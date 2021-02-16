@@ -44,8 +44,8 @@ class PlayerTest(aiobungie.Client):
 
 if __name__ == '__main__':
     plr = PlayerTest()
-    plr.loop.run_until_complete(plr.player_data("DeeJ"))```
+    plr.loop.run_until_complete(plr.player_data("DeeJ"))
+```
 
 ### Requirements
-
 * httpx

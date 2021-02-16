@@ -1,13 +1,17 @@
-import httpx
+import sys
 from .player import Player
+import httpx
+import asyncio
 
-class Aiobungie:
-    __slots__ = ('session', 'key')
-    API_URL = 'https://www.bungie.net/platform/'
+class Client:
 
-    def __init__(self, session = None, key = None):
+    __slots__ = ('session', 'key', 'loop')
+    API_URL = 'https://www.bungie.net/Platform'
+
+    def __init__(self, key = None, session: httpx.AsyncClient = None, loop = None):
+        self.loop = asyncio.get_event_loop() if not loop else loop
+        self.key = {'X-API-KEY': key}
         self.session = session
-        self.key = {"X-API-KEY": key}
 
     @property
     def get_key(self):
@@ -15,6 +19,7 @@ class Aiobungie:
         return self.key.get("X-API-KEY")
 
     async def create_session(self):
+        """:class: `Aiobungie`: Creates a new session."""
         self.session = httpx.AsyncClient()
 
     async def get(self ,url):
@@ -26,11 +31,16 @@ class Aiobungie:
             if data.status_code == 200:
                 try:
                     return data.json()
-                except Exception:
-                    raise
+                except httpx.HTTPError as e:
+                    print(f"HTTP error due to {e.with_traceback}")
+                    sys.exit(1)
 
     async def get_player(self, name = None):
-        resp = await self.get(self.API_URL + name)
+        """:class: `Aiobungie`: Returns the aviliable player data."""
+        resp = await self.get(self.API_URL + '/Destiny2/SearchDestinyPlayer/All/' + name)
+        if resp is None:
+            print("Player not found,")
+            return
         return Player(resp)
 
     async def get_clan(self, clanid = None):
@@ -39,9 +49,8 @@ class Aiobungie:
         """
         if not clanid:
             raise ValueError
-        else:
-            resp = await self.get(self.API_URL + clanid)
-            return resp
+        resp = await self.get(self.API_URL + '' + clanid)
+        return resp
 
     async def get_weapon(self, name = None):
         """
@@ -49,11 +58,5 @@ class Aiobungie:
         """
         if not name:
             raise NameError
-        else:
-            resp = await self.get(self.API_URL + name)
-            #return Weapons(resp)
-
-    async def close(self):
-        if self.session.is_closed:
-            return
-        await self.session.aclose()
+        resp = await self.get(self.API_URL + name)
+        #return Weapons(resp)

@@ -1,4 +1,4 @@
-from .aiobungie import Aiobungie
+from .aiobungie import Client
 
 __title__ = 'aiobungie'
 __license__ = 'MIT'

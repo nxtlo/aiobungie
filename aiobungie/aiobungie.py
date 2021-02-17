@@ -2,22 +2,37 @@ import sys
 from .bungie import *
 from .player import Player
 from .appinfo import AppInfo
+import copy
 import httpx
 import asyncio
+from typing import Dict
 
-class Client:
+class Client(object):
     __slots__ = ('session', 'key', 'loop')
     API_URL = 'https://www.bungie.net/Platform'
 
     def __init__(self, *, key = None, session: httpx.AsyncClient = None, loop = None):
         self.loop = asyncio.get_event_loop() if not loop else loop
-        self.key = {'X-API-KEY': key}
+        self.key: Dict = {'X-API-KEY': key}
         self.session = session
+        super().__init__()
 
 
     def get_key(self, key):
-        """Returns the cached api key"""
-        return self.key.get(key)
+        node = copy.copy(self.key.get(key))
+        return node
+
+
+    def __repr__(self):
+        return f"<{self.__class__}, key: {self.key}, session: {self.session}, loop: {self.loop}>"
+
+
+    def __str__(self):
+        return f'{self.__class__.__qualname__}'
+
+
+    def __contains__(self, key):
+        return key in self.key
 
 
     async def create_session(self):

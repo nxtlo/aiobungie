@@ -1,5 +1,4 @@
 import sys
-from .clans import Clans
 from .bungie import *
 from .player import Player
 from .appinfo import AppInfo

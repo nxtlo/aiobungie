@@ -1,4 +1,4 @@
 __pycache__/
 venv
-aiobungie.egg-info
+*.egg-info
 dist/

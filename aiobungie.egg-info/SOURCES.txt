@@ -1,7 +1,0 @@
-README.md
-setup.py
-aiobungie.egg-info/PKG-INFO
-aiobungie.egg-info/SOURCES.txt
-aiobungie.egg-info/dependency_links.txt
-aiobungie.egg-info/requires.txt
-aiobungie.egg-info/top_level.txt

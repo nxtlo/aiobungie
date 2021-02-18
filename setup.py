@@ -11,7 +11,7 @@ setup(
     name='aiobungie',
     description='An async wrapper for the bungie api',
     long_description=fs,
-    version='0.1',
+    version='0.0',
     long_description_content_type="text/markdown",
     url='https://github.com/nxtlo/aiobungie',
     author='nxtlo',

@@ -5,7 +5,9 @@ An Asynchronous API wrapper for the bungie API witten in Python.
 
 ## Installing
 
-TODO
+```
+pip install aiobungie
+```
 
 ## Quick Example
 

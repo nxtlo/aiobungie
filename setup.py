@@ -1,22 +1,22 @@
 from setuptools import setup
 import sys
-import aiobungie
 
 if sys.version_info < (3, 6):
     raise RuntimeError("aiobungie reuires Python 3.6 or higher")
 
-with open("./README.md", "r") as f:
+with open("./README.md", "r", encoding='utf-8') as f:
     fs = f.read()
 
 setup(
-    name=aiobungie.__title__,
-    version=aiobungie.__version__,
-    description=aiobungie.__description__,
+    name='aiobungie',
+    description='An async wrapper for the bungie api',
     long_description=fs,
-    long_description_content_type="text/markdowb",
-    url=aiobungie.__url__,
-    author=aiobungie.__author__,
-    license=aiobungie.__license__,
+    version='0.1',
+    long_description_content_type="text/markdown",
+    url='https://github.com/nxtlo/aiobungie',
+    author='nxtlo',
+    license='MIT',
+    install_requires=['httpx'],
     python_requires='>=3.6.0',
     classifires=[
         "Development Status :: 3 - Alpha",

@@ -19,7 +19,6 @@ class Client(object):
         self.session = session
         super().__init__()
 
-
     def get_key(self, key):
         """an easier access to get the api key."""
         node = copy.copy(self.key.get(key))
@@ -93,7 +92,8 @@ class Client(object):
         """
         Returns
         --------
-        Returns all available application data.
+        :class:`list`
+            Returns all available application data.
 
         Parameters
         -----------
@@ -108,7 +108,8 @@ class Client(object):
         """
         Returns
         --------
-        Returns information about a destiny2 clan
+        :class:`list`
+            Returns information about a destiny2 clan
 
         Parameters
         -----------

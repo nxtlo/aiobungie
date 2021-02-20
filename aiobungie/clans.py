@@ -44,7 +44,7 @@ class Clans(object):
         """
         Returns
         --------
-        Optional[:class: `datetime.datetime`]
+        :class:`datetime.datetime`:
             When was the clan created at.
         """
         return self.get('creationDate')
@@ -54,7 +54,7 @@ class Clans(object):
         """
         Returns
         --------
-        Optional[:class: `datetime.datetime`]
+        :class:`datetime.datetime`:
             last time the clan was updated.
         """
         return self.get("modificationDate")

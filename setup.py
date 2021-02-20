@@ -16,7 +16,7 @@ setup(
     url='https://github.com/nxtlo/aiobungie',
     author='nxtlo',
     license='MIT',
-    install_requires=['httpx'],
+    install_requires=['aiohttp'],
     python_requires='>=3.6.0',
     classifires=[
         "Development Status :: 3 - Alpha",

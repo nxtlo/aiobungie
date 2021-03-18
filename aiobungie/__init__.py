@@ -1,1 +1,1 @@
-from .aiobungie import Client
+from .client import Client

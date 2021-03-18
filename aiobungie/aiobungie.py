@@ -2,9 +2,8 @@ from .bungie import Careers
 from .player import Player
 from .appinfo import AppInfo
 from .clans import Clans
-from typing import Dict
+import httpx
 import copy
-import aiohttp
 import asyncio
 
 class Client(object):
@@ -13,9 +12,9 @@ class Client(object):
     __slots__ = ('session', 'key', 'loop')
     API_URL = 'https://www.bungie.net/Platform'
 
-    def __init__(self, *, key = None, session: aiohttp.ClientSession = None, loop = None):
+    def __init__(self, *, key = None, session: httpx.AsyncClient = None, loop = None):
         self.loop = asyncio.get_event_loop() if not loop else loop
-        self.key: Dict = {'X-API-KEY': key}
+        self.key = key
         self.session = session
         super().__init__()
 
@@ -24,38 +23,34 @@ class Client(object):
         node = copy.copy(self.key.get(key))
         return node
 
-    @classmethod
-    def qual_name(cls):
-        return cls.__qualname__
-
     def __repr__(self):
         return f"<{self.__class__}, key: {self.key}, session: {self.session}, loop: {self.loop}>"
-
 
     def __contains__(self, key):
         return key in self.key
 
-
     async def create_session(self):
         """Creates a new aiohttp Client Session"""
-        self.session = aiohttp.ClientSession()
+        self.session = httpx.AsyncClient()
 
 
     async def close(self):
-        await self.session.close()
-
+        if not self.session.is_closed:
+            await self.session.aclose()
+            self.session = None
 
     async def fetch(self ,url):
         if not self.session:
             await self.create_session()
 
         async with self.session as client:
-            data = await client.get(url, headers=self.get_key("X-API-KEY"))
-            if data.status == 200:
+            headers = {'X-API-KEY': self.key}
+            data = await client.get(url, headers=headers)
+            if data.status_code == 200:
                 try:
-                    return await data.json()
-                except Exception:
-                    return await data.text()
+                    return data.json()
+                except httpx.DecodingError:
+                    return data.text
 
 
     async def get_player(self, name: str):

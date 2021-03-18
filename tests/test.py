@@ -1,8 +1,6 @@
 from aiobungie import Client
 
-client = Client(key={'X-API-KEY': ''})
-
-
+client = Client('')
 
 async def player_test():
     guardian = await client.get_player("DeeJ")
@@ -36,5 +34,4 @@ async def main():
     await clan_test()
     # await player_test()
 
-if __name__ == '__main__':
-    client.loop.run_until_complete(main())
+client.loop.run_until_complete(main())

@@ -16,7 +16,7 @@ import aiobungie
 
 # Without classes.
 
-client = aiobungie.Client(key={'X-API-KEY': 'YOUR_API_KEY'})
+client = aiobungie.Client(key='YOUR_API_KEY')
 
 async def player(name):
     _player = await client.get_player(name)
@@ -31,7 +31,7 @@ client.loop.run_until_complete(player("Sweatcicle"))
 
 class PlayerTest(aiobungie.Client):
     def __init__(self):
-        super().__init__(key={'X-API-KEY': 'YOUR_API_KEY'})
+        super().__init__(key='YOUR_API_KEY')
 
     async def player_data(self, player_name: str):
         player = await self.get_player(player_name)
@@ -50,4 +50,4 @@ if __name__ == '__main__':
 ```
 
 ### Requirements
-* aiohttp
+* httpx

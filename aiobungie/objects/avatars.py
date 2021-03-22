@@ -23,5 +23,8 @@ SOFTWARE.
 '''
 
 
-from .error import *
-from .client import Client
+
+class Emblem:
+    __slots__ = ()
+    def __init__(self, data):
+        pass

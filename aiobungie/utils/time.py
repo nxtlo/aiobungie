@@ -22,6 +22,32 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
+import calendar
+from typing import Optional
+from datetime import datetime
+import time
 
-from .error import *
-from .client import Client
+class HumanFriendlyTime(object):
+    def __init__(self):
+        pass
+
+
+    @staticmethod
+    def from_timestamp(timer = None) -> Optional[datetime]:
+        '''
+        Converts timestamp to datetime.utcnow()
+        '''
+        if not timer:
+            return datetime.utcnow().strftime("%c")
+        else:
+            return time.ctime(timer)
+
+    @staticmethod
+    def to_timestamp(date) -> Optional[calendar.Calendar]:
+        '''
+        Converts datetime.utcnow().utctimetuple() to timestamp.
+        '''
+        try:
+            return calendar.timegm(date)
+        except Exception as e:
+            raise e

@@ -22,6 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
+import io
 
-from .error import *
-from .client import Client
+class ImageProtocol:
+    BASE = ""
+    def __init__(self):
+        pass
+

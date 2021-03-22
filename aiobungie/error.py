@@ -22,6 +22,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
+class InvalidInput(Exception):
+    pass
 
-from .error import *
-from .client import Client
+class InvalidTime(Exception):
+    pass
+
+class PlayerNotFound(Exception):
+    pass

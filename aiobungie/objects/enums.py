@@ -22,21 +22,61 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
-from enum import Enum
+import typing
+import types
+
+__all__: typing.Tuple = (
+    'GameMode',
+    'MembershipType',
+    'DestinyCharecter',
+    'DestinyMilestoneType',
+    'DestinyRace'
+)
 
 
-class DestinyRace(Enum):
-    HUMAN = 0
-    AWOKEN = 1
-    EXO = 2
+class GameMode:
+    NOTHING = None
+    STORY   = 2
+    STRIKE  = 3
+    RAID    = 4
+    ALLPVP  = 5
+    PATROL  = 6
+    ALLPVE  = 7
+    TOF     = 14
+    '''Trials Of Osiris'''
+    CONTROL     = 10
+    NIGHTFALL   = 16
+    IRONBANER   = 19
+    ALLSTRIKES  = 18
+
+
+class MembershipType:
+    NONE        = 0
+    XBOX        = 1
+    PSN         = 2
+    STEAM       = 3
+    BLIZZARD    = 4
+    ALL         = -1
+
+
+class DestinyCharecter:
+    TITAN   = 0
+    HUNTER  = 1
+    WARLOCK = 2
     UNKNOWN = 3
 
 
+class DestinyRace:
+    HUMAN   = 0
+    AWOKEN  = 1
+    EXO     = 2
+    UNKNOWN = 3
 
-class DestinyMilestoneType(Enum):
-    UNKNOWN = 0
-    TUTORIAL = 1
-    ONETIME = 2
-    WEEKLY = 3
-    DAILY = 4
-    SPECIAL = 5
+
+class DestinyMilestoneType:
+    UNKNOWN     = 0
+    TUTORIAL    = 1
+    ONETIME     = 2
+    WEEKLY      = 3
+    DAILY       = 4
+    SPECIAL     = 5

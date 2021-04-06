@@ -25,6 +25,7 @@ SOFTWARE.
 
 from .objects import *
 from .http import HTTPClient
+from typing import Any, Optional, List
 import httpx
 import asyncio
 
@@ -67,9 +68,49 @@ class Client(object):
         # return Emblem(resp)
 
 
+    async def get_activity_stats(
+        self,
+        userid: int,
+        character: int,
+        type: Optional[MembershipType] = MembershipType.ALL,
+        mode: Optional[GameMode] = None,
+        page: Optional[int] = 0,
+        limit: int = 1
+        ) -> Optional[list]:
+        '''
+        Returns
+        --------
+        Optional[:class: `list`]
+
+        Paramaters
+        ----------
+        userid: :class:`int`
+            The user id.
+
+        character: :class:`int`
+            The id of the character to retrieve.
+        
+        type: Optional[:class:`.MembershipType`]
+            The Member ship type, if nothing was passed than it will return all.
+        
+        mode: Optional[:class:`.GameMode`]
+            This paramater filters the game mode, Nightfall, Strike, Iron Banner, etc.
+
+        page: Optional[:class:`int`]
+            The page number
+
+        limit: Optional[:class:`int`]
+            Limits the returned result.
+        '''
+        resp = await self._client.fetch(
+            f"{self.API_URL}/Destiny2/{type}/Account/{userid}/Character/{character}/Stats/Activities/?page={page}&count={limit}"
+            )
+        return resp
+
+
     async def get_clan_admins(self, clanid: int):
         resp = await self._client.fetch(f'{self.API_URL}/GroupV2/{clanid}/AdminsAndFounder/')
-        return ClanAdmins(**resp)
+        # return ClanAdmins(**resp)
 
 
     async def get_careers(self):

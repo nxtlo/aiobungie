@@ -1,4 +1,5 @@
 from .appinfo import AppInfo
 from .bungie import Careers, News
-from .clans import Clans, ClanAdmins
+from .clans import Clans
 from .player import Player
+from .enums import *

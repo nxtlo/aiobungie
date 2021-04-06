@@ -24,4 +24,5 @@ SOFTWARE.
 
 
 from .error import *
+from .objects.enums import *
 from .client import Client

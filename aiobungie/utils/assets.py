@@ -24,8 +24,14 @@ SOFTWARE.
 
 import io
 
-class ImageProtocol:
-    BASE = ""
-    def __init__(self):
-        pass
+__all__ = (
+    'ImageProtocol',
+)
 
+class ImageProtocol:
+    BASE = "https://bungie.net"
+    def __init__(self, path: str) -> None:
+        self.path = path
+    
+    def __str__(self):
+        return self.BASE + self.path

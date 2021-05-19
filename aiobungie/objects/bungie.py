@@ -21,36 +21,37 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
-
+from typing import Optional, Any, Dict, List, Sequence
 
 class Careers(object):
-    __slots__ = ("response",)
+    __slots__: Sequence[str] = ("response",)
     
-    def __init__(self, data):
-        self.response = data.get("Response")
+    def __init__(self, data) -> None:
+        self.response: Optional[Dict[str, Any]] = data.get("Response")
+        self.response = self.response.get('categories')
 
     @property
-    def _(self):
-        pass
-
+    def categories(self) -> List[Any]:
+        for i in self.response:
+            return i
 
 class News(object):
-    __slots__ = ('response')
+    __slots__: Sequence[str] = ('response',)
 
-    def __init__(self, data):
-        self.response = data.get('response')
+    def __init__(self, data: Dict[str, Any]) -> None:
+        self.response: Optional[Dict[str, Any]] = data.get('response')
 
     @property
-    def _(self):
+    def _(self) -> None:
         pass
 
 
 class DestinyContent(object):
     __slots__ = ('response')
 
-    def __init__(self, data):
-        self.response = data.get('response')
+    def __init__(self, data: Optional[Dict[Any, Any]]) -> None:
+        self.response: Dict[str, Any] = data.get('response')
 
     @property
-    def _(self):
+    def _(self) -> None:
         pass

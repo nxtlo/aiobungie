@@ -22,27 +22,47 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
+from typing import Optional, Sequence, List, Union
+from ..utils import MembershipType as mbs, ImageProtocol
+from ..error import PlayerNotFound
 
 class Player:
     __slots__ = ("response",)
-    def __init__(self, data):
+    def __init__(self, data) -> None:
         self.response = data.get("Response")
 
     @property
-    def icon_path(self):
+    def icon(self) -> Optional[Union[ImageProtocol, str]]:
         for item in self.response:
-            return item['iconPath']
+            return ImageProtocol(item['iconPath'])
 
     @property
-    def name(self):
+    def name(self) -> Optional[str]:
         for item in self.response:
             return item['displayName']
 
     @property
-    def type(self):
+    def type(self) -> Optional[mbs]:
         for item in self.response:
-            return item['membershipType']
+            try:
+                _type = item['membershipType']
+                if _type == mbs.NONE:
+                    _type = None
+                elif _type == mbs.XBOX:
+                    _type = 'Xbox'
+                elif _type == mbs.BLIZZARD:
+                    _type = 'Blizzard'
+                elif _type == mbs.PSN:
+                    _type = 'PSN'
+                elif _type == mbs.STEAM:
+                    _type = 'Steam'
+                else:
+                    _type = mbs.ALL
+                return _type
+            except UnboundLocalError:
+                _type = None
+                return None
 
     @property
-    def id(self):
+    def id(self) -> Optional[List[int]]:
         return [item['membershipId'] for item in self.response]

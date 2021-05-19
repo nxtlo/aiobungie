@@ -23,24 +23,28 @@ SOFTWARE.
 '''
 
 import httpx
+from typing import Optional, Sequence, Dict, List, Union
 
 class HTTPClient:
-    __slots__ = ('session', 'key')
+    __slots__: Sequence[str] = ('session', 'key')
 
-    def __init__(self, key, session = None):
-        self.session = session
-        self.key = key
+    def __init__(self, key, session = None) -> None:
+        self.session: httpx.AsyncClient = session
+        self.key: Optional[str] = key
 
-    async def create_session(self):
+    async def create_session(self) -> Optional[httpx.AsyncClient]:
         """Creates a new aiohttp Client Session"""
         self.session = httpx.AsyncClient()
 
-    async def close(self):
+    async def close(self) -> None:
         if not self.session.is_closed:
-            await self.session.aclose()
+            try:
+                await self.session.aclose()
+            except httpx.CloseError:
+                raise
             self.session = None
 
-    async def fetch(self ,url):
+    async def fetch(self ,url: str) -> Optional[httpx.Request]:
         if not self.session:
             await self.create_session()
 

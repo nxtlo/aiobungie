@@ -25,14 +25,21 @@ SOFTWARE.
 import typing
 import types
 
-__all__: typing.Tuple = (
+__all__: typing.Sequence[str] = (
     'GameMode',
     'MembershipType',
     'DestinyCharecter',
     'DestinyMilestoneType',
-    'DestinyRace'
+    'DestinyRace',
+    'Vendor'
 )
 
+
+class Vendor:
+    ZAVALA  = 69482069
+    XUR     = 2190858386
+    BANSHE  = 672118013
+    SPIDER  = 863940356
 
 class GameMode:
     NOTHING = None

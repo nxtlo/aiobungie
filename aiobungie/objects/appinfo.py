@@ -22,75 +22,78 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
+from typing import Optional, Any, Sequence, Union, Dict
+from aiobungie import ImageProtocol, MembershipType
+from datetime import datetime
 
 class AppInfo:
-    __slots__ = ('response',)
+    __slots__: Sequence[str] = ('response',)
 
-    def __init__(self, data):
+    def __init__(self, data: Optional[Dict]) -> None:
         self.response = data.get('Response')
 
     @property
-    def id(self):
+    def id(self) -> Optional[int]:
         """Returns the application id"""
         return self.response['applicationId']
 
     @property
-    def name(self):
+    def name(self) -> Any:
         """Returns the application name"""
         return self.response['name']
 
     @property
-    def redirect_url(self):
+    def redirect_url(self) -> Optional[Union[str, Any]]:
         """Returns the redirect url"""
         return self.response['redirectUrl']
 
     @property
-    def created_at(self):
+    def created_at(self) -> Optional[datetime]:
         """Returns the app's CreationDate"""
         return self.response['creationDate']
 
     @property
-    def published_at(self):
+    def published_at(self) -> Optional[datetime]:
         """Returns when was the app first published"""
         return self.response['firstPublished']
 
     @property
-    def link(self):
+    def link(self) -> Any:
         """Returns the application link"""
         return self.response['link']
     
     @property
-    def status(self):
+    def status(self) -> int:
         """Returns an integer of the application's status"""
         return self.response['status']
 
     @property
-    def is_public(self):
+    def is_public(self) -> bool:
         """Returns a bool if the app was public or Privet"""
         for item in self.response['team']:
             return item.get('user')['isPublic']
 
     @property
-    def owner_name(self):
+    def owner_name(self) -> Optional[str]:
         """Returns a str of the app's owner"""
         for item in self.response['team']:
             return item.get('user')['displayName']
 
 
     @property
-    def owner_id(self):
+    def owner_id(self) -> int:
         """Returns the app's owner id"""
         for item in self.response['team']:
             return item.get('user')['membershipId']
 
     @property
-    def icon_path(self):
+    def icon_path(self) -> Optional[ImageProtocol]:
         """Returns the icon path fot the app"""
         for item in self.response['team']:
-            return item.get("user")['iconPath']
+            return ImageProtocol(item.get("user")['iconPath'])
 
     @property
-    def member_type(self):
+    def member_type(self) -> Optional[MembershipType]:
         """Returns the member ship type"""
         for item in self.response['team']:
             return item.get('user')['membershipType']

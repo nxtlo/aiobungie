@@ -1,5 +1,6 @@
 from .appinfo import AppInfo
 from .bungie import Careers, News
-from .clans import Clans
+from .clans import Clans, ClanAdmins
 from .player import Player
-from .enums import *
+from .meta import Manifest
+from ..utils import *

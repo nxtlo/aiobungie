@@ -22,34 +22,39 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
-
 from .objects import *
+from . import error
 from .http import HTTPClient
-from typing import Any, Optional, List
+from typing import Any, Optional, List, Sequence, Union, Dict
 import httpx
 import asyncio
 
 class Client(object):
     """The base class the all Clients must inherit from."""
 
-    __slots__ = ('_client', 'key', 'loop')
-    API_URL = 'https://www.bungie.net/Platform'
+    __slots__: Sequence[str] = ('_client', 'key', 'loop')
+    API_URL: str = 'https://www.bungie.net/Platform'
 
-    def __init__(self, key = None, *, session: httpx.AsyncClient = None, loop = None):
+    def __init__(self, key = None, *, session: httpx.AsyncClient = None, loop = None) -> None:
         self.loop = asyncio.get_event_loop() if not loop else loop
-        self.key = key
+        self.key: str = key
+        if not self.key:
+            raise ValueError("Missing the API key!")
         self._client = HTTPClient(session=session, key=key)
         super().__init__()
 
-
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<{self.__class__}, key: {self.key}, Client: {self._client}, loop: {self.loop}>"
 
-    async def get_player(self, name: str):
+    async def get_manifest(self) -> Optional[Manifest]:
+        resp = await self._client.fetch(f'{self.API_URL}/Destiny2/Manifest')
+        return Manifest(resp)
+
+    async def get_player(self, name: str) -> Optional[Player]:
         """
         Parameters
         -----------
-        name: str
+        name: :class:`str`
             The Player's Name
 
         Returns
@@ -58,15 +63,15 @@ class Client(object):
             A list of Destiny memberships if given a full GamerTag.
         """
         resp = await self._client.fetch(f'{self.API_URL}/Destiny2/SearchDestinyPlayer/All/{name}')
-        if resp is None:
-            print("Player not found,")
-            return
         return Player(resp)
 
-    async def get_avatar(self, avatar: int):
-        resp = await self._client.fetch(f'{self.API_URL}/.../{avatar}')
-        # return Emblem(resp)
-
+    async def get_vendor_sales(self, 
+                                    vendor: Optional[Union[Vendor, int]], 
+                                    memberid: int, 
+                                    charid: int, 
+                                    type: MembershipType
+                                    ) -> Optional[Dict[str, Any]]:
+        return await self._client.fetch(f'{self.API_URL}/Destiny2/{type}/Profile/{memberid}/Character/{charid}/Vendors/{vendor}/?components=402')
 
     async def get_activity_stats(
         self,
@@ -85,7 +90,7 @@ class Client(object):
         Paramaters
         ----------
         userid: :class:`int`
-            The user id.
+            The user id that starts with `4611`.
 
         character: :class:`int`
             The id of the character to retrieve.
@@ -108,12 +113,12 @@ class Client(object):
         return resp
 
 
-    async def get_clan_admins(self, clanid: int):
+    async def get_clan_admins(self, clanid: int) -> Optional[Dict[str, Any]]:
         resp = await self._client.fetch(f'{self.API_URL}/GroupV2/{clanid}/AdminsAndFounder/')
-        # return ClanAdmins(**resp)
+        return ClanAdmins(**resp)
 
 
-    async def get_careers(self):
+    async def get_careers(self) -> None:
         """
         Returns
         --------
@@ -124,7 +129,7 @@ class Client(object):
         return Careers(resp)
 
 
-    async def get_app(self, appid: int):
+    async def get_app(self, appid: int) -> List[Any]:
         """
         Returns
         --------
@@ -140,7 +145,7 @@ class Client(object):
         return AppInfo(resp)
 
 
-    async def get_clan(self, clanid: int):
+    async def get_clan(self, clanid: int) -> List[Clans]:
         """
         Returns
         --------

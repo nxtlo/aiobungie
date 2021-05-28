@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "aiobungie"
+version = "0.1.0"
+description = "A small async api wrapper for the bungie api"
+authors = ["nxtlo <dhmony-99@hotmail.com>"]
+license = "MIT"
+keywords = ['async', 'api', 'destiny', 'bungie']
+readme = "README.md"
+repository = "https://github.com/nxtlo/aiobungie"
+packages = [
+    {include = "aiobungie"},
+    {include = "aiobungie/**/*.py"},
+    {include = "aiobungie/py.typed"}
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+httpx = "^0.18.1"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

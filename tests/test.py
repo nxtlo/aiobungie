@@ -1,7 +1,17 @@
+from typing import Optional
 import aiobungie
+import os
 
-with open('./.env') as env:
-    token = env.read()
+token: Optional[str]
+
+try:
+    from dotenv import load_dotenv
+except ImportError:
+    with open('./.env') as e:
+        token = e.read()[4:]
+else:
+    load_dotenv("./.env")
+    token = os.environ.get('TOKEN')
 
 client = aiobungie.Client(token)
 CLAN = 4389205

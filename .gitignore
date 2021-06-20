@@ -3,3 +3,9 @@ venv
 *.egg-info
 dist/
 build/
+.env
+.venv/
+venv/
+*.sqlite3
+*.zip
+.vscode/

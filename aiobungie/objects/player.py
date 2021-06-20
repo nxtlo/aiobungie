@@ -22,13 +22,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
-from typing import Optional, Sequence, List, Union
+from typing import Optional, Sequence, List, Union, Dict, Any
 from ..utils import MembershipType as mbs, ImageProtocol
 from ..error import PlayerNotFound
 
 class Player:
-    __slots__ = ("response",)
-    def __init__(self, data) -> None:
+    __slots__: Sequence[str] = ("response",)
+    def __init__(self, data: Dict[str, Any]) -> None:
         self.response = data.get("Response")
 
     @property

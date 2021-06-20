@@ -43,14 +43,14 @@ class Client(object):
         self._client = HTTPClient(session=session, key=key)
         super().__init__()
 
-    def __repr__(self) -> str:
-        return f"<{self.__class__}, key: {self.key}, Client: {self._client}, loop: {self.loop}>"
+    async def from_path(self, path: str):
+        return await self._client.fetch(f'{self.API_URL}/{path}')
 
     async def get_manifest(self) -> Optional[Manifest]:
         resp = await self._client.fetch(f'{self.API_URL}/Destiny2/Manifest')
         return Manifest(resp)
 
-    async def get_player(self, name: str) -> Optional[Player]:
+    async def get_player(self, name: str, type: MembershipType = MembershipType.ALL) -> Optional[Player]:
         """
         Parameters
         -----------
@@ -62,7 +62,7 @@ class Client(object):
         :class:`list`
             A list of Destiny memberships if given a full GamerTag.
         """
-        resp = await self._client.fetch(f'{self.API_URL}/Destiny2/SearchDestinyPlayer/All/{name}')
+        resp = await self._client.fetch(f'{self.API_URL}/Destiny2/SearchDestinyPlayer/{type}/{name}')
         return Player(resp)
 
     async def get_vendor_sales(self, 
@@ -70,18 +70,20 @@ class Client(object):
                                     memberid: int, 
                                     charid: int, 
                                     type: MembershipType
-                                    ) -> Optional[Dict[str, Any]]:
-        return await self._client.fetch(f'{self.API_URL}/Destiny2/{type}/Profile/{memberid}/Character/{charid}/Vendors/{vendor}/?components=402')
+                                    ):
+        return await self._client.fetch(
+            f'{self.API_URL}/Destiny2/{type}/Profile/{memberid}/Character/{charid}/Vendors/{vendor}/?components=402'
+            )
 
     async def get_activity_stats(
         self,
         userid: int,
         character: int,
-        type: Optional[MembershipType] = MembershipType.ALL,
+        type: Optional[Union[MembershipType, None]] = MembershipType.ALL,
         mode: Optional[GameMode] = None,
         page: Optional[int] = 0,
         limit: int = 1
-        ) -> Optional[list]:
+        ) -> Activity:
         '''
         Returns
         --------
@@ -108,9 +110,9 @@ class Client(object):
             Limits the returned result.
         '''
         resp = await self._client.fetch(
-            f"{self.API_URL}/Destiny2/{type}/Account/{userid}/Character/{character}/Stats/Activities/?page={page}&count={limit}"
+            f"{self.API_URL}/Destiny2/{type}/Account/{userid}/Character/{character}/Stats/Activities/?page={page}&count={limit}&mode={mode}"
             )
-        return resp
+        return Activity(data=resp)
 
 
     async def get_clan_admins(self, clanid: int) -> Optional[Dict[str, Any]]:

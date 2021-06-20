@@ -16,6 +16,8 @@ packages = [
 [tool.poetry.dependencies]
 python = "^3.8"
 httpx = "^0.18.1"
+aiofiles = "^0.7.0"
+aiosqlite = "^0.17.0"
 
 [tool.poetry.dev-dependencies]
 

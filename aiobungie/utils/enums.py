@@ -31,8 +31,40 @@ __all__: typing.Sequence[str] = (
     'DestinyCharecter',
     'DestinyMilestoneType',
     'DestinyRace',
-    'Vendor'
+    'Vendor',
+    'Raid',
+    'Dungeon'
 )
+
+
+class Raid:
+    def __init__(self, *, raid: int = None) -> None:
+        self.raid = raid
+        super().__init__()
+    DSC     = 910380154
+    LW      = 2122313384
+    VOG     = 3881495763
+    GOS     = 3458480158
+    
+    def __str__(self):
+        if self.raid == self.DSC:
+            return 'Deep Stone Crypt'
+        elif self.raid == self.LW:
+            return 'Last Wish'
+        elif self.raid == self.VOG:
+            return 'Vault of Glass'
+        elif self.raid == self.GOS:
+            return 'Garden of Salvation'
+        return self
+
+class Dungeon:
+    PRESAGE     = ...
+    HARBINGER   = ...
+    PROPHECY    = ...
+    POH         = ...
+    SHATTERED   = ...
+    ZEROHOUR    = ...
+    WHISPER     = ...
 
 
 class Vendor:

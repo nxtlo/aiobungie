@@ -30,3 +30,6 @@ class InvalidTime(Exception):
 
 class PlayerNotFound(Exception):
     pass
+
+class HashError(Exception):
+    pass

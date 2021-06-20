@@ -11,7 +11,7 @@ MEMTYPE = aiobungie.MembershipType.STEAM
 VENDOR = aiobungie.Vendor.SPIDER
 
 async def player_test():
-    guardian = await client.get_player("Sweatcicle")
+    guardian = await client.get_player("Fate 怒")
     
     attrs = f'''
             {guardian.name},
@@ -24,8 +24,8 @@ async def player_test():
 
 async def man_test():
     man = await client.get_manifest()
-    print(await man.from_db())
-    await man.download()
+    await man.__dbinit__()
+    print(await man.get_raid_image(aiobungie.Raid.LW))
 
 async def vendor_test():
     resp = await client.get_vendor_sales(vendor=VENDOR, memberid=MEMID, charid=CHARID, type=MEMTYPE)
@@ -36,8 +36,21 @@ async def careers_test():
     print(car.categories)
 
 async def activity_test():
-    user = await client.get_clan_admins(CLAN)
-    ...
+    act = await client.get_activity_stats(
+        MEMID, CHARID, MEMTYPE, aiobungie.GameMode.RAID
+    )
+    print(act.when)
+    print(f'GameMode {act.mode}')
+    print(f'Total Kills {act.kills}')
+    print(f"Total assists {act.assists}")
+    print(f"Total Players {act.player_count}")
+    print(f"Total Deaths {act.deaths}")
+    print(f"Duration {act.duration}")
+    print(f"K/D {act.kd}")
+    print(f"Hash {act.hash}")
+    print(f"Raw Hash {act.raw_hash}")
+    print(f"is Completed {act.is_completed}")
+
 
 async def clan_test():
     clan = await client.get_clan(CLAN)
@@ -56,11 +69,12 @@ async def clan_test():
     print(attrs)
 
 async def main():
-    await clan_test()
+    # await clan_test()
     # await player_test()
     # await careers_test()
-    # await man_test()
+    await man_test()
     # await vendor_test()
+    # print(await client.from_path(f'/Destiny2/SearchDestinyPlayer/{MEMTYPE}/'))
     # await activity_test()
 
 client.loop.run_until_complete(main())

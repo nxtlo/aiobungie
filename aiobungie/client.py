@@ -65,6 +65,36 @@ class Client(object):
         resp = await self._client.fetch(f'{self.API_URL}/Destiny2/SearchDestinyPlayer/{type}/{name}')
         return Player(resp)
 
+
+    async def get_charecter(self, memberid: int, type: MembershipType, character: DestinyCharecter) -> Character:
+        """
+        Fetches a destiny character and returns its data.
+
+        Paramaters
+        -----------
+            memberid: :class:`int`
+                A valid bungie member id.
+
+            character: :class:`.DestinyCharacter`
+                a Destiny character -> .WARLOCK, .TITAN, .HUNTER
+            
+            type: :class:`.MembershipType`
+                The membership type -> .STEAM, .XBOX, .PSN
+
+        Returns
+        -------
+            Character: A Destiny character.
+
+        Raises
+        -------
+            :exc:`.PlayerNotFound` 
+                raised if the Character was not found.
+        """
+        if character not in (DestinyCharecter.HUNTER, DestinyCharecter.WARLOCK, DestinyCharecter.TITAN):
+            raise error.CharacterTypeError(f"Expected {DestinyCharecter}, Got {character}")
+        resp = await self._client.fetch(f'{self.API_URL}/Destiny2/{type}/Profile/{memberid}/?components={Component.CHARECTERS}')
+        return Character(char=character, data=resp)
+
     async def get_vendor_sales(self, 
                                     vendor: Optional[Union[Vendor, int]], 
                                     memberid: int, 
@@ -72,7 +102,7 @@ class Client(object):
                                     type: MembershipType
                                     ):
         return await self._client.fetch(
-            f'{self.API_URL}/Destiny2/{type}/Profile/{memberid}/Character/{charid}/Vendors/{vendor}/?components=402'
+            f'{self.API_URL}/Destiny2/{type}/Profile/{memberid}/Character/{charid}/Vendors/{vendor}/?components={Component.VENDOR_SALES}'
             )
 
     async def get_activity_stats(
@@ -87,7 +117,7 @@ class Client(object):
         '''
         Returns
         --------
-        Optional[:class: `list`]
+        Optional[:class:`list`]
 
         Paramaters
         ----------
@@ -112,8 +142,18 @@ class Client(object):
         resp = await self._client.fetch(
             f"{self.API_URL}/Destiny2/{type}/Account/{userid}/Character/{character}/Stats/Activities/?page={page}&count={limit}&mode={mode}"
             )
-        return Activity(data=resp)
+        try:
+            return Activity(data=resp)
 
+        except AttributeError:
+            raise error.HashError(
+                ".hash method is only used for raids, please remove it and use .raw_hash() instead"
+                )
+        except TypeError:
+            raise error.ActivityNotFound(
+                "Error has been occurred during getting your data, maybe the page is out of index or not found?\n"
+                f"Actual response: {resp!r}"
+                )
 
     async def get_clan_admins(self, clanid: int) -> Optional[Dict[str, Any]]:
         resp = await self._client.fetch(f'{self.API_URL}/GroupV2/{clanid}/AdminsAndFounder/')
@@ -140,7 +180,7 @@ class Client(object):
 
         Parameters
         -----------
-        appid: int
+        appid: :class:`int`
             The application id.
         """
         resp = await self._client.fetch(f"{self.API_URL}/App/Application/{appid}")

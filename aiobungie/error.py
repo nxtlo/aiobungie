@@ -33,3 +33,9 @@ class PlayerNotFound(Exception):
 
 class HashError(Exception):
     pass
+
+class ActivityNotFound(Exception):
+    pass
+
+class CharacterTypeError(Exception):
+    pass

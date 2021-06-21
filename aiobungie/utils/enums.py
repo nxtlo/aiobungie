@@ -33,7 +33,9 @@ __all__: typing.Sequence[str] = (
     'DestinyRace',
     'Vendor',
     'Raid',
-    'Dungeon'
+    'Dungeon',
+    'DestinyGender',
+    'Component'
 )
 
 
@@ -88,6 +90,19 @@ class GameMode:
     IRONBANER   = 19
     ALLSTRIKES  = 18
 
+class Component:
+    NOTHING     = 0
+    PROFILE     = 100
+    SILVER      = 105
+    PROGRESSION = 104
+    INVENTORIES = 102
+    CHARECTERS  = 200
+    CHAR_INVENTORY = 201
+    CHARECTER_PROGRESSION = 202
+    EQUIPED_ITEMS   = 205
+    VENDORS     = 400
+    RECORDS     = 900
+    VENDOR_SALES    = 402
 
 class MembershipType:
     NONE        = 0
@@ -99,18 +114,53 @@ class MembershipType:
 
 
 class DestinyCharecter:
+    def __init__(self, *, data = None):
+        self.data = data
+        super().__init__()
     TITAN   = 0
     HUNTER  = 1
     WARLOCK = 2
     UNKNOWN = 3
 
+    def __str__(self):
+        if self.data == self.TITAN:
+            return "Titan"
+        elif self.data == self.HUNTER:
+            return "Hunter"
+        elif self.data == self.WARLOCK:
+            return "Warlock"
+        else:
+            return "Unknown"
+        return self
+
+class DestinyGender:
+    def __init__(self, *, data = None):
+        self.data = data
+        super().__init__()
+    MALE    = 0
+    FEMALE  = 1
+    UNKNOWN = 2
+
+    def __str__(self):
+        return 'Male' if self.data == self.MALE else 'Female'
 
 class DestinyRace:
+    def __init__(self, *, data = None):
+        self.data = data
+        super().__init__()
     HUMAN   = 0
     AWOKEN  = 1
     EXO     = 2
     UNKNOWN = 3
 
+    def __str__(self):
+        if self.data == self.HUMAN:
+            return 'Human'
+        elif self.data == self.AWOKEN:
+            return 'Awoken'
+        elif self.data == self.EXO:
+            return 'Exo'
+        return 'Unknown'
 
 class DestinyMilestoneType:
     UNKNOWN     = 0

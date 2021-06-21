@@ -14,7 +14,7 @@ else:
     load_dotenv("./.env")
     token = os.environ.get('TOKEN')
 
-client = aiobungie.Client('e8ff97b63a444fe8a2f9fc36e9cdef19')
+client = aiobungie.Client(token)
 CLAN = 4389205
 MEMID = 4611686018484639825
 CHARID = 2305843009444904605

@@ -6,7 +6,7 @@ token: Optional[str]
 
 try:
     from dotenv import load_dotenv
-except ImportError:
+except (ImportError, ValueError):
     with open('./.env') as e:
         token = e.read()[4:]
 else:
@@ -34,7 +34,7 @@ async def player_test():
 
 async def man_test():
     man = await client.get_manifest()
-    await man.__dbinit__()
+    await man._dbinit()
     print(await man.get_raid_image(aiobungie.Raid.LW))
 
 async def vendor_test():

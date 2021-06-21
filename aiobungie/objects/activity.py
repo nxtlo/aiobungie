@@ -37,14 +37,58 @@ class Activity:
 			if self.mode == GameMode.RAID:
 				self.hash = Raid(raid=i['activityDetails'].get('referenceId'))
 				self.mode = 'Raid'
-			self.is_completed = i['values'].get('completed').get('basic')['displayValue']
-			self.kills = i['values'].get('kills').get('basic')['displayValue']
-			self.assists = i['values'].get('assists').get('basic')['displayValue']
-			self.player_count = i['values'].get('playerCount').get('basic')['displayValue']
-			self.deaths = i['values'].get('deaths').get('basic')['displayValue']
-			self.duration = i['values'].get('activityDurationSeconds').get('basic')['displayValue']
-			self.member_type = i['activityDetails'].get('mode')
-			self.kd = i['values'].get('killsDeathsRatio').get('basic')['displayValue']
+			self.is_completed = i[
+				'values'
+				].get(
+					'completed'
+					).get(
+						'basic'
+						)['displayValue']
+			self.kills = i[
+				'values'
+				].get(
+					'kills'
+					).get(
+						'basic'
+						)['displayValue']
+			self.assists = i[
+				'values'
+				].get(
+					'assists'
+					).get(
+						'basic'
+						)['displayValue']
+			self.player_count = i[
+				'values'
+				].get(
+					'playerCount'
+					).get(
+						'basic'
+						)['displayValue']
+			self.deaths = i[
+				'values'
+				].get(
+					'deaths'
+					).get(
+						'basic'
+						)['displayValue']
+			self.duration = i[
+				'values'
+				].get(
+					'activityDurationSeconds'
+					).get(
+						'basic'
+						)['displayValue']
+			self.member_type = i[
+				'activityDetails'
+				].get('mode')
+			self.kd = i[
+				'values'
+				].get(
+					'killsDeathsRatio'
+					).get(
+						'basic'
+						)['displayValue']
 
 	@property
 	def raw_hash(self) -> int:

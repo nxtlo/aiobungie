@@ -22,7 +22,7 @@ class Manifest:
         self.data: t.Dict[str, t.Any] = data.get('Response', None)
         self.db = Database('./destiny.sqlite3')
 
-    async def __dbinit__(self):
+    async def _dbinit(self):
         if not os.path.exists('./destiny.sqlite3'):
             await self.download()
         return

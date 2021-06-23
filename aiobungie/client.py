@@ -90,8 +90,6 @@ class Client(object):
             :exc:`.PlayerNotFound` 
                 raised if the Character was not found.
         """
-        if character not in (DestinyCharecter.HUNTER, DestinyCharecter.WARLOCK, DestinyCharecter.TITAN):
-            raise error.CharacterTypeError(f"Expected {DestinyCharecter}, Got {character}")
         resp = await self._client.fetch(f'{self.API_URL}/Destiny2/{type}/Profile/{memberid}/?components={Component.CHARECTERS}')
         return Character(char=character, data=resp)
 

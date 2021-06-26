@@ -26,3 +26,5 @@ SOFTWARE.
 from .error import *
 from .utils import *
 from .client import Client
+
+__version__ = '0.2.1a'

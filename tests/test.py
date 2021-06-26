@@ -1,20 +1,24 @@
 from typing import Optional
 import aiobungie
-import json
+from aiobungie.experiements import OAuth2, refresh
+import asyncio
 import os
 
 token: Optional[str]
+secret: Optional[str]
 
 try:
     from dotenv import load_dotenv
 except (ImportError, ValueError):
     with open('./.env') as e:
-        token = e.read()[4:]
+        token = e.readline()[4:]
 else:
     load_dotenv("./.env")
     token = os.environ.get('TOKEN')
+    secret = os.environ.get('SECRET')
 
 client = aiobungie.Client(token)
+auth = OAuth2(token, secret)
 CLAN = 4389205
 MEMID = 4611686018484639825
 CHARID = 2305843009444904605
@@ -48,10 +52,13 @@ async def careers_test():
     print(car.categories)
 
 async def activity_test():
+    person = await client.get_player('ItzKarlz')
+    char = await client.get_charecter(person.id[0], aiobungie.MembershipType.XBOX, aiobungie.DestinyCharecter.WARLOCK)
     act: client.get_activity_stats() = await client.get_activity_stats(
-        MEMID, CHARID, MEMTYPE, aiobungie.GameMode.IRONBANER
+        person.id[0], char.id, aiobungie.MembershipType.XBOX, aiobungie.GameMode.RAID, page=0
     )
     print(act.when)
+    print(person.name)
     print(f'GameMode {act.mode}')
     print(f'Total Kills {act.kills}')
     print(f"Total assists {act.assists}")
@@ -95,14 +102,22 @@ async def clan_test():
             '''
     print(attrs)
 
+# Make our request, refresh the token every 1hr and do the request Again.
+@refresh(every=3599, cls=auth)
+async def auth_tests():
+    await auth.do_auth()
+    user = await auth.get_current_user()
+    print(user)
+
 async def main():
     # await clan_test()
     # await player_test()
     # await careers_test()
     # await man_test()
     # await vendor_test()
-    # print(await client.from_path(f'/Destiny2/{MEMTYPE}/Profile/{MEMID}/?components={aiobungie.Component.CHARECTERS}'))
-    await char_test()
+    # print(await client.from_path(f'User/GetCurrentBungieAccount/'))
+    # await char_test()
     # await activity_test()
+    pass
 
-client.loop.run_until_complete(main())
+client.loop.run_until_complete(auth_tests())

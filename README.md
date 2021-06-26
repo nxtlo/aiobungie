@@ -14,40 +14,52 @@ pip install aiobungie
 ```python
 import aiobungie
 
-# Without classes.
-
 client = aiobungie.Client(key='YOUR_API_KEY')
 
-async def player(name):
-    _player = await client.get_player(name)
-    print(_player.name)
-    print(_player.icon_path)
-    print(_player.id)
-    print(_player.type)
+async def main() -> None:
 
-client.loop.run_until_complete(player("Sweatcicle"))
+    clan = await client.get_clan(1234)
+    print(f'{clan.id}, {clan.name}, {clan.owner}, {clan.created_at}, {clan.about}')
 
-# With classes
+    player = await client.get_player('Fate怒')
+    print(f'{player.name}, {player.id[0]}, {player.icon}, {player.type}')
 
-class PlayerTest(aiobungie.Client):
-    def __init__(self):
-        super().__init__(key='YOUR_API_KEY')
+    char = await client.get_character(player.id[0], aiobungie.MembershipType.STEAM, aiobungie.DestinyCharacter.WARLOCK)
+    print(f'{char.emblem}, {char.light}, {char.id}, {char.race}, {char.gender}, {char._class}')
 
-    async def player_data(self, player_name: str):
-        player = await self.get_player(player_name)
+    activ = await client.get_activity_stats(player.id[0], char.id, aiobungie.MembershipType.STEAM, aiobungie.GameMode.RAID)
+    print(
+        f'''{activ.mode}, {activ.kills}, {activ.player_count}, 
+        {activ.duration}, {activ.when}, {activ.kd}, {activ.deaths},
+        {activ.assists}, {activ.hash} -> raids only {activ.raw_hash} -> Any
+        ''')
 
-        try:
-            print(player.name)
-            print(player.type)
-            print(player.id)
-            print(player.icon_path)
-        except:
-            pass
+    # Raw search
+    print(await client.from_path('User/.../.../'))
 
-if __name__ == '__main__':
-    plr = PlayerTest()
-    plr.loop.run_until_complete(plr.player_data("DeeJ"))
+
+# OAuth2 is not fully implemented yet.
+
+from aiobungie.experiements import OAuth2, refresh
+
+auth_client = OAuth2(token='', secret='')
+
+# Use the refresh decorator to automatically refresh the tokens
+# The cls param is required to get the client secret and pass it to the POST request.
+@refresh(every=3600, cls=auth_client)
+async def auth_stuff() -> None:
+    await auth_client.do_auth() # Creates sqlite db, Open a page get the code param then paste it in the pormpt.
+                                # You will only do this one, after it will auto_refresh the tokens for you.
+    print(await auth_client.get_current_user())
+
 ```
 
 ### Requirements
+* >=Python3.8
 * httpx
+
+### OAuth and Dev
+* requests_oauthlib
+* aiosqlite
+* aiofiles
+* python-dotenv

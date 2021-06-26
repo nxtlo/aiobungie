@@ -9,8 +9,7 @@ readme = "README.md"
 repository = "https://github.com/nxtlo/aiobungie"
 packages = [
     {include = "aiobungie"},
-    {include = "aiobungie/**/*.py"},
-    {include = "aiobungie/py.typed"}
+    {include = "aiobungie/**/*.py"}
 ]
 
 [tool.poetry.dependencies]
@@ -21,7 +20,7 @@ httpx = "^0.18.1"
 python-dotenv = "^0.17.1"
 aiosqlite = "^0.17.0"
 aiofiles = "^0.7.0"
-
+requests-oauthlib = "^1.3.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

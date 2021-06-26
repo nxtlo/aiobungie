@@ -7,5 +7,6 @@ build/
 .venv/
 venv/
 *.sqlite3
+*.sqlite
 *.zip
 .vscode/

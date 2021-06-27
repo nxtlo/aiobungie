@@ -52,10 +52,12 @@ async def auth_stuff() -> None:
                                 # You will only do this one, after it will auto_refresh the tokens for you.
     print(await auth_client.get_current_user())
 
+client.loop.run_until_complete(main())
+client.loop.run_until_complete(auth_stuff())
 ```
 
 ### Requirements
-* >=Python3.8
+>= Python3.8 <= 4.0
 * httpx
 
 ### OAuth and Dev

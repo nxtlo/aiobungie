@@ -27,7 +27,11 @@ from .clans import Clans, ClanAdmins
 from .player import Player
 from .meta import Manifest
 from .character import Character
-from ..utils import *
 from .activity import Activity
+from typing import Sequence as Seq
 
-__version__ = '0.2.0a'
+__all__: Seq[str] = (
+	'AppInfo', 'News', 'Careers', 'Clans',
+	'ClanAdmins', 'Player', 'Manifest',
+	'Character', 'Activity'
+)

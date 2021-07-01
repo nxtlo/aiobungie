@@ -22,7 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 from .. import error
-from ..utils import Component, DestinyCharecter, ImageProtocol, DestinyGender, DestinyRace
+from ..utils.enums import Component, DestinyCharecter, DestinyGender, DestinyRace
+from ..utils import ImageProtocol
 from datetime import datetime
 from typing import (
 	List,

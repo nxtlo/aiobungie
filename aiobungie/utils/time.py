@@ -23,17 +23,20 @@ SOFTWARE.
 '''
 
 import calendar
+import time
 from typing import Optional
 from datetime import datetime
-import time
 
-class HumanFriendlyTime(object):
+__all__ = (
+    'Time',
+)
+class Time(object):
     def __init__(self):
         pass
 
 
     @staticmethod
-    def from_timestamp(timer = None) -> Optional[datetime]:
+    def from_timestamp(timer = None) -> str:
         '''
         Converts timestamp to datetime.utcnow()
         '''
@@ -43,11 +46,16 @@ class HumanFriendlyTime(object):
             return time.ctime(timer)
 
     @staticmethod
-    def to_timestamp(date) -> Optional[calendar.Calendar]:
+    def clean_date(date: datetime) -> datetime:
+        '''Converts datetime.utcnow() to a readble date.'''
+        return date.strftime('%A, %d/%m/%Y, %H:%M:%S %p')
+
+    @staticmethod
+    def to_timestamp(date: datetime) -> int:
         '''
         Converts datetime.utcnow().utctimetuple() to timestamp.
         '''
         try:
-            return calendar.timegm(date)
+            return calendar.timegm(date.timetuple())
         except Exception as e:
             raise e

@@ -22,9 +22,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
+from . import error # NOQA
+from .utils import ImageProtocol, Time # NOQA
+from .utils.enums import * # NOQA
+from .utils import enums #NOQA
+from .client import Client # NOQA
 
-from .error import *
-from .utils import *
-from .client import Client
+__all__ = (
+	('Client', 'ImageProtocol', 'Time', 'error')
+	+ enums.__all__ #NOQA
+)
 
-__version__ = '0.2.1a'
+__version__ = '0.2.2a' #NOQA

@@ -22,13 +22,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
+import asyncio
+import httpx
 from .objects import *
+from .utils.enums import MembershipType, DestinyCharecter, Component, GameMode, Vendor
 from . import error
 from .http import HTTPClient
 from typing import Any, Optional, List, Sequence, Union, Dict
-import httpx
-import asyncio
 
+__all__: Sequence[str] = (
+    'Client',
+)
 class Client(object):
     """The base class the all Clients must inherit from."""
 

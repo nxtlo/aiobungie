@@ -29,6 +29,7 @@ import asyncio
 import time
 import inspect
 import logging
+from ..utils import Crypt, Time
 from datetime import datetime
 from typing import Callable, Any, Sequence, TYPE_CHECKING, Optional
 from os.path import isfile
@@ -43,7 +44,6 @@ REDIRECT: str = 'https://www.bungie.net/Platform'
 log = logging.getLogger(__name__)
 _db = sqlite3.connect('./db.sqlite')
 _cur = _db.cursor()
-stptime = datetime.utcnow().strftime('%A, %d/%m/%Y, %H:%M:%S %p')
 
 __all__: Sequence[str] = (
 	'OAuth2', 'refresh'
@@ -69,8 +69,6 @@ def on_ready():
 			return inject(*args, **kwargs)
 		return decorator
 	return fake
-
-
 class OAuth2:
 	"""
 	an exmepremental bungie oauth2
@@ -166,7 +164,7 @@ class OAuth2:
 			ok = req.fetch_token(TOKEN_EP, code=wait, client_secret=self._secret)
 			access_token = ok.get('access_token')
 			refresh_token = ok.get('refresh_token')
-			_cur.execute("INSERT INTO tokens(token, refresh_token, inserted_at) VALUES(?, ?, ?)", (access_token, refresh_token, stptime))
+			_cur.execute("INSERT INTO tokens(token, refresh_token, inserted_at) VALUES(?, ?, ?)", (access_token, refresh_token, Time.clean_date(datetime.utcnow())))
 			_db.commit()
 			log.info("Inserted token to the database.")
 		return found
@@ -211,7 +209,7 @@ def refresh(*, every: float = 0, cls = None) -> Callable[[Any], asyncio.Abstract
 				req = request.json()
 				new_token = req.get('access_token')
 				new_ref = req.get('refresh_token')
-				_cur.execute("UPDATE tokens SET (token, refresh_token, updated_at) = (?, ?, ?)", (new_token, new_ref, stptime))
+				_cur.execute("UPDATE tokens SET (token, refresh_token, updated_at) = (?, ?, ?)", (new_token, new_ref, Time.clean_date(datetime.utcnow())))
 				log.info(f"Tokens refreshed, sleeping for {every}.")
 				if inspect.iscoroutinefunction(inject):
 					await asyncio.sleep(every)

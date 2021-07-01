@@ -25,6 +25,9 @@ SOFTWARE.
 import httpx
 from typing import Optional, Sequence, Dict, List, Union
 
+__all__ = (
+    'HTTPClient',
+)
 class HTTPClient:
     __slots__: Sequence[str] = ('session', 'key')
 

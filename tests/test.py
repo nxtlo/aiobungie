@@ -1,5 +1,6 @@
 from typing import Optional
 import aiobungie
+from aiobungie.objects import Clans
 from aiobungie.experiements import OAuth2, refresh
 import asyncio
 import os
@@ -10,10 +11,10 @@ secret: Optional[str]
 try:
     from dotenv import load_dotenv
 except (ImportError, ValueError):
-    with open('./.env') as e:
+    with open('../.env') as e:
         token = e.readline()[4:]
 else:
-    load_dotenv("./.env")
+    load_dotenv("../.env")
     token = os.environ.get('TOKEN')
     secret = os.environ.get('SECRET')
 
@@ -87,7 +88,7 @@ async def char_test():
     print(char._class)
 
 async def clan_test():
-    clan = await client.get_clan(CLAN)
+    clan: Clans = await client.get_clan(CLAN)
     attrs = f'''
             {clan.id}, 
             {clan.name}, 
@@ -110,7 +111,7 @@ async def auth_tests():
     print(user)
 
 async def main():
-    # await clan_test()
+    await clan_test()
     # await player_test()
     # await careers_test()
     # await man_test()
@@ -118,6 +119,6 @@ async def main():
     # print(await client.from_path(f'User/GetCurrentBungieAccount/'))
     # await char_test()
     # await activity_test()
-    pass
 
-client.loop.run_until_complete(auth_tests())
+client.loop.run_until_complete(main())
+# client.loop.run_until_complete(auth_tests())

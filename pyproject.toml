@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "aiobungie"
-version = "0.2.1a"
+version = "0.2.2a"
 description = "A small async api wrapper for the bungie api"
 authors = ["nxtlo <dhmony-99@hotmail.com>"]
 license = "MIT"
@@ -15,6 +15,7 @@ packages = [
 [tool.poetry.dependencies]
 python = "^3.8"
 httpx = "^0.18.1"
+cryptography = "^3.4.7"
 
 [tool.poetry.dev-dependencies]
 python-dotenv = "^0.17.1"

@@ -23,7 +23,8 @@ SOFTWARE.
 '''
 
 from typing import Optional, Sequence, List, Union, Dict, Any
-from ..utils import MembershipType as mbs, ImageProtocol
+from ..utils.enums import MembershipType as mbs
+from ..utils import ImageProtocol
 from ..error import PlayerNotFound
 
 class Player:

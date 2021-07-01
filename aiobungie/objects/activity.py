@@ -24,8 +24,8 @@ SOFTWARE.
 
 from typing import Dict, Sequence, Optional, Any, TYPE_CHECKING, Optional
 from datetime import datetime
-from .. import GameMode, MembershipType, Raid
-from .. import HashError
+from ..utils.enums import GameMode, MembershipType, Raid
+from ..error import HashError
 
 __all__: Sequence[str] = (
 	'Activity',

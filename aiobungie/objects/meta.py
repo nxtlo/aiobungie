@@ -31,7 +31,8 @@ import os
 import aiofiles
 import json
 import os.path
-from ..utils import Raid, ImageProtocol
+from ..utils.enums import Raid
+from ..utils import ImageProtocol
 
 __all__: t.Sequence[str] = (
     'Manifest',

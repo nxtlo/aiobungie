@@ -25,17 +25,18 @@ SOFTWARE.
 from logging import getLogger
 from typing import Callable, Any
 from functools import wraps
+import sys
 
 log = getLogger(__name__)
 
-def deprecated(func: Callable[..., Any]) -> Callable[..., Any]:
+def deprecated(func) -> Callable[..., Any]:
 	'''
 	functions with this decorator will not work or is not implemented yet.
 	'''
 	@wraps(func)
 	def wrapper(*args, **kwargs):
 		log.warn(f'WARNING, Function {func.__name__!r} is deprecated.')
-		del func
 		coro = func(*args, **kwargs)
+		exit(1)
 		return coro
 	return wrapper

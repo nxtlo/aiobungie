@@ -1,6 +1,7 @@
 from typing import Optional
 import aiobungie
 from aiobungie.objects import Clan
+from aiobungie.utils import deprecated
 from aiobungie.experiements import OAuth2, refresh
 import asyncio
 import os
@@ -110,6 +111,7 @@ async def auth_tests():
     user = await auth.get_current_user()
     print(user)
 
+@deprecated
 async def main():
     await clan_test()
     # await player_test()

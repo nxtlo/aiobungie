@@ -25,7 +25,8 @@ SOFTWARE.
 __all__ = (
     'InvalidInput', 'InvalidTime',
     'PlayerNotFound', 'HashError',
-    'ActivityNotFound', 'CharacterTypeError'
+    'ActivityNotFound', 'CharacterTypeError',
+    'JsonError'
 )
 class InvalidInput(Exception):
     pass
@@ -43,4 +44,7 @@ class ActivityNotFound(Exception):
     pass
 
 class CharacterTypeError(Exception):
+    pass
+
+class JsonError(Exception):
     pass

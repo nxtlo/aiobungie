@@ -22,8 +22,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 from .. import error
-from ..utils.enums import Component, DestinyCharecter, DestinyGender, DestinyRace
-from ..utils import ImageProtocol
 from datetime import datetime
 from typing import (
 	List,
@@ -31,8 +29,14 @@ from typing import (
 	Dict,
 	Any,
 	Union,
-	Sequence
+	Sequence,
+	TYPE_CHECKING
 )
+
+# if TYPE_CHECKING:
+from ..utils.enums import Component, DestinyCharecter, DestinyGender, DestinyRace
+from ..utils import ImageProtocol
+from ..types.character import Character as CharacterPayload
 
 __all__: Sequence[str] = (
 	'Character'
@@ -46,21 +50,23 @@ class Character:
 		'last_session', '_char'
 	)
 
-	emblem_icon: Optional[Union[ImageProtocol, str]]
-	emblem: Optional[Union[ImageProtocol, str]]
-	light: int
-	total_played_time: int
-	last_played: datetime
-	id: int
-	_class: DestinyCharecter
-	member_id: int
-	last_session: int
-	race: DestinyRace
-	gender: DestinyGender
 	_resp: Dict[str, Any]
 	_char: DestinyCharecter
 
-	def __init__(self, *, char: DestinyCharecter, data: Dict[str, Any]) -> None:
+	if TYPE_CHECKING:
+		emblem_icon: Optional[Union[ImageProtocol, str]]
+		emblem: Optional[Union[ImageProtocol, str]]
+		light: int
+		total_played_time: int
+		last_played: datetime
+		id: int
+		_class: DestinyCharecter
+		member_id: int
+		last_session: int
+		race: DestinyRace
+		gender: DestinyGender
+
+	def __init__(self, *, char: DestinyCharecter, data: Any) -> None:
 		self._resp = data.get('Response', {})['characters']['data']
 		self._char = char
 		self._update(self._resp)

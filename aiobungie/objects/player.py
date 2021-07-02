@@ -22,48 +22,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
-from typing import Optional, Sequence, List, Union, Dict, Any
-from ..utils.enums import MembershipType as mbs
-from ..utils import ImageProtocol
+from typing import Optional, Sequence, List, Union, Dict, Any, TYPE_CHECKING
 from ..error import PlayerNotFound
 
+if TYPE_CHECKING:
+    from ..types.player import Player as TypedPlayer
+    from ..utils.enums import MembershipType
+    from ..utils import ImageProtocol
+
 class Player:
-    __slots__: Sequence[str] = ("response",)
-    def __init__(self, data: Dict[str, Any]) -> None:
-        self.response = data.get("Response")
+    __slots__: Sequence[str] = (
+        'icon', 'id', 'name', 'type'
+    )
+    def __init__(self, data: Any) -> None:
+        self._update(data)
 
-    @property
-    def icon(self) -> Optional[Union[ImageProtocol, str]]:
-        for item in self.response:
-            return ImageProtocol(item['iconPath'])
-
-    @property
-    def name(self) -> Optional[str]:
-        for item in self.response:
-            return item['displayName']
-
-    @property
-    def type(self) -> Optional[mbs]:
-        for item in self.response:
-            try:
-                _type = item['membershipType']
-                if _type == mbs.NONE:
-                    _type = None
-                elif _type == mbs.XBOX:
-                    _type = 'Xbox'
-                elif _type == mbs.BLIZZARD:
-                    _type = 'Blizzard'
-                elif _type == mbs.PSN:
-                    _type = 'PSN'
-                elif _type == mbs.STEAM:
-                    _type = 'Steam'
-                else:
-                    _type = mbs.ALL
-                return _type
-            except UnboundLocalError:
-                _type = None
-                return None
-
-    @property
-    def id(self) -> Optional[List[int]]:
-        return [item['membershipId'] for item in self.response]
+    def _update(self, data) -> None:
+        self.icon: ImageProtocol = ImageProtocol(data['iconPath'])
+        self.id: Optional[int] = int(data['membershipId'])
+        self.type: MembershipType = MembershipType(data=int(data['membershipType']))

@@ -22,40 +22,20 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
-import calendar
-import time
-from typing import Optional
-from datetime import datetime
+from logging import getLogger
+from typing import Callable, Any
+from functools import wraps
 
-__all__ = (
-    'Time',
-)
-class Time(object):
-    def __init__(self):
-        pass
+log = getLogger(__name__)
 
-
-    @staticmethod
-    def from_timestamp(timer = None) -> str:
-        '''
-        Converts timestamp to datetime.utcnow()
-        '''
-        if not timer:
-            return datetime.utcnow().strftime("%c")
-        else:
-            return time.ctime(int(timer))
-
-    @staticmethod
-    def clean_date(date: datetime) -> str:
-        '''Converts datetime.utcnow() to a readble date.'''
-        return date.strftime('%A, %d/%m/%Y, %H:%M:%S %p')
-
-    @staticmethod
-    def to_timestamp(date: datetime) -> int:
-        '''
-        Converts datetime.utcnow().utctimetuple() to timestamp.
-        '''
-        try:
-            return calendar.timegm(date.timetuple())
-        except Exception as e:
-            raise e
+def deprecated(func: Callable[..., Any]) -> Callable[..., Any]:
+	'''
+	functions with this decorator will not work or is not implemented yet.
+	'''
+	@wraps(func)
+	def wrapper(*args, **kwargs):
+		log.warn(f'WARNING, Function {func.__name__!r} is deprecated.')
+		del func
+		coro = func(*args, **kwargs)
+		return coro
+	return wrapper

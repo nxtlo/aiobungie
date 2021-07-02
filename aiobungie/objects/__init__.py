@@ -22,8 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 from .appinfo import AppInfo
-from .bungie import Careers, News
-from .clans import Clans, ClanAdmins
+from .clans import Clan
 from .player import Player
 from .meta import Manifest
 from .character import Character
@@ -31,7 +30,7 @@ from .activity import Activity
 from typing import Sequence as Seq
 
 __all__: Seq[str] = (
-	'AppInfo', 'News', 'Careers', 'Clans',
-	'ClanAdmins', 'Player', 'Manifest',
+	'AppInfo', 'Clans',
+	'Player', 'Manifest',
 	'Character', 'Activity'
 )

@@ -24,8 +24,10 @@ SOFTWARE.
 
 from typing import Dict, Sequence, Optional, Any, TYPE_CHECKING, Optional
 from datetime import datetime
-from ..utils.enums import GameMode, MembershipType, Raid
 from ..error import HashError
+
+if TYPE_CHECKING:
+	from ..utils.enums import GameMode, MembershipType, Raid
 
 __all__: Sequence[str] = (
 	'Activity',
@@ -37,19 +39,20 @@ class Activity:
 		'deaths', 'assists', 'kd', 'duration', 'player_count',
 		'when', 'member_type', 'hash', 'image'
 	)
-	is_completed: str
-	hash: int # Only for raids since we're not going to store everysingle other activity.
-	mode: GameMode
-	kills: int
-	deaths: int
-	when: Optional[datetime]
-	assists: int
-	duration: Optional[str]
-	player_count: int
-	image: str
-	member_type: MembershipType
+	if TYPE_CHECKING:
+		is_completed: str
+		hash: int # Only for raids since we're not going to store everysingle other activity.
+		mode: GameMode
+		kills: int
+		deaths: int
+		when: Optional[datetime]
+		assists: int
+		duration: Optional[str]
+		player_count: int
+		image: str
+		member_type: MembershipType
 
-	def __init__(self, *, data: Dict[str, Any]) -> None:
+	def __init__(self, *, data: Any) -> None:
 		self._response = data.get('Response', None)
 		self._update(self._response)
 

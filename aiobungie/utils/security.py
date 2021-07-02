@@ -1,7 +1,29 @@
+'''
+MIT License
+
+Copyright (c) 2020 - Present nxtlo
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+'''
 from typing import Union, Sequence, Optional, Any
 from cryptography.fernet import Fernet
 from logging import getLogger
-import colorama
 
 log = getLogger(__name__)
 
@@ -10,22 +32,40 @@ __all__ = (
 )
 
 class Crypt:
-	__slots__: Sequence[str] = ('_entrie',)
+	'''
+	an Object half inherits :class:`.Fernet` to decrypt and encrypt data.
 
-	def __init__(self, entrie: Any = None) -> None:
+	Attributes
+	-----------
+	entrie: :class:`bytes`
+		The data entrie you wanna encrypt and decrypt
+	
+	instance: :class:`.Fernet`
+		The default for this attr is `.Fernet` and should not be changed
+		it can be None or your own `.Fernet` instance.
+
+	'''
+	__slots__: Sequence[str] = ('_entrie', '_instance')
+
+	def __init__(self, entrie: bytes, instance = None) -> None:
 		self._entrie = entrie
+		if not instance:
+			self._instance: Fernet = instance(instance.generate_key())
+		self._instance = instance
 
-	def encrypt(self) -> None:
-		_key = Fernet.generate_key()
-		meth = Fernet(_key)
-		try:
-			return meth.encrypt(self._entrie)
-		except Exception as e:
-			raise f'<{e!r}>'
+	def encrypt(self) -> bytes:
+		'''
+		A method that encrypts :class:`Crypt.entrie` attr
+		'''
+		return self._instance.encrypt(self._entrie)
 
-	def decrypt(self, token: Union[bytes, str], ttl: int = None) -> Union[bytes, str]:
+	def decrypt(self, token: bytes, ttl: int = None) -> Union[bytes, str]:
+		'''
+		a Method that decrypt a token. 
+		this should be the encrypted :class:`.Crypt.entrie` attr.
+		'''
 		try:
-			key = Fernet.decrypt(token, ttl)
+			key = self._instance.decrypt(token, ttl)
 		except Exception as e:
-			log.warn(colorama.Fore.RED + f"Couldn't decrypt key due: {e!r}")
+			log.warn(f"Couldn't decrypt key due: {e!r}")
 		return key.strip()

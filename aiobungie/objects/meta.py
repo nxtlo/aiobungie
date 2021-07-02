@@ -36,12 +36,11 @@ from ..utils import ImageProtocol
 
 __all__: t.Sequence[str] = (
     'Manifest',
-    'Database'
 )
 class Manifest:
     BASE: str = 'https://bungie.net'
     def __init__(self, data) -> None:
-        self.data: t.Dict[str, t.Any] = data.get('Response', None)
+        self.data: t.Any = data.get('Response', None)
         self.db = Database('./destiny.sqlite3')
 
     async def _dbinit(self):
@@ -49,9 +48,9 @@ class Manifest:
             await self.download()
         return
     
-    async def get_raid_image(self, raid: Raid) -> None:
+    async def get_raid_image(self, raid: Raid) -> ImageProtocol:
         image = await self.db.execute("SELECT json FROM DestinyActivityDefinition WHERE id = ?", (raid,), 'pgcrImage')
-        return ImageProtocol(image)
+        return ImageProtocol(path=str(image))
 
     async def download(self) -> None:
         _time = time.time()
@@ -76,7 +75,7 @@ class Database:
     def __init__(self, path: str) -> None:
         self.path = path
 
-    async def execute(self, sql: str, params = None, item = None) -> None:
+    async def execute(self, sql: str, params: tuple = None, item:str = None) -> None:
         async with aiosqlite.connect(self.path) as db:
             try:
                 cur = await db.execute(sql, params)

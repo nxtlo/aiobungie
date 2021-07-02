@@ -1,20 +1,20 @@
 from typing import Optional
 import aiobungie
-from aiobungie.objects import Clans
+from aiobungie.objects import Clan
 from aiobungie.experiements import OAuth2, refresh
 import asyncio
 import os
 
-token: Optional[str]
-secret: Optional[str]
+token: str
+secret: str
 
 try:
     from dotenv import load_dotenv
 except (ImportError, ValueError):
-    with open('../.env') as e:
+    with open('./.env') as e:
         token = e.readline()[4:]
 else:
-    load_dotenv("../.env")
+    load_dotenv("./.env")
     token = os.environ.get('TOKEN')
     secret = os.environ.get('SECRET')
 
@@ -88,18 +88,18 @@ async def char_test():
     print(char._class)
 
 async def clan_test():
-    clan: Clans = await client.get_clan(CLAN)
+    clan: Clan = await client.get_clan(CLAN)
     attrs = f'''
             {clan.id}, 
-            {clan.name}, 
-            {clan.about}, 
-            {clan.description}, 
-            {clan.created_at}, 
-            {clan.edited_at}",
-            {clan.avatar},
-            {clan.banner},
-            {clan.owner},
-            {clan.tag}
+            {clan.owner.id}
+            {clan.owner.name}
+            {clan.owner.icon}
+            {clan.owner.is_public}
+            {clan.owner.type}
+            {clan.owner.types}
+            {clan.owner.joined_at}
+            {clan.owner.last_online}
+            {clan.owner.clan_id}
             '''
     print(attrs)
 

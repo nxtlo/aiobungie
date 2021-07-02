@@ -25,12 +25,7 @@ SOFTWARE.
 from . import error # NOQA
 from .utils import ImageProtocol, Time # NOQA
 from .utils.enums import * # NOQA
-from .utils import enums #NOQA
 from .client import Client # NOQA
+from typing import Sequence as Seq, Any #NOQA
 
-__all__ = (
-	('Client', 'ImageProtocol', 'Time', 'error')
-	+ enums.__all__ #NOQA
-)
-
-__version__ = '0.2.2a' #NOQA
+__version__ = '0.2.3a' #NOQA

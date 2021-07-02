@@ -24,11 +24,38 @@ SOFTWARE.
 
 import asyncio
 import httpx
-from .objects import *
-from .utils.enums import MembershipType, DestinyCharecter, Component, GameMode, Vendor
+
 from . import error
+from typing import (
+    TypeVar,
+    Any, 
+    Optional, 
+    Sequence, 
+    Union, 
+    Coroutine,
+    TYPE_CHECKING
+    )
+
+#if TYPE_CHECKING:
 from .http import HTTPClient
-from typing import Any, Optional, List, Sequence, Union, Dict
+from .objects import ( 
+    Activity
+    , AppInfo
+    , Clan
+    , Manifest
+    , Player
+    , Character
+)
+from .utils.enums import (
+    MembershipType
+    , DestinyCharecter
+    , Component
+    , GameMode
+    , Vendor
+)
+from .utils.helpers import deprecated
+T = TypeVar('T')
+Route = Coroutine[Any, Any, T]
 
 __all__: Sequence[str] = (
     'Client',
@@ -42,19 +69,24 @@ class Client(object):
     def __init__(self, key = None, *, session: httpx.AsyncClient = None, loop = None) -> None:
         self.loop = asyncio.get_event_loop() if not loop else loop
         self.key: str = key
+
         if not self.key:
             raise ValueError("Missing the API key!")
         self._client = HTTPClient(session=session, key=key)
+
         super().__init__()
 
     async def from_path(self, path: str):
         return await self._client.fetch(f'{self.API_URL}/{path}')
 
+        
     async def get_manifest(self) -> Optional[Manifest]:
         resp = await self._client.fetch(f'{self.API_URL}/Destiny2/Manifest')
         return Manifest(resp)
 
-    async def get_player(self, name: str, type: MembershipType = MembershipType.ALL) -> Optional[Player]:
+
+
+    async def get_player(self, name: str, type: MembershipType) -> Player:
         """
         Parameters
         -----------
@@ -97,6 +129,7 @@ class Client(object):
         resp = await self._client.fetch(f'{self.API_URL}/Destiny2/{type}/Profile/{memberid}/?components={Component.CHARECTERS}')
         return Character(char=character, data=resp)
 
+    @deprecated
     async def get_vendor_sales(self, 
                                     vendor: Optional[Union[Vendor, int]], 
                                     memberid: int, 
@@ -111,7 +144,7 @@ class Client(object):
         self,
         userid: int,
         character: int,
-        type: Optional[Union[MembershipType, None]] = MembershipType.ALL,
+        type: MembershipType = None,
         mode: Optional[GameMode] = None,
         page: Optional[int] = 0,
         limit: int = 1
@@ -157,23 +190,7 @@ class Client(object):
                 f"Actual response: {resp!r}"
                 )
 
-    async def get_clan_admins(self, clanid: int) -> Optional[Dict[str, Any]]:
-        resp = await self._client.fetch(f'{self.API_URL}/GroupV2/{clanid}/AdminsAndFounder/')
-        return ClanAdmins(**resp)
-
-
-    async def get_careers(self) -> None:
-        """
-        Returns
-        --------
-        :class:`list`
-            Returns all available Careers at bungie.net.
-        """
-        resp = await self._client.fetch(f"{self.API_URL}/Content/Careers")
-        return Careers(resp)
-
-
-    async def get_app(self, appid: int) -> List[Any]:
+    async def get_app(self, appid: int) -> AppInfo:
         """
         Returns
         --------
@@ -189,7 +206,7 @@ class Client(object):
         return AppInfo(resp)
 
 
-    async def get_clan(self, clanid: int) -> List[Clans]:
+    async def get_clan(self, clanid: int) -> Clan:
         """
         Returns
         --------
@@ -202,4 +219,4 @@ class Client(object):
             The clan id.
         """
         resp = await self._client.fetch(f'{self.API_URL}/GroupV2/{clanid}')
-        return Clans(resp)
+        return Clan(data=resp)

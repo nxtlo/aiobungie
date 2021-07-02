@@ -76,7 +76,7 @@ class Vendor:
     SPIDER  = 863940356
 
 class GameMode:
-    NOTHING = None
+    NOTHING = 0
     STORY   = 2
     STRIKE  = 3
     RAID    = 4
@@ -105,12 +105,30 @@ class Component:
     VENDOR_SALES    = 402
 
 class MembershipType:
+    def __init__(self, *, data: int = None) -> None:
+        self.data = data
+        super().__init__()
     NONE        = 0
     XBOX        = 1
     PSN         = 2
     STEAM       = 3
     BLIZZARD    = 4
     ALL         = -1
+
+    def __str__(self) -> str:
+        if self.data == self.NONE:
+            return 'None'
+        elif self.data == self.XBOX:
+            return 'Xbox'
+        elif self.data == self.PSN:
+            return 'PSN'
+        elif self.data == self.STEAM:
+            return 'Steam'
+        elif self.data == self.BLIZZARD:
+            return 'Blizzard'
+        elif self.data == self.ALL:
+            return 'All'
+        return super().__str__()
 
 
 class DestinyCharecter:

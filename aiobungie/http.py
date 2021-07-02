@@ -23,7 +23,8 @@ SOFTWARE.
 '''
 
 import httpx
-from typing import Optional, Sequence, Dict, List, Union
+from .error import JsonError
+from typing import Optional, Sequence, Any, Union
 
 __all__ = (
     'HTTPClient',
@@ -31,23 +32,23 @@ __all__ = (
 class HTTPClient:
     __slots__: Sequence[str] = ('session', 'key')
 
-    def __init__(self, key, session = None) -> None:
+    def __init__(self, key: str, session = None) -> None:
         self.session: httpx.AsyncClient = session
-        self.key: Optional[str] = key
+        self.key  = key
 
-    async def create_session(self) -> Optional[httpx.AsyncClient]:
+    async def create_session(self) -> None:
         """Creates a new aiohttp Client Session"""
         self.session = httpx.AsyncClient()
 
     async def close(self) -> None:
         if not self.session.is_closed:
             try:
-                await self.session.aclose()
+                return await self.session.aclose()
             except httpx.CloseError:
                 raise
             self.session = None
 
-    async def fetch(self ,url: str) -> Optional[httpx.Request]:
+    async def fetch(self, url: str) -> Optional[Any]:
         if not self.session:
             await self.create_session()
 
@@ -55,6 +56,7 @@ class HTTPClient:
             data = await client.get(url, headers={'X-API-KEY': self.key})
             if data.status_code == 200:
                 try:
-                    return data.json()
-                except httpx.DecodingError:
-                    return data.text
+                    data = data.json()
+                except httpx.DecodingError as e:
+                    raise JsonError(f'Falied decoding json, See: {e!r}') from e
+            return data

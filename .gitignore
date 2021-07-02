@@ -10,3 +10,6 @@ venv/
 *.sqlite
 *.zip
 .vscode/
+*.db
+.mypy_cache/
+docs/

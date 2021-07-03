@@ -1,25 +1,18 @@
 from typing import Optional
 import aiobungie
-from aiobungie.objects import Clan
+from aiobungie.objects import Clan, Player
 from aiobungie.utils import deprecated
 from aiobungie.experiements import OAuth2, refresh
 import asyncio
 import os
 
-token: str
-secret: str
+from dotenv import load_dotenv
 
-try:
-    from dotenv import load_dotenv
-except (ImportError, ValueError):
-    with open('./.env') as e:
-        token = e.readline()[4:]
-else:
-    load_dotenv("./.env")
-    token = os.environ.get('TOKEN')
-    secret = os.environ.get('SECRET')
+load_dotenv("./.env")
+token = os.environ.get('TOKEN')
+secret = os.environ.get('SECRET')
 
-client = aiobungie.Client(token)
+client = aiobungie.Client(key=token)
 auth = OAuth2(token, secret)
 CLAN = 4389205
 MEMID = 4611686018484639825
@@ -28,16 +21,12 @@ CHAR = aiobungie.DestinyCharecter.TITAN
 MEMTYPE = aiobungie.MembershipType.STEAM
 VENDOR = aiobungie.Vendor.SPIDER
 
-async def player_test():
-    guardian = await client.get_player("Granger", MEMTYPE)
-    
-    attrs = f'''
-            {guardian.name},
-            {guardian.id},
-            {guardian.icon},
-            {guardian.type}
-            '''
-    print(attrs)
+async def player_test() -> None:
+    player: Player = await client.get_player("Fate怒", MEMTYPE)
+    print(player.name, player.id, player.type, player.icon, player.is_public)
+    print(repr(player))
+    print(hash(player))
+    print(int(player))
 
 
 async def man_test():
@@ -111,7 +100,7 @@ async def auth_tests():
     user = await auth.get_current_user()
     print(user)
 
-@deprecated
+# @deprecated
 async def main():
     await clan_test()
     # await player_test()

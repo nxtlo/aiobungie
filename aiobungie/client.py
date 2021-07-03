@@ -54,29 +54,34 @@ from .utils.enums import (
     , Vendor
 )
 from .utils.helpers import deprecated
-T = TypeVar('T')
-Route = Coroutine[Any, Any, T]
+
 
 __all__: Sequence[str] = (
     'Client',
 )
-class Client(object):
+class Client:
     """The base class the all Clients must inherit from."""
 
     __slots__: Sequence[str] = ('_client', 'key', 'loop')
     API_URL: str = 'https://www.bungie.net/Platform'
 
-    def __init__(self, key = None, *, session: httpx.AsyncClient = None, loop = None) -> None:
-        self.loop = asyncio.get_event_loop() if not loop else loop
+    def __init__(
+        self, 
+        key: str, 
+        *, 
+        session: httpx.AsyncClient = None, 
+        loop: asyncio.AbstractEventLoop = None
+        ) -> None:
+        self.loop: asyncio.AbstractEventLoop = asyncio.get_event_loop() if not loop else loop
         self.key: str = key
 
         if not self.key:
             raise ValueError("Missing the API key!")
-        self._client = HTTPClient(session=session, key=key)
+        self._client: HTTPClient = HTTPClient(session=session, key=key)
 
         super().__init__()
 
-    async def from_path(self, path: str):
+    async def from_path(self, path: str) -> Any:
         return await self._client.fetch(f'{self.API_URL}/{path}')
 
         
@@ -86,20 +91,23 @@ class Client(object):
 
 
 
-    async def get_player(self, name: str, type: MembershipType) -> Player:
+    async def get_player(self, name: str, type: Union[MembershipType, int], /) -> Player:
         """
         Parameters
         -----------
         name: :class:`str`
             The Player's Name
 
+        type: Union[:class:`.MembershipType`, :class:`int`]:
+            The player's membership type, e,g. XBOX, STEAM, PSN
+
         Returns
         --------
-        :class:`list`
-            A list of Destiny memberships if given a full GamerTag.
+        :class:`.Player`
+            a Destiny Player object
         """
-        resp = await self._client.fetch(f'{self.API_URL}/Destiny2/SearchDestinyPlayer/{type}/{name}')
-        return Player(resp)
+        resp = await self._client.get_player(name, type)
+        return Player(data=resp)
 
 
     async def get_charecter(self, memberid: int, type: MembershipType, character: DestinyCharecter) -> Character:
@@ -206,17 +214,17 @@ class Client(object):
         return AppInfo(resp)
 
 
-    async def get_clan(self, clanid: int) -> Clan:
+    async def get_clan(self, clanid: int, /) -> Clan:
         """
         Returns
         --------
-        :class:`list`
-            Returns information about a destiny2 clan
+        :class:`.Clan`:
+            A Bungie clan object
 
         Parameters
         -----------
-        clanid: int
+        clanid: :class:`int`:
             The clan id.
         """
-        resp = await self._client.fetch(f'{self.API_URL}/GroupV2/{clanid}')
+        resp = await self._client.get_clan(clanid)
         return Clan(data=resp)

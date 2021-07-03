@@ -105,7 +105,7 @@ class Component:
     VENDOR_SALES    = 402
 
 class MembershipType:
-    def __init__(self, *, data: int = None) -> None:
+    def __init__(self, *, data = None) -> None:
         self.data = data
         super().__init__()
     NONE        = 0
@@ -128,8 +128,9 @@ class MembershipType:
             return 'Blizzard'
         elif self.data == self.ALL:
             return 'All'
+        else:
+            return 'None'
         return super().__str__()
-
 
 class DestinyCharecter:
     def __init__(self, *, data = None):

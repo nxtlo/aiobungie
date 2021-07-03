@@ -35,10 +35,10 @@ from typing import (
 # if TYPE_CHECKING:
 from ..utils import ImageProtocol, Time
 from ..utils.enums import MembershipType
-from ..types.clans import Clans as ClanPayload
+from ..types.clans import Clan as ClanPayload, ClanOwner as ClanOwnerPayload
 
 class ClanMembers:
-    ...
+    __slots__: Sequence[str] = ()
 
 class ClanOwner:
     '''Represents a Bungie clan owner.
@@ -52,7 +52,7 @@ class ClanOwner:
         The clan owner's display name
 
     last_online: :class:`str`:
-        An aware :class:`str` version of a :class:`datetime.datetime.utc_now()` object.
+        An aware :class:`str` version of a :class:`datetime.datetime.utcnow()` object.
 
     type: :class:`.MembershipType`:
         Returns the clan owner's membership type.
@@ -61,8 +61,8 @@ class ClanOwner:
     clan_id: :class:`int`:
         The clan owner's clan id
 
-    joined_at: Optional[:class:`datetime.utcnow()`]
-
+    joined_at: Optional[:class:`datetime.utcnow()`]:
+        The clan owner's join date.
 
     icon: :class:`.ImageProtocol`:
         Returns the clan owner's icon from ImageProtocol.
@@ -83,27 +83,27 @@ class ClanOwner:
         id: int
         name: str
         last_online: str
-        type: MembershipType
+        type: Optional[MembershipType]
         clan_id: int
         joined_at: datetime
         icon: ImageProtocol
         is_public: bool
         types: List[int]
 
-    def __init__(self, *, data) -> None:
+    def __init__(self, *, data: ClanOwnerPayload) -> None:
         self._update(data)
 
-    def _update(self, data) -> None:
-        data = data['founder']
-        self.id: int = data['destinyUserInfo']['membershipId']
-        self.name: str = data['destinyUserInfo']['displayName']
-        self.icon: ImageProtocol = ImageProtocol(data['destinyUserInfo']['iconPath'])
-        self.last_online: str = Time.from_timestamp(data['lastOnlineStatusChange'])
-        self.clan_id: int = data['groupId']
-        self.joined_at: datetime = data['joinDate']
-        self.types: List[int] = data['destinyUserInfo']['applicableMembershipTypes']
-        self.is_public: bool = data['destinyUserInfo']['isPublic']
-        self.type: MembershipType = MembershipType(data=data['destinyUserInfo']['membershipType'])
+    def _update(self, data: ClanOwnerPayload) -> None:
+        new_data = data['founder']
+        self.id: int = new_data['destinyUserInfo']['membershipId']
+        self.name: str = new_data['destinyUserInfo']['displayName']
+        self.icon: ImageProtocol = ImageProtocol(str(new_data['destinyUserInfo']['iconPath']))
+        self.last_online: str = Time.from_timestamp(new_data['lastOnlineStatusChange'])
+        self.clan_id: int = new_data['groupId']
+        self.joined_at: datetime = new_data['joinDate']
+        self.types: List[int] = new_data['destinyUserInfo']['applicableMembershipTypes']
+        self.is_public: bool = new_data['destinyUserInfo']['isPublic']
+        self.type: Optional[MembershipType] = MembershipType(data=new_data['destinyUserInfo']['membershipType'])
 
 
     def __str__(self) -> str:
@@ -177,15 +177,15 @@ class Clan:
     def _update(self, data) -> None:
         data = data['Response']
         self.id: int = data['detail']['groupId']
-        self.name = data['detail']['name']
-        self.created_at = data['detail']['creationDate']
-        self.member_count = data['detail']['memberCount']
-        self.description = data['detail']['about']
-        self.about = data['detail']['motto']
-        self.is_public = data['detail']['isPublic']
-        self.banner = ImageProtocol(data['detail']['bannerPath'])
-        self.avatar = ImageProtocol(data['detail']['avatarPath'])
-        self.tag = data
+        self.name: str = data['detail']['name']
+        self.created_at: datetime = data['detail']['creationDate']
+        self.member_count: int = data['detail']['memberCount']
+        self.description: str = data['detail']['about']
+        self.about: str = data['detail']['motto']
+        self.is_public: bool = data['detail']['isPublic']
+        self.banner: ImageProtocol = ImageProtocol(data['detail']['bannerPath'])
+        self.avatar: ImageProtocol = ImageProtocol(data['detail']['avatarPath'])
+        # self.tag = data
         self.owner = ClanOwner(data=data)
 
     def __str__(self) -> str:

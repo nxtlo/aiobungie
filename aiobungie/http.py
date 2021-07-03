@@ -24,12 +24,19 @@ SOFTWARE.
 
 import httpx
 from .error import JsonError
-from typing import Optional, Sequence, Any, Union
+from typing import Optional, Sequence, Any, Union, TYPE_CHECKING, TypeVar, Coroutine
+from .types import player, clans
+from .utils.enums import MembershipType
+
+# if TYPE_CHECKING:
+T = TypeVar('T')
+Response = Coroutine[Any, Any, T]
 
 __all__ = (
     'HTTPClient',
 )
 class HTTPClient:
+    BASE: str = 'https://www.bungie.net/Platform'
     __slots__: Sequence[str] = ('session', 'key')
 
     def __init__(self, key: str, session = None) -> None:
@@ -48,7 +55,7 @@ class HTTPClient:
                 raise
             self.session = None
 
-    async def fetch(self, url: str) -> Optional[Any]:
+    async def fetch(self, url: str) -> Any:
         if not self.session:
             await self.create_session()
 
@@ -60,3 +67,9 @@ class HTTPClient:
                 except httpx.DecodingError as e:
                     raise JsonError(f'Falied decoding json, See: {e!r}') from e
             return data
+
+    def get_player(self, name: str, type: Union[MembershipType, int]) -> Response[player.Player]:
+        return self.fetch(f'{self.BASE}/Destiny2/SearchDestinyPlayer/{type}/{name}')
+
+    def get_clan(self, id: int) -> Response[clans.Clan]:
+        return self.fetch(f'{self.BASE}/GroupV2/{id}')

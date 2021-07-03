@@ -21,13 +21,16 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
-from typing import TypedDict, Any, Dict
+from typing import TypedDict, Any, Dict, Optional, Union
 from ..utils import ImageProtocol
 from ..utils.enums import MembershipType
 
-class Player(TypedDict):
-	Response: Any
-	icon: ImageProtocol
-	name: str
-	type: MembershipType
-	id: int
+class PlayerResponse(TypedDict):
+	iconPath: ImageProtocol
+	displayName: str
+	membershipType: Union[MembershipType, int]
+	membershipId: int
+	isPublic: bool
+class Player(PlayerResponse, total=False):
+	Response: Dict[int, PlayerResponse]
+	

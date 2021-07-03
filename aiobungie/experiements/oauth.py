@@ -49,11 +49,11 @@ __all__: Sequence[str] = (
 	'OAuth2', 'refresh'
 )
 
-def on_ready():
+def on_ready() -> Callable[[Any], Any] :
 	'''
 	a decorator that literally just creates the database tables.
 	'''
-	def fake(inject: object):
+	def fake(inject):
 		@wraps(inject)
 		def decorator(*args, **kwargs):
 			if isfile('./db.sqlite'):
@@ -88,51 +88,46 @@ class OAuth2:
 		'_session', '_token', '_secret', '_loop'
 	)
 
-	if TYPE_CHECKING:
-		_session: httpx.AsyncClient()
-		_token: str
-		_secret: str
-		_loop: asyncio.get_event_loop()
-
-	def __init__(self, token: str, secret: str, loop = None, session = None) -> None:
-		self._token = token
-		self._loop = asyncio.get_event_loop() if not loop else loop
-		self._secret = secret
+	def __init__(
+		self, token: Optional[str], 
+		secret: Optional[str], 
+		loop: Optional[asyncio.AbstractEventLoop] = None, 
+		session: Optional[httpx.AsyncClient] = None
+		) -> None:
+		self._token: Optional[str] = token
+		self._loop: asyncio.AbstractEventLoop = asyncio.get_event_loop() if not loop else loop
+		self._secret: Optional[str] = secret
 		if self._token is None:
 			raise ValueError("Token have to be passed.")
 
 		if self._secret is None:
 			raise ValueError("Client Secret has to be passed.")
 
-		self._session = session
+		self._session: httpx.AsyncClient() = session
 
 
 	def __repr__(self) -> str:
 		return f'<{self.__class__.__name__} Session: {self._session.__repr__} Status: {self._session._state}>'
 
 
-	async def __aenter__(self) -> None:
+	async def __aenter__(self):
 		return await self._session.__aenter__()
 
 
-	async def __aexit__(self, type = None, value = None, tb = None) -> None:
+	async def __aexit__(self, type = None, value = None, tb = None):
 		return await self._session.__aexit__(type, value, tb)
-
-
-	async def new_session(self) -> httpx.AsyncClient:
-		self._session = httpx.AsyncClient()
 
 	
 	async def teardown(self) -> None:
 		if not self._session.is_closed:
 			log.warn("Shutting down now!...")
-			await self._session.aclose()
+			return await self._session.aclose()
 		self._session = None
 
 
-	async def run(self, path, aceess) -> Optional[httpx.Request]:
+	async def run(self, path, aceess) -> Any:
 		if not self._session:
-			await self.new_session()
+			self._session = httpx.AsyncClient()
 
 		async with self._session as client:
 			resp = await client.get(f'{REDIRECT}/{path}', headers={
@@ -145,7 +140,7 @@ class OAuth2:
 				return resp.text
 
 	@on_ready()
-	async def do_auth(self) -> None:
+	async def do_auth(self) -> Optional[Any]:
 		req = OAuth2Session(
 			client_id=CLIENT_ID, 
 			redirect_uri='https://www.bungie.net/', 
@@ -194,7 +189,7 @@ def refresh(*, every: float = 0, cls = None) -> Callable[[Any], asyncio.Abstract
 	'''
 	if cls is None:
 		cls = OAuth2
-	def inner(inject: object):
+	def inner(inject):
 		@wraps(inject)
 		async def decorator(*args, **kwargs) -> None:
 			ref_token = _cur.execute("SELECT refresh_token FROM tokens").fetchall()[0][0]

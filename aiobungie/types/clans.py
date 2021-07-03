@@ -21,11 +21,17 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
-from typing import TypedDict
+from typing import TypedDict, Dict, Any, List, Optional
 from ..utils import ImageProtocol
+from .user import UserCard
+from ..utils.enums import MembershipType
 from datetime import datetime
 
-class Clans(TypedDict):
+class ClanOwnerResponse(UserCard, total=False):
+	groupId: int
+	joinDate: datetime
+
+class ClanResponse(TypedDict):
 	id: int
 	name: str
 	created_at: datetime
@@ -38,3 +44,9 @@ class Clans(TypedDict):
 	about: str
 	tag: str
 	owner: str
+
+class ClanOwner(ClanOwnerResponse):
+	founder: Dict[str, Any] # TODO: Make this Dict[str, ClanOwnerResponse]
+
+class Clan(ClanResponse, total=False):
+	Response: Dict[Any, ClanResponse]

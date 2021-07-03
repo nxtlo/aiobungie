@@ -25,19 +25,50 @@ SOFTWARE.
 from typing import Optional, Sequence, List, Union, Dict, Any, TYPE_CHECKING
 from ..error import PlayerNotFound
 
-if TYPE_CHECKING:
-    from ..types.player import Player as TypedPlayer
-    from ..utils.enums import MembershipType
-    from ..utils import ImageProtocol
+# if TYPE_CHECKING:
+from ..types.player import Player as PlayerPayload
+from ..utils.enums import MembershipType
+from ..utils import ImageProtocol
 
 class Player:
     __slots__: Sequence[str] = (
-        'icon', 'id', 'name', 'type'
+        'icon', 'id', 'name', 'type', 'is_public'
     )
-    def __init__(self, data: Any) -> None:
+    if TYPE_CHECKING:
+        icon: ImageProtocol
+        id: int
+        name: str
+        is_public: bool
+        type: Union[MembershipType, int]
+
+    def __init__(self, data: PlayerPayload) -> None:
         self._update(data)
 
-    def _update(self, data) -> None:
-        self.icon: ImageProtocol = ImageProtocol(data['iconPath'])
-        self.id: Optional[int] = int(data['membershipId'])
-        self.type: MembershipType = MembershipType(data=int(data['membershipType']))
+    def _update(self, data: PlayerPayload) -> None:
+        new_data = data['Response'][0]
+        self.is_public: bool = new_data['isPublic']
+        self.icon: ImageProtocol = ImageProtocol(str(new_data['iconPath']))
+        self.id: Optional[int] = new_data['membershipId']
+        self.type: Union[MembershipType, int] = MembershipType(data=new_data['membershipType'])
+        self.name: str = new_data['displayName']
+
+    def __str__(self) -> str:
+        return str(self.name)
+
+    def __repr__(self) -> str:
+        return (
+            f'Player name={self.name} id={self.id}'
+            f' type={self.type} icon={self.icon} is_public={self.is_public}'
+        )
+
+    def __eq__(self, other: Any) -> bool:
+        return isinstance(other, Player) and other.id == self.id
+
+    def __ne__(self, other: Any) -> bool:
+        return not self.__eq__(other)
+
+    def __hash__(self) -> int:
+        return hash(self.id)
+
+    def __int__(self) -> int:
+        return int(self.id)

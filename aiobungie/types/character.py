@@ -22,14 +22,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 from typing import TypedDict, Union
-from ..utils import ImageProtocol
+from ..utils import Image
 from ..utils.enums import DestinyCharecter, DestinyRace, DestinyGender
 from datetime import datetime
 
 
 class Character(TypedDict):
-	emblem_icon: Union[ImageProtocol, str]
-	emblem: Union[ImageProtocol, str]
+	emblem_icon: Union[Image, str]
+	emblem: Union[Image, str]
 	light: int
 	total_played_time: int
 	last_player: datetime

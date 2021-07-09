@@ -31,9 +31,10 @@ from typing import (
     Union,
     TYPE_CHECKING
 )
+from ..error import ClanNotFound
 
 # if TYPE_CHECKING:
-from ..utils import ImageProtocol, Time
+from ..utils import Image, Time
 from ..utils.enums import MembershipType
 from ..types.clans import Clan as ClanPayload, ClanOwner as ClanOwnerPayload
 
@@ -64,8 +65,8 @@ class ClanOwner:
     joined_at: Optional[:class:`datetime.utcnow()`]:
         The clan owner's join date.
 
-    icon: :class:`.ImageProtocol`:
-        Returns the clan owner's icon from ImageProtocol.
+    icon: :class:`.Image`:
+        Returns the clan owner's icon from Image.
 
     is_public: :class:`bool`:
         Returns True if the clan's owner profile is public or False if not.
@@ -86,7 +87,7 @@ class ClanOwner:
         type: Optional[MembershipType]
         clan_id: int
         joined_at: datetime
-        icon: ImageProtocol
+        icon: Image
         is_public: bool
         types: List[int]
 
@@ -94,16 +95,16 @@ class ClanOwner:
         self._update(data)
 
     def _update(self, data: ClanOwnerPayload) -> None:
-        new_data = data['founder']
-        self.id: int = new_data['destinyUserInfo']['membershipId']
-        self.name: str = new_data['destinyUserInfo']['displayName']
-        self.icon: ImageProtocol = ImageProtocol(str(new_data['destinyUserInfo']['iconPath']))
-        self.last_online: str = Time.from_timestamp(new_data['lastOnlineStatusChange'])
-        self.clan_id: int = new_data['groupId']
-        self.joined_at: datetime = new_data['joinDate']
-        self.types: List[int] = new_data['destinyUserInfo']['applicableMembershipTypes']
-        self.is_public: bool = new_data['destinyUserInfo']['isPublic']
-        self.type: Optional[MembershipType] = MembershipType(data=new_data['destinyUserInfo']['membershipType'])
+        self.id: int = data['destinyUserInfo']['membershipId']
+        self.name: str = data['destinyUserInfo']['displayName']
+        self.icon: Image = Image(str(data['destinyUserInfo']['iconPath']))
+        convert = int(data['lastOnlineStatusChange'])
+        self.last_online: str = Time.human_timedelta(Time.from_timestamp(convert))
+        self.clan_id: int = data['groupId']
+        self.joined_at: datetime = data['joinDate']
+        self.types: List[int] = data['destinyUserInfo']['applicableMembershipTypes']
+        self.is_public: bool = data['destinyUserInfo']['isPublic']
+        self.type: Optional[MembershipType] = MembershipType(data=data['destinyUserInfo']['membershipType'])
 
 
     def __str__(self) -> str:
@@ -137,17 +138,17 @@ class Clan:
     is_public: :class:`bool`:
         Returns True if the clan is public and False if not.
 
-    banner: :class:`.ImageProtocol`:
+    banner: :class:`.Image`:
         Returns the clan's banner
 
-    avatar: :class:`.ImageProtocol`:
+    avatar: :class:`.Image`:
         Returns the clan's avatar
 
     about: :class:`str`:
         The clan's about.
 
-    tag: :class:`str`:
-        The clan's tag
+    tags: :class:`str`:
+        The clan's tags
 
     owner: :class:`.ClanOwner`:
         Returns an object of the clan's owner.
@@ -156,37 +157,40 @@ class Clan:
     __slots__: Sequence[str] = (
         'id', 'name', 'created_at', 'edited_at',
         'member_count', 'description', 'is_public',
-        'banner', 'avatar', 'about', 'tag', 'owner'
+        'banner', 'avatar', 'about', 'tags', 'owner',
     )
     if TYPE_CHECKING:
         id: int
         name: str
         created_at: datetime
         member_count: int
-        description: Any
+        description: str
         is_public: bool
-        banner: ImageProtocol
-        avatar: ImageProtocol
+        banner: Image
+        avatar: Image
         about: str
-        tag: str
+        tags: List[str]
         owner: ClanOwner
 
-    def __init__(self, data: Any) -> None:
+    def __init__(self, data: ClanPayload) -> None:
         self._update(data=data)
 
-    def _update(self, data) -> None:
-        data = data['Response']
-        self.id: int = data['detail']['groupId']
-        self.name: str = data['detail']['name']
-        self.created_at: datetime = data['detail']['creationDate']
-        self.member_count: int = data['detail']['memberCount']
-        self.description: str = data['detail']['about']
-        self.about: str = data['detail']['motto']
-        self.is_public: bool = data['detail']['isPublic']
-        self.banner: ImageProtocol = ImageProtocol(data['detail']['bannerPath'])
-        self.avatar: ImageProtocol = ImageProtocol(data['detail']['avatarPath'])
-        # self.tag = data
-        self.owner = ClanOwner(data=data)
+    def _update(self, data: ClanPayload) -> None:
+        try:
+            new_data = data['Response']
+            self.id: int = new_data['detail']['groupId']
+            self.name: str = new_data['detail']['name']
+            self.created_at: datetime = new_data['detail']['creationDate']
+            self.member_count: int = new_data['detail']['memberCount']
+            self.description: str = new_data['detail']['about']
+            self.about: str = new_data['detail']['motto']
+            self.is_public: bool = new_data['detail']['isPublic']
+            self.banner: Image = Image(str(new_data['detail']['bannerPath']))
+            self.avatar: Image = Image(str(new_data['detail']['avatarPath']))
+            self.tags: List[str] = new_data['detail']['tags']
+            self.owner: ClanOwner = ClanOwner(data=new_data['founder']) # NOTE: This works but mypy is being dumb
+        except (TypeError, AttributeError):
+            raise ClanNotFound(f"Clan was not found.")
 
     def __str__(self) -> str:
         return str(self.name)

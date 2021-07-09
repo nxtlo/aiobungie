@@ -21,12 +21,14 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
+from typing import Any, overload
 
 __all__ = (
     'InvalidInput', 'InvalidTime',
     'PlayerNotFound', 'HashError',
     'ActivityNotFound', 'CharacterTypeError',
-    'JsonError'
+    'JsonError', 'ClanNotFound', 'CharacterNotFound',
+    'NotFound', 'HTTPException'
 )
 class InvalidInput(Exception):
     pass
@@ -47,4 +49,17 @@ class CharacterTypeError(Exception):
     pass
 
 class JsonError(Exception):
+    pass
+
+class CharacterNotFound(Exception):
+    pass
+
+class HTTPException(Exception):
+    pass
+
+class ClanNotFound(Exception):
+    pass
+
+
+class NotFound(Exception):
     pass

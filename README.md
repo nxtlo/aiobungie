@@ -1,12 +1,26 @@
-## aiobungie
+# aiobungie
 
-An Asynchronous API wrapper for the bungie API witten in Python.
+An Asynchronous statically typed API wrapper for the bungie API written in Python.
 
+# Features
 
-## Installing
+* Fully Asynchronous.
+* Easy to use.
+* Statically typings and annotations.
+* All endpoints will be implemented.
 
+# Installing
+
+Official release.
+
+```s
+$ pip install aiobungie
 ```
-pip install aiobungie
+
+Development
+
+```s
+$ pip install git+https://github.com/nxtlo/aiobungie
 ```
 
 ## Quick Example
@@ -18,16 +32,20 @@ client = aiobungie.Client(key='YOUR_API_KEY')
 
 async def main() -> None:
 
-    clan = await client.get_clan(1234)
+    # fetch a clan.
+    clan = await client.fetch_clan(1234)
     print(f'{clan.id}, {clan.name}, {clan.owner}, {clan.created_at}, {clan.about}')
 
-    player = await client.get_player('Fate怒')
+    # fetch a bungie user.
+    player = await client.fetch_player('Fate怒')
     print(f'{player.name}, {player.id[0]}, {player.icon}, {player.type}')
 
-    char = await client.get_character(player.id[0], aiobungie.MembershipType.STEAM, aiobungie.DestinyCharacter.WARLOCK)
+    # fetch a specific character.
+    char = await client.fetch_character(player.id[0], aiobungie.MembershipType.STEAM, aiobungie.DestinyCharacter.WARLOCK)
     print(f'{char.emblem}, {char.light}, {char.id}, {char.race}, {char.gender}, {char._class}')
 
-    activ = await client.get_activity_stats(player.id[0], char.id, aiobungie.MembershipType.STEAM, aiobungie.GameMode.RAID)
+    # fetch activities.
+    activ = await client.fetch_activity(player.id[0], char.id, aiobungie.MembershipType.STEAM, aiobungie.GameMode.RAID)
     print(
         f'''{activ.mode}, {activ.kills}, {activ.player_count}, 
         {activ.duration}, {activ.when}, {activ.kd}, {activ.deaths},
@@ -35,33 +53,44 @@ async def main() -> None:
         ''')
 
     # Raw search
-    print(await client.from_path('User/.../.../'))
+    endpoint = await client.from_path('User/.../.../')
+    print(endpoint)
 
+client.loop.run_until_complete(main())
+```
 
+## OAuth2
+
+```py
 # OAuth2 is not fully implemented yet.
 
-from aiobungie.experiements import OAuth2, refresh
+from aiobungie.ext import OAuth2, refresh
 
-auth_client = OAuth2(token='', secret='')
+client = OAuth2(token='', secret='')
 
 # Use the refresh decorator to automatically refresh the tokens
 # The cls param is required to get the client secret and pass it to the POST request.
-@refresh(every=3600, cls=auth_client)
-async def auth_stuff() -> None:
-    await auth_client.do_auth() # Creates sqlite db, Open a page get the code param then paste it in the pormpt.
-                                # You will only do this one, after it will auto_refresh the tokens for you.
-    print(await auth_client.get_current_user())
 
-client.loop.run_until_complete(main())
+@refresh(hours=1, cls=client)
+async def auth_stuff() -> None:
+    await client.do_auth()
+    print(await client.get_current_user())
+
 client.loop.run_until_complete(auth_stuff())
 ```
 
 ### Requirements
->= Python3.8 <= 4.0
-* httpx
+* Python >=3.8
+* aiohttp
 
-### OAuth and Dev
+### OAuth2 and Dev
+* cryptography
 * requests_oauthlib
 * aiosqlite
 * aiofiles
 * python-dotenv
+
+
+### Getting Help
+* Discord: `Fate 怒#0008`
+* Docs: Soon.

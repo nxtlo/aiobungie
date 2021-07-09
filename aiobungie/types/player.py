@@ -22,11 +22,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 from typing import TypedDict, Any, Dict, Optional, Union
-from ..utils import ImageProtocol
+from ..utils import Image
 from ..utils.enums import MembershipType
 
 class PlayerResponse(TypedDict):
-	iconPath: ImageProtocol
+	iconPath: Image
 	displayName: str
 	membershipType: Union[MembershipType, int]
 	membershipId: int

@@ -23,7 +23,7 @@ SOFTWARE.
 '''
 
 from typing import Optional, Any, Sequence, Union, Dict
-from aiobungie import ImageProtocol, MembershipType
+from aiobungie import Image, MembershipType
 from datetime import datetime
 
 class AppInfo:
@@ -87,10 +87,10 @@ class AppInfo:
             return item.get('user')['membershipId']
 
     @property
-    def icon_path(self) -> Optional[ImageProtocol]:
+    def icon_path(self) -> Optional[Image]:
         """Returns the icon path fot the app"""
         for item in self.response['team']:
-            return ImageProtocol(item.get("user")['iconPath'])
+            return Image(item.get("user")['iconPath'])
 
     @property
     def member_type(self) -> Optional[MembershipType]:

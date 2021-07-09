@@ -21,32 +21,33 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
-from typing import TypedDict, Dict, Any, List, Optional
-from ..utils import ImageProtocol
+from typing import TypedDict, Dict, Any, List, Union
+from ..utils import Image
 from .user import UserCard
-from ..utils.enums import MembershipType
 from datetime import datetime
 
-class ClanOwnerResponse(UserCard, total=False):
-	groupId: int
+class ClanOwner(UserCard, total=False):
 	joinDate: datetime
+	groupId: int
+	destinyUserInfo: Dict[str, Any] # TODO: Make this Dict[str, ClanOwnerResponse]
 
-class ClanResponse(TypedDict):
-	id: int
+class PartitialClan(TypedDict):
+	groupId: int
+	memberCount: int
 	name: str
-	created_at: datetime
-	edited_at: datetime
-	member_count: int
-	description: str
-	is_public: bool
-	banner: ImageProtocol
-	avatar: ImageProtocol
 	about: str
-	tag: str
-	owner: str
+	motto: str
+	tags: List[str]
+	description: str
+	isPublic: bool
+	bannerPath: Image
+	avatarPath: Image
+	creationDate: datetime
 
-class ClanOwner(ClanOwnerResponse):
-	founder: Dict[str, Any] # TODO: Make this Dict[str, ClanOwnerResponse]
+class ClanResponse(PartitialClan):
+	detail: Dict[str, PartitialClan]
+	founder: ClanOwner
+	ErrorCode: int
 
 class Clan(ClanResponse, total=False):
-	Response: Dict[Any, ClanResponse]
+	Response: Dict[str, ClanResponse]

@@ -23,17 +23,13 @@ SOFTWARE.
 '''
 
 import asyncio
-import httpx
-
 from . import error
 from typing import (
-    TypeVar,
     Any, 
     Optional, 
     Sequence, 
     Union, 
-    Coroutine,
-    TYPE_CHECKING
+    # TYPE_CHECKING
     )
 
 #if TYPE_CHECKING:
@@ -60,16 +56,19 @@ __all__: Sequence[str] = (
     'Client',
 )
 class Client:
-    """The base class the all Clients must inherit from."""
+    """Represents a client that connects to the Bungie API
 
-    __slots__: Sequence[str] = ('_client', 'key', 'loop')
-    API_URL: str = 'https://www.bungie.net/Platform'
-
+    Attributes
+    -----------
+    key: :class:`str`:
+        Your Bungie's API key or Token from the developer's portal.
+    loop: :class:`asyncio.AbstractEventLoop`:
+        asyncio event loop.
+    """
     def __init__(
         self, 
         key: str, 
         *, 
-        session: httpx.AsyncClient = None, 
         loop: asyncio.AbstractEventLoop = None
         ) -> None:
         self.loop: asyncio.AbstractEventLoop = asyncio.get_event_loop() if not loop else loop
@@ -77,27 +76,24 @@ class Client:
 
         if not self.key:
             raise ValueError("Missing the API key!")
-        self._client: HTTPClient = HTTPClient(session=session, key=key)
-
+        self.http: HTTPClient = HTTPClient(key=key)
         super().__init__()
 
     async def from_path(self, path: str) -> Any:
-        return await self._client.fetch(f'{self.API_URL}/{path}')
+        return await self.http.static_search(path)
 
-        
-    async def get_manifest(self) -> Optional[Manifest]:
-        resp = await self._client.fetch(f'{self.API_URL}/Destiny2/Manifest')
+    @deprecated
+    async def fetch_manifest(self) -> Optional[Manifest]:
+        resp = await self.http.fetch_manifest()
         return Manifest(resp)
 
 
-
-    async def get_player(self, name: str, type: Union[MembershipType, int], /) -> Player:
+    async def fetch_player(self, name: str, type: Union[MembershipType, int], /) -> Player:
         """
         Parameters
         -----------
         name: :class:`str`
             The Player's Name
-
         type: Union[:class:`.MembershipType`, :class:`int`]:
             The player's membership type, e,g. XBOX, STEAM, PSN
 
@@ -106,11 +102,11 @@ class Client:
         :class:`.Player`
             a Destiny Player object
         """
-        resp = await self._client.get_player(name, type)
+        resp = await self.http.fetch_player(name, type)
         return Player(data=resp)
 
 
-    async def get_charecter(self, memberid: int, type: MembershipType, character: DestinyCharecter) -> Character:
+    async def fetch_charecter(self, memberid: int, type: MembershipType, character: DestinyCharecter) -> Character:
         """
         Fetches a destiny character and returns its data.
 
@@ -118,73 +114,75 @@ class Client:
         -----------
             memberid: :class:`int`
                 A valid bungie member id.
-
             character: :class:`.DestinyCharacter`
                 a Destiny character -> .WARLOCK, .TITAN, .HUNTER
-            
             type: :class:`.MembershipType`
                 The membership type -> .STEAM, .XBOX, .PSN
 
         Returns
         -------
-            Character: A Destiny character.
+        :class:`.Character`:
+            a Bungie character object.
 
         Raises
         -------
-            :exc:`.PlayerNotFound` 
+            :exc:`.CharacterNotFound` 
                 raised if the Character was not found.
         """
-        resp = await self._client.fetch(f'{self.API_URL}/Destiny2/{type}/Profile/{memberid}/?components={Component.CHARECTERS}')
+        resp = await self.http.fetch_character(memberid=memberid, type=type, character=character)
         return Character(char=character, data=resp)
 
+
     @deprecated
-    async def get_vendor_sales(self, 
-                                    vendor: Optional[Union[Vendor, int]], 
-                                    memberid: int, 
-                                    charid: int, 
-                                    type: MembershipType
-                                    ):
-        return await self._client.fetch(
-            f'{self.API_URL}/Destiny2/{type}/Profile/{memberid}/Character/{charid}/Vendors/{vendor}/?components={Component.VENDOR_SALES}'
+    async def fetch_vendor_sales(self, 
+        vendor: Optional[Union[Vendor, int]], 
+        memberid: int, 
+        charid: int, 
+        type: MembershipType
+        ) -> Any:
+        return await self.http.fetch('GET',
+            f'Destiny2/{type}/Profile/{memberid}/Character/{charid}/Vendors/{vendor}/?components={Component.VENDOR_SALES}'
             )
 
-    async def get_activity_stats(
+    async def fetch_activity(
         self,
         userid: int,
-        character: int,
-        type: MembershipType = None,
-        mode: Optional[GameMode] = None,
-        page: Optional[int] = 0,
-        limit: int = 1
+        charid: int,
+        mode: Union[GameMode, int], *,
+        memtype: Optional[Union[int, MembershipType]] = MembershipType.ALL,
+        page: Optional[int] = 1,
+        limit: Optional[int] = 1
         ) -> Activity:
         '''
-        Returns
-        --------
-        Optional[:class:`list`]
-
         Paramaters
         ----------
         userid: :class:`int`
             The user id that starts with `4611`.
-
-        character: :class:`int`
+        charaid: :class:`int`
             The id of the character to retrieve.
-        
-        type: Optional[:class:`.MembershipType`]
-            The Member ship type, if nothing was passed than it will return all.
-        
-        mode: Optional[:class:`.GameMode`]
+        mode: :class:`.GameMode`
             This paramater filters the game mode, Nightfall, Strike, Iron Banner, etc.
-
+        memtype: Optional[Union[:class:`int`, :class:`.MembershipType`]]
+            The Member ship type, if nothing was passed than it will return all.
         page: Optional[:class:`int`]
             The page number
-
         limit: Optional[:class:`int`]
             Limits the returned result.
+
+        Returns
+        --------
+        :class:`.Activity`:
+            A bungie Activity object.
+
+        Raises
+        ------
+        `AttributeError`
+            Using :meth:`Activity.hash()` for non raid activies.
+        `ActivityNotFound`
+            Any other errors occures during the response.
+
         '''
-        resp = await self._client.fetch(
-            f"{self.API_URL}/Destiny2/{type}/Account/{userid}/Character/{character}/Stats/Activities/?page={page}&count={limit}&mode={mode}"
-            )
+        resp = await self.http.fetch_activity(userid, charid, mode, memtype=memtype, page=page, limit=limit)
         try:
             return Activity(data=resp)
 
@@ -194,27 +192,25 @@ class Client:
                 )
         except TypeError:
             raise error.ActivityNotFound(
-                "Error has been occurred during getting your data, maybe the page is out of index or not found?\n"
-                f"Actual response: {resp!r}"
-                )
+                "Error has been occurred during getting your data, maybe the page is out of index or not found?\n")
 
-    async def get_app(self, appid: int) -> AppInfo:
+    async def fetch_app(self, appid: int, /) -> AppInfo:
         """
         Returns
         --------
-        :class:`list`
-            Returns all available application data.
+        :class:`.AppInfo`:
+            a Bungie application object.
 
         Parameters
         -----------
         appid: :class:`int`
             The application id.
         """
-        resp = await self._client.fetch(f"{self.API_URL}/App/Application/{appid}")
+        resp = await self.http.fetch_app(appid)
         return AppInfo(resp)
 
 
-    async def get_clan(self, clanid: int, /) -> Clan:
+    async def fetch_clan(self, clanid: int, /) -> Clan:
         """
         Returns
         --------
@@ -226,5 +222,5 @@ class Client:
         clanid: :class:`int`:
             The clan id.
         """
-        resp = await self._client.get_clan(clanid)
-        return Clan(data=resp)
+        resp = Clan(data=(await self.http.fetch_clan(clanid)))
+        return resp

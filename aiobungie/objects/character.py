@@ -35,7 +35,7 @@ from typing import (
 
 # if TYPE_CHECKING:
 from ..utils.enums import Component, DestinyCharecter, DestinyGender, DestinyRace
-from ..utils import ImageProtocol
+from ..utils import Image
 from ..types.character import Character as CharacterPayload
 
 __all__: Sequence[str] = (
@@ -54,8 +54,8 @@ class Character:
 	_char: DestinyCharecter
 
 	if TYPE_CHECKING:
-		emblem_icon: Optional[Union[ImageProtocol, str]]
-		emblem: Optional[Union[ImageProtocol, str]]
+		emblem_icon: Optional[Union[Image, str]]
+		emblem: Optional[Union[Image, str]]
 		light: int
 		total_played_time: int
 		last_played: datetime
@@ -79,8 +79,8 @@ class Character:
 			lock = self._resp[2]
 			self.id = lock.get('characterId')
 			self.light = lock.get('light')
-			self.emblem_icon = ImageProtocol(lock.get('emblemPath'))
-			self.emblem = ImageProtocol(lock.get('emblemBackgroundPath'))
+			self.emblem_icon = Image(lock.get('emblemPath'))
+			self.emblem = Image(lock.get('emblemBackgroundPath'))
 			self.member_id = lock.get('membershipId')
 			self.total_played_time = lock.get('minutesPlayedTotal')
 			self.gender = DestinyGender(data=lock.get('genderType'))
@@ -92,8 +92,8 @@ class Character:
 			lock = self._resp[1]
 			self.id = lock.get('characterId')
 			self.light = lock.get('light')
-			self.emblem_icon = ImageProtocol(lock.get('emblemPath'))
-			self.emblem = ImageProtocol(lock.get('emblemBackgroundPath'))
+			self.emblem_icon = Image(lock.get('emblemPath'))
+			self.emblem = Image(lock.get('emblemBackgroundPath'))
 			self.member_id = lock.get('membershipId')
 			self.total_played_time = lock.get('minutesPlayedTotal')
 			self.gender = DestinyGender(data=lock.get('genderType'))
@@ -105,8 +105,8 @@ class Character:
 			lock = self._resp[0]
 			self.id = lock.get('characterId')
 			self.light = lock.get('light')
-			self.emblem_icon = ImageProtocol(lock.get('emblemPath'))
-			self.emblem = ImageProtocol(lock.get('emblemBackgroundPath'))
+			self.emblem_icon = Image(lock.get('emblemPath'))
+			self.emblem = Image(lock.get('emblemBackgroundPath'))
 			self.member_id = lock.get('membershipId')
 			self.total_played_time = lock.get('minutesPlayedTotal')
 			self.gender = DestinyGender(data=lock.get('genderType'))

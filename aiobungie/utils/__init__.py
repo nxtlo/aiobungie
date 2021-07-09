@@ -22,11 +22,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 from .time import Time
-from .assets import ImageProtocol
+from .assets import Image
 from .security import Crypt
 from .helpers import deprecated
+from .cache import MemoryCache, RedisCache
 from . import enums
 
 __all__ = (
-	'Time', 'ImageProtocol', 'Crypt', 'enums', 'deprecated'
+	'Time', 'Image', 'Crypt', 'enums', 
+	'deprecated', 'MemoryCache', 'RedisCache'
 )

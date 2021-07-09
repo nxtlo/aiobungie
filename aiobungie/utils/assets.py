@@ -25,10 +25,10 @@ SOFTWARE.
 import io
 
 __all__ = (
-    'ImageProtocol',
+    'Image',
 )
 
-class ImageProtocol:
+class Image:
     BASE = "https://bungie.net"
     def __init__(self, path: str) -> None:
         self.path = path

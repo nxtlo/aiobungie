@@ -21,11 +21,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
-from typing import Union, Sequence, Optional, Any
+from typing import Union, Sequence, Final
 from cryptography.fernet import Fernet
-from logging import getLogger
+from logging import getLogger, Logger
 
-log = getLogger(__name__)
+log: Final[Logger] = getLogger(__name__)
 
 __all__ = (
 	'Crypt',
@@ -37,35 +37,32 @@ class Crypt:
 
 	Attributes
 	-----------
-	entrie: :class:`bytes`
-		The data entrie you wanna encrypt and decrypt
+	entry: :class:`bytes`
+		The data entry you wanna encrypt and decrypt
 	
 	instance: :class:`.Fernet`
 		The default for this attr is `.Fernet` and should not be changed
 		it can be None or your own `.Fernet` instance.
 
 	'''
-	__slots__: Sequence[str] = ('_entrie', '_instance')
+	__slots__: Sequence[str] = ('_entry', '_instance')
 
-	def __init__(self, entrie: bytes, instance = None) -> None:
-		self._entrie = entrie
-		if not instance:
-			self._instance: Fernet = instance(instance.generate_key())
-		self._instance = instance
+	def __init__(self, entry: bytes) -> None:
+		self._entry = entry
+		self._instance: Fernet = Fernet(Fernet.generate_key())
 
 	def encrypt(self) -> bytes:
 		'''
 		A method that encrypts :class:`Crypt.entrie` attr
 		'''
-		return self._instance.encrypt(self._entrie)
+		return self._instance.encrypt(self._entry)
 
 	def decrypt(self, token: bytes, ttl: int = None) -> Union[bytes, str]:
 		'''
 		a Method that decrypt a token. 
 		this should be the encrypted :class:`.Crypt.entrie` attr.
 		'''
-		try:
-			key = self._instance.decrypt(token, ttl)
-		except Exception as e:
-			log.warn(f"Couldn't decrypt key due: {e!r}")
+		key = self._instance.decrypt(token, ttl)
+		if not key:
+			log.warn(f"Couldn't decrypt key.")
 		return key.strip()

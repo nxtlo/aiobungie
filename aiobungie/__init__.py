@@ -23,9 +23,9 @@ SOFTWARE.
 '''
 
 from . import error # NOQA
-from .utils import ImageProtocol, Time # NOQA
+from .utils import Image, Time # NOQA
 from .utils.enums import * # NOQA
 from .client import Client # NOQA
 from typing import Sequence as Seq, Any #NOQA
 
-__version__ = '0.2.3a' #NOQA
+__version__ = '0.2.4a' #NOQA

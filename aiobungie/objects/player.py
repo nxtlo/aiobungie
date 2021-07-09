@@ -28,14 +28,14 @@ from ..error import PlayerNotFound
 # if TYPE_CHECKING:
 from ..types.player import Player as PlayerPayload
 from ..utils.enums import MembershipType
-from ..utils import ImageProtocol
+from ..utils import Image
 
 class Player:
     __slots__: Sequence[str] = (
         'icon', 'id', 'name', 'type', 'is_public'
     )
     if TYPE_CHECKING:
-        icon: ImageProtocol
+        icon: Image
         id: int
         name: str
         is_public: bool
@@ -47,7 +47,7 @@ class Player:
     def _update(self, data: PlayerPayload) -> None:
         new_data = data['Response'][0]
         self.is_public: bool = new_data['isPublic']
-        self.icon: ImageProtocol = ImageProtocol(str(new_data['iconPath']))
+        self.icon: Image = Image(str(new_data['iconPath']))
         self.id: Optional[int] = new_data['membershipId']
         self.type: Union[MembershipType, int] = MembershipType(data=new_data['membershipType'])
         self.name: str = new_data['displayName']

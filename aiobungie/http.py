@@ -22,11 +22,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
-import httpx
-from .error import JsonError
-from typing import Optional, Sequence, Any, Union, TYPE_CHECKING, TypeVar, Coroutine
+import aiohttp
+from aiohttp.helpers import HeadersMixin
+from .error import NotFound, HTTPException
+from typing import (Optional
+    , Any
+    , Union
+    , TYPE_CHECKING
+    , TypeVar
+    , Coroutine
+    , Dict
+    )
 from .types import player, clans
-from .utils.enums import MembershipType
+from .utils.enums import MembershipType, DestinyCharecter, Component, GameMode
+import warnings
+import logging
+import asyncio
 
 # if TYPE_CHECKING:
 T = TypeVar('T')
@@ -36,40 +47,93 @@ __all__ = (
     'HTTPClient',
 )
 class HTTPClient:
+    '''
+    An HTTP Client for sending http requests to the Bungie API
+
+    '''
     BASE: str = 'https://www.bungie.net/Platform'
-    __slots__: Sequence[str] = ('session', 'key')
 
-    def __init__(self, key: str, session = None) -> None:
-        self.session: httpx.AsyncClient = session
-        self.key  = key
+    def __init__(self, key: str) -> None:
+        self.key: str = key
+        self.headers: Dict[str, str] = {'X-API-KEY': self.key} # had to do it this way due to Auth.
 
-    async def create_session(self) -> None:
-        """Creates a new aiohttp Client Session"""
-        self.session = httpx.AsyncClient()
+    async def fetch(self, method: str, route: str, **kwargs: Any) -> Any:
+        if self.key is None:
+            raise ValueError("No API KEY was passed.") 
 
-    async def close(self) -> None:
-        if not self.session.is_closed:
+        for tries in range(5):
             try:
-                return await self.session.aclose()
-            except httpx.CloseError:
+                async with aiohttp.ClientSession() as session:
+                    async with session.request(method=method, url=f'{self.BASE}/{route}', **kwargs) as response:
+                        data = await response.json()
+                        text = await response.text()
+
+                        if 300 > response.status >= 200:
+                            logging.debug("{} Request success from {} with {}".format(method, self.BASE + route, data))
+                            try:
+                                return data
+                            except aiohttp.ContentTypeError:
+                                text
+                        
+                        if response.status in {500, 502}:
+                            warnings.warn("Got {} status {} Msg {}".format(data, response.status, data['Message']))
+                            await asyncio.sleep(tries + 1 * 2)
+                            continue
+
+                        if data is None:
+                            raise HTTPException(f'Error making your request: {data["Message"]}')
+
+                        if response.status == 404:
+                            raise NotFound(response, data)
+        
+            except aiohttp.ClientError:
                 raise
-            self.session = None
+    
+    # Currently some of the funcs return Response[Any]
+    # And not the actual type, The reason for that Character
+    # And Activity objects are much complicated, so that'l
+    # take Some time, but for Manifest and static search will
+    # not return any types. So they will be Any.
 
-    async def fetch(self, url: str) -> Any:
-        if not self.session:
-            await self.create_session()
+    def fetch_manifest(self) -> Response[Any]:
+        return self.fetch('GET', 'Destin2/Manifest', headers=self.headers)
 
-        async with self.session as client:
-            data = await client.get(url, headers={'X-API-KEY': self.key})
-            if data.status_code == 200:
-                try:
-                    data = data.json()
-                except httpx.DecodingError as e:
-                    raise JsonError(f'Falied decoding json, See: {e!r}') from e
-            return data
+    def static_search(self, path: str) -> Response[Any]:
+        return self.fetch('GET', path, heaers=self.headers)
 
-    def get_player(self, name: str, type: Union[MembershipType, int]) -> Response[player.Player]:
-        return self.fetch(f'{self.BASE}/Destiny2/SearchDestinyPlayer/{type}/{name}')
+    def fetch_player(self, name: str, type: Union[MembershipType, int]) -> Response[player.Player]:
+        return self.fetch('GET', f'Destiny2/SearchDestinyPlayer/{type}/{name}', headers=self.headers)
 
-    def get_clan(self, id: int) -> Response[clans.Clan]:
-        return self.fetch(f'{self.BASE}/GroupV2/{id}')
+    def fetch_clan(self, id: int) -> Response[clans.Clan]:
+        return self.fetch('GET' ,f'GroupV2/{id}', headers=self.headers)
+
+    def fetch_app(self, appid: int) -> Response[Any]:
+        return self.fetch('GET' ,f'App/Application/{appid}', headers=self.headers)
+
+    def fetch_character(self, memberid: int, 
+            type: MembershipType, 
+            character: DestinyCharecter
+            ) -> Response[Any]:
+        return self.fetch('GET', 
+                        f'Destiny2/{type}/Profile/{memberid}/ \
+                          ?components={Component.CHARECTERS}',
+                          headers=self.headers
+                        )
+
+    def fetch_activity(
+        self, 
+        userid: int, 
+        charid: int, 
+        mode: Union[GameMode, int], 
+        *,
+        memtype: Optional[Union[int, MembershipType]] = MembershipType.ALL, 
+        page: Optional[int] = 1, 
+        limit: Optional[int] = 1
+        ) -> Response[Any]:
+        return self.fetch('GET', 
+            f'Destiny2/{memtype}/Account/ \
+            {userid}/Character/{charid}/Stats/ \
+            Activities/?page={page}&count={limit} \
+            &mode={mode}',
+            headers=self.headers
+        )

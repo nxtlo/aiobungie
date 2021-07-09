@@ -26,8 +26,8 @@ from typing import Dict, Sequence, Optional, Any, TYPE_CHECKING, Optional
 from datetime import datetime
 from ..error import HashError
 
-if TYPE_CHECKING:
-	from ..utils.enums import GameMode, MembershipType, Raid
+# if TYPE_CHECKING:
+from ..utils.enums import GameMode, MembershipType, Raid
 
 __all__: Sequence[str] = (
 	'Activity',

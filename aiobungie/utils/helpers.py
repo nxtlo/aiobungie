@@ -22,12 +22,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
-from logging import getLogger
-from typing import Callable, Any
+import logging
+from typing import Callable, Any, Final
 from functools import wraps
-import sys
 
-log = getLogger(__name__)
+log: Final[logging.Logger] = logging.getLogger(__name__)
 
 def deprecated(func) -> Callable[..., Any]:
 	'''
@@ -35,8 +34,7 @@ def deprecated(func) -> Callable[..., Any]:
 	'''
 	@wraps(func)
 	def wrapper(*args, **kwargs):
-		log.warn(f'WARNING, Function {func.__name__!r} is deprecated.')
+		log.warn(DeprecationWarning("This function is no longer used or not fully implemented yet."))
 		coro = func(*args, **kwargs)
-		exit(1)
 		return coro
 	return wrapper

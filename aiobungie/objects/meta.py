@@ -32,7 +32,7 @@ import aiofiles
 import json
 import os.path
 from ..utils.enums import Raid
-from ..utils import ImageProtocol
+from ..utils import Image
 
 __all__: t.Sequence[str] = (
     'Manifest',
@@ -48,9 +48,9 @@ class Manifest:
             await self.download()
         return
     
-    async def get_raid_image(self, raid: Raid) -> ImageProtocol:
+    async def get_raid_image(self, raid: Raid) -> Image:
         image = await self.db.execute("SELECT json FROM DestinyActivityDefinition WHERE id = ?", (raid,), 'pgcrImage')
-        return ImageProtocol(path=str(image))
+        return Image(path=str(image))
 
     async def download(self) -> None:
         _time = time.time()

@@ -28,4 +28,4 @@ from .utils.enums import * # NOQA
 from .client import Client # NOQA
 from typing import Sequence as Seq, Any #NOQA
 
-__version__ = '0.2.4a' #NOQA
+__version__ = '0.2.4' #NOQA

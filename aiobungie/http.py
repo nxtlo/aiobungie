@@ -69,8 +69,7 @@ class HTTPClient:
 
                         if 300 > response.status >= 200:
                             logging.debug("{} Request success from {} with {}".format(method, self.BASE + route, data))
-                            try:
-                                return data
+                            return data
                         
                         if response.status in {500, 502}:
                             warnings.warn("Got {} status {} Msg {}".format(data, response.status, data['Message']))

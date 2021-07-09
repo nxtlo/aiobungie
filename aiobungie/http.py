@@ -66,14 +66,11 @@ class HTTPClient:
                 async with aiohttp.ClientSession() as session:
                     async with session.request(method=method, url=f'{self.BASE}/{route}', **kwargs) as response:
                         data = await response.json()
-                        text = await response.text()
 
                         if 300 > response.status >= 200:
                             logging.debug("{} Request success from {} with {}".format(method, self.BASE + route, data))
                             try:
                                 return data
-                            except aiohttp.ContentTypeError:
-                                text
                         
                         if response.status in {500, 502}:
                             warnings.warn("Got {} status {} Msg {}".format(data, response.status, data['Message']))

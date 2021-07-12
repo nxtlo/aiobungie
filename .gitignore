@@ -13,3 +13,4 @@ venv/
 *.db
 .mypy_cache/
 docs/
+*.html

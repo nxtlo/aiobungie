@@ -11,6 +11,5 @@ venv/
 *.zip
 .vscode/
 *.db
-.mypy_cache/
 docs/
-*.html
+.mypy_cache/

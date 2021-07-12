@@ -32,7 +32,8 @@ from ..utils import Image
 
 class Player:
     __slots__: Sequence[str] = (
-        'icon', 'id', 'name', 'type', 'is_public'
+        'icon', 'id', 'name', 'type', 
+        'is_public', 'user'
     )
     if TYPE_CHECKING:
         icon: Image
@@ -41,16 +42,19 @@ class Player:
         is_public: bool
         type: Union[MembershipType, int]
 
-    def __init__(self, data: PlayerPayload) -> None:
-        self._update(data)
+    def __init__(self, data: PlayerPayload, *, position: int = None) -> None:
+        self._update(data, position=position)
 
-    def _update(self, data: PlayerPayload) -> None:
-        new_data = data['Response'][0]
-        self.is_public: bool = new_data['isPublic']
-        self.icon: Image = Image(str(new_data['iconPath']))
-        self.id: Optional[int] = new_data['membershipId']
-        self.type: Union[MembershipType, int] = MembershipType(data=new_data['membershipType'])
-        self.name: str = new_data['displayName']
+    def _update(self, data: PlayerPayload, *, position: int = None) -> None:
+        try:
+            data = data[0] if not position else data[position] # type: ignore
+        except IndexError:
+            return data[0] # type: ignore
+        self.is_public: bool = data['isPublic']
+        self.icon: Image = Image(str(data['iconPath']))
+        self.id: Optional[int] = data['membershipId']
+        self.type: Union[MembershipType, int] = MembershipType(data=data['membershipType'])
+        self.name: str = data['displayName']
 
     def __str__(self) -> str:
         return str(self.name)

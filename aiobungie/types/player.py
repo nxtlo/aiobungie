@@ -25,12 +25,9 @@ from typing import TypedDict, Any, Dict, Optional, Union
 from ..utils import Image
 from ..utils.enums import MembershipType
 
-class PlayerResponse(TypedDict):
+class Player(TypedDict, total=False):
 	iconPath: Image
 	displayName: str
 	membershipType: Union[MembershipType, int]
 	membershipId: int
 	isPublic: bool
-class Player(PlayerResponse, total=False):
-	Response: Dict[int, PlayerResponse]
-	

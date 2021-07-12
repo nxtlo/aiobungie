@@ -21,15 +21,16 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
-from typing import TypedDict, Dict, Any, List, Union
+from typing import TypedDict, List
 from ..utils import Image
 from .user import UserCard
 from datetime import datetime
 
-class ClanOwner(UserCard, total=False):
-	joinDate: datetime
+class ClanOwner(TypedDict, total=False):
+	destinyUserInfo: UserCard
+	lastOnlineStatusChange: str
+	joinDate: str
 	groupId: int
-	destinyUserInfo: Dict[str, Any] # TODO: Make this Dict[str, ClanOwnerResponse]
 
 class PartitialClan(TypedDict):
 	groupId: int
@@ -44,10 +45,7 @@ class PartitialClan(TypedDict):
 	avatarPath: Image
 	creationDate: datetime
 
-class ClanResponse(PartitialClan):
-	detail: Dict[str, PartitialClan]
+class Clan(TypedDict, total=False):
+	detail: PartitialClan
 	founder: ClanOwner
 	ErrorCode: int
-
-class Clan(ClanResponse, total=False):
-	Response: Dict[str, ClanResponse]

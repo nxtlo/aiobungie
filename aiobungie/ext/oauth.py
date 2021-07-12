@@ -29,11 +29,12 @@ import inspect
 import logging
 import uuid
 from ..utils import RedisCache
-from typing import ( Any
-					, Sequence
-					, Optional
-					, Dict
-				)
+from typing import (
+	Any
+	, Sequence
+	, Optional
+	, Dict
+)
 from requests_oauthlib import OAuth2Session
 from functools import wraps
 from ..http import HTTPClient

@@ -23,7 +23,6 @@ SOFTWARE.
 '''
 
 import aiohttp
-from aiohttp.helpers import HeadersMixin
 from .error import NotFound, HTTPException
 from typing import (Optional
     , Any
@@ -32,8 +31,9 @@ from typing import (Optional
     , TypeVar
     , Coroutine
     , Dict
+    , List
     )
-from .types import player, clans
+from .types import player, clans, user, application as app
 from .utils.enums import MembershipType, DestinyCharecter, Component, GameMode
 import warnings
 import logging
@@ -69,15 +69,18 @@ class HTTPClient:
 
                         if 300 > response.status >= 200:
                             logging.debug("{} Request success from {} with {}".format(method, self.BASE + route, data))
-                            return data
+                            try:
+                                return data['Response'] # Almost all bungie json objects are
+                                                        # wrapped inside a dict[Response=...], but
+                                                        # sometimes it returns a List so this check
+                                                        # is needed
+                            except (AttributeError, TypeError):
+                                return data
                         
                         if response.status in {500, 502}:
                             warnings.warn("Got {} status {} Msg {}".format(data, response.status, data['Message']))
                             await asyncio.sleep(tries + 1 * 2)
                             continue
-
-                        if data is None:
-                            raise HTTPException(f'Error making your request: {data["Message"]}')
 
                         if response.status == 404:
                             raise NotFound(response, data)
@@ -91,11 +94,17 @@ class HTTPClient:
     # take Some time, but for Manifest and static search will
     # not return any types. So they will be Any.
 
+    def fetch_user(self, name: str) -> Response[user.User]:
+        return self.fetch('GET', f'User/SearchUsers/?q={name}', headers=self.headers)
+
+    def fetch_user_from_id(self, id: int) -> Response[user.User]:
+        return self.fetch("GET", f'User/GetBungieNetUserById/{id}/', headers=self.headers)
+
     def fetch_manifest(self) -> Response[Any]:
         return self.fetch('GET', 'Destin2/Manifest', headers=self.headers)
 
     def static_search(self, path: str) -> Response[Any]:
-        return self.fetch('GET', path, heaers=self.headers)
+        return self.fetch('GET', path, headers=self.headers)
 
     def fetch_player(self, name: str, type: Union[MembershipType, int]) -> Response[player.Player]:
         return self.fetch('GET', f'Destiny2/SearchDestinyPlayer/{type}/{name}', headers=self.headers)
@@ -103,7 +112,7 @@ class HTTPClient:
     def fetch_clan(self, id: int) -> Response[clans.Clan]:
         return self.fetch('GET' ,f'GroupV2/{id}', headers=self.headers)
 
-    def fetch_app(self, appid: int) -> Response[Any]:
+    def fetch_app(self, appid: int) -> Response[app.Application]:
         return self.fetch('GET' ,f'App/Application/{appid}', headers=self.headers)
 
     def fetch_character(self, memberid: int, 

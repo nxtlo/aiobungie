@@ -21,16 +21,17 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
-from .appinfo import AppInfo
+from .application import Application
 from .clans import Clan
 from .player import Player
 from .meta import Manifest
 from .character import Character
 from .activity import Activity
+from .user import User
 from typing import Sequence as Seq
 
 __all__: Seq[str] = (
-	'AppInfo', 'Clans',
+	'Application', 'Clans',
 	'Player', 'Manifest',
 	'Character', 'Activity'
 )

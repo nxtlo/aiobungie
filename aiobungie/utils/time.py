@@ -25,6 +25,7 @@ SOFTWARE.
 import calendar
 import time
 from dateutil.relativedelta import relativedelta
+from dateutil.parser import parse
 from datetime import datetime
 
 __all__ = (
@@ -46,7 +47,7 @@ class plural:
         return f'{v} {singular}'
 
 
-def human_join(seq, delim=', ', final='or'):
+def human_join(seq, delim=', ', final='or') -> str:
     '''
     Rapptz :>)
     '''
@@ -76,9 +77,12 @@ class Time(object):
         return datetime.utcfromtimestamp(timer)
 
     @staticmethod
-    def clean_date(date: datetime) -> str:
+    def clean_date(date: str) -> datetime:
         '''Converts datetime.utcnow() to a readble date.'''
-        return date.strftime('%A, %d/%m/%Y, %H:%M:%S %p')
+        parsed = parse(date)
+        ts = Time.to_timestamp(parsed) # had to do it in two ways.
+        ft = Time.from_timestamp(ts)
+        return ft
 
     @staticmethod
     def to_timestamp(date: datetime) -> int:
@@ -91,7 +95,7 @@ class Time(object):
             raise e
 
     @staticmethod
-    def human_timedelta(dt, *, source=None, accuracy=3, brief=False, suffix=True):
+    def human_timedelta(dt, *, source=None, accuracy=3, brief=False, suffix=True) -> str:
         '''
         Rapptz :>)
         '''

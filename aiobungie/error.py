@@ -28,7 +28,7 @@ __all__ = (
     'PlayerNotFound', 'HashError',
     'ActivityNotFound', 'CharacterTypeError',
     'JsonError', 'ClanNotFound', 'CharacterNotFound',
-    'NotFound', 'HTTPException'
+    'NotFound', 'HTTPException', 'UserNotFound'
 )
 class InvalidInput(Exception):
     pass
@@ -62,4 +62,7 @@ class ClanNotFound(Exception):
 
 
 class NotFound(Exception):
+    pass
+
+class UserNotFound(Exception):
     pass

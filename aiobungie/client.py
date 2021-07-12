@@ -36,11 +36,12 @@ from typing import (
 from .http import HTTPClient
 from .objects import ( 
     Activity
-    , AppInfo
+    , Application
     , Clan
     , Manifest
     , Player
     , Character
+    , User
 )
 from .utils.enums import (
     MembershipType
@@ -88,14 +89,63 @@ class Client:
         return Manifest(resp)
 
 
-    async def fetch_player(self, name: str, type: Union[MembershipType, int], /) -> Player:
-        """
+    async def fetch_user(self, name: str, *, position: int = 0) -> User:
+        '''|coro|
+
+        Fetches a Bungie user by their name.
+
+        Paramaters
+        ----------
+        name: :class:`str`:
+            The user name.
+        position: :class:`int`:
+            The user position/index in the list to return,
+            Will returns the first one if not specified.
+
+        Raises
+        -------
+        UserNotFound:
+            The user wasa not found.
+        '''
+        data = await self.http.fetch_user(name=name)
+        return User(data=data, position=position)
+
+
+    async def fetch_user_from_id(self, id: int) -> User:
+        '''|coro|
+
+        Fetches a Bungie user by their id.
+
+        Paramaters
+        ----------
+        id: :class:`int`:
+            The user id.
+        position: :class:`int`:
+            The user position/index in the list to return,
+            Will returns the first one if not specified.
+
+        Raises
+        -------
+        UserNotFound:
+            The user wasa not found.
+        '''
+        payload = await self.http.fetch_user_from_id(id)
+        return User(data=payload)
+
+
+    async def fetch_player(self, name: str, type: Union[MembershipType, int], *, position: int = None) -> Player:
+        """|coro|
+
+        Fetches a Destiny2 Player.
+
         Parameters
         -----------
         name: :class:`str`
             The Player's Name
         type: Union[:class:`.MembershipType`, :class:`int`]:
             The player's membership type, e,g. XBOX, STEAM, PSN
+        position: :class:`int`:
+            Which player position to return, first player will return if None.
 
         Returns
         --------
@@ -103,12 +153,13 @@ class Client:
             a Destiny Player object
         """
         resp = await self.http.fetch_player(name, type)
-        return Player(data=resp)
+        return Player(data=resp, position=position)
 
 
     async def fetch_charecter(self, memberid: int, type: MembershipType, character: DestinyCharecter) -> Character:
-        """
-        Fetches a destiny character and returns its data.
+        """|coro|
+
+        Fetches a Destiny 2 character.
 
         Paramaters
         -----------
@@ -153,7 +204,10 @@ class Client:
         page: Optional[int] = 1,
         limit: Optional[int] = 1
         ) -> Activity:
-        '''
+        '''|coro|
+
+        Fetches a Destiny 2 activity for the specified user id and character.
+
         Paramaters
         ----------
         userid: :class:`int`
@@ -194,11 +248,14 @@ class Client:
             raise error.ActivityNotFound(
                 "Error has been occurred during getting your data, maybe the page is out of index or not found?\n")
 
-    async def fetch_app(self, appid: int, /) -> AppInfo:
-        """
+    async def fetch_app(self, appid: int) -> Application:
+        """|coro|
+
+        Fetches a Bungie Application.
+
         Returns
         --------
-        :class:`.AppInfo`:
+        :class:`.Application`:
             a Bungie application object.
 
         Parameters
@@ -207,11 +264,14 @@ class Client:
             The application id.
         """
         resp = await self.http.fetch_app(appid)
-        return AppInfo(resp)
+        return Application(resp)
 
 
     async def fetch_clan(self, clanid: int, /) -> Clan:
-        """
+        """|coro|
+
+        Fetches a Bungie Clan.
+
         Returns
         --------
         :class:`.Clan`:

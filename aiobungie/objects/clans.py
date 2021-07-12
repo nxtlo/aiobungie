@@ -86,7 +86,7 @@ class ClanOwner:
         last_online: str
         type: Optional[MembershipType]
         clan_id: int
-        joined_at: datetime
+        joined_at: str
         icon: Image
         is_public: bool
         types: List[int]
@@ -101,7 +101,7 @@ class ClanOwner:
         convert = int(data['lastOnlineStatusChange'])
         self.last_online: str = Time.human_timedelta(Time.from_timestamp(convert))
         self.clan_id: int = data['groupId']
-        self.joined_at: datetime = data['joinDate']
+        self.joined_at: str = data['joinDate']
         self.types: List[int] = data['destinyUserInfo']['applicableMembershipTypes']
         self.is_public: bool = data['destinyUserInfo']['isPublic']
         self.type: Optional[MembershipType] = MembershipType(data=data['destinyUserInfo']['membershipType'])
@@ -157,7 +157,7 @@ class Clan:
     __slots__: Sequence[str] = (
         'id', 'name', 'created_at', 'edited_at',
         'member_count', 'description', 'is_public',
-        'banner', 'avatar', 'about', 'tags', 'owner',
+        'banner', 'avatar', 'about', 'tags', 'owner'
     )
     if TYPE_CHECKING:
         id: int
@@ -176,21 +176,17 @@ class Clan:
         self._update(data=data)
 
     def _update(self, data: ClanPayload) -> None:
-        try:
-            new_data = data['Response']
-            self.id: int = new_data['detail']['groupId']
-            self.name: str = new_data['detail']['name']
-            self.created_at: datetime = new_data['detail']['creationDate']
-            self.member_count: int = new_data['detail']['memberCount']
-            self.description: str = new_data['detail']['about']
-            self.about: str = new_data['detail']['motto']
-            self.is_public: bool = new_data['detail']['isPublic']
-            self.banner: Image = Image(str(new_data['detail']['bannerPath']))
-            self.avatar: Image = Image(str(new_data['detail']['avatarPath']))
-            self.tags: List[str] = new_data['detail']['tags']
-            self.owner: ClanOwner = ClanOwner(data=new_data['founder']) # NOTE: This works but mypy is being dumb
-        except (TypeError, AttributeError):
-            raise ClanNotFound(f"Clan was not found.")
+        self.id: int = data['detail']['groupId']
+        self.name: str = data['detail']['name']
+        self.created_at: datetime = data['detail']['creationDate']
+        self.member_count: int = data['detail']['memberCount']
+        self.description: str = data['detail']['about']
+        self.about: str = data['detail']['motto']
+        self.is_public: bool = data['detail']['isPublic']
+        self.banner: Image = Image(str(data['detail']['bannerPath']))
+        self.avatar: Image = Image(str(data['detail']['avatarPath']))
+        self.tags: List[str] = data['detail']['tags']
+        self.owner: ClanOwner = ClanOwner(data=data['founder']) # NOTE: This works but mypy is being dumb
 
     def __str__(self) -> str:
         return str(self.name)

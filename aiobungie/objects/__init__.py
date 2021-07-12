@@ -31,7 +31,7 @@ from .user import User
 from typing import Sequence as Seq
 
 __all__: Seq[str] = (
-	'Application', 'Clans',
+	'Application', 'Clan',
 	'Player', 'Manifest',
 	'Character', 'Activity'
 )

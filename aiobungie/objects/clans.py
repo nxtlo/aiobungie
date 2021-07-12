@@ -38,6 +38,8 @@ from ..utils import Image, Time
 from ..utils.enums import MembershipType
 from ..types.clans import Clan as ClanPayload, ClanOwner as ClanOwnerPayload
 
+__all__: Sequence[str] = ['Clan']
+
 class ClanMembers:
     __slots__: Sequence[str] = ()
 

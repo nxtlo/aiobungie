@@ -1,0 +1,1021 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>aiobungie.client API documentation</title>
+<meta name="description" content="MIT License …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>aiobungie.client</code></h1>
+</header>
+<section id="section-intro">
+<p>MIT License</p>
+<p>Copyright (c) 2020 - Present nxtlo</p>
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:</p>
+<p>The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.</p>
+<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#39;&#39;&#39;
+MIT License
+
+Copyright (c) 2020 - Present nxtlo
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the &#34;Software&#34;), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED &#34;AS IS&#34;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+&#39;&#39;&#39;
+
+import asyncio
+from . import error
+from typing import (
+    Any, 
+    Optional, 
+    Sequence, 
+    Union, 
+    # TYPE_CHECKING
+    )
+
+#if TYPE_CHECKING:
+from .http import HTTPClient
+from .objects import ( 
+    Activity
+    , Application
+    , Clan
+    , Manifest
+    , Player
+    , Character
+    , User
+)
+from .utils.enums import (
+    MembershipType
+    , DestinyCharecter
+    , Component
+    , GameMode
+    , Vendor
+)
+from .utils.helpers import deprecated
+
+
+__all__: Sequence[str] = (
+    &#39;Client&#39;,
+)
+class Client:
+    &#34;&#34;&#34;Represents a client that connects to the Bungie API
+
+    Attributes
+    -----------
+    key: :class:`str`:
+        Your Bungie&#39;s API key or Token from the developer&#39;s portal.
+    loop: :class:`asyncio.AbstractEventLoop`:
+        asyncio event loop.
+    &#34;&#34;&#34;
+    def __init__(
+        self, 
+        key: str, 
+        *, 
+        loop: asyncio.AbstractEventLoop = None
+        ) -&gt; None:
+        self.loop: asyncio.AbstractEventLoop = asyncio.get_event_loop() if not loop else loop
+        self.key: str = key
+
+        if not self.key:
+            raise ValueError(&#34;Missing the API key!&#34;)
+        self.http: HTTPClient = HTTPClient(key=key)
+        super().__init__()
+
+    async def from_path(self, path: str) -&gt; Any:
+        return await self.http.static_search(path)
+
+    @deprecated
+    async def fetch_manifest(self) -&gt; Optional[Manifest]:
+        resp = await self.http.fetch_manifest()
+        return Manifest(resp)
+
+
+    async def fetch_user(self, name: str, *, position: int = 0) -&gt; User:
+        &#39;&#39;&#39;|coro|
+
+        Fetches a Bungie user by their name.
+
+        Paramaters
+        ----------
+        name: :class:`str`:
+            The user name.
+        position: :class:`int`:
+            The user position/index in the list to return,
+            Will returns the first one if not specified.
+
+        Raises
+        -------
+        UserNotFound:
+            The user wasa not found.
+        &#39;&#39;&#39;
+        data = await self.http.fetch_user(name=name)
+        return User(data=data, position=position)
+
+
+    async def fetch_user_from_id(self, id: int) -&gt; User:
+        &#39;&#39;&#39;|coro|
+
+        Fetches a Bungie user by their id.
+
+        Paramaters
+        ----------
+        id: :class:`int`:
+            The user id.
+        position: :class:`int`:
+            The user position/index in the list to return,
+            Will returns the first one if not specified.
+
+        Raises
+        -------
+        UserNotFound:
+            The user wasa not found.
+        &#39;&#39;&#39;
+        payload = await self.http.fetch_user_from_id(id)
+        return User(data=payload)
+
+
+    async def fetch_player(self, name: str, type: Union[MembershipType, int], *, position: int = None) -&gt; Player:
+        &#34;&#34;&#34;|coro|
+
+        Fetches a Destiny2 Player.
+
+        Parameters
+        -----------
+        name: :class:`str`
+            The Player&#39;s Name
+        type: Union[:class:`.MembershipType`, :class:`int`]:
+            The player&#39;s membership type, e,g. XBOX, STEAM, PSN
+        position: :class:`int`:
+            Which player position to return, first player will return if None.
+
+        Returns
+        --------
+        :class:`.Player`
+            a Destiny Player object
+        &#34;&#34;&#34;
+        resp = await self.http.fetch_player(name, type)
+        return Player(data=resp, position=position)
+
+
+    async def fetch_charecter(self, memberid: int, type: MembershipType, character: DestinyCharecter) -&gt; Character:
+        &#34;&#34;&#34;|coro|
+
+        Fetches a Destiny 2 character.
+
+        Paramaters
+        -----------
+            memberid: :class:`int`
+                A valid bungie member id.
+            character: :class:`.DestinyCharacter`
+                a Destiny character -&gt; .WARLOCK, .TITAN, .HUNTER
+            type: :class:`.MembershipType`
+                The membership type -&gt; .STEAM, .XBOX, .PSN
+
+        Returns
+        -------
+        :class:`.Character`:
+            a Bungie character object.
+
+        Raises
+        -------
+            :exc:`.CharacterNotFound` 
+                raised if the Character was not found.
+        &#34;&#34;&#34;
+        resp = await self.http.fetch_character(memberid=memberid, type=type, character=character)
+        return Character(char=character, data=resp)
+
+
+    @deprecated
+    async def fetch_vendor_sales(self, 
+        vendor: Optional[Union[Vendor, int]], 
+        memberid: int, 
+        charid: int, 
+        type: MembershipType
+        ) -&gt; Any:
+        return await self.http.fetch(&#39;GET&#39;,
+            f&#39;Destiny2/{type}/Profile/{memberid}/Character/{charid}/Vendors/{vendor}/?components={Component.VENDOR_SALES}&#39;
+            )
+
+    async def fetch_activity(
+        self,
+        userid: int,
+        charid: int,
+        mode: Union[GameMode, int], *,
+        memtype: Optional[Union[int, MembershipType]] = MembershipType.ALL,
+        page: Optional[int] = 1,
+        limit: Optional[int] = 1
+        ) -&gt; Activity:
+        &#39;&#39;&#39;|coro|
+
+        Fetches a Destiny 2 activity for the specified user id and character.
+
+        Paramaters
+        ----------
+        userid: :class:`int`
+            The user id that starts with `4611`.
+        charaid: :class:`int`
+            The id of the character to retrieve.
+        mode: :class:`.GameMode`
+            This paramater filters the game mode, Nightfall, Strike, Iron Banner, etc.
+        memtype: Optional[Union[:class:`int`, :class:`.MembershipType`]]
+            The Member ship type, if nothing was passed than it will return all.
+        page: Optional[:class:`int`]
+            The page number
+        limit: Optional[:class:`int`]
+            Limits the returned result.
+
+        Returns
+        --------
+        :class:`.Activity`:
+            A bungie Activity object.
+
+        Raises
+        ------
+        `AttributeError`
+            Using :meth:`Activity.hash()` for non raid activies.
+        `ActivityNotFound`
+            Any other errors occures during the response.
+
+        &#39;&#39;&#39;
+        resp = await self.http.fetch_activity(userid, charid, mode, memtype=memtype, page=page, limit=limit)
+        try:
+            return Activity(data=resp)
+
+        except AttributeError:
+            raise error.HashError(
+                &#34;.hash method is only used for raids, please remove it and use .raw_hash() instead&#34;
+                )
+        except TypeError:
+            raise error.ActivityNotFound(
+                &#34;Error has been occurred during getting your data, maybe the page is out of index or not found?\n&#34;)
+
+    async def fetch_app(self, appid: int) -&gt; Application:
+        &#34;&#34;&#34;|coro|
+
+        Fetches a Bungie Application.
+
+        Returns
+        --------
+        :class:`.Application`:
+            a Bungie application object.
+
+        Parameters
+        -----------
+        appid: :class:`int`
+            The application id.
+        &#34;&#34;&#34;
+        resp = await self.http.fetch_app(appid)
+        return Application(resp)
+
+
+    async def fetch_clan(self, clanid: int, /) -&gt; Clan:
+        &#34;&#34;&#34;|coro|
+
+        Fetches a Bungie Clan.
+
+        Returns
+        --------
+        :class:`.Clan`:
+            A Bungie clan object
+
+        Parameters
+        -----------
+        clanid: :class:`int`:
+            The clan id.
+        &#34;&#34;&#34;
+        resp = Clan(data=(await self.http.fetch_clan(clanid)))
+        return resp</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="aiobungie.client.Client"><code class="flex name class">
+<span>class <span class="ident">Client</span></span>
+<span>(</span><span>key: str, *, loop: asyncio.events.AbstractEventLoop = None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents a client that connects to the Bungie API</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>key</code></strong> :&ensp;<code>:class:</code>str<code>:</code></dt>
+<dd>Your Bungie's API key or Token from the developer's portal.</dd>
+<dt><strong><code>loop</code></strong> :&ensp;<code>:class:</code>asyncio.AbstractEventLoop<code>:</code></dt>
+<dd>asyncio event loop.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Client:
+    &#34;&#34;&#34;Represents a client that connects to the Bungie API
+
+    Attributes
+    -----------
+    key: :class:`str`:
+        Your Bungie&#39;s API key or Token from the developer&#39;s portal.
+    loop: :class:`asyncio.AbstractEventLoop`:
+        asyncio event loop.
+    &#34;&#34;&#34;
+    def __init__(
+        self, 
+        key: str, 
+        *, 
+        loop: asyncio.AbstractEventLoop = None
+        ) -&gt; None:
+        self.loop: asyncio.AbstractEventLoop = asyncio.get_event_loop() if not loop else loop
+        self.key: str = key
+
+        if not self.key:
+            raise ValueError(&#34;Missing the API key!&#34;)
+        self.http: HTTPClient = HTTPClient(key=key)
+        super().__init__()
+
+    async def from_path(self, path: str) -&gt; Any:
+        return await self.http.static_search(path)
+
+    @deprecated
+    async def fetch_manifest(self) -&gt; Optional[Manifest]:
+        resp = await self.http.fetch_manifest()
+        return Manifest(resp)
+
+
+    async def fetch_user(self, name: str, *, position: int = 0) -&gt; User:
+        &#39;&#39;&#39;|coro|
+
+        Fetches a Bungie user by their name.
+
+        Paramaters
+        ----------
+        name: :class:`str`:
+            The user name.
+        position: :class:`int`:
+            The user position/index in the list to return,
+            Will returns the first one if not specified.
+
+        Raises
+        -------
+        UserNotFound:
+            The user wasa not found.
+        &#39;&#39;&#39;
+        data = await self.http.fetch_user(name=name)
+        return User(data=data, position=position)
+
+
+    async def fetch_user_from_id(self, id: int) -&gt; User:
+        &#39;&#39;&#39;|coro|
+
+        Fetches a Bungie user by their id.
+
+        Paramaters
+        ----------
+        id: :class:`int`:
+            The user id.
+        position: :class:`int`:
+            The user position/index in the list to return,
+            Will returns the first one if not specified.
+
+        Raises
+        -------
+        UserNotFound:
+            The user wasa not found.
+        &#39;&#39;&#39;
+        payload = await self.http.fetch_user_from_id(id)
+        return User(data=payload)
+
+
+    async def fetch_player(self, name: str, type: Union[MembershipType, int], *, position: int = None) -&gt; Player:
+        &#34;&#34;&#34;|coro|
+
+        Fetches a Destiny2 Player.
+
+        Parameters
+        -----------
+        name: :class:`str`
+            The Player&#39;s Name
+        type: Union[:class:`.MembershipType`, :class:`int`]:
+            The player&#39;s membership type, e,g. XBOX, STEAM, PSN
+        position: :class:`int`:
+            Which player position to return, first player will return if None.
+
+        Returns
+        --------
+        :class:`.Player`
+            a Destiny Player object
+        &#34;&#34;&#34;
+        resp = await self.http.fetch_player(name, type)
+        return Player(data=resp, position=position)
+
+
+    async def fetch_charecter(self, memberid: int, type: MembershipType, character: DestinyCharecter) -&gt; Character:
+        &#34;&#34;&#34;|coro|
+
+        Fetches a Destiny 2 character.
+
+        Paramaters
+        -----------
+            memberid: :class:`int`
+                A valid bungie member id.
+            character: :class:`.DestinyCharacter`
+                a Destiny character -&gt; .WARLOCK, .TITAN, .HUNTER
+            type: :class:`.MembershipType`
+                The membership type -&gt; .STEAM, .XBOX, .PSN
+
+        Returns
+        -------
+        :class:`.Character`:
+            a Bungie character object.
+
+        Raises
+        -------
+            :exc:`.CharacterNotFound` 
+                raised if the Character was not found.
+        &#34;&#34;&#34;
+        resp = await self.http.fetch_character(memberid=memberid, type=type, character=character)
+        return Character(char=character, data=resp)
+
+
+    @deprecated
+    async def fetch_vendor_sales(self, 
+        vendor: Optional[Union[Vendor, int]], 
+        memberid: int, 
+        charid: int, 
+        type: MembershipType
+        ) -&gt; Any:
+        return await self.http.fetch(&#39;GET&#39;,
+            f&#39;Destiny2/{type}/Profile/{memberid}/Character/{charid}/Vendors/{vendor}/?components={Component.VENDOR_SALES}&#39;
+            )
+
+    async def fetch_activity(
+        self,
+        userid: int,
+        charid: int,
+        mode: Union[GameMode, int], *,
+        memtype: Optional[Union[int, MembershipType]] = MembershipType.ALL,
+        page: Optional[int] = 1,
+        limit: Optional[int] = 1
+        ) -&gt; Activity:
+        &#39;&#39;&#39;|coro|
+
+        Fetches a Destiny 2 activity for the specified user id and character.
+
+        Paramaters
+        ----------
+        userid: :class:`int`
+            The user id that starts with `4611`.
+        charaid: :class:`int`
+            The id of the character to retrieve.
+        mode: :class:`.GameMode`
+            This paramater filters the game mode, Nightfall, Strike, Iron Banner, etc.
+        memtype: Optional[Union[:class:`int`, :class:`.MembershipType`]]
+            The Member ship type, if nothing was passed than it will return all.
+        page: Optional[:class:`int`]
+            The page number
+        limit: Optional[:class:`int`]
+            Limits the returned result.
+
+        Returns
+        --------
+        :class:`.Activity`:
+            A bungie Activity object.
+
+        Raises
+        ------
+        `AttributeError`
+            Using :meth:`Activity.hash()` for non raid activies.
+        `ActivityNotFound`
+            Any other errors occures during the response.
+
+        &#39;&#39;&#39;
+        resp = await self.http.fetch_activity(userid, charid, mode, memtype=memtype, page=page, limit=limit)
+        try:
+            return Activity(data=resp)
+
+        except AttributeError:
+            raise error.HashError(
+                &#34;.hash method is only used for raids, please remove it and use .raw_hash() instead&#34;
+                )
+        except TypeError:
+            raise error.ActivityNotFound(
+                &#34;Error has been occurred during getting your data, maybe the page is out of index or not found?\n&#34;)
+
+    async def fetch_app(self, appid: int) -&gt; Application:
+        &#34;&#34;&#34;|coro|
+
+        Fetches a Bungie Application.
+
+        Returns
+        --------
+        :class:`.Application`:
+            a Bungie application object.
+
+        Parameters
+        -----------
+        appid: :class:`int`
+            The application id.
+        &#34;&#34;&#34;
+        resp = await self.http.fetch_app(appid)
+        return Application(resp)
+
+
+    async def fetch_clan(self, clanid: int, /) -&gt; Clan:
+        &#34;&#34;&#34;|coro|
+
+        Fetches a Bungie Clan.
+
+        Returns
+        --------
+        :class:`.Clan`:
+            A Bungie clan object
+
+        Parameters
+        -----------
+        clanid: :class:`int`:
+            The clan id.
+        &#34;&#34;&#34;
+        resp = Clan(data=(await self.http.fetch_clan(clanid)))
+        return resp</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="aiobungie.client.Client.fetch_activity"><code class="name flex">
+<span>async def <span class="ident">fetch_activity</span></span>(<span>self, userid: int, charid: int, mode: Union[<a title="aiobungie.utils.enums.GameMode" href="utils/enums.html#aiobungie.utils.enums.GameMode">GameMode</a>, int], *, memtype: Union[int, <a title="aiobungie.utils.enums.MembershipType" href="utils/enums.html#aiobungie.utils.enums.MembershipType">MembershipType</a>, NoneType] = -1, page: Optional[int] = 1, limit: Optional[int] = 1) ‑> <a title="aiobungie.objects.activity.Activity" href="objects/activity.html#aiobungie.objects.activity.Activity">Activity</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>|coro|</p>
+<p>Fetches a Destiny 2 activity for the specified user id and character.</p>
+<h2 id="paramaters">Paramaters</h2>
+<p>userid: :class:<code>int</code>
+The user id that starts with <code>4611</code>.
+charaid: :class:<code>int</code>
+The id of the character to retrieve.
+mode: :class:<code>.GameMode</code>
+This paramater filters the game mode, Nightfall, Strike, Iron Banner, etc.
+memtype: Optional[Union[:class:<code>int</code>, :class:<code>.MembershipType</code>]]
+The Member ship type, if nothing was passed than it will return all.
+page: Optional[:class:<code>int</code>]
+The page number
+limit: Optional[:class:<code>int</code>]
+Limits the returned result.</p>
+<h2 id="returns">Returns</h2>
+<p>:class:<code>.Activity</code>:
+A bungie Activity object.</p>
+<h2 id="raises">Raises</h2>
+<p><code>AttributeError</code>
+Using :meth:<code>Activity.hash()</code> for non raid activies.
+<code>ActivityNotFound</code>
+Any other errors occures during the response.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_activity(
+    self,
+    userid: int,
+    charid: int,
+    mode: Union[GameMode, int], *,
+    memtype: Optional[Union[int, MembershipType]] = MembershipType.ALL,
+    page: Optional[int] = 1,
+    limit: Optional[int] = 1
+    ) -&gt; Activity:
+    &#39;&#39;&#39;|coro|
+
+    Fetches a Destiny 2 activity for the specified user id and character.
+
+    Paramaters
+    ----------
+    userid: :class:`int`
+        The user id that starts with `4611`.
+    charaid: :class:`int`
+        The id of the character to retrieve.
+    mode: :class:`.GameMode`
+        This paramater filters the game mode, Nightfall, Strike, Iron Banner, etc.
+    memtype: Optional[Union[:class:`int`, :class:`.MembershipType`]]
+        The Member ship type, if nothing was passed than it will return all.
+    page: Optional[:class:`int`]
+        The page number
+    limit: Optional[:class:`int`]
+        Limits the returned result.
+
+    Returns
+    --------
+    :class:`.Activity`:
+        A bungie Activity object.
+
+    Raises
+    ------
+    `AttributeError`
+        Using :meth:`Activity.hash()` for non raid activies.
+    `ActivityNotFound`
+        Any other errors occures during the response.
+
+    &#39;&#39;&#39;
+    resp = await self.http.fetch_activity(userid, charid, mode, memtype=memtype, page=page, limit=limit)
+    try:
+        return Activity(data=resp)
+
+    except AttributeError:
+        raise error.HashError(
+            &#34;.hash method is only used for raids, please remove it and use .raw_hash() instead&#34;
+            )
+    except TypeError:
+        raise error.ActivityNotFound(
+            &#34;Error has been occurred during getting your data, maybe the page is out of index or not found?\n&#34;)</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.client.Client.fetch_app"><code class="name flex">
+<span>async def <span class="ident">fetch_app</span></span>(<span>self, appid: int) ‑> <a title="aiobungie.objects.application.Application" href="objects/application.html#aiobungie.objects.application.Application">Application</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>|coro|</p>
+<p>Fetches a Bungie Application.</p>
+<h2 id="returns">Returns</h2>
+<p>:class:<code>.Application</code>:
+a Bungie application object.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>appid</code></strong> :&ensp;<code>:class:</code>int``</dt>
+<dd>The application id.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_app(self, appid: int) -&gt; Application:
+    &#34;&#34;&#34;|coro|
+
+    Fetches a Bungie Application.
+
+    Returns
+    --------
+    :class:`.Application`:
+        a Bungie application object.
+
+    Parameters
+    -----------
+    appid: :class:`int`
+        The application id.
+    &#34;&#34;&#34;
+    resp = await self.http.fetch_app(appid)
+    return Application(resp)</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.client.Client.fetch_charecter"><code class="name flex">
+<span>async def <span class="ident">fetch_charecter</span></span>(<span>self, memberid: int, type: <a title="aiobungie.utils.enums.MembershipType" href="utils/enums.html#aiobungie.utils.enums.MembershipType">MembershipType</a>, character: <a title="aiobungie.utils.enums.DestinyCharecter" href="utils/enums.html#aiobungie.utils.enums.DestinyCharecter">DestinyCharecter</a>) ‑> <a title="aiobungie.objects.character.Character" href="objects/character.html#aiobungie.objects.character.Character">Character</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>|coro|</p>
+<p>Fetches a Destiny 2 character.</p>
+<h2 id="paramaters">Paramaters</h2>
+<pre><code>memberid: :class:&lt;code&gt;int&lt;/code&gt;
+    A valid bungie member id.
+character: :class:&lt;code&gt;.DestinyCharacter&lt;/code&gt;
+    a Destiny character -&gt; .WARLOCK, .TITAN, .HUNTER
+type: :class:&lt;code&gt;.MembershipType&lt;/code&gt;
+    The membership type -&gt; .STEAM, .XBOX, .PSN
+</code></pre>
+<h2 id="returns">Returns</h2>
+<p>:class:<code>.Character</code>:
+a Bungie character object.</p>
+<h2 id="raises">Raises</h2>
+<pre><code>:exc:&lt;code&gt;.CharacterNotFound&lt;/code&gt; 
+    raised if the Character was not found.
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_charecter(self, memberid: int, type: MembershipType, character: DestinyCharecter) -&gt; Character:
+    &#34;&#34;&#34;|coro|
+
+    Fetches a Destiny 2 character.
+
+    Paramaters
+    -----------
+        memberid: :class:`int`
+            A valid bungie member id.
+        character: :class:`.DestinyCharacter`
+            a Destiny character -&gt; .WARLOCK, .TITAN, .HUNTER
+        type: :class:`.MembershipType`
+            The membership type -&gt; .STEAM, .XBOX, .PSN
+
+    Returns
+    -------
+    :class:`.Character`:
+        a Bungie character object.
+
+    Raises
+    -------
+        :exc:`.CharacterNotFound` 
+            raised if the Character was not found.
+    &#34;&#34;&#34;
+    resp = await self.http.fetch_character(memberid=memberid, type=type, character=character)
+    return Character(char=character, data=resp)</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.client.Client.fetch_clan"><code class="name flex">
+<span>async def <span class="ident">fetch_clan</span></span>(<span>self, clanid: int, /) ‑> <a title="aiobungie.objects.clans.Clan" href="objects/clans.html#aiobungie.objects.clans.Clan">Clan</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>|coro|</p>
+<p>Fetches a Bungie Clan.</p>
+<h2 id="returns">Returns</h2>
+<p>:class:<code>.Clan</code>:
+A Bungie clan object</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>clanid</code></strong> :&ensp;<code>:class:</code>int<code>:</code></dt>
+<dd>The clan id.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_clan(self, clanid: int, /) -&gt; Clan:
+    &#34;&#34;&#34;|coro|
+
+    Fetches a Bungie Clan.
+
+    Returns
+    --------
+    :class:`.Clan`:
+        A Bungie clan object
+
+    Parameters
+    -----------
+    clanid: :class:`int`:
+        The clan id.
+    &#34;&#34;&#34;
+    resp = Clan(data=(await self.http.fetch_clan(clanid)))
+    return resp</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.client.Client.fetch_manifest"><code class="name flex">
+<span>async def <span class="ident">fetch_manifest</span></span>(<span>self) ‑> Optional[<a title="aiobungie.objects.meta.Manifest" href="objects/meta.html#aiobungie.objects.meta.Manifest">Manifest</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@deprecated
+async def fetch_manifest(self) -&gt; Optional[Manifest]:
+    resp = await self.http.fetch_manifest()
+    return Manifest(resp)</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.client.Client.fetch_player"><code class="name flex">
+<span>async def <span class="ident">fetch_player</span></span>(<span>self, name: str, type: Union[<a title="aiobungie.utils.enums.MembershipType" href="utils/enums.html#aiobungie.utils.enums.MembershipType">MembershipType</a>, int], *, position: int = None) ‑> <a title="aiobungie.objects.player.Player" href="objects/player.html#aiobungie.objects.player.Player">Player</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>|coro|</p>
+<p>Fetches a Destiny2 Player.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>name</code></strong> :&ensp;<code>:class:</code>str``</dt>
+<dd>The Player's Name</dd>
+<dt><strong><code>type</code></strong> :&ensp;<code>Union[:class:</code>.MembershipType<code>, :class:</code>int<code>]:</code></dt>
+<dd>The player's membership type, e,g. XBOX, STEAM, PSN</dd>
+<dt><strong><code>position</code></strong> :&ensp;<code>:class:</code>int<code>:</code></dt>
+<dd>Which player position to return, first player will return if None.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>:class:<code>.Player</code>
+a Destiny Player object</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_player(self, name: str, type: Union[MembershipType, int], *, position: int = None) -&gt; Player:
+    &#34;&#34;&#34;|coro|
+
+    Fetches a Destiny2 Player.
+
+    Parameters
+    -----------
+    name: :class:`str`
+        The Player&#39;s Name
+    type: Union[:class:`.MembershipType`, :class:`int`]:
+        The player&#39;s membership type, e,g. XBOX, STEAM, PSN
+    position: :class:`int`:
+        Which player position to return, first player will return if None.
+
+    Returns
+    --------
+    :class:`.Player`
+        a Destiny Player object
+    &#34;&#34;&#34;
+    resp = await self.http.fetch_player(name, type)
+    return Player(data=resp, position=position)</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.client.Client.fetch_user"><code class="name flex">
+<span>async def <span class="ident">fetch_user</span></span>(<span>self, name: str, *, position: int = 0) ‑> <a title="aiobungie.objects.user.User" href="objects/user.html#aiobungie.objects.user.User">User</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>|coro|</p>
+<p>Fetches a Bungie user by their name.</p>
+<h2 id="paramaters">Paramaters</h2>
+<p>name: :class:<code>str</code>:
+The user name.
+position: :class:<code>int</code>:
+The user position/index in the list to return,
+Will returns the first one if not specified.</p>
+<h2 id="raises">Raises</h2>
+<h2 id="usernotfound">Usernotfound</h2>
+<p>The user wasa not found.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_user(self, name: str, *, position: int = 0) -&gt; User:
+    &#39;&#39;&#39;|coro|
+
+    Fetches a Bungie user by their name.
+
+    Paramaters
+    ----------
+    name: :class:`str`:
+        The user name.
+    position: :class:`int`:
+        The user position/index in the list to return,
+        Will returns the first one if not specified.
+
+    Raises
+    -------
+    UserNotFound:
+        The user wasa not found.
+    &#39;&#39;&#39;
+    data = await self.http.fetch_user(name=name)
+    return User(data=data, position=position)</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.client.Client.fetch_user_from_id"><code class="name flex">
+<span>async def <span class="ident">fetch_user_from_id</span></span>(<span>self, id: int) ‑> <a title="aiobungie.objects.user.User" href="objects/user.html#aiobungie.objects.user.User">User</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>|coro|</p>
+<p>Fetches a Bungie user by their id.</p>
+<h2 id="paramaters">Paramaters</h2>
+<p>id: :class:<code>int</code>:
+The user id.
+position: :class:<code>int</code>:
+The user position/index in the list to return,
+Will returns the first one if not specified.</p>
+<h2 id="raises">Raises</h2>
+<h2 id="usernotfound">Usernotfound</h2>
+<p>The user wasa not found.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_user_from_id(self, id: int) -&gt; User:
+    &#39;&#39;&#39;|coro|
+
+    Fetches a Bungie user by their id.
+
+    Paramaters
+    ----------
+    id: :class:`int`:
+        The user id.
+    position: :class:`int`:
+        The user position/index in the list to return,
+        Will returns the first one if not specified.
+
+    Raises
+    -------
+    UserNotFound:
+        The user wasa not found.
+    &#39;&#39;&#39;
+    payload = await self.http.fetch_user_from_id(id)
+    return User(data=payload)</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.client.Client.fetch_vendor_sales"><code class="name flex">
+<span>async def <span class="ident">fetch_vendor_sales</span></span>(<span>self, vendor: Union[<a title="aiobungie.utils.enums.Vendor" href="utils/enums.html#aiobungie.utils.enums.Vendor">Vendor</a>, int, NoneType], memberid: int, charid: int, type: <a title="aiobungie.utils.enums.MembershipType" href="utils/enums.html#aiobungie.utils.enums.MembershipType">MembershipType</a>) ‑> Any</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@deprecated
+async def fetch_vendor_sales(self, 
+    vendor: Optional[Union[Vendor, int]], 
+    memberid: int, 
+    charid: int, 
+    type: MembershipType
+    ) -&gt; Any:
+    return await self.http.fetch(&#39;GET&#39;,
+        f&#39;Destiny2/{type}/Profile/{memberid}/Character/{charid}/Vendors/{vendor}/?components={Component.VENDOR_SALES}&#39;
+        )</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.client.Client.from_path"><code class="name flex">
+<span>async def <span class="ident">from_path</span></span>(<span>self, path: str) ‑> Any</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def from_path(self, path: str) -&gt; Any:
+    return await self.http.static_search(path)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="aiobungie" href="index.html">aiobungie</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="aiobungie.client.Client" href="#aiobungie.client.Client">Client</a></code></h4>
+<ul class="two-column">
+<li><code><a title="aiobungie.client.Client.fetch_activity" href="#aiobungie.client.Client.fetch_activity">fetch_activity</a></code></li>
+<li><code><a title="aiobungie.client.Client.fetch_app" href="#aiobungie.client.Client.fetch_app">fetch_app</a></code></li>
+<li><code><a title="aiobungie.client.Client.fetch_charecter" href="#aiobungie.client.Client.fetch_charecter">fetch_charecter</a></code></li>
+<li><code><a title="aiobungie.client.Client.fetch_clan" href="#aiobungie.client.Client.fetch_clan">fetch_clan</a></code></li>
+<li><code><a title="aiobungie.client.Client.fetch_manifest" href="#aiobungie.client.Client.fetch_manifest">fetch_manifest</a></code></li>
+<li><code><a title="aiobungie.client.Client.fetch_player" href="#aiobungie.client.Client.fetch_player">fetch_player</a></code></li>
+<li><code><a title="aiobungie.client.Client.fetch_user" href="#aiobungie.client.Client.fetch_user">fetch_user</a></code></li>
+<li><code><a title="aiobungie.client.Client.fetch_user_from_id" href="#aiobungie.client.Client.fetch_user_from_id">fetch_user_from_id</a></code></li>
+<li><code><a title="aiobungie.client.Client.fetch_vendor_sales" href="#aiobungie.client.Client.fetch_vendor_sales">fetch_vendor_sales</a></code></li>
+<li><code><a title="aiobungie.client.Client.from_path" href="#aiobungie.client.Client.from_path">from_path</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>

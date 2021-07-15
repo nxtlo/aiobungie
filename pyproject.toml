@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "aiobungie"
-version = "0.2.5a"
+version = "0.2.5a0"
 description = "A small async api wrapper for the bungie api"
 authors = ["nxtlo <dhmony-99@hotmail.com>"]
 license = "MIT"

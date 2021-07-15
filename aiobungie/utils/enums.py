@@ -1,34 +1,34 @@
-'''
-MIT License
+# MIT License
+# 
+# Copyright (c) 2020 - Present nxtlo
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
-Copyright (c) 2020 - Present nxtlo
+'''Bungie enums impl for aiobungie.'''
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-'''
-
-import typing
-import types
+from __future__ import annotations
 
 __all__: typing.Sequence[str] = (
     'GameMode',
     'MembershipType',
-    'DestinyCharecter',
+    'DestinyCharacter',
     'DestinyMilestoneType',
     'DestinyRace',
     'Vendor',
@@ -38,44 +38,54 @@ __all__: typing.Sequence[str] = (
     'Component'
 )
 
+import typing
+import enum
 
-class Raid:
-    def __init__(self, *, raid: int = None) -> None:
-        self.raid = raid
-        super().__init__()
+@typing.final
+class Raid(enum.Enum):
     DSC     = 910380154
     LW      = 2122313384
     VOG     = 3881495763
     GOS     = 3458480158
+
+    def __int__(self) -> int:
+        return int(self.value)
     
-    def __str__(self):
-        if self.raid == self.DSC:
-            return 'Deep Stone Crypt'
-        elif self.raid == self.LW:
-            return 'Last Wish'
-        elif self.raid == self.VOG:
-            return 'Vault of Glass'
-        elif self.raid == self.GOS:
-            return 'Garden of Salvation'
-        return self
+    def __str__(self) -> str:
+        return str(self.name)
+        
+@typing.final
+class Dungeon(enum.Enum):
+    PRESAGE     = 0
+    HARBINGER   = 0
+    PROPHECY    = 0
+    POH         = 0
+    SHATTERED   = 0
+    ZEROHOUR    = 0
+    WHISPER     = 0
+    
+    def __str__(self) -> str:
+        return str(self.name)
 
-class Dungeon:
-    PRESAGE     = ...
-    HARBINGER   = ...
-    PROPHECY    = ...
-    POH         = ...
-    SHATTERED   = ...
-    ZEROHOUR    = ...
-    WHISPER     = ...
+    def __int__(self) -> int:
+        return int(self.value)
 
 
-class Vendor:
+@typing.final
+class Vendor(enum.Enum):
     ZAVALA  = 69482069
     XUR     = 2190858386
     BANSHE  = 672118013
     SPIDER  = 863940356
 
-class GameMode:
+    def __str__(self) -> str:
+        return (str(self.name))
+
+
+    def __int__(self) -> int:
+        return int(self.value)
+@typing.final
+class GameMode(enum.Enum):
     NOTHING = 0
     STORY   = 2
     STRIKE  = 3
@@ -89,8 +99,18 @@ class GameMode:
     NIGHTFALL   = 16
     IRONBANER   = 19
     ALLSTRIKES  = 18
+    DUNGEON     = 82
+    GAMBIT      = 63
 
-class Component:
+    def __str__(self) -> str:
+        return (str(self.name))
+
+
+    def __int__(self) -> int:
+        return int(self.value)
+
+@typing.final
+class Component(enum.Enum):
     NOTHING     = 0
     PROFILE     = 100
     SILVER      = 105
@@ -104,10 +124,14 @@ class Component:
     RECORDS     = 900
     VENDOR_SALES    = 402
 
-class MembershipType:
-    def __init__(self, *, data = None) -> None:
-        self.data = data
-        super().__init__()
+    def __str__(self) -> str:
+        return (str(self.name))
+
+    def __int__(self) -> int:
+        return int(self.value)
+
+@typing.final
+class MembershipType(enum.Enum):
     NONE        = 0
     XBOX        = 1
     PSN         = 2
@@ -116,72 +140,51 @@ class MembershipType:
     ALL         = -1
 
     def __str__(self) -> str:
-        if self.data == self.NONE:
-            return 'None'
-        elif self.data == self.XBOX:
-            return 'Xbox'
-        elif self.data == self.PSN:
-            return 'PSN'
-        elif self.data == self.STEAM:
-            return 'Steam'
-        elif self.data == self.BLIZZARD:
-            return 'Blizzard'
-        elif self.data == self.ALL:
-            return 'All'
-        else:
-            return 'None'
-        return super().__str__()
+        return str(self.name)
 
-class DestinyCharecter:
-    def __init__(self, *, data = None):
-        self.data = data
-        super().__init__()
+    def __int__(self) -> int:
+        return int(self.value)
+
+@typing.final
+class DestinyCharacter(enum.Enum):
     TITAN   = 0
     HUNTER  = 1
     WARLOCK = 2
     UNKNOWN = 3
 
-    def __str__(self):
-        if self.data == self.TITAN:
-            return "Titan"
-        elif self.data == self.HUNTER:
-            return "Hunter"
-        elif self.data == self.WARLOCK:
-            return "Warlock"
-        else:
-            return "Unknown"
-        return self
+    def __str__(self) -> str:
+        return str(self.name)
 
-class DestinyGender:
-    def __init__(self, *, data = None):
-        self.data = data
-        super().__init__()
+    def __int__(self) -> int:
+        return int(self.value)
+
+@typing.final
+class DestinyGender(enum.Enum):
     MALE    = 0
     FEMALE  = 1
     UNKNOWN = 2
 
-    def __str__(self):
-        return 'Male' if self.data == self.MALE else 'Female'
+    def __str__(self) -> str:
+        return str(self.name)
 
-class DestinyRace:
-    def __init__(self, *, data = None):
-        self.data = data
-        super().__init__()
+    def __int__(self) -> int:
+        return int(self.value)
+
+@typing.final
+class DestinyRace(enum.Enum):
     HUMAN   = 0
     AWOKEN  = 1
     EXO     = 2
     UNKNOWN = 3
 
-    def __str__(self):
-        if self.data == self.HUMAN:
-            return 'Human'
-        elif self.data == self.AWOKEN:
-            return 'Awoken'
-        elif self.data == self.EXO:
-            return 'Exo'
-        return 'Unknown'
+    def __str__(self) -> str:
+        return str(self.name)
 
-class DestinyMilestoneType:
+    def __int__(self) -> int:
+        return int(self.value)
+
+@typing.final
+class DestinyMilestoneType(enum.Enum):
     UNKNOWN     = 0
     TUTORIAL    = 1
     ONETIME     = 2

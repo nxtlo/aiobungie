@@ -1,9 +1,7 @@
 import os
 from aiobungie.ext import OAuth2, refresh
 from dotenv import load_dotenv
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
-sch = AsyncIOScheduler()
 
 load_dotenv("./.env")
 TOKEN = str(os.environ.get('TOKEN'))

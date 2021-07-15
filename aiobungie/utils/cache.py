@@ -1,8 +1,40 @@
+# MIT License
+# 
+# Copyright (c) 2020 - Present nxtlo
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+'''aiobungie Redis and Memory cache.'''
+
+
+from __future__ import annotations
+
+__all__: Sequence[str] = (
+	'RedisCache', 'MemoryCache', 'Hash'
+)
+
 from typing import (
 	Dict
 	, Sequence
 	, Final
 	, Any
+	, final
 )
 import asyncio
 import logging
@@ -10,43 +42,40 @@ import aredis
 
 log: Final[logging.Logger] = logging.getLogger(__name__)
 
+@final
 class RefreshNotFound(Exception):
 	pass
 
+@final
 class AccessNotFound(Exception):
 	pass
 
+@final
 class EmptyCache(Exception):
 	pass
 
-__all__: Sequence[str] = (
-	'RedisCache', 'MemoryCache', 'Hash'
-)
-
 class Hash:
-	'''
-	Implementation of redis hash.
+	'''Implementation of redis hash.
 
 	Attributes
 	-----------
 	inject: :class:`aredis.StrictRedis`:
 		an Injector for your redis client.
 	'''
-	__slots__: Sequence = (
+	__slots__: Sequence[str] = (
 		'_injector',
 	)
 	def __init__(self, inject: aredis.StrictRedis) -> None:
 		self._injector = inject
 
 	async def set(self, hash: str, field: str, value: str) -> Any:
-		'''
-		Creates a new hash with field name and a value.
+		'''Creates a new hash with field name and a value.
 
 		Paramaters
 		-----------
 		hash: :class:`str`:
 			The hash name.
-		firld: :class:`str`:
+		field: :class:`str`:
 			The field name.
 		value: :class:`str`:
 			The value for the field.
@@ -54,8 +83,7 @@ class Hash:
 		return await self._injector.execute_command("HSET {} {} {}".format(hash, field, value))
 
 	async def setx(self, hash: str, field: str) -> Any:
-		'''
-		A method thats similar to :meth:`Hash.set`
+		'''A method thats similar to :meth:`Hash.set`
 		but will not replace the value if one is already exists.
 
 		Paramaters
@@ -68,14 +96,12 @@ class Hash:
 		await self._injector.execute_command(f"HSETNX {hash} {field}")
 
 	async def flush(self, hash: str) -> Any:
-		'''
-		Removes a hash.
+		'''Removes a hash.
 
 		Paramaters
 		-----------
 		hash: :class:`str`:
 			The hash name.
-
 		'''
 		cmd = await self._injector.execute_command(f"DEL {hash}")
 		if cmd != 1:
@@ -84,8 +110,7 @@ class Hash:
 		return cmd
 
 	async def len(self, hash: str) -> int:
-		'''
-		Returns the length of the hash.
+		'''Returns the length of the hash.
 
 		Paramaters
 		-----------
@@ -96,8 +121,7 @@ class Hash:
 
 
 	async def all(self, hash: str) -> Any:
-		'''
-		Returns all values from a hash.
+		'''Returns all values from a hash.
 
 		Paramaters
 		-----------
@@ -106,7 +130,7 @@ class Hash:
 
 		Returns
 		-------
-		:class:`List[Any]`:
+		:class:`Any`:
 			a List of any values.
 		'''
 		coro = await self._injector.execute_command(f"HVALS {hash}")
@@ -122,8 +146,7 @@ class Hash:
 		return coro
 
 	async def delete(self, hash: str, field: str) -> Any:
-		'''
-		Deletes a field from the provided hash.
+		'''Deletes a field from the provided hash.
 
 		Paramaters
 		----------
@@ -135,8 +158,7 @@ class Hash:
 		return await self._injector.execute_command(f"HDEL {hash} {field}")
 
 	async def exists(self, hash: str, field: str) -> bool:
-		'''
-		Returns True if the field exists in the hash.
+		'''Returns True if the field exists in the hash.
 
 		Paramaters
 		----------
@@ -145,13 +167,12 @@ class Hash:
 		field: :class:`str`;
 			The field name
 		
-		Returns: :class:`bool`:
+		Returns: :class:`builtins.bool`:
 			True if field exists in hash and False if not.
 		'''
 
 	async def get(self, hash: str, field: str) -> str:
-		'''
-		Returns the value associated with field in the hash stored at key.
+		'''Returns the value associated with field in the hash stored at key.
 
 		Paramaters
 		----------
@@ -159,10 +180,6 @@ class Hash:
 			The hash name.
 		field: :class:`str`:
 			The field name
-
-		Returns
-		--------
-		:class:`AnyStr`
 		'''
 		coro = await self._injector.execute_command(f"HGET {hash} {field}")
 		try:
@@ -174,9 +191,7 @@ class Hash:
 
 
 class RedisCache:
-	'''
-	Redis Cache for access and refresh tokens.
-	'''
+	'''Redis Cache for access and refresh tokens.'''
 	__slots__: Sequence[str] = (
 		'_pool', 'hash'
 	)
@@ -206,9 +221,7 @@ class RedisCache:
 		await self._pool.expire(key, time)
 
 class MemoryCache:
-	'''
-	Implemention for token and refresh_token in memory cache.
-	'''
+	'''Implemention for token and refresh_token in memory cache.'''
 	__slots__: Sequence[str] = ('_token', '_refresh', '__entry')
 
 

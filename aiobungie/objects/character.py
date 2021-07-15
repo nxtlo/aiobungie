@@ -21,8 +21,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
+
+from __future__ import annotations
+
+__all__: Sequence[str] = ('Character', )
+
+from ..utils import Image
 from .. import error
-from datetime import datetime
 from typing import (
 	List,
 	Optional,
@@ -33,86 +38,75 @@ from typing import (
 	TYPE_CHECKING
 )
 
-# if TYPE_CHECKING:
-from ..utils.enums import Component, DestinyCharecter, DestinyGender, DestinyRace
-from ..utils import Image
-from ..types.character import Character as CharacterPayload
+if TYPE_CHECKING:
+	from ..utils.enums import Component, DestinyCharacter, DestinyGender, DestinyRace
+	from datetime import datetime
+	from ..types.character import Character as CharacterPayload
 
-__all__: Sequence[str] = (
-	'Character'
-	, 
-)
 
 class Character:
+	"""Represents a Bungie Character Object.
+
+	A Bungie character object can be a Warlock, Titan or a Hunter.
+
+	Attributes
+	-----------
+	light: :class:`int`
+		The character's light
+	id: :class:`int`
+		The character's id
+	gender: :class:`.DestinyGender`:
+		The character's gender
+	race: :class:`.DestinyRace`:
+		The character's race
+	emblem: :class:`.Image`:
+		The character's currnt equipped emblem.
+	emblem_icon: :class:`.Image`:
+		The character's current icon for the equipped emblem.
+	last_played: :class:`datetime.datetime`:
+		When was this character last played date in UTC.
+	last_session: :class:`int`
+		The player's last session.
+	total_played_time: :class:`int`
+		Returns the total played time in seconds for the chosen character.
+	member_id: :class:`int`
+		The character's member id.
+	cls: :class:`.DestinyCharacter`:
+		The character's class.
+	"""
+
 	__slots__: Sequence[str] = (
-		'_resp', 'emblem_icon', 'emblem', 'light', 'total_played_time',
-		'id', '_class', 'member_id', 'gender', 'race', 'last_played',
-		'last_session', '_char'
+		'emblem_icon', 
+		'emblem', 
+		'light', 
+		'total_played_time',
+		'id', 
+		'cls',
+		'member_id', 
+		'gender', 
+		'race', 
+		'last_played',
+		'last_session', 
+		'_char'
 	)
 
-	_resp: Dict[str, Any]
-	_char: DestinyCharecter
+	_char: Union[DestinyCharacter, int]
 
-	if TYPE_CHECKING:
-		emblem_icon: Optional[Union[Image, str]]
-		emblem: Optional[Union[Image, str]]
-		light: int
-		total_played_time: int
-		last_played: datetime
-		id: int
-		_class: DestinyCharecter
-		member_id: int
-		last_session: int
-		race: DestinyRace
-		gender: DestinyGender
+	emblem_icon: Optional[Union[Image, str]]
+	emblem: Optional[Union[Image, str]]
+	light: int
+	total_played_time: int
+	last_played: datetime
+	id: int
+	cls: DestinyCharacter
+	member_id: int
+	last_session: int
+	race: DestinyRace
+	gender: DestinyGender
 
-	def __init__(self, *, char: DestinyCharecter, data: Any) -> None:
-		self._resp = data.get('Response', {})['characters']['data']
+	def __init__(self, *, char: Union[DestinyCharacter, int], data: Any = ...) -> None:
 		self._char = char
-		self._update(self._resp)
+		self._update(data)
 
-	# This one right here is kinda Yandare type beat
-	# i will find a better way to rewrite this lol.
-	def _update(self, data: Dict[str, Any]) -> None:
-		self._resp = [x for x in self._resp.values()]
-		if self._char is DestinyCharecter.WARLOCK:
-			lock = self._resp[2]
-			self.id = lock.get('characterId')
-			self.light = lock.get('light')
-			self.emblem_icon = Image(lock.get('emblemPath'))
-			self.emblem = Image(lock.get('emblemBackgroundPath'))
-			self.member_id = lock.get('membershipId')
-			self.total_played_time = lock.get('minutesPlayedTotal')
-			self.gender = DestinyGender(data=lock.get('genderType'))
-			self._class = DestinyCharecter(data=lock.get('classType'))
-			self.last_session = lock.get('minutesPlayedThisSession')
-			self.last_played = lock.get('dateLastPlayed')
-			self.race = DestinyRace(data=lock.get('raceType'))
-		elif self._char is DestinyCharecter.HUNTER:
-			lock = self._resp[1]
-			self.id = lock.get('characterId')
-			self.light = lock.get('light')
-			self.emblem_icon = Image(lock.get('emblemPath'))
-			self.emblem = Image(lock.get('emblemBackgroundPath'))
-			self.member_id = lock.get('membershipId')
-			self.total_played_time = lock.get('minutesPlayedTotal')
-			self.gender = DestinyGender(data=lock.get('genderType'))
-			self._class = DestinyCharecter(data=lock.get('classType'))
-			self.last_session = lock.get('minutesPlayedThisSession')
-			self.last_played = lock.get('dateLastPlayed')
-			self.race = DestinyRace(data=lock.get('raceType'))
-		elif self._char is DestinyCharecter.TITAN:
-			lock = self._resp[0]
-			self.id = lock.get('characterId')
-			self.light = lock.get('light')
-			self.emblem_icon = Image(lock.get('emblemPath'))
-			self.emblem = Image(lock.get('emblemBackgroundPath'))
-			self.member_id = lock.get('membershipId')
-			self.total_played_time = lock.get('minutesPlayedTotal')
-			self.gender = DestinyGender(data=lock.get('genderType'))
-			self._class = DestinyCharecter(data=lock.get('classType'))
-			self.last_session = lock.get('minutesPlayedThisSession')
-			self.last_played = lock.get('dateLastPlayed')
-			self.race = DestinyRace(data=lock.get('raceType'))
-		else:
-			None
+	def _update(self, data: Any = ...) -> None:
+		...

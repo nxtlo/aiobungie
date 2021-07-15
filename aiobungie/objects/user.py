@@ -1,11 +1,42 @@
+# MIT License
+# 
+# Copyright (c) 2020 - Present nxtlo
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+"""Basic implementation for a Bungie a user."""
+
+
+from __future__ import annotations
+
+__all__: Sequence[str] = [
+	'User'
+]
+
 import logging
 from ..utils import Image, Time
 from ..error import UserNotFound
 from typing import TYPE_CHECKING, Sequence, Optional, Union, Any, Final
-from datetime import datetime
 
-# if TYPE_CHECKING:
-from ..types.user import User as UserPayload
+if TYPE_CHECKING:
+	from datetime import datetime
+	from ..types.user import User as UserPayload
 
 log: Final[logging.Logger] = logging.getLogger(__name__)
 
@@ -14,10 +45,11 @@ class User:
 
 	Attributes
 	----------
-	id: :class:`int`:
+	id: :class:`int`
 		The user's id
 	name: :class:`str`:
-	is_deleted: :class:`bool`:
+		The user's name.
+	is_deleted: :class:`builtins.bool`:
 		Returns True if the user is deleted
 	about: :class:`str`:
 		The user's about, Default is None if nothing is Found.
@@ -53,10 +85,10 @@ class User:
 		'locale', 
 		'picture', 
 		'name', 
-		'id'
+		'id',
 	)
 
-	def __init__(self, *, data: UserPayload, position: int = None) -> None:
+	def __init__(self, *, data: UserPayload, position: int = 0) -> None:
 		self._update(data, position)
 
 	@property
@@ -89,11 +121,13 @@ class User:
 		return not self.__eq__(other)
 
 
-	def _update(self, data: UserPayload, posotion: int = None) -> None:
+	def _update(self, data: UserPayload, posotion: int = 0) -> None:
 		try:
-			data = data or data[posotion] # type: ignore
+			data = data[posotion] # type: ignore
+		except KeyError:
+			pass
 		except IndexError:
-			if posotion or posotion is None:
+			if posotion or posotion == 0:
 				raise UserNotFound("Player was not found.")
 
 		self.id: int = data['membershipId']

@@ -1,17 +1,17 @@
 import aiobungie
 import os
-
 from aiobungie.objects import (
     Clan, 
     Player, 
     Character, 
     User, 
-    Application
+    Application,
+    Activity
 )
 
 from asyncio import run
 from dotenv import load_dotenv
-from typing import Dict, Any
+from typing import Dict, Any, TYPE_CHECKING
 
 load_dotenv("./.env")
 TOKEN = str(os.environ.get('TOKEN'))
@@ -24,7 +24,7 @@ data: Dict[str, Any] = {
     'clanid': 4389205,
     'memid': 4611686018484639825,
     'charid': 2305843009444904605,
-    'char': aiobungie.DestinyCharecter.WARLOCK,
+    'char': aiobungie.DestinyCharacter.WARLOCK,
     'memtype': aiobungie.MembershipType.STEAM,
     'vendor': aiobungie.Vendor.SPIDER
 }
@@ -56,15 +56,14 @@ class ClientTest(aiobungie.Client):
     async def vendor_test(self):
         resp = await self.fetch_vendor_sales(vendor=data['vendor'], memberid=data['memid'], charid=data['charid'], type=data['memtype'])
         print(resp)
+    
 
     async def activity_test(self):
-        person = await self.fetch_player(data['me'], data['memtype'])
-        char = await self.fetch_charecter(data['memid'], data['memtype'], data['char'])
-        act = await self.fetch_activity(
-            data['memid'], char.id, aiobungie.GameMode.RAID, memtype=data['memtype'], page=1, limit=1
+        # char = await self.fetch_charecter(data['memid'], data['memtype'], data['char'])
+        act: Activity = await self.fetch_activity(
+            data['memid'], data['charid'], aiobungie.GameMode.RAID, memtype=data['memtype'], page=1, limit=1
         )
         print(act.when)
-        print(person.name)
         print(f'GameMode {act.mode}')
         print(f'Total Kills {act.kills}')
         print(f"Total assists {act.assists}")
@@ -78,10 +77,7 @@ class ClientTest(aiobungie.Client):
         # print(f"Fastest: {act.fast}")
 
     async def char_test(self):
-        player: Player = await self.fetch_player(data['me'], data['memtype'])
         char: Character = await self.fetch_charecter(data['memid'], data['memtype'], data['char'])
-        #print(char._resp[1])
-        print(player.name)
         print(char.emblem)
         print(char.total_played_time)
         print(char.gender)
@@ -95,13 +91,20 @@ class ClientTest(aiobungie.Client):
     async def clan_test(self):
         clan: Clan = await self.fetch_clan(data['clanid'])
         attrs = f'''
+                {clan.name}
+                {clan.id}
+                {clan.member_count}
+                {clan.about}
+                {clan.tags}
+                {clan.description}
+                {clan.owner.type}
                 {clan.owner.last_online}
                 {clan.owner.joined_at}
                 '''
         print(attrs)
 
     async def user_test(self):
-        user: User = await self.fetch_user("Crit", position=2)
+        user: User = await self.fetch_user('Fate')
         print(
             user.name, user.id, user.created_at,
             user.is_deleted, user.about, user.picture,
@@ -111,7 +114,7 @@ class ClientTest(aiobungie.Client):
         )
 
     async def user_id_test(self):
-        user: User = await self.fetch_user_from_id(4207067)
+        user: User = await self.fetch_user_from_id(data['id'])
         print(
             user.name, user.id, user.created_at,
             user.is_deleted, user.about, user.picture,
@@ -127,8 +130,10 @@ async def main() -> None:
     # await client.user_test()
     # await client.user_id_test()
     # await client.player_test()
-    # await client.char_test()
     # await client.clan_test()
+
+    '''Under is not working yet.'''
+    # await client.char_test()
     # await client.activity_test()
 
 client.loop.run_until_complete(main())

@@ -22,7 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
-from typing import TypedDict, Optional
+
+from typing import TypedDict, Optional, final
 from datetime import datetime
 from .user import UserCard
 

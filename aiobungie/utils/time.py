@@ -1,26 +1,33 @@
-'''
-MIT License
+# MIT License
+# 
+# Copyright (c) 2020 - Present nxtlo
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
-Copyright (c) 2020 - Present nxtlo
+'''Time formating module.'''
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+from __future__ import annotations
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-'''
+__all__ = (
+    'Time',
+)
 
 import calendar
 import time
@@ -28,9 +35,6 @@ from dateutil.relativedelta import relativedelta
 from dateutil.parser import parse
 from datetime import datetime
 
-__all__ = (
-    'Time',
-)
 
 class plural:
     '''
@@ -72,13 +76,13 @@ class Time(object):
     @staticmethod
     def from_timestamp(timer = None) -> datetime:
         '''
-        Converts timestamp to datetime.utcnow()
+        Converts timestamp to :class:`datetime.datetime`
         '''
         return datetime.utcfromtimestamp(timer)
 
     @staticmethod
     def clean_date(date: str) -> datetime:
-        '''Converts datetime.utcnow() to a readble date.'''
+        '''Formats :class:`datetime.datetime` to a readble date.'''
         parsed = parse(date)
         ts = Time.to_timestamp(parsed) # had to do it in two ways.
         ft = Time.from_timestamp(ts)
@@ -87,7 +91,7 @@ class Time(object):
     @staticmethod
     def to_timestamp(date: datetime) -> int:
         '''
-        Converts datetime.utcnow().utctimetuple() to timestamp.
+        Converts datetime.datetime.utctimetuple() to timestamp.
         '''
         try:
             return calendar.timegm(date.timetuple())

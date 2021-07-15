@@ -1,35 +1,41 @@
-'''
-MIT License
+# MIT License
+# 
+# Copyright (c) 2020 - Present nxtlo
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
-Copyright (c) 2020 - Present nxtlo
+"""Basic implementation for a Bungie a application."""
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+from __future__ import annotations
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-'''
+__all__: Sequence[str] = ('Application', 'ApplicationOwner')
 
 from typing import Optional, Sequence, Dict, TYPE_CHECKING
-from datetime import datetime
 from ..utils import Image, Time
 from .. import MembershipType
-from ..types.application import Application as AppPayload, Team as TeamPayload
-from ..types.user import UserCard
 
-__all__: Sequence[str] = ('Application',)
+if TYPE_CHECKING:
+    from datetime import datetime
+    from ..types.application import Application as AppPayload, Team as TeamPayload
+    from ..types.user import UserCard
+
 
 class ApplicationOwner:
     ''' Represents a Bungie Application owner
@@ -38,11 +44,11 @@ class ApplicationOwner:
     -----------
     name: :class:`str`:
         The application owner name.
-    id: :class:`int`:
+    id: :class:`int`
         The application owner bungie id.
     icon: :class:`.Image`:
         The application owner profile icon.
-    is_public: :class:`bool`:
+    is_public: :class:`builtins.bool`:
         Determines if the application owner's profile was public or private
     type: :class:`.MembershipType`:
         The application owner's bungie membership type.
@@ -76,7 +82,7 @@ class Application:
     -----------
     name: :class:`str`:
         The app's name
-    id: :class:`int`:
+    id: :class:`int`
         The app's id.
     redirect_url: :class:`str`:
         The app's redirect url, None if not Found.

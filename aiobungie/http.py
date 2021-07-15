@@ -1,56 +1,63 @@
+# MIT License
+# 
+# Copyright (c) 2020 = Present nxtlo
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+'''An HTTPClient for sending requests to the Bungie API
+and Where all the magic happenes.
 '''
-MIT License
 
-Copyright (c) 2020 = Present nxtlo
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-'''
-
-import aiohttp
-from .error import NotFound, HTTPException
-from typing import (Optional
-    , Any
-    , Union
-    , TYPE_CHECKING
-    , TypeVar
-    , Coroutine
-    , Dict
-    , List
-    )
-from .types import player, clans, user, application as app
-from .utils.enums import MembershipType, DestinyCharecter, Component, GameMode
-import warnings
-import logging
-import asyncio
-
-# if TYPE_CHECKING:
-T = TypeVar('T')
-Response = Coroutine[Any, Any, T]
+from __future__ import annotations
 
 __all__ = (
     'HTTPClient',
 )
-class HTTPClient:
-    '''
-    An HTTP Client for sending http requests to the Bungie API
 
-    '''
+import aiohttp
+from .error import NotFound, HTTPException, JsonError
+from typing import (Optional
+    , Any
+    , Union
+    , TypeVar
+    , Coroutine
+    , Dict
+    , List
+    , Final
+    , TYPE_CHECKING
+)
+
+if TYPE_CHECKING:
+    from .types import player, clans, user, application as app
+    from .utils.enums import MembershipType, DestinyCharacter, Component, GameMode
+    T = TypeVar('T')
+    Response = Coroutine[Any, Any, T]
+
+import logging
+import warnings
+import asyncio
+
+log: Final[logging.Logger] = logging.getLogger(__name__)
+
+
+class HTTPClient:
+    """An HTTP Client for sending http requests to the Bungie API"""
     BASE: str = 'https://www.bungie.net/Platform'
 
     def __init__(self, key: str) -> None:
@@ -68,7 +75,7 @@ class HTTPClient:
                         data = await response.json()
 
                         if 300 > response.status >= 200:
-                            logging.debug("{} Request success from {} with {}".format(method, self.BASE + route, data))
+                            log.debug("{} Request success from {} with {}".format(method, self.BASE + route, data))
                             try:
                                 return data['Response'] # Almost all bungie json objects are
                                                         # wrapped inside a dict[Response=...], but
@@ -84,6 +91,10 @@ class HTTPClient:
 
                         if response.status == 404:
                             raise NotFound(response, data)
+
+            except aiohttp.ContentTypeError:
+                text: str = await response.text()
+                raise JsonError(f"Couldn't return json object: {text}")
         
             except aiohttp.ClientError:
                 raise
@@ -116,8 +127,8 @@ class HTTPClient:
         return self.fetch('GET' ,f'App/Application/{appid}', headers=self.headers)
 
     def fetch_character(self, memberid: int, 
-            type: MembershipType, 
-            character: DestinyCharecter
+            type: Union[MembershipType, int], 
+            character: Union[DestinyCharacter, int]
             ) -> Response[Any]:
         return self.fetch('GET', 
                         f'Destiny2/{type}/Profile/{memberid}/ \
@@ -130,8 +141,8 @@ class HTTPClient:
         userid: int, 
         charid: int, 
         mode: Union[GameMode, int], 
+        memtype: Union[int, MembershipType], 
         *,
-        memtype: Optional[Union[int, MembershipType]] = MembershipType.ALL, 
         page: Optional[int] = 1, 
         limit: Optional[int] = 1
         ) -> Response[Any]:

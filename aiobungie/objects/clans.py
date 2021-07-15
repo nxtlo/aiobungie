@@ -1,27 +1,32 @@
-'''
-MIT License
+# MIT License
+# 
+# Copyright (c) 2020 - Present nxtlo
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
-Copyright (c) 2020 - Present nxtlo
+"""Basic implementation for a Bungie a clan."""
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+from __future__ import annotations
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-'''
-from datetime import datetime
+__all__: Sequence[str] = ['Clan', 'ClanOwner']
+
 from typing import (
     List,
     Sequence,
@@ -31,14 +36,14 @@ from typing import (
     Union,
     TYPE_CHECKING
 )
-from ..error import ClanNotFound
 
-# if TYPE_CHECKING:
 from ..utils import Image, Time
+from ..error import ClanNotFound
 from ..utils.enums import MembershipType
-from ..types.clans import Clan as ClanPayload, ClanOwner as ClanOwnerPayload
 
-__all__: Sequence[str] = ['Clan']
+if TYPE_CHECKING:
+    from datetime import datetime
+    from ..types.clans import Clan as ClanPayload, ClanOwner as ClanOwnerPayload
 
 class ClanMembers:
     __slots__: Sequence[str] = ()
@@ -48,31 +53,23 @@ class ClanOwner:
 
     Attributes
     -----------
-    id: :class:`int`:
+    id: :class:`int`
         The clan owner's membership id
-
     name: :class:`str`:
         The clan owner's display name
-
     last_online: :class:`str`:
-        An aware :class:`str` version of a :class:`datetime.datetime.utcnow()` object.
-
+        An aware :class:`str` version of a :class:`datetime.datetime` object.
     type: :class:`.MembershipType`:
         Returns the clan owner's membership type.
-        This could be Xbox, Steam, PSN, Blizzard or ALL, it the membershiptype is not recognized it will return ``None``.
-    
-    clan_id: :class:`int`:
+        This could be Xbox, Steam, PSN, Blizzard or ALL, if the membershiptype is not recognized it will return ``None``.
+    clan_id: :class:`int`
         The clan owner's clan id
-
     joined_at: Optional[:class:`datetime.utcnow()`]:
         The clan owner's join date.
-
     icon: :class:`.Image`:
         Returns the clan owner's icon from Image.
-
-    is_public: :class:`bool`:
+    is_public: :class:`builtins.bool`:
         Returns True if the clan's owner profile is public or False if not.
-
     types: :class:List[:class:`int`]:
         returns a List of :class:`int` of the clan owner's types.
     
@@ -106,7 +103,7 @@ class ClanOwner:
         self.joined_at: str = data['joinDate']
         self.types: List[int] = data['destinyUserInfo']['applicableMembershipTypes']
         self.is_public: bool = data['destinyUserInfo']['isPublic']
-        self.type: Optional[MembershipType] = MembershipType(data=data['destinyUserInfo']['membershipType'])
+        self.type: Optional[MembershipType] = MembershipType(data['destinyUserInfo'].get('membershipType', None))
 
 
     def __str__(self) -> str:
@@ -121,37 +118,28 @@ class ClanOwner:
         return self.is_public
 
 class Clan:
-    """Represents a Bungie clan.
+    """Represents a Bungie clan object.
 
     Attributes
     -----------
     name: :class:`str`:
         The clan's name
-    
-    id: :class:`int`:
+    id: :class:`int`
         The clans's id
-
-    created_at: :class:`datetime.utcnow()`:
+    created_at: :class:`datetime.datetime`:
         Returns the clan's creation date in UTC time.
-
     description: :class:`str`:
         The clan's description.
-
-    is_public: :class:`bool`:
+    is_public: :class:`builtins.bool`:
         Returns True if the clan is public and False if not.
-
     banner: :class:`.Image`:
         Returns the clan's banner
-
     avatar: :class:`.Image`:
         Returns the clan's avatar
-
     about: :class:`str`:
         The clan's about.
-
     tags: :class:`str`:
         The clan's tags
-
     owner: :class:`.ClanOwner`:
         Returns an object of the clan's owner.
         See :class:`.ClanOwner` for info.
@@ -161,6 +149,7 @@ class Clan:
         'member_count', 'description', 'is_public',
         'banner', 'avatar', 'about', 'tags', 'owner'
     )
+
     if TYPE_CHECKING:
         id: int
         name: str

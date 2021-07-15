@@ -21,9 +21,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
+
 from typing import TypedDict, Union
 from ..utils import Image
-from ..utils.enums import DestinyCharecter, DestinyRace, DestinyGender
+from ..utils.enums import DestinyCharacter, DestinyRace, DestinyGender
 from datetime import datetime
 
 
@@ -34,7 +35,7 @@ class Character(TypedDict):
 	total_played_time: int
 	last_player: datetime
 	id: int
-	_class: DestinyCharecter
+	_class: DestinyCharacter
 	member_id: int
 	last_session: int
 	race: DestinyRace

@@ -1,26 +1,33 @@
-'''
-MIT License
+# MIT License
+# 
+# Copyright (c) 2020 - Present nxtlo
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
-Copyright (c) 2020 - Present nxtlo
+'''The base aiobungie Client that your should inherit from / use.'''
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+from __future__ import annotations
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-'''
+__all__: Sequence[str] = (
+    'Client',
+)
 
 import asyncio
 from . import error
@@ -28,34 +35,32 @@ from typing import (
     Any, 
     Optional, 
     Sequence, 
-    Union, 
-    # TYPE_CHECKING
-    )
+    Union,
+    TYPE_CHECKING
+)
 
-#if TYPE_CHECKING:
+from .utils.enums import (
+    MembershipType
+    , DestinyCharacter
+    , Component
+    , GameMode
+    , Vendor
+)
+
 from .http import HTTPClient
 from .objects import ( 
     Activity
     , Application
     , Clan
-    , Manifest
     , Player
     , Character
     , User
+    , Manifest
 )
-from .utils.enums import (
-    MembershipType
-    , DestinyCharecter
-    , Component
-    , GameMode
-    , Vendor
-)
+
 from .utils.helpers import deprecated
 
 
-__all__: Sequence[str] = (
-    'Client',
-)
 class Client:
     """Represents a client that connects to the Bungie API
 
@@ -66,6 +71,9 @@ class Client:
     loop: :class:`asyncio.AbstractEventLoop`:
         asyncio event loop.
     """
+    __slots__: Sequence[str] = (
+        'key', 'loop', 'http'
+    )
     def __init__(
         self, 
         key: str, 
@@ -80,25 +88,24 @@ class Client:
         self.http: HTTPClient = HTTPClient(key=key)
         super().__init__()
 
+
     async def from_path(self, path: str) -> Any:
         return await self.http.static_search(path)
 
-    @deprecated
+
     async def fetch_manifest(self) -> Optional[Manifest]:
         resp = await self.http.fetch_manifest()
         return Manifest(resp)
 
 
     async def fetch_user(self, name: str, *, position: int = 0) -> User:
-        '''|coro|
-
-        Fetches a Bungie user by their name.
+        """Fetches a Bungie user by their name.
 
         Paramaters
-        ----------
+        -----------
         name: :class:`str`:
             The user name.
-        position: :class:`int`:
+        position: :class:`int`
             The user position/index in the list to return,
             Will returns the first one if not specified.
 
@@ -106,21 +113,19 @@ class Client:
         -------
         UserNotFound:
             The user wasa not found.
-        '''
+        """
         data = await self.http.fetch_user(name=name)
         return User(data=data, position=position)
 
 
     async def fetch_user_from_id(self, id: int) -> User:
-        '''|coro|
-
-        Fetches a Bungie user by their id.
+        '''Fetches a Bungie user by their id.
 
         Paramaters
-        ----------
-        id: :class:`int`:
+        -----------
+        id: :class:`int`
             The user id.
-        position: :class:`int`:
+        position: :class:`int`
             The user position/index in the list to return,
             Will returns the first one if not specified.
 
@@ -134,9 +139,7 @@ class Client:
 
 
     async def fetch_player(self, name: str, type: Union[MembershipType, int], *, position: int = None) -> Player:
-        """|coro|
-
-        Fetches a Destiny2 Player.
+        """Fetches a Destiny2 Player.
 
         Parameters
         -----------
@@ -144,7 +147,7 @@ class Client:
             The Player's Name
         type: Union[:class:`.MembershipType`, :class:`int`]:
             The player's membership type, e,g. XBOX, STEAM, PSN
-        position: :class:`int`:
+        position: :class:`int`
             Which player position to return, first player will return if None.
 
         Returns
@@ -152,23 +155,26 @@ class Client:
         :class:`.Player`
             a Destiny Player object
         """
-        resp = await self.http.fetch_player(name, type)
+        resp = await self.http.fetch_player(name, int(type))
         return Player(data=resp, position=position)
 
 
-    async def fetch_charecter(self, memberid: int, type: MembershipType, character: DestinyCharecter) -> Character:
-        """|coro|
-
-        Fetches a Destiny 2 character.
+    @deprecated
+    async def fetch_charecter(
+        self, memberid: int, 
+        type: Union[MembershipType, int], 
+        character: DestinyCharacter
+        ) -> Character:
+        """Fetches a Destiny 2 character.
 
         Paramaters
         -----------
-            memberid: :class:`int`
-                A valid bungie member id.
-            character: :class:`.DestinyCharacter`
-                a Destiny character -> .WARLOCK, .TITAN, .HUNTER
-            type: :class:`.MembershipType`
-                The membership type -> .STEAM, .XBOX, .PSN
+        memberid: :class:`int`
+            A valid bungie member id.
+        character: :class:`.DestinyCharacter`
+            a Destiny character -> .WARLOCK, .TITAN, .HUNTER
+        type: :class:`.MembershipType`
+            The membership type -> .STEAM, .XBOX, .PSN
 
         Returns
         -------
@@ -177,11 +183,11 @@ class Client:
 
         Raises
         -------
-            :exc:`.CharacterNotFound` 
-                raised if the Character was not found.
+        :exc:`.CharacterNotFound` 
+            raised if the Character was not found.
         """
-        resp = await self.http.fetch_character(memberid=memberid, type=type, character=character)
-        return Character(char=character, data=resp)
+        resp = await self.http.fetch_character(memberid=memberid, type=int(type), character=int(character))
+        return Character(char=int(character), data=resp)
 
 
     @deprecated
@@ -195,28 +201,28 @@ class Client:
             f'Destiny2/{type}/Profile/{memberid}/Character/{charid}/Vendors/{vendor}/?components={Component.VENDOR_SALES}'
             )
 
+    @deprecated
     async def fetch_activity(
         self,
         userid: int,
         charid: int,
-        mode: Union[GameMode, int], *,
-        memtype: Optional[Union[int, MembershipType]] = MembershipType.ALL,
+        mode: Union[GameMode, int],
+        memtype: Union[int, MembershipType],
+        *,
         page: Optional[int] = 1,
         limit: Optional[int] = 1
         ) -> Activity:
-        '''|coro|
-
-        Fetches a Destiny 2 activity for the specified user id and character.
+        '''Fetches a Destiny 2 activity for the specified user id and character.
 
         Paramaters
-        ----------
+        -----------
         userid: :class:`int`
             The user id that starts with `4611`.
         charaid: :class:`int`
             The id of the character to retrieve.
         mode: :class:`.GameMode`
             This paramater filters the game mode, Nightfall, Strike, Iron Banner, etc.
-        memtype: Optional[Union[:class:`int`, :class:`.MembershipType`]]
+        memtype: Union[:class:`int`, :class:`.MembershipType`]
             The Member ship type, if nothing was passed than it will return all.
         page: Optional[:class:`int`]
             The page number
@@ -236,7 +242,7 @@ class Client:
             Any other errors occures during the response.
 
         '''
-        resp = await self.http.fetch_activity(userid, charid, mode, memtype=memtype, page=page, limit=limit)
+        resp = await self.http.fetch_activity(userid, charid, int(mode), memtype=int(memtype), page=page, limit=limit)
         try:
             return Activity(data=resp)
 
@@ -249,9 +255,7 @@ class Client:
                 "Error has been occurred during getting your data, maybe the page is out of index or not found?\n")
 
     async def fetch_app(self, appid: int) -> Application:
-        """|coro|
-
-        Fetches a Bungie Application.
+        """Fetches a Bungie Application.
 
         Returns
         --------
@@ -268,9 +272,7 @@ class Client:
 
 
     async def fetch_clan(self, clanid: int, /) -> Clan:
-        """|coro|
-
-        Fetches a Bungie Clan.
+        """Fetches a Bungie Clan.
 
         Returns
         --------
@@ -279,7 +281,7 @@ class Client:
 
         Parameters
         -----------
-        clanid: :class:`int`:
+        clanid: :class:`int`
             The clan id.
         """
         resp = Clan(data=(await self.http.fetch_clan(clanid)))

@@ -35,7 +35,8 @@ __all__: typing.Sequence[str] = (
     'Raid',
     'Dungeon',
     'DestinyGender',
-    'Component'
+    'Component',
+    'Planet'
 )
 
 import typing
@@ -43,10 +44,18 @@ import enum
 
 @typing.final
 class Raid(enum.Enum):
+    """An Enum for all available raids in Destiny 2."""
     DSC     = 910380154
+    """Deep Stone Crypt"""
+
     LW      = 2122313384
+    """Last Wish"""
+
     VOG     = 3881495763
+    """Normal Valut of Glass"""
+
     GOS     = 3458480158
+    """Garden Of Salvation"""
 
     def __int__(self) -> int:
         return int(self.value)
@@ -56,13 +65,30 @@ class Raid(enum.Enum):
         
 @typing.final
 class Dungeon(enum.Enum):
-    PRESAGE     = 0
-    HARBINGER   = 0
-    PROPHECY    = 0
-    POH         = 0
-    SHATTERED   = 0
-    ZEROHOUR    = 0
-    WHISPER     = 0
+    """An Enum for all available Dungeon/Like missions in Destiny 2."""
+    NORMAL_PRESAGE     = 2124066889
+    """Normal Presage"""
+
+    MASTER_PRESAGE     = 4212753278
+    """Master Presage"""
+
+    HARBINGER          = 1738383283
+    """Harbinger"""
+
+    PROPHECY           = 4148187374
+    """Prophecy"""
+
+    MASTER_POH          = 785700673
+    """Master Pit of Heresy?"""
+
+    LEGEND_POH          = 785700678
+    """Legend Pit of Heresy?"""
+
+    POH                 = 1375089621
+    """Normal Pit of Heresy."""
+
+    SHATTERED           = 2032534090
+    """Shattered Throne"""
     
     def __str__(self) -> str:
         return str(self.name)
@@ -72,11 +98,74 @@ class Dungeon(enum.Enum):
 
 
 @typing.final
+class Planet(enum.Enum):
+    """An Enum for all available planets in Destiny 2."""
+
+    UNKNOWN = 0
+    """Unknown space"""
+
+    ORBIT = 2961497387
+    """The Orbit"""
+    
+    EARTH = 3747705955
+    """Earth"""
+
+    DREAMING_CITY = 2877881518
+    """The Dreaming city."""
+
+    NESSUS = 3526908984
+    """Nessus"""
+
+    MOON = 3325508439
+    """The Moon"""
+
+    COSMODROME = 3990611421
+    """The Cosmodrome"""
+
+    TANGLED_SHORE = 3821439926
+    """The Tangled Shore"""
+
+    VENUS = 3871070152
+    """Venus"""
+
+    EAZ = 541863059 # Exclusive event.
+    """European Aerial Zone"""
+
+    EUROPA = 1729879943
+    """Europa"""
+
+    def __str__(self) -> str:
+        return str(self.name)
+
+    def __int__(self) -> int:
+        return int(self.value)
+
+@typing.final
 class Vendor(enum.Enum):
+    """An Enum for all available vendors in Destiny 2."""
     ZAVALA  = 69482069
     XUR     = 2190858386
     BANSHE  = 672118013
     SPIDER  = 863940356
+    SHAXX   = 3603221665
+    KADI    = 529635856
+    """Postmaster exo."""
+    YUNA    = 1796504621
+    """Asia servers only."""
+    EVERVERSE   = 3361454721
+    AMANDA  = 460529231
+    """Amanda holiday"""
+    CROW    = 3611983588
+    HAWTHORNE = 3347378076
+    ADA1    = 350061650
+    DRIFTER = 248695599
+    IKORA   = 1976548992
+    SAINT   = 765357505
+    """Saint-14"""
+    ERIS_MORN   = 1616085565
+    SHAW_HAWN   = 1816541247
+    """COSMODROME Guy"""
+    VARIKS      = 2531198101
 
     def __str__(self) -> str:
         return (str(self.name))
@@ -84,8 +173,10 @@ class Vendor(enum.Enum):
 
     def __int__(self) -> int:
         return int(self.value)
+
 @typing.final
 class GameMode(enum.Enum):
+    """An Enum for all available gamemodes in Destiny 2."""
     NOTHING = 0
     STORY   = 2
     STRIKE  = 3
@@ -111,6 +202,7 @@ class GameMode(enum.Enum):
 
 @typing.final
 class Component(enum.Enum):
+    """An Enum for Destiny 2 Components."""
     NOTHING     = 0
     PROFILE     = 100
     SILVER      = 105
@@ -132,6 +224,7 @@ class Component(enum.Enum):
 
 @typing.final
 class MembershipType(enum.Enum):
+    """An Enum for Bungie membership types."""
     NONE        = 0
     XBOX        = 1
     PSN         = 2
@@ -147,6 +240,7 @@ class MembershipType(enum.Enum):
 
 @typing.final
 class DestinyCharacter(enum.Enum):
+    """An Enum for Destiny character classes."""
     TITAN   = 0
     HUNTER  = 1
     WARLOCK = 2
@@ -160,6 +254,7 @@ class DestinyCharacter(enum.Enum):
 
 @typing.final
 class DestinyGender(enum.Enum):
+    """An Enum for Destiny Genders."""
     MALE    = 0
     FEMALE  = 1
     UNKNOWN = 2
@@ -172,6 +267,7 @@ class DestinyGender(enum.Enum):
 
 @typing.final
 class DestinyRace(enum.Enum):
+    """An Enum for Destiny races."""
     HUMAN   = 0
     AWOKEN  = 1
     EXO     = 2
@@ -185,6 +281,7 @@ class DestinyRace(enum.Enum):
 
 @typing.final
 class DestinyMilestoneType(enum.Enum):
+    """An Enum for Destiny 2 milestone types."""
     UNKNOWN     = 0
     TUTORIAL    = 1
     ONETIME     = 2

@@ -25,10 +25,10 @@
 
 from __future__ import annotations
 
-__all__ = (
+__all__ = [
 	'Time', 'Image', 'Crypt', 'enums', 
 	'deprecated', 'MemoryCache', 'RedisCache'
-)
+]
 
 from .time import Time
 from .assets import Image

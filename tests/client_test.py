@@ -77,7 +77,7 @@ class ClientTest(aiobungie.Client):
         # print(f"Fastest: {act.fast}")
 
     async def char_test(self):
-        char: Character = await self.fetch_charecter(data['memid'], data['memtype'], data['char'])
+        char: Character = await self.fetch_character(data['memid'], data['memtype'], data['char'])
         print(char.emblem)
         print(char.total_played_time)
         print(char.gender)

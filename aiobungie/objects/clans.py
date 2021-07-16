@@ -53,25 +53,25 @@ class ClanOwner:
 
     Attributes
     -----------
-    id: :class:`int`
+    id: `builtins.int`
         The clan owner's membership id
-    name: :class:`str`:
+    name: `builtins.str`
         The clan owner's display name
-    last_online: :class:`str`:
-        An aware :class:`str` version of a :class:`datetime.datetime` object.
-    type: :class:`.MembershipType`:
+    last_online: `builtins.str`
+        An aware `builtins.str` version of a `datetime.datetime` object.
+    type: `aiobungie.utils.enums.MembershipType`
         Returns the clan owner's membership type.
-        This could be Xbox, Steam, PSN, Blizzard or ALL, if the membershiptype is not recognized it will return ``None``.
-    clan_id: :class:`int`
+        This could be Xbox, Steam, PSN, Blizzard or ALL, if the membership type is not recognized it will return `builtins.NoneType`.
+    clan_id: `builtins.int`
         The clan owner's clan id
-    joined_at: Optional[:class:`datetime.utcnow()`]:
-        The clan owner's join date.
-    icon: :class:`.Image`:
+    joined_at: Optional[datetime.datetime]:
+        The clan owner's join date in UTC.
+    icon: `aiobungie.utils.assets.Image`
         Returns the clan owner's icon from Image.
-    is_public: :class:`builtins.bool`:
+    is_public: `builtins.bool`
         Returns True if the clan's owner profile is public or False if not.
-    types: :class:List[:class:`int`]:
-        returns a List of :class:`int` of the clan owner's types.
+    types: typing.List[builtins.int]:
+        returns a List of `builtins.int` of the clan owner's types.
     
     '''
     __slots__: Sequence[str] = (
@@ -122,27 +122,27 @@ class Clan:
 
     Attributes
     -----------
-    name: :class:`str`:
+    name: `builtins.str`
         The clan's name
-    id: :class:`int`
+    id: `builtins.int`
         The clans's id
-    created_at: :class:`datetime.datetime`:
+    created_at: `datetime.datetime`
         Returns the clan's creation date in UTC time.
-    description: :class:`str`:
+    description: `builtins.str`
         The clan's description.
-    is_public: :class:`builtins.bool`:
+    is_public: `builtins.bool`
         Returns True if the clan is public and False if not.
-    banner: :class:`.Image`:
+    banner: `aiobungie.utils.assets.Image`
         Returns the clan's banner
-    avatar: :class:`.Image`:
+    avatar: `aiobungie.utils.assets.Image`
         Returns the clan's avatar
-    about: :class:`str`:
+    about: `builtins.str`
         The clan's about.
-    tags: :class:`str`:
+    tags: `builtins.str`
         The clan's tags
-    owner: :class:`.ClanOwner`:
+    owner: `aiobungie.objects.ClanOwner`
         Returns an object of the clan's owner.
-        See :class:`.ClanOwner` for info.
+        See `aiobungie.objects.ClanOwner` for info.
     """
     __slots__: Sequence[str] = (
         'id', 'name', 'created_at', 'edited_at',

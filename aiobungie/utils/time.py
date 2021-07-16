@@ -31,6 +31,7 @@ __all__ = (
 
 import calendar
 import time
+from typing import Optional
 from dateutil.relativedelta import relativedelta
 from dateutil.parser import parse
 from datetime import datetime
@@ -69,20 +70,17 @@ def human_join(seq, delim=', ', final='or') -> str:
 
 
 class Time(object):
-    def __init__(self):
-        pass
-
 
     @staticmethod
-    def from_timestamp(timer = None) -> datetime:
+    def from_timestamp(timer: float) -> datetime:
         '''
-        Converts timestamp to :class:`datetime.datetime`
+        Converts timestamp to `datetime.datetime`
         '''
         return datetime.utcfromtimestamp(timer)
 
     @staticmethod
     def clean_date(date: str) -> datetime:
-        '''Formats :class:`datetime.datetime` to a readble date.'''
+        '''Formats `datetime.datetime` to a readble date.'''
         parsed = parse(date)
         ts = Time.to_timestamp(parsed) # had to do it in two ways.
         ft = Time.from_timestamp(ts)

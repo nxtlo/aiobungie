@@ -27,7 +27,8 @@ from __future__ import annotations
 
 __all__: Sequence[str] = ['Player']
 
-from typing import Optional, Sequence, List, Union, Dict, Any, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Union
+
 from ..error import PlayerNotFound
 from ..utils import Image
 from ..utils.enums import MembershipType
@@ -36,9 +37,24 @@ if TYPE_CHECKING:
     from ..types.player import Player as PlayerPayload
 
 class Player:
+    """Represents a Bungie Destiny 2 Players.
+
+    Attributes
+    ----------
+    icon: `aiobungie.utils.Image`
+        The player's icon.
+    id: `builtins.int`
+        The player's id.
+    name: `builtins.str`
+        The player's name.
+    is_public: `builtins.bool`
+        A boolean True if the user's profile is public and False if not.
+    type: `aiobungie.utils.enums.MembershipType`
+        The player's membership type.
+    """
     __slots__: Sequence[str] = (
         'icon', 'id', 'name', 'type', 
-        'is_public', 'user'
+        'is_public'
     )
     if TYPE_CHECKING:
         icon: Image

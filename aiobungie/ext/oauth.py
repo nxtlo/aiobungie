@@ -25,6 +25,11 @@
 '''A very basic OAuth2 implementation for aiobungie.'''
 
 from __future__ import annotations
+
+__all__: Sequence[str] = [
+	'OAuth2', 'refresh'
+]
+
 import asyncio
 import inspect
 import logging
@@ -35,16 +40,17 @@ from typing import (
 	, Sequence
 	, Optional
 	, Dict
+	, TYPE_CHECKING
 )
 from requests_oauthlib import OAuth2Session
 from functools import wraps
 from ..http import HTTPClient
 
+if TYPE_CHECKING:
+	import builtins
+
 log: logging.Logger = logging.getLogger(__name__)
 
-__all__: Sequence[str] = (
-	'OAuth2', 'refresh'
-)
 
 class OAuth2:
 	"""
@@ -52,9 +58,9 @@ class OAuth2:
 
 	Attributes
 	-----------
-	token: :class:`str`:
+	token: `builtins.str`
 		Your application's token or API Key
-	secret: :class:`str`:
+	secret: `builtins.str`
 		Your application's client secret.
 	"""
 	CLIENT_ID: int = 33953
@@ -120,16 +126,16 @@ def refresh(*, seconds: float = 0, minutes: float = 0, hours: float = 0, cls: OA
 	'''
 	a decorator to refresh the token every ??? seconds.
 
-	Paramaters
+	Parameters
 	----------
-	every: :class:`int`
+	every: `builtins.int`
 		The amount of seconds to refresh after. Default is 59 minutes
-	cls: :class:`object`:
+	cls: `object`
 		This should your OAuth2 class.
 
 	Raises
-	-------
-	TypeError:
+	------
+	`builtins.TypeError`
 		The function was not a coroutine.
 	'''
 

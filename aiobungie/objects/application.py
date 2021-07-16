@@ -42,15 +42,15 @@ class ApplicationOwner:
 
     Attributes
     -----------
-    name: :class:`str`:
+    name: `builtins.str`
         The application owner name.
-    id: :class:`int`
+    id: `builtins.int`
         The application owner bungie id.
-    icon: :class:`.Image`:
+    icon: `aiobungie.utils.assets.Image`
         The application owner profile icon.
-    is_public: :class:`builtins.bool`:
+    is_public: `builtins.bool`
         Determines if the application owner's profile was public or private
-    type: :class:`.MembershipType`:
+    type: `aiobungie.utils.enums.MembershipType`
         The application owner's bungie membership type.
     '''
     __slots__: Sequence[str] = (
@@ -80,23 +80,23 @@ class Application:
 
     Attributes
     -----------
-    name: :class:`str`:
+    name: `builtins.str`
         The app's name
-    id: :class:`int`
+    id: `builtins.int`
         The app's id.
-    redirect_url: :class:`str`:
+    redirect_url: typing.Optional[`builtins.str`]:
         The app's redirect url, None if not Found.
-    created_at: :class:`datetime.datetime`:
+    created_at: `datetime.datetime`
         The application's creation date in UTC time.
-    published_at: :class:`datetime.datetime`
+    published_at: `datetime.datetime`
         The application's publish date in UTC time.
-    link: :class:`str`:
+    link: `builtins.str`
         The app's link if it exists.
-    status: :class:`str`:
+    status: `builtins.str`
         The app's status.
-    owner: :class:`.ApplicationOwner`:
+    owner: `aiobungie.objects.ApplicationOwner`
         An object of The application owner.
-    scope: :class:`str`:
+    scope: `builtins.str`
         The app's scope
     '''
     __slots__: Sequence[str] = (

@@ -25,9 +25,9 @@
 
 from __future__ import annotations
 
-__all__: Sequence[str] = (
+__all__: Sequence[str] = [
     'Client',
-)
+]
 
 import asyncio
 from . import error
@@ -66,14 +66,24 @@ class Client:
 
     Attributes
     -----------
-    key: :class:`str`:
+    key: `builtins.str`
         Your Bungie's API key or Token from the developer's portal.
-    loop: :class:`asyncio.AbstractEventLoop`:
+    loop: `asyncio.AbstractEventLoop`
         asyncio event loop.
     """
     __slots__: Sequence[str] = (
         'key', 'loop', 'http'
     )
+
+    key: str
+    """You Bungie API Key"""
+
+    loop: asyncio.AbstractEventLoop
+    """An optional asyncio loop, Default is None."""
+
+    http: HTTPClient
+    """The http client connector to make the request."""
+
     def __init__(
         self, 
         key: str, 
@@ -101,17 +111,17 @@ class Client:
     async def fetch_user(self, name: str, *, position: int = 0) -> User:
         """Fetches a Bungie user by their name.
 
-        Paramaters
-        -----------
-        name: :class:`str`:
+        Parameters
+        ----------
+        name: `builtins.str`
             The user name.
-        position: :class:`int`
+        position: `builtins.int`
             The user position/index in the list to return,
             Will returns the first one if not specified.
 
         Raises
-        -------
-        UserNotFound:
+        ------
+        `aiobungie.error.UserNotFound`
             The user wasa not found.
         """
         data = await self.http.fetch_user(name=name)
@@ -121,17 +131,17 @@ class Client:
     async def fetch_user_from_id(self, id: int) -> User:
         '''Fetches a Bungie user by their id.
 
-        Paramaters
-        -----------
-        id: :class:`int`
+        Parameters
+        ----------
+        id: `builtins.int`
             The user id.
-        position: :class:`int`
-            The user position/index in the list to return,
+        position: `builtins.int`
+            The user position/index in the list to return, 
             Will returns the first one if not specified.
 
         Raises
-        -------
-        UserNotFound:
+        ------
+        `aiobungie.error.UserNotFound`
             The user wasa not found.
         '''
         payload = await self.http.fetch_user_from_id(id)
@@ -143,16 +153,16 @@ class Client:
 
         Parameters
         -----------
-        name: :class:`str`
+        name: `builtins.str`
             The Player's Name
-        type: Union[:class:`.MembershipType`, :class:`int`]:
+        type: `aiobungie.utils.enums.MembershipType`
             The player's membership type, e,g. XBOX, STEAM, PSN
-        position: :class:`int`
+        position: `builtins.int`
             Which player position to return, first player will return if None.
 
         Returns
         --------
-        :class:`.Player`
+        `aiobungie.objects.Player`
             a Destiny Player object
         """
         resp = await self.http.fetch_player(name, int(type))
@@ -160,30 +170,30 @@ class Client:
 
 
     @deprecated
-    async def fetch_charecter(
+    async def fetch_character(
         self, memberid: int, 
         type: Union[MembershipType, int], 
         character: DestinyCharacter
         ) -> Character:
         """Fetches a Destiny 2 character.
 
-        Paramaters
-        -----------
-        memberid: :class:`int`
+        Parameters
+        ----------
+        memberid: `builtins.int`
             A valid bungie member id.
-        character: :class:`.DestinyCharacter`
-            a Destiny character -> .WARLOCK, .TITAN, .HUNTER
-        type: :class:`.MembershipType`
-            The membership type -> .STEAM, .XBOX, .PSN
+        character: `aiobungie.utils.enums.DestinyCharacter`
+            The Destiny character to retrieve.
+        type: `aiobungie.utils.enums.MembershipType`
+            The member's membership type.
 
         Returns
         -------
-        :class:`.Character`:
+        `aiobungie.objects.Character`
             a Bungie character object.
 
         Raises
-        -------
-        :exc:`.CharacterNotFound` 
+        ------
+        `aiobungie.error.CharacterNotFound` 
             raised if the Character was not found.
         """
         resp = await self.http.fetch_character(memberid=memberid, type=int(type), character=int(character))
@@ -214,33 +224,32 @@ class Client:
         ) -> Activity:
         '''Fetches a Destiny 2 activity for the specified user id and character.
 
-        Paramaters
-        -----------
-        userid: :class:`int`
+        Parameters
+        ----------
+        userid: `builtins.int`
             The user id that starts with `4611`.
-        charaid: :class:`int`
+        charaid: `builtins.int`
             The id of the character to retrieve.
-        mode: :class:`.GameMode`
-            This paramater filters the game mode, Nightfall, Strike, Iron Banner, etc.
-        memtype: Union[:class:`int`, :class:`.MembershipType`]
+        mode: `aiobungie.utils.enums.GameMode`
+            This parameter filters the game mode, Nightfall, Strike, Iron Banner, etc.
+        memtype: `aiobungie.utils.enums.MembershipType`
             The Member ship type, if nothing was passed than it will return all.
-        page: Optional[:class:`int`]
+        page: typing.Optional[`builtins.int`]
             The page number
-        limit: Optional[:class:`int`]
-            Limits the returned result.
+        limit: typing.Optional[`builtins.int`]
+            Limit the returned result.
 
         Returns
-        --------
-        :class:`.Activity`:
+        -------
+        `aiobungie.objects.Activity`
             A bungie Activity object.
 
         Raises
         ------
         `AttributeError`
-            Using :meth:`Activity.hash()` for non raid activies.
-        `ActivityNotFound`
+            Using `aiobungie.objects.Activity.hash` for non raid activies.
+        `aiobungie.error.ActivityNotFound`
             Any other errors occures during the response.
-
         '''
         resp = await self.http.fetch_activity(userid, charid, int(mode), memtype=int(memtype), page=page, limit=limit)
         try:
@@ -254,18 +263,18 @@ class Client:
             raise error.ActivityNotFound(
                 "Error has been occurred during getting your data, maybe the page is out of index or not found?\n")
 
-    async def fetch_app(self, appid: int) -> Application:
+    async def fetch_app(self, appid: int, /) -> Application:
         """Fetches a Bungie Application.
-
-        Returns
-        --------
-        :class:`.Application`:
-            a Bungie application object.
 
         Parameters
         -----------
-        appid: :class:`int`
+        appid: `builtins.int`
             The application id.
+
+        Returns
+        --------
+        `aiobungie.objects.Application`
+            a Bungie application object.
         """
         resp = await self.http.fetch_app(appid)
         return Application(resp)
@@ -274,15 +283,15 @@ class Client:
     async def fetch_clan(self, clanid: int, /) -> Clan:
         """Fetches a Bungie Clan.
 
-        Returns
-        --------
-        :class:`.Clan`:
-            A Bungie clan object
-
         Parameters
         -----------
-        clanid: :class:`int`
+        clanid: `builtins.int`
             The clan id.
+
+        Returns
+        --------
+        `aiobungie.objects.Clan`
+            A Bungie clan object
         """
         resp = Clan(data=(await self.http.fetch_clan(clanid)))
         return resp

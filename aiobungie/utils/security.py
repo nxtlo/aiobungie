@@ -37,14 +37,14 @@ log: Final[Logger] = getLogger(__name__)
 
 class Crypt:
 	'''
-	an Object half inherits :class:`cryptography.Fernet` to decrypt and encrypt data.
+	an Object half inherits `cryptography.Fernet` to decrypt and encrypt data.
 
 	Attributes
 	-----------
-	entry: :class:`builtins.bytes`
+	entry: `builtins.bytes`
 		The data entry you wanna encrypt and decrypt
 	
-	instance: :class:`.Fernet`
+	instance: `cryptography.Fernet`
 		The default for this attr is `cryptography.Fernet` and should not be changed
 		it can be None or your own `cryptography.Fernet` instance.
 	'''
@@ -55,16 +55,9 @@ class Crypt:
 		self._instance: Fernet = Fernet(Fernet.generate_key())
 
 	def encrypt(self) -> bytes:
-		'''
-		A method that encrypts :meth:`.entry` attr
-		'''
 		return self._instance.encrypt(self._entry)
 
 	def decrypt(self, token: bytes, ttl: int = None) -> Union[bytes, str]:
-		'''
-		a Method that decrypt a token. 
-		this should be the encrypted :meth:`.entry` attr.
-		'''
 		key = self._instance.decrypt(token, ttl)
 		if not key:
 			log.warn(f"Couldn't decrypt key.")

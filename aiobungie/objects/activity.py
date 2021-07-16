@@ -39,33 +39,33 @@ if TYPE_CHECKING:
 class Activity:
 	"""Represents a Bungie Activity object.
 
-	An activity can be one of :class:`.GameMode`.
+	An activity can be one of `aiobungie.utils.enums.GameMode`.
 
 	Attributes
 	-----------
-	mode: :class:`.GameMode`:
+	mode: `aiobungie.utils.enums.GameMode`
 		The activity mode or type.
-	is_completed: :class:`str`:
+	is_completed: `builtins.str`
 		Check if the activity was completed or no.
-	hash: :class:`.Raid`:
+	hash: `aiobungie.utils.enums.Raid`
 		This is a special attr used only for raids that returns the raid name.
-	raw_hash: :class:`int`
+	raw_hash: `builtins.int`
 		The activity's hash.
-	duration: :class:`str`:
+	duration: `builtins.str`
 		A string of The activity's duration, Example format `7m 42s`
-	kills: :class:`int`
+	kills: `builtins.int`
 		Activity's Total kills
-	deaths: :class:`int`
+	deaths: `builtins.int`
 		Activity's total deaths.
-	assists: :class:`int`
+	assists: `builtins.int`
 		Activity's Total assists
-	kd: :class:`int`
+	kd: `builtins.int`
 		Activity's kd ration.
-	member_type: :class:`.MembershipType`:
+	member_type: `aiobungie.utils.enums.MembershipType`
 		The activity member's membership type.
-	players_count: :class:`int`
+	players_count: `builtins.int`
 		Total players in the activity.
-	when: :class:`typing.Optional[datetime.datetime]:
+	when: typing.Optional[datetime.datetime]
 		When did the activity occurred in UTC datetime.
 	"""
 	__slots__: Sequence[str] = (

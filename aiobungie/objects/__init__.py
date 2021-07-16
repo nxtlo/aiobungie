@@ -29,11 +29,12 @@ __all__: Seq[str] = [
 	'Application', 'Clan',
 	'Player', 'Manifest',
 	'Character', 'Activity',
-	'User',
+	'User', 'ClanOwner', 
+	'ApplicationOwner'
 ]
 
-from .application import Application
-from .clans import Clan
+from .application import Application, ApplicationOwner
+from .clans import Clan, ClanOwner
 from .player import Player
 from .meta import Manifest
 from .character import Character

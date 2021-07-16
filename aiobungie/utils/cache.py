@@ -59,7 +59,7 @@ class Hash:
 
 	Attributes
 	-----------
-	inject: :class:`aredis.StrictRedis`:
+	inject: `aredis.StrictRedis`
 		an Injector for your redis client.
 	'''
 	__slots__: Sequence[str] = (
@@ -71,26 +71,26 @@ class Hash:
 	async def set(self, hash: str, field: str, value: str) -> Any:
 		'''Creates a new hash with field name and a value.
 
-		Paramaters
+		Parameters
 		-----------
-		hash: :class:`str`:
+		hash: `builtins.str`
 			The hash name.
-		field: :class:`str`:
+		field: `builtins.str`
 			The field name.
-		value: :class:`str`:
+		value: `builtins.str`
 			The value for the field.
 		'''
 		return await self._injector.execute_command("HSET {} {} {}".format(hash, field, value))
 
 	async def setx(self, hash: str, field: str) -> Any:
-		'''A method thats similar to :meth:`Hash.set`
+		'''A method thats similar to `Hash.set`
 		but will not replace the value if one is already exists.
 
-		Paramaters
+		Parameters
 		----------
-		hash: :class:`str`:
+		hash: `builtins.str`
 			The hash name.
-		field: :class:`str`:
+		field: `builtins.str`
 			The field name
 		'''
 		await self._injector.execute_command(f"HSETNX {hash} {field}")
@@ -98,9 +98,9 @@ class Hash:
 	async def flush(self, hash: str) -> Any:
 		'''Removes a hash.
 
-		Paramaters
+		Parameters
 		-----------
-		hash: :class:`str`:
+		hash: `builtins.str`
 			The hash name.
 		'''
 		cmd = await self._injector.execute_command(f"DEL {hash}")
@@ -112,9 +112,9 @@ class Hash:
 	async def len(self, hash: str) -> int:
 		'''Returns the length of the hash.
 
-		Paramaters
+		Parameters
 		-----------
-		hash: :class:`str`:
+		hash: `builtins.str`
 			The hash name.
 		'''
 		return await self._injector.execute_command("HLEN {}".format(hash))
@@ -123,15 +123,15 @@ class Hash:
 	async def all(self, hash: str) -> Any:
 		'''Returns all values from a hash.
 
-		Paramaters
+		Parameters
 		-----------
-		hash: :class:`str`:
+		hash: `builtins.str`
 			The hash name.
 
 		Returns
 		-------
-		:class:`Any`:
-			a List of any values.
+		`typing.Any`
+			Any values.
 		'''
 		coro = await self._injector.execute_command(f"HVALS {hash}")
 		for tries in range(5):
@@ -148,11 +148,11 @@ class Hash:
 	async def delete(self, hash: str, field: str) -> Any:
 		'''Deletes a field from the provided hash.
 
-		Paramaters
+		Parameters
 		----------
-		hash: :class:`str`:
+		hash: `builtins.str`
 			The hash name.
-		field: :class:`str`:
+		field: `builtins.str`
 			The field you want to delete.
 		'''
 		return await self._injector.execute_command(f"HDEL {hash} {field}")
@@ -160,25 +160,25 @@ class Hash:
 	async def exists(self, hash: str, field: str) -> bool:
 		'''Returns True if the field exists in the hash.
 
-		Paramaters
+		Parameters
 		----------
-		hash: :class:`str`:
+		hash: `builtins.str`
 			The hash name.
-		field: :class:`str`;
+		field: `builtins.str`
 			The field name
 		
-		Returns: :class:`builtins.bool`:
+		Returns: `builtins.bool`
 			True if field exists in hash and False if not.
 		'''
 
 	async def get(self, hash: str, field: str) -> str:
 		'''Returns the value associated with field in the hash stored at key.
 
-		Paramaters
+		Parameters
 		----------
-		hash: :class:`str`:
+		hash: `builtins.str`
 			The hash name.
-		field: :class:`str`:
+		field: `builtins.str`
 			The field name
 		'''
 		coro = await self._injector.execute_command(f"HGET {hash} {field}")

@@ -45,31 +45,31 @@ class User:
 
 	Attributes
 	----------
-	id: :class:`int`
+	id: `builtins.int`
 		The user's id
-	name: :class:`str`:
+	name: `builtins.str`
 		The user's name.
-	is_deleted: :class:`builtins.bool`:
+	is_deleted: `builtins.bool`
 		Returns True if the user is deleted
-	about: :class:`str`:
+	about: typing.Optional[builtins.str]
 		The user's about, Default is None if nothing is Found.
-	created_at: :class:`datetime`:
+	created_at: `datetime.datetime`
 		The user's creation date in UTC date.
-	updated_at: :class:`datetime`:
+	updated_at: `datetime.datetime`
 		The user's last updated om UTC date.
-	psn_name: :class:`str`:
+	psn_name: typing.Optional[builtins.str]
 		The user's psn id if it exists.
-	twitch_name: :class:`str`:
+	twitch_name: typing.Optional[builtins.str]
 		The user's twitch name if it exists.
-	blizzard_name: :class:`str`:
+	blizzard_name: typing.Optional[builtins.str]
 		The user's blizzard name if it exists.
-	steam_name: :class:`str`:
+	steam_name: typing.Optional[builtins.str]
 		The user's steam name if it exists
-	status: :class:`str`:
+	status: typing.Optional[builtins.str]
 		The user's bungie status text
-	locale: :class:`str`:
+	locale: typing.Optional[builtins.str]
 		The user's locale.
-	picture: :class:`.Image`:
+	picture: typing.Optional[aiobungie.utils.assets.Image]
 		The user's avatar.
 	'''
 	__slots__: Sequence[str] = (

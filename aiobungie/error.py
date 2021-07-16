@@ -24,28 +24,28 @@
 
 from __future__ import annotations
 
-__all__: Sequence[str] = (
+__all__: Sequence[str] = [
     'PlayerNotFound', 'HashError',
     'ActivityNotFound', 'CharacterTypeError',
     'JsonError', 'ClanNotFound', 'CharacterNotFound',
     'NotFound', 'HTTPException', 'UserNotFound'
-)
+]
 
 from typing import final, Sequence
 
 @final
 class PlayerNotFound(Exception):
-    """Raised when a :class:`.Player` is not found."""
+    """Raised when a `aiobungie.objects.Player` is not found."""
     pass
 
 @final
 class HashError(Exception):
-    """Raised when :meth:`.Activity.hash` used for modes that are not raids."""
+    """Raised when `aiobungie.objects.Activity.hash` used for modes that are not raids."""
     pass
 
 @final
 class ActivityNotFound(Exception):
-    """Raised when a :class:`.Activity` not found."""
+    """Raised when a `aiobungie.objects.Activity` not found."""
     pass
 
 @final
@@ -59,17 +59,17 @@ class JsonError(Exception):
 
 @final
 class CharacterNotFound(Exception):
-    """Raised when a :class:`.Character` not found."""
+    """Raised when a `aiobungie.objects.Character` not found."""
     pass
 
 @final
 class HTTPException(Exception):
-    """Exception for handling :class:`.HTTPClient` requests errors."""
+    """Exception for handling `aiobungie.http.HTTPClient` requests errors."""
     pass
 
 @final
 class ClanNotFound(Exception):
-    """Raised when a :class:`.Clan` not found."""
+    """Raised when a `aiobungie.objects.Clan` not found."""
     pass
 
 @final
@@ -79,5 +79,5 @@ class NotFound(Exception):
 
 @final
 class UserNotFound(Exception):
-    '''Raised when a :class:`.User` not found.'''
+    '''Raised when a `aiobungie.objects.User` not found.'''
     pass

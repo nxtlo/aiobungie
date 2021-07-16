@@ -123,7 +123,7 @@ class HTTPClient:
     def fetch_clan(self, id: int) -> Response[clans.Clan]:
         return self.fetch('GET' ,f'GroupV2/{id}', headers=self.headers)
 
-    def fetch_app(self, appid: int) -> Response[app.Application]:
+    def fetch_app(self, appid: int, /) -> Response[app.Application]:
         return self.fetch('GET' ,f'App/Application/{appid}', headers=self.headers)
 
     def fetch_character(self, memberid: int, 

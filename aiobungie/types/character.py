@@ -22,21 +22,29 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
-from typing import TypedDict, Union
+from __future__ import annotations
+from typing import TypedDict, Dict
 from ..utils import Image
-from ..utils.enums import DestinyCharacter, DestinyRace, DestinyGender
+from ..utils.enums import DestinyClass, DestinyRace, DestinyGender, Stat, MembershipType
 from datetime import datetime
 
 
-class Character(TypedDict):
-	emblem_icon: Union[Image, str]
-	emblem: Union[Image, str]
+class CharacterData(TypedDict):
+	membershipId: int
+	membershipType: MembershipType
+	characterId: int
+	dateLastPlayed: datetime
+	minutesPlayedTotal: int
 	light: int
-	total_played_time: int
-	last_player: datetime
-	id: int
-	_class: DestinyCharacter
-	member_id: int
-	last_session: int
-	race: DestinyRace
-	gender: DestinyGender
+	stats: Stat
+	raceType: DestinyRace
+	classType: DestinyClass
+	genderType: DestinyGender
+	emblemPath: Image
+	emblemBackgroundPath: Image
+	emblemHash: int
+	baseCharacterLevel: int
+	titleRecordHash: int
+
+class CharacterImpl(CharacterData, total=False):
+	pass

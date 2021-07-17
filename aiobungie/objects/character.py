@@ -1,3 +1,5 @@
+#-*- coding: utf-8 -*-
+
 # MIT License
 # 
 # Copyright (c) 2020 - Present nxtlo
@@ -26,8 +28,6 @@ from __future__ import annotations
 
 __all__: Sequence[str] = ('Character', )
 
-from ..utils import Image
-from .. import error
 from typing import (
 	List,
 	Optional,
@@ -38,10 +38,12 @@ from typing import (
 	TYPE_CHECKING
 )
 
+from .. import error
+from ..utils import Time, enums, Image
+
 if TYPE_CHECKING:
-	from ..utils.enums import Component, DestinyCharacter, DestinyGender, DestinyRace
 	from datetime import datetime
-	from ..types.character import Character as CharacterPayload
+	from ..types.character import CharacterImpl, CharacterData
 
 
 class Character:
@@ -59,54 +61,125 @@ class Character:
 		The character's gender
 	race: `aiobungie.utils.enums.DestinyRace`
 		The character's race
-	emblem: typing.Optional[aiobungie.utils.assets.Image]
+	emblem: `aiobungie.utils.assets.Image`
 		The character's currnt equipped emblem.
-	emblem_icon: typing.Optional[aiobungie.utils.assets.Image]
+	emblem_icon: `aiobungie.utils.assets.Image`
 		The character's current icon for the equipped emblem.
+	emblem_hash: `builtins.int`
+		Character's emblem hash.
 	last_played: `datetime.datetime`
 		When was this character last played date in UTC.
-	last_session: `builtins.int`
-		The player's last session.
-	total_played_time: `builtins.int`
+	total_played: `builtins.int`
 		Returns the total played time in seconds for the chosen character.
 	member_id: `builtins.int`
 		The character's member id.
-	cls: `aiobungie.utils.enums.DestinyCharacter`
+	cls: `aiobungie.utils.enums.DestinyClass`
 		The character's class.
+	level: `builtins.int`
+		Character's base level.
+	stats: `aiobungie.utils.enums.Stat`
+		Character's current stats.
 	"""
 
+	id: int
+	"""Character's id"""
+
+	light: int
+	"""Character's light"""
+
+	gender: enums.DestinyGender
+	"""Character's gender"""
+
+	race: enums.DestinyRace
+	"""Character's race"""
+
+	emblem: Image
+	"""Character's emblem"""
+
+	emblem_icon: Image
+	"""Character's emblem icon"""
+
+	emblem_hash: int
+	"""Character's emblem hash."""
+
+	last_played: datetime
+	"""Character's last played date."""
+
+	total_played: int
+	"""Character's total plyed time minutes."""
+
+	member_id: int
+	"""Character's member id."""
+
+	member_type: enums.MembershipType
+	"""Character's membership type."""
+
+	cls: enums.DestinyClass
+	"""Character's class."""
+
+	title_hash: int
+	"""Character's equipped title hash."""
+
+	level: int
+	"""Character's base level."""
+
+	stats: enums.Stat
+	"""Character stats."""
+
 	__slots__: Sequence[str] = (
-		'emblem_icon', 
-		'emblem', 
-		'light', 
-		'total_played_time',
-		'id', 
-		'cls',
-		'member_id', 
-		'gender', 
-		'race', 
+		'id',
+		'light',
+		'gender',
+		'race',
+		'emblem',
+		'emblem_icon',
+		'emblem_hash',
 		'last_played',
-		'last_session', 
-		'_char'
+		'total_played',
+		'member_id',
+		'member_type',
+		'cls',
+		'level',
+		'title_hash',
+		'stats',
+		'_char' # ignored
 	)
 
-	_char: Union[DestinyCharacter, int]
-
-	emblem_icon: Optional[Union[Image, str]]
-	emblem: Optional[Union[Image, str]]
-	light: int
-	total_played_time: int
-	last_played: datetime
-	id: int
-	cls: DestinyCharacter
-	member_id: int
-	last_session: int
-	race: DestinyRace
-	gender: DestinyGender
-
-	def __init__(self, *, char: Union[DestinyCharacter, int], data: Any = ...) -> None:
+	def __init__(self, *, char: enums.DestinyClass, data: CharacterImpl) -> None:
 		self._char = char
-		self._update(data)
+		self.update(data)
 
-	def _update(self, data: Any = ...) -> None:
-		...
+	@property
+	def last_played_delta(self) -> str:
+		"""Last played in human delta time."""
+		return Time.human_timedelta(Time.clean_date(str(self.last_played)))
+
+	def _check_char(self, payload: CharacterImpl, char: enums.DestinyClass) -> CharacterData:
+		payload = [c for c in payload['characters']['data'].values()] # type: ignore
+		return payload[char.value] # type: ignore
+
+	def __int__(self) -> int:
+		return self.id
+
+	def __repr__(self) -> str:
+		return (
+			f'{self.__class__.__name__} id={self.id} gender={self.gender}'
+			f' class={self.cls} race={self.race}')
+
+	def update(self, data: CharacterImpl) -> None:
+		data = self._check_char(data, self._char)
+		self.id = data['characterId']
+		self.gender = data['genderType']
+		self.race = data['raceType']
+		self.cls = data['classType']
+		self.emblem = Image(str(data['emblemBackgroundPath']))
+		self.emblem_icon = Image(str(data['emblemPath']))
+		self.emblem_hash = data['emblemHash']
+		self.last_played = data['dateLastPlayed']
+		self.total_played = data['minutesPlayedTotal']
+		self.member_id = data['membershipId']
+		self.member_type = data['membershipType']
+		self.level = data['baseCharacterLevel']
+		self.title_hash = data['titleRecordHash']
+		self.light = data['light']
+		self.stats = data['stats']

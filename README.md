@@ -41,7 +41,7 @@ async def main() -> None:
     print(f'{player.name}, {player.id[0]}, {player.icon}, {player.type}')
 
     # fetch a specific character.
-    char = await client.fetch_character(player.id[0], aiobungie.MembershipType.STEAM, aiobungie.DestinyCharacter.WARLOCK)
+    char = await client.fetch_character(player.id[0], aiobungie.MembershipType.STEAM, aiobungie.DestinyClass.WARLOCK)
     print(f'{char.emblem}, {char.light}, {char.id}, {char.race}, {char.gender}, {char._class}')
 
     # fetch activities.

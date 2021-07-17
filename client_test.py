@@ -1,4 +1,5 @@
 import aiobungie
+import json
 import os
 from aiobungie.objects import (
     Clan, 
@@ -24,7 +25,7 @@ data: Dict[str, Any] = {
     'clanid': 4389205,
     'memid': 4611686018484639825,
     'charid': 2305843009444904605,
-    'char': aiobungie.DestinyCharacter.WARLOCK,
+    'char': aiobungie.DestinyClass.WARLOCK,
     'memtype': aiobungie.MembershipType.STEAM,
     'vendor': aiobungie.Vendor.SPIDER
 }
@@ -74,22 +75,24 @@ class ClientTest(aiobungie.Client):
         # print(f"Hash {act.hash}")
         print(f"Raw Hash {act.raw_hash}")
         print(f"is Completed {act.is_completed}")
-        # print(f"Fastest: {act.fast}")
+        # print(f"Fastest: {act.fast}")s
 
     async def char_test(self):
         char: Character = await self.fetch_character(data['memid'], data['memtype'], data['char'])
-        print(char.emblem)
-        print(char.total_played_time)
-        print(char.gender)
-        print(char.emblem_icon)
-        print(char.light)
-        print(char.id)
-        print(char.race)
+        print(repr(char))
+        print(char.last_played_delta)
+        print(char.member_id)
+        print(char.member_type)
         print(char.last_played)
-        print(char._class)
+        print(char.emblem)
+        print(char.emblem_hash)
+        print(char.emblem_icon)
+        print(char.level)
+        print(char.light)
+        print(char.stats)
 
-    async def clan_test(self):
-        clan: Clan = await self.fetch_clan(data['clanid'])
+    async def clan_id_test(self):
+        clan: Clan = await self.fetch_clan_from_id(data['clanid'])
         attrs = f'''
                 {clan.name}
                 {clan.id}
@@ -102,6 +105,24 @@ class ClientTest(aiobungie.Client):
                 {clan.owner.joined_at}
                 '''
         print(attrs)
+
+    async def clan_test(self):
+        clan: Clan = await self.fetch_clan('Fast')
+        attrs = f'''
+                {clan.name}
+                {clan.avatar}
+                {clan.banner}
+                {clan.id}
+                {clan.member_count}
+                {clan.about}
+                {clan.tags}
+                {clan.description}
+                {clan.owner.type}
+                {clan.owner.last_online}
+                {clan.owner.joined_at}
+                '''
+        print(attrs)
+
 
     async def user_test(self):
         user: User = await self.fetch_user('Fate')
@@ -126,12 +147,9 @@ class ClientTest(aiobungie.Client):
 
 client = ClientTest(TOKEN)
 async def main() -> None:
-    await client.app_test()
-    # await client.user_test()
-    # await client.user_id_test()
-    # await client.player_test()
-    # await client.clan_test()
-
+    await client.char_test()
+    await client.clan_test()
+    # print(await client.fetch_vendor_sales())
     '''Under is not working yet.'''
     # await client.char_test()
     # await client.activity_test()

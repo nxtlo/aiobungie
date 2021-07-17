@@ -28,7 +28,7 @@ from __future__ import annotations
 __all__: typing.Sequence[str] = (
     'GameMode',
     'MembershipType',
-    'DestinyCharacter',
+    'DestinyClass',
     'DestinyMilestoneType',
     'DestinyRace',
     'Vendor',
@@ -36,7 +36,8 @@ __all__: typing.Sequence[str] = (
     'Dungeon',
     'DestinyGender',
     'Component',
-    'Planet'
+    'Planet',
+    'Stat'
 )
 
 import typing
@@ -239,7 +240,7 @@ class MembershipType(enum.Enum):
         return int(self.value)
 
 @typing.final
-class DestinyCharacter(enum.Enum):
+class DestinyClass(enum.Enum):
     """An Enum for Destiny character classes."""
     TITAN   = 0
     HUNTER  = 1
@@ -288,3 +289,20 @@ class DestinyMilestoneType(enum.Enum):
     WEEKLY      = 3
     DAILY       = 4
     SPECIAL     = 5
+
+
+@typing.final
+class Stat(enum.Enum):
+    """An Enum for Destiny 2 character stats."""
+    MOBILITY    = 2996146975
+    RESILIENCE  = 392767087
+    RECOVERY    = 1943323491
+    DISCIPLINE  = 1735777505
+    INTELLECT   = 144602215
+    STRENGTH    = 4244567218
+
+    def __int__(self) -> int:
+        return int(self.value)
+
+    def __str__(self) -> str:
+        return str(self.name)

@@ -31,7 +31,7 @@ __all__ = (
 )
 
 import aiohttp
-from .error import NotFound, HTTPException, JsonError
+from .error import NotFound, HTTPException, JsonError, ClanNotFound
 from typing import (Optional
     , Any
     , Union
@@ -43,9 +43,10 @@ from typing import (Optional
     , TYPE_CHECKING
 )
 
+from .utils.enums import Component
 if TYPE_CHECKING:
     from .types import player, clans, user, application as app
-    from .utils.enums import MembershipType, DestinyCharacter, Component, GameMode
+    from .utils.enums import MembershipType, DestinyClass, GameMode
     T = TypeVar('T')
     Response = Coroutine[Any, Any, T]
 
@@ -85,6 +86,8 @@ class HTTPClient:
                                 return data
                         
                         if response.status in {500, 502}:
+                            if data['ErrorStatus'] == 'ClanNotFound':
+                                raise ClanNotFound("The clan you're looking for was not found.")
                             warnings.warn("Got {} status {} Msg {}".format(data, response.status, data['Message']))
                             await asyncio.sleep(tries + 1 * 2)
                             continue
@@ -120,19 +123,23 @@ class HTTPClient:
     def fetch_player(self, name: str, type: Union[MembershipType, int]) -> Response[player.Player]:
         return self.fetch('GET', f'Destiny2/SearchDestinyPlayer/{type}/{name}', headers=self.headers)
 
-    def fetch_clan(self, id: int) -> Response[clans.Clan]:
+    def fetch_clan_from_id(self, id: int) -> Response[clans.Clan]:
         return self.fetch('GET' ,f'GroupV2/{id}', headers=self.headers)
+
+    def fetch_clan(self, name: str, type: int = 1) -> Response[clans.Clan]:
+        return self.fetch('GET', f'GroupV2/Name/{name}/{type}', headers=self.headers)
 
     def fetch_app(self, appid: int, /) -> Response[app.Application]:
         return self.fetch('GET' ,f'App/Application/{appid}', headers=self.headers)
 
-    def fetch_character(self, memberid: int, 
-            type: Union[MembershipType, int], 
-            character: Union[DestinyCharacter, int]
+    def fetch_character(self, 
+            memberid: int, 
+            type: MembershipType, 
+            character: DestinyClass
             ) -> Response[Any]:
         return self.fetch('GET', 
-                        f'Destiny2/{type}/Profile/{memberid}/ \
-                          ?components={Component.CHARECTERS}',
+                        f'Destiny2/{type.value}/Profile/{memberid}/ \
+                          ?components={int(Component.CHARECTERS)}',
                           headers=self.headers
                         )
 
@@ -153,3 +160,9 @@ class HTTPClient:
             &mode={mode}',
             headers=self.headers
         )
+
+    def fetch_vendor_sales(self) -> Response[Any]:
+        return self.fetch(
+            'GET', 
+            f'Destiny2/Vendors/?components={int(Component.VENDOR_SALES)}', 
+            headers=self.headers)

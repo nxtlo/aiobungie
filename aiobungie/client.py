@@ -41,8 +41,7 @@ from typing import (
 
 from .utils.enums import (
     MembershipType
-    , DestinyCharacter
-    , Component
+    , DestinyClass
     , GameMode
     , Vendor
 )
@@ -169,11 +168,11 @@ class Client:
         return Player(data=resp, position=position)
 
 
-    @deprecated
     async def fetch_character(
-        self, memberid: int, 
-        type: Union[MembershipType, int], 
-        character: DestinyCharacter
+        self, 
+        memberid: int, 
+        type: MembershipType, 
+        character: DestinyClass
         ) -> Character:
         """Fetches a Destiny 2 character.
 
@@ -181,7 +180,7 @@ class Client:
         ----------
         memberid: `builtins.int`
             A valid bungie member id.
-        character: `aiobungie.utils.enums.DestinyCharacter`
+        character: `aiobungie.utils.enums.DestinyClass`
             The Destiny character to retrieve.
         type: `aiobungie.utils.enums.MembershipType`
             The member's membership type.
@@ -196,20 +195,15 @@ class Client:
         `aiobungie.error.CharacterNotFound` 
             raised if the Character was not found.
         """
-        resp = await self.http.fetch_character(memberid=memberid, type=int(type), character=int(character))
-        return Character(char=int(character), data=resp)
+        resp = await self.http.fetch_character(memberid=memberid, type=type, character=character)
+        return Character(char=character, data=resp)
 
 
-    @deprecated
     async def fetch_vendor_sales(self, 
-        vendor: Optional[Union[Vendor, int]], 
-        memberid: int, 
-        charid: int, 
-        type: MembershipType
         ) -> Any:
-        return await self.http.fetch('GET',
-            f'Destiny2/{type}/Profile/{memberid}/Character/{charid}/Vendors/{vendor}/?components={Component.VENDOR_SALES}'
-            )
+        """Fetch vendor sales."""
+        return await self.http.fetch_vendor_sales()
+        
 
     @deprecated
     async def fetch_activity(
@@ -234,9 +228,9 @@ class Client:
             This parameter filters the game mode, Nightfall, Strike, Iron Banner, etc.
         memtype: `aiobungie.utils.enums.MembershipType`
             The Member ship type, if nothing was passed than it will return all.
-        page: typing.Optional[`builtins.int`]
+        page: typing.Optional[builtins.int]
             The page number
-        limit: typing.Optional[`builtins.int`]
+        limit: typing.Optional[builtins.int]
             Limit the returned result.
 
         Returns
@@ -280,12 +274,12 @@ class Client:
         return Application(resp)
 
 
-    async def fetch_clan(self, clanid: int, /) -> Clan:
-        """Fetches a Bungie Clan.
+    async def fetch_clan_from_id(self, id: int, /) -> Clan:
+        """Fetches a Bungie Clan by its id.
 
         Parameters
         -----------
-        clanid: `builtins.int`
+        id: `builtins.int`
             The clan id.
 
         Returns
@@ -293,5 +287,24 @@ class Client:
         `aiobungie.objects.Clan`
             A Bungie clan object
         """
-        resp = Clan(data=(await self.http.fetch_clan(clanid)))
+        resp = Clan(data=(await self.http.fetch_clan_from_id(id)))
         return resp
+
+
+    async def fetch_clan(self, name: str, /, type: int = 1) -> Clan:
+        """ Fetches a Clan by its name and returns the first result.
+
+        Parameters
+        ----------
+        name: `builtins.str`
+            The clan name
+        type `builtins.int`
+            The group type, Default is one.
+
+        Returns
+        -------
+        `aiobungie.objects.Clan`
+            A bungie clan object.
+        """
+        resp = await self.http.fetch_clan(name, type)
+        return Clan(data=resp)

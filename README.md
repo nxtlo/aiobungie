@@ -32,8 +32,10 @@ client = aiobungie.Client(key='YOUR_API_KEY')
 
 async def main() -> None:
 
-    # fetch a clan.
-    clan = await client.fetch_clan(1234)
+    # fetch a clan from its id.
+    clan = await client.fetch_clan_from_id(1234)
+    # or fetch the clan by its name
+    clan = await client.fetch_clan("Fast")
     print(f'{clan.id}, {clan.name}, {clan.owner}, {clan.created_at}, {clan.about}')
 
     # fetch a bungie user.

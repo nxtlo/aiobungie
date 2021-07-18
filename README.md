@@ -20,7 +20,7 @@ $ pip install aiobungie
 Development
 
 ```s
-$ pip install git+https://github.com/nxtlo/aiobungie
+$ pip install aiobungie[dev]
 ```
 
 ## Quick Example
@@ -38,7 +38,7 @@ async def main() -> None:
     clan = await client.fetch_clan("Fast")
     print(f'{clan.id}, {clan.name}, {clan.owner}, {clan.created_at}, {clan.about}')
 
-    # fetch a bungie user.
+    # fetch a destiny 2 player.
     player = await client.fetch_player('Fate怒')
     print(f'{player.name}, {player.id[0]}, {player.icon}, {player.type}')
 
@@ -85,14 +85,14 @@ client.loop.run_until_complete(auth_stuff())
 * Python >=3.8
 * aiohttp
 
-### OAuth2 and Dev
+### Dev
+* aiosqlite
+
+### OAuth2
 * cryptography
 * requests_oauthlib
-* aiosqlite
-* aiofiles
-* python-dotenv
-
+* aredis
 
 ### Getting Help
-* Discord: `Fate 怒#0008`
+* Discord: `Fate 怒#0008` | `350750086357057537`
 * Docs: Soon.

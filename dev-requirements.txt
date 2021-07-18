@@ -1,0 +1,5 @@
+aredis
+requests_oauthlib
+cryptography
+aiosqlite
+mypy

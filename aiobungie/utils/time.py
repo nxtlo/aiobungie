@@ -41,18 +41,21 @@ class plural:
     '''
     Rapptz :>)
     '''
-    def __init__(self, value):
+    def __init__(self, value: int) -> None:
         self.value = value
-    def __format__(self, format_spec):
+
+    def __format__(self, format_spec: str) -> str:
         v = self.value
         singular, sep, plural = format_spec.partition('|')
         plural = plural or f'{singular}s'
+
         if abs(v) != 1:
             return f'{v} {plural}'
+
         return f'{v} {singular}'
 
 
-def human_join(seq, delim=', ', final='or') -> str:
+def human_join(seq: list, delim: str =', ', final: str ='or') -> str:
     '''
     Rapptz :>)
     '''
@@ -97,7 +100,7 @@ class Time(object):
             raise e
 
     @staticmethod
-    def human_timedelta(dt, *, source=None, accuracy=3, brief=False, suffix=True) -> str:
+    def human_timedelta(dt: datetime, *, source=None, accuracy: int = 3, brief=False, suffix=True) -> str:
         '''
         Rapptz :>)
         '''

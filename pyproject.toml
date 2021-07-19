@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "aiobungie"
-version = "0.2.5a0"
+version = "0.2.5a2"
 description = "A small async api wrapper for the bungie api"
 authors = ["nxtlo <dhmony-99@hotmail.com>"]
 license = "MIT"
@@ -10,6 +10,22 @@ repository = "https://github.com/nxtlo/aiobungie"
 packages = [
     {include = "aiobungie"},
     {include = "aiobungie/**/*.py"}
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Framework :: AsyncIO",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Topic :: Communications :: Chat",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
 ]
 
 [tool.poetry.dependencies]

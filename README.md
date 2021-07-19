@@ -1,9 +1,8 @@
-[![aiobungie PyPI Download Results]](https://img.shields.io/pypi/dm/aiobungie?style=for-the-badge)
-[![aiobungie open Issue]](https://img.shields.io/github/issues/nxtlo/aiobungie?style=for-the-badge)
-[![aiobungie Python Version Support]](https://img.shields.io/pypi/pyversions/aiobungie?style=for-the-badge)
-[![aiobungie PyPI last Version]](https://img.shields.io/pypi/v/aiobungie?color=green&style=for-the-badge)
-[![aiobungie LICENSE]](https://img.shields.io/pypi/l/aiobungie?style=for-the-badge)
-
+[![aiobungie PyPI Download Results](https://img.shields.io/pypi/dm/aiobungie?style=for-the-badge)
+[![aiobungie open Issue](https://img.shields.io/github/issues/nxtlo/aiobungie?style=for-the-badge)
+[![aiobungie Python Version Support](https://img.shields.io/pypi/pyversions/aiobungie?style=for-the-badge)
+[![aiobungie PyPI last Version](https://img.shields.io/pypi/v/aiobungie?color=green&style=for-the-badge)
+[![aiobungie LICENSE](https://img.shields.io/pypi/l/aiobungie?style=for-the-badge)
 
 # aiobungie
 

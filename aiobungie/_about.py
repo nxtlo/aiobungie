@@ -25,7 +25,7 @@
 
 __about__ = "A Pythonic `async`/`await` framework / wrapper for interacting with the Bungie API."
 __author__ = 'nxtlo'
-__version__ = "0.2.5a1"
+__version__ = "0.2.5a2"
 __docs__ = "https://nxtlo.github.io/aiobungie/"
 __license__ = "MIT"
 __url__ = "https://github.com/nxtlo/aiobungie"

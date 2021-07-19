@@ -1,38 +1,41 @@
 ---
 name: Bug report
-about: Create a report to help us improve
+about: Found a bug? let me know.
 title: ''
-labels: ''
+labels: 'bug'
 assignees: ''
 
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+### Steps to reproduce
+<!--
+Steps to reproduce the bug. This can also be a code snippet.
+Make sure you have removed your bot token (if visible).
+-->
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+1.
+2.
+3.
+4.
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+### Expected Result
+<!--
+What should have happened if the bug wasn't there?
+Make sure you have removed your bot token (if visible).
+-->
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+### Actual Result
+<!-- What happened exactly? If you have a traceback, please provide all of it. -->
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
+### System info
+<!-- Output of `python -m hikari`. -->
 
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
+### Further info
+<!-- Any further info or images go here. -->
 
-**Additional context**
-Add any other context about the problem here.
+### Checklist
+<!-- Make sure to tick all the following boxes by putting an `x` in between (like this `[x]`) -->
+- [ ] I have made sure to remove ANY sensitive information (token, passwords,
+      credentials, personal details, etc).
+- [ ] I have searched the issue tracker and have made sure it's not a duplicate.
+      If it is a follow up of another issue, I have specified it.

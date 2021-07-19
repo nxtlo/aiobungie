@@ -101,4 +101,4 @@ client.loop.run_until_complete(auth_stuff())
 
 ### Getting Help
 * Discord: `Fate 怒#0008` | `350750086357057537`
-* Docs: Soon.
+* Docs: [Here](https://nxtlo.github.io/aiobungie/).

@@ -27,9 +27,11 @@ from __future__ import annotations
 
 __all__ = [
 	'Time', 'Image', 'Crypt', 'enums', 
-	'deprecated', 'MemoryCache', 'RedisCache'
+	'deprecated', 'MemoryCache', 'RedisCache',
+	'Manifest'
 ]
 
+from .meta import Manifest
 from .time import Time
 from .assets import Image
 from .security import Crypt

@@ -29,7 +29,7 @@ __all__: Sequence[str] = (
 	'Activity',
 )
 
-from typing import Dict, Sequence, Optional, Any, TYPE_CHECKING, Optional
+from typing import Dict, Sequence, Optional, Any, TYPE_CHECKING
 from ..error import HashError
 from ..utils.enums import GameMode, MembershipType, Raid
 

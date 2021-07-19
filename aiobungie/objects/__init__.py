@@ -26,8 +26,7 @@
 from __future__ import annotations
 
 __all__: Seq[str] = [
-	'Application', 'Clan',
-	'Player', 'Manifest',
+	'Application', 'Clan','Player',
 	'Character', 'Activity',
 	'User', 'ClanOwner', 
 	'ApplicationOwner'
@@ -36,7 +35,6 @@ __all__: Seq[str] = [
 from .application import Application, ApplicationOwner
 from .clans import Clan, ClanOwner
 from .player import Player
-from .meta import Manifest
 from .character import Character
 from .activity import Activity
 from .user import User

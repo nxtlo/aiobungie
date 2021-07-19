@@ -28,21 +28,20 @@ from __future__ import annotations
 __all__: t.Sequence[str] = ('Manifest',)
 
 import typing as t
-import httpx
 import aiosqlite
 import zipfile
 import time
 import os
-import aiofiles
 import json
 import os.path
+from ..http import HTTPClient
 from ..utils.enums import Raid
 from ..utils import Image
 
 class Manifest:
-    BASE: str = 'https://bungie.net'
-    def __init__(self, data) -> None:
-        self.data: t.Any = data.get('Response', None)
+    def __init__(self, token: str, data: t.Dict[str, t.Any]) -> None:
+        self.data = data
+        self._client = HTTPClient(token)
         self.db = Database('./destiny.sqlite3')
 
     async def _dbinit(self):
@@ -59,12 +58,11 @@ class Manifest:
         if os.path.isfile('./file.zip'):
             os.remove('./destiny.sqlite3')
             os.remove('./file.zip')
-        path = self.data.get('mobileWorldContentPaths').get('en')
-        async with httpx.AsyncClient() as ses:
             try:
-                file = await ses.get(self.BASE + path)
-                async with aiofiles.open('./file.zip', 'wb') as afile:
-                    await afile.write(file.content)
+                path = self.data['mobileWorldContentPaths']['en']
+                file = await self._client.fetch('GET', path)
+                with open('./file.zip', 'wb') as afile:
+                    afile.write(file.content)
                     with zipfile.ZipFile('./file.zip') as zipped:
                         name = zipped.namelist()
                         zipped.extractall()

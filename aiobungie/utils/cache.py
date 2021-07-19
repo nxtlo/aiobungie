@@ -253,7 +253,7 @@ class MemoryCache:
 	def put(self) -> None:
 		if not self._token:
 			raise ValueError("Access Token is Missing!")
-		elif not self._refresh:
+		if not self._refresh:
 			raise ValueError("Refresh token is Missing")
 		self.__entry['token'] = self._token
 		self.__entry['refresh'] = self._refresh

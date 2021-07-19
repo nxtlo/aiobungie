@@ -54,10 +54,8 @@ from .objects import (
     , Player
     , Character
     , User
-    , Manifest
 )
-
-from .utils.helpers import deprecated
+from.utils import deprecated, Manifest
 
 
 class Client:
@@ -104,7 +102,7 @@ class Client:
 
     async def fetch_manifest(self) -> Optional[Manifest]:
         resp = await self.http.fetch_manifest()
-        return Manifest(resp)
+        return Manifest(self.key, resp)
 
 
     async def fetch_user(self, name: str, *, position: int = 0) -> User:

@@ -36,48 +36,39 @@ from typing import final, Sequence
 @final
 class PlayerNotFound(Exception):
     """Raised when a `aiobungie.objects.Player` is not found."""
-    pass
 
 @final
 class HashError(Exception):
     """Raised when `aiobungie.objects.Activity.hash` used for modes that are not raids."""
-    pass
 
 @final
 class ActivityNotFound(Exception):
     """Raised when a `aiobungie.objects.Activity` not found."""
-    pass
 
 @final
 class CharacterTypeError(Exception):
-    pass
+    """Raised on a character type error."""
 
 @final
 class JsonError(Exception):
     """Raised when an HTTP request did not return a json response."""
-    pass
 
 @final
 class CharacterNotFound(Exception):
     """Raised when a `aiobungie.objects.Character` not found."""
-    pass
 
 @final
 class HTTPException(Exception):
     """Exception for handling `aiobungie.http.HTTPClient` requests errors."""
-    pass
 
 @final
 class ClanNotFound(Exception):
     """Raised when a `aiobungie.objects.Clan` not found."""
-    pass
 
 @final
 class NotFound(Exception):
     """Raised when an unknown request was not found."""
-    pass
 
 @final
 class UserNotFound(Exception):
     '''Raised when a `aiobungie.objects.User` not found.'''
-    pass

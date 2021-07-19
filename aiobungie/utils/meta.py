@@ -1,17 +1,17 @@
 # MIT License
-# 
+#
 # Copyright (c) 2020 - Present nxtlo
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -20,12 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-'''A very basic implementation of a bungie Manifest.'''
+"""A very basic implementation of a bungie Manifest."""
 
 
 from __future__ import annotations
 
-__all__: t.Sequence[str] = ('Manifest',)
+__all__: t.Sequence[str] = ("Manifest",)
 
 import typing as t
 import aiosqlite
@@ -35,47 +35,53 @@ import os
 import json
 import os.path
 from ..http import HTTPClient
-from ..utils.enums import Raid
-from ..utils import Image
+from .enums import Raid
+from .assets import Image
+
 
 class Manifest:
     def __init__(self, token: str, data: t.Dict[str, t.Any]) -> None:
         self.data = data
         self._client = HTTPClient(token)
-        self.db = Database('./destiny.sqlite3')
+        self.db = Database("./destiny.sqlite3")
 
     async def _dbinit(self):
-        if not os.path.exists('./destiny.sqlite3'):
+        if not os.path.exists("./destiny.sqlite3"):
             await self.download()
         return
-    
+
     async def get_raid_image(self, raid: Raid) -> Image:
-        image = await self.db.execute("SELECT json FROM DestinyActivityDefinition WHERE id = ?", (raid,), 'pgcrImage')
+        image = await self.db.execute(
+            "SELECT json FROM DestinyActivityDefinition WHERE id = ?",
+            (raid,),
+            "pgcrImage",
+        )
         return Image(path=str(image))
 
     async def download(self) -> None:
         _time = time.time()
-        if os.path.isfile('./file.zip'):
-            os.remove('./destiny.sqlite3')
-            os.remove('./file.zip')
+        if os.path.isfile("./file.zip"):
+            os.remove("./destiny.sqlite3")
+            os.remove("./file.zip")
             try:
-                path = self.data['mobileWorldContentPaths']['en']
-                file = await self._client.fetch('GET', path)
-                with open('./file.zip', 'wb') as afile:
+                path = self.data["mobileWorldContentPaths"]["en"]
+                file = await self._client.fetch("GET", path)
+                with open("./file.zip", "wb") as afile:
                     afile.write(file.content)
-                    with zipfile.ZipFile('./file.zip') as zipped:
+                    with zipfile.ZipFile("./file.zip") as zipped:
                         name = zipped.namelist()
                         zipped.extractall()
-                    os.rename(name[0], 'destiny.sqlite3')
+                    os.rename(name[0], "destiny.sqlite3")
                     print(f"Finished downloading file in: {_time - time.time()}")
             except Exception:
                 raise
+
 
 class Database:
     def __init__(self, path: str) -> None:
         self.path = path
 
-    async def execute(self, sql: str, params: tuple = None, item:str = None) -> None:
+    async def execute(self, sql: str, params: tuple = None, item: str = None) -> None:
         async with aiosqlite.connect(self.path) as db:
             try:
                 cur = await db.execute(sql, params)

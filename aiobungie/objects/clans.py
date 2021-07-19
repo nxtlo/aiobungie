@@ -1,17 +1,17 @@
 # MIT License
-# 
+#
 # Copyright (c) 2020 - Present nxtlo
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -25,17 +25,9 @@
 
 from __future__ import annotations
 
-__all__: Sequence[str] = ['Clan', 'ClanOwner']
+__all__: Sequence[str] = ["Clan", "ClanOwner"]
 
-from typing import (
-    List,
-    Sequence,
-    Dict,
-    Any,
-    Optional,
-    Union,
-    TYPE_CHECKING
-)
+from typing import List, Sequence, Dict, Any, Optional, Union, TYPE_CHECKING
 
 from ..utils import Image, Time
 from ..error import ClanNotFound
@@ -45,11 +37,13 @@ if TYPE_CHECKING:
     from datetime import datetime
     from ..types.clans import Clan as ClanPayload, ClanOwner as ClanOwnerPayload
 
+
 class ClanMembers:
     __slots__: Sequence[str] = ()
 
+
 class ClanOwner:
-    '''Represents a Bungie clan owner.
+    """Represents a Bungie clan owner.
 
     Attributes
     -----------
@@ -72,12 +66,19 @@ class ClanOwner:
         Returns True if the clan's owner profile is public or False if not.
     types: typing.List[builtins.int]:
         returns a List of `builtins.int` of the clan owner's types.
-    
-    '''
+
+    """
+
     __slots__: Sequence[str] = (
-        'id', 'name', 'type',
-        'clan_id', 'icon', 'is_public',
-        'joined_at', 'types', 'last_online'
+        "id",
+        "name",
+        "type",
+        "clan_id",
+        "icon",
+        "is_public",
+        "joined_at",
+        "types",
+        "last_online",
     )
     if TYPE_CHECKING:
         id: int
@@ -94,28 +95,28 @@ class ClanOwner:
         self._update(data)
 
     def _update(self, data: ClanOwnerPayload) -> None:
-        self.id: int = data['destinyUserInfo']['membershipId']
-        self.name: str = data['destinyUserInfo']['displayName']
-        self.icon: Image = Image(str(data['destinyUserInfo']['iconPath']))
-        convert = int(data['lastOnlineStatusChange'])
+        self.id: int = data["destinyUserInfo"]["membershipId"]
+        self.name: str = data["destinyUserInfo"]["displayName"]
+        self.icon: Image = Image(str(data["destinyUserInfo"]["iconPath"]))
+        convert = int(data["lastOnlineStatusChange"])
         self.last_online: str = Time.human_timedelta(Time.from_timestamp(convert))
-        self.clan_id: int = data['groupId']
-        self.joined_at: str = data['joinDate']
-        self.types: List[int] = data['destinyUserInfo']['applicableMembershipTypes']
-        self.is_public: bool = data['destinyUserInfo']['isPublic']
-        self.type: Optional[MembershipType] = MembershipType(data['destinyUserInfo'].get('membershipType', None))
-
+        self.clan_id: int = data["groupId"]
+        self.joined_at: str = data["joinDate"]
+        self.types: List[int] = data["destinyUserInfo"]["applicableMembershipTypes"]
+        self.is_public: bool = data["destinyUserInfo"]["isPublic"]
+        self.type: Optional[MembershipType] = MembershipType(
+            data["destinyUserInfo"].get("membershipType", None)
+        )
 
     def __str__(self) -> str:
         return str(self.name)
 
     def __repr__(self) -> str:
-        return (
-            f'ClaOwner name={self.name} id={self.id} type={self.type} last_online={self.last_online}'
-        )
+        return f"ClaOwner name={self.name} id={self.id} type={self.type} last_online={self.last_online}"
 
     def __bool__(self) -> bool:
         return self.is_public
+
 
 class Clan:
     """Represents a Bungie clan object.
@@ -144,10 +145,20 @@ class Clan:
         Returns an object of the clan's owner.
         See `aiobungie.objects.ClanOwner` for info.
     """
+
     __slots__: Sequence[str] = (
-        'id', 'name', 'created_at', 'edited_at',
-        'member_count', 'description', 'is_public',
-        'banner', 'avatar', 'about', 'tags', 'owner'
+        "id",
+        "name",
+        "created_at",
+        "edited_at",
+        "member_count",
+        "description",
+        "is_public",
+        "banner",
+        "avatar",
+        "about",
+        "tags",
+        "owner",
     )
 
     if TYPE_CHECKING:
@@ -167,24 +178,25 @@ class Clan:
         self._update(data=data)
 
     def _update(self, data: ClanPayload) -> None:
-        self.id: int = data['detail']['groupId']
-        self.name: str = data['detail']['name']
-        self.created_at: datetime = data['detail']['creationDate']
-        self.member_count: int = data['detail']['memberCount']
-        self.description: str = data['detail']['about']
-        self.about: str = data['detail']['motto']
-        self.is_public: bool = data['detail']['isPublic']
-        self.banner: Image = Image(str(data['detail']['bannerPath']))
-        self.avatar: Image = Image(str(data['detail']['avatarPath']))
-        self.tags: List[str] = data['detail']['tags']
-        self.owner: ClanOwner = ClanOwner(data=data['founder']) # NOTE: This works but mypy is being dumb
+        self.id: int = data["detail"]["groupId"]
+        self.name: str = data["detail"]["name"]
+        self.created_at: datetime = data["detail"]["creationDate"]
+        self.member_count: int = data["detail"]["memberCount"]
+        self.description: str = data["detail"]["about"]
+        self.about: str = data["detail"]["motto"]
+        self.is_public: bool = data["detail"]["isPublic"]
+        self.banner: Image = Image(str(data["detail"]["bannerPath"]))
+        self.avatar: Image = Image(str(data["detail"]["avatarPath"]))
+        self.tags: List[str] = data["detail"]["tags"]
+        self.owner: ClanOwner = ClanOwner(
+            data=data["founder"]
+        )  # NOTE: This works but mypy is being dumb
 
     def __str__(self) -> str:
         return str(self.name)
 
-
     def __repr__(self) -> Union[Any, str]:
         return (
-            f'<Clan id={self.id} name={self.name} created_at={self.created_at}'
-            f' owner={self.owner} is_public={self.is_public} about={self.about}'
+            f"<Clan id={self.id} name={self.name} created_at={self.created_at}"
+            f" owner={self.owner} is_public={self.is_public} about={self.about}"
         )

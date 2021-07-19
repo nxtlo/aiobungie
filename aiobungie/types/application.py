@@ -1,4 +1,4 @@
-'''
+"""
 MIT License
 
 Copyright (c) 2020 - Present nxtlo
@@ -20,24 +20,26 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-'''
+"""
 
 
 from typing import TypedDict, Optional, final
 from datetime import datetime
 from .user import UserCard
 
+
 class Team(TypedDict, total=False):
-	user: UserCard
-	role: int
+    user: UserCard
+    role: int
+
 
 class Application(TypedDict, total=False):
-	applicationId: int
-	name: str
-	redirectUrl: Optional[str]
-	link: str
-	scope: str
-	status: int
-	creationDate: datetime
-	firstPublished: datetime
-	team: Team
+    applicationId: int
+    name: str
+    redirectUrl: Optional[str]
+    link: str
+    scope: str
+    status: int
+    creationDate: datetime
+    firstPublished: datetime
+    team: Team

@@ -1,4 +1,4 @@
-'''
+"""
 MIT License
 
 Copyright (c) 2020 - Present nxtlo
@@ -20,33 +20,36 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-'''
+"""
 
 from typing import TypedDict, List
 from ..utils import Image
 from .user import UserCard
 from datetime import datetime
 
+
 class ClanOwner(TypedDict, total=False):
-	destinyUserInfo: UserCard
-	lastOnlineStatusChange: str
-	joinDate: str
-	groupId: int
+    destinyUserInfo: UserCard
+    lastOnlineStatusChange: str
+    joinDate: str
+    groupId: int
+
 
 class PartitialClan(TypedDict):
-	groupId: int
-	memberCount: int
-	name: str
-	about: str
-	motto: str
-	tags: List[str]
-	description: str
-	isPublic: bool
-	bannerPath: Image
-	avatarPath: Image
-	creationDate: datetime
+    groupId: int
+    memberCount: int
+    name: str
+    about: str
+    motto: str
+    tags: List[str]
+    description: str
+    isPublic: bool
+    bannerPath: Image
+    avatarPath: Image
+    creationDate: datetime
+
 
 class Clan(TypedDict, total=False):
-	detail: PartitialClan
-	founder: ClanOwner
-	ErrorCode: int
+    detail: PartitialClan
+    founder: ClanOwner
+    ErrorCode: int

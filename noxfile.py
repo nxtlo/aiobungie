@@ -1,13 +1,9 @@
-import nox
+import sys
+from pathlib import Path
+import runpy
 
-FILES = ['aiobungie/__init__.py', 'aiobungie/objects/__init__.py', 'aiobungie/utils/__init__.py']
+sys.path.append(str(Path().absolute()))
 
-def gen_stubs(session: nox.Session) -> None:
-	session.install("-r", "requirements.txt", "-r", "dev-requirements.txt")
-	session.run('stubgen', *FILES, '-o', '.', '--include-private', '--no-import', external=True)
-
-@nox.session(reuse_venv=True)
-def type_check(session: nox.Session) -> None:
-	gen_stubs(session)
-	session.install("-r", "requirements.txt", "-r", "dev-requirements.txt")
-	session.run('mypy', 'aiobungie', external=True)
+for f in Path("nix").rglob("*"):
+	if f.is_file() and f.name.endswith("nox.py"):
+		runpy.run_path(str(f))

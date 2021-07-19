@@ -1,4 +1,4 @@
-'''
+"""
 MIT License
 
 Copyright (c) 2020 - Present nxtlo
@@ -20,15 +20,16 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-'''
+"""
 
 from typing import TypedDict, Any, Dict, Optional, Union
 from ..utils import Image
 from ..utils.enums import MembershipType
 
+
 class Player(TypedDict, total=False):
-	iconPath: Image
-	displayName: str
-	membershipType: Union[MembershipType, int]
-	membershipId: int
-	isPublic: bool
+    iconPath: Image
+    displayName: str
+    membershipType: Union[MembershipType, int]
+    membershipId: int
+    isPublic: bool

@@ -1,4 +1,4 @@
-'''
+"""
 MIT License
 
 Copyright (c) 2020 - Present nxtlo
@@ -20,7 +20,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-'''
+"""
 
 from __future__ import annotations
 from typing import TypedDict, Dict
@@ -30,21 +30,22 @@ from datetime import datetime
 
 
 class CharacterData(TypedDict):
-	membershipId: int
-	membershipType: MembershipType
-	characterId: int
-	dateLastPlayed: datetime
-	minutesPlayedTotal: int
-	light: int
-	stats: Stat
-	raceType: DestinyRace
-	classType: DestinyClass
-	genderType: DestinyGender
-	emblemPath: Image
-	emblemBackgroundPath: Image
-	emblemHash: int
-	baseCharacterLevel: int
-	titleRecordHash: int
+    membershipId: int
+    membershipType: MembershipType
+    characterId: int
+    dateLastPlayed: datetime
+    minutesPlayedTotal: int
+    light: int
+    stats: Stat
+    raceType: DestinyRace
+    classType: DestinyClass
+    genderType: DestinyGender
+    emblemPath: Image
+    emblemBackgroundPath: Image
+    emblemHash: int
+    baseCharacterLevel: int
+    titleRecordHash: int
+
 
 class CharacterImpl(CharacterData, total=False):
-	pass
+    pass

@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  release:
+    types: [published]
+
+jobs:
+  build:
+
+    runs-on: [ubuntu-20.04, macos-10.15, windows-2019]
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.8, 3.9]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Checkout Repo
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install Test
+      run: |
+        pip install .
+        pip uninstall -y aiobungie
+        
+        pip install .[dev]
+        pip uninstall -y aiobungie
+        
+    - name: Run Test
+      run: |
+        pip install nox
+        nox

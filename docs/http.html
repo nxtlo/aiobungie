@@ -77,7 +77,7 @@ from typing import (
 from .internal.enums import Component
 
 if TYPE_CHECKING:
-    from .types import player, clans, user, application as app, profile
+    from .types import player, clans, user, application as app, profile, character
     from .internal.enums import MembershipType, Class, GameMode
 
     T = TypeVar(&#34;T&#34;)
@@ -191,7 +191,7 @@ class HTTPClient:
 
     def fetch_character(
         self, memberid: int, type: MembershipType, character: Class
-    ) -&gt; Response[Any]:
+    ) -&gt; Response[character.CharacterImpl]:
         return self.fetch(
             &#34;GET&#34;,
             f&#34;Destiny2/{int(type)}/Profile/{memberid}/?components={int(Component.CHARECTERS)}&#34;,
@@ -354,7 +354,7 @@ class HTTPClient:
 
     def fetch_character(
         self, memberid: int, type: MembershipType, character: Class
-    ) -&gt; Response[Any]:
+    ) -&gt; Response[character.CharacterImpl]:
         return self.fetch(
             &#34;GET&#34;,
             f&#34;Destiny2/{int(type)}/Profile/{memberid}/?components={int(Component.CHARECTERS)}&#34;,
@@ -503,7 +503,7 @@ class HTTPClient:
 </details>
 </dd>
 <dt id="aiobungie.http.HTTPClient.fetch_character"><code class="name flex">
-<span>def <span class="ident">fetch_character</span></span>(<span>self, memberid: int, type: MembershipType, character: Class) ‑> Response[Any]</span>
+<span>def <span class="ident">fetch_character</span></span>(<span>self, memberid: int, type: MembershipType, character: Class) ‑> Response[character.CharacterImpl]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -513,7 +513,7 @@ class HTTPClient:
 </summary>
 <pre><code class="python">def fetch_character(
     self, memberid: int, type: MembershipType, character: Class
-) -&gt; Response[Any]:
+) -&gt; Response[character.CharacterImpl]:
     return self.fetch(
         &#34;GET&#34;,
         f&#34;Destiny2/{int(type)}/Profile/{memberid}/?components={int(Component.CHARECTERS)}&#34;,

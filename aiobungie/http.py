@@ -46,7 +46,7 @@ from typing import (
 from .internal.enums import Component
 
 if TYPE_CHECKING:
-    from .types import player, clans, user, application as app, profile
+    from .types import player, clans, user, application as app, profile, character
     from .internal.enums import MembershipType, Class, GameMode
 
     T = TypeVar("T")
@@ -160,7 +160,7 @@ class HTTPClient:
 
     def fetch_character(
         self, memberid: int, type: MembershipType, character: Class
-    ) -> Response[Any]:
+    ) -> Response[character.CharacterImpl]:
         return self.fetch(
             "GET",
             f"Destiny2/{int(type)}/Profile/{memberid}/?components={int(Component.CHARECTERS)}",

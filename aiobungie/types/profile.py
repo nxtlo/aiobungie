@@ -19,40 +19,41 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-#
 
-"""Clan entities related to a Bungie Destiny 2 Clan including the Clan owner."""
+"""Profile and entities releated to a Bungie member Profile."""
 
 from __future__ import annotations
 
-from typing import TypedDict, List
-from ..internal import Image
-from .user import UserCard
-from datetime import datetime
+__all__: typing.Sequence = ["Profile", "ProfileImpl", "PartialProfile"]
+
+import datetime
+import typing
+from ..internal import enums
+from . import character, user
 
 
-class ClanOwnerImpl(TypedDict, total=False):
-    destinyUserInfo: UserCard
-    lastOnlineStatusChange: str
-    joinDate: str
-    groupId: int
+class PartialProfile(typing.TypedDict):
+    """A Partial interface for a Profile."""
+
+    userInfo: user.UserCard
+    dateLastPlayed: datetime.datetime
+    characterIds: typing.List[int]
+    currentSeasonRewardPowerCap: int
 
 
-class PartitialClan(TypedDict):
-    groupId: int
-    memberCount: int
-    name: str
-    about: str
-    motto: str
-    tags: List[str]
-    description: str
-    isPublic: bool
-    bannerPath: Image
-    avatarPath: Image
-    creationDate: datetime
+class Profile(PartialProfile, total=False):
+    """Interface for a Profile object."""
+
+    data: PartialProfile
 
 
-class ClanImpl(TypedDict, total=False):
-    detail: PartitialClan
-    founder: ClanOwnerImpl
-    ErrorCode: int
+class ProfileImpl(Profile, total=False):
+    """An actual implementation of a Bungie Profile."""
+
+    # Profile Components TODO: include all components here.
+
+    profile: Profile
+    """Profile component"""
+
+    characters: character.CharacterImpl
+    """Character component"""

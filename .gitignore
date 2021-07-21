@@ -12,5 +12,5 @@ venv/
 .vscode/
 *.db
 .mypy_cache/
-_docs/
 .nox
+docs/

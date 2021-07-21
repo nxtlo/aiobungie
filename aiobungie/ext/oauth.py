@@ -32,7 +32,8 @@ import asyncio
 import inspect
 import logging
 import uuid
-from ..utils import RedisCache
+from aiobungie import url
+from ..internal import RedisCache
 from typing import Any, Sequence, Optional, Dict, TYPE_CHECKING
 from requests_oauthlib import OAuth2Session
 from functools import wraps
@@ -84,16 +85,13 @@ class OAuth2:
     async def do_auth(self) -> None:
         req = OAuth2Session(
             client_id=self.CLIENT_ID,
-            redirect_uri="https://www.bungie.net/",
-            auto_refresh_url="https://www.bungie.net/Platform/App/OAuth/token/",
+            redirect_uri=url.BASE + "/",
         )
-        url, _ = req.authorization_url(
-            "https://www.bungie.net/en/OAuth/Authorize/", state=uuid.uuid4()
-        )
-        print(url)
+        _url, _ = req.authorization_url(url.OAUTH_EP, state=uuid.uuid4())
+        print(_url)
         wait = input("Please click the url and Enter the code: ")
         data = req.fetch_token(
-            "https://www.bungie.net/Platform/App/Oauth/token/",
+            url.TOKEN_EP,
             code=wait,
             client_secret=self._secret,
         )
@@ -158,7 +156,7 @@ def refresh(
                 "Content-Type": "application/x-www-form-urlencoded",
             }
 
-            post = await cls._http.fetch("POST", "App/OAuth/token/", data=data)
+            post = await cls._http.fetch("POST", url.TOKEN_EP, data=data)
             new_token = post.get("access_token")
             new_ref = post.get("refresh_token")
 

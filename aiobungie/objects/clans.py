@@ -29,13 +29,13 @@ __all__: Sequence[str] = ["Clan", "ClanOwner"]
 
 from typing import List, Sequence, Dict, Any, Optional, Union, TYPE_CHECKING
 
-from ..utils import Image, Time
+from ..internal import Image, Time
 from ..error import ClanNotFound
-from ..utils.enums import MembershipType
+from ..internal.enums import MembershipType
 
 if TYPE_CHECKING:
     from datetime import datetime
-    from ..types.clans import Clan as ClanPayload, ClanOwner as ClanOwnerPayload
+    from ..types.clans import ClanImpl, ClanOwnerImpl
 
 
 class ClanMembers:
@@ -53,14 +53,14 @@ class ClanOwner:
         The clan owner's display name
     last_online: `builtins.str`
         An aware `builtins.str` version of a `datetime.datetime` object.
-    type: `aiobungie.utils.enums.MembershipType`
+    type: `aiobungie.internal.enums.MembershipType`
         Returns the clan owner's membership type.
         This could be Xbox, Steam, PSN, Blizzard or ALL, if the membership type is not recognized it will return `builtins.NoneType`.
     clan_id: `builtins.int`
         The clan owner's clan id
     joined_at: Optional[datetime.datetime]:
         The clan owner's join date in UTC.
-    icon: `aiobungie.utils.assets.Image`
+    icon: `aiobungie.internal.assets.Image`
         Returns the clan owner's icon from Image.
     is_public: `builtins.bool`
         Returns True if the clan's owner profile is public or False if not.
@@ -80,33 +80,47 @@ class ClanOwner:
         "types",
         "last_online",
     )
-    if TYPE_CHECKING:
-        id: int
-        name: str
-        last_online: str
-        type: Optional[MembershipType]
-        clan_id: int
-        joined_at: str
-        icon: Image
-        is_public: bool
-        types: List[int]
 
-    def __init__(self, *, data: ClanOwnerPayload) -> None:
+    id: int
+    name: str
+    last_online: str
+    type: Optional[MembershipType]
+    clan_id: int
+    joined_at: str
+    icon: Image
+    is_public: bool
+    types: List[int]
+
+    def __init__(self, *, data: ClanOwnerImpl) -> None:
         self._update(data)
 
-    def _update(self, data: ClanOwnerPayload) -> None:
-        self.id: int = data["destinyUserInfo"]["membershipId"]
-        self.name: str = data["destinyUserInfo"]["displayName"]
-        self.icon: Image = Image(str(data["destinyUserInfo"]["iconPath"]))
-        convert = int(data["lastOnlineStatusChange"])
-        self.last_online: str = Time.human_timedelta(Time.from_timestamp(convert))
-        self.clan_id: int = data["groupId"]
-        self.joined_at: str = data["joinDate"]
-        self.types: List[int] = data["destinyUserInfo"]["applicableMembershipTypes"]
-        self.is_public: bool = data["destinyUserInfo"]["isPublic"]
-        self.type: Optional[MembershipType] = MembershipType(
-            data["destinyUserInfo"].get("membershipType", None)
+    def as_dict(self) -> Dict[str, Any]:
+        """Returns a dict object of the clan owner,
+        This function is useful if you're binding to other REST apis.
+        """
+        return dict(
+            id=self.id,
+            name=self.name,
+            is_public=self.is_public,
+            icon=self.icon,
+            types=self.type,
+            joined_at=self.joined_at,
+            type=self.type,
+            clan_id=self.clan_id,
+            last_online=self.last_online,
         )
+
+    def _update(self, data: ClanOwnerImpl) -> None:
+        self.id = data["destinyUserInfo"]["membershipId"]
+        self.name = data["destinyUserInfo"]["displayName"]
+        self.icon = Image(str(data["destinyUserInfo"]["iconPath"]))
+        convert = int(data["lastOnlineStatusChange"])
+        self.last_online = Time.human_timedelta(Time.from_timestamp(convert))
+        self.clan_id = data["groupId"]
+        self.joined_at = data["joinDate"]
+        self.types = data["destinyUserInfo"]["applicableMembershipTypes"]
+        self.is_public = data["destinyUserInfo"]["isPublic"]
+        self.type = MembershipType(data["destinyUserInfo"].get("membershipType", None))
 
     def __str__(self) -> str:
         return str(self.name)
@@ -133,9 +147,9 @@ class Clan:
         The clan's description.
     is_public: `builtins.bool`
         Returns True if the clan is public and False if not.
-    banner: `aiobungie.utils.assets.Image`
+    banner: `aiobungie.internal.assets.Image`
         Returns the clan's banner
-    avatar: `aiobungie.utils.assets.Image`
+    avatar: `aiobungie.internal.assets.Image`
         Returns the clan's avatar
     about: `builtins.str`
         The clan's about.
@@ -150,7 +164,6 @@ class Clan:
         "id",
         "name",
         "created_at",
-        "edited_at",
         "member_count",
         "description",
         "is_public",
@@ -161,36 +174,50 @@ class Clan:
         "owner",
     )
 
-    if TYPE_CHECKING:
-        id: int
-        name: str
-        created_at: datetime
-        member_count: int
-        description: str
-        is_public: bool
-        banner: Image
-        avatar: Image
-        about: str
-        tags: List[str]
-        owner: ClanOwner
+    id: int
+    name: str
+    created_at: datetime
+    member_count: int
+    description: str
+    is_public: bool
+    banner: Image
+    avatar: Image
+    about: str
+    tags: List[str]
+    owner: ClanOwner
 
-    def __init__(self, data: ClanPayload) -> None:
+    def __init__(self, data: ClanImpl) -> None:
         self._update(data=data)
 
-    def _update(self, data: ClanPayload) -> None:
-        self.id: int = data["detail"]["groupId"]
-        self.name: str = data["detail"]["name"]
-        self.created_at: datetime = data["detail"]["creationDate"]
-        self.member_count: int = data["detail"]["memberCount"]
-        self.description: str = data["detail"]["about"]
-        self.about: str = data["detail"]["motto"]
-        self.is_public: bool = data["detail"]["isPublic"]
-        self.banner: Image = Image(str(data["detail"]["bannerPath"]))
-        self.avatar: Image = Image(str(data["detail"]["avatarPath"]))
-        self.tags: List[str] = data["detail"]["tags"]
-        self.owner: ClanOwner = ClanOwner(
-            data=data["founder"]
-        )  # NOTE: This works but mypy is being dumb
+    def as_dict(self) -> Dict[str, Any]:
+        """Returns a dict object of the player,
+        This function is useful if you're binding to other REST apis.
+        """
+        return dict(
+            id=self.id,
+            name=self.name,
+            created_at=self.created_at,
+            is_public=self.is_public,
+            avatar=self.avatar,
+            banner=self.banner,
+            about=self.about,
+            description=self.description,
+            tags=self.tags,
+            owner=self.owner,
+        )
+
+    def _update(self, data: ClanImpl) -> None:
+        self.id = data["detail"]["groupId"]
+        self.name = data["detail"]["name"]
+        self.created_at = data["detail"]["creationDate"]
+        self.member_count = data["detail"]["memberCount"]
+        self.description = data["detail"]["about"]
+        self.about = data["detail"]["motto"]
+        self.is_public = data["detail"]["isPublic"]
+        self.banner = Image(str(data["detail"]["bannerPath"]))
+        self.avatar = Image(str(data["detail"]["avatarPath"]))
+        self.tags = data["detail"]["tags"]
+        self.owner = ClanOwner(data=data["founder"])
 
     def __str__(self) -> str:
         return str(self.name)

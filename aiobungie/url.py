@@ -1,6 +1,6 @@
 # MIT License
 #
-# Copyright (c) 2020 - Present nxtlo
+# Copyright (c) 2020 = Present nxtlo
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -19,40 +19,23 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-#
 
-"""Clan entities related to a Bungie Destiny 2 Clan including the Clan owner."""
+"""Bungie API endpoint urls."""
 
 from __future__ import annotations
 
-from typing import TypedDict, List
-from ..internal import Image
-from .user import UserCard
-from datetime import datetime
+__all__: typing.Sequence[str] = ["BASE", "REST_EP", "OAUTH_EP", "TOKEN_EP"]
 
+import typing
 
-class ClanOwnerImpl(TypedDict, total=False):
-    destinyUserInfo: UserCard
-    lastOnlineStatusChange: str
-    joinDate: str
-    groupId: int
+BASE: typing.Final[str] = "https://bungie.net"
+"""Base bungie url"""
 
+REST_EP: typing.Final[str] = f"{BASE}/Platform"
+"""REST API endpoint"""
 
-class PartitialClan(TypedDict):
-    groupId: int
-    memberCount: int
-    name: str
-    about: str
-    motto: str
-    tags: List[str]
-    description: str
-    isPublic: bool
-    bannerPath: Image
-    avatarPath: Image
-    creationDate: datetime
+OAUTH_EP: typing.Final[str] = f"{BASE}/en/OAuth/Authorize"
+"""OAuth endpoint"""
 
-
-class ClanImpl(TypedDict, total=False):
-    detail: PartitialClan
-    founder: ClanOwnerImpl
-    ErrorCode: int
+TOKEN_EP: typing.Final[str] = f"{REST_EP}/App/OAuth/token"
+"""OAuth token endpoint"""

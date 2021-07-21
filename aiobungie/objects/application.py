@@ -27,13 +27,13 @@ from __future__ import annotations
 
 __all__: Sequence[str] = ("Application", "ApplicationOwner")
 
-from typing import Optional, Sequence, Dict, TYPE_CHECKING
-from ..utils import Image, Time
+from typing import Optional, Sequence, Dict, TYPE_CHECKING, Any
+from ..internal import Image, Time
 from .. import MembershipType
 
 if TYPE_CHECKING:
     from datetime import datetime
-    from ..types.application import Application as AppPayload, Team as TeamPayload
+    from ..types.application import ApplicationImpl, TeamImpl
     from ..types.user import UserCard
 
 
@@ -46,11 +46,11 @@ class ApplicationOwner:
         The application owner name.
     id: `builtins.int`
         The application owner bungie id.
-    icon: `aiobungie.utils.assets.Image`
+    icon: `aiobungie.internal.assets.Image`
         The application owner profile icon.
     is_public: `builtins.bool`
         Determines if the application owner's profile was public or private
-    type: `aiobungie.utils.enums.MembershipType`
+    type: `aiobungie.internal.enums.MembershipType`
         The application owner's bungie membership type.
     """
 
@@ -68,6 +68,18 @@ class ApplicationOwner:
         self.id: int = data["membershipId"]
         self.icon: Image = Image(str(data["iconPath"]))
         self.is_public: bool = data["isPublic"]
+
+    def as_dict(self) -> Dict[str, Any]:
+        """Returns a dict object of the application owner,
+        This function is useful if you're binding to other REST apis.
+        """
+        return dict(
+            id=self.id,
+            name=self.name,
+            is_public=self.is_public,
+            icon=self.icon,
+            type=self.type,
+        )
 
     def __str__(self) -> str:
         return str(self.name)
@@ -116,7 +128,7 @@ class Application:
         "scope",
     )
 
-    def __init__(self, data: AppPayload) -> None:
+    def __init__(self, data: ApplicationImpl) -> None:
         self._update(data=data)
 
     def __int__(self) -> int:
@@ -131,7 +143,23 @@ class Application:
             f" status={self.status} redirect_url={self.redirect_url} owner={self.owner}"
         )
 
-    def _update(self, data: AppPayload) -> None:
+    def as_dict(self) -> Dict[str, Any]:
+        """Returns a dict object of the application,
+        This function is useful if you're binding to other REST apis.
+        """
+        return dict(
+            id=self.id,
+            name=self.name,
+            link=self.link,
+            status=self.status,
+            redirect_url=self.redirect_url,
+            created_at=self.created_at,
+            published_at=self.published_at,
+            owner=self.owner,
+            scope=self.scope,
+        )
+
+    def _update(self, data: ApplicationImpl) -> None:
         self.id: int = data["applicationId"]
         self.name: str = data["name"]
         self.redirect_url: Optional[str] = data.get("redirectUrl", None)

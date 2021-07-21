@@ -28,16 +28,20 @@ from __future__ import annotations
 __all__: typing.Sequence[str] = (
     "GameMode",
     "MembershipType",
-    "DestinyClass",
-    "DestinyMilestoneType",
-    "DestinyRace",
+    "Class",
+    "MilestoneType",
+    "Race",
     "Vendor",
     "Raid",
     "Dungeon",
-    "DestinyGender",
+    "Gender",
     "Component",
     "Planet",
     "Stat",
+    "WeaponType",
+    "DamageType",
+    "Item",
+    "Place",
 )
 
 import typing
@@ -109,9 +113,6 @@ class Planet(enum.Enum):
     UNKNOWN = 0
     """Unknown space"""
 
-    ORBIT = 2961497387
-    """The Orbit"""
-
     EARTH = 3747705955
     """Earth"""
 
@@ -141,6 +142,22 @@ class Planet(enum.Enum):
 
     def __str__(self) -> str:
         return str(self.name)
+
+    def __int__(self) -> int:
+        return int(self.value)
+
+
+@typing.final
+class Place(enum.Enum):
+    """An Enum for Destiny 2 Places and NOT Planets"""
+
+    ORBIT = 2961497387
+    SOCIAL = 4151112093
+    LIGHT_HOUSE = 4276116472
+    EXPLORE = 3497767639
+
+    def __str__(self) -> str:
+        return self.name
 
     def __int__(self) -> int:
         return int(self.value)
@@ -200,6 +217,14 @@ class GameMode(enum.Enum):
     ALLSTRIKES = 18
     DUNGEON = 82
     GAMBIT = 63
+    EMIPIRE_HUNT = 494260690
+    RUMBLE = 964120289
+    CLASSIC_MIX = 1472571612
+    COUNTDOWN = 3956087078
+    DOUBLES = 4288302346
+    CLASH = 3954711135
+    MAYHEM = 3517186939
+    SURVIVAL = 2175955486
 
     def __str__(self) -> str:
         return str(self.name)
@@ -241,6 +266,7 @@ class MembershipType(enum.Enum):
     PSN = 2
     STEAM = 3
     BLIZZARD = 4
+    STADIA = 5
     ALL = -1
 
     def __str__(self) -> str:
@@ -251,7 +277,7 @@ class MembershipType(enum.Enum):
 
 
 @typing.final
-class DestinyClass(enum.Enum):
+class Class(enum.Enum):
     """An Enum for Destiny character classes."""
 
     TITAN = 0
@@ -267,7 +293,7 @@ class DestinyClass(enum.Enum):
 
 
 @typing.final
-class DestinyGender(enum.Enum):
+class Gender(enum.Enum):
     """An Enum for Destiny Genders."""
 
     MALE = 0
@@ -282,7 +308,7 @@ class DestinyGender(enum.Enum):
 
 
 @typing.final
-class DestinyRace(enum.Enum):
+class Race(enum.Enum):
     """An Enum for Destiny races."""
 
     HUMAN = 0
@@ -298,7 +324,7 @@ class DestinyRace(enum.Enum):
 
 
 @typing.final
-class DestinyMilestoneType(enum.Enum):
+class MilestoneType(enum.Enum):
     """An Enum for Destiny 2 milestone types."""
 
     UNKNOWN = 0
@@ -307,6 +333,12 @@ class DestinyMilestoneType(enum.Enum):
     WEEKLY = 3
     DAILY = 4
     SPECIAL = 5
+
+    def __int__(self) -> int:
+        return int(self.value)
+
+    def __str__(self) -> str:
+        return str(self.name)
 
 
 @typing.final
@@ -325,3 +357,81 @@ class Stat(enum.Enum):
 
     def __str__(self) -> str:
         return str(self.name)
+
+
+@typing.final
+class WeaponType(enum.Enum):
+    """Enums for The three Destiny Weapon Types"""
+
+    KINETIC = 1498876634
+    ENERGY = 2465295065
+    POWER = 953998645
+
+    def __str__(self) -> str:
+        return str(self.name)
+
+    def __int__(self) -> int:
+        return int(self.value)
+
+
+@typing.final
+class DamageType(enum.Enum):
+    """Enums for Destiny Damage types"""
+
+    KINETIC = 3373582085
+    SOLAR = 1847026933
+    VOID = 3454344768
+    ARC = 2303181850
+    STASIS = 151347233
+    RAID = 1067729826
+    """This is a special damage type reserved for some raid activity encounters."""
+
+    def __str__(self) -> str:
+        return str(self.name)
+
+    def __int__(self) -> int:
+        return int(self.value)
+
+
+@typing.final
+class Item(enum.Enum):
+    """Enums for Destiny2's inventory bucket items"""
+
+    NONE = 0
+    AUTO_RIFLE = 6
+    SHOTGUN = 7
+    MACHINE_GUN = 8
+    HANDCANNON = 9
+    ROCKET_LAUNCHER = 10
+    FUSION_RIFLE = 11
+    SNIPER_RIFLE = 12
+    PULSE_RIFLE = 13
+    SCOUT_RIFLE = 14
+    SIDEARM = 17
+    SWORD = 18
+    MASK = 19
+    SHADER = 20
+    ORNAMENT = 21
+    FUSION_RIFLELINE = 22
+    GRENADE_LAUNCHER = 23
+    SUBMACHINE = 24
+    TRACE_RIFLE = 25
+    HELMET = 26
+    GAUNTLET = 27
+    CHEST_ARMOR = 28
+    LEG_ARMOR = 29
+    CLASS_ARMOR = 30
+    BOW = 31
+    EMBLEMS = 4274335291
+    LEGENDRY_SHARDS = 2689798309
+    GHOST = 4023194814
+    SUBCLASS = 3284755031
+    SEASONAL_ARTIFACT = 1506418338
+    EMOTES = 3054419239
+    SYNTHWAEV_TEMPLATE = 4092644517
+
+    def __str__(self) -> str:
+        return str(self.name)
+
+    def __int__(self) -> int:
+        return int(self.value)

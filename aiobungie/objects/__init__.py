@@ -34,9 +34,11 @@ __all__: Seq[str] = [
     "User",
     "ClanOwner",
     "ApplicationOwner",
+    "Profile",
 ]
 
 from .application import Application, ApplicationOwner
+from .profile import Profile
 from .clans import Clan, ClanOwner
 from .player import Player
 from .character import Character

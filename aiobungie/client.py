@@ -33,11 +33,11 @@ import asyncio
 from . import error
 from typing import Any, Optional, Sequence, Union, TYPE_CHECKING
 
-from .utils.enums import MembershipType, DestinyClass, GameMode, Vendor
+from .internal.enums import MembershipType, Class, GameMode, Vendor, Component
 
 from .http import HTTPClient
-from .objects import Activity, Application, Clan, Player, Character, User
-from .utils import deprecated, Manifest
+from . import objects
+from .internal import deprecated, Manifest
 
 
 class Client:
@@ -80,7 +80,7 @@ class Client:
         resp = await self.http.fetch_manifest()
         return Manifest(self.key, resp)
 
-    async def fetch_user(self, name: str, *, position: int = 0) -> User:
+    async def fetch_user(self, name: str, *, position: int = 0) -> objects.User:
         """Fetches a Bungie user by their name.
 
         Parameters
@@ -97,9 +97,9 @@ class Client:
             The user wasa not found.
         """
         data = await self.http.fetch_user(name=name)
-        return User(data=data, position=position)
+        return objects.User(data=data, position=position)
 
-    async def fetch_user_from_id(self, id: int) -> User:
+    async def fetch_user_from_id(self, id: int) -> objects.User:
         """Fetches a Bungie user by their id.
 
         Parameters
@@ -116,18 +116,30 @@ class Client:
             The user wasa not found.
         """
         payload = await self.http.fetch_user_from_id(id)
-        return User(data=payload)
+        return objects.User(data=payload)
+
+    async def fetch_profile(
+        self,
+        memberid: int,
+        type: MembershipType,
+        /,
+        component: Component,
+        *,
+        character: Optional[Class] = None,
+    ) -> objects.Profile:
+        data = await self.http.fetch_profile(memberid, type, component=component)
+        return objects.Profile(data=data, component=component, character=character)
 
     async def fetch_player(
-        self, name: str, type: Union[MembershipType, int], *, position: int = None
-    ) -> Player:
+        self, name: str, type: MembershipType, *, position: int = None
+    ) -> objects.Player:
         """Fetches a Destiny2 Player.
 
         Parameters
         -----------
         name: `builtins.str`
             The Player's Name
-        type: `aiobungie.utils.enums.MembershipType`
+        type: `aiobungie.internal.enums.MembershipType`
             The player's membership type, e,g. XBOX, STEAM, PSN
         position: `builtins.int`
             Which player position to return, first player will return if None.
@@ -137,21 +149,21 @@ class Client:
         `aiobungie.objects.Player`
             a Destiny Player object
         """
-        resp = await self.http.fetch_player(name, int(type))
-        return Player(data=resp, position=position)
+        resp = await self.http.fetch_player(name, type)
+        return objects.Player(data=resp, position=position)
 
     async def fetch_character(
-        self, memberid: int, type: MembershipType, character: DestinyClass
-    ) -> Character:
+        self, memberid: int, type: MembershipType, character: Class
+    ) -> objects.Character:
         """Fetches a Destiny 2 character.
 
         Parameters
         ----------
         memberid: `builtins.int`
             A valid bungie member id.
-        character: `aiobungie.utils.enums.DestinyClass`
+        character: `aiobungie.internal.enums.Class`
             The Destiny character to retrieve.
-        type: `aiobungie.utils.enums.MembershipType`
+        type: `aiobungie.internal.enums.MembershipType`
             The member's membership type.
 
         Returns
@@ -167,7 +179,7 @@ class Client:
         resp = await self.http.fetch_character(
             memberid=memberid, type=type, character=character
         )
-        return Character(char=character, data=resp)
+        return objects.Character(char=character, data=resp)
 
     async def fetch_vendor_sales(
         self,
@@ -185,7 +197,7 @@ class Client:
         *,
         page: Optional[int] = 1,
         limit: Optional[int] = 1,
-    ) -> Activity:
+    ) -> objects.Activity:
         """Fetches a Destiny 2 activity for the specified user id and character.
 
         Parameters
@@ -194,9 +206,9 @@ class Client:
             The user id that starts with `4611`.
         charaid: `builtins.int`
             The id of the character to retrieve.
-        mode: `aiobungie.utils.enums.GameMode`
+        mode: `aiobungie.internal.enums.GameMode`
             This parameter filters the game mode, Nightfall, Strike, Iron Banner, etc.
-        memtype: `aiobungie.utils.enums.MembershipType`
+        memtype: `aiobungie.internal.enums.MembershipType`
             The Member ship type, if nothing was passed than it will return all.
         page: typing.Optional[builtins.int]
             The page number
@@ -219,7 +231,7 @@ class Client:
             userid, charid, int(mode), memtype=int(memtype), page=page, limit=limit
         )
         try:
-            return Activity(data=resp)
+            return objects.Activity(data=resp)
 
         except AttributeError:
             raise error.HashError(
@@ -230,7 +242,7 @@ class Client:
                 "Error has been occurred during getting your data, maybe the page is out of index or not found?\n"
             )
 
-    async def fetch_app(self, appid: int, /) -> Application:
+    async def fetch_app(self, appid: int, /) -> objects.Application:
         """Fetches a Bungie Application.
 
         Parameters
@@ -244,9 +256,9 @@ class Client:
             a Bungie application object.
         """
         resp = await self.http.fetch_app(appid)
-        return Application(resp)
+        return objects.Application(resp)
 
-    async def fetch_clan_from_id(self, id: int, /) -> Clan:
+    async def fetch_clan_from_id(self, id: int, /) -> objects.Clan:
         """Fetches a Bungie Clan by its id.
 
         Parameters
@@ -259,10 +271,10 @@ class Client:
         `aiobungie.objects.Clan`
             A Bungie clan object
         """
-        resp = Clan(data=(await self.http.fetch_clan_from_id(id)))
+        resp = objects.Clan(data=(await self.http.fetch_clan_from_id(id)))
         return resp
 
-    async def fetch_clan(self, name: str, /, type: int = 1) -> Clan:
+    async def fetch_clan(self, name: str, /, type: int = 1) -> objects.Clan:
         """Fetches a Clan by its name and returns the first result.
 
         Parameters
@@ -278,4 +290,4 @@ class Client:
             A bungie clan object.
         """
         resp = await self.http.fetch_clan(name, type)
-        return Clan(data=resp)
+        return objects.Clan(data=resp)

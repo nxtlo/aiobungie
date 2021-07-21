@@ -25,7 +25,7 @@
 
 from __future__ import annotations
 from .error import *
-from .utils.enums import *
+from .internal.enums import *
 from .client import Client
 
-__version__ = "0.2.5a2"  # NOQA
+__version__ = "0.2.5a3"  # NOQA

@@ -29,52 +29,64 @@ __all__: t.Sequence[str] = ("Manifest",)
 
 import typing as t
 import aiosqlite
+import logging
 import zipfile
 import time
 import os
 import json
 import os.path
+import aiohttp
 from ..http import HTTPClient
 from .enums import Raid
+from aiobungie import url
 from .assets import Image
 
 
-class Manifest:
-    def __init__(self, token: str, data: t.Dict[str, t.Any]) -> None:
-        self.data = data
-        self._client = HTTPClient(token)
-        self.db = Database("./destiny.sqlite3")
+log: t.Final[logging.Logger] = logging.getLogger(__name__)
 
-    async def _dbinit(self):
-        if not os.path.exists("./destiny.sqlite3"):
-            await self.download()
-        return
+
+class Manifest:
+    def __init__(self, token: str, path: t.Dict[str, t.Any]) -> None:
+        self.path = url.BASE + path["mobileWorldContentPaths"]["en"]
+        self.token = token
+        self.db = Database("./.cache/destiny.sqlite3")
 
     async def get_raid_image(self, raid: Raid) -> Image:
         image = await self.db.execute(
             "SELECT json FROM DestinyActivityDefinition WHERE id = ?",
-            (raid,),
+            (int(raid),),
             "pgcrImage",
         )
         return Image(path=str(image))
 
-    async def download(self) -> None:
+    async def download(self, *, force: bool = False) -> None:
         _time = time.time()
-        if os.path.isfile("./file.zip"):
-            os.remove("./destiny.sqlite3")
-            os.remove("./file.zip")
-            try:
-                path = self.data["mobileWorldContentPaths"]["en"]
-                file = await self._client.fetch("GET", path)
-                with open("./file.zip", "wb") as afile:
-                    afile.write(file.content)
-                    with zipfile.ZipFile("./file.zip") as zipped:
-                        name = zipped.namelist()
-                        zipped.extractall()
-                    os.rename(name[0], "destiny.sqlite3")
-                    print(f"Finished downloading file in: {_time - time.time()}")
-            except Exception:
-                raise
+
+        if os.path.isfile("./.cache/destiny.sqlite3"):
+            if not force:
+                log.info("Database already exists, returning.")
+                return
+            else:
+                os.remove("./.cache/destiny.sqlite3")
+
+        if os.path.isfile("./.cache/file.zip"):
+            os.remove("./.cache/file.zip")
+        try:
+            log.debug("Downloading manifest...")
+            token = {"X-API-KEY": self.token}
+            async with aiohttp.ClientSession() as s:
+                async with s.get(self.path, headers=token) as r:
+                    if not os.path.exists("./.cache"):
+                        os.mkdir("./.cache")
+                    with open("./.cache/file.zip", "wb") as afile:
+                        afile.write(await r.read())
+                        with zipfile.ZipFile("./.cache/file.zip") as zipped:
+                            name = zipped.namelist()
+                            zipped.extractall()
+                        os.rename(name[0], "./.cache/destiny.sqlite3")
+                        print(f"Finished downloading file in: {_time - time.time()}")
+        except Exception:
+            raise
 
 
 class Database:

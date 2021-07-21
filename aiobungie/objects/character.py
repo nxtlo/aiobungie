@@ -31,7 +31,8 @@ __all__: Sequence[str] = ("Character",)
 from typing import List, Optional, Dict, Any, Union, Sequence, TYPE_CHECKING
 
 from .. import error
-from ..utils import Time, enums, Image
+from .. import url
+from ..internal import Time, enums, Image
 
 if TYPE_CHECKING:
     from datetime import datetime
@@ -49,13 +50,13 @@ class Character:
             The character's light
     id: `builtins.int`
             The character's id
-    gender: `aiobungie.utils.enums.DestinyGender`
+    gender: `aiobungie.internal.enums.Gender`
             The character's gender
-    race: `aiobungie.utils.enums.DestinyRace`
+    race: `aiobungie.internal.enums.Race`
             The character's race
-    emblem: `aiobungie.utils.assets.Image`
+    emblem: `aiobungie.internal.assets.Image`
             The character's currnt equipped emblem.
-    emblem_icon: `aiobungie.utils.assets.Image`
+    emblem_icon: `aiobungie.internal.assets.Image`
             The character's current icon for the equipped emblem.
     emblem_hash: `builtins.int`
             Character's emblem hash.
@@ -65,11 +66,11 @@ class Character:
             Returns the total played time in seconds for the chosen character.
     member_id: `builtins.int`
             The character's member id.
-    cls: `aiobungie.utils.enums.DestinyClass`
+    cls: `aiobungie.internal.enums.Class`
             The character's class.
     level: `builtins.int`
             Character's base level.
-    stats: `aiobungie.utils.enums.Stat`
+    stats: `aiobungie.internal.enums.Stat`
             Character's current stats.
     """
 
@@ -79,10 +80,10 @@ class Character:
     light: int
     """Character's light"""
 
-    gender: enums.DestinyGender
+    gender: enums.Gender
     """Character's gender"""
 
-    race: enums.DestinyRace
+    race: enums.Race
     """Character's race"""
 
     emblem: Image
@@ -106,7 +107,7 @@ class Character:
     member_type: enums.MembershipType
     """Character's membership type."""
 
-    cls: enums.DestinyClass
+    cls: enums.Class
     """Character's class."""
 
     title_hash: int
@@ -137,7 +138,7 @@ class Character:
         "_char",  # ignored
     )
 
-    def __init__(self, *, char: enums.DestinyClass, data: CharacterImpl) -> None:
+    def __init__(self, *, char: enums.Class, data: CharacterImpl) -> None:
         self._char = char
         self.update(data)
 
@@ -146,9 +147,34 @@ class Character:
         """Last played in human delta time."""
         return Time.human_timedelta(Time.clean_date(str(self.last_played)))
 
-    def _check_char(
-        self, payload: CharacterImpl, char: enums.DestinyClass
-    ) -> CharacterData:
+    @property
+    def url(self) -> str:
+        """Returns the bungie url for the current character."""
+        return f"{url.BASE}/en/Gear/{int(self.member_type)}/{self.member_id}/{self.id}"
+
+    def as_dict(self) -> Dict[str, Any]:
+        """Returns a dict object of the character,
+        This function is useful if you're binding to other REST apis.
+        """
+        return dict(
+            id=self.id,
+            light=self.light,
+            gender=self.gender,
+            race=self.race,
+            emblem=self.emblem,
+            emblem_icon=self.emblem_icon,
+            emblem_hash=self.emblem_hash,
+            last_played=self.last_played,
+            total_played=self.total_played,
+            member_id=self.member_id,
+            member_type=self.member_type,
+            cls=self.cls,
+            level=self.level,
+            title_hash=self.title_hash,
+            stats=self.stats,
+        )
+
+    def _check_char(self, payload: CharacterImpl, char: enums.Class) -> CharacterData:
         payload = [c for c in payload["characters"]["data"].values()]  # type: ignore
         return payload[char.value]  # type: ignore
 
@@ -164,16 +190,16 @@ class Character:
     def update(self, data: CharacterImpl) -> None:
         data = self._check_char(data, self._char)
         self.id = data["characterId"]
-        self.gender = data["genderType"]
-        self.race = data["raceType"]
-        self.cls = data["classType"]
+        self.gender = enums.Gender(data["genderType"])
+        self.race = enums.Race(data["raceType"])
+        self.cls = enums.Class(data["classType"])
         self.emblem = Image(str(data["emblemBackgroundPath"]))
         self.emblem_icon = Image(str(data["emblemPath"]))
         self.emblem_hash = data["emblemHash"]
         self.last_played = data["dateLastPlayed"]
         self.total_played = data["minutesPlayedTotal"]
         self.member_id = data["membershipId"]
-        self.member_type = data["membershipType"]
+        self.member_type = enums.MembershipType(data["membershipType"])
         self.level = data["baseCharacterLevel"]
         self.title_hash = data["titleRecordHash"]
         self.light = data["light"]

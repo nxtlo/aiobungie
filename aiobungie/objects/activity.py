@@ -29,7 +29,7 @@ __all__: Sequence[str] = ("Activity",)
 
 from typing import Dict, Sequence, Optional, Any, TYPE_CHECKING
 from ..error import HashError
-from ..utils.enums import GameMode, MembershipType, Raid
+from ..internal.enums import GameMode, MembershipType, Raid
 
 if TYPE_CHECKING:
     from datetime import datetime
@@ -38,15 +38,15 @@ if TYPE_CHECKING:
 class Activity:
     """Represents a Bungie Activity object.
 
-    An activity can be one of `aiobungie.utils.enums.GameMode`.
+    An activity can be one of `aiobungie.internal.enums.GameMode`.
 
     Attributes
     -----------
-    mode: `aiobungie.utils.enums.GameMode`
+    mode: `aiobungie.internal.enums.GameMode`
             The activity mode or type.
     is_completed: `builtins.str`
             Check if the activity was completed or no.
-    hash: `aiobungie.utils.enums.Raid`
+    hash: `aiobungie.internal.enums.Raid`
             This is a special attr used only for raids that returns the raid name.
     raw_hash: `builtins.int`
             The activity's hash.
@@ -60,7 +60,7 @@ class Activity:
             Activity's Total assists
     kd: `builtins.int`
             Activity's kd ration.
-    member_type: `aiobungie.utils.enums.MembershipType`
+    member_type: `aiobungie.internal.enums.MembershipType`
             The activity member's membership type.
     players_count: `builtins.int`
             Total players in the activity.
@@ -95,6 +95,24 @@ class Activity:
 
     def __init__(self, *, data: Any) -> None:
         self._update(data)
+
+    def as_dict(self) -> Dict[str, Any]:
+        """Returns a dict object of the Activity,
+        This function is useful if you're binding to other REST apis.
+        """
+        return dict(
+            is_completed=self.is_completed,
+            mode=self.mode,
+            duration=self.duration,
+            player_cout=self.player_count,
+            when=self.when,
+            kills=self.kills,
+            deaths=self.deaths,
+            assists=self.assists,
+            kd=self.kd,
+            member_type=self.member_type,
+            hash=self.hash or None,
+        )
 
     def _update(self, data: Dict[str, Any]):
         ...

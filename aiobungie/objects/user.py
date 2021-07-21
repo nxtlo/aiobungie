@@ -28,13 +28,13 @@ from __future__ import annotations
 __all__: Sequence[str] = ["User"]
 
 import logging
-from ..utils import Image, Time
+from ..internal import Image, Time
 from ..error import UserNotFound
-from typing import TYPE_CHECKING, Sequence, Optional, Union, Any, Final
+from typing import TYPE_CHECKING, Sequence, Optional, Union, Any, Final, Dict
 
 if TYPE_CHECKING:
     from datetime import datetime
-    from ..types.user import User as UserPayload
+    from ..types.user import UserImpl
 
 log: Final[logging.Logger] = logging.getLogger(__name__)
 
@@ -68,7 +68,7 @@ class User:
             The user's bungie status text
     locale: typing.Optional[builtins.str]
             The user's locale.
-    picture: typing.Optional[aiobungie.utils.assets.Image]
+    picture: typing.Optional[aiobungie.internal.assets.Image]
             The user's avatar.
     """
 
@@ -88,7 +88,7 @@ class User:
         "id",
     )
 
-    def __init__(self, *, data: UserPayload, position: int = 0) -> None:
+    def __init__(self, *, data: UserImpl, position: int = 0) -> None:
         self._update(data, position)
 
     @property
@@ -98,9 +98,6 @@ class User:
 
     def __str__(self) -> str:
         return str(self.name)
-
-    def __int__(self) -> int:
-        return int(self.id)
 
     def __bool__(self) -> bool:
         return bool(self.is_deleted)
@@ -120,7 +117,27 @@ class User:
     def __ne__(self, other: Any) -> bool:
         return not self.__eq__(other)
 
-    def _update(self, data: UserPayload, posotion: int = 0) -> None:
+    def as_dict(self) -> Dict[str, Any]:
+        """Returns a dict object of the user,
+        This function is useful if you're binding to other REST apis.
+        """
+        return dict(
+            id=self.id,
+            name=self.name,
+            about=self.about,
+            created_at=self.created_at,
+            updated_at=self.updated_at,
+            is_deleted=self.is_deleted,
+            locale=self.locale,
+            steam_name=self.steam_name,
+            twitch_name=self.twitch_name,
+            psn_name=self.psn_name,
+            blizzard_name=self.blizzard_name,
+            status=self.status,
+            picture=self.picture,
+        )
+
+    def _update(self, data: UserImpl, posotion: int = 0) -> None:
         try:
             data = data[posotion]  # type: ignore
         except KeyError:

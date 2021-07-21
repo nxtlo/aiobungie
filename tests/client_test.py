@@ -1,9 +1,17 @@
 import aiobungie
 import json
 import os
-from aiobungie.objects import Clan, Player, Character, User, Application, Activity
+from aiobungie.objects import (
+    Clan,
+    Player,
+    Character,
+    User,
+    Application,
+    Activity,
+    Profile,
+)
 
-from asyncio import run
+import asyncio
 from dotenv import load_dotenv
 from typing import Dict, Any, TYPE_CHECKING
 
@@ -18,7 +26,7 @@ data: Dict[str, Any] = {
     "clanid": 4389205,
     "memid": 4611686018484639825,
     "charid": 2305843009444904605,
-    "char": aiobungie.DestinyClass.WARLOCK,
+    "char": aiobungie.Class.WARLOCK,
     "memtype": aiobungie.MembershipType.STEAM,
     "vendor": aiobungie.Vendor.SPIDER,
 }
@@ -44,8 +52,8 @@ class ClientTest(aiobungie.Client):
 
     async def man_test(self):
         man = await self.fetch_manifest()
-        await man._dbinit()
-        print(await man.get_raid_image(aiobungie.Raid.LW))
+        await man.download()
+        print(await man.get_raid_image(raid=aiobungie.Raid.DSC))
 
     async def vendor_test(self):
         resp = await self.fetch_vendor_sales(
@@ -163,13 +171,45 @@ class ClientTest(aiobungie.Client):
             user.human_time,
         )
 
+    async def profile_test(self) -> None:
+        profile: Profile = await self.fetch_profile(
+            data["memid"],
+            aiobungie.MembershipType.STEAM,
+            component=aiobungie.Component.PROFILE,
+        )
+        print(repr(profile))
+
+    async def profile_char_test(self) -> None:
+        profile: Profile = await self.fetch_profile(
+            data["memid"],
+            aiobungie.MembershipType.STEAM,
+            component=aiobungie.Component.CHARECTERS,
+            character=aiobungie.Class.WARLOCK,
+        )
+        print(repr(profile.character))
+        print(profile.character.emblem)
+        print(profile.character.last_played)
+        print(profile.character.member_id)
+        print(profile.character.light)
+
 
 client = ClientTest(TOKEN)
 
 
 async def main() -> None:
-    await client.char_test()
-    await client.clan_test()
+    coros = [
+        client.profile_test(),
+        client.profile_char_test(),
+        client.player_test(),
+        client.char_test(),
+        client.clan_test(),
+        client.clan_id_test(),
+        client.user_id_test(),
+        client.user_test(),
+        client.app_test(),
+    ]
+    await asyncio.gather(*coros)
+    await client.man_test()
     # print(await client.fetch_vendor_sales())
     """Under is not working yet."""
     # await client.char_test()

@@ -46,7 +46,7 @@ log: logging.Logger = logging.getLogger(__name__)
 
 class OAuth2:
     """
-    OAuth2 implemention for the Bungie API.
+    OAuth2 implementation for the Bungie API.
 
     Attributes
     -----------

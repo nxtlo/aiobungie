@@ -44,8 +44,8 @@ __all__: typing.Sequence[str] = (
     "Place",
 )
 
-import typing
 import enum
+import typing
 
 
 @typing.final

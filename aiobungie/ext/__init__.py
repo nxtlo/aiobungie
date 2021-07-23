@@ -23,4 +23,5 @@
 """aiobungie extensions."""
 
 from __future__ import annotations
+
 from .oauth import OAuth2, refresh

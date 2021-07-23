@@ -27,14 +27,15 @@ from __future__ import annotations
 
 __all__: Sequence[str] = ["Clan", "ClanOwner"]
 
-from typing import List, Sequence, Dict, Any, Optional, Union, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Union
 
-from ..internal import Image, Time
 from ..error import ClanNotFound
+from ..internal import Image, Time
 from ..internal.enums import MembershipType
 
 if TYPE_CHECKING:
     from datetime import datetime
+
     from ..types.clans import ClanImpl, ClanOwnerImpl
 
 

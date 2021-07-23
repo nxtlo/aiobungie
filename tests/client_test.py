@@ -215,5 +215,4 @@ async def main() -> None:
     # await client.char_test()
     # await client.activity_test()
 
-
-client.loop.run_until_complete(main())
+client.run(main())

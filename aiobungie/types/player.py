@@ -23,7 +23,9 @@
 """Player and entities releated to a Destiny 2 Player."""
 
 from __future__ import annotations
-from typing import TypedDict, Any, Dict, Optional, Union
+
+from typing import Any, Dict, Optional, TypedDict, Union
+
 from ..internal import Image
 from ..internal.enums import MembershipType
 

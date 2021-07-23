@@ -27,9 +27,10 @@ from __future__ import annotations
 
 __all__: Sequence[str] = ("RedisCache", "MemoryCache", "Hash")
 
-from typing import Dict, Sequence, Final, Any, final
 import asyncio
 import logging
+from typing import Any, Dict, Final, Sequence, final
+
 import aredis
 
 log: Final[logging.Logger] = logging.getLogger(__name__)

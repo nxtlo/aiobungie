@@ -25,8 +25,10 @@
 
 
 from __future__ import annotations
-from typing import TypedDict, Optional, final
+
 from datetime import datetime
+from typing import Optional, TypedDict, final
+
 from .user import UserCard
 
 

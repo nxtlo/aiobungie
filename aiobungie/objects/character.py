@@ -28,15 +28,15 @@ from __future__ import annotations
 
 __all__: Sequence[str] = ("Character",)
 
-from typing import List, Optional, Dict, Any, Union, Sequence, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Union
 
-from .. import error
-from .. import url
-from ..internal import Time, enums, Image
+from .. import error, url
+from ..internal import Image, Time, enums
 
 if TYPE_CHECKING:
     from datetime import datetime
-    from ..types.character import CharacterImpl, CharacterData
+
+    from ..types.character import CharacterData, CharacterImpl
 
 
 class Character:

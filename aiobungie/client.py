@@ -30,14 +30,12 @@ __all__: Sequence[str] = [
 ]
 
 import asyncio
-from . import error
-from typing import Any, Optional, Sequence, Union, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Coroutine, Optional, Sequence, Union
 
-from .internal.enums import MembershipType, Class, GameMode, Vendor, Component
-
+from . import error, objects
 from .http import HTTPClient
-from . import objects
-from .internal import deprecated, Manifest
+from .internal import Manifest, deprecated
+from .internal.enums import Class, Component, GameMode, MembershipType, Vendor
 
 
 class Client:
@@ -72,6 +70,37 @@ class Client:
             raise ValueError("Missing the API key!")
         self.http: HTTPClient = HTTPClient(key=key)
         super().__init__()
+
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb) -> None:
+        pass
+
+    def run(self, future: Coroutine[Any, None, None]) -> None:
+        """Runs a Coro function until its complete.
+        This is equivalent to asyncio.get_event_loop().run_until_complete(...)
+
+        Parameters
+        ----------
+        future: `typing.Coroutine[typing.Any, typing.Any, typing.Any]`
+            Your coro function.
+
+        Example
+        -------
+        ```py
+        async def main() -> None:
+            player = await client.fetch_player("Fate")
+            print(player.name)
+
+        client.run(main())
+        ```
+        """
+        try:
+            if not self.loop.is_running():
+                self.loop.run_until_complete(future)
+        except asyncio.CancelledError:
+            raise
 
     async def from_path(self, path: str) -> Any:
         return await self.http.static_search(path)

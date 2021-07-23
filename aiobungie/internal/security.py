@@ -27,9 +27,10 @@ from __future__ import annotations
 
 __all__ = ["Crypt"]
 
-from typing import Union, Sequence, Final
+from logging import Logger, getLogger
+from typing import Final, Sequence, Union
+
 from cryptography.fernet import Fernet
-from logging import getLogger, Logger
 
 log: Final[Logger] = getLogger(__name__)
 

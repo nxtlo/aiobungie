@@ -24,8 +24,58 @@
 
 
 from __future__ import annotations
+
+__all__: Sequence[str] = (
+    # __init__.py
+    "__about__",
+    "__author__",
+    "__version__",
+    "__url__",
+    "__email__",
+    "__docs__",
+    "__license__",
+    # client.py
+    "Client",
+    # error.py
+    "PlayerNotFound",
+    "HashError",
+    "ActivityNotFound",
+    "CharacterTypeError",
+    "JsonError",
+    "ClanNotFound",
+    "CharacterNotFound",
+    "NotFound",
+    "HTTPException",
+    "UserNotFound",
+    # enums.py
+    "GameMode",
+    "MembershipType",
+    "Class",
+    "MilestoneType",
+    "Race",
+    "Vendor",
+    "Raid",
+    "Dungeon",
+    "Gender",
+    "Component",
+    "Planet",
+    "Stat",
+    "WeaponType",
+    "DamageType",
+    "Item",
+    "Place",
+)
+
+from typing import Sequence
+
+from .client import Client
 from .error import *
 from .internal.enums import *
-from .client import Client
 
-__version__ = "0.2.5a3"  # NOQA
+__version__ = "0.2.5a3"
+__about__ = "A Pythonic `async`/`await` framework / wrapper for interacting with the Bungie API."
+__author__ = "nxtlo"
+__docs__ = "https://nxtlo.github.io/aiobungie/"
+__license__ = "MIT"
+__url__ = "https://github.com/nxtlo/aiobungie"
+__email__ = "dhmony-99@hotmail.com"

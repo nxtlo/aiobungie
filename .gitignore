@@ -13,4 +13,4 @@ venv/
 *.db
 .mypy_cache/
 .nox
-docs/
+.cache/

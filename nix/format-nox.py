@@ -1,8 +1,9 @@
 import nox
 
 @nox.session(reuse_venv=True)
-def black(session: nox.Session) -> None:
-	session.install("black")
+def format_and_sort(session: nox.Session) -> None:
+	session.install("-r", "dev-requirements.txt")
+	session.run("isort", "aiobungie")
 	session.run("black", "aiobungie")
 
 

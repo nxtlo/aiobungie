@@ -28,6 +28,7 @@ __all__: typing.Sequence = ["Profile", "ProfileImpl", "PartialProfile"]
 
 import datetime
 import typing
+
 from ..internal import enums
 from . import character, user
 

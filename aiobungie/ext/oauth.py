@@ -32,12 +32,15 @@ import asyncio
 import inspect
 import logging
 import uuid
-from aiobungie import url
-from ..internal import RedisCache
-from typing import Any, Sequence, Optional, Dict, TYPE_CHECKING
-from requests_oauthlib import OAuth2Session
 from functools import wraps
+from typing import TYPE_CHECKING, Any, Dict, Optional, Sequence
+
+from requests_oauthlib import OAuth2Session
+
+from aiobungie import url
+
 from ..http import HTTPClient
+from ..internal import RedisCache
 
 if TYPE_CHECKING:
     import builtins

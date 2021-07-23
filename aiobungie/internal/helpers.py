@@ -28,8 +28,8 @@ from __future__ import annotations
 __all__: Sequence[str] = ["deprecated"]
 
 import warnings
-from typing import Callable, Any, Sequence
 from functools import wraps
+from typing import Any, Callable, Sequence
 
 
 def deprecated(func) -> Callable[[Any], None]:

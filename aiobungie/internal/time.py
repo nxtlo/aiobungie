@@ -29,10 +29,11 @@ __all__ = ("Time",)
 
 import calendar
 import time
-from typing import Optional
-from dateutil.relativedelta import relativedelta
-from dateutil.parser import parse
 from datetime import datetime
+from typing import Optional
+
+from dateutil.parser import parse
+from dateutil.relativedelta import relativedelta
 
 
 class plural:

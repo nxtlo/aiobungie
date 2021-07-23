@@ -28,33 +28,35 @@ from __future__ import annotations
 
 __all__ = ("HTTPClient",)
 
-import aiohttp
-from .error import NotFound, HTTPException, JsonError, ClanNotFound
-from . import url
 from typing import (
-    Optional,
+    TYPE_CHECKING,
     Any,
-    Union,
-    TypeVar,
     Coroutine,
     Dict,
-    List,
     Final,
-    TYPE_CHECKING,
+    List,
+    Optional,
+    TypeVar,
+    Union,
 )
 
+import aiohttp
+
+from . import url
+from .error import ClanNotFound, HTTPException, JsonError, NotFound
 from .internal.enums import Component
 
 if TYPE_CHECKING:
-    from .types import player, clans, user, application as app, profile, character
-    from .internal.enums import MembershipType, Class, GameMode
+    from .internal.enums import Class, GameMode, MembershipType
+    from .types import application as app
+    from .types import character, clans, player, profile, user
 
     T = TypeVar("T")
     Response = Coroutine[Any, Any, T]
 
+import asyncio
 import logging
 import warnings
-import asyncio
 
 log: Final[logging.Logger] = logging.getLogger(__name__)
 

@@ -28,12 +28,14 @@ from __future__ import annotations
 __all__: Sequence[str] = ["User"]
 
 import logging
-from ..internal import Image, Time
+from typing import TYPE_CHECKING, Any, Dict, Final, Optional, Sequence, Union
+
 from ..error import UserNotFound
-from typing import TYPE_CHECKING, Sequence, Optional, Union, Any, Final, Dict
+from ..internal import Image, Time
 
 if TYPE_CHECKING:
     from datetime import datetime
+
     from ..types.user import UserImpl
 
 log: Final[logging.Logger] = logging.getLogger(__name__)

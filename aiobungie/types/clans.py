@@ -25,10 +25,11 @@
 
 from __future__ import annotations
 
-from typing import TypedDict, List
+from datetime import datetime
+from typing import List, TypedDict
+
 from ..internal import Image
 from .user import UserCard
-from datetime import datetime
 
 
 class ClanOwnerImpl(TypedDict, total=False):

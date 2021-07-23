@@ -4,8 +4,9 @@ from dotenv import load_dotenv
 
 
 load_dotenv("./.env")
-TOKEN = str(os.environ.get('TOKEN'))
-SECRET = str(os.environ.get('SECRET'))
+TOKEN = str(os.environ.get("TOKEN"))
+SECRET = str(os.environ.get("SECRET"))
+
 
 class OAuth2Tests(OAuth2):
     def __init__(self, token: str, secret: str) -> None:
@@ -16,8 +17,12 @@ class OAuth2Tests(OAuth2):
     async def auth_tests(self):
         print(await self.get_current_user())
 
+
 client = OAuth2Tests(TOKEN, SECRET)
+
 
 async def main() -> None:
     await client.auth_tests()
+
+
 client.loop.run_until_complete(main())

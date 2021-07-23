@@ -37,7 +37,7 @@ __all__: Sequence[str] = [
     "UserNotFound",
 ]
 
-from typing import final, Sequence
+from typing import Sequence, final
 
 
 @final

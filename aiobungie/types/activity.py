@@ -24,10 +24,12 @@
 """Activity and entities related to a Bungie Activity flow."""
 
 from __future__ import annotations
+
 from datetime import datetime
+from typing import Optional, TypedDict
+
 from ..internal import Image
-from ..internal.enums import GameMode, MembershipType, Class
-from typing import TypedDict, Optional
+from ..internal.enums import Class, GameMode, MembershipType
 
 
 class ActivityTypeImpl(TypedDict, total=False):

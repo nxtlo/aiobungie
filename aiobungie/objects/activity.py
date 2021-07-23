@@ -27,7 +27,8 @@ from __future__ import annotations
 
 __all__: Sequence[str] = ("Activity",)
 
-from typing import Dict, Sequence, Optional, Any, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Dict, Optional, Sequence
+
 from ..error import HashError
 from ..internal.enums import GameMode, MembershipType, Raid
 

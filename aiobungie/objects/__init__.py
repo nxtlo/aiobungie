@@ -37,11 +37,12 @@ __all__: Seq[str] = [
     "Profile",
 ]
 
+from typing import Sequence as Seq
+
+from .activity import Activity
 from .application import Application, ApplicationOwner
-from .profile import Profile
+from .character import Character
 from .clans import Clan, ClanOwner
 from .player import Player
-from .character import Character
-from .activity import Activity
+from .profile import Profile
 from .user import User
-from typing import Sequence as Seq

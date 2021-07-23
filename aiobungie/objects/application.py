@@ -27,12 +27,13 @@ from __future__ import annotations
 
 __all__: Sequence[str] = ("Application", "ApplicationOwner")
 
-from typing import Optional, Sequence, Dict, TYPE_CHECKING, Any
-from ..internal import Image, Time
-from .. import MembershipType
+from typing import TYPE_CHECKING, Any, Dict, Optional, Sequence
+
+from ..internal import Image, Time, enums
 
 if TYPE_CHECKING:
     from datetime import datetime
+
     from ..types.application import ApplicationImpl, TeamImpl
     from ..types.user import UserCard
 
@@ -64,7 +65,7 @@ class ApplicationOwner:
 
     def __init__(self, data: UserCard) -> None:
         self.name: str = data["displayName"]
-        self.type: MembershipType = data["membershipType"]
+        self.type: enums.MembershipType = data["membershipType"]
         self.id: int = data["membershipId"]
         self.icon: Image = Image(str(data["iconPath"]))
         self.is_public: bool = data["isPublic"]

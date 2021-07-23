@@ -27,20 +27,22 @@ from __future__ import annotations
 
 __all__: t.Sequence[str] = ("Manifest",)
 
-import typing as t
-import aiosqlite
-import logging
-import zipfile
-import time
-import os
 import json
+import logging
+import os
 import os.path
-import aiohttp
-from ..http import HTTPClient
-from .enums import Raid
-from aiobungie import url
-from .assets import Image
+import time
+import typing as t
+import zipfile
 
+import aiohttp
+import aiosqlite
+
+from aiobungie import url
+
+from ..http import HTTPClient
+from .assets import Image
+from .enums import Raid
 
 log: t.Final[logging.Logger] = logging.getLogger(__name__)
 

@@ -11,5 +11,7 @@ def pdoc(session: nox.Session) -> None:
 		"--html",
 		"--output-dir",
 		"docs",
+		"--template-dir",
+		"templates",
 		"--force"
 	)

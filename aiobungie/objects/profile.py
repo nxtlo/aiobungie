@@ -26,16 +26,18 @@ from __future__ import annotations
 
 __all__: typing.Sequence[str] = ("Profile",)
 
-import typing
-import traceback
-import logging
 import datetime
+import logging
+import traceback
+import typing
+
+from aiobungie.internal import Image, Time, enums
+
 from .character import Character
-from aiobungie.internal import enums, Image, Time
 
 if typing.TYPE_CHECKING:
-    from ..types.profile import ProfileImpl, PartialProfile
     from ..types.character import CharacterImpl
+    from ..types.profile import PartialProfile, ProfileImpl
 
 log: typing.Final[logging.Logger] = logging.getLogger(__name__)
 

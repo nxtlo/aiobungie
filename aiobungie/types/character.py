@@ -23,10 +23,12 @@
 """Character entities related to Bungie Characters."""
 
 from __future__ import annotations
-from typing import TypedDict, Dict
-from ..internal import Image
-from ..internal.enums import Class, Race, Gender, Stat, MembershipType
+
 from datetime import datetime
+from typing import Dict, TypedDict
+
+from ..internal import Image
+from ..internal.enums import Class, Gender, MembershipType, Race, Stat
 
 
 class CharacterData(TypedDict):

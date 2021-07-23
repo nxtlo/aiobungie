@@ -23,10 +23,12 @@
 """User and entities releated to a Bungie user."""
 
 from __future__ import annotations
-from typing import TypedDict, List, Optional, Union
+
+from datetime import datetime
+from typing import List, Optional, TypedDict, Union
+
 from ..internal import Image
 from ..internal.enums import MembershipType
-from datetime import datetime
 
 
 class UserCard(TypedDict):

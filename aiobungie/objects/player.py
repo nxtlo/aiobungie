@@ -28,6 +28,7 @@ from __future__ import annotations
 __all__: Sequence[str] = ["Player"]
 
 from typing import TYPE_CHECKING, Any, Dict, Optional, Sequence, Union
+
 from ..error import PlayerNotFound
 from ..internal import Image
 from ..internal.enums import MembershipType

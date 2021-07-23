@@ -28,7 +28,8 @@ from __future__ import annotations
 
 __all__: Sequence[str] = ("Character",)
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Union
+import logging
+from typing import TYPE_CHECKING, Any, Dict, Final, List, Optional, Sequence, Union
 
 from .. import error, url
 from ..internal import Image, Time, enums
@@ -37,6 +38,8 @@ if TYPE_CHECKING:
     from datetime import datetime
 
     from ..types.character import CharacterData, CharacterImpl
+
+log: Final[logging.Logger] = logging.getLogger(__name__)
 
 
 class Character:
@@ -72,6 +75,9 @@ class Character:
             Character's base level.
     stats: `aiobungie.internal.enums.Stat`
             Character's current stats.
+    title_hash: `typing.Optional[builtins.int]`
+            The hash of the character's equipped title, Returns `builtins.NoneType`
+            if no title is equipped.
     """
 
     id: int
@@ -110,7 +116,7 @@ class Character:
     cls: enums.Class
     """Character's class."""
 
-    title_hash: int
+    title_hash: Optional[int]
     """Character's equipped title hash."""
 
     level: int
@@ -161,8 +167,8 @@ class Character:
             light=self.light,
             gender=self.gender,
             race=self.race,
-            emblem=self.emblem,
-            emblem_icon=self.emblem_icon,
+            emblem=str(self.emblem),
+            emblem_icon=str(self.emblem_icon),
             emblem_hash=self.emblem_hash,
             last_played=self.last_played,
             total_played=self.total_played,
@@ -175,8 +181,22 @@ class Character:
         )
 
     def _check_char(self, payload: CharacterImpl, char: enums.Class) -> CharacterData:
-        payload = [c for c in payload["characters"]["data"].values()]  # type: ignore
-        return payload[char.value]  # type: ignore
+        try:
+            payload = [c for c in payload["characters"]["data"].values()]  # type: ignore
+        except TypeError:
+            raise error.CharacterNotFound(
+                "Player id is invalid or not Found."
+            ) from None
+
+        try:
+            data = payload[char.value]  # type: ignore
+        except IndexError:
+            logging.warn(
+                f" Player doesn't have have a {str(char)} character. Will return the first character."
+            )
+            data = payload[0]  # type: ignore
+
+        return data
 
     def __int__(self) -> int:
         return self.id
@@ -201,6 +221,6 @@ class Character:
         self.member_id = data["membershipId"]
         self.member_type = enums.MembershipType(data["membershipType"])
         self.level = data["baseCharacterLevel"]
-        self.title_hash = data["titleRecordHash"]
+        self.title_hash = data.get("titleRecordHash", None)
         self.light = data["light"]
         self.stats = data["stats"]

@@ -95,7 +95,7 @@ class Player:
     id: int
     name: str
     is_public: bool
-    type: Union[MembershipType, int]
+    type: MembershipType
 
     def __init__(self, data: PlayerImpl, *, position: int = None) -&gt; None:
         self._update(data, position=position)
@@ -116,7 +116,16 @@ class Player:
         try:
             data = data[0] if not position else data[position]  # type: ignore
         except IndexError:
-            return data[0]  # type: ignore
+            try:  # type: ignore
+                # This is kinda cluster fuck
+                # if we&#39;re out of index the first time
+                # we try to return the first character
+                # otherwise the list is empty meaning
+                # the player was not found.
+                return data[0]  # type: ignore
+            except IndexError:
+                raise PlayerNotFound(&#34;Player was not found.&#34;)
+
         self.is_public = data[&#34;isPublic&#34;]
         self.icon = Image(str(data[&#34;iconPath&#34;]))
         self.id = data[&#34;membershipId&#34;]
@@ -206,7 +215,7 @@ class Player:
     id: int
     name: str
     is_public: bool
-    type: Union[MembershipType, int]
+    type: MembershipType
 
     def __init__(self, data: PlayerImpl, *, position: int = None) -&gt; None:
         self._update(data, position=position)
@@ -227,7 +236,16 @@ class Player:
         try:
             data = data[0] if not position else data[position]  # type: ignore
         except IndexError:
-            return data[0]  # type: ignore
+            try:  # type: ignore
+                # This is kinda cluster fuck
+                # if we&#39;re out of index the first time
+                # we try to return the first character
+                # otherwise the list is empty meaning
+                # the player was not found.
+                return data[0]  # type: ignore
+            except IndexError:
+                raise PlayerNotFound(&#34;Player was not found.&#34;)
+
         self.is_public = data[&#34;isPublic&#34;]
         self.icon = Image(str(data[&#34;iconPath&#34;]))
         self.id = data[&#34;membershipId&#34;]
@@ -273,7 +291,7 @@ class Player:
 <dd>
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
-<dt id="aiobungie.objects.player.Player.type"><code class="name">var <span class="ident">type</span> : Union[<a title="aiobungie.internal.enums.MembershipType" href="../internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a>, int]</code></dt>
+<dt id="aiobungie.objects.player.Player.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="../internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
 <dd>
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>

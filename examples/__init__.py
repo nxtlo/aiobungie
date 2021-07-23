@@ -19,35 +19,3 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
-"""Character entities related to Bungie Characters."""
-
-from __future__ import annotations
-
-from datetime import datetime
-from typing import Dict, Optional, TypedDict
-
-from ..internal import Image
-from ..internal.enums import Class, Gender, MembershipType, Race, Stat
-
-
-class CharacterData(TypedDict):
-    membershipId: int
-    membershipType: MembershipType
-    characterId: int
-    dateLastPlayed: datetime
-    minutesPlayedTotal: int
-    light: int
-    stats: Stat
-    raceType: Race
-    classType: Class
-    genderType: Gender
-    emblemPath: Image
-    emblemBackgroundPath: Image
-    emblemHash: int
-    baseCharacterLevel: int
-    titleRecordHash: Optional[int]
-
-
-class CharacterImpl(CharacterData, total=False):
-    pass

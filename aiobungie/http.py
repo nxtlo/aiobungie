@@ -104,9 +104,7 @@ class HTTPClient:
                                     "The clan you're looking for was not found."
                                 )
                             warnings.warn(
-                                "Got {} status {} Msg {}".format(
-                                    data, response.status, data["Message"]
-                                )
+                                f"Error making the request: code {response.status}, {data['Message']}"
                             )
                             await asyncio.sleep(tries + 1 * 2)
                             continue
@@ -173,18 +171,18 @@ class HTTPClient:
         self,
         userid: int,
         charid: int,
-        mode: Union[GameMode, int],
-        memtype: Union[int, MembershipType],
+        mode: GameMode,
+        memtype: MembershipType,
         *,
         page: Optional[int] = 1,
         limit: Optional[int] = 1,
     ) -> Response[Any]:
         return self.fetch(
             "GET",
-            f"Destiny2/{memtype}/Account/ \
+            f"Destiny2/{int(memtype)}/Account/ \
             {userid}/Character/{charid}/Stats/ \
             Activities/?page={page}&count={limit} \
-            &mode={mode}",
+            &mode={int(mode)}",
             headers=self.headers,
         )
 

@@ -57,7 +57,8 @@ from __future__ import annotations
 
 __all__: Sequence[str] = (&#34;Character&#34;,)
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Union
+import logging
+from typing import TYPE_CHECKING, Any, Dict, Final, List, Optional, Sequence, Union
 
 from .. import error, url
 from ..internal import Image, Time, enums
@@ -66,6 +67,8 @@ if TYPE_CHECKING:
     from datetime import datetime
 
     from ..types.character import CharacterData, CharacterImpl
+
+log: Final[logging.Logger] = logging.getLogger(__name__)
 
 
 class Character:
@@ -101,6 +104,9 @@ class Character:
             Character&#39;s base level.
     stats: `aiobungie.internal.enums.Stat`
             Character&#39;s current stats.
+    title_hash: `typing.Optional[builtins.int]`
+            The hash of the character&#39;s equipped title, Returns `builtins.NoneType`
+            if no title is equipped.
     &#34;&#34;&#34;
 
     id: int
@@ -139,7 +145,7 @@ class Character:
     cls: enums.Class
     &#34;&#34;&#34;Character&#39;s class.&#34;&#34;&#34;
 
-    title_hash: int
+    title_hash: Optional[int]
     &#34;&#34;&#34;Character&#39;s equipped title hash.&#34;&#34;&#34;
 
     level: int
@@ -190,8 +196,8 @@ class Character:
             light=self.light,
             gender=self.gender,
             race=self.race,
-            emblem=self.emblem,
-            emblem_icon=self.emblem_icon,
+            emblem=str(self.emblem),
+            emblem_icon=str(self.emblem_icon),
             emblem_hash=self.emblem_hash,
             last_played=self.last_played,
             total_played=self.total_played,
@@ -204,8 +210,22 @@ class Character:
         )
 
     def _check_char(self, payload: CharacterImpl, char: enums.Class) -&gt; CharacterData:
-        payload = [c for c in payload[&#34;characters&#34;][&#34;data&#34;].values()]  # type: ignore
-        return payload[char.value]  # type: ignore
+        try:
+            payload = [c for c in payload[&#34;characters&#34;][&#34;data&#34;].values()]  # type: ignore
+        except TypeError:
+            raise error.CharacterNotFound(
+                &#34;Player id is invalid or not Found.&#34;
+            ) from None
+
+        try:
+            data = payload[char.value]  # type: ignore
+        except IndexError:
+            logging.warn(
+                f&#34; Player doesn&#39;t have have a {str(char)} character. Will return the first character.&#34;
+            )
+            data = payload[0]  # type: ignore
+
+        return data
 
     def __int__(self) -&gt; int:
         return self.id
@@ -230,7 +250,7 @@ class Character:
         self.member_id = data[&#34;membershipId&#34;]
         self.member_type = enums.MembershipType(data[&#34;membershipType&#34;])
         self.level = data[&#34;baseCharacterLevel&#34;]
-        self.title_hash = data[&#34;titleRecordHash&#34;]
+        self.title_hash = data.get(&#34;titleRecordHash&#34;, None)
         self.light = data[&#34;light&#34;]
         self.stats = data[&#34;stats&#34;]</code></pre>
 </details>
@@ -279,6 +299,9 @@ class Character:
 <dd>Character's base level.</dd>
 <dt><strong><code>stats</code></strong> :&ensp;<code><a title="aiobungie.internal.enums.Stat" href="../internal/enums.html#aiobungie.internal.enums.Stat">Stat</a></code></dt>
 <dd>Character's current stats.</dd>
+<dt><strong><code>title_hash</code></strong> :&ensp;<code>typing.Optional[builtins.int]</code></dt>
+<dd>The hash of the character's equipped title, Returns <code>builtins.NoneType</code>
+if no title is equipped.</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -317,6 +340,9 @@ class Character:
             Character&#39;s base level.
     stats: `aiobungie.internal.enums.Stat`
             Character&#39;s current stats.
+    title_hash: `typing.Optional[builtins.int]`
+            The hash of the character&#39;s equipped title, Returns `builtins.NoneType`
+            if no title is equipped.
     &#34;&#34;&#34;
 
     id: int
@@ -355,7 +381,7 @@ class Character:
     cls: enums.Class
     &#34;&#34;&#34;Character&#39;s class.&#34;&#34;&#34;
 
-    title_hash: int
+    title_hash: Optional[int]
     &#34;&#34;&#34;Character&#39;s equipped title hash.&#34;&#34;&#34;
 
     level: int
@@ -406,8 +432,8 @@ class Character:
             light=self.light,
             gender=self.gender,
             race=self.race,
-            emblem=self.emblem,
-            emblem_icon=self.emblem_icon,
+            emblem=str(self.emblem),
+            emblem_icon=str(self.emblem_icon),
             emblem_hash=self.emblem_hash,
             last_played=self.last_played,
             total_played=self.total_played,
@@ -420,8 +446,22 @@ class Character:
         )
 
     def _check_char(self, payload: CharacterImpl, char: enums.Class) -&gt; CharacterData:
-        payload = [c for c in payload[&#34;characters&#34;][&#34;data&#34;].values()]  # type: ignore
-        return payload[char.value]  # type: ignore
+        try:
+            payload = [c for c in payload[&#34;characters&#34;][&#34;data&#34;].values()]  # type: ignore
+        except TypeError:
+            raise error.CharacterNotFound(
+                &#34;Player id is invalid or not Found.&#34;
+            ) from None
+
+        try:
+            data = payload[char.value]  # type: ignore
+        except IndexError:
+            logging.warn(
+                f&#34; Player doesn&#39;t have have a {str(char)} character. Will return the first character.&#34;
+            )
+            data = payload[0]  # type: ignore
+
+        return data
 
     def __int__(self) -&gt; int:
         return self.id
@@ -446,7 +486,7 @@ class Character:
         self.member_id = data[&#34;membershipId&#34;]
         self.member_type = enums.MembershipType(data[&#34;membershipType&#34;])
         self.level = data[&#34;baseCharacterLevel&#34;]
-        self.title_hash = data[&#34;titleRecordHash&#34;]
+        self.title_hash = data.get(&#34;titleRecordHash&#34;, None)
         self.light = data[&#34;light&#34;]
         self.stats = data[&#34;stats&#34;]</code></pre>
 </details>
@@ -560,8 +600,8 @@ This function is useful if you're binding to other REST apis.</p></div>
         light=self.light,
         gender=self.gender,
         race=self.race,
-        emblem=self.emblem,
-        emblem_icon=self.emblem_icon,
+        emblem=str(self.emblem),
+        emblem_icon=str(self.emblem_icon),
         emblem_hash=self.emblem_hash,
         last_played=self.last_played,
         total_played=self.total_played,
@@ -597,7 +637,7 @@ This function is useful if you're binding to other REST apis.</p></div>
     self.member_id = data[&#34;membershipId&#34;]
     self.member_type = enums.MembershipType(data[&#34;membershipType&#34;])
     self.level = data[&#34;baseCharacterLevel&#34;]
-    self.title_hash = data[&#34;titleRecordHash&#34;]
+    self.title_hash = data.get(&#34;titleRecordHash&#34;, None)
     self.light = data[&#34;light&#34;]
     self.stats = data[&#34;stats&#34;]</code></pre>
 </details>

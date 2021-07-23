@@ -64,6 +64,11 @@ class ClientTest(aiobungie.Client):
         )
         print(resp)
 
+    async def with_enter(self) -> None:
+        async with self as resp:
+            player = await resp.fetch_player("Fate", aiobungie.MembershipType.STEAM)
+            print(player.id)
+
     async def activity_test(self):
         # char = await self.fetch_charecter(data['memid'], data['memtype'], data['char'])
         act: Activity = await self.fetch_activity(
@@ -207,6 +212,7 @@ async def main() -> None:
         client.user_id_test(),
         client.user_test(),
         client.app_test(),
+        client.with_enter()
     ]
     await asyncio.gather(*coros)
     await client.man_test()

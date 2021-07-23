@@ -485,8 +485,8 @@ class Class(enum.Enum):
         self,
         userid: int,
         charid: int,
-        mode: Union[GameMode, int],
-        memtype: Union[int, MembershipType],
+        mode: GameMode,
+        memtype: MembershipType,
         *,
         page: Optional[int] = 1,
         limit: Optional[int] = 1,
@@ -521,7 +521,7 @@ class Class(enum.Enum):
             Any other errors occures during the response.
         &#34;&#34;&#34;
         resp = await self.http.fetch_activity(
-            userid, charid, int(mode), memtype=int(memtype), page=page, limit=limit
+            userid, charid, mode, memtype=memtype, page=page, limit=limit
         )
         try:
             return objects.Activity(data=resp)
@@ -603,7 +603,7 @@ class Class(enum.Enum):
 <h3>Methods</h3>
 <dl>
 <dt id="aiobungie.Client.fetch_activity"><code class="name flex">
-<span>async def <span class="ident">fetch_activity</span></span>(<span>self, userid: int, charid: int, mode: Union[<a title="aiobungie.GameMode" href="#aiobungie.GameMode">GameMode</a>, int], memtype: Union[int, <a title="aiobungie.MembershipType" href="#aiobungie.MembershipType">MembershipType</a>], *, page: Optional[int] = 1, limit: Optional[int] = 1) ‑> <a title="aiobungie.objects.activity.Activity" href="objects/activity.html#aiobungie.objects.activity.Activity">Activity</a></span>
+<span>async def <span class="ident">fetch_activity</span></span>(<span>self, userid: int, charid: int, mode: <a title="aiobungie.GameMode" href="#aiobungie.GameMode">GameMode</a>, memtype: <a title="aiobungie.MembershipType" href="#aiobungie.MembershipType">MembershipType</a>, *, page: Optional[int] = 1, limit: Optional[int] = 1) ‑> <a title="aiobungie.objects.activity.Activity" href="objects/activity.html#aiobungie.objects.activity.Activity">Activity</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Fetches a Destiny 2 activity for the specified user id and character.</p>
@@ -639,8 +639,8 @@ async def fetch_activity(
     self,
     userid: int,
     charid: int,
-    mode: Union[GameMode, int],
-    memtype: Union[int, MembershipType],
+    mode: GameMode,
+    memtype: MembershipType,
     *,
     page: Optional[int] = 1,
     limit: Optional[int] = 1,
@@ -675,7 +675,7 @@ async def fetch_activity(
         Any other errors occures during the response.
     &#34;&#34;&#34;
     resp = await self.http.fetch_activity(
-        userid, charid, int(mode), memtype=int(memtype), page=page, limit=limit
+        userid, charid, mode, memtype=memtype, page=page, limit=limit
     )
     try:
         return objects.Activity(data=resp)

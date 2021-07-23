@@ -43,7 +43,6 @@ log: Final[logging.Logger] = logging.getLogger(__name__)
 
 class User:
     """Represents a Bungie User object.
-
     Attributes
     ----------
     id: `builtins.int`

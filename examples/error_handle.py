@@ -20,34 +20,39 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Character entities related to Bungie Characters."""
-
-from __future__ import annotations
-
-from datetime import datetime
-from typing import Dict, Optional, TypedDict
-
-from ..internal import Image
-from ..internal.enums import Class, Gender, MembershipType, Race, Stat
+"""A simple example with error handle."""
 
 
-class CharacterData(TypedDict):
-    membershipId: int
-    membershipType: MembershipType
-    characterId: int
-    dateLastPlayed: datetime
-    minutesPlayedTotal: int
-    light: int
-    stats: Stat
-    raceType: Race
-    classType: Class
-    genderType: Gender
-    emblemPath: Image
-    emblemBackgroundPath: Image
-    emblemHash: int
-    baseCharacterLevel: int
-    titleRecordHash: Optional[int]
+# NOTE: This will only work on python 3.10
+# If you want to test this on older versions
+# Change `Character | None` to Union[Character, None]
+
+import asyncio
+import logging
+
+import aiobungie
+from aiobungie.objects import Character, Profile
 
 
-class CharacterImpl(CharacterData, total=False):
-    pass
+class HandleMyErrors:
+    def __init__(self) -> None:
+        self.type = aiobungie.MembershipType.STEAM
+        self.id = 4611686018484639825
+
+    async def my_titan(self) -> Character | None:  # Supports Python 3.10 union types.
+        try:
+            async with aiobungie.Client("YOUR_TOKEN_HERE") as client:
+                titan: Character = await client.fetch_character(
+                    self.id, self.type, aiobungie.Class.TITAN
+                )
+
+        except aiobungie.CharacterNotFound:
+            logging.warn(f"Couldn't find the titan for player id {self.id}")
+
+        return titan
+
+
+handler = HandleMyErrors()
+if __name__ == "__main__":
+    loop = asyncio.get_event_loop().run_until_complete
+    print(loop(handler.my_titan()))

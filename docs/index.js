@@ -1169,6 +1169,11 @@ INDEX=[
 "doc":"Raised when a  aiobungie.objects.User not found."
 },
 {
+"ref":"aiobungie.error.ComponentError",
+"url":2,
+"doc":"Raised when someone uses the wrong  aiobungie.internal.enums.Component. "
+},
+{
 "ref":"aiobungie.ext",
 "url":3,
 "doc":"aiobungie extensions."
@@ -2722,7 +2727,7 @@ INDEX=[
 {
 "ref":"aiobungie.objects.Character",
 "url":14,
-"doc":"Represents a Bungie Character Object. A Bungie character object can be a Warlock, Titan or a Hunter. Attributes      - light:  builtins.int The character's light id:  builtins.int The character's id gender:  aiobungie.internal.enums.Gender The character's gender race:  aiobungie.internal.enums.Race The character's race emblem:  aiobungie.internal.assets.Image The character's currnt equipped emblem. emblem_icon:  aiobungie.internal.assets.Image The character's current icon for the equipped emblem. emblem_hash:  builtins.int Character's emblem hash. last_played:  datetime.datetime When was this character last played date in UTC. total_played:  builtins.int Returns the total played time in seconds for the chosen character. member_id:  builtins.int The character's member id. cls:  aiobungie.internal.enums.Class The character's class. level:  builtins.int Character's base level. stats:  aiobungie.internal.enums.Stat Character's current stats."
+"doc":"Represents a Bungie Character Object. A Bungie character object can be a Warlock, Titan or a Hunter. Attributes      - light:  builtins.int The character's light id:  builtins.int The character's id gender:  aiobungie.internal.enums.Gender The character's gender race:  aiobungie.internal.enums.Race The character's race emblem:  aiobungie.internal.assets.Image The character's currnt equipped emblem. emblem_icon:  aiobungie.internal.assets.Image The character's current icon for the equipped emblem. emblem_hash:  builtins.int Character's emblem hash. last_played:  datetime.datetime When was this character last played date in UTC. total_played:  builtins.int Returns the total played time in seconds for the chosen character. member_id:  builtins.int The character's member id. cls:  aiobungie.internal.enums.Class The character's class. level:  builtins.int Character's base level. stats:  aiobungie.internal.enums.Stat Character's current stats. title_hash:  typing.Optional[builtins.int] The hash of the character's equipped title, Returns  builtins.NoneType if no title is equipped."
 },
 {
 "ref":"aiobungie.objects.Character.last_played_delta",
@@ -3304,7 +3309,7 @@ INDEX=[
 {
 "ref":"aiobungie.objects.character.Character",
 "url":17,
-"doc":"Represents a Bungie Character Object. A Bungie character object can be a Warlock, Titan or a Hunter. Attributes      - light:  builtins.int The character's light id:  builtins.int The character's id gender:  aiobungie.internal.enums.Gender The character's gender race:  aiobungie.internal.enums.Race The character's race emblem:  aiobungie.internal.assets.Image The character's currnt equipped emblem. emblem_icon:  aiobungie.internal.assets.Image The character's current icon for the equipped emblem. emblem_hash:  builtins.int Character's emblem hash. last_played:  datetime.datetime When was this character last played date in UTC. total_played:  builtins.int Returns the total played time in seconds for the chosen character. member_id:  builtins.int The character's member id. cls:  aiobungie.internal.enums.Class The character's class. level:  builtins.int Character's base level. stats:  aiobungie.internal.enums.Stat Character's current stats."
+"doc":"Represents a Bungie Character Object. A Bungie character object can be a Warlock, Titan or a Hunter. Attributes      - light:  builtins.int The character's light id:  builtins.int The character's id gender:  aiobungie.internal.enums.Gender The character's gender race:  aiobungie.internal.enums.Race The character's race emblem:  aiobungie.internal.assets.Image The character's currnt equipped emblem. emblem_icon:  aiobungie.internal.assets.Image The character's current icon for the equipped emblem. emblem_hash:  builtins.int Character's emblem hash. last_played:  datetime.datetime When was this character last played date in UTC. total_played:  builtins.int Returns the total played time in seconds for the chosen character. member_id:  builtins.int The character's member id. cls:  aiobungie.internal.enums.Class The character's class. level:  builtins.int Character's base level. stats:  aiobungie.internal.enums.Stat Character's current stats. title_hash:  typing.Optional[builtins.int] The hash of the character's equipped title, Returns  builtins.NoneType if no title is equipped."
 },
 {
 "ref":"aiobungie.objects.character.Character.last_played_delta",

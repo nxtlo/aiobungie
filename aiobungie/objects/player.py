@@ -66,7 +66,7 @@ class Player:
     id: int
     name: str
     is_public: bool
-    type: Union[MembershipType, int]
+    type: MembershipType
 
     def __init__(self, data: PlayerImpl, *, position: int = None) -> None:
         self._update(data, position=position)
@@ -87,7 +87,16 @@ class Player:
         try:
             data = data[0] if not position else data[position]  # type: ignore
         except IndexError:
-            return data[0]  # type: ignore
+            try:  # type: ignore
+                # This is kinda cluster fuck
+                # if we're out of index the first time
+                # we try to return the first character
+                # otherwise the list is empty meaning
+                # the player was not found.
+                return data[0]  # type: ignore
+            except IndexError:
+                raise PlayerNotFound("Player was not found.")
+
         self.is_public = data["isPublic"]
         self.icon = Image(str(data["iconPath"]))
         self.id = data["membershipId"]

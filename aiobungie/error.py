@@ -35,6 +35,7 @@ __all__: Sequence[str] = [
     "NotFound",
     "HTTPException",
     "UserNotFound",
+    "ComponentError",
 ]
 
 from typing import Sequence, final
@@ -88,3 +89,8 @@ class NotFound(Exception):
 @final
 class UserNotFound(Exception):
     """Raised when a `aiobungie.objects.User` not found."""
+
+
+@final
+class ComponentError(Exception):
+    """Raised when someone uses the wrong `aiobungie.internal.enums.Component.`"""

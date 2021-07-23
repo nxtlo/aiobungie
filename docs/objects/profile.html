@@ -60,6 +60,7 @@ import logging
 import traceback
 import typing
 
+from aiobungie import error
 from aiobungie.internal import Image, Time, enums
 
 from .character import Character
@@ -161,7 +162,6 @@ class Profile:
             last_played=self.last_played,
             character_ids=self.character_ids,
             power_cap=self.power_cap,
-            character=self.character if self._character else None,
         )
 
     @property
@@ -169,7 +169,7 @@ class Profile:
         &#34;&#34;&#34;Returns last_played attr but in human delta date.&#34;&#34;&#34;
         return Time.human_timedelta(self.last_played)
 
-    def predicate(self, data: ProfileImpl) -&gt; PartialProfile:
+    def predicate(self, data: ProfileImpl) -&gt; typing.Union[PartialProfile, ProfileImpl]:
         try:
             inject = data[&#34;profile&#34;][&#34;data&#34;]
         except KeyError:
@@ -178,7 +178,9 @@ class Profile:
 
     def _factor_character(self, data: CharacterImpl) -&gt; None:
         if not self._component == enums.Component.CHARECTERS:
-            raise Warning from None
+            raise error.ComponentError(
+                f&#34;Component used must be CHARACTERS and not {self._component}.&#34;
+            )
 
         if not self._character:
             raise ValueError(
@@ -187,13 +189,12 @@ class Profile:
 
         self.character = Character(char=self._character, data=data)
 
-    def _factor_profile(self, data: ProfileImpl) -&gt; None:
+    def _factor_profile(self, data: typing.Union[PartialProfile, ProfileImpl]) -&gt; None:
 
         if self._component != enums.Component.PROFILE:
             raise TypeError(
                 &#34;You must select the profile component to return a profile.&#34;
             )
-            traceback.print_exc()
 
         if self._component == enums.Component.PROFILE and self._character:
             log.warning(
@@ -210,7 +211,7 @@ class Profile:
         self.character_ids = data[&#34;characterIds&#34;]
         self.power_cap = data[&#34;currentSeasonRewardPowerCap&#34;]
 
-    def update(self, data: ProfileImpl) -&gt; None:
+    def update(self, data: typing.Union[PartialProfile, ProfileImpl]) -&gt; None:
         data = self.predicate(data)  # type: ignore
         if self._component is enums.Component.PROFILE:
             self._factor_profile(data)
@@ -350,7 +351,6 @@ to CHARACTERS from<code><a title="aiobungie.internal.enums.Component" href="../i
             last_played=self.last_played,
             character_ids=self.character_ids,
             power_cap=self.power_cap,
-            character=self.character if self._character else None,
         )
 
     @property
@@ -358,7 +358,7 @@ to CHARACTERS from<code><a title="aiobungie.internal.enums.Component" href="../i
         &#34;&#34;&#34;Returns last_played attr but in human delta date.&#34;&#34;&#34;
         return Time.human_timedelta(self.last_played)
 
-    def predicate(self, data: ProfileImpl) -&gt; PartialProfile:
+    def predicate(self, data: ProfileImpl) -&gt; typing.Union[PartialProfile, ProfileImpl]:
         try:
             inject = data[&#34;profile&#34;][&#34;data&#34;]
         except KeyError:
@@ -367,7 +367,9 @@ to CHARACTERS from<code><a title="aiobungie.internal.enums.Component" href="../i
 
     def _factor_character(self, data: CharacterImpl) -&gt; None:
         if not self._component == enums.Component.CHARECTERS:
-            raise Warning from None
+            raise error.ComponentError(
+                f&#34;Component used must be CHARACTERS and not {self._component}.&#34;
+            )
 
         if not self._character:
             raise ValueError(
@@ -376,13 +378,12 @@ to CHARACTERS from<code><a title="aiobungie.internal.enums.Component" href="../i
 
         self.character = Character(char=self._character, data=data)
 
-    def _factor_profile(self, data: ProfileImpl) -&gt; None:
+    def _factor_profile(self, data: typing.Union[PartialProfile, ProfileImpl]) -&gt; None:
 
         if self._component != enums.Component.PROFILE:
             raise TypeError(
                 &#34;You must select the profile component to return a profile.&#34;
             )
-            traceback.print_exc()
 
         if self._component == enums.Component.PROFILE and self._character:
             log.warning(
@@ -399,7 +400,7 @@ to CHARACTERS from<code><a title="aiobungie.internal.enums.Component" href="../i
         self.character_ids = data[&#34;characterIds&#34;]
         self.power_cap = data[&#34;currentSeasonRewardPowerCap&#34;]
 
-    def update(self, data: ProfileImpl) -&gt; None:
+    def update(self, data: typing.Union[PartialProfile, ProfileImpl]) -&gt; None:
         data = self.predicate(data)  # type: ignore
         if self._component is enums.Component.PROFILE:
             self._factor_profile(data)
@@ -479,12 +480,11 @@ This function is useful if you're binding to other REST apis.</p></div>
         last_played=self.last_played,
         character_ids=self.character_ids,
         power_cap=self.power_cap,
-        character=self.character if self._character else None,
     )</code></pre>
 </details>
 </dd>
 <dt id="aiobungie.objects.profile.Profile.predicate"><code class="name flex">
-<span>def <span class="ident">predicate</span></span>(<span>self, data: ProfileImpl) ‑> PartialProfile</span>
+<span>def <span class="ident">predicate</span></span>(<span>self, data: ProfileImpl) ‑> typing.Union[PartialProfile, ProfileImpl]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -492,7 +492,7 @@ This function is useful if you're binding to other REST apis.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def predicate(self, data: ProfileImpl) -&gt; PartialProfile:
+<pre><code class="python">def predicate(self, data: ProfileImpl) -&gt; typing.Union[PartialProfile, ProfileImpl]:
     try:
         inject = data[&#34;profile&#34;][&#34;data&#34;]
     except KeyError:
@@ -501,7 +501,7 @@ This function is useful if you're binding to other REST apis.</p></div>
 </details>
 </dd>
 <dt id="aiobungie.objects.profile.Profile.update"><code class="name flex">
-<span>def <span class="ident">update</span></span>(<span>self, data: ProfileImpl) ‑> None</span>
+<span>def <span class="ident">update</span></span>(<span>self, data: typing.Union[PartialProfile, ProfileImpl]) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -509,7 +509,7 @@ This function is useful if you're binding to other REST apis.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def update(self, data: ProfileImpl) -&gt; None:
+<pre><code class="python">def update(self, data: typing.Union[PartialProfile, ProfileImpl]) -&gt; None:
     data = self.predicate(data)  # type: ignore
     if self._component is enums.Component.PROFILE:
         self._factor_profile(data)

@@ -31,6 +31,7 @@ import logging
 import traceback
 import typing
 
+from aiobungie import error
 from aiobungie.internal import Image, Time, enums
 
 from .character import Character
@@ -132,7 +133,6 @@ class Profile:
             last_played=self.last_played,
             character_ids=self.character_ids,
             power_cap=self.power_cap,
-            character=self.character if self._character else None,
         )
 
     @property
@@ -140,7 +140,7 @@ class Profile:
         """Returns last_played attr but in human delta date."""
         return Time.human_timedelta(self.last_played)
 
-    def predicate(self, data: ProfileImpl) -> PartialProfile:
+    def predicate(self, data: ProfileImpl) -> typing.Union[PartialProfile, ProfileImpl]:
         try:
             inject = data["profile"]["data"]
         except KeyError:
@@ -149,7 +149,9 @@ class Profile:
 
     def _factor_character(self, data: CharacterImpl) -> None:
         if not self._component == enums.Component.CHARECTERS:
-            raise Warning from None
+            raise error.ComponentError(
+                f"Component used must be CHARACTERS and not {self._component}."
+            )
 
         if not self._character:
             raise ValueError(
@@ -158,13 +160,12 @@ class Profile:
 
         self.character = Character(char=self._character, data=data)
 
-    def _factor_profile(self, data: ProfileImpl) -> None:
+    def _factor_profile(self, data: typing.Union[PartialProfile, ProfileImpl]) -> None:
 
         if self._component != enums.Component.PROFILE:
             raise TypeError(
                 "You must select the profile component to return a profile."
             )
-            traceback.print_exc()
 
         if self._component == enums.Component.PROFILE and self._character:
             log.warning(
@@ -181,7 +182,7 @@ class Profile:
         self.character_ids = data["characterIds"]
         self.power_cap = data["currentSeasonRewardPowerCap"]
 
-    def update(self, data: ProfileImpl) -> None:
+    def update(self, data: typing.Union[PartialProfile, ProfileImpl]) -> None:
         data = self.predicate(data)  # type: ignore
         if self._component is enums.Component.PROFILE:
             self._factor_profile(data)

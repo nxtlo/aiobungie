@@ -64,6 +64,7 @@ __all__: Sequence[str] = [
     &#34;NotFound&#34;,
     &#34;HTTPException&#34;,
     &#34;UserNotFound&#34;,
+    &#34;ComponentError&#34;,
 ]
 
 from typing import Sequence, final
@@ -116,7 +117,12 @@ class NotFound(Exception):
 
 @final
 class UserNotFound(Exception):
-    &#34;&#34;&#34;Raised when a `aiobungie.objects.User` not found.&#34;&#34;&#34;</code></pre>
+    &#34;&#34;&#34;Raised when a `aiobungie.objects.User` not found.&#34;&#34;&#34;
+
+
+@final
+class ComponentError(Exception):
+    &#34;&#34;&#34;Raised when someone uses the wrong `aiobungie.internal.enums.Component.`&#34;&#34;&#34;</code></pre>
 </details>
 </section>
 <section>
@@ -201,6 +207,26 @@ class CharacterTypeError(Exception):
 <pre><code class="python">@final
 class ClanNotFound(Exception):
     &#34;&#34;&#34;Raised when a `aiobungie.objects.Clan` not found.&#34;&#34;&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.Exception</li>
+<li>builtins.BaseException</li>
+</ul>
+</dd>
+<dt id="aiobungie.error.ComponentError"><code class="flex name class">
+<span>class <span class="ident">ComponentError</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Raised when someone uses the wrong <code><a title="aiobungie.internal.enums.Component" href="internal/enums.html#aiobungie.internal.enums.Component">Component</a>.</code></p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@final
+class ComponentError(Exception):
+    &#34;&#34;&#34;Raised when someone uses the wrong `aiobungie.internal.enums.Component.`&#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -401,6 +427,9 @@ setTimeout(() => input.focus(), 100);
 </li>
 <li>
 <h4><code><a title="aiobungie.error.ClanNotFound" href="#aiobungie.error.ClanNotFound">ClanNotFound</a></code></h4>
+</li>
+<li>
+<h4><code><a title="aiobungie.error.ComponentError" href="#aiobungie.error.ComponentError">ComponentError</a></code></h4>
 </li>
 <li>
 <h4><code><a title="aiobungie.error.HTTPException" href="#aiobungie.error.HTTPException">HTTPException</a></code></h4>

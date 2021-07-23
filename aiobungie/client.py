@@ -221,8 +221,8 @@ class Client:
         self,
         userid: int,
         charid: int,
-        mode: Union[GameMode, int],
-        memtype: Union[int, MembershipType],
+        mode: GameMode,
+        memtype: MembershipType,
         *,
         page: Optional[int] = 1,
         limit: Optional[int] = 1,
@@ -257,7 +257,7 @@ class Client:
             Any other errors occures during the response.
         """
         resp = await self.http.fetch_activity(
-            userid, charid, int(mode), memtype=int(memtype), page=page, limit=limit
+            userid, charid, mode, memtype=memtype, page=page, limit=limit
         )
         try:
             return objects.Activity(data=resp)

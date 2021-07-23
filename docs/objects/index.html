@@ -658,6 +658,9 @@ This function is useful if you're binding to other REST apis.</p></div>
 <dd>Character's base level.</dd>
 <dt><strong><code>stats</code></strong> :&ensp;<code><a title="aiobungie.internal.enums.Stat" href="../internal/enums.html#aiobungie.internal.enums.Stat">Stat</a></code></dt>
 <dd>Character's current stats.</dd>
+<dt><strong><code>title_hash</code></strong> :&ensp;<code>typing.Optional[builtins.int]</code></dt>
+<dd>The hash of the character's equipped title, Returns <code>builtins.NoneType</code>
+if no title is equipped.</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -696,6 +699,9 @@ This function is useful if you're binding to other REST apis.</p></div>
             Character&#39;s base level.
     stats: `aiobungie.internal.enums.Stat`
             Character&#39;s current stats.
+    title_hash: `typing.Optional[builtins.int]`
+            The hash of the character&#39;s equipped title, Returns `builtins.NoneType`
+            if no title is equipped.
     &#34;&#34;&#34;
 
     id: int
@@ -734,7 +740,7 @@ This function is useful if you're binding to other REST apis.</p></div>
     cls: enums.Class
     &#34;&#34;&#34;Character&#39;s class.&#34;&#34;&#34;
 
-    title_hash: int
+    title_hash: Optional[int]
     &#34;&#34;&#34;Character&#39;s equipped title hash.&#34;&#34;&#34;
 
     level: int
@@ -785,8 +791,8 @@ This function is useful if you're binding to other REST apis.</p></div>
             light=self.light,
             gender=self.gender,
             race=self.race,
-            emblem=self.emblem,
-            emblem_icon=self.emblem_icon,
+            emblem=str(self.emblem),
+            emblem_icon=str(self.emblem_icon),
             emblem_hash=self.emblem_hash,
             last_played=self.last_played,
             total_played=self.total_played,
@@ -799,8 +805,22 @@ This function is useful if you're binding to other REST apis.</p></div>
         )
 
     def _check_char(self, payload: CharacterImpl, char: enums.Class) -&gt; CharacterData:
-        payload = [c for c in payload[&#34;characters&#34;][&#34;data&#34;].values()]  # type: ignore
-        return payload[char.value]  # type: ignore
+        try:
+            payload = [c for c in payload[&#34;characters&#34;][&#34;data&#34;].values()]  # type: ignore
+        except TypeError:
+            raise error.CharacterNotFound(
+                &#34;Player id is invalid or not Found.&#34;
+            ) from None
+
+        try:
+            data = payload[char.value]  # type: ignore
+        except IndexError:
+            logging.warn(
+                f&#34; Player doesn&#39;t have have a {str(char)} character. Will return the first character.&#34;
+            )
+            data = payload[0]  # type: ignore
+
+        return data
 
     def __int__(self) -&gt; int:
         return self.id
@@ -825,7 +845,7 @@ This function is useful if you're binding to other REST apis.</p></div>
         self.member_id = data[&#34;membershipId&#34;]
         self.member_type = enums.MembershipType(data[&#34;membershipType&#34;])
         self.level = data[&#34;baseCharacterLevel&#34;]
-        self.title_hash = data[&#34;titleRecordHash&#34;]
+        self.title_hash = data.get(&#34;titleRecordHash&#34;, None)
         self.light = data[&#34;light&#34;]
         self.stats = data[&#34;stats&#34;]</code></pre>
 </details>
@@ -939,8 +959,8 @@ This function is useful if you're binding to other REST apis.</p></div>
         light=self.light,
         gender=self.gender,
         race=self.race,
-        emblem=self.emblem,
-        emblem_icon=self.emblem_icon,
+        emblem=str(self.emblem),
+        emblem_icon=str(self.emblem_icon),
         emblem_hash=self.emblem_hash,
         last_played=self.last_played,
         total_played=self.total_played,
@@ -976,7 +996,7 @@ This function is useful if you're binding to other REST apis.</p></div>
     self.member_id = data[&#34;membershipId&#34;]
     self.member_type = enums.MembershipType(data[&#34;membershipType&#34;])
     self.level = data[&#34;baseCharacterLevel&#34;]
-    self.title_hash = data[&#34;titleRecordHash&#34;]
+    self.title_hash = data.get(&#34;titleRecordHash&#34;, None)
     self.light = data[&#34;light&#34;]
     self.stats = data[&#34;stats&#34;]</code></pre>
 </details>
@@ -1435,7 +1455,7 @@ This function is useful if you're binding to other REST apis.</p></div>
     id: int
     name: str
     is_public: bool
-    type: Union[MembershipType, int]
+    type: MembershipType
 
     def __init__(self, data: PlayerImpl, *, position: int = None) -&gt; None:
         self._update(data, position=position)
@@ -1456,7 +1476,16 @@ This function is useful if you're binding to other REST apis.</p></div>
         try:
             data = data[0] if not position else data[position]  # type: ignore
         except IndexError:
-            return data[0]  # type: ignore
+            try:  # type: ignore
+                # This is kinda cluster fuck
+                # if we&#39;re out of index the first time
+                # we try to return the first character
+                # otherwise the list is empty meaning
+                # the player was not found.
+                return data[0]  # type: ignore
+            except IndexError:
+                raise PlayerNotFound(&#34;Player was not found.&#34;)
+
         self.is_public = data[&#34;isPublic&#34;]
         self.icon = Image(str(data[&#34;iconPath&#34;]))
         self.id = data[&#34;membershipId&#34;]
@@ -1502,7 +1531,7 @@ This function is useful if you're binding to other REST apis.</p></div>
 <dd>
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
-<dt id="aiobungie.objects.Player.type"><code class="name">var <span class="ident">type</span> : Union[<a title="aiobungie.internal.enums.MembershipType" href="../internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a>, int]</code></dt>
+<dt id="aiobungie.objects.Player.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="../internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
 <dd>
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
@@ -1656,7 +1685,6 @@ to CHARACTERS from<code><a title="aiobungie.internal.enums.Component" href="../i
             last_played=self.last_played,
             character_ids=self.character_ids,
             power_cap=self.power_cap,
-            character=self.character if self._character else None,
         )
 
     @property
@@ -1664,7 +1692,7 @@ to CHARACTERS from<code><a title="aiobungie.internal.enums.Component" href="../i
         &#34;&#34;&#34;Returns last_played attr but in human delta date.&#34;&#34;&#34;
         return Time.human_timedelta(self.last_played)
 
-    def predicate(self, data: ProfileImpl) -&gt; PartialProfile:
+    def predicate(self, data: ProfileImpl) -&gt; typing.Union[PartialProfile, ProfileImpl]:
         try:
             inject = data[&#34;profile&#34;][&#34;data&#34;]
         except KeyError:
@@ -1673,7 +1701,9 @@ to CHARACTERS from<code><a title="aiobungie.internal.enums.Component" href="../i
 
     def _factor_character(self, data: CharacterImpl) -&gt; None:
         if not self._component == enums.Component.CHARECTERS:
-            raise Warning from None
+            raise error.ComponentError(
+                f&#34;Component used must be CHARACTERS and not {self._component}.&#34;
+            )
 
         if not self._character:
             raise ValueError(
@@ -1682,13 +1712,12 @@ to CHARACTERS from<code><a title="aiobungie.internal.enums.Component" href="../i
 
         self.character = Character(char=self._character, data=data)
 
-    def _factor_profile(self, data: ProfileImpl) -&gt; None:
+    def _factor_profile(self, data: typing.Union[PartialProfile, ProfileImpl]) -&gt; None:
 
         if self._component != enums.Component.PROFILE:
             raise TypeError(
                 &#34;You must select the profile component to return a profile.&#34;
             )
-            traceback.print_exc()
 
         if self._component == enums.Component.PROFILE and self._character:
             log.warning(
@@ -1705,7 +1734,7 @@ to CHARACTERS from<code><a title="aiobungie.internal.enums.Component" href="../i
         self.character_ids = data[&#34;characterIds&#34;]
         self.power_cap = data[&#34;currentSeasonRewardPowerCap&#34;]
 
-    def update(self, data: ProfileImpl) -&gt; None:
+    def update(self, data: typing.Union[PartialProfile, ProfileImpl]) -&gt; None:
         data = self.predicate(data)  # type: ignore
         if self._component is enums.Component.PROFILE:
             self._factor_profile(data)
@@ -1785,12 +1814,11 @@ This function is useful if you're binding to other REST apis.</p></div>
         last_played=self.last_played,
         character_ids=self.character_ids,
         power_cap=self.power_cap,
-        character=self.character if self._character else None,
     )</code></pre>
 </details>
 </dd>
 <dt id="aiobungie.objects.Profile.predicate"><code class="name flex">
-<span>def <span class="ident">predicate</span></span>(<span>self, data: ProfileImpl) ‑> PartialProfile</span>
+<span>def <span class="ident">predicate</span></span>(<span>self, data: ProfileImpl) ‑> typing.Union[PartialProfile, ProfileImpl]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1798,7 +1826,7 @@ This function is useful if you're binding to other REST apis.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def predicate(self, data: ProfileImpl) -&gt; PartialProfile:
+<pre><code class="python">def predicate(self, data: ProfileImpl) -&gt; typing.Union[PartialProfile, ProfileImpl]:
     try:
         inject = data[&#34;profile&#34;][&#34;data&#34;]
     except KeyError:
@@ -1807,7 +1835,7 @@ This function is useful if you're binding to other REST apis.</p></div>
 </details>
 </dd>
 <dt id="aiobungie.objects.Profile.update"><code class="name flex">
-<span>def <span class="ident">update</span></span>(<span>self, data: ProfileImpl) ‑> None</span>
+<span>def <span class="ident">update</span></span>(<span>self, data: typing.Union[PartialProfile, ProfileImpl]) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1815,7 +1843,7 @@ This function is useful if you're binding to other REST apis.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def update(self, data: ProfileImpl) -&gt; None:
+<pre><code class="python">def update(self, data: typing.Union[PartialProfile, ProfileImpl]) -&gt; None:
     data = self.predicate(data)  # type: ignore
     if self._component is enums.Component.PROFILE:
         self._factor_profile(data)
@@ -1831,8 +1859,9 @@ This function is useful if you're binding to other REST apis.</p></div>
 <span>(</span><span>*, data: UserImpl, position: int = 0)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Represents a Bungie User object.</p>
-<h2 id="attributes">Attributes</h2>
+<div class="desc"><p>Represents a Bungie User object.
+Attributes</p>
+<hr>
 <dl>
 <dt><strong><code>id</code></strong> :&ensp;<code>builtins.int</code></dt>
 <dd>The user's id</dd>
@@ -1867,7 +1896,6 @@ This function is useful if you're binding to other REST apis.</p></div>
 </summary>
 <pre><code class="python">class User:
     &#34;&#34;&#34;Represents a Bungie User object.
-
     Attributes
     ----------
     id: `builtins.int`

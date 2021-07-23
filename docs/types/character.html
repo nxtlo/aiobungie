@@ -54,7 +54,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Dict, TypedDict
+from typing import Dict, Optional, TypedDict
 
 from ..internal import Image
 from ..internal.enums import Class, Gender, MembershipType, Race, Stat
@@ -75,7 +75,7 @@ class CharacterData(TypedDict):
     emblemBackgroundPath: Image
     emblemHash: int
     baseCharacterLevel: int
-    titleRecordHash: int
+    titleRecordHash: Optional[int]
 
 
 class CharacterImpl(CharacterData, total=False):
@@ -126,7 +126,7 @@ dict(one=1, two=2)</p></div>
     emblemBackgroundPath: Image
     emblemHash: int
     baseCharacterLevel: int
-    titleRecordHash: int</code></pre>
+    titleRecordHash: Optional[int]</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -190,7 +190,7 @@ dict(one=1, two=2)</p></div>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="aiobungie.types.character.CharacterData.titleRecordHash"><code class="name">var <span class="ident">titleRecordHash</span> : int</code></dt>
+<dt id="aiobungie.types.character.CharacterData.titleRecordHash"><code class="name">var <span class="ident">titleRecordHash</span> : Optional[int]</code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -281,7 +281,7 @@ dict(one=1, two=2)</p></div>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="aiobungie.types.character.CharacterImpl.titleRecordHash"><code class="name">var <span class="ident">titleRecordHash</span> : int</code></dt>
+<dt id="aiobungie.types.character.CharacterImpl.titleRecordHash"><code class="name">var <span class="ident">titleRecordHash</span> : Optional[int]</code></dt>
 <dd>
 <div class="desc"></div>
 </dd>

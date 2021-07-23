@@ -3,6 +3,7 @@
 ![aiobungie Python Version Support](https://img.shields.io/pypi/pyversions/aiobungie)
 ![aiobungie PyPI last Version](https://img.shields.io/pypi/v/aiobungie?color=green)
 ![aiobungie LICENSE](https://img.shields.io/pypi/l/aiobungie)
+[![CodeFactor](https://www.codefactor.io/repository/github/nxtlo/aiobungie/badge)](https://www.codefactor.io/repository/github/nxtlo/aiobungie)
 
 # aiobungie
 

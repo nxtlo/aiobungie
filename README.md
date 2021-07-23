@@ -32,6 +32,8 @@ $ pip install aiobungie[dev]
 
 ## Quick Example
 
+See [Examples for more.](https://github.com/nxtlo/aiobungie/tree/master/examples)
+
 ```python
 import aiobungie
 

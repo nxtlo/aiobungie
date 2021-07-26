@@ -59,45 +59,45 @@ __all__: Sequence[str] = [
 ]
 
 import asyncio
-from typing import TYPE_CHECKING, Any, Coroutine, Optional, Sequence, Union
+from typing import Any, Coroutine, Optional, Sequence
+
+from aiobungie.internal import cache, impl
+from aiobungie.internal import serialize as serialize_
 
 from . import error, objects
 from .http import HTTPClient
 from .internal import Manifest, deprecated
-from .internal.enums import Class, Component, GameMode, MembershipType, Vendor
+from .internal.enums import Class, Component, GameMode, MembershipType
 
 
-class Client:
+class Client(impl.BaseClient):
     &#34;&#34;&#34;Represents a client that connects to the Bungie API
 
     Attributes
     -----------
-    key: `builtins.str`
+    token: `builtins.str`
         Your Bungie&#39;s API key or Token from the developer&#39;s portal.
     loop: `asyncio.AbstractEventLoop`
         asyncio event loop.
     &#34;&#34;&#34;
 
-    __slots__: Sequence[str] = (&#34;key&#34;, &#34;loop&#34;, &#34;http&#34;)
+    __slots__: Sequence[str] = (&#34;loop&#34;, &#34;http&#34;, &#34;_cache&#34;, &#34;_serialize&#34;)
 
-    key: str
-    &#34;&#34;&#34;You Bungie API Key&#34;&#34;&#34;
-
-    loop: asyncio.AbstractEventLoop
-    &#34;&#34;&#34;An optional asyncio loop, Default is None.&#34;&#34;&#34;
-
-    http: HTTPClient
-    &#34;&#34;&#34;The http client connector to make the request.&#34;&#34;&#34;
-
-    def __init__(self, key: str, *, loop: asyncio.AbstractEventLoop = None) -&gt; None:
-        self.loop: asyncio.AbstractEventLoop = (
+    def __init__(self, token: str, *, loop: asyncio.AbstractEventLoop = None) -&gt; None:
+        self.loop: asyncio.AbstractEventLoop = (  # asyncio loop.
             asyncio.get_event_loop() if not loop else loop
         )
-        self.key: str = key
 
-        if not self.key:
+        self._cache = cache.Hash(
+            cache.RedisCache()
+        )  # Redis hash cache for testing purposes only.
+        # This requires a redis server running for usage.
+
+        self._serialize = serialize_.Deserialize()  # DeSerilaizing payloads
+
+        if not token:
             raise ValueError(&#34;Missing the API key!&#34;)
-        self.http: HTTPClient = HTTPClient(key=key)
+        self.http: HTTPClient = HTTPClient(key=token, loop=self.loop)
         super().__init__()
 
     async def __aenter__(self):
@@ -106,7 +106,15 @@ class Client:
     async def __aexit__(self, exc_type, exc_val, exc_tb) -&gt; None:
         pass
 
-    def run(self, future: Coroutine[Any, None, None]) -&gt; None:
+    @property
+    def cache(self) -&gt; cache.Hash:
+        return self._cache
+
+    @property
+    def serilize(self) -&gt; serialize_.Deserialize:
+        return self._serialize
+
+    def run(self, future: Coroutine[Any, None, None], debug: bool = False) -&gt; None:
         &#34;&#34;&#34;Runs a Coro function until its complete.
         This is equivalent to asyncio.get_event_loop().run_until_complete(...)
 
@@ -127,6 +135,8 @@ class Client:
         &#34;&#34;&#34;
         try:
             if not self.loop.is_running():
+                if debug:
+                    self.loop.set_debug(True)
                 self.loop.run_until_complete(future)
         except asyncio.CancelledError:
             raise
@@ -134,9 +144,11 @@ class Client:
     async def from_path(self, path: str) -&gt; Any:
         return await self.http.static_search(path)
 
-    async def fetch_manifest(self) -&gt; Optional[Manifest]:
-        resp = await self.http.fetch_manifest()
-        return Manifest(self.key, resp)
+    #
+    #     async def fetch_manifest(self) -&gt; Optional[Manifest]:
+    #         resp = await self.http.fetch_manifest()
+    #         return Manifest(self._token, resp)
+    #
 
     async def fetch_user(self, name: str, *, position: int = 0) -&gt; objects.User:
         &#34;&#34;&#34;Fetches a Bungie user by their name.
@@ -155,7 +167,7 @@ class Client:
             The user wasa not found.
         &#34;&#34;&#34;
         data = await self.http.fetch_user(name=name)
-        return objects.User(data=data, position=position)
+        return self._serialize.deserialize_user(data, position)
 
     async def fetch_user_from_id(self, id: int) -&gt; objects.User:
         &#34;&#34;&#34;Fetches a Bungie user by their id.
@@ -174,7 +186,8 @@ class Client:
             The user wasa not found.
         &#34;&#34;&#34;
         payload = await self.http.fetch_user_from_id(id)
-        return objects.User(data=payload)
+        return self._serialize.deserialize_user(payload)  # type: ignore
+        # User and User from id has the same attrs but different return types so we have to ignore here.
 
     async def fetch_profile(
         self,
@@ -189,7 +202,7 @@ class Client:
         return objects.Profile(data=data, component=component, character=character)
 
     async def fetch_player(
-        self, name: str, type: MembershipType, *, position: int = None
+        self, name: str, type: MembershipType, *, position: int = 0
     ) -&gt; objects.Player:
         &#34;&#34;&#34;Fetches a Destiny2 Player.
 
@@ -208,7 +221,7 @@ class Client:
             a Destiny Player object
         &#34;&#34;&#34;
         resp = await self.http.fetch_player(name, type)
-        return objects.Player(data=resp, position=position)
+        return self._serialize.deserialize_player(payload=resp, position=position)
 
     async def fetch_character(
         self, memberid: int, type: MembershipType, character: Class
@@ -314,7 +327,7 @@ class Client:
             a Bungie application object.
         &#34;&#34;&#34;
         resp = await self.http.fetch_app(appid)
-        return objects.Application(resp)
+        return self._serialize.deserialize_app(resp)
 
     async def fetch_clan_from_id(self, id: int, /) -&gt; objects.Clan:
         &#34;&#34;&#34;Fetches a Bungie Clan by its id.
@@ -329,8 +342,8 @@ class Client:
         `aiobungie.objects.Clan`
             A Bungie clan object
         &#34;&#34;&#34;
-        resp = objects.Clan(data=(await self.http.fetch_clan_from_id(id)))
-        return resp
+        resp = await self.http.fetch_clan_from_id(id)
+        return self._serialize.deseialize_clan(resp)
 
     async def fetch_clan(self, name: str, /, type: int = 1) -&gt; objects.Clan:
         &#34;&#34;&#34;Fetches a Clan by its name and returns the first result.
@@ -348,7 +361,7 @@ class Client:
             A bungie clan object.
         &#34;&#34;&#34;
         resp = await self.http.fetch_clan(name, type)
-        return objects.Clan(data=resp)</code></pre>
+        return self._serialize.deseialize_clan(resp)</code></pre>
 </details>
 </section>
 <section>
@@ -362,13 +375,13 @@ class Client:
 <dl>
 <dt id="aiobungie.client.Client"><code class="flex name class">
 <span>class <span class="ident">Client</span></span>
-<span>(</span><span>key: str, *, loop: asyncio.AbstractEventLoop = None)</span>
+<span>(</span><span>token: str, *, loop: asyncio.AbstractEventLoop = None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Represents a client that connects to the Bungie API</p>
 <h2 id="attributes">Attributes</h2>
 <dl>
-<dt><strong><code>key</code></strong> :&ensp;<code>builtins.str</code></dt>
+<dt><strong><code>token</code></strong> :&ensp;<code>builtins.str</code></dt>
 <dd>Your Bungie's API key or Token from the developer's portal.</dd>
 <dt><strong><code>loop</code></strong> :&ensp;<code>asyncio.AbstractEventLoop</code></dt>
 <dd>asyncio event loop.</dd>
@@ -377,37 +390,34 @@ class Client:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Client:
+<pre><code class="python">class Client(impl.BaseClient):
     &#34;&#34;&#34;Represents a client that connects to the Bungie API
 
     Attributes
     -----------
-    key: `builtins.str`
+    token: `builtins.str`
         Your Bungie&#39;s API key or Token from the developer&#39;s portal.
     loop: `asyncio.AbstractEventLoop`
         asyncio event loop.
     &#34;&#34;&#34;
 
-    __slots__: Sequence[str] = (&#34;key&#34;, &#34;loop&#34;, &#34;http&#34;)
+    __slots__: Sequence[str] = (&#34;loop&#34;, &#34;http&#34;, &#34;_cache&#34;, &#34;_serialize&#34;)
 
-    key: str
-    &#34;&#34;&#34;You Bungie API Key&#34;&#34;&#34;
-
-    loop: asyncio.AbstractEventLoop
-    &#34;&#34;&#34;An optional asyncio loop, Default is None.&#34;&#34;&#34;
-
-    http: HTTPClient
-    &#34;&#34;&#34;The http client connector to make the request.&#34;&#34;&#34;
-
-    def __init__(self, key: str, *, loop: asyncio.AbstractEventLoop = None) -&gt; None:
-        self.loop: asyncio.AbstractEventLoop = (
+    def __init__(self, token: str, *, loop: asyncio.AbstractEventLoop = None) -&gt; None:
+        self.loop: asyncio.AbstractEventLoop = (  # asyncio loop.
             asyncio.get_event_loop() if not loop else loop
         )
-        self.key: str = key
 
-        if not self.key:
+        self._cache = cache.Hash(
+            cache.RedisCache()
+        )  # Redis hash cache for testing purposes only.
+        # This requires a redis server running for usage.
+
+        self._serialize = serialize_.Deserialize()  # DeSerilaizing payloads
+
+        if not token:
             raise ValueError(&#34;Missing the API key!&#34;)
-        self.http: HTTPClient = HTTPClient(key=key)
+        self.http: HTTPClient = HTTPClient(key=token, loop=self.loop)
         super().__init__()
 
     async def __aenter__(self):
@@ -416,7 +426,15 @@ class Client:
     async def __aexit__(self, exc_type, exc_val, exc_tb) -&gt; None:
         pass
 
-    def run(self, future: Coroutine[Any, None, None]) -&gt; None:
+    @property
+    def cache(self) -&gt; cache.Hash:
+        return self._cache
+
+    @property
+    def serilize(self) -&gt; serialize_.Deserialize:
+        return self._serialize
+
+    def run(self, future: Coroutine[Any, None, None], debug: bool = False) -&gt; None:
         &#34;&#34;&#34;Runs a Coro function until its complete.
         This is equivalent to asyncio.get_event_loop().run_until_complete(...)
 
@@ -437,6 +455,8 @@ class Client:
         &#34;&#34;&#34;
         try:
             if not self.loop.is_running():
+                if debug:
+                    self.loop.set_debug(True)
                 self.loop.run_until_complete(future)
         except asyncio.CancelledError:
             raise
@@ -444,9 +464,11 @@ class Client:
     async def from_path(self, path: str) -&gt; Any:
         return await self.http.static_search(path)
 
-    async def fetch_manifest(self) -&gt; Optional[Manifest]:
-        resp = await self.http.fetch_manifest()
-        return Manifest(self.key, resp)
+    #
+    #     async def fetch_manifest(self) -&gt; Optional[Manifest]:
+    #         resp = await self.http.fetch_manifest()
+    #         return Manifest(self._token, resp)
+    #
 
     async def fetch_user(self, name: str, *, position: int = 0) -&gt; objects.User:
         &#34;&#34;&#34;Fetches a Bungie user by their name.
@@ -465,7 +487,7 @@ class Client:
             The user wasa not found.
         &#34;&#34;&#34;
         data = await self.http.fetch_user(name=name)
-        return objects.User(data=data, position=position)
+        return self._serialize.deserialize_user(data, position)
 
     async def fetch_user_from_id(self, id: int) -&gt; objects.User:
         &#34;&#34;&#34;Fetches a Bungie user by their id.
@@ -484,7 +506,8 @@ class Client:
             The user wasa not found.
         &#34;&#34;&#34;
         payload = await self.http.fetch_user_from_id(id)
-        return objects.User(data=payload)
+        return self._serialize.deserialize_user(payload)  # type: ignore
+        # User and User from id has the same attrs but different return types so we have to ignore here.
 
     async def fetch_profile(
         self,
@@ -499,7 +522,7 @@ class Client:
         return objects.Profile(data=data, component=component, character=character)
 
     async def fetch_player(
-        self, name: str, type: MembershipType, *, position: int = None
+        self, name: str, type: MembershipType, *, position: int = 0
     ) -&gt; objects.Player:
         &#34;&#34;&#34;Fetches a Destiny2 Player.
 
@@ -518,7 +541,7 @@ class Client:
             a Destiny Player object
         &#34;&#34;&#34;
         resp = await self.http.fetch_player(name, type)
-        return objects.Player(data=resp, position=position)
+        return self._serialize.deserialize_player(payload=resp, position=position)
 
     async def fetch_character(
         self, memberid: int, type: MembershipType, character: Class
@@ -624,7 +647,7 @@ class Client:
             a Bungie application object.
         &#34;&#34;&#34;
         resp = await self.http.fetch_app(appid)
-        return objects.Application(resp)
+        return self._serialize.deserialize_app(resp)
 
     async def fetch_clan_from_id(self, id: int, /) -&gt; objects.Clan:
         &#34;&#34;&#34;Fetches a Bungie Clan by its id.
@@ -639,8 +662,8 @@ class Client:
         `aiobungie.objects.Clan`
             A Bungie clan object
         &#34;&#34;&#34;
-        resp = objects.Clan(data=(await self.http.fetch_clan_from_id(id)))
-        return resp
+        resp = await self.http.fetch_clan_from_id(id)
+        return self._serialize.deseialize_clan(resp)
 
     async def fetch_clan(self, name: str, /, type: int = 1) -&gt; objects.Clan:
         &#34;&#34;&#34;Fetches a Clan by its name and returns the first result.
@@ -658,21 +681,52 @@ class Client:
             A bungie clan object.
         &#34;&#34;&#34;
         resp = await self.http.fetch_clan(name, type)
-        return objects.Clan(data=resp)</code></pre>
+        return self._serialize.deseialize_clan(resp)</code></pre>
 </details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="aiobungie.internal.impl.BaseClient" href="internal/impl.html#aiobungie.internal.impl.BaseClient">BaseClient</a></li>
+<li><a title="aiobungie.internal.impl.BaseCache" href="internal/impl.html#aiobungie.internal.impl.BaseCache">BaseCache</a></li>
+<li>typing.Protocol</li>
+<li>typing.Generic</li>
+</ul>
 <h3>Instance variables</h3>
 <dl>
-<dt id="aiobungie.client.Client.http"><code class="name">var <span class="ident">http</span> : <a title="aiobungie.http.HTTPClient" href="http.html#aiobungie.http.HTTPClient">HTTPClient</a></code></dt>
+<dt id="aiobungie.client.Client.cache"><code class="name">var <span class="ident">cache</span> : <a title="aiobungie.internal.cache.Hash" href="internal/cache.html#aiobungie.internal.cache.Hash">Hash</a></code></dt>
 <dd>
-<div class="desc"><p>The http client connector to make the request.</p></div>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="aiobungie.internal.impl.BaseClient" href="internal/impl.html#aiobungie.internal.impl.BaseClient">BaseClient</a></code>.<code><a title="aiobungie.internal.impl.BaseClient.cache" href="internal/impl.html#aiobungie.internal.impl.BaseClient.cache">cache</a></code>
+</p>
+<div class="desc inherited"><p>A redis hash cache for testing purposes.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def cache(self) -&gt; cache.Hash:
+    return self._cache</code></pre>
+</details>
 </dd>
-<dt id="aiobungie.client.Client.key"><code class="name">var <span class="ident">key</span> : str</code></dt>
+<dt id="aiobungie.client.Client.http"><code class="name">var <span class="ident">http</span></code></dt>
 <dd>
-<div class="desc"><p>You Bungie API Key</p></div>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
-<dt id="aiobungie.client.Client.loop"><code class="name">var <span class="ident">loop</span> : asyncio.events.AbstractEventLoop</code></dt>
+<dt id="aiobungie.client.Client.loop"><code class="name">var <span class="ident">loop</span></code></dt>
 <dd>
-<div class="desc"><p>An optional asyncio loop, Default is None.</p></div>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="aiobungie.client.Client.serilize"><code class="name">var <span class="ident">serilize</span> : <a title="aiobungie.internal.serialize.Deserialize" href="internal/serialize.html#aiobungie.internal.serialize.Deserialize">Deserialize</a></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def serilize(self) -&gt; serialize_.Deserialize:
+    return self._serialize</code></pre>
+</details>
 </dd>
 </dl>
 <h3>Methods</h3>
@@ -796,7 +850,7 @@ a Bungie application object.</p></div>
         a Bungie application object.
     &#34;&#34;&#34;
     resp = await self.http.fetch_app(appid)
-    return objects.Application(resp)</code></pre>
+    return self._serialize.deserialize_app(resp)</code></pre>
 </details>
 </dd>
 <dt id="aiobungie.client.Client.fetch_character"><code class="name flex">
@@ -888,7 +942,7 @@ A bungie clan object.</p></div>
         A bungie clan object.
     &#34;&#34;&#34;
     resp = await self.http.fetch_clan(name, type)
-    return objects.Clan(data=resp)</code></pre>
+    return self._serialize.deseialize_clan(resp)</code></pre>
 </details>
 </dd>
 <dt id="aiobungie.client.Client.fetch_clan_from_id"><code class="name flex">
@@ -921,26 +975,12 @@ A Bungie clan object</p></div>
     `aiobungie.objects.Clan`
         A Bungie clan object
     &#34;&#34;&#34;
-    resp = objects.Clan(data=(await self.http.fetch_clan_from_id(id)))
-    return resp</code></pre>
-</details>
-</dd>
-<dt id="aiobungie.client.Client.fetch_manifest"><code class="name flex">
-<span>async def <span class="ident">fetch_manifest</span></span>(<span>self) ‑> Optional[<a title="aiobungie.internal.meta.Manifest" href="internal/meta.html#aiobungie.internal.meta.Manifest">Manifest</a>]</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">async def fetch_manifest(self) -&gt; Optional[Manifest]:
-    resp = await self.http.fetch_manifest()
-    return Manifest(self.key, resp)</code></pre>
+    resp = await self.http.fetch_clan_from_id(id)
+    return self._serialize.deseialize_clan(resp)</code></pre>
 </details>
 </dd>
 <dt id="aiobungie.client.Client.fetch_player"><code class="name flex">
-<span>async def <span class="ident">fetch_player</span></span>(<span>self, name: str, type: MembershipType, *, position: int = None) ‑> <a title="aiobungie.objects.player.Player" href="objects/player.html#aiobungie.objects.player.Player">Player</a></span>
+<span>async def <span class="ident">fetch_player</span></span>(<span>self, name: str, type: MembershipType, *, position: int = 0) ‑> <a title="aiobungie.objects.player.Player" href="objects/player.html#aiobungie.objects.player.Player">Player</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Fetches a Destiny2 Player.</p>
@@ -961,7 +1001,7 @@ a Destiny Player object</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">async def fetch_player(
-    self, name: str, type: MembershipType, *, position: int = None
+    self, name: str, type: MembershipType, *, position: int = 0
 ) -&gt; objects.Player:
     &#34;&#34;&#34;Fetches a Destiny2 Player.
 
@@ -980,7 +1020,7 @@ a Destiny Player object</p></div>
         a Destiny Player object
     &#34;&#34;&#34;
     resp = await self.http.fetch_player(name, type)
-    return objects.Player(data=resp, position=position)</code></pre>
+    return self._serialize.deserialize_player(payload=resp, position=position)</code></pre>
 </details>
 </dd>
 <dt id="aiobungie.client.Client.fetch_profile"><code class="name flex">
@@ -1042,7 +1082,7 @@ The user wasa not found.</p></div>
         The user wasa not found.
     &#34;&#34;&#34;
     data = await self.http.fetch_user(name=name)
-    return objects.User(data=data, position=position)</code></pre>
+    return self._serialize.deserialize_user(data, position)</code></pre>
 </details>
 </dd>
 <dt id="aiobungie.client.Client.fetch_user_from_id"><code class="name flex">
@@ -1082,7 +1122,7 @@ The user wasa not found.</p></div>
         The user wasa not found.
     &#34;&#34;&#34;
     payload = await self.http.fetch_user_from_id(id)
-    return objects.User(data=payload)</code></pre>
+    return self._serialize.deserialize_user(payload)  # type: ignore</code></pre>
 </details>
 </dd>
 <dt id="aiobungie.client.Client.fetch_vendor_sales"><code class="name flex">
@@ -1115,28 +1155,20 @@ The user wasa not found.</p></div>
 </details>
 </dd>
 <dt id="aiobungie.client.Client.run"><code class="name flex">
-<span>def <span class="ident">run</span></span>(<span>self, future: Coroutine[Any, None, None]) ‑> NoneType</span>
+<span>def <span class="ident">run</span></span>(<span>self, future: Coroutine[Any, None, None], debug: bool = False) ‑> NoneType</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Runs a Coro function until its complete.
-This is equivalent to asyncio.get_event_loop().run_until_complete(&hellip;)</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>future</code></strong> :&ensp;<code>typing.Coroutine[typing.Any, typing.Any, typing.Any]</code></dt>
-<dd>Your coro function.</dd>
-</dl>
-<h2 id="example">Example</h2>
-<pre><code class="language-py">async def main() -&gt; None:
-    player = await client.fetch_player(&quot;Fate&quot;)
-    print(player.name)
-
-client.run(main())
-</code></pre></div>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="aiobungie.internal.impl.BaseClient" href="internal/impl.html#aiobungie.internal.impl.BaseClient">BaseClient</a></code>.<code><a title="aiobungie.internal.impl.BaseClient.run" href="internal/impl.html#aiobungie.internal.impl.BaseClient.run">run</a></code>
+</p>
+<div class="desc inherited"><p>Runs a Coro function until its complete.
+This is equivalent to asyncio.get_event_loop().run_until_complete(&hellip;) …</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def run(self, future: Coroutine[Any, None, None]) -&gt; None:
+<pre><code class="python">def run(self, future: Coroutine[Any, None, None], debug: bool = False) -&gt; None:
     &#34;&#34;&#34;Runs a Coro function until its complete.
     This is equivalent to asyncio.get_event_loop().run_until_complete(...)
 
@@ -1157,6 +1189,8 @@ client.run(main())
     &#34;&#34;&#34;
     try:
         if not self.loop.is_running():
+            if debug:
+                self.loop.set_debug(True)
             self.loop.run_until_complete(future)
     except asyncio.CancelledError:
         raise</code></pre>
@@ -1229,12 +1263,12 @@ setTimeout(() => input.focus(), 100);
 <li>
 <h4><code><a title="aiobungie.client.Client" href="#aiobungie.client.Client">Client</a></code></h4>
 <ul class="two-column">
+<li><code><a title="aiobungie.client.Client.cache" href="#aiobungie.client.Client.cache">cache</a></code></li>
 <li><code><a title="aiobungie.client.Client.fetch_activity" href="#aiobungie.client.Client.fetch_activity">fetch_activity</a></code></li>
 <li><code><a title="aiobungie.client.Client.fetch_app" href="#aiobungie.client.Client.fetch_app">fetch_app</a></code></li>
 <li><code><a title="aiobungie.client.Client.fetch_character" href="#aiobungie.client.Client.fetch_character">fetch_character</a></code></li>
 <li><code><a title="aiobungie.client.Client.fetch_clan" href="#aiobungie.client.Client.fetch_clan">fetch_clan</a></code></li>
 <li><code><a title="aiobungie.client.Client.fetch_clan_from_id" href="#aiobungie.client.Client.fetch_clan_from_id">fetch_clan_from_id</a></code></li>
-<li><code><a title="aiobungie.client.Client.fetch_manifest" href="#aiobungie.client.Client.fetch_manifest">fetch_manifest</a></code></li>
 <li><code><a title="aiobungie.client.Client.fetch_player" href="#aiobungie.client.Client.fetch_player">fetch_player</a></code></li>
 <li><code><a title="aiobungie.client.Client.fetch_profile" href="#aiobungie.client.Client.fetch_profile">fetch_profile</a></code></li>
 <li><code><a title="aiobungie.client.Client.fetch_user" href="#aiobungie.client.Client.fetch_user">fetch_user</a></code></li>
@@ -1242,9 +1276,9 @@ setTimeout(() => input.focus(), 100);
 <li><code><a title="aiobungie.client.Client.fetch_vendor_sales" href="#aiobungie.client.Client.fetch_vendor_sales">fetch_vendor_sales</a></code></li>
 <li><code><a title="aiobungie.client.Client.from_path" href="#aiobungie.client.Client.from_path">from_path</a></code></li>
 <li><code><a title="aiobungie.client.Client.http" href="#aiobungie.client.Client.http">http</a></code></li>
-<li><code><a title="aiobungie.client.Client.key" href="#aiobungie.client.Client.key">key</a></code></li>
 <li><code><a title="aiobungie.client.Client.loop" href="#aiobungie.client.Client.loop">loop</a></code></li>
 <li><code><a title="aiobungie.client.Client.run" href="#aiobungie.client.Client.run">run</a></code></li>
+<li><code><a title="aiobungie.client.Client.serilize" href="#aiobungie.client.Client.serilize">serilize</a></code></li>
 </ul>
 </li>
 </ul>

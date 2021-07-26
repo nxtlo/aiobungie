@@ -28,9 +28,7 @@ from __future__ import annotations
 __all__ = ("Time",)
 
 import calendar
-import time
 from datetime import datetime
-from typing import Optional
 
 from dateutil.parser import parse
 from dateutil.relativedelta import relativedelta
@@ -74,7 +72,7 @@ def human_join(seq: list, delim: str = ", ", final: str = "or") -> str:
 
 class Time(object):
     @staticmethod
-    def from_timestamp(timer: float) -> datetime:
+    def from_timestamp(timer: int) -> datetime:
         """
         Converts timestamp to `datetime.datetime`
         """

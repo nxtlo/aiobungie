@@ -59,7 +59,6 @@ from typing import Sequence
 __all__: Sequence[str] = [
     &#34;Time&#34;,
     &#34;Image&#34;,
-    &#34;Crypt&#34;,
     &#34;enums&#34;,
     &#34;deprecated&#34;,
     &#34;MemoryCache&#34;,
@@ -72,7 +71,6 @@ from .assets import Image
 from .cache import MemoryCache, RedisCache
 from .helpers import deprecated
 from .meta import Manifest
-from .security import Crypt
 from .time import Time</code></pre>
 </details>
 </section>
@@ -95,13 +93,17 @@ from .time import Time</code></pre>
 <dd>
 <div class="desc"><p>A helper module for useful decorators and other stuff.</p></div>
 </dd>
+<dt><code class="name"><a title="aiobungie.internal.impl" href="impl.html">aiobungie.internal.impl</a></code></dt>
+<dd>
+<div class="desc"><p>A base module for all client implementation.</p></div>
+</dd>
 <dt><code class="name"><a title="aiobungie.internal.meta" href="meta.html">aiobungie.internal.meta</a></code></dt>
 <dd>
 <div class="desc"><p>A very basic implementation of a bungie Manifest.</p></div>
 </dd>
-<dt><code class="name"><a title="aiobungie.internal.security" href="security.html">aiobungie.internal.security</a></code></dt>
+<dt><code class="name"><a title="aiobungie.internal.serialize" href="serialize.html">aiobungie.internal.serialize</a></code></dt>
 <dd>
-<div class="desc"><p>A module for Encrypting and Decrypting for OAuth2 data.</p></div>
+<div class="desc"><p>Deserialization for all bungie incoming json payloads.</p></div>
 </dd>
 <dt><code class="name"><a title="aiobungie.internal.time" href="time.html">aiobungie.internal.time</a></code></dt>
 <dd>
@@ -142,86 +144,6 @@ from .time import Time</code></pre>
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="aiobungie.internal.Crypt"><code class="flex name class">
-<span>class <span class="ident">Crypt</span></span>
-<span>(</span><span>entry: bytes)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>an Object half inherits <code>cryptography.Fernet</code> to decrypt and encrypt data.</p>
-<h2 id="attributes">Attributes</h2>
-<dl>
-<dt><strong><code>entry</code></strong> :&ensp;<code>builtins.bytes</code></dt>
-<dd>The data entry you wanna encrypt and decrypt</dd>
-<dt><strong><code>instance</code></strong> :&ensp;<code>cryptography.Fernet</code></dt>
-<dd>The default for this attr is <code>cryptography.Fernet</code> and should not be changed
-it can be None or your own <code>cryptography.Fernet</code> instance.</dd>
-</dl></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class Crypt:
-    &#34;&#34;&#34;
-    an Object half inherits `cryptography.Fernet` to decrypt and encrypt data.
-
-    Attributes
-    -----------
-    entry: `builtins.bytes`
-            The data entry you wanna encrypt and decrypt
-
-    instance: `cryptography.Fernet`
-            The default for this attr is `cryptography.Fernet` and should not be changed
-            it can be None or your own `cryptography.Fernet` instance.
-    &#34;&#34;&#34;
-
-    __slots__: Sequence[str] = (&#34;_entry&#34;, &#34;_instance&#34;)
-
-    def __init__(self, entry: bytes) -&gt; None:
-        self._entry = entry
-        self._instance: Fernet = Fernet(Fernet.generate_key())
-
-    def encrypt(self) -&gt; bytes:
-        return self._instance.encrypt(self._entry)
-
-    def decrypt(self, token: bytes, ttl: int = None) -&gt; Union[bytes, str]:
-        key = self._instance.decrypt(token, ttl)
-        if not key:
-            log.warn(f&#34;Couldn&#39;t decrypt key.&#34;)
-        return key.strip()</code></pre>
-</details>
-<h3>Methods</h3>
-<dl>
-<dt id="aiobungie.internal.Crypt.decrypt"><code class="name flex">
-<span>def <span class="ident">decrypt</span></span>(<span>self, token: bytes, ttl: int = None) ‑> Union[bytes, str]</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def decrypt(self, token: bytes, ttl: int = None) -&gt; Union[bytes, str]:
-    key = self._instance.decrypt(token, ttl)
-    if not key:
-        log.warn(f&#34;Couldn&#39;t decrypt key.&#34;)
-    return key.strip()</code></pre>
-</details>
-</dd>
-<dt id="aiobungie.internal.Crypt.encrypt"><code class="name flex">
-<span>def <span class="ident">encrypt</span></span>(<span>self) ‑> bytes</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def encrypt(self) -&gt; bytes:
-    return self._instance.encrypt(self._entry)</code></pre>
-</details>
-</dd>
-</dl>
-</dd>
 <dt id="aiobungie.internal.Image"><code class="flex name class">
 <span>class <span class="ident">Image</span></span>
 <span>(</span><span>path: str)</span>
@@ -719,7 +641,7 @@ it can be None or your own <code>cryptography.Fernet</code> instance.</dd>
 </summary>
 <pre><code class="python">class Time(object):
     @staticmethod
-    def from_timestamp(timer: float) -&gt; datetime:
+    def from_timestamp(timer: int) -&gt; datetime:
         &#34;&#34;&#34;
         Converts timestamp to `datetime.datetime`
         &#34;&#34;&#34;
@@ -831,7 +753,7 @@ def clean_date(date: str) -&gt; datetime:
 </details>
 </dd>
 <dt id="aiobungie.internal.Time.from_timestamp"><code class="name flex">
-<span>def <span class="ident">from_timestamp</span></span>(<span>timer: float) ‑> datetime.datetime</span>
+<span>def <span class="ident">from_timestamp</span></span>(<span>timer: int) ‑> datetime.datetime</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Converts timestamp to <code>datetime.datetime</code></p></div>
@@ -840,7 +762,7 @@ def clean_date(date: str) -&gt; datetime:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def from_timestamp(timer: float) -&gt; datetime:
+def from_timestamp(timer: int) -&gt; datetime:
     &#34;&#34;&#34;
     Converts timestamp to `datetime.datetime`
     &#34;&#34;&#34;
@@ -1012,8 +934,9 @@ setTimeout(() => input.focus(), 100);
 <li><code><a title="aiobungie.internal.cache" href="cache.html">aiobungie.internal.cache</a></code></li>
 <li><code><a title="aiobungie.internal.enums" href="enums.html">aiobungie.internal.enums</a></code></li>
 <li><code><a title="aiobungie.internal.helpers" href="helpers.html">aiobungie.internal.helpers</a></code></li>
+<li><code><a title="aiobungie.internal.impl" href="impl.html">aiobungie.internal.impl</a></code></li>
 <li><code><a title="aiobungie.internal.meta" href="meta.html">aiobungie.internal.meta</a></code></li>
-<li><code><a title="aiobungie.internal.security" href="security.html">aiobungie.internal.security</a></code></li>
+<li><code><a title="aiobungie.internal.serialize" href="serialize.html">aiobungie.internal.serialize</a></code></li>
 <li><code><a title="aiobungie.internal.time" href="time.html">aiobungie.internal.time</a></code></li>
 </ul>
 </li>
@@ -1024,13 +947,6 @@ setTimeout(() => input.focus(), 100);
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
-<li>
-<h4><code><a title="aiobungie.internal.Crypt" href="#aiobungie.internal.Crypt">Crypt</a></code></h4>
-<ul class="">
-<li><code><a title="aiobungie.internal.Crypt.decrypt" href="#aiobungie.internal.Crypt.decrypt">decrypt</a></code></li>
-<li><code><a title="aiobungie.internal.Crypt.encrypt" href="#aiobungie.internal.Crypt.encrypt">encrypt</a></code></li>
-</ul>
-</li>
 <li>
 <h4><code><a title="aiobungie.internal.Image" href="#aiobungie.internal.Image">Image</a></code></h4>
 <ul class="">

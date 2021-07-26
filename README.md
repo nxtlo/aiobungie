@@ -1,4 +1,3 @@
-![aiobungie PyPI Download Results](https://img.shields.io/pypi/dm/aiobungie)
 ![aiobungie open Issue](https://img.shields.io/github/issues/nxtlo/aiobungie)
 ![aiobungie Python Version Support](https://img.shields.io/pypi/pyversions/aiobungie)
 ![aiobungie PyPI last Version](https://img.shields.io/pypi/v/aiobungie?color=green)
@@ -27,7 +26,7 @@ $ pip install aiobungie
 Development
 
 ```s
-$ pip install aiobungie[dev]
+$ pip install git+https://github.com/nxtlo/aiobungie
 ```
 
 ## Quick Example
@@ -70,37 +69,11 @@ async def main() -> None:
 client.loop.run_until_complete(main())
 ```
 
-## OAuth2
-
-```py
-# OAuth2 is not fully implemented yet.
-
-from aiobungie.ext import OAuth2, refresh
-
-client = OAuth2(token='', secret='')
-
-# Use the refresh decorator to automatically refresh the tokens
-# The cls param is required to get the client secret and pass it to the POST request.
-
-@refresh(hours=1, cls=client)
-async def auth_stuff() -> None:
-    await client.do_auth()
-    print(await client.get_current_user())
-
-client.loop.run_until_complete(auth_stuff())
-```
-
 ### Requirements
-* Python >=3.8
-* aiohttp
-
-### Dev
-* aiosqlite
-
-### OAuth2
-* cryptography
-* requests_oauthlib
-* aredis
+* Python >=3.8 -> Required.
+* aiohttp -> Required for http.
+* aredis -> Optional for cache.
+* aiosqlite -> Optional for Manifest db.
 
 ### Getting Help
 * Discord: `Fate 怒#0008` | `350750086357057537`

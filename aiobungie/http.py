@@ -28,28 +28,17 @@ from __future__ import annotations
 
 __all__ = ("HTTPClient",)
 
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Coroutine,
-    Dict,
-    Final,
-    List,
-    Optional,
-    TypeVar,
-    Union,
-)
+from typing import TYPE_CHECKING, Any, Coroutine, Final, Optional, TypeVar
 
 import aiohttp
 
 from . import url
-from .error import ClanNotFound, HTTPException, JsonError, NotFound
-from .internal.enums import Component
+from .error import ClanNotFound, HTTPException, NotFound
+from .internal import helpers
+from .internal.enums import Class, Component, GameMode, MembershipType
 
 if TYPE_CHECKING:
-    from .internal.enums import Class, GameMode, MembershipType
-    from .types import application as app
-    from .types import character, clans, player, profile, user
+    from .types import character, profile
 
     T = TypeVar("T")
     Response = Coroutine[Any, Any, T]
@@ -64,19 +53,29 @@ log: Final[logging.Logger] = logging.getLogger(__name__)
 class HTTPClient:
     """An HTTP Client for sending http requests to the Bungie API"""
 
-    def __init__(self, key: str) -> None:
+    def __init__(
+        self,
+        key: str,
+        connector: Optional[aiohttp.BaseConnector] = None,
+        *,
+        loop: asyncio.AbstractEventLoop = None,
+    ) -> None:
         self.key: str = key
-        self.headers: Dict[str, str] = {
-            "X-API-KEY": self.key
-        }  # had to do it this way due to Auth.
+        self.connector = connector
+        self.loop = loop or asyncio.get_event_loop()
 
     async def fetch(self, method: str, route: str, **kwargs: Any) -> Any:
-        if self.key is None:
+
+        if (token := self.key) is not None:
+            kwargs["headers"] = {"X-API-KEY": token}
+        else:
             raise ValueError("No API KEY was passed.")
 
         for tries in range(5):
             try:
-                async with aiohttp.ClientSession() as session:
+                async with aiohttp.ClientSession(
+                    loop=self.loop, connector=self.connector
+                ) as session:
                     async with session.request(
                         method=method, url=f"{url.REST_EP}/{route}", **kwargs
                     ) as response:
@@ -116,6 +115,8 @@ class HTTPClient:
                             response.method, response.url, response.status
                         )
                     )
+                else:
+                    raise HTTPException(data, response)
 
             except aiohttp.ClientError:
                 raise
@@ -126,37 +127,31 @@ class HTTPClient:
     # take Some time, but for Manifest and static search will
     # not return any types. So they will be Any.
 
-    def fetch_user(self, name: str) -> Response[user.UserImpl]:
-        return self.fetch("GET", f"User/SearchUsers/?q={name}", headers=self.headers)
+    def fetch_user(self, name: str) -> Response[helpers.JsonList]:
+        return self.fetch("GET", f"User/SearchUsers/?q={name}")
 
-    def fetch_user_from_id(self, id: int) -> Response[user.UserImpl]:
-        return self.fetch(
-            "GET", f"User/GetBungieNetUserById/{id}/", headers=self.headers
-        )
+    def fetch_user_from_id(self, id: int) -> Response[helpers.JsonDict]:
+        return self.fetch("GET", f"User/GetBungieNetUserById/{id}/")
 
     def fetch_manifest(self) -> Response[Any]:
-        return self.fetch("GET", "Destiny2/Manifest/", headers=self.headers)
+        return self.fetch("GET", "Destiny2/Manifest/")
 
     def static_search(self, path: str) -> Response[Any]:
-        return self.fetch("GET", path, headers=self.headers)
+        return self.fetch("GET", path)
 
     def fetch_player(
         self, name: str, type: MembershipType
-    ) -> Response[player.PlayerImpl]:
-        return self.fetch(
-            "GET",
-            f"Destiny2/SearchDestinyPlayer/{int(type)}/{name}",
-            headers=self.headers,
-        )
+    ) -> Response[helpers.JsonDict]:
+        return self.fetch("GET", f"Destiny2/SearchDestinyPlayer/{int(type)}/{name}")
 
-    def fetch_clan_from_id(self, id: int) -> Response[clans.ClanImpl]:
-        return self.fetch("GET", f"GroupV2/{id}", headers=self.headers)
+    def fetch_clan_from_id(self, id: int) -> Response[helpers.JsonDict]:
+        return self.fetch("GET", f"GroupV2/{id}")
 
-    def fetch_clan(self, name: str, type: int = 1) -> Response[clans.ClanImpl]:
-        return self.fetch("GET", f"GroupV2/Name/{name}/{type}", headers=self.headers)
+    def fetch_clan(self, name: str, type: int = 1) -> Response[helpers.JsonDict]:
+        return self.fetch("GET", f"GroupV2/Name/{name}/{type}")
 
-    def fetch_app(self, appid: int, /) -> Response[app.ApplicationImpl]:
-        return self.fetch("GET", f"App/Application/{appid}", headers=self.headers)
+    def fetch_app(self, appid: int, /) -> Response[helpers.JsonDict]:
+        return self.fetch("GET", f"App/Application/{appid}")
 
     def fetch_character(
         self, memberid: int, type: MembershipType, character: Class
@@ -164,7 +159,6 @@ class HTTPClient:
         return self.fetch(
             "GET",
             f"Destiny2/{int(type)}/Profile/{memberid}/?components={int(Component.CHARECTERS)}",
-            headers=self.headers,
         )
 
     def fetch_activity(
@@ -183,14 +177,11 @@ class HTTPClient:
             {userid}/Character/{charid}/Stats/ \
             Activities/?page={page}&count={limit} \
             &mode={int(mode)}",
-            headers=self.headers,
         )
 
     def fetch_vendor_sales(self) -> Response[Any]:
         return self.fetch(
-            "GET",
-            f"Destiny2/Vendors/?components={int(Component.VENDOR_SALES)}",
-            headers=self.headers,
+            "GET", f"Destiny2/Vendors/?components={int(Component.VENDOR_SALES)}"
         )
 
     def fetch_profile(
@@ -199,5 +190,4 @@ class HTTPClient:
         return self.fetch(
             "GET",
             f"Destiny2/{int(type)}/Profile/{int(memberid)}/?components={int(component)}",
-            headers=self.headers,
         )

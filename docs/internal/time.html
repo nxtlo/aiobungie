@@ -57,9 +57,7 @@ from __future__ import annotations
 __all__ = (&#34;Time&#34;,)
 
 import calendar
-import time
 from datetime import datetime
-from typing import Optional
 
 from dateutil.parser import parse
 from dateutil.relativedelta import relativedelta
@@ -103,7 +101,7 @@ def human_join(seq: list, delim: str = &#34;, &#34;, final: str = &#34;or&#34;) 
 
 class Time(object):
     @staticmethod
-    def from_timestamp(timer: float) -&gt; datetime:
+    def from_timestamp(timer: int) -&gt; datetime:
         &#34;&#34;&#34;
         Converts timestamp to `datetime.datetime`
         &#34;&#34;&#34;
@@ -215,7 +213,7 @@ class Time(object):
 </summary>
 <pre><code class="python">class Time(object):
     @staticmethod
-    def from_timestamp(timer: float) -&gt; datetime:
+    def from_timestamp(timer: int) -&gt; datetime:
         &#34;&#34;&#34;
         Converts timestamp to `datetime.datetime`
         &#34;&#34;&#34;
@@ -327,7 +325,7 @@ def clean_date(date: str) -&gt; datetime:
 </details>
 </dd>
 <dt id="aiobungie.internal.time.Time.from_timestamp"><code class="name flex">
-<span>def <span class="ident">from_timestamp</span></span>(<span>timer: float) ‑> datetime.datetime</span>
+<span>def <span class="ident">from_timestamp</span></span>(<span>timer: int) ‑> datetime.datetime</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Converts timestamp to <code>datetime.datetime</code></p></div>
@@ -336,7 +334,7 @@ def clean_date(date: str) -&gt; datetime:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def from_timestamp(timer: float) -&gt; datetime:
+def from_timestamp(timer: int) -&gt; datetime:
     &#34;&#34;&#34;
     Converts timestamp to `datetime.datetime`
     &#34;&#34;&#34;

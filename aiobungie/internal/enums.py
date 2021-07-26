@@ -267,6 +267,7 @@ class MembershipType(enum.Enum):
     STEAM = 3
     BLIZZARD = 4
     STADIA = 5
+    BUNGIE = 254
     ALL = -1
 
     def __str__(self) -> str:

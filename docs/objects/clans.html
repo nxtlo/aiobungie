@@ -56,24 +56,30 @@ from __future__ import annotations
 
 __all__: Sequence[str] = [&#34;Clan&#34;, &#34;ClanOwner&#34;]
 
+import abc
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Union
+
+import attr
+
+from aiobungie import url
 
 from ..error import ClanNotFound
 from ..internal import Image, Time
 from ..internal.enums import MembershipType
+from .user import UserCard
 
 if TYPE_CHECKING:
     from datetime import datetime
-
-    from ..types.clans import ClanImpl, ClanOwnerImpl
 
 
 class ClanMembers:
     __slots__: Sequence[str] = ()
 
 
-class ClanOwner:
+@attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
+class ClanOwner(UserCard):
     &#34;&#34;&#34;Represents a Bungie clan owner.
+
 
     Attributes
     -----------
@@ -85,7 +91,8 @@ class ClanOwner:
         An aware `builtins.str` version of a `datetime.datetime` object.
     type: `aiobungie.internal.enums.MembershipType`
         Returns the clan owner&#39;s membership type.
-        This could be Xbox, Steam, PSN, Blizzard or ALL, if the membership type is not recognized it will return `builtins.NoneType`.
+        This could be Xbox, Steam, PSN, Blizzard or ALL,
+        if the membership type is not recognized it will return `builtins.NoneType`.
     clan_id: `builtins.int`
         The clan owner&#39;s clan id
     joined_at: Optional[datetime.datetime]:
@@ -96,34 +103,46 @@ class ClanOwner:
         Returns True if the clan&#39;s owner profile is public or False if not.
     types: typing.List[builtins.int]:
         returns a List of `builtins.int` of the clan owner&#39;s types.
-
     &#34;&#34;&#34;
 
-    __slots__: Sequence[str] = (
-        &#34;id&#34;,
-        &#34;name&#34;,
-        &#34;type&#34;,
-        &#34;clan_id&#34;,
-        &#34;icon&#34;,
-        &#34;is_public&#34;,
-        &#34;joined_at&#34;,
-        &#34;types&#34;,
-        &#34;last_online&#34;,
-    )
+    id: int = attr.ib(hash=True, repr=True)
+    &#34;&#34;&#34;The user id.&#34;&#34;&#34;
 
-    id: int
-    name: str
-    last_online: str
-    type: Optional[MembershipType]
-    clan_id: int
-    joined_at: str
-    icon: Image
-    is_public: bool
-    types: List[int]
+    name: str = attr.ib(repr=True)
+    &#34;&#34;&#34;The user name.&#34;&#34;&#34;
 
-    def __init__(self, *, data: ClanOwnerImpl) -&gt; None:
-        self._update(data)
+    is_public: Optional[bool] = attr.ib(hash=False, repr=True, eq=False)
+    &#34;&#34;&#34;Returns if the user profile is public or no.&#34;&#34;&#34;
 
+    type: MembershipType = attr.ib(hash=False, repr=True, eq=True)
+    &#34;&#34;&#34;Returns the membership type of the user.&#34;&#34;&#34;
+
+    types: Optional[List[int]] = attr.ib(hash=True, repr=False, eq=False)
+    &#34;&#34;&#34;Returns a list of the member ship&#39;s membership types.&#34;&#34;&#34;
+
+    last_online: datetime = attr.ib(repr=False)
+    &#34;&#34;&#34;An aware `datetime.datetime` object of the user&#39;s last online date UTC.&#34;&#34;&#34;
+
+    clan_id: int = attr.ib(repr=True)
+    &#34;&#34;&#34;Owner&#39;s current clan id.&#34;&#34;&#34;
+
+    icon: Image = attr.ib(repr=False)
+    &#34;&#34;&#34;Owner&#39;s profile icom&#34;&#34;&#34;
+
+    joined_at: datetime = attr.ib(repr=True)
+    &#34;&#34;&#34;Owner&#39;s bungie join date.&#34;&#34;&#34;
+
+    @property
+    def human_timedelta(self) -&gt; str:
+        &#34;&#34;&#34;Returns a human readble date of the clan owner&#39;s last login.&#34;&#34;&#34;
+        return Time.human_timedelta(self.last_online)
+
+    @property
+    def link(self) -&gt; Optional[str]:
+        &#34;&#34;&#34;Returns the user&#39;s profile link.&#34;&#34;&#34;
+        return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;
+
+    @property
     def as_dict(self) -&gt; Dict[str, Any]:
         &#34;&#34;&#34;Returns a dict object of the clan owner,
         This function is useful if you&#39;re binding to other REST apis.
@@ -132,7 +151,7 @@ class ClanOwner:
             id=self.id,
             name=self.name,
             is_public=self.is_public,
-            icon=self.icon,
+            icon=str(self.icon),
             types=self.type,
             joined_at=self.joined_at,
             type=self.type,
@@ -140,28 +159,8 @@ class ClanOwner:
             last_online=self.last_online,
         )
 
-    def _update(self, data: ClanOwnerImpl) -&gt; None:
-        self.id = data[&#34;destinyUserInfo&#34;][&#34;membershipId&#34;]
-        self.name = data[&#34;destinyUserInfo&#34;][&#34;displayName&#34;]
-        self.icon = Image(str(data[&#34;destinyUserInfo&#34;][&#34;iconPath&#34;]))
-        convert = int(data[&#34;lastOnlineStatusChange&#34;])
-        self.last_online = Time.human_timedelta(Time.from_timestamp(convert))
-        self.clan_id = data[&#34;groupId&#34;]
-        self.joined_at = data[&#34;joinDate&#34;]
-        self.types = data[&#34;destinyUserInfo&#34;][&#34;applicableMembershipTypes&#34;]
-        self.is_public = data[&#34;destinyUserInfo&#34;][&#34;isPublic&#34;]
-        self.type = MembershipType(data[&#34;destinyUserInfo&#34;].get(&#34;membershipType&#34;, None))
 
-    def __str__(self) -&gt; str:
-        return str(self.name)
-
-    def __repr__(self) -&gt; str:
-        return f&#34;ClaOwner name={self.name} id={self.id} type={self.type} last_online={self.last_online}&#34;
-
-    def __bool__(self) -&gt; bool:
-        return self.is_public
-
-
+@attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
 class Clan:
     &#34;&#34;&#34;Represents a Bungie clan object.
 
@@ -190,35 +189,45 @@ class Clan:
         See `aiobungie.objects.ClanOwner` for info.
     &#34;&#34;&#34;
 
-    __slots__: Sequence[str] = (
-        &#34;id&#34;,
-        &#34;name&#34;,
-        &#34;created_at&#34;,
-        &#34;member_count&#34;,
-        &#34;description&#34;,
-        &#34;is_public&#34;,
-        &#34;banner&#34;,
-        &#34;avatar&#34;,
-        &#34;about&#34;,
-        &#34;tags&#34;,
-        &#34;owner&#34;,
-    )
+    id: int = attr.ib(hash=True, repr=True, eq=True)
+    &#34;&#34;&#34;The clan id&#34;&#34;&#34;
 
-    id: int
-    name: str
-    created_at: datetime
-    member_count: int
-    description: str
-    is_public: bool
-    banner: Image
-    avatar: Image
-    about: str
-    tags: List[str]
-    owner: ClanOwner
+    name: str = attr.ib(repr=True)
+    &#34;&#34;&#34;The clan&#39;s name&#34;&#34;&#34;
 
-    def __init__(self, data: ClanImpl) -&gt; None:
-        self._update(data=data)
+    created_at: datetime = attr.ib(repr=True)
+    &#34;&#34;&#34;Clan&#39;s creation date time in UTC.&#34;&#34;&#34;
 
+    member_count: int = attr.ib(repr=True)
+    &#34;&#34;&#34;Clan&#39;s member count.&#34;&#34;&#34;
+
+    description: str = attr.ib(repr=True, eq=False)
+    &#34;&#34;&#34;Clan&#39;s description&#34;&#34;&#34;
+
+    is_public: bool = attr.ib(repr=True, eq=False)
+    &#34;&#34;&#34;Clan&#39;s privacy status.&#34;&#34;&#34;
+
+    banner: Image = attr.ib(repr=False)
+    &#34;&#34;&#34;Clan&#39;s banner&#34;&#34;&#34;
+
+    avatar: Image = attr.ib(repr=False)
+    &#34;&#34;&#34;Clan&#39;s avatar&#34;&#34;&#34;
+
+    about: str = attr.ib(repr=True, eq=False)
+    &#34;&#34;&#34;Clan&#39;s about title.&#34;&#34;&#34;
+
+    tags: List[str] = attr.ib(repr=False)
+    &#34;&#34;&#34;A list of the clan&#39;s tags.&#34;&#34;&#34;
+
+    owner: ClanOwner = attr.ib(repr=True)
+    &#34;&#34;&#34;The clan owner.&#34;&#34;&#34;
+
+    @property
+    def human_timedelta(self) -&gt; str:
+        &#34;&#34;&#34;Returns a human readble date of the clan&#39;s creation date.&#34;&#34;&#34;
+        return Time.human_timedelta(self.created_at)
+
+    @property
     def as_dict(self) -&gt; Dict[str, Any]:
         &#34;&#34;&#34;Returns a dict object of the player,
         This function is useful if you&#39;re binding to other REST apis.
@@ -228,34 +237,11 @@ class Clan:
             name=self.name,
             created_at=self.created_at,
             is_public=self.is_public,
-            avatar=self.avatar,
-            banner=self.banner,
+            avatar=str(self.avatar),
+            banner=str(self.banner),
             about=self.about,
             description=self.description,
             tags=self.tags,
-            owner=self.owner,
-        )
-
-    def _update(self, data: ClanImpl) -&gt; None:
-        self.id = data[&#34;detail&#34;][&#34;groupId&#34;]
-        self.name = data[&#34;detail&#34;][&#34;name&#34;]
-        self.created_at = data[&#34;detail&#34;][&#34;creationDate&#34;]
-        self.member_count = data[&#34;detail&#34;][&#34;memberCount&#34;]
-        self.description = data[&#34;detail&#34;][&#34;about&#34;]
-        self.about = data[&#34;detail&#34;][&#34;motto&#34;]
-        self.is_public = data[&#34;detail&#34;][&#34;isPublic&#34;]
-        self.banner = Image(str(data[&#34;detail&#34;][&#34;bannerPath&#34;]))
-        self.avatar = Image(str(data[&#34;detail&#34;][&#34;avatarPath&#34;]))
-        self.tags = data[&#34;detail&#34;][&#34;tags&#34;]
-        self.owner = ClanOwner(data=data[&#34;founder&#34;])
-
-    def __str__(self) -&gt; str:
-        return str(self.name)
-
-    def __repr__(self) -&gt; Union[Any, str]:
-        return (
-            f&#34;&lt;Clan id={self.id} name={self.name} created_at={self.created_at}&#34;
-            f&#34; owner={self.owner} is_public={self.is_public} about={self.about}&#34;
         )</code></pre>
 </details>
 </section>
@@ -270,7 +256,7 @@ class Clan:
 <dl>
 <dt id="aiobungie.objects.clans.Clan"><code class="flex name class">
 <span>class <span class="ident">Clan</span></span>
-<span>(</span><span>data: ClanImpl)</span>
+<span>(</span><span>*, id: int, name: str, created_at: datetime, member_count: int, description: str, is_public: bool, banner: Image, avatar: Image, about: str, tags: List[str], owner: <a title="aiobungie.objects.clans.ClanOwner" href="#aiobungie.objects.clans.ClanOwner">ClanOwner</a>)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Represents a Bungie clan object.</p>
@@ -297,12 +283,14 @@ class Clan:
 <dt><strong><code>owner</code></strong> :&ensp;<code><a title="aiobungie.objects.ClanOwner" href="index.html#aiobungie.objects.ClanOwner">ClanOwner</a></code></dt>
 <dd>Returns an object of the clan's owner.
 See <code><a title="aiobungie.objects.ClanOwner" href="index.html#aiobungie.objects.ClanOwner">ClanOwner</a></code> for info.</dd>
-</dl></div>
+</dl>
+<p>Method generated by attrs for class Clan.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Clan:
+<pre><code class="python">@attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
+class Clan:
     &#34;&#34;&#34;Represents a Bungie clan object.
 
     Attributes
@@ -330,35 +318,45 @@ See <code><a title="aiobungie.objects.ClanOwner" href="index.html#aiobungie.obje
         See `aiobungie.objects.ClanOwner` for info.
     &#34;&#34;&#34;
 
-    __slots__: Sequence[str] = (
-        &#34;id&#34;,
-        &#34;name&#34;,
-        &#34;created_at&#34;,
-        &#34;member_count&#34;,
-        &#34;description&#34;,
-        &#34;is_public&#34;,
-        &#34;banner&#34;,
-        &#34;avatar&#34;,
-        &#34;about&#34;,
-        &#34;tags&#34;,
-        &#34;owner&#34;,
-    )
+    id: int = attr.ib(hash=True, repr=True, eq=True)
+    &#34;&#34;&#34;The clan id&#34;&#34;&#34;
 
-    id: int
-    name: str
-    created_at: datetime
-    member_count: int
-    description: str
-    is_public: bool
-    banner: Image
-    avatar: Image
-    about: str
-    tags: List[str]
-    owner: ClanOwner
+    name: str = attr.ib(repr=True)
+    &#34;&#34;&#34;The clan&#39;s name&#34;&#34;&#34;
 
-    def __init__(self, data: ClanImpl) -&gt; None:
-        self._update(data=data)
+    created_at: datetime = attr.ib(repr=True)
+    &#34;&#34;&#34;Clan&#39;s creation date time in UTC.&#34;&#34;&#34;
 
+    member_count: int = attr.ib(repr=True)
+    &#34;&#34;&#34;Clan&#39;s member count.&#34;&#34;&#34;
+
+    description: str = attr.ib(repr=True, eq=False)
+    &#34;&#34;&#34;Clan&#39;s description&#34;&#34;&#34;
+
+    is_public: bool = attr.ib(repr=True, eq=False)
+    &#34;&#34;&#34;Clan&#39;s privacy status.&#34;&#34;&#34;
+
+    banner: Image = attr.ib(repr=False)
+    &#34;&#34;&#34;Clan&#39;s banner&#34;&#34;&#34;
+
+    avatar: Image = attr.ib(repr=False)
+    &#34;&#34;&#34;Clan&#39;s avatar&#34;&#34;&#34;
+
+    about: str = attr.ib(repr=True, eq=False)
+    &#34;&#34;&#34;Clan&#39;s about title.&#34;&#34;&#34;
+
+    tags: List[str] = attr.ib(repr=False)
+    &#34;&#34;&#34;A list of the clan&#39;s tags.&#34;&#34;&#34;
+
+    owner: ClanOwner = attr.ib(repr=True)
+    &#34;&#34;&#34;The clan owner.&#34;&#34;&#34;
+
+    @property
+    def human_timedelta(self) -&gt; str:
+        &#34;&#34;&#34;Returns a human readble date of the clan&#39;s creation date.&#34;&#34;&#34;
+        return Time.human_timedelta(self.created_at)
+
+    @property
     def as_dict(self) -&gt; Dict[str, Any]:
         &#34;&#34;&#34;Returns a dict object of the player,
         This function is useful if you&#39;re binding to other REST apis.
@@ -368,88 +366,20 @@ See <code><a title="aiobungie.objects.ClanOwner" href="index.html#aiobungie.obje
             name=self.name,
             created_at=self.created_at,
             is_public=self.is_public,
-            avatar=self.avatar,
-            banner=self.banner,
+            avatar=str(self.avatar),
+            banner=str(self.banner),
             about=self.about,
             description=self.description,
             tags=self.tags,
-            owner=self.owner,
-        )
-
-    def _update(self, data: ClanImpl) -&gt; None:
-        self.id = data[&#34;detail&#34;][&#34;groupId&#34;]
-        self.name = data[&#34;detail&#34;][&#34;name&#34;]
-        self.created_at = data[&#34;detail&#34;][&#34;creationDate&#34;]
-        self.member_count = data[&#34;detail&#34;][&#34;memberCount&#34;]
-        self.description = data[&#34;detail&#34;][&#34;about&#34;]
-        self.about = data[&#34;detail&#34;][&#34;motto&#34;]
-        self.is_public = data[&#34;detail&#34;][&#34;isPublic&#34;]
-        self.banner = Image(str(data[&#34;detail&#34;][&#34;bannerPath&#34;]))
-        self.avatar = Image(str(data[&#34;detail&#34;][&#34;avatarPath&#34;]))
-        self.tags = data[&#34;detail&#34;][&#34;tags&#34;]
-        self.owner = ClanOwner(data=data[&#34;founder&#34;])
-
-    def __str__(self) -&gt; str:
-        return str(self.name)
-
-    def __repr__(self) -&gt; Union[Any, str]:
-        return (
-            f&#34;&lt;Clan id={self.id} name={self.name} created_at={self.created_at}&#34;
-            f&#34; owner={self.owner} is_public={self.is_public} about={self.about}&#34;
         )</code></pre>
 </details>
 <h3>Instance variables</h3>
 <dl>
 <dt id="aiobungie.objects.clans.Clan.about"><code class="name">var <span class="ident">about</span></code></dt>
 <dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+<div class="desc"><p>Clan's about title.</p></div>
 </dd>
-<dt id="aiobungie.objects.clans.Clan.avatar"><code class="name">var <span class="ident">avatar</span></code></dt>
-<dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
-</dd>
-<dt id="aiobungie.objects.clans.Clan.banner"><code class="name">var <span class="ident">banner</span></code></dt>
-<dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
-</dd>
-<dt id="aiobungie.objects.clans.Clan.created_at"><code class="name">var <span class="ident">created_at</span></code></dt>
-<dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
-</dd>
-<dt id="aiobungie.objects.clans.Clan.description"><code class="name">var <span class="ident">description</span></code></dt>
-<dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
-</dd>
-<dt id="aiobungie.objects.clans.Clan.id"><code class="name">var <span class="ident">id</span></code></dt>
-<dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
-</dd>
-<dt id="aiobungie.objects.clans.Clan.is_public"><code class="name">var <span class="ident">is_public</span></code></dt>
-<dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
-</dd>
-<dt id="aiobungie.objects.clans.Clan.member_count"><code class="name">var <span class="ident">member_count</span></code></dt>
-<dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
-</dd>
-<dt id="aiobungie.objects.clans.Clan.name"><code class="name">var <span class="ident">name</span></code></dt>
-<dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
-</dd>
-<dt id="aiobungie.objects.clans.Clan.owner"><code class="name">var <span class="ident">owner</span></code></dt>
-<dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
-</dd>
-<dt id="aiobungie.objects.clans.Clan.tags"><code class="name">var <span class="ident">tags</span></code></dt>
-<dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
-</dd>
-</dl>
-<h3>Methods</h3>
-<dl>
-<dt id="aiobungie.objects.clans.Clan.as_dict"><code class="name flex">
-<span>def <span class="ident">as_dict</span></span>(<span>self) ‑> Dict[str, Any]</span>
-</code></dt>
+<dt id="aiobungie.objects.clans.Clan.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
 <dd>
 <div class="desc"><p>Returns a dict object of the player,
 This function is useful if you're binding to other REST apis.</p></div>
@@ -457,7 +387,8 @@ This function is useful if you're binding to other REST apis.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def as_dict(self) -&gt; Dict[str, Any]:
+<pre><code class="python">@property
+def as_dict(self) -&gt; Dict[str, Any]:
     &#34;&#34;&#34;Returns a dict object of the player,
     This function is useful if you&#39;re binding to other REST apis.
     &#34;&#34;&#34;
@@ -466,20 +397,72 @@ This function is useful if you're binding to other REST apis.</p></div>
         name=self.name,
         created_at=self.created_at,
         is_public=self.is_public,
-        avatar=self.avatar,
-        banner=self.banner,
+        avatar=str(self.avatar),
+        banner=str(self.banner),
         about=self.about,
         description=self.description,
         tags=self.tags,
-        owner=self.owner,
     )</code></pre>
 </details>
+</dd>
+<dt id="aiobungie.objects.clans.Clan.avatar"><code class="name">var <span class="ident">avatar</span></code></dt>
+<dd>
+<div class="desc"><p>Clan's avatar</p></div>
+</dd>
+<dt id="aiobungie.objects.clans.Clan.banner"><code class="name">var <span class="ident">banner</span></code></dt>
+<dd>
+<div class="desc"><p>Clan's banner</p></div>
+</dd>
+<dt id="aiobungie.objects.clans.Clan.created_at"><code class="name">var <span class="ident">created_at</span></code></dt>
+<dd>
+<div class="desc"><p>Clan's creation date time in UTC.</p></div>
+</dd>
+<dt id="aiobungie.objects.clans.Clan.description"><code class="name">var <span class="ident">description</span></code></dt>
+<dd>
+<div class="desc"><p>Clan's description</p></div>
+</dd>
+<dt id="aiobungie.objects.clans.Clan.human_timedelta"><code class="name">var <span class="ident">human_timedelta</span> : str</code></dt>
+<dd>
+<div class="desc"><p>Returns a human readble date of the clan's creation date.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def human_timedelta(self) -&gt; str:
+    &#34;&#34;&#34;Returns a human readble date of the clan&#39;s creation date.&#34;&#34;&#34;
+    return Time.human_timedelta(self.created_at)</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.objects.clans.Clan.id"><code class="name">var <span class="ident">id</span></code></dt>
+<dd>
+<div class="desc"><p>The clan id</p></div>
+</dd>
+<dt id="aiobungie.objects.clans.Clan.is_public"><code class="name">var <span class="ident">is_public</span></code></dt>
+<dd>
+<div class="desc"><p>Clan's privacy status.</p></div>
+</dd>
+<dt id="aiobungie.objects.clans.Clan.member_count"><code class="name">var <span class="ident">member_count</span></code></dt>
+<dd>
+<div class="desc"><p>Clan's member count.</p></div>
+</dd>
+<dt id="aiobungie.objects.clans.Clan.name"><code class="name">var <span class="ident">name</span></code></dt>
+<dd>
+<div class="desc"><p>The clan's name</p></div>
+</dd>
+<dt id="aiobungie.objects.clans.Clan.owner"><code class="name">var <span class="ident">owner</span></code></dt>
+<dd>
+<div class="desc"><p>The clan owner.</p></div>
+</dd>
+<dt id="aiobungie.objects.clans.Clan.tags"><code class="name">var <span class="ident">tags</span></code></dt>
+<dd>
+<div class="desc"><p>A list of the clan's tags.</p></div>
 </dd>
 </dl>
 </dd>
 <dt id="aiobungie.objects.clans.ClanOwner"><code class="flex name class">
 <span>class <span class="ident">ClanOwner</span></span>
-<span>(</span><span>*, data: ClanOwnerImpl)</span>
+<span>(</span><span>*, id: int, name: str, is_public: Optional[bool], type: MembershipType, types: Optional[List[int]], last_online: datetime, clan_id: int, icon: Image, joined_at: datetime)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Represents a Bungie clan owner.</p>
@@ -493,7 +476,8 @@ This function is useful if you're binding to other REST apis.</p></div>
 <dd>An aware <code>builtins.str</code> version of a <code>datetime.datetime</code> object.</dd>
 <dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.internal.enums.MembershipType" href="../internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
 <dd>Returns the clan owner's membership type.
-This could be Xbox, Steam, PSN, Blizzard or ALL, if the membership type is not recognized it will return <code>builtins.NoneType</code>.</dd>
+This could be Xbox, Steam, PSN, Blizzard or ALL,
+if the membership type is not recognized it will return <code>builtins.NoneType</code>.</dd>
 <dt><strong><code>clan_id</code></strong> :&ensp;<code>builtins.int</code></dt>
 <dd>The clan owner's clan id</dd>
 <dt><strong><code>joined_at</code></strong> :&ensp;<code>Optional[datetime.datetime]:</code></dt>
@@ -504,13 +488,16 @@ This could be Xbox, Steam, PSN, Blizzard or ALL, if the membership type is not r
 <dd>Returns True if the clan's owner profile is public or False if not.</dd>
 <dt><strong><code>types</code></strong> :&ensp;<code>typing.List[builtins.int]:</code></dt>
 <dd>returns a List of <code>builtins.int</code> of the clan owner's types.</dd>
-</dl></div>
+</dl>
+<p>Method generated by attrs for class ClanOwner.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class ClanOwner:
+<pre><code class="python">@attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
+class ClanOwner(UserCard):
     &#34;&#34;&#34;Represents a Bungie clan owner.
+
 
     Attributes
     -----------
@@ -522,7 +509,8 @@ This could be Xbox, Steam, PSN, Blizzard or ALL, if the membership type is not r
         An aware `builtins.str` version of a `datetime.datetime` object.
     type: `aiobungie.internal.enums.MembershipType`
         Returns the clan owner&#39;s membership type.
-        This could be Xbox, Steam, PSN, Blizzard or ALL, if the membership type is not recognized it will return `builtins.NoneType`.
+        This could be Xbox, Steam, PSN, Blizzard or ALL,
+        if the membership type is not recognized it will return `builtins.NoneType`.
     clan_id: `builtins.int`
         The clan owner&#39;s clan id
     joined_at: Optional[datetime.datetime]:
@@ -533,34 +521,46 @@ This could be Xbox, Steam, PSN, Blizzard or ALL, if the membership type is not r
         Returns True if the clan&#39;s owner profile is public or False if not.
     types: typing.List[builtins.int]:
         returns a List of `builtins.int` of the clan owner&#39;s types.
-
     &#34;&#34;&#34;
 
-    __slots__: Sequence[str] = (
-        &#34;id&#34;,
-        &#34;name&#34;,
-        &#34;type&#34;,
-        &#34;clan_id&#34;,
-        &#34;icon&#34;,
-        &#34;is_public&#34;,
-        &#34;joined_at&#34;,
-        &#34;types&#34;,
-        &#34;last_online&#34;,
-    )
+    id: int = attr.ib(hash=True, repr=True)
+    &#34;&#34;&#34;The user id.&#34;&#34;&#34;
 
-    id: int
-    name: str
-    last_online: str
-    type: Optional[MembershipType]
-    clan_id: int
-    joined_at: str
-    icon: Image
-    is_public: bool
-    types: List[int]
+    name: str = attr.ib(repr=True)
+    &#34;&#34;&#34;The user name.&#34;&#34;&#34;
 
-    def __init__(self, *, data: ClanOwnerImpl) -&gt; None:
-        self._update(data)
+    is_public: Optional[bool] = attr.ib(hash=False, repr=True, eq=False)
+    &#34;&#34;&#34;Returns if the user profile is public or no.&#34;&#34;&#34;
 
+    type: MembershipType = attr.ib(hash=False, repr=True, eq=True)
+    &#34;&#34;&#34;Returns the membership type of the user.&#34;&#34;&#34;
+
+    types: Optional[List[int]] = attr.ib(hash=True, repr=False, eq=False)
+    &#34;&#34;&#34;Returns a list of the member ship&#39;s membership types.&#34;&#34;&#34;
+
+    last_online: datetime = attr.ib(repr=False)
+    &#34;&#34;&#34;An aware `datetime.datetime` object of the user&#39;s last online date UTC.&#34;&#34;&#34;
+
+    clan_id: int = attr.ib(repr=True)
+    &#34;&#34;&#34;Owner&#39;s current clan id.&#34;&#34;&#34;
+
+    icon: Image = attr.ib(repr=False)
+    &#34;&#34;&#34;Owner&#39;s profile icom&#34;&#34;&#34;
+
+    joined_at: datetime = attr.ib(repr=True)
+    &#34;&#34;&#34;Owner&#39;s bungie join date.&#34;&#34;&#34;
+
+    @property
+    def human_timedelta(self) -&gt; str:
+        &#34;&#34;&#34;Returns a human readble date of the clan owner&#39;s last login.&#34;&#34;&#34;
+        return Time.human_timedelta(self.last_online)
+
+    @property
+    def link(self) -&gt; Optional[str]:
+        &#34;&#34;&#34;Returns the user&#39;s profile link.&#34;&#34;&#34;
+        return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;
+
+    @property
     def as_dict(self) -&gt; Dict[str, Any]:
         &#34;&#34;&#34;Returns a dict object of the clan owner,
         This function is useful if you&#39;re binding to other REST apis.
@@ -569,79 +569,22 @@ This could be Xbox, Steam, PSN, Blizzard or ALL, if the membership type is not r
             id=self.id,
             name=self.name,
             is_public=self.is_public,
-            icon=self.icon,
+            icon=str(self.icon),
             types=self.type,
             joined_at=self.joined_at,
             type=self.type,
             clan_id=self.clan_id,
             last_online=self.last_online,
-        )
-
-    def _update(self, data: ClanOwnerImpl) -&gt; None:
-        self.id = data[&#34;destinyUserInfo&#34;][&#34;membershipId&#34;]
-        self.name = data[&#34;destinyUserInfo&#34;][&#34;displayName&#34;]
-        self.icon = Image(str(data[&#34;destinyUserInfo&#34;][&#34;iconPath&#34;]))
-        convert = int(data[&#34;lastOnlineStatusChange&#34;])
-        self.last_online = Time.human_timedelta(Time.from_timestamp(convert))
-        self.clan_id = data[&#34;groupId&#34;]
-        self.joined_at = data[&#34;joinDate&#34;]
-        self.types = data[&#34;destinyUserInfo&#34;][&#34;applicableMembershipTypes&#34;]
-        self.is_public = data[&#34;destinyUserInfo&#34;][&#34;isPublic&#34;]
-        self.type = MembershipType(data[&#34;destinyUserInfo&#34;].get(&#34;membershipType&#34;, None))
-
-    def __str__(self) -&gt; str:
-        return str(self.name)
-
-    def __repr__(self) -&gt; str:
-        return f&#34;ClaOwner name={self.name} id={self.id} type={self.type} last_online={self.last_online}&#34;
-
-    def __bool__(self) -&gt; bool:
-        return self.is_public</code></pre>
+        )</code></pre>
 </details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="aiobungie.objects.user.UserCard" href="user.html#aiobungie.objects.user.UserCard">UserCard</a></li>
+<li>abc.ABC</li>
+</ul>
 <h3>Instance variables</h3>
 <dl>
-<dt id="aiobungie.objects.clans.ClanOwner.clan_id"><code class="name">var <span class="ident">clan_id</span> : int</code></dt>
-<dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
-</dd>
-<dt id="aiobungie.objects.clans.ClanOwner.icon"><code class="name">var <span class="ident">icon</span> : <a title="aiobungie.internal.assets.Image" href="../internal/assets.html#aiobungie.internal.assets.Image">Image</a></code></dt>
-<dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
-</dd>
-<dt id="aiobungie.objects.clans.ClanOwner.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
-<dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
-</dd>
-<dt id="aiobungie.objects.clans.ClanOwner.is_public"><code class="name">var <span class="ident">is_public</span> : bool</code></dt>
-<dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
-</dd>
-<dt id="aiobungie.objects.clans.ClanOwner.joined_at"><code class="name">var <span class="ident">joined_at</span> : str</code></dt>
-<dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
-</dd>
-<dt id="aiobungie.objects.clans.ClanOwner.last_online"><code class="name">var <span class="ident">last_online</span> : str</code></dt>
-<dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
-</dd>
-<dt id="aiobungie.objects.clans.ClanOwner.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
-<dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
-</dd>
-<dt id="aiobungie.objects.clans.ClanOwner.type"><code class="name">var <span class="ident">type</span> : Optional[<a title="aiobungie.internal.enums.MembershipType" href="../internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a>]</code></dt>
-<dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
-</dd>
-<dt id="aiobungie.objects.clans.ClanOwner.types"><code class="name">var <span class="ident">types</span> : List[int]</code></dt>
-<dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
-</dd>
-</dl>
-<h3>Methods</h3>
-<dl>
-<dt id="aiobungie.objects.clans.ClanOwner.as_dict"><code class="name flex">
-<span>def <span class="ident">as_dict</span></span>(<span>self) ‑> Dict[str, Any]</span>
-</code></dt>
+<dt id="aiobungie.objects.clans.ClanOwner.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
 <dd>
 <div class="desc"><p>Returns a dict object of the clan owner,
 This function is useful if you're binding to other REST apis.</p></div>
@@ -649,7 +592,8 @@ This function is useful if you're binding to other REST apis.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def as_dict(self) -&gt; Dict[str, Any]:
+<pre><code class="python">@property
+def as_dict(self) -&gt; Dict[str, Any]:
     &#34;&#34;&#34;Returns a dict object of the clan owner,
     This function is useful if you&#39;re binding to other REST apis.
     &#34;&#34;&#34;
@@ -657,7 +601,7 @@ This function is useful if you're binding to other REST apis.</p></div>
         id=self.id,
         name=self.name,
         is_public=self.is_public,
-        icon=self.icon,
+        icon=str(self.icon),
         types=self.type,
         joined_at=self.joined_at,
         type=self.type,
@@ -665,6 +609,76 @@ This function is useful if you're binding to other REST apis.</p></div>
         last_online=self.last_online,
     )</code></pre>
 </details>
+</dd>
+<dt id="aiobungie.objects.clans.ClanOwner.clan_id"><code class="name">var <span class="ident">clan_id</span></code></dt>
+<dd>
+<div class="desc"><p>Owner's current clan id.</p></div>
+</dd>
+<dt id="aiobungie.objects.clans.ClanOwner.human_timedelta"><code class="name">var <span class="ident">human_timedelta</span> : str</code></dt>
+<dd>
+<div class="desc"><p>Returns a human readble date of the clan owner's last login.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def human_timedelta(self) -&gt; str:
+    &#34;&#34;&#34;Returns a human readble date of the clan owner&#39;s last login.&#34;&#34;&#34;
+    return Time.human_timedelta(self.last_online)</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.objects.clans.ClanOwner.icon"><code class="name">var <span class="ident">icon</span></code></dt>
+<dd>
+<div class="desc"><p>Owner's profile icom</p></div>
+</dd>
+<dt id="aiobungie.objects.clans.ClanOwner.id"><code class="name">var <span class="ident">id</span></code></dt>
+<dd>
+<div class="desc"><p>The user id.</p></div>
+</dd>
+<dt id="aiobungie.objects.clans.ClanOwner.is_public"><code class="name">var <span class="ident">is_public</span></code></dt>
+<dd>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="aiobungie.objects.user.UserCard" href="user.html#aiobungie.objects.user.UserCard">UserCard</a></code>.<code><a title="aiobungie.objects.user.UserCard.is_public" href="user.html#aiobungie.objects.user.UserCard.is_public">is_public</a></code>
+</p>
+<div class="desc inherited"><p>Returns if the user profile is public or no.</p></div>
+</dd>
+<dt id="aiobungie.objects.clans.ClanOwner.joined_at"><code class="name">var <span class="ident">joined_at</span></code></dt>
+<dd>
+<div class="desc"><p>Owner's bungie join date.</p></div>
+</dd>
+<dt id="aiobungie.objects.clans.ClanOwner.last_online"><code class="name">var <span class="ident">last_online</span></code></dt>
+<dd>
+<div class="desc"><p>An aware <code>datetime.datetime</code> object of the user's last online date UTC.</p></div>
+</dd>
+<dt id="aiobungie.objects.clans.ClanOwner.link"><code class="name">var <span class="ident">link</span> : Optional[str]</code></dt>
+<dd>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="aiobungie.objects.user.UserCard" href="user.html#aiobungie.objects.user.UserCard">UserCard</a></code>.<code><a title="aiobungie.objects.user.UserCard.link" href="user.html#aiobungie.objects.user.UserCard.link">link</a></code>
+</p>
+<div class="desc inherited"><p>Returns the user's profile link.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def link(self) -&gt; Optional[str]:
+    &#34;&#34;&#34;Returns the user&#39;s profile link.&#34;&#34;&#34;
+    return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.objects.clans.ClanOwner.name"><code class="name">var <span class="ident">name</span></code></dt>
+<dd>
+<div class="desc"><p>The user name.</p></div>
+</dd>
+<dt id="aiobungie.objects.clans.ClanOwner.type"><code class="name">var <span class="ident">type</span></code></dt>
+<dd>
+<div class="desc"><p>Returns the membership type of the user.</p></div>
+</dd>
+<dt id="aiobungie.objects.clans.ClanOwner.types"><code class="name">var <span class="ident">types</span></code></dt>
+<dd>
+<div class="desc"><p>Returns a list of the member ship's membership types.</p></div>
 </dd>
 </dl>
 </dd>
@@ -739,6 +753,7 @@ setTimeout(() => input.focus(), 100);
 <li><code><a title="aiobungie.objects.clans.Clan.banner" href="#aiobungie.objects.clans.Clan.banner">banner</a></code></li>
 <li><code><a title="aiobungie.objects.clans.Clan.created_at" href="#aiobungie.objects.clans.Clan.created_at">created_at</a></code></li>
 <li><code><a title="aiobungie.objects.clans.Clan.description" href="#aiobungie.objects.clans.Clan.description">description</a></code></li>
+<li><code><a title="aiobungie.objects.clans.Clan.human_timedelta" href="#aiobungie.objects.clans.Clan.human_timedelta">human_timedelta</a></code></li>
 <li><code><a title="aiobungie.objects.clans.Clan.id" href="#aiobungie.objects.clans.Clan.id">id</a></code></li>
 <li><code><a title="aiobungie.objects.clans.Clan.is_public" href="#aiobungie.objects.clans.Clan.is_public">is_public</a></code></li>
 <li><code><a title="aiobungie.objects.clans.Clan.member_count" href="#aiobungie.objects.clans.Clan.member_count">member_count</a></code></li>
@@ -752,11 +767,13 @@ setTimeout(() => input.focus(), 100);
 <ul class="two-column">
 <li><code><a title="aiobungie.objects.clans.ClanOwner.as_dict" href="#aiobungie.objects.clans.ClanOwner.as_dict">as_dict</a></code></li>
 <li><code><a title="aiobungie.objects.clans.ClanOwner.clan_id" href="#aiobungie.objects.clans.ClanOwner.clan_id">clan_id</a></code></li>
+<li><code><a title="aiobungie.objects.clans.ClanOwner.human_timedelta" href="#aiobungie.objects.clans.ClanOwner.human_timedelta">human_timedelta</a></code></li>
 <li><code><a title="aiobungie.objects.clans.ClanOwner.icon" href="#aiobungie.objects.clans.ClanOwner.icon">icon</a></code></li>
 <li><code><a title="aiobungie.objects.clans.ClanOwner.id" href="#aiobungie.objects.clans.ClanOwner.id">id</a></code></li>
 <li><code><a title="aiobungie.objects.clans.ClanOwner.is_public" href="#aiobungie.objects.clans.ClanOwner.is_public">is_public</a></code></li>
 <li><code><a title="aiobungie.objects.clans.ClanOwner.joined_at" href="#aiobungie.objects.clans.ClanOwner.joined_at">joined_at</a></code></li>
 <li><code><a title="aiobungie.objects.clans.ClanOwner.last_online" href="#aiobungie.objects.clans.ClanOwner.last_online">last_online</a></code></li>
+<li><code><a title="aiobungie.objects.clans.ClanOwner.link" href="#aiobungie.objects.clans.ClanOwner.link">link</a></code></li>
 <li><code><a title="aiobungie.objects.clans.ClanOwner.name" href="#aiobungie.objects.clans.ClanOwner.name">name</a></code></li>
 <li><code><a title="aiobungie.objects.clans.ClanOwner.type" href="#aiobungie.objects.clans.ClanOwner.type">type</a></code></li>
 <li><code><a title="aiobungie.objects.clans.ClanOwner.types" href="#aiobungie.objects.clans.ClanOwner.types">types</a></code></li>

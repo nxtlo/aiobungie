@@ -58,14 +58,13 @@ __all__: typing.Sequence = [&#34;Profile&#34;, &#34;ProfileImpl&#34;, &#34;Parti
 import datetime
 import typing
 
-from ..internal import enums
-from . import character, user
+from . import character
 
 
 class PartialProfile(typing.TypedDict):
     &#34;&#34;&#34;A Partial interface for a Profile.&#34;&#34;&#34;
 
-    userInfo: user.UserCard
+    userInfo: typing.Any
     dateLastPlayed: datetime.datetime
     characterIds: typing.List[int]
     currentSeasonRewardPowerCap: int
@@ -111,7 +110,7 @@ class ProfileImpl(Profile, total=False):
 <pre><code class="python">class PartialProfile(typing.TypedDict):
     &#34;&#34;&#34;A Partial interface for a Profile.&#34;&#34;&#34;
 
-    userInfo: user.UserCard
+    userInfo: typing.Any
     dateLastPlayed: datetime.datetime
     characterIds: typing.List[int]
     currentSeasonRewardPowerCap: int</code></pre>
@@ -134,7 +133,7 @@ class ProfileImpl(Profile, total=False):
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="aiobungie.types.profile.PartialProfile.userInfo"><code class="name">var <span class="ident">userInfo</span> : <a title="aiobungie.types.user.UserCard" href="user.html#aiobungie.types.user.UserCard">UserCard</a></code></dt>
+<dt id="aiobungie.types.profile.PartialProfile.userInfo"><code class="name">var <span class="ident">userInfo</span> : Any</code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -177,7 +176,7 @@ class ProfileImpl(Profile, total=False):
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="aiobungie.types.profile.Profile.userInfo"><code class="name">var <span class="ident">userInfo</span> : <a title="aiobungie.types.user.UserCard" href="user.html#aiobungie.types.user.UserCard">UserCard</a></code></dt>
+<dt id="aiobungie.types.profile.Profile.userInfo"><code class="name">var <span class="ident">userInfo</span> : Any</code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -234,7 +233,7 @@ class ProfileImpl(Profile, total=False):
 <dd>
 <div class="desc"><p>Profile component</p></div>
 </dd>
-<dt id="aiobungie.types.profile.ProfileImpl.userInfo"><code class="name">var <span class="ident">userInfo</span> : <a title="aiobungie.types.user.UserCard" href="user.html#aiobungie.types.user.UserCard">UserCard</a></code></dt>
+<dt id="aiobungie.types.profile.ProfileImpl.userInfo"><code class="name">var <span class="ident">userInfo</span> : Any</code></dt>
 <dd>
 <div class="desc"></div>
 </dd>

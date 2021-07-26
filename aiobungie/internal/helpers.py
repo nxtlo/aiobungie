@@ -25,11 +25,14 @@
 
 from __future__ import annotations
 
-__all__: Sequence[str] = ["deprecated"]
+__all__: Sequence[str] = ["deprecated", "JsonDict", "JsonList"]
 
 import warnings
 from functools import wraps
-from typing import Any, Callable, Sequence
+from typing import Any, Callable, Dict, List, Sequence
+
+JsonDict = Dict[str, Any]
+JsonList = List[Dict[str, Any]]
 
 
 def deprecated(func) -> Callable[[Any], None]:

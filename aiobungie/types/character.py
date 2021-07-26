@@ -25,7 +25,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Dict, Optional, TypedDict
+from typing import Optional, TypedDict
 
 from ..internal import Image
 from ..internal.enums import Class, Gender, MembershipType, Race, Stat

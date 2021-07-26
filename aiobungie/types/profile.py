@@ -29,14 +29,13 @@ __all__: typing.Sequence = ["Profile", "ProfileImpl", "PartialProfile"]
 import datetime
 import typing
 
-from ..internal import enums
-from . import character, user
+from . import character
 
 
 class PartialProfile(typing.TypedDict):
     """A Partial interface for a Profile."""
 
-    userInfo: user.UserCard
+    userInfo: typing.Any
     dateLastPlayed: datetime.datetime
     characterIds: typing.List[int]
     currentSeasonRewardPowerCap: int

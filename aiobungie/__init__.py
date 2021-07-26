@@ -72,7 +72,7 @@ from .client import Client
 from .error import *
 from .internal.enums import *
 
-__version__ = "0.2.5a4"
+__version__ = "0.2.5b1"
 __about__ = "A Pythonic `async`/`await` framework / wrapper for interacting with the Bungie API."
 __author__ = "nxtlo"
 __docs__ = "https://nxtlo.github.io/aiobungie/"

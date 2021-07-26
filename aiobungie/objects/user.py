@@ -25,24 +25,94 @@
 
 from __future__ import annotations
 
-__all__: Sequence[str] = ["User"]
+__all__: Sequence[str] = ["User", "PartialUser", "UserCard"]
 
-import logging
-from typing import TYPE_CHECKING, Any, Dict, Final, Optional, Sequence, Union
+from abc import ABC, abstractmethod
+from typing import TYPE_CHECKING, Any, Dict, Optional, Sequence
 
-from ..error import UserNotFound
-from ..internal import Image, Time
+import attr
+
+from ..internal import Image, Time, enums
 
 if TYPE_CHECKING:
     from datetime import datetime
 
-    from ..types.user import UserImpl
 
-log: Final[logging.Logger] = logging.getLogger(__name__)
+@attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
+class PartialUser(ABC):
+    """The partial user object."""
+
+    __slots__: Sequence[str] = ()
+
+    @property
+    @abstractmethod
+    def steam_name(self) -> Optional[str]:
+        """The user's steam username or None."""
+
+    @property
+    @abstractmethod
+    def twitch_name(self) -> Optional[str]:
+        """The user's twitch username or None."""
+
+    @property
+    @abstractmethod
+    def blizzard_name(self) -> Optional[str]:
+        """The user's blizzard username or None."""
+
+    @property
+    @abstractmethod
+    def psn_name(self) -> Optional[str]:
+        """The user's psn username or None."""
+
+    @property
+    @abstractmethod
+    def about(self) -> Optional[str]:
+        """The user's about section."""
+
+    @property
+    @abstractmethod
+    def locale(self) -> Optional[str]:
+        """The user's profile locale."""
+
+    @property
+    @abstractmethod
+    def name(self) -> str:
+        """The user's name."""
+
+    @property
+    @abstractmethod
+    def picture(self) -> Optional[Image]:
+        """The user's profile picture if its set."""
+
+    @property
+    @abstractmethod
+    def updated_at(self) -> datetime:
+        """The user's last profile update."""
+
+    @property
+    @abstractmethod
+    def is_deleted(self) -> bool:
+        """Determines if the user is deleted or not."""
+
+    @property
+    @abstractmethod
+    def status(self) -> Optional[str]:
+        """The user's profile status."""
+
+    @property
+    @abstractmethod
+    def created_at(self) -> datetime:
+        """Retruns the user's creation date in UTC timezone."""
+
+    @property
+    def human_timedelta(self) -> str:
+        return Time.human_timedelta(self.created_at)
 
 
-class User:
-    """Represents a Bungie User object.
+@attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
+class User(PartialUser):
+    """Represents Bungie User object.
+
     Attributes
     ----------
     id: `builtins.int`
@@ -69,55 +139,50 @@ class User:
             The user's bungie status text
     locale: typing.Optional[builtins.str]
             The user's locale.
-    picture: typing.Optional[aiobungie.internal.assets.Image]
+    picture: aiobungie.internal.assets.Image
             The user's avatar.
     """
 
-    __slots__: Sequence[str] = (
-        "is_deleted",
-        "about",
-        "created_at",
-        "updated_at",
-        "psn_name",
-        "steam_name",
-        "twitch_name",
-        "blizzard_name",
-        "status",
-        "locale",
-        "picture",
-        "name",
-        "id",
-    )
+    id: int = attr.ib(hash=True, repr=True)
+    """The user's id"""
 
-    def __init__(self, *, data: UserImpl, position: int = 0) -> None:
-        self._update(data, position)
+    created_at: datetime = attr.ib(hash=True, repr=True, eq=False)
+    """The user's creation date in UTC timezone."""
+
+    name: str = attr.ib(hash=False, eq=False, repr=True)
+    """The user's name."""
+
+    is_deleted: bool = attr.ib(repr=True, eq=False, hash=False)
+    """Returns True if the user is deleted"""
+
+    about: Optional[str] = attr.ib(repr=True, hash=False, eq=False)
+    """The user's about, Default is None if nothing is Found."""
+
+    updated_at: datetime = attr.ib(repr=True, hash=False, eq=False)
+    """The user's last updated om UTC date."""
+
+    psn_name: Optional[str] = attr.ib(repr=True, hash=False, eq=False)
+    """The user's psn id if it exists."""
+
+    steam_name: Optional[str] = attr.ib(repr=True, hash=False, eq=False)
+    """The user's steam name if it exists"""
+
+    twitch_name: Optional[str] = attr.ib(repr=True, hash=False, eq=False)
+    """The user's twitch name if it exists."""
+
+    blizzard_name: Optional[str] = attr.ib(repr=True, hash=False, eq=False)
+    """The user's blizzard name if it exists."""
+
+    status: Optional[str] = attr.ib(repr=True, hash=False, eq=False)
+    """The user's bungie status text"""
+
+    locale: Optional[str] = attr.ib(repr=False, hash=False, eq=False)
+    """The user's locale."""
+
+    picture: Image = attr.ib(repr=False, hash=False, eq=False)
+    """The user's profile picture."""
 
     @property
-    def human_time(self) -> str:
-        """Returns a human readble of the user's creation date"""
-        return Time.human_timedelta(self.created_at)
-
-    def __str__(self) -> str:
-        return str(self.name)
-
-    def __bool__(self) -> bool:
-        return bool(self.is_deleted)
-
-    def __hash__(self) -> int:
-        return hash(self.id)
-
-    def __repr__(self) -> str:
-        return (
-            f"User name={self.name} id={self.id} about={self.about} created_at={self.created_at}"
-            f" blizzard_name={self.blizzard_name} steam_name={self.steam_name} status={self.status}"
-        )
-
-    def __eq__(self, other: Any) -> bool:
-        return isinstance(other, User) and other.id == self.id
-
-    def __ne__(self, other: Any) -> bool:
-        return not self.__eq__(other)
-
     def as_dict(self) -> Dict[str, Any]:
         """Returns a dict object of the user,
         This function is useful if you're binding to other REST apis.
@@ -135,28 +200,35 @@ class User:
             psn_name=self.psn_name,
             blizzard_name=self.blizzard_name,
             status=self.status,
-            picture=self.picture,
+            picture=str(self.picture),
         )
 
-    def _update(self, data: UserImpl, posotion: int = 0) -> None:
-        try:
-            data = data[posotion]  # type: ignore
-        except KeyError:
-            pass
-        except IndexError:
-            if posotion or posotion == 0:
-                raise UserNotFound("Player was not found.")
 
-        self.id: int = data["membershipId"]
-        self.name: str = data["displayName"]
-        self.is_deleted: bool = data["isDeleted"]
-        self.about: Optional[str] = data["about"]
-        self.created_at: datetime = Time.clean_date(data["firstAccess"])
-        self.updated_at: datetime = Time.clean_date(data["lastUpdate"])
-        self.psn_name: Optional[str] = data.get("psnDisplayName", None)
-        self.steam_name: Optional[str] = data.get("steamDisplayName", None)
-        self.twitch_name: Optional[str] = data.get("twitchDisplayName", None)
-        self.blizzard_name: Optional[str] = data.get("blizzardDisplayName", None)
-        self.status: Optional[str] = data["statusText"]
-        self.locale: Optional[str] = data["locale"]
-        self.picture: Optional[Image] = Image(path=str(data["profilePicturePath"]))
+class UserCard(ABC):
+    """The is meant for any Member / User / like objects."""
+
+    __slots__: Sequence[str] = ()
+
+    @property
+    @abstractmethod
+    def name(self) -> str:
+        """The user's name."""
+
+    @property
+    @abstractmethod
+    def is_public(self) -> Optional[bool]:
+        """Returns if the user profile is public or no."""
+
+    @property
+    @abstractmethod
+    def type(self) -> Optional[enums.MembershipType]:
+        """Returns the user type of the user."""
+
+    @property
+    @abstractmethod
+    def icon(self) -> Image:
+        """The user's icon."""
+
+    @property
+    def link(self) -> Optional[str]:
+        """Returns the user's profile link."""

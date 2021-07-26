@@ -27,18 +27,23 @@ from __future__ import annotations
 
 __all__: Sequence[str] = ["Player"]
 
+import abc
+import datetime
 from typing import TYPE_CHECKING, Any, Dict, Optional, Sequence, Union
 
+import attr
+
+from aiobungie import url
+
 from ..error import PlayerNotFound
-from ..internal import Image
+from ..internal import Image, Time
 from ..internal.enums import MembershipType
-
-if TYPE_CHECKING:
-    from ..types.player import PlayerImpl
+from .user import UserCard
 
 
-class Player:
-    """Represents a Bungie Destiny 2 Players.
+@attr.s(hash=True, repr=True, init=True, kw_only=True, weakref_slot=False, slots=True)
+class Player(UserCard):
+    """Represents a Bungie Destiny 2 Player.
 
     Attributes
     ----------
@@ -54,23 +59,22 @@ class Player:
         The player's membership type.
     """
 
-    __slots__: Sequence[str] = (
-        "icon",
-        "id",
-        "name",
-        "type",
-        "is_public",
-    )
+    icon: Image = attr.ib(repr=False, hash=False, eq=False)
+    """The player's icon."""
 
-    icon: Image
-    id: int
-    name: str
-    is_public: bool
-    type: MembershipType
+    id: int = attr.ib(repr=True, hash=True)
+    """The player's id."""
 
-    def __init__(self, data: PlayerImpl, *, position: int = None) -> None:
-        self._update(data, position=position)
+    name: str = attr.ib(repr=True, eq=False, hash=False)
+    """The player's name"""
 
+    is_public: bool = attr.ib(repr=True, eq=True, hash=False)
+    """The player's profile privacy."""
+
+    type: MembershipType = attr.ib(repr=True, eq=True, hash=False)
+    """The profile's membership type."""
+
+    @property
     def as_dict(self) -> Dict[str, Any]:
         """Returns a dict object of the player,
         This function is useful if you're binding to other REST apis.
@@ -79,47 +83,9 @@ class Player:
             id=self.id,
             name=self.name,
             is_public=self.is_public,
-            icon=self.icon,
+            icon=str(self.icon),
             type=self.type,
         )
-
-    def _update(self, data: PlayerImpl, *, position: int = None) -> None:
-        try:
-            data = data[0] if not position else data[position]  # type: ignore
-        except IndexError:
-            try:  # type: ignore
-                # This is kinda cluster fuck
-                # if we're out of index the first time
-                # we try to return the first character
-                # otherwise the list is empty meaning
-                # the player was not found.
-                return data[0]  # type: ignore
-            except IndexError:
-                raise PlayerNotFound("Player was not found.")
-
-        self.is_public = data["isPublic"]
-        self.icon = Image(str(data["iconPath"]))
-        self.id = data["membershipId"]
-        self.type = MembershipType(data["membershipType"])
-        self.name = data["displayName"]
-
-    def __str__(self) -> str:
-        return str(self.name)
-
-    def __repr__(self) -> str:
-        return (
-            f"Player name={self.name} id={self.id}"
-            f" type={self.type} icon={self.icon} is_public={self.is_public}"
-        )
-
-    def __eq__(self, other: Any) -> bool:
-        return isinstance(other, Player) and other.id == self.id
-
-    def __ne__(self, other: Any) -> bool:
-        return not self.__eq__(other)
-
-    def __hash__(self) -> int:
-        return hash(self.id)
 
     def __int__(self) -> int:
         return int(self.id)

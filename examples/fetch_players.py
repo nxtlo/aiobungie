@@ -69,7 +69,7 @@ async def fetch_me() -> None:
         user.name,
         user.about,
         user.id,
-        user.human_time,
+        user.human_timedelta,
         user.steam_name,  # You can get the steam name if it exists.
     )
 

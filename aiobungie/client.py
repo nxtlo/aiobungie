@@ -30,45 +30,45 @@ __all__: Sequence[str] = [
 ]
 
 import asyncio
-from typing import TYPE_CHECKING, Any, Coroutine, Optional, Sequence, Union
+from typing import Any, Coroutine, Optional, Sequence
+
+from aiobungie.internal import cache, impl
+from aiobungie.internal import serialize as serialize_
 
 from . import error, objects
 from .http import HTTPClient
 from .internal import Manifest, deprecated
-from .internal.enums import Class, Component, GameMode, MembershipType, Vendor
+from .internal.enums import Class, Component, GameMode, MembershipType
 
 
-class Client:
+class Client(impl.BaseClient):
     """Represents a client that connects to the Bungie API
 
     Attributes
     -----------
-    key: `builtins.str`
+    token: `builtins.str`
         Your Bungie's API key or Token from the developer's portal.
     loop: `asyncio.AbstractEventLoop`
         asyncio event loop.
     """
 
-    __slots__: Sequence[str] = ("key", "loop", "http")
+    __slots__: Sequence[str] = ("loop", "http", "_cache", "_serialize")
 
-    key: str
-    """You Bungie API Key"""
-
-    loop: asyncio.AbstractEventLoop
-    """An optional asyncio loop, Default is None."""
-
-    http: HTTPClient
-    """The http client connector to make the request."""
-
-    def __init__(self, key: str, *, loop: asyncio.AbstractEventLoop = None) -> None:
-        self.loop: asyncio.AbstractEventLoop = (
+    def __init__(self, token: str, *, loop: asyncio.AbstractEventLoop = None) -> None:
+        self.loop: asyncio.AbstractEventLoop = (  # asyncio loop.
             asyncio.get_event_loop() if not loop else loop
         )
-        self.key: str = key
 
-        if not self.key:
+        self._cache = cache.Hash(
+            cache.RedisCache()
+        )  # Redis hash cache for testing purposes only.
+        # This requires a redis server running for usage.
+
+        self._serialize = serialize_.Deserialize()  # DeSerilaizing payloads
+
+        if not token:
             raise ValueError("Missing the API key!")
-        self.http: HTTPClient = HTTPClient(key=key)
+        self.http: HTTPClient = HTTPClient(key=token, loop=self.loop)
         super().__init__()
 
     async def __aenter__(self):
@@ -77,7 +77,15 @@ class Client:
     async def __aexit__(self, exc_type, exc_val, exc_tb) -> None:
         pass
 
-    def run(self, future: Coroutine[Any, None, None]) -> None:
+    @property
+    def cache(self) -> cache.Hash:
+        return self._cache
+
+    @property
+    def serialize(self) -> serialize_.Deserialize:
+        return self._serialize
+
+    def run(self, future: Coroutine[Any, None, None], debug: bool = False) -> None:
         """Runs a Coro function until its complete.
         This is equivalent to asyncio.get_event_loop().run_until_complete(...)
 
@@ -98,6 +106,8 @@ class Client:
         """
         try:
             if not self.loop.is_running():
+                if debug:
+                    self.loop.set_debug(True)
                 self.loop.run_until_complete(future)
         except asyncio.CancelledError:
             raise
@@ -105,9 +115,11 @@ class Client:
     async def from_path(self, path: str) -> Any:
         return await self.http.static_search(path)
 
-    async def fetch_manifest(self) -> Optional[Manifest]:
-        resp = await self.http.fetch_manifest()
-        return Manifest(self.key, resp)
+    #
+    #     async def fetch_manifest(self) -> Optional[Manifest]:
+    #         resp = await self.http.fetch_manifest()
+    #         return Manifest(self._token, resp)
+    #
 
     async def fetch_user(self, name: str, *, position: int = 0) -> objects.User:
         """Fetches a Bungie user by their name.
@@ -126,7 +138,7 @@ class Client:
             The user wasa not found.
         """
         data = await self.http.fetch_user(name=name)
-        return objects.User(data=data, position=position)
+        return self._serialize.deserialize_user(data, position)
 
     async def fetch_user_from_id(self, id: int) -> objects.User:
         """Fetches a Bungie user by their id.
@@ -145,7 +157,8 @@ class Client:
             The user wasa not found.
         """
         payload = await self.http.fetch_user_from_id(id)
-        return objects.User(data=payload)
+        return self._serialize.deserialize_user(payload)  # type: ignore
+        # User and User from id has the same attrs but different return types so we have to ignore here.
 
     async def fetch_profile(
         self,
@@ -160,7 +173,7 @@ class Client:
         return objects.Profile(data=data, component=component, character=character)
 
     async def fetch_player(
-        self, name: str, type: MembershipType, *, position: int = None
+        self, name: str, type: MembershipType, *, position: int = 0
     ) -> objects.Player:
         """Fetches a Destiny2 Player.
 
@@ -179,7 +192,7 @@ class Client:
             a Destiny Player object
         """
         resp = await self.http.fetch_player(name, type)
-        return objects.Player(data=resp, position=position)
+        return self._serialize.deserialize_player(payload=resp, position=position)
 
     async def fetch_character(
         self, memberid: int, type: MembershipType, character: Class
@@ -285,7 +298,7 @@ class Client:
             a Bungie application object.
         """
         resp = await self.http.fetch_app(appid)
-        return objects.Application(resp)
+        return self._serialize.deserialize_app(resp)
 
     async def fetch_clan_from_id(self, id: int, /) -> objects.Clan:
         """Fetches a Bungie Clan by its id.
@@ -300,8 +313,8 @@ class Client:
         `aiobungie.objects.Clan`
             A Bungie clan object
         """
-        resp = objects.Clan(data=(await self.http.fetch_clan_from_id(id)))
-        return resp
+        resp = await self.http.fetch_clan_from_id(id)
+        return self._serialize.deseialize_clan(resp)
 
     async def fetch_clan(self, name: str, /, type: int = 1) -> objects.Clan:
         """Fetches a Clan by its name and returns the first result.
@@ -319,4 +332,4 @@ class Client:
             A bungie clan object.
         """
         resp = await self.http.fetch_clan(name, type)
-        return objects.Clan(data=resp)
+        return self._serialize.deseialize_clan(resp)

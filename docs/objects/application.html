@@ -58,17 +58,20 @@ __all__: Sequence[str] = (&#34;Application&#34;, &#34;ApplicationOwner&#34;)
 
 from typing import TYPE_CHECKING, Any, Dict, Optional, Sequence
 
+import attr
+
+from aiobungie import url
+
 from ..internal import Image, Time, enums
+from .user import UserCard
 
 if TYPE_CHECKING:
     from datetime import datetime
 
-    from ..types.application import ApplicationImpl, TeamImpl
-    from ..types.user import UserCard
 
-
-class ApplicationOwner:
-    &#34;&#34;&#34;Represents a Bungie Application owner
+@attr.s(hash=True, repr=True, init=True, kw_only=True, weakref_slot=False, slots=True)
+class ApplicationOwner(UserCard):
+    &#34;&#34;&#34;Represents a Bungie Application owner.
 
     Attributes
     -----------
@@ -84,20 +87,24 @@ class ApplicationOwner:
         The application owner&#39;s bungie membership type.
     &#34;&#34;&#34;
 
-    __slots__: Sequence[str] = (
-        &#34;name&#34;,
-        &#34;id&#34;,
-        &#34;icon&#34;,
-        &#34;is_public&#34;,
-        &#34;type&#34;,
-    )
+    name: str = attr.ib(repr=True, hash=False, eq=False)
+    &#34;&#34;&#34;The application owner name.&#34;&#34;&#34;
 
-    def __init__(self, data: UserCard) -&gt; None:
-        self.name: str = data[&#34;displayName&#34;]
-        self.type: enums.MembershipType = data[&#34;membershipType&#34;]
-        self.id: int = data[&#34;membershipId&#34;]
-        self.icon: Image = Image(str(data[&#34;iconPath&#34;]))
-        self.is_public: bool = data[&#34;isPublic&#34;]
+    type: enums.MembershipType = attr.ib(repr=True, hash=False, eq=True)
+    &#34;&#34;&#34;The membership of the application owner.&#34;&#34;&#34;
+
+    id: int = attr.ib(repr=True, hash=True, eq=True)
+    &#34;&#34;&#34;The application owner&#39;s id.&#34;&#34;&#34;
+
+    icon: Image = attr.ib(repr=False)
+    &#34;&#34;&#34;The application owner&#39;s icon.&#34;&#34;&#34;
+
+    is_public: bool = attr.ib(repr=True)
+    &#34;&#34;&#34;The application owner&#39;s profile privacy.&#34;&#34;&#34;
+
+    @property
+    def link(self) -&gt; str:
+        return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;
 
     def as_dict(self) -&gt; Dict[str, Any]:
         &#34;&#34;&#34;Returns a dict object of the application owner,
@@ -107,20 +114,12 @@ class ApplicationOwner:
             id=self.id,
             name=self.name,
             is_public=self.is_public,
-            icon=self.icon,
+            icon=str(self.icon),
             type=self.type,
         )
 
-    def __str__(self) -&gt; str:
-        return str(self.name)
 
-    def __repr__(self) -&gt; str:
-        return (
-            f&#34;ApplicationOwner name={self.name} id={self.id} is_public={self.is_public}&#34;
-            f&#34; icon={self.icon} type={self.type}&#34;
-        )
-
-
+@attr.s(hash=True, repr=True, init=True, kw_only=True, weakref_slot=False, slots=True)
 class Application:
     &#34;&#34;&#34;Represents a Bungie developer application.
 
@@ -146,33 +145,39 @@ class Application:
         The app&#39;s scope
     &#34;&#34;&#34;
 
-    __slots__: Sequence[str] = (
-        &#34;id&#34;,
-        &#34;name&#34;,
-        &#34;redirect_url&#34;,
-        &#34;created_at&#34;,
-        &#34;published_at&#34;,
-        &#34;link&#34;,
-        &#34;status&#34;,
-        &#34;owner&#34;,
-        &#34;scope&#34;,
-    )
+    id: int = attr.ib(repr=True, hash=True, eq=True)
+    &#34;&#34;&#34;App id&#34;&#34;&#34;
 
-    def __init__(self, data: ApplicationImpl) -&gt; None:
-        self._update(data=data)
+    name: str = attr.ib(repr=True, hash=False, eq=False)
+    &#34;&#34;&#34;App name&#34;&#34;&#34;
 
-    def __int__(self) -&gt; int:
-        return int(self.id)
+    redirect_url: Optional[str] = attr.ib(repr=True)
+    &#34;&#34;&#34;App redirect url&#34;&#34;&#34;
 
-    def __str__(self) -&gt; str:
-        return str(self.name)
+    created_at: datetime = attr.ib(repr=True)
+    &#34;&#34;&#34;App creation date in UTC timezone&#34;&#34;&#34;
 
-    def __repr__(self) -&gt; str:
-        return str(
-            f&#34;Application id={self.id} name={self.name} created_at={self.created_at}&#34;
-            f&#34; status={self.status} redirect_url={self.redirect_url} owner={self.owner}&#34;
-        )
+    published_at: datetime = attr.ib(repr=True)
+    &#34;&#34;&#34;App&#39;s publish date in UTC timezone&#34;&#34;&#34;
 
+    link: str = attr.ib(repr=True)
+    &#34;&#34;&#34;App&#39;s link&#34;&#34;&#34;
+
+    status: int = attr.ib(repr=False)
+    &#34;&#34;&#34;App&#39;s status&#34;&#34;&#34;
+
+    scope: str = attr.ib(repr=False)
+    &#34;&#34;&#34;App&#39;s scope&#34;&#34;&#34;
+
+    owner: ApplicationOwner = attr.ib(repr=True)
+    &#34;&#34;&#34;App&#39;s owner&#34;&#34;&#34;
+
+    @property
+    def human_timedelta(self) -&gt; str:
+        &#34;&#34;&#34;Returns a human readble date of the app&#39;s creation date.&#34;&#34;&#34;
+        return Time.human_timedelta(self.created_at)
+
+    @property
     def as_dict(self) -&gt; Dict[str, Any]:
         &#34;&#34;&#34;Returns a dict object of the application,
         This function is useful if you&#39;re binding to other REST apis.
@@ -187,18 +192,7 @@ class Application:
             published_at=self.published_at,
             owner=self.owner,
             scope=self.scope,
-        )
-
-    def _update(self, data: ApplicationImpl) -&gt; None:
-        self.id: int = data[&#34;applicationId&#34;]
-        self.name: str = data[&#34;name&#34;]
-        self.redirect_url: Optional[str] = data.get(&#34;redirectUrl&#34;, None)
-        self.created_at: datetime = Time.clean_date(str(data[&#34;creationDate&#34;]))
-        self.published_at: datetime = Time.clean_date(str(data[&#34;firstPublished&#34;]))
-        self.link: str = data[&#34;link&#34;]
-        self.status: int = data[&#34;status&#34;]
-        self.scope: str = data[&#34;scope&#34;]
-        self.owner: ApplicationOwner = ApplicationOwner(data=data[&#34;team&#34;][0][&#34;user&#34;])  # type: ignore</code></pre>
+        )</code></pre>
 </details>
 </section>
 <section>
@@ -212,7 +206,7 @@ class Application:
 <dl>
 <dt id="aiobungie.objects.application.Application"><code class="flex name class">
 <span>class <span class="ident">Application</span></span>
-<span>(</span><span>data: ApplicationImpl)</span>
+<span>(</span><span>*, id: int, name: str, redirect_url: Optional[str], created_at: datetime, published_at: datetime, link: str, status: int, scope: str, owner: <a title="aiobungie.objects.application.ApplicationOwner" href="#aiobungie.objects.application.ApplicationOwner">ApplicationOwner</a>)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Represents a Bungie developer application.</p>
@@ -236,12 +230,14 @@ class Application:
 <dd>An object of The application owner.</dd>
 <dt><strong><code>scope</code></strong> :&ensp;<code>builtins.str</code></dt>
 <dd>The app's scope</dd>
-</dl></div>
+</dl>
+<p>Method generated by attrs for class Application.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Application:
+<pre><code class="python">@attr.s(hash=True, repr=True, init=True, kw_only=True, weakref_slot=False, slots=True)
+class Application:
     &#34;&#34;&#34;Represents a Bungie developer application.
 
     Attributes
@@ -266,33 +262,39 @@ class Application:
         The app&#39;s scope
     &#34;&#34;&#34;
 
-    __slots__: Sequence[str] = (
-        &#34;id&#34;,
-        &#34;name&#34;,
-        &#34;redirect_url&#34;,
-        &#34;created_at&#34;,
-        &#34;published_at&#34;,
-        &#34;link&#34;,
-        &#34;status&#34;,
-        &#34;owner&#34;,
-        &#34;scope&#34;,
-    )
+    id: int = attr.ib(repr=True, hash=True, eq=True)
+    &#34;&#34;&#34;App id&#34;&#34;&#34;
 
-    def __init__(self, data: ApplicationImpl) -&gt; None:
-        self._update(data=data)
+    name: str = attr.ib(repr=True, hash=False, eq=False)
+    &#34;&#34;&#34;App name&#34;&#34;&#34;
 
-    def __int__(self) -&gt; int:
-        return int(self.id)
+    redirect_url: Optional[str] = attr.ib(repr=True)
+    &#34;&#34;&#34;App redirect url&#34;&#34;&#34;
 
-    def __str__(self) -&gt; str:
-        return str(self.name)
+    created_at: datetime = attr.ib(repr=True)
+    &#34;&#34;&#34;App creation date in UTC timezone&#34;&#34;&#34;
 
-    def __repr__(self) -&gt; str:
-        return str(
-            f&#34;Application id={self.id} name={self.name} created_at={self.created_at}&#34;
-            f&#34; status={self.status} redirect_url={self.redirect_url} owner={self.owner}&#34;
-        )
+    published_at: datetime = attr.ib(repr=True)
+    &#34;&#34;&#34;App&#39;s publish date in UTC timezone&#34;&#34;&#34;
 
+    link: str = attr.ib(repr=True)
+    &#34;&#34;&#34;App&#39;s link&#34;&#34;&#34;
+
+    status: int = attr.ib(repr=False)
+    &#34;&#34;&#34;App&#39;s status&#34;&#34;&#34;
+
+    scope: str = attr.ib(repr=False)
+    &#34;&#34;&#34;App&#39;s scope&#34;&#34;&#34;
+
+    owner: ApplicationOwner = attr.ib(repr=True)
+    &#34;&#34;&#34;App&#39;s owner&#34;&#34;&#34;
+
+    @property
+    def human_timedelta(self) -&gt; str:
+        &#34;&#34;&#34;Returns a human readble date of the app&#39;s creation date.&#34;&#34;&#34;
+        return Time.human_timedelta(self.created_at)
+
+    @property
     def as_dict(self) -&gt; Dict[str, Any]:
         &#34;&#34;&#34;Returns a dict object of the application,
         This function is useful if you&#39;re binding to other REST apis.
@@ -307,63 +309,11 @@ class Application:
             published_at=self.published_at,
             owner=self.owner,
             scope=self.scope,
-        )
-
-    def _update(self, data: ApplicationImpl) -&gt; None:
-        self.id: int = data[&#34;applicationId&#34;]
-        self.name: str = data[&#34;name&#34;]
-        self.redirect_url: Optional[str] = data.get(&#34;redirectUrl&#34;, None)
-        self.created_at: datetime = Time.clean_date(str(data[&#34;creationDate&#34;]))
-        self.published_at: datetime = Time.clean_date(str(data[&#34;firstPublished&#34;]))
-        self.link: str = data[&#34;link&#34;]
-        self.status: int = data[&#34;status&#34;]
-        self.scope: str = data[&#34;scope&#34;]
-        self.owner: ApplicationOwner = ApplicationOwner(data=data[&#34;team&#34;][0][&#34;user&#34;])  # type: ignore</code></pre>
+        )</code></pre>
 </details>
 <h3>Instance variables</h3>
 <dl>
-<dt id="aiobungie.objects.application.Application.created_at"><code class="name">var <span class="ident">created_at</span></code></dt>
-<dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
-</dd>
-<dt id="aiobungie.objects.application.Application.id"><code class="name">var <span class="ident">id</span></code></dt>
-<dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
-</dd>
-<dt id="aiobungie.objects.application.Application.link"><code class="name">var <span class="ident">link</span></code></dt>
-<dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
-</dd>
-<dt id="aiobungie.objects.application.Application.name"><code class="name">var <span class="ident">name</span></code></dt>
-<dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
-</dd>
-<dt id="aiobungie.objects.application.Application.owner"><code class="name">var <span class="ident">owner</span></code></dt>
-<dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
-</dd>
-<dt id="aiobungie.objects.application.Application.published_at"><code class="name">var <span class="ident">published_at</span></code></dt>
-<dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
-</dd>
-<dt id="aiobungie.objects.application.Application.redirect_url"><code class="name">var <span class="ident">redirect_url</span></code></dt>
-<dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
-</dd>
-<dt id="aiobungie.objects.application.Application.scope"><code class="name">var <span class="ident">scope</span></code></dt>
-<dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
-</dd>
-<dt id="aiobungie.objects.application.Application.status"><code class="name">var <span class="ident">status</span></code></dt>
-<dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
-</dd>
-</dl>
-<h3>Methods</h3>
-<dl>
-<dt id="aiobungie.objects.application.Application.as_dict"><code class="name flex">
-<span>def <span class="ident">as_dict</span></span>(<span>self) ‑> Dict[str, Any]</span>
-</code></dt>
+<dt id="aiobungie.objects.application.Application.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
 <dd>
 <div class="desc"><p>Returns a dict object of the application,
 This function is useful if you're binding to other REST apis.</p></div>
@@ -371,7 +321,8 @@ This function is useful if you're binding to other REST apis.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def as_dict(self) -&gt; Dict[str, Any]:
+<pre><code class="python">@property
+def as_dict(self) -&gt; Dict[str, Any]:
     &#34;&#34;&#34;Returns a dict object of the application,
     This function is useful if you&#39;re binding to other REST apis.
     &#34;&#34;&#34;
@@ -388,14 +339,63 @@ This function is useful if you're binding to other REST apis.</p></div>
     )</code></pre>
 </details>
 </dd>
+<dt id="aiobungie.objects.application.Application.created_at"><code class="name">var <span class="ident">created_at</span></code></dt>
+<dd>
+<div class="desc"><p>App creation date in UTC timezone</p></div>
+</dd>
+<dt id="aiobungie.objects.application.Application.human_timedelta"><code class="name">var <span class="ident">human_timedelta</span> : str</code></dt>
+<dd>
+<div class="desc"><p>Returns a human readble date of the app's creation date.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def human_timedelta(self) -&gt; str:
+    &#34;&#34;&#34;Returns a human readble date of the app&#39;s creation date.&#34;&#34;&#34;
+    return Time.human_timedelta(self.created_at)</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.objects.application.Application.id"><code class="name">var <span class="ident">id</span></code></dt>
+<dd>
+<div class="desc"><p>App id</p></div>
+</dd>
+<dt id="aiobungie.objects.application.Application.link"><code class="name">var <span class="ident">link</span></code></dt>
+<dd>
+<div class="desc"><p>App's link</p></div>
+</dd>
+<dt id="aiobungie.objects.application.Application.name"><code class="name">var <span class="ident">name</span></code></dt>
+<dd>
+<div class="desc"><p>App name</p></div>
+</dd>
+<dt id="aiobungie.objects.application.Application.owner"><code class="name">var <span class="ident">owner</span></code></dt>
+<dd>
+<div class="desc"><p>App's owner</p></div>
+</dd>
+<dt id="aiobungie.objects.application.Application.published_at"><code class="name">var <span class="ident">published_at</span></code></dt>
+<dd>
+<div class="desc"><p>App's publish date in UTC timezone</p></div>
+</dd>
+<dt id="aiobungie.objects.application.Application.redirect_url"><code class="name">var <span class="ident">redirect_url</span></code></dt>
+<dd>
+<div class="desc"><p>App redirect url</p></div>
+</dd>
+<dt id="aiobungie.objects.application.Application.scope"><code class="name">var <span class="ident">scope</span></code></dt>
+<dd>
+<div class="desc"><p>App's scope</p></div>
+</dd>
+<dt id="aiobungie.objects.application.Application.status"><code class="name">var <span class="ident">status</span></code></dt>
+<dd>
+<div class="desc"><p>App's status</p></div>
+</dd>
 </dl>
 </dd>
 <dt id="aiobungie.objects.application.ApplicationOwner"><code class="flex name class">
 <span>class <span class="ident">ApplicationOwner</span></span>
-<span>(</span><span>data: UserCard)</span>
+<span>(</span><span>*, name: str, type: enums.MembershipType, id: int, icon: Image, is_public: bool)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Represents a Bungie Application owner</p>
+<div class="desc"><p>Represents a Bungie Application owner.</p>
 <h2 id="attributes">Attributes</h2>
 <dl>
 <dt><strong><code>name</code></strong> :&ensp;<code>builtins.str</code></dt>
@@ -408,13 +408,15 @@ This function is useful if you're binding to other REST apis.</p></div>
 <dd>Determines if the application owner's profile was public or private</dd>
 <dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.internal.enums.MembershipType" href="../internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
 <dd>The application owner's bungie membership type.</dd>
-</dl></div>
+</dl>
+<p>Method generated by attrs for class ApplicationOwner.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class ApplicationOwner:
-    &#34;&#34;&#34;Represents a Bungie Application owner
+<pre><code class="python">@attr.s(hash=True, repr=True, init=True, kw_only=True, weakref_slot=False, slots=True)
+class ApplicationOwner(UserCard):
+    &#34;&#34;&#34;Represents a Bungie Application owner.
 
     Attributes
     -----------
@@ -430,20 +432,24 @@ This function is useful if you're binding to other REST apis.</p></div>
         The application owner&#39;s bungie membership type.
     &#34;&#34;&#34;
 
-    __slots__: Sequence[str] = (
-        &#34;name&#34;,
-        &#34;id&#34;,
-        &#34;icon&#34;,
-        &#34;is_public&#34;,
-        &#34;type&#34;,
-    )
+    name: str = attr.ib(repr=True, hash=False, eq=False)
+    &#34;&#34;&#34;The application owner name.&#34;&#34;&#34;
 
-    def __init__(self, data: UserCard) -&gt; None:
-        self.name: str = data[&#34;displayName&#34;]
-        self.type: enums.MembershipType = data[&#34;membershipType&#34;]
-        self.id: int = data[&#34;membershipId&#34;]
-        self.icon: Image = Image(str(data[&#34;iconPath&#34;]))
-        self.is_public: bool = data[&#34;isPublic&#34;]
+    type: enums.MembershipType = attr.ib(repr=True, hash=False, eq=True)
+    &#34;&#34;&#34;The membership of the application owner.&#34;&#34;&#34;
+
+    id: int = attr.ib(repr=True, hash=True, eq=True)
+    &#34;&#34;&#34;The application owner&#39;s id.&#34;&#34;&#34;
+
+    icon: Image = attr.ib(repr=False)
+    &#34;&#34;&#34;The application owner&#39;s icon.&#34;&#34;&#34;
+
+    is_public: bool = attr.ib(repr=True)
+    &#34;&#34;&#34;The application owner&#39;s profile privacy.&#34;&#34;&#34;
+
+    @property
+    def link(self) -&gt; str:
+        return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;
 
     def as_dict(self) -&gt; Dict[str, Any]:
         &#34;&#34;&#34;Returns a dict object of the application owner,
@@ -453,40 +459,52 @@ This function is useful if you're binding to other REST apis.</p></div>
             id=self.id,
             name=self.name,
             is_public=self.is_public,
-            icon=self.icon,
+            icon=str(self.icon),
             type=self.type,
-        )
-
-    def __str__(self) -&gt; str:
-        return str(self.name)
-
-    def __repr__(self) -&gt; str:
-        return (
-            f&#34;ApplicationOwner name={self.name} id={self.id} is_public={self.is_public}&#34;
-            f&#34; icon={self.icon} type={self.type}&#34;
         )</code></pre>
 </details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="aiobungie.objects.user.UserCard" href="user.html#aiobungie.objects.user.UserCard">UserCard</a></li>
+<li>abc.ABC</li>
+</ul>
 <h3>Instance variables</h3>
 <dl>
-<dt id="aiobungie.objects.application.ApplicationOwner.icon"><code class="name">var <span class="ident">icon</span></code></dt>
+<dt id="aiobungie.objects.application.ApplicationOwner.icon"><code class="name">var <span class="ident">icon</span> : <a title="aiobungie.internal.assets.Image" href="../internal/assets.html#aiobungie.internal.assets.Image">Image</a></code></dt>
 <dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+<div class="desc"><p>The application owner's icon.</p></div>
 </dd>
-<dt id="aiobungie.objects.application.ApplicationOwner.id"><code class="name">var <span class="ident">id</span></code></dt>
+<dt id="aiobungie.objects.application.ApplicationOwner.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
 <dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+<div class="desc"><p>The application owner's id.</p></div>
 </dd>
-<dt id="aiobungie.objects.application.ApplicationOwner.is_public"><code class="name">var <span class="ident">is_public</span></code></dt>
+<dt id="aiobungie.objects.application.ApplicationOwner.is_public"><code class="name">var <span class="ident">is_public</span> : bool</code></dt>
 <dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+<div class="desc"><p>The application owner's profile privacy.</p></div>
 </dd>
-<dt id="aiobungie.objects.application.ApplicationOwner.name"><code class="name">var <span class="ident">name</span></code></dt>
+<dt id="aiobungie.objects.application.ApplicationOwner.link"><code class="name">var <span class="ident">link</span> : str</code></dt>
 <dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="aiobungie.objects.user.UserCard" href="user.html#aiobungie.objects.user.UserCard">UserCard</a></code>.<code><a title="aiobungie.objects.user.UserCard.link" href="user.html#aiobungie.objects.user.UserCard.link">link</a></code>
+</p>
+<div class="desc inherited"><p>Returns the user's profile link.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def link(self) -&gt; str:
+    return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;</code></pre>
+</details>
 </dd>
-<dt id="aiobungie.objects.application.ApplicationOwner.type"><code class="name">var <span class="ident">type</span></code></dt>
+<dt id="aiobungie.objects.application.ApplicationOwner.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
 <dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+<div class="desc"><p>The application owner name.</p></div>
+</dd>
+<dt id="aiobungie.objects.application.ApplicationOwner.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="../internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
+<dd>
+<div class="desc"><p>The membership of the application owner.</p></div>
 </dd>
 </dl>
 <h3>Methods</h3>
@@ -509,7 +527,7 @@ This function is useful if you're binding to other REST apis.</p></div>
         id=self.id,
         name=self.name,
         is_public=self.is_public,
-        icon=self.icon,
+        icon=str(self.icon),
         type=self.type,
     )</code></pre>
 </details>
@@ -583,6 +601,7 @@ setTimeout(() => input.focus(), 100);
 <ul class="two-column">
 <li><code><a title="aiobungie.objects.application.Application.as_dict" href="#aiobungie.objects.application.Application.as_dict">as_dict</a></code></li>
 <li><code><a title="aiobungie.objects.application.Application.created_at" href="#aiobungie.objects.application.Application.created_at">created_at</a></code></li>
+<li><code><a title="aiobungie.objects.application.Application.human_timedelta" href="#aiobungie.objects.application.Application.human_timedelta">human_timedelta</a></code></li>
 <li><code><a title="aiobungie.objects.application.Application.id" href="#aiobungie.objects.application.Application.id">id</a></code></li>
 <li><code><a title="aiobungie.objects.application.Application.link" href="#aiobungie.objects.application.Application.link">link</a></code></li>
 <li><code><a title="aiobungie.objects.application.Application.name" href="#aiobungie.objects.application.Application.name">name</a></code></li>
@@ -600,6 +619,7 @@ setTimeout(() => input.focus(), 100);
 <li><code><a title="aiobungie.objects.application.ApplicationOwner.icon" href="#aiobungie.objects.application.ApplicationOwner.icon">icon</a></code></li>
 <li><code><a title="aiobungie.objects.application.ApplicationOwner.id" href="#aiobungie.objects.application.ApplicationOwner.id">id</a></code></li>
 <li><code><a title="aiobungie.objects.application.ApplicationOwner.is_public" href="#aiobungie.objects.application.ApplicationOwner.is_public">is_public</a></code></li>
+<li><code><a title="aiobungie.objects.application.ApplicationOwner.link" href="#aiobungie.objects.application.ApplicationOwner.link">link</a></code></li>
 <li><code><a title="aiobungie.objects.application.ApplicationOwner.name" href="#aiobungie.objects.application.ApplicationOwner.name">name</a></code></li>
 <li><code><a title="aiobungie.objects.application.ApplicationOwner.type" href="#aiobungie.objects.application.ApplicationOwner.type">type</a></code></li>
 </ul>

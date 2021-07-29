@@ -73,7 +73,6 @@ client.loop.run_until_complete(main())
 * Python >=3.8 -> Required.
 * aiohttp -> Required for http.
 * aredis -> Optional for cache.
-* aiosqlite -> Optional for Manifest db.
 
 ### Getting Help
 * Discord: `Fate 怒#0008` | `350750086357057537`

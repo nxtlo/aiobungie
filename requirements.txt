@@ -1,5 +1,4 @@
 attrs==21.2.0
 aiohttp==3.7.4.post0
-aiosqlite==0.17.0
 python-dateutil==2.8.1
 aredis==1.1.8

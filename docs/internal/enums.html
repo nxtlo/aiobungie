@@ -1,33 +1,493 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.9.2" />
-<title>aiobungie.internal.enums API documentation</title>
-<meta name="description" content="Bungie enums impl for aiobungie." />
-<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
-<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
-<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/atom-one-dark.min.css" crossorigin>
-<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}#lunr-search{width:100%;font-size:1em;padding:6px 9px 5px 9px;border:1px solid silver}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
-<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
-<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
-<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+    <meta name="generator" content="pdoc 0.9.2" />
+    <title>aiobungie.internal.enums API documentation</title>
+    <meta name="description" content="Bungie enums impl for aiobungie." />
+    <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+    <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+    <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/atom-one-dark.min.css" crossorigin>
+    <style>
+         :root {
+            --highlight-color: #fe9
+        }
+        
+        .flex {
+            display: flex !important
+        }
+        
+        body {
+            line-height: 1.5em
+        }
+        
+        #content {
+            padding: 20px
+        }
+        
+        #sidebar {
+            padding: 30px;
+            overflow: hidden
+        }
+        
+        #sidebar>*:last-child {
+            margin-bottom: 2cm
+        }
+        
+        #lunr-search {
+            width: 100%;
+            font-size: 1em;
+            padding: 6px 9px 5px 9px;
+            border: 1px solid silver
+        }
+        
+        .http-server-breadcrumbs {
+            font-size: 130%;
+            margin: 0 0 15px 0
+        }
+        
+        #footer {
+            font-size: .75em;
+            padding: 5px 30px;
+            border-top: 1px solid #ddd;
+            text-align: right
+        }
+        
+        #footer p {
+            margin: 0 0 0 1em;
+            display: inline-block
+        }
+        
+        #footer p:last-child {
+            margin-right: 30px
+        }
+        
+        h1,
+        h2,
+        h3,
+        h4,
+        h5 {
+            font-weight: 300
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            line-height: 1.1em
+        }
+        
+        h2 {
+            font-size: 1.75em;
+            margin: 1em 0 .50em 0
+        }
+        
+        h3 {
+            font-size: 1.4em;
+            margin: 25px 0 10px 0
+        }
+        
+        h4 {
+            margin: 0;
+            font-size: 105%
+        }
+        
+        h1:target,
+        h2:target,
+        h3:target,
+        h4:target,
+        h5:target,
+        h6:target {
+            background: var(--highlight-color);
+            padding: .2em 0
+        }
+        
+        a {
+            color: #058;
+            text-decoration: none;
+            transition: color .3s ease-in-out
+        }
+        
+        a:hover {
+            color: #e82
+        }
+        
+        .title code {
+            font-weight: bold
+        }
+        
+        h2[id^="header-"] {
+            margin-top: 2em
+        }
+        
+        .ident {
+            color: #900
+        }
+        
+        pre code {
+            background: #f8f8f8;
+            font-size: .8em;
+            line-height: 1.4em
+        }
+        
+        code {
+            background: #f2f2f1;
+            padding: 1px 4px;
+            overflow-wrap: break-word
+        }
+        
+        h1 code {
+            background: transparent
+        }
+        
+        pre {
+            background: #f8f8f8;
+            border: 0;
+            border-top: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+            margin: 1em 0;
+            padding: 1ex
+        }
+        
+        #http-server-module-list {
+            display: flex;
+            flex-flow: column
+        }
+        
+        #http-server-module-list div {
+            display: flex
+        }
+        
+        #http-server-module-list dt {
+            min-width: 10%
+        }
+        
+        #http-server-module-list p {
+            margin-top: 0
+        }
+        
+        .toc ul,
+        #index {
+            list-style-type: none;
+            margin: 0;
+            padding: 0
+        }
+        
+        #index code {
+            background: transparent
+        }
+        
+        #index h3 {
+            border-bottom: 1px solid #ddd
+        }
+        
+        #index ul {
+            padding: 0
+        }
+        
+        #index h4 {
+            margin-top: .6em;
+            font-weight: bold
+        }
+        
+        @media (min-width:200ex) {
+            #index .two-column {
+                column-count: 2
+            }
+        }
+        
+        @media (min-width:300ex) {
+            #index .two-column {
+                column-count: 3
+            }
+        }
+        
+        dl {
+            margin-bottom: 2em
+        }
+        
+        dl dl:last-child {
+            margin-bottom: 4em
+        }
+        
+        dd {
+            margin: 0 0 1em 3em
+        }
+        
+        #header-classes+dl>dd {
+            margin-bottom: 3em
+        }
+        
+        dd dd {
+            margin-left: 2em
+        }
+        
+        dd p {
+            margin: 10px 0
+        }
+        
+        .name {
+            background: #eee;
+            font-weight: bold;
+            font-size: .85em;
+            padding: 5px 10px;
+            display: inline-block;
+            min-width: 40%
+        }
+        
+        .name:hover {
+            background: #e0e0e0
+        }
+        
+        dt:target .name {
+            background: var(--highlight-color)
+        }
+        
+        .name>span:first-child {
+            white-space: nowrap
+        }
+        
+        .name.class>span:nth-child(2) {
+            margin-left: .4em
+        }
+        
+        .inherited {
+            color: #999;
+            border-left: 5px solid #eee;
+            padding-left: 1em
+        }
+        
+        .inheritance em {
+            font-style: normal;
+            font-weight: bold
+        }
+        
+        .desc h2 {
+            font-weight: 400;
+            font-size: 1.25em
+        }
+        
+        .desc h3 {
+            font-size: 1em
+        }
+        
+        .desc dt code {
+            background: inherit
+        }
+        
+        .source summary,
+        .git-link-div {
+            color: #666;
+            text-align: right;
+            font-weight: 400;
+            font-size: .8em;
+            text-transform: uppercase
+        }
+        
+        .source summary>* {
+            white-space: nowrap;
+            cursor: pointer
+        }
+        
+        .git-link {
+            color: inherit;
+            margin-left: 1em
+        }
+        
+        .source pre {
+            max-height: 500px;
+            overflow: auto;
+            margin: 0
+        }
+        
+        .source pre code {
+            font-size: 12px;
+            overflow: visible
+        }
+        
+        .hlist {
+            list-style: none
+        }
+        
+        .hlist li {
+            display: inline
+        }
+        
+        .hlist li:after {
+            content: ',\2002'
+        }
+        
+        .hlist li:last-child:after {
+            content: none
+        }
+        
+        .hlist .hlist {
+            display: inline;
+            padding-left: 1em
+        }
+        
+        img {
+            max-width: 100%
+        }
+        
+        td {
+            padding: 0 .5em
+        }
+        
+        .admonition {
+            padding: .1em .5em;
+            margin-bottom: 1em
+        }
+        
+        .admonition-title {
+            font-weight: bold
+        }
+        
+        .admonition.note,
+        .admonition.info,
+        .admonition.important {
+            background: #aef
+        }
+        
+        .admonition.todo,
+        .admonition.versionadded,
+        .admonition.tip,
+        .admonition.hint {
+            background: #dfd
+        }
+        
+        .admonition.warning,
+        .admonition.versionchanged,
+        .admonition.deprecated {
+            background: #fd4
+        }
+        
+        .admonition.error,
+        .admonition.danger,
+        .admonition.caution {
+            background: lightpink
+        }
+    </style>
+    <style media="screen and (min-width: 700px)">
+        @media screen and (min-width:700px) {
+            #sidebar {
+                width: 30%;
+                height: 100vh;
+                overflow: auto;
+                position: sticky;
+                top: 0
+            }
+            #content {
+                width: 70%;
+                max-width: 100ch;
+                padding: 3em 4em;
+                border-left: 1px solid #ddd
+            }
+            pre code {
+                font-size: 1em
+            }
+            .item .name {
+                font-size: 1em
+            }
+            main {
+                display: flex;
+                flex-direction: row-reverse;
+                justify-content: flex-end
+            }
+            .toc ul ul,
+            #index ul {
+                padding-left: 1.5em
+            }
+            .toc>ul>li {
+                margin-top: .5em
+            }
+        }
+    </style>
+    <style media="print">
+        @media print {
+            #sidebar h1 {
+                page-break-before: always
+            }
+            .source {
+                display: none
+            }
+        }
+        
+        @media print {
+            * {
+                background: transparent !important;
+                color: #000 !important;
+                box-shadow: none !important;
+                text-shadow: none !important
+            }
+            a[href]:after {
+                content: " (" attr(href) ")";
+                font-size: 90%
+            }
+            a[href][title]:after {
+                content: none
+            }
+            abbr[title]:after {
+                content: " (" attr(title) ")"
+            }
+            .ir a:after,
+            a[href^="javascript:"]:after,
+            a[href^="#"]:after {
+                content: ""
+            }
+            pre,
+            blockquote {
+                border: 1px solid #999;
+                page-break-inside: avoid
+            }
+            thead {
+                display: table-header-group
+            }
+            tr,
+            img {
+                page-break-inside: avoid
+            }
+            img {
+                max-width: 100% !important
+            }
+            @page {
+                margin: 0.5cm
+            }
+            p,
+            h2,
+            h3 {
+                orphans: 3;
+                widows: 3
+            }
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6 {
+                page-break-after: avoid
+            }
+        }
+    </style>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())
+    </script>
 </head>
+
 <body>
-<main>
-<article id="content">
-<header>
-<h1 class="title">Module <code>aiobungie.internal.enums</code></h1>
-</header>
-<section id="section-intro">
-<p>Bungie enums impl for aiobungie.</p>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python"># MIT License
+    <main>
+        <article id="content">
+            <header>
+                <h1 class="title">Module <code>aiobungie.internal.enums</code></h1>
+            </header>
+            <section id="section-intro">
+                <p>Bungie enums impl for aiobungie.</p>
+                <details class="source">
+                    <summary>
+                        <span>Expand source code</span>
+                    </summary>
+                    <pre><code class="python"># MIT License
 #
 # Copyright (c) 2020 - Present nxtlo
 #
@@ -465,28 +925,30 @@ class Item(enum.Enum):
 
     def __int__(self) -&gt; int:
         return int(self.value)</code></pre>
-</details>
-</section>
-<section>
-</section>
-<section>
-</section>
-<section>
-</section>
-<section>
-<h2 class="section-title" id="header-classes">Classes</h2>
-<dl>
-<dt id="aiobungie.internal.enums.Class"><code class="flex name class">
+                </details>
+            </section>
+            <section>
+            </section>
+            <section>
+            </section>
+            <section>
+            </section>
+            <section>
+                <h2 class="section-title" id="header-classes">Classes</h2>
+                <dl>
+                    <dt id="aiobungie.internal.enums.Class"><code class="flex name class">
 <span>class <span class="ident">Class</span></span>
 <span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
 </code></dt>
-<dd>
-<div class="desc"><p>An Enum for Destiny character classes.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@typing.final
+                    <dd>
+                        <div class="desc">
+                            <p>An Enum for Destiny character classes.</p>
+                        </div>
+                        <details class="source">
+                            <summary>
+                                <span>Expand source code</span>
+                            </summary>
+                            <pre><code class="python">@typing.final
 class Class(enum.Enum):
     &#34;&#34;&#34;An Enum for Destiny character classes.&#34;&#34;&#34;
 
@@ -500,42 +962,44 @@ class Class(enum.Enum):
 
     def __int__(self) -&gt; int:
         return int(self.value)</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>enum.Enum</li>
-</ul>
-<h3>Class variables</h3>
-<dl>
-<dt id="aiobungie.internal.enums.Class.HUNTER"><code class="name">var <span class="ident">HUNTER</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Class.TITAN"><code class="name">var <span class="ident">TITAN</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Class.UNKNOWN"><code class="name">var <span class="ident">UNKNOWN</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Class.WARLOCK"><code class="name">var <span class="ident">WARLOCK</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-</dl>
-</dd>
-<dt id="aiobungie.internal.enums.Component"><code class="flex name class">
+                        </details>
+                        <h3>Ancestors</h3>
+                        <ul class="hlist">
+                            <li>enum.Enum</li>
+                        </ul>
+                        <h3>Class variables</h3>
+                        <dl>
+                            <dt id="aiobungie.internal.enums.Class.HUNTER"><code class="name">var <span class="ident">HUNTER</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Class.TITAN"><code class="name">var <span class="ident">TITAN</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Class.UNKNOWN"><code class="name">var <span class="ident">UNKNOWN</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Class.WARLOCK"><code class="name">var <span class="ident">WARLOCK</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                        </dl>
+                    </dd>
+                    <dt id="aiobungie.internal.enums.Component"><code class="flex name class">
 <span>class <span class="ident">Component</span></span>
 <span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
 </code></dt>
-<dd>
-<div class="desc"><p>An Enum for Destiny 2 Components.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@typing.final
+                    <dd>
+                        <div class="desc">
+                            <p>An Enum for Destiny 2 Components.</p>
+                        </div>
+                        <details class="source">
+                            <summary>
+                                <span>Expand source code</span>
+                            </summary>
+                            <pre><code class="python">@typing.final
 class Component(enum.Enum):
     &#34;&#34;&#34;An Enum for Destiny 2 Components.&#34;&#34;&#34;
 
@@ -557,74 +1021,76 @@ class Component(enum.Enum):
 
     def __int__(self) -&gt; int:
         return int(self.value)</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>enum.Enum</li>
-</ul>
-<h3>Class variables</h3>
-<dl>
-<dt id="aiobungie.internal.enums.Component.CHARECTERS"><code class="name">var <span class="ident">CHARECTERS</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Component.CHARECTER_PROGRESSION"><code class="name">var <span class="ident">CHARECTER_PROGRESSION</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Component.CHAR_INVENTORY"><code class="name">var <span class="ident">CHAR_INVENTORY</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Component.EQUIPED_ITEMS"><code class="name">var <span class="ident">EQUIPED_ITEMS</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Component.INVENTORIES"><code class="name">var <span class="ident">INVENTORIES</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Component.NOTHING"><code class="name">var <span class="ident">NOTHING</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Component.PROFILE"><code class="name">var <span class="ident">PROFILE</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Component.PROGRESSION"><code class="name">var <span class="ident">PROGRESSION</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Component.RECORDS"><code class="name">var <span class="ident">RECORDS</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Component.SILVER"><code class="name">var <span class="ident">SILVER</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Component.VENDORS"><code class="name">var <span class="ident">VENDORS</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Component.VENDOR_SALES"><code class="name">var <span class="ident">VENDOR_SALES</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-</dl>
-</dd>
-<dt id="aiobungie.internal.enums.DamageType"><code class="flex name class">
+                        </details>
+                        <h3>Ancestors</h3>
+                        <ul class="hlist">
+                            <li>enum.Enum</li>
+                        </ul>
+                        <h3>Class variables</h3>
+                        <dl>
+                            <dt id="aiobungie.internal.enums.Component.CHARECTERS"><code class="name">var <span class="ident">CHARECTERS</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Component.CHARECTER_PROGRESSION"><code class="name">var <span class="ident">CHARECTER_PROGRESSION</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Component.CHAR_INVENTORY"><code class="name">var <span class="ident">CHAR_INVENTORY</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Component.EQUIPED_ITEMS"><code class="name">var <span class="ident">EQUIPED_ITEMS</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Component.INVENTORIES"><code class="name">var <span class="ident">INVENTORIES</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Component.NOTHING"><code class="name">var <span class="ident">NOTHING</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Component.PROFILE"><code class="name">var <span class="ident">PROFILE</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Component.PROGRESSION"><code class="name">var <span class="ident">PROGRESSION</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Component.RECORDS"><code class="name">var <span class="ident">RECORDS</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Component.SILVER"><code class="name">var <span class="ident">SILVER</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Component.VENDORS"><code class="name">var <span class="ident">VENDORS</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Component.VENDOR_SALES"><code class="name">var <span class="ident">VENDOR_SALES</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                        </dl>
+                    </dd>
+                    <dt id="aiobungie.internal.enums.DamageType"><code class="flex name class">
 <span>class <span class="ident">DamageType</span></span>
 <span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
 </code></dt>
-<dd>
-<div class="desc"><p>Enums for Destiny Damage types</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@typing.final
+                    <dd>
+                        <div class="desc">
+                            <p>Enums for Destiny Damage types</p>
+                        </div>
+                        <details class="source">
+                            <summary>
+                                <span>Expand source code</span>
+                            </summary>
+                            <pre><code class="python">@typing.final
 class DamageType(enum.Enum):
     &#34;&#34;&#34;Enums for Destiny Damage types&#34;&#34;&#34;
 
@@ -641,50 +1107,54 @@ class DamageType(enum.Enum):
 
     def __int__(self) -&gt; int:
         return int(self.value)</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>enum.Enum</li>
-</ul>
-<h3>Class variables</h3>
-<dl>
-<dt id="aiobungie.internal.enums.DamageType.ARC"><code class="name">var <span class="ident">ARC</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.DamageType.KINETIC"><code class="name">var <span class="ident">KINETIC</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.DamageType.RAID"><code class="name">var <span class="ident">RAID</span></code></dt>
-<dd>
-<div class="desc"><p>This is a special damage type reserved for some raid activity encounters.</p></div>
-</dd>
-<dt id="aiobungie.internal.enums.DamageType.SOLAR"><code class="name">var <span class="ident">SOLAR</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.DamageType.STASIS"><code class="name">var <span class="ident">STASIS</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.DamageType.VOID"><code class="name">var <span class="ident">VOID</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-</dl>
-</dd>
-<dt id="aiobungie.internal.enums.Dungeon"><code class="flex name class">
+                        </details>
+                        <h3>Ancestors</h3>
+                        <ul class="hlist">
+                            <li>enum.Enum</li>
+                        </ul>
+                        <h3>Class variables</h3>
+                        <dl>
+                            <dt id="aiobungie.internal.enums.DamageType.ARC"><code class="name">var <span class="ident">ARC</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.DamageType.KINETIC"><code class="name">var <span class="ident">KINETIC</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.DamageType.RAID"><code class="name">var <span class="ident">RAID</span></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>This is a special damage type reserved for some raid activity encounters.</p>
+                                </div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.DamageType.SOLAR"><code class="name">var <span class="ident">SOLAR</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.DamageType.STASIS"><code class="name">var <span class="ident">STASIS</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.DamageType.VOID"><code class="name">var <span class="ident">VOID</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                        </dl>
+                    </dd>
+                    <dt id="aiobungie.internal.enums.Dungeon"><code class="flex name class">
 <span>class <span class="ident">Dungeon</span></span>
 <span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
 </code></dt>
-<dd>
-<div class="desc"><p>An Enum for all available Dungeon/Like missions in Destiny 2.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@typing.final
+                    <dd>
+                        <div class="desc">
+                            <p>An Enum for all available Dungeon/Like missions in Destiny 2.</p>
+                        </div>
+                        <details class="source">
+                            <summary>
+                                <span>Expand source code</span>
+                            </summary>
+                            <pre><code class="python">@typing.final
 class Dungeon(enum.Enum):
     &#34;&#34;&#34;An Enum for all available Dungeon/Like missions in Destiny 2.&#34;&#34;&#34;
 
@@ -717,58 +1187,76 @@ class Dungeon(enum.Enum):
 
     def __int__(self) -&gt; int:
         return int(self.value)</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>enum.Enum</li>
-</ul>
-<h3>Class variables</h3>
-<dl>
-<dt id="aiobungie.internal.enums.Dungeon.HARBINGER"><code class="name">var <span class="ident">HARBINGER</span></code></dt>
-<dd>
-<div class="desc"><p>Harbinger</p></div>
-</dd>
-<dt id="aiobungie.internal.enums.Dungeon.LEGEND_POH"><code class="name">var <span class="ident">LEGEND_POH</span></code></dt>
-<dd>
-<div class="desc"><p>Legend Pit of Heresy?</p></div>
-</dd>
-<dt id="aiobungie.internal.enums.Dungeon.MASTER_POH"><code class="name">var <span class="ident">MASTER_POH</span></code></dt>
-<dd>
-<div class="desc"><p>Master Pit of Heresy?</p></div>
-</dd>
-<dt id="aiobungie.internal.enums.Dungeon.MASTER_PRESAGE"><code class="name">var <span class="ident">MASTER_PRESAGE</span></code></dt>
-<dd>
-<div class="desc"><p>Master Presage</p></div>
-</dd>
-<dt id="aiobungie.internal.enums.Dungeon.NORMAL_PRESAGE"><code class="name">var <span class="ident">NORMAL_PRESAGE</span></code></dt>
-<dd>
-<div class="desc"><p>Normal Presage</p></div>
-</dd>
-<dt id="aiobungie.internal.enums.Dungeon.POH"><code class="name">var <span class="ident">POH</span></code></dt>
-<dd>
-<div class="desc"><p>Normal Pit of Heresy.</p></div>
-</dd>
-<dt id="aiobungie.internal.enums.Dungeon.PROPHECY"><code class="name">var <span class="ident">PROPHECY</span></code></dt>
-<dd>
-<div class="desc"><p>Prophecy</p></div>
-</dd>
-<dt id="aiobungie.internal.enums.Dungeon.SHATTERED"><code class="name">var <span class="ident">SHATTERED</span></code></dt>
-<dd>
-<div class="desc"><p>Shattered Throne</p></div>
-</dd>
-</dl>
-</dd>
-<dt id="aiobungie.internal.enums.GameMode"><code class="flex name class">
+                        </details>
+                        <h3>Ancestors</h3>
+                        <ul class="hlist">
+                            <li>enum.Enum</li>
+                        </ul>
+                        <h3>Class variables</h3>
+                        <dl>
+                            <dt id="aiobungie.internal.enums.Dungeon.HARBINGER"><code class="name">var <span class="ident">HARBINGER</span></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Harbinger</p>
+                                </div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Dungeon.LEGEND_POH"><code class="name">var <span class="ident">LEGEND_POH</span></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Legend Pit of Heresy?</p>
+                                </div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Dungeon.MASTER_POH"><code class="name">var <span class="ident">MASTER_POH</span></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Master Pit of Heresy?</p>
+                                </div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Dungeon.MASTER_PRESAGE"><code class="name">var <span class="ident">MASTER_PRESAGE</span></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Master Presage</p>
+                                </div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Dungeon.NORMAL_PRESAGE"><code class="name">var <span class="ident">NORMAL_PRESAGE</span></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Normal Presage</p>
+                                </div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Dungeon.POH"><code class="name">var <span class="ident">POH</span></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Normal Pit of Heresy.</p>
+                                </div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Dungeon.PROPHECY"><code class="name">var <span class="ident">PROPHECY</span></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Prophecy</p>
+                                </div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Dungeon.SHATTERED"><code class="name">var <span class="ident">SHATTERED</span></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Shattered Throne</p>
+                                </div>
+                            </dd>
+                        </dl>
+                    </dd>
+                    <dt id="aiobungie.internal.enums.GameMode"><code class="flex name class">
 <span>class <span class="ident">GameMode</span></span>
 <span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
 </code></dt>
-<dd>
-<div class="desc"><p>An Enum for all available gamemodes in Destiny 2.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@typing.final
+                    <dd>
+                        <div class="desc">
+                            <p>An Enum for all available gamemodes in Destiny 2.</p>
+                        </div>
+                        <details class="source">
+                            <summary>
+                                <span>Expand source code</span>
+                            </summary>
+                            <pre><code class="python">@typing.final
 class GameMode(enum.Enum):
     &#34;&#34;&#34;An Enum for all available gamemodes in Destiny 2.&#34;&#34;&#34;
 
@@ -801,114 +1289,118 @@ class GameMode(enum.Enum):
 
     def __int__(self) -&gt; int:
         return int(self.value)</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>enum.Enum</li>
-</ul>
-<h3>Class variables</h3>
-<dl>
-<dt id="aiobungie.internal.enums.GameMode.ALLPVE"><code class="name">var <span class="ident">ALLPVE</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.GameMode.ALLPVP"><code class="name">var <span class="ident">ALLPVP</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.GameMode.ALLSTRIKES"><code class="name">var <span class="ident">ALLSTRIKES</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.GameMode.CLASH"><code class="name">var <span class="ident">CLASH</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.GameMode.CLASSIC_MIX"><code class="name">var <span class="ident">CLASSIC_MIX</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.GameMode.CONTROL"><code class="name">var <span class="ident">CONTROL</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.GameMode.COUNTDOWN"><code class="name">var <span class="ident">COUNTDOWN</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.GameMode.DOUBLES"><code class="name">var <span class="ident">DOUBLES</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.GameMode.DUNGEON"><code class="name">var <span class="ident">DUNGEON</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.GameMode.EMIPIRE_HUNT"><code class="name">var <span class="ident">EMIPIRE_HUNT</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.GameMode.GAMBIT"><code class="name">var <span class="ident">GAMBIT</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.GameMode.IRONBANER"><code class="name">var <span class="ident">IRONBANER</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.GameMode.MAYHEM"><code class="name">var <span class="ident">MAYHEM</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.GameMode.NIGHTFALL"><code class="name">var <span class="ident">NIGHTFALL</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.GameMode.NOTHING"><code class="name">var <span class="ident">NOTHING</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.GameMode.PATROL"><code class="name">var <span class="ident">PATROL</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.GameMode.RAID"><code class="name">var <span class="ident">RAID</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.GameMode.RUMBLE"><code class="name">var <span class="ident">RUMBLE</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.GameMode.STORY"><code class="name">var <span class="ident">STORY</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.GameMode.STRIKE"><code class="name">var <span class="ident">STRIKE</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.GameMode.SURVIVAL"><code class="name">var <span class="ident">SURVIVAL</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.GameMode.TOF"><code class="name">var <span class="ident">TOF</span></code></dt>
-<dd>
-<div class="desc"><p>Trials Of Osiris</p></div>
-</dd>
-</dl>
-</dd>
-<dt id="aiobungie.internal.enums.Gender"><code class="flex name class">
+                        </details>
+                        <h3>Ancestors</h3>
+                        <ul class="hlist">
+                            <li>enum.Enum</li>
+                        </ul>
+                        <h3>Class variables</h3>
+                        <dl>
+                            <dt id="aiobungie.internal.enums.GameMode.ALLPVE"><code class="name">var <span class="ident">ALLPVE</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.GameMode.ALLPVP"><code class="name">var <span class="ident">ALLPVP</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.GameMode.ALLSTRIKES"><code class="name">var <span class="ident">ALLSTRIKES</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.GameMode.CLASH"><code class="name">var <span class="ident">CLASH</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.GameMode.CLASSIC_MIX"><code class="name">var <span class="ident">CLASSIC_MIX</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.GameMode.CONTROL"><code class="name">var <span class="ident">CONTROL</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.GameMode.COUNTDOWN"><code class="name">var <span class="ident">COUNTDOWN</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.GameMode.DOUBLES"><code class="name">var <span class="ident">DOUBLES</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.GameMode.DUNGEON"><code class="name">var <span class="ident">DUNGEON</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.GameMode.EMIPIRE_HUNT"><code class="name">var <span class="ident">EMIPIRE_HUNT</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.GameMode.GAMBIT"><code class="name">var <span class="ident">GAMBIT</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.GameMode.IRONBANER"><code class="name">var <span class="ident">IRONBANER</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.GameMode.MAYHEM"><code class="name">var <span class="ident">MAYHEM</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.GameMode.NIGHTFALL"><code class="name">var <span class="ident">NIGHTFALL</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.GameMode.NOTHING"><code class="name">var <span class="ident">NOTHING</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.GameMode.PATROL"><code class="name">var <span class="ident">PATROL</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.GameMode.RAID"><code class="name">var <span class="ident">RAID</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.GameMode.RUMBLE"><code class="name">var <span class="ident">RUMBLE</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.GameMode.STORY"><code class="name">var <span class="ident">STORY</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.GameMode.STRIKE"><code class="name">var <span class="ident">STRIKE</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.GameMode.SURVIVAL"><code class="name">var <span class="ident">SURVIVAL</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.GameMode.TOF"><code class="name">var <span class="ident">TOF</span></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Trials Of Osiris</p>
+                                </div>
+                            </dd>
+                        </dl>
+                    </dd>
+                    <dt id="aiobungie.internal.enums.Gender"><code class="flex name class">
 <span>class <span class="ident">Gender</span></span>
 <span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
 </code></dt>
-<dd>
-<div class="desc"><p>An Enum for Destiny Genders.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@typing.final
+                    <dd>
+                        <div class="desc">
+                            <p>An Enum for Destiny Genders.</p>
+                        </div>
+                        <details class="source">
+                            <summary>
+                                <span>Expand source code</span>
+                            </summary>
+                            <pre><code class="python">@typing.final
 class Gender(enum.Enum):
     &#34;&#34;&#34;An Enum for Destiny Genders.&#34;&#34;&#34;
 
@@ -921,38 +1413,40 @@ class Gender(enum.Enum):
 
     def __int__(self) -&gt; int:
         return int(self.value)</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>enum.Enum</li>
-</ul>
-<h3>Class variables</h3>
-<dl>
-<dt id="aiobungie.internal.enums.Gender.FEMALE"><code class="name">var <span class="ident">FEMALE</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Gender.MALE"><code class="name">var <span class="ident">MALE</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Gender.UNKNOWN"><code class="name">var <span class="ident">UNKNOWN</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-</dl>
-</dd>
-<dt id="aiobungie.internal.enums.Item"><code class="flex name class">
+                        </details>
+                        <h3>Ancestors</h3>
+                        <ul class="hlist">
+                            <li>enum.Enum</li>
+                        </ul>
+                        <h3>Class variables</h3>
+                        <dl>
+                            <dt id="aiobungie.internal.enums.Gender.FEMALE"><code class="name">var <span class="ident">FEMALE</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Gender.MALE"><code class="name">var <span class="ident">MALE</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Gender.UNKNOWN"><code class="name">var <span class="ident">UNKNOWN</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                        </dl>
+                    </dd>
+                    <dt id="aiobungie.internal.enums.Item"><code class="flex name class">
 <span>class <span class="ident">Item</span></span>
 <span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
 </code></dt>
-<dd>
-<div class="desc"><p>Enums for Destiny2's inventory bucket items</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@typing.final
+                    <dd>
+                        <div class="desc">
+                            <p>Enums for Destiny2's inventory bucket items</p>
+                        </div>
+                        <details class="source">
+                            <summary>
+                                <span>Expand source code</span>
+                            </summary>
+                            <pre><code class="python">@typing.final
 class Item(enum.Enum):
     &#34;&#34;&#34;Enums for Destiny2&#39;s inventory bucket items&#34;&#34;&#34;
 
@@ -994,154 +1488,156 @@ class Item(enum.Enum):
 
     def __int__(self) -&gt; int:
         return int(self.value)</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>enum.Enum</li>
-</ul>
-<h3>Class variables</h3>
-<dl>
-<dt id="aiobungie.internal.enums.Item.AUTO_RIFLE"><code class="name">var <span class="ident">AUTO_RIFLE</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Item.BOW"><code class="name">var <span class="ident">BOW</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Item.CHEST_ARMOR"><code class="name">var <span class="ident">CHEST_ARMOR</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Item.CLASS_ARMOR"><code class="name">var <span class="ident">CLASS_ARMOR</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Item.EMBLEMS"><code class="name">var <span class="ident">EMBLEMS</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Item.EMOTES"><code class="name">var <span class="ident">EMOTES</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Item.FUSION_RIFLE"><code class="name">var <span class="ident">FUSION_RIFLE</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Item.FUSION_RIFLELINE"><code class="name">var <span class="ident">FUSION_RIFLELINE</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Item.GAUNTLET"><code class="name">var <span class="ident">GAUNTLET</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Item.GHOST"><code class="name">var <span class="ident">GHOST</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Item.GRENADE_LAUNCHER"><code class="name">var <span class="ident">GRENADE_LAUNCHER</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Item.HANDCANNON"><code class="name">var <span class="ident">HANDCANNON</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Item.HELMET"><code class="name">var <span class="ident">HELMET</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Item.LEGENDRY_SHARDS"><code class="name">var <span class="ident">LEGENDRY_SHARDS</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Item.LEG_ARMOR"><code class="name">var <span class="ident">LEG_ARMOR</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Item.MACHINE_GUN"><code class="name">var <span class="ident">MACHINE_GUN</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Item.MASK"><code class="name">var <span class="ident">MASK</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Item.NONE"><code class="name">var <span class="ident">NONE</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Item.ORNAMENT"><code class="name">var <span class="ident">ORNAMENT</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Item.PULSE_RIFLE"><code class="name">var <span class="ident">PULSE_RIFLE</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Item.ROCKET_LAUNCHER"><code class="name">var <span class="ident">ROCKET_LAUNCHER</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Item.SCOUT_RIFLE"><code class="name">var <span class="ident">SCOUT_RIFLE</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Item.SEASONAL_ARTIFACT"><code class="name">var <span class="ident">SEASONAL_ARTIFACT</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Item.SHADER"><code class="name">var <span class="ident">SHADER</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Item.SHOTGUN"><code class="name">var <span class="ident">SHOTGUN</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Item.SIDEARM"><code class="name">var <span class="ident">SIDEARM</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Item.SNIPER_RIFLE"><code class="name">var <span class="ident">SNIPER_RIFLE</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Item.SUBCLASS"><code class="name">var <span class="ident">SUBCLASS</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Item.SUBMACHINE"><code class="name">var <span class="ident">SUBMACHINE</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Item.SWORD"><code class="name">var <span class="ident">SWORD</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Item.SYNTHWAEV_TEMPLATE"><code class="name">var <span class="ident">SYNTHWAEV_TEMPLATE</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Item.TRACE_RIFLE"><code class="name">var <span class="ident">TRACE_RIFLE</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-</dl>
-</dd>
-<dt id="aiobungie.internal.enums.MembershipType"><code class="flex name class">
+                        </details>
+                        <h3>Ancestors</h3>
+                        <ul class="hlist">
+                            <li>enum.Enum</li>
+                        </ul>
+                        <h3>Class variables</h3>
+                        <dl>
+                            <dt id="aiobungie.internal.enums.Item.AUTO_RIFLE"><code class="name">var <span class="ident">AUTO_RIFLE</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Item.BOW"><code class="name">var <span class="ident">BOW</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Item.CHEST_ARMOR"><code class="name">var <span class="ident">CHEST_ARMOR</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Item.CLASS_ARMOR"><code class="name">var <span class="ident">CLASS_ARMOR</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Item.EMBLEMS"><code class="name">var <span class="ident">EMBLEMS</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Item.EMOTES"><code class="name">var <span class="ident">EMOTES</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Item.FUSION_RIFLE"><code class="name">var <span class="ident">FUSION_RIFLE</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Item.FUSION_RIFLELINE"><code class="name">var <span class="ident">FUSION_RIFLELINE</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Item.GAUNTLET"><code class="name">var <span class="ident">GAUNTLET</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Item.GHOST"><code class="name">var <span class="ident">GHOST</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Item.GRENADE_LAUNCHER"><code class="name">var <span class="ident">GRENADE_LAUNCHER</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Item.HANDCANNON"><code class="name">var <span class="ident">HANDCANNON</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Item.HELMET"><code class="name">var <span class="ident">HELMET</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Item.LEGENDRY_SHARDS"><code class="name">var <span class="ident">LEGENDRY_SHARDS</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Item.LEG_ARMOR"><code class="name">var <span class="ident">LEG_ARMOR</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Item.MACHINE_GUN"><code class="name">var <span class="ident">MACHINE_GUN</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Item.MASK"><code class="name">var <span class="ident">MASK</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Item.NONE"><code class="name">var <span class="ident">NONE</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Item.ORNAMENT"><code class="name">var <span class="ident">ORNAMENT</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Item.PULSE_RIFLE"><code class="name">var <span class="ident">PULSE_RIFLE</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Item.ROCKET_LAUNCHER"><code class="name">var <span class="ident">ROCKET_LAUNCHER</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Item.SCOUT_RIFLE"><code class="name">var <span class="ident">SCOUT_RIFLE</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Item.SEASONAL_ARTIFACT"><code class="name">var <span class="ident">SEASONAL_ARTIFACT</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Item.SHADER"><code class="name">var <span class="ident">SHADER</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Item.SHOTGUN"><code class="name">var <span class="ident">SHOTGUN</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Item.SIDEARM"><code class="name">var <span class="ident">SIDEARM</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Item.SNIPER_RIFLE"><code class="name">var <span class="ident">SNIPER_RIFLE</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Item.SUBCLASS"><code class="name">var <span class="ident">SUBCLASS</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Item.SUBMACHINE"><code class="name">var <span class="ident">SUBMACHINE</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Item.SWORD"><code class="name">var <span class="ident">SWORD</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Item.SYNTHWAEV_TEMPLATE"><code class="name">var <span class="ident">SYNTHWAEV_TEMPLATE</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Item.TRACE_RIFLE"><code class="name">var <span class="ident">TRACE_RIFLE</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                        </dl>
+                    </dd>
+                    <dt id="aiobungie.internal.enums.MembershipType"><code class="flex name class">
 <span>class <span class="ident">MembershipType</span></span>
 <span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
 </code></dt>
-<dd>
-<div class="desc"><p>An Enum for Bungie membership types.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@typing.final
+                    <dd>
+                        <div class="desc">
+                            <p>An Enum for Bungie membership types.</p>
+                        </div>
+                        <details class="source">
+                            <summary>
+                                <span>Expand source code</span>
+                            </summary>
+                            <pre><code class="python">@typing.final
 class MembershipType(enum.Enum):
     &#34;&#34;&#34;An Enum for Bungie membership types.&#34;&#34;&#34;
 
@@ -1159,58 +1655,60 @@ class MembershipType(enum.Enum):
 
     def __int__(self) -&gt; int:
         return int(self.value)</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>enum.Enum</li>
-</ul>
-<h3>Class variables</h3>
-<dl>
-<dt id="aiobungie.internal.enums.MembershipType.ALL"><code class="name">var <span class="ident">ALL</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.MembershipType.BLIZZARD"><code class="name">var <span class="ident">BLIZZARD</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.MembershipType.BUNGIE"><code class="name">var <span class="ident">BUNGIE</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.MembershipType.NONE"><code class="name">var <span class="ident">NONE</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.MembershipType.PSN"><code class="name">var <span class="ident">PSN</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.MembershipType.STADIA"><code class="name">var <span class="ident">STADIA</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.MembershipType.STEAM"><code class="name">var <span class="ident">STEAM</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.MembershipType.XBOX"><code class="name">var <span class="ident">XBOX</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-</dl>
-</dd>
-<dt id="aiobungie.internal.enums.MilestoneType"><code class="flex name class">
+                        </details>
+                        <h3>Ancestors</h3>
+                        <ul class="hlist">
+                            <li>enum.Enum</li>
+                        </ul>
+                        <h3>Class variables</h3>
+                        <dl>
+                            <dt id="aiobungie.internal.enums.MembershipType.ALL"><code class="name">var <span class="ident">ALL</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.MembershipType.BLIZZARD"><code class="name">var <span class="ident">BLIZZARD</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.MembershipType.BUNGIE"><code class="name">var <span class="ident">BUNGIE</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.MembershipType.NONE"><code class="name">var <span class="ident">NONE</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.MembershipType.PSN"><code class="name">var <span class="ident">PSN</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.MembershipType.STADIA"><code class="name">var <span class="ident">STADIA</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.MembershipType.STEAM"><code class="name">var <span class="ident">STEAM</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.MembershipType.XBOX"><code class="name">var <span class="ident">XBOX</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                        </dl>
+                    </dd>
+                    <dt id="aiobungie.internal.enums.MilestoneType"><code class="flex name class">
 <span>class <span class="ident">MilestoneType</span></span>
 <span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
 </code></dt>
-<dd>
-<div class="desc"><p>An Enum for Destiny 2 milestone types.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@typing.final
+                    <dd>
+                        <div class="desc">
+                            <p>An Enum for Destiny 2 milestone types.</p>
+                        </div>
+                        <details class="source">
+                            <summary>
+                                <span>Expand source code</span>
+                            </summary>
+                            <pre><code class="python">@typing.final
 class MilestoneType(enum.Enum):
     &#34;&#34;&#34;An Enum for Destiny 2 milestone types.&#34;&#34;&#34;
 
@@ -1226,50 +1724,52 @@ class MilestoneType(enum.Enum):
 
     def __str__(self) -&gt; str:
         return str(self.name)</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>enum.Enum</li>
-</ul>
-<h3>Class variables</h3>
-<dl>
-<dt id="aiobungie.internal.enums.MilestoneType.DAILY"><code class="name">var <span class="ident">DAILY</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.MilestoneType.ONETIME"><code class="name">var <span class="ident">ONETIME</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.MilestoneType.SPECIAL"><code class="name">var <span class="ident">SPECIAL</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.MilestoneType.TUTORIAL"><code class="name">var <span class="ident">TUTORIAL</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.MilestoneType.UNKNOWN"><code class="name">var <span class="ident">UNKNOWN</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.MilestoneType.WEEKLY"><code class="name">var <span class="ident">WEEKLY</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-</dl>
-</dd>
-<dt id="aiobungie.internal.enums.Place"><code class="flex name class">
+                        </details>
+                        <h3>Ancestors</h3>
+                        <ul class="hlist">
+                            <li>enum.Enum</li>
+                        </ul>
+                        <h3>Class variables</h3>
+                        <dl>
+                            <dt id="aiobungie.internal.enums.MilestoneType.DAILY"><code class="name">var <span class="ident">DAILY</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.MilestoneType.ONETIME"><code class="name">var <span class="ident">ONETIME</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.MilestoneType.SPECIAL"><code class="name">var <span class="ident">SPECIAL</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.MilestoneType.TUTORIAL"><code class="name">var <span class="ident">TUTORIAL</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.MilestoneType.UNKNOWN"><code class="name">var <span class="ident">UNKNOWN</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.MilestoneType.WEEKLY"><code class="name">var <span class="ident">WEEKLY</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                        </dl>
+                    </dd>
+                    <dt id="aiobungie.internal.enums.Place"><code class="flex name class">
 <span>class <span class="ident">Place</span></span>
 <span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
 </code></dt>
-<dd>
-<div class="desc"><p>An Enum for Destiny 2 Places and NOT Planets</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@typing.final
+                    <dd>
+                        <div class="desc">
+                            <p>An Enum for Destiny 2 Places and NOT Planets</p>
+                        </div>
+                        <details class="source">
+                            <summary>
+                                <span>Expand source code</span>
+                            </summary>
+                            <pre><code class="python">@typing.final
 class Place(enum.Enum):
     &#34;&#34;&#34;An Enum for Destiny 2 Places and NOT Planets&#34;&#34;&#34;
 
@@ -1283,42 +1783,44 @@ class Place(enum.Enum):
 
     def __int__(self) -&gt; int:
         return int(self.value)</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>enum.Enum</li>
-</ul>
-<h3>Class variables</h3>
-<dl>
-<dt id="aiobungie.internal.enums.Place.EXPLORE"><code class="name">var <span class="ident">EXPLORE</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Place.LIGHT_HOUSE"><code class="name">var <span class="ident">LIGHT_HOUSE</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Place.ORBIT"><code class="name">var <span class="ident">ORBIT</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Place.SOCIAL"><code class="name">var <span class="ident">SOCIAL</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-</dl>
-</dd>
-<dt id="aiobungie.internal.enums.Planet"><code class="flex name class">
+                        </details>
+                        <h3>Ancestors</h3>
+                        <ul class="hlist">
+                            <li>enum.Enum</li>
+                        </ul>
+                        <h3>Class variables</h3>
+                        <dl>
+                            <dt id="aiobungie.internal.enums.Place.EXPLORE"><code class="name">var <span class="ident">EXPLORE</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Place.LIGHT_HOUSE"><code class="name">var <span class="ident">LIGHT_HOUSE</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Place.ORBIT"><code class="name">var <span class="ident">ORBIT</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Place.SOCIAL"><code class="name">var <span class="ident">SOCIAL</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                        </dl>
+                    </dd>
+                    <dt id="aiobungie.internal.enums.Planet"><code class="flex name class">
 <span>class <span class="ident">Planet</span></span>
 <span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
 </code></dt>
-<dd>
-<div class="desc"><p>An Enum for all available planets in Destiny 2.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@typing.final
+                    <dd>
+                        <div class="desc">
+                            <p>An Enum for all available planets in Destiny 2.</p>
+                        </div>
+                        <details class="source">
+                            <summary>
+                                <span>Expand source code</span>
+                            </summary>
+                            <pre><code class="python">@typing.final
 class Planet(enum.Enum):
     &#34;&#34;&#34;An Enum for all available planets in Destiny 2.&#34;&#34;&#34;
 
@@ -1357,66 +1859,88 @@ class Planet(enum.Enum):
 
     def __int__(self) -&gt; int:
         return int(self.value)</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>enum.Enum</li>
-</ul>
-<h3>Class variables</h3>
-<dl>
-<dt id="aiobungie.internal.enums.Planet.COSMODROME"><code class="name">var <span class="ident">COSMODROME</span></code></dt>
-<dd>
-<div class="desc"><p>The Cosmodrome</p></div>
-</dd>
-<dt id="aiobungie.internal.enums.Planet.DREAMING_CITY"><code class="name">var <span class="ident">DREAMING_CITY</span></code></dt>
-<dd>
-<div class="desc"><p>The Dreaming city.</p></div>
-</dd>
-<dt id="aiobungie.internal.enums.Planet.EARTH"><code class="name">var <span class="ident">EARTH</span></code></dt>
-<dd>
-<div class="desc"><p>Earth</p></div>
-</dd>
-<dt id="aiobungie.internal.enums.Planet.EAZ"><code class="name">var <span class="ident">EAZ</span></code></dt>
-<dd>
-<div class="desc"><p>European Aerial Zone</p></div>
-</dd>
-<dt id="aiobungie.internal.enums.Planet.EUROPA"><code class="name">var <span class="ident">EUROPA</span></code></dt>
-<dd>
-<div class="desc"><p>Europa</p></div>
-</dd>
-<dt id="aiobungie.internal.enums.Planet.MOON"><code class="name">var <span class="ident">MOON</span></code></dt>
-<dd>
-<div class="desc"><p>The Moon</p></div>
-</dd>
-<dt id="aiobungie.internal.enums.Planet.NESSUS"><code class="name">var <span class="ident">NESSUS</span></code></dt>
-<dd>
-<div class="desc"><p>Nessus</p></div>
-</dd>
-<dt id="aiobungie.internal.enums.Planet.TANGLED_SHORE"><code class="name">var <span class="ident">TANGLED_SHORE</span></code></dt>
-<dd>
-<div class="desc"><p>The Tangled Shore</p></div>
-</dd>
-<dt id="aiobungie.internal.enums.Planet.UNKNOWN"><code class="name">var <span class="ident">UNKNOWN</span></code></dt>
-<dd>
-<div class="desc"><p>Unknown space</p></div>
-</dd>
-<dt id="aiobungie.internal.enums.Planet.VENUS"><code class="name">var <span class="ident">VENUS</span></code></dt>
-<dd>
-<div class="desc"><p>Venus</p></div>
-</dd>
-</dl>
-</dd>
-<dt id="aiobungie.internal.enums.Race"><code class="flex name class">
+                        </details>
+                        <h3>Ancestors</h3>
+                        <ul class="hlist">
+                            <li>enum.Enum</li>
+                        </ul>
+                        <h3>Class variables</h3>
+                        <dl>
+                            <dt id="aiobungie.internal.enums.Planet.COSMODROME"><code class="name">var <span class="ident">COSMODROME</span></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>The Cosmodrome</p>
+                                </div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Planet.DREAMING_CITY"><code class="name">var <span class="ident">DREAMING_CITY</span></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>The Dreaming city.</p>
+                                </div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Planet.EARTH"><code class="name">var <span class="ident">EARTH</span></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Earth</p>
+                                </div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Planet.EAZ"><code class="name">var <span class="ident">EAZ</span></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>European Aerial Zone</p>
+                                </div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Planet.EUROPA"><code class="name">var <span class="ident">EUROPA</span></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Europa</p>
+                                </div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Planet.MOON"><code class="name">var <span class="ident">MOON</span></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>The Moon</p>
+                                </div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Planet.NESSUS"><code class="name">var <span class="ident">NESSUS</span></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Nessus</p>
+                                </div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Planet.TANGLED_SHORE"><code class="name">var <span class="ident">TANGLED_SHORE</span></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>The Tangled Shore</p>
+                                </div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Planet.UNKNOWN"><code class="name">var <span class="ident">UNKNOWN</span></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Unknown space</p>
+                                </div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Planet.VENUS"><code class="name">var <span class="ident">VENUS</span></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Venus</p>
+                                </div>
+                            </dd>
+                        </dl>
+                    </dd>
+                    <dt id="aiobungie.internal.enums.Race"><code class="flex name class">
 <span>class <span class="ident">Race</span></span>
 <span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
 </code></dt>
-<dd>
-<div class="desc"><p>An Enum for Destiny races.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@typing.final
+                    <dd>
+                        <div class="desc">
+                            <p>An Enum for Destiny races.</p>
+                        </div>
+                        <details class="source">
+                            <summary>
+                                <span>Expand source code</span>
+                            </summary>
+                            <pre><code class="python">@typing.final
 class Race(enum.Enum):
     &#34;&#34;&#34;An Enum for Destiny races.&#34;&#34;&#34;
 
@@ -1430,42 +1954,44 @@ class Race(enum.Enum):
 
     def __int__(self) -&gt; int:
         return int(self.value)</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>enum.Enum</li>
-</ul>
-<h3>Class variables</h3>
-<dl>
-<dt id="aiobungie.internal.enums.Race.AWOKEN"><code class="name">var <span class="ident">AWOKEN</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Race.EXO"><code class="name">var <span class="ident">EXO</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Race.HUMAN"><code class="name">var <span class="ident">HUMAN</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Race.UNKNOWN"><code class="name">var <span class="ident">UNKNOWN</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-</dl>
-</dd>
-<dt id="aiobungie.internal.enums.Raid"><code class="flex name class">
+                        </details>
+                        <h3>Ancestors</h3>
+                        <ul class="hlist">
+                            <li>enum.Enum</li>
+                        </ul>
+                        <h3>Class variables</h3>
+                        <dl>
+                            <dt id="aiobungie.internal.enums.Race.AWOKEN"><code class="name">var <span class="ident">AWOKEN</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Race.EXO"><code class="name">var <span class="ident">EXO</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Race.HUMAN"><code class="name">var <span class="ident">HUMAN</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Race.UNKNOWN"><code class="name">var <span class="ident">UNKNOWN</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                        </dl>
+                    </dd>
+                    <dt id="aiobungie.internal.enums.Raid"><code class="flex name class">
 <span>class <span class="ident">Raid</span></span>
 <span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
 </code></dt>
-<dd>
-<div class="desc"><p>An Enum for all available raids in Destiny 2.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@typing.final
+                    <dd>
+                        <div class="desc">
+                            <p>An Enum for all available raids in Destiny 2.</p>
+                        </div>
+                        <details class="source">
+                            <summary>
+                                <span>Expand source code</span>
+                            </summary>
+                            <pre><code class="python">@typing.final
 class Raid(enum.Enum):
     &#34;&#34;&#34;An Enum for all available raids in Destiny 2.&#34;&#34;&#34;
 
@@ -1486,42 +2012,52 @@ class Raid(enum.Enum):
 
     def __str__(self) -&gt; str:
         return str(self.name)</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>enum.Enum</li>
-</ul>
-<h3>Class variables</h3>
-<dl>
-<dt id="aiobungie.internal.enums.Raid.DSC"><code class="name">var <span class="ident">DSC</span></code></dt>
-<dd>
-<div class="desc"><p>Deep Stone Crypt</p></div>
-</dd>
-<dt id="aiobungie.internal.enums.Raid.GOS"><code class="name">var <span class="ident">GOS</span></code></dt>
-<dd>
-<div class="desc"><p>Garden Of Salvation</p></div>
-</dd>
-<dt id="aiobungie.internal.enums.Raid.LW"><code class="name">var <span class="ident">LW</span></code></dt>
-<dd>
-<div class="desc"><p>Last Wish</p></div>
-</dd>
-<dt id="aiobungie.internal.enums.Raid.VOG"><code class="name">var <span class="ident">VOG</span></code></dt>
-<dd>
-<div class="desc"><p>Normal Valut of Glass</p></div>
-</dd>
-</dl>
-</dd>
-<dt id="aiobungie.internal.enums.Stat"><code class="flex name class">
+                        </details>
+                        <h3>Ancestors</h3>
+                        <ul class="hlist">
+                            <li>enum.Enum</li>
+                        </ul>
+                        <h3>Class variables</h3>
+                        <dl>
+                            <dt id="aiobungie.internal.enums.Raid.DSC"><code class="name">var <span class="ident">DSC</span></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Deep Stone Crypt</p>
+                                </div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Raid.GOS"><code class="name">var <span class="ident">GOS</span></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Garden Of Salvation</p>
+                                </div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Raid.LW"><code class="name">var <span class="ident">LW</span></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Last Wish</p>
+                                </div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Raid.VOG"><code class="name">var <span class="ident">VOG</span></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Normal Valut of Glass</p>
+                                </div>
+                            </dd>
+                        </dl>
+                    </dd>
+                    <dt id="aiobungie.internal.enums.Stat"><code class="flex name class">
 <span>class <span class="ident">Stat</span></span>
 <span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
 </code></dt>
-<dd>
-<div class="desc"><p>An Enum for Destiny 2 character stats.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@typing.final
+                    <dd>
+                        <div class="desc">
+                            <p>An Enum for Destiny 2 character stats.</p>
+                        </div>
+                        <details class="source">
+                            <summary>
+                                <span>Expand source code</span>
+                            </summary>
+                            <pre><code class="python">@typing.final
 class Stat(enum.Enum):
     &#34;&#34;&#34;An Enum for Destiny 2 character stats.&#34;&#34;&#34;
 
@@ -1537,50 +2073,52 @@ class Stat(enum.Enum):
 
     def __str__(self) -&gt; str:
         return str(self.name)</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>enum.Enum</li>
-</ul>
-<h3>Class variables</h3>
-<dl>
-<dt id="aiobungie.internal.enums.Stat.DISCIPLINE"><code class="name">var <span class="ident">DISCIPLINE</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Stat.INTELLECT"><code class="name">var <span class="ident">INTELLECT</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Stat.MOBILITY"><code class="name">var <span class="ident">MOBILITY</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Stat.RECOVERY"><code class="name">var <span class="ident">RECOVERY</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Stat.RESILIENCE"><code class="name">var <span class="ident">RESILIENCE</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Stat.STRENGTH"><code class="name">var <span class="ident">STRENGTH</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-</dl>
-</dd>
-<dt id="aiobungie.internal.enums.Vendor"><code class="flex name class">
+                        </details>
+                        <h3>Ancestors</h3>
+                        <ul class="hlist">
+                            <li>enum.Enum</li>
+                        </ul>
+                        <h3>Class variables</h3>
+                        <dl>
+                            <dt id="aiobungie.internal.enums.Stat.DISCIPLINE"><code class="name">var <span class="ident">DISCIPLINE</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Stat.INTELLECT"><code class="name">var <span class="ident">INTELLECT</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Stat.MOBILITY"><code class="name">var <span class="ident">MOBILITY</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Stat.RECOVERY"><code class="name">var <span class="ident">RECOVERY</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Stat.RESILIENCE"><code class="name">var <span class="ident">RESILIENCE</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Stat.STRENGTH"><code class="name">var <span class="ident">STRENGTH</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                        </dl>
+                    </dd>
+                    <dt id="aiobungie.internal.enums.Vendor"><code class="flex name class">
 <span>class <span class="ident">Vendor</span></span>
 <span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
 </code></dt>
-<dd>
-<div class="desc"><p>An Enum for all available vendors in Destiny 2.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@typing.final
+                    <dd>
+                        <div class="desc">
+                            <p>An Enum for all available vendors in Destiny 2.</p>
+                        </div>
+                        <details class="source">
+                            <summary>
+                                <span>Expand source code</span>
+                            </summary>
+                            <pre><code class="python">@typing.final
 class Vendor(enum.Enum):
     &#34;&#34;&#34;An Enum for all available vendors in Destiny 2.&#34;&#34;&#34;
 
@@ -1613,98 +2151,110 @@ class Vendor(enum.Enum):
 
     def __int__(self) -&gt; int:
         return int(self.value)</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>enum.Enum</li>
-</ul>
-<h3>Class variables</h3>
-<dl>
-<dt id="aiobungie.internal.enums.Vendor.ADA1"><code class="name">var <span class="ident">ADA1</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Vendor.AMANDA"><code class="name">var <span class="ident">AMANDA</span></code></dt>
-<dd>
-<div class="desc"><p>Amanda holiday</p></div>
-</dd>
-<dt id="aiobungie.internal.enums.Vendor.BANSHE"><code class="name">var <span class="ident">BANSHE</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Vendor.CROW"><code class="name">var <span class="ident">CROW</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Vendor.DRIFTER"><code class="name">var <span class="ident">DRIFTER</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Vendor.ERIS_MORN"><code class="name">var <span class="ident">ERIS_MORN</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Vendor.EVERVERSE"><code class="name">var <span class="ident">EVERVERSE</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Vendor.HAWTHORNE"><code class="name">var <span class="ident">HAWTHORNE</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Vendor.IKORA"><code class="name">var <span class="ident">IKORA</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Vendor.KADI"><code class="name">var <span class="ident">KADI</span></code></dt>
-<dd>
-<div class="desc"><p>Postmaster exo.</p></div>
-</dd>
-<dt id="aiobungie.internal.enums.Vendor.SAINT"><code class="name">var <span class="ident">SAINT</span></code></dt>
-<dd>
-<div class="desc"><p>Saint-14</p></div>
-</dd>
-<dt id="aiobungie.internal.enums.Vendor.SHAW_HAWN"><code class="name">var <span class="ident">SHAW_HAWN</span></code></dt>
-<dd>
-<div class="desc"><p>COSMODROME Guy</p></div>
-</dd>
-<dt id="aiobungie.internal.enums.Vendor.SHAXX"><code class="name">var <span class="ident">SHAXX</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Vendor.SPIDER"><code class="name">var <span class="ident">SPIDER</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Vendor.VARIKS"><code class="name">var <span class="ident">VARIKS</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Vendor.XUR"><code class="name">var <span class="ident">XUR</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.Vendor.YUNA"><code class="name">var <span class="ident">YUNA</span></code></dt>
-<dd>
-<div class="desc"><p>Asia servers only.</p></div>
-</dd>
-<dt id="aiobungie.internal.enums.Vendor.ZAVALA"><code class="name">var <span class="ident">ZAVALA</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-</dl>
-</dd>
-<dt id="aiobungie.internal.enums.WeaponType"><code class="flex name class">
+                        </details>
+                        <h3>Ancestors</h3>
+                        <ul class="hlist">
+                            <li>enum.Enum</li>
+                        </ul>
+                        <h3>Class variables</h3>
+                        <dl>
+                            <dt id="aiobungie.internal.enums.Vendor.ADA1"><code class="name">var <span class="ident">ADA1</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Vendor.AMANDA"><code class="name">var <span class="ident">AMANDA</span></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Amanda holiday</p>
+                                </div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Vendor.BANSHE"><code class="name">var <span class="ident">BANSHE</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Vendor.CROW"><code class="name">var <span class="ident">CROW</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Vendor.DRIFTER"><code class="name">var <span class="ident">DRIFTER</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Vendor.ERIS_MORN"><code class="name">var <span class="ident">ERIS_MORN</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Vendor.EVERVERSE"><code class="name">var <span class="ident">EVERVERSE</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Vendor.HAWTHORNE"><code class="name">var <span class="ident">HAWTHORNE</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Vendor.IKORA"><code class="name">var <span class="ident">IKORA</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Vendor.KADI"><code class="name">var <span class="ident">KADI</span></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Postmaster exo.</p>
+                                </div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Vendor.SAINT"><code class="name">var <span class="ident">SAINT</span></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Saint-14</p>
+                                </div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Vendor.SHAW_HAWN"><code class="name">var <span class="ident">SHAW_HAWN</span></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>COSMODROME Guy</p>
+                                </div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Vendor.SHAXX"><code class="name">var <span class="ident">SHAXX</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Vendor.SPIDER"><code class="name">var <span class="ident">SPIDER</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Vendor.VARIKS"><code class="name">var <span class="ident">VARIKS</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Vendor.XUR"><code class="name">var <span class="ident">XUR</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Vendor.YUNA"><code class="name">var <span class="ident">YUNA</span></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Asia servers only.</p>
+                                </div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Vendor.ZAVALA"><code class="name">var <span class="ident">ZAVALA</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                        </dl>
+                    </dd>
+                    <dt id="aiobungie.internal.enums.WeaponType"><code class="flex name class">
 <span>class <span class="ident">WeaponType</span></span>
 <span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
 </code></dt>
-<dd>
-<div class="desc"><p>Enums for The three Destiny Weapon Types</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@typing.final
+                    <dd>
+                        <div class="desc">
+                            <p>Enums for The three Destiny Weapon Types</p>
+                        </div>
+                        <details class="source">
+                            <summary>
+                                <span>Expand source code</span>
+                            </summary>
+                            <pre><code class="python">@typing.final
 class WeaponType(enum.Enum):
     &#34;&#34;&#34;Enums for The three Destiny Weapon Types&#34;&#34;&#34;
 
@@ -1717,326 +2267,336 @@ class WeaponType(enum.Enum):
 
     def __int__(self) -&gt; int:
         return int(self.value)</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>enum.Enum</li>
-</ul>
-<h3>Class variables</h3>
-<dl>
-<dt id="aiobungie.internal.enums.WeaponType.ENERGY"><code class="name">var <span class="ident">ENERGY</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.WeaponType.KINETIC"><code class="name">var <span class="ident">KINETIC</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="aiobungie.internal.enums.WeaponType.POWER"><code class="name">var <span class="ident">POWER</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-</dl>
-</dd>
-</dl>
-</section>
-</article>
-<nav id="sidebar">
-<form>
-<input id="lunr-search" name="q" placeholder="🔎 Search ..." aria-label="Search"
-disabled minlength="2">
-</form>
-<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.3/tingle.min.css" integrity="sha512-j1u8eUJ4f23xPPxwOrLUPQaCD2dwzNqqmDDcWS4deWsMv2ohLqmXXuP3hU7g8TyzbMSakP/mMqoNBYWj8AEIFg==" crossorigin>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.3/tingle.min.js" integrity="sha512-plGUER9JkeEWPPqQBE4sdLqBoQug5Ap+BCGMc7bJ8BXkm+VVj6QzkpBz5Yv2yPkkq+cqg9IpkBaGCas6uDbW8g==" crossorigin></script>
-<style>
-.modal-dialog iframe {
-width: 100vw;
-height: calc(100vh - 80px);
-}
-@media screen and (min-width: 700px) {
-.modal-dialog iframe {
-width: 70vw;
-height: 80vh;
-}
-}
-.modal-dialog .tingle-modal-box {width: auto;}
-.modal-dialog .tingle-modal-box__content {padding: 0;}
-</style>
-<script>
-const input = document.getElementById('lunr-search');
-input.disabled = false;
-input.form.addEventListener('submit', (ev) => {
-ev.preventDefault();
-const url = new URL(window.location);
-url.searchParams.set('q', input.value);
-history.replaceState({}, null, url.toString());
-search(input.value);
-});
-const query = new URL(window.location).searchParams.get('q');
-if (query)
-search(query);
-function search(query) {
-const url = '../../doc-search.html#' + encodeURIComponent(query);
-new tingle.modal({
-cssClass: ['modal-dialog'],
-onClose: () => {
-const url = new URL(window.location);
-url.searchParams.delete('q');
-history.replaceState({}, null, url.toString());
-setTimeout(() => input.focus(), 100);
-}
-}).setContent('<iframe src="' + url + '"></iframe>').open();
-}
-</script>
-<h1>Index</h1>
-<div class="toc">
-<ul></ul>
-</div>
-<ul id="index">
-<li><h3>Super-module</h3>
-<ul>
-<li><code><a title="aiobungie.internal" href="index.html">aiobungie.internal</a></code></li>
-</ul>
-</li>
-<li><h3><a href="#header-classes">Classes</a></h3>
-<ul>
-<li>
-<h4><code><a title="aiobungie.internal.enums.Class" href="#aiobungie.internal.enums.Class">Class</a></code></h4>
-<ul class="">
-<li><code><a title="aiobungie.internal.enums.Class.HUNTER" href="#aiobungie.internal.enums.Class.HUNTER">HUNTER</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Class.TITAN" href="#aiobungie.internal.enums.Class.TITAN">TITAN</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Class.UNKNOWN" href="#aiobungie.internal.enums.Class.UNKNOWN">UNKNOWN</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Class.WARLOCK" href="#aiobungie.internal.enums.Class.WARLOCK">WARLOCK</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="aiobungie.internal.enums.Component" href="#aiobungie.internal.enums.Component">Component</a></code></h4>
-<ul class="">
-<li><code><a title="aiobungie.internal.enums.Component.CHARECTERS" href="#aiobungie.internal.enums.Component.CHARECTERS">CHARECTERS</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Component.CHARECTER_PROGRESSION" href="#aiobungie.internal.enums.Component.CHARECTER_PROGRESSION">CHARECTER_PROGRESSION</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Component.CHAR_INVENTORY" href="#aiobungie.internal.enums.Component.CHAR_INVENTORY">CHAR_INVENTORY</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Component.EQUIPED_ITEMS" href="#aiobungie.internal.enums.Component.EQUIPED_ITEMS">EQUIPED_ITEMS</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Component.INVENTORIES" href="#aiobungie.internal.enums.Component.INVENTORIES">INVENTORIES</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Component.NOTHING" href="#aiobungie.internal.enums.Component.NOTHING">NOTHING</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Component.PROFILE" href="#aiobungie.internal.enums.Component.PROFILE">PROFILE</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Component.PROGRESSION" href="#aiobungie.internal.enums.Component.PROGRESSION">PROGRESSION</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Component.RECORDS" href="#aiobungie.internal.enums.Component.RECORDS">RECORDS</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Component.SILVER" href="#aiobungie.internal.enums.Component.SILVER">SILVER</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Component.VENDORS" href="#aiobungie.internal.enums.Component.VENDORS">VENDORS</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Component.VENDOR_SALES" href="#aiobungie.internal.enums.Component.VENDOR_SALES">VENDOR_SALES</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="aiobungie.internal.enums.DamageType" href="#aiobungie.internal.enums.DamageType">DamageType</a></code></h4>
-<ul class="two-column">
-<li><code><a title="aiobungie.internal.enums.DamageType.ARC" href="#aiobungie.internal.enums.DamageType.ARC">ARC</a></code></li>
-<li><code><a title="aiobungie.internal.enums.DamageType.KINETIC" href="#aiobungie.internal.enums.DamageType.KINETIC">KINETIC</a></code></li>
-<li><code><a title="aiobungie.internal.enums.DamageType.RAID" href="#aiobungie.internal.enums.DamageType.RAID">RAID</a></code></li>
-<li><code><a title="aiobungie.internal.enums.DamageType.SOLAR" href="#aiobungie.internal.enums.DamageType.SOLAR">SOLAR</a></code></li>
-<li><code><a title="aiobungie.internal.enums.DamageType.STASIS" href="#aiobungie.internal.enums.DamageType.STASIS">STASIS</a></code></li>
-<li><code><a title="aiobungie.internal.enums.DamageType.VOID" href="#aiobungie.internal.enums.DamageType.VOID">VOID</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="aiobungie.internal.enums.Dungeon" href="#aiobungie.internal.enums.Dungeon">Dungeon</a></code></h4>
-<ul class="two-column">
-<li><code><a title="aiobungie.internal.enums.Dungeon.HARBINGER" href="#aiobungie.internal.enums.Dungeon.HARBINGER">HARBINGER</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Dungeon.LEGEND_POH" href="#aiobungie.internal.enums.Dungeon.LEGEND_POH">LEGEND_POH</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Dungeon.MASTER_POH" href="#aiobungie.internal.enums.Dungeon.MASTER_POH">MASTER_POH</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Dungeon.MASTER_PRESAGE" href="#aiobungie.internal.enums.Dungeon.MASTER_PRESAGE">MASTER_PRESAGE</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Dungeon.NORMAL_PRESAGE" href="#aiobungie.internal.enums.Dungeon.NORMAL_PRESAGE">NORMAL_PRESAGE</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Dungeon.POH" href="#aiobungie.internal.enums.Dungeon.POH">POH</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Dungeon.PROPHECY" href="#aiobungie.internal.enums.Dungeon.PROPHECY">PROPHECY</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Dungeon.SHATTERED" href="#aiobungie.internal.enums.Dungeon.SHATTERED">SHATTERED</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="aiobungie.internal.enums.GameMode" href="#aiobungie.internal.enums.GameMode">GameMode</a></code></h4>
-<ul class="two-column">
-<li><code><a title="aiobungie.internal.enums.GameMode.ALLPVE" href="#aiobungie.internal.enums.GameMode.ALLPVE">ALLPVE</a></code></li>
-<li><code><a title="aiobungie.internal.enums.GameMode.ALLPVP" href="#aiobungie.internal.enums.GameMode.ALLPVP">ALLPVP</a></code></li>
-<li><code><a title="aiobungie.internal.enums.GameMode.ALLSTRIKES" href="#aiobungie.internal.enums.GameMode.ALLSTRIKES">ALLSTRIKES</a></code></li>
-<li><code><a title="aiobungie.internal.enums.GameMode.CLASH" href="#aiobungie.internal.enums.GameMode.CLASH">CLASH</a></code></li>
-<li><code><a title="aiobungie.internal.enums.GameMode.CLASSIC_MIX" href="#aiobungie.internal.enums.GameMode.CLASSIC_MIX">CLASSIC_MIX</a></code></li>
-<li><code><a title="aiobungie.internal.enums.GameMode.CONTROL" href="#aiobungie.internal.enums.GameMode.CONTROL">CONTROL</a></code></li>
-<li><code><a title="aiobungie.internal.enums.GameMode.COUNTDOWN" href="#aiobungie.internal.enums.GameMode.COUNTDOWN">COUNTDOWN</a></code></li>
-<li><code><a title="aiobungie.internal.enums.GameMode.DOUBLES" href="#aiobungie.internal.enums.GameMode.DOUBLES">DOUBLES</a></code></li>
-<li><code><a title="aiobungie.internal.enums.GameMode.DUNGEON" href="#aiobungie.internal.enums.GameMode.DUNGEON">DUNGEON</a></code></li>
-<li><code><a title="aiobungie.internal.enums.GameMode.EMIPIRE_HUNT" href="#aiobungie.internal.enums.GameMode.EMIPIRE_HUNT">EMIPIRE_HUNT</a></code></li>
-<li><code><a title="aiobungie.internal.enums.GameMode.GAMBIT" href="#aiobungie.internal.enums.GameMode.GAMBIT">GAMBIT</a></code></li>
-<li><code><a title="aiobungie.internal.enums.GameMode.IRONBANER" href="#aiobungie.internal.enums.GameMode.IRONBANER">IRONBANER</a></code></li>
-<li><code><a title="aiobungie.internal.enums.GameMode.MAYHEM" href="#aiobungie.internal.enums.GameMode.MAYHEM">MAYHEM</a></code></li>
-<li><code><a title="aiobungie.internal.enums.GameMode.NIGHTFALL" href="#aiobungie.internal.enums.GameMode.NIGHTFALL">NIGHTFALL</a></code></li>
-<li><code><a title="aiobungie.internal.enums.GameMode.NOTHING" href="#aiobungie.internal.enums.GameMode.NOTHING">NOTHING</a></code></li>
-<li><code><a title="aiobungie.internal.enums.GameMode.PATROL" href="#aiobungie.internal.enums.GameMode.PATROL">PATROL</a></code></li>
-<li><code><a title="aiobungie.internal.enums.GameMode.RAID" href="#aiobungie.internal.enums.GameMode.RAID">RAID</a></code></li>
-<li><code><a title="aiobungie.internal.enums.GameMode.RUMBLE" href="#aiobungie.internal.enums.GameMode.RUMBLE">RUMBLE</a></code></li>
-<li><code><a title="aiobungie.internal.enums.GameMode.STORY" href="#aiobungie.internal.enums.GameMode.STORY">STORY</a></code></li>
-<li><code><a title="aiobungie.internal.enums.GameMode.STRIKE" href="#aiobungie.internal.enums.GameMode.STRIKE">STRIKE</a></code></li>
-<li><code><a title="aiobungie.internal.enums.GameMode.SURVIVAL" href="#aiobungie.internal.enums.GameMode.SURVIVAL">SURVIVAL</a></code></li>
-<li><code><a title="aiobungie.internal.enums.GameMode.TOF" href="#aiobungie.internal.enums.GameMode.TOF">TOF</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="aiobungie.internal.enums.Gender" href="#aiobungie.internal.enums.Gender">Gender</a></code></h4>
-<ul class="">
-<li><code><a title="aiobungie.internal.enums.Gender.FEMALE" href="#aiobungie.internal.enums.Gender.FEMALE">FEMALE</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Gender.MALE" href="#aiobungie.internal.enums.Gender.MALE">MALE</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Gender.UNKNOWN" href="#aiobungie.internal.enums.Gender.UNKNOWN">UNKNOWN</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="aiobungie.internal.enums.Item" href="#aiobungie.internal.enums.Item">Item</a></code></h4>
-<ul class="two-column">
-<li><code><a title="aiobungie.internal.enums.Item.AUTO_RIFLE" href="#aiobungie.internal.enums.Item.AUTO_RIFLE">AUTO_RIFLE</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Item.BOW" href="#aiobungie.internal.enums.Item.BOW">BOW</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Item.CHEST_ARMOR" href="#aiobungie.internal.enums.Item.CHEST_ARMOR">CHEST_ARMOR</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Item.CLASS_ARMOR" href="#aiobungie.internal.enums.Item.CLASS_ARMOR">CLASS_ARMOR</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Item.EMBLEMS" href="#aiobungie.internal.enums.Item.EMBLEMS">EMBLEMS</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Item.EMOTES" href="#aiobungie.internal.enums.Item.EMOTES">EMOTES</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Item.FUSION_RIFLE" href="#aiobungie.internal.enums.Item.FUSION_RIFLE">FUSION_RIFLE</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Item.FUSION_RIFLELINE" href="#aiobungie.internal.enums.Item.FUSION_RIFLELINE">FUSION_RIFLELINE</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Item.GAUNTLET" href="#aiobungie.internal.enums.Item.GAUNTLET">GAUNTLET</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Item.GHOST" href="#aiobungie.internal.enums.Item.GHOST">GHOST</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Item.GRENADE_LAUNCHER" href="#aiobungie.internal.enums.Item.GRENADE_LAUNCHER">GRENADE_LAUNCHER</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Item.HANDCANNON" href="#aiobungie.internal.enums.Item.HANDCANNON">HANDCANNON</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Item.HELMET" href="#aiobungie.internal.enums.Item.HELMET">HELMET</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Item.LEGENDRY_SHARDS" href="#aiobungie.internal.enums.Item.LEGENDRY_SHARDS">LEGENDRY_SHARDS</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Item.LEG_ARMOR" href="#aiobungie.internal.enums.Item.LEG_ARMOR">LEG_ARMOR</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Item.MACHINE_GUN" href="#aiobungie.internal.enums.Item.MACHINE_GUN">MACHINE_GUN</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Item.MASK" href="#aiobungie.internal.enums.Item.MASK">MASK</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Item.NONE" href="#aiobungie.internal.enums.Item.NONE">NONE</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Item.ORNAMENT" href="#aiobungie.internal.enums.Item.ORNAMENT">ORNAMENT</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Item.PULSE_RIFLE" href="#aiobungie.internal.enums.Item.PULSE_RIFLE">PULSE_RIFLE</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Item.ROCKET_LAUNCHER" href="#aiobungie.internal.enums.Item.ROCKET_LAUNCHER">ROCKET_LAUNCHER</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Item.SCOUT_RIFLE" href="#aiobungie.internal.enums.Item.SCOUT_RIFLE">SCOUT_RIFLE</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Item.SEASONAL_ARTIFACT" href="#aiobungie.internal.enums.Item.SEASONAL_ARTIFACT">SEASONAL_ARTIFACT</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Item.SHADER" href="#aiobungie.internal.enums.Item.SHADER">SHADER</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Item.SHOTGUN" href="#aiobungie.internal.enums.Item.SHOTGUN">SHOTGUN</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Item.SIDEARM" href="#aiobungie.internal.enums.Item.SIDEARM">SIDEARM</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Item.SNIPER_RIFLE" href="#aiobungie.internal.enums.Item.SNIPER_RIFLE">SNIPER_RIFLE</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Item.SUBCLASS" href="#aiobungie.internal.enums.Item.SUBCLASS">SUBCLASS</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Item.SUBMACHINE" href="#aiobungie.internal.enums.Item.SUBMACHINE">SUBMACHINE</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Item.SWORD" href="#aiobungie.internal.enums.Item.SWORD">SWORD</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Item.SYNTHWAEV_TEMPLATE" href="#aiobungie.internal.enums.Item.SYNTHWAEV_TEMPLATE">SYNTHWAEV_TEMPLATE</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Item.TRACE_RIFLE" href="#aiobungie.internal.enums.Item.TRACE_RIFLE">TRACE_RIFLE</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="aiobungie.internal.enums.MembershipType" href="#aiobungie.internal.enums.MembershipType">MembershipType</a></code></h4>
-<ul class="two-column">
-<li><code><a title="aiobungie.internal.enums.MembershipType.ALL" href="#aiobungie.internal.enums.MembershipType.ALL">ALL</a></code></li>
-<li><code><a title="aiobungie.internal.enums.MembershipType.BLIZZARD" href="#aiobungie.internal.enums.MembershipType.BLIZZARD">BLIZZARD</a></code></li>
-<li><code><a title="aiobungie.internal.enums.MembershipType.BUNGIE" href="#aiobungie.internal.enums.MembershipType.BUNGIE">BUNGIE</a></code></li>
-<li><code><a title="aiobungie.internal.enums.MembershipType.NONE" href="#aiobungie.internal.enums.MembershipType.NONE">NONE</a></code></li>
-<li><code><a title="aiobungie.internal.enums.MembershipType.PSN" href="#aiobungie.internal.enums.MembershipType.PSN">PSN</a></code></li>
-<li><code><a title="aiobungie.internal.enums.MembershipType.STADIA" href="#aiobungie.internal.enums.MembershipType.STADIA">STADIA</a></code></li>
-<li><code><a title="aiobungie.internal.enums.MembershipType.STEAM" href="#aiobungie.internal.enums.MembershipType.STEAM">STEAM</a></code></li>
-<li><code><a title="aiobungie.internal.enums.MembershipType.XBOX" href="#aiobungie.internal.enums.MembershipType.XBOX">XBOX</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="aiobungie.internal.enums.MilestoneType" href="#aiobungie.internal.enums.MilestoneType">MilestoneType</a></code></h4>
-<ul class="two-column">
-<li><code><a title="aiobungie.internal.enums.MilestoneType.DAILY" href="#aiobungie.internal.enums.MilestoneType.DAILY">DAILY</a></code></li>
-<li><code><a title="aiobungie.internal.enums.MilestoneType.ONETIME" href="#aiobungie.internal.enums.MilestoneType.ONETIME">ONETIME</a></code></li>
-<li><code><a title="aiobungie.internal.enums.MilestoneType.SPECIAL" href="#aiobungie.internal.enums.MilestoneType.SPECIAL">SPECIAL</a></code></li>
-<li><code><a title="aiobungie.internal.enums.MilestoneType.TUTORIAL" href="#aiobungie.internal.enums.MilestoneType.TUTORIAL">TUTORIAL</a></code></li>
-<li><code><a title="aiobungie.internal.enums.MilestoneType.UNKNOWN" href="#aiobungie.internal.enums.MilestoneType.UNKNOWN">UNKNOWN</a></code></li>
-<li><code><a title="aiobungie.internal.enums.MilestoneType.WEEKLY" href="#aiobungie.internal.enums.MilestoneType.WEEKLY">WEEKLY</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="aiobungie.internal.enums.Place" href="#aiobungie.internal.enums.Place">Place</a></code></h4>
-<ul class="">
-<li><code><a title="aiobungie.internal.enums.Place.EXPLORE" href="#aiobungie.internal.enums.Place.EXPLORE">EXPLORE</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Place.LIGHT_HOUSE" href="#aiobungie.internal.enums.Place.LIGHT_HOUSE">LIGHT_HOUSE</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Place.ORBIT" href="#aiobungie.internal.enums.Place.ORBIT">ORBIT</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Place.SOCIAL" href="#aiobungie.internal.enums.Place.SOCIAL">SOCIAL</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="aiobungie.internal.enums.Planet" href="#aiobungie.internal.enums.Planet">Planet</a></code></h4>
-<ul class="two-column">
-<li><code><a title="aiobungie.internal.enums.Planet.COSMODROME" href="#aiobungie.internal.enums.Planet.COSMODROME">COSMODROME</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Planet.DREAMING_CITY" href="#aiobungie.internal.enums.Planet.DREAMING_CITY">DREAMING_CITY</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Planet.EARTH" href="#aiobungie.internal.enums.Planet.EARTH">EARTH</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Planet.EAZ" href="#aiobungie.internal.enums.Planet.EAZ">EAZ</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Planet.EUROPA" href="#aiobungie.internal.enums.Planet.EUROPA">EUROPA</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Planet.MOON" href="#aiobungie.internal.enums.Planet.MOON">MOON</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Planet.NESSUS" href="#aiobungie.internal.enums.Planet.NESSUS">NESSUS</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Planet.TANGLED_SHORE" href="#aiobungie.internal.enums.Planet.TANGLED_SHORE">TANGLED_SHORE</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Planet.UNKNOWN" href="#aiobungie.internal.enums.Planet.UNKNOWN">UNKNOWN</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Planet.VENUS" href="#aiobungie.internal.enums.Planet.VENUS">VENUS</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="aiobungie.internal.enums.Race" href="#aiobungie.internal.enums.Race">Race</a></code></h4>
-<ul class="">
-<li><code><a title="aiobungie.internal.enums.Race.AWOKEN" href="#aiobungie.internal.enums.Race.AWOKEN">AWOKEN</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Race.EXO" href="#aiobungie.internal.enums.Race.EXO">EXO</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Race.HUMAN" href="#aiobungie.internal.enums.Race.HUMAN">HUMAN</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Race.UNKNOWN" href="#aiobungie.internal.enums.Race.UNKNOWN">UNKNOWN</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="aiobungie.internal.enums.Raid" href="#aiobungie.internal.enums.Raid">Raid</a></code></h4>
-<ul class="">
-<li><code><a title="aiobungie.internal.enums.Raid.DSC" href="#aiobungie.internal.enums.Raid.DSC">DSC</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Raid.GOS" href="#aiobungie.internal.enums.Raid.GOS">GOS</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Raid.LW" href="#aiobungie.internal.enums.Raid.LW">LW</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Raid.VOG" href="#aiobungie.internal.enums.Raid.VOG">VOG</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="aiobungie.internal.enums.Stat" href="#aiobungie.internal.enums.Stat">Stat</a></code></h4>
-<ul class="two-column">
-<li><code><a title="aiobungie.internal.enums.Stat.DISCIPLINE" href="#aiobungie.internal.enums.Stat.DISCIPLINE">DISCIPLINE</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Stat.INTELLECT" href="#aiobungie.internal.enums.Stat.INTELLECT">INTELLECT</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Stat.MOBILITY" href="#aiobungie.internal.enums.Stat.MOBILITY">MOBILITY</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Stat.RECOVERY" href="#aiobungie.internal.enums.Stat.RECOVERY">RECOVERY</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Stat.RESILIENCE" href="#aiobungie.internal.enums.Stat.RESILIENCE">RESILIENCE</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Stat.STRENGTH" href="#aiobungie.internal.enums.Stat.STRENGTH">STRENGTH</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="aiobungie.internal.enums.Vendor" href="#aiobungie.internal.enums.Vendor">Vendor</a></code></h4>
-<ul class="two-column">
-<li><code><a title="aiobungie.internal.enums.Vendor.ADA1" href="#aiobungie.internal.enums.Vendor.ADA1">ADA1</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Vendor.AMANDA" href="#aiobungie.internal.enums.Vendor.AMANDA">AMANDA</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Vendor.BANSHE" href="#aiobungie.internal.enums.Vendor.BANSHE">BANSHE</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Vendor.CROW" href="#aiobungie.internal.enums.Vendor.CROW">CROW</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Vendor.DRIFTER" href="#aiobungie.internal.enums.Vendor.DRIFTER">DRIFTER</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Vendor.ERIS_MORN" href="#aiobungie.internal.enums.Vendor.ERIS_MORN">ERIS_MORN</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Vendor.EVERVERSE" href="#aiobungie.internal.enums.Vendor.EVERVERSE">EVERVERSE</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Vendor.HAWTHORNE" href="#aiobungie.internal.enums.Vendor.HAWTHORNE">HAWTHORNE</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Vendor.IKORA" href="#aiobungie.internal.enums.Vendor.IKORA">IKORA</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Vendor.KADI" href="#aiobungie.internal.enums.Vendor.KADI">KADI</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Vendor.SAINT" href="#aiobungie.internal.enums.Vendor.SAINT">SAINT</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Vendor.SHAW_HAWN" href="#aiobungie.internal.enums.Vendor.SHAW_HAWN">SHAW_HAWN</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Vendor.SHAXX" href="#aiobungie.internal.enums.Vendor.SHAXX">SHAXX</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Vendor.SPIDER" href="#aiobungie.internal.enums.Vendor.SPIDER">SPIDER</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Vendor.VARIKS" href="#aiobungie.internal.enums.Vendor.VARIKS">VARIKS</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Vendor.XUR" href="#aiobungie.internal.enums.Vendor.XUR">XUR</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Vendor.YUNA" href="#aiobungie.internal.enums.Vendor.YUNA">YUNA</a></code></li>
-<li><code><a title="aiobungie.internal.enums.Vendor.ZAVALA" href="#aiobungie.internal.enums.Vendor.ZAVALA">ZAVALA</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="aiobungie.internal.enums.WeaponType" href="#aiobungie.internal.enums.WeaponType">WeaponType</a></code></h4>
-<ul class="">
-<li><code><a title="aiobungie.internal.enums.WeaponType.ENERGY" href="#aiobungie.internal.enums.WeaponType.ENERGY">ENERGY</a></code></li>
-<li><code><a title="aiobungie.internal.enums.WeaponType.KINETIC" href="#aiobungie.internal.enums.WeaponType.KINETIC">KINETIC</a></code></li>
-<li><code><a title="aiobungie.internal.enums.WeaponType.POWER" href="#aiobungie.internal.enums.WeaponType.POWER">POWER</a></code></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</nav>
-</main>
-<footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.9.2</a>.</p>
-</footer>
+                        </details>
+                        <h3>Ancestors</h3>
+                        <ul class="hlist">
+                            <li>enum.Enum</li>
+                        </ul>
+                        <h3>Class variables</h3>
+                        <dl>
+                            <dt id="aiobungie.internal.enums.WeaponType.ENERGY"><code class="name">var <span class="ident">ENERGY</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.WeaponType.KINETIC"><code class="name">var <span class="ident">KINETIC</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.WeaponType.POWER"><code class="name">var <span class="ident">POWER</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                        </dl>
+                    </dd>
+                </dl>
+            </section>
+        </article>
+        <nav id="sidebar">
+            <form>
+                <input id="lunr-search" name="q" placeholder="🔎 Search ..." aria-label="Search" disabled minlength="2">
+            </form>
+            <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.3/tingle.min.css" integrity="sha512-j1u8eUJ4f23xPPxwOrLUPQaCD2dwzNqqmDDcWS4deWsMv2ohLqmXXuP3hU7g8TyzbMSakP/mMqoNBYWj8AEIFg==" crossorigin>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.3/tingle.min.js" integrity="sha512-plGUER9JkeEWPPqQBE4sdLqBoQug5Ap+BCGMc7bJ8BXkm+VVj6QzkpBz5Yv2yPkkq+cqg9IpkBaGCas6uDbW8g==" crossorigin></script>
+            <style>
+                .modal-dialog iframe {
+                    width: 100vw;
+                    height: calc(100vh - 80px);
+                }
+                
+                @media screen and (min-width: 700px) {
+                    .modal-dialog iframe {
+                        width: 70vw;
+                        height: 80vh;
+                    }
+                }
+                
+                .modal-dialog .tingle-modal-box {
+                    width: auto;
+                }
+                
+                .modal-dialog .tingle-modal-box__content {
+                    padding: 0;
+                }
+            </style>
+            <script>
+                const input = document.getElementById('lunr-search');
+                input.disabled = false;
+                input.form.addEventListener('submit', (ev) => {
+                    ev.preventDefault();
+                    const url = new URL(window.location);
+                    url.searchParams.set('q', input.value);
+                    history.replaceState({}, null, url.toString());
+                    search(input.value);
+                });
+                const query = new URL(window.location).searchParams.get('q');
+                if (query)
+                    search(query);
+
+                function search(query) {
+                    const url = '.././doc-search.html#' + encodeURIComponent(query);
+                    new tingle.modal({
+                        cssClass: ['modal-dialog'],
+                        onClose: () => {
+                            const url = new URL(window.location);
+                            url.searchParams.delete('q');
+                            history.replaceState({}, null, url.toString());
+                            setTimeout(() => input.focus(), 100);
+                        }
+                    }).setContent('<iframe src="' + url + '"></iframe>').open();
+                }
+            </script>
+            <h1>Index</h1>
+            <div class="toc">
+                <ul></ul>
+            </div>
+            <ul id="index">
+                <li>
+                    <h3>Super-module</h3>
+                    <ul>
+                        <li><code><a title="aiobungie.internal" href="index.html">aiobungie.internal</a></code></li>
+                    </ul>
+                </li>
+                <li>
+                    <h3><a href="#header-classes">Classes</a></h3>
+                    <ul>
+                        <li>
+                            <h4><code><a title="aiobungie.internal.enums.Class" href="#aiobungie.internal.enums.Class">Class</a></code></h4>
+                            <ul class="">
+                                <li><code><a title="aiobungie.internal.enums.Class.HUNTER" href="#aiobungie.internal.enums.Class.HUNTER">HUNTER</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Class.TITAN" href="#aiobungie.internal.enums.Class.TITAN">TITAN</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Class.UNKNOWN" href="#aiobungie.internal.enums.Class.UNKNOWN">UNKNOWN</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Class.WARLOCK" href="#aiobungie.internal.enums.Class.WARLOCK">WARLOCK</a></code></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <h4><code><a title="aiobungie.internal.enums.Component" href="#aiobungie.internal.enums.Component">Component</a></code></h4>
+                            <ul class="">
+                                <li><code><a title="aiobungie.internal.enums.Component.CHARECTERS" href="#aiobungie.internal.enums.Component.CHARECTERS">CHARECTERS</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Component.CHARECTER_PROGRESSION" href="#aiobungie.internal.enums.Component.CHARECTER_PROGRESSION">CHARECTER_PROGRESSION</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Component.CHAR_INVENTORY" href="#aiobungie.internal.enums.Component.CHAR_INVENTORY">CHAR_INVENTORY</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Component.EQUIPED_ITEMS" href="#aiobungie.internal.enums.Component.EQUIPED_ITEMS">EQUIPED_ITEMS</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Component.INVENTORIES" href="#aiobungie.internal.enums.Component.INVENTORIES">INVENTORIES</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Component.NOTHING" href="#aiobungie.internal.enums.Component.NOTHING">NOTHING</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Component.PROFILE" href="#aiobungie.internal.enums.Component.PROFILE">PROFILE</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Component.PROGRESSION" href="#aiobungie.internal.enums.Component.PROGRESSION">PROGRESSION</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Component.RECORDS" href="#aiobungie.internal.enums.Component.RECORDS">RECORDS</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Component.SILVER" href="#aiobungie.internal.enums.Component.SILVER">SILVER</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Component.VENDORS" href="#aiobungie.internal.enums.Component.VENDORS">VENDORS</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Component.VENDOR_SALES" href="#aiobungie.internal.enums.Component.VENDOR_SALES">VENDOR_SALES</a></code></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <h4><code><a title="aiobungie.internal.enums.DamageType" href="#aiobungie.internal.enums.DamageType">DamageType</a></code></h4>
+                            <ul class="two-column">
+                                <li><code><a title="aiobungie.internal.enums.DamageType.ARC" href="#aiobungie.internal.enums.DamageType.ARC">ARC</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.DamageType.KINETIC" href="#aiobungie.internal.enums.DamageType.KINETIC">KINETIC</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.DamageType.RAID" href="#aiobungie.internal.enums.DamageType.RAID">RAID</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.DamageType.SOLAR" href="#aiobungie.internal.enums.DamageType.SOLAR">SOLAR</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.DamageType.STASIS" href="#aiobungie.internal.enums.DamageType.STASIS">STASIS</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.DamageType.VOID" href="#aiobungie.internal.enums.DamageType.VOID">VOID</a></code></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <h4><code><a title="aiobungie.internal.enums.Dungeon" href="#aiobungie.internal.enums.Dungeon">Dungeon</a></code></h4>
+                            <ul class="two-column">
+                                <li><code><a title="aiobungie.internal.enums.Dungeon.HARBINGER" href="#aiobungie.internal.enums.Dungeon.HARBINGER">HARBINGER</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Dungeon.LEGEND_POH" href="#aiobungie.internal.enums.Dungeon.LEGEND_POH">LEGEND_POH</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Dungeon.MASTER_POH" href="#aiobungie.internal.enums.Dungeon.MASTER_POH">MASTER_POH</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Dungeon.MASTER_PRESAGE" href="#aiobungie.internal.enums.Dungeon.MASTER_PRESAGE">MASTER_PRESAGE</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Dungeon.NORMAL_PRESAGE" href="#aiobungie.internal.enums.Dungeon.NORMAL_PRESAGE">NORMAL_PRESAGE</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Dungeon.POH" href="#aiobungie.internal.enums.Dungeon.POH">POH</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Dungeon.PROPHECY" href="#aiobungie.internal.enums.Dungeon.PROPHECY">PROPHECY</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Dungeon.SHATTERED" href="#aiobungie.internal.enums.Dungeon.SHATTERED">SHATTERED</a></code></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <h4><code><a title="aiobungie.internal.enums.GameMode" href="#aiobungie.internal.enums.GameMode">GameMode</a></code></h4>
+                            <ul class="two-column">
+                                <li><code><a title="aiobungie.internal.enums.GameMode.ALLPVE" href="#aiobungie.internal.enums.GameMode.ALLPVE">ALLPVE</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.GameMode.ALLPVP" href="#aiobungie.internal.enums.GameMode.ALLPVP">ALLPVP</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.GameMode.ALLSTRIKES" href="#aiobungie.internal.enums.GameMode.ALLSTRIKES">ALLSTRIKES</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.GameMode.CLASH" href="#aiobungie.internal.enums.GameMode.CLASH">CLASH</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.GameMode.CLASSIC_MIX" href="#aiobungie.internal.enums.GameMode.CLASSIC_MIX">CLASSIC_MIX</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.GameMode.CONTROL" href="#aiobungie.internal.enums.GameMode.CONTROL">CONTROL</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.GameMode.COUNTDOWN" href="#aiobungie.internal.enums.GameMode.COUNTDOWN">COUNTDOWN</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.GameMode.DOUBLES" href="#aiobungie.internal.enums.GameMode.DOUBLES">DOUBLES</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.GameMode.DUNGEON" href="#aiobungie.internal.enums.GameMode.DUNGEON">DUNGEON</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.GameMode.EMIPIRE_HUNT" href="#aiobungie.internal.enums.GameMode.EMIPIRE_HUNT">EMIPIRE_HUNT</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.GameMode.GAMBIT" href="#aiobungie.internal.enums.GameMode.GAMBIT">GAMBIT</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.GameMode.IRONBANER" href="#aiobungie.internal.enums.GameMode.IRONBANER">IRONBANER</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.GameMode.MAYHEM" href="#aiobungie.internal.enums.GameMode.MAYHEM">MAYHEM</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.GameMode.NIGHTFALL" href="#aiobungie.internal.enums.GameMode.NIGHTFALL">NIGHTFALL</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.GameMode.NOTHING" href="#aiobungie.internal.enums.GameMode.NOTHING">NOTHING</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.GameMode.PATROL" href="#aiobungie.internal.enums.GameMode.PATROL">PATROL</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.GameMode.RAID" href="#aiobungie.internal.enums.GameMode.RAID">RAID</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.GameMode.RUMBLE" href="#aiobungie.internal.enums.GameMode.RUMBLE">RUMBLE</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.GameMode.STORY" href="#aiobungie.internal.enums.GameMode.STORY">STORY</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.GameMode.STRIKE" href="#aiobungie.internal.enums.GameMode.STRIKE">STRIKE</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.GameMode.SURVIVAL" href="#aiobungie.internal.enums.GameMode.SURVIVAL">SURVIVAL</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.GameMode.TOF" href="#aiobungie.internal.enums.GameMode.TOF">TOF</a></code></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <h4><code><a title="aiobungie.internal.enums.Gender" href="#aiobungie.internal.enums.Gender">Gender</a></code></h4>
+                            <ul class="">
+                                <li><code><a title="aiobungie.internal.enums.Gender.FEMALE" href="#aiobungie.internal.enums.Gender.FEMALE">FEMALE</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Gender.MALE" href="#aiobungie.internal.enums.Gender.MALE">MALE</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Gender.UNKNOWN" href="#aiobungie.internal.enums.Gender.UNKNOWN">UNKNOWN</a></code></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <h4><code><a title="aiobungie.internal.enums.Item" href="#aiobungie.internal.enums.Item">Item</a></code></h4>
+                            <ul class="two-column">
+                                <li><code><a title="aiobungie.internal.enums.Item.AUTO_RIFLE" href="#aiobungie.internal.enums.Item.AUTO_RIFLE">AUTO_RIFLE</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Item.BOW" href="#aiobungie.internal.enums.Item.BOW">BOW</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Item.CHEST_ARMOR" href="#aiobungie.internal.enums.Item.CHEST_ARMOR">CHEST_ARMOR</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Item.CLASS_ARMOR" href="#aiobungie.internal.enums.Item.CLASS_ARMOR">CLASS_ARMOR</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Item.EMBLEMS" href="#aiobungie.internal.enums.Item.EMBLEMS">EMBLEMS</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Item.EMOTES" href="#aiobungie.internal.enums.Item.EMOTES">EMOTES</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Item.FUSION_RIFLE" href="#aiobungie.internal.enums.Item.FUSION_RIFLE">FUSION_RIFLE</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Item.FUSION_RIFLELINE" href="#aiobungie.internal.enums.Item.FUSION_RIFLELINE">FUSION_RIFLELINE</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Item.GAUNTLET" href="#aiobungie.internal.enums.Item.GAUNTLET">GAUNTLET</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Item.GHOST" href="#aiobungie.internal.enums.Item.GHOST">GHOST</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Item.GRENADE_LAUNCHER" href="#aiobungie.internal.enums.Item.GRENADE_LAUNCHER">GRENADE_LAUNCHER</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Item.HANDCANNON" href="#aiobungie.internal.enums.Item.HANDCANNON">HANDCANNON</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Item.HELMET" href="#aiobungie.internal.enums.Item.HELMET">HELMET</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Item.LEGENDRY_SHARDS" href="#aiobungie.internal.enums.Item.LEGENDRY_SHARDS">LEGENDRY_SHARDS</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Item.LEG_ARMOR" href="#aiobungie.internal.enums.Item.LEG_ARMOR">LEG_ARMOR</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Item.MACHINE_GUN" href="#aiobungie.internal.enums.Item.MACHINE_GUN">MACHINE_GUN</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Item.MASK" href="#aiobungie.internal.enums.Item.MASK">MASK</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Item.NONE" href="#aiobungie.internal.enums.Item.NONE">NONE</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Item.ORNAMENT" href="#aiobungie.internal.enums.Item.ORNAMENT">ORNAMENT</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Item.PULSE_RIFLE" href="#aiobungie.internal.enums.Item.PULSE_RIFLE">PULSE_RIFLE</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Item.ROCKET_LAUNCHER" href="#aiobungie.internal.enums.Item.ROCKET_LAUNCHER">ROCKET_LAUNCHER</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Item.SCOUT_RIFLE" href="#aiobungie.internal.enums.Item.SCOUT_RIFLE">SCOUT_RIFLE</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Item.SEASONAL_ARTIFACT" href="#aiobungie.internal.enums.Item.SEASONAL_ARTIFACT">SEASONAL_ARTIFACT</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Item.SHADER" href="#aiobungie.internal.enums.Item.SHADER">SHADER</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Item.SHOTGUN" href="#aiobungie.internal.enums.Item.SHOTGUN">SHOTGUN</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Item.SIDEARM" href="#aiobungie.internal.enums.Item.SIDEARM">SIDEARM</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Item.SNIPER_RIFLE" href="#aiobungie.internal.enums.Item.SNIPER_RIFLE">SNIPER_RIFLE</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Item.SUBCLASS" href="#aiobungie.internal.enums.Item.SUBCLASS">SUBCLASS</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Item.SUBMACHINE" href="#aiobungie.internal.enums.Item.SUBMACHINE">SUBMACHINE</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Item.SWORD" href="#aiobungie.internal.enums.Item.SWORD">SWORD</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Item.SYNTHWAEV_TEMPLATE" href="#aiobungie.internal.enums.Item.SYNTHWAEV_TEMPLATE">SYNTHWAEV_TEMPLATE</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Item.TRACE_RIFLE" href="#aiobungie.internal.enums.Item.TRACE_RIFLE">TRACE_RIFLE</a></code></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <h4><code><a title="aiobungie.internal.enums.MembershipType" href="#aiobungie.internal.enums.MembershipType">MembershipType</a></code></h4>
+                            <ul class="two-column">
+                                <li><code><a title="aiobungie.internal.enums.MembershipType.ALL" href="#aiobungie.internal.enums.MembershipType.ALL">ALL</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.MembershipType.BLIZZARD" href="#aiobungie.internal.enums.MembershipType.BLIZZARD">BLIZZARD</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.MembershipType.BUNGIE" href="#aiobungie.internal.enums.MembershipType.BUNGIE">BUNGIE</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.MembershipType.NONE" href="#aiobungie.internal.enums.MembershipType.NONE">NONE</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.MembershipType.PSN" href="#aiobungie.internal.enums.MembershipType.PSN">PSN</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.MembershipType.STADIA" href="#aiobungie.internal.enums.MembershipType.STADIA">STADIA</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.MembershipType.STEAM" href="#aiobungie.internal.enums.MembershipType.STEAM">STEAM</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.MembershipType.XBOX" href="#aiobungie.internal.enums.MembershipType.XBOX">XBOX</a></code></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <h4><code><a title="aiobungie.internal.enums.MilestoneType" href="#aiobungie.internal.enums.MilestoneType">MilestoneType</a></code></h4>
+                            <ul class="two-column">
+                                <li><code><a title="aiobungie.internal.enums.MilestoneType.DAILY" href="#aiobungie.internal.enums.MilestoneType.DAILY">DAILY</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.MilestoneType.ONETIME" href="#aiobungie.internal.enums.MilestoneType.ONETIME">ONETIME</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.MilestoneType.SPECIAL" href="#aiobungie.internal.enums.MilestoneType.SPECIAL">SPECIAL</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.MilestoneType.TUTORIAL" href="#aiobungie.internal.enums.MilestoneType.TUTORIAL">TUTORIAL</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.MilestoneType.UNKNOWN" href="#aiobungie.internal.enums.MilestoneType.UNKNOWN">UNKNOWN</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.MilestoneType.WEEKLY" href="#aiobungie.internal.enums.MilestoneType.WEEKLY">WEEKLY</a></code></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <h4><code><a title="aiobungie.internal.enums.Place" href="#aiobungie.internal.enums.Place">Place</a></code></h4>
+                            <ul class="">
+                                <li><code><a title="aiobungie.internal.enums.Place.EXPLORE" href="#aiobungie.internal.enums.Place.EXPLORE">EXPLORE</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Place.LIGHT_HOUSE" href="#aiobungie.internal.enums.Place.LIGHT_HOUSE">LIGHT_HOUSE</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Place.ORBIT" href="#aiobungie.internal.enums.Place.ORBIT">ORBIT</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Place.SOCIAL" href="#aiobungie.internal.enums.Place.SOCIAL">SOCIAL</a></code></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <h4><code><a title="aiobungie.internal.enums.Planet" href="#aiobungie.internal.enums.Planet">Planet</a></code></h4>
+                            <ul class="two-column">
+                                <li><code><a title="aiobungie.internal.enums.Planet.COSMODROME" href="#aiobungie.internal.enums.Planet.COSMODROME">COSMODROME</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Planet.DREAMING_CITY" href="#aiobungie.internal.enums.Planet.DREAMING_CITY">DREAMING_CITY</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Planet.EARTH" href="#aiobungie.internal.enums.Planet.EARTH">EARTH</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Planet.EAZ" href="#aiobungie.internal.enums.Planet.EAZ">EAZ</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Planet.EUROPA" href="#aiobungie.internal.enums.Planet.EUROPA">EUROPA</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Planet.MOON" href="#aiobungie.internal.enums.Planet.MOON">MOON</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Planet.NESSUS" href="#aiobungie.internal.enums.Planet.NESSUS">NESSUS</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Planet.TANGLED_SHORE" href="#aiobungie.internal.enums.Planet.TANGLED_SHORE">TANGLED_SHORE</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Planet.UNKNOWN" href="#aiobungie.internal.enums.Planet.UNKNOWN">UNKNOWN</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Planet.VENUS" href="#aiobungie.internal.enums.Planet.VENUS">VENUS</a></code></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <h4><code><a title="aiobungie.internal.enums.Race" href="#aiobungie.internal.enums.Race">Race</a></code></h4>
+                            <ul class="">
+                                <li><code><a title="aiobungie.internal.enums.Race.AWOKEN" href="#aiobungie.internal.enums.Race.AWOKEN">AWOKEN</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Race.EXO" href="#aiobungie.internal.enums.Race.EXO">EXO</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Race.HUMAN" href="#aiobungie.internal.enums.Race.HUMAN">HUMAN</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Race.UNKNOWN" href="#aiobungie.internal.enums.Race.UNKNOWN">UNKNOWN</a></code></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <h4><code><a title="aiobungie.internal.enums.Raid" href="#aiobungie.internal.enums.Raid">Raid</a></code></h4>
+                            <ul class="">
+                                <li><code><a title="aiobungie.internal.enums.Raid.DSC" href="#aiobungie.internal.enums.Raid.DSC">DSC</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Raid.GOS" href="#aiobungie.internal.enums.Raid.GOS">GOS</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Raid.LW" href="#aiobungie.internal.enums.Raid.LW">LW</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Raid.VOG" href="#aiobungie.internal.enums.Raid.VOG">VOG</a></code></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <h4><code><a title="aiobungie.internal.enums.Stat" href="#aiobungie.internal.enums.Stat">Stat</a></code></h4>
+                            <ul class="two-column">
+                                <li><code><a title="aiobungie.internal.enums.Stat.DISCIPLINE" href="#aiobungie.internal.enums.Stat.DISCIPLINE">DISCIPLINE</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Stat.INTELLECT" href="#aiobungie.internal.enums.Stat.INTELLECT">INTELLECT</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Stat.MOBILITY" href="#aiobungie.internal.enums.Stat.MOBILITY">MOBILITY</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Stat.RECOVERY" href="#aiobungie.internal.enums.Stat.RECOVERY">RECOVERY</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Stat.RESILIENCE" href="#aiobungie.internal.enums.Stat.RESILIENCE">RESILIENCE</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Stat.STRENGTH" href="#aiobungie.internal.enums.Stat.STRENGTH">STRENGTH</a></code></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <h4><code><a title="aiobungie.internal.enums.Vendor" href="#aiobungie.internal.enums.Vendor">Vendor</a></code></h4>
+                            <ul class="two-column">
+                                <li><code><a title="aiobungie.internal.enums.Vendor.ADA1" href="#aiobungie.internal.enums.Vendor.ADA1">ADA1</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Vendor.AMANDA" href="#aiobungie.internal.enums.Vendor.AMANDA">AMANDA</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Vendor.BANSHE" href="#aiobungie.internal.enums.Vendor.BANSHE">BANSHE</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Vendor.CROW" href="#aiobungie.internal.enums.Vendor.CROW">CROW</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Vendor.DRIFTER" href="#aiobungie.internal.enums.Vendor.DRIFTER">DRIFTER</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Vendor.ERIS_MORN" href="#aiobungie.internal.enums.Vendor.ERIS_MORN">ERIS_MORN</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Vendor.EVERVERSE" href="#aiobungie.internal.enums.Vendor.EVERVERSE">EVERVERSE</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Vendor.HAWTHORNE" href="#aiobungie.internal.enums.Vendor.HAWTHORNE">HAWTHORNE</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Vendor.IKORA" href="#aiobungie.internal.enums.Vendor.IKORA">IKORA</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Vendor.KADI" href="#aiobungie.internal.enums.Vendor.KADI">KADI</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Vendor.SAINT" href="#aiobungie.internal.enums.Vendor.SAINT">SAINT</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Vendor.SHAW_HAWN" href="#aiobungie.internal.enums.Vendor.SHAW_HAWN">SHAW_HAWN</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Vendor.SHAXX" href="#aiobungie.internal.enums.Vendor.SHAXX">SHAXX</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Vendor.SPIDER" href="#aiobungie.internal.enums.Vendor.SPIDER">SPIDER</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Vendor.VARIKS" href="#aiobungie.internal.enums.Vendor.VARIKS">VARIKS</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Vendor.XUR" href="#aiobungie.internal.enums.Vendor.XUR">XUR</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Vendor.YUNA" href="#aiobungie.internal.enums.Vendor.YUNA">YUNA</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Vendor.ZAVALA" href="#aiobungie.internal.enums.Vendor.ZAVALA">ZAVALA</a></code></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <h4><code><a title="aiobungie.internal.enums.WeaponType" href="#aiobungie.internal.enums.WeaponType">WeaponType</a></code></h4>
+                            <ul class="">
+                                <li><code><a title="aiobungie.internal.enums.WeaponType.ENERGY" href="#aiobungie.internal.enums.WeaponType.ENERGY">ENERGY</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.WeaponType.KINETIC" href="#aiobungie.internal.enums.WeaponType.KINETIC">KINETIC</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.WeaponType.POWER" href="#aiobungie.internal.enums.WeaponType.POWER">POWER</a></code></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </main>
+    <footer id="footer">
+        <p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.9.2</a>.</p>
+    </footer>
 </body>
+
 </html>

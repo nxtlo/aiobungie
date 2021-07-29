@@ -28,10 +28,7 @@ __all__: typing.Sequence[str] = ["BaseCache", "BaseClient"]
 
 import typing
 
-from aiobungie.internal.cache import Hash as Hash_
-
-if typing.TYPE_CHECKING:
-    from aiobungie.objects import User as User_
+from aiobungie.internal.cache import Cache as _Cache
 
 
 @typing.runtime_checkable
@@ -39,7 +36,7 @@ class BaseCache(typing.Protocol):
     __slots__: typing.Sequence[str] = ()
 
     @property
-    def cache(self) -> Hash_:
+    def cache(self) -> _Cache:
         """A redis hash cache for testing purposes."""
         raise NotImplementedError
 

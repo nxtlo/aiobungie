@@ -20,12 +20,22 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""aiobungie extensions."""
+import os
+import aiobungie
+from typing import Any, Dict
+from dotenv import load_dotenv
 
-from __future__ import annotations
+load_dotenv()
+TOKEN = str(os.environ["TOKEN"])
 
-__all__: typing.Sequence[str] = ["Manifest"]
-
-import typing
-
-from .meta import Manifest
+data: Dict[str, Any] = {
+    "me": "Fate怒",
+    "id": 20315338,
+    "app": 33226,
+    "clanid": 4389205,
+    "memid": 4611686018484639825,
+    "charid": 2305843009444904605,
+    "char": aiobungie.Class.WARLOCK,
+    "memtype": aiobungie.MembershipType.STEAM,
+    "vendor": aiobungie.Vendor.SPIDER,
+}

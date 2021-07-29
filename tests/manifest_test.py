@@ -20,12 +20,32 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""aiobungie extensions."""
+"""Bungie Manifest tests."""
 
-from __future__ import annotations
+import asyncio
+import aiobungie
+from aiobungie.ext import Manifest
+from tests import config
 
-__all__: typing.Sequence[str] = ["Manifest"]
 
-import typing
+class ClientTest(aiobungie.Client):
+    def __init__(self, token: str) -> None:
+        super().__init__(token=token)
 
-from .meta import Manifest
+    async def man_test(self) -> None:
+
+        man: Manifest = await self.fetch_manifest()
+        await man.download(force=True)
+
+        print(
+			man.get_raid_image(raid=aiobungie.Raid.DSC)
+		)
+
+client = ClientTest(config.TOKEN)
+
+async def main() -> None:
+	coros = [client.man_test()]
+	await asyncio.gather(*coros)
+
+if __name__ == "__main__":
+	client.run(main())

@@ -29,7 +29,7 @@ from __future__ import annotations
 __all__: Sequence[str] = ("Character",)
 
 import logging
-from typing import TYPE_CHECKING, Any, Dict, Final, List, Optional, Sequence, Union
+from typing import TYPE_CHECKING, Any, Dict, Final, Optional, Sequence
 
 from .. import error, url
 from ..internal import Image, Time, enums
@@ -191,7 +191,7 @@ class Character:
         try:
             data = payload[char.value]  # type: ignore
         except IndexError:
-            logging.warn(
+            log.warning(
                 f" Player doesn't have have a {str(char)} character. Will return the first character."
             )
             data = payload[0]  # type: ignore

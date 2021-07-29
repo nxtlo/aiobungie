@@ -25,30 +25,18 @@
 
 from __future__ import annotations
 
-__all__: Sequence[str] = ("RedisCache", "MemoryCache", "Hash")
+__all__: Sequence[str] = ("Cache", "Hash")
 
 import asyncio
 import logging
-from typing import Any, Dict, Final, Sequence, final
+from typing import Any, Final, List, Sequence
 
 import aredis
 
+from aiobungie.objects import user as user
+
 log: Final[logging.Logger] = logging.getLogger(__name__)
-
-
-@final
-class RefreshNotFound(Exception):
-    pass
-
-
-@final
-class AccessNotFound(Exception):
-    pass
-
-
-@final
-class EmptyCache(Exception):
-    pass
+log.setLevel("DEBUG")
 
 
 class Hash:
@@ -57,31 +45,29 @@ class Hash:
     Attributes
     -----------
     inject: `aredis.StrictRedis`
-            an Injector for your redis client.
+        an Injector for your redis client.
     """
 
     __slots__: Sequence[str] = ("_injector",)
 
-    def __init__(self, inject: aredis.StrictRedis) -> None:
+    def __init__(self, inject: aredis.StrictRedis, /) -> None:
         self._injector = inject
 
-    async def set(self, hash: str, field: str, value: str) -> Any:
+    async def set(self, hash: str, field: Any, value: Any) -> None:
         """Creates a new hash with field name and a value.
 
         Parameters
         -----------
         hash: `builtins.str`
                 The hash name.
-        field: `builtins.str`
+        field: `typing.Any`
                 The field name.
-        value: `builtins.str`
+        value: `typing.Any`
                 The value for the field.
         """
-        return await self._injector.execute_command(
-            "HSET {} {} {}".format(hash, field, value)
-        )
+        await self._injector.execute_command("HSET {} {} {}".format(hash, field, value))
 
-    async def setx(self, hash: str, field: str) -> Any:
+    async def setx(self, hash: str, field: Any, value: Any) -> None:
         """A method thats similar to `Hash.set`
         but will not replace the value if one is already exists.
 
@@ -89,23 +75,31 @@ class Hash:
         ----------
         hash: `builtins.str`
                 The hash name.
-        field: `builtins.str`
+        field: `typing.Any`
                 The field name
+        value: `typing.Any`
+            The value of the field.
         """
-        await self._injector.execute_command(f"HSETNX {hash} {field}")
+        await self._injector.execute_command(f"HSETNX {hash} {field} {value}")
 
-    async def flush(self, hash: str) -> Any:
+    async def flush(self, *hashes: Sequence[str]) -> None:
         """Removes a hash.
 
         Parameters
         -----------
-        hash: `builtins.str`
-                The hash name.
+        hashes: `typing.Sequence[builtins.str]`
+                    The hashes you desire to delete.
         """
-        cmd = await self._injector.execute_command(f"DEL {hash}")
+        fmt = [h for h in [*tuple(hashes)]]
+        for hash in fmt:
+            print(hash)
+            cmd = await self._injector.execute_command(f"DEL {str(hash)}")
         if cmd != 1:
-            log.warn(f"Result is {cmd}, Means hash {hash} doesn't exists. returning.")
+            log.warning(
+                f"Result is {cmd}, Means hash {hashes} doesn't exists. returning."
+            )
             return
+        print("Flushed", fmt)
         return cmd
 
     async def len(self, hash: str) -> int:
@@ -118,7 +112,16 @@ class Hash:
         """
         return await self._injector.execute_command("HLEN {}".format(hash))
 
-    async def all(self, hash: str) -> Any:
+    async def hashes(self) -> List[str]:
+        """Returns all hashes in the cache."""
+        keys = await self._injector.execute_command("KEYS *")
+        try:
+            key = [str(key, "utf-8") for key in keys]
+        except TypeError:
+            raise
+        return key
+
+    async def all(self, hash: str) -> List[str]:
         """Returns all values from a hash.
 
         Parameters
@@ -128,55 +131,53 @@ class Hash:
 
         Returns
         -------
-        `typing.Any`
-                Any values.
+        `typing.List[builtins.str]`
+            A list of string values.
         """
         coro = await self._injector.execute_command(f"HVALS {hash}")
-        for tries in range(5):
-            for k, v in enumerate(coro):
-                val = str(v, "utf-8")
-                try:
-                    return f"{k}: {val}"
-                except TypeError:
-                    log.debug("Couldn't format data")
-                    await asyncio.sleep(1 + tries * 2)
-                    continue
-        return coro
+        try:
+            found = [str(vals, "utf-8") for vals in coro]
+        except TypeError:
+            raise
+        return found
 
-    async def delete(self, hash: str, field: str) -> Any:
+    async def delete(self, hash: str, field: Any) -> None:
         """Deletes a field from the provided hash.
 
         Parameters
         ----------
         hash: `builtins.str`
                 The hash name.
-        field: `builtins.str`
+        field: `typing.Any`
                 The field you want to delete.
         """
-        return await self._injector.execute_command(f"HDEL {hash} {field}")
+        await self._injector.execute_command(f"HDEL {hash} {field}")
 
-    async def exists(self, hash: str, field: str) -> bool:
+    async def exists(self, hash: str, field: Any) -> bool:
         """Returns True if the field exists in the hash.
 
         Parameters
         ----------
         hash: `builtins.str`
                 The hash name.
-        field: `builtins.str`
+        field: `typing.Any`
                 The field name
 
         Returns: `builtins.bool`
                 True if field exists in hash and False if not.
         """
+        if await self.get(hash, field) is not None:
+            return True
+        return False
 
-    async def get(self, hash: str, field: str) -> str:
+    async def get(self, hash: str, field: Any) -> str:
         """Returns the value associated with field in the hash stored at key.
 
         Parameters
         ----------
         hash: `builtins.str`
                 The hash name.
-        field: `builtins.str`
+        field: `typing.Any`
                 The field name
         """
         coro = await self._injector.execute_command(f"HGET {hash} {field}")
@@ -188,16 +189,33 @@ class Hash:
             return val
 
 
-class RedisCache:
-    """Redis Cache for access and refresh tokens."""
+class Cache:
+    """Redis Cache for interacting with aiobungie."""
 
     __slots__: Sequence[str] = ("_pool", "hash")
 
-    def __init__(self) -> None:
+    def __init__(
+        self,
+        host: str = "127.0.0.1",
+        port: int = 6379,
+        db: int = 0,
+        loop: asyncio.AbstractEventLoop = None,
+        **kwargs,
+    ) -> None:
         self._pool: aredis.StrictRedis = aredis.StrictRedis(
-            "127.0.0.1", port=6379, db=0
+            host=host,
+            port=port,
+            db=db,
+            kwargs=kwargs,
+            loop=asyncio.get_event_loop() or loop,
         )
         self.hash: Hash = Hash(self._pool)
+
+    async def set_user(self, user: user.User, /) -> None:
+        await self.put(user.id, user.as_dict)
+
+    async def get_user(self, user: user.User) -> user.User:
+        return await self.get(user.id)
 
     async def flush(self) -> None:
         await self._pool.flushdb()
@@ -205,7 +223,15 @@ class RedisCache:
     async def ttl(self, key: str) -> Any:
         return await self._pool.ttl(key)
 
-    async def put(self, key: str, value: str, expires: int = 0) -> None:
+    async def get(self, key: Any) -> Any:
+        try:
+            result = await self._pool.get(key)
+            result = str(result, "utf-8")
+        except TypeError:
+            raise
+        return result
+
+    async def put(self, key: Any, value: Any, expires: int = 0) -> None:
         await self._pool.set(key, value)
         if expires:
             await self.expire(key, expires)
@@ -221,71 +247,3 @@ class RedisCache:
 
     async def expire(self, key: str, time: int) -> None:
         await self._pool.expire(key, time)
-
-
-class MemoryCache:
-    """Implemention for token and refresh_token in memory cache."""
-
-    __slots__: Sequence[str] = ("_token", "_refresh", "__entry")
-
-    def __init__(self, token: str, refresh: str) -> None:
-        self._token: str = token
-        self._refresh: str = refresh
-        self.__entry: Dict[str, str] = {}
-
-    def getToken(self) -> str:
-        """Retrives the access token from cache."""
-        try:
-            if self.__entry["token"] is None:
-                log.warn(self.__entry.items())
-            raise ValueError("Token is not cached")
-        except KeyError:
-            pass
-        return self.__entry["token"]
-
-    def getRefresh(self) -> str:
-        try:
-            if self.__entry["refresh"] is None:
-                log.warn(self.__entry.items())
-            raise ValueError("Refresh token is not cached")
-        except KeyError:
-            pass
-        return self.__entry["refresh"]
-
-    def put(self) -> None:
-        if not self._token:
-            raise ValueError("Access Token is Missing!")
-        if not self._refresh:
-            raise ValueError("Refresh token is Missing")
-        self.__entry["token"] = self._token
-        self.__entry["refresh"] = self._refresh
-        log.info("Tokens cached.")
-
-    def clear(self) -> None:
-        self.__entry.clear()
-        log.info("Cache cleared.")
-
-    def pop(self, item: str) -> None:
-        if self.__entry.get(item) is not None:
-            self.__entry.pop(item)
-            log.info(f"Poped item {item}")
-        raise EmptyCache(f"Item {item} was not found in cache")
-
-    def all(self) -> list:
-        return sorted([i for i in self.__entry.items()])
-
-    def refreshNext(self, token: str, refresh: str) -> None:
-        self.clear()  # Clear the cache
-        self.__entry["token"] = token
-        self.__entry["refresh"] = refresh
-
-    async def refreshTokens(self, token: str, refresh: str) -> None:
-        if self.__entry.items() is None:
-            raise EmptyCache(
-                f"The cache is empty, Values found: {self.__entry.items()}"
-            )
-        try:
-            self.refreshNext(token, refresh)
-        except KeyboardInterrupt:
-            raise Warning("Your keyboard cancled the loop.")
-        log.info("Token refreshed")

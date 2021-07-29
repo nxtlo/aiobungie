@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "aiobungie"
-version = "0.2.5b1"
+version = "0.2.5b2"
 description = "A small async api wrapper for the bungie api"
 authors = ["nxtlo <dhmony-99@hotmail.com>"]
 license = "MIT"
@@ -33,7 +33,6 @@ classifiers = [
 python = "^3.8"
 python-dateutil = "2.8.2"
 aiohttp = "3.7.4.post0"
-aiosqlite = "0.17.0"
 aredis = "1.1.8"
 attrs = "21.2.0"
 

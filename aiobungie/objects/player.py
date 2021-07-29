@@ -27,16 +27,11 @@ from __future__ import annotations
 
 __all__: Sequence[str] = ["Player"]
 
-import abc
-import datetime
-from typing import TYPE_CHECKING, Any, Dict, Optional, Sequence, Union
+from typing import TYPE_CHECKING, Any, Dict, Sequence
 
 import attr
 
-from aiobungie import url
-
-from ..error import PlayerNotFound
-from ..internal import Image, Time
+from ..internal import Image
 from ..internal.enums import MembershipType
 from .user import UserCard
 

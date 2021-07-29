@@ -45,9 +45,9 @@ if TYPE_CHECKING:
 
 import asyncio
 import logging
-import warnings
 
 log: Final[logging.Logger] = logging.getLogger(__name__)
+log.setLevel("DEBUG")
 
 
 class HTTPClient:
@@ -64,7 +64,14 @@ class HTTPClient:
         self.connector = connector
         self.loop = loop or asyncio.get_event_loop()
 
-    async def fetch(self, method: str, route: str, **kwargs: Any) -> Any:
+    async def fetch(
+        self,
+        method: str,
+        route: str,
+        base: bool = False,
+        type: str = "json",
+        **kwargs: Any,
+    ) -> Any:
 
         if (token := self.key) is not None:
             kwargs["headers"] = {"X-API-KEY": token}
@@ -77,14 +84,21 @@ class HTTPClient:
                     loop=self.loop, connector=self.connector
                 ) as session:
                     async with session.request(
-                        method=method, url=f"{url.REST_EP}/{route}", **kwargs
+                        method=method,
+                        url=f"{url.REST_EP if not base else url.BASE}/{route}",
+                        **kwargs,
                     ) as response:
-                        data = await response.json()
 
                         if 300 > response.status >= 200:
+                            if (
+                                type == "read"
+                            ):  # We want to read the bytes for the manifest response.
+                                return await response.read()
+
+                            data = await response.json()
                             log.debug(
-                                "{} Request success from {} with {}".format(
-                                    method, f"{url.REST_EP}/{route}", data
+                                "{} Request success from {} with status {}".format(
+                                    method, f"{url.REST_EP}/{route}", data["Message"]
                                 )
                             )
                             try:
@@ -98,12 +112,12 @@ class HTTPClient:
                                 return data
 
                         if response.status in {500, 502}:
-                            if data["ErrorStatus"] == "ClanNotFound":
+                            if data["ErrorStatus"] == "ClanNotFound":  # type: ignore
                                 raise ClanNotFound(
                                     "The clan you're looking for was not found."
                                 )
-                            warnings.warn(
-                                f"Error making the request: code {response.status}, {data['Message']}"
+                            log.error(
+                                f"Error making the request: code {response.status}, {data['Message']}"  # type: ignore
                             )
                             await asyncio.sleep(tries + 1 * 2)
                             continue
@@ -116,7 +130,7 @@ class HTTPClient:
                         )
                     )
                 else:
-                    raise HTTPException(data, response)
+                    raise HTTPException(data, response)  # type: ignore
 
             except aiohttp.ClientError:
                 raise

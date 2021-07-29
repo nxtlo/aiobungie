@@ -32,12 +32,13 @@ __all__: Sequence[str] = [
 import asyncio
 from typing import Any, Coroutine, Optional, Sequence
 
-from aiobungie.internal import cache, impl
+from aiobungie.ext import Manifest
+from aiobungie.internal import cache as cache_
+from aiobungie.internal import deprecated, impl
 from aiobungie.internal import serialize as serialize_
 
 from . import error, objects
 from .http import HTTPClient
-from .internal import Manifest, deprecated
 from .internal.enums import Class, Component, GameMode, MembershipType
 
 
@@ -52,23 +53,27 @@ class Client(impl.BaseClient):
         asyncio event loop.
     """
 
-    __slots__: Sequence[str] = ("loop", "http", "_cache", "_serialize")
+    __slots__: Sequence[str] = ("loop", "http", "_cache", "_serialize", "_token")
 
     def __init__(self, token: str, *, loop: asyncio.AbstractEventLoop = None) -> None:
         self.loop: asyncio.AbstractEventLoop = (  # asyncio loop.
             asyncio.get_event_loop() if not loop else loop
         )
 
-        self._cache = cache.Hash(
-            cache.RedisCache()
-        )  # Redis hash cache for testing purposes only.
+        # Redis hash cache for testing purposes only.
         # This requires a redis server running for usage.
+        self._cache = cache_.Cache(loop=self.loop)
 
-        self._serialize = serialize_.Deserialize()  # DeSerilaizing payloads
+        # DeSerilaizing payloads
+        self._serialize = serialize_.Deserialize()
 
         if not token:
             raise ValueError("Missing the API key!")
+
+        # HTTP Client
         self.http: HTTPClient = HTTPClient(key=token, loop=self.loop)
+
+        self._token = token  # We need the token For Manifest.
         super().__init__()
 
     async def __aenter__(self):
@@ -78,7 +83,7 @@ class Client(impl.BaseClient):
         pass
 
     @property
-    def cache(self) -> cache.Hash:
+    def cache(self) -> cache_.Cache:
         return self._cache
 
     @property
@@ -115,11 +120,9 @@ class Client(impl.BaseClient):
     async def from_path(self, path: str) -> Any:
         return await self.http.static_search(path)
 
-    #
-    #     async def fetch_manifest(self) -> Optional[Manifest]:
-    #         resp = await self.http.fetch_manifest()
-    #         return Manifest(self._token, resp)
-    #
+    async def fetch_manifest(self) -> Manifest:
+        resp = await self.http.fetch_manifest()
+        return Manifest(self._token, resp)
 
     async def fetch_user(self, name: str, *, position: int = 0) -> objects.User:
         """Fetches a Bungie user by their name.
@@ -138,7 +141,10 @@ class Client(impl.BaseClient):
             The user wasa not found.
         """
         data = await self.http.fetch_user(name=name)
-        return self._serialize.deserialize_user(data, position)
+        assert isinstance(data, list)
+        user_mod = self._serialize.deserialize_user(data, position)
+        # await self._cache.set_user(user_mod)
+        return user_mod
 
     async def fetch_user_from_id(self, id: int) -> objects.User:
         """Fetches a Bungie user by their id.
@@ -157,6 +163,7 @@ class Client(impl.BaseClient):
             The user wasa not found.
         """
         payload = await self.http.fetch_user_from_id(id)
+        assert isinstance(payload, dict)
         return self._serialize.deserialize_user(payload)  # type: ignore
         # User and User from id has the same attrs but different return types so we have to ignore here.
 
@@ -170,6 +177,7 @@ class Client(impl.BaseClient):
         character: Optional[Class] = None,
     ) -> objects.Profile:
         data = await self.http.fetch_profile(memberid, type, component=component)
+        assert isinstance(data, dict)
         return objects.Profile(data=data, component=component, character=character)
 
     async def fetch_player(
@@ -192,6 +200,7 @@ class Client(impl.BaseClient):
             a Destiny Player object
         """
         resp = await self.http.fetch_player(name, type)
+        assert isinstance(resp, list)
         return self._serialize.deserialize_player(payload=resp, position=position)
 
     async def fetch_character(
@@ -298,6 +307,7 @@ class Client(impl.BaseClient):
             a Bungie application object.
         """
         resp = await self.http.fetch_app(appid)
+        assert isinstance(resp, dict)
         return self._serialize.deserialize_app(resp)
 
     async def fetch_clan_from_id(self, id: int, /) -> objects.Clan:
@@ -314,6 +324,7 @@ class Client(impl.BaseClient):
             A Bungie clan object
         """
         resp = await self.http.fetch_clan_from_id(id)
+        assert isinstance(resp, dict)
         return self._serialize.deseialize_clan(resp)
 
     async def fetch_clan(self, name: str, /, type: int = 1) -> objects.Clan:
@@ -332,4 +343,5 @@ class Client(impl.BaseClient):
             A bungie clan object.
         """
         resp = await self.http.fetch_clan(name, type)
+        assert isinstance(resp, dict)
         return self._serialize.deseialize_clan(resp)

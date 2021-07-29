@@ -28,11 +28,10 @@ __all__: typing.Sequence[str] = ("Profile",)
 
 import datetime
 import logging
-import traceback
 import typing
 
 from aiobungie import error
-from aiobungie.internal import Image, Time, enums
+from aiobungie.internal import Time, enums
 
 from .character import Character
 

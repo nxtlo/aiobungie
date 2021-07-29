@@ -1,33 +1,493 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.9.2" />
-<title>aiobungie.objects.activity API documentation</title>
-<meta name="description" content="Basic implementation for a Bungie a activity." />
-<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
-<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
-<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/atom-one-dark.min.css" crossorigin>
-<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}#lunr-search{width:100%;font-size:1em;padding:6px 9px 5px 9px;border:1px solid silver}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
-<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
-<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
-<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+    <meta name="generator" content="pdoc 0.9.2" />
+    <title>aiobungie.objects.activity API documentation</title>
+    <meta name="description" content="Basic implementation for a Bungie a activity." />
+    <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+    <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+    <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/atom-one-dark.min.css" crossorigin>
+    <style>
+         :root {
+            --highlight-color: #fe9
+        }
+        
+        .flex {
+            display: flex !important
+        }
+        
+        body {
+            line-height: 1.5em
+        }
+        
+        #content {
+            padding: 20px
+        }
+        
+        #sidebar {
+            padding: 30px;
+            overflow: hidden
+        }
+        
+        #sidebar>*:last-child {
+            margin-bottom: 2cm
+        }
+        
+        #lunr-search {
+            width: 100%;
+            font-size: 1em;
+            padding: 6px 9px 5px 9px;
+            border: 1px solid silver
+        }
+        
+        .http-server-breadcrumbs {
+            font-size: 130%;
+            margin: 0 0 15px 0
+        }
+        
+        #footer {
+            font-size: .75em;
+            padding: 5px 30px;
+            border-top: 1px solid #ddd;
+            text-align: right
+        }
+        
+        #footer p {
+            margin: 0 0 0 1em;
+            display: inline-block
+        }
+        
+        #footer p:last-child {
+            margin-right: 30px
+        }
+        
+        h1,
+        h2,
+        h3,
+        h4,
+        h5 {
+            font-weight: 300
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            line-height: 1.1em
+        }
+        
+        h2 {
+            font-size: 1.75em;
+            margin: 1em 0 .50em 0
+        }
+        
+        h3 {
+            font-size: 1.4em;
+            margin: 25px 0 10px 0
+        }
+        
+        h4 {
+            margin: 0;
+            font-size: 105%
+        }
+        
+        h1:target,
+        h2:target,
+        h3:target,
+        h4:target,
+        h5:target,
+        h6:target {
+            background: var(--highlight-color);
+            padding: .2em 0
+        }
+        
+        a {
+            color: #058;
+            text-decoration: none;
+            transition: color .3s ease-in-out
+        }
+        
+        a:hover {
+            color: #e82
+        }
+        
+        .title code {
+            font-weight: bold
+        }
+        
+        h2[id^="header-"] {
+            margin-top: 2em
+        }
+        
+        .ident {
+            color: #900
+        }
+        
+        pre code {
+            background: #f8f8f8;
+            font-size: .8em;
+            line-height: 1.4em
+        }
+        
+        code {
+            background: #f2f2f1;
+            padding: 1px 4px;
+            overflow-wrap: break-word
+        }
+        
+        h1 code {
+            background: transparent
+        }
+        
+        pre {
+            background: #f8f8f8;
+            border: 0;
+            border-top: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+            margin: 1em 0;
+            padding: 1ex
+        }
+        
+        #http-server-module-list {
+            display: flex;
+            flex-flow: column
+        }
+        
+        #http-server-module-list div {
+            display: flex
+        }
+        
+        #http-server-module-list dt {
+            min-width: 10%
+        }
+        
+        #http-server-module-list p {
+            margin-top: 0
+        }
+        
+        .toc ul,
+        #index {
+            list-style-type: none;
+            margin: 0;
+            padding: 0
+        }
+        
+        #index code {
+            background: transparent
+        }
+        
+        #index h3 {
+            border-bottom: 1px solid #ddd
+        }
+        
+        #index ul {
+            padding: 0
+        }
+        
+        #index h4 {
+            margin-top: .6em;
+            font-weight: bold
+        }
+        
+        @media (min-width:200ex) {
+            #index .two-column {
+                column-count: 2
+            }
+        }
+        
+        @media (min-width:300ex) {
+            #index .two-column {
+                column-count: 3
+            }
+        }
+        
+        dl {
+            margin-bottom: 2em
+        }
+        
+        dl dl:last-child {
+            margin-bottom: 4em
+        }
+        
+        dd {
+            margin: 0 0 1em 3em
+        }
+        
+        #header-classes+dl>dd {
+            margin-bottom: 3em
+        }
+        
+        dd dd {
+            margin-left: 2em
+        }
+        
+        dd p {
+            margin: 10px 0
+        }
+        
+        .name {
+            background: #eee;
+            font-weight: bold;
+            font-size: .85em;
+            padding: 5px 10px;
+            display: inline-block;
+            min-width: 40%
+        }
+        
+        .name:hover {
+            background: #e0e0e0
+        }
+        
+        dt:target .name {
+            background: var(--highlight-color)
+        }
+        
+        .name>span:first-child {
+            white-space: nowrap
+        }
+        
+        .name.class>span:nth-child(2) {
+            margin-left: .4em
+        }
+        
+        .inherited {
+            color: #999;
+            border-left: 5px solid #eee;
+            padding-left: 1em
+        }
+        
+        .inheritance em {
+            font-style: normal;
+            font-weight: bold
+        }
+        
+        .desc h2 {
+            font-weight: 400;
+            font-size: 1.25em
+        }
+        
+        .desc h3 {
+            font-size: 1em
+        }
+        
+        .desc dt code {
+            background: inherit
+        }
+        
+        .source summary,
+        .git-link-div {
+            color: #666;
+            text-align: right;
+            font-weight: 400;
+            font-size: .8em;
+            text-transform: uppercase
+        }
+        
+        .source summary>* {
+            white-space: nowrap;
+            cursor: pointer
+        }
+        
+        .git-link {
+            color: inherit;
+            margin-left: 1em
+        }
+        
+        .source pre {
+            max-height: 500px;
+            overflow: auto;
+            margin: 0
+        }
+        
+        .source pre code {
+            font-size: 12px;
+            overflow: visible
+        }
+        
+        .hlist {
+            list-style: none
+        }
+        
+        .hlist li {
+            display: inline
+        }
+        
+        .hlist li:after {
+            content: ',\2002'
+        }
+        
+        .hlist li:last-child:after {
+            content: none
+        }
+        
+        .hlist .hlist {
+            display: inline;
+            padding-left: 1em
+        }
+        
+        img {
+            max-width: 100%
+        }
+        
+        td {
+            padding: 0 .5em
+        }
+        
+        .admonition {
+            padding: .1em .5em;
+            margin-bottom: 1em
+        }
+        
+        .admonition-title {
+            font-weight: bold
+        }
+        
+        .admonition.note,
+        .admonition.info,
+        .admonition.important {
+            background: #aef
+        }
+        
+        .admonition.todo,
+        .admonition.versionadded,
+        .admonition.tip,
+        .admonition.hint {
+            background: #dfd
+        }
+        
+        .admonition.warning,
+        .admonition.versionchanged,
+        .admonition.deprecated {
+            background: #fd4
+        }
+        
+        .admonition.error,
+        .admonition.danger,
+        .admonition.caution {
+            background: lightpink
+        }
+    </style>
+    <style media="screen and (min-width: 700px)">
+        @media screen and (min-width:700px) {
+            #sidebar {
+                width: 30%;
+                height: 100vh;
+                overflow: auto;
+                position: sticky;
+                top: 0
+            }
+            #content {
+                width: 70%;
+                max-width: 100ch;
+                padding: 3em 4em;
+                border-left: 1px solid #ddd
+            }
+            pre code {
+                font-size: 1em
+            }
+            .item .name {
+                font-size: 1em
+            }
+            main {
+                display: flex;
+                flex-direction: row-reverse;
+                justify-content: flex-end
+            }
+            .toc ul ul,
+            #index ul {
+                padding-left: 1.5em
+            }
+            .toc>ul>li {
+                margin-top: .5em
+            }
+        }
+    </style>
+    <style media="print">
+        @media print {
+            #sidebar h1 {
+                page-break-before: always
+            }
+            .source {
+                display: none
+            }
+        }
+        
+        @media print {
+            * {
+                background: transparent !important;
+                color: #000 !important;
+                box-shadow: none !important;
+                text-shadow: none !important
+            }
+            a[href]:after {
+                content: " (" attr(href) ")";
+                font-size: 90%
+            }
+            a[href][title]:after {
+                content: none
+            }
+            abbr[title]:after {
+                content: " (" attr(title) ")"
+            }
+            .ir a:after,
+            a[href^="javascript:"]:after,
+            a[href^="#"]:after {
+                content: ""
+            }
+            pre,
+            blockquote {
+                border: 1px solid #999;
+                page-break-inside: avoid
+            }
+            thead {
+                display: table-header-group
+            }
+            tr,
+            img {
+                page-break-inside: avoid
+            }
+            img {
+                max-width: 100% !important
+            }
+            @page {
+                margin: 0.5cm
+            }
+            p,
+            h2,
+            h3 {
+                orphans: 3;
+                widows: 3
+            }
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6 {
+                page-break-after: avoid
+            }
+        }
+    </style>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())
+    </script>
 </head>
+
 <body>
-<main>
-<article id="content">
-<header>
-<h1 class="title">Module <code>aiobungie.objects.activity</code></h1>
-</header>
-<section id="section-intro">
-<p>Basic implementation for a Bungie a activity.</p>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python"># MIT License
+    <main>
+        <article id="content">
+            <header>
+                <h1 class="title">Module <code>aiobungie.objects.activity</code></h1>
+            </header>
+            <section id="section-intro">
+                <p>Basic implementation for a Bungie a activity.</p>
+                <details class="source">
+                    <summary>
+                        <span>Expand source code</span>
+                    </summary>
+                    <pre><code class="python"># MIT License
 #
 # Copyright (c) 2020 - Present nxtlo
 #
@@ -146,56 +606,58 @@ class Activity:
 
     def _update(self, data: Dict[str, Any]):
         ...</code></pre>
-</details>
-</section>
-<section>
-</section>
-<section>
-</section>
-<section>
-</section>
-<section>
-<h2 class="section-title" id="header-classes">Classes</h2>
-<dl>
-<dt id="aiobungie.objects.activity.Activity"><code class="flex name class">
+                </details>
+            </section>
+            <section>
+            </section>
+            <section>
+            </section>
+            <section>
+            </section>
+            <section>
+                <h2 class="section-title" id="header-classes">Classes</h2>
+                <dl>
+                    <dt id="aiobungie.objects.activity.Activity"><code class="flex name class">
 <span>class <span class="ident">Activity</span></span>
 <span>(</span><span>*, data: Any)</span>
 </code></dt>
-<dd>
-<div class="desc"><p>Represents a Bungie Activity object.</p>
-<p>An activity can be one of <code><a title="aiobungie.internal.enums.GameMode" href="../internal/enums.html#aiobungie.internal.enums.GameMode">GameMode</a></code>.</p>
-<h2 id="attributes">Attributes</h2>
-<dl>
-<dt><strong><code>mode</code></strong> :&ensp;<code><a title="aiobungie.internal.enums.GameMode" href="../internal/enums.html#aiobungie.internal.enums.GameMode">GameMode</a></code></dt>
-<dd>The activity mode or type.</dd>
-<dt><strong><code>is_completed</code></strong> :&ensp;<code>builtins.str</code></dt>
-<dd>Check if the activity was completed or no.</dd>
-<dt><strong><code>hash</code></strong> :&ensp;<code><a title="aiobungie.internal.enums.Raid" href="../internal/enums.html#aiobungie.internal.enums.Raid">Raid</a></code></dt>
-<dd>This is a special attr used only for raids that returns the raid name.</dd>
-<dt><strong><code>raw_hash</code></strong> :&ensp;<code>builtins.int</code></dt>
-<dd>The activity's hash.</dd>
-<dt><strong><code>duration</code></strong> :&ensp;<code>builtins.str</code></dt>
-<dd>A string of The activity's duration, Example format <code>7m 42s</code></dd>
-<dt><strong><code>kills</code></strong> :&ensp;<code>builtins.int</code></dt>
-<dd>Activity's Total kills</dd>
-<dt><strong><code>deaths</code></strong> :&ensp;<code>builtins.int</code></dt>
-<dd>Activity's total deaths.</dd>
-<dt><strong><code>assists</code></strong> :&ensp;<code>builtins.int</code></dt>
-<dd>Activity's Total assists</dd>
-<dt><strong><code>kd</code></strong> :&ensp;<code>builtins.int</code></dt>
-<dd>Activity's kd ration.</dd>
-<dt><strong><code>member_type</code></strong> :&ensp;<code><a title="aiobungie.internal.enums.MembershipType" href="../internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
-<dd>The activity member's membership type.</dd>
-<dt><strong><code>players_count</code></strong> :&ensp;<code>builtins.int</code></dt>
-<dd>Total players in the activity.</dd>
-<dt><strong><code>when</code></strong> :&ensp;<code>typing.Optional[datetime.datetime]</code></dt>
-<dd>When did the activity occurred in UTC datetime.</dd>
-</dl></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class Activity:
+                    <dd>
+                        <div class="desc">
+                            <p>Represents a Bungie Activity object.</p>
+                            <p>An activity can be one of <code><a title="aiobungie.internal.enums.GameMode" href="../internal/enums.html#aiobungie.internal.enums.GameMode">GameMode</a></code>.</p>
+                            <h2 id="attributes">Attributes</h2>
+                            <dl>
+                                <dt><strong><code>mode</code></strong> :&ensp;<code><a title="aiobungie.internal.enums.GameMode" href="../internal/enums.html#aiobungie.internal.enums.GameMode">GameMode</a></code></dt>
+                                <dd>The activity mode or type.</dd>
+                                <dt><strong><code>is_completed</code></strong> :&ensp;<code>builtins.str</code></dt>
+                                <dd>Check if the activity was completed or no.</dd>
+                                <dt><strong><code>hash</code></strong> :&ensp;<code><a title="aiobungie.internal.enums.Raid" href="../internal/enums.html#aiobungie.internal.enums.Raid">Raid</a></code></dt>
+                                <dd>This is a special attr used only for raids that returns the raid name.</dd>
+                                <dt><strong><code>raw_hash</code></strong> :&ensp;<code>builtins.int</code></dt>
+                                <dd>The activity's hash.</dd>
+                                <dt><strong><code>duration</code></strong> :&ensp;<code>builtins.str</code></dt>
+                                <dd>A string of The activity's duration, Example format <code>7m 42s</code></dd>
+                                <dt><strong><code>kills</code></strong> :&ensp;<code>builtins.int</code></dt>
+                                <dd>Activity's Total kills</dd>
+                                <dt><strong><code>deaths</code></strong> :&ensp;<code>builtins.int</code></dt>
+                                <dd>Activity's total deaths.</dd>
+                                <dt><strong><code>assists</code></strong> :&ensp;<code>builtins.int</code></dt>
+                                <dd>Activity's Total assists</dd>
+                                <dt><strong><code>kd</code></strong> :&ensp;<code>builtins.int</code></dt>
+                                <dd>Activity's kd ration.</dd>
+                                <dt><strong><code>member_type</code></strong> :&ensp;<code><a title="aiobungie.internal.enums.MembershipType" href="../internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
+                                <dd>The activity member's membership type.</dd>
+                                <dt><strong><code>players_count</code></strong> :&ensp;<code>builtins.int</code></dt>
+                                <dd>Total players in the activity.</dd>
+                                <dt><strong><code>when</code></strong> :&ensp;<code>typing.Optional[datetime.datetime]</code></dt>
+                                <dd>When did the activity occurred in UTC datetime.</dd>
+                            </dl>
+                        </div>
+                        <details class="source">
+                            <summary>
+                                <span>Expand source code</span>
+                            </summary>
+                            <pre><code class="python">class Activity:
     &#34;&#34;&#34;Represents a Bungie Activity object.
 
     An activity can be one of `aiobungie.internal.enums.GameMode`.
@@ -276,67 +738,90 @@ class Activity:
 
     def _update(self, data: Dict[str, Any]):
         ...</code></pre>
-</details>
-<h3>Instance variables</h3>
-<dl>
-<dt id="aiobungie.objects.activity.Activity.assists"><code class="name">var <span class="ident">assists</span></code></dt>
-<dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
-</dd>
-<dt id="aiobungie.objects.activity.Activity.deaths"><code class="name">var <span class="ident">deaths</span></code></dt>
-<dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
-</dd>
-<dt id="aiobungie.objects.activity.Activity.duration"><code class="name">var <span class="ident">duration</span></code></dt>
-<dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
-</dd>
-<dt id="aiobungie.objects.activity.Activity.hash"><code class="name">var <span class="ident">hash</span></code></dt>
-<dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
-</dd>
-<dt id="aiobungie.objects.activity.Activity.is_completed"><code class="name">var <span class="ident">is_completed</span></code></dt>
-<dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
-</dd>
-<dt id="aiobungie.objects.activity.Activity.kd"><code class="name">var <span class="ident">kd</span></code></dt>
-<dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
-</dd>
-<dt id="aiobungie.objects.activity.Activity.kills"><code class="name">var <span class="ident">kills</span></code></dt>
-<dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
-</dd>
-<dt id="aiobungie.objects.activity.Activity.member_type"><code class="name">var <span class="ident">member_type</span></code></dt>
-<dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
-</dd>
-<dt id="aiobungie.objects.activity.Activity.mode"><code class="name">var <span class="ident">mode</span></code></dt>
-<dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
-</dd>
-<dt id="aiobungie.objects.activity.Activity.player_count"><code class="name">var <span class="ident">player_count</span></code></dt>
-<dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
-</dd>
-<dt id="aiobungie.objects.activity.Activity.when"><code class="name">var <span class="ident">when</span></code></dt>
-<dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
-</dd>
-</dl>
-<h3>Methods</h3>
-<dl>
-<dt id="aiobungie.objects.activity.Activity.as_dict"><code class="name flex">
+                        </details>
+                        <h3>Instance variables</h3>
+                        <dl>
+                            <dt id="aiobungie.objects.activity.Activity.assists"><code class="name">var <span class="ident">assists</span></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Return an attribute of instance, which is of type owner.</p>
+                                </div>
+                            </dd>
+                            <dt id="aiobungie.objects.activity.Activity.deaths"><code class="name">var <span class="ident">deaths</span></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Return an attribute of instance, which is of type owner.</p>
+                                </div>
+                            </dd>
+                            <dt id="aiobungie.objects.activity.Activity.duration"><code class="name">var <span class="ident">duration</span></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Return an attribute of instance, which is of type owner.</p>
+                                </div>
+                            </dd>
+                            <dt id="aiobungie.objects.activity.Activity.hash"><code class="name">var <span class="ident">hash</span></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Return an attribute of instance, which is of type owner.</p>
+                                </div>
+                            </dd>
+                            <dt id="aiobungie.objects.activity.Activity.is_completed"><code class="name">var <span class="ident">is_completed</span></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Return an attribute of instance, which is of type owner.</p>
+                                </div>
+                            </dd>
+                            <dt id="aiobungie.objects.activity.Activity.kd"><code class="name">var <span class="ident">kd</span></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Return an attribute of instance, which is of type owner.</p>
+                                </div>
+                            </dd>
+                            <dt id="aiobungie.objects.activity.Activity.kills"><code class="name">var <span class="ident">kills</span></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Return an attribute of instance, which is of type owner.</p>
+                                </div>
+                            </dd>
+                            <dt id="aiobungie.objects.activity.Activity.member_type"><code class="name">var <span class="ident">member_type</span></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Return an attribute of instance, which is of type owner.</p>
+                                </div>
+                            </dd>
+                            <dt id="aiobungie.objects.activity.Activity.mode"><code class="name">var <span class="ident">mode</span></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Return an attribute of instance, which is of type owner.</p>
+                                </div>
+                            </dd>
+                            <dt id="aiobungie.objects.activity.Activity.player_count"><code class="name">var <span class="ident">player_count</span></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Return an attribute of instance, which is of type owner.</p>
+                                </div>
+                            </dd>
+                            <dt id="aiobungie.objects.activity.Activity.when"><code class="name">var <span class="ident">when</span></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Return an attribute of instance, which is of type owner.</p>
+                                </div>
+                            </dd>
+                        </dl>
+                        <h3>Methods</h3>
+                        <dl>
+                            <dt id="aiobungie.objects.activity.Activity.as_dict"><code class="name flex">
 <span>def <span class="ident">as_dict</span></span>(<span>self) ‑> Dict[str, Any]</span>
 </code></dt>
-<dd>
-<div class="desc"><p>Returns a dict object of the Activity,
-This function is useful if you're binding to other REST apis.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def as_dict(self) -&gt; Dict[str, Any]:
+                            <dd>
+                                <div class="desc">
+                                    <p>Returns a dict object of the Activity, This function is useful if you're binding to other REST apis.</p>
+                                </div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">def as_dict(self) -&gt; Dict[str, Any]:
     &#34;&#34;&#34;Returns a dict object of the Activity,
     This function is useful if you&#39;re binding to other REST apis.
     &#34;&#34;&#34;
@@ -353,96 +838,106 @@ This function is useful if you're binding to other REST apis.</p></div>
         member_type=self.member_type,
         hash=self.hash or None,
     )</code></pre>
-</details>
-</dd>
-</dl>
-</dd>
-</dl>
-</section>
-</article>
-<nav id="sidebar">
-<form>
-<input id="lunr-search" name="q" placeholder="🔎 Search ..." aria-label="Search"
-disabled minlength="2">
-</form>
-<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.3/tingle.min.css" integrity="sha512-j1u8eUJ4f23xPPxwOrLUPQaCD2dwzNqqmDDcWS4deWsMv2ohLqmXXuP3hU7g8TyzbMSakP/mMqoNBYWj8AEIFg==" crossorigin>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.3/tingle.min.js" integrity="sha512-plGUER9JkeEWPPqQBE4sdLqBoQug5Ap+BCGMc7bJ8BXkm+VVj6QzkpBz5Yv2yPkkq+cqg9IpkBaGCas6uDbW8g==" crossorigin></script>
-<style>
-.modal-dialog iframe {
-width: 100vw;
-height: calc(100vh - 80px);
-}
-@media screen and (min-width: 700px) {
-.modal-dialog iframe {
-width: 70vw;
-height: 80vh;
-}
-}
-.modal-dialog .tingle-modal-box {width: auto;}
-.modal-dialog .tingle-modal-box__content {padding: 0;}
-</style>
-<script>
-const input = document.getElementById('lunr-search');
-input.disabled = false;
-input.form.addEventListener('submit', (ev) => {
-ev.preventDefault();
-const url = new URL(window.location);
-url.searchParams.set('q', input.value);
-history.replaceState({}, null, url.toString());
-search(input.value);
-});
-const query = new URL(window.location).searchParams.get('q');
-if (query)
-search(query);
-function search(query) {
-const url = '../../doc-search.html#' + encodeURIComponent(query);
-new tingle.modal({
-cssClass: ['modal-dialog'],
-onClose: () => {
-const url = new URL(window.location);
-url.searchParams.delete('q');
-history.replaceState({}, null, url.toString());
-setTimeout(() => input.focus(), 100);
-}
-}).setContent('<iframe src="' + url + '"></iframe>').open();
-}
-</script>
-<h1>Index</h1>
-<div class="toc">
-<ul></ul>
-</div>
-<ul id="index">
-<li><h3>Super-module</h3>
-<ul>
-<li><code><a title="aiobungie.objects" href="index.html">aiobungie.objects</a></code></li>
-</ul>
-</li>
-<li><h3><a href="#header-classes">Classes</a></h3>
-<ul>
-<li>
-<h4><code><a title="aiobungie.objects.activity.Activity" href="#aiobungie.objects.activity.Activity">Activity</a></code></h4>
-<ul class="two-column">
-<li><code><a title="aiobungie.objects.activity.Activity.as_dict" href="#aiobungie.objects.activity.Activity.as_dict">as_dict</a></code></li>
-<li><code><a title="aiobungie.objects.activity.Activity.assists" href="#aiobungie.objects.activity.Activity.assists">assists</a></code></li>
-<li><code><a title="aiobungie.objects.activity.Activity.deaths" href="#aiobungie.objects.activity.Activity.deaths">deaths</a></code></li>
-<li><code><a title="aiobungie.objects.activity.Activity.duration" href="#aiobungie.objects.activity.Activity.duration">duration</a></code></li>
-<li><code><a title="aiobungie.objects.activity.Activity.hash" href="#aiobungie.objects.activity.Activity.hash">hash</a></code></li>
-<li><code><a title="aiobungie.objects.activity.Activity.is_completed" href="#aiobungie.objects.activity.Activity.is_completed">is_completed</a></code></li>
-<li><code><a title="aiobungie.objects.activity.Activity.kd" href="#aiobungie.objects.activity.Activity.kd">kd</a></code></li>
-<li><code><a title="aiobungie.objects.activity.Activity.kills" href="#aiobungie.objects.activity.Activity.kills">kills</a></code></li>
-<li><code><a title="aiobungie.objects.activity.Activity.member_type" href="#aiobungie.objects.activity.Activity.member_type">member_type</a></code></li>
-<li><code><a title="aiobungie.objects.activity.Activity.mode" href="#aiobungie.objects.activity.Activity.mode">mode</a></code></li>
-<li><code><a title="aiobungie.objects.activity.Activity.player_count" href="#aiobungie.objects.activity.Activity.player_count">player_count</a></code></li>
-<li><code><a title="aiobungie.objects.activity.Activity.when" href="#aiobungie.objects.activity.Activity.when">when</a></code></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</nav>
-</main>
-<footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.9.2</a>.</p>
-</footer>
+                                </details>
+                            </dd>
+                        </dl>
+                    </dd>
+                </dl>
+            </section>
+        </article>
+        <nav id="sidebar">
+            <form>
+                <input id="lunr-search" name="q" placeholder="🔎 Search ..." aria-label="Search" disabled minlength="2">
+            </form>
+            <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.3/tingle.min.css" integrity="sha512-j1u8eUJ4f23xPPxwOrLUPQaCD2dwzNqqmDDcWS4deWsMv2ohLqmXXuP3hU7g8TyzbMSakP/mMqoNBYWj8AEIFg==" crossorigin>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.3/tingle.min.js" integrity="sha512-plGUER9JkeEWPPqQBE4sdLqBoQug5Ap+BCGMc7bJ8BXkm+VVj6QzkpBz5Yv2yPkkq+cqg9IpkBaGCas6uDbW8g==" crossorigin></script>
+            <style>
+                .modal-dialog iframe {
+                    width: 100vw;
+                    height: calc(100vh - 80px);
+                }
+                
+                @media screen and (min-width: 700px) {
+                    .modal-dialog iframe {
+                        width: 70vw;
+                        height: 80vh;
+                    }
+                }
+                
+                .modal-dialog .tingle-modal-box {
+                    width: auto;
+                }
+                
+                .modal-dialog .tingle-modal-box__content {
+                    padding: 0;
+                }
+            </style>
+            <script>
+                const input = document.getElementById('lunr-search');
+                input.disabled = false;
+                input.form.addEventListener('submit', (ev) => {
+                    ev.preventDefault();
+                    const url = new URL(window.location);
+                    url.searchParams.set('q', input.value);
+                    history.replaceState({}, null, url.toString());
+                    search(input.value);
+                });
+                const query = new URL(window.location).searchParams.get('q');
+                if (query)
+                    search(query);
+
+                function search(query) {
+                    const url = '.././doc-search.html#' + encodeURIComponent(query);
+                    new tingle.modal({
+                        cssClass: ['modal-dialog'],
+                        onClose: () => {
+                            const url = new URL(window.location);
+                            url.searchParams.delete('q');
+                            history.replaceState({}, null, url.toString());
+                            setTimeout(() => input.focus(), 100);
+                        }
+                    }).setContent('<iframe src="' + url + '"></iframe>').open();
+                }
+            </script>
+            <h1>Index</h1>
+            <div class="toc">
+                <ul></ul>
+            </div>
+            <ul id="index">
+                <li>
+                    <h3>Super-module</h3>
+                    <ul>
+                        <li><code><a title="aiobungie.objects" href="index.html">aiobungie.objects</a></code></li>
+                    </ul>
+                </li>
+                <li>
+                    <h3><a href="#header-classes">Classes</a></h3>
+                    <ul>
+                        <li>
+                            <h4><code><a title="aiobungie.objects.activity.Activity" href="#aiobungie.objects.activity.Activity">Activity</a></code></h4>
+                            <ul class="two-column">
+                                <li><code><a title="aiobungie.objects.activity.Activity.as_dict" href="#aiobungie.objects.activity.Activity.as_dict">as_dict</a></code></li>
+                                <li><code><a title="aiobungie.objects.activity.Activity.assists" href="#aiobungie.objects.activity.Activity.assists">assists</a></code></li>
+                                <li><code><a title="aiobungie.objects.activity.Activity.deaths" href="#aiobungie.objects.activity.Activity.deaths">deaths</a></code></li>
+                                <li><code><a title="aiobungie.objects.activity.Activity.duration" href="#aiobungie.objects.activity.Activity.duration">duration</a></code></li>
+                                <li><code><a title="aiobungie.objects.activity.Activity.hash" href="#aiobungie.objects.activity.Activity.hash">hash</a></code></li>
+                                <li><code><a title="aiobungie.objects.activity.Activity.is_completed" href="#aiobungie.objects.activity.Activity.is_completed">is_completed</a></code></li>
+                                <li><code><a title="aiobungie.objects.activity.Activity.kd" href="#aiobungie.objects.activity.Activity.kd">kd</a></code></li>
+                                <li><code><a title="aiobungie.objects.activity.Activity.kills" href="#aiobungie.objects.activity.Activity.kills">kills</a></code></li>
+                                <li><code><a title="aiobungie.objects.activity.Activity.member_type" href="#aiobungie.objects.activity.Activity.member_type">member_type</a></code></li>
+                                <li><code><a title="aiobungie.objects.activity.Activity.mode" href="#aiobungie.objects.activity.Activity.mode">mode</a></code></li>
+                                <li><code><a title="aiobungie.objects.activity.Activity.player_count" href="#aiobungie.objects.activity.Activity.player_count">player_count</a></code></li>
+                                <li><code><a title="aiobungie.objects.activity.Activity.when" href="#aiobungie.objects.activity.Activity.when">when</a></code></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </main>
+    <footer id="footer">
+        <p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.9.2</a>.</p>
+    </footer>
 </body>
+
 </html>

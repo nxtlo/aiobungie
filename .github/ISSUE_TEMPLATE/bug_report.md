@@ -10,7 +10,7 @@ assignees: ''
 ### Steps to reproduce
 <!--
 Steps to reproduce the bug. This can also be a code snippet.
-Make sure you have removed your bot token (if visible).
+Make sure you have removed your token (if visible).
 -->
 
 1.
@@ -28,7 +28,7 @@ Make sure you have removed your bot token (if visible).
 <!-- What happened exactly? If you have a traceback, please provide all of it. -->
 
 ### System info
-<!-- Output of `python -m hikari`. -->
+<!-- The OS you got the bug on, And the Python version. -->
 
 ### Further info
 <!-- Any further info or images go here. -->

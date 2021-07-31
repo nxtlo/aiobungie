@@ -44,16 +44,15 @@ async def fetch_me() -> None:
 
     print(fate.name, fate.type, fate.id)
 
-    fate_warlock: Character = await client.fetch_character(  # A Bungie user profile.
+    fate_warlock: Character = await client.fetch_character(  # A Destiny 2 player character.
         fate.id,
         fate.type,
         character=aiobungie.Class.WARLOCK,  # The character we want to return is the warlock.
-    )  # you can pass the data from the player's request to fetch the profile.
-    # NOTE: you need to use the CHARACTERS component.
+    )  # you can pass the data from the player's request to fetch the character.
 
     print(
-        fate_warlock.light,  # You'll actually need to access
-        fate_warlock.id,  # The character from `character` variable.
+        fate_warlock.light,
+        fate_warlock.id,
         fate_warlock.race,
         fate_warlock.emblem,
         fate_warlock.url,

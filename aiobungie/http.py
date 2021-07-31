@@ -28,18 +28,25 @@ from __future__ import annotations
 
 __all__ = ("HTTPClient",)
 
-from typing import TYPE_CHECKING, Any, Coroutine, Final, Optional, TypeVar
+import http
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Coroutine,
+    Final,
+    NoReturn,
+    Optional,
+    TypeVar,
+    final,
+)
 
 import aiohttp
 
-from . import url
-from .error import ClanNotFound, HTTPException, NotFound
+from . import error, url
 from .internal import helpers
 from .internal.enums import Class, Component, GameMode, MembershipType
 
 if TYPE_CHECKING:
-    from .types import character, profile
-
     T = TypeVar("T")
     Response = Coroutine[Any, Any, T]
 
@@ -48,6 +55,37 @@ import logging
 
 log: Final[logging.Logger] = logging.getLogger(__name__)
 log.setLevel("DEBUG")
+
+
+async def handle_errors(
+    response: aiohttp.ClientResponse, msg: str
+) -> error.AiobungieError:
+    from_json = await response.json()
+    data = [str(response.real_url), from_json, msg]
+
+    if response.status == http.HTTPStatus.NOT_FOUND:
+        return error.NotFound(*data)
+    elif response.status == http.HTTPStatus.FORBIDDEN:
+        return error.Forbidden(*data)
+    elif response.status == http.HTTPStatus.UNAUTHORIZED:
+        return error.Unauthorized(*data)
+
+    status = http.HTTPStatus(response.status)
+
+    if 400 <= status < 500:
+        return error.ResponseError(*data, status)
+    elif 500 <= status < 600:
+        # High order errors
+        if msg == "ClanNotFound":
+            return error.ClanNotFound(msg)
+        elif msg == "DestinyInvalidMembershipType":
+            return error.MembershipTypeError(msg)
+        elif msg == "GroupNotFound":
+            return error.ClanNotFound(msg)
+        else:
+            return error.AiobungieError(msg)
+    else:
+        return error.HTTPException(msg)
 
 
 class HTTPClient:
@@ -78,62 +116,49 @@ class HTTPClient:
         else:
             raise ValueError("No API KEY was passed.")
 
-        for tries in range(5):
-            try:
-                async with aiohttp.ClientSession(
-                    loop=self.loop, connector=self.connector
-                ) as session:
-                    async with session.request(
-                        method=method,
-                        url=f"{url.REST_EP if not base else url.BASE}/{route}",
-                        **kwargs,
-                    ) as response:
+        try:
+            async with aiohttp.ClientSession(
+                loop=self.loop, connector=self.connector
+            ) as session:
+                async with session.request(
+                    method=method,
+                    url=f"{url.REST_EP if not base else url.BASE}/{route}",
+                    **kwargs,
+                ) as response:
 
-                        if 300 > response.status >= 200:
-                            if (
-                                type == "read"
-                            ):  # We want to read the bytes for the manifest response.
-                                return await response.read()
+                    data = await response.json()
+                    msg: str = data["ErrorStatus"]
+                    if 300 > response.status >= 200:
+                        if (
+                            type == "read"
+                        ):  # We want to read the bytes for the manifest response.
+                            data = await response.read()
+                            return data
 
-                            data = await response.json()
-                            log.debug(
-                                "{} Request success from {} with status {}".format(
-                                    method, f"{url.REST_EP}/{route}", data["Message"]
-                                )
+                        log.debug(
+                            "{} Request success from {} with status {}".format(
+                                method, f"{url.REST_EP}/{route}", data["Message"]
                             )
-                            try:
-                                return data[
-                                    "Response"
-                                ]  # Almost all bungie json objects are
-                                # wrapped inside a dict[Response=...], but
-                                # sometimes it returns a List so this check
-                                # is needed
-                            except (AttributeError, TypeError):
-                                return data
-
-                        if response.status in {500, 502}:
-                            if data["ErrorStatus"] == "ClanNotFound":  # type: ignore
-                                raise ClanNotFound(
-                                    "The clan you're looking for was not found."
-                                )
-                            log.error(
-                                f"Error making the request: code {response.status}, {data['Message']}"  # type: ignore
-                            )
-                            await asyncio.sleep(tries + 1 * 2)
-                            continue
-
-            except aiohttp.ContentTypeError:
-                if response.status == 404:
-                    raise NotFound(
-                        "Method {} from {} returned {}".format(
-                            response.method, response.url, response.status
                         )
-                    )
-                else:
-                    raise HTTPException(data, response)  # type: ignore
+                        try:
+                            return data[
+                                "Response"
+                            ]  # Almost all bungie json objects are
+                            # wrapped inside a dict[Response=...], but
+                            # sometimes it returns a List so this check
+                            # is needed
+                        except (AttributeError, TypeError):
+                            return data
 
-            except aiohttp.ClientError:
-                raise
+                    await self._handle_err(response, msg)
+
+        except aiohttp.ClientError:
+            raise
+
+    @staticmethod
+    @final
+    async def _handle_err(response: aiohttp.ClientResponse, msg: str) -> NoReturn:
+        raise await handle_errors(response, msg)
 
     # Currently some of the funcs return Response[Any]
     # And not the actual type, The reason for that Character
@@ -169,7 +194,7 @@ class HTTPClient:
 
     def fetch_character(
         self, memberid: int, type: MembershipType, character: Class
-    ) -> Response[character.CharacterImpl]:
+    ) -> Response[helpers.JsonDict]:
         return self.fetch(
             "GET",
             f"Destiny2/{int(type)}/Profile/{memberid}/?components={int(Component.CHARECTERS)}",
@@ -199,9 +224,9 @@ class HTTPClient:
         )
 
     def fetch_profile(
-        self, memberid: int, type: MembershipType, *, component: Component
-    ) -> Response[profile.ProfileImpl]:
+        self, memberid: int, type: MembershipType, /
+    ) -> Response[helpers.JsonDict]:
         return self.fetch(
             "GET",
-            f"Destiny2/{int(type)}/Profile/{int(memberid)}/?components={int(component)}",
+            f"Destiny2/{int(type)}/Profile/{int(memberid)}/?components={int(Component.PROFILE)}",
         )

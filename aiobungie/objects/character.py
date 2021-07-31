@@ -26,26 +26,111 @@
 
 from __future__ import annotations
 
-__all__: Sequence[str] = ("Character",)
+__all__: typing.Sequence[str] = ("CharacterComponent", "Character")
 
+import abc
+import datetime
 import logging
-from typing import TYPE_CHECKING, Any, Dict, Final, Optional, Sequence
+import typing
 
-from .. import error, url
+import attr
+
+from .. import url
 from ..internal import Image, Time, enums
 
-if TYPE_CHECKING:
-    from datetime import datetime
-
-    from ..types.character import CharacterData, CharacterImpl
-
-log: Final[logging.Logger] = logging.getLogger(__name__)
+log: typing.Final[logging.Logger] = logging.getLogger(__name__)
 
 
-class Character:
-    """Represents a Bungie Character Object.
+@attr.s(kw_only=True, hash=True, weakref_slot=False, slots=True, init=True, eq=True)
+class CharacterComponent(abc.ABC):
+    """An interface for a Bungie character component."""
+
+    @property
+    @abc.abstractmethod
+    def member_type(self) -> enums.MembershipType:
+        """The character's membership type."""
+
+    @property
+    @abc.abstractmethod
+    def id(self) -> int:
+        """The character's member id."""
+
+    @property
+    @abc.abstractmethod
+    def light(self) -> int:
+        """The character's light."""
+
+    @property
+    @abc.abstractmethod
+    def stats(self) -> enums.Stat:
+        """The character's stats."""
+
+    @property
+    @abc.abstractmethod
+    def url(self) -> str:
+        """The character's url at bungie.net."""
+
+    @property
+    @abc.abstractmethod
+    def emblem(self) -> Image:
+        """The character's current equipped emblem."""
+
+    @property
+    @abc.abstractmethod
+    def last_played(self) -> datetime.datetime:
+        """The character's last played time."""
+
+    @property
+    @abc.abstractmethod
+    def emblem_icon(self) -> Image:
+        """The character's current equipped emblem icon."""
+
+    @property
+    @abc.abstractmethod
+    def emblem_hash(self) -> int:
+        """The character's current equipped emblem hash."""
+
+    @property
+    @abc.abstractmethod
+    def race(self) -> enums.Race:
+        """The character's race."""
+
+    @property
+    @abc.abstractmethod
+    def gender(self) -> enums.Gender:
+        """The character's gender."""
+
+    @property
+    @abc.abstractmethod
+    def total_played_time(self) -> str:
+        """Character's total played time in hours."""
+
+    @property
+    @abc.abstractmethod
+    def class_type(self) -> enums.Class:
+        """The character's class."""
+
+    @property
+    @abc.abstractmethod
+    def title_hash(self) -> typing.Optional[int]:
+        """
+        The character's title hash.
+        This is Optional and can be None if no title was found.
+        """
+
+    @property
+    def human_timedelta(self) -> str:
+        """The player's last played time in a human readble date."""
+        return Time.human_timedelta(Time.clean_date(str(self.last_played)))
+
+
+@attr.s(kw_only=True, hash=True, weakref_slot=False, slots=True, init=True, eq=True)
+class Character(CharacterComponent):
+    """An implementation for a Bungie character.
 
     A Bungie character object can be a Warlock, Titan or a Hunter.
+
+    This can only be accessed using the `aiobungie.Component` CHARACTERS component.
 
     Attributes
     -----------
@@ -69,7 +154,7 @@ class Character:
             Returns the total played time in seconds for the chosen character.
     member_id: `builtins.int`
             The character's member id.
-    cls: `aiobungie.internal.enums.Class`
+    class_type: `aiobungie.internal.enums.Class`
             The character's class.
     level: `builtins.int`
             Character's base level.
@@ -80,85 +165,58 @@ class Character:
             if no title is equipped.
     """
 
-    id: int
+    id: int = attr.ib(hash=True, repr=True)
     """Character's id"""
 
-    light: int
+    member_id: int = attr.ib(hash=True, repr=True)
+    """The character's member id."""
+
+    member_type: enums.MembershipType = attr.ib(repr=True, hash=False)
+    """The character's memberhip type."""
+
+    light: int = attr.ib(repr=True, hash=False)
     """Character's light"""
 
-    gender: enums.Gender
+    gender: enums.Gender = attr.ib(repr=True, hash=False)
     """Character's gender"""
 
-    race: enums.Race
+    race: enums.Race = attr.ib(repr=True, hash=False)
     """Character's race"""
 
-    emblem: Image
+    emblem: Image = attr.ib(repr=False, hash=False)
     """Character's emblem"""
 
-    emblem_icon: Image
+    emblem_icon: Image = attr.ib(repr=False, hash=False)
     """Character's emblem icon"""
 
-    emblem_hash: int
+    emblem_hash: int = attr.ib(repr=False, hash=False)
     """Character's emblem hash."""
 
-    last_played: datetime
+    last_played: datetime.datetime = attr.ib(repr=False, hash=False)
     """Character's last played date."""
 
-    total_played: int
+    total_played_time: str = attr.ib(repr=False, hash=False)
     """Character's total plyed time minutes."""
 
-    member_id: int
-    """Character's member id."""
-
-    member_type: enums.MembershipType
-    """Character's membership type."""
-
-    cls: enums.Class
+    class_type: enums.Class = attr.ib(repr=True, hash=False)
     """Character's class."""
 
-    title_hash: Optional[int]
+    title_hash: typing.Optional[int] = attr.ib(repr=True, hash=False)
     """Character's equipped title hash."""
 
-    level: int
+    level: int = attr.ib(repr=False, hash=False)
     """Character's base level."""
 
-    stats: enums.Stat
+    stats: enums.Stat = attr.ib(repr=False, hash=False)
     """Character stats."""
-
-    __slots__: Sequence[str] = (
-        "id",
-        "light",
-        "gender",
-        "race",
-        "emblem",
-        "emblem_icon",
-        "emblem_hash",
-        "last_played",
-        "total_played",
-        "member_id",
-        "member_type",
-        "cls",
-        "level",
-        "title_hash",
-        "stats",
-        "_char",  # ignored
-    )
-
-    def __init__(self, *, char: enums.Class, data: CharacterImpl) -> None:
-        self._char = char
-        self.update(data)
-
-    @property
-    def last_played_delta(self) -> str:
-        """Last played in human delta time."""
-        return Time.human_timedelta(Time.clean_date(str(self.last_played)))
 
     @property
     def url(self) -> str:
-        """Returns the bungie url for the current character."""
+        """A url for the character at bungie.net."""
         return f"{url.BASE}/en/Gear/{int(self.member_type)}/{self.member_id}/{self.id}"
 
-    def as_dict(self) -> Dict[str, Any]:
+    @property
+    def as_dict(self) -> typing.Dict[str, typing.Any]:
         """Returns a dict object of the character,
         This function is useful if you're binding to other REST apis.
         """
@@ -171,56 +229,14 @@ class Character:
             emblem_icon=str(self.emblem_icon),
             emblem_hash=self.emblem_hash,
             last_played=self.last_played,
-            total_played=self.total_played,
+            total_played_time=self.total_played_time,
             member_id=self.member_id,
             member_type=self.member_type,
-            cls=self.cls,
+            cls=str(self.class_type),
             level=self.level,
             title_hash=self.title_hash,
             stats=self.stats,
         )
 
-    def _check_char(self, payload: CharacterImpl, char: enums.Class) -> CharacterData:
-        try:
-            payload = [c for c in payload["characters"]["data"].values()]  # type: ignore
-        except TypeError:
-            raise error.CharacterNotFound(
-                "Player id is invalid or not Found."
-            ) from None
-
-        try:
-            data = payload[char.value]  # type: ignore
-        except IndexError:
-            log.warning(
-                f" Player doesn't have have a {str(char)} character. Will return the first character."
-            )
-            data = payload[0]  # type: ignore
-
-        return data
-
     def __int__(self) -> int:
-        return self.id
-
-    def __repr__(self) -> str:
-        return (
-            f"{self.__class__.__name__} id={self.id} gender={self.gender}"
-            f" class={self.cls} race={self.race}"
-        )
-
-    def update(self, data: CharacterImpl) -> None:
-        data = self._check_char(data, self._char)
-        self.id = data["characterId"]
-        self.gender = enums.Gender(data["genderType"])
-        self.race = enums.Race(data["raceType"])
-        self.cls = enums.Class(data["classType"])
-        self.emblem = Image(str(data["emblemBackgroundPath"]))
-        self.emblem_icon = Image(str(data["emblemPath"]))
-        self.emblem_hash = data["emblemHash"]
-        self.last_played = data["dateLastPlayed"]
-        self.total_played = data["minutesPlayedTotal"]
-        self.member_id = data["membershipId"]
-        self.member_type = enums.MembershipType(data["membershipType"])
-        self.level = data["baseCharacterLevel"]
-        self.title_hash = data.get("titleRecordHash", None)
-        self.light = data["light"]
-        self.stats = data["stats"]
+        return int(self.id)

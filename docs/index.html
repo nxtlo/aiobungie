@@ -527,15 +527,15 @@ __all__: Sequence[str] = (
     &#34;Client&#34;,
     # error.py
     &#34;PlayerNotFound&#34;,
-    &#34;HashError&#34;,
     &#34;ActivityNotFound&#34;,
-    &#34;CharacterTypeError&#34;,
-    &#34;JsonError&#34;,
     &#34;ClanNotFound&#34;,
-    &#34;CharacterNotFound&#34;,
     &#34;NotFound&#34;,
     &#34;HTTPException&#34;,
     &#34;UserNotFound&#34;,
+    &#34;ResponseError&#34;,
+    &#34;Unauthorized&#34;,
+    &#34;Forbidden&#34;,
+    &#34;MembershipTypeError&#34;,
     # enums.py
     &#34;GameMode&#34;,
     &#34;MembershipType&#34;,
@@ -561,7 +561,7 @@ from .client import Client
 from .error import *
 from .internal.enums import *
 
-__version__ = &#34;0.2.5b2&#34;
+__version__ = &#34;0.2.5b3&#34;
 __about__ = &#34;A Pythonic `async`/`await` framework / wrapper for interacting with the Bungie API.&#34;
 __author__ = &#34;nxtlo&#34;
 __docs__ = &#34;https://nxtlo.github.io/aiobungie/&#34;
@@ -609,13 +609,6 @@ __email__ = &#34;dhmony-99@hotmail.com&#34;</code></pre>
                             <p>Basic aiobungie objects implementation.</p>
                         </div>
                     </dd>
-                    <dt><code class="name"><a title="aiobungie.types" href="types/index.html">aiobungie.types</a></code></dt>
-                    <dd>
-                        <div class="desc">
-                            <p>aiobungie.types …
-                            </p>
-                        </div>
-                    </dd>
                     <dt><code class="name"><a title="aiobungie.url" href="url.html">aiobungie.url</a></code></dt>
                     <dd>
                         <div class="desc">
@@ -644,55 +637,13 @@ __email__ = &#34;dhmony-99@hotmail.com&#34;</code></pre>
                                 <span>Expand source code</span>
                             </summary>
                             <pre><code class="python">@final
-class ActivityNotFound(Exception):
+class ActivityNotFound(NotFound):
     &#34;&#34;&#34;Raised when a `aiobungie.objects.Activity` not found.&#34;&#34;&#34;</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
-                            <li>builtins.Exception</li>
-                            <li>builtins.BaseException</li>
-                        </ul>
-                    </dd>
-                    <dt id="aiobungie.CharacterNotFound"><code class="flex name class">
-<span>class <span class="ident">CharacterNotFound</span></span>
-<span>(</span><span>*args, **kwargs)</span>
-</code></dt>
-                    <dd>
-                        <div class="desc">
-                            <p>Raised when a <code><a title="aiobungie.objects.Character" href="objects/index.html#aiobungie.objects.Character">Character</a></code> not found.</p>
-                        </div>
-                        <details class="source">
-                            <summary>
-                                <span>Expand source code</span>
-                            </summary>
-                            <pre><code class="python">@final
-class CharacterNotFound(Exception):
-    &#34;&#34;&#34;Raised when a `aiobungie.objects.Character` not found.&#34;&#34;&#34;</code></pre>
-                        </details>
-                        <h3>Ancestors</h3>
-                        <ul class="hlist">
-                            <li>builtins.Exception</li>
-                            <li>builtins.BaseException</li>
-                        </ul>
-                    </dd>
-                    <dt id="aiobungie.CharacterTypeError"><code class="flex name class">
-<span>class <span class="ident">CharacterTypeError</span></span>
-<span>(</span><span>*args, **kwargs)</span>
-</code></dt>
-                    <dd>
-                        <div class="desc">
-                            <p>Raised on a character type error.</p>
-                        </div>
-                        <details class="source">
-                            <summary>
-                                <span>Expand source code</span>
-                            </summary>
-                            <pre><code class="python">@final
-class CharacterTypeError(Exception):
-    &#34;&#34;&#34;Raised on a character type error.&#34;&#34;&#34;</code></pre>
-                        </details>
-                        <h3>Ancestors</h3>
-                        <ul class="hlist">
+                            <li><a title="aiobungie.error.NotFound" href="error.html#aiobungie.error.NotFound">NotFound</a></li>
+                            <li><a title="aiobungie.error.AiobungieError" href="error.html#aiobungie.error.AiobungieError">AiobungieError</a></li>
                             <li>builtins.Exception</li>
                             <li>builtins.BaseException</li>
                         </ul>
@@ -710,11 +661,13 @@ class CharacterTypeError(Exception):
                                 <span>Expand source code</span>
                             </summary>
                             <pre><code class="python">@final
-class ClanNotFound(Exception):
+class ClanNotFound(NotFound):
     &#34;&#34;&#34;Raised when a `aiobungie.objects.Clan` not found.&#34;&#34;&#34;</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
+                            <li><a title="aiobungie.error.NotFound" href="error.html#aiobungie.error.NotFound">NotFound</a></li>
+                            <li><a title="aiobungie.error.AiobungieError" href="error.html#aiobungie.error.AiobungieError">AiobungieError</a></li>
                             <li>builtins.Exception</li>
                             <li>builtins.BaseException</li>
                         </ul>
@@ -811,14 +764,14 @@ class Class(enum.Enum):
         # This requires a redis server running for usage.
         self._cache = cache_.Cache(loop=self.loop)
 
-        # DeSerilaizing payloads
-        self._serialize = serialize_.Deserialize()
-
         if not token:
             raise ValueError(&#34;Missing the API key!&#34;)
 
         # HTTP Client
         self.http: HTTPClient = HTTPClient(key=token, loop=self.loop)
+
+        # DeSerilaizing payloads
+        self._serialize = serialize_.Deserialize(self)
 
         self._token = token  # We need the token For Manifest.
         super().__init__()
@@ -836,6 +789,10 @@ class Class(enum.Enum):
     @property
     def serialize(self) -&gt; serialize_.Deserialize:
         return self._serialize
+
+    @property
+    def rest(self) -&gt; &#34;Client&#34;:
+        return self
 
     def run(self, future: Coroutine[Any, None, None], debug: bool = False) -&gt; None:
         &#34;&#34;&#34;Runs a Coro function until its complete.
@@ -865,9 +822,30 @@ class Class(enum.Enum):
             raise
 
     async def from_path(self, path: str) -&gt; Any:
+        &#34;&#34;&#34;Raw http search given a valid bungie endpoint.
+
+        Parameters
+        ----------
+        path: `builtins.str`
+            The bungie endpoint or path.
+            A path must look something like this
+            &#34;Destiny2/3/Profile/46111239123/...&#34;
+
+        Returns
+        -------
+        `typing.Any`
+            Any object.
+        &#34;&#34;&#34;
         return await self.http.static_search(path)
 
     async def fetch_manifest(self) -&gt; Manifest:
+        &#34;&#34;&#34;Access The bungie Manifest.
+
+        Returns
+        -------
+        `aiobungie.ext.Manifest`
+            A Manifest object.
+        &#34;&#34;&#34;
         resp = await self.http.fetch_manifest()
         return Manifest(self._token, resp)
 
@@ -890,7 +868,6 @@ class Class(enum.Enum):
         data = await self.http.fetch_user(name=name)
         assert isinstance(data, list)
         user_mod = self._serialize.deserialize_user(data, position)
-        # await self._cache.set_user(user_mod)
         return user_mod
 
     async def fetch_user_from_id(self, id: int) -&gt; objects.User:
@@ -911,21 +888,35 @@ class Class(enum.Enum):
         &#34;&#34;&#34;
         payload = await self.http.fetch_user_from_id(id)
         assert isinstance(payload, dict)
-        return self._serialize.deserialize_user(payload)  # type: ignore
         # User and User from id has the same attrs but different return types so we have to ignore here.
+        return self._serialize.deserialize_user(payload)  # type: ignore
 
     async def fetch_profile(
         self,
         memberid: int,
         type: MembershipType,
         /,
-        component: Component,
-        *,
-        character: Optional[Class] = None,
     ) -&gt; objects.Profile:
-        data = await self.http.fetch_profile(memberid, type, component=component)
+        &#34;&#34;&#34;
+        Fetches a bungie profile.
+
+        See `aiobungie.objects.Profile` to access other components.
+
+        Paramaters
+        ----------
+        memberid: `builtins.int`
+            The member&#39;s id.
+        type: `aiobungie.MembershipType`
+            A valid membership type.
+
+        Returns
+        --------
+        `aiobungie.objects.Profile`
+            A bungie member profile.
+        &#34;&#34;&#34;
+        data = await self.http.fetch_profile(memberid, type)
         assert isinstance(data, dict)
-        return objects.Profile(data=data, component=component, character=character)
+        return self._serialize.deserialize_profile(data)
 
     async def fetch_player(
         self, name: str, type: MembershipType, *, position: int = 0
@@ -971,13 +962,15 @@ class Class(enum.Enum):
 
         Raises
         ------
-        `aiobungie.error.CharacterNotFound`
+        `aiobungie.error.CharacterError`
             raised if the Character was not found.
         &#34;&#34;&#34;
         resp = await self.http.fetch_character(
             memberid=memberid, type=type, character=character
         )
-        return objects.Character(char=character, data=resp)
+        assert isinstance(resp, dict)
+        char_module = self.serialize.deserialize_character(resp, chartype=character)
+        return char_module
 
     async def fetch_vendor_sales(
         self,
@@ -995,7 +988,7 @@ class Class(enum.Enum):
         *,
         page: Optional[int] = 1,
         limit: Optional[int] = 1,
-    ) -&gt; objects.Activity:
+    ) -&gt; None:
         &#34;&#34;&#34;Fetches a Destiny 2 activity for the specified user id and character.
 
         Parameters
@@ -1028,17 +1021,7 @@ class Class(enum.Enum):
         resp = await self.http.fetch_activity(
             userid, charid, mode, memtype=memtype, page=page, limit=limit
         )
-        try:
-            return objects.Activity(data=resp)
-
-        except AttributeError:
-            raise error.HashError(
-                &#34;.hash method is only used for raids, please remove it and use .raw_hash() instead&#34;
-            )
-        except TypeError:
-            raise error.ActivityNotFound(
-                &#34;Error has been occurred during getting your data, maybe the page is out of index or not found?\n&#34;
-            )
+        pass
 
     async def fetch_app(self, appid: int, /) -&gt; objects.Application:
         &#34;&#34;&#34;Fetches a Bungie Application.
@@ -1097,6 +1080,7 @@ class Class(enum.Enum):
                         <ul class="hlist">
                             <li><a title="aiobungie.internal.impl.BaseClient" href="internal/impl.html#aiobungie.internal.impl.BaseClient">BaseClient</a></li>
                             <li><a title="aiobungie.internal.impl.BaseCache" href="internal/impl.html#aiobungie.internal.impl.BaseCache">BaseCache</a></li>
+                            <li><a title="aiobungie.internal.impl.RESTful" href="internal/impl.html#aiobungie.internal.impl.RESTful">RESTful</a></li>
                             <li>typing.Protocol</li>
                             <li>typing.Generic</li>
                         </ul>
@@ -1132,6 +1116,24 @@ def cache(self) -&gt; cache_.Cache:
                                     <p>Return an attribute of instance, which is of type owner.</p>
                                 </div>
                             </dd>
+                            <dt id="aiobungie.Client.rest"><code class="name">var <span class="ident">rest</span> : <a title="aiobungie.client.Client" href="client.html#aiobungie.client.Client">Client</a></code></dt>
+                            <dd>
+                                <p class="inheritance">
+                                    <em>Inherited from:</em>
+                                    <code><a title="aiobungie.internal.impl.BaseClient" href="internal/impl.html#aiobungie.internal.impl.BaseClient">BaseClient</a></code>.<code><a title="aiobungie.internal.impl.BaseClient.rest" href="internal/impl.html#aiobungie.internal.impl.BaseClient.rest">rest</a></code>
+                                </p>
+                                <div class="desc inherited">
+                                    <p>Returns resful of the client instance for other requests.</p>
+                                </div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">@property
+def rest(self) -&gt; &#34;Client&#34;:
+    return self</code></pre>
+                                </details>
+                            </dd>
                             <dt id="aiobungie.Client.serialize"><code class="name">var <span class="ident">serialize</span> : <a title="aiobungie.internal.serialize.Deserialize" href="internal/serialize.html#aiobungie.internal.serialize.Deserialize">Deserialize</a></code></dt>
                             <dd>
                                 <div class="desc"></div>
@@ -1148,7 +1150,7 @@ def serialize(self) -&gt; serialize_.Deserialize:
                         <h3>Methods</h3>
                         <dl>
                             <dt id="aiobungie.Client.fetch_activity"><code class="name flex">
-<span>async def <span class="ident">fetch_activity</span></span>(<span>self, userid: int, charid: int, mode: <a title="aiobungie.GameMode" href="#aiobungie.GameMode">GameMode</a>, memtype: <a title="aiobungie.MembershipType" href="#aiobungie.MembershipType">MembershipType</a>, *, page: Optional[int] = 1, limit: Optional[int] = 1) ‑> <a title="aiobungie.objects.activity.Activity" href="objects/activity.html#aiobungie.objects.activity.Activity">Activity</a></span>
+<span>async def <span class="ident">fetch_activity</span></span>(<span>self, userid: int, charid: int, mode: <a title="aiobungie.GameMode" href="#aiobungie.GameMode">GameMode</a>, memtype: <a title="aiobungie.MembershipType" href="#aiobungie.MembershipType">MembershipType</a>, *, page: Optional[int] = 1, limit: Optional[int] = 1) ‑> NoneType</span>
 </code></dt>
                             <dd>
                                 <div class="desc">
@@ -1188,7 +1190,7 @@ async def fetch_activity(
     *,
     page: Optional[int] = 1,
     limit: Optional[int] = 1,
-) -&gt; objects.Activity:
+) -&gt; None:
     &#34;&#34;&#34;Fetches a Destiny 2 activity for the specified user id and character.
 
     Parameters
@@ -1221,17 +1223,7 @@ async def fetch_activity(
     resp = await self.http.fetch_activity(
         userid, charid, mode, memtype=memtype, page=page, limit=limit
     )
-    try:
-        return objects.Activity(data=resp)
-
-    except AttributeError:
-        raise error.HashError(
-            &#34;.hash method is only used for raids, please remove it and use .raw_hash() instead&#34;
-        )
-    except TypeError:
-        raise error.ActivityNotFound(
-            &#34;Error has been occurred during getting your data, maybe the page is out of index or not found?\n&#34;
-        )</code></pre>
+    pass</code></pre>
                                 </details>
                             </dd>
                             <dt id="aiobungie.Client.fetch_app"><code class="name flex">
@@ -1288,7 +1280,7 @@ async def fetch_activity(
                                     <h2 id="returns">Returns</h2>
                                     <p><code><a title="aiobungie.objects.Character" href="objects/index.html#aiobungie.objects.Character">Character</a></code> a Bungie character object.</p>
                                     <h2 id="raises">Raises</h2>
-                                    <p><code><a title="aiobungie.error.CharacterNotFound" href="error.html#aiobungie.error.CharacterNotFound">CharacterNotFound</a></code> raised if the Character was not found.</p>
+                                    <p><code><a title="aiobungie.error.CharacterError" href="error.html#aiobungie.error.CharacterError">CharacterError</a></code> raised if the Character was not found.</p>
                                 </div>
                                 <details class="source">
                                     <summary>
@@ -1315,13 +1307,15 @@ async def fetch_activity(
 
     Raises
     ------
-    `aiobungie.error.CharacterNotFound`
+    `aiobungie.error.CharacterError`
         raised if the Character was not found.
     &#34;&#34;&#34;
     resp = await self.http.fetch_character(
         memberid=memberid, type=type, character=character
     )
-    return objects.Character(char=character, data=resp)</code></pre>
+    assert isinstance(resp, dict)
+    char_module = self.serialize.deserialize_character(resp, chartype=character)
+    return char_module</code></pre>
                                 </details>
                             </dd>
                             <dt id="aiobungie.Client.fetch_clan"><code class="name flex">
@@ -1403,12 +1397,23 @@ async def fetch_activity(
 <span>async def <span class="ident">fetch_manifest</span></span>(<span>self) ‑> <a title="aiobungie.ext.meta.Manifest" href="ext/meta.html#aiobungie.ext.meta.Manifest">Manifest</a></span>
 </code></dt>
                             <dd>
-                                <div class="desc"></div>
+                                <div class="desc">
+                                    <p>Access The bungie Manifest.</p>
+                                    <h2 id="returns">Returns</h2>
+                                    <p><code><a title="aiobungie.ext.Manifest" href="ext/index.html#aiobungie.ext.Manifest">Manifest</a></code> A Manifest object.</p>
+                                </div>
                                 <details class="source">
                                     <summary>
                                         <span>Expand source code</span>
                                     </summary>
                                     <pre><code class="python">async def fetch_manifest(self) -&gt; Manifest:
+    &#34;&#34;&#34;Access The bungie Manifest.
+
+    Returns
+    -------
+    `aiobungie.ext.Manifest`
+        A Manifest object.
+    &#34;&#34;&#34;
     resp = await self.http.fetch_manifest()
     return Manifest(self._token, resp)</code></pre>
                                 </details>
@@ -1460,10 +1465,17 @@ async def fetch_activity(
                                 </details>
                             </dd>
                             <dt id="aiobungie.Client.fetch_profile"><code class="name flex">
-<span>async def <span class="ident">fetch_profile</span></span>(<span>self, memberid: int, type: <a title="aiobungie.MembershipType" href="#aiobungie.MembershipType">MembershipType</a>, /, component: <a title="aiobungie.Component" href="#aiobungie.Component">Component</a>, *, character: Optional[<a title="aiobungie.Class" href="#aiobungie.Class">Class</a>] = None) ‑> <a title="aiobungie.objects.profile.Profile" href="objects/profile.html#aiobungie.objects.profile.Profile">Profile</a></span>
+<span>async def <span class="ident">fetch_profile</span></span>(<span>self, memberid: int, type: <a title="aiobungie.MembershipType" href="#aiobungie.MembershipType">MembershipType</a>, /) ‑> <a title="aiobungie.objects.profile.Profile" href="objects/profile.html#aiobungie.objects.profile.Profile">Profile</a></span>
 </code></dt>
                             <dd>
-                                <div class="desc"></div>
+                                <div class="desc">
+                                    <p>Fetches a bungie profile.</p>
+                                    <p>See <code><a title="aiobungie.objects.Profile" href="objects/index.html#aiobungie.objects.Profile">Profile</a></code> to access other components.</p>
+                                    <h2 id="paramaters">Paramaters</h2>
+                                    <p>memberid: <code>builtins.int</code> The member's id. type: <code><a title="aiobungie.MembershipType" href="#aiobungie.MembershipType">MembershipType</a></code> A valid membership type.</p>
+                                    <h2 id="returns">Returns</h2>
+                                    <p><code><a title="aiobungie.objects.Profile" href="objects/index.html#aiobungie.objects.Profile">Profile</a></code> A bungie member profile.</p>
+                                </div>
                                 <details class="source">
                                     <summary>
                                         <span>Expand source code</span>
@@ -1473,13 +1485,27 @@ async def fetch_activity(
     memberid: int,
     type: MembershipType,
     /,
-    component: Component,
-    *,
-    character: Optional[Class] = None,
 ) -&gt; objects.Profile:
-    data = await self.http.fetch_profile(memberid, type, component=component)
+    &#34;&#34;&#34;
+    Fetches a bungie profile.
+
+    See `aiobungie.objects.Profile` to access other components.
+
+    Paramaters
+    ----------
+    memberid: `builtins.int`
+        The member&#39;s id.
+    type: `aiobungie.MembershipType`
+        A valid membership type.
+
+    Returns
+    --------
+    `aiobungie.objects.Profile`
+        A bungie member profile.
+    &#34;&#34;&#34;
+    data = await self.http.fetch_profile(memberid, type)
     assert isinstance(data, dict)
-    return objects.Profile(data=data, component=component, character=character)</code></pre>
+    return self._serialize.deserialize_profile(data)</code></pre>
                                 </details>
                             </dd>
                             <dt id="aiobungie.Client.fetch_user"><code class="name flex">
@@ -1521,7 +1547,6 @@ async def fetch_activity(
     data = await self.http.fetch_user(name=name)
     assert isinstance(data, list)
     user_mod = self._serialize.deserialize_user(data, position)
-    # await self._cache.set_user(user_mod)
     return user_mod</code></pre>
                                 </details>
                             </dd>
@@ -1563,6 +1588,7 @@ async def fetch_activity(
     &#34;&#34;&#34;
     payload = await self.http.fetch_user_from_id(id)
     assert isinstance(payload, dict)
+    # User and User from id has the same attrs but different return types so we have to ignore here.
     return self._serialize.deserialize_user(payload)  # type: ignore</code></pre>
                                 </details>
                             </dd>
@@ -1588,12 +1614,36 @@ async def fetch_activity(
 <span>async def <span class="ident">from_path</span></span>(<span>self, path: str) ‑> Any</span>
 </code></dt>
                             <dd>
-                                <div class="desc"></div>
+                                <div class="desc">
+                                    <p>Raw http search given a valid bungie endpoint.</p>
+                                    <h2 id="parameters">Parameters</h2>
+                                    <dl>
+                                        <dt><strong><code>path</code></strong> :&ensp;<code>builtins.str</code></dt>
+                                        <dd>The bungie endpoint or path. A path must look something like this "Destiny2/3/Profile/46111239123/&hellip;"
+                                        </dd>
+                                    </dl>
+                                    <h2 id="returns">Returns</h2>
+                                    <p><code>typing.Any</code> Any object.</p>
+                                </div>
                                 <details class="source">
                                     <summary>
                                         <span>Expand source code</span>
                                     </summary>
                                     <pre><code class="python">async def from_path(self, path: str) -&gt; Any:
+    &#34;&#34;&#34;Raw http search given a valid bungie endpoint.
+
+    Parameters
+    ----------
+    path: `builtins.str`
+        The bungie endpoint or path.
+        A path must look something like this
+        &#34;Destiny2/3/Profile/46111239123/...&#34;
+
+    Returns
+    -------
+    `typing.Any`
+        Any object.
+    &#34;&#34;&#34;
     return await self.http.static_search(path)</code></pre>
                                 </details>
                             </dd>
@@ -1899,6 +1949,44 @@ class Dungeon(enum.Enum):
                             </dd>
                         </dl>
                     </dd>
+                    <dt id="aiobungie.Forbidden"><code class="flex name class">
+<span>class <span class="ident">Forbidden</span></span>
+<span>(</span><span>message: str)</span>
+</code></dt>
+                    <dd>
+                        <div class="desc">
+                            <p>Exception that's raised for when status code 403 occurs.</p>
+                            <p>Method generated by attrs for class HTTPException.</p>
+                        </div>
+                        <details class="source">
+                            <summary>
+                                <span>Expand source code</span>
+                            </summary>
+                            <pre><code class="python">@final
+class Forbidden(HTTPException):
+    &#34;&#34;&#34;Exception that&#39;s raised for when status code 403 occurs.&#34;&#34;&#34;</code></pre>
+                        </details>
+                        <h3>Ancestors</h3>
+                        <ul class="hlist">
+                            <li><a title="aiobungie.error.HTTPException" href="error.html#aiobungie.error.HTTPException">HTTPException</a></li>
+                            <li><a title="aiobungie.error.AiobungieError" href="error.html#aiobungie.error.AiobungieError">AiobungieError</a></li>
+                            <li>builtins.Exception</li>
+                            <li>builtins.BaseException</li>
+                        </ul>
+                        <h3>Instance variables</h3>
+                        <dl>
+                            <dt id="aiobungie.Forbidden.message"><code class="name">var <span class="ident">message</span> : str</code></dt>
+                            <dd>
+                                <p class="inheritance">
+                                    <em>Inherited from:</em>
+                                    <code><a title="aiobungie.error.HTTPException" href="error.html#aiobungie.error.HTTPException">HTTPException</a></code>.<code><a title="aiobungie.error.HTTPException.message" href="error.html#aiobungie.error.HTTPException.message">message</a></code>
+                                </p>
+                                <div class="desc inherited">
+                                    <p>Return an attribute of instance, which is of type owner.</p>
+                                </div>
+                            </dd>
+                        </dl>
+                    </dd>
                     <dt id="aiobungie.GameMode"><code class="flex name class">
 <span>class <span class="ident">GameMode</span></span>
 <span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
@@ -2091,47 +2179,46 @@ class Gender(enum.Enum):
                     </dd>
                     <dt id="aiobungie.HTTPException"><code class="flex name class">
 <span>class <span class="ident">HTTPException</span></span>
-<span>(</span><span>*args, **kwargs)</span>
+<span>(</span><span>message: str)</span>
 </code></dt>
                     <dd>
                         <div class="desc">
                             <p>Exception for handling <code><a title="aiobungie.http.HTTPClient" href="http.html#aiobungie.http.HTTPClient">HTTPClient</a></code> requests errors.</p>
+                            <p>Method generated by attrs for class HTTPException.</p>
                         </div>
                         <details class="source">
                             <summary>
                                 <span>Expand source code</span>
                             </summary>
-                            <pre><code class="python">@final
-class HTTPException(Exception):
-    &#34;&#34;&#34;Exception for handling `aiobungie.http.HTTPClient` requests errors.&#34;&#34;&#34;</code></pre>
+                            <pre><code class="python">@attr.define(auto_exc=True, repr=False, weakref_slot=False)
+class HTTPException(AiobungieError):
+    &#34;&#34;&#34;Exception for handling `aiobungie.http.HTTPClient` requests errors.&#34;&#34;&#34;
+
+    message: str = attr.field()</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
+                            <li><a title="aiobungie.error.AiobungieError" href="error.html#aiobungie.error.AiobungieError">AiobungieError</a></li>
                             <li>builtins.Exception</li>
                             <li>builtins.BaseException</li>
                         </ul>
-                    </dd>
-                    <dt id="aiobungie.HashError"><code class="flex name class">
-<span>class <span class="ident">HashError</span></span>
-<span>(</span><span>*args, **kwargs)</span>
-</code></dt>
-                    <dd>
-                        <div class="desc">
-                            <p>Raised when <code><a title="aiobungie.objects.Activity.hash" href="objects/index.html#aiobungie.objects.Activity.hash">Activity.hash</a></code> used for modes that are not raids.</p>
-                        </div>
-                        <details class="source">
-                            <summary>
-                                <span>Expand source code</span>
-                            </summary>
-                            <pre><code class="python">@final
-class HashError(Exception):
-    &#34;&#34;&#34;Raised when `aiobungie.objects.Activity.hash` used for modes that are not raids.&#34;&#34;&#34;</code></pre>
-                        </details>
-                        <h3>Ancestors</h3>
+                        <h3>Subclasses</h3>
                         <ul class="hlist">
-                            <li>builtins.Exception</li>
-                            <li>builtins.BaseException</li>
+                            <li><a title="aiobungie.error.CharacterError" href="error.html#aiobungie.error.CharacterError">CharacterError</a></li>
+                            <li><a title="aiobungie.error.ComponentError" href="error.html#aiobungie.error.ComponentError">ComponentError</a></li>
+                            <li><a title="aiobungie.error.Forbidden" href="error.html#aiobungie.error.Forbidden">Forbidden</a></li>
+                            <li><a title="aiobungie.error.MembershipTypeError" href="error.html#aiobungie.error.MembershipTypeError">MembershipTypeError</a></li>
+                            <li><a title="aiobungie.error.Unauthorized" href="error.html#aiobungie.error.Unauthorized">Unauthorized</a></li>
                         </ul>
+                        <h3>Instance variables</h3>
+                        <dl>
+                            <dt id="aiobungie.HTTPException.message"><code class="name">var <span class="ident">message</span> : str</code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Return an attribute of instance, which is of type owner.</p>
+                                </div>
+                            </dd>
+                        </dl>
                     </dd>
                     <dt id="aiobungie.Item"><code class="flex name class">
 <span>class <span class="ident">Item</span></span>
@@ -2324,28 +2411,6 @@ class Item(enum.Enum):
                             </dd>
                         </dl>
                     </dd>
-                    <dt id="aiobungie.JsonError"><code class="flex name class">
-<span>class <span class="ident">JsonError</span></span>
-<span>(</span><span>*args, **kwargs)</span>
-</code></dt>
-                    <dd>
-                        <div class="desc">
-                            <p>Raised when an HTTP request did not return a json response.</p>
-                        </div>
-                        <details class="source">
-                            <summary>
-                                <span>Expand source code</span>
-                            </summary>
-                            <pre><code class="python">@final
-class JsonError(Exception):
-    &#34;&#34;&#34;Raised when an HTTP request did not return a json response.&#34;&#34;&#34;</code></pre>
-                        </details>
-                        <h3>Ancestors</h3>
-                        <ul class="hlist">
-                            <li>builtins.Exception</li>
-                            <li>builtins.BaseException</li>
-                        </ul>
-                    </dd>
                     <dt id="aiobungie.MembershipType"><code class="flex name class">
 <span>class <span class="ident">MembershipType</span></span>
 <span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
@@ -2414,6 +2479,47 @@ class MembershipType(enum.Enum):
                             <dt id="aiobungie.MembershipType.XBOX"><code class="name">var <span class="ident">XBOX</span></code></dt>
                             <dd>
                                 <div class="desc"></div>
+                            </dd>
+                        </dl>
+                    </dd>
+                    <dt id="aiobungie.MembershipTypeError"><code class="flex name class">
+<span>class <span class="ident">MembershipTypeError</span></span>
+<span>(</span><span>message: str)</span>
+</code></dt>
+                    <dd>
+                        <div class="desc">
+                            <p>Raised when the memberhsip type is invalid. or The object you're trying to fetch doesn't have The requested membership type.</p>
+                            <p>Method generated by attrs for class HTTPException.</p>
+                        </div>
+                        <details class="source">
+                            <summary>
+                                <span>Expand source code</span>
+                            </summary>
+                            <pre><code class="python">@final
+class MembershipTypeError(HTTPException):
+    &#34;&#34;&#34;Raised when the memberhsip type is invalid.
+    or The object you&#39;re trying to fetch doesn&#39;t have
+    The requested membership type.
+    &#34;&#34;&#34;</code></pre>
+                        </details>
+                        <h3>Ancestors</h3>
+                        <ul class="hlist">
+                            <li><a title="aiobungie.error.HTTPException" href="error.html#aiobungie.error.HTTPException">HTTPException</a></li>
+                            <li><a title="aiobungie.error.AiobungieError" href="error.html#aiobungie.error.AiobungieError">AiobungieError</a></li>
+                            <li>builtins.Exception</li>
+                            <li>builtins.BaseException</li>
+                        </ul>
+                        <h3>Instance variables</h3>
+                        <dl>
+                            <dt id="aiobungie.MembershipTypeError.message"><code class="name">var <span class="ident">message</span> : str</code></dt>
+                            <dd>
+                                <p class="inheritance">
+                                    <em>Inherited from:</em>
+                                    <code><a title="aiobungie.error.HTTPException" href="error.html#aiobungie.error.HTTPException">HTTPException</a></code>.<code><a title="aiobungie.error.HTTPException.message" href="error.html#aiobungie.error.HTTPException.message">message</a></code>
+                                </p>
+                                <div class="desc inherited">
+                                    <p>Return an attribute of instance, which is of type owner.</p>
+                                </div>
                             </dd>
                         </dl>
                     </dd>
@@ -2490,14 +2596,21 @@ class MilestoneType(enum.Enum):
                             <summary>
                                 <span>Expand source code</span>
                             </summary>
-                            <pre><code class="python">@final
-class NotFound(Exception):
+                            <pre><code class="python">class NotFound(AiobungieError):
     &#34;&#34;&#34;Raised when an unknown request was not found.&#34;&#34;&#34;</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
+                            <li><a title="aiobungie.error.AiobungieError" href="error.html#aiobungie.error.AiobungieError">AiobungieError</a></li>
                             <li>builtins.Exception</li>
                             <li>builtins.BaseException</li>
+                        </ul>
+                        <h3>Subclasses</h3>
+                        <ul class="hlist">
+                            <li><a title="aiobungie.error.ActivityNotFound" href="error.html#aiobungie.error.ActivityNotFound">ActivityNotFound</a></li>
+                            <li><a title="aiobungie.error.ClanNotFound" href="error.html#aiobungie.error.ClanNotFound">ClanNotFound</a></li>
+                            <li><a title="aiobungie.error.PlayerNotFound" href="error.html#aiobungie.error.PlayerNotFound">PlayerNotFound</a></li>
+                            <li><a title="aiobungie.error.UserNotFound" href="error.html#aiobungie.error.UserNotFound">UserNotFound</a></li>
                         </ul>
                     </dd>
                     <dt id="aiobungie.Place"><code class="flex name class">
@@ -2684,11 +2797,13 @@ class Planet(enum.Enum):
                                 <span>Expand source code</span>
                             </summary>
                             <pre><code class="python">@final
-class PlayerNotFound(Exception):
+class PlayerNotFound(NotFound):
     &#34;&#34;&#34;Raised when a `aiobungie.objects.Player` is not found.&#34;&#34;&#34;</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
+                            <li><a title="aiobungie.error.NotFound" href="error.html#aiobungie.error.NotFound">NotFound</a></li>
+                            <li><a title="aiobungie.error.AiobungieError" href="error.html#aiobungie.error.AiobungieError">AiobungieError</a></li>
                             <li>builtins.Exception</li>
                             <li>builtins.BaseException</li>
                         </ul>
@@ -2810,6 +2925,29 @@ class Raid(enum.Enum):
                             </dd>
                         </dl>
                     </dd>
+                    <dt id="aiobungie.ResponseError"><code class="flex name class">
+<span>class <span class="ident">ResponseError</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+                    <dd>
+                        <div class="desc">
+                            <p>Typical Responses error.</p>
+                        </div>
+                        <details class="source">
+                            <summary>
+                                <span>Expand source code</span>
+                            </summary>
+                            <pre><code class="python">@final
+class ResponseError(AiobungieError):
+    &#34;&#34;&#34;Typical Responses error.&#34;&#34;&#34;</code></pre>
+                        </details>
+                        <h3>Ancestors</h3>
+                        <ul class="hlist">
+                            <li><a title="aiobungie.error.AiobungieError" href="error.html#aiobungie.error.AiobungieError">AiobungieError</a></li>
+                            <li>builtins.Exception</li>
+                            <li>builtins.BaseException</li>
+                        </ul>
+                    </dd>
                     <dt id="aiobungie.Stat"><code class="flex name class">
 <span>class <span class="ident">Stat</span></span>
 <span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
@@ -2871,6 +3009,44 @@ class Stat(enum.Enum):
                             </dd>
                         </dl>
                     </dd>
+                    <dt id="aiobungie.Unauthorized"><code class="flex name class">
+<span>class <span class="ident">Unauthorized</span></span>
+<span>(</span><span>message: str)</span>
+</code></dt>
+                    <dd>
+                        <div class="desc">
+                            <p>Unauthorized access.</p>
+                            <p>Method generated by attrs for class HTTPException.</p>
+                        </div>
+                        <details class="source">
+                            <summary>
+                                <span>Expand source code</span>
+                            </summary>
+                            <pre><code class="python">@final
+class Unauthorized(HTTPException):
+    &#34;&#34;&#34;Unauthorized access.&#34;&#34;&#34;</code></pre>
+                        </details>
+                        <h3>Ancestors</h3>
+                        <ul class="hlist">
+                            <li><a title="aiobungie.error.HTTPException" href="error.html#aiobungie.error.HTTPException">HTTPException</a></li>
+                            <li><a title="aiobungie.error.AiobungieError" href="error.html#aiobungie.error.AiobungieError">AiobungieError</a></li>
+                            <li>builtins.Exception</li>
+                            <li>builtins.BaseException</li>
+                        </ul>
+                        <h3>Instance variables</h3>
+                        <dl>
+                            <dt id="aiobungie.Unauthorized.message"><code class="name">var <span class="ident">message</span> : str</code></dt>
+                            <dd>
+                                <p class="inheritance">
+                                    <em>Inherited from:</em>
+                                    <code><a title="aiobungie.error.HTTPException" href="error.html#aiobungie.error.HTTPException">HTTPException</a></code>.<code><a title="aiobungie.error.HTTPException.message" href="error.html#aiobungie.error.HTTPException.message">message</a></code>
+                                </p>
+                                <div class="desc inherited">
+                                    <p>Return an attribute of instance, which is of type owner.</p>
+                                </div>
+                            </dd>
+                        </dl>
+                    </dd>
                     <dt id="aiobungie.UserNotFound"><code class="flex name class">
 <span>class <span class="ident">UserNotFound</span></span>
 <span>(</span><span>*args, **kwargs)</span>
@@ -2884,11 +3060,13 @@ class Stat(enum.Enum):
                                 <span>Expand source code</span>
                             </summary>
                             <pre><code class="python">@final
-class UserNotFound(Exception):
+class UserNotFound(NotFound):
     &#34;&#34;&#34;Raised when a `aiobungie.objects.User` not found.&#34;&#34;&#34;</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
+                            <li><a title="aiobungie.error.NotFound" href="error.html#aiobungie.error.NotFound">NotFound</a></li>
+                            <li><a title="aiobungie.error.AiobungieError" href="error.html#aiobungie.error.AiobungieError">AiobungieError</a></li>
                             <li>builtins.Exception</li>
                             <li>builtins.BaseException</li>
                         </ul>
@@ -3146,7 +3324,6 @@ class WeaponType(enum.Enum):
                         <li><code><a title="aiobungie.http" href="http.html">aiobungie.http</a></code></li>
                         <li><code><a title="aiobungie.internal" href="internal/index.html">aiobungie.internal</a></code></li>
                         <li><code><a title="aiobungie.objects" href="objects/index.html">aiobungie.objects</a></code></li>
-                        <li><code><a title="aiobungie.types" href="types/index.html">aiobungie.types</a></code></li>
                         <li><code><a title="aiobungie.url" href="url.html">aiobungie.url</a></code></li>
                     </ul>
                 </li>
@@ -3155,12 +3332,6 @@ class WeaponType(enum.Enum):
                     <ul>
                         <li>
                             <h4><code><a title="aiobungie.ActivityNotFound" href="#aiobungie.ActivityNotFound">ActivityNotFound</a></code></h4>
-                        </li>
-                        <li>
-                            <h4><code><a title="aiobungie.CharacterNotFound" href="#aiobungie.CharacterNotFound">CharacterNotFound</a></code></h4>
-                        </li>
-                        <li>
-                            <h4><code><a title="aiobungie.CharacterTypeError" href="#aiobungie.CharacterTypeError">CharacterTypeError</a></code></h4>
                         </li>
                         <li>
                             <h4><code><a title="aiobungie.ClanNotFound" href="#aiobungie.ClanNotFound">ClanNotFound</a></code></h4>
@@ -3192,6 +3363,7 @@ class WeaponType(enum.Enum):
                                 <li><code><a title="aiobungie.Client.from_path" href="#aiobungie.Client.from_path">from_path</a></code></li>
                                 <li><code><a title="aiobungie.Client.http" href="#aiobungie.Client.http">http</a></code></li>
                                 <li><code><a title="aiobungie.Client.loop" href="#aiobungie.Client.loop">loop</a></code></li>
+                                <li><code><a title="aiobungie.Client.rest" href="#aiobungie.Client.rest">rest</a></code></li>
                                 <li><code><a title="aiobungie.Client.run" href="#aiobungie.Client.run">run</a></code></li>
                                 <li><code><a title="aiobungie.Client.serialize" href="#aiobungie.Client.serialize">serialize</a></code></li>
                             </ul>
@@ -3238,6 +3410,12 @@ class WeaponType(enum.Enum):
                             </ul>
                         </li>
                         <li>
+                            <h4><code><a title="aiobungie.Forbidden" href="#aiobungie.Forbidden">Forbidden</a></code></h4>
+                            <ul class="">
+                                <li><code><a title="aiobungie.Forbidden.message" href="#aiobungie.Forbidden.message">message</a></code></li>
+                            </ul>
+                        </li>
+                        <li>
                             <h4><code><a title="aiobungie.GameMode" href="#aiobungie.GameMode">GameMode</a></code></h4>
                             <ul class="two-column">
                                 <li><code><a title="aiobungie.GameMode.ALLPVE" href="#aiobungie.GameMode.ALLPVE">ALLPVE</a></code></li>
@@ -3274,9 +3452,9 @@ class WeaponType(enum.Enum):
                         </li>
                         <li>
                             <h4><code><a title="aiobungie.HTTPException" href="#aiobungie.HTTPException">HTTPException</a></code></h4>
-                        </li>
-                        <li>
-                            <h4><code><a title="aiobungie.HashError" href="#aiobungie.HashError">HashError</a></code></h4>
+                            <ul class="">
+                                <li><code><a title="aiobungie.HTTPException.message" href="#aiobungie.HTTPException.message">message</a></code></li>
+                            </ul>
                         </li>
                         <li>
                             <h4><code><a title="aiobungie.Item" href="#aiobungie.Item">Item</a></code></h4>
@@ -3316,9 +3494,6 @@ class WeaponType(enum.Enum):
                             </ul>
                         </li>
                         <li>
-                            <h4><code><a title="aiobungie.JsonError" href="#aiobungie.JsonError">JsonError</a></code></h4>
-                        </li>
-                        <li>
                             <h4><code><a title="aiobungie.MembershipType" href="#aiobungie.MembershipType">MembershipType</a></code></h4>
                             <ul class="two-column">
                                 <li><code><a title="aiobungie.MembershipType.ALL" href="#aiobungie.MembershipType.ALL">ALL</a></code></li>
@@ -3329,6 +3504,12 @@ class WeaponType(enum.Enum):
                                 <li><code><a title="aiobungie.MembershipType.STADIA" href="#aiobungie.MembershipType.STADIA">STADIA</a></code></li>
                                 <li><code><a title="aiobungie.MembershipType.STEAM" href="#aiobungie.MembershipType.STEAM">STEAM</a></code></li>
                                 <li><code><a title="aiobungie.MembershipType.XBOX" href="#aiobungie.MembershipType.XBOX">XBOX</a></code></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <h4><code><a title="aiobungie.MembershipTypeError" href="#aiobungie.MembershipTypeError">MembershipTypeError</a></code></h4>
+                            <ul class="">
+                                <li><code><a title="aiobungie.MembershipTypeError.message" href="#aiobungie.MembershipTypeError.message">message</a></code></li>
                             </ul>
                         </li>
                         <li>
@@ -3391,6 +3572,9 @@ class WeaponType(enum.Enum):
                             </ul>
                         </li>
                         <li>
+                            <h4><code><a title="aiobungie.ResponseError" href="#aiobungie.ResponseError">ResponseError</a></code></h4>
+                        </li>
+                        <li>
                             <h4><code><a title="aiobungie.Stat" href="#aiobungie.Stat">Stat</a></code></h4>
                             <ul class="two-column">
                                 <li><code><a title="aiobungie.Stat.DISCIPLINE" href="#aiobungie.Stat.DISCIPLINE">DISCIPLINE</a></code></li>
@@ -3399,6 +3583,12 @@ class WeaponType(enum.Enum):
                                 <li><code><a title="aiobungie.Stat.RECOVERY" href="#aiobungie.Stat.RECOVERY">RECOVERY</a></code></li>
                                 <li><code><a title="aiobungie.Stat.RESILIENCE" href="#aiobungie.Stat.RESILIENCE">RESILIENCE</a></code></li>
                                 <li><code><a title="aiobungie.Stat.STRENGTH" href="#aiobungie.Stat.STRENGTH">STRENGTH</a></code></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <h4><code><a title="aiobungie.Unauthorized" href="#aiobungie.Unauthorized">Unauthorized</a></code></h4>
+                            <ul class="">
+                                <li><code><a title="aiobungie.Unauthorized.message" href="#aiobungie.Unauthorized.message">message</a></code></li>
                             </ul>
                         </li>
                         <li>

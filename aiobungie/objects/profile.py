@@ -26,23 +26,130 @@ from __future__ import annotations
 
 __all__: typing.Sequence[str] = ("Profile",)
 
+import abc
 import datetime
 import logging
 import typing
 
-from aiobungie import error
-from aiobungie.internal import Time, enums
+import attr
+
+from aiobungie.internal import Time, enums, impl
 
 from .character import Character
-
-if typing.TYPE_CHECKING:
-    from ..types.character import CharacterImpl
-    from ..types.profile import PartialProfile, ProfileImpl
 
 log: typing.Final[logging.Logger] = logging.getLogger(__name__)
 
 
-class Profile:
+@attr.s(kw_only=True, hash=True, weakref_slot=False, slots=True, init=True, eq=True)
+class ProfileComponentImpl(abc.ABC):
+    @property
+    @abc.abstractmethod
+    def app(self) -> impl.RESTful:
+        """A Client that we may use for making other requests."""
+
+    @property
+    @abc.abstractmethod
+    def name(self) -> str:
+        """Profile's name"""
+
+    @property
+    @abc.abstractmethod
+    def type(self) -> enums.MembershipType:
+        """Profile's membership type."""
+
+    @property
+    @abc.abstractmethod
+    def last_played(self) -> datetime.datetime:
+        """The profile user's last played date time."""
+
+    @property
+    @abc.abstractmethod
+    def is_public(self) -> bool:
+        """Profile's privacy status."""
+
+    @property
+    @abc.abstractmethod
+    def character_ids(self) -> typing.List[int]:
+        """A list of the profile's character ids."""
+
+    @property
+    @abc.abstractmethod
+    def id(self) -> int:
+        """The profile's id."""
+
+    async def titan(self) -> Character:
+        """Returns the titan character of the profile owner."""
+        # We're ignoring the types for the character since
+        char: Character = await self.app.rest.fetch_character(
+            int(self.id), self.type, enums.Class.TITAN
+        )
+        return Character(
+            id=char.id,
+            class_type=char.class_type,
+            emblem=char.emblem,
+            emblem_hash=char.emblem_hash,
+            emblem_icon=char.emblem_icon,
+            light=char.light,
+            last_played=char.last_played,
+            level=char.level,
+            member_id=char.member_id,
+            member_type=char.member_type,
+            gender=char.gender,
+            race=char.race,
+            total_played_time=char.total_played_time,
+            title_hash=char.title_hash,
+            stats=char.stats,
+        )
+
+    async def hunter(self) -> Character:
+        """Returns the hunter character of the profile owner."""
+        char: Character = await self.app.rest.fetch_character(
+            self.id, self.type, enums.Class.HUNTER
+        )
+        return Character(
+            id=char.id,
+            class_type=char.class_type,
+            emblem=char.emblem,
+            emblem_hash=char.emblem_hash,
+            emblem_icon=char.emblem_icon,
+            light=char.light,
+            last_played=char.last_played,
+            level=char.level,
+            member_id=char.member_id,
+            member_type=char.member_type,
+            gender=char.gender,
+            race=char.race,
+            total_played_time=char.total_played_time,
+            title_hash=char.title_hash,
+            stats=char.stats,
+        )
+
+    async def warlock(self) -> Character:
+        """Returns the Warlock character of the profile owner."""
+        char: Character = await self.app.rest.fetch_character(
+            self.id, self.type, enums.Class.WARLOCK
+        )
+        return Character(
+            id=char.id,
+            class_type=char.class_type,
+            emblem=char.emblem,
+            emblem_hash=char.emblem_hash,
+            emblem_icon=char.emblem_icon,
+            light=char.light,
+            last_played=char.last_played,
+            level=char.level,
+            member_id=char.member_id,
+            member_type=char.member_type,
+            gender=char.gender,
+            race=char.race,
+            total_played_time=char.total_played_time,
+            title_hash=char.title_hash,
+            stats=char.stats,
+        )
+
+
+@attr.s(kw_only=True, hash=True, weakref_slot=False, slots=True, init=True, eq=True)
+class Profile(ProfileComponentImpl):
     """Represents a Bungie member Profile.
 
     A bungie profile have components, each component has different data,
@@ -62,64 +169,42 @@ class Profile:
             The profile owner's last played date in UTC
     character_ids: `typing.List[builtins.int]`
             A list of the profile's character ids.
-    character: `aiobungie.objects.Character`
-            A character thats only accessiable if the component was set
-            to CHARACTERS from`aiobungie.internal.enums.Component`.
     power_cap: `builtins.int`
             The profile's current season power cap.
     """
 
-    __slots__: typing.Sequence[str] = (
-        "id",
-        "name",
-        "type",
-        "last_played",
-        "character_ids",
-        "character",
-        "is_public",
-        "power_cap",
-        "_character",
-        "_component",
-    )
+    id: int = attr.ib(repr=True, hash=True, eq=False)
+    """Profile's id"""
 
-    id: int
-    name: str
-    type: enums.MembershipType
-    is_public: bool
-    last_played: datetime.datetime
-    character_ids: typing.List[int]
-    character: Character
-    power_cap: int
+    app: impl.RESTful = attr.ib(repr=False, hash=False, eq=False)
 
-    def __init__(
-        self,
-        *,
-        data: ProfileImpl,
-        component: enums.Component,
-        character: typing.Optional[enums.Class] = None,
-    ) -> None:
-        self._component = component
-        self._character = character
-        self.update(data)
+    name: str = attr.ib(repr=True, hash=False, eq=False)
+    """Profile's name."""
 
-    def __repr__(self) -> str:
-        return (
-            f"Profile name={self.name} id={self.id} type={self.type}"
-            f" is_public={self.is_public} last_played={self.last_played}"
-        )
+    type: enums.MembershipType = attr.ib(repr=True, hash=False, eq=False)
+    """Profile's type."""
+
+    is_public: bool = attr.ib(repr=True, hash=False, eq=False)
+    """Profile's privacy status."""
+
+    last_played: datetime.datetime = attr.ib(repr=True, hash=False, eq=False)
+    """Profile's last played Destiny 2 played date."""
+
+    character_ids: typing.List[int] = attr.ib(repr=False, hash=False, eq=False)
+    """A list of the profile's character ids."""
+
+    power_cap: int = attr.ib(repr=False, hash=False, eq=False)
+    """The profile's current seaspn power cap."""
+
+    # Components
 
     def __str__(self) -> str:
         return self.name
 
-    def __eq__(self, o: typing.Any) -> bool:
-        return isinstance(o, Profile) and o.id == self.id
+    def __int__(self) -> int:
+        return int(self.id)
 
-    def __ne__(self, o: typing.Any) -> bool:
-        return not self.__eq__(o)
-
-    def __hash__(self) -> int:
-        return hash(self.id)
-
+    @property
     def as_dict(self) -> typing.Dict[str, typing.Any]:
         """Returns a dict object of the profile,
         This function is useful if you're binding to other REST apis.
@@ -127,7 +212,7 @@ class Profile:
         return dict(
             id=self.id,
             name=self.name,
-            type=self.type,
+            type=str(self.type),
             is_public=self.is_public,
             last_played=self.last_played,
             character_ids=self.character_ids,
@@ -135,56 +220,6 @@ class Profile:
         )
 
     @property
-    def delta_last_played(self) -> str:
+    def human_timedelta(self) -> str:
         """Returns last_played attr but in human delta date."""
         return Time.human_timedelta(self.last_played)
-
-    def predicate(self, data: ProfileImpl) -> typing.Union[PartialProfile, ProfileImpl]:
-        try:
-            inject = data["profile"]["data"]
-        except KeyError:
-            inject = data
-        return inject
-
-    def _factor_character(self, data: CharacterImpl) -> None:
-        if not self._component == enums.Component.CHARECTERS:
-            raise error.ComponentError(
-                f"Component used must be CHARACTERS and not {self._component}."
-            )
-
-        if not self._character:
-            raise ValueError(
-                f"Expected aiobungie.Class in character parameter, Got {self._character}"
-            )
-
-        self.character = Character(char=self._character, data=data)
-
-    def _factor_profile(self, data: typing.Union[PartialProfile, ProfileImpl]) -> None:
-
-        if self._component != enums.Component.PROFILE:
-            raise TypeError(
-                "You must select the profile component to return a profile."
-            )
-
-        if self._component == enums.Component.PROFILE and self._character:
-            log.warning(
-                f"WARNING: The character paramater is not needed for {self._component} component"
-            )
-
-        data = self.predicate(data)  # type: ignore
-
-        self.id = int(data["userInfo"]["membershipId"])
-        self.name = data["userInfo"]["displayName"]
-        self.is_public = data["userInfo"]["isPublic"]
-        self.type = enums.MembershipType(data["userInfo"]["membershipType"])
-        self.last_played = Time.clean_date(str(data["dateLastPlayed"]))
-        self.character_ids = data["characterIds"]
-        self.power_cap = data["currentSeasonRewardPowerCap"]
-
-    def update(self, data: typing.Union[PartialProfile, ProfileImpl]) -> None:
-        data = self.predicate(data)  # type: ignore
-        if self._component is enums.Component.PROFILE:
-            self._factor_profile(data)
-
-        elif self._component is enums.Component.CHARECTERS:
-            self._factor_character(data)  # type: ignore

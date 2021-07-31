@@ -29,14 +29,77 @@ __all__: Sequence[str] = ("Activity",)
 
 from typing import TYPE_CHECKING, Any, Dict, Optional, Sequence
 
-from ..error import HashError
-from ..internal.enums import GameMode, MembershipType, Raid
+from aiobungie.internal import time
+
+from ..internal.enums import GameMode, MembershipType
 
 if TYPE_CHECKING:
     from datetime import datetime
 
+import abc
 
-class Activity:
+import attr
+
+# NOTE: This is still being worked on.
+
+
+@attr.s(hash=True, repr=True, slots=True, weakref_slot=False, eq=True, kw_only=True)
+class PartialActivity(abc.ABC):
+    """A partial interface for any bungie activity"""
+
+    @property
+    @abc.abstractmethod
+    def is_completed(self) -> str:
+        """Returns `Ok` if the activity is completed and 'No' if not."""
+
+    @property
+    @abc.abstractmethod
+    def hash(self) -> int:
+        """The activity's hash."""
+
+    @property
+    @abc.abstractmethod
+    def mode(self) -> GameMode:
+        """Activity's game mode."""
+
+    @property
+    @abc.abstractmethod
+    def duration(self) -> str:
+        """A string of The activity's duration, Example format `7m 42s`"""
+
+    @property
+    @abc.abstractmethod
+    def players_count(self) -> int:
+        """Character's total player count"""
+
+    @property
+    @abc.abstractmethod
+    def when(self) -> Optional[datetime]:
+        """A UTC datetime object of when was the activivy started."""
+
+    @property
+    @abc.abstractmethod
+    def kills(self) -> int:
+        """Activity's total kills."""
+
+    @property
+    @abc.abstractmethod
+    def deaths(self) -> int:
+        """Activity's total deaths."""
+
+    @property
+    @abc.abstractmethod
+    def assists(self) -> int:
+        """Activity's total assists."""
+
+    @property
+    @abc.abstractmethod
+    def kd(self) -> int:
+        """Activity's kill/death ration."""
+
+
+@attr.s(hash=True, repr=True, slots=True, weakref_slot=False, eq=True, kw_only=True)
+class Activity(PartialActivity):
     """Represents a Bungie Activity object.
 
     An activity can be one of `aiobungie.internal.enums.GameMode`.
@@ -47,9 +110,7 @@ class Activity:
             The activity mode or type.
     is_completed: `builtins.str`
             Check if the activity was completed or no.
-    hash: `aiobungie.internal.enums.Raid`
-            This is a special attr used only for raids that returns the raid name.
-    raw_hash: `builtins.int`
+    hash: `builtins.int`
             The activity's hash.
     duration: `builtins.str`
             A string of The activity's duration, Example format `7m 42s`
@@ -69,33 +130,27 @@ class Activity:
             When did the activity occurred in UTC datetime.
     """
 
-    __slots__: Sequence[str] = (
-        "is_completed",
-        "mode",
-        "kills",
-        "deaths",
-        "assists",
-        "kd",
-        "duration",
-        "player_count",
-        "when",
-        "member_type",
-        "hash",
-    )
-    is_completed: str
-    hash: Raid  # Only for raids since we're not going to store everysingle other activity.
-    mode: GameMode
-    kills: int
-    deaths: int
-    when: Optional[datetime]
-    assists: int
-    duration: str
-    player_count: int
-    member_type: MembershipType
-    kd: int
+    is_completed: str = attr.ib(repr=True, hash=False, eq=False)
 
-    def __init__(self, *, data: Any) -> None:
-        self._update(data)
+    hash: int = attr.ib(hash=True, repr=False, eq=False)
+
+    mode: GameMode = attr.ib(hash=False, repr=True)
+
+    kills: int = attr.ib(repr=False, eq=False, hash=False)
+
+    deaths: int = attr.ib(repr=False, eq=False, hash=False)
+
+    when: Optional[datetime] = attr.ib(repr=True, eq=False, hash=False)
+
+    assists: int = attr.ib(repr=False, eq=False, hash=False)
+
+    duration: str = attr.ib(repr=True, eq=False, hash=False)
+
+    player_count: int = attr.ib(repr=False, eq=False, hash=False)
+
+    member_type: MembershipType = attr.ib(repr=False, eq=False, hash=False)
+
+    kd: int = attr.ib(repr=True, eq=False, hash=False)
 
     def as_dict(self) -> Dict[str, Any]:
         """Returns a dict object of the Activity,
@@ -106,14 +161,10 @@ class Activity:
             mode=self.mode,
             duration=self.duration,
             player_cout=self.player_count,
-            when=self.when,
+            when=time.Time.clean_date(str(self.when)),
             kills=self.kills,
             deaths=self.deaths,
             assists=self.assists,
             kd=self.kd,
-            member_type=self.member_type,
-            hash=self.hash or None,
+            member_type=MembershipType(str(self.member_type)),
         )
-
-    def _update(self, data: Dict[str, Any]):
-        ...

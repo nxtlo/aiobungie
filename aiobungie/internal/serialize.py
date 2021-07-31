@@ -24,22 +24,32 @@
 
 from __future__ import annotations
 
-from aiobungie import error
-from aiobungie.internal import Image, Time, enums
-from aiobungie.objects import application as app
-from aiobungie.objects import clans, player, user
-
-from .helpers import JsonDict, JsonList
+from aiohttp.helpers import is_ip_address
 
 __all__: typing.Sequence[str] = ["Deserialize"]
 
+import logging
 import typing
+
+from aiobungie import error, http
+from aiobungie.internal import Image, Time, enums, impl
+from aiobungie.objects import application as app
+from aiobungie.objects import character, clans, player, profile, user
+
+from .helpers import JsonDict, JsonList
+
+_LOG: typing.Final[logging.Logger] = logging.getLogger(__name__)
 
 
 class Deserialize:
     """The base Deserialization class for all aiobungie objects."""
 
     # This is actually inspired by hikari's entity factory.
+
+    __slots__: typing.Sequence[str] = "_rest"
+
+    def __init__(self, rest: impl.RESTful) -> None:
+        self._rest = rest
 
     def deserialize_user(self, payload: JsonList, position: int = 0) -> user.User:
         from_id = payload
@@ -160,4 +170,68 @@ class Deserialize:
             published_at=Time.clean_date(str(payload["firstPublished"])),
             owner=self.deserialize_app_owner(payload["team"][0]["user"]),  # type: ignore
             scope=payload["scope"],
+        )
+
+    def deserialize_character(
+        self, payload: JsonDict, *, chartype: enums.Class
+    ) -> character.Character:
+
+        try:
+            payload = [c for c in payload["characters"]["data"].values()]  # type: ignore
+        except TypeError:
+            raise error.CharacterError(
+                "One of these caused this error, "
+                "The membership type is invalid, "
+                "the character's id or the member's id are wrong "
+                "Please recheck those and retry again."
+            ) from None
+
+        try:
+            payload = payload[int(chartype)]  # type: ignore
+        except IndexError:
+            _LOG.warning(
+                f" Player doesn't have have a {str(chartype)} character. Will return the first character."
+            )
+            payload = payload[0]  # type: ignore
+
+        total_time = Time.format_played(int(payload["minutesPlayedTotal"]), suffix=True)
+
+        return character.Character(
+            id=payload["characterId"],
+            gender=enums.Gender(payload["genderType"]),
+            race=enums.Race(payload["raceType"]),
+            class_type=enums.Class(payload["classType"]),
+            emblem=Image(str(payload["emblemBackgroundPath"])),
+            emblem_icon=Image(str(payload["emblemPath"])),
+            emblem_hash=int(payload["emblemHash"]),
+            last_played=payload["dateLastPlayed"],
+            total_played_time=total_time,
+            member_id=payload["membershipId"],
+            member_type=enums.MembershipType(payload["membershipType"]),
+            level=payload["baseCharacterLevel"],
+            title_hash=payload.get("titleRecordHash", None),
+            light=payload["light"],
+            stats=payload["stats"],
+        )
+
+    def deserialize_profile(self, payload: JsonDict, /) -> profile.Profile:
+
+        payload = payload["profile"]["data"]
+        id = int(payload["userInfo"]["membershipId"])
+        name = payload["userInfo"]["displayName"]
+        is_public = payload["userInfo"]["isPublic"]
+        type = enums.MembershipType(payload["userInfo"]["membershipType"])
+        last_played = Time.clean_date(str(payload["dateLastPlayed"]))
+        character_ids = payload["characterIds"]
+        power_cap = payload["currentSeasonRewardPowerCap"]
+
+        return profile.Profile(
+            id=id,
+            name=name,
+            is_public=is_public,
+            type=type,
+            last_played=last_played,
+            character_ids=character_ids,
+            power_cap=power_cap,
+            app=self._rest,
         )

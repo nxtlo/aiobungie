@@ -25,72 +25,89 @@
 from __future__ import annotations
 
 __all__: Sequence[str] = [
+    "AiobungieError",
     "PlayerNotFound",
-    "HashError",
     "ActivityNotFound",
-    "CharacterTypeError",
-    "JsonError",
     "ClanNotFound",
-    "CharacterNotFound",
+    "CharacterError",
     "NotFound",
     "HTTPException",
     "UserNotFound",
     "ComponentError",
+    "MembershipTypeError",
+    "Forbidden",
+    "Unauthorized",
+    "ResponseError",
 ]
 
 from typing import Sequence, final
 
-
-@final
-class PlayerNotFound(Exception):
-    """Raised when a `aiobungie.objects.Player` is not found."""
+import attr
 
 
-@final
-class HashError(Exception):
-    """Raised when `aiobungie.objects.Activity.hash` used for modes that are not raids."""
+class AiobungieError(Exception):
+    """The base exception class that all other errors inherit from."""
 
 
-@final
-class ActivityNotFound(Exception):
-    """Raised when a `aiobungie.objects.Activity` not found."""
-
-
-@final
-class CharacterTypeError(Exception):
-    """Raised on a character type error."""
-
-
-@final
-class JsonError(Exception):
-    """Raised when an HTTP request did not return a json response."""
-
-
-@final
-class CharacterNotFound(Exception):
-    """Raised when a `aiobungie.objects.Character` not found."""
-
-
-@final
-class HTTPException(Exception):
+@attr.define(auto_exc=True, repr=False, weakref_slot=False)
+class HTTPException(AiobungieError):
     """Exception for handling `aiobungie.http.HTTPClient` requests errors."""
 
-
-@final
-class ClanNotFound(Exception):
-    """Raised when a `aiobungie.objects.Clan` not found."""
+    message: str = attr.field()
 
 
-@final
-class NotFound(Exception):
+class NotFound(AiobungieError):
     """Raised when an unknown request was not found."""
 
 
 @final
-class UserNotFound(Exception):
+class ResponseError(AiobungieError):
+    """Typical Responses error."""
+
+
+@final
+class PlayerNotFound(NotFound):
+    """Raised when a `aiobungie.objects.Player` is not found."""
+
+
+@final
+class Forbidden(HTTPException):
+    """Exception that's raised for when status code 403 occurs."""
+
+
+@final
+class Unauthorized(HTTPException):
+    """Unauthorized access."""
+
+
+@final
+class ActivityNotFound(NotFound):
+    """Raised when a `aiobungie.objects.Activity` not found."""
+
+
+@final
+class CharacterError(HTTPException):
+    """Raised when a `aiobungie.objects.Character` not found."""
+
+
+@final
+class ClanNotFound(NotFound):
+    """Raised when a `aiobungie.objects.Clan` not found."""
+
+
+@final
+class UserNotFound(NotFound):
     """Raised when a `aiobungie.objects.User` not found."""
 
 
 @final
-class ComponentError(Exception):
+class ComponentError(HTTPException):
     """Raised when someone uses the wrong `aiobungie.internal.enums.Component.`"""
+
+
+@final
+class MembershipTypeError(HTTPException):
+    """Raised when the memberhsip type is invalid.
+    or The object you're trying to fetch doesn't have
+    The requested membership type.
+    """

@@ -27,14 +27,12 @@ from __future__ import annotations
 
 __all__: Sequence[str] = ["Clan", "ClanOwner"]
 
-import abc
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence
 
 import attr
 
 from aiobungie import url
 
-from ..error import ClanNotFound
 from ..internal import Image, Time
 from ..internal.enums import MembershipType
 from .user import UserCard
@@ -197,6 +195,10 @@ class Clan:
     def human_timedelta(self) -> str:
         """Returns a human readble date of the clan's creation date."""
         return Time.human_timedelta(self.created_at)
+
+    @property
+    def url(self) -> str:
+        return f"{url.BASE}/en/ClanV2/Index?groupId={self.id}"
 
     @property
     def as_dict(self) -> Dict[str, Any]:

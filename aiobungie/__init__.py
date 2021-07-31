@@ -38,15 +38,15 @@ __all__: Sequence[str] = (
     "Client",
     # error.py
     "PlayerNotFound",
-    "HashError",
     "ActivityNotFound",
-    "CharacterTypeError",
-    "JsonError",
     "ClanNotFound",
-    "CharacterNotFound",
     "NotFound",
     "HTTPException",
     "UserNotFound",
+    "ResponseError",
+    "Unauthorized",
+    "Forbidden",
+    "MembershipTypeError",
     # enums.py
     "GameMode",
     "MembershipType",
@@ -72,7 +72,7 @@ from .client import Client
 from .error import *
 from .internal.enums import *
 
-__version__ = "0.2.5b2"
+__version__ = "0.2.5b3"
 __about__ = "A Pythonic `async`/`await` framework / wrapper for interacting with the Bungie API."
 __author__ = "nxtlo"
 __docs__ = "https://nxtlo.github.io/aiobungie/"

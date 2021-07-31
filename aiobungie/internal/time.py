@@ -28,6 +28,7 @@ from __future__ import annotations
 __all__ = ("Time",)
 
 import calendar
+import math
 from datetime import datetime
 
 from dateutil.parser import parse
@@ -70,7 +71,17 @@ def human_join(seq: list, delim: str = ", ", final: str = "or") -> str:
     return delim.join(seq[:-1]) + f" {final} {seq[-1]}"
 
 
-class Time(object):
+class Time:
+    @staticmethod
+    def format_played(mins: int, *, suffix: bool = False) -> str:
+        """
+        Converts A Bungie's total played time in minutes
+        to a a readble time.
+        """
+        hrs = math.floor(mins // 60)
+        seconds = math.floor(mins % 60)
+        return f"{hrs} hours{' and' if suffix else ''} {seconds} seconds."
+
     @staticmethod
     def from_timestamp(timer: int) -> datetime:
         """

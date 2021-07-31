@@ -25,6 +25,8 @@
 
 from __future__ import annotations
 
+from aiobungie.objects import activity
+
 __all__: Sequence[str] = [
     "Client",
 ]
@@ -37,9 +39,9 @@ from aiobungie.internal import cache as cache_
 from aiobungie.internal import deprecated, impl
 from aiobungie.internal import serialize as serialize_
 
-from . import error, objects
+from . import objects
 from .http import HTTPClient
-from .internal.enums import Class, Component, GameMode, MembershipType
+from .internal.enums import Class, GameMode, MembershipType
 
 
 class Client(impl.BaseClient):
@@ -64,14 +66,14 @@ class Client(impl.BaseClient):
         # This requires a redis server running for usage.
         self._cache = cache_.Cache(loop=self.loop)
 
-        # DeSerilaizing payloads
-        self._serialize = serialize_.Deserialize()
-
         if not token:
             raise ValueError("Missing the API key!")
 
         # HTTP Client
         self.http: HTTPClient = HTTPClient(key=token, loop=self.loop)
+
+        # DeSerilaizing payloads
+        self._serialize = serialize_.Deserialize(self)
 
         self._token = token  # We need the token For Manifest.
         super().__init__()
@@ -89,6 +91,10 @@ class Client(impl.BaseClient):
     @property
     def serialize(self) -> serialize_.Deserialize:
         return self._serialize
+
+    @property
+    def rest(self) -> "Client":
+        return self
 
     def run(self, future: Coroutine[Any, None, None], debug: bool = False) -> None:
         """Runs a Coro function until its complete.
@@ -118,9 +124,30 @@ class Client(impl.BaseClient):
             raise
 
     async def from_path(self, path: str) -> Any:
+        """Raw http search given a valid bungie endpoint.
+
+        Parameters
+        ----------
+        path: `builtins.str`
+            The bungie endpoint or path.
+            A path must look something like this
+            "Destiny2/3/Profile/46111239123/..."
+
+        Returns
+        -------
+        `typing.Any`
+            Any object.
+        """
         return await self.http.static_search(path)
 
     async def fetch_manifest(self) -> Manifest:
+        """Access The bungie Manifest.
+
+        Returns
+        -------
+        `aiobungie.ext.Manifest`
+            A Manifest object.
+        """
         resp = await self.http.fetch_manifest()
         return Manifest(self._token, resp)
 
@@ -143,7 +170,6 @@ class Client(impl.BaseClient):
         data = await self.http.fetch_user(name=name)
         assert isinstance(data, list)
         user_mod = self._serialize.deserialize_user(data, position)
-        # await self._cache.set_user(user_mod)
         return user_mod
 
     async def fetch_user_from_id(self, id: int) -> objects.User:
@@ -164,21 +190,35 @@ class Client(impl.BaseClient):
         """
         payload = await self.http.fetch_user_from_id(id)
         assert isinstance(payload, dict)
-        return self._serialize.deserialize_user(payload)  # type: ignore
         # User and User from id has the same attrs but different return types so we have to ignore here.
+        return self._serialize.deserialize_user(payload)  # type: ignore
 
     async def fetch_profile(
         self,
         memberid: int,
         type: MembershipType,
         /,
-        component: Component,
-        *,
-        character: Optional[Class] = None,
     ) -> objects.Profile:
-        data = await self.http.fetch_profile(memberid, type, component=component)
+        """
+        Fetches a bungie profile.
+
+        See `aiobungie.objects.Profile` to access other components.
+
+        Paramaters
+        ----------
+        memberid: `builtins.int`
+            The member's id.
+        type: `aiobungie.MembershipType`
+            A valid membership type.
+
+        Returns
+        --------
+        `aiobungie.objects.Profile`
+            A bungie member profile.
+        """
+        data = await self.http.fetch_profile(memberid, type)
         assert isinstance(data, dict)
-        return objects.Profile(data=data, component=component, character=character)
+        return self._serialize.deserialize_profile(data)
 
     async def fetch_player(
         self, name: str, type: MembershipType, *, position: int = 0
@@ -224,13 +264,15 @@ class Client(impl.BaseClient):
 
         Raises
         ------
-        `aiobungie.error.CharacterNotFound`
+        `aiobungie.error.CharacterError`
             raised if the Character was not found.
         """
         resp = await self.http.fetch_character(
             memberid=memberid, type=type, character=character
         )
-        return objects.Character(char=character, data=resp)
+        assert isinstance(resp, dict)
+        char_module = self.serialize.deserialize_character(resp, chartype=character)
+        return char_module
 
     async def fetch_vendor_sales(
         self,
@@ -248,7 +290,7 @@ class Client(impl.BaseClient):
         *,
         page: Optional[int] = 1,
         limit: Optional[int] = 1,
-    ) -> objects.Activity:
+    ) -> None:
         """Fetches a Destiny 2 activity for the specified user id and character.
 
         Parameters
@@ -281,17 +323,7 @@ class Client(impl.BaseClient):
         resp = await self.http.fetch_activity(
             userid, charid, mode, memtype=memtype, page=page, limit=limit
         )
-        try:
-            return objects.Activity(data=resp)
-
-        except AttributeError:
-            raise error.HashError(
-                ".hash method is only used for raids, please remove it and use .raw_hash() instead"
-            )
-        except TypeError:
-            raise error.ActivityNotFound(
-                "Error has been occurred during getting your data, maybe the page is out of index or not found?\n"
-            )
+        pass
 
     async def fetch_app(self, appid: int, /) -> objects.Application:
         """Fetches a Bungie Application.

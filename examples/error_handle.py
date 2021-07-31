@@ -46,7 +46,7 @@ class HandleMyErrors:
                     self.id, self.type, aiobungie.Class.TITAN
                 )
 
-        except aiobungie.CharacterNotFound:
+        except aiobungie.CharacterError:
             logging.warn(f"Couldn't find the titan for player id {self.id}")
 
         return titan

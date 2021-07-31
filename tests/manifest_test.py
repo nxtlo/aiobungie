@@ -23,6 +23,7 @@
 """Bungie Manifest tests."""
 
 import asyncio
+
 import aiobungie
 from aiobungie.ext import Manifest
 from tests import config

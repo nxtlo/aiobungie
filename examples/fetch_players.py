@@ -27,7 +27,7 @@
 # You can fetch the bungie profile, Destiny 2 player, Bungie user.
 
 import aiobungie
-from aiobungie.objects import Player, Profile, User
+from aiobungie.objects import Character, Player, Profile, User
 
 client = aiobungie.Client("YOUR_TOKEN_HERE")
 
@@ -44,20 +44,19 @@ async def fetch_me() -> None:
 
     print(fate.name, fate.type, fate.id)
 
-    fate_warlock: Profile = await client.fetch_profile(  # A Bungie user profile.
+    fate_warlock: Character = await client.fetch_character(  # A Bungie user profile.
         fate.id,
         fate.type,
-        component=aiobungie.Component.CHARECTERS,  # The component to return from the profile. We want the characters.
         character=aiobungie.Class.WARLOCK,  # The character we want to return is the warlock.
     )  # you can pass the data from the player's request to fetch the profile.
     # NOTE: you need to use the CHARACTERS component.
 
     print(
-        fate_warlock.character.light,  # You'll actually need to access
-        fate_warlock.character.id,  # The character from `character` variable.
-        fate_warlock.character.race,
-        fate_warlock.character.emblem,
-        fate_warlock.character.url,
+        fate_warlock.light,  # You'll actually need to access
+        fate_warlock.id,  # The character from `character` variable.
+        fate_warlock.race,
+        fate_warlock.emblem,
+        fate_warlock.url,
     )
 
     # Fetch a bungie user. its better to use the `from_id`
@@ -72,6 +71,22 @@ async def fetch_me() -> None:
         user.human_timedelta,
         user.steam_name,  # You can get the steam name if it exists.
     )
+
+    # You can also fetch a profile then get the exact character.
+
+    profile: Profile = await client.fetch_profile(
+        4611686018484639825, aiobungie.MembershipType.STEAM
+    )
+    # Hunter
+    hunter: Character = await profile.hunter()
+
+    # Warlock
+    # warlock: Character = await profile.warlock()
+
+    # Titan
+    # titan: Character = await profile.titan()
+
+    print(hunter.id, hunter.light, hunter.gender, hunter.race is aiobungie.Race.HUMAN)
 
 
 client.run(fetch_me())

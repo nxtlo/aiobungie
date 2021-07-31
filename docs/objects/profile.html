@@ -1,493 +1,33 @@
 <!doctype html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-    <meta name="generator" content="pdoc 0.9.2" />
-    <title>aiobungie.objects.profile API documentation</title>
-    <meta name="description" content="Implementation for a Bungie a Profile." />
-    <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
-    <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
-    <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/atom-one-dark.min.css" crossorigin>
-    <style>
-         :root {
-            --highlight-color: #fe9
-        }
-        
-        .flex {
-            display: flex !important
-        }
-        
-        body {
-            line-height: 1.5em
-        }
-        
-        #content {
-            padding: 20px
-        }
-        
-        #sidebar {
-            padding: 30px;
-            overflow: hidden
-        }
-        
-        #sidebar>*:last-child {
-            margin-bottom: 2cm
-        }
-        
-        #lunr-search {
-            width: 100%;
-            font-size: 1em;
-            padding: 6px 9px 5px 9px;
-            border: 1px solid silver
-        }
-        
-        .http-server-breadcrumbs {
-            font-size: 130%;
-            margin: 0 0 15px 0
-        }
-        
-        #footer {
-            font-size: .75em;
-            padding: 5px 30px;
-            border-top: 1px solid #ddd;
-            text-align: right
-        }
-        
-        #footer p {
-            margin: 0 0 0 1em;
-            display: inline-block
-        }
-        
-        #footer p:last-child {
-            margin-right: 30px
-        }
-        
-        h1,
-        h2,
-        h3,
-        h4,
-        h5 {
-            font-weight: 300
-        }
-        
-        h1 {
-            font-size: 2.5em;
-            line-height: 1.1em
-        }
-        
-        h2 {
-            font-size: 1.75em;
-            margin: 1em 0 .50em 0
-        }
-        
-        h3 {
-            font-size: 1.4em;
-            margin: 25px 0 10px 0
-        }
-        
-        h4 {
-            margin: 0;
-            font-size: 105%
-        }
-        
-        h1:target,
-        h2:target,
-        h3:target,
-        h4:target,
-        h5:target,
-        h6:target {
-            background: var(--highlight-color);
-            padding: .2em 0
-        }
-        
-        a {
-            color: #058;
-            text-decoration: none;
-            transition: color .3s ease-in-out
-        }
-        
-        a:hover {
-            color: #e82
-        }
-        
-        .title code {
-            font-weight: bold
-        }
-        
-        h2[id^="header-"] {
-            margin-top: 2em
-        }
-        
-        .ident {
-            color: #900
-        }
-        
-        pre code {
-            background: #f8f8f8;
-            font-size: .8em;
-            line-height: 1.4em
-        }
-        
-        code {
-            background: #f2f2f1;
-            padding: 1px 4px;
-            overflow-wrap: break-word
-        }
-        
-        h1 code {
-            background: transparent
-        }
-        
-        pre {
-            background: #f8f8f8;
-            border: 0;
-            border-top: 1px solid #ccc;
-            border-bottom: 1px solid #ccc;
-            margin: 1em 0;
-            padding: 1ex
-        }
-        
-        #http-server-module-list {
-            display: flex;
-            flex-flow: column
-        }
-        
-        #http-server-module-list div {
-            display: flex
-        }
-        
-        #http-server-module-list dt {
-            min-width: 10%
-        }
-        
-        #http-server-module-list p {
-            margin-top: 0
-        }
-        
-        .toc ul,
-        #index {
-            list-style-type: none;
-            margin: 0;
-            padding: 0
-        }
-        
-        #index code {
-            background: transparent
-        }
-        
-        #index h3 {
-            border-bottom: 1px solid #ddd
-        }
-        
-        #index ul {
-            padding: 0
-        }
-        
-        #index h4 {
-            margin-top: .6em;
-            font-weight: bold
-        }
-        
-        @media (min-width:200ex) {
-            #index .two-column {
-                column-count: 2
-            }
-        }
-        
-        @media (min-width:300ex) {
-            #index .two-column {
-                column-count: 3
-            }
-        }
-        
-        dl {
-            margin-bottom: 2em
-        }
-        
-        dl dl:last-child {
-            margin-bottom: 4em
-        }
-        
-        dd {
-            margin: 0 0 1em 3em
-        }
-        
-        #header-classes+dl>dd {
-            margin-bottom: 3em
-        }
-        
-        dd dd {
-            margin-left: 2em
-        }
-        
-        dd p {
-            margin: 10px 0
-        }
-        
-        .name {
-            background: #eee;
-            font-weight: bold;
-            font-size: .85em;
-            padding: 5px 10px;
-            display: inline-block;
-            min-width: 40%
-        }
-        
-        .name:hover {
-            background: #e0e0e0
-        }
-        
-        dt:target .name {
-            background: var(--highlight-color)
-        }
-        
-        .name>span:first-child {
-            white-space: nowrap
-        }
-        
-        .name.class>span:nth-child(2) {
-            margin-left: .4em
-        }
-        
-        .inherited {
-            color: #999;
-            border-left: 5px solid #eee;
-            padding-left: 1em
-        }
-        
-        .inheritance em {
-            font-style: normal;
-            font-weight: bold
-        }
-        
-        .desc h2 {
-            font-weight: 400;
-            font-size: 1.25em
-        }
-        
-        .desc h3 {
-            font-size: 1em
-        }
-        
-        .desc dt code {
-            background: inherit
-        }
-        
-        .source summary,
-        .git-link-div {
-            color: #666;
-            text-align: right;
-            font-weight: 400;
-            font-size: .8em;
-            text-transform: uppercase
-        }
-        
-        .source summary>* {
-            white-space: nowrap;
-            cursor: pointer
-        }
-        
-        .git-link {
-            color: inherit;
-            margin-left: 1em
-        }
-        
-        .source pre {
-            max-height: 500px;
-            overflow: auto;
-            margin: 0
-        }
-        
-        .source pre code {
-            font-size: 12px;
-            overflow: visible
-        }
-        
-        .hlist {
-            list-style: none
-        }
-        
-        .hlist li {
-            display: inline
-        }
-        
-        .hlist li:after {
-            content: ',\2002'
-        }
-        
-        .hlist li:last-child:after {
-            content: none
-        }
-        
-        .hlist .hlist {
-            display: inline;
-            padding-left: 1em
-        }
-        
-        img {
-            max-width: 100%
-        }
-        
-        td {
-            padding: 0 .5em
-        }
-        
-        .admonition {
-            padding: .1em .5em;
-            margin-bottom: 1em
-        }
-        
-        .admonition-title {
-            font-weight: bold
-        }
-        
-        .admonition.note,
-        .admonition.info,
-        .admonition.important {
-            background: #aef
-        }
-        
-        .admonition.todo,
-        .admonition.versionadded,
-        .admonition.tip,
-        .admonition.hint {
-            background: #dfd
-        }
-        
-        .admonition.warning,
-        .admonition.versionchanged,
-        .admonition.deprecated {
-            background: #fd4
-        }
-        
-        .admonition.error,
-        .admonition.danger,
-        .admonition.caution {
-            background: lightpink
-        }
-    </style>
-    <style media="screen and (min-width: 700px)">
-        @media screen and (min-width:700px) {
-            #sidebar {
-                width: 30%;
-                height: 100vh;
-                overflow: auto;
-                position: sticky;
-                top: 0
-            }
-            #content {
-                width: 70%;
-                max-width: 100ch;
-                padding: 3em 4em;
-                border-left: 1px solid #ddd
-            }
-            pre code {
-                font-size: 1em
-            }
-            .item .name {
-                font-size: 1em
-            }
-            main {
-                display: flex;
-                flex-direction: row-reverse;
-                justify-content: flex-end
-            }
-            .toc ul ul,
-            #index ul {
-                padding-left: 1.5em
-            }
-            .toc>ul>li {
-                margin-top: .5em
-            }
-        }
-    </style>
-    <style media="print">
-        @media print {
-            #sidebar h1 {
-                page-break-before: always
-            }
-            .source {
-                display: none
-            }
-        }
-        
-        @media print {
-            * {
-                background: transparent !important;
-                color: #000 !important;
-                box-shadow: none !important;
-                text-shadow: none !important
-            }
-            a[href]:after {
-                content: " (" attr(href) ")";
-                font-size: 90%
-            }
-            a[href][title]:after {
-                content: none
-            }
-            abbr[title]:after {
-                content: " (" attr(title) ")"
-            }
-            .ir a:after,
-            a[href^="javascript:"]:after,
-            a[href^="#"]:after {
-                content: ""
-            }
-            pre,
-            blockquote {
-                border: 1px solid #999;
-                page-break-inside: avoid
-            }
-            thead {
-                display: table-header-group
-            }
-            tr,
-            img {
-                page-break-inside: avoid
-            }
-            img {
-                max-width: 100% !important
-            }
-            @page {
-                margin: 0.5cm
-            }
-            p,
-            h2,
-            h3 {
-                orphans: 3;
-                widows: 3
-            }
-            h1,
-            h2,
-            h3,
-            h4,
-            h5,
-            h6 {
-                page-break-after: avoid
-            }
-        }
-    </style>
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
-    <script>
-        window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())
-    </script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>aiobungie.objects.profile API documentation</title>
+<meta name="description" content="Implementation for a Bungie a Profile." />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/atom-one-dark.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}#lunr-search{width:100%;font-size:1em;padding:6px 9px 5px 9px;border:1px solid silver}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
 </head>
-
 <body>
-    <main>
-        <article id="content">
-            <header>
-                <h1 class="title">Module <code>aiobungie.objects.profile</code></h1>
-            </header>
-            <section id="section-intro">
-                <p>Implementation for a Bungie a Profile.</p>
-                <details class="source">
-                    <summary>
-                        <span>Expand source code</span>
-                    </summary>
-                    <pre><code class="python"># MIT License
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>aiobungie.objects.profile</code></h1>
+</header>
+<section id="section-intro">
+<p>Implementation for a Bungie a Profile.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python"># MIT License
 #
 # Copyright (c) 2020 - Present nxtlo
 #
@@ -515,24 +55,130 @@ from __future__ import annotations
 
 __all__: typing.Sequence[str] = (&#34;Profile&#34;,)
 
+import abc
 import datetime
 import logging
 import typing
 
-from aiobungie import error
-from aiobungie.internal import Time, enums
+import attr
+
+from aiobungie.internal import Time, enums, impl
 
 from .character import Character
-
-if typing.TYPE_CHECKING:
-    from ..types.character import CharacterImpl
-    from ..types.profile import PartialProfile, ProfileImpl
-
 
 log: typing.Final[logging.Logger] = logging.getLogger(__name__)
 
 
-class Profile:
+@attr.s(kw_only=True, hash=True, weakref_slot=False, slots=True, init=True, eq=True)
+class ProfileComponentImpl(abc.ABC):
+    @property
+    @abc.abstractmethod
+    def app(self) -&gt; impl.RESTful:
+        &#34;&#34;&#34;A Client that we may use for making other requests.&#34;&#34;&#34;
+
+    @property
+    @abc.abstractmethod
+    def name(self) -&gt; str:
+        &#34;&#34;&#34;Profile&#39;s name&#34;&#34;&#34;
+
+    @property
+    @abc.abstractmethod
+    def type(self) -&gt; enums.MembershipType:
+        &#34;&#34;&#34;Profile&#39;s membership type.&#34;&#34;&#34;
+
+    @property
+    @abc.abstractmethod
+    def last_played(self) -&gt; datetime.datetime:
+        &#34;&#34;&#34;The profile user&#39;s last played date time.&#34;&#34;&#34;
+
+    @property
+    @abc.abstractmethod
+    def is_public(self) -&gt; bool:
+        &#34;&#34;&#34;Profile&#39;s privacy status.&#34;&#34;&#34;
+
+    @property
+    @abc.abstractmethod
+    def character_ids(self) -&gt; typing.List[int]:
+        &#34;&#34;&#34;A list of the profile&#39;s character ids.&#34;&#34;&#34;
+
+    @property
+    @abc.abstractmethod
+    def id(self) -&gt; int:
+        &#34;&#34;&#34;The profile&#39;s id.&#34;&#34;&#34;
+
+    async def titan(self) -&gt; Character:
+        &#34;&#34;&#34;Returns the titan character of the profile owner.&#34;&#34;&#34;
+        # We&#39;re ignoring the types for the character since
+        char: Character = await self.app.rest.fetch_character(
+            int(self.id), self.type, enums.Class.TITAN
+        )
+        return Character(
+            id=char.id,
+            class_type=char.class_type,
+            emblem=char.emblem,
+            emblem_hash=char.emblem_hash,
+            emblem_icon=char.emblem_icon,
+            light=char.light,
+            last_played=char.last_played,
+            level=char.level,
+            member_id=char.member_id,
+            member_type=char.member_type,
+            gender=char.gender,
+            race=char.race,
+            total_played_time=char.total_played_time,
+            title_hash=char.title_hash,
+            stats=char.stats,
+        )
+
+    async def hunter(self) -&gt; Character:
+        &#34;&#34;&#34;Returns the hunter character of the profile owner.&#34;&#34;&#34;
+        char: Character = await self.app.rest.fetch_character(
+            self.id, self.type, enums.Class.HUNTER
+        )
+        return Character(
+            id=char.id,
+            class_type=char.class_type,
+            emblem=char.emblem,
+            emblem_hash=char.emblem_hash,
+            emblem_icon=char.emblem_icon,
+            light=char.light,
+            last_played=char.last_played,
+            level=char.level,
+            member_id=char.member_id,
+            member_type=char.member_type,
+            gender=char.gender,
+            race=char.race,
+            total_played_time=char.total_played_time,
+            title_hash=char.title_hash,
+            stats=char.stats,
+        )
+
+    async def warlock(self) -&gt; Character:
+        &#34;&#34;&#34;Returns the Warlock character of the profile owner.&#34;&#34;&#34;
+        char: Character = await self.app.rest.fetch_character(
+            self.id, self.type, enums.Class.WARLOCK
+        )
+        return Character(
+            id=char.id,
+            class_type=char.class_type,
+            emblem=char.emblem,
+            emblem_hash=char.emblem_hash,
+            emblem_icon=char.emblem_icon,
+            light=char.light,
+            last_played=char.last_played,
+            level=char.level,
+            member_id=char.member_id,
+            member_type=char.member_type,
+            gender=char.gender,
+            race=char.race,
+            total_played_time=char.total_played_time,
+            title_hash=char.title_hash,
+            stats=char.stats,
+        )
+
+
+@attr.s(kw_only=True, hash=True, weakref_slot=False, slots=True, init=True, eq=True)
+class Profile(ProfileComponentImpl):
     &#34;&#34;&#34;Represents a Bungie member Profile.
 
     A bungie profile have components, each component has different data,
@@ -552,64 +198,42 @@ class Profile:
             The profile owner&#39;s last played date in UTC
     character_ids: `typing.List[builtins.int]`
             A list of the profile&#39;s character ids.
-    character: `aiobungie.objects.Character`
-            A character thats only accessiable if the component was set
-            to CHARACTERS from`aiobungie.internal.enums.Component`.
     power_cap: `builtins.int`
             The profile&#39;s current season power cap.
     &#34;&#34;&#34;
 
-    __slots__: typing.Sequence[str] = (
-        &#34;id&#34;,
-        &#34;name&#34;,
-        &#34;type&#34;,
-        &#34;last_played&#34;,
-        &#34;character_ids&#34;,
-        &#34;character&#34;,
-        &#34;is_public&#34;,
-        &#34;power_cap&#34;,
-        &#34;_character&#34;,
-        &#34;_component&#34;,
-    )
+    id: int = attr.ib(repr=True, hash=True, eq=False)
+    &#34;&#34;&#34;Profile&#39;s id&#34;&#34;&#34;
 
-    id: int
-    name: str
-    type: enums.MembershipType
-    is_public: bool
-    last_played: datetime.datetime
-    character_ids: typing.List[int]
-    character: Character
-    power_cap: int
+    app: impl.RESTful = attr.ib(repr=False, hash=False, eq=False)
 
-    def __init__(
-        self,
-        *,
-        data: ProfileImpl,
-        component: enums.Component,
-        character: typing.Optional[enums.Class] = None,
-    ) -&gt; None:
-        self._component = component
-        self._character = character
-        self.update(data)
+    name: str = attr.ib(repr=True, hash=False, eq=False)
+    &#34;&#34;&#34;Profile&#39;s name.&#34;&#34;&#34;
 
-    def __repr__(self) -&gt; str:
-        return (
-            f&#34;Profile name={self.name} id={self.id} type={self.type}&#34;
-            f&#34; is_public={self.is_public} last_played={self.last_played}&#34;
-        )
+    type: enums.MembershipType = attr.ib(repr=True, hash=False, eq=False)
+    &#34;&#34;&#34;Profile&#39;s type.&#34;&#34;&#34;
+
+    is_public: bool = attr.ib(repr=True, hash=False, eq=False)
+    &#34;&#34;&#34;Profile&#39;s privacy status.&#34;&#34;&#34;
+
+    last_played: datetime.datetime = attr.ib(repr=True, hash=False, eq=False)
+    &#34;&#34;&#34;Profile&#39;s last played Destiny 2 played date.&#34;&#34;&#34;
+
+    character_ids: typing.List[int] = attr.ib(repr=False, hash=False, eq=False)
+    &#34;&#34;&#34;A list of the profile&#39;s character ids.&#34;&#34;&#34;
+
+    power_cap: int = attr.ib(repr=False, hash=False, eq=False)
+    &#34;&#34;&#34;The profile&#39;s current seaspn power cap.&#34;&#34;&#34;
+
+    # Components
 
     def __str__(self) -&gt; str:
         return self.name
 
-    def __eq__(self, o: typing.Any) -&gt; bool:
-        return isinstance(o, Profile) and o.id == self.id
+    def __int__(self) -&gt; int:
+        return int(self.id)
 
-    def __ne__(self, o: typing.Any) -&gt; bool:
-        return not self.__eq__(o)
-
-    def __hash__(self) -&gt; int:
-        return hash(self.id)
-
+    @property
     def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
         &#34;&#34;&#34;Returns a dict object of the profile,
         This function is useful if you&#39;re binding to other REST apis.
@@ -617,7 +241,7 @@ class Profile:
         return dict(
             id=self.id,
             name=self.name,
-            type=self.type,
+            type=str(self.type),
             is_public=self.is_public,
             last_played=self.last_played,
             character_ids=self.character_ids,
@@ -625,101 +249,52 @@ class Profile:
         )
 
     @property
-    def delta_last_played(self) -&gt; str:
+    def human_timedelta(self) -&gt; str:
         &#34;&#34;&#34;Returns last_played attr but in human delta date.&#34;&#34;&#34;
-        return Time.human_timedelta(self.last_played)
-
-    def predicate(self, data: ProfileImpl) -&gt; typing.Union[PartialProfile, ProfileImpl]:
-        try:
-            inject = data[&#34;profile&#34;][&#34;data&#34;]
-        except KeyError:
-            inject = data
-        return inject
-
-    def _factor_character(self, data: CharacterImpl) -&gt; None:
-        if not self._component == enums.Component.CHARECTERS:
-            raise error.ComponentError(
-                f&#34;Component used must be CHARACTERS and not {self._component}.&#34;
-            )
-
-        if not self._character:
-            raise ValueError(
-                f&#34;Expected aiobungie.Class in character parameter, Got {self._character}&#34;
-            )
-
-        self.character = Character(char=self._character, data=data)
-
-    def _factor_profile(self, data: typing.Union[PartialProfile, ProfileImpl]) -&gt; None:
-
-        if self._component != enums.Component.PROFILE:
-            raise TypeError(
-                &#34;You must select the profile component to return a profile.&#34;
-            )
-
-        if self._component == enums.Component.PROFILE and self._character:
-            log.warning(
-                f&#34;WARNING: The character paramater is not needed for {self._component} component&#34;
-            )
-
-        data = self.predicate(data)  # type: ignore
-
-        self.id = int(data[&#34;userInfo&#34;][&#34;membershipId&#34;])
-        self.name = data[&#34;userInfo&#34;][&#34;displayName&#34;]
-        self.is_public = data[&#34;userInfo&#34;][&#34;isPublic&#34;]
-        self.type = enums.MembershipType(data[&#34;userInfo&#34;][&#34;membershipType&#34;])
-        self.last_played = Time.clean_date(str(data[&#34;dateLastPlayed&#34;]))
-        self.character_ids = data[&#34;characterIds&#34;]
-        self.power_cap = data[&#34;currentSeasonRewardPowerCap&#34;]
-
-    def update(self, data: typing.Union[PartialProfile, ProfileImpl]) -&gt; None:
-        data = self.predicate(data)  # type: ignore
-        if self._component is enums.Component.PROFILE:
-            self._factor_profile(data)
-
-        elif self._component is enums.Component.CHARECTERS:
-            self._factor_character(data)  # type: ignore</code></pre>
-                </details>
-            </section>
-            <section>
-            </section>
-            <section>
-            </section>
-            <section>
-            </section>
-            <section>
-                <h2 class="section-title" id="header-classes">Classes</h2>
-                <dl>
-                    <dt id="aiobungie.objects.profile.Profile"><code class="flex name class">
+        return Time.human_timedelta(self.last_played)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="aiobungie.objects.profile.Profile"><code class="flex name class">
 <span>class <span class="ident">Profile</span></span>
-<span>(</span><span>*, data: ProfileImpl, component: enums.Component, character: typing.Optional[enums.Class] = None)</span>
+<span>(</span><span>*, id: int, app: impl.RESTful, name: str, type: enums.MembershipType, is_public: bool, last_played: datetime.datetime, character_ids: typing.List[int], power_cap: int)</span>
 </code></dt>
-                    <dd>
-                        <div class="desc">
-                            <p>Represents a Bungie member Profile.</p>
-                            <p>A bungie profile have components, each component has different data, for an example, The profile component returns the a <code><a title="aiobungie.objects.Profile" href="index.html#aiobungie.objects.Profile">Profile</a></code>                                object which's this class, the character component returns <code><a title="aiobungie.objects.Character" href="index.html#aiobungie.objects.Character">Character</a></code> object, etc. See <code><a title="aiobungie.internal.enums.Component" href="../internal/enums.html#aiobungie.internal.enums.Component">Component</a></code>                                to see the current available components.</p>
-                            <h2 id="attributes">Attributes</h2>
-                            <dl>
-                                <dt><strong><code>id</code></strong> :&ensp;<code>builtins.int</code></dt>
-                                <dd>Profile's id</dd>
-                                <dt><strong><code>name</code></strong> :&ensp;<code>builtins.str</code></dt>
-                                <dd>Profile's name</dd>
-                                <dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.internal.enums.MembershipType" href="../internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
-                                <dd>The profile's membership type.</dd>
-                                <dt><strong><code>last_played</code></strong> :&ensp;<code>datetime.datetime</code></dt>
-                                <dd>The profile owner's last played date in UTC</dd>
-                                <dt><strong><code>character_ids</code></strong> :&ensp;<code>typing.List[builtins.int]</code></dt>
-                                <dd>A list of the profile's character ids.</dd>
-                                <dt><strong><code>character</code></strong> :&ensp;<code><a title="aiobungie.objects.Character" href="index.html#aiobungie.objects.Character">Character</a></code></dt>
-                                <dd>A character thats only accessiable if the component was set to CHARACTERS from<code><a title="aiobungie.internal.enums.Component" href="../internal/enums.html#aiobungie.internal.enums.Component">Component</a></code>.</dd>
-                                <dt><strong><code>power_cap</code></strong> :&ensp;<code>builtins.int</code></dt>
-                                <dd>The profile's current season power cap.</dd>
-                            </dl>
-                        </div>
-                        <details class="source">
-                            <summary>
-                                <span>Expand source code</span>
-                            </summary>
-                            <pre><code class="python">class Profile:
+<dd>
+<div class="desc"><p>Represents a Bungie member Profile.</p>
+<p>A bungie profile have components, each component has different data,
+for an example, The profile component returns the a <code><a title="aiobungie.objects.Profile" href="index.html#aiobungie.objects.Profile">Profile</a></code>
+object which's this class, the character component returns <code><a title="aiobungie.objects.Character" href="index.html#aiobungie.objects.Character">Character</a></code> object, etc.
+See <code><a title="aiobungie.internal.enums.Component" href="../internal/enums.html#aiobungie.internal.enums.Component">Component</a></code> to see the current available components.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>id</code></strong> :&ensp;<code>builtins.int</code></dt>
+<dd>Profile's id</dd>
+<dt><strong><code>name</code></strong> :&ensp;<code>builtins.str</code></dt>
+<dd>Profile's name</dd>
+<dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.internal.enums.MembershipType" href="../internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
+<dd>The profile's membership type.</dd>
+<dt><strong><code>last_played</code></strong> :&ensp;<code>datetime.datetime</code></dt>
+<dd>The profile owner's last played date in UTC</dd>
+<dt><strong><code>character_ids</code></strong> :&ensp;<code>typing.List[builtins.int]</code></dt>
+<dd>A list of the profile's character ids.</dd>
+<dt><strong><code>power_cap</code></strong> :&ensp;<code>builtins.int</code></dt>
+<dd>The profile's current season power cap.</dd>
+</dl>
+<p>Method generated by attrs for class Profile.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@attr.s(kw_only=True, hash=True, weakref_slot=False, slots=True, init=True, eq=True)
+class Profile(ProfileComponentImpl):
     &#34;&#34;&#34;Represents a Bungie member Profile.
 
     A bungie profile have components, each component has different data,
@@ -739,64 +314,42 @@ class Profile:
             The profile owner&#39;s last played date in UTC
     character_ids: `typing.List[builtins.int]`
             A list of the profile&#39;s character ids.
-    character: `aiobungie.objects.Character`
-            A character thats only accessiable if the component was set
-            to CHARACTERS from`aiobungie.internal.enums.Component`.
     power_cap: `builtins.int`
             The profile&#39;s current season power cap.
     &#34;&#34;&#34;
 
-    __slots__: typing.Sequence[str] = (
-        &#34;id&#34;,
-        &#34;name&#34;,
-        &#34;type&#34;,
-        &#34;last_played&#34;,
-        &#34;character_ids&#34;,
-        &#34;character&#34;,
-        &#34;is_public&#34;,
-        &#34;power_cap&#34;,
-        &#34;_character&#34;,
-        &#34;_component&#34;,
-    )
+    id: int = attr.ib(repr=True, hash=True, eq=False)
+    &#34;&#34;&#34;Profile&#39;s id&#34;&#34;&#34;
 
-    id: int
-    name: str
-    type: enums.MembershipType
-    is_public: bool
-    last_played: datetime.datetime
-    character_ids: typing.List[int]
-    character: Character
-    power_cap: int
+    app: impl.RESTful = attr.ib(repr=False, hash=False, eq=False)
 
-    def __init__(
-        self,
-        *,
-        data: ProfileImpl,
-        component: enums.Component,
-        character: typing.Optional[enums.Class] = None,
-    ) -&gt; None:
-        self._component = component
-        self._character = character
-        self.update(data)
+    name: str = attr.ib(repr=True, hash=False, eq=False)
+    &#34;&#34;&#34;Profile&#39;s name.&#34;&#34;&#34;
 
-    def __repr__(self) -&gt; str:
-        return (
-            f&#34;Profile name={self.name} id={self.id} type={self.type}&#34;
-            f&#34; is_public={self.is_public} last_played={self.last_played}&#34;
-        )
+    type: enums.MembershipType = attr.ib(repr=True, hash=False, eq=False)
+    &#34;&#34;&#34;Profile&#39;s type.&#34;&#34;&#34;
+
+    is_public: bool = attr.ib(repr=True, hash=False, eq=False)
+    &#34;&#34;&#34;Profile&#39;s privacy status.&#34;&#34;&#34;
+
+    last_played: datetime.datetime = attr.ib(repr=True, hash=False, eq=False)
+    &#34;&#34;&#34;Profile&#39;s last played Destiny 2 played date.&#34;&#34;&#34;
+
+    character_ids: typing.List[int] = attr.ib(repr=False, hash=False, eq=False)
+    &#34;&#34;&#34;A list of the profile&#39;s character ids.&#34;&#34;&#34;
+
+    power_cap: int = attr.ib(repr=False, hash=False, eq=False)
+    &#34;&#34;&#34;The profile&#39;s current seaspn power cap.&#34;&#34;&#34;
+
+    # Components
 
     def __str__(self) -&gt; str:
         return self.name
 
-    def __eq__(self, o: typing.Any) -&gt; bool:
-        return isinstance(o, Profile) and o.id == self.id
+    def __int__(self) -&gt; int:
+        return int(self.id)
 
-    def __ne__(self, o: typing.Any) -&gt; bool:
-        return not self.__eq__(o)
-
-    def __hash__(self) -&gt; int:
-        return hash(self.id)
-
+    @property
     def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
         &#34;&#34;&#34;Returns a dict object of the profile,
         This function is useful if you&#39;re binding to other REST apis.
@@ -804,7 +357,7 @@ class Profile:
         return dict(
             id=self.id,
             name=self.name,
-            type=self.type,
+            type=str(self.type),
             is_public=self.is_public,
             last_played=self.last_played,
             character_ids=self.character_ids,
@@ -812,287 +365,172 @@ class Profile:
         )
 
     @property
-    def delta_last_played(self) -&gt; str:
+    def human_timedelta(self) -&gt; str:
         &#34;&#34;&#34;Returns last_played attr but in human delta date.&#34;&#34;&#34;
-        return Time.human_timedelta(self.last_played)
-
-    def predicate(self, data: ProfileImpl) -&gt; typing.Union[PartialProfile, ProfileImpl]:
-        try:
-            inject = data[&#34;profile&#34;][&#34;data&#34;]
-        except KeyError:
-            inject = data
-        return inject
-
-    def _factor_character(self, data: CharacterImpl) -&gt; None:
-        if not self._component == enums.Component.CHARECTERS:
-            raise error.ComponentError(
-                f&#34;Component used must be CHARACTERS and not {self._component}.&#34;
-            )
-
-        if not self._character:
-            raise ValueError(
-                f&#34;Expected aiobungie.Class in character parameter, Got {self._character}&#34;
-            )
-
-        self.character = Character(char=self._character, data=data)
-
-    def _factor_profile(self, data: typing.Union[PartialProfile, ProfileImpl]) -&gt; None:
-
-        if self._component != enums.Component.PROFILE:
-            raise TypeError(
-                &#34;You must select the profile component to return a profile.&#34;
-            )
-
-        if self._component == enums.Component.PROFILE and self._character:
-            log.warning(
-                f&#34;WARNING: The character paramater is not needed for {self._component} component&#34;
-            )
-
-        data = self.predicate(data)  # type: ignore
-
-        self.id = int(data[&#34;userInfo&#34;][&#34;membershipId&#34;])
-        self.name = data[&#34;userInfo&#34;][&#34;displayName&#34;]
-        self.is_public = data[&#34;userInfo&#34;][&#34;isPublic&#34;]
-        self.type = enums.MembershipType(data[&#34;userInfo&#34;][&#34;membershipType&#34;])
-        self.last_played = Time.clean_date(str(data[&#34;dateLastPlayed&#34;]))
-        self.character_ids = data[&#34;characterIds&#34;]
-        self.power_cap = data[&#34;currentSeasonRewardPowerCap&#34;]
-
-    def update(self, data: typing.Union[PartialProfile, ProfileImpl]) -&gt; None:
-        data = self.predicate(data)  # type: ignore
-        if self._component is enums.Component.PROFILE:
-            self._factor_profile(data)
-
-        elif self._component is enums.Component.CHARECTERS:
-            self._factor_character(data)  # type: ignore</code></pre>
-                        </details>
-                        <h3>Instance variables</h3>
-                        <dl>
-                            <dt id="aiobungie.objects.profile.Profile.character"><code class="name">var <span class="ident">character</span> : <a title="aiobungie.objects.character.Character" href="character.html#aiobungie.objects.character.Character">Character</a></code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Return an attribute of instance, which is of type owner.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.objects.profile.Profile.character_ids"><code class="name">var <span class="ident">character_ids</span> : List[int]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Return an attribute of instance, which is of type owner.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.objects.profile.Profile.delta_last_played"><code class="name">var <span class="ident">delta_last_played</span> : str</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Returns last_played attr but in human delta date.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def delta_last_played(self) -&gt; str:
-    &#34;&#34;&#34;Returns last_played attr but in human delta date.&#34;&#34;&#34;
-    return Time.human_timedelta(self.last_played)</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.objects.profile.Profile.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Return an attribute of instance, which is of type owner.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.objects.profile.Profile.is_public"><code class="name">var <span class="ident">is_public</span> : bool</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Return an attribute of instance, which is of type owner.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.objects.profile.Profile.last_played"><code class="name">var <span class="ident">last_played</span> : datetime.datetime</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Return an attribute of instance, which is of type owner.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.objects.profile.Profile.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Return an attribute of instance, which is of type owner.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.objects.profile.Profile.power_cap"><code class="name">var <span class="ident">power_cap</span> : int</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Return an attribute of instance, which is of type owner.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.objects.profile.Profile.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="../internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Return an attribute of instance, which is of type owner.</p>
-                                </div>
-                            </dd>
-                        </dl>
-                        <h3>Methods</h3>
-                        <dl>
-                            <dt id="aiobungie.objects.profile.Profile.as_dict"><code class="name flex">
-<span>def <span class="ident">as_dict</span></span>(<span>self) ‑> Dict[str, Any]</span>
-</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Returns a dict object of the profile, This function is useful if you're binding to other REST apis.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
+        return Time.human_timedelta(self.last_played)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>aiobungie.objects.profile.ProfileComponentImpl</li>
+<li>abc.ABC</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="aiobungie.objects.profile.Profile.app"><code class="name">var <span class="ident">app</span> : <a title="aiobungie.internal.impl.RESTful" href="../internal/impl.html#aiobungie.internal.impl.RESTful">RESTful</a></code></dt>
+<dd>
+<div class="desc"><p>A Client that we may use for making other requests.</p></div>
+</dd>
+<dt id="aiobungie.objects.profile.Profile.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
+<dd>
+<div class="desc"><p>Returns a dict object of the profile,
+This function is useful if you're binding to other REST apis.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
     &#34;&#34;&#34;Returns a dict object of the profile,
     This function is useful if you&#39;re binding to other REST apis.
     &#34;&#34;&#34;
     return dict(
         id=self.id,
         name=self.name,
-        type=self.type,
+        type=str(self.type),
         is_public=self.is_public,
         last_played=self.last_played,
         character_ids=self.character_ids,
         power_cap=self.power_cap,
     )</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.objects.profile.Profile.predicate"><code class="name flex">
-<span>def <span class="ident">predicate</span></span>(<span>self, data: ProfileImpl) ‑> typing.Union[PartialProfile, ProfileImpl]</span>
-</code></dt>
-                            <dd>
-                                <div class="desc"></div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">def predicate(self, data: ProfileImpl) -&gt; typing.Union[PartialProfile, ProfileImpl]:
-    try:
-        inject = data[&#34;profile&#34;][&#34;data&#34;]
-    except KeyError:
-        inject = data
-    return inject</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.objects.profile.Profile.update"><code class="name flex">
-<span>def <span class="ident">update</span></span>(<span>self, data: typing.Union[PartialProfile, ProfileImpl]) ‑> None</span>
-</code></dt>
-                            <dd>
-                                <div class="desc"></div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">def update(self, data: typing.Union[PartialProfile, ProfileImpl]) -&gt; None:
-    data = self.predicate(data)  # type: ignore
-    if self._component is enums.Component.PROFILE:
-        self._factor_profile(data)
-
-    elif self._component is enums.Component.CHARECTERS:
-        self._factor_character(data)  # type: ignore</code></pre>
-                                </details>
-                            </dd>
-                        </dl>
-                    </dd>
-                </dl>
-            </section>
-        </article>
-        <nav id="sidebar">
-            <form>
-                <input id="lunr-search" name="q" placeholder="🔎 Search ..." aria-label="Search" disabled minlength="2">
-            </form>
-            <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.3/tingle.min.css" integrity="sha512-j1u8eUJ4f23xPPxwOrLUPQaCD2dwzNqqmDDcWS4deWsMv2ohLqmXXuP3hU7g8TyzbMSakP/mMqoNBYWj8AEIFg==" crossorigin>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.3/tingle.min.js" integrity="sha512-plGUER9JkeEWPPqQBE4sdLqBoQug5Ap+BCGMc7bJ8BXkm+VVj6QzkpBz5Yv2yPkkq+cqg9IpkBaGCas6uDbW8g==" crossorigin></script>
-            <style>
-                .modal-dialog iframe {
-                    width: 100vw;
-                    height: calc(100vh - 80px);
-                }
-                
-                @media screen and (min-width: 700px) {
-                    .modal-dialog iframe {
-                        width: 70vw;
-                        height: 80vh;
-                    }
-                }
-                
-                .modal-dialog .tingle-modal-box {
-                    width: auto;
-                }
-                
-                .modal-dialog .tingle-modal-box__content {
-                    padding: 0;
-                }
-            </style>
-            <script>
-                const input = document.getElementById('lunr-search');
-                input.disabled = false;
-                input.form.addEventListener('submit', (ev) => {
-                    ev.preventDefault();
-                    const url = new URL(window.location);
-                    url.searchParams.set('q', input.value);
-                    history.replaceState({}, null, url.toString());
-                    search(input.value);
-                });
-                const query = new URL(window.location).searchParams.get('q');
-                if (query)
-                    search(query);
-
-                function search(query) {
-                    const url = '.././doc-search.html#' + encodeURIComponent(query);
-                    new tingle.modal({
-                        cssClass: ['modal-dialog'],
-                        onClose: () => {
-                            const url = new URL(window.location);
-                            url.searchParams.delete('q');
-                            history.replaceState({}, null, url.toString());
-                            setTimeout(() => input.focus(), 100);
-                        }
-                    }).setContent('<iframe src="' + url + '"></iframe>').open();
-                }
-            </script>
-            <h1>Index</h1>
-            <div class="toc">
-                <ul></ul>
-            </div>
-            <ul id="index">
-                <li>
-                    <h3>Super-module</h3>
-                    <ul>
-                        <li><code><a title="aiobungie.objects" href="index.html">aiobungie.objects</a></code></li>
-                    </ul>
-                </li>
-                <li>
-                    <h3><a href="#header-classes">Classes</a></h3>
-                    <ul>
-                        <li>
-                            <h4><code><a title="aiobungie.objects.profile.Profile" href="#aiobungie.objects.profile.Profile">Profile</a></code></h4>
-                            <ul class="two-column">
-                                <li><code><a title="aiobungie.objects.profile.Profile.as_dict" href="#aiobungie.objects.profile.Profile.as_dict">as_dict</a></code></li>
-                                <li><code><a title="aiobungie.objects.profile.Profile.character" href="#aiobungie.objects.profile.Profile.character">character</a></code></li>
-                                <li><code><a title="aiobungie.objects.profile.Profile.character_ids" href="#aiobungie.objects.profile.Profile.character_ids">character_ids</a></code></li>
-                                <li><code><a title="aiobungie.objects.profile.Profile.delta_last_played" href="#aiobungie.objects.profile.Profile.delta_last_played">delta_last_played</a></code></li>
-                                <li><code><a title="aiobungie.objects.profile.Profile.id" href="#aiobungie.objects.profile.Profile.id">id</a></code></li>
-                                <li><code><a title="aiobungie.objects.profile.Profile.is_public" href="#aiobungie.objects.profile.Profile.is_public">is_public</a></code></li>
-                                <li><code><a title="aiobungie.objects.profile.Profile.last_played" href="#aiobungie.objects.profile.Profile.last_played">last_played</a></code></li>
-                                <li><code><a title="aiobungie.objects.profile.Profile.name" href="#aiobungie.objects.profile.Profile.name">name</a></code></li>
-                                <li><code><a title="aiobungie.objects.profile.Profile.power_cap" href="#aiobungie.objects.profile.Profile.power_cap">power_cap</a></code></li>
-                                <li><code><a title="aiobungie.objects.profile.Profile.predicate" href="#aiobungie.objects.profile.Profile.predicate">predicate</a></code></li>
-                                <li><code><a title="aiobungie.objects.profile.Profile.type" href="#aiobungie.objects.profile.Profile.type">type</a></code></li>
-                                <li><code><a title="aiobungie.objects.profile.Profile.update" href="#aiobungie.objects.profile.Profile.update">update</a></code></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </nav>
-    </main>
-    <footer id="footer">
-        <p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.9.2</a>.</p>
-    </footer>
+</details>
+</dd>
+<dt id="aiobungie.objects.profile.Profile.character_ids"><code class="name">var <span class="ident">character_ids</span> : List[int]</code></dt>
+<dd>
+<div class="desc"><p>A list of the profile's character ids.</p></div>
+</dd>
+<dt id="aiobungie.objects.profile.Profile.human_timedelta"><code class="name">var <span class="ident">human_timedelta</span> : str</code></dt>
+<dd>
+<div class="desc"><p>Returns last_played attr but in human delta date.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def human_timedelta(self) -&gt; str:
+    &#34;&#34;&#34;Returns last_played attr but in human delta date.&#34;&#34;&#34;
+    return Time.human_timedelta(self.last_played)</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.objects.profile.Profile.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
+<dd>
+<div class="desc"><p>Profile's id</p></div>
+</dd>
+<dt id="aiobungie.objects.profile.Profile.is_public"><code class="name">var <span class="ident">is_public</span> : bool</code></dt>
+<dd>
+<div class="desc"><p>Profile's privacy status.</p></div>
+</dd>
+<dt id="aiobungie.objects.profile.Profile.last_played"><code class="name">var <span class="ident">last_played</span> : datetime.datetime</code></dt>
+<dd>
+<div class="desc"><p>Profile's last played Destiny 2 played date.</p></div>
+</dd>
+<dt id="aiobungie.objects.profile.Profile.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
+<dd>
+<div class="desc"><p>Profile's name.</p></div>
+</dd>
+<dt id="aiobungie.objects.profile.Profile.power_cap"><code class="name">var <span class="ident">power_cap</span> : int</code></dt>
+<dd>
+<div class="desc"><p>The profile's current seaspn power cap.</p></div>
+</dd>
+<dt id="aiobungie.objects.profile.Profile.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="../internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
+<dd>
+<div class="desc"><p>Profile's type.</p></div>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<form>
+<input id="lunr-search" name="q" placeholder="🔎 Search ..." aria-label="Search"
+disabled minlength="2">
+</form>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.3/tingle.min.css" integrity="sha512-j1u8eUJ4f23xPPxwOrLUPQaCD2dwzNqqmDDcWS4deWsMv2ohLqmXXuP3hU7g8TyzbMSakP/mMqoNBYWj8AEIFg==" crossorigin>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.3/tingle.min.js" integrity="sha512-plGUER9JkeEWPPqQBE4sdLqBoQug5Ap+BCGMc7bJ8BXkm+VVj6QzkpBz5Yv2yPkkq+cqg9IpkBaGCas6uDbW8g==" crossorigin></script>
+<style>
+.modal-dialog iframe {
+width: 100vw;
+height: calc(100vh - 80px);
+}
+@media screen and (min-width: 700px) {
+.modal-dialog iframe {
+width: 70vw;
+height: 80vh;
+}
+}
+.modal-dialog .tingle-modal-box {width: auto;}
+.modal-dialog .tingle-modal-box__content {padding: 0;}
+</style>
+<script>
+const input = document.getElementById('lunr-search');
+input.disabled = false;
+input.form.addEventListener('submit', (ev) => {
+ev.preventDefault();
+const url = new URL(window.location);
+url.searchParams.set('q', input.value);
+history.replaceState({}, null, url.toString());
+search(input.value);
+});
+const query = new URL(window.location).searchParams.get('q');
+if (query)
+search(query);
+function search(query) {
+const url = '.././doc-search.html#' + encodeURIComponent(query);
+new tingle.modal({
+cssClass: ['modal-dialog'],
+onClose: () => {
+const url = new URL(window.location);
+url.searchParams.delete('q');
+history.replaceState({}, null, url.toString());
+setTimeout(() => input.focus(), 100);
+}
+}).setContent('<iframe src="' + url + '"></iframe>').open();
+}
+</script>
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="aiobungie.objects" href="index.html">aiobungie.objects</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="aiobungie.objects.profile.Profile" href="#aiobungie.objects.profile.Profile">Profile</a></code></h4>
+<ul class="two-column">
+<li><code><a title="aiobungie.objects.profile.Profile.app" href="#aiobungie.objects.profile.Profile.app">app</a></code></li>
+<li><code><a title="aiobungie.objects.profile.Profile.as_dict" href="#aiobungie.objects.profile.Profile.as_dict">as_dict</a></code></li>
+<li><code><a title="aiobungie.objects.profile.Profile.character_ids" href="#aiobungie.objects.profile.Profile.character_ids">character_ids</a></code></li>
+<li><code><a title="aiobungie.objects.profile.Profile.human_timedelta" href="#aiobungie.objects.profile.Profile.human_timedelta">human_timedelta</a></code></li>
+<li><code><a title="aiobungie.objects.profile.Profile.id" href="#aiobungie.objects.profile.Profile.id">id</a></code></li>
+<li><code><a title="aiobungie.objects.profile.Profile.is_public" href="#aiobungie.objects.profile.Profile.is_public">is_public</a></code></li>
+<li><code><a title="aiobungie.objects.profile.Profile.last_played" href="#aiobungie.objects.profile.Profile.last_played">last_played</a></code></li>
+<li><code><a title="aiobungie.objects.profile.Profile.name" href="#aiobungie.objects.profile.Profile.name">name</a></code></li>
+<li><code><a title="aiobungie.objects.profile.Profile.power_cap" href="#aiobungie.objects.profile.Profile.power_cap">power_cap</a></code></li>
+<li><code><a title="aiobungie.objects.profile.Profile.type" href="#aiobungie.objects.profile.Profile.type">type</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
 </body>
-
 </html>

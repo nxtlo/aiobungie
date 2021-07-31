@@ -514,75 +514,93 @@
 from __future__ import annotations
 
 __all__: Sequence[str] = [
+    &#34;AiobungieError&#34;,
     &#34;PlayerNotFound&#34;,
-    &#34;HashError&#34;,
     &#34;ActivityNotFound&#34;,
-    &#34;CharacterTypeError&#34;,
-    &#34;JsonError&#34;,
     &#34;ClanNotFound&#34;,
-    &#34;CharacterNotFound&#34;,
+    &#34;CharacterError&#34;,
     &#34;NotFound&#34;,
     &#34;HTTPException&#34;,
     &#34;UserNotFound&#34;,
     &#34;ComponentError&#34;,
+    &#34;MembershipTypeError&#34;,
+    &#34;Forbidden&#34;,
+    &#34;Unauthorized&#34;,
+    &#34;ResponseError&#34;,
 ]
 
 from typing import Sequence, final
 
-
-@final
-class PlayerNotFound(Exception):
-    &#34;&#34;&#34;Raised when a `aiobungie.objects.Player` is not found.&#34;&#34;&#34;
+import attr
+from aiohttp import ClientResponse
 
 
-@final
-class HashError(Exception):
-    &#34;&#34;&#34;Raised when `aiobungie.objects.Activity.hash` used for modes that are not raids.&#34;&#34;&#34;
+class AiobungieError(Exception):
+    &#34;&#34;&#34;The base exception class that all other errors inherit from.&#34;&#34;&#34;
 
 
-@final
-class ActivityNotFound(Exception):
-    &#34;&#34;&#34;Raised when a `aiobungie.objects.Activity` not found.&#34;&#34;&#34;
-
-
-@final
-class CharacterTypeError(Exception):
-    &#34;&#34;&#34;Raised on a character type error.&#34;&#34;&#34;
-
-
-@final
-class JsonError(Exception):
-    &#34;&#34;&#34;Raised when an HTTP request did not return a json response.&#34;&#34;&#34;
-
-
-@final
-class CharacterNotFound(Exception):
-    &#34;&#34;&#34;Raised when a `aiobungie.objects.Character` not found.&#34;&#34;&#34;
-
-
-@final
-class HTTPException(Exception):
+@attr.define(auto_exc=True, repr=False, weakref_slot=False)
+class HTTPException(AiobungieError):
     &#34;&#34;&#34;Exception for handling `aiobungie.http.HTTPClient` requests errors.&#34;&#34;&#34;
 
-
-@final
-class ClanNotFound(Exception):
-    &#34;&#34;&#34;Raised when a `aiobungie.objects.Clan` not found.&#34;&#34;&#34;
+    message: str = attr.field()
 
 
-@final
-class NotFound(Exception):
+class NotFound(AiobungieError):
     &#34;&#34;&#34;Raised when an unknown request was not found.&#34;&#34;&#34;
 
 
 @final
-class UserNotFound(Exception):
+class ResponseError(AiobungieError):
+    &#34;&#34;&#34;Typical Responses error.&#34;&#34;&#34;
+
+
+@final
+class PlayerNotFound(NotFound):
+    &#34;&#34;&#34;Raised when a `aiobungie.objects.Player` is not found.&#34;&#34;&#34;
+
+
+@final
+class Forbidden(HTTPException):
+    &#34;&#34;&#34;Exception that&#39;s raised for when status code 403 occurs.&#34;&#34;&#34;
+
+
+@final
+class Unauthorized(HTTPException):
+    &#34;&#34;&#34;Unauthorized access.&#34;&#34;&#34;
+
+
+@final
+class ActivityNotFound(NotFound):
+    &#34;&#34;&#34;Raised when a `aiobungie.objects.Activity` not found.&#34;&#34;&#34;
+
+
+@final
+class CharacterError(HTTPException):
+    &#34;&#34;&#34;Raised when a `aiobungie.objects.Character` not found.&#34;&#34;&#34;
+
+
+@final
+class ClanNotFound(NotFound):
+    &#34;&#34;&#34;Raised when a `aiobungie.objects.Clan` not found.&#34;&#34;&#34;
+
+
+@final
+class UserNotFound(NotFound):
     &#34;&#34;&#34;Raised when a `aiobungie.objects.User` not found.&#34;&#34;&#34;
 
 
 @final
-class ComponentError(Exception):
-    &#34;&#34;&#34;Raised when someone uses the wrong `aiobungie.internal.enums.Component.`&#34;&#34;&#34;</code></pre>
+class ComponentError(HTTPException):
+    &#34;&#34;&#34;Raised when someone uses the wrong `aiobungie.internal.enums.Component.`&#34;&#34;&#34;
+
+
+@final
+class MembershipTypeError(HTTPException):
+    &#34;&#34;&#34;Raised when the memberhsip type is invalid.
+    or The object you&#39;re trying to fetch doesn&#39;t have
+    The requested membership type.
+    &#34;&#34;&#34;</code></pre>
                 </details>
             </section>
             <section>
@@ -607,58 +625,81 @@ class ComponentError(Exception):
                                 <span>Expand source code</span>
                             </summary>
                             <pre><code class="python">@final
-class ActivityNotFound(Exception):
+class ActivityNotFound(NotFound):
     &#34;&#34;&#34;Raised when a `aiobungie.objects.Activity` not found.&#34;&#34;&#34;</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
+                            <li><a title="aiobungie.error.NotFound" href="#aiobungie.error.NotFound">NotFound</a></li>
+                            <li><a title="aiobungie.error.AiobungieError" href="#aiobungie.error.AiobungieError">AiobungieError</a></li>
                             <li>builtins.Exception</li>
                             <li>builtins.BaseException</li>
                         </ul>
                     </dd>
-                    <dt id="aiobungie.error.CharacterNotFound"><code class="flex name class">
-<span>class <span class="ident">CharacterNotFound</span></span>
+                    <dt id="aiobungie.error.AiobungieError"><code class="flex name class">
+<span>class <span class="ident">AiobungieError</span></span>
 <span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+                    <dd>
+                        <div class="desc">
+                            <p>The base exception class that all other errors inherit from.</p>
+                        </div>
+                        <details class="source">
+                            <summary>
+                                <span>Expand source code</span>
+                            </summary>
+                            <pre><code class="python">class AiobungieError(Exception):
+    &#34;&#34;&#34;The base exception class that all other errors inherit from.&#34;&#34;&#34;</code></pre>
+                        </details>
+                        <h3>Ancestors</h3>
+                        <ul class="hlist">
+                            <li>builtins.Exception</li>
+                            <li>builtins.BaseException</li>
+                        </ul>
+                        <h3>Subclasses</h3>
+                        <ul class="hlist">
+                            <li><a title="aiobungie.error.HTTPException" href="#aiobungie.error.HTTPException">HTTPException</a></li>
+                            <li><a title="aiobungie.error.NotFound" href="#aiobungie.error.NotFound">NotFound</a></li>
+                            <li><a title="aiobungie.error.ResponseError" href="#aiobungie.error.ResponseError">ResponseError</a></li>
+                        </ul>
+                    </dd>
+                    <dt id="aiobungie.error.CharacterError"><code class="flex name class">
+<span>class <span class="ident">CharacterError</span></span>
+<span>(</span><span>message: str)</span>
 </code></dt>
                     <dd>
                         <div class="desc">
                             <p>Raised when a <code><a title="aiobungie.objects.Character" href="objects/index.html#aiobungie.objects.Character">Character</a></code> not found.</p>
+                            <p>Method generated by attrs for class HTTPException.</p>
                         </div>
                         <details class="source">
                             <summary>
                                 <span>Expand source code</span>
                             </summary>
                             <pre><code class="python">@final
-class CharacterNotFound(Exception):
+class CharacterError(HTTPException):
     &#34;&#34;&#34;Raised when a `aiobungie.objects.Character` not found.&#34;&#34;&#34;</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
+                            <li><a title="aiobungie.error.HTTPException" href="#aiobungie.error.HTTPException">HTTPException</a></li>
+                            <li><a title="aiobungie.error.AiobungieError" href="#aiobungie.error.AiobungieError">AiobungieError</a></li>
                             <li>builtins.Exception</li>
                             <li>builtins.BaseException</li>
                         </ul>
-                    </dd>
-                    <dt id="aiobungie.error.CharacterTypeError"><code class="flex name class">
-<span>class <span class="ident">CharacterTypeError</span></span>
-<span>(</span><span>*args, **kwargs)</span>
-</code></dt>
-                    <dd>
-                        <div class="desc">
-                            <p>Raised on a character type error.</p>
-                        </div>
-                        <details class="source">
-                            <summary>
-                                <span>Expand source code</span>
-                            </summary>
-                            <pre><code class="python">@final
-class CharacterTypeError(Exception):
-    &#34;&#34;&#34;Raised on a character type error.&#34;&#34;&#34;</code></pre>
-                        </details>
-                        <h3>Ancestors</h3>
-                        <ul class="hlist">
-                            <li>builtins.Exception</li>
-                            <li>builtins.BaseException</li>
-                        </ul>
+                        <h3>Instance variables</h3>
+                        <dl>
+                            <dt id="aiobungie.error.CharacterError.message"><code class="name">var <span class="ident">message</span> : str</code></dt>
+                            <dd>
+                                <p class="inheritance">
+                                    <em>Inherited from:</em>
+                                    <code><a title="aiobungie.error.HTTPException" href="#aiobungie.error.HTTPException">HTTPException</a></code>.<code><a title="aiobungie.error.HTTPException.message" href="#aiobungie.error.HTTPException.message">message</a></code>
+                                </p>
+                                <div class="desc inherited">
+                                    <p>Return an attribute of instance, which is of type owner.</p>
+                                </div>
+                            </dd>
+                        </dl>
                     </dd>
                     <dt id="aiobungie.error.ClanNotFound"><code class="flex name class">
 <span>class <span class="ident">ClanNotFound</span></span>
@@ -673,102 +714,176 @@ class CharacterTypeError(Exception):
                                 <span>Expand source code</span>
                             </summary>
                             <pre><code class="python">@final
-class ClanNotFound(Exception):
+class ClanNotFound(NotFound):
     &#34;&#34;&#34;Raised when a `aiobungie.objects.Clan` not found.&#34;&#34;&#34;</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
+                            <li><a title="aiobungie.error.NotFound" href="#aiobungie.error.NotFound">NotFound</a></li>
+                            <li><a title="aiobungie.error.AiobungieError" href="#aiobungie.error.AiobungieError">AiobungieError</a></li>
                             <li>builtins.Exception</li>
                             <li>builtins.BaseException</li>
                         </ul>
                     </dd>
                     <dt id="aiobungie.error.ComponentError"><code class="flex name class">
 <span>class <span class="ident">ComponentError</span></span>
-<span>(</span><span>*args, **kwargs)</span>
+<span>(</span><span>message: str)</span>
 </code></dt>
                     <dd>
                         <div class="desc">
                             <p>Raised when someone uses the wrong <code><a title="aiobungie.internal.enums.Component" href="internal/enums.html#aiobungie.internal.enums.Component">Component</a>.</code></p>
+                            <p>Method generated by attrs for class HTTPException.</p>
                         </div>
                         <details class="source">
                             <summary>
                                 <span>Expand source code</span>
                             </summary>
                             <pre><code class="python">@final
-class ComponentError(Exception):
+class ComponentError(HTTPException):
     &#34;&#34;&#34;Raised when someone uses the wrong `aiobungie.internal.enums.Component.`&#34;&#34;&#34;</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
+                            <li><a title="aiobungie.error.HTTPException" href="#aiobungie.error.HTTPException">HTTPException</a></li>
+                            <li><a title="aiobungie.error.AiobungieError" href="#aiobungie.error.AiobungieError">AiobungieError</a></li>
                             <li>builtins.Exception</li>
                             <li>builtins.BaseException</li>
                         </ul>
+                        <h3>Instance variables</h3>
+                        <dl>
+                            <dt id="aiobungie.error.ComponentError.message"><code class="name">var <span class="ident">message</span> : str</code></dt>
+                            <dd>
+                                <p class="inheritance">
+                                    <em>Inherited from:</em>
+                                    <code><a title="aiobungie.error.HTTPException" href="#aiobungie.error.HTTPException">HTTPException</a></code>.<code><a title="aiobungie.error.HTTPException.message" href="#aiobungie.error.HTTPException.message">message</a></code>
+                                </p>
+                                <div class="desc inherited">
+                                    <p>Return an attribute of instance, which is of type owner.</p>
+                                </div>
+                            </dd>
+                        </dl>
+                    </dd>
+                    <dt id="aiobungie.error.Forbidden"><code class="flex name class">
+<span>class <span class="ident">Forbidden</span></span>
+<span>(</span><span>message: str)</span>
+</code></dt>
+                    <dd>
+                        <div class="desc">
+                            <p>Exception that's raised for when status code 403 occurs.</p>
+                            <p>Method generated by attrs for class HTTPException.</p>
+                        </div>
+                        <details class="source">
+                            <summary>
+                                <span>Expand source code</span>
+                            </summary>
+                            <pre><code class="python">@final
+class Forbidden(HTTPException):
+    &#34;&#34;&#34;Exception that&#39;s raised for when status code 403 occurs.&#34;&#34;&#34;</code></pre>
+                        </details>
+                        <h3>Ancestors</h3>
+                        <ul class="hlist">
+                            <li><a title="aiobungie.error.HTTPException" href="#aiobungie.error.HTTPException">HTTPException</a></li>
+                            <li><a title="aiobungie.error.AiobungieError" href="#aiobungie.error.AiobungieError">AiobungieError</a></li>
+                            <li>builtins.Exception</li>
+                            <li>builtins.BaseException</li>
+                        </ul>
+                        <h3>Instance variables</h3>
+                        <dl>
+                            <dt id="aiobungie.error.Forbidden.message"><code class="name">var <span class="ident">message</span> : str</code></dt>
+                            <dd>
+                                <p class="inheritance">
+                                    <em>Inherited from:</em>
+                                    <code><a title="aiobungie.error.HTTPException" href="#aiobungie.error.HTTPException">HTTPException</a></code>.<code><a title="aiobungie.error.HTTPException.message" href="#aiobungie.error.HTTPException.message">message</a></code>
+                                </p>
+                                <div class="desc inherited">
+                                    <p>Return an attribute of instance, which is of type owner.</p>
+                                </div>
+                            </dd>
+                        </dl>
                     </dd>
                     <dt id="aiobungie.error.HTTPException"><code class="flex name class">
 <span>class <span class="ident">HTTPException</span></span>
-<span>(</span><span>*args, **kwargs)</span>
+<span>(</span><span>message: str)</span>
 </code></dt>
                     <dd>
                         <div class="desc">
                             <p>Exception for handling <code><a title="aiobungie.http.HTTPClient" href="http.html#aiobungie.http.HTTPClient">HTTPClient</a></code> requests errors.</p>
+                            <p>Method generated by attrs for class HTTPException.</p>
                         </div>
                         <details class="source">
                             <summary>
                                 <span>Expand source code</span>
                             </summary>
-                            <pre><code class="python">@final
-class HTTPException(Exception):
-    &#34;&#34;&#34;Exception for handling `aiobungie.http.HTTPClient` requests errors.&#34;&#34;&#34;</code></pre>
+                            <pre><code class="python">@attr.define(auto_exc=True, repr=False, weakref_slot=False)
+class HTTPException(AiobungieError):
+    &#34;&#34;&#34;Exception for handling `aiobungie.http.HTTPClient` requests errors.&#34;&#34;&#34;
+
+    message: str = attr.field()</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
+                            <li><a title="aiobungie.error.AiobungieError" href="#aiobungie.error.AiobungieError">AiobungieError</a></li>
                             <li>builtins.Exception</li>
                             <li>builtins.BaseException</li>
                         </ul>
+                        <h3>Subclasses</h3>
+                        <ul class="hlist">
+                            <li><a title="aiobungie.error.CharacterError" href="#aiobungie.error.CharacterError">CharacterError</a></li>
+                            <li><a title="aiobungie.error.ComponentError" href="#aiobungie.error.ComponentError">ComponentError</a></li>
+                            <li><a title="aiobungie.error.Forbidden" href="#aiobungie.error.Forbidden">Forbidden</a></li>
+                            <li><a title="aiobungie.error.MembershipTypeError" href="#aiobungie.error.MembershipTypeError">MembershipTypeError</a></li>
+                            <li><a title="aiobungie.error.Unauthorized" href="#aiobungie.error.Unauthorized">Unauthorized</a></li>
+                        </ul>
+                        <h3>Instance variables</h3>
+                        <dl>
+                            <dt id="aiobungie.error.HTTPException.message"><code class="name">var <span class="ident">message</span> : str</code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Return an attribute of instance, which is of type owner.</p>
+                                </div>
+                            </dd>
+                        </dl>
                     </dd>
-                    <dt id="aiobungie.error.HashError"><code class="flex name class">
-<span>class <span class="ident">HashError</span></span>
-<span>(</span><span>*args, **kwargs)</span>
+                    <dt id="aiobungie.error.MembershipTypeError"><code class="flex name class">
+<span>class <span class="ident">MembershipTypeError</span></span>
+<span>(</span><span>message: str)</span>
 </code></dt>
                     <dd>
                         <div class="desc">
-                            <p>Raised when <code><a title="aiobungie.objects.Activity.hash" href="objects/index.html#aiobungie.objects.Activity.hash">Activity.hash</a></code> used for modes that are not raids.</p>
+                            <p>Raised when the memberhsip type is invalid. or The object you're trying to fetch doesn't have The requested membership type.</p>
+                            <p>Method generated by attrs for class HTTPException.</p>
                         </div>
                         <details class="source">
                             <summary>
                                 <span>Expand source code</span>
                             </summary>
                             <pre><code class="python">@final
-class HashError(Exception):
-    &#34;&#34;&#34;Raised when `aiobungie.objects.Activity.hash` used for modes that are not raids.&#34;&#34;&#34;</code></pre>
+class MembershipTypeError(HTTPException):
+    &#34;&#34;&#34;Raised when the memberhsip type is invalid.
+    or The object you&#39;re trying to fetch doesn&#39;t have
+    The requested membership type.
+    &#34;&#34;&#34;</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
+                            <li><a title="aiobungie.error.HTTPException" href="#aiobungie.error.HTTPException">HTTPException</a></li>
+                            <li><a title="aiobungie.error.AiobungieError" href="#aiobungie.error.AiobungieError">AiobungieError</a></li>
                             <li>builtins.Exception</li>
                             <li>builtins.BaseException</li>
                         </ul>
-                    </dd>
-                    <dt id="aiobungie.error.JsonError"><code class="flex name class">
-<span>class <span class="ident">JsonError</span></span>
-<span>(</span><span>*args, **kwargs)</span>
-</code></dt>
-                    <dd>
-                        <div class="desc">
-                            <p>Raised when an HTTP request did not return a json response.</p>
-                        </div>
-                        <details class="source">
-                            <summary>
-                                <span>Expand source code</span>
-                            </summary>
-                            <pre><code class="python">@final
-class JsonError(Exception):
-    &#34;&#34;&#34;Raised when an HTTP request did not return a json response.&#34;&#34;&#34;</code></pre>
-                        </details>
-                        <h3>Ancestors</h3>
-                        <ul class="hlist">
-                            <li>builtins.Exception</li>
-                            <li>builtins.BaseException</li>
-                        </ul>
+                        <h3>Instance variables</h3>
+                        <dl>
+                            <dt id="aiobungie.error.MembershipTypeError.message"><code class="name">var <span class="ident">message</span> : str</code></dt>
+                            <dd>
+                                <p class="inheritance">
+                                    <em>Inherited from:</em>
+                                    <code><a title="aiobungie.error.HTTPException" href="#aiobungie.error.HTTPException">HTTPException</a></code>.<code><a title="aiobungie.error.HTTPException.message" href="#aiobungie.error.HTTPException.message">message</a></code>
+                                </p>
+                                <div class="desc inherited">
+                                    <p>Return an attribute of instance, which is of type owner.</p>
+                                </div>
+                            </dd>
+                        </dl>
                     </dd>
                     <dt id="aiobungie.error.NotFound"><code class="flex name class">
 <span>class <span class="ident">NotFound</span></span>
@@ -782,14 +897,21 @@ class JsonError(Exception):
                             <summary>
                                 <span>Expand source code</span>
                             </summary>
-                            <pre><code class="python">@final
-class NotFound(Exception):
+                            <pre><code class="python">class NotFound(AiobungieError):
     &#34;&#34;&#34;Raised when an unknown request was not found.&#34;&#34;&#34;</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
+                            <li><a title="aiobungie.error.AiobungieError" href="#aiobungie.error.AiobungieError">AiobungieError</a></li>
                             <li>builtins.Exception</li>
                             <li>builtins.BaseException</li>
+                        </ul>
+                        <h3>Subclasses</h3>
+                        <ul class="hlist">
+                            <li><a title="aiobungie.error.ActivityNotFound" href="#aiobungie.error.ActivityNotFound">ActivityNotFound</a></li>
+                            <li><a title="aiobungie.error.ClanNotFound" href="#aiobungie.error.ClanNotFound">ClanNotFound</a></li>
+                            <li><a title="aiobungie.error.PlayerNotFound" href="#aiobungie.error.PlayerNotFound">PlayerNotFound</a></li>
+                            <li><a title="aiobungie.error.UserNotFound" href="#aiobungie.error.UserNotFound">UserNotFound</a></li>
                         </ul>
                     </dd>
                     <dt id="aiobungie.error.PlayerNotFound"><code class="flex name class">
@@ -805,14 +927,77 @@ class NotFound(Exception):
                                 <span>Expand source code</span>
                             </summary>
                             <pre><code class="python">@final
-class PlayerNotFound(Exception):
+class PlayerNotFound(NotFound):
     &#34;&#34;&#34;Raised when a `aiobungie.objects.Player` is not found.&#34;&#34;&#34;</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
+                            <li><a title="aiobungie.error.NotFound" href="#aiobungie.error.NotFound">NotFound</a></li>
+                            <li><a title="aiobungie.error.AiobungieError" href="#aiobungie.error.AiobungieError">AiobungieError</a></li>
                             <li>builtins.Exception</li>
                             <li>builtins.BaseException</li>
                         </ul>
+                    </dd>
+                    <dt id="aiobungie.error.ResponseError"><code class="flex name class">
+<span>class <span class="ident">ResponseError</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+                    <dd>
+                        <div class="desc">
+                            <p>Typical Responses error.</p>
+                        </div>
+                        <details class="source">
+                            <summary>
+                                <span>Expand source code</span>
+                            </summary>
+                            <pre><code class="python">@final
+class ResponseError(AiobungieError):
+    &#34;&#34;&#34;Typical Responses error.&#34;&#34;&#34;</code></pre>
+                        </details>
+                        <h3>Ancestors</h3>
+                        <ul class="hlist">
+                            <li><a title="aiobungie.error.AiobungieError" href="#aiobungie.error.AiobungieError">AiobungieError</a></li>
+                            <li>builtins.Exception</li>
+                            <li>builtins.BaseException</li>
+                        </ul>
+                    </dd>
+                    <dt id="aiobungie.error.Unauthorized"><code class="flex name class">
+<span>class <span class="ident">Unauthorized</span></span>
+<span>(</span><span>message: str)</span>
+</code></dt>
+                    <dd>
+                        <div class="desc">
+                            <p>Unauthorized access.</p>
+                            <p>Method generated by attrs for class HTTPException.</p>
+                        </div>
+                        <details class="source">
+                            <summary>
+                                <span>Expand source code</span>
+                            </summary>
+                            <pre><code class="python">@final
+class Unauthorized(HTTPException):
+    &#34;&#34;&#34;Unauthorized access.&#34;&#34;&#34;</code></pre>
+                        </details>
+                        <h3>Ancestors</h3>
+                        <ul class="hlist">
+                            <li><a title="aiobungie.error.HTTPException" href="#aiobungie.error.HTTPException">HTTPException</a></li>
+                            <li><a title="aiobungie.error.AiobungieError" href="#aiobungie.error.AiobungieError">AiobungieError</a></li>
+                            <li>builtins.Exception</li>
+                            <li>builtins.BaseException</li>
+                        </ul>
+                        <h3>Instance variables</h3>
+                        <dl>
+                            <dt id="aiobungie.error.Unauthorized.message"><code class="name">var <span class="ident">message</span> : str</code></dt>
+                            <dd>
+                                <p class="inheritance">
+                                    <em>Inherited from:</em>
+                                    <code><a title="aiobungie.error.HTTPException" href="#aiobungie.error.HTTPException">HTTPException</a></code>.<code><a title="aiobungie.error.HTTPException.message" href="#aiobungie.error.HTTPException.message">message</a></code>
+                                </p>
+                                <div class="desc inherited">
+                                    <p>Return an attribute of instance, which is of type owner.</p>
+                                </div>
+                            </dd>
+                        </dl>
                     </dd>
                     <dt id="aiobungie.error.UserNotFound"><code class="flex name class">
 <span>class <span class="ident">UserNotFound</span></span>
@@ -827,11 +1012,13 @@ class PlayerNotFound(Exception):
                                 <span>Expand source code</span>
                             </summary>
                             <pre><code class="python">@final
-class UserNotFound(Exception):
+class UserNotFound(NotFound):
     &#34;&#34;&#34;Raised when a `aiobungie.objects.User` not found.&#34;&#34;&#34;</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
+                            <li><a title="aiobungie.error.NotFound" href="#aiobungie.error.NotFound">NotFound</a></li>
+                            <li><a title="aiobungie.error.AiobungieError" href="#aiobungie.error.AiobungieError">AiobungieError</a></li>
                             <li>builtins.Exception</li>
                             <li>builtins.BaseException</li>
                         </ul>
@@ -911,31 +1098,55 @@ class UserNotFound(Exception):
                             <h4><code><a title="aiobungie.error.ActivityNotFound" href="#aiobungie.error.ActivityNotFound">ActivityNotFound</a></code></h4>
                         </li>
                         <li>
-                            <h4><code><a title="aiobungie.error.CharacterNotFound" href="#aiobungie.error.CharacterNotFound">CharacterNotFound</a></code></h4>
+                            <h4><code><a title="aiobungie.error.AiobungieError" href="#aiobungie.error.AiobungieError">AiobungieError</a></code></h4>
                         </li>
                         <li>
-                            <h4><code><a title="aiobungie.error.CharacterTypeError" href="#aiobungie.error.CharacterTypeError">CharacterTypeError</a></code></h4>
+                            <h4><code><a title="aiobungie.error.CharacterError" href="#aiobungie.error.CharacterError">CharacterError</a></code></h4>
+                            <ul class="">
+                                <li><code><a title="aiobungie.error.CharacterError.message" href="#aiobungie.error.CharacterError.message">message</a></code></li>
+                            </ul>
                         </li>
                         <li>
                             <h4><code><a title="aiobungie.error.ClanNotFound" href="#aiobungie.error.ClanNotFound">ClanNotFound</a></code></h4>
                         </li>
                         <li>
                             <h4><code><a title="aiobungie.error.ComponentError" href="#aiobungie.error.ComponentError">ComponentError</a></code></h4>
+                            <ul class="">
+                                <li><code><a title="aiobungie.error.ComponentError.message" href="#aiobungie.error.ComponentError.message">message</a></code></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <h4><code><a title="aiobungie.error.Forbidden" href="#aiobungie.error.Forbidden">Forbidden</a></code></h4>
+                            <ul class="">
+                                <li><code><a title="aiobungie.error.Forbidden.message" href="#aiobungie.error.Forbidden.message">message</a></code></li>
+                            </ul>
                         </li>
                         <li>
                             <h4><code><a title="aiobungie.error.HTTPException" href="#aiobungie.error.HTTPException">HTTPException</a></code></h4>
+                            <ul class="">
+                                <li><code><a title="aiobungie.error.HTTPException.message" href="#aiobungie.error.HTTPException.message">message</a></code></li>
+                            </ul>
                         </li>
                         <li>
-                            <h4><code><a title="aiobungie.error.HashError" href="#aiobungie.error.HashError">HashError</a></code></h4>
-                        </li>
-                        <li>
-                            <h4><code><a title="aiobungie.error.JsonError" href="#aiobungie.error.JsonError">JsonError</a></code></h4>
+                            <h4><code><a title="aiobungie.error.MembershipTypeError" href="#aiobungie.error.MembershipTypeError">MembershipTypeError</a></code></h4>
+                            <ul class="">
+                                <li><code><a title="aiobungie.error.MembershipTypeError.message" href="#aiobungie.error.MembershipTypeError.message">message</a></code></li>
+                            </ul>
                         </li>
                         <li>
                             <h4><code><a title="aiobungie.error.NotFound" href="#aiobungie.error.NotFound">NotFound</a></code></h4>
                         </li>
                         <li>
                             <h4><code><a title="aiobungie.error.PlayerNotFound" href="#aiobungie.error.PlayerNotFound">PlayerNotFound</a></code></h4>
+                        </li>
+                        <li>
+                            <h4><code><a title="aiobungie.error.ResponseError" href="#aiobungie.error.ResponseError">ResponseError</a></code></h4>
+                        </li>
+                        <li>
+                            <h4><code><a title="aiobungie.error.Unauthorized" href="#aiobungie.error.Unauthorized">Unauthorized</a></code></h4>
+                            <ul class="">
+                                <li><code><a title="aiobungie.error.Unauthorized.message" href="#aiobungie.error.Unauthorized.message">message</a></code></li>
+                            </ul>
                         </li>
                         <li>
                             <h4><code><a title="aiobungie.error.UserNotFound" href="#aiobungie.error.UserNotFound">UserNotFound</a></code></h4>

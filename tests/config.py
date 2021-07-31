@@ -21,9 +21,11 @@
 # SOFTWARE.
 
 import os
-import aiobungie
 from typing import Any, Dict
+
 from dotenv import load_dotenv
+
+import aiobungie
 
 load_dotenv()
 TOKEN = str(os.environ["TOKEN"])

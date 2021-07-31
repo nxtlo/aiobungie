@@ -23,19 +23,14 @@
 """Non manifest aiobungie tests."""
 
 
-import aiobungie
-import time
-from aiobungie.objects import (
-    Clan,
-    Player,
-    Character,
-    User,
-    Application,
-    Activity,
-    Profile,
-)
-from tests.config import data, TOKEN
 import asyncio
+import time
+
+import aiobungie
+from aiobungie.objects import (Activity, Application, Character, Clan, Player,
+                               Profile, User)
+from tests.config import TOKEN, data
+
 
 class ClientTest(aiobungie.Client):
     def __init__(self, token: str) -> None:
@@ -50,7 +45,7 @@ class ClientTest(aiobungie.Client):
             app.published_at,
             app.as_dict,
             app.link,
-            app.redirect_url
+            app.redirect_url,
         )
 
     async def player_test(self) -> None:
@@ -63,13 +58,13 @@ class ClientTest(aiobungie.Client):
             player.is_public,
             player.icon,
             player.as_dict,
-            player.type
+            player.type,
         )
 
-    #async def man_test(self):
-        #man = await self.fetch_manifest()
-        #await man.download()
-        #print(await man.get_raid_image(raid=aiobungie.Raid.DSC))
+    # async def man_test(self):
+    # man = await self.fetch_manifest()
+    # await man.download()
+    # print(await man.get_raid_image(raid=aiobungie.Raid.DSC))
 
     async def vendor_test(self):
         resp = await self.fetch_vendor_sales(
@@ -112,23 +107,23 @@ class ClientTest(aiobungie.Client):
         char: Character = await self.fetch_character(
             data["memid"], data["memtype"], data["char"]
         )
-        print(repr(char))
-        print(char.last_played_delta)
+        print(char.human_timedelta)
         print(char.member_id)
         print(char.member_type)
         print(char.last_played)
+        print(char.total_played_time)
         print(char.emblem)
         print(char.emblem_hash)
         print(char.emblem_icon)
         print(char.level)
         print(char.light)
         print(char.stats)
+        print(char.class_type)
 
     async def clan_id_test(self):
         clan: Clan = await self.fetch_clan_from_id(data["clanid"])
         print(
             clan.human_timedelta,
-            repr(clan),
             clan.owner.link,
             clan.owner.as_dict,
             clan.owner.icon,
@@ -138,14 +133,14 @@ class ClientTest(aiobungie.Client):
             clan.about,
             clan.banner,
             clan.is_public,
-            clan.member_count
+            clan.member_count,
         )
 
     async def clan_test(self):
-        clan: Clan = await self.fetch_clan("Fast")
+        clan: Clan = await self.fetch_clan("PotatoSalad")
         print(
             clan.human_timedelta,
-            repr(clan),
+            clan.url,
             clan.owner.link,
             clan.owner.as_dict,
             clan.owner.icon,
@@ -155,13 +150,12 @@ class ClientTest(aiobungie.Client):
             clan.about,
             clan.banner,
             clan.is_public,
-            clan.member_count
+            clan.member_count,
         )
 
     async def user_test(self):
         user: User = await self.fetch_user("Fate", position=24)
         print(
-            repr(user),
             user.human_timedelta,
             user.about,
             user.name,
@@ -176,9 +170,8 @@ class ClientTest(aiobungie.Client):
         )
 
     async def user_id_test(self):
-        user: User = await self.fetch_user_from_id(data['id'])
+        user: User = await self.fetch_user_from_id(data["id"])
         print(
-            print(repr(user)),
             user.human_timedelta,
             user.about,
             user.name,
@@ -196,36 +189,70 @@ class ClientTest(aiobungie.Client):
         profile: Profile = await self.fetch_profile(
             data["memid"],
             aiobungie.MembershipType.STEAM,
-            component=aiobungie.Component.PROFILE,
         )
         print(
             profile.name,
             profile.character_ids,
             profile.as_dict,
-            profile.delta_last_played,
+            profile.last_played,
+            profile.human_timedelta,
             profile.power_cap,
             profile.type,
         )
 
-    async def profile_char_test(self) -> None:
+    async def titan_test(self) -> None:
         profile: Profile = await self.fetch_profile(
-            data["memid"],
-            aiobungie.MembershipType.STEAM,
-            component=aiobungie.Component.CHARECTERS,
-            character=aiobungie.Class.WARLOCK,
+            data["memid"], aiobungie.MembershipType.STEAM
         )
-        print(
-            profile.character,
-            profile.character.emblem,
-            profile.character.last_played,
-            profile.character.member_id,
-            profile.character.light,
-            profile.character.as_dict,
-            profile.character.emblem_icon,
-            profile.character.id,
-            profile.character.gender,
-            profile.character.race
+        char: Character = await profile.titan()
+        print(char.human_timedelta)
+        print(char.member_id)
+        print(char.member_type)
+        print(char.last_played)
+        print(char.total_played_time)
+        print(char.emblem)
+        print(char.emblem_hash)
+        print(char.emblem_icon)
+        print(char.level)
+        print(char.light)
+        print(char.stats)
+        print(char.class_type)
+
+    async def hunter_test(self) -> None:
+        profile: Profile = await self.fetch_profile(
+            data["memid"], aiobungie.MembershipType.STEAM
         )
+        char: Character = await profile.hunter()
+        print(char.human_timedelta)
+        print(char.member_id)
+        print(char.member_type)
+        print(char.last_played)
+        print(char.total_played_time)
+        print(char.emblem)
+        print(char.emblem_hash)
+        print(char.emblem_icon)
+        print(char.level)
+        print(char.light)
+        print(char.stats)
+        print(char.class_type)
+
+    async def warlock_test(self) -> None:
+        profile: Profile = await self.fetch_profile(
+            data["memid"], aiobungie.MembershipType.STEAM
+        )
+        char: Character = await profile.warlock()
+        print(char.human_timedelta)
+        print(char.member_id)
+        print(char.member_type)
+        print(char.last_played)
+        print(char.total_played_time)
+        print(char.emblem)
+        print(char.emblem_hash)
+        print(char.emblem_icon)
+        print(char.level)
+        print(char.light)
+        print(char.stats)
+        print(char.class_type)
 
 
 client = ClientTest(TOKEN)
@@ -234,15 +261,17 @@ client = ClientTest(TOKEN)
 async def main() -> None:
     before = time.time()
     coros = [
+        client.char_test(),
         client.clan_id_test(),
         client.clan_test(),
         client.app_test(),
-        client.char_test(),
-        client.profile_char_test(),
-        client.profile_test(),
-        client.player_test(),
         client.user_id_test(),
-        client.user_test()
+        client.user_test(),
+        client.player_test(),
+        client.profile_test(),
+        client.titan_test(),
+        client.hunter_test(),
+        client.warlock_test(),
     ]
     await asyncio.gather(*coros)
     full = before - time.time()
@@ -252,5 +281,6 @@ async def main() -> None:
     """Under is not working yet."""
     # await client.char_test()
     # await client.activity_test()
+
 
 client.run(main(), debug=True)

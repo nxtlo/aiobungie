@@ -1,7 +1,7 @@
 from .error import *
 from .internal.enums import *
 from .client import Client as Client
-from typing import Any
+from typing  import Any
 
 __all__: Any
 __version__: str
@@ -14,20 +14,18 @@ __email__: str
 
 # Names in __all__ with no definition:
 #   ActivityNotFound
-#   CharacterNotFound
-#   CharacterTypeError
 #   ClanNotFound
 #   Class
 #   Component
 #   DamageType
 #   Dungeon
+#   Forbidden
 #   GameMode
 #   Gender
 #   HTTPException
-#   HashError
 #   Item
-#   JsonError
 #   MembershipType
+#   MembershipTypeError
 #   MilestoneType
 #   NotFound
 #   Place
@@ -35,7 +33,9 @@ __email__: str
 #   PlayerNotFound
 #   Race
 #   Raid
+#   ResponseError
 #   Stat
+#   Unauthorized
 #   UserNotFound
 #   Vendor
 #   WeaponType

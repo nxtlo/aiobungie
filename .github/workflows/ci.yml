@@ -52,7 +52,7 @@ jobs:
           python-version: 3.8
 
       - name: Deploy
-        uses: abatilo/actions-poetry@v2.0.0
+        uses: abatilo/actions-poetry@v2.1.2
         with:
           poetry-version: 3.8
 

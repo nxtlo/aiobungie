@@ -1,17 +1,39 @@
-![aiobungie open Issue](https://img.shields.io/github/issues/nxtlo/aiobungie)
-![aiobungie Python Version Support](https://img.shields.io/pypi/pyversions/aiobungie)
-![aiobungie PyPI last Version](https://img.shields.io/pypi/v/aiobungie?color=green)
-![aiobungie LICENSE](https://img.shields.io/pypi/l/aiobungie)
-[![CodeFactor](https://www.codefactor.io/repository/github/nxtlo/aiobungie/badge)](https://www.codefactor.io/repository/github/nxtlo/aiobungie)
+<div align="center">
+    <h1>aiobungie</h1>
+    <p>An Asynchronous statically typed API wrapper for the bungie API written in Python.</p>
+    <a href="https://codeclimate.com/github/nxtlo/aiobungie/maintainability">
+    <img src="https://api.codeclimate.com/v1/badges/09e71a0374875d4594f4/maintainability"/>
+    </a>
+    <a href="https://github.com/nxtlo/aiobungie/issues">
+    <img src="https://img.shields.io/github/issues/nxtlo/aiobungie"/>
+    </a>
+    <a href="http://python.org">
+    <img src="https://img.shields.io/badge/python-3.8%20%7C%203.9%20%7C%203.10dev-blue"/>
+    </a>
+    <a href="https://pypi.org/project/aiobungie/">
+    <img src="https://img.shields.io/pypi/v/aiobungie?color=green"/>
+    </a>
+    <a href="https://github.com/nxtlo/aiobungie/blob/master/LICENSE">
+    <img src="https://img.shields.io/pypi/l/aiobungie"/>
+    </a>
+    <a href="https://github.com/nxtlo/aiobungie/blob/master/LICENSE">
+    <img src="https://img.shields.io/pypi/l/aiobungie"/>
+    </a>
+    <a href="https://www.codefactor.io/repository/github/nxtlo/aiobungie/">
+    <img src="https://www.codefactor.io/repository/github/nxtlo/aiobungie/badge">
+    </a>
+    <a href="https://github.com/nxtlo/aiobungie/actions/workflows/ci.yml">
+    <img src="https://github.com/nxtlo/aiobungie/actions/workflows/ci.yml/badge.svg?branch=master">
+    </a>
+    <a href="https://codeclimate.com/github/nxtlo/aiobungie/test_coverage"><img src="https://api.codeclimate.com/v1/badges/09e71a0374875d4594f4/test_coverage" /></a>
 
-# aiobungie
+</div>
 
-An Asynchronous statically typed API wrapper for the bungie API written in Python.
-
-# Features
+# Key Features
 
 * Fully Asynchronous.
-* Easy to use.
+* Simplicity.
+* Efficient and optimized.
 * Statically typings and annotations.
 * All endpoints will be implemented.
 

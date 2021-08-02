@@ -214,7 +214,7 @@ class Client(impl.BaseClient):
         Returns
         --------
         `aiobungie.objects.Profile`
-            A bungie member profile.
+            An aiobungie member profile.
         """
         data = await self.http.fetch_profile(memberid, type)
         assert isinstance(data, dict)
@@ -237,7 +237,7 @@ class Client(impl.BaseClient):
         Returns
         --------
         `aiobungie.objects.Player`
-            a Destiny Player object
+            An aiobungie Destiny 2 Player object
         """
         resp = await self.http.fetch_player(name, type)
         assert isinstance(resp, list)
@@ -260,7 +260,7 @@ class Client(impl.BaseClient):
         Returns
         -------
         `aiobungie.objects.Character`
-            a Bungie character object.
+            An aiobungie character object.
 
         Raises
         ------
@@ -311,7 +311,7 @@ class Client(impl.BaseClient):
         Returns
         -------
         `aiobungie.objects.Activity`
-            A bungie Activity object.
+            An aiobungie Activity object.
 
         Raises
         ------
@@ -336,7 +336,7 @@ class Client(impl.BaseClient):
         Returns
         --------
         `aiobungie.objects.Application`
-            a Bungie application object.
+            An aiobungie application object.
         """
         resp = await self.http.fetch_app(appid)
         assert isinstance(resp, dict)
@@ -353,7 +353,7 @@ class Client(impl.BaseClient):
         Returns
         --------
         `aiobungie.objects.Clan`
-            A Bungie clan object
+            An aioungie clan object
         """
         resp = await self.http.fetch_clan_from_id(id)
         assert isinstance(resp, dict)
@@ -372,8 +372,27 @@ class Client(impl.BaseClient):
         Returns
         -------
         `aiobungie.objects.Clan`
-            A bungie clan object.
+            An aiobungie clan object.
         """
         resp = await self.http.fetch_clan(name, type)
         assert isinstance(resp, dict)
         return self._serialize.deseialize_clan(resp)
+
+    async def fetch_entity(self, type: str, hash: int, /) -> objects.Entity:
+        """Fetches a static definition of an entity given a type and its hash.
+
+        Paramaters
+        ----------
+        type: `builtins.str`
+            Entity's type definition.
+        hash: `builtins.int`
+            Entity's hash.
+
+        Returns
+        -------
+        `aiobungie.objects.Entity`
+            An aiobungie entity object.
+        """
+        resp = await self.http.fetch_entity(type, hash)
+        assert isinstance(resp, dict)
+        return self._serialize.deserialize_entity(resp)

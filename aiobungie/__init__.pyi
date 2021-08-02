@@ -1,7 +1,8 @@
+from typing import Any
+
+from .client import Client as Client
 from .error import *
 from .internal.enums import *
-from .client import Client as Client
-from typing  import Any
 
 __all__: Any
 __version__: str

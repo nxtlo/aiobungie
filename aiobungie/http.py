@@ -29,16 +29,8 @@ from __future__ import annotations
 __all__ = ("HTTPClient",)
 
 import http
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Coroutine,
-    Final,
-    NoReturn,
-    Optional,
-    TypeVar,
-    final,
-)
+from typing import (TYPE_CHECKING, Any, Coroutine, Final, NoReturn, Optional,
+                    TypeVar, final)
 
 import aiohttp
 
@@ -230,3 +222,6 @@ class HTTPClient:
             "GET",
             f"Destiny2/{int(type)}/Profile/{int(memberid)}/?components={int(Component.PROFILE)}",
         )
+
+    def fetch_entity(self, type: str, hash: int) -> Response[helpers.JsonDict]:
+        return self.fetch("GET", route=f"Destiny2/Manifest/{type}/{hash}")

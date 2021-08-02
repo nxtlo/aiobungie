@@ -27,6 +27,7 @@ import asyncio
 import time
 
 import aiobungie
+from aiobungie import objects
 from aiobungie.objects import (Activity, Application, Character, Clan, Player,
                                Profile, User)
 from tests.config import TOKEN, data
@@ -253,6 +254,10 @@ class ClientTest(aiobungie.Client):
         print(char.light)
         print(char.stats)
         print(char.class_type)
+        
+    async def entity_test(self) -> None:
+        entity: objects.Entity = await self.fetch_entity('DestinyInventoryItemDefinition', 3325463374)
+        print(repr(entity))
 
 
 client = ClientTest(TOKEN)
@@ -261,17 +266,18 @@ client = ClientTest(TOKEN)
 async def main() -> None:
     before = time.time()
     coros = [
-        client.char_test(),
-        client.clan_id_test(),
-        client.clan_test(),
-        client.app_test(),
-        client.user_id_test(),
-        client.user_test(),
-        client.player_test(),
-        client.profile_test(),
-        client.titan_test(),
-        client.hunter_test(),
-        client.warlock_test(),
+        client.entity_test()
+        # client.char_test(),
+        # client.clan_id_test(),
+        # client.clan_test(),
+        # client.app_test(),
+        # client.user_id_test(),
+        # client.user_test(),
+        # client.player_test(),
+        # client.profile_test(),
+        # client.titan_test(),
+        # client.hunter_test(),
+        # client.warlock_test(),
     ]
     await asyncio.gather(*coros)
     full = before - time.time()

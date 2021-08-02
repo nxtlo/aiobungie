@@ -24,17 +24,17 @@
 
 from __future__ import annotations
 
-from aiohttp.helpers import is_ip_address
-
 __all__: typing.Sequence[str] = ["Deserialize"]
 
 import logging
 import typing
 
-from aiobungie import error, http
+# Utils
+from aiobungie import error
 from aiobungie.internal import Image, Time, enums, impl
+# Objects
 from aiobungie.objects import application as app
-from aiobungie.objects import character, clans, player, profile, user
+from aiobungie.objects import character, clans, entity, player, profile, user
 
 from .helpers import JsonDict, JsonList
 
@@ -234,4 +234,33 @@ class Deserialize:
             character_ids=character_ids,
             power_cap=power_cap,
             app=self._rest,
+        )
+
+    def deserialize_entity(self, payload: JsonDict, /) -> entity.Entity:
+        props: JsonDict = payload["displayProperties"]
+        inventory: JsonDict = payload["inventory"]
+        return entity.Entity(
+            app=self._rest,
+            name=props["name"],
+            description=props["description"],
+            hash=payload["hash"],
+            index=payload["index"],
+            icon=Image(str(props["icon"])),
+            has_icon=props["hasIcon"],
+            water_mark=Image(str(payload["iconWatermark"])),
+            banner=payload["screenshot"],
+            about=payload["flavorText"],
+            type=enums.Item(payload["itemType"]),
+            bucket_type=enums.Item(inventory["bucketTypeHash"]),
+            type_name=payload["itemTypeDisplayName"],
+            tier=enums.ItemTier(inventory["tierTypeHash"]),
+            tier_name=inventory["tierTypeName"],
+            sub_type=enums.Item(payload["itemSubType"]),
+            item_class=enums.Class(payload["classType"]),
+            damage=enums.DamageType(payload["defaultDamageTypeHash"]),
+            summary_hash=payload["summaryItemHash"],
+            is_equippable=payload["equippable"],
+            stats=payload["stats"],
+            ammo_type=enums.AmmoType(payload["equippingBlock"]["ammoType"]),
+            lore_hash=payload.get("loreHash", None),
         )

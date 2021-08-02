@@ -42,10 +42,16 @@ log: typing.Final[logging.Logger] = logging.getLogger(__name__)
 
 @attr.s(kw_only=True, hash=True, weakref_slot=False, slots=True, init=True, eq=True)
 class ProfileComponentImpl(abc.ABC):
+    """
+    A partial interface that will/include all bungie profile components.
+
+    Some fields may or may not be available here.
+    """
+
     @property
     @abc.abstractmethod
     def app(self) -> impl.RESTful:
-        """A Client that we may use for making other requests."""
+        """A client that we may to make rest requests."""
 
     @property
     @abc.abstractmethod
@@ -152,10 +158,21 @@ class ProfileComponentImpl(abc.ABC):
 class Profile(ProfileComponentImpl):
     """Represents a Bungie member Profile.
 
-    A bungie profile have components, each component has different data,
-    for an example, The profile component returns the a `aiobungie.objects.Profile`
-    object which's this class, the character component returns `aiobungie.objects.Character` object, etc.
-    See `aiobungie.internal.enums.Component` to see the current available components.
+    Bungie profiles requires components. but in aiobungie
+    you don't need to select a specific component since they will all/will be
+    implemented.
+
+    for an example: to access the `Character` component you'll need to pass `?component=200` right?.
+    in aiobungie you can just do this.
+
+    ```py
+    profile = await client.fetch_profile("Fate")
+
+    # access the character component and get my warlock.
+    warlock = await profile.warlock()
+
+    assert warlock.light == 1320
+    ```
 
     Attributes
     ----------

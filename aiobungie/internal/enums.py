@@ -42,6 +42,8 @@ __all__: typing.Sequence[str] = (
     "DamageType",
     "Item",
     "Place",
+    "ItemTier",
+    "AmmoType",
 )
 
 import enum
@@ -202,7 +204,7 @@ class Vendor(enum.Enum):
 class GameMode(enum.Enum):
     """An Enum for all available gamemodes in Destiny 2."""
 
-    NOTHING = 0
+    NONE = 0
     STORY = 2
     STRIKE = 3
     RAID = 4
@@ -237,7 +239,7 @@ class GameMode(enum.Enum):
 class Component(enum.Enum):
     """An Enum for Destiny 2 Components."""
 
-    NOTHING = 0
+    NONE = 0
     PROFILE = 100
     SILVER = 105
     PROGRESSION = 104
@@ -346,6 +348,7 @@ class MilestoneType(enum.Enum):
 class Stat(enum.Enum):
     """An Enum for Destiny 2 character stats."""
 
+    NONE = 0
     MOBILITY = 2996146975
     RESILIENCE = 392767087
     RECOVERY = 1943323491
@@ -364,6 +367,7 @@ class Stat(enum.Enum):
 class WeaponType(enum.Enum):
     """Enums for The three Destiny Weapon Types"""
 
+    NONE = 0
     KINETIC = 1498876634
     ENERGY = 2465295065
     POWER = 953998645
@@ -379,6 +383,7 @@ class WeaponType(enum.Enum):
 class DamageType(enum.Enum):
     """Enums for Destiny Damage types"""
 
+    NONE = 0
     KINETIC = 3373582085
     SOLAR = 1847026933
     VOID = 3454344768
@@ -399,6 +404,8 @@ class Item(enum.Enum):
     """Enums for Destiny2's inventory bucket items"""
 
     NONE = 0
+    ARMOR = 2
+    WEAPON = 3
     AUTO_RIFLE = 6
     SHOTGUN = 7
     MACHINE_GUN = 8
@@ -417,11 +424,21 @@ class Item(enum.Enum):
     GRENADE_LAUNCHER = 23
     SUBMACHINE = 24
     TRACE_RIFLE = 25
-    HELMET = 26
-    GAUNTLET = 27
+
+    # the actual armor hash.
+    HELMET_ARMOR = 26
+    GAUNTLET_ARMOR = 27
     CHEST_ARMOR = 28
     LEG_ARMOR = 29
     CLASS_ARMOR = 30
+
+    # Only for inventory item definitions.
+    HELMET = 3448274439
+    GAUNTLET = 3551918588
+    CHEST = 14239492
+    LEG = 20886954
+    CLASS = 1585787867
+
     BOW = 31
     EMBLEMS = 4274335291
     LEGENDRY_SHARDS = 2689798309
@@ -431,8 +448,48 @@ class Item(enum.Enum):
     EMOTES = 3054419239
     SYNTHWAEV_TEMPLATE = 4092644517
 
+    # This is also required here since
+    # All bungie items are entities.
+    KINETIC = 1498876634
+    ENERGY = 2465295065
+    POWER = 953998645
+
     def __str__(self) -> str:
         return str(self.name)
 
     def __int__(self) -> int:
         return int(self.value)
+
+
+@typing.final
+class ItemTier(enum.Enum):
+    """An enum for a Destiny 2 item tier."""
+
+    NONE = 0
+    BASIC = 3340296461
+    COMMON = 2395677314
+    RARE = 2127292149
+    LEGENDERY = 4008398120
+    EXOTIC = 2759499571
+
+    def __int__(self) -> int:
+        return int(self.value)
+
+    def __str__(self) -> str:
+        return self.name
+
+
+@typing.final
+class AmmoType(enum.Enum):
+    """AN enum for Detyiny 2 ammo types."""
+
+    NONE = 0
+    PRIMARY = 1
+    SPECIAL = 2
+    HEAVY = 3
+
+    def __int__(self) -> int:
+        return int(self.value)
+
+    def __str__(self) -> str:
+        return self.name

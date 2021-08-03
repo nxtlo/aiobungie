@@ -46,7 +46,7 @@ class Deserialize:
 
     # This is actually inspired by hikari's entity factory.
 
-    __slots__: typing.Sequence[str] = "_rest"
+    __slots__: typing.Sequence[str] = ("_rest",)
 
     def __init__(self, rest: impl.RESTful) -> None:
         self._rest = rest

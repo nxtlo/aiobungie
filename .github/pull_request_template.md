@@ -3,4 +3,4 @@
 
 ### Checks
 <!-- Make sure you check box like `[x]` -->
-- [ ] I have run nox`` tests and it all tests passed.
+- [ ] I have run `nox` tests and all tests have passed.

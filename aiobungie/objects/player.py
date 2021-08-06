@@ -33,11 +33,11 @@ import attr
 
 from ..internal import Image
 from ..internal.enums import MembershipType
-from .user import UserCard
+from .user import UserLike
 
 
 @attr.s(hash=True, repr=True, init=True, kw_only=True, weakref_slot=False, slots=True)
-class Player(UserCard):
+class Player(UserLike):
     """Represents a Bungie Destiny 2 Player.
 
     Attributes
@@ -54,19 +54,19 @@ class Player(UserCard):
         The player's membership type.
     """
 
-    icon: Image = attr.ib(repr=False, hash=False, eq=False)
+    icon: Image = attr.field(repr=False, hash=False, eq=False)
     """The player's icon."""
 
-    id: int = attr.ib(repr=True, hash=True)
+    id: int = attr.field(repr=True, hash=True)
     """The player's id."""
 
-    name: str = attr.ib(repr=True, eq=False, hash=False)
+    name: str = attr.field(repr=True, eq=False, hash=False)
     """The player's name"""
 
-    is_public: bool = attr.ib(repr=True, eq=True, hash=False)
+    is_public: bool = attr.field(repr=True, eq=True, hash=False)
     """The player's profile privacy."""
 
-    type: MembershipType = attr.ib(repr=True, eq=True, hash=False)
+    type: MembershipType = attr.field(repr=True, eq=True, hash=False)
     """The profile's membership type."""
 
     @property
@@ -74,13 +74,8 @@ class Player(UserCard):
         """Returns a dict object of the player,
         This function is useful if you're binding to other REST apis.
         """
-        return dict(
-            id=self.id,
-            name=self.name,
-            is_public=self.is_public,
-            icon=str(self.icon),
-            type=self.type,
-        )
+
+        return attr.asdict(self)
 
     def __int__(self) -> int:
         return int(self.id)

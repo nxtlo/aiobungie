@@ -20,14 +20,20 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""A basic bungie entity definition implementation."""
+"""A basic bungie entity definition implementation.
+
+This is still not fully implemented and you may experince bugs.
+"""
 
 from __future__ import annotations
+
+from aiobungie.internal.enums import Place
 
 __all__: typing.Sequence[str] = ["PartialEntity", "Entity"]
 
 import abc
 import typing
+
 import attr
 
 from aiobungie.internal import assets, enums, impl
@@ -35,6 +41,11 @@ from aiobungie.internal import assets, enums, impl
 
 @attr.s(kw_only=True, hash=True, weakref_slot=False, slots=True, init=True, eq=True)
 class PartialEntity(abc.ABC):
+    """A partial interface for a bungie entity
+
+    All bungie entities has a hash and an index. but other fields
+    are optional. it may or may not be present.
+    """
 
     @property
     @abc.abstractmethod
@@ -43,18 +54,18 @@ class PartialEntity(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def name(self) -> str:
+    def name(self) -> typing.Optional[str]:
         """Entity's name"""
 
     @property
     @abc.abstractmethod
-    def icon(self) -> assets.Image:
-        """Entity's icon"""
+    def icon(self) -> typing.Optional[assets.Image]:
+        """An optional entity's icon if its filled."""
 
     @property
     @abc.abstractmethod
-    def banner(self) -> assets.Image:
-        """Entity's large banner."""
+    def banner(self) -> typing.Optional[assets.Image]:
+        """An optional benner of the entity if its filled."""
 
     @property
     @abc.abstractmethod
@@ -63,12 +74,12 @@ class PartialEntity(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def description(self) -> str:
+    def description(self) -> typing.Optional[str]:
         """Entity's description"""
 
     @property
     @abc.abstractmethod
-    def type_name(self) -> str:
+    def type_name(self) -> typing.Optional[str]:
         """Entity's type name. i.e., `Grenade Launcher`"""
 
     @property
@@ -78,12 +89,12 @@ class PartialEntity(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def tier(self) -> enums.ItemTier:
+    def tier(self) -> typing.Optional[enums.ItemTier]:
         """Entity's "tier."""
 
     @property
     @abc.abstractmethod
-    def tier_name(self) -> str:
+    def tier_name(self) -> typing.Optional[str]:
         """A `builtins.str` version of the entity's tier and name."""
 
     @property
@@ -93,12 +104,12 @@ class PartialEntity(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def bucket_type(self) -> typing.Optional[enums.Item]:
+    def bucket_type(self) -> typing.Optional[int]:
         """Entity's bucket type."""
 
     @property
     @abc.abstractmethod
-    def stats(self) -> typing.Dict[str, typing.Any]:  # TODO: Serialize this.
+    def stats(self) -> typing.Optional[typing.Dict[str, typing.Any]]:
         """Entity's stats. this currently returns a dict object
         of the stats.
         """
@@ -110,12 +121,12 @@ class PartialEntity(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def lore_hash(self) -> int:
+    def lore_hash(self) -> typing.Optional[int]:
         """The entity's lore hash"""
 
     @property
     @abc.abstractmethod
-    def item_class(self) -> enums.Class:
+    def item_class(self) -> typing.Optional[enums.Class]:
         """The entity's class type."""
 
     @property
@@ -127,12 +138,12 @@ class PartialEntity(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def is_equippable(self) -> bool:
+    def is_equippable(self) -> typing.Optional[bool]:
         """True if the entity can be equipped or False."""
 
     @property
     @abc.abstractmethod
-    def summary_hash(self) -> int:
+    def summary_hash(self) -> typing.Optional[int]:
         """Entity's summary hash."""
 
     @property
@@ -142,90 +153,110 @@ class PartialEntity(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def about(self) -> str:
+    def about(self) -> typing.Optional[str]:
         """Entity's about. you probably wanna use this instaed `Entity.description`"""
 
 
 @attr.s(kw_only=True, hash=True, weakref_slot=False, slots=True, init=True, eq=True)
 class Entity(PartialEntity):
-    """A concrate implementation of a Bungie Item Definition Entity."""
+    """A concrate implementation of a Bungie Item Definition Entity.
 
-    hash: int = attr.ib(repr=True, hash=True, eq=True)
+    As bungie says. using this endpoint is still in beta
+    and may experience rough edges and bugs.
+    """
+
+    hash: int = attr.field(repr=True, hash=True, eq=True)
     """Entity's hash."""
 
-    index: int = attr.ib(repr=True, hash=False, eq=False)
+    index: int = attr.field(repr=True, hash=False, eq=False)
     """Entity's index."""
 
-    app: impl.RESTful = attr.ib(repr=False, hash=False, eq=False)
+    app: impl.RESTful = attr.field(repr=False, hash=False, eq=False)
     """A client that we may use to make rest calls."""
 
-    name: str = attr.ib(repr=True, hash=False, eq=False)
+    name: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
     """Entity's name"""
 
-    icon: assets.Image = attr.ib(repr=False, hash=False, eq=False)
+    icon: typing.Optional[assets.Image] = attr.field(repr=False, hash=False, eq=False)
     """Entity's icon"""
 
-    has_icon: bool = attr.ib(repr=False, hash=False, eq=False)
+    has_icon: bool = attr.field(repr=False, hash=False, eq=False)
     """A boolean that returns True if the entity has an icon."""
 
-    description: str = attr.ib(repr=True, hash=False, eq=False)
+    description: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
     """Entity's description. most entities don't use this so consider using
     `Entity.about` if you found an empty string.
     """
 
-    type: typing.Optional[enums.Item] = attr.ib(repr=True, hash=False)
+    type: typing.Optional[enums.Item] = attr.field(repr=True, hash=False)
     """Entity's type."""
 
-    type_name: str = attr.ib(repr=True, hash=False, eq=False)
+    type_name: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
     """Entity's type name. i.e., `Grenade Launcher`"""
 
-    water_mark: typing.Optional[assets.Image] = attr.ib(
+    water_mark: typing.Optional[assets.Image] = attr.field(
         repr=False, hash=False, eq=False
     )
     """Entity's water mark."""
 
-    tier: enums.ItemTier = attr.ib(repr=True, hash=False, eq=False)
+    tier: typing.Optional[enums.ItemTier] = attr.field(repr=True, hash=False, eq=False)
     """Entity's "tier."""
 
-    tier_name: str = attr.ib(repr=False, eq=False)
+    tier_name: typing.Optional[str] = attr.field(repr=False, eq=False)
     """A string version of the item tier."""
 
-    bucket_type: typing.Optional[enums.Item] = attr.ib(repr=True, hash=False, eq=False)
+    bucket_type: typing.Optional[int] = attr.field(repr=True, hash=False, eq=False)
     """The entity's bucket type, None if unknown"""
 
-    stats: typing.Dict[str, typing.Any] = attr.ib(repr=False, hash=False, eq=False)
+    stats: typing.Optional[typing.Dict[str, typing.Any]] = attr.field(
+        repr=False, hash=False, eq=False
+    )
     """Entity's stats. this currently returns a dict object
     of the stats.
     """
 
-    ammo_type: typing.Optional[enums.AmmoType] = attr.ib(
+    ammo_type: typing.Optional[enums.AmmoType] = attr.field(
         repr=False, hash=False, eq=False
     )
     """Entity's ammo type if it was a wepon, otherwise it will return None"""
 
-    lore_hash: int = attr.ib(repr=False, hash=False, eq=False)
+    lore_hash: typing.Optional[int] = attr.field(repr=False, hash=False, eq=False)
     """The entity's lore hash"""
 
-    item_class: enums.Class = attr.ib(repr=False, hash=False, eq=False)
+    item_class: typing.Optional[enums.Class] = attr.field(
+        repr=False, hash=False, eq=False
+    )
     """The entity's class type."""
 
-    sub_type: typing.Optional[enums.Item] = attr.ib(repr=False, hash=False, eq=False)
+    sub_type: typing.Optional[enums.Item] = attr.field(repr=False, hash=False, eq=False)
     """The subtype of the entity. A type is a weapon or armor.
     A subtype is a handcannonn or leg armor for an example.
     """
 
-    is_equippable: bool = attr.ib(repr=False, hash=False, eq=False)
+    is_equippable: typing.Optional[bool] = attr.field(repr=False, hash=False, eq=False)
     """True if the entity can be equipped or False."""
 
-    summary_hash: int = attr.ib(repr=False, hash=False, eq=False)
+    summary_hash: typing.Optional[int] = attr.field(repr=False, hash=False, eq=False)
     """Entity's summary hash."""
 
-    damage: typing.Optional[enums.DamageType] = attr.ib(
+    damage: typing.Optional[enums.DamageType] = attr.field(
         repr=False, hash=False, eq=False
     )
     """Entity's damage type. Only works for weapons."""
 
-    about: str = attr.ib(repr=True, hash=False, eq=False)
+    about: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
     """Entity's about."""
 
-    banner: assets.Image = attr.ib(repr=False, eq=False, hash=False)
+    banner: typing.Optional[assets.Image] = attr.field(repr=False, eq=False, hash=False)
+    """Entity's banner."""
+
+    @property
+    def as_dict(self) -> typing.Dict[str, typing.Any]:
+        """Returns an instance of the object as a dict"""
+        return attr.asdict(self)
+
+    def __str__(self) -> str:
+        return str(self.name)
+
+    def __int__(self) -> int:
+        return self.hash

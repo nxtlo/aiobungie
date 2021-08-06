@@ -25,14 +25,20 @@
 
 from __future__ import annotations
 
-__all__: Sequence[str] = ["deprecated", "JsonDict", "JsonList"]
+__all__: Sequence[str] = ["deprecated", "JsonDict", "JsonList", "Undefined", "Unknown"]
 
 import warnings
 from functools import wraps
-from typing import Any, Callable, Dict, List, Sequence
+from typing import Any, Callable, Dict, List, Optional, Sequence
 
 JsonDict = Dict[str, Any]
 JsonList = List[Dict[str, Any]]
+
+# For stuff thats == ''
+Undefined: str = "Undefined"
+
+# For unknown stuff.
+Unknown: Optional[str] = ""
 
 
 def deprecated(func) -> Callable[[Any], None]:

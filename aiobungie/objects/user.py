@@ -25,7 +25,7 @@
 
 from __future__ import annotations
 
-__all__: Sequence[str] = ["User", "PartialUser", "UserCard"]
+__all__: Sequence[str] = ["User", "PartialUser", "UserLike"]
 
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Any, Dict, Optional, Sequence
@@ -143,43 +143,43 @@ class User(PartialUser):
             The user's avatar.
     """
 
-    id: int = attr.ib(hash=True, repr=True)
+    id: int = attr.field(hash=True, repr=True)
     """The user's id"""
 
-    created_at: datetime = attr.ib(hash=True, repr=True, eq=False)
+    created_at: datetime = attr.field(hash=True, repr=True, eq=False)
     """The user's creation date in UTC timezone."""
 
-    name: str = attr.ib(hash=False, eq=False, repr=True)
+    name: str = attr.field(hash=False, eq=False, repr=True)
     """The user's name."""
 
-    is_deleted: bool = attr.ib(repr=True, eq=False, hash=False)
+    is_deleted: bool = attr.field(repr=True, eq=False, hash=False)
     """Returns True if the user is deleted"""
 
-    about: Optional[str] = attr.ib(repr=True, hash=False, eq=False)
+    about: Optional[str] = attr.field(repr=True, hash=False, eq=False)
     """The user's about, Default is None if nothing is Found."""
 
-    updated_at: datetime = attr.ib(repr=True, hash=False, eq=False)
+    updated_at: datetime = attr.field(repr=True, hash=False, eq=False)
     """The user's last updated om UTC date."""
 
-    psn_name: Optional[str] = attr.ib(repr=True, hash=False, eq=False)
+    psn_name: Optional[str] = attr.field(repr=True, hash=False, eq=False)
     """The user's psn id if it exists."""
 
-    steam_name: Optional[str] = attr.ib(repr=True, hash=False, eq=False)
+    steam_name: Optional[str] = attr.field(repr=True, hash=False, eq=False)
     """The user's steam name if it exists"""
 
-    twitch_name: Optional[str] = attr.ib(repr=True, hash=False, eq=False)
+    twitch_name: Optional[str] = attr.field(repr=True, hash=False, eq=False)
     """The user's twitch name if it exists."""
 
-    blizzard_name: Optional[str] = attr.ib(repr=True, hash=False, eq=False)
+    blizzard_name: Optional[str] = attr.field(repr=True, hash=False, eq=False)
     """The user's blizzard name if it exists."""
 
-    status: Optional[str] = attr.ib(repr=True, hash=False, eq=False)
+    status: Optional[str] = attr.field(repr=True, hash=False, eq=False)
     """The user's bungie status text"""
 
-    locale: Optional[str] = attr.ib(repr=False, hash=False, eq=False)
+    locale: Optional[str] = attr.field(repr=False, hash=False, eq=False)
     """The user's locale."""
 
-    picture: Image = attr.ib(repr=False, hash=False, eq=False)
+    picture: Image = attr.field(repr=False, hash=False, eq=False)
     """The user's profile picture."""
 
     @property
@@ -187,25 +187,11 @@ class User(PartialUser):
         """Returns a dict object of the user,
         This function is useful if you're binding to other REST apis.
         """
-        return dict(
-            id=self.id,
-            name=self.name,
-            about=self.about,
-            created_at=self.created_at,
-            updated_at=self.updated_at,
-            is_deleted=self.is_deleted,
-            locale=self.locale,
-            steam_name=self.steam_name,
-            twitch_name=self.twitch_name,
-            psn_name=self.psn_name,
-            blizzard_name=self.blizzard_name,
-            status=self.status,
-            picture=str(self.picture),
-        )
+        return attr.asdict(self)
 
 
-class UserCard(ABC):
-    """The is meant for any Member / User / like objects."""
+class UserLike(ABC):
+    """The is meant for any Member / user / like objects."""
 
     __slots__: Sequence[str] = ()
 
@@ -232,3 +218,11 @@ class UserCard(ABC):
     @property
     def link(self) -> Optional[str]:
         """Returns the user's profile link."""
+
+    @property
+    @abstractmethod
+    def as_dict(self) -> Dict[str, Any]:
+        """Returns an instance of the object attrs as a dict."""
+        
+    def __str__(self) -> str:
+        return self.name

@@ -25,6 +25,8 @@
 
 from __future__ import annotations
 
+from sqlite3.dbapi2 import OptimizedUnicode
+
 __all__: t.Sequence[str] = ("Manifest",)
 
 import logging
@@ -101,3 +103,26 @@ class Manifest:
             "pgcrImage",
         )
         return Image(path=str(image))
+
+    def fetch(
+        self, definition: str, id: int, item: t.Optional[str] = None
+    ) -> t.Optional[t.Dict[t.Any, t.Any]]:
+        """Fetch something from the manifest databse.
+        This returns a `typing.Dict[typing.Any, typing.Any]`
+
+        Parameters
+        ----------
+        definition: `builtins.str`
+            The definition you want to fetch from.
+        id: `builtins.int`
+            The id of the entity.
+        item: `typing.Optional[builsint.str]`
+            An item to get from the dict.
+
+        Returns
+        -------
+        `typing.Optional[typing.Dict[typing.Any, typing.Any]]`
+        """
+        return self.db.fetch(
+            "SELECT json FROM {} WHERE id = ?".format(definition), (id,), item
+        )

@@ -243,7 +243,7 @@ class Client(impl.BaseClient):
         Returns
         --------
         `aiobungie.objects.Profile`
-            A bungie member profile.
+            An aiobungie member profile.
         &#34;&#34;&#34;
         data = await self.http.fetch_profile(memberid, type)
         assert isinstance(data, dict)
@@ -266,7 +266,7 @@ class Client(impl.BaseClient):
         Returns
         --------
         `aiobungie.objects.Player`
-            a Destiny Player object
+            An aiobungie Destiny 2 Player object
         &#34;&#34;&#34;
         resp = await self.http.fetch_player(name, type)
         assert isinstance(resp, list)
@@ -289,7 +289,7 @@ class Client(impl.BaseClient):
         Returns
         -------
         `aiobungie.objects.Character`
-            a Bungie character object.
+            An aiobungie character object.
 
         Raises
         ------
@@ -340,7 +340,7 @@ class Client(impl.BaseClient):
         Returns
         -------
         `aiobungie.objects.Activity`
-            A bungie Activity object.
+            An aiobungie Activity object.
 
         Raises
         ------
@@ -365,7 +365,7 @@ class Client(impl.BaseClient):
         Returns
         --------
         `aiobungie.objects.Application`
-            a Bungie application object.
+            An aiobungie application object.
         &#34;&#34;&#34;
         resp = await self.http.fetch_app(appid)
         assert isinstance(resp, dict)
@@ -382,7 +382,7 @@ class Client(impl.BaseClient):
         Returns
         --------
         `aiobungie.objects.Clan`
-            A Bungie clan object
+            An aioungie clan object
         &#34;&#34;&#34;
         resp = await self.http.fetch_clan_from_id(id)
         assert isinstance(resp, dict)
@@ -401,11 +401,30 @@ class Client(impl.BaseClient):
         Returns
         -------
         `aiobungie.objects.Clan`
-            A bungie clan object.
+            An aiobungie clan object.
         &#34;&#34;&#34;
         resp = await self.http.fetch_clan(name, type)
         assert isinstance(resp, dict)
-        return self._serialize.deseialize_clan(resp)</code></pre>
+        return self._serialize.deseialize_clan(resp)
+
+    async def fetch_entity(self, type: str, hash: int, /) -&gt; objects.Entity:
+        &#34;&#34;&#34;Fetches a static definition of an entity given a type and its hash.
+
+        Paramaters
+        ----------
+        type: `builtins.str`
+            Entity&#39;s type definition.
+        hash: `builtins.int`
+            Entity&#39;s hash.
+
+        Returns
+        -------
+        `aiobungie.objects.Entity`
+            An aiobungie entity object.
+        &#34;&#34;&#34;
+        resp = await self.http.fetch_entity(type, hash)
+        assert isinstance(resp, dict)
+        return self._serialize.deserialize_entity(resp)</code></pre>
 </details>
 </section>
 <section>
@@ -604,7 +623,7 @@ class Client(impl.BaseClient):
         Returns
         --------
         `aiobungie.objects.Profile`
-            A bungie member profile.
+            An aiobungie member profile.
         &#34;&#34;&#34;
         data = await self.http.fetch_profile(memberid, type)
         assert isinstance(data, dict)
@@ -627,7 +646,7 @@ class Client(impl.BaseClient):
         Returns
         --------
         `aiobungie.objects.Player`
-            a Destiny Player object
+            An aiobungie Destiny 2 Player object
         &#34;&#34;&#34;
         resp = await self.http.fetch_player(name, type)
         assert isinstance(resp, list)
@@ -650,7 +669,7 @@ class Client(impl.BaseClient):
         Returns
         -------
         `aiobungie.objects.Character`
-            a Bungie character object.
+            An aiobungie character object.
 
         Raises
         ------
@@ -701,7 +720,7 @@ class Client(impl.BaseClient):
         Returns
         -------
         `aiobungie.objects.Activity`
-            A bungie Activity object.
+            An aiobungie Activity object.
 
         Raises
         ------
@@ -726,7 +745,7 @@ class Client(impl.BaseClient):
         Returns
         --------
         `aiobungie.objects.Application`
-            a Bungie application object.
+            An aiobungie application object.
         &#34;&#34;&#34;
         resp = await self.http.fetch_app(appid)
         assert isinstance(resp, dict)
@@ -743,7 +762,7 @@ class Client(impl.BaseClient):
         Returns
         --------
         `aiobungie.objects.Clan`
-            A Bungie clan object
+            An aioungie clan object
         &#34;&#34;&#34;
         resp = await self.http.fetch_clan_from_id(id)
         assert isinstance(resp, dict)
@@ -762,11 +781,30 @@ class Client(impl.BaseClient):
         Returns
         -------
         `aiobungie.objects.Clan`
-            A bungie clan object.
+            An aiobungie clan object.
         &#34;&#34;&#34;
         resp = await self.http.fetch_clan(name, type)
         assert isinstance(resp, dict)
-        return self._serialize.deseialize_clan(resp)</code></pre>
+        return self._serialize.deseialize_clan(resp)
+
+    async def fetch_entity(self, type: str, hash: int, /) -&gt; objects.Entity:
+        &#34;&#34;&#34;Fetches a static definition of an entity given a type and its hash.
+
+        Paramaters
+        ----------
+        type: `builtins.str`
+            Entity&#39;s type definition.
+        hash: `builtins.int`
+            Entity&#39;s hash.
+
+        Returns
+        -------
+        `aiobungie.objects.Entity`
+            An aiobungie entity object.
+        &#34;&#34;&#34;
+        resp = await self.http.fetch_entity(type, hash)
+        assert isinstance(resp, dict)
+        return self._serialize.deserialize_entity(resp)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -855,7 +893,7 @@ def serialize(self) -&gt; serialize_.Deserialize:
 </dl>
 <h2 id="returns">Returns</h2>
 <p><code><a title="aiobungie.objects.Activity" href="objects/index.html#aiobungie.objects.Activity">Activity</a></code>
-A bungie Activity object.</p>
+An aiobungie Activity object.</p>
 <h2 id="raises">Raises</h2>
 <p><code>AttributeError</code>
 Using <code><a title="aiobungie.objects.Activity.hash" href="objects/index.html#aiobungie.objects.Activity.hash">Activity.hash</a></code> for non raid activies.
@@ -896,7 +934,7 @@ async def fetch_activity(
     Returns
     -------
     `aiobungie.objects.Activity`
-        A bungie Activity object.
+        An aiobungie Activity object.
 
     Raises
     ------
@@ -923,7 +961,7 @@ async def fetch_activity(
 </dl>
 <h2 id="returns">Returns</h2>
 <p><code><a title="aiobungie.objects.Application" href="objects/index.html#aiobungie.objects.Application">Application</a></code>
-a Bungie application object.</p></div>
+An aiobungie application object.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -939,7 +977,7 @@ a Bungie application object.</p></div>
     Returns
     --------
     `aiobungie.objects.Application`
-        a Bungie application object.
+        An aiobungie application object.
     &#34;&#34;&#34;
     resp = await self.http.fetch_app(appid)
     assert isinstance(resp, dict)
@@ -962,7 +1000,7 @@ a Bungie application object.</p></div>
 </dl>
 <h2 id="returns">Returns</h2>
 <p><code><a title="aiobungie.objects.Character" href="objects/index.html#aiobungie.objects.Character">Character</a></code>
-a Bungie character object.</p>
+An aiobungie character object.</p>
 <h2 id="raises">Raises</h2>
 <p><code><a title="aiobungie.error.CharacterError" href="error.html#aiobungie.error.CharacterError">CharacterError</a></code>
 raised if the Character was not found.</p></div>
@@ -987,7 +1025,7 @@ raised if the Character was not found.</p></div>
     Returns
     -------
     `aiobungie.objects.Character`
-        a Bungie character object.
+        An aiobungie character object.
 
     Raises
     ------
@@ -1016,7 +1054,7 @@ raised if the Character was not found.</p></div>
 The group type, Default is one.</p>
 <h2 id="returns">Returns</h2>
 <p><code><a title="aiobungie.objects.Clan" href="objects/index.html#aiobungie.objects.Clan">Clan</a></code>
-A bungie clan object.</p></div>
+An aiobungie clan object.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1034,7 +1072,7 @@ A bungie clan object.</p></div>
     Returns
     -------
     `aiobungie.objects.Clan`
-        A bungie clan object.
+        An aiobungie clan object.
     &#34;&#34;&#34;
     resp = await self.http.fetch_clan(name, type)
     assert isinstance(resp, dict)
@@ -1053,7 +1091,7 @@ A bungie clan object.</p></div>
 </dl>
 <h2 id="returns">Returns</h2>
 <p><code><a title="aiobungie.objects.Clan" href="objects/index.html#aiobungie.objects.Clan">Clan</a></code>
-A Bungie clan object</p></div>
+An aioungie clan object</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1069,11 +1107,48 @@ A Bungie clan object</p></div>
     Returns
     --------
     `aiobungie.objects.Clan`
-        A Bungie clan object
+        An aioungie clan object
     &#34;&#34;&#34;
     resp = await self.http.fetch_clan_from_id(id)
     assert isinstance(resp, dict)
     return self._serialize.deseialize_clan(resp)</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.client.Client.fetch_entity"><code class="name flex">
+<span>async def <span class="ident">fetch_entity</span></span>(<span>self, type: str, hash: int, /) ‑> <a title="aiobungie.objects.entity.Entity" href="objects/entity.html#aiobungie.objects.entity.Entity">Entity</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Fetches a static definition of an entity given a type and its hash.</p>
+<h2 id="paramaters">Paramaters</h2>
+<p>type: <code>builtins.str</code>
+Entity's type definition.
+hash: <code>builtins.int</code>
+Entity's hash.</p>
+<h2 id="returns">Returns</h2>
+<p><code><a title="aiobungie.objects.Entity" href="objects/index.html#aiobungie.objects.Entity">Entity</a></code>
+An aiobungie entity object.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_entity(self, type: str, hash: int, /) -&gt; objects.Entity:
+    &#34;&#34;&#34;Fetches a static definition of an entity given a type and its hash.
+
+    Paramaters
+    ----------
+    type: `builtins.str`
+        Entity&#39;s type definition.
+    hash: `builtins.int`
+        Entity&#39;s hash.
+
+    Returns
+    -------
+    `aiobungie.objects.Entity`
+        An aiobungie entity object.
+    &#34;&#34;&#34;
+    resp = await self.http.fetch_entity(type, hash)
+    assert isinstance(resp, dict)
+    return self._serialize.deserialize_entity(resp)</code></pre>
 </details>
 </dd>
 <dt id="aiobungie.client.Client.fetch_manifest"><code class="name flex">
@@ -1116,7 +1191,7 @@ A Manifest object.</p></div>
 </dl>
 <h2 id="returns">Returns</h2>
 <p><code><a title="aiobungie.objects.Player" href="objects/index.html#aiobungie.objects.Player">Player</a></code>
-a Destiny Player object</p></div>
+An aiobungie Destiny 2 Player object</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1138,7 +1213,7 @@ a Destiny Player object</p></div>
     Returns
     --------
     `aiobungie.objects.Player`
-        a Destiny Player object
+        An aiobungie Destiny 2 Player object
     &#34;&#34;&#34;
     resp = await self.http.fetch_player(name, type)
     assert isinstance(resp, list)
@@ -1158,7 +1233,7 @@ type: <code><a title="aiobungie.MembershipType" href="index.html#aiobungie.Membe
 A valid membership type.</p>
 <h2 id="returns">Returns</h2>
 <p><code><a title="aiobungie.objects.Profile" href="objects/index.html#aiobungie.objects.Profile">Profile</a></code>
-A bungie member profile.</p></div>
+An aiobungie member profile.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1184,7 +1259,7 @@ A bungie member profile.</p></div>
     Returns
     --------
     `aiobungie.objects.Profile`
-        A bungie member profile.
+        An aiobungie member profile.
     &#34;&#34;&#34;
     data = await self.http.fetch_profile(memberid, type)
     assert isinstance(data, dict)
@@ -1443,6 +1518,7 @@ setTimeout(() => input.focus(), 100);
 <li><code><a title="aiobungie.client.Client.fetch_character" href="#aiobungie.client.Client.fetch_character">fetch_character</a></code></li>
 <li><code><a title="aiobungie.client.Client.fetch_clan" href="#aiobungie.client.Client.fetch_clan">fetch_clan</a></code></li>
 <li><code><a title="aiobungie.client.Client.fetch_clan_from_id" href="#aiobungie.client.Client.fetch_clan_from_id">fetch_clan_from_id</a></code></li>
+<li><code><a title="aiobungie.client.Client.fetch_entity" href="#aiobungie.client.Client.fetch_entity">fetch_entity</a></code></li>
 <li><code><a title="aiobungie.client.Client.fetch_manifest" href="#aiobungie.client.Client.fetch_manifest">fetch_manifest</a></code></li>
 <li><code><a title="aiobungie.client.Client.fetch_player" href="#aiobungie.client.Client.fetch_player">fetch_player</a></code></li>
 <li><code><a title="aiobungie.client.Client.fetch_profile" href="#aiobungie.client.Client.fetch_profile">fetch_profile</a></code></li>

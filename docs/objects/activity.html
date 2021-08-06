@@ -159,44 +159,34 @@ class Activity(PartialActivity):
             When did the activity occurred in UTC datetime.
     &#34;&#34;&#34;
 
-    is_completed: str = attr.ib(repr=True, hash=False, eq=False)
+    is_completed: str = attr.field(repr=True, hash=False, eq=False)
 
-    hash: int = attr.ib(hash=True, repr=False, eq=False)
+    hash: int = attr.field(hash=True, repr=False, eq=False)
 
-    mode: GameMode = attr.ib(hash=False, repr=True)
+    mode: GameMode = attr.field(hash=False, repr=True)
 
-    kills: int = attr.ib(repr=False, eq=False, hash=False)
+    kills: int = attr.field(repr=False, eq=False, hash=False)
 
-    deaths: int = attr.ib(repr=False, eq=False, hash=False)
+    deaths: int = attr.field(repr=False, eq=False, hash=False)
 
-    when: Optional[datetime] = attr.ib(repr=True, eq=False, hash=False)
+    when: Optional[datetime] = attr.field(repr=True, eq=False, hash=False)
 
-    assists: int = attr.ib(repr=False, eq=False, hash=False)
+    assists: int = attr.field(repr=False, eq=False, hash=False)
 
-    duration: str = attr.ib(repr=True, eq=False, hash=False)
+    duration: str = attr.field(repr=True, eq=False, hash=False)
 
-    player_count: int = attr.ib(repr=False, eq=False, hash=False)
+    player_count: int = attr.field(repr=False, eq=False, hash=False)
 
-    member_type: MembershipType = attr.ib(repr=False, eq=False, hash=False)
+    member_type: MembershipType = attr.field(repr=False, eq=False, hash=False)
 
-    kd: int = attr.ib(repr=True, eq=False, hash=False)
+    kd: int = attr.field(repr=True, eq=False, hash=False)
 
+    @property
     def as_dict(self) -&gt; Dict[str, Any]:
         &#34;&#34;&#34;Returns a dict object of the Activity,
         This function is useful if you&#39;re binding to other REST apis.
         &#34;&#34;&#34;
-        return dict(
-            is_completed=self.is_completed,
-            mode=self.mode,
-            duration=self.duration,
-            player_cout=self.player_count,
-            when=time.Time.clean_date(str(self.when)),
-            kills=self.kills,
-            deaths=self.deaths,
-            assists=self.assists,
-            kd=self.kd,
-            member_type=MembershipType(str(self.member_type)),
-        )</code></pre>
+        return attr.asdict(self)</code></pre>
 </details>
 </section>
 <section>
@@ -277,44 +267,34 @@ class Activity(PartialActivity):
             When did the activity occurred in UTC datetime.
     &#34;&#34;&#34;
 
-    is_completed: str = attr.ib(repr=True, hash=False, eq=False)
+    is_completed: str = attr.field(repr=True, hash=False, eq=False)
 
-    hash: int = attr.ib(hash=True, repr=False, eq=False)
+    hash: int = attr.field(hash=True, repr=False, eq=False)
 
-    mode: GameMode = attr.ib(hash=False, repr=True)
+    mode: GameMode = attr.field(hash=False, repr=True)
 
-    kills: int = attr.ib(repr=False, eq=False, hash=False)
+    kills: int = attr.field(repr=False, eq=False, hash=False)
 
-    deaths: int = attr.ib(repr=False, eq=False, hash=False)
+    deaths: int = attr.field(repr=False, eq=False, hash=False)
 
-    when: Optional[datetime] = attr.ib(repr=True, eq=False, hash=False)
+    when: Optional[datetime] = attr.field(repr=True, eq=False, hash=False)
 
-    assists: int = attr.ib(repr=False, eq=False, hash=False)
+    assists: int = attr.field(repr=False, eq=False, hash=False)
 
-    duration: str = attr.ib(repr=True, eq=False, hash=False)
+    duration: str = attr.field(repr=True, eq=False, hash=False)
 
-    player_count: int = attr.ib(repr=False, eq=False, hash=False)
+    player_count: int = attr.field(repr=False, eq=False, hash=False)
 
-    member_type: MembershipType = attr.ib(repr=False, eq=False, hash=False)
+    member_type: MembershipType = attr.field(repr=False, eq=False, hash=False)
 
-    kd: int = attr.ib(repr=True, eq=False, hash=False)
+    kd: int = attr.field(repr=True, eq=False, hash=False)
 
+    @property
     def as_dict(self) -&gt; Dict[str, Any]:
         &#34;&#34;&#34;Returns a dict object of the Activity,
         This function is useful if you&#39;re binding to other REST apis.
         &#34;&#34;&#34;
-        return dict(
-            is_completed=self.is_completed,
-            mode=self.mode,
-            duration=self.duration,
-            player_cout=self.player_count,
-            when=time.Time.clean_date(str(self.when)),
-            kills=self.kills,
-            deaths=self.deaths,
-            assists=self.assists,
-            kd=self.kd,
-            member_type=MembershipType(str(self.member_type)),
-        )</code></pre>
+        return attr.asdict(self)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -323,6 +303,22 @@ class Activity(PartialActivity):
 </ul>
 <h3>Instance variables</h3>
 <dl>
+<dt id="aiobungie.objects.activity.Activity.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
+<dd>
+<div class="desc"><p>Returns a dict object of the Activity,
+This function is useful if you're binding to other REST apis.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def as_dict(self) -&gt; Dict[str, Any]:
+    &#34;&#34;&#34;Returns a dict object of the Activity,
+    This function is useful if you&#39;re binding to other REST apis.
+    &#34;&#34;&#34;
+    return attr.asdict(self)</code></pre>
+</details>
+</dd>
 <dt id="aiobungie.objects.activity.Activity.assists"><code class="name">var <span class="ident">assists</span></code></dt>
 <dd>
 <div class="desc"><p>Activity's total assists.</p></div>
@@ -366,37 +362,6 @@ class Activity(PartialActivity):
 <dt id="aiobungie.objects.activity.Activity.when"><code class="name">var <span class="ident">when</span></code></dt>
 <dd>
 <div class="desc"><p>A UTC datetime object of when was the activivy started.</p></div>
-</dd>
-</dl>
-<h3>Methods</h3>
-<dl>
-<dt id="aiobungie.objects.activity.Activity.as_dict"><code class="name flex">
-<span>def <span class="ident">as_dict</span></span>(<span>self) ‑> Dict[str, Any]</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Returns a dict object of the Activity,
-This function is useful if you're binding to other REST apis.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def as_dict(self) -&gt; Dict[str, Any]:
-    &#34;&#34;&#34;Returns a dict object of the Activity,
-    This function is useful if you&#39;re binding to other REST apis.
-    &#34;&#34;&#34;
-    return dict(
-        is_completed=self.is_completed,
-        mode=self.mode,
-        duration=self.duration,
-        player_cout=self.player_count,
-        when=time.Time.clean_date(str(self.when)),
-        kills=self.kills,
-        deaths=self.deaths,
-        assists=self.assists,
-        kd=self.kd,
-        member_type=MembershipType(str(self.member_type)),
-    )</code></pre>
-</details>
 </dd>
 </dl>
 </dd>

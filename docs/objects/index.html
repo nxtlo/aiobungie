@@ -64,6 +64,7 @@ __all__: Seq[str] = [
     &#34;ClanOwner&#34;,
     &#34;ApplicationOwner&#34;,
     &#34;Profile&#34;,
+    &#34;Entity&#34;,
 ]
 
 from typing import Sequence as Seq
@@ -72,6 +73,7 @@ from .activity import Activity
 from .application import Application, ApplicationOwner
 from .character import Character
 from .clans import Clan, ClanOwner
+from .entity import Entity
 from .player import Player
 from .profile import Profile
 from .user import User</code></pre>
@@ -95,6 +97,10 @@ from .user import User</code></pre>
 <dt><code class="name"><a title="aiobungie.objects.clans" href="clans.html">aiobungie.objects.clans</a></code></dt>
 <dd>
 <div class="desc"><p>Basic implementation for a Bungie a clan.</p></div>
+</dd>
+<dt><code class="name"><a title="aiobungie.objects.entity" href="entity.html">aiobungie.objects.entity</a></code></dt>
+<dd>
+<div class="desc"><p>A basic bungie entity definition implementation …</p></div>
 </dd>
 <dt><code class="name"><a title="aiobungie.objects.player" href="player.html">aiobungie.objects.player</a></code></dt>
 <dd>
@@ -186,44 +192,34 @@ class Activity(PartialActivity):
             When did the activity occurred in UTC datetime.
     &#34;&#34;&#34;
 
-    is_completed: str = attr.ib(repr=True, hash=False, eq=False)
+    is_completed: str = attr.field(repr=True, hash=False, eq=False)
 
-    hash: int = attr.ib(hash=True, repr=False, eq=False)
+    hash: int = attr.field(hash=True, repr=False, eq=False)
 
-    mode: GameMode = attr.ib(hash=False, repr=True)
+    mode: GameMode = attr.field(hash=False, repr=True)
 
-    kills: int = attr.ib(repr=False, eq=False, hash=False)
+    kills: int = attr.field(repr=False, eq=False, hash=False)
 
-    deaths: int = attr.ib(repr=False, eq=False, hash=False)
+    deaths: int = attr.field(repr=False, eq=False, hash=False)
 
-    when: Optional[datetime] = attr.ib(repr=True, eq=False, hash=False)
+    when: Optional[datetime] = attr.field(repr=True, eq=False, hash=False)
 
-    assists: int = attr.ib(repr=False, eq=False, hash=False)
+    assists: int = attr.field(repr=False, eq=False, hash=False)
 
-    duration: str = attr.ib(repr=True, eq=False, hash=False)
+    duration: str = attr.field(repr=True, eq=False, hash=False)
 
-    player_count: int = attr.ib(repr=False, eq=False, hash=False)
+    player_count: int = attr.field(repr=False, eq=False, hash=False)
 
-    member_type: MembershipType = attr.ib(repr=False, eq=False, hash=False)
+    member_type: MembershipType = attr.field(repr=False, eq=False, hash=False)
 
-    kd: int = attr.ib(repr=True, eq=False, hash=False)
+    kd: int = attr.field(repr=True, eq=False, hash=False)
 
+    @property
     def as_dict(self) -&gt; Dict[str, Any]:
         &#34;&#34;&#34;Returns a dict object of the Activity,
         This function is useful if you&#39;re binding to other REST apis.
         &#34;&#34;&#34;
-        return dict(
-            is_completed=self.is_completed,
-            mode=self.mode,
-            duration=self.duration,
-            player_cout=self.player_count,
-            when=time.Time.clean_date(str(self.when)),
-            kills=self.kills,
-            deaths=self.deaths,
-            assists=self.assists,
-            kd=self.kd,
-            member_type=MembershipType(str(self.member_type)),
-        )</code></pre>
+        return attr.asdict(self)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -232,6 +228,22 @@ class Activity(PartialActivity):
 </ul>
 <h3>Instance variables</h3>
 <dl>
+<dt id="aiobungie.objects.Activity.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
+<dd>
+<div class="desc"><p>Returns a dict object of the Activity,
+This function is useful if you're binding to other REST apis.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def as_dict(self) -&gt; Dict[str, Any]:
+    &#34;&#34;&#34;Returns a dict object of the Activity,
+    This function is useful if you&#39;re binding to other REST apis.
+    &#34;&#34;&#34;
+    return attr.asdict(self)</code></pre>
+</details>
+</dd>
 <dt id="aiobungie.objects.Activity.assists"><code class="name">var <span class="ident">assists</span></code></dt>
 <dd>
 <div class="desc"><p>Activity's total assists.</p></div>
@@ -275,37 +287,6 @@ class Activity(PartialActivity):
 <dt id="aiobungie.objects.Activity.when"><code class="name">var <span class="ident">when</span></code></dt>
 <dd>
 <div class="desc"><p>A UTC datetime object of when was the activivy started.</p></div>
-</dd>
-</dl>
-<h3>Methods</h3>
-<dl>
-<dt id="aiobungie.objects.Activity.as_dict"><code class="name flex">
-<span>def <span class="ident">as_dict</span></span>(<span>self) ‑> Dict[str, Any]</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Returns a dict object of the Activity,
-This function is useful if you're binding to other REST apis.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def as_dict(self) -&gt; Dict[str, Any]:
-    &#34;&#34;&#34;Returns a dict object of the Activity,
-    This function is useful if you&#39;re binding to other REST apis.
-    &#34;&#34;&#34;
-    return dict(
-        is_completed=self.is_completed,
-        mode=self.mode,
-        duration=self.duration,
-        player_cout=self.player_count,
-        when=time.Time.clean_date(str(self.when)),
-        kills=self.kills,
-        deaths=self.deaths,
-        assists=self.assists,
-        kd=self.kd,
-        member_type=MembershipType(str(self.member_type)),
-    )</code></pre>
-</details>
 </dd>
 </dl>
 </dd>
@@ -367,31 +348,31 @@ class Application:
         The app&#39;s scope
     &#34;&#34;&#34;
 
-    id: int = attr.ib(repr=True, hash=True, eq=True)
+    id: int = attr.field(repr=True, hash=True, eq=True)
     &#34;&#34;&#34;App id&#34;&#34;&#34;
 
-    name: str = attr.ib(repr=True, hash=False, eq=False)
+    name: str = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;App name&#34;&#34;&#34;
 
-    redirect_url: Optional[str] = attr.ib(repr=True)
+    redirect_url: Optional[str] = attr.field(repr=True)
     &#34;&#34;&#34;App redirect url&#34;&#34;&#34;
 
-    created_at: datetime = attr.ib(repr=True)
+    created_at: datetime = attr.field(repr=True)
     &#34;&#34;&#34;App creation date in UTC timezone&#34;&#34;&#34;
 
-    published_at: datetime = attr.ib(repr=True)
+    published_at: datetime = attr.field(repr=True)
     &#34;&#34;&#34;App&#39;s publish date in UTC timezone&#34;&#34;&#34;
 
-    link: str = attr.ib(repr=True)
+    link: str = attr.field(repr=True)
     &#34;&#34;&#34;App&#39;s link&#34;&#34;&#34;
 
-    status: int = attr.ib(repr=False)
+    status: int = attr.field(repr=False)
     &#34;&#34;&#34;App&#39;s status&#34;&#34;&#34;
 
-    scope: str = attr.ib(repr=False)
+    scope: str = attr.field(repr=False)
     &#34;&#34;&#34;App&#39;s scope&#34;&#34;&#34;
 
-    owner: ApplicationOwner = attr.ib(repr=True)
+    owner: ApplicationOwner = attr.field(repr=True)
     &#34;&#34;&#34;App&#39;s owner&#34;&#34;&#34;
 
     @property
@@ -404,17 +385,7 @@ class Application:
         &#34;&#34;&#34;Returns a dict object of the application,
         This function is useful if you&#39;re binding to other REST apis.
         &#34;&#34;&#34;
-        return dict(
-            id=self.id,
-            name=self.name,
-            link=self.link,
-            status=self.status,
-            redirect_url=self.redirect_url,
-            created_at=self.created_at,
-            published_at=self.published_at,
-            owner=self.owner,
-            scope=self.scope,
-        )</code></pre>
+        return attr.asdict(self)</code></pre>
 </details>
 <h3>Instance variables</h3>
 <dl>
@@ -431,17 +402,7 @@ def as_dict(self) -&gt; Dict[str, Any]:
     &#34;&#34;&#34;Returns a dict object of the application,
     This function is useful if you&#39;re binding to other REST apis.
     &#34;&#34;&#34;
-    return dict(
-        id=self.id,
-        name=self.name,
-        link=self.link,
-        status=self.status,
-        redirect_url=self.redirect_url,
-        created_at=self.created_at,
-        published_at=self.published_at,
-        owner=self.owner,
-        scope=self.scope,
-    )</code></pre>
+    return attr.asdict(self)</code></pre>
 </details>
 </dd>
 <dt id="aiobungie.objects.Application.created_at"><code class="name">var <span class="ident">created_at</span></code></dt>
@@ -520,7 +481,7 @@ def human_timedelta(self) -&gt; str:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@attr.s(hash=True, repr=True, init=True, kw_only=True, weakref_slot=False, slots=True)
-class ApplicationOwner(UserCard):
+class ApplicationOwner(UserLike):
     &#34;&#34;&#34;Represents a Bungie Application owner.
 
     Attributes
@@ -537,25 +498,26 @@ class ApplicationOwner(UserCard):
         The application owner&#39;s bungie membership type.
     &#34;&#34;&#34;
 
-    name: str = attr.ib(repr=True, hash=False, eq=False)
+    name: str = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;The application owner name.&#34;&#34;&#34;
 
-    type: enums.MembershipType = attr.ib(repr=True, hash=False, eq=True)
+    type: enums.MembershipType = attr.field(repr=True, hash=False, eq=True)
     &#34;&#34;&#34;The membership of the application owner.&#34;&#34;&#34;
 
-    id: int = attr.ib(repr=True, hash=True, eq=True)
+    id: int = attr.field(repr=True, hash=True, eq=True)
     &#34;&#34;&#34;The application owner&#39;s id.&#34;&#34;&#34;
 
-    icon: Image = attr.ib(repr=False)
+    icon: Image = attr.field(repr=False)
     &#34;&#34;&#34;The application owner&#39;s icon.&#34;&#34;&#34;
 
-    is_public: bool = attr.ib(repr=True)
+    is_public: bool = attr.field(repr=True)
     &#34;&#34;&#34;The application owner&#39;s profile privacy.&#34;&#34;&#34;
 
     @property
     def link(self) -&gt; str:
         return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;
 
+    @property
     def as_dict(self) -&gt; Dict[str, Any]:
         &#34;&#34;&#34;Returns a dict object of the application owner,
         This function is useful if you&#39;re binding to other REST apis.
@@ -570,11 +532,33 @@ class ApplicationOwner(UserCard):
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="aiobungie.objects.user.UserCard" href="user.html#aiobungie.objects.user.UserCard">UserCard</a></li>
+<li><a title="aiobungie.objects.user.UserLike" href="user.html#aiobungie.objects.user.UserLike">UserLike</a></li>
 <li>abc.ABC</li>
 </ul>
 <h3>Instance variables</h3>
 <dl>
+<dt id="aiobungie.objects.ApplicationOwner.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
+<dd>
+<div class="desc"><p>Returns a dict object of the application owner,
+This function is useful if you're binding to other REST apis.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def as_dict(self) -&gt; Dict[str, Any]:
+    &#34;&#34;&#34;Returns a dict object of the application owner,
+    This function is useful if you&#39;re binding to other REST apis.
+    &#34;&#34;&#34;
+    return dict(
+        id=self.id,
+        name=self.name,
+        is_public=self.is_public,
+        icon=str(self.icon),
+        type=self.type,
+    )</code></pre>
+</details>
+</dd>
 <dt id="aiobungie.objects.ApplicationOwner.icon"><code class="name">var <span class="ident">icon</span> : <a title="aiobungie.internal.assets.Image" href="../internal/assets.html#aiobungie.internal.assets.Image">Image</a></code></dt>
 <dd>
 <div class="desc"><p>The application owner's icon.</p></div>
@@ -591,7 +575,7 @@ class ApplicationOwner(UserCard):
 <dd>
 <p class="inheritance">
 <em>Inherited from:</em>
-<code><a title="aiobungie.objects.user.UserCard" href="user.html#aiobungie.objects.user.UserCard">UserCard</a></code>.<code><a title="aiobungie.objects.user.UserCard.link" href="user.html#aiobungie.objects.user.UserCard.link">link</a></code>
+<code><a title="aiobungie.objects.user.UserLike" href="user.html#aiobungie.objects.user.UserLike">UserLike</a></code>.<code><a title="aiobungie.objects.user.UserLike.link" href="user.html#aiobungie.objects.user.UserLike.link">link</a></code>
 </p>
 <div class="desc inherited"><p>Returns the user's profile link.</p></div>
 <details class="source">
@@ -610,32 +594,6 @@ def link(self) -&gt; str:
 <dt id="aiobungie.objects.ApplicationOwner.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="../internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
 <dd>
 <div class="desc"><p>The membership of the application owner.</p></div>
-</dd>
-</dl>
-<h3>Methods</h3>
-<dl>
-<dt id="aiobungie.objects.ApplicationOwner.as_dict"><code class="name flex">
-<span>def <span class="ident">as_dict</span></span>(<span>self) ‑> Dict[str, Any]</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Returns a dict object of the application owner,
-This function is useful if you're binding to other REST apis.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def as_dict(self) -&gt; Dict[str, Any]:
-    &#34;&#34;&#34;Returns a dict object of the application owner,
-    This function is useful if you&#39;re binding to other REST apis.
-    &#34;&#34;&#34;
-    return dict(
-        id=self.id,
-        name=self.name,
-        is_public=self.is_public,
-        icon=str(self.icon),
-        type=self.type,
-    )</code></pre>
-</details>
 </dd>
 </dl>
 </dd>
@@ -725,49 +683,49 @@ class Character(CharacterComponent):
             if no title is equipped.
     &#34;&#34;&#34;
 
-    id: int = attr.ib(hash=True, repr=True)
+    id: int = attr.field(hash=True, repr=True)
     &#34;&#34;&#34;Character&#39;s id&#34;&#34;&#34;
 
-    member_id: int = attr.ib(hash=True, repr=True)
+    member_id: int = attr.field(hash=True, repr=True)
     &#34;&#34;&#34;The character&#39;s member id.&#34;&#34;&#34;
 
-    member_type: enums.MembershipType = attr.ib(repr=True, hash=False)
+    member_type: enums.MembershipType = attr.field(repr=True, hash=False)
     &#34;&#34;&#34;The character&#39;s memberhip type.&#34;&#34;&#34;
 
-    light: int = attr.ib(repr=True, hash=False)
+    light: int = attr.field(repr=True, hash=False)
     &#34;&#34;&#34;Character&#39;s light&#34;&#34;&#34;
 
-    gender: enums.Gender = attr.ib(repr=True, hash=False)
+    gender: enums.Gender = attr.field(repr=True, hash=False)
     &#34;&#34;&#34;Character&#39;s gender&#34;&#34;&#34;
 
-    race: enums.Race = attr.ib(repr=True, hash=False)
+    race: enums.Race = attr.field(repr=True, hash=False)
     &#34;&#34;&#34;Character&#39;s race&#34;&#34;&#34;
 
-    emblem: Image = attr.ib(repr=False, hash=False)
+    emblem: Image = attr.field(repr=False, hash=False)
     &#34;&#34;&#34;Character&#39;s emblem&#34;&#34;&#34;
 
-    emblem_icon: Image = attr.ib(repr=False, hash=False)
+    emblem_icon: Image = attr.field(repr=False, hash=False)
     &#34;&#34;&#34;Character&#39;s emblem icon&#34;&#34;&#34;
 
-    emblem_hash: int = attr.ib(repr=False, hash=False)
+    emblem_hash: int = attr.field(repr=False, hash=False)
     &#34;&#34;&#34;Character&#39;s emblem hash.&#34;&#34;&#34;
 
-    last_played: datetime.datetime = attr.ib(repr=False, hash=False)
+    last_played: datetime.datetime = attr.field(repr=False, hash=False)
     &#34;&#34;&#34;Character&#39;s last played date.&#34;&#34;&#34;
 
-    total_played_time: str = attr.ib(repr=False, hash=False)
+    total_played_time: str = attr.field(repr=False, hash=False)
     &#34;&#34;&#34;Character&#39;s total plyed time minutes.&#34;&#34;&#34;
 
-    class_type: enums.Class = attr.ib(repr=True, hash=False)
+    class_type: enums.Class = attr.field(repr=True, hash=False)
     &#34;&#34;&#34;Character&#39;s class.&#34;&#34;&#34;
 
-    title_hash: typing.Optional[int] = attr.ib(repr=True, hash=False)
+    title_hash: typing.Optional[int] = attr.field(repr=True, hash=False)
     &#34;&#34;&#34;Character&#39;s equipped title hash.&#34;&#34;&#34;
 
-    level: int = attr.ib(repr=False, hash=False)
+    level: int = attr.field(repr=False, hash=False)
     &#34;&#34;&#34;Character&#39;s base level.&#34;&#34;&#34;
 
-    stats: enums.Stat = attr.ib(repr=False, hash=False)
+    stats: enums.Stat = attr.field(repr=False, hash=False)
     &#34;&#34;&#34;Character stats.&#34;&#34;&#34;
 
     @property
@@ -780,23 +738,7 @@ class Character(CharacterComponent):
         &#34;&#34;&#34;Returns a dict object of the character,
         This function is useful if you&#39;re binding to other REST apis.
         &#34;&#34;&#34;
-        return dict(
-            id=self.id,
-            light=self.light,
-            gender=self.gender,
-            race=self.race,
-            emblem=str(self.emblem),
-            emblem_icon=str(self.emblem_icon),
-            emblem_hash=self.emblem_hash,
-            last_played=self.last_played,
-            total_played_time=self.total_played_time,
-            member_id=self.member_id,
-            member_type=self.member_type,
-            cls=str(self.class_type),
-            level=self.level,
-            title_hash=self.title_hash,
-            stats=self.stats,
-        )
+        return attr.asdict(self)
 
     def __int__(self) -&gt; int:
         return int(self.id)</code></pre>
@@ -821,23 +763,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
     &#34;&#34;&#34;Returns a dict object of the character,
     This function is useful if you&#39;re binding to other REST apis.
     &#34;&#34;&#34;
-    return dict(
-        id=self.id,
-        light=self.light,
-        gender=self.gender,
-        race=self.race,
-        emblem=str(self.emblem),
-        emblem_icon=str(self.emblem_icon),
-        emblem_hash=self.emblem_hash,
-        last_played=self.last_played,
-        total_played_time=self.total_played_time,
-        member_id=self.member_id,
-        member_type=self.member_type,
-        cls=str(self.class_type),
-        level=self.level,
-        title_hash=self.title_hash,
-        stats=self.stats,
-    )</code></pre>
+    return attr.asdict(self)</code></pre>
 </details>
 </dd>
 <dt id="aiobungie.objects.Character.class_type"><code class="name">var <span class="ident">class_type</span> : <a title="aiobungie.internal.enums.Class" href="../internal/enums.html#aiobungie.internal.enums.Class">Class</a></code></dt>
@@ -987,37 +913,37 @@ class Clan:
         See `aiobungie.objects.ClanOwner` for info.
     &#34;&#34;&#34;
 
-    id: int = attr.ib(hash=True, repr=True, eq=True)
+    id: int = attr.field(hash=True, repr=True, eq=True)
     &#34;&#34;&#34;The clan id&#34;&#34;&#34;
 
-    name: str = attr.ib(repr=True)
+    name: str = attr.field(repr=True)
     &#34;&#34;&#34;The clan&#39;s name&#34;&#34;&#34;
 
-    created_at: datetime = attr.ib(repr=True)
+    created_at: datetime = attr.field(repr=True)
     &#34;&#34;&#34;Clan&#39;s creation date time in UTC.&#34;&#34;&#34;
 
-    member_count: int = attr.ib(repr=True)
+    member_count: int = attr.field(repr=True)
     &#34;&#34;&#34;Clan&#39;s member count.&#34;&#34;&#34;
 
-    description: str = attr.ib(repr=True, eq=False)
+    description: str = attr.field(repr=True, eq=False)
     &#34;&#34;&#34;Clan&#39;s description&#34;&#34;&#34;
 
-    is_public: bool = attr.ib(repr=True, eq=False)
+    is_public: bool = attr.field(repr=True, eq=False)
     &#34;&#34;&#34;Clan&#39;s privacy status.&#34;&#34;&#34;
 
-    banner: Image = attr.ib(repr=False)
+    banner: Image = attr.field(repr=False)
     &#34;&#34;&#34;Clan&#39;s banner&#34;&#34;&#34;
 
-    avatar: Image = attr.ib(repr=False)
+    avatar: Image = attr.field(repr=False)
     &#34;&#34;&#34;Clan&#39;s avatar&#34;&#34;&#34;
 
-    about: str = attr.ib(repr=True, eq=False)
+    about: str = attr.field(repr=True, eq=False)
     &#34;&#34;&#34;Clan&#39;s about title.&#34;&#34;&#34;
 
-    tags: List[str] = attr.ib(repr=False)
+    tags: List[str] = attr.field(repr=False)
     &#34;&#34;&#34;A list of the clan&#39;s tags.&#34;&#34;&#34;
 
-    owner: ClanOwner = attr.ib(repr=True)
+    owner: ClanOwner = attr.field(repr=True)
     &#34;&#34;&#34;The clan owner.&#34;&#34;&#34;
 
     @property
@@ -1031,20 +957,8 @@ class Clan:
 
     @property
     def as_dict(self) -&gt; Dict[str, Any]:
-        &#34;&#34;&#34;Returns a dict object of the player,
-        This function is useful if you&#39;re binding to other REST apis.
-        &#34;&#34;&#34;
-        return dict(
-            id=self.id,
-            name=self.name,
-            created_at=self.created_at,
-            is_public=self.is_public,
-            avatar=str(self.avatar),
-            banner=str(self.banner),
-            about=self.about,
-            description=self.description,
-            tags=self.tags,
-        )</code></pre>
+        &#34;&#34;&#34;Returns an instance of the object as a dict&#34;&#34;&#34;
+        return attr.asdict(self)</code></pre>
 </details>
 <h3>Instance variables</h3>
 <dl>
@@ -1054,28 +968,15 @@ class Clan:
 </dd>
 <dt id="aiobungie.objects.Clan.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
 <dd>
-<div class="desc"><p>Returns a dict object of the player,
-This function is useful if you're binding to other REST apis.</p></div>
+<div class="desc"><p>Returns an instance of the object as a dict</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
 def as_dict(self) -&gt; Dict[str, Any]:
-    &#34;&#34;&#34;Returns a dict object of the player,
-    This function is useful if you&#39;re binding to other REST apis.
-    &#34;&#34;&#34;
-    return dict(
-        id=self.id,
-        name=self.name,
-        created_at=self.created_at,
-        is_public=self.is_public,
-        avatar=str(self.avatar),
-        banner=str(self.banner),
-        about=self.about,
-        description=self.description,
-        tags=self.tags,
-    )</code></pre>
+    &#34;&#34;&#34;Returns an instance of the object as a dict&#34;&#34;&#34;
+    return attr.asdict(self)</code></pre>
 </details>
 </dd>
 <dt id="aiobungie.objects.Clan.avatar"><code class="name">var <span class="ident">avatar</span></code></dt>
@@ -1180,7 +1081,7 @@ if the membership type is not recognized it will return <code>builtins.NoneType<
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
-class ClanOwner(UserCard):
+class ClanOwner(UserLike):
     &#34;&#34;&#34;Represents a Bungie clan owner.
 
 
@@ -1208,31 +1109,31 @@ class ClanOwner(UserCard):
         returns a List of `builtins.int` of the clan owner&#39;s types.
     &#34;&#34;&#34;
 
-    id: int = attr.ib(hash=True, repr=True)
+    id: int = attr.field(hash=True, repr=True)
     &#34;&#34;&#34;The user id.&#34;&#34;&#34;
 
-    name: str = attr.ib(repr=True)
+    name: str = attr.field(repr=True)
     &#34;&#34;&#34;The user name.&#34;&#34;&#34;
 
-    is_public: Optional[bool] = attr.ib(hash=False, repr=True, eq=False)
+    is_public: Optional[bool] = attr.field(hash=False, repr=True, eq=False)
     &#34;&#34;&#34;Returns if the user profile is public or no.&#34;&#34;&#34;
 
-    type: MembershipType = attr.ib(hash=False, repr=True, eq=True)
+    type: MembershipType = attr.field(hash=False, repr=True, eq=True)
     &#34;&#34;&#34;Returns the membership type of the user.&#34;&#34;&#34;
 
-    types: Optional[List[int]] = attr.ib(hash=True, repr=False, eq=False)
+    types: Optional[List[int]] = attr.field(hash=True, repr=False, eq=False)
     &#34;&#34;&#34;Returns a list of the member ship&#39;s membership types.&#34;&#34;&#34;
 
-    last_online: datetime = attr.ib(repr=False)
+    last_online: datetime = attr.field(repr=False)
     &#34;&#34;&#34;An aware `datetime.datetime` object of the user&#39;s last online date UTC.&#34;&#34;&#34;
 
-    clan_id: int = attr.ib(repr=True)
+    clan_id: int = attr.field(repr=True)
     &#34;&#34;&#34;Owner&#39;s current clan id.&#34;&#34;&#34;
 
-    icon: Image = attr.ib(repr=False)
+    icon: Image = attr.field(repr=False)
     &#34;&#34;&#34;Owner&#39;s profile icom&#34;&#34;&#34;
 
-    joined_at: datetime = attr.ib(repr=True)
+    joined_at: datetime = attr.field(repr=True)
     &#34;&#34;&#34;Owner&#39;s bungie join date.&#34;&#34;&#34;
 
     @property
@@ -1250,21 +1151,11 @@ class ClanOwner(UserCard):
         &#34;&#34;&#34;Returns a dict object of the clan owner,
         This function is useful if you&#39;re binding to other REST apis.
         &#34;&#34;&#34;
-        return dict(
-            id=self.id,
-            name=self.name,
-            is_public=self.is_public,
-            icon=str(self.icon),
-            types=self.type,
-            joined_at=self.joined_at,
-            type=self.type,
-            clan_id=self.clan_id,
-            last_online=self.last_online,
-        )</code></pre>
+        return attr.asdict(self)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="aiobungie.objects.user.UserCard" href="user.html#aiobungie.objects.user.UserCard">UserCard</a></li>
+<li><a title="aiobungie.objects.user.UserLike" href="user.html#aiobungie.objects.user.UserLike">UserLike</a></li>
 <li>abc.ABC</li>
 </ul>
 <h3>Instance variables</h3>
@@ -1282,17 +1173,7 @@ def as_dict(self) -&gt; Dict[str, Any]:
     &#34;&#34;&#34;Returns a dict object of the clan owner,
     This function is useful if you&#39;re binding to other REST apis.
     &#34;&#34;&#34;
-    return dict(
-        id=self.id,
-        name=self.name,
-        is_public=self.is_public,
-        icon=str(self.icon),
-        types=self.type,
-        joined_at=self.joined_at,
-        type=self.type,
-        clan_id=self.clan_id,
-        last_online=self.last_online,
-    )</code></pre>
+    return attr.asdict(self)</code></pre>
 </details>
 </dd>
 <dt id="aiobungie.objects.ClanOwner.clan_id"><code class="name">var <span class="ident">clan_id</span></code></dt>
@@ -1324,7 +1205,7 @@ def human_timedelta(self) -&gt; str:
 <dd>
 <p class="inheritance">
 <em>Inherited from:</em>
-<code><a title="aiobungie.objects.user.UserCard" href="user.html#aiobungie.objects.user.UserCard">UserCard</a></code>.<code><a title="aiobungie.objects.user.UserCard.is_public" href="user.html#aiobungie.objects.user.UserCard.is_public">is_public</a></code>
+<code><a title="aiobungie.objects.user.UserLike" href="user.html#aiobungie.objects.user.UserLike">UserLike</a></code>.<code><a title="aiobungie.objects.user.UserLike.is_public" href="user.html#aiobungie.objects.user.UserLike.is_public">is_public</a></code>
 </p>
 <div class="desc inherited"><p>Returns if the user profile is public or no.</p></div>
 </dd>
@@ -1340,7 +1221,7 @@ def human_timedelta(self) -&gt; str:
 <dd>
 <p class="inheritance">
 <em>Inherited from:</em>
-<code><a title="aiobungie.objects.user.UserCard" href="user.html#aiobungie.objects.user.UserCard">UserCard</a></code>.<code><a title="aiobungie.objects.user.UserCard.link" href="user.html#aiobungie.objects.user.UserCard.link">link</a></code>
+<code><a title="aiobungie.objects.user.UserLike" href="user.html#aiobungie.objects.user.UserLike">UserLike</a></code>.<code><a title="aiobungie.objects.user.UserLike.link" href="user.html#aiobungie.objects.user.UserLike.link">link</a></code>
 </p>
 <div class="desc inherited"><p>Returns the user's profile link.</p></div>
 <details class="source">
@@ -1364,6 +1245,296 @@ def link(self) -&gt; Optional[str]:
 <dt id="aiobungie.objects.ClanOwner.types"><code class="name">var <span class="ident">types</span></code></dt>
 <dd>
 <div class="desc"><p>Returns a list of the member ship's membership types.</p></div>
+</dd>
+</dl>
+</dd>
+<dt id="aiobungie.objects.Entity"><code class="flex name class">
+<span>class <span class="ident">Entity</span></span>
+<span>(</span><span>*, hash: int, index: int, app: impl.RESTful, name: typing.Optional[str], icon: typing.Optional[assets.Image], has_icon: bool, description: typing.Optional[str], type: typing.Optional[enums.Item], type_name: typing.Optional[str], water_mark: typing.Optional[assets.Image], tier: typing.Optional[enums.ItemTier], tier_name: typing.Optional[str], bucket_type: typing.Optional[int], stats: typing.Optional[typing.Dict[str, typing.Any]], ammo_type: typing.Optional[enums.AmmoType], lore_hash: typing.Optional[int], item_class: typing.Optional[enums.Class], sub_type: typing.Optional[enums.Item], is_equippable: typing.Optional[bool], summary_hash: typing.Optional[int], damage: typing.Optional[enums.DamageType], about: typing.Optional[str], banner: typing.Optional[assets.Image])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A concrate implementation of a Bungie Item Definition Entity.</p>
+<p>As bungie says. using this endpoint is still in beta
+and may experience rough edges and bugs.</p>
+<p>Method generated by attrs for class Entity.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@attr.s(kw_only=True, hash=True, weakref_slot=False, slots=True, init=True, eq=True)
+class Entity(PartialEntity):
+    &#34;&#34;&#34;A concrate implementation of a Bungie Item Definition Entity.
+
+    As bungie says. using this endpoint is still in beta
+    and may experience rough edges and bugs.
+    &#34;&#34;&#34;
+
+    hash: int = attr.field(repr=True, hash=True, eq=True)
+    &#34;&#34;&#34;Entity&#39;s hash.&#34;&#34;&#34;
+
+    index: int = attr.field(repr=True, hash=False, eq=False)
+    &#34;&#34;&#34;Entity&#39;s index.&#34;&#34;&#34;
+
+    app: impl.RESTful = attr.field(repr=False, hash=False, eq=False)
+    &#34;&#34;&#34;A client that we may use to make rest calls.&#34;&#34;&#34;
+
+    name: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    &#34;&#34;&#34;Entity&#39;s name&#34;&#34;&#34;
+
+    icon: typing.Optional[assets.Image] = attr.field(repr=False, hash=False, eq=False)
+    &#34;&#34;&#34;Entity&#39;s icon&#34;&#34;&#34;
+
+    has_icon: bool = attr.field(repr=False, hash=False, eq=False)
+    &#34;&#34;&#34;A boolean that returns True if the entity has an icon.&#34;&#34;&#34;
+
+    description: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    &#34;&#34;&#34;Entity&#39;s description. most entities don&#39;t use this so consider using
+    `Entity.about` if you found an empty string.
+    &#34;&#34;&#34;
+
+    type: typing.Optional[enums.Item] = attr.field(repr=True, hash=False)
+    &#34;&#34;&#34;Entity&#39;s type.&#34;&#34;&#34;
+
+    type_name: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    &#34;&#34;&#34;Entity&#39;s type name. i.e., `Grenade Launcher`&#34;&#34;&#34;
+
+    water_mark: typing.Optional[assets.Image] = attr.field(
+        repr=False, hash=False, eq=False
+    )
+    &#34;&#34;&#34;Entity&#39;s water mark.&#34;&#34;&#34;
+
+    tier: typing.Optional[enums.ItemTier] = attr.field(repr=True, hash=False, eq=False)
+    &#34;&#34;&#34;Entity&#39;s &#34;tier.&#34;&#34;&#34;
+
+    tier_name: typing.Optional[str] = attr.field(repr=False, eq=False)
+    &#34;&#34;&#34;A string version of the item tier.&#34;&#34;&#34;
+
+    bucket_type: typing.Optional[int] = attr.field(repr=True, hash=False, eq=False)
+    &#34;&#34;&#34;The entity&#39;s bucket type, None if unknown&#34;&#34;&#34;
+
+    stats: typing.Optional[typing.Dict[str, typing.Any]] = attr.field(
+        repr=False, hash=False, eq=False
+    )
+    &#34;&#34;&#34;Entity&#39;s stats. this currently returns a dict object
+    of the stats.
+    &#34;&#34;&#34;
+
+    ammo_type: typing.Optional[enums.AmmoType] = attr.field(
+        repr=False, hash=False, eq=False
+    )
+    &#34;&#34;&#34;Entity&#39;s ammo type if it was a wepon, otherwise it will return None&#34;&#34;&#34;
+
+    lore_hash: typing.Optional[int] = attr.field(repr=False, hash=False, eq=False)
+    &#34;&#34;&#34;The entity&#39;s lore hash&#34;&#34;&#34;
+
+    item_class: typing.Optional[enums.Class] = attr.field(
+        repr=False, hash=False, eq=False
+    )
+    &#34;&#34;&#34;The entity&#39;s class type.&#34;&#34;&#34;
+
+    sub_type: typing.Optional[enums.Item] = attr.field(repr=False, hash=False, eq=False)
+    &#34;&#34;&#34;The subtype of the entity. A type is a weapon or armor.
+    A subtype is a handcannonn or leg armor for an example.
+    &#34;&#34;&#34;
+
+    is_equippable: typing.Optional[bool] = attr.field(repr=False, hash=False, eq=False)
+    &#34;&#34;&#34;True if the entity can be equipped or False.&#34;&#34;&#34;
+
+    summary_hash: typing.Optional[int] = attr.field(repr=False, hash=False, eq=False)
+    &#34;&#34;&#34;Entity&#39;s summary hash.&#34;&#34;&#34;
+
+    damage: typing.Optional[enums.DamageType] = attr.field(
+        repr=False, hash=False, eq=False
+    )
+    &#34;&#34;&#34;Entity&#39;s damage type. Only works for weapons.&#34;&#34;&#34;
+
+    about: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    &#34;&#34;&#34;Entity&#39;s about.&#34;&#34;&#34;
+
+    banner: typing.Optional[assets.Image] = attr.field(repr=False, eq=False, hash=False)
+    &#34;&#34;&#34;Entity&#39;s banner.&#34;&#34;&#34;
+
+    @property
+    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
+        &#34;&#34;&#34;Returns an instance of the object as a dict&#34;&#34;&#34;
+        return attr.asdict(self)
+
+    def __str__(self) -&gt; str:
+        return str(self.name)
+
+    def __int__(self) -&gt; int:
+        return self.hash</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="aiobungie.objects.entity.PartialEntity" href="entity.html#aiobungie.objects.entity.PartialEntity">PartialEntity</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="aiobungie.objects.Entity.about"><code class="name">var <span class="ident">about</span> : Optional[str]</code></dt>
+<dd>
+<div class="desc"><p>Entity's about.</p></div>
+</dd>
+<dt id="aiobungie.objects.Entity.ammo_type"><code class="name">var <span class="ident">ammo_type</span> : Optional[<a title="aiobungie.internal.enums.AmmoType" href="../internal/enums.html#aiobungie.internal.enums.AmmoType">AmmoType</a>]</code></dt>
+<dd>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="aiobungie.objects.entity.PartialEntity" href="entity.html#aiobungie.objects.entity.PartialEntity">PartialEntity</a></code>.<code><a title="aiobungie.objects.entity.PartialEntity.ammo_type" href="entity.html#aiobungie.objects.entity.PartialEntity.ammo_type">ammo_type</a></code>
+</p>
+<div class="desc inherited"><p>Entity's ammo type if it was a wepon, otherwise it will return None</p></div>
+</dd>
+<dt id="aiobungie.objects.Entity.app"><code class="name">var <span class="ident">app</span> : <a title="aiobungie.internal.impl.RESTful" href="../internal/impl.html#aiobungie.internal.impl.RESTful">RESTful</a></code></dt>
+<dd>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="aiobungie.objects.entity.PartialEntity" href="entity.html#aiobungie.objects.entity.PartialEntity">PartialEntity</a></code>.<code><a title="aiobungie.objects.entity.PartialEntity.app" href="entity.html#aiobungie.objects.entity.PartialEntity.app">app</a></code>
+</p>
+<div class="desc inherited"><p>A client that we may use to make rest calls.</p></div>
+</dd>
+<dt id="aiobungie.objects.Entity.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
+<dd>
+<div class="desc"><p>Returns an instance of the object as a dict</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
+    &#34;&#34;&#34;Returns an instance of the object as a dict&#34;&#34;&#34;
+    return attr.asdict(self)</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.objects.Entity.banner"><code class="name">var <span class="ident">banner</span> : Optional[<a title="aiobungie.internal.assets.Image" href="../internal/assets.html#aiobungie.internal.assets.Image">Image</a>]</code></dt>
+<dd>
+<div class="desc"><p>Entity's banner.</p></div>
+</dd>
+<dt id="aiobungie.objects.Entity.bucket_type"><code class="name">var <span class="ident">bucket_type</span> : Optional[int]</code></dt>
+<dd>
+<div class="desc"><p>The entity's bucket type, None if unknown</p></div>
+</dd>
+<dt id="aiobungie.objects.Entity.damage"><code class="name">var <span class="ident">damage</span> : Optional[<a title="aiobungie.internal.enums.DamageType" href="../internal/enums.html#aiobungie.internal.enums.DamageType">DamageType</a>]</code></dt>
+<dd>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="aiobungie.objects.entity.PartialEntity" href="entity.html#aiobungie.objects.entity.PartialEntity">PartialEntity</a></code>.<code><a title="aiobungie.objects.entity.PartialEntity.damage" href="entity.html#aiobungie.objects.entity.PartialEntity.damage">damage</a></code>
+</p>
+<div class="desc inherited"><p>Entity's damage type. Only works for weapons.</p></div>
+</dd>
+<dt id="aiobungie.objects.Entity.description"><code class="name">var <span class="ident">description</span> : Optional[str]</code></dt>
+<dd>
+<div class="desc"><p>Entity's description. most entities don't use this so consider using
+<code><a title="aiobungie.objects.Entity.about" href="#aiobungie.objects.Entity.about">Entity.about</a></code> if you found an empty string.</p></div>
+</dd>
+<dt id="aiobungie.objects.Entity.has_icon"><code class="name">var <span class="ident">has_icon</span> : bool</code></dt>
+<dd>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="aiobungie.objects.entity.PartialEntity" href="entity.html#aiobungie.objects.entity.PartialEntity">PartialEntity</a></code>.<code><a title="aiobungie.objects.entity.PartialEntity.has_icon" href="entity.html#aiobungie.objects.entity.PartialEntity.has_icon">has_icon</a></code>
+</p>
+<div class="desc inherited"><p>A boolean that returns True if the entity has an icon.</p></div>
+</dd>
+<dt id="aiobungie.objects.Entity.hash"><code class="name">var <span class="ident">hash</span> : int</code></dt>
+<dd>
+<div class="desc"><p>Entity's hash.</p></div>
+</dd>
+<dt id="aiobungie.objects.Entity.icon"><code class="name">var <span class="ident">icon</span> : Optional[<a title="aiobungie.internal.assets.Image" href="../internal/assets.html#aiobungie.internal.assets.Image">Image</a>]</code></dt>
+<dd>
+<div class="desc"><p>Entity's icon</p></div>
+</dd>
+<dt id="aiobungie.objects.Entity.index"><code class="name">var <span class="ident">index</span> : int</code></dt>
+<dd>
+<div class="desc"><p>Entity's index.</p></div>
+</dd>
+<dt id="aiobungie.objects.Entity.is_equippable"><code class="name">var <span class="ident">is_equippable</span> : Optional[bool]</code></dt>
+<dd>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="aiobungie.objects.entity.PartialEntity" href="entity.html#aiobungie.objects.entity.PartialEntity">PartialEntity</a></code>.<code><a title="aiobungie.objects.entity.PartialEntity.is_equippable" href="entity.html#aiobungie.objects.entity.PartialEntity.is_equippable">is_equippable</a></code>
+</p>
+<div class="desc inherited"><p>True if the entity can be equipped or False.</p></div>
+</dd>
+<dt id="aiobungie.objects.Entity.item_class"><code class="name">var <span class="ident">item_class</span> : Optional[<a title="aiobungie.internal.enums.Class" href="../internal/enums.html#aiobungie.internal.enums.Class">Class</a>]</code></dt>
+<dd>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="aiobungie.objects.entity.PartialEntity" href="entity.html#aiobungie.objects.entity.PartialEntity">PartialEntity</a></code>.<code><a title="aiobungie.objects.entity.PartialEntity.item_class" href="entity.html#aiobungie.objects.entity.PartialEntity.item_class">item_class</a></code>
+</p>
+<div class="desc inherited"><p>The entity's class type.</p></div>
+</dd>
+<dt id="aiobungie.objects.Entity.lore_hash"><code class="name">var <span class="ident">lore_hash</span> : Optional[int]</code></dt>
+<dd>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="aiobungie.objects.entity.PartialEntity" href="entity.html#aiobungie.objects.entity.PartialEntity">PartialEntity</a></code>.<code><a title="aiobungie.objects.entity.PartialEntity.lore_hash" href="entity.html#aiobungie.objects.entity.PartialEntity.lore_hash">lore_hash</a></code>
+</p>
+<div class="desc inherited"><p>The entity's lore hash</p></div>
+</dd>
+<dt id="aiobungie.objects.Entity.name"><code class="name">var <span class="ident">name</span> : Optional[str]</code></dt>
+<dd>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="aiobungie.objects.entity.PartialEntity" href="entity.html#aiobungie.objects.entity.PartialEntity">PartialEntity</a></code>.<code><a title="aiobungie.objects.entity.PartialEntity.name" href="entity.html#aiobungie.objects.entity.PartialEntity.name">name</a></code>
+</p>
+<div class="desc inherited"><p>Entity's name</p></div>
+</dd>
+<dt id="aiobungie.objects.Entity.stats"><code class="name">var <span class="ident">stats</span> : Optional[Dict[str, Any]]</code></dt>
+<dd>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="aiobungie.objects.entity.PartialEntity" href="entity.html#aiobungie.objects.entity.PartialEntity">PartialEntity</a></code>.<code><a title="aiobungie.objects.entity.PartialEntity.stats" href="entity.html#aiobungie.objects.entity.PartialEntity.stats">stats</a></code>
+</p>
+<div class="desc inherited"><p>Entity's stats. this currently returns a dict object
+of the stats.</p></div>
+</dd>
+<dt id="aiobungie.objects.Entity.sub_type"><code class="name">var <span class="ident">sub_type</span> : Optional[<a title="aiobungie.internal.enums.Item" href="../internal/enums.html#aiobungie.internal.enums.Item">Item</a>]</code></dt>
+<dd>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="aiobungie.objects.entity.PartialEntity" href="entity.html#aiobungie.objects.entity.PartialEntity">PartialEntity</a></code>.<code><a title="aiobungie.objects.entity.PartialEntity.sub_type" href="entity.html#aiobungie.objects.entity.PartialEntity.sub_type">sub_type</a></code>
+</p>
+<div class="desc inherited"><p>The subtype of the entity. A type is a weapon or armor.
+A subtype is a handcannonn or leg armor for an example.</p></div>
+</dd>
+<dt id="aiobungie.objects.Entity.summary_hash"><code class="name">var <span class="ident">summary_hash</span> : Optional[int]</code></dt>
+<dd>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="aiobungie.objects.entity.PartialEntity" href="entity.html#aiobungie.objects.entity.PartialEntity">PartialEntity</a></code>.<code><a title="aiobungie.objects.entity.PartialEntity.summary_hash" href="entity.html#aiobungie.objects.entity.PartialEntity.summary_hash">summary_hash</a></code>
+</p>
+<div class="desc inherited"><p>Entity's summary hash.</p></div>
+</dd>
+<dt id="aiobungie.objects.Entity.tier"><code class="name">var <span class="ident">tier</span> : Optional[<a title="aiobungie.internal.enums.ItemTier" href="../internal/enums.html#aiobungie.internal.enums.ItemTier">ItemTier</a>]</code></dt>
+<dd>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="aiobungie.objects.entity.PartialEntity" href="entity.html#aiobungie.objects.entity.PartialEntity">PartialEntity</a></code>.<code><a title="aiobungie.objects.entity.PartialEntity.tier" href="entity.html#aiobungie.objects.entity.PartialEntity.tier">tier</a></code>
+</p>
+<div class="desc inherited"><p>Entity's "tier.</p></div>
+</dd>
+<dt id="aiobungie.objects.Entity.tier_name"><code class="name">var <span class="ident">tier_name</span> : Optional[str]</code></dt>
+<dd>
+<div class="desc"><p>A string version of the item tier.</p></div>
+</dd>
+<dt id="aiobungie.objects.Entity.type"><code class="name">var <span class="ident">type</span> : Optional[<a title="aiobungie.internal.enums.Item" href="../internal/enums.html#aiobungie.internal.enums.Item">Item</a>]</code></dt>
+<dd>
+<div class="desc"><p>Entity's type.</p></div>
+</dd>
+<dt id="aiobungie.objects.Entity.type_name"><code class="name">var <span class="ident">type_name</span> : Optional[str]</code></dt>
+<dd>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="aiobungie.objects.entity.PartialEntity" href="entity.html#aiobungie.objects.entity.PartialEntity">PartialEntity</a></code>.<code><a title="aiobungie.objects.entity.PartialEntity.type_name" href="entity.html#aiobungie.objects.entity.PartialEntity.type_name">type_name</a></code>
+</p>
+<div class="desc inherited"><p>Entity's type name. i.e., <code>Grenade Launcher</code></p></div>
+</dd>
+<dt id="aiobungie.objects.Entity.water_mark"><code class="name">var <span class="ident">water_mark</span> : Optional[<a title="aiobungie.internal.assets.Image" href="../internal/assets.html#aiobungie.internal.assets.Image">Image</a>]</code></dt>
+<dd>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="aiobungie.objects.entity.PartialEntity" href="entity.html#aiobungie.objects.entity.PartialEntity">PartialEntity</a></code>.<code><a title="aiobungie.objects.entity.PartialEntity.water_mark" href="entity.html#aiobungie.objects.entity.PartialEntity.water_mark">water_mark</a></code>
+</p>
+<div class="desc inherited"><p>Entity's water mark.</p></div>
 </dd>
 </dl>
 </dd>
@@ -1392,7 +1563,7 @@ def link(self) -&gt; Optional[str]:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@attr.s(hash=True, repr=True, init=True, kw_only=True, weakref_slot=False, slots=True)
-class Player(UserCard):
+class Player(UserLike):
     &#34;&#34;&#34;Represents a Bungie Destiny 2 Player.
 
     Attributes
@@ -1409,19 +1580,19 @@ class Player(UserCard):
         The player&#39;s membership type.
     &#34;&#34;&#34;
 
-    icon: Image = attr.ib(repr=False, hash=False, eq=False)
+    icon: Image = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;The player&#39;s icon.&#34;&#34;&#34;
 
-    id: int = attr.ib(repr=True, hash=True)
+    id: int = attr.field(repr=True, hash=True)
     &#34;&#34;&#34;The player&#39;s id.&#34;&#34;&#34;
 
-    name: str = attr.ib(repr=True, eq=False, hash=False)
+    name: str = attr.field(repr=True, eq=False, hash=False)
     &#34;&#34;&#34;The player&#39;s name&#34;&#34;&#34;
 
-    is_public: bool = attr.ib(repr=True, eq=True, hash=False)
+    is_public: bool = attr.field(repr=True, eq=True, hash=False)
     &#34;&#34;&#34;The player&#39;s profile privacy.&#34;&#34;&#34;
 
-    type: MembershipType = attr.ib(repr=True, eq=True, hash=False)
+    type: MembershipType = attr.field(repr=True, eq=True, hash=False)
     &#34;&#34;&#34;The profile&#39;s membership type.&#34;&#34;&#34;
 
     @property
@@ -1429,20 +1600,15 @@ class Player(UserCard):
         &#34;&#34;&#34;Returns a dict object of the player,
         This function is useful if you&#39;re binding to other REST apis.
         &#34;&#34;&#34;
-        return dict(
-            id=self.id,
-            name=self.name,
-            is_public=self.is_public,
-            icon=str(self.icon),
-            type=self.type,
-        )
+
+        return attr.asdict(self)
 
     def __int__(self) -&gt; int:
         return int(self.id)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="aiobungie.objects.user.UserCard" href="user.html#aiobungie.objects.user.UserCard">UserCard</a></li>
+<li><a title="aiobungie.objects.user.UserLike" href="user.html#aiobungie.objects.user.UserLike">UserLike</a></li>
 <li>abc.ABC</li>
 </ul>
 <h3>Instance variables</h3>
@@ -1460,13 +1626,8 @@ def as_dict(self) -&gt; Dict[str, Any]:
     &#34;&#34;&#34;Returns a dict object of the player,
     This function is useful if you&#39;re binding to other REST apis.
     &#34;&#34;&#34;
-    return dict(
-        id=self.id,
-        name=self.name,
-        is_public=self.is_public,
-        icon=str(self.icon),
-        type=self.type,
-    )</code></pre>
+
+    return attr.asdict(self)</code></pre>
 </details>
 </dd>
 <dt id="aiobungie.objects.Player.icon"><code class="name">var <span class="ident">icon</span> : <a title="aiobungie.internal.assets.Image" href="../internal/assets.html#aiobungie.internal.assets.Image">Image</a></code></dt>
@@ -1485,7 +1646,7 @@ def as_dict(self) -&gt; Dict[str, Any]:
 <dd>
 <p class="inheritance">
 <em>Inherited from:</em>
-<code><a title="aiobungie.objects.user.UserCard" href="user.html#aiobungie.objects.user.UserCard">UserCard</a></code>.<code><a title="aiobungie.objects.user.UserCard.link" href="user.html#aiobungie.objects.user.UserCard.link">link</a></code>
+<code><a title="aiobungie.objects.user.UserLike" href="user.html#aiobungie.objects.user.UserLike">UserLike</a></code>.<code><a title="aiobungie.objects.user.UserLike.link" href="user.html#aiobungie.objects.user.UserLike.link">link</a></code>
 </p>
 <div class="desc inherited"><p>Returns the user's profile link.</p></div>
 </dd>
@@ -1505,10 +1666,18 @@ def as_dict(self) -&gt; Dict[str, Any]:
 </code></dt>
 <dd>
 <div class="desc"><p>Represents a Bungie member Profile.</p>
-<p>A bungie profile have components, each component has different data,
-for an example, The profile component returns the a <code><a title="aiobungie.objects.Profile" href="#aiobungie.objects.Profile">Profile</a></code>
-object which's this class, the character component returns <code><a title="aiobungie.objects.Character" href="#aiobungie.objects.Character">Character</a></code> object, etc.
-See <code><a title="aiobungie.internal.enums.Component" href="../internal/enums.html#aiobungie.internal.enums.Component">Component</a></code> to see the current available components.</p>
+<p>Bungie profiles requires components. but in aiobungie
+you don't need to select a specific component since they will all/will be
+implemented.</p>
+<p>for an example: to access the <code><a title="aiobungie.objects.Character" href="#aiobungie.objects.Character">Character</a></code> component you'll need to pass <code>?component=200</code> right?.
+in aiobungie you can just do this.</p>
+<pre><code class="language-py">profile = await client.fetch_profile(&quot;Fate&quot;)
+
+# access the character component and get my warlock.
+warlock = await profile.warlock()
+
+assert warlock.light == 1320
+</code></pre>
 <h2 id="attributes">Attributes</h2>
 <dl>
 <dt><strong><code>id</code></strong> :&ensp;<code>builtins.int</code></dt>
@@ -1533,10 +1702,21 @@ See <code><a title="aiobungie.internal.enums.Component" href="../internal/enums.
 class Profile(ProfileComponentImpl):
     &#34;&#34;&#34;Represents a Bungie member Profile.
 
-    A bungie profile have components, each component has different data,
-    for an example, The profile component returns the a `aiobungie.objects.Profile`
-    object which&#39;s this class, the character component returns `aiobungie.objects.Character` object, etc.
-    See `aiobungie.internal.enums.Component` to see the current available components.
+    Bungie profiles requires components. but in aiobungie
+    you don&#39;t need to select a specific component since they will all/will be
+    implemented.
+
+    for an example: to access the `Character` component you&#39;ll need to pass `?component=200` right?.
+    in aiobungie you can just do this.
+
+    ```py
+    profile = await client.fetch_profile(&#34;Fate&#34;)
+
+    # access the character component and get my warlock.
+    warlock = await profile.warlock()
+
+    assert warlock.light == 1320
+    ```
 
     Attributes
     ----------
@@ -1554,27 +1734,27 @@ class Profile(ProfileComponentImpl):
             The profile&#39;s current season power cap.
     &#34;&#34;&#34;
 
-    id: int = attr.ib(repr=True, hash=True, eq=False)
+    id: int = attr.field(repr=True, hash=True, eq=False)
     &#34;&#34;&#34;Profile&#39;s id&#34;&#34;&#34;
 
-    app: impl.RESTful = attr.ib(repr=False, hash=False, eq=False)
+    app: impl.RESTful = attr.field(repr=False, hash=False, eq=False)
 
-    name: str = attr.ib(repr=True, hash=False, eq=False)
+    name: str = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;Profile&#39;s name.&#34;&#34;&#34;
 
-    type: enums.MembershipType = attr.ib(repr=True, hash=False, eq=False)
+    type: enums.MembershipType = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;Profile&#39;s type.&#34;&#34;&#34;
 
-    is_public: bool = attr.ib(repr=True, hash=False, eq=False)
+    is_public: bool = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;Profile&#39;s privacy status.&#34;&#34;&#34;
 
-    last_played: datetime.datetime = attr.ib(repr=True, hash=False, eq=False)
+    last_played: datetime.datetime = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;Profile&#39;s last played Destiny 2 played date.&#34;&#34;&#34;
 
-    character_ids: typing.List[int] = attr.ib(repr=False, hash=False, eq=False)
+    character_ids: typing.List[int] = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;A list of the profile&#39;s character ids.&#34;&#34;&#34;
 
-    power_cap: int = attr.ib(repr=False, hash=False, eq=False)
+    power_cap: int = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;The profile&#39;s current seaspn power cap.&#34;&#34;&#34;
 
     # Components
@@ -1590,15 +1770,7 @@ class Profile(ProfileComponentImpl):
         &#34;&#34;&#34;Returns a dict object of the profile,
         This function is useful if you&#39;re binding to other REST apis.
         &#34;&#34;&#34;
-        return dict(
-            id=self.id,
-            name=self.name,
-            type=str(self.type),
-            is_public=self.is_public,
-            last_played=self.last_played,
-            character_ids=self.character_ids,
-            power_cap=self.power_cap,
-        )
+        return attr.asdict(self)
 
     @property
     def human_timedelta(self) -&gt; str:
@@ -1614,7 +1786,7 @@ class Profile(ProfileComponentImpl):
 <dl>
 <dt id="aiobungie.objects.Profile.app"><code class="name">var <span class="ident">app</span> : <a title="aiobungie.internal.impl.RESTful" href="../internal/impl.html#aiobungie.internal.impl.RESTful">RESTful</a></code></dt>
 <dd>
-<div class="desc"><p>A Client that we may use for making other requests.</p></div>
+<div class="desc"><p>A client that we may to make rest requests.</p></div>
 </dd>
 <dt id="aiobungie.objects.Profile.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
 <dd>
@@ -1629,15 +1801,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
     &#34;&#34;&#34;Returns a dict object of the profile,
     This function is useful if you&#39;re binding to other REST apis.
     &#34;&#34;&#34;
-    return dict(
-        id=self.id,
-        name=self.name,
-        type=str(self.type),
-        is_public=self.is_public,
-        last_played=self.last_played,
-        character_ids=self.character_ids,
-        power_cap=self.power_cap,
-    )</code></pre>
+    return attr.asdict(self)</code></pre>
 </details>
 </dd>
 <dt id="aiobungie.objects.Profile.character_ids"><code class="name">var <span class="ident">character_ids</span> : List[int]</code></dt>
@@ -1757,43 +1921,43 @@ class User(PartialUser):
             The user&#39;s avatar.
     &#34;&#34;&#34;
 
-    id: int = attr.ib(hash=True, repr=True)
+    id: int = attr.field(hash=True, repr=True)
     &#34;&#34;&#34;The user&#39;s id&#34;&#34;&#34;
 
-    created_at: datetime = attr.ib(hash=True, repr=True, eq=False)
+    created_at: datetime = attr.field(hash=True, repr=True, eq=False)
     &#34;&#34;&#34;The user&#39;s creation date in UTC timezone.&#34;&#34;&#34;
 
-    name: str = attr.ib(hash=False, eq=False, repr=True)
+    name: str = attr.field(hash=False, eq=False, repr=True)
     &#34;&#34;&#34;The user&#39;s name.&#34;&#34;&#34;
 
-    is_deleted: bool = attr.ib(repr=True, eq=False, hash=False)
+    is_deleted: bool = attr.field(repr=True, eq=False, hash=False)
     &#34;&#34;&#34;Returns True if the user is deleted&#34;&#34;&#34;
 
-    about: Optional[str] = attr.ib(repr=True, hash=False, eq=False)
+    about: Optional[str] = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s about, Default is None if nothing is Found.&#34;&#34;&#34;
 
-    updated_at: datetime = attr.ib(repr=True, hash=False, eq=False)
+    updated_at: datetime = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s last updated om UTC date.&#34;&#34;&#34;
 
-    psn_name: Optional[str] = attr.ib(repr=True, hash=False, eq=False)
+    psn_name: Optional[str] = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s psn id if it exists.&#34;&#34;&#34;
 
-    steam_name: Optional[str] = attr.ib(repr=True, hash=False, eq=False)
+    steam_name: Optional[str] = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s steam name if it exists&#34;&#34;&#34;
 
-    twitch_name: Optional[str] = attr.ib(repr=True, hash=False, eq=False)
+    twitch_name: Optional[str] = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s twitch name if it exists.&#34;&#34;&#34;
 
-    blizzard_name: Optional[str] = attr.ib(repr=True, hash=False, eq=False)
+    blizzard_name: Optional[str] = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s blizzard name if it exists.&#34;&#34;&#34;
 
-    status: Optional[str] = attr.ib(repr=True, hash=False, eq=False)
+    status: Optional[str] = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s bungie status text&#34;&#34;&#34;
 
-    locale: Optional[str] = attr.ib(repr=False, hash=False, eq=False)
+    locale: Optional[str] = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s locale.&#34;&#34;&#34;
 
-    picture: Image = attr.ib(repr=False, hash=False, eq=False)
+    picture: Image = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s profile picture.&#34;&#34;&#34;
 
     @property
@@ -1801,21 +1965,7 @@ class User(PartialUser):
         &#34;&#34;&#34;Returns a dict object of the user,
         This function is useful if you&#39;re binding to other REST apis.
         &#34;&#34;&#34;
-        return dict(
-            id=self.id,
-            name=self.name,
-            about=self.about,
-            created_at=self.created_at,
-            updated_at=self.updated_at,
-            is_deleted=self.is_deleted,
-            locale=self.locale,
-            steam_name=self.steam_name,
-            twitch_name=self.twitch_name,
-            psn_name=self.psn_name,
-            blizzard_name=self.blizzard_name,
-            status=self.status,
-            picture=str(self.picture),
-        )</code></pre>
+        return attr.asdict(self)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -1841,21 +1991,7 @@ def as_dict(self) -&gt; Dict[str, Any]:
     &#34;&#34;&#34;Returns a dict object of the user,
     This function is useful if you&#39;re binding to other REST apis.
     &#34;&#34;&#34;
-    return dict(
-        id=self.id,
-        name=self.name,
-        about=self.about,
-        created_at=self.created_at,
-        updated_at=self.updated_at,
-        is_deleted=self.is_deleted,
-        locale=self.locale,
-        steam_name=self.steam_name,
-        twitch_name=self.twitch_name,
-        psn_name=self.psn_name,
-        blizzard_name=self.blizzard_name,
-        status=self.status,
-        picture=str(self.picture),
-    )</code></pre>
+    return attr.asdict(self)</code></pre>
 </details>
 </dd>
 <dt id="aiobungie.objects.User.blizzard_name"><code class="name">var <span class="ident">blizzard_name</span></code></dt>
@@ -1978,6 +2114,7 @@ setTimeout(() => input.focus(), 100);
 <li><code><a title="aiobungie.objects.application" href="application.html">aiobungie.objects.application</a></code></li>
 <li><code><a title="aiobungie.objects.character" href="character.html">aiobungie.objects.character</a></code></li>
 <li><code><a title="aiobungie.objects.clans" href="clans.html">aiobungie.objects.clans</a></code></li>
+<li><code><a title="aiobungie.objects.entity" href="entity.html">aiobungie.objects.entity</a></code></li>
 <li><code><a title="aiobungie.objects.player" href="player.html">aiobungie.objects.player</a></code></li>
 <li><code><a title="aiobungie.objects.profile" href="profile.html">aiobungie.objects.profile</a></code></li>
 <li><code><a title="aiobungie.objects.user" href="user.html">aiobungie.objects.user</a></code></li>
@@ -2087,6 +2224,35 @@ setTimeout(() => input.focus(), 100);
 <li><code><a title="aiobungie.objects.ClanOwner.name" href="#aiobungie.objects.ClanOwner.name">name</a></code></li>
 <li><code><a title="aiobungie.objects.ClanOwner.type" href="#aiobungie.objects.ClanOwner.type">type</a></code></li>
 <li><code><a title="aiobungie.objects.ClanOwner.types" href="#aiobungie.objects.ClanOwner.types">types</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="aiobungie.objects.Entity" href="#aiobungie.objects.Entity">Entity</a></code></h4>
+<ul class="two-column">
+<li><code><a title="aiobungie.objects.Entity.about" href="#aiobungie.objects.Entity.about">about</a></code></li>
+<li><code><a title="aiobungie.objects.Entity.ammo_type" href="#aiobungie.objects.Entity.ammo_type">ammo_type</a></code></li>
+<li><code><a title="aiobungie.objects.Entity.app" href="#aiobungie.objects.Entity.app">app</a></code></li>
+<li><code><a title="aiobungie.objects.Entity.as_dict" href="#aiobungie.objects.Entity.as_dict">as_dict</a></code></li>
+<li><code><a title="aiobungie.objects.Entity.banner" href="#aiobungie.objects.Entity.banner">banner</a></code></li>
+<li><code><a title="aiobungie.objects.Entity.bucket_type" href="#aiobungie.objects.Entity.bucket_type">bucket_type</a></code></li>
+<li><code><a title="aiobungie.objects.Entity.damage" href="#aiobungie.objects.Entity.damage">damage</a></code></li>
+<li><code><a title="aiobungie.objects.Entity.description" href="#aiobungie.objects.Entity.description">description</a></code></li>
+<li><code><a title="aiobungie.objects.Entity.has_icon" href="#aiobungie.objects.Entity.has_icon">has_icon</a></code></li>
+<li><code><a title="aiobungie.objects.Entity.hash" href="#aiobungie.objects.Entity.hash">hash</a></code></li>
+<li><code><a title="aiobungie.objects.Entity.icon" href="#aiobungie.objects.Entity.icon">icon</a></code></li>
+<li><code><a title="aiobungie.objects.Entity.index" href="#aiobungie.objects.Entity.index">index</a></code></li>
+<li><code><a title="aiobungie.objects.Entity.is_equippable" href="#aiobungie.objects.Entity.is_equippable">is_equippable</a></code></li>
+<li><code><a title="aiobungie.objects.Entity.item_class" href="#aiobungie.objects.Entity.item_class">item_class</a></code></li>
+<li><code><a title="aiobungie.objects.Entity.lore_hash" href="#aiobungie.objects.Entity.lore_hash">lore_hash</a></code></li>
+<li><code><a title="aiobungie.objects.Entity.name" href="#aiobungie.objects.Entity.name">name</a></code></li>
+<li><code><a title="aiobungie.objects.Entity.stats" href="#aiobungie.objects.Entity.stats">stats</a></code></li>
+<li><code><a title="aiobungie.objects.Entity.sub_type" href="#aiobungie.objects.Entity.sub_type">sub_type</a></code></li>
+<li><code><a title="aiobungie.objects.Entity.summary_hash" href="#aiobungie.objects.Entity.summary_hash">summary_hash</a></code></li>
+<li><code><a title="aiobungie.objects.Entity.tier" href="#aiobungie.objects.Entity.tier">tier</a></code></li>
+<li><code><a title="aiobungie.objects.Entity.tier_name" href="#aiobungie.objects.Entity.tier_name">tier_name</a></code></li>
+<li><code><a title="aiobungie.objects.Entity.type" href="#aiobungie.objects.Entity.type">type</a></code></li>
+<li><code><a title="aiobungie.objects.Entity.type_name" href="#aiobungie.objects.Entity.type_name">type_name</a></code></li>
+<li><code><a title="aiobungie.objects.Entity.water_mark" href="#aiobungie.objects.Entity.water_mark">water_mark</a></code></li>
 </ul>
 </li>
 <li>

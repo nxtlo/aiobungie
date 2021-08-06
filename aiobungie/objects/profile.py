@@ -190,27 +190,27 @@ class Profile(ProfileComponentImpl):
             The profile's current season power cap.
     """
 
-    id: int = attr.ib(repr=True, hash=True, eq=False)
+    id: int = attr.field(repr=True, hash=True, eq=False)
     """Profile's id"""
 
-    app: impl.RESTful = attr.ib(repr=False, hash=False, eq=False)
+    app: impl.RESTful = attr.field(repr=False, hash=False, eq=False)
 
-    name: str = attr.ib(repr=True, hash=False, eq=False)
+    name: str = attr.field(repr=True, hash=False, eq=False)
     """Profile's name."""
 
-    type: enums.MembershipType = attr.ib(repr=True, hash=False, eq=False)
+    type: enums.MembershipType = attr.field(repr=True, hash=False, eq=False)
     """Profile's type."""
 
-    is_public: bool = attr.ib(repr=True, hash=False, eq=False)
+    is_public: bool = attr.field(repr=True, hash=False, eq=False)
     """Profile's privacy status."""
 
-    last_played: datetime.datetime = attr.ib(repr=True, hash=False, eq=False)
+    last_played: datetime.datetime = attr.field(repr=True, hash=False, eq=False)
     """Profile's last played Destiny 2 played date."""
 
-    character_ids: typing.List[int] = attr.ib(repr=False, hash=False, eq=False)
+    character_ids: typing.List[int] = attr.field(repr=False, hash=False, eq=False)
     """A list of the profile's character ids."""
 
-    power_cap: int = attr.ib(repr=False, hash=False, eq=False)
+    power_cap: int = attr.field(repr=False, hash=False, eq=False)
     """The profile's current seaspn power cap."""
 
     # Components
@@ -226,15 +226,7 @@ class Profile(ProfileComponentImpl):
         """Returns a dict object of the profile,
         This function is useful if you're binding to other REST apis.
         """
-        return dict(
-            id=self.id,
-            name=self.name,
-            type=str(self.type),
-            is_public=self.is_public,
-            last_played=self.last_played,
-            character_ids=self.character_ids,
-            power_cap=self.power_cap,
-        )
+        return attr.asdict(self)
 
     @property
     def human_timedelta(self) -> str:

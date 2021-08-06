@@ -145,7 +145,30 @@ from .meta import Manifest</code></pre>
             (int(raid),),
             &#34;pgcrImage&#34;,
         )
-        return Image(path=str(image))</code></pre>
+        return Image(path=str(image))
+
+    def fetch(
+        self, definition: str, id: int, item: t.Optional[str] = None
+    ) -&gt; t.Optional[t.Dict[t.Any, t.Any]]:
+        &#34;&#34;&#34;Fetch something from the manifest databse.
+        This returns a `typing.Dict[typing.Any, typing.Any]`
+
+        Parameters
+        ----------
+        definition: `builtins.str`
+            The definition you want to fetch from.
+        id: `builtins.int`
+            The id of the entity.
+        item: `typing.Optional[builsint.str]`
+            An item to get from the dict.
+
+        Returns
+        -------
+        `typing.Optional[typing.Dict[typing.Any, typing.Any]]`
+        &#34;&#34;&#34;
+        return self.db.fetch(
+            &#34;SELECT json FROM {} WHERE id = ?&#34;.format(definition), (id,), item
+        )</code></pre>
 </details>
 <h3>Instance variables</h3>
 <dl>
@@ -210,6 +233,51 @@ from .meta import Manifest</code></pre>
             log.info(&#34;Database finished downloading.&#34;)
     except Exception:
         raise</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.ext.Manifest.fetch"><code class="name flex">
+<span>def <span class="ident">fetch</span></span>(<span>self, definition: str, id: int, item: t.Optional[str] = None) ‑> Optional[Dict[Any, Any]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Fetch something from the manifest databse.
+This returns a <code>typing.Dict[typing.Any, typing.Any]</code></p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>definition</code></strong> :&ensp;<code>builtins.str</code></dt>
+<dd>The definition you want to fetch from.</dd>
+<dt><strong><code>id</code></strong> :&ensp;<code>builtins.int</code></dt>
+<dd>The id of the entity.</dd>
+<dt><strong><code>item</code></strong> :&ensp;<code>typing.Optional[builsint.str]</code></dt>
+<dd>An item to get from the dict.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p><code>typing.Optional[typing.Dict[typing.Any, typing.Any]]</code></p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def fetch(
+    self, definition: str, id: int, item: t.Optional[str] = None
+) -&gt; t.Optional[t.Dict[t.Any, t.Any]]:
+    &#34;&#34;&#34;Fetch something from the manifest databse.
+    This returns a `typing.Dict[typing.Any, typing.Any]`
+
+    Parameters
+    ----------
+    definition: `builtins.str`
+        The definition you want to fetch from.
+    id: `builtins.int`
+        The id of the entity.
+    item: `typing.Optional[builsint.str]`
+        An item to get from the dict.
+
+    Returns
+    -------
+    `typing.Optional[typing.Dict[typing.Any, typing.Any]]`
+    &#34;&#34;&#34;
+    return self.db.fetch(
+        &#34;SELECT json FROM {} WHERE id = ?&#34;.format(definition), (id,), item
+    )</code></pre>
 </details>
 </dd>
 <dt id="aiobungie.ext.Manifest.get_raid_image"><code class="name flex">
@@ -304,6 +372,7 @@ setTimeout(() => input.focus(), 100);
 <ul class="">
 <li><code><a title="aiobungie.ext.Manifest.db" href="#aiobungie.ext.Manifest.db">db</a></code></li>
 <li><code><a title="aiobungie.ext.Manifest.download" href="#aiobungie.ext.Manifest.download">download</a></code></li>
+<li><code><a title="aiobungie.ext.Manifest.fetch" href="#aiobungie.ext.Manifest.fetch">fetch</a></code></li>
 <li><code><a title="aiobungie.ext.Manifest.get_raid_image" href="#aiobungie.ext.Manifest.get_raid_image">get_raid_image</a></code></li>
 <li><code><a title="aiobungie.ext.Manifest.version" href="#aiobungie.ext.Manifest.version">version</a></code></li>
 </ul>

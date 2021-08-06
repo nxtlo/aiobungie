@@ -63,14 +63,14 @@ import attr
 from aiobungie import url
 
 from ..internal import Image, Time, enums
-from .user import UserCard
+from .user import UserLike
 
 if TYPE_CHECKING:
     from datetime import datetime
 
 
 @attr.s(hash=True, repr=True, init=True, kw_only=True, weakref_slot=False, slots=True)
-class ApplicationOwner(UserCard):
+class ApplicationOwner(UserLike):
     &#34;&#34;&#34;Represents a Bungie Application owner.
 
     Attributes
@@ -87,25 +87,26 @@ class ApplicationOwner(UserCard):
         The application owner&#39;s bungie membership type.
     &#34;&#34;&#34;
 
-    name: str = attr.ib(repr=True, hash=False, eq=False)
+    name: str = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;The application owner name.&#34;&#34;&#34;
 
-    type: enums.MembershipType = attr.ib(repr=True, hash=False, eq=True)
+    type: enums.MembershipType = attr.field(repr=True, hash=False, eq=True)
     &#34;&#34;&#34;The membership of the application owner.&#34;&#34;&#34;
 
-    id: int = attr.ib(repr=True, hash=True, eq=True)
+    id: int = attr.field(repr=True, hash=True, eq=True)
     &#34;&#34;&#34;The application owner&#39;s id.&#34;&#34;&#34;
 
-    icon: Image = attr.ib(repr=False)
+    icon: Image = attr.field(repr=False)
     &#34;&#34;&#34;The application owner&#39;s icon.&#34;&#34;&#34;
 
-    is_public: bool = attr.ib(repr=True)
+    is_public: bool = attr.field(repr=True)
     &#34;&#34;&#34;The application owner&#39;s profile privacy.&#34;&#34;&#34;
 
     @property
     def link(self) -&gt; str:
         return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;
 
+    @property
     def as_dict(self) -&gt; Dict[str, Any]:
         &#34;&#34;&#34;Returns a dict object of the application owner,
         This function is useful if you&#39;re binding to other REST apis.
@@ -145,31 +146,31 @@ class Application:
         The app&#39;s scope
     &#34;&#34;&#34;
 
-    id: int = attr.ib(repr=True, hash=True, eq=True)
+    id: int = attr.field(repr=True, hash=True, eq=True)
     &#34;&#34;&#34;App id&#34;&#34;&#34;
 
-    name: str = attr.ib(repr=True, hash=False, eq=False)
+    name: str = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;App name&#34;&#34;&#34;
 
-    redirect_url: Optional[str] = attr.ib(repr=True)
+    redirect_url: Optional[str] = attr.field(repr=True)
     &#34;&#34;&#34;App redirect url&#34;&#34;&#34;
 
-    created_at: datetime = attr.ib(repr=True)
+    created_at: datetime = attr.field(repr=True)
     &#34;&#34;&#34;App creation date in UTC timezone&#34;&#34;&#34;
 
-    published_at: datetime = attr.ib(repr=True)
+    published_at: datetime = attr.field(repr=True)
     &#34;&#34;&#34;App&#39;s publish date in UTC timezone&#34;&#34;&#34;
 
-    link: str = attr.ib(repr=True)
+    link: str = attr.field(repr=True)
     &#34;&#34;&#34;App&#39;s link&#34;&#34;&#34;
 
-    status: int = attr.ib(repr=False)
+    status: int = attr.field(repr=False)
     &#34;&#34;&#34;App&#39;s status&#34;&#34;&#34;
 
-    scope: str = attr.ib(repr=False)
+    scope: str = attr.field(repr=False)
     &#34;&#34;&#34;App&#39;s scope&#34;&#34;&#34;
 
-    owner: ApplicationOwner = attr.ib(repr=True)
+    owner: ApplicationOwner = attr.field(repr=True)
     &#34;&#34;&#34;App&#39;s owner&#34;&#34;&#34;
 
     @property
@@ -182,17 +183,7 @@ class Application:
         &#34;&#34;&#34;Returns a dict object of the application,
         This function is useful if you&#39;re binding to other REST apis.
         &#34;&#34;&#34;
-        return dict(
-            id=self.id,
-            name=self.name,
-            link=self.link,
-            status=self.status,
-            redirect_url=self.redirect_url,
-            created_at=self.created_at,
-            published_at=self.published_at,
-            owner=self.owner,
-            scope=self.scope,
-        )</code></pre>
+        return attr.asdict(self)</code></pre>
 </details>
 </section>
 <section>
@@ -262,31 +253,31 @@ class Application:
         The app&#39;s scope
     &#34;&#34;&#34;
 
-    id: int = attr.ib(repr=True, hash=True, eq=True)
+    id: int = attr.field(repr=True, hash=True, eq=True)
     &#34;&#34;&#34;App id&#34;&#34;&#34;
 
-    name: str = attr.ib(repr=True, hash=False, eq=False)
+    name: str = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;App name&#34;&#34;&#34;
 
-    redirect_url: Optional[str] = attr.ib(repr=True)
+    redirect_url: Optional[str] = attr.field(repr=True)
     &#34;&#34;&#34;App redirect url&#34;&#34;&#34;
 
-    created_at: datetime = attr.ib(repr=True)
+    created_at: datetime = attr.field(repr=True)
     &#34;&#34;&#34;App creation date in UTC timezone&#34;&#34;&#34;
 
-    published_at: datetime = attr.ib(repr=True)
+    published_at: datetime = attr.field(repr=True)
     &#34;&#34;&#34;App&#39;s publish date in UTC timezone&#34;&#34;&#34;
 
-    link: str = attr.ib(repr=True)
+    link: str = attr.field(repr=True)
     &#34;&#34;&#34;App&#39;s link&#34;&#34;&#34;
 
-    status: int = attr.ib(repr=False)
+    status: int = attr.field(repr=False)
     &#34;&#34;&#34;App&#39;s status&#34;&#34;&#34;
 
-    scope: str = attr.ib(repr=False)
+    scope: str = attr.field(repr=False)
     &#34;&#34;&#34;App&#39;s scope&#34;&#34;&#34;
 
-    owner: ApplicationOwner = attr.ib(repr=True)
+    owner: ApplicationOwner = attr.field(repr=True)
     &#34;&#34;&#34;App&#39;s owner&#34;&#34;&#34;
 
     @property
@@ -299,17 +290,7 @@ class Application:
         &#34;&#34;&#34;Returns a dict object of the application,
         This function is useful if you&#39;re binding to other REST apis.
         &#34;&#34;&#34;
-        return dict(
-            id=self.id,
-            name=self.name,
-            link=self.link,
-            status=self.status,
-            redirect_url=self.redirect_url,
-            created_at=self.created_at,
-            published_at=self.published_at,
-            owner=self.owner,
-            scope=self.scope,
-        )</code></pre>
+        return attr.asdict(self)</code></pre>
 </details>
 <h3>Instance variables</h3>
 <dl>
@@ -326,17 +307,7 @@ def as_dict(self) -&gt; Dict[str, Any]:
     &#34;&#34;&#34;Returns a dict object of the application,
     This function is useful if you&#39;re binding to other REST apis.
     &#34;&#34;&#34;
-    return dict(
-        id=self.id,
-        name=self.name,
-        link=self.link,
-        status=self.status,
-        redirect_url=self.redirect_url,
-        created_at=self.created_at,
-        published_at=self.published_at,
-        owner=self.owner,
-        scope=self.scope,
-    )</code></pre>
+    return attr.asdict(self)</code></pre>
 </details>
 </dd>
 <dt id="aiobungie.objects.application.Application.created_at"><code class="name">var <span class="ident">created_at</span></code></dt>
@@ -415,7 +386,7 @@ def human_timedelta(self) -&gt; str:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@attr.s(hash=True, repr=True, init=True, kw_only=True, weakref_slot=False, slots=True)
-class ApplicationOwner(UserCard):
+class ApplicationOwner(UserLike):
     &#34;&#34;&#34;Represents a Bungie Application owner.
 
     Attributes
@@ -432,25 +403,26 @@ class ApplicationOwner(UserCard):
         The application owner&#39;s bungie membership type.
     &#34;&#34;&#34;
 
-    name: str = attr.ib(repr=True, hash=False, eq=False)
+    name: str = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;The application owner name.&#34;&#34;&#34;
 
-    type: enums.MembershipType = attr.ib(repr=True, hash=False, eq=True)
+    type: enums.MembershipType = attr.field(repr=True, hash=False, eq=True)
     &#34;&#34;&#34;The membership of the application owner.&#34;&#34;&#34;
 
-    id: int = attr.ib(repr=True, hash=True, eq=True)
+    id: int = attr.field(repr=True, hash=True, eq=True)
     &#34;&#34;&#34;The application owner&#39;s id.&#34;&#34;&#34;
 
-    icon: Image = attr.ib(repr=False)
+    icon: Image = attr.field(repr=False)
     &#34;&#34;&#34;The application owner&#39;s icon.&#34;&#34;&#34;
 
-    is_public: bool = attr.ib(repr=True)
+    is_public: bool = attr.field(repr=True)
     &#34;&#34;&#34;The application owner&#39;s profile privacy.&#34;&#34;&#34;
 
     @property
     def link(self) -&gt; str:
         return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;
 
+    @property
     def as_dict(self) -&gt; Dict[str, Any]:
         &#34;&#34;&#34;Returns a dict object of the application owner,
         This function is useful if you&#39;re binding to other REST apis.
@@ -465,11 +437,33 @@ class ApplicationOwner(UserCard):
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="aiobungie.objects.user.UserCard" href="user.html#aiobungie.objects.user.UserCard">UserCard</a></li>
+<li><a title="aiobungie.objects.user.UserLike" href="user.html#aiobungie.objects.user.UserLike">UserLike</a></li>
 <li>abc.ABC</li>
 </ul>
 <h3>Instance variables</h3>
 <dl>
+<dt id="aiobungie.objects.application.ApplicationOwner.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
+<dd>
+<div class="desc"><p>Returns a dict object of the application owner,
+This function is useful if you're binding to other REST apis.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def as_dict(self) -&gt; Dict[str, Any]:
+    &#34;&#34;&#34;Returns a dict object of the application owner,
+    This function is useful if you&#39;re binding to other REST apis.
+    &#34;&#34;&#34;
+    return dict(
+        id=self.id,
+        name=self.name,
+        is_public=self.is_public,
+        icon=str(self.icon),
+        type=self.type,
+    )</code></pre>
+</details>
+</dd>
 <dt id="aiobungie.objects.application.ApplicationOwner.icon"><code class="name">var <span class="ident">icon</span> : <a title="aiobungie.internal.assets.Image" href="../internal/assets.html#aiobungie.internal.assets.Image">Image</a></code></dt>
 <dd>
 <div class="desc"><p>The application owner's icon.</p></div>
@@ -486,7 +480,7 @@ class ApplicationOwner(UserCard):
 <dd>
 <p class="inheritance">
 <em>Inherited from:</em>
-<code><a title="aiobungie.objects.user.UserCard" href="user.html#aiobungie.objects.user.UserCard">UserCard</a></code>.<code><a title="aiobungie.objects.user.UserCard.link" href="user.html#aiobungie.objects.user.UserCard.link">link</a></code>
+<code><a title="aiobungie.objects.user.UserLike" href="user.html#aiobungie.objects.user.UserLike">UserLike</a></code>.<code><a title="aiobungie.objects.user.UserLike.link" href="user.html#aiobungie.objects.user.UserLike.link">link</a></code>
 </p>
 <div class="desc inherited"><p>Returns the user's profile link.</p></div>
 <details class="source">
@@ -505,32 +499,6 @@ def link(self) -&gt; str:
 <dt id="aiobungie.objects.application.ApplicationOwner.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="../internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
 <dd>
 <div class="desc"><p>The membership of the application owner.</p></div>
-</dd>
-</dl>
-<h3>Methods</h3>
-<dl>
-<dt id="aiobungie.objects.application.ApplicationOwner.as_dict"><code class="name flex">
-<span>def <span class="ident">as_dict</span></span>(<span>self) ‑> Dict[str, Any]</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Returns a dict object of the application owner,
-This function is useful if you're binding to other REST apis.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def as_dict(self) -&gt; Dict[str, Any]:
-    &#34;&#34;&#34;Returns a dict object of the application owner,
-    This function is useful if you&#39;re binding to other REST apis.
-    &#34;&#34;&#34;
-    return dict(
-        id=self.id,
-        name=self.name,
-        is_public=self.is_public,
-        icon=str(self.icon),
-        type=self.type,
-    )</code></pre>
-</details>
 </dd>
 </dl>
 </dd>

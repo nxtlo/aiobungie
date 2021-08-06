@@ -165,49 +165,49 @@ class Character(CharacterComponent):
             if no title is equipped.
     """
 
-    id: int = attr.ib(hash=True, repr=True)
+    id: int = attr.field(hash=True, repr=True)
     """Character's id"""
 
-    member_id: int = attr.ib(hash=True, repr=True)
+    member_id: int = attr.field(hash=True, repr=True)
     """The character's member id."""
 
-    member_type: enums.MembershipType = attr.ib(repr=True, hash=False)
+    member_type: enums.MembershipType = attr.field(repr=True, hash=False)
     """The character's memberhip type."""
 
-    light: int = attr.ib(repr=True, hash=False)
+    light: int = attr.field(repr=True, hash=False)
     """Character's light"""
 
-    gender: enums.Gender = attr.ib(repr=True, hash=False)
+    gender: enums.Gender = attr.field(repr=True, hash=False)
     """Character's gender"""
 
-    race: enums.Race = attr.ib(repr=True, hash=False)
+    race: enums.Race = attr.field(repr=True, hash=False)
     """Character's race"""
 
-    emblem: Image = attr.ib(repr=False, hash=False)
+    emblem: Image = attr.field(repr=False, hash=False)
     """Character's emblem"""
 
-    emblem_icon: Image = attr.ib(repr=False, hash=False)
+    emblem_icon: Image = attr.field(repr=False, hash=False)
     """Character's emblem icon"""
 
-    emblem_hash: int = attr.ib(repr=False, hash=False)
+    emblem_hash: int = attr.field(repr=False, hash=False)
     """Character's emblem hash."""
 
-    last_played: datetime.datetime = attr.ib(repr=False, hash=False)
+    last_played: datetime.datetime = attr.field(repr=False, hash=False)
     """Character's last played date."""
 
-    total_played_time: str = attr.ib(repr=False, hash=False)
+    total_played_time: str = attr.field(repr=False, hash=False)
     """Character's total plyed time minutes."""
 
-    class_type: enums.Class = attr.ib(repr=True, hash=False)
+    class_type: enums.Class = attr.field(repr=True, hash=False)
     """Character's class."""
 
-    title_hash: typing.Optional[int] = attr.ib(repr=True, hash=False)
+    title_hash: typing.Optional[int] = attr.field(repr=True, hash=False)
     """Character's equipped title hash."""
 
-    level: int = attr.ib(repr=False, hash=False)
+    level: int = attr.field(repr=False, hash=False)
     """Character's base level."""
 
-    stats: enums.Stat = attr.ib(repr=False, hash=False)
+    stats: enums.Stat = attr.field(repr=False, hash=False)
     """Character stats."""
 
     @property
@@ -220,23 +220,7 @@ class Character(CharacterComponent):
         """Returns a dict object of the character,
         This function is useful if you're binding to other REST apis.
         """
-        return dict(
-            id=self.id,
-            light=self.light,
-            gender=self.gender,
-            race=self.race,
-            emblem=str(self.emblem),
-            emblem_icon=str(self.emblem_icon),
-            emblem_hash=self.emblem_hash,
-            last_played=self.last_played,
-            total_played_time=self.total_played_time,
-            member_id=self.member_id,
-            member_type=self.member_type,
-            cls=str(self.class_type),
-            level=self.level,
-            title_hash=self.title_hash,
-            stats=self.stats,
-        )
+        return attr.asdict(self)
 
     def __int__(self) -> int:
         return int(self.id)

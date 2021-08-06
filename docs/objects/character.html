@@ -194,49 +194,49 @@ class Character(CharacterComponent):
             if no title is equipped.
     &#34;&#34;&#34;
 
-    id: int = attr.ib(hash=True, repr=True)
+    id: int = attr.field(hash=True, repr=True)
     &#34;&#34;&#34;Character&#39;s id&#34;&#34;&#34;
 
-    member_id: int = attr.ib(hash=True, repr=True)
+    member_id: int = attr.field(hash=True, repr=True)
     &#34;&#34;&#34;The character&#39;s member id.&#34;&#34;&#34;
 
-    member_type: enums.MembershipType = attr.ib(repr=True, hash=False)
+    member_type: enums.MembershipType = attr.field(repr=True, hash=False)
     &#34;&#34;&#34;The character&#39;s memberhip type.&#34;&#34;&#34;
 
-    light: int = attr.ib(repr=True, hash=False)
+    light: int = attr.field(repr=True, hash=False)
     &#34;&#34;&#34;Character&#39;s light&#34;&#34;&#34;
 
-    gender: enums.Gender = attr.ib(repr=True, hash=False)
+    gender: enums.Gender = attr.field(repr=True, hash=False)
     &#34;&#34;&#34;Character&#39;s gender&#34;&#34;&#34;
 
-    race: enums.Race = attr.ib(repr=True, hash=False)
+    race: enums.Race = attr.field(repr=True, hash=False)
     &#34;&#34;&#34;Character&#39;s race&#34;&#34;&#34;
 
-    emblem: Image = attr.ib(repr=False, hash=False)
+    emblem: Image = attr.field(repr=False, hash=False)
     &#34;&#34;&#34;Character&#39;s emblem&#34;&#34;&#34;
 
-    emblem_icon: Image = attr.ib(repr=False, hash=False)
+    emblem_icon: Image = attr.field(repr=False, hash=False)
     &#34;&#34;&#34;Character&#39;s emblem icon&#34;&#34;&#34;
 
-    emblem_hash: int = attr.ib(repr=False, hash=False)
+    emblem_hash: int = attr.field(repr=False, hash=False)
     &#34;&#34;&#34;Character&#39;s emblem hash.&#34;&#34;&#34;
 
-    last_played: datetime.datetime = attr.ib(repr=False, hash=False)
+    last_played: datetime.datetime = attr.field(repr=False, hash=False)
     &#34;&#34;&#34;Character&#39;s last played date.&#34;&#34;&#34;
 
-    total_played_time: str = attr.ib(repr=False, hash=False)
+    total_played_time: str = attr.field(repr=False, hash=False)
     &#34;&#34;&#34;Character&#39;s total plyed time minutes.&#34;&#34;&#34;
 
-    class_type: enums.Class = attr.ib(repr=True, hash=False)
+    class_type: enums.Class = attr.field(repr=True, hash=False)
     &#34;&#34;&#34;Character&#39;s class.&#34;&#34;&#34;
 
-    title_hash: typing.Optional[int] = attr.ib(repr=True, hash=False)
+    title_hash: typing.Optional[int] = attr.field(repr=True, hash=False)
     &#34;&#34;&#34;Character&#39;s equipped title hash.&#34;&#34;&#34;
 
-    level: int = attr.ib(repr=False, hash=False)
+    level: int = attr.field(repr=False, hash=False)
     &#34;&#34;&#34;Character&#39;s base level.&#34;&#34;&#34;
 
-    stats: enums.Stat = attr.ib(repr=False, hash=False)
+    stats: enums.Stat = attr.field(repr=False, hash=False)
     &#34;&#34;&#34;Character stats.&#34;&#34;&#34;
 
     @property
@@ -249,23 +249,7 @@ class Character(CharacterComponent):
         &#34;&#34;&#34;Returns a dict object of the character,
         This function is useful if you&#39;re binding to other REST apis.
         &#34;&#34;&#34;
-        return dict(
-            id=self.id,
-            light=self.light,
-            gender=self.gender,
-            race=self.race,
-            emblem=str(self.emblem),
-            emblem_icon=str(self.emblem_icon),
-            emblem_hash=self.emblem_hash,
-            last_played=self.last_played,
-            total_played_time=self.total_played_time,
-            member_id=self.member_id,
-            member_type=self.member_type,
-            cls=str(self.class_type),
-            level=self.level,
-            title_hash=self.title_hash,
-            stats=self.stats,
-        )
+        return attr.asdict(self)
 
     def __int__(self) -&gt; int:
         return int(self.id)</code></pre>
@@ -366,49 +350,49 @@ class Character(CharacterComponent):
             if no title is equipped.
     &#34;&#34;&#34;
 
-    id: int = attr.ib(hash=True, repr=True)
+    id: int = attr.field(hash=True, repr=True)
     &#34;&#34;&#34;Character&#39;s id&#34;&#34;&#34;
 
-    member_id: int = attr.ib(hash=True, repr=True)
+    member_id: int = attr.field(hash=True, repr=True)
     &#34;&#34;&#34;The character&#39;s member id.&#34;&#34;&#34;
 
-    member_type: enums.MembershipType = attr.ib(repr=True, hash=False)
+    member_type: enums.MembershipType = attr.field(repr=True, hash=False)
     &#34;&#34;&#34;The character&#39;s memberhip type.&#34;&#34;&#34;
 
-    light: int = attr.ib(repr=True, hash=False)
+    light: int = attr.field(repr=True, hash=False)
     &#34;&#34;&#34;Character&#39;s light&#34;&#34;&#34;
 
-    gender: enums.Gender = attr.ib(repr=True, hash=False)
+    gender: enums.Gender = attr.field(repr=True, hash=False)
     &#34;&#34;&#34;Character&#39;s gender&#34;&#34;&#34;
 
-    race: enums.Race = attr.ib(repr=True, hash=False)
+    race: enums.Race = attr.field(repr=True, hash=False)
     &#34;&#34;&#34;Character&#39;s race&#34;&#34;&#34;
 
-    emblem: Image = attr.ib(repr=False, hash=False)
+    emblem: Image = attr.field(repr=False, hash=False)
     &#34;&#34;&#34;Character&#39;s emblem&#34;&#34;&#34;
 
-    emblem_icon: Image = attr.ib(repr=False, hash=False)
+    emblem_icon: Image = attr.field(repr=False, hash=False)
     &#34;&#34;&#34;Character&#39;s emblem icon&#34;&#34;&#34;
 
-    emblem_hash: int = attr.ib(repr=False, hash=False)
+    emblem_hash: int = attr.field(repr=False, hash=False)
     &#34;&#34;&#34;Character&#39;s emblem hash.&#34;&#34;&#34;
 
-    last_played: datetime.datetime = attr.ib(repr=False, hash=False)
+    last_played: datetime.datetime = attr.field(repr=False, hash=False)
     &#34;&#34;&#34;Character&#39;s last played date.&#34;&#34;&#34;
 
-    total_played_time: str = attr.ib(repr=False, hash=False)
+    total_played_time: str = attr.field(repr=False, hash=False)
     &#34;&#34;&#34;Character&#39;s total plyed time minutes.&#34;&#34;&#34;
 
-    class_type: enums.Class = attr.ib(repr=True, hash=False)
+    class_type: enums.Class = attr.field(repr=True, hash=False)
     &#34;&#34;&#34;Character&#39;s class.&#34;&#34;&#34;
 
-    title_hash: typing.Optional[int] = attr.ib(repr=True, hash=False)
+    title_hash: typing.Optional[int] = attr.field(repr=True, hash=False)
     &#34;&#34;&#34;Character&#39;s equipped title hash.&#34;&#34;&#34;
 
-    level: int = attr.ib(repr=False, hash=False)
+    level: int = attr.field(repr=False, hash=False)
     &#34;&#34;&#34;Character&#39;s base level.&#34;&#34;&#34;
 
-    stats: enums.Stat = attr.ib(repr=False, hash=False)
+    stats: enums.Stat = attr.field(repr=False, hash=False)
     &#34;&#34;&#34;Character stats.&#34;&#34;&#34;
 
     @property
@@ -421,23 +405,7 @@ class Character(CharacterComponent):
         &#34;&#34;&#34;Returns a dict object of the character,
         This function is useful if you&#39;re binding to other REST apis.
         &#34;&#34;&#34;
-        return dict(
-            id=self.id,
-            light=self.light,
-            gender=self.gender,
-            race=self.race,
-            emblem=str(self.emblem),
-            emblem_icon=str(self.emblem_icon),
-            emblem_hash=self.emblem_hash,
-            last_played=self.last_played,
-            total_played_time=self.total_played_time,
-            member_id=self.member_id,
-            member_type=self.member_type,
-            cls=str(self.class_type),
-            level=self.level,
-            title_hash=self.title_hash,
-            stats=self.stats,
-        )
+        return attr.asdict(self)
 
     def __int__(self) -&gt; int:
         return int(self.id)</code></pre>
@@ -462,23 +430,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
     &#34;&#34;&#34;Returns a dict object of the character,
     This function is useful if you&#39;re binding to other REST apis.
     &#34;&#34;&#34;
-    return dict(
-        id=self.id,
-        light=self.light,
-        gender=self.gender,
-        race=self.race,
-        emblem=str(self.emblem),
-        emblem_icon=str(self.emblem_icon),
-        emblem_hash=self.emblem_hash,
-        last_played=self.last_played,
-        total_played_time=self.total_played_time,
-        member_id=self.member_id,
-        member_type=self.member_type,
-        cls=str(self.class_type),
-        level=self.level,
-        title_hash=self.title_hash,
-        stats=self.stats,
-    )</code></pre>
+    return attr.asdict(self)</code></pre>
 </details>
 </dd>
 <dt id="aiobungie.objects.character.Character.class_type"><code class="name">var <span class="ident">class_type</span> : <a title="aiobungie.internal.enums.Class" href="../internal/enums.html#aiobungie.internal.enums.Class">Class</a></code></dt>

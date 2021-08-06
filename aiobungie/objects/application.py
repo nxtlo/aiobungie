@@ -34,14 +34,14 @@ import attr
 from aiobungie import url
 
 from ..internal import Image, Time, enums
-from .user import UserCard
+from .user import UserLike
 
 if TYPE_CHECKING:
     from datetime import datetime
 
 
 @attr.s(hash=True, repr=True, init=True, kw_only=True, weakref_slot=False, slots=True)
-class ApplicationOwner(UserCard):
+class ApplicationOwner(UserLike):
     """Represents a Bungie Application owner.
 
     Attributes
@@ -58,25 +58,26 @@ class ApplicationOwner(UserCard):
         The application owner's bungie membership type.
     """
 
-    name: str = attr.ib(repr=True, hash=False, eq=False)
+    name: str = attr.field(repr=True, hash=False, eq=False)
     """The application owner name."""
 
-    type: enums.MembershipType = attr.ib(repr=True, hash=False, eq=True)
+    type: enums.MembershipType = attr.field(repr=True, hash=False, eq=True)
     """The membership of the application owner."""
 
-    id: int = attr.ib(repr=True, hash=True, eq=True)
+    id: int = attr.field(repr=True, hash=True, eq=True)
     """The application owner's id."""
 
-    icon: Image = attr.ib(repr=False)
+    icon: Image = attr.field(repr=False)
     """The application owner's icon."""
 
-    is_public: bool = attr.ib(repr=True)
+    is_public: bool = attr.field(repr=True)
     """The application owner's profile privacy."""
 
     @property
     def link(self) -> str:
         return f"{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}"
 
+    @property
     def as_dict(self) -> Dict[str, Any]:
         """Returns a dict object of the application owner,
         This function is useful if you're binding to other REST apis.
@@ -116,31 +117,31 @@ class Application:
         The app's scope
     """
 
-    id: int = attr.ib(repr=True, hash=True, eq=True)
+    id: int = attr.field(repr=True, hash=True, eq=True)
     """App id"""
 
-    name: str = attr.ib(repr=True, hash=False, eq=False)
+    name: str = attr.field(repr=True, hash=False, eq=False)
     """App name"""
 
-    redirect_url: Optional[str] = attr.ib(repr=True)
+    redirect_url: Optional[str] = attr.field(repr=True)
     """App redirect url"""
 
-    created_at: datetime = attr.ib(repr=True)
+    created_at: datetime = attr.field(repr=True)
     """App creation date in UTC timezone"""
 
-    published_at: datetime = attr.ib(repr=True)
+    published_at: datetime = attr.field(repr=True)
     """App's publish date in UTC timezone"""
 
-    link: str = attr.ib(repr=True)
+    link: str = attr.field(repr=True)
     """App's link"""
 
-    status: int = attr.ib(repr=False)
+    status: int = attr.field(repr=False)
     """App's status"""
 
-    scope: str = attr.ib(repr=False)
+    scope: str = attr.field(repr=False)
     """App's scope"""
 
-    owner: ApplicationOwner = attr.ib(repr=True)
+    owner: ApplicationOwner = attr.field(repr=True)
     """App's owner"""
 
     @property
@@ -153,14 +154,10 @@ class Application:
         """Returns a dict object of the application,
         This function is useful if you're binding to other REST apis.
         """
-        return dict(
-            id=self.id,
-            name=self.name,
-            link=self.link,
-            status=self.status,
-            redirect_url=self.redirect_url,
-            created_at=self.created_at,
-            published_at=self.published_at,
-            owner=self.owner,
-            scope=self.scope,
-        )
+        return attr.asdict(self)
+    
+    def __str__(self) -> str:
+        return self.name
+    
+    def __int__(self) -> int:
+        return self.id

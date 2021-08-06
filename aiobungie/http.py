@@ -26,11 +26,23 @@ and Where all the magic happenes.
 
 from __future__ import annotations
 
+import types
+import typing
+
 __all__ = ("HTTPClient",)
 
 import http
-from typing import (TYPE_CHECKING, Any, Coroutine, Final, NoReturn, Optional,
-                    TypeVar, final)
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Coroutine,
+    Final,
+    NoReturn,
+    Optional,
+    TypeVar,
+    Union,
+    final,
+)
 
 import aiohttp
 
@@ -45,8 +57,7 @@ if TYPE_CHECKING:
 import asyncio
 import logging
 
-log: Final[logging.Logger] = logging.getLogger(__name__)
-log.setLevel("DEBUG")
+_LOG: Final[logging.Logger] = logging.getLogger("aiobungie.http")
 
 
 async def handle_errors(
@@ -80,6 +91,29 @@ async def handle_errors(
         return error.HTTPException(msg)
 
 
+class PreLock:
+
+    __slots__: typing.Sequence[str] = ("_lock",)
+
+    def __init__(self, locker: asyncio.Lock) -> None:
+        self._lock: asyncio.Lock = locker
+
+    async def __aenter__(self) -> None:
+        await self.acquire()
+
+    async def __aexit__(
+        self,
+        ext_type: Optional[BaseException],
+        exc: Optional[BaseException],
+        exc_tb: Optional[types.TracebackType],
+    ) -> None:
+        self._lock.release()
+
+    async def acquire(self) -> None:
+        if not self._lock.locked():
+            await self._lock.acquire()
+
+
 class HTTPClient:
     """An HTTP Client for sending http requests to the Bungie API"""
 
@@ -94,6 +128,7 @@ class HTTPClient:
         self.connector = connector
         self.loop = loop or asyncio.get_event_loop()
 
+    @final
     async def fetch(
         self,
         method: str,
@@ -103,49 +138,64 @@ class HTTPClient:
         **kwargs: Any,
     ) -> Any:
 
-        if (token := self.key) is not None:
-            kwargs["headers"] = {"X-API-KEY": token}
+        locker = asyncio.Lock()
+        if isinstance(self.key, str) and self.key is not None:
+            kwargs["headers"] = {"X-API-KEY": self.key}
         else:
             raise ValueError("No API KEY was passed.")
 
-        try:
-            async with aiohttp.ClientSession(
-                loop=self.loop, connector=self.connector
-            ) as session:
-                async with session.request(
-                    method=method,
-                    url=f"{url.REST_EP if not base else url.BASE}/{route}",
-                    **kwargs,
-                ) as response:
+        if "json" in kwargs:
+            kwargs["Content-Type"] = "application/json"
 
-                    data = await response.json()
-                    msg: str = data["ErrorStatus"]
-                    if 300 > response.status >= 200:
-                        if (
-                            type == "read"
-                        ):  # We want to read the bytes for the manifest response.
-                            data = await response.read()
-                            return data
+        while 1:
+            async with PreLock(locker):
+                try:
+                    async with aiohttp.ClientSession(
+                        loop=self.loop, connector=self.connector
+                    ) as session:
+                        async with session.request(
+                            method=method,
+                            url=f"{url.REST_EP if not base else url.BASE}/{route}",
+                            **kwargs,
+                        ) as response:
 
-                        log.debug(
-                            "{} Request success from {} with status {}".format(
-                                method, f"{url.REST_EP}/{route}", data["Message"]
-                            )
-                        )
-                        try:
-                            return data[
-                                "Response"
-                            ]  # Almost all bungie json objects are
-                            # wrapped inside a dict[Response=...], but
-                            # sometimes it returns a List so this check
-                            # is needed
-                        except (AttributeError, TypeError):
-                            return data
+                            data = await response.json()
+                            msg: str = data["ErrorStatus"]
+                            if 300 > response.status >= 200:
+                                if (
+                                    type == "read"
+                                ):  # We want to read the bytes for the manifest response.
+                                    data = await response.read()
+                                    return data
 
-                    await self._handle_err(response, msg)
+                                _LOG.info(
+                                    "{} Request success from {} with status {}".format(
+                                        method,
+                                        f"{url.REST_EP}/{route}",
+                                        data["Message"],
+                                    )
+                                )
+                                try:
+                                    # Almost all bungie json objects are
+                                    # wrapped inside a dict[Response=...], but
+                                    # sometimes it returns a List so this check
+                                    # is needed
+                                    return data["Response"]
+                                except KeyError:
+                                    return data
 
-        except aiohttp.ClientError:
-            raise
+                            # We continue here.
+                            if response.status in {500, 502, 504}:
+                                await asyncio.sleep(0x05)
+                                continue
+
+                            await self._handle_err(response, msg)
+
+                except aiohttp.ContentTypeError:
+                    return await response.text(encoding="utf-8")
+
+                except aiohttp.ClientError:
+                    raise
 
     @staticmethod
     @final

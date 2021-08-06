@@ -1,5 +1,5 @@
 # MIT License
-#
+# mypy: ignore-errors
 # Copyright (c) 2020 - Present nxtlo
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -32,11 +32,11 @@ import typing
 # Utils
 from aiobungie import error
 from aiobungie.internal import Image, Time, enums, impl
+from aiobungie.internal.helpers import JsonDict, JsonList, Undefined, Unknown
+
 # Objects
 from aiobungie.objects import application as app
 from aiobungie.objects import character, clans, entity, player, profile, user
-
-from .helpers import JsonDict, JsonList
 
 _LOG: typing.Final[logging.Logger] = logging.getLogger(__name__)
 
@@ -59,7 +59,7 @@ class Deserialize:
             data = from_id  # type: ignore
         except IndexError:
             if position or position == 0:
-                raise error.UserNotFound("Player was not found.")
+                raise error.UserNotFound("Player was not found.") from None
 
         return user.User(
             id=int(data["membershipId"]),
@@ -90,7 +90,7 @@ class Deserialize:
                 # the player was not found.
                 data = old_data[0]  # type: ignore
             except IndexError:
-                raise error.PlayerNotFound("Player was not found.")
+                raise error.PlayerNotFound("Player was not found.") from None
 
         return player.Player(
             name=data["displayName"],
@@ -237,30 +237,106 @@ class Deserialize:
         )
 
     def deserialize_entity(self, payload: JsonDict, /) -> entity.Entity:
-        props: JsonDict = payload["displayProperties"]
-        inventory: JsonDict = payload["inventory"]
+        try:
+            # All Bungie entities has a display propetie
+            # if we don't find it means the entitiy was not found.
+            props: JsonDict = payload["displayProperties"]
+        except KeyError:
+            raise error.NotFound(
+                "The entity hash or the definition type is invalid"
+            ) from None
+
+        # Some entities have an inventory which
+        # Includes its hash types.
+        # Most entites has this
+        # and for some it doesn't exists
+        inventory: JsonDict = {}
+
+        if (raw_inventory := payload.get("inventory")) is not None:
+            inventory: JsonDict = raw_inventory
+
+        # Entity tier type. Most entities have tier
+        # and some doesn't exists so we have to check.
+
+        bucket_type: typing.Optional[int] = None
+        tier: typing.Optional[enums.ItemTier] = None
+        tier_name: typing.Optional[str] = None
+
+        if (raw_bucket := inventory.get("bucketTypeHash")) is not None:
+            bucket_type: int = raw_bucket
+
+        if (raw_tier := inventory.get("tierTypeHash")) is not None:
+            tier: enums.ItemTier = enums.ItemTier(raw_tier)
+
+        if (raw_tier_name := inventory.get("tierTypeName")) is not None:
+            tier_name: str = raw_tier_name
+
+        if (name := props.get("name")) == Unknown:
+            name = Undefined
+
+        if (type_name := payload.get("itemTypeDisplayName")) == Unknown:
+            type_name = Undefined
+
+        if (description := props.get("description")) == Unknown:
+            description = Undefined
+
+        if (about := payload.get("flavorText")) == Unknown:
+            about = Undefined
+
+        icon: typing.Optional[Image] = None
+        if (raw_icon := props.get("icon")) is not None:
+            icon: Image = Image(str(raw_icon))
+
+        water_mark: typing.Optional[Image] = None
+        if (raw_watermark := payload.get("iconWatermark")) is not None:
+            water_mark: Image = Image(str(raw_watermark))
+
+        banner: typing.Optional[Image] = None
+        if (screenshot := payload.get("screenshot")) is not None:
+            banner: Image = Image(str(screenshot))
+
+        damage: typing.Optional[enums.DamageType] = None
+        if (damage_type := payload.get("defaultDamageTypeHash")) is not None:
+            damage: enums.DamageType = enums.DamageType(damage_type)
+
+        summary_hash: typing.Optional[int] = None
+        if (raw_summary_hash := payload.get("summaryItemHash")) is not None:
+            summary_hash: int = int(raw_summary_hash)
+
+        stats: typing.Optional[JsonDict] = {}
+        if (raw_stats := payload.get("stats")) is not None:
+            stats: JsonDict = raw_stats
+
+        block: typing.Optional[enums.AmmoType] = None
+        if (ammo := payload.get("equippingBlock")) is not None:
+            block: enums.AmmoType = enums.AmmoType(ammo["ammoType"])
+
+        item_class: typing.Optional[enums.Class] = None
+        if (raw_item_class := payload.get("classType")) is not None:
+            item_class: enums.Class = enums.Class(raw_item_class)
+
         return entity.Entity(
             app=self._rest,
-            name=props["name"],
-            description=props["description"],
+            name=name,
+            description=description,
             hash=payload["hash"],
             index=payload["index"],
-            icon=Image(str(props["icon"])),
+            icon=icon,
             has_icon=props["hasIcon"],
-            water_mark=Image(str(payload["iconWatermark"])),
-            banner=payload["screenshot"],
-            about=payload["flavorText"],
-            type=enums.Item(payload["itemType"]),
-            bucket_type=enums.Item(inventory["bucketTypeHash"]),
-            type_name=payload["itemTypeDisplayName"],
-            tier=enums.ItemTier(inventory["tierTypeHash"]),
-            tier_name=inventory["tierTypeName"],
-            sub_type=enums.Item(payload["itemSubType"]),
-            item_class=enums.Class(payload["classType"]),
-            damage=enums.DamageType(payload["defaultDamageTypeHash"]),
-            summary_hash=payload["summaryItemHash"],
-            is_equippable=payload["equippable"],
-            stats=payload["stats"],
-            ammo_type=enums.AmmoType(payload["equippingBlock"]["ammoType"]),
+            water_mark=water_mark,
+            banner=banner,
+            about=about,
+            type=payload.get("itemType", None),
+            bucket_type=bucket_type,
+            tier=tier,
+            tier_name=tier_name,
+            type_name=type_name,
+            sub_type=payload.get("itemSubType", None),
+            item_class=item_class,
+            damage=damage,
+            summary_hash=summary_hash,
+            is_equippable=payload.get("equippable", None),
+            stats=stats,
+            ammo_type=block,
             lore_hash=payload.get("loreHash", None),
         )

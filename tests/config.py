@@ -41,3 +41,15 @@ data: Dict[str, Any] = {
     "memtype": aiobungie.MembershipType.STEAM,
     "vendor": aiobungie.Vendor.SPIDER,
 }
+
+
+types: Dict[str, str] = {
+    'inventory_item_def': 'DestinyInventoryItemDefinition',
+    'place_def': 'DestinyPlaceDefinition',
+    'activ_def': 'DestinyActivityDefinition',
+    'activ_type_def': 'DestinyActivityTypeDefinition',
+    'activity_mode_def': 'DestinyActivityModeDefinition',
+    'class_def': 'DestinyClassDefinition',
+    'bucket_def': 'DestinyInventoryBucketDefinition',
+    'milestone_def': 'DestinyMilestoneDefinition',
+}

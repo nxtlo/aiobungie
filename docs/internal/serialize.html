@@ -28,7 +28,7 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python"># MIT License
-#
+# mypy: ignore-errors
 # Copyright (c) 2020 - Present nxtlo
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -53,19 +53,19 @@
 
 from __future__ import annotations
 
-from aiohttp.helpers import is_ip_address
-
 __all__: typing.Sequence[str] = [&#34;Deserialize&#34;]
 
 import logging
 import typing
 
-from aiobungie import error, http
+# Utils
+from aiobungie import error
 from aiobungie.internal import Image, Time, enums, impl
-from aiobungie.objects import application as app
-from aiobungie.objects import character, clans, player, profile, user
+from aiobungie.internal.helpers import JsonDict, JsonList, Undefined, Unknown
 
-from .helpers import JsonDict, JsonList
+# Objects
+from aiobungie.objects import application as app
+from aiobungie.objects import character, clans, entity, player, profile, user
 
 _LOG: typing.Final[logging.Logger] = logging.getLogger(__name__)
 
@@ -75,7 +75,7 @@ class Deserialize:
 
     # This is actually inspired by hikari&#39;s entity factory.
 
-    __slots__: typing.Sequence[str] = &#34;_rest&#34;
+    __slots__: typing.Sequence[str] = (&#34;_rest&#34;,)
 
     def __init__(self, rest: impl.RESTful) -&gt; None:
         self._rest = rest
@@ -88,7 +88,7 @@ class Deserialize:
             data = from_id  # type: ignore
         except IndexError:
             if position or position == 0:
-                raise error.UserNotFound(&#34;Player was not found.&#34;)
+                raise error.UserNotFound(&#34;Player was not found.&#34;) from None
 
         return user.User(
             id=int(data[&#34;membershipId&#34;]),
@@ -119,7 +119,7 @@ class Deserialize:
                 # the player was not found.
                 data = old_data[0]  # type: ignore
             except IndexError:
-                raise error.PlayerNotFound(&#34;Player was not found.&#34;)
+                raise error.PlayerNotFound(&#34;Player was not found.&#34;) from None
 
         return player.Player(
             name=data[&#34;displayName&#34;],
@@ -263,6 +263,111 @@ class Deserialize:
             character_ids=character_ids,
             power_cap=power_cap,
             app=self._rest,
+        )
+
+    def deserialize_entity(self, payload: JsonDict, /) -&gt; entity.Entity:
+        try:
+            # All Bungie entities has a display propetie
+            # if we don&#39;t find it means the entitiy was not found.
+            props: JsonDict = payload[&#34;displayProperties&#34;]
+        except KeyError:
+            raise error.NotFound(
+                &#34;The entity hash or the definition type is invalid&#34;
+            ) from None
+
+        # Some entities have an inventory which
+        # Includes its hash types.
+        # Most entites has this
+        # and for some it doesn&#39;t exists
+        inventory: JsonDict = {}
+
+        if (raw_inventory := payload.get(&#34;inventory&#34;)) is not None:
+            inventory: JsonDict = raw_inventory
+
+        # Entity tier type. Most entities have tier
+        # and some doesn&#39;t exists so we have to check.
+
+        bucket_type: typing.Optional[int] = None
+        tier: typing.Optional[enums.ItemTier] = None
+        tier_name: typing.Optional[str] = None
+
+        if (raw_bucket := inventory.get(&#34;bucketTypeHash&#34;)) is not None:
+            bucket_type: int = raw_bucket
+
+        if (raw_tier := inventory.get(&#34;tierTypeHash&#34;)) is not None:
+            tier: enums.ItemTier = enums.ItemTier(raw_tier)
+
+        if (raw_tier_name := inventory.get(&#34;tierTypeName&#34;)) is not None:
+            tier_name: str = raw_tier_name
+
+        if (name := props.get(&#34;name&#34;)) == Unknown:
+            name = Undefined
+
+        if (type_name := payload.get(&#34;itemTypeDisplayName&#34;)) == Unknown:
+            type_name = Undefined
+
+        if (description := props.get(&#34;description&#34;)) == Unknown:
+            description = Undefined
+
+        if (about := payload.get(&#34;flavorText&#34;)) == Unknown:
+            about = Undefined
+
+        icon: typing.Optional[Image] = None
+        if (raw_icon := props.get(&#34;icon&#34;)) is not None:
+            icon: Image = Image(str(raw_icon))
+
+        water_mark: typing.Optional[Image] = None
+        if (raw_watermark := payload.get(&#34;iconWatermark&#34;)) is not None:
+            water_mark: Image = Image(str(raw_watermark))
+
+        banner: typing.Optional[Image] = None
+        if (screenshot := payload.get(&#34;screenshot&#34;)) is not None:
+            banner: Image = Image(str(screenshot))
+
+        damage: typing.Optional[enums.DamageType] = None
+        if (damage_type := payload.get(&#34;defaultDamageTypeHash&#34;)) is not None:
+            damage: enums.DamageType = enums.DamageType(damage_type)
+
+        summary_hash: typing.Optional[int] = None
+        if (raw_summary_hash := payload.get(&#34;summaryItemHash&#34;)) is not None:
+            summary_hash: int = int(raw_summary_hash)
+
+        stats: typing.Optional[JsonDict] = {}
+        if (raw_stats := payload.get(&#34;stats&#34;)) is not None:
+            stats: JsonDict = raw_stats
+
+        block: typing.Optional[enums.AmmoType] = None
+        if (ammo := payload.get(&#34;equippingBlock&#34;)) is not None:
+            block: enums.AmmoType = enums.AmmoType(ammo[&#34;ammoType&#34;])
+
+        item_class: typing.Optional[enums.Class] = None
+        if (raw_item_class := payload.get(&#34;classType&#34;)) is not None:
+            item_class: enums.Class = enums.Class(raw_item_class)
+
+        return entity.Entity(
+            app=self._rest,
+            name=name,
+            description=description,
+            hash=payload[&#34;hash&#34;],
+            index=payload[&#34;index&#34;],
+            icon=icon,
+            has_icon=props[&#34;hasIcon&#34;],
+            water_mark=water_mark,
+            banner=banner,
+            about=about,
+            type=payload.get(&#34;itemType&#34;, None),
+            bucket_type=bucket_type,
+            tier=tier,
+            tier_name=tier_name,
+            type_name=type_name,
+            sub_type=payload.get(&#34;itemSubType&#34;, None),
+            item_class=item_class,
+            damage=damage,
+            summary_hash=summary_hash,
+            is_equippable=payload.get(&#34;equippable&#34;, None),
+            stats=stats,
+            ammo_type=block,
+            lore_hash=payload.get(&#34;loreHash&#34;, None),
         )</code></pre>
 </details>
 </section>
@@ -290,7 +395,7 @@ class Deserialize:
 
     # This is actually inspired by hikari&#39;s entity factory.
 
-    __slots__: typing.Sequence[str] = &#34;_rest&#34;
+    __slots__: typing.Sequence[str] = (&#34;_rest&#34;,)
 
     def __init__(self, rest: impl.RESTful) -&gt; None:
         self._rest = rest
@@ -303,7 +408,7 @@ class Deserialize:
             data = from_id  # type: ignore
         except IndexError:
             if position or position == 0:
-                raise error.UserNotFound(&#34;Player was not found.&#34;)
+                raise error.UserNotFound(&#34;Player was not found.&#34;) from None
 
         return user.User(
             id=int(data[&#34;membershipId&#34;]),
@@ -334,7 +439,7 @@ class Deserialize:
                 # the player was not found.
                 data = old_data[0]  # type: ignore
             except IndexError:
-                raise error.PlayerNotFound(&#34;Player was not found.&#34;)
+                raise error.PlayerNotFound(&#34;Player was not found.&#34;) from None
 
         return player.Player(
             name=data[&#34;displayName&#34;],
@@ -478,6 +583,111 @@ class Deserialize:
             character_ids=character_ids,
             power_cap=power_cap,
             app=self._rest,
+        )
+
+    def deserialize_entity(self, payload: JsonDict, /) -&gt; entity.Entity:
+        try:
+            # All Bungie entities has a display propetie
+            # if we don&#39;t find it means the entitiy was not found.
+            props: JsonDict = payload[&#34;displayProperties&#34;]
+        except KeyError:
+            raise error.NotFound(
+                &#34;The entity hash or the definition type is invalid&#34;
+            ) from None
+
+        # Some entities have an inventory which
+        # Includes its hash types.
+        # Most entites has this
+        # and for some it doesn&#39;t exists
+        inventory: JsonDict = {}
+
+        if (raw_inventory := payload.get(&#34;inventory&#34;)) is not None:
+            inventory: JsonDict = raw_inventory
+
+        # Entity tier type. Most entities have tier
+        # and some doesn&#39;t exists so we have to check.
+
+        bucket_type: typing.Optional[int] = None
+        tier: typing.Optional[enums.ItemTier] = None
+        tier_name: typing.Optional[str] = None
+
+        if (raw_bucket := inventory.get(&#34;bucketTypeHash&#34;)) is not None:
+            bucket_type: int = raw_bucket
+
+        if (raw_tier := inventory.get(&#34;tierTypeHash&#34;)) is not None:
+            tier: enums.ItemTier = enums.ItemTier(raw_tier)
+
+        if (raw_tier_name := inventory.get(&#34;tierTypeName&#34;)) is not None:
+            tier_name: str = raw_tier_name
+
+        if (name := props.get(&#34;name&#34;)) == Unknown:
+            name = Undefined
+
+        if (type_name := payload.get(&#34;itemTypeDisplayName&#34;)) == Unknown:
+            type_name = Undefined
+
+        if (description := props.get(&#34;description&#34;)) == Unknown:
+            description = Undefined
+
+        if (about := payload.get(&#34;flavorText&#34;)) == Unknown:
+            about = Undefined
+
+        icon: typing.Optional[Image] = None
+        if (raw_icon := props.get(&#34;icon&#34;)) is not None:
+            icon: Image = Image(str(raw_icon))
+
+        water_mark: typing.Optional[Image] = None
+        if (raw_watermark := payload.get(&#34;iconWatermark&#34;)) is not None:
+            water_mark: Image = Image(str(raw_watermark))
+
+        banner: typing.Optional[Image] = None
+        if (screenshot := payload.get(&#34;screenshot&#34;)) is not None:
+            banner: Image = Image(str(screenshot))
+
+        damage: typing.Optional[enums.DamageType] = None
+        if (damage_type := payload.get(&#34;defaultDamageTypeHash&#34;)) is not None:
+            damage: enums.DamageType = enums.DamageType(damage_type)
+
+        summary_hash: typing.Optional[int] = None
+        if (raw_summary_hash := payload.get(&#34;summaryItemHash&#34;)) is not None:
+            summary_hash: int = int(raw_summary_hash)
+
+        stats: typing.Optional[JsonDict] = {}
+        if (raw_stats := payload.get(&#34;stats&#34;)) is not None:
+            stats: JsonDict = raw_stats
+
+        block: typing.Optional[enums.AmmoType] = None
+        if (ammo := payload.get(&#34;equippingBlock&#34;)) is not None:
+            block: enums.AmmoType = enums.AmmoType(ammo[&#34;ammoType&#34;])
+
+        item_class: typing.Optional[enums.Class] = None
+        if (raw_item_class := payload.get(&#34;classType&#34;)) is not None:
+            item_class: enums.Class = enums.Class(raw_item_class)
+
+        return entity.Entity(
+            app=self._rest,
+            name=name,
+            description=description,
+            hash=payload[&#34;hash&#34;],
+            index=payload[&#34;index&#34;],
+            icon=icon,
+            has_icon=props[&#34;hasIcon&#34;],
+            water_mark=water_mark,
+            banner=banner,
+            about=about,
+            type=payload.get(&#34;itemType&#34;, None),
+            bucket_type=bucket_type,
+            tier=tier,
+            tier_name=tier_name,
+            type_name=type_name,
+            sub_type=payload.get(&#34;itemSubType&#34;, None),
+            item_class=item_class,
+            damage=damage,
+            summary_hash=summary_hash,
+            is_equippable=payload.get(&#34;equippable&#34;, None),
+            stats=stats,
+            ammo_type=block,
+            lore_hash=payload.get(&#34;loreHash&#34;, None),
         )</code></pre>
 </details>
 <h3>Methods</h3>
@@ -646,6 +856,121 @@ class Deserialize:
     )</code></pre>
 </details>
 </dd>
+<dt id="aiobungie.internal.serialize.Deserialize.deserialize_entity"><code class="name flex">
+<span>def <span class="ident">deserialize_entity</span></span>(<span>self, payload: JsonDict, /) ‑> <a title="aiobungie.objects.entity.Entity" href="../objects/entity.html#aiobungie.objects.entity.Entity">Entity</a></span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def deserialize_entity(self, payload: JsonDict, /) -&gt; entity.Entity:
+    try:
+        # All Bungie entities has a display propetie
+        # if we don&#39;t find it means the entitiy was not found.
+        props: JsonDict = payload[&#34;displayProperties&#34;]
+    except KeyError:
+        raise error.NotFound(
+            &#34;The entity hash or the definition type is invalid&#34;
+        ) from None
+
+    # Some entities have an inventory which
+    # Includes its hash types.
+    # Most entites has this
+    # and for some it doesn&#39;t exists
+    inventory: JsonDict = {}
+
+    if (raw_inventory := payload.get(&#34;inventory&#34;)) is not None:
+        inventory: JsonDict = raw_inventory
+
+    # Entity tier type. Most entities have tier
+    # and some doesn&#39;t exists so we have to check.
+
+    bucket_type: typing.Optional[int] = None
+    tier: typing.Optional[enums.ItemTier] = None
+    tier_name: typing.Optional[str] = None
+
+    if (raw_bucket := inventory.get(&#34;bucketTypeHash&#34;)) is not None:
+        bucket_type: int = raw_bucket
+
+    if (raw_tier := inventory.get(&#34;tierTypeHash&#34;)) is not None:
+        tier: enums.ItemTier = enums.ItemTier(raw_tier)
+
+    if (raw_tier_name := inventory.get(&#34;tierTypeName&#34;)) is not None:
+        tier_name: str = raw_tier_name
+
+    if (name := props.get(&#34;name&#34;)) == Unknown:
+        name = Undefined
+
+    if (type_name := payload.get(&#34;itemTypeDisplayName&#34;)) == Unknown:
+        type_name = Undefined
+
+    if (description := props.get(&#34;description&#34;)) == Unknown:
+        description = Undefined
+
+    if (about := payload.get(&#34;flavorText&#34;)) == Unknown:
+        about = Undefined
+
+    icon: typing.Optional[Image] = None
+    if (raw_icon := props.get(&#34;icon&#34;)) is not None:
+        icon: Image = Image(str(raw_icon))
+
+    water_mark: typing.Optional[Image] = None
+    if (raw_watermark := payload.get(&#34;iconWatermark&#34;)) is not None:
+        water_mark: Image = Image(str(raw_watermark))
+
+    banner: typing.Optional[Image] = None
+    if (screenshot := payload.get(&#34;screenshot&#34;)) is not None:
+        banner: Image = Image(str(screenshot))
+
+    damage: typing.Optional[enums.DamageType] = None
+    if (damage_type := payload.get(&#34;defaultDamageTypeHash&#34;)) is not None:
+        damage: enums.DamageType = enums.DamageType(damage_type)
+
+    summary_hash: typing.Optional[int] = None
+    if (raw_summary_hash := payload.get(&#34;summaryItemHash&#34;)) is not None:
+        summary_hash: int = int(raw_summary_hash)
+
+    stats: typing.Optional[JsonDict] = {}
+    if (raw_stats := payload.get(&#34;stats&#34;)) is not None:
+        stats: JsonDict = raw_stats
+
+    block: typing.Optional[enums.AmmoType] = None
+    if (ammo := payload.get(&#34;equippingBlock&#34;)) is not None:
+        block: enums.AmmoType = enums.AmmoType(ammo[&#34;ammoType&#34;])
+
+    item_class: typing.Optional[enums.Class] = None
+    if (raw_item_class := payload.get(&#34;classType&#34;)) is not None:
+        item_class: enums.Class = enums.Class(raw_item_class)
+
+    return entity.Entity(
+        app=self._rest,
+        name=name,
+        description=description,
+        hash=payload[&#34;hash&#34;],
+        index=payload[&#34;index&#34;],
+        icon=icon,
+        has_icon=props[&#34;hasIcon&#34;],
+        water_mark=water_mark,
+        banner=banner,
+        about=about,
+        type=payload.get(&#34;itemType&#34;, None),
+        bucket_type=bucket_type,
+        tier=tier,
+        tier_name=tier_name,
+        type_name=type_name,
+        sub_type=payload.get(&#34;itemSubType&#34;, None),
+        item_class=item_class,
+        damage=damage,
+        summary_hash=summary_hash,
+        is_equippable=payload.get(&#34;equippable&#34;, None),
+        stats=stats,
+        ammo_type=block,
+        lore_hash=payload.get(&#34;loreHash&#34;, None),
+    )</code></pre>
+</details>
+</dd>
 <dt id="aiobungie.internal.serialize.Deserialize.deserialize_player"><code class="name flex">
 <span>def <span class="ident">deserialize_player</span></span>(<span>self, payload: JsonDict, position: int = 0) ‑> <a title="aiobungie.objects.player.Player" href="../objects/player.html#aiobungie.objects.player.Player">Player</a></span>
 </code></dt>
@@ -668,7 +993,7 @@ class Deserialize:
             # the player was not found.
             data = old_data[0]  # type: ignore
         except IndexError:
-            raise error.PlayerNotFound(&#34;Player was not found.&#34;)
+            raise error.PlayerNotFound(&#34;Player was not found.&#34;) from None
 
     return player.Player(
         name=data[&#34;displayName&#34;],
@@ -728,7 +1053,7 @@ class Deserialize:
         data = from_id  # type: ignore
     except IndexError:
         if position or position == 0:
-            raise error.UserNotFound(&#34;Player was not found.&#34;)
+            raise error.UserNotFound(&#34;Player was not found.&#34;) from None
 
     return user.User(
         id=int(data[&#34;membershipId&#34;]),
@@ -819,6 +1144,7 @@ setTimeout(() => input.focus(), 100);
 <li><code><a title="aiobungie.internal.serialize.Deserialize.deserialize_app" href="#aiobungie.internal.serialize.Deserialize.deserialize_app">deserialize_app</a></code></li>
 <li><code><a title="aiobungie.internal.serialize.Deserialize.deserialize_app_owner" href="#aiobungie.internal.serialize.Deserialize.deserialize_app_owner">deserialize_app_owner</a></code></li>
 <li><code><a title="aiobungie.internal.serialize.Deserialize.deserialize_character" href="#aiobungie.internal.serialize.Deserialize.deserialize_character">deserialize_character</a></code></li>
+<li><code><a title="aiobungie.internal.serialize.Deserialize.deserialize_entity" href="#aiobungie.internal.serialize.Deserialize.deserialize_entity">deserialize_entity</a></code></li>
 <li><code><a title="aiobungie.internal.serialize.Deserialize.deserialize_player" href="#aiobungie.internal.serialize.Deserialize.deserialize_player">deserialize_player</a></code></li>
 <li><code><a title="aiobungie.internal.serialize.Deserialize.deserialize_profile" href="#aiobungie.internal.serialize.Deserialize.deserialize_profile">deserialize_profile</a></code></li>
 <li><code><a title="aiobungie.internal.serialize.Deserialize.deserialize_user" href="#aiobungie.internal.serialize.Deserialize.deserialize_user">deserialize_user</a></code></li>

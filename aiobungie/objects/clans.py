@@ -35,7 +35,7 @@ from aiobungie import url
 
 from ..internal import Image, Time
 from ..internal.enums import MembershipType
-from .user import UserCard
+from .user import UserLike
 
 if TYPE_CHECKING:
     from datetime import datetime
@@ -46,7 +46,7 @@ class ClanMembers:
 
 
 @attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
-class ClanOwner(UserCard):
+class ClanOwner(UserLike):
     """Represents a Bungie clan owner.
 
 
@@ -74,31 +74,31 @@ class ClanOwner(UserCard):
         returns a List of `builtins.int` of the clan owner's types.
     """
 
-    id: int = attr.ib(hash=True, repr=True)
+    id: int = attr.field(hash=True, repr=True)
     """The user id."""
 
-    name: str = attr.ib(repr=True)
+    name: str = attr.field(repr=True)
     """The user name."""
 
-    is_public: Optional[bool] = attr.ib(hash=False, repr=True, eq=False)
+    is_public: Optional[bool] = attr.field(hash=False, repr=True, eq=False)
     """Returns if the user profile is public or no."""
 
-    type: MembershipType = attr.ib(hash=False, repr=True, eq=True)
+    type: MembershipType = attr.field(hash=False, repr=True, eq=True)
     """Returns the membership type of the user."""
 
-    types: Optional[List[int]] = attr.ib(hash=True, repr=False, eq=False)
+    types: Optional[List[int]] = attr.field(hash=True, repr=False, eq=False)
     """Returns a list of the member ship's membership types."""
 
-    last_online: datetime = attr.ib(repr=False)
+    last_online: datetime = attr.field(repr=False)
     """An aware `datetime.datetime` object of the user's last online date UTC."""
 
-    clan_id: int = attr.ib(repr=True)
+    clan_id: int = attr.field(repr=True)
     """Owner's current clan id."""
 
-    icon: Image = attr.ib(repr=False)
+    icon: Image = attr.field(repr=False)
     """Owner's profile icom"""
 
-    joined_at: datetime = attr.ib(repr=True)
+    joined_at: datetime = attr.field(repr=True)
     """Owner's bungie join date."""
 
     @property
@@ -116,18 +116,14 @@ class ClanOwner(UserCard):
         """Returns a dict object of the clan owner,
         This function is useful if you're binding to other REST apis.
         """
-        return dict(
-            id=self.id,
-            name=self.name,
-            is_public=self.is_public,
-            icon=str(self.icon),
-            types=self.type,
-            joined_at=self.joined_at,
-            type=self.type,
-            clan_id=self.clan_id,
-            last_online=self.last_online,
-        )
+        return attr.asdict(self)
+    
+    
+    def __int__(self) -> int:
+        return self.id
 
+    def __str__(self) -> str:
+        return self.name
 
 @attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
 class Clan:
@@ -158,37 +154,37 @@ class Clan:
         See `aiobungie.objects.ClanOwner` for info.
     """
 
-    id: int = attr.ib(hash=True, repr=True, eq=True)
+    id: int = attr.field(hash=True, repr=True, eq=True)
     """The clan id"""
 
-    name: str = attr.ib(repr=True)
+    name: str = attr.field(repr=True)
     """The clan's name"""
 
-    created_at: datetime = attr.ib(repr=True)
+    created_at: datetime = attr.field(repr=True)
     """Clan's creation date time in UTC."""
 
-    member_count: int = attr.ib(repr=True)
+    member_count: int = attr.field(repr=True)
     """Clan's member count."""
 
-    description: str = attr.ib(repr=True, eq=False)
+    description: str = attr.field(repr=True, eq=False)
     """Clan's description"""
 
-    is_public: bool = attr.ib(repr=True, eq=False)
+    is_public: bool = attr.field(repr=True, eq=False)
     """Clan's privacy status."""
 
-    banner: Image = attr.ib(repr=False)
+    banner: Image = attr.field(repr=False)
     """Clan's banner"""
 
-    avatar: Image = attr.ib(repr=False)
+    avatar: Image = attr.field(repr=False)
     """Clan's avatar"""
 
-    about: str = attr.ib(repr=True, eq=False)
+    about: str = attr.field(repr=True, eq=False)
     """Clan's about title."""
 
-    tags: List[str] = attr.ib(repr=False)
+    tags: List[str] = attr.field(repr=False)
     """A list of the clan's tags."""
 
-    owner: ClanOwner = attr.ib(repr=True)
+    owner: ClanOwner = attr.field(repr=True)
     """The clan owner."""
 
     @property
@@ -202,17 +198,11 @@ class Clan:
 
     @property
     def as_dict(self) -> Dict[str, Any]:
-        """Returns a dict object of the player,
-        This function is useful if you're binding to other REST apis.
-        """
-        return dict(
-            id=self.id,
-            name=self.name,
-            created_at=self.created_at,
-            is_public=self.is_public,
-            avatar=str(self.avatar),
-            banner=str(self.banner),
-            about=self.about,
-            description=self.description,
-            tags=self.tags,
-        )
+        """Returns an instance of the object as a dict"""
+        return attr.asdict(self)
+    
+    def __int__(self) -> int:
+        return self.id
+
+    def __str__(self) -> str:
+        return self.name 

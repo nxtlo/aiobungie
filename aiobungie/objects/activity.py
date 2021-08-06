@@ -130,41 +130,31 @@ class Activity(PartialActivity):
             When did the activity occurred in UTC datetime.
     """
 
-    is_completed: str = attr.ib(repr=True, hash=False, eq=False)
+    is_completed: str = attr.field(repr=True, hash=False, eq=False)
 
-    hash: int = attr.ib(hash=True, repr=False, eq=False)
+    hash: int = attr.field(hash=True, repr=False, eq=False)
 
-    mode: GameMode = attr.ib(hash=False, repr=True)
+    mode: GameMode = attr.field(hash=False, repr=True)
 
-    kills: int = attr.ib(repr=False, eq=False, hash=False)
+    kills: int = attr.field(repr=False, eq=False, hash=False)
 
-    deaths: int = attr.ib(repr=False, eq=False, hash=False)
+    deaths: int = attr.field(repr=False, eq=False, hash=False)
 
-    when: Optional[datetime] = attr.ib(repr=True, eq=False, hash=False)
+    when: Optional[datetime] = attr.field(repr=True, eq=False, hash=False)
 
-    assists: int = attr.ib(repr=False, eq=False, hash=False)
+    assists: int = attr.field(repr=False, eq=False, hash=False)
 
-    duration: str = attr.ib(repr=True, eq=False, hash=False)
+    duration: str = attr.field(repr=True, eq=False, hash=False)
 
-    player_count: int = attr.ib(repr=False, eq=False, hash=False)
+    player_count: int = attr.field(repr=False, eq=False, hash=False)
 
-    member_type: MembershipType = attr.ib(repr=False, eq=False, hash=False)
+    member_type: MembershipType = attr.field(repr=False, eq=False, hash=False)
 
-    kd: int = attr.ib(repr=True, eq=False, hash=False)
+    kd: int = attr.field(repr=True, eq=False, hash=False)
 
+    @property
     def as_dict(self) -> Dict[str, Any]:
         """Returns a dict object of the Activity,
         This function is useful if you're binding to other REST apis.
         """
-        return dict(
-            is_completed=self.is_completed,
-            mode=self.mode,
-            duration=self.duration,
-            player_cout=self.player_count,
-            when=time.Time.clean_date(str(self.when)),
-            kills=self.kills,
-            deaths=self.deaths,
-            assists=self.assists,
-            kd=self.kd,
-            member_type=MembershipType(str(self.member_type)),
-        )
+        return attr.asdict(self)

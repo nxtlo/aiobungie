@@ -39,28 +39,14 @@ class ClientTest(aiobungie.Client):
 
     async def app_test(self):
         app: Application = await self.fetch_app(data["app"])
-        print(
-            app.human_timedelta,
-            app.owner.link,
-            app.id,
-            app.published_at,
-            app.as_dict,
-            app.link,
-            app.redirect_url,
-        )
+        print(app.as_dict)
+        
 
     async def player_test(self) -> None:
         player: Player = await self.fetch_player(
             data["me"], aiobungie.MembershipType.ALL
         )
-        print(
-            player.name,
-            player.id,
-            player.is_public,
-            player.icon,
-            player.as_dict,
-            player.type,
-        )
+        print(player.as_dict)
 
     # async def man_test(self):
     # man = await self.fetch_manifest()
@@ -108,180 +94,80 @@ class ClientTest(aiobungie.Client):
         char: Character = await self.fetch_character(
             data["memid"], data["memtype"], data["char"]
         )
-        print(char.human_timedelta)
-        print(char.member_id)
-        print(char.member_type)
-        print(char.last_played)
-        print(char.total_played_time)
-        print(char.emblem)
-        print(char.emblem_hash)
-        print(char.emblem_icon)
-        print(char.level)
-        print(char.light)
-        print(char.stats)
-        print(char.class_type)
+        print(char.as_dict)
+        
 
     async def clan_id_test(self):
         clan: Clan = await self.fetch_clan_from_id(data["clanid"])
-        print(
-            clan.human_timedelta,
-            clan.owner.link,
-            clan.owner.as_dict,
-            clan.owner.icon,
-            clan.owner.joined_at,
-            clan.owner.name,
-            clan.owner.id,
-            clan.about,
-            clan.banner,
-            clan.is_public,
-            clan.member_count,
-        )
+        print(clan.as_dict)
 
     async def clan_test(self):
         clan: Clan = await self.fetch_clan("PotatoSalad")
-        print(
-            clan.human_timedelta,
-            clan.url,
-            clan.owner.link,
-            clan.owner.as_dict,
-            clan.owner.icon,
-            clan.owner.joined_at,
-            clan.owner.name,
-            clan.owner.id,
-            clan.about,
-            clan.banner,
-            clan.is_public,
-            clan.member_count,
-        )
+        print(clan.as_dict)
 
     async def user_test(self):
         user: User = await self.fetch_user("Fate", position=24)
-        print(
-            user.human_timedelta,
-            user.about,
-            user.name,
-            user.created_at,
-            user.blizzard_name,
-            user.status,
-            user.steam_name,
-            user.is_deleted,
-            user.picture,
-            user.psn_name,
-            user.id,
-        )
+        print(user.as_dict)
+        
 
     async def user_id_test(self):
         user: User = await self.fetch_user_from_id(data["id"])
-        print(
-            user.human_timedelta,
-            user.about,
-            user.name,
-            user.created_at,
-            user.blizzard_name,
-            user.status,
-            user.steam_name,
-            user.is_deleted,
-            user.picture,
-            user.psn_name,
-            user.id,
-        )
+        print(user.as_dict)
+        
 
     async def profile_test(self) -> None:
         profile: Profile = await self.fetch_profile(
             data["memid"],
             aiobungie.MembershipType.STEAM,
         )
-        print(
-            profile.name,
-            profile.character_ids,
-            profile.as_dict,
-            profile.last_played,
-            profile.human_timedelta,
-            profile.power_cap,
-            profile.type,
-        )
+        print(profile.as_dict)
+        
 
     async def titan_test(self) -> None:
         profile: Profile = await self.fetch_profile(
             data["memid"], aiobungie.MembershipType.STEAM
         )
         char: Character = await profile.titan()
-        print(char.human_timedelta)
-        print(char.member_id)
-        print(char.member_type)
-        print(char.last_played)
-        print(char.total_played_time)
-        print(char.emblem)
-        print(char.emblem_hash)
-        print(char.emblem_icon)
-        print(char.level)
-        print(char.light)
-        print(char.stats)
-        print(char.class_type)
-
+        print(char.as_dict)
+        
+        
     async def hunter_test(self) -> None:
         profile: Profile = await self.fetch_profile(
             data["memid"], aiobungie.MembershipType.STEAM
         )
         char: Character = await profile.hunter()
-        print(char.human_timedelta)
-        print(char.member_id)
-        print(char.member_type)
-        print(char.last_played)
-        print(char.total_played_time)
-        print(char.emblem)
-        print(char.emblem_hash)
-        print(char.emblem_icon)
-        print(char.level)
-        print(char.light)
-        print(char.stats)
-        print(char.class_type)
+        print(char.as_dict)
+        
 
     async def warlock_test(self) -> None:
         profile: Profile = await self.fetch_profile(
             data["memid"], aiobungie.MembershipType.STEAM
         )
         char: Character = await profile.warlock()
-        print(char.human_timedelta)
-        print(char.member_id)
-        print(char.member_type)
-        print(char.last_played)
-        print(char.total_played_time)
-        print(char.emblem)
-        print(char.emblem_hash)
-        print(char.emblem_icon)
-        print(char.level)
-        print(char.light)
-        print(char.stats)
-        print(char.class_type)
-        
-    async def entity_test(self) -> None:
-        entity: objects.Entity = await self.fetch_entity('DestinyInventoryItemDefinition', 3325463374)
-        print(repr(entity))
+        print(char.as_dict)
 
 
 client = ClientTest(TOKEN)
 
-
 async def main() -> None:
     before = time.time()
     coros = [
-        client.entity_test()
-        # client.char_test(),
-        # client.clan_id_test(),
-        # client.clan_test(),
-        # client.app_test(),
-        # client.user_id_test(),
-        # client.user_test(),
-        # client.player_test(),
-        # client.profile_test(),
-        # client.titan_test(),
-        # client.hunter_test(),
-        # client.warlock_test(),
+      client.char_test(),
+      client.clan_id_test(),
+      client.clan_test(),
+      client.app_test(),
+      client.user_id_test(),
+      client.user_test(),
+      client.player_test(),
+      client.profile_test(),
+      client.titan_test(),
+      client.hunter_test(),
+      client.warlock_test(),
     ]
     await asyncio.gather(*coros)
     full = before - time.time()
     print(f"TOOK {1000 * full:,.0f} ms")
+
     # await client.man_test()
     # print(await client.fetch_vendor_sales())
     """Under is not working yet."""

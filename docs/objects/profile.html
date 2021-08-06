@@ -71,10 +71,16 @@ log: typing.Final[logging.Logger] = logging.getLogger(__name__)
 
 @attr.s(kw_only=True, hash=True, weakref_slot=False, slots=True, init=True, eq=True)
 class ProfileComponentImpl(abc.ABC):
+    &#34;&#34;&#34;
+    A partial interface that will/include all bungie profile components.
+
+    Some fields may or may not be available here.
+    &#34;&#34;&#34;
+
     @property
     @abc.abstractmethod
     def app(self) -&gt; impl.RESTful:
-        &#34;&#34;&#34;A Client that we may use for making other requests.&#34;&#34;&#34;
+        &#34;&#34;&#34;A client that we may to make rest requests.&#34;&#34;&#34;
 
     @property
     @abc.abstractmethod
@@ -181,10 +187,21 @@ class ProfileComponentImpl(abc.ABC):
 class Profile(ProfileComponentImpl):
     &#34;&#34;&#34;Represents a Bungie member Profile.
 
-    A bungie profile have components, each component has different data,
-    for an example, The profile component returns the a `aiobungie.objects.Profile`
-    object which&#39;s this class, the character component returns `aiobungie.objects.Character` object, etc.
-    See `aiobungie.internal.enums.Component` to see the current available components.
+    Bungie profiles requires components. but in aiobungie
+    you don&#39;t need to select a specific component since they will all/will be
+    implemented.
+
+    for an example: to access the `Character` component you&#39;ll need to pass `?component=200` right?.
+    in aiobungie you can just do this.
+
+    ```py
+    profile = await client.fetch_profile(&#34;Fate&#34;)
+
+    # access the character component and get my warlock.
+    warlock = await profile.warlock()
+
+    assert warlock.light == 1320
+    ```
 
     Attributes
     ----------
@@ -202,27 +219,27 @@ class Profile(ProfileComponentImpl):
             The profile&#39;s current season power cap.
     &#34;&#34;&#34;
 
-    id: int = attr.ib(repr=True, hash=True, eq=False)
+    id: int = attr.field(repr=True, hash=True, eq=False)
     &#34;&#34;&#34;Profile&#39;s id&#34;&#34;&#34;
 
-    app: impl.RESTful = attr.ib(repr=False, hash=False, eq=False)
+    app: impl.RESTful = attr.field(repr=False, hash=False, eq=False)
 
-    name: str = attr.ib(repr=True, hash=False, eq=False)
+    name: str = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;Profile&#39;s name.&#34;&#34;&#34;
 
-    type: enums.MembershipType = attr.ib(repr=True, hash=False, eq=False)
+    type: enums.MembershipType = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;Profile&#39;s type.&#34;&#34;&#34;
 
-    is_public: bool = attr.ib(repr=True, hash=False, eq=False)
+    is_public: bool = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;Profile&#39;s privacy status.&#34;&#34;&#34;
 
-    last_played: datetime.datetime = attr.ib(repr=True, hash=False, eq=False)
+    last_played: datetime.datetime = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;Profile&#39;s last played Destiny 2 played date.&#34;&#34;&#34;
 
-    character_ids: typing.List[int] = attr.ib(repr=False, hash=False, eq=False)
+    character_ids: typing.List[int] = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;A list of the profile&#39;s character ids.&#34;&#34;&#34;
 
-    power_cap: int = attr.ib(repr=False, hash=False, eq=False)
+    power_cap: int = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;The profile&#39;s current seaspn power cap.&#34;&#34;&#34;
 
     # Components
@@ -238,15 +255,7 @@ class Profile(ProfileComponentImpl):
         &#34;&#34;&#34;Returns a dict object of the profile,
         This function is useful if you&#39;re binding to other REST apis.
         &#34;&#34;&#34;
-        return dict(
-            id=self.id,
-            name=self.name,
-            type=str(self.type),
-            is_public=self.is_public,
-            last_played=self.last_played,
-            character_ids=self.character_ids,
-            power_cap=self.power_cap,
-        )
+        return attr.asdict(self)
 
     @property
     def human_timedelta(self) -&gt; str:
@@ -269,10 +278,18 @@ class Profile(ProfileComponentImpl):
 </code></dt>
 <dd>
 <div class="desc"><p>Represents a Bungie member Profile.</p>
-<p>A bungie profile have components, each component has different data,
-for an example, The profile component returns the a <code><a title="aiobungie.objects.Profile" href="index.html#aiobungie.objects.Profile">Profile</a></code>
-object which's this class, the character component returns <code><a title="aiobungie.objects.Character" href="index.html#aiobungie.objects.Character">Character</a></code> object, etc.
-See <code><a title="aiobungie.internal.enums.Component" href="../internal/enums.html#aiobungie.internal.enums.Component">Component</a></code> to see the current available components.</p>
+<p>Bungie profiles requires components. but in aiobungie
+you don't need to select a specific component since they will all/will be
+implemented.</p>
+<p>for an example: to access the <code>Character</code> component you'll need to pass <code>?component=200</code> right?.
+in aiobungie you can just do this.</p>
+<pre><code class="language-py">profile = await client.fetch_profile(&quot;Fate&quot;)
+
+# access the character component and get my warlock.
+warlock = await profile.warlock()
+
+assert warlock.light == 1320
+</code></pre>
 <h2 id="attributes">Attributes</h2>
 <dl>
 <dt><strong><code>id</code></strong> :&ensp;<code>builtins.int</code></dt>
@@ -297,10 +314,21 @@ See <code><a title="aiobungie.internal.enums.Component" href="../internal/enums.
 class Profile(ProfileComponentImpl):
     &#34;&#34;&#34;Represents a Bungie member Profile.
 
-    A bungie profile have components, each component has different data,
-    for an example, The profile component returns the a `aiobungie.objects.Profile`
-    object which&#39;s this class, the character component returns `aiobungie.objects.Character` object, etc.
-    See `aiobungie.internal.enums.Component` to see the current available components.
+    Bungie profiles requires components. but in aiobungie
+    you don&#39;t need to select a specific component since they will all/will be
+    implemented.
+
+    for an example: to access the `Character` component you&#39;ll need to pass `?component=200` right?.
+    in aiobungie you can just do this.
+
+    ```py
+    profile = await client.fetch_profile(&#34;Fate&#34;)
+
+    # access the character component and get my warlock.
+    warlock = await profile.warlock()
+
+    assert warlock.light == 1320
+    ```
 
     Attributes
     ----------
@@ -318,27 +346,27 @@ class Profile(ProfileComponentImpl):
             The profile&#39;s current season power cap.
     &#34;&#34;&#34;
 
-    id: int = attr.ib(repr=True, hash=True, eq=False)
+    id: int = attr.field(repr=True, hash=True, eq=False)
     &#34;&#34;&#34;Profile&#39;s id&#34;&#34;&#34;
 
-    app: impl.RESTful = attr.ib(repr=False, hash=False, eq=False)
+    app: impl.RESTful = attr.field(repr=False, hash=False, eq=False)
 
-    name: str = attr.ib(repr=True, hash=False, eq=False)
+    name: str = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;Profile&#39;s name.&#34;&#34;&#34;
 
-    type: enums.MembershipType = attr.ib(repr=True, hash=False, eq=False)
+    type: enums.MembershipType = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;Profile&#39;s type.&#34;&#34;&#34;
 
-    is_public: bool = attr.ib(repr=True, hash=False, eq=False)
+    is_public: bool = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;Profile&#39;s privacy status.&#34;&#34;&#34;
 
-    last_played: datetime.datetime = attr.ib(repr=True, hash=False, eq=False)
+    last_played: datetime.datetime = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;Profile&#39;s last played Destiny 2 played date.&#34;&#34;&#34;
 
-    character_ids: typing.List[int] = attr.ib(repr=False, hash=False, eq=False)
+    character_ids: typing.List[int] = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;A list of the profile&#39;s character ids.&#34;&#34;&#34;
 
-    power_cap: int = attr.ib(repr=False, hash=False, eq=False)
+    power_cap: int = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;The profile&#39;s current seaspn power cap.&#34;&#34;&#34;
 
     # Components
@@ -354,15 +382,7 @@ class Profile(ProfileComponentImpl):
         &#34;&#34;&#34;Returns a dict object of the profile,
         This function is useful if you&#39;re binding to other REST apis.
         &#34;&#34;&#34;
-        return dict(
-            id=self.id,
-            name=self.name,
-            type=str(self.type),
-            is_public=self.is_public,
-            last_played=self.last_played,
-            character_ids=self.character_ids,
-            power_cap=self.power_cap,
-        )
+        return attr.asdict(self)
 
     @property
     def human_timedelta(self) -&gt; str:
@@ -378,7 +398,7 @@ class Profile(ProfileComponentImpl):
 <dl>
 <dt id="aiobungie.objects.profile.Profile.app"><code class="name">var <span class="ident">app</span> : <a title="aiobungie.internal.impl.RESTful" href="../internal/impl.html#aiobungie.internal.impl.RESTful">RESTful</a></code></dt>
 <dd>
-<div class="desc"><p>A Client that we may use for making other requests.</p></div>
+<div class="desc"><p>A client that we may to make rest requests.</p></div>
 </dd>
 <dt id="aiobungie.objects.profile.Profile.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
 <dd>
@@ -393,15 +413,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
     &#34;&#34;&#34;Returns a dict object of the profile,
     This function is useful if you&#39;re binding to other REST apis.
     &#34;&#34;&#34;
-    return dict(
-        id=self.id,
-        name=self.name,
-        type=str(self.type),
-        is_public=self.is_public,
-        last_played=self.last_played,
-        character_ids=self.character_ids,
-        power_cap=self.power_cap,
-    )</code></pre>
+    return attr.asdict(self)</code></pre>
 </details>
 </dd>
 <dt id="aiobungie.objects.profile.Profile.character_ids"><code class="name">var <span class="ident">character_ids</span> : List[int]</code></dt>

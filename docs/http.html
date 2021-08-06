@@ -57,6 +57,9 @@ and Where all the magic happenes.
 
 from __future__ import annotations
 
+import types
+import typing
+
 __all__ = (&#34;HTTPClient&#34;,)
 
 import http
@@ -68,6 +71,7 @@ from typing import (
     NoReturn,
     Optional,
     TypeVar,
+    Union,
     final,
 )
 
@@ -84,8 +88,7 @@ if TYPE_CHECKING:
 import asyncio
 import logging
 
-log: Final[logging.Logger] = logging.getLogger(__name__)
-log.setLevel(&#34;DEBUG&#34;)
+_LOG: Final[logging.Logger] = logging.getLogger(&#34;aiobungie.http&#34;)
 
 
 async def handle_errors(
@@ -119,6 +122,29 @@ async def handle_errors(
         return error.HTTPException(msg)
 
 
+class PreLock:
+
+    __slots__: typing.Sequence[str] = (&#34;_lock&#34;,)
+
+    def __init__(self, locker: asyncio.Lock) -&gt; None:
+        self._lock: asyncio.Lock = locker
+
+    async def __aenter__(self) -&gt; None:
+        await self.acquire()
+
+    async def __aexit__(
+        self,
+        ext_type: Optional[BaseException],
+        exc: Optional[BaseException],
+        exc_tb: Optional[types.TracebackType],
+    ) -&gt; None:
+        self._lock.release()
+
+    async def acquire(self) -&gt; None:
+        if not self._lock.locked():
+            await self._lock.acquire()
+
+
 class HTTPClient:
     &#34;&#34;&#34;An HTTP Client for sending http requests to the Bungie API&#34;&#34;&#34;
 
@@ -133,6 +159,7 @@ class HTTPClient:
         self.connector = connector
         self.loop = loop or asyncio.get_event_loop()
 
+    @final
     async def fetch(
         self,
         method: str,
@@ -142,49 +169,64 @@ class HTTPClient:
         **kwargs: Any,
     ) -&gt; Any:
 
-        if (token := self.key) is not None:
-            kwargs[&#34;headers&#34;] = {&#34;X-API-KEY&#34;: token}
+        locker = asyncio.Lock()
+        if isinstance(self.key, str) and self.key is not None:
+            kwargs[&#34;headers&#34;] = {&#34;X-API-KEY&#34;: self.key}
         else:
             raise ValueError(&#34;No API KEY was passed.&#34;)
 
-        try:
-            async with aiohttp.ClientSession(
-                loop=self.loop, connector=self.connector
-            ) as session:
-                async with session.request(
-                    method=method,
-                    url=f&#34;{url.REST_EP if not base else url.BASE}/{route}&#34;,
-                    **kwargs,
-                ) as response:
+        if &#34;json&#34; in kwargs:
+            kwargs[&#34;Content-Type&#34;] = &#34;application/json&#34;
 
-                    data = await response.json()
-                    msg: str = data[&#34;ErrorStatus&#34;]
-                    if 300 &gt; response.status &gt;= 200:
-                        if (
-                            type == &#34;read&#34;
-                        ):  # We want to read the bytes for the manifest response.
-                            data = await response.read()
-                            return data
+        while 1:
+            async with PreLock(locker):
+                try:
+                    async with aiohttp.ClientSession(
+                        loop=self.loop, connector=self.connector
+                    ) as session:
+                        async with session.request(
+                            method=method,
+                            url=f&#34;{url.REST_EP if not base else url.BASE}/{route}&#34;,
+                            **kwargs,
+                        ) as response:
 
-                        log.debug(
-                            &#34;{} Request success from {} with status {}&#34;.format(
-                                method, f&#34;{url.REST_EP}/{route}&#34;, data[&#34;Message&#34;]
-                            )
-                        )
-                        try:
-                            return data[
-                                &#34;Response&#34;
-                            ]  # Almost all bungie json objects are
-                            # wrapped inside a dict[Response=...], but
-                            # sometimes it returns a List so this check
-                            # is needed
-                        except (AttributeError, TypeError):
-                            return data
+                            data = await response.json()
+                            msg: str = data[&#34;ErrorStatus&#34;]
+                            if 300 &gt; response.status &gt;= 200:
+                                if (
+                                    type == &#34;read&#34;
+                                ):  # We want to read the bytes for the manifest response.
+                                    data = await response.read()
+                                    return data
 
-                    await self._handle_err(response, msg)
+                                _LOG.info(
+                                    &#34;{} Request success from {} with status {}&#34;.format(
+                                        method,
+                                        f&#34;{url.REST_EP}/{route}&#34;,
+                                        data[&#34;Message&#34;],
+                                    )
+                                )
+                                try:
+                                    # Almost all bungie json objects are
+                                    # wrapped inside a dict[Response=...], but
+                                    # sometimes it returns a List so this check
+                                    # is needed
+                                    return data[&#34;Response&#34;]
+                                except KeyError:
+                                    return data
 
-        except aiohttp.ClientError:
-            raise
+                            # We continue here.
+                            if response.status in {500, 502, 504}:
+                                await asyncio.sleep(0x05)
+                                continue
+
+                            await self._handle_err(response, msg)
+
+                except aiohttp.ContentTypeError:
+                    return await response.text(encoding=&#34;utf-8&#34;)
+
+                except aiohttp.ClientError:
+                    raise
 
     @staticmethod
     @final
@@ -260,7 +302,10 @@ class HTTPClient:
         return self.fetch(
             &#34;GET&#34;,
             f&#34;Destiny2/{int(type)}/Profile/{int(memberid)}/?components={int(Component.PROFILE)}&#34;,
-        )</code></pre>
+        )
+
+    def fetch_entity(self, type: str, hash: int) -&gt; Response[helpers.JsonDict]:
+        return self.fetch(&#34;GET&#34;, route=f&#34;Destiny2/Manifest/{type}/{hash}&#34;)</code></pre>
 </details>
 </section>
 <section>
@@ -296,6 +341,7 @@ class HTTPClient:
         self.connector = connector
         self.loop = loop or asyncio.get_event_loop()
 
+    @final
     async def fetch(
         self,
         method: str,
@@ -305,49 +351,64 @@ class HTTPClient:
         **kwargs: Any,
     ) -&gt; Any:
 
-        if (token := self.key) is not None:
-            kwargs[&#34;headers&#34;] = {&#34;X-API-KEY&#34;: token}
+        locker = asyncio.Lock()
+        if isinstance(self.key, str) and self.key is not None:
+            kwargs[&#34;headers&#34;] = {&#34;X-API-KEY&#34;: self.key}
         else:
             raise ValueError(&#34;No API KEY was passed.&#34;)
 
-        try:
-            async with aiohttp.ClientSession(
-                loop=self.loop, connector=self.connector
-            ) as session:
-                async with session.request(
-                    method=method,
-                    url=f&#34;{url.REST_EP if not base else url.BASE}/{route}&#34;,
-                    **kwargs,
-                ) as response:
+        if &#34;json&#34; in kwargs:
+            kwargs[&#34;Content-Type&#34;] = &#34;application/json&#34;
 
-                    data = await response.json()
-                    msg: str = data[&#34;ErrorStatus&#34;]
-                    if 300 &gt; response.status &gt;= 200:
-                        if (
-                            type == &#34;read&#34;
-                        ):  # We want to read the bytes for the manifest response.
-                            data = await response.read()
-                            return data
+        while 1:
+            async with PreLock(locker):
+                try:
+                    async with aiohttp.ClientSession(
+                        loop=self.loop, connector=self.connector
+                    ) as session:
+                        async with session.request(
+                            method=method,
+                            url=f&#34;{url.REST_EP if not base else url.BASE}/{route}&#34;,
+                            **kwargs,
+                        ) as response:
 
-                        log.debug(
-                            &#34;{} Request success from {} with status {}&#34;.format(
-                                method, f&#34;{url.REST_EP}/{route}&#34;, data[&#34;Message&#34;]
-                            )
-                        )
-                        try:
-                            return data[
-                                &#34;Response&#34;
-                            ]  # Almost all bungie json objects are
-                            # wrapped inside a dict[Response=...], but
-                            # sometimes it returns a List so this check
-                            # is needed
-                        except (AttributeError, TypeError):
-                            return data
+                            data = await response.json()
+                            msg: str = data[&#34;ErrorStatus&#34;]
+                            if 300 &gt; response.status &gt;= 200:
+                                if (
+                                    type == &#34;read&#34;
+                                ):  # We want to read the bytes for the manifest response.
+                                    data = await response.read()
+                                    return data
 
-                    await self._handle_err(response, msg)
+                                _LOG.info(
+                                    &#34;{} Request success from {} with status {}&#34;.format(
+                                        method,
+                                        f&#34;{url.REST_EP}/{route}&#34;,
+                                        data[&#34;Message&#34;],
+                                    )
+                                )
+                                try:
+                                    # Almost all bungie json objects are
+                                    # wrapped inside a dict[Response=...], but
+                                    # sometimes it returns a List so this check
+                                    # is needed
+                                    return data[&#34;Response&#34;]
+                                except KeyError:
+                                    return data
 
-        except aiohttp.ClientError:
-            raise
+                            # We continue here.
+                            if response.status in {500, 502, 504}:
+                                await asyncio.sleep(0x05)
+                                continue
+
+                            await self._handle_err(response, msg)
+
+                except aiohttp.ContentTypeError:
+                    return await response.text(encoding=&#34;utf-8&#34;)
+
+                except aiohttp.ClientError:
+                    raise
 
     @staticmethod
     @final
@@ -423,7 +484,10 @@ class HTTPClient:
         return self.fetch(
             &#34;GET&#34;,
             f&#34;Destiny2/{int(type)}/Profile/{int(memberid)}/?components={int(Component.PROFILE)}&#34;,
-        )</code></pre>
+        )
+
+    def fetch_entity(self, type: str, hash: int) -&gt; Response[helpers.JsonDict]:
+        return self.fetch(&#34;GET&#34;, route=f&#34;Destiny2/Manifest/{type}/{hash}&#34;)</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -436,7 +500,8 @@ class HTTPClient:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">async def fetch(
+<pre><code class="python">@final
+async def fetch(
     self,
     method: str,
     route: str,
@@ -445,49 +510,64 @@ class HTTPClient:
     **kwargs: Any,
 ) -&gt; Any:
 
-    if (token := self.key) is not None:
-        kwargs[&#34;headers&#34;] = {&#34;X-API-KEY&#34;: token}
+    locker = asyncio.Lock()
+    if isinstance(self.key, str) and self.key is not None:
+        kwargs[&#34;headers&#34;] = {&#34;X-API-KEY&#34;: self.key}
     else:
         raise ValueError(&#34;No API KEY was passed.&#34;)
 
-    try:
-        async with aiohttp.ClientSession(
-            loop=self.loop, connector=self.connector
-        ) as session:
-            async with session.request(
-                method=method,
-                url=f&#34;{url.REST_EP if not base else url.BASE}/{route}&#34;,
-                **kwargs,
-            ) as response:
+    if &#34;json&#34; in kwargs:
+        kwargs[&#34;Content-Type&#34;] = &#34;application/json&#34;
 
-                data = await response.json()
-                msg: str = data[&#34;ErrorStatus&#34;]
-                if 300 &gt; response.status &gt;= 200:
-                    if (
-                        type == &#34;read&#34;
-                    ):  # We want to read the bytes for the manifest response.
-                        data = await response.read()
-                        return data
+    while 1:
+        async with PreLock(locker):
+            try:
+                async with aiohttp.ClientSession(
+                    loop=self.loop, connector=self.connector
+                ) as session:
+                    async with session.request(
+                        method=method,
+                        url=f&#34;{url.REST_EP if not base else url.BASE}/{route}&#34;,
+                        **kwargs,
+                    ) as response:
 
-                    log.debug(
-                        &#34;{} Request success from {} with status {}&#34;.format(
-                            method, f&#34;{url.REST_EP}/{route}&#34;, data[&#34;Message&#34;]
-                        )
-                    )
-                    try:
-                        return data[
-                            &#34;Response&#34;
-                        ]  # Almost all bungie json objects are
-                        # wrapped inside a dict[Response=...], but
-                        # sometimes it returns a List so this check
-                        # is needed
-                    except (AttributeError, TypeError):
-                        return data
+                        data = await response.json()
+                        msg: str = data[&#34;ErrorStatus&#34;]
+                        if 300 &gt; response.status &gt;= 200:
+                            if (
+                                type == &#34;read&#34;
+                            ):  # We want to read the bytes for the manifest response.
+                                data = await response.read()
+                                return data
 
-                await self._handle_err(response, msg)
+                            _LOG.info(
+                                &#34;{} Request success from {} with status {}&#34;.format(
+                                    method,
+                                    f&#34;{url.REST_EP}/{route}&#34;,
+                                    data[&#34;Message&#34;],
+                                )
+                            )
+                            try:
+                                # Almost all bungie json objects are
+                                # wrapped inside a dict[Response=...], but
+                                # sometimes it returns a List so this check
+                                # is needed
+                                return data[&#34;Response&#34;]
+                            except KeyError:
+                                return data
 
-    except aiohttp.ClientError:
-        raise</code></pre>
+                        # We continue here.
+                        if response.status in {500, 502, 504}:
+                            await asyncio.sleep(0x05)
+                            continue
+
+                        await self._handle_err(response, msg)
+
+            except aiohttp.ContentTypeError:
+                return await response.text(encoding=&#34;utf-8&#34;)
+
+            except aiohttp.ClientError:
+                raise</code></pre>
 </details>
 </dd>
 <dt id="aiobungie.http.HTTPClient.fetch_activity"><code class="name flex">
@@ -573,6 +653,19 @@ class HTTPClient:
 </summary>
 <pre><code class="python">def fetch_clan_from_id(self, id: int) -&gt; Response[helpers.JsonDict]:
     return self.fetch(&#34;GET&#34;, f&#34;GroupV2/{id}&#34;)</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.http.HTTPClient.fetch_entity"><code class="name flex">
+<span>def <span class="ident">fetch_entity</span></span>(<span>self, type: str, hash: int) ‑> Response[helpers.JsonDict]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def fetch_entity(self, type: str, hash: int) -&gt; Response[helpers.JsonDict]:
+    return self.fetch(&#34;GET&#34;, route=f&#34;Destiny2/Manifest/{type}/{hash}&#34;)</code></pre>
 </details>
 </dd>
 <dt id="aiobungie.http.HTTPClient.fetch_manifest"><code class="name flex">
@@ -748,6 +841,7 @@ setTimeout(() => input.focus(), 100);
 <li><code><a title="aiobungie.http.HTTPClient.fetch_character" href="#aiobungie.http.HTTPClient.fetch_character">fetch_character</a></code></li>
 <li><code><a title="aiobungie.http.HTTPClient.fetch_clan" href="#aiobungie.http.HTTPClient.fetch_clan">fetch_clan</a></code></li>
 <li><code><a title="aiobungie.http.HTTPClient.fetch_clan_from_id" href="#aiobungie.http.HTTPClient.fetch_clan_from_id">fetch_clan_from_id</a></code></li>
+<li><code><a title="aiobungie.http.HTTPClient.fetch_entity" href="#aiobungie.http.HTTPClient.fetch_entity">fetch_entity</a></code></li>
 <li><code><a title="aiobungie.http.HTTPClient.fetch_manifest" href="#aiobungie.http.HTTPClient.fetch_manifest">fetch_manifest</a></code></li>
 <li><code><a title="aiobungie.http.HTTPClient.fetch_player" href="#aiobungie.http.HTTPClient.fetch_player">fetch_player</a></code></li>
 <li><code><a title="aiobungie.http.HTTPClient.fetch_profile" href="#aiobungie.http.HTTPClient.fetch_profile">fetch_profile</a></code></li>

@@ -80,7 +80,7 @@ import typing
 
 
 @typing.final
-class Raid(enum.Enum):
+class Raid(int, enum.Enum):
     &#34;&#34;&#34;An Enum for all available raids in Destiny 2.&#34;&#34;&#34;
 
     DSC = 910380154
@@ -103,7 +103,7 @@ class Raid(enum.Enum):
 
 
 @typing.final
-class Dungeon(enum.Enum):
+class Dungeon(int, enum.Enum):
     &#34;&#34;&#34;An Enum for all available Dungeon/Like missions in Destiny 2.&#34;&#34;&#34;
 
     NORMAL_PRESAGE = 2124066889
@@ -138,7 +138,7 @@ class Dungeon(enum.Enum):
 
 
 @typing.final
-class Planet(enum.Enum):
+class Planet(int, enum.Enum):
     &#34;&#34;&#34;An Enum for all available planets in Destiny 2.&#34;&#34;&#34;
 
     UNKNOWN = 0
@@ -179,7 +179,7 @@ class Planet(enum.Enum):
 
 
 @typing.final
-class Place(enum.Enum):
+class Place(int, enum.Enum):
     &#34;&#34;&#34;An Enum for Destiny 2 Places and NOT Planets&#34;&#34;&#34;
 
     ORBIT = 2961497387
@@ -195,7 +195,7 @@ class Place(enum.Enum):
 
 
 @typing.final
-class Vendor(enum.Enum):
+class Vendor(int, enum.Enum):
     &#34;&#34;&#34;An Enum for all available vendors in Destiny 2.&#34;&#34;&#34;
 
     ZAVALA = 69482069
@@ -230,7 +230,7 @@ class Vendor(enum.Enum):
 
 
 @typing.final
-class GameMode(enum.Enum):
+class GameMode(int, enum.Enum):
     &#34;&#34;&#34;An Enum for all available gamemodes in Destiny 2.&#34;&#34;&#34;
 
     NONE = 0
@@ -265,7 +265,7 @@ class GameMode(enum.Enum):
 
 
 @typing.final
-class Component(enum.Enum):
+class Component(int, enum.Enum):
     &#34;&#34;&#34;An Enum for Destiny 2 Components.&#34;&#34;&#34;
 
     NONE = 0
@@ -289,7 +289,7 @@ class Component(enum.Enum):
 
 
 @typing.final
-class MembershipType(enum.Enum):
+class MembershipType(int, enum.Enum):
     &#34;&#34;&#34;An Enum for Bungie membership types.&#34;&#34;&#34;
 
     NONE = 0
@@ -309,7 +309,7 @@ class MembershipType(enum.Enum):
 
 
 @typing.final
-class Class(enum.Enum):
+class Class(int, enum.Enum):
     &#34;&#34;&#34;An Enum for Destiny character classes.&#34;&#34;&#34;
 
     TITAN = 0
@@ -325,7 +325,7 @@ class Class(enum.Enum):
 
 
 @typing.final
-class Gender(enum.Enum):
+class Gender(int, enum.Enum):
     &#34;&#34;&#34;An Enum for Destiny Genders.&#34;&#34;&#34;
 
     MALE = 0
@@ -340,7 +340,7 @@ class Gender(enum.Enum):
 
 
 @typing.final
-class Race(enum.Enum):
+class Race(int, enum.Enum):
     &#34;&#34;&#34;An Enum for Destiny races.&#34;&#34;&#34;
 
     HUMAN = 0
@@ -356,7 +356,7 @@ class Race(enum.Enum):
 
 
 @typing.final
-class MilestoneType(enum.Enum):
+class MilestoneType(int, enum.Enum):
     &#34;&#34;&#34;An Enum for Destiny 2 milestone types.&#34;&#34;&#34;
 
     UNKNOWN = 0
@@ -374,7 +374,7 @@ class MilestoneType(enum.Enum):
 
 
 @typing.final
-class Stat(enum.Enum):
+class Stat(int, enum.Enum):
     &#34;&#34;&#34;An Enum for Destiny 2 character stats.&#34;&#34;&#34;
 
     NONE = 0
@@ -393,7 +393,7 @@ class Stat(enum.Enum):
 
 
 @typing.final
-class WeaponType(enum.Enum):
+class WeaponType(int, enum.Enum):
     &#34;&#34;&#34;Enums for The three Destiny Weapon Types&#34;&#34;&#34;
 
     NONE = 0
@@ -409,7 +409,7 @@ class WeaponType(enum.Enum):
 
 
 @typing.final
-class DamageType(enum.Enum):
+class DamageType(int, enum.Enum):
     &#34;&#34;&#34;Enums for Destiny Damage types&#34;&#34;&#34;
 
     NONE = 0
@@ -429,7 +429,7 @@ class DamageType(enum.Enum):
 
 
 @typing.final
-class Item(enum.Enum):
+class Item(int, enum.Enum):
     &#34;&#34;&#34;Enums for Destiny2&#39;s inventory bucket items&#34;&#34;&#34;
 
     NONE = 0
@@ -491,7 +491,7 @@ class Item(enum.Enum):
 
 
 @typing.final
-class ItemTier(enum.Enum):
+class ItemTier(int, enum.Enum):
     &#34;&#34;&#34;An enum for a Destiny 2 item tier.&#34;&#34;&#34;
 
     NONE = 0
@@ -509,7 +509,7 @@ class ItemTier(enum.Enum):
 
 
 @typing.final
-class AmmoType(enum.Enum):
+class AmmoType(int, enum.Enum):
     &#34;&#34;&#34;AN enum for Detyiny 2 ammo types.&#34;&#34;&#34;
 
     NONE = 0
@@ -544,7 +544,7 @@ class AmmoType(enum.Enum):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@typing.final
-class AmmoType(enum.Enum):
+class AmmoType(int, enum.Enum):
     &#34;&#34;&#34;AN enum for Detyiny 2 ammo types.&#34;&#34;&#34;
 
     NONE = 0
@@ -560,6 +560,7 @@ class AmmoType(enum.Enum):
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
+<li>builtins.int</li>
 <li>enum.Enum</li>
 </ul>
 <h3>Class variables</h3>
@@ -593,7 +594,7 @@ class AmmoType(enum.Enum):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@typing.final
-class Class(enum.Enum):
+class Class(int, enum.Enum):
     &#34;&#34;&#34;An Enum for Destiny character classes.&#34;&#34;&#34;
 
     TITAN = 0
@@ -609,6 +610,7 @@ class Class(enum.Enum):
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
+<li>builtins.int</li>
 <li>enum.Enum</li>
 </ul>
 <h3>Class variables</h3>
@@ -642,7 +644,7 @@ class Class(enum.Enum):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@typing.final
-class Component(enum.Enum):
+class Component(int, enum.Enum):
     &#34;&#34;&#34;An Enum for Destiny 2 Components.&#34;&#34;&#34;
 
     NONE = 0
@@ -666,6 +668,7 @@ class Component(enum.Enum):
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
+<li>builtins.int</li>
 <li>enum.Enum</li>
 </ul>
 <h3>Class variables</h3>
@@ -731,7 +734,7 @@ class Component(enum.Enum):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@typing.final
-class DamageType(enum.Enum):
+class DamageType(int, enum.Enum):
     &#34;&#34;&#34;Enums for Destiny Damage types&#34;&#34;&#34;
 
     NONE = 0
@@ -751,6 +754,7 @@ class DamageType(enum.Enum):
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
+<li>builtins.int</li>
 <li>enum.Enum</li>
 </ul>
 <h3>Class variables</h3>
@@ -796,7 +800,7 @@ class DamageType(enum.Enum):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@typing.final
-class Dungeon(enum.Enum):
+class Dungeon(int, enum.Enum):
     &#34;&#34;&#34;An Enum for all available Dungeon/Like missions in Destiny 2.&#34;&#34;&#34;
 
     NORMAL_PRESAGE = 2124066889
@@ -831,6 +835,7 @@ class Dungeon(enum.Enum):
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
+<li>builtins.int</li>
 <li>enum.Enum</li>
 </ul>
 <h3>Class variables</h3>
@@ -880,7 +885,7 @@ class Dungeon(enum.Enum):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@typing.final
-class GameMode(enum.Enum):
+class GameMode(int, enum.Enum):
     &#34;&#34;&#34;An Enum for all available gamemodes in Destiny 2.&#34;&#34;&#34;
 
     NONE = 0
@@ -915,6 +920,7 @@ class GameMode(enum.Enum):
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
+<li>builtins.int</li>
 <li>enum.Enum</li>
 </ul>
 <h3>Class variables</h3>
@@ -1020,7 +1026,7 @@ class GameMode(enum.Enum):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@typing.final
-class Gender(enum.Enum):
+class Gender(int, enum.Enum):
     &#34;&#34;&#34;An Enum for Destiny Genders.&#34;&#34;&#34;
 
     MALE = 0
@@ -1035,6 +1041,7 @@ class Gender(enum.Enum):
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
+<li>builtins.int</li>
 <li>enum.Enum</li>
 </ul>
 <h3>Class variables</h3>
@@ -1064,7 +1071,7 @@ class Gender(enum.Enum):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@typing.final
-class Item(enum.Enum):
+class Item(int, enum.Enum):
     &#34;&#34;&#34;Enums for Destiny2&#39;s inventory bucket items&#34;&#34;&#34;
 
     NONE = 0
@@ -1126,6 +1133,7 @@ class Item(enum.Enum):
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
+<li>builtins.int</li>
 <li>enum.Enum</li>
 </ul>
 <h3>Class variables</h3>
@@ -1311,7 +1319,7 @@ class Item(enum.Enum):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@typing.final
-class ItemTier(enum.Enum):
+class ItemTier(int, enum.Enum):
     &#34;&#34;&#34;An enum for a Destiny 2 item tier.&#34;&#34;&#34;
 
     NONE = 0
@@ -1329,6 +1337,7 @@ class ItemTier(enum.Enum):
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
+<li>builtins.int</li>
 <li>enum.Enum</li>
 </ul>
 <h3>Class variables</h3>
@@ -1370,7 +1379,7 @@ class ItemTier(enum.Enum):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@typing.final
-class MembershipType(enum.Enum):
+class MembershipType(int, enum.Enum):
     &#34;&#34;&#34;An Enum for Bungie membership types.&#34;&#34;&#34;
 
     NONE = 0
@@ -1390,6 +1399,7 @@ class MembershipType(enum.Enum):
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
+<li>builtins.int</li>
 <li>enum.Enum</li>
 </ul>
 <h3>Class variables</h3>
@@ -1439,7 +1449,7 @@ class MembershipType(enum.Enum):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@typing.final
-class MilestoneType(enum.Enum):
+class MilestoneType(int, enum.Enum):
     &#34;&#34;&#34;An Enum for Destiny 2 milestone types.&#34;&#34;&#34;
 
     UNKNOWN = 0
@@ -1457,6 +1467,7 @@ class MilestoneType(enum.Enum):
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
+<li>builtins.int</li>
 <li>enum.Enum</li>
 </ul>
 <h3>Class variables</h3>
@@ -1498,7 +1509,7 @@ class MilestoneType(enum.Enum):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@typing.final
-class Place(enum.Enum):
+class Place(int, enum.Enum):
     &#34;&#34;&#34;An Enum for Destiny 2 Places and NOT Planets&#34;&#34;&#34;
 
     ORBIT = 2961497387
@@ -1514,6 +1525,7 @@ class Place(enum.Enum):
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
+<li>builtins.int</li>
 <li>enum.Enum</li>
 </ul>
 <h3>Class variables</h3>
@@ -1547,7 +1559,7 @@ class Place(enum.Enum):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@typing.final
-class Planet(enum.Enum):
+class Planet(int, enum.Enum):
     &#34;&#34;&#34;An Enum for all available planets in Destiny 2.&#34;&#34;&#34;
 
     UNKNOWN = 0
@@ -1588,6 +1600,7 @@ class Planet(enum.Enum):
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
+<li>builtins.int</li>
 <li>enum.Enum</li>
 </ul>
 <h3>Class variables</h3>
@@ -1645,7 +1658,7 @@ class Planet(enum.Enum):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@typing.final
-class Race(enum.Enum):
+class Race(int, enum.Enum):
     &#34;&#34;&#34;An Enum for Destiny races.&#34;&#34;&#34;
 
     HUMAN = 0
@@ -1661,6 +1674,7 @@ class Race(enum.Enum):
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
+<li>builtins.int</li>
 <li>enum.Enum</li>
 </ul>
 <h3>Class variables</h3>
@@ -1694,7 +1708,7 @@ class Race(enum.Enum):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@typing.final
-class Raid(enum.Enum):
+class Raid(int, enum.Enum):
     &#34;&#34;&#34;An Enum for all available raids in Destiny 2.&#34;&#34;&#34;
 
     DSC = 910380154
@@ -1717,6 +1731,7 @@ class Raid(enum.Enum):
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
+<li>builtins.int</li>
 <li>enum.Enum</li>
 </ul>
 <h3>Class variables</h3>
@@ -1750,7 +1765,7 @@ class Raid(enum.Enum):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@typing.final
-class Stat(enum.Enum):
+class Stat(int, enum.Enum):
     &#34;&#34;&#34;An Enum for Destiny 2 character stats.&#34;&#34;&#34;
 
     NONE = 0
@@ -1769,6 +1784,7 @@ class Stat(enum.Enum):
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
+<li>builtins.int</li>
 <li>enum.Enum</li>
 </ul>
 <h3>Class variables</h3>
@@ -1814,7 +1830,7 @@ class Stat(enum.Enum):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@typing.final
-class Vendor(enum.Enum):
+class Vendor(int, enum.Enum):
     &#34;&#34;&#34;An Enum for all available vendors in Destiny 2.&#34;&#34;&#34;
 
     ZAVALA = 69482069
@@ -1849,6 +1865,7 @@ class Vendor(enum.Enum):
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
+<li>builtins.int</li>
 <li>enum.Enum</li>
 </ul>
 <h3>Class variables</h3>
@@ -1938,7 +1955,7 @@ class Vendor(enum.Enum):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@typing.final
-class WeaponType(enum.Enum):
+class WeaponType(int, enum.Enum):
     &#34;&#34;&#34;Enums for The three Destiny Weapon Types&#34;&#34;&#34;
 
     NONE = 0
@@ -1954,6 +1971,7 @@ class WeaponType(enum.Enum):
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
+<li>builtins.int</li>
 <li>enum.Enum</li>
 </ul>
 <h3>Class variables</h3>

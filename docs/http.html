@@ -1,39 +1,498 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.9.2" />
-<title>aiobungie.http API documentation</title>
-<meta name="description" content="An HTTPClient for sending requests to the Bungie API
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+    <meta name="generator" content="pdoc 0.9.2" />
+    <title>aiobungie.http API documentation</title>
+    <meta name="description" content="An HTTPClient for sending requests to the Bungie API
 and Where all the magic happenes." />
-<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
-<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
-<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/atom-one-dark.min.css" crossorigin>
-<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}#lunr-search{width:100%;font-size:1em;padding:6px 9px 5px 9px;border:1px solid silver}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
-<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
-<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
-<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+    <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+    <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+    <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/atom-one-dark.min.css" crossorigin>
+    <style>
+         :root {
+            --highlight-color: #fe9
+        }
+        
+        .flex {
+            display: flex !important
+        }
+        
+        body {
+            line-height: 1.5em
+        }
+        
+        #content {
+            padding: 20px
+        }
+        
+        #sidebar {
+            padding: 30px;
+            overflow: hidden
+        }
+        
+        #sidebar>*:last-child {
+            margin-bottom: 2cm
+        }
+        
+        #lunr-search {
+            width: 100%;
+            font-size: 1em;
+            padding: 6px 9px 5px 9px;
+            border: 1px solid silver
+        }
+        
+        .http-server-breadcrumbs {
+            font-size: 130%;
+            margin: 0 0 15px 0
+        }
+        
+        #footer {
+            font-size: .75em;
+            padding: 5px 30px;
+            border-top: 1px solid #ddd;
+            text-align: right
+        }
+        
+        #footer p {
+            margin: 0 0 0 1em;
+            display: inline-block
+        }
+        
+        #footer p:last-child {
+            margin-right: 30px
+        }
+        
+        h1,
+        h2,
+        h3,
+        h4,
+        h5 {
+            font-weight: 300
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            line-height: 1.1em
+        }
+        
+        h2 {
+            font-size: 1.75em;
+            margin: 1em 0 .50em 0
+        }
+        
+        h3 {
+            font-size: 1.4em;
+            margin: 25px 0 10px 0
+        }
+        
+        h4 {
+            margin: 0;
+            font-size: 105%
+        }
+        
+        h1:target,
+        h2:target,
+        h3:target,
+        h4:target,
+        h5:target,
+        h6:target {
+            background: var(--highlight-color);
+            padding: .2em 0
+        }
+        
+        a {
+            color: #058;
+            text-decoration: none;
+            transition: color .3s ease-in-out
+        }
+        
+        a:hover {
+            color: #e82
+        }
+        
+        .title code {
+            font-weight: bold
+        }
+        
+        h2[id^="header-"] {
+            margin-top: 2em
+        }
+        
+        .ident {
+            color: #900
+        }
+        
+        pre code {
+            background: #f8f8f8;
+            font-size: .8em;
+            line-height: 1.4em
+        }
+        
+        code {
+            background: #f2f2f1;
+            padding: 1px 4px;
+            overflow-wrap: break-word
+        }
+        
+        h1 code {
+            background: transparent
+        }
+        
+        pre {
+            background: #f8f8f8;
+            border: 0;
+            border-top: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+            margin: 1em 0;
+            padding: 1ex
+        }
+        
+        #http-server-module-list {
+            display: flex;
+            flex-flow: column
+        }
+        
+        #http-server-module-list div {
+            display: flex
+        }
+        
+        #http-server-module-list dt {
+            min-width: 10%
+        }
+        
+        #http-server-module-list p {
+            margin-top: 0
+        }
+        
+        .toc ul,
+        #index {
+            list-style-type: none;
+            margin: 0;
+            padding: 0
+        }
+        
+        #index code {
+            background: transparent
+        }
+        
+        #index h3 {
+            border-bottom: 1px solid #ddd
+        }
+        
+        #index ul {
+            padding: 0
+        }
+        
+        #index h4 {
+            margin-top: .6em;
+            font-weight: bold
+        }
+        
+        @media (min-width:200ex) {
+            #index .two-column {
+                column-count: 2
+            }
+        }
+        
+        @media (min-width:300ex) {
+            #index .two-column {
+                column-count: 3
+            }
+        }
+        
+        dl {
+            margin-bottom: 2em
+        }
+        
+        dl dl:last-child {
+            margin-bottom: 4em
+        }
+        
+        dd {
+            margin: 0 0 1em 3em
+        }
+        
+        #header-classes+dl>dd {
+            margin-bottom: 3em
+        }
+        
+        dd dd {
+            margin-left: 2em
+        }
+        
+        dd p {
+            margin: 10px 0
+        }
+        
+        .name {
+            background: #eee;
+            font-weight: bold;
+            font-size: .85em;
+            padding: 5px 10px;
+            display: inline-block;
+            min-width: 40%
+        }
+        
+        .name:hover {
+            background: #e0e0e0
+        }
+        
+        dt:target .name {
+            background: var(--highlight-color)
+        }
+        
+        .name>span:first-child {
+            white-space: nowrap
+        }
+        
+        .name.class>span:nth-child(2) {
+            margin-left: .4em
+        }
+        
+        .inherited {
+            color: #999;
+            border-left: 5px solid #eee;
+            padding-left: 1em
+        }
+        
+        .inheritance em {
+            font-style: normal;
+            font-weight: bold
+        }
+        
+        .desc h2 {
+            font-weight: 400;
+            font-size: 1.25em
+        }
+        
+        .desc h3 {
+            font-size: 1em
+        }
+        
+        .desc dt code {
+            background: inherit
+        }
+        
+        .source summary,
+        .git-link-div {
+            color: #666;
+            text-align: right;
+            font-weight: 400;
+            font-size: .8em;
+            text-transform: uppercase
+        }
+        
+        .source summary>* {
+            white-space: nowrap;
+            cursor: pointer
+        }
+        
+        .git-link {
+            color: inherit;
+            margin-left: 1em
+        }
+        
+        .source pre {
+            max-height: 500px;
+            overflow: auto;
+            margin: 0
+        }
+        
+        .source pre code {
+            font-size: 12px;
+            overflow: visible
+        }
+        
+        .hlist {
+            list-style: none
+        }
+        
+        .hlist li {
+            display: inline
+        }
+        
+        .hlist li:after {
+            content: ',\2002'
+        }
+        
+        .hlist li:last-child:after {
+            content: none
+        }
+        
+        .hlist .hlist {
+            display: inline;
+            padding-left: 1em
+        }
+        
+        img {
+            max-width: 100%
+        }
+        
+        td {
+            padding: 0 .5em
+        }
+        
+        .admonition {
+            padding: .1em .5em;
+            margin-bottom: 1em
+        }
+        
+        .admonition-title {
+            font-weight: bold
+        }
+        
+        .admonition.note,
+        .admonition.info,
+        .admonition.important {
+            background: #aef
+        }
+        
+        .admonition.todo,
+        .admonition.versionadded,
+        .admonition.tip,
+        .admonition.hint {
+            background: #dfd
+        }
+        
+        .admonition.warning,
+        .admonition.versionchanged,
+        .admonition.deprecated {
+            background: #fd4
+        }
+        
+        .admonition.error,
+        .admonition.danger,
+        .admonition.caution {
+            background: lightpink
+        }
+    </style>
+    <style media="screen and (min-width: 700px)">
+        @media screen and (min-width:700px) {
+            #sidebar {
+                width: 30%;
+                height: 100vh;
+                overflow: auto;
+                position: sticky;
+                top: 0
+            }
+            #content {
+                width: 70%;
+                max-width: 100ch;
+                padding: 3em 4em;
+                border-left: 1px solid #ddd
+            }
+            pre code {
+                font-size: 1em
+            }
+            .item .name {
+                font-size: 1em
+            }
+            main {
+                display: flex;
+                flex-direction: row-reverse;
+                justify-content: flex-end
+            }
+            .toc ul ul,
+            #index ul {
+                padding-left: 1.5em
+            }
+            .toc>ul>li {
+                margin-top: .5em
+            }
+        }
+    </style>
+    <style media="print">
+        @media print {
+            #sidebar h1 {
+                page-break-before: always
+            }
+            .source {
+                display: none
+            }
+        }
+        
+        @media print {
+            * {
+                background: transparent !important;
+                color: #000 !important;
+                box-shadow: none !important;
+                text-shadow: none !important
+            }
+            a[href]:after {
+                content: " (" attr(href) ")";
+                font-size: 90%
+            }
+            a[href][title]:after {
+                content: none
+            }
+            abbr[title]:after {
+                content: " (" attr(title) ")"
+            }
+            .ir a:after,
+            a[href^="javascript:"]:after,
+            a[href^="#"]:after {
+                content: ""
+            }
+            pre,
+            blockquote {
+                border: 1px solid #999;
+                page-break-inside: avoid
+            }
+            thead {
+                display: table-header-group
+            }
+            tr,
+            img {
+                page-break-inside: avoid
+            }
+            img {
+                max-width: 100% !important
+            }
+            @page {
+                margin: 0.5cm
+            }
+            p,
+            h2,
+            h3 {
+                orphans: 3;
+                widows: 3
+            }
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6 {
+                page-break-after: avoid
+            }
+        }
+    </style>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())
+    </script>
 </head>
+
 <body>
-<main>
-<article id="content">
-<header>
-<h1 class="title">Module <code>aiobungie.http</code></h1>
-</header>
-<section id="section-intro">
-<p>An HTTPClient for sending requests to the Bungie API
-and Where all the magic happenes.</p>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python"># MIT License
+    <main>
+        <article id="content">
+            <header>
+                <h1 class="title">Module <code>aiobungie.http</code></h1>
+            </header>
+            <section id="section-intro">
+                <p>An HTTPClient for sending requests to the Bungie API and Where all the magic happenes.</p>
+                <details class="source">
+                    <summary>
+                        <span>Expand source code</span>
+                    </summary>
+                    <pre><code class="python"># MIT License
 #
 # Copyright (c) 2020 = Present nxtlo
 #
-# Permission is hereby granted, free of charge, to any person obtaining a copy
+# Permission is hereby granted, free of charge, to typing.Any person obtaining a copy
 # of this software and associated documentation files (the &#34;Software&#34;), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
@@ -43,10 +502,10 @@ and Where all the magic happenes.</p>
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
 #
-# THE SOFTWARE IS PROVIDED &#34;AS IS&#34;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# THE SOFTWARE IS PROVIDED &#34;AS IS&#34;, WITHOUT WARRANTY OF typing.Any KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR typing.Any CLAIM, DAMAGES OR OTHER
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
@@ -63,32 +522,26 @@ import typing
 __all__ = (&#34;HTTPClient&#34;,)
 
 import http
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Coroutine,
-    Final,
-    NoReturn,
-    Optional,
-    TypeVar,
-    Union,
-    final,
-)
+import typing
 
 import aiohttp
 
-from . import error, url
+from . import error
+from . import url
 from .internal import helpers
-from .internal.enums import Class, Component, GameMode, MembershipType
+from .internal.enums import Class
+from .internal.enums import Component
+from .internal.enums import GameMode
+from .internal.enums import MembershipType
 
-if TYPE_CHECKING:
-    T = TypeVar(&#34;T&#34;)
-    Response = Coroutine[Any, Any, T]
+if typing.TYPE_CHECKING:
+    T = typing.TypeVar(&#34;T&#34;)
+    Response = typing.Coroutine[typing.Any, typing.Any, T]
 
 import asyncio
 import logging
 
-_LOG: Final[logging.Logger] = logging.getLogger(&#34;aiobungie.http&#34;)
+_LOG: typing.Final[logging.Logger] = logging.getLogger(&#34;aiobungie.http&#34;)
 
 
 async def handle_errors(
@@ -134,9 +587,9 @@ class PreLock:
 
     async def __aexit__(
         self,
-        ext_type: Optional[BaseException],
-        exc: Optional[BaseException],
-        exc_tb: Optional[types.TracebackType],
+        ext_type: typing.Optional[BaseException],
+        exc: typing.Optional[BaseException],
+        exc_tb: typing.Optional[types.TracebackType],
     ) -&gt; None:
         self._lock.release()
 
@@ -151,7 +604,7 @@ class HTTPClient:
     def __init__(
         self,
         key: str,
-        connector: Optional[aiohttp.BaseConnector] = None,
+        connector: typing.Optional[aiohttp.BaseConnector] = None,
         *,
         loop: asyncio.AbstractEventLoop = None,
     ) -&gt; None:
@@ -159,15 +612,15 @@ class HTTPClient:
         self.connector = connector
         self.loop = loop or asyncio.get_event_loop()
 
-    @final
+    @typing.final
     async def fetch(
         self,
         method: str,
         route: str,
         base: bool = False,
         type: str = &#34;json&#34;,
-        **kwargs: Any,
-    ) -&gt; Any:
+        **kwargs: typing.Any,
+    ) -&gt; typing.Any:
 
         locker = asyncio.Lock()
         if isinstance(self.key, str) and self.key is not None:
@@ -178,7 +631,7 @@ class HTTPClient:
         if &#34;json&#34; in kwargs:
             kwargs[&#34;Content-Type&#34;] = &#34;application/json&#34;
 
-        while 1:
+        for tries in range(5):
             async with PreLock(locker):
                 try:
                     async with aiohttp.ClientSession(
@@ -199,7 +652,7 @@ class HTTPClient:
                                     data = await response.read()
                                     return data
 
-                                _LOG.info(
+                                _LOG.debug(
                                     &#34;{} Request success from {} with status {}&#34;.format(
                                         method,
                                         f&#34;{url.REST_EP}/{route}&#34;,
@@ -217,10 +670,10 @@ class HTTPClient:
 
                             # We continue here.
                             if response.status in {500, 502, 504}:
-                                await asyncio.sleep(0x05)
-                                continue
+                                await self._handle_err(response, msg)
 
-                            await self._handle_err(response, msg)
+                                await asyncio.sleep(tries + 0x01 * 0x02)
+                                continue
 
                 except aiohttp.ContentTypeError:
                     return await response.text(encoding=&#34;utf-8&#34;)
@@ -229,15 +682,17 @@ class HTTPClient:
                     raise
 
     @staticmethod
-    @final
-    async def _handle_err(response: aiohttp.ClientResponse, msg: str) -&gt; NoReturn:
+    @typing.final
+    async def _handle_err(
+        response: aiohttp.ClientResponse, msg: str
+    ) -&gt; typing.NoReturn:
         raise await handle_errors(response, msg)
 
-    # Currently some of the funcs return Response[Any]
+    # Currently some of the funcs return Response[typing.Any]
     # And not the actual type, The reason for that Character
     # And Activity objects are much complicated, so that&#39;l
     # take Some time, but for Manifest and static search will
-    # not return any types. So they will be Any.
+    # not return typing.Any types. So they will be typing.Any.
 
     def fetch_user(self, name: str) -&gt; Response[helpers.JsonList]:
         return self.fetch(&#34;GET&#34;, f&#34;User/SearchUsers/?q={name}&#34;)
@@ -245,10 +700,10 @@ class HTTPClient:
     def fetch_user_from_id(self, id: int) -&gt; Response[helpers.JsonDict]:
         return self.fetch(&#34;GET&#34;, f&#34;User/GetBungieNetUserById/{id}/&#34;)
 
-    def fetch_manifest(self) -&gt; Response[Any]:
+    def fetch_manifest(self) -&gt; Response[typing.Any]:
         return self.fetch(&#34;GET&#34;, &#34;Destiny2/Manifest/&#34;)
 
-    def static_search(self, path: str) -&gt; Response[Any]:
+    def static_search(self, path: str) -&gt; Response[typing.Any]:
         return self.fetch(&#34;GET&#34;, path)
 
     def fetch_player(
@@ -280,9 +735,9 @@ class HTTPClient:
         mode: GameMode,
         memtype: MembershipType,
         *,
-        page: Optional[int] = 1,
-        limit: Optional[int] = 1,
-    ) -&gt; Response[Any]:
+        page: typing.Optional[int] = 1,
+        limit: typing.Optional[int] = 1,
+    ) -&gt; Response[typing.Any]:
         return self.fetch(
             &#34;GET&#34;,
             f&#34;Destiny2/{int(memtype)}/Account/ \
@@ -291,7 +746,7 @@ class HTTPClient:
             &amp;mode={int(mode)}&#34;,
         )
 
-    def fetch_vendor_sales(self) -&gt; Response[Any]:
+    def fetch_vendor_sales(self) -&gt; Response[typing.Any]:
         return self.fetch(
             &#34;GET&#34;, f&#34;Destiny2/Vendors/?components={int(Component.VENDOR_SALES)}&#34;
         )
@@ -305,35 +760,54 @@ class HTTPClient:
         )
 
     def fetch_entity(self, type: str, hash: int) -&gt; Response[helpers.JsonDict]:
-        return self.fetch(&#34;GET&#34;, route=f&#34;Destiny2/Manifest/{type}/{hash}&#34;)</code></pre>
-</details>
-</section>
-<section>
-</section>
-<section>
-</section>
-<section>
-</section>
-<section>
-<h2 class="section-title" id="header-classes">Classes</h2>
-<dl>
-<dt id="aiobungie.http.HTTPClient"><code class="flex name class">
+        return self.fetch(&#34;GET&#34;, route=f&#34;Destiny2/Manifest/{type}/{hash}&#34;)
+
+    def fetch_inventory_item(self, hash: int) -&gt; Response[helpers.JsonDict]:
+        return self.fetch_entity(&#34;DestinyInventoryItemDefinition&#34;, hash)
+
+    def fetch_clan_members(
+        self,
+        id: int,
+        type: MembershipType = MembershipType.NONE,
+        name: typing.Optional[str] = None,
+        /,
+        *,
+        page: int = 1,
+    ) -&gt; Response[helpers.JsonDict]:
+        return self.fetch(
+            &#34;GET&#34;,
+            f&#34;/GroupV2/{id}/Members/?memberType={int(type)}&amp;nameSearch={name if name else &#39;&#39;}&amp;currentpage={page}&#34;,
+        )</code></pre>
+                </details>
+            </section>
+            <section>
+            </section>
+            <section>
+            </section>
+            <section>
+            </section>
+            <section>
+                <h2 class="section-title" id="header-classes">Classes</h2>
+                <dl>
+                    <dt id="aiobungie.http.HTTPClient"><code class="flex name class">
 <span>class <span class="ident">HTTPClient</span></span>
-<span>(</span><span>key: str, connector: Optional[aiohttp.BaseConnector] = None, *, loop: asyncio.AbstractEventLoop = None)</span>
+<span>(</span><span>key: str, connector: typing.Optional[aiohttp.BaseConnector] = None, *, loop: asyncio.AbstractEventLoop = None)</span>
 </code></dt>
-<dd>
-<div class="desc"><p>An HTTP Client for sending http requests to the Bungie API</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class HTTPClient:
+                    <dd>
+                        <div class="desc">
+                            <p>An HTTP Client for sending http requests to the Bungie API</p>
+                        </div>
+                        <details class="source">
+                            <summary>
+                                <span>Expand source code</span>
+                            </summary>
+                            <pre><code class="python">class HTTPClient:
     &#34;&#34;&#34;An HTTP Client for sending http requests to the Bungie API&#34;&#34;&#34;
 
     def __init__(
         self,
         key: str,
-        connector: Optional[aiohttp.BaseConnector] = None,
+        connector: typing.Optional[aiohttp.BaseConnector] = None,
         *,
         loop: asyncio.AbstractEventLoop = None,
     ) -&gt; None:
@@ -341,15 +815,15 @@ class HTTPClient:
         self.connector = connector
         self.loop = loop or asyncio.get_event_loop()
 
-    @final
+    @typing.final
     async def fetch(
         self,
         method: str,
         route: str,
         base: bool = False,
         type: str = &#34;json&#34;,
-        **kwargs: Any,
-    ) -&gt; Any:
+        **kwargs: typing.Any,
+    ) -&gt; typing.Any:
 
         locker = asyncio.Lock()
         if isinstance(self.key, str) and self.key is not None:
@@ -360,7 +834,7 @@ class HTTPClient:
         if &#34;json&#34; in kwargs:
             kwargs[&#34;Content-Type&#34;] = &#34;application/json&#34;
 
-        while 1:
+        for tries in range(5):
             async with PreLock(locker):
                 try:
                     async with aiohttp.ClientSession(
@@ -381,7 +855,7 @@ class HTTPClient:
                                     data = await response.read()
                                     return data
 
-                                _LOG.info(
+                                _LOG.debug(
                                     &#34;{} Request success from {} with status {}&#34;.format(
                                         method,
                                         f&#34;{url.REST_EP}/{route}&#34;,
@@ -399,10 +873,10 @@ class HTTPClient:
 
                             # We continue here.
                             if response.status in {500, 502, 504}:
-                                await asyncio.sleep(0x05)
-                                continue
+                                await self._handle_err(response, msg)
 
-                            await self._handle_err(response, msg)
+                                await asyncio.sleep(tries + 0x01 * 0x02)
+                                continue
 
                 except aiohttp.ContentTypeError:
                     return await response.text(encoding=&#34;utf-8&#34;)
@@ -411,15 +885,17 @@ class HTTPClient:
                     raise
 
     @staticmethod
-    @final
-    async def _handle_err(response: aiohttp.ClientResponse, msg: str) -&gt; NoReturn:
+    @typing.final
+    async def _handle_err(
+        response: aiohttp.ClientResponse, msg: str
+    ) -&gt; typing.NoReturn:
         raise await handle_errors(response, msg)
 
-    # Currently some of the funcs return Response[Any]
+    # Currently some of the funcs return Response[typing.Any]
     # And not the actual type, The reason for that Character
     # And Activity objects are much complicated, so that&#39;l
     # take Some time, but for Manifest and static search will
-    # not return any types. So they will be Any.
+    # not return typing.Any types. So they will be typing.Any.
 
     def fetch_user(self, name: str) -&gt; Response[helpers.JsonList]:
         return self.fetch(&#34;GET&#34;, f&#34;User/SearchUsers/?q={name}&#34;)
@@ -427,10 +903,10 @@ class HTTPClient:
     def fetch_user_from_id(self, id: int) -&gt; Response[helpers.JsonDict]:
         return self.fetch(&#34;GET&#34;, f&#34;User/GetBungieNetUserById/{id}/&#34;)
 
-    def fetch_manifest(self) -&gt; Response[Any]:
+    def fetch_manifest(self) -&gt; Response[typing.Any]:
         return self.fetch(&#34;GET&#34;, &#34;Destiny2/Manifest/&#34;)
 
-    def static_search(self, path: str) -&gt; Response[Any]:
+    def static_search(self, path: str) -&gt; Response[typing.Any]:
         return self.fetch(&#34;GET&#34;, path)
 
     def fetch_player(
@@ -462,9 +938,9 @@ class HTTPClient:
         mode: GameMode,
         memtype: MembershipType,
         *,
-        page: Optional[int] = 1,
-        limit: Optional[int] = 1,
-    ) -&gt; Response[Any]:
+        page: typing.Optional[int] = 1,
+        limit: typing.Optional[int] = 1,
+    ) -&gt; Response[typing.Any]:
         return self.fetch(
             &#34;GET&#34;,
             f&#34;Destiny2/{int(memtype)}/Account/ \
@@ -473,7 +949,7 @@ class HTTPClient:
             &amp;mode={int(mode)}&#34;,
         )
 
-    def fetch_vendor_sales(self) -&gt; Response[Any]:
+    def fetch_vendor_sales(self) -&gt; Response[typing.Any]:
         return self.fetch(
             &#34;GET&#34;, f&#34;Destiny2/Vendors/?components={int(Component.VENDOR_SALES)}&#34;
         )
@@ -487,28 +963,45 @@ class HTTPClient:
         )
 
     def fetch_entity(self, type: str, hash: int) -&gt; Response[helpers.JsonDict]:
-        return self.fetch(&#34;GET&#34;, route=f&#34;Destiny2/Manifest/{type}/{hash}&#34;)</code></pre>
-</details>
-<h3>Methods</h3>
-<dl>
-<dt id="aiobungie.http.HTTPClient.fetch"><code class="name flex">
-<span>async def <span class="ident">fetch</span></span>(<span>self, method: str, route: str, base: bool = False, type: str = 'json', **kwargs: Any) ‑> Any</span>
+        return self.fetch(&#34;GET&#34;, route=f&#34;Destiny2/Manifest/{type}/{hash}&#34;)
+
+    def fetch_inventory_item(self, hash: int) -&gt; Response[helpers.JsonDict]:
+        return self.fetch_entity(&#34;DestinyInventoryItemDefinition&#34;, hash)
+
+    def fetch_clan_members(
+        self,
+        id: int,
+        type: MembershipType = MembershipType.NONE,
+        name: typing.Optional[str] = None,
+        /,
+        *,
+        page: int = 1,
+    ) -&gt; Response[helpers.JsonDict]:
+        return self.fetch(
+            &#34;GET&#34;,
+            f&#34;/GroupV2/{id}/Members/?memberType={int(type)}&amp;nameSearch={name if name else &#39;&#39;}&amp;currentpage={page}&#34;,
+        )</code></pre>
+                        </details>
+                        <h3>Methods</h3>
+                        <dl>
+                            <dt id="aiobungie.http.HTTPClient.fetch"><code class="name flex">
+<span>async def <span class="ident">fetch</span></span>(<span>self, method: str, route: str, base: bool = False, type: str = 'json', **kwargs: typing.Any) ‑> Any</span>
 </code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@final
+                            <dd>
+                                <div class="desc"></div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">@typing.final
 async def fetch(
     self,
     method: str,
     route: str,
     base: bool = False,
     type: str = &#34;json&#34;,
-    **kwargs: Any,
-) -&gt; Any:
+    **kwargs: typing.Any,
+) -&gt; typing.Any:
 
     locker = asyncio.Lock()
     if isinstance(self.key, str) and self.key is not None:
@@ -519,7 +1012,7 @@ async def fetch(
     if &#34;json&#34; in kwargs:
         kwargs[&#34;Content-Type&#34;] = &#34;application/json&#34;
 
-    while 1:
+    for tries in range(5):
         async with PreLock(locker):
             try:
                 async with aiohttp.ClientSession(
@@ -540,7 +1033,7 @@ async def fetch(
                                 data = await response.read()
                                 return data
 
-                            _LOG.info(
+                            _LOG.debug(
                                 &#34;{} Request success from {} with status {}&#34;.format(
                                     method,
                                     f&#34;{url.REST_EP}/{route}&#34;,
@@ -558,37 +1051,37 @@ async def fetch(
 
                         # We continue here.
                         if response.status in {500, 502, 504}:
-                            await asyncio.sleep(0x05)
-                            continue
+                            await self._handle_err(response, msg)
 
-                        await self._handle_err(response, msg)
+                            await asyncio.sleep(tries + 0x01 * 0x02)
+                            continue
 
             except aiohttp.ContentTypeError:
                 return await response.text(encoding=&#34;utf-8&#34;)
 
             except aiohttp.ClientError:
                 raise</code></pre>
-</details>
-</dd>
-<dt id="aiobungie.http.HTTPClient.fetch_activity"><code class="name flex">
-<span>def <span class="ident">fetch_activity</span></span>(<span>self, userid: int, charid: int, mode: GameMode, memtype: MembershipType, *, page: Optional[int] = 1, limit: Optional[int] = 1) ‑> Response[Any]</span>
+                                </details>
+                            </dd>
+                            <dt id="aiobungie.http.HTTPClient.fetch_activity"><code class="name flex">
+<span>def <span class="ident">fetch_activity</span></span>(<span>self, userid: int, charid: int, mode: GameMode, memtype: MembershipType, *, page: typing.Optional[int] = 1, limit: typing.Optional[int] = 1) ‑> Response[typing.Any]</span>
 </code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def fetch_activity(
+                            <dd>
+                                <div class="desc"></div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">def fetch_activity(
     self,
     userid: int,
     charid: int,
     mode: GameMode,
     memtype: MembershipType,
     *,
-    page: Optional[int] = 1,
-    limit: Optional[int] = 1,
-) -&gt; Response[Any]:
+    page: typing.Optional[int] = 1,
+    limit: typing.Optional[int] = 1,
+) -&gt; Response[typing.Any]:
     return self.fetch(
         &#34;GET&#34;,
         f&#34;Destiny2/{int(memtype)}/Account/ \
@@ -596,268 +1089,317 @@ async def fetch(
         Activities/?page={page}&amp;count={limit} \
         &amp;mode={int(mode)}&#34;,
     )</code></pre>
-</details>
-</dd>
-<dt id="aiobungie.http.HTTPClient.fetch_app"><code class="name flex">
+                                </details>
+                            </dd>
+                            <dt id="aiobungie.http.HTTPClient.fetch_app"><code class="name flex">
 <span>def <span class="ident">fetch_app</span></span>(<span>self, appid: int, /) ‑> Response[helpers.JsonDict]</span>
 </code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def fetch_app(self, appid: int, /) -&gt; Response[helpers.JsonDict]:
+                            <dd>
+                                <div class="desc"></div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">def fetch_app(self, appid: int, /) -&gt; Response[helpers.JsonDict]:
     return self.fetch(&#34;GET&#34;, f&#34;App/Application/{appid}&#34;)</code></pre>
-</details>
-</dd>
-<dt id="aiobungie.http.HTTPClient.fetch_character"><code class="name flex">
+                                </details>
+                            </dd>
+                            <dt id="aiobungie.http.HTTPClient.fetch_character"><code class="name flex">
 <span>def <span class="ident">fetch_character</span></span>(<span>self, memberid: int, type: MembershipType, character: Class) ‑> Response[helpers.JsonDict]</span>
 </code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def fetch_character(
+                            <dd>
+                                <div class="desc"></div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">def fetch_character(
     self, memberid: int, type: MembershipType, character: Class
 ) -&gt; Response[helpers.JsonDict]:
     return self.fetch(
         &#34;GET&#34;,
         f&#34;Destiny2/{int(type)}/Profile/{memberid}/?components={int(Component.CHARECTERS)}&#34;,
     )</code></pre>
-</details>
-</dd>
-<dt id="aiobungie.http.HTTPClient.fetch_clan"><code class="name flex">
+                                </details>
+                            </dd>
+                            <dt id="aiobungie.http.HTTPClient.fetch_clan"><code class="name flex">
 <span>def <span class="ident">fetch_clan</span></span>(<span>self, name: str, type: int = 1) ‑> Response[helpers.JsonDict]</span>
 </code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def fetch_clan(self, name: str, type: int = 1) -&gt; Response[helpers.JsonDict]:
+                            <dd>
+                                <div class="desc"></div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">def fetch_clan(self, name: str, type: int = 1) -&gt; Response[helpers.JsonDict]:
     return self.fetch(&#34;GET&#34;, f&#34;GroupV2/Name/{name}/{type}&#34;)</code></pre>
-</details>
-</dd>
-<dt id="aiobungie.http.HTTPClient.fetch_clan_from_id"><code class="name flex">
+                                </details>
+                            </dd>
+                            <dt id="aiobungie.http.HTTPClient.fetch_clan_from_id"><code class="name flex">
 <span>def <span class="ident">fetch_clan_from_id</span></span>(<span>self, id: int) ‑> Response[helpers.JsonDict]</span>
 </code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def fetch_clan_from_id(self, id: int) -&gt; Response[helpers.JsonDict]:
+                            <dd>
+                                <div class="desc"></div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">def fetch_clan_from_id(self, id: int) -&gt; Response[helpers.JsonDict]:
     return self.fetch(&#34;GET&#34;, f&#34;GroupV2/{id}&#34;)</code></pre>
-</details>
-</dd>
-<dt id="aiobungie.http.HTTPClient.fetch_entity"><code class="name flex">
+                                </details>
+                            </dd>
+                            <dt id="aiobungie.http.HTTPClient.fetch_clan_members"><code class="name flex">
+<span>def <span class="ident">fetch_clan_members</span></span>(<span>self, id: int, type: MembershipType = NONE, name: typing.Optional[str] = None, /, *, page: int = 1) ‑> Response[helpers.JsonDict]</span>
+</code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">def fetch_clan_members(
+    self,
+    id: int,
+    type: MembershipType = MembershipType.NONE,
+    name: typing.Optional[str] = None,
+    /,
+    *,
+    page: int = 1,
+) -&gt; Response[helpers.JsonDict]:
+    return self.fetch(
+        &#34;GET&#34;,
+        f&#34;/GroupV2/{id}/Members/?memberType={int(type)}&amp;nameSearch={name if name else &#39;&#39;}&amp;currentpage={page}&#34;,
+    )</code></pre>
+                                </details>
+                            </dd>
+                            <dt id="aiobungie.http.HTTPClient.fetch_entity"><code class="name flex">
 <span>def <span class="ident">fetch_entity</span></span>(<span>self, type: str, hash: int) ‑> Response[helpers.JsonDict]</span>
 </code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def fetch_entity(self, type: str, hash: int) -&gt; Response[helpers.JsonDict]:
+                            <dd>
+                                <div class="desc"></div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">def fetch_entity(self, type: str, hash: int) -&gt; Response[helpers.JsonDict]:
     return self.fetch(&#34;GET&#34;, route=f&#34;Destiny2/Manifest/{type}/{hash}&#34;)</code></pre>
-</details>
-</dd>
-<dt id="aiobungie.http.HTTPClient.fetch_manifest"><code class="name flex">
-<span>def <span class="ident">fetch_manifest</span></span>(<span>self) ‑> Response[Any]</span>
+                                </details>
+                            </dd>
+                            <dt id="aiobungie.http.HTTPClient.fetch_inventory_item"><code class="name flex">
+<span>def <span class="ident">fetch_inventory_item</span></span>(<span>self, hash: int) ‑> Response[helpers.JsonDict]</span>
 </code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def fetch_manifest(self) -&gt; Response[Any]:
+                            <dd>
+                                <div class="desc"></div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">def fetch_inventory_item(self, hash: int) -&gt; Response[helpers.JsonDict]:
+    return self.fetch_entity(&#34;DestinyInventoryItemDefinition&#34;, hash)</code></pre>
+                                </details>
+                            </dd>
+                            <dt id="aiobungie.http.HTTPClient.fetch_manifest"><code class="name flex">
+<span>def <span class="ident">fetch_manifest</span></span>(<span>self) ‑> Response[typing.Any]</span>
+</code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">def fetch_manifest(self) -&gt; Response[typing.Any]:
     return self.fetch(&#34;GET&#34;, &#34;Destiny2/Manifest/&#34;)</code></pre>
-</details>
-</dd>
-<dt id="aiobungie.http.HTTPClient.fetch_player"><code class="name flex">
+                                </details>
+                            </dd>
+                            <dt id="aiobungie.http.HTTPClient.fetch_player"><code class="name flex">
 <span>def <span class="ident">fetch_player</span></span>(<span>self, name: str, type: MembershipType) ‑> Response[helpers.JsonDict]</span>
 </code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def fetch_player(
+                            <dd>
+                                <div class="desc"></div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">def fetch_player(
     self, name: str, type: MembershipType
 ) -&gt; Response[helpers.JsonDict]:
     return self.fetch(&#34;GET&#34;, f&#34;Destiny2/SearchDestinyPlayer/{int(type)}/{name}&#34;)</code></pre>
-</details>
-</dd>
-<dt id="aiobungie.http.HTTPClient.fetch_profile"><code class="name flex">
+                                </details>
+                            </dd>
+                            <dt id="aiobungie.http.HTTPClient.fetch_profile"><code class="name flex">
 <span>def <span class="ident">fetch_profile</span></span>(<span>self, memberid: int, type: MembershipType, /) ‑> Response[helpers.JsonDict]</span>
 </code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def fetch_profile(
+                            <dd>
+                                <div class="desc"></div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">def fetch_profile(
     self, memberid: int, type: MembershipType, /
 ) -&gt; Response[helpers.JsonDict]:
     return self.fetch(
         &#34;GET&#34;,
         f&#34;Destiny2/{int(type)}/Profile/{int(memberid)}/?components={int(Component.PROFILE)}&#34;,
     )</code></pre>
-</details>
-</dd>
-<dt id="aiobungie.http.HTTPClient.fetch_user"><code class="name flex">
+                                </details>
+                            </dd>
+                            <dt id="aiobungie.http.HTTPClient.fetch_user"><code class="name flex">
 <span>def <span class="ident">fetch_user</span></span>(<span>self, name: str) ‑> Response[helpers.JsonList]</span>
 </code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def fetch_user(self, name: str) -&gt; Response[helpers.JsonList]:
+                            <dd>
+                                <div class="desc"></div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">def fetch_user(self, name: str) -&gt; Response[helpers.JsonList]:
     return self.fetch(&#34;GET&#34;, f&#34;User/SearchUsers/?q={name}&#34;)</code></pre>
-</details>
-</dd>
-<dt id="aiobungie.http.HTTPClient.fetch_user_from_id"><code class="name flex">
+                                </details>
+                            </dd>
+                            <dt id="aiobungie.http.HTTPClient.fetch_user_from_id"><code class="name flex">
 <span>def <span class="ident">fetch_user_from_id</span></span>(<span>self, id: int) ‑> Response[helpers.JsonDict]</span>
 </code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def fetch_user_from_id(self, id: int) -&gt; Response[helpers.JsonDict]:
+                            <dd>
+                                <div class="desc"></div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">def fetch_user_from_id(self, id: int) -&gt; Response[helpers.JsonDict]:
     return self.fetch(&#34;GET&#34;, f&#34;User/GetBungieNetUserById/{id}/&#34;)</code></pre>
-</details>
-</dd>
-<dt id="aiobungie.http.HTTPClient.fetch_vendor_sales"><code class="name flex">
-<span>def <span class="ident">fetch_vendor_sales</span></span>(<span>self) ‑> Response[Any]</span>
+                                </details>
+                            </dd>
+                            <dt id="aiobungie.http.HTTPClient.fetch_vendor_sales"><code class="name flex">
+<span>def <span class="ident">fetch_vendor_sales</span></span>(<span>self) ‑> Response[typing.Any]</span>
 </code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def fetch_vendor_sales(self) -&gt; Response[Any]:
+                            <dd>
+                                <div class="desc"></div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">def fetch_vendor_sales(self) -&gt; Response[typing.Any]:
     return self.fetch(
         &#34;GET&#34;, f&#34;Destiny2/Vendors/?components={int(Component.VENDOR_SALES)}&#34;
     )</code></pre>
-</details>
-</dd>
-<dt id="aiobungie.http.HTTPClient.static_search"><code class="name flex">
-<span>def <span class="ident">static_search</span></span>(<span>self, path: str) ‑> Response[Any]</span>
+                                </details>
+                            </dd>
+                            <dt id="aiobungie.http.HTTPClient.static_search"><code class="name flex">
+<span>def <span class="ident">static_search</span></span>(<span>self, path: str) ‑> Response[typing.Any]</span>
 </code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def static_search(self, path: str) -&gt; Response[Any]:
+                            <dd>
+                                <div class="desc"></div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">def static_search(self, path: str) -&gt; Response[typing.Any]:
     return self.fetch(&#34;GET&#34;, path)</code></pre>
-</details>
-</dd>
-</dl>
-</dd>
-</dl>
-</section>
-</article>
-<nav id="sidebar">
-<form>
-<input id="lunr-search" name="q" placeholder="🔎 Search ..." aria-label="Search"
-disabled minlength="2">
-</form>
-<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.3/tingle.min.css" integrity="sha512-j1u8eUJ4f23xPPxwOrLUPQaCD2dwzNqqmDDcWS4deWsMv2ohLqmXXuP3hU7g8TyzbMSakP/mMqoNBYWj8AEIFg==" crossorigin>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.3/tingle.min.js" integrity="sha512-plGUER9JkeEWPPqQBE4sdLqBoQug5Ap+BCGMc7bJ8BXkm+VVj6QzkpBz5Yv2yPkkq+cqg9IpkBaGCas6uDbW8g==" crossorigin></script>
-<style>
-.modal-dialog iframe {
-width: 100vw;
-height: calc(100vh - 80px);
-}
-@media screen and (min-width: 700px) {
-.modal-dialog iframe {
-width: 70vw;
-height: 80vh;
-}
-}
-.modal-dialog .tingle-modal-box {width: auto;}
-.modal-dialog .tingle-modal-box__content {padding: 0;}
-</style>
-<script>
-const input = document.getElementById('lunr-search');
-input.disabled = false;
-input.form.addEventListener('submit', (ev) => {
-ev.preventDefault();
-const url = new URL(window.location);
-url.searchParams.set('q', input.value);
-history.replaceState({}, null, url.toString());
-search(input.value);
-});
-const query = new URL(window.location).searchParams.get('q');
-if (query)
-search(query);
-function search(query) {
-const url = './doc-search.html#' + encodeURIComponent(query);
-new tingle.modal({
-cssClass: ['modal-dialog'],
-onClose: () => {
-const url = new URL(window.location);
-url.searchParams.delete('q');
-history.replaceState({}, null, url.toString());
-setTimeout(() => input.focus(), 100);
-}
-}).setContent('<iframe src="' + url + '"></iframe>').open();
-}
-</script>
-<h1>Index</h1>
-<div class="toc">
-<ul></ul>
-</div>
-<ul id="index">
-<li><h3>Super-module</h3>
-<ul>
-<li><code><a title="aiobungie" href="index.html">aiobungie</a></code></li>
-</ul>
-</li>
-<li><h3><a href="#header-classes">Classes</a></h3>
-<ul>
-<li>
-<h4><code><a title="aiobungie.http.HTTPClient" href="#aiobungie.http.HTTPClient">HTTPClient</a></code></h4>
-<ul class="two-column">
-<li><code><a title="aiobungie.http.HTTPClient.fetch" href="#aiobungie.http.HTTPClient.fetch">fetch</a></code></li>
-<li><code><a title="aiobungie.http.HTTPClient.fetch_activity" href="#aiobungie.http.HTTPClient.fetch_activity">fetch_activity</a></code></li>
-<li><code><a title="aiobungie.http.HTTPClient.fetch_app" href="#aiobungie.http.HTTPClient.fetch_app">fetch_app</a></code></li>
-<li><code><a title="aiobungie.http.HTTPClient.fetch_character" href="#aiobungie.http.HTTPClient.fetch_character">fetch_character</a></code></li>
-<li><code><a title="aiobungie.http.HTTPClient.fetch_clan" href="#aiobungie.http.HTTPClient.fetch_clan">fetch_clan</a></code></li>
-<li><code><a title="aiobungie.http.HTTPClient.fetch_clan_from_id" href="#aiobungie.http.HTTPClient.fetch_clan_from_id">fetch_clan_from_id</a></code></li>
-<li><code><a title="aiobungie.http.HTTPClient.fetch_entity" href="#aiobungie.http.HTTPClient.fetch_entity">fetch_entity</a></code></li>
-<li><code><a title="aiobungie.http.HTTPClient.fetch_manifest" href="#aiobungie.http.HTTPClient.fetch_manifest">fetch_manifest</a></code></li>
-<li><code><a title="aiobungie.http.HTTPClient.fetch_player" href="#aiobungie.http.HTTPClient.fetch_player">fetch_player</a></code></li>
-<li><code><a title="aiobungie.http.HTTPClient.fetch_profile" href="#aiobungie.http.HTTPClient.fetch_profile">fetch_profile</a></code></li>
-<li><code><a title="aiobungie.http.HTTPClient.fetch_user" href="#aiobungie.http.HTTPClient.fetch_user">fetch_user</a></code></li>
-<li><code><a title="aiobungie.http.HTTPClient.fetch_user_from_id" href="#aiobungie.http.HTTPClient.fetch_user_from_id">fetch_user_from_id</a></code></li>
-<li><code><a title="aiobungie.http.HTTPClient.fetch_vendor_sales" href="#aiobungie.http.HTTPClient.fetch_vendor_sales">fetch_vendor_sales</a></code></li>
-<li><code><a title="aiobungie.http.HTTPClient.static_search" href="#aiobungie.http.HTTPClient.static_search">static_search</a></code></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</nav>
-</main>
-<footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.9.2</a>.</p>
-</footer>
+                                </details>
+                            </dd>
+                        </dl>
+                    </dd>
+                </dl>
+            </section>
+        </article>
+        <nav id="sidebar">
+            <form>
+                <input id="lunr-search" name="q" placeholder="🔎 Search ..." aria-label="Search" disabled minlength="2">
+            </form>
+            <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.3/tingle.min.css" integrity="sha512-j1u8eUJ4f23xPPxwOrLUPQaCD2dwzNqqmDDcWS4deWsMv2ohLqmXXuP3hU7g8TyzbMSakP/mMqoNBYWj8AEIFg==" crossorigin>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.3/tingle.min.js" integrity="sha512-plGUER9JkeEWPPqQBE4sdLqBoQug5Ap+BCGMc7bJ8BXkm+VVj6QzkpBz5Yv2yPkkq+cqg9IpkBaGCas6uDbW8g==" crossorigin></script>
+            <style>
+                .modal-dialog iframe {
+                    width: 100vw;
+                    height: calc(100vh - 80px);
+                }
+                
+                @media screen and (min-width: 700px) {
+                    .modal-dialog iframe {
+                        width: 70vw;
+                        height: 80vh;
+                    }
+                }
+                
+                .modal-dialog .tingle-modal-box {
+                    width: auto;
+                }
+                
+                .modal-dialog .tingle-modal-box__content {
+                    padding: 0;
+                }
+            </style>
+            <script>
+                const input = document.getElementById('lunr-search');
+                input.disabled = false;
+                input.form.addEventListener('submit', (ev) => {
+                    ev.preventDefault();
+                    const url = new URL(window.location);
+                    url.searchParams.set('q', input.value);
+                    history.replaceState({}, null, url.toString());
+                    search(input.value);
+                });
+                const query = new URL(window.location).searchParams.get('q');
+                if (query)
+                    search(query);
+
+                function search(query) {
+                    const url = './doc-search.html#' + encodeURIComponent(query);
+                    new tingle.modal({
+                        cssClass: ['modal-dialog'],
+                        onClose: () => {
+                            const url = new URL(window.location);
+                            url.searchParams.delete('q');
+                            history.replaceState({}, null, url.toString());
+                            setTimeout(() => input.focus(), 100);
+                        }
+                    }).setContent('<iframe src="' + url + '"></iframe>').open();
+                }
+            </script>
+            <h1>Index</h1>
+            <div class="toc">
+                <ul></ul>
+            </div>
+            <ul id="index">
+                <li>
+                    <h3>Super-module</h3>
+                    <ul>
+                        <li><code><a title="aiobungie" href="index.html">aiobungie</a></code></li>
+                    </ul>
+                </li>
+                <li>
+                    <h3><a href="#header-classes">Classes</a></h3>
+                    <ul>
+                        <li>
+                            <h4><code><a title="aiobungie.http.HTTPClient" href="#aiobungie.http.HTTPClient">HTTPClient</a></code></h4>
+                            <ul class="">
+                                <li><code><a title="aiobungie.http.HTTPClient.fetch" href="#aiobungie.http.HTTPClient.fetch">fetch</a></code></li>
+                                <li><code><a title="aiobungie.http.HTTPClient.fetch_activity" href="#aiobungie.http.HTTPClient.fetch_activity">fetch_activity</a></code></li>
+                                <li><code><a title="aiobungie.http.HTTPClient.fetch_app" href="#aiobungie.http.HTTPClient.fetch_app">fetch_app</a></code></li>
+                                <li><code><a title="aiobungie.http.HTTPClient.fetch_character" href="#aiobungie.http.HTTPClient.fetch_character">fetch_character</a></code></li>
+                                <li><code><a title="aiobungie.http.HTTPClient.fetch_clan" href="#aiobungie.http.HTTPClient.fetch_clan">fetch_clan</a></code></li>
+                                <li><code><a title="aiobungie.http.HTTPClient.fetch_clan_from_id" href="#aiobungie.http.HTTPClient.fetch_clan_from_id">fetch_clan_from_id</a></code></li>
+                                <li><code><a title="aiobungie.http.HTTPClient.fetch_clan_members" href="#aiobungie.http.HTTPClient.fetch_clan_members">fetch_clan_members</a></code></li>
+                                <li><code><a title="aiobungie.http.HTTPClient.fetch_entity" href="#aiobungie.http.HTTPClient.fetch_entity">fetch_entity</a></code></li>
+                                <li><code><a title="aiobungie.http.HTTPClient.fetch_inventory_item" href="#aiobungie.http.HTTPClient.fetch_inventory_item">fetch_inventory_item</a></code></li>
+                                <li><code><a title="aiobungie.http.HTTPClient.fetch_manifest" href="#aiobungie.http.HTTPClient.fetch_manifest">fetch_manifest</a></code></li>
+                                <li><code><a title="aiobungie.http.HTTPClient.fetch_player" href="#aiobungie.http.HTTPClient.fetch_player">fetch_player</a></code></li>
+                                <li><code><a title="aiobungie.http.HTTPClient.fetch_profile" href="#aiobungie.http.HTTPClient.fetch_profile">fetch_profile</a></code></li>
+                                <li><code><a title="aiobungie.http.HTTPClient.fetch_user" href="#aiobungie.http.HTTPClient.fetch_user">fetch_user</a></code></li>
+                                <li><code><a title="aiobungie.http.HTTPClient.fetch_user_from_id" href="#aiobungie.http.HTTPClient.fetch_user_from_id">fetch_user_from_id</a></code></li>
+                                <li><code><a title="aiobungie.http.HTTPClient.fetch_vendor_sales" href="#aiobungie.http.HTTPClient.fetch_vendor_sales">fetch_vendor_sales</a></code></li>
+                                <li><code><a title="aiobungie.http.HTTPClient.static_search" href="#aiobungie.http.HTTPClient.static_search">static_search</a></code></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </main>
+    <footer id="footer">
+        <p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.9.2</a>.</p>
+    </footer>
 </body>
+
 </html>

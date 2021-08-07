@@ -38,15 +38,16 @@ class ClientTest(aiobungie.Client):
         man: Manifest = await self.fetch_manifest()
         await man.download(force=True)
 
-        print(
-			man.get_raid_image(raid=aiobungie.Raid.DSC)
-		)
+        print(man.get_raid_image(raid=aiobungie.Raid.DSC))
+
 
 client = ClientTest(config.TOKEN)
 
+
 async def main() -> None:
-	coros = [client.man_test()]
-	await asyncio.gather(*coros)
+    coros = [client.man_test()]
+    await asyncio.gather(*coros)
+
 
 if __name__ == "__main__":
-	client.run(main())
+    client.run(main())

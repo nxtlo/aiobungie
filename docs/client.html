@@ -54,23 +54,25 @@
 
 from __future__ import annotations
 
-from aiobungie.objects import activity
-
-__all__: Sequence[str] = [
+__all__: typing.Sequence[str] = [
     &#34;Client&#34;,
 ]
 
 import asyncio
-from typing import Any, Coroutine, Optional, Sequence
+import typing
 
 from aiobungie.ext import Manifest
 from aiobungie.internal import cache as cache_
-from aiobungie.internal import deprecated, impl
+from aiobungie.internal import deprecated
+from aiobungie.internal import impl
 from aiobungie.internal import serialize as serialize_
+from aiobungie.objects import activity
 
 from . import objects
 from .http import HTTPClient
-from .internal.enums import Class, GameMode, MembershipType
+from .internal.enums import Class
+from .internal.enums import GameMode
+from .internal.enums import MembershipType
 
 
 class Client(impl.BaseClient):
@@ -84,7 +86,7 @@ class Client(impl.BaseClient):
         asyncio event loop.
     &#34;&#34;&#34;
 
-    __slots__: Sequence[str] = (&#34;loop&#34;, &#34;http&#34;, &#34;_cache&#34;, &#34;_serialize&#34;, &#34;_token&#34;)
+    __slots__: typing.Sequence[str] = (&#34;loop&#34;, &#34;http&#34;, &#34;_cache&#34;, &#34;_serialize&#34;, &#34;_token&#34;)
 
     def __init__(self, token: str, *, loop: asyncio.AbstractEventLoop = None) -&gt; None:
         self.loop: asyncio.AbstractEventLoop = (  # asyncio loop.
@@ -125,7 +127,9 @@ class Client(impl.BaseClient):
     def rest(self) -&gt; &#34;Client&#34;:
         return self
 
-    def run(self, future: Coroutine[Any, None, None], debug: bool = False) -&gt; None:
+    def run(
+        self, future: typing.Coroutine[typing.Any, None, None], debug: bool = False
+    ) -&gt; None:
         &#34;&#34;&#34;Runs a Coro function until its complete.
         This is equivalent to asyncio.get_event_loop().run_until_complete(...)
 
@@ -152,7 +156,7 @@ class Client(impl.BaseClient):
         except asyncio.CancelledError:
             raise
 
-    async def from_path(self, path: str) -&gt; Any:
+    async def from_path(self, path: str) -&gt; typing.Any:
         &#34;&#34;&#34;Raw http search given a valid bungie endpoint.
 
         Parameters
@@ -305,7 +309,7 @@ class Client(impl.BaseClient):
 
     async def fetch_vendor_sales(
         self,
-    ) -&gt; Any:
+    ) -&gt; typing.Any:
         &#34;&#34;&#34;Fetch vendor sales.&#34;&#34;&#34;
         return await self.http.fetch_vendor_sales()
 
@@ -317,8 +321,8 @@ class Client(impl.BaseClient):
         mode: GameMode,
         memtype: MembershipType,
         *,
-        page: Optional[int] = 1,
-        limit: Optional[int] = 1,
+        page: typing.Optional[int] = 1,
+        limit: typing.Optional[int] = 1,
     ) -&gt; None:
         &#34;&#34;&#34;Fetches a Destiny 2 activity for the specified user id and character.
 
@@ -407,8 +411,34 @@ class Client(impl.BaseClient):
         assert isinstance(resp, dict)
         return self._serialize.deseialize_clan(resp)
 
-    async def fetch_entity(self, type: str, hash: int, /) -&gt; objects.Entity:
-        &#34;&#34;&#34;Fetches a static definition of an entity given a type and its hash.
+    # These are not documented for a reason.
+    # See: `aiobungie.objects.Clan.fetch_member()`
+    # and `aiobungie.objects.Clan.fetch_members()`
+
+    async def fetch_clan_member(
+        self,
+        id: int,
+        name: typing.Optional[str] = None,
+        type: MembershipType = MembershipType.NONE,
+        /,
+    ) -&gt; objects.clans.ClanMember:
+
+        resp = await self.http.fetch_clan_members(id, type, name)
+        assert isinstance(resp, dict)
+        return self._serialize.deserialize_clan_member(resp, name)
+
+    async def fetch_clan_members(
+        self, id: int, type: MembershipType = MembershipType.NONE, /
+    ) -&gt; typing.Dict[str, int]:
+
+        resp = await self.http.fetch_clan_members(id, type, page=1)
+        assert isinstance(resp, dict)
+        return self._serialize.deserialize_clan_members(resp)
+
+    async def fetch_inventory_item(
+        self, hash: int, /
+    ) -&gt; objects.entity.InventoryEntity:
+        &#34;&#34;&#34;Fetches a static inventory item entity given a its hash.
 
         Paramaters
         ----------
@@ -419,12 +449,12 @@ class Client(impl.BaseClient):
 
         Returns
         -------
-        `aiobungie.objects.Entity`
-            An aiobungie entity object.
+        `aiobungie.objects.InventoryEntity`
+            A bungie inventory item.
         &#34;&#34;&#34;
-        resp = await self.http.fetch_entity(type, hash)
+        resp = await self.http.fetch_inventory_item(hash)
         assert isinstance(resp, dict)
-        return self._serialize.deserialize_entity(resp)</code></pre>
+        return self._serialize.deserialize_inventory_entity(resp)</code></pre>
 </details>
 </section>
 <section>
@@ -464,7 +494,7 @@ class Client(impl.BaseClient):
         asyncio event loop.
     &#34;&#34;&#34;
 
-    __slots__: Sequence[str] = (&#34;loop&#34;, &#34;http&#34;, &#34;_cache&#34;, &#34;_serialize&#34;, &#34;_token&#34;)
+    __slots__: typing.Sequence[str] = (&#34;loop&#34;, &#34;http&#34;, &#34;_cache&#34;, &#34;_serialize&#34;, &#34;_token&#34;)
 
     def __init__(self, token: str, *, loop: asyncio.AbstractEventLoop = None) -&gt; None:
         self.loop: asyncio.AbstractEventLoop = (  # asyncio loop.
@@ -505,7 +535,9 @@ class Client(impl.BaseClient):
     def rest(self) -&gt; &#34;Client&#34;:
         return self
 
-    def run(self, future: Coroutine[Any, None, None], debug: bool = False) -&gt; None:
+    def run(
+        self, future: typing.Coroutine[typing.Any, None, None], debug: bool = False
+    ) -&gt; None:
         &#34;&#34;&#34;Runs a Coro function until its complete.
         This is equivalent to asyncio.get_event_loop().run_until_complete(...)
 
@@ -532,7 +564,7 @@ class Client(impl.BaseClient):
         except asyncio.CancelledError:
             raise
 
-    async def from_path(self, path: str) -&gt; Any:
+    async def from_path(self, path: str) -&gt; typing.Any:
         &#34;&#34;&#34;Raw http search given a valid bungie endpoint.
 
         Parameters
@@ -685,7 +717,7 @@ class Client(impl.BaseClient):
 
     async def fetch_vendor_sales(
         self,
-    ) -&gt; Any:
+    ) -&gt; typing.Any:
         &#34;&#34;&#34;Fetch vendor sales.&#34;&#34;&#34;
         return await self.http.fetch_vendor_sales()
 
@@ -697,8 +729,8 @@ class Client(impl.BaseClient):
         mode: GameMode,
         memtype: MembershipType,
         *,
-        page: Optional[int] = 1,
-        limit: Optional[int] = 1,
+        page: typing.Optional[int] = 1,
+        limit: typing.Optional[int] = 1,
     ) -&gt; None:
         &#34;&#34;&#34;Fetches a Destiny 2 activity for the specified user id and character.
 
@@ -787,8 +819,34 @@ class Client(impl.BaseClient):
         assert isinstance(resp, dict)
         return self._serialize.deseialize_clan(resp)
 
-    async def fetch_entity(self, type: str, hash: int, /) -&gt; objects.Entity:
-        &#34;&#34;&#34;Fetches a static definition of an entity given a type and its hash.
+    # These are not documented for a reason.
+    # See: `aiobungie.objects.Clan.fetch_member()`
+    # and `aiobungie.objects.Clan.fetch_members()`
+
+    async def fetch_clan_member(
+        self,
+        id: int,
+        name: typing.Optional[str] = None,
+        type: MembershipType = MembershipType.NONE,
+        /,
+    ) -&gt; objects.clans.ClanMember:
+
+        resp = await self.http.fetch_clan_members(id, type, name)
+        assert isinstance(resp, dict)
+        return self._serialize.deserialize_clan_member(resp, name)
+
+    async def fetch_clan_members(
+        self, id: int, type: MembershipType = MembershipType.NONE, /
+    ) -&gt; typing.Dict[str, int]:
+
+        resp = await self.http.fetch_clan_members(id, type, page=1)
+        assert isinstance(resp, dict)
+        return self._serialize.deserialize_clan_members(resp)
+
+    async def fetch_inventory_item(
+        self, hash: int, /
+    ) -&gt; objects.entity.InventoryEntity:
+        &#34;&#34;&#34;Fetches a static inventory item entity given a its hash.
 
         Paramaters
         ----------
@@ -799,12 +857,12 @@ class Client(impl.BaseClient):
 
         Returns
         -------
-        `aiobungie.objects.Entity`
-            An aiobungie entity object.
+        `aiobungie.objects.InventoryEntity`
+            A bungie inventory item.
         &#34;&#34;&#34;
-        resp = await self.http.fetch_entity(type, hash)
+        resp = await self.http.fetch_inventory_item(hash)
         assert isinstance(resp, dict)
-        return self._serialize.deserialize_entity(resp)</code></pre>
+        return self._serialize.deserialize_inventory_entity(resp)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -872,7 +930,7 @@ def serialize(self) -&gt; serialize_.Deserialize:
 <h3>Methods</h3>
 <dl>
 <dt id="aiobungie.client.Client.fetch_activity"><code class="name flex">
-<span>async def <span class="ident">fetch_activity</span></span>(<span>self, userid: int, charid: int, mode: GameMode, memtype: MembershipType, *, page: Optional[int] = 1, limit: Optional[int] = 1) ‑> NoneType</span>
+<span>async def <span class="ident">fetch_activity</span></span>(<span>self, userid: int, charid: int, mode: GameMode, memtype: MembershipType, *, page: typing.Optional[int] = 1, limit: typing.Optional[int] = 1) ‑> NoneType</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Fetches a Destiny 2 activity for the specified user id and character.</p>
@@ -911,8 +969,8 @@ async def fetch_activity(
     mode: GameMode,
     memtype: MembershipType,
     *,
-    page: Optional[int] = 1,
-    limit: Optional[int] = 1,
+    page: typing.Optional[int] = 1,
+    limit: typing.Optional[int] = 1,
 ) -&gt; None:
     &#34;&#34;&#34;Fetches a Destiny 2 activity for the specified user id and character.
 
@@ -1114,25 +1172,67 @@ An aioungie clan object</p></div>
     return self._serialize.deseialize_clan(resp)</code></pre>
 </details>
 </dd>
-<dt id="aiobungie.client.Client.fetch_entity"><code class="name flex">
-<span>async def <span class="ident">fetch_entity</span></span>(<span>self, type: str, hash: int, /) ‑> <a title="aiobungie.objects.entity.Entity" href="objects/entity.html#aiobungie.objects.entity.Entity">Entity</a></span>
+<dt id="aiobungie.client.Client.fetch_clan_member"><code class="name flex">
+<span>async def <span class="ident">fetch_clan_member</span></span>(<span>self, id: int, name: typing.Optional[str] = None, type: MembershipType = NONE, /) ‑> <a title="aiobungie.objects.clans.ClanMember" href="objects/clans.html#aiobungie.objects.clans.ClanMember">ClanMember</a></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Fetches a static definition of an entity given a type and its hash.</p>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_clan_member(
+    self,
+    id: int,
+    name: typing.Optional[str] = None,
+    type: MembershipType = MembershipType.NONE,
+    /,
+) -&gt; objects.clans.ClanMember:
+
+    resp = await self.http.fetch_clan_members(id, type, name)
+    assert isinstance(resp, dict)
+    return self._serialize.deserialize_clan_member(resp, name)</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.client.Client.fetch_clan_members"><code class="name flex">
+<span>async def <span class="ident">fetch_clan_members</span></span>(<span>self, id: int, type: MembershipType = NONE, /) ‑> Dict[str, int]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_clan_members(
+    self, id: int, type: MembershipType = MembershipType.NONE, /
+) -&gt; typing.Dict[str, int]:
+
+    resp = await self.http.fetch_clan_members(id, type, page=1)
+    assert isinstance(resp, dict)
+    return self._serialize.deserialize_clan_members(resp)</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.client.Client.fetch_inventory_item"><code class="name flex">
+<span>async def <span class="ident">fetch_inventory_item</span></span>(<span>self, hash: int, /) ‑> <a title="aiobungie.objects.entity.InventoryEntity" href="objects/entity.html#aiobungie.objects.entity.InventoryEntity">InventoryEntity</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Fetches a static inventory item entity given a its hash.</p>
 <h2 id="paramaters">Paramaters</h2>
 <p>type: <code>builtins.str</code>
 Entity's type definition.
 hash: <code>builtins.int</code>
 Entity's hash.</p>
 <h2 id="returns">Returns</h2>
-<p><code><a title="aiobungie.objects.Entity" href="objects/index.html#aiobungie.objects.Entity">Entity</a></code>
-An aiobungie entity object.</p></div>
+<p><code><a title="aiobungie.objects.InventoryEntity" href="objects/index.html#aiobungie.objects.InventoryEntity">InventoryEntity</a></code>
+A bungie inventory item.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">async def fetch_entity(self, type: str, hash: int, /) -&gt; objects.Entity:
-    &#34;&#34;&#34;Fetches a static definition of an entity given a type and its hash.
+<pre><code class="python">async def fetch_inventory_item(
+    self, hash: int, /
+) -&gt; objects.entity.InventoryEntity:
+    &#34;&#34;&#34;Fetches a static inventory item entity given a its hash.
 
     Paramaters
     ----------
@@ -1143,12 +1243,12 @@ An aiobungie entity object.</p></div>
 
     Returns
     -------
-    `aiobungie.objects.Entity`
-        An aiobungie entity object.
+    `aiobungie.objects.InventoryEntity`
+        A bungie inventory item.
     &#34;&#34;&#34;
-    resp = await self.http.fetch_entity(type, hash)
+    resp = await self.http.fetch_inventory_item(hash)
     assert isinstance(resp, dict)
-    return self._serialize.deserialize_entity(resp)</code></pre>
+    return self._serialize.deserialize_inventory_entity(resp)</code></pre>
 </details>
 </dd>
 <dt id="aiobungie.client.Client.fetch_manifest"><code class="name flex">
@@ -1361,7 +1461,7 @@ The user wasa not found.</p></div>
 </summary>
 <pre><code class="python">async def fetch_vendor_sales(
     self,
-) -&gt; Any:
+) -&gt; typing.Any:
     &#34;&#34;&#34;Fetch vendor sales.&#34;&#34;&#34;
     return await self.http.fetch_vendor_sales()</code></pre>
 </details>
@@ -1385,7 +1485,7 @@ Any object.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">async def from_path(self, path: str) -&gt; Any:
+<pre><code class="python">async def from_path(self, path: str) -&gt; typing.Any:
     &#34;&#34;&#34;Raw http search given a valid bungie endpoint.
 
     Parameters
@@ -1404,7 +1504,7 @@ Any object.</p></div>
 </details>
 </dd>
 <dt id="aiobungie.client.Client.run"><code class="name flex">
-<span>def <span class="ident">run</span></span>(<span>self, future: Coroutine[Any, None, None], debug: bool = False) ‑> NoneType</span>
+<span>def <span class="ident">run</span></span>(<span>self, future: typing.Coroutine[typing.Any, None, None], debug: bool = False) ‑> NoneType</span>
 </code></dt>
 <dd>
 <p class="inheritance">
@@ -1417,7 +1517,9 @@ This is equivalent to asyncio.get_event_loop().run_until_complete(&hellip;) …<
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def run(self, future: Coroutine[Any, None, None], debug: bool = False) -&gt; None:
+<pre><code class="python">def run(
+    self, future: typing.Coroutine[typing.Any, None, None], debug: bool = False
+) -&gt; None:
     &#34;&#34;&#34;Runs a Coro function until its complete.
     This is equivalent to asyncio.get_event_loop().run_until_complete(...)
 
@@ -1511,14 +1613,16 @@ setTimeout(() => input.focus(), 100);
 <ul>
 <li>
 <h4><code><a title="aiobungie.client.Client" href="#aiobungie.client.Client">Client</a></code></h4>
-<ul class="two-column">
+<ul class="">
 <li><code><a title="aiobungie.client.Client.cache" href="#aiobungie.client.Client.cache">cache</a></code></li>
 <li><code><a title="aiobungie.client.Client.fetch_activity" href="#aiobungie.client.Client.fetch_activity">fetch_activity</a></code></li>
 <li><code><a title="aiobungie.client.Client.fetch_app" href="#aiobungie.client.Client.fetch_app">fetch_app</a></code></li>
 <li><code><a title="aiobungie.client.Client.fetch_character" href="#aiobungie.client.Client.fetch_character">fetch_character</a></code></li>
 <li><code><a title="aiobungie.client.Client.fetch_clan" href="#aiobungie.client.Client.fetch_clan">fetch_clan</a></code></li>
 <li><code><a title="aiobungie.client.Client.fetch_clan_from_id" href="#aiobungie.client.Client.fetch_clan_from_id">fetch_clan_from_id</a></code></li>
-<li><code><a title="aiobungie.client.Client.fetch_entity" href="#aiobungie.client.Client.fetch_entity">fetch_entity</a></code></li>
+<li><code><a title="aiobungie.client.Client.fetch_clan_member" href="#aiobungie.client.Client.fetch_clan_member">fetch_clan_member</a></code></li>
+<li><code><a title="aiobungie.client.Client.fetch_clan_members" href="#aiobungie.client.Client.fetch_clan_members">fetch_clan_members</a></code></li>
+<li><code><a title="aiobungie.client.Client.fetch_inventory_item" href="#aiobungie.client.Client.fetch_inventory_item">fetch_inventory_item</a></code></li>
 <li><code><a title="aiobungie.client.Client.fetch_manifest" href="#aiobungie.client.Client.fetch_manifest">fetch_manifest</a></code></li>
 <li><code><a title="aiobungie.client.Client.fetch_player" href="#aiobungie.client.Client.fetch_player">fetch_player</a></code></li>
 <li><code><a title="aiobungie.client.Client.fetch_profile" href="#aiobungie.client.Client.fetch_profile">fetch_profile</a></code></li>

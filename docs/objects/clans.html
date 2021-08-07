@@ -54,24 +54,86 @@
 
 from __future__ import annotations
 
-__all__: Sequence[str] = [&#34;Clan&#34;, &#34;ClanOwner&#34;]
+__all__: typing.List[str] = [&#34;Clan&#34;, &#34;ClanOwner&#34;, &#34;ClanMember&#34;]
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence
+
+import typing
 
 import attr
 
 from aiobungie import url
+from aiobungie.internal import impl
 
-from ..internal import Image, Time
+from ..internal import Image
+from ..internal import Time
 from ..internal.enums import MembershipType
 from .user import UserLike
 
-if TYPE_CHECKING:
+if typing.TYPE_CHECKING:
+    import types
     from datetime import datetime
 
 
-class ClanMembers:
-    __slots__: Sequence[str] = ()
+@attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
+class ClanMember(UserLike):
+    &#34;&#34;&#34;Represents a Destiny 2 clan member.&#34;&#34;&#34;
+
+    id: int = attr.field(repr=True, hash=True)
+    &#34;&#34;&#34;Clan member&#39;s id&#34;&#34;&#34;
+
+    name: str = attr.field(repr=True)
+    &#34;&#34;&#34;Clan member&#39;s name&#34;&#34;&#34;
+
+    type: MembershipType = attr.field(repr=True)
+    &#34;&#34;&#34;Clan member&#39;s membership type.&#34;&#34;&#34;
+
+    icon: Image = attr.field(repr=False)
+    &#34;&#34;&#34;Clan member&#39;s icon&#34;&#34;&#34;
+
+    is_public: bool = attr.field(repr=True)
+    &#34;&#34;&#34;`builtins.True` if the clan member is public.&#34;&#34;&#34;
+
+    group_id: int = attr.field(repr=True)
+    &#34;&#34;&#34;The member&#39;s group id.&#34;&#34;&#34;
+
+    is_online: bool = attr.field(repr=True)
+    &#34;&#34;&#34;True if the clan member is online or not.&#34;&#34;&#34;
+
+    last_online: datetime = attr.field(repr=False)
+    &#34;&#34;&#34;The date of the clan member&#39;s last online in UTC time zone.&#34;&#34;&#34;
+
+    joined_at: datetime = attr.field(repr=False)
+    &#34;&#34;&#34;The clan member&#39;s join date in UTC time zone.&#34;&#34;&#34;
+
+    @property
+    def link(self) -&gt; typing.Optional[str]:
+        &#34;&#34;&#34;Clan member&#39;s profile link.&#34;&#34;&#34;
+        return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;
+
+    @property
+    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
+        return attr.asdict(self)
+
+    # These are not implemented yet
+    # Since they requires OAuth2.
+
+    async def ban(self) -&gt; None:
+        &#34;&#34;&#34;Bans a clan member from the clan.
+        This requires OAuth2: AdminGroups scope.
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    async def unban(self) -&gt; None:
+        &#34;&#34;&#34;Unbans a clan member clan.
+        This requires OAuth2: AdminGroups scope.
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    async def kick(self) -&gt; None:
+        &#34;&#34;&#34;Kicks a clan member from the clan.
+        The requires OAuth2: AdminsGroup scope.
+        &#34;&#34;&#34;
+        raise NotImplementedError
 
 
 @attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
@@ -109,13 +171,15 @@ class ClanOwner(UserLike):
     name: str = attr.field(repr=True)
     &#34;&#34;&#34;The user name.&#34;&#34;&#34;
 
-    is_public: Optional[bool] = attr.field(hash=False, repr=True, eq=False)
+    is_public: typing.Optional[bool] = attr.field(hash=False, repr=True, eq=False)
     &#34;&#34;&#34;Returns if the user profile is public or no.&#34;&#34;&#34;
 
     type: MembershipType = attr.field(hash=False, repr=True, eq=True)
     &#34;&#34;&#34;Returns the membership type of the user.&#34;&#34;&#34;
 
-    types: Optional[List[int]] = attr.field(hash=True, repr=False, eq=False)
+    types: typing.Optional[typing.List[int]] = attr.field(
+        hash=True, repr=False, eq=False
+    )
     &#34;&#34;&#34;Returns a list of the member ship&#39;s membership types.&#34;&#34;&#34;
 
     last_online: datetime = attr.field(repr=False)
@@ -136,16 +200,22 @@ class ClanOwner(UserLike):
         return Time.human_timedelta(self.last_online)
 
     @property
-    def link(self) -&gt; Optional[str]:
+    def link(self) -&gt; typing.Optional[str]:
         &#34;&#34;&#34;Returns the user&#39;s profile link.&#34;&#34;&#34;
         return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;
 
     @property
-    def as_dict(self) -&gt; Dict[str, Any]:
+    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
         &#34;&#34;&#34;Returns a dict object of the clan owner,
         This function is useful if you&#39;re binding to other REST apis.
         &#34;&#34;&#34;
         return attr.asdict(self)
+
+    def __int__(self) -&gt; int:
+        return self.id
+
+    def __str__(self) -&gt; str:
+        return self.name
 
 
 @attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
@@ -177,6 +247,9 @@ class Clan:
         See `aiobungie.objects.ClanOwner` for info.
     &#34;&#34;&#34;
 
+    app: impl.RESTful = attr.field(repr=False, eq=False, hash=False)
+    &#34;&#34;&#34;A client app the we may use for external requests.&#34;&#34;&#34;
+
     id: int = attr.field(hash=True, repr=True, eq=True)
     &#34;&#34;&#34;The clan id&#34;&#34;&#34;
 
@@ -204,11 +277,75 @@ class Clan:
     about: str = attr.field(repr=True, eq=False)
     &#34;&#34;&#34;Clan&#39;s about title.&#34;&#34;&#34;
 
-    tags: List[str] = attr.field(repr=False)
+    tags: typing.List[str] = attr.field(repr=False)
     &#34;&#34;&#34;A list of the clan&#39;s tags.&#34;&#34;&#34;
 
     owner: ClanOwner = attr.field(repr=True)
     &#34;&#34;&#34;The clan owner.&#34;&#34;&#34;
+
+    async def fetch_member(
+        self, name: str, type: MembershipType = MembershipType.NONE, /
+    ) -&gt; ClanMember:
+        &#34;&#34;&#34;Fetch a specific clan member by their name and membership type.
+
+        if the memberhship type is None we will
+        try to return the first member matches the name.
+        its also better to leave this parameter on None
+        since usually only one player has this name.
+
+        Parameters
+        ----------
+        name: `builtins.str`
+            The clan member name.
+        type: `aiobungie.MembershipType`
+            The member&#39;s membership type. Default is 0
+            which returns any member matches the name.
+
+        Returns
+        --------
+        `ClanMember`
+        &#34;&#34;&#34;
+        return await self.app.rest.fetch_clan_member(self.id, name, type)
+
+    async def fetch_members(
+        self, type: MembershipType = MembershipType.NONE, /
+    ) -&gt; typing.Dict[str, int]:
+        &#34;&#34;&#34;Fetch the members of the clan.
+
+        if the memberhship type is None it will
+        All membership types.
+
+        Parameters
+        ----------
+        type: `aiobungie.MembershipType`
+            Filters the membership types to return.
+            Default is 0 which returns all membership types.
+
+        Returns
+        --------
+        `typing.Dict[str, int]`
+            A dict that holds a key of the clan members&#39;s name
+            and a value of the clan members&#39;s id.
+        &#34;&#34;&#34;
+        return await self.app.rest.fetch_clan_members(self.id, type)
+
+    async def fetch_banned_members(
+        self, page: int = 1, /
+    ) -&gt; typing.Sequence[ClanMember]:
+        &#34;&#34;&#34;Fetch members who has been banned from the clan.
+
+        Parameters
+        ----------
+        page: `buildint.int`
+            The page number to return.
+
+        Returns
+        --------
+        `typing.Sequence[aiobungie.objects.clans.ClanMember]`
+            A sequence of clan members.
+        name
+        &#34;&#34;&#34;
+        raise NotImplementedError
 
     @property
     def human_timedelta(self) -&gt; str:
@@ -220,9 +357,15 @@ class Clan:
         return f&#34;{url.BASE}/en/ClanV2/Index?groupId={self.id}&#34;
 
     @property
-    def as_dict(self) -&gt; Dict[str, Any]:
+    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
         &#34;&#34;&#34;Returns an instance of the object as a dict&#34;&#34;&#34;
-        return attr.asdict(self)</code></pre>
+        return attr.asdict(self)
+
+    def __int__(self) -&gt; int:
+        return self.id
+
+    def __str__(self) -&gt; str:
+        return self.name</code></pre>
 </details>
 </section>
 <section>
@@ -236,7 +379,7 @@ class Clan:
 <dl>
 <dt id="aiobungie.objects.clans.Clan"><code class="flex name class">
 <span>class <span class="ident">Clan</span></span>
-<span>(</span><span>*, id: int, name: str, created_at: datetime, member_count: int, description: str, is_public: bool, banner: Image, avatar: Image, about: str, tags: List[str], owner: <a title="aiobungie.objects.clans.ClanOwner" href="#aiobungie.objects.clans.ClanOwner">ClanOwner</a>)</span>
+<span>(</span><span>*, app: impl.RESTful, id: int, name: str, created_at: datetime, member_count: int, description: str, is_public: bool, banner: Image, avatar: Image, about: str, tags: typing.List[str], owner: <a title="aiobungie.objects.clans.ClanOwner" href="#aiobungie.objects.clans.ClanOwner">ClanOwner</a>)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Represents a Bungie clan object.</p>
@@ -298,6 +441,9 @@ class Clan:
         See `aiobungie.objects.ClanOwner` for info.
     &#34;&#34;&#34;
 
+    app: impl.RESTful = attr.field(repr=False, eq=False, hash=False)
+    &#34;&#34;&#34;A client app the we may use for external requests.&#34;&#34;&#34;
+
     id: int = attr.field(hash=True, repr=True, eq=True)
     &#34;&#34;&#34;The clan id&#34;&#34;&#34;
 
@@ -325,11 +471,75 @@ class Clan:
     about: str = attr.field(repr=True, eq=False)
     &#34;&#34;&#34;Clan&#39;s about title.&#34;&#34;&#34;
 
-    tags: List[str] = attr.field(repr=False)
+    tags: typing.List[str] = attr.field(repr=False)
     &#34;&#34;&#34;A list of the clan&#39;s tags.&#34;&#34;&#34;
 
     owner: ClanOwner = attr.field(repr=True)
     &#34;&#34;&#34;The clan owner.&#34;&#34;&#34;
+
+    async def fetch_member(
+        self, name: str, type: MembershipType = MembershipType.NONE, /
+    ) -&gt; ClanMember:
+        &#34;&#34;&#34;Fetch a specific clan member by their name and membership type.
+
+        if the memberhship type is None we will
+        try to return the first member matches the name.
+        its also better to leave this parameter on None
+        since usually only one player has this name.
+
+        Parameters
+        ----------
+        name: `builtins.str`
+            The clan member name.
+        type: `aiobungie.MembershipType`
+            The member&#39;s membership type. Default is 0
+            which returns any member matches the name.
+
+        Returns
+        --------
+        `ClanMember`
+        &#34;&#34;&#34;
+        return await self.app.rest.fetch_clan_member(self.id, name, type)
+
+    async def fetch_members(
+        self, type: MembershipType = MembershipType.NONE, /
+    ) -&gt; typing.Dict[str, int]:
+        &#34;&#34;&#34;Fetch the members of the clan.
+
+        if the memberhship type is None it will
+        All membership types.
+
+        Parameters
+        ----------
+        type: `aiobungie.MembershipType`
+            Filters the membership types to return.
+            Default is 0 which returns all membership types.
+
+        Returns
+        --------
+        `typing.Dict[str, int]`
+            A dict that holds a key of the clan members&#39;s name
+            and a value of the clan members&#39;s id.
+        &#34;&#34;&#34;
+        return await self.app.rest.fetch_clan_members(self.id, type)
+
+    async def fetch_banned_members(
+        self, page: int = 1, /
+    ) -&gt; typing.Sequence[ClanMember]:
+        &#34;&#34;&#34;Fetch members who has been banned from the clan.
+
+        Parameters
+        ----------
+        page: `buildint.int`
+            The page number to return.
+
+        Returns
+        --------
+        `typing.Sequence[aiobungie.objects.clans.ClanMember]`
+            A sequence of clan members.
+        name
+        &#34;&#34;&#34;
+        raise NotImplementedError
 
     @property
     def human_timedelta(self) -&gt; str:
@@ -341,15 +551,25 @@ class Clan:
         return f&#34;{url.BASE}/en/ClanV2/Index?groupId={self.id}&#34;
 
     @property
-    def as_dict(self) -&gt; Dict[str, Any]:
+    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
         &#34;&#34;&#34;Returns an instance of the object as a dict&#34;&#34;&#34;
-        return attr.asdict(self)</code></pre>
+        return attr.asdict(self)
+
+    def __int__(self) -&gt; int:
+        return self.id
+
+    def __str__(self) -&gt; str:
+        return self.name</code></pre>
 </details>
 <h3>Instance variables</h3>
 <dl>
 <dt id="aiobungie.objects.clans.Clan.about"><code class="name">var <span class="ident">about</span></code></dt>
 <dd>
 <div class="desc"><p>Clan's about title.</p></div>
+</dd>
+<dt id="aiobungie.objects.clans.Clan.app"><code class="name">var <span class="ident">app</span></code></dt>
+<dd>
+<div class="desc"><p>A client app the we may use for external requests.</p></div>
 </dd>
 <dt id="aiobungie.objects.clans.Clan.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
 <dd>
@@ -359,7 +579,7 @@ class Clan:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def as_dict(self) -&gt; Dict[str, Any]:
+def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
     &#34;&#34;&#34;Returns an instance of the object as a dict&#34;&#34;&#34;
     return attr.asdict(self)</code></pre>
 </details>
@@ -430,10 +650,345 @@ def url(self) -&gt; str:
 </details>
 </dd>
 </dl>
+<h3>Methods</h3>
+<dl>
+<dt id="aiobungie.objects.clans.Clan.fetch_banned_members"><code class="name flex">
+<span>async def <span class="ident">fetch_banned_members</span></span>(<span>self, page: int = 1, /) ‑> Sequence[<a title="aiobungie.objects.clans.ClanMember" href="#aiobungie.objects.clans.ClanMember">ClanMember</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Fetch members who has been banned from the clan.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>page</code></strong> :&ensp;<code>buildint.int</code></dt>
+<dd>The page number to return.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>typing.Sequence[<a title="aiobungie.objects.clans.ClanMember" href="#aiobungie.objects.clans.ClanMember">ClanMember</a>]</code></dt>
+<dt>A sequence of clan members.</dt>
+<dt><code>name</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_banned_members(
+    self, page: int = 1, /
+) -&gt; typing.Sequence[ClanMember]:
+    &#34;&#34;&#34;Fetch members who has been banned from the clan.
+
+    Parameters
+    ----------
+    page: `buildint.int`
+        The page number to return.
+
+    Returns
+    --------
+    `typing.Sequence[aiobungie.objects.clans.ClanMember]`
+        A sequence of clan members.
+    name
+    &#34;&#34;&#34;
+    raise NotImplementedError</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.objects.clans.Clan.fetch_member"><code class="name flex">
+<span>async def <span class="ident">fetch_member</span></span>(<span>self, name: str, type: MembershipType = NONE, /) ‑> <a title="aiobungie.objects.clans.ClanMember" href="#aiobungie.objects.clans.ClanMember">ClanMember</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Fetch a specific clan member by their name and membership type.</p>
+<p>if the memberhship type is None we will
+try to return the first member matches the name.
+its also better to leave this parameter on None
+since usually only one player has this name.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>name</code></strong> :&ensp;<code>builtins.str</code></dt>
+<dd>The clan member name.</dd>
+<dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.MembershipType" href="../index.html#aiobungie.MembershipType">MembershipType</a></code></dt>
+<dd>The member's membership type. Default is 0
+which returns any member matches the name.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p><code><a title="aiobungie.objects.clans.ClanMember" href="#aiobungie.objects.clans.ClanMember">ClanMember</a></code></p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_member(
+    self, name: str, type: MembershipType = MembershipType.NONE, /
+) -&gt; ClanMember:
+    &#34;&#34;&#34;Fetch a specific clan member by their name and membership type.
+
+    if the memberhship type is None we will
+    try to return the first member matches the name.
+    its also better to leave this parameter on None
+    since usually only one player has this name.
+
+    Parameters
+    ----------
+    name: `builtins.str`
+        The clan member name.
+    type: `aiobungie.MembershipType`
+        The member&#39;s membership type. Default is 0
+        which returns any member matches the name.
+
+    Returns
+    --------
+    `ClanMember`
+    &#34;&#34;&#34;
+    return await self.app.rest.fetch_clan_member(self.id, name, type)</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.objects.clans.Clan.fetch_members"><code class="name flex">
+<span>async def <span class="ident">fetch_members</span></span>(<span>self, type: MembershipType = NONE, /) ‑> Dict[str, int]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Fetch the members of the clan.</p>
+<p>if the memberhship type is None it will
+All membership types.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.MembershipType" href="../index.html#aiobungie.MembershipType">MembershipType</a></code></dt>
+<dd>Filters the membership types to return.
+Default is 0 which returns all membership types.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p><code>typing.Dict[str, int]</code>
+A dict that holds a key of the clan members's name
+and a value of the clan members's id.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_members(
+    self, type: MembershipType = MembershipType.NONE, /
+) -&gt; typing.Dict[str, int]:
+    &#34;&#34;&#34;Fetch the members of the clan.
+
+    if the memberhship type is None it will
+    All membership types.
+
+    Parameters
+    ----------
+    type: `aiobungie.MembershipType`
+        Filters the membership types to return.
+        Default is 0 which returns all membership types.
+
+    Returns
+    --------
+    `typing.Dict[str, int]`
+        A dict that holds a key of the clan members&#39;s name
+        and a value of the clan members&#39;s id.
+    &#34;&#34;&#34;
+    return await self.app.rest.fetch_clan_members(self.id, type)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="aiobungie.objects.clans.ClanMember"><code class="flex name class">
+<span>class <span class="ident">ClanMember</span></span>
+<span>(</span><span>*, id: int, name: str, type: MembershipType, icon: Image, is_public: bool, group_id: int, is_online: bool, last_online: datetime, joined_at: datetime)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents a Destiny 2 clan member.</p>
+<p>Method generated by attrs for class ClanMember.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
+class ClanMember(UserLike):
+    &#34;&#34;&#34;Represents a Destiny 2 clan member.&#34;&#34;&#34;
+
+    id: int = attr.field(repr=True, hash=True)
+    &#34;&#34;&#34;Clan member&#39;s id&#34;&#34;&#34;
+
+    name: str = attr.field(repr=True)
+    &#34;&#34;&#34;Clan member&#39;s name&#34;&#34;&#34;
+
+    type: MembershipType = attr.field(repr=True)
+    &#34;&#34;&#34;Clan member&#39;s membership type.&#34;&#34;&#34;
+
+    icon: Image = attr.field(repr=False)
+    &#34;&#34;&#34;Clan member&#39;s icon&#34;&#34;&#34;
+
+    is_public: bool = attr.field(repr=True)
+    &#34;&#34;&#34;`builtins.True` if the clan member is public.&#34;&#34;&#34;
+
+    group_id: int = attr.field(repr=True)
+    &#34;&#34;&#34;The member&#39;s group id.&#34;&#34;&#34;
+
+    is_online: bool = attr.field(repr=True)
+    &#34;&#34;&#34;True if the clan member is online or not.&#34;&#34;&#34;
+
+    last_online: datetime = attr.field(repr=False)
+    &#34;&#34;&#34;The date of the clan member&#39;s last online in UTC time zone.&#34;&#34;&#34;
+
+    joined_at: datetime = attr.field(repr=False)
+    &#34;&#34;&#34;The clan member&#39;s join date in UTC time zone.&#34;&#34;&#34;
+
+    @property
+    def link(self) -&gt; typing.Optional[str]:
+        &#34;&#34;&#34;Clan member&#39;s profile link.&#34;&#34;&#34;
+        return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;
+
+    @property
+    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
+        return attr.asdict(self)
+
+    # These are not implemented yet
+    # Since they requires OAuth2.
+
+    async def ban(self) -&gt; None:
+        &#34;&#34;&#34;Bans a clan member from the clan.
+        This requires OAuth2: AdminGroups scope.
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    async def unban(self) -&gt; None:
+        &#34;&#34;&#34;Unbans a clan member clan.
+        This requires OAuth2: AdminGroups scope.
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    async def kick(self) -&gt; None:
+        &#34;&#34;&#34;Kicks a clan member from the clan.
+        The requires OAuth2: AdminsGroup scope.
+        &#34;&#34;&#34;
+        raise NotImplementedError</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="aiobungie.objects.user.UserLike" href="user.html#aiobungie.objects.user.UserLike">UserLike</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="aiobungie.objects.clans.ClanMember.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
+<dd>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="aiobungie.objects.user.UserLike" href="user.html#aiobungie.objects.user.UserLike">UserLike</a></code>.<code><a title="aiobungie.objects.user.UserLike.as_dict" href="user.html#aiobungie.objects.user.UserLike.as_dict">as_dict</a></code>
+</p>
+<div class="desc inherited"><p>Returns an instance of the object attrs as a dict.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
+    return attr.asdict(self)</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.objects.clans.ClanMember.group_id"><code class="name">var <span class="ident">group_id</span></code></dt>
+<dd>
+<div class="desc"><p>The member's group id.</p></div>
+</dd>
+<dt id="aiobungie.objects.clans.ClanMember.icon"><code class="name">var <span class="ident">icon</span></code></dt>
+<dd>
+<div class="desc"><p>Clan member's icon</p></div>
+</dd>
+<dt id="aiobungie.objects.clans.ClanMember.id"><code class="name">var <span class="ident">id</span></code></dt>
+<dd>
+<div class="desc"><p>Clan member's id</p></div>
+</dd>
+<dt id="aiobungie.objects.clans.ClanMember.is_online"><code class="name">var <span class="ident">is_online</span></code></dt>
+<dd>
+<div class="desc"><p>True if the clan member is online or not.</p></div>
+</dd>
+<dt id="aiobungie.objects.clans.ClanMember.is_public"><code class="name">var <span class="ident">is_public</span></code></dt>
+<dd>
+<div class="desc"><p><code>builtins.True</code> if the clan member is public.</p></div>
+</dd>
+<dt id="aiobungie.objects.clans.ClanMember.joined_at"><code class="name">var <span class="ident">joined_at</span></code></dt>
+<dd>
+<div class="desc"><p>The clan member's join date in UTC time zone.</p></div>
+</dd>
+<dt id="aiobungie.objects.clans.ClanMember.last_online"><code class="name">var <span class="ident">last_online</span></code></dt>
+<dd>
+<div class="desc"><p>The date of the clan member's last online in UTC time zone.</p></div>
+</dd>
+<dt id="aiobungie.objects.clans.ClanMember.link"><code class="name">var <span class="ident">link</span> : Optional[str]</code></dt>
+<dd>
+<div class="desc"><p>Clan member's profile link.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def link(self) -&gt; typing.Optional[str]:
+    &#34;&#34;&#34;Clan member&#39;s profile link.&#34;&#34;&#34;
+    return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.objects.clans.ClanMember.name"><code class="name">var <span class="ident">name</span></code></dt>
+<dd>
+<div class="desc"><p>Clan member's name</p></div>
+</dd>
+<dt id="aiobungie.objects.clans.ClanMember.type"><code class="name">var <span class="ident">type</span></code></dt>
+<dd>
+<div class="desc"><p>Clan member's membership type.</p></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="aiobungie.objects.clans.ClanMember.ban"><code class="name flex">
+<span>async def <span class="ident">ban</span></span>(<span>self) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Bans a clan member from the clan.
+This requires OAuth2: AdminGroups scope.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def ban(self) -&gt; None:
+    &#34;&#34;&#34;Bans a clan member from the clan.
+    This requires OAuth2: AdminGroups scope.
+    &#34;&#34;&#34;
+    raise NotImplementedError</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.objects.clans.ClanMember.kick"><code class="name flex">
+<span>async def <span class="ident">kick</span></span>(<span>self) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Kicks a clan member from the clan.
+The requires OAuth2: AdminsGroup scope.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def kick(self) -&gt; None:
+    &#34;&#34;&#34;Kicks a clan member from the clan.
+    The requires OAuth2: AdminsGroup scope.
+    &#34;&#34;&#34;
+    raise NotImplementedError</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.objects.clans.ClanMember.unban"><code class="name flex">
+<span>async def <span class="ident">unban</span></span>(<span>self) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Unbans a clan member clan.
+This requires OAuth2: AdminGroups scope.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def unban(self) -&gt; None:
+    &#34;&#34;&#34;Unbans a clan member clan.
+    This requires OAuth2: AdminGroups scope.
+    &#34;&#34;&#34;
+    raise NotImplementedError</code></pre>
+</details>
+</dd>
+</dl>
 </dd>
 <dt id="aiobungie.objects.clans.ClanOwner"><code class="flex name class">
 <span>class <span class="ident">ClanOwner</span></span>
-<span>(</span><span>*, id: int, name: str, is_public: Optional[bool], type: MembershipType, types: Optional[List[int]], last_online: datetime, clan_id: int, icon: Image, joined_at: datetime)</span>
+<span>(</span><span>*, id: int, name: str, is_public: typing.Optional[bool], type: MembershipType, types: typing.Optional[typing.List[int]], last_online: datetime, clan_id: int, icon: Image, joined_at: datetime)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Represents a Bungie clan owner.</p>
@@ -500,13 +1055,15 @@ class ClanOwner(UserLike):
     name: str = attr.field(repr=True)
     &#34;&#34;&#34;The user name.&#34;&#34;&#34;
 
-    is_public: Optional[bool] = attr.field(hash=False, repr=True, eq=False)
+    is_public: typing.Optional[bool] = attr.field(hash=False, repr=True, eq=False)
     &#34;&#34;&#34;Returns if the user profile is public or no.&#34;&#34;&#34;
 
     type: MembershipType = attr.field(hash=False, repr=True, eq=True)
     &#34;&#34;&#34;Returns the membership type of the user.&#34;&#34;&#34;
 
-    types: Optional[List[int]] = attr.field(hash=True, repr=False, eq=False)
+    types: typing.Optional[typing.List[int]] = attr.field(
+        hash=True, repr=False, eq=False
+    )
     &#34;&#34;&#34;Returns a list of the member ship&#39;s membership types.&#34;&#34;&#34;
 
     last_online: datetime = attr.field(repr=False)
@@ -527,16 +1084,22 @@ class ClanOwner(UserLike):
         return Time.human_timedelta(self.last_online)
 
     @property
-    def link(self) -&gt; Optional[str]:
+    def link(self) -&gt; typing.Optional[str]:
         &#34;&#34;&#34;Returns the user&#39;s profile link.&#34;&#34;&#34;
         return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;
 
     @property
-    def as_dict(self) -&gt; Dict[str, Any]:
+    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
         &#34;&#34;&#34;Returns a dict object of the clan owner,
         This function is useful if you&#39;re binding to other REST apis.
         &#34;&#34;&#34;
-        return attr.asdict(self)</code></pre>
+        return attr.asdict(self)
+
+    def __int__(self) -&gt; int:
+        return self.id
+
+    def __str__(self) -&gt; str:
+        return self.name</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -554,7 +1117,7 @@ This function is useful if you're binding to other REST apis.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def as_dict(self) -&gt; Dict[str, Any]:
+def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
     &#34;&#34;&#34;Returns a dict object of the clan owner,
     This function is useful if you&#39;re binding to other REST apis.
     &#34;&#34;&#34;
@@ -614,7 +1177,7 @@ def human_timedelta(self) -&gt; str:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def link(self) -&gt; Optional[str]:
+def link(self) -&gt; typing.Optional[str]:
     &#34;&#34;&#34;Returns the user&#39;s profile link.&#34;&#34;&#34;
     return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;</code></pre>
 </details>
@@ -671,7 +1234,7 @@ const query = new URL(window.location).searchParams.get('q');
 if (query)
 search(query);
 function search(query) {
-const url = '.././doc-search.html#' + encodeURIComponent(query);
+const url = '../../doc-search.html#' + encodeURIComponent(query);
 new tingle.modal({
 cssClass: ['modal-dialog'],
 onClose: () => {
@@ -697,13 +1260,17 @@ setTimeout(() => input.focus(), 100);
 <ul>
 <li>
 <h4><code><a title="aiobungie.objects.clans.Clan" href="#aiobungie.objects.clans.Clan">Clan</a></code></h4>
-<ul class="two-column">
+<ul class="">
 <li><code><a title="aiobungie.objects.clans.Clan.about" href="#aiobungie.objects.clans.Clan.about">about</a></code></li>
+<li><code><a title="aiobungie.objects.clans.Clan.app" href="#aiobungie.objects.clans.Clan.app">app</a></code></li>
 <li><code><a title="aiobungie.objects.clans.Clan.as_dict" href="#aiobungie.objects.clans.Clan.as_dict">as_dict</a></code></li>
 <li><code><a title="aiobungie.objects.clans.Clan.avatar" href="#aiobungie.objects.clans.Clan.avatar">avatar</a></code></li>
 <li><code><a title="aiobungie.objects.clans.Clan.banner" href="#aiobungie.objects.clans.Clan.banner">banner</a></code></li>
 <li><code><a title="aiobungie.objects.clans.Clan.created_at" href="#aiobungie.objects.clans.Clan.created_at">created_at</a></code></li>
 <li><code><a title="aiobungie.objects.clans.Clan.description" href="#aiobungie.objects.clans.Clan.description">description</a></code></li>
+<li><code><a title="aiobungie.objects.clans.Clan.fetch_banned_members" href="#aiobungie.objects.clans.Clan.fetch_banned_members">fetch_banned_members</a></code></li>
+<li><code><a title="aiobungie.objects.clans.Clan.fetch_member" href="#aiobungie.objects.clans.Clan.fetch_member">fetch_member</a></code></li>
+<li><code><a title="aiobungie.objects.clans.Clan.fetch_members" href="#aiobungie.objects.clans.Clan.fetch_members">fetch_members</a></code></li>
 <li><code><a title="aiobungie.objects.clans.Clan.human_timedelta" href="#aiobungie.objects.clans.Clan.human_timedelta">human_timedelta</a></code></li>
 <li><code><a title="aiobungie.objects.clans.Clan.id" href="#aiobungie.objects.clans.Clan.id">id</a></code></li>
 <li><code><a title="aiobungie.objects.clans.Clan.is_public" href="#aiobungie.objects.clans.Clan.is_public">is_public</a></code></li>
@@ -712,6 +1279,25 @@ setTimeout(() => input.focus(), 100);
 <li><code><a title="aiobungie.objects.clans.Clan.owner" href="#aiobungie.objects.clans.Clan.owner">owner</a></code></li>
 <li><code><a title="aiobungie.objects.clans.Clan.tags" href="#aiobungie.objects.clans.Clan.tags">tags</a></code></li>
 <li><code><a title="aiobungie.objects.clans.Clan.url" href="#aiobungie.objects.clans.Clan.url">url</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="aiobungie.objects.clans.ClanMember" href="#aiobungie.objects.clans.ClanMember">ClanMember</a></code></h4>
+<ul class="two-column">
+<li><code><a title="aiobungie.objects.clans.ClanMember.as_dict" href="#aiobungie.objects.clans.ClanMember.as_dict">as_dict</a></code></li>
+<li><code><a title="aiobungie.objects.clans.ClanMember.ban" href="#aiobungie.objects.clans.ClanMember.ban">ban</a></code></li>
+<li><code><a title="aiobungie.objects.clans.ClanMember.group_id" href="#aiobungie.objects.clans.ClanMember.group_id">group_id</a></code></li>
+<li><code><a title="aiobungie.objects.clans.ClanMember.icon" href="#aiobungie.objects.clans.ClanMember.icon">icon</a></code></li>
+<li><code><a title="aiobungie.objects.clans.ClanMember.id" href="#aiobungie.objects.clans.ClanMember.id">id</a></code></li>
+<li><code><a title="aiobungie.objects.clans.ClanMember.is_online" href="#aiobungie.objects.clans.ClanMember.is_online">is_online</a></code></li>
+<li><code><a title="aiobungie.objects.clans.ClanMember.is_public" href="#aiobungie.objects.clans.ClanMember.is_public">is_public</a></code></li>
+<li><code><a title="aiobungie.objects.clans.ClanMember.joined_at" href="#aiobungie.objects.clans.ClanMember.joined_at">joined_at</a></code></li>
+<li><code><a title="aiobungie.objects.clans.ClanMember.kick" href="#aiobungie.objects.clans.ClanMember.kick">kick</a></code></li>
+<li><code><a title="aiobungie.objects.clans.ClanMember.last_online" href="#aiobungie.objects.clans.ClanMember.last_online">last_online</a></code></li>
+<li><code><a title="aiobungie.objects.clans.ClanMember.link" href="#aiobungie.objects.clans.ClanMember.link">link</a></code></li>
+<li><code><a title="aiobungie.objects.clans.ClanMember.name" href="#aiobungie.objects.clans.ClanMember.name">name</a></code></li>
+<li><code><a title="aiobungie.objects.clans.ClanMember.type" href="#aiobungie.objects.clans.ClanMember.type">type</a></code></li>
+<li><code><a title="aiobungie.objects.clans.ClanMember.unban" href="#aiobungie.objects.clans.ClanMember.unban">unban</a></code></li>
 </ul>
 </li>
 <li>

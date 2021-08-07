@@ -54,9 +54,10 @@
 
 from __future__ import annotations
 
-__all__: Sequence[str] = [&#34;Player&#34;]
+__all__: typing.Sequence[str] = [&#34;Player&#34;]
 
-from typing import Any, Dict, Sequence
+
+import typing
 
 import attr
 
@@ -99,7 +100,7 @@ class Player(UserLike):
     &#34;&#34;&#34;The profile&#39;s membership type.&#34;&#34;&#34;
 
     @property
-    def as_dict(self) -&gt; Dict[str, Any]:
+    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
         &#34;&#34;&#34;Returns a dict object of the player,
         This function is useful if you&#39;re binding to other REST apis.
         &#34;&#34;&#34;
@@ -177,7 +178,7 @@ class Player(UserLike):
     &#34;&#34;&#34;The profile&#39;s membership type.&#34;&#34;&#34;
 
     @property
-    def as_dict(self) -&gt; Dict[str, Any]:
+    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
         &#34;&#34;&#34;Returns a dict object of the player,
         This function is useful if you&#39;re binding to other REST apis.
         &#34;&#34;&#34;
@@ -203,7 +204,7 @@ This function is useful if you're binding to other REST apis.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def as_dict(self) -&gt; Dict[str, Any]:
+def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
     &#34;&#34;&#34;Returns a dict object of the player,
     This function is useful if you&#39;re binding to other REST apis.
     &#34;&#34;&#34;

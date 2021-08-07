@@ -25,23 +25,29 @@
 
 from __future__ import annotations
 
-__all__: Sequence[str] = ["deprecated", "JsonDict", "JsonList", "Undefined", "Unknown"]
+__all__: typing.Sequence[str] = [
+    "deprecated",
+    "JsonDict",
+    "JsonList",
+    "Undefined",
+    "Unknown",
+]
 
+import typing
 import warnings
 from functools import wraps
-from typing import Any, Callable, Dict, List, Optional, Sequence
 
-JsonDict = Dict[str, Any]
-JsonList = List[Dict[str, Any]]
+JsonDict = typing.Dict[str, typing.Any]
+JsonList = typing.List[typing.Dict[str, typing.Any]]
 
 # For stuff thats == ''
 Undefined: str = "Undefined"
 
 # For unknown stuff.
-Unknown: Optional[str] = ""
+Unknown: typing.Optional[str] = ""
 
 
-def deprecated(func) -> Callable[[Any], None]:
+def deprecated(func) -> typing.Callable[[typing.Any], None]:
     """
     functions with this decorator will not work or is not implemented yet.
     """

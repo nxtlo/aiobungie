@@ -36,7 +36,9 @@ import typing
 import attr
 
 from .. import url
-from ..internal import Image, Time, enums
+from ..internal import Image
+from ..internal import Time
+from ..internal import enums
 
 log: typing.Final[logging.Logger] = logging.getLogger(__name__)
 

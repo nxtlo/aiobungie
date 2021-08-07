@@ -25,9 +25,10 @@
 
 from __future__ import annotations
 
-__all__: Sequence[str] = ["Player"]
+__all__: typing.Sequence[str] = ["Player"]
 
-from typing import Any, Dict, Sequence
+
+import typing
 
 import attr
 
@@ -70,7 +71,7 @@ class Player(UserLike):
     """The profile's membership type."""
 
     @property
-    def as_dict(self) -> Dict[str, Any]:
+    def as_dict(self) -> typing.Dict[str, typing.Any]:
         """Returns a dict object of the player,
         This function is useful if you're binding to other REST apis.
         """

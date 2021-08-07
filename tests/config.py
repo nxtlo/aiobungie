@@ -21,7 +21,8 @@
 # SOFTWARE.
 
 import os
-from typing import Any, Dict
+from typing import Any
+from typing import Dict
 
 from dotenv import load_dotenv
 
@@ -44,12 +45,12 @@ data: Dict[str, Any] = {
 
 
 types: Dict[str, str] = {
-    'inventory_item_def': 'DestinyInventoryItemDefinition',
-    'place_def': 'DestinyPlaceDefinition',
-    'activ_def': 'DestinyActivityDefinition',
-    'activ_type_def': 'DestinyActivityTypeDefinition',
-    'activity_mode_def': 'DestinyActivityModeDefinition',
-    'class_def': 'DestinyClassDefinition',
-    'bucket_def': 'DestinyInventoryBucketDefinition',
-    'milestone_def': 'DestinyMilestoneDefinition',
+    "inventory_item_def": "DestinyInventoryItemDefinition",
+    "place_def": "DestinyPlaceDefinition",
+    "activ_def": "DestinyActivityDefinition",
+    "activ_type_def": "DestinyActivityTypeDefinition",
+    "activity_mode_def": "DestinyActivityModeDefinition",
+    "class_def": "DestinyClassDefinition",
+    "bucket_def": "DestinyInventoryBucketDefinition",
+    "milestone_def": "DestinyMilestoneDefinition",
 }

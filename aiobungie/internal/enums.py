@@ -51,7 +51,7 @@ import typing
 
 
 @typing.final
-class Raid(enum.Enum):
+class Raid(int, enum.Enum):
     """An Enum for all available raids in Destiny 2."""
 
     DSC = 910380154
@@ -74,7 +74,7 @@ class Raid(enum.Enum):
 
 
 @typing.final
-class Dungeon(enum.Enum):
+class Dungeon(int, enum.Enum):
     """An Enum for all available Dungeon/Like missions in Destiny 2."""
 
     NORMAL_PRESAGE = 2124066889
@@ -109,7 +109,7 @@ class Dungeon(enum.Enum):
 
 
 @typing.final
-class Planet(enum.Enum):
+class Planet(int, enum.Enum):
     """An Enum for all available planets in Destiny 2."""
 
     UNKNOWN = 0
@@ -150,7 +150,7 @@ class Planet(enum.Enum):
 
 
 @typing.final
-class Place(enum.Enum):
+class Place(int, enum.Enum):
     """An Enum for Destiny 2 Places and NOT Planets"""
 
     ORBIT = 2961497387
@@ -166,7 +166,7 @@ class Place(enum.Enum):
 
 
 @typing.final
-class Vendor(enum.Enum):
+class Vendor(int, enum.Enum):
     """An Enum for all available vendors in Destiny 2."""
 
     ZAVALA = 69482069
@@ -201,7 +201,7 @@ class Vendor(enum.Enum):
 
 
 @typing.final
-class GameMode(enum.Enum):
+class GameMode(int, enum.Enum):
     """An Enum for all available gamemodes in Destiny 2."""
 
     NONE = 0
@@ -236,7 +236,7 @@ class GameMode(enum.Enum):
 
 
 @typing.final
-class Component(enum.Enum):
+class Component(int, enum.Enum):
     """An Enum for Destiny 2 Components."""
 
     NONE = 0
@@ -260,7 +260,7 @@ class Component(enum.Enum):
 
 
 @typing.final
-class MembershipType(enum.Enum):
+class MembershipType(int, enum.Enum):
     """An Enum for Bungie membership types."""
 
     NONE = 0
@@ -280,7 +280,7 @@ class MembershipType(enum.Enum):
 
 
 @typing.final
-class Class(enum.Enum):
+class Class(int, enum.Enum):
     """An Enum for Destiny character classes."""
 
     TITAN = 0
@@ -296,7 +296,7 @@ class Class(enum.Enum):
 
 
 @typing.final
-class Gender(enum.Enum):
+class Gender(int, enum.Enum):
     """An Enum for Destiny Genders."""
 
     MALE = 0
@@ -311,7 +311,7 @@ class Gender(enum.Enum):
 
 
 @typing.final
-class Race(enum.Enum):
+class Race(int, enum.Enum):
     """An Enum for Destiny races."""
 
     HUMAN = 0
@@ -327,7 +327,7 @@ class Race(enum.Enum):
 
 
 @typing.final
-class MilestoneType(enum.Enum):
+class MilestoneType(int, enum.Enum):
     """An Enum for Destiny 2 milestone types."""
 
     UNKNOWN = 0
@@ -345,7 +345,7 @@ class MilestoneType(enum.Enum):
 
 
 @typing.final
-class Stat(enum.Enum):
+class Stat(int, enum.Enum):
     """An Enum for Destiny 2 character stats."""
 
     NONE = 0
@@ -364,7 +364,7 @@ class Stat(enum.Enum):
 
 
 @typing.final
-class WeaponType(enum.Enum):
+class WeaponType(int, enum.Enum):
     """Enums for The three Destiny Weapon Types"""
 
     NONE = 0
@@ -380,7 +380,7 @@ class WeaponType(enum.Enum):
 
 
 @typing.final
-class DamageType(enum.Enum):
+class DamageType(int, enum.Enum):
     """Enums for Destiny Damage types"""
 
     NONE = 0
@@ -400,7 +400,7 @@ class DamageType(enum.Enum):
 
 
 @typing.final
-class Item(enum.Enum):
+class Item(int, enum.Enum):
     """Enums for Destiny2's inventory bucket items"""
 
     NONE = 0
@@ -462,7 +462,7 @@ class Item(enum.Enum):
 
 
 @typing.final
-class ItemTier(enum.Enum):
+class ItemTier(int, enum.Enum):
     """An enum for a Destiny 2 item tier."""
 
     NONE = 0
@@ -480,7 +480,7 @@ class ItemTier(enum.Enum):
 
 
 @typing.final
-class AmmoType(enum.Enum):
+class AmmoType(int, enum.Enum):
     """AN enum for Detyiny 2 ammo types."""
 
     NONE = 0

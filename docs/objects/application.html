@@ -54,18 +54,20 @@
 
 from __future__ import annotations
 
-__all__: Sequence[str] = (&#34;Application&#34;, &#34;ApplicationOwner&#34;)
+__all__: typing.Sequence[str] = (&#34;Application&#34;, &#34;ApplicationOwner&#34;)
 
-from typing import TYPE_CHECKING, Any, Dict, Optional, Sequence
+import typing
 
 import attr
 
 from aiobungie import url
 
-from ..internal import Image, Time, enums
+from ..internal import Image
+from ..internal import Time
+from ..internal import enums
 from .user import UserLike
 
-if TYPE_CHECKING:
+if typing.TYPE_CHECKING:
     from datetime import datetime
 
 
@@ -107,7 +109,7 @@ class ApplicationOwner(UserLike):
         return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;
 
     @property
-    def as_dict(self) -&gt; Dict[str, Any]:
+    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
         &#34;&#34;&#34;Returns a dict object of the application owner,
         This function is useful if you&#39;re binding to other REST apis.
         &#34;&#34;&#34;
@@ -152,7 +154,7 @@ class Application:
     name: str = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;App name&#34;&#34;&#34;
 
-    redirect_url: Optional[str] = attr.field(repr=True)
+    redirect_url: typing.Optional[str] = attr.field(repr=True)
     &#34;&#34;&#34;App redirect url&#34;&#34;&#34;
 
     created_at: datetime = attr.field(repr=True)
@@ -179,11 +181,17 @@ class Application:
         return Time.human_timedelta(self.created_at)
 
     @property
-    def as_dict(self) -&gt; Dict[str, Any]:
+    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
         &#34;&#34;&#34;Returns a dict object of the application,
         This function is useful if you&#39;re binding to other REST apis.
         &#34;&#34;&#34;
-        return attr.asdict(self)</code></pre>
+        return attr.asdict(self)
+
+    def __str__(self) -&gt; str:
+        return self.name
+
+    def __int__(self) -&gt; int:
+        return self.id</code></pre>
 </details>
 </section>
 <section>
@@ -197,7 +205,7 @@ class Application:
 <dl>
 <dt id="aiobungie.objects.application.Application"><code class="flex name class">
 <span>class <span class="ident">Application</span></span>
-<span>(</span><span>*, id: int, name: str, redirect_url: Optional[str], created_at: datetime, published_at: datetime, link: str, status: int, scope: str, owner: <a title="aiobungie.objects.application.ApplicationOwner" href="#aiobungie.objects.application.ApplicationOwner">ApplicationOwner</a>)</span>
+<span>(</span><span>*, id: int, name: str, redirect_url: typing.Optional[str], created_at: datetime, published_at: datetime, link: str, status: int, scope: str, owner: <a title="aiobungie.objects.application.ApplicationOwner" href="#aiobungie.objects.application.ApplicationOwner">ApplicationOwner</a>)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Represents a Bungie developer application.</p>
@@ -259,7 +267,7 @@ class Application:
     name: str = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;App name&#34;&#34;&#34;
 
-    redirect_url: Optional[str] = attr.field(repr=True)
+    redirect_url: typing.Optional[str] = attr.field(repr=True)
     &#34;&#34;&#34;App redirect url&#34;&#34;&#34;
 
     created_at: datetime = attr.field(repr=True)
@@ -286,11 +294,17 @@ class Application:
         return Time.human_timedelta(self.created_at)
 
     @property
-    def as_dict(self) -&gt; Dict[str, Any]:
+    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
         &#34;&#34;&#34;Returns a dict object of the application,
         This function is useful if you&#39;re binding to other REST apis.
         &#34;&#34;&#34;
-        return attr.asdict(self)</code></pre>
+        return attr.asdict(self)
+
+    def __str__(self) -&gt; str:
+        return self.name
+
+    def __int__(self) -&gt; int:
+        return self.id</code></pre>
 </details>
 <h3>Instance variables</h3>
 <dl>
@@ -303,7 +317,7 @@ This function is useful if you're binding to other REST apis.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def as_dict(self) -&gt; Dict[str, Any]:
+def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
     &#34;&#34;&#34;Returns a dict object of the application,
     This function is useful if you&#39;re binding to other REST apis.
     &#34;&#34;&#34;
@@ -423,7 +437,7 @@ class ApplicationOwner(UserLike):
         return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;
 
     @property
-    def as_dict(self) -&gt; Dict[str, Any]:
+    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
         &#34;&#34;&#34;Returns a dict object of the application owner,
         This function is useful if you&#39;re binding to other REST apis.
         &#34;&#34;&#34;
@@ -451,7 +465,7 @@ This function is useful if you're binding to other REST apis.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def as_dict(self) -&gt; Dict[str, Any]:
+def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
     &#34;&#34;&#34;Returns a dict object of the application owner,
     This function is useful if you&#39;re binding to other REST apis.
     &#34;&#34;&#34;

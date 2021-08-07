@@ -25,18 +25,20 @@
 
 from __future__ import annotations
 
-__all__: Sequence[str] = ("Application", "ApplicationOwner")
+__all__: typing.Sequence[str] = ("Application", "ApplicationOwner")
 
-from typing import TYPE_CHECKING, Any, Dict, Optional, Sequence
+import typing
 
 import attr
 
 from aiobungie import url
 
-from ..internal import Image, Time, enums
+from ..internal import Image
+from ..internal import Time
+from ..internal import enums
 from .user import UserLike
 
-if TYPE_CHECKING:
+if typing.TYPE_CHECKING:
     from datetime import datetime
 
 
@@ -78,7 +80,7 @@ class ApplicationOwner(UserLike):
         return f"{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}"
 
     @property
-    def as_dict(self) -> Dict[str, Any]:
+    def as_dict(self) -> typing.Dict[str, typing.Any]:
         """Returns a dict object of the application owner,
         This function is useful if you're binding to other REST apis.
         """
@@ -123,7 +125,7 @@ class Application:
     name: str = attr.field(repr=True, hash=False, eq=False)
     """App name"""
 
-    redirect_url: Optional[str] = attr.field(repr=True)
+    redirect_url: typing.Optional[str] = attr.field(repr=True)
     """App redirect url"""
 
     created_at: datetime = attr.field(repr=True)
@@ -150,14 +152,14 @@ class Application:
         return Time.human_timedelta(self.created_at)
 
     @property
-    def as_dict(self) -> Dict[str, Any]:
+    def as_dict(self) -> typing.Dict[str, typing.Any]:
         """Returns a dict object of the application,
         This function is useful if you're binding to other REST apis.
         """
         return attr.asdict(self)
-    
+
     def __str__(self) -> str:
         return self.name
-    
+
     def __int__(self) -> int:
         return self.id

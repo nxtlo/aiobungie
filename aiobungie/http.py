@@ -2,7 +2,7 @@
 #
 # Copyright (c) 2020 = Present nxtlo
 #
-# Permission is hereby granted, free of charge, to any person obtaining a copy
+# Permission is hereby granted, free of charge, to typing.Any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
@@ -12,10 +12,10 @@
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
 #
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF typing.Any KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR typing.Any CLAIM, DAMAGES OR OTHER
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
@@ -32,32 +32,26 @@ import typing
 __all__ = ("HTTPClient",)
 
 import http
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Coroutine,
-    Final,
-    NoReturn,
-    Optional,
-    TypeVar,
-    Union,
-    final,
-)
+import typing
 
 import aiohttp
 
-from . import error, url
+from . import error
+from . import url
 from .internal import helpers
-from .internal.enums import Class, Component, GameMode, MembershipType
+from .internal.enums import Class
+from .internal.enums import Component
+from .internal.enums import GameMode
+from .internal.enums import MembershipType
 
-if TYPE_CHECKING:
-    T = TypeVar("T")
-    Response = Coroutine[Any, Any, T]
+if typing.TYPE_CHECKING:
+    T = typing.TypeVar("T")
+    Response = typing.Coroutine[typing.Any, typing.Any, T]
 
 import asyncio
 import logging
 
-_LOG: Final[logging.Logger] = logging.getLogger("aiobungie.http")
+_LOG: typing.Final[logging.Logger] = logging.getLogger("aiobungie.http")
 
 
 async def handle_errors(
@@ -103,9 +97,9 @@ class PreLock:
 
     async def __aexit__(
         self,
-        ext_type: Optional[BaseException],
-        exc: Optional[BaseException],
-        exc_tb: Optional[types.TracebackType],
+        ext_type: typing.Optional[BaseException],
+        exc: typing.Optional[BaseException],
+        exc_tb: typing.Optional[types.TracebackType],
     ) -> None:
         self._lock.release()
 
@@ -120,7 +114,7 @@ class HTTPClient:
     def __init__(
         self,
         key: str,
-        connector: Optional[aiohttp.BaseConnector] = None,
+        connector: typing.Optional[aiohttp.BaseConnector] = None,
         *,
         loop: asyncio.AbstractEventLoop = None,
     ) -> None:
@@ -128,15 +122,15 @@ class HTTPClient:
         self.connector = connector
         self.loop = loop or asyncio.get_event_loop()
 
-    @final
+    @typing.final
     async def fetch(
         self,
         method: str,
         route: str,
         base: bool = False,
         type: str = "json",
-        **kwargs: Any,
-    ) -> Any:
+        **kwargs: typing.Any,
+    ) -> typing.Any:
 
         locker = asyncio.Lock()
         if isinstance(self.key, str) and self.key is not None:
@@ -147,7 +141,7 @@ class HTTPClient:
         if "json" in kwargs:
             kwargs["Content-Type"] = "application/json"
 
-        while 1:
+        for tries in range(5):
             async with PreLock(locker):
                 try:
                     async with aiohttp.ClientSession(
@@ -168,7 +162,7 @@ class HTTPClient:
                                     data = await response.read()
                                     return data
 
-                                _LOG.info(
+                                _LOG.debug(
                                     "{} Request success from {} with status {}".format(
                                         method,
                                         f"{url.REST_EP}/{route}",
@@ -186,10 +180,10 @@ class HTTPClient:
 
                             # We continue here.
                             if response.status in {500, 502, 504}:
-                                await asyncio.sleep(0x05)
-                                continue
+                                await self._handle_err(response, msg)
 
-                            await self._handle_err(response, msg)
+                                await asyncio.sleep(tries + 0x01 * 0x02)
+                                continue
 
                 except aiohttp.ContentTypeError:
                     return await response.text(encoding="utf-8")
@@ -198,15 +192,17 @@ class HTTPClient:
                     raise
 
     @staticmethod
-    @final
-    async def _handle_err(response: aiohttp.ClientResponse, msg: str) -> NoReturn:
+    @typing.final
+    async def _handle_err(
+        response: aiohttp.ClientResponse, msg: str
+    ) -> typing.NoReturn:
         raise await handle_errors(response, msg)
 
-    # Currently some of the funcs return Response[Any]
+    # Currently some of the funcs return Response[typing.Any]
     # And not the actual type, The reason for that Character
     # And Activity objects are much complicated, so that'l
     # take Some time, but for Manifest and static search will
-    # not return any types. So they will be Any.
+    # not return typing.Any types. So they will be typing.Any.
 
     def fetch_user(self, name: str) -> Response[helpers.JsonList]:
         return self.fetch("GET", f"User/SearchUsers/?q={name}")
@@ -214,10 +210,10 @@ class HTTPClient:
     def fetch_user_from_id(self, id: int) -> Response[helpers.JsonDict]:
         return self.fetch("GET", f"User/GetBungieNetUserById/{id}/")
 
-    def fetch_manifest(self) -> Response[Any]:
+    def fetch_manifest(self) -> Response[typing.Any]:
         return self.fetch("GET", "Destiny2/Manifest/")
 
-    def static_search(self, path: str) -> Response[Any]:
+    def static_search(self, path: str) -> Response[typing.Any]:
         return self.fetch("GET", path)
 
     def fetch_player(
@@ -249,9 +245,9 @@ class HTTPClient:
         mode: GameMode,
         memtype: MembershipType,
         *,
-        page: Optional[int] = 1,
-        limit: Optional[int] = 1,
-    ) -> Response[Any]:
+        page: typing.Optional[int] = 1,
+        limit: typing.Optional[int] = 1,
+    ) -> Response[typing.Any]:
         return self.fetch(
             "GET",
             f"Destiny2/{int(memtype)}/Account/ \
@@ -260,7 +256,7 @@ class HTTPClient:
             &mode={int(mode)}",
         )
 
-    def fetch_vendor_sales(self) -> Response[Any]:
+    def fetch_vendor_sales(self) -> Response[typing.Any]:
         return self.fetch(
             "GET", f"Destiny2/Vendors/?components={int(Component.VENDOR_SALES)}"
         )
@@ -275,3 +271,20 @@ class HTTPClient:
 
     def fetch_entity(self, type: str, hash: int) -> Response[helpers.JsonDict]:
         return self.fetch("GET", route=f"Destiny2/Manifest/{type}/{hash}")
+
+    def fetch_inventory_item(self, hash: int) -> Response[helpers.JsonDict]:
+        return self.fetch_entity("DestinyInventoryItemDefinition", hash)
+
+    def fetch_clan_members(
+        self,
+        id: int,
+        type: MembershipType = MembershipType.NONE,
+        name: typing.Optional[str] = None,
+        /,
+        *,
+        page: int = 1,
+    ) -> Response[helpers.JsonDict]:
+        return self.fetch(
+            "GET",
+            f"/GroupV2/{id}/Members/?memberType={int(type)}&nameSearch={name if name else ''}&currentpage={page}",
+        )

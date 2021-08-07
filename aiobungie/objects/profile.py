@@ -24,7 +24,7 @@
 
 from __future__ import annotations
 
-__all__: typing.Sequence[str] = ("Profile",)
+__all__: typing.Sequence[str] = ("Profile", "ProfileComponentImpl")
 
 import abc
 import datetime
@@ -33,7 +33,9 @@ import typing
 
 import attr
 
-from aiobungie.internal import Time, enums, impl
+from aiobungie.internal import Time
+from aiobungie.internal import enums
+from aiobungie.internal import impl
 
 from .character import Character
 

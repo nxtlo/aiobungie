@@ -53,7 +53,7 @@
 
 from __future__ import annotations
 
-__all__: typing.Sequence[str] = (&#34;Profile&#34;,)
+__all__: typing.Sequence[str] = (&#34;Profile&#34;, &#34;ProfileComponentImpl&#34;)
 
 import abc
 import datetime
@@ -62,7 +62,9 @@ import typing
 
 import attr
 
-from aiobungie.internal import Time, enums, impl
+from aiobungie.internal import Time
+from aiobungie.internal import enums
+from aiobungie.internal import impl
 
 from .character import Character
 
@@ -391,14 +393,18 @@ class Profile(ProfileComponentImpl):
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li>aiobungie.objects.profile.ProfileComponentImpl</li>
+<li><a title="aiobungie.objects.profile.ProfileComponentImpl" href="#aiobungie.objects.profile.ProfileComponentImpl">ProfileComponentImpl</a></li>
 <li>abc.ABC</li>
 </ul>
 <h3>Instance variables</h3>
 <dl>
 <dt id="aiobungie.objects.profile.Profile.app"><code class="name">var <span class="ident">app</span> : <a title="aiobungie.internal.impl.RESTful" href="../internal/impl.html#aiobungie.internal.impl.RESTful">RESTful</a></code></dt>
 <dd>
-<div class="desc"><p>A client that we may to make rest requests.</p></div>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="aiobungie.objects.profile.ProfileComponentImpl" href="#aiobungie.objects.profile.ProfileComponentImpl">ProfileComponentImpl</a></code>.<code><a title="aiobungie.objects.profile.ProfileComponentImpl.app" href="#aiobungie.objects.profile.ProfileComponentImpl.app">app</a></code>
+</p>
+<div class="desc inherited"><p>A client that we may to make rest requests.</p></div>
 </dd>
 <dt id="aiobungie.objects.profile.Profile.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
 <dd>
@@ -418,7 +424,11 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
 </dd>
 <dt id="aiobungie.objects.profile.Profile.character_ids"><code class="name">var <span class="ident">character_ids</span> : List[int]</code></dt>
 <dd>
-<div class="desc"><p>A list of the profile's character ids.</p></div>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="aiobungie.objects.profile.ProfileComponentImpl" href="#aiobungie.objects.profile.ProfileComponentImpl">ProfileComponentImpl</a></code>.<code><a title="aiobungie.objects.profile.ProfileComponentImpl.character_ids" href="#aiobungie.objects.profile.ProfileComponentImpl.character_ids">character_ids</a></code>
+</p>
+<div class="desc inherited"><p>A list of the profile's character ids.</p></div>
 </dd>
 <dt id="aiobungie.objects.profile.Profile.human_timedelta"><code class="name">var <span class="ident">human_timedelta</span> : str</code></dt>
 <dd>
@@ -439,7 +449,11 @@ def human_timedelta(self) -&gt; str:
 </dd>
 <dt id="aiobungie.objects.profile.Profile.is_public"><code class="name">var <span class="ident">is_public</span> : bool</code></dt>
 <dd>
-<div class="desc"><p>Profile's privacy status.</p></div>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="aiobungie.objects.profile.ProfileComponentImpl" href="#aiobungie.objects.profile.ProfileComponentImpl">ProfileComponentImpl</a></code>.<code><a title="aiobungie.objects.profile.ProfileComponentImpl.is_public" href="#aiobungie.objects.profile.ProfileComponentImpl.is_public">is_public</a></code>
+</p>
+<div class="desc inherited"><p>Profile's privacy status.</p></div>
 </dd>
 <dt id="aiobungie.objects.profile.Profile.last_played"><code class="name">var <span class="ident">last_played</span> : datetime.datetime</code></dt>
 <dd>
@@ -456,6 +470,369 @@ def human_timedelta(self) -&gt; str:
 <dt id="aiobungie.objects.profile.Profile.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="../internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
 <dd>
 <div class="desc"><p>Profile's type.</p></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="aiobungie.objects.profile.Profile.hunter"><code class="name flex">
+<span>async def <span class="ident">hunter</span></span>(<span>self) ‑> <a title="aiobungie.objects.character.Character" href="character.html#aiobungie.objects.character.Character">Character</a></span>
+</code></dt>
+<dd>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="aiobungie.objects.profile.ProfileComponentImpl" href="#aiobungie.objects.profile.ProfileComponentImpl">ProfileComponentImpl</a></code>.<code><a title="aiobungie.objects.profile.ProfileComponentImpl.hunter" href="#aiobungie.objects.profile.ProfileComponentImpl.hunter">hunter</a></code>
+</p>
+<div class="desc inherited"><p>Returns the hunter character of the profile owner.</p></div>
+</dd>
+<dt id="aiobungie.objects.profile.Profile.titan"><code class="name flex">
+<span>async def <span class="ident">titan</span></span>(<span>self) ‑> <a title="aiobungie.objects.character.Character" href="character.html#aiobungie.objects.character.Character">Character</a></span>
+</code></dt>
+<dd>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="aiobungie.objects.profile.ProfileComponentImpl" href="#aiobungie.objects.profile.ProfileComponentImpl">ProfileComponentImpl</a></code>.<code><a title="aiobungie.objects.profile.ProfileComponentImpl.titan" href="#aiobungie.objects.profile.ProfileComponentImpl.titan">titan</a></code>
+</p>
+<div class="desc inherited"><p>Returns the titan character of the profile owner.</p></div>
+</dd>
+<dt id="aiobungie.objects.profile.Profile.warlock"><code class="name flex">
+<span>async def <span class="ident">warlock</span></span>(<span>self) ‑> <a title="aiobungie.objects.character.Character" href="character.html#aiobungie.objects.character.Character">Character</a></span>
+</code></dt>
+<dd>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="aiobungie.objects.profile.ProfileComponentImpl" href="#aiobungie.objects.profile.ProfileComponentImpl">ProfileComponentImpl</a></code>.<code><a title="aiobungie.objects.profile.ProfileComponentImpl.warlock" href="#aiobungie.objects.profile.ProfileComponentImpl.warlock">warlock</a></code>
+</p>
+<div class="desc inherited"><p>Returns the Warlock character of the profile owner.</p></div>
+</dd>
+</dl>
+</dd>
+<dt id="aiobungie.objects.profile.ProfileComponentImpl"><code class="flex name class">
+<span>class <span class="ident">ProfileComponentImpl</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>A partial interface that will/include all bungie profile components.</p>
+<p>Some fields may or may not be available here.</p>
+<p>Method generated by attrs for class ProfileComponentImpl.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@attr.s(kw_only=True, hash=True, weakref_slot=False, slots=True, init=True, eq=True)
+class ProfileComponentImpl(abc.ABC):
+    &#34;&#34;&#34;
+    A partial interface that will/include all bungie profile components.
+
+    Some fields may or may not be available here.
+    &#34;&#34;&#34;
+
+    @property
+    @abc.abstractmethod
+    def app(self) -&gt; impl.RESTful:
+        &#34;&#34;&#34;A client that we may to make rest requests.&#34;&#34;&#34;
+
+    @property
+    @abc.abstractmethod
+    def name(self) -&gt; str:
+        &#34;&#34;&#34;Profile&#39;s name&#34;&#34;&#34;
+
+    @property
+    @abc.abstractmethod
+    def type(self) -&gt; enums.MembershipType:
+        &#34;&#34;&#34;Profile&#39;s membership type.&#34;&#34;&#34;
+
+    @property
+    @abc.abstractmethod
+    def last_played(self) -&gt; datetime.datetime:
+        &#34;&#34;&#34;The profile user&#39;s last played date time.&#34;&#34;&#34;
+
+    @property
+    @abc.abstractmethod
+    def is_public(self) -&gt; bool:
+        &#34;&#34;&#34;Profile&#39;s privacy status.&#34;&#34;&#34;
+
+    @property
+    @abc.abstractmethod
+    def character_ids(self) -&gt; typing.List[int]:
+        &#34;&#34;&#34;A list of the profile&#39;s character ids.&#34;&#34;&#34;
+
+    @property
+    @abc.abstractmethod
+    def id(self) -&gt; int:
+        &#34;&#34;&#34;The profile&#39;s id.&#34;&#34;&#34;
+
+    async def titan(self) -&gt; Character:
+        &#34;&#34;&#34;Returns the titan character of the profile owner.&#34;&#34;&#34;
+        # We&#39;re ignoring the types for the character since
+        char: Character = await self.app.rest.fetch_character(
+            int(self.id), self.type, enums.Class.TITAN
+        )
+        return Character(
+            id=char.id,
+            class_type=char.class_type,
+            emblem=char.emblem,
+            emblem_hash=char.emblem_hash,
+            emblem_icon=char.emblem_icon,
+            light=char.light,
+            last_played=char.last_played,
+            level=char.level,
+            member_id=char.member_id,
+            member_type=char.member_type,
+            gender=char.gender,
+            race=char.race,
+            total_played_time=char.total_played_time,
+            title_hash=char.title_hash,
+            stats=char.stats,
+        )
+
+    async def hunter(self) -&gt; Character:
+        &#34;&#34;&#34;Returns the hunter character of the profile owner.&#34;&#34;&#34;
+        char: Character = await self.app.rest.fetch_character(
+            self.id, self.type, enums.Class.HUNTER
+        )
+        return Character(
+            id=char.id,
+            class_type=char.class_type,
+            emblem=char.emblem,
+            emblem_hash=char.emblem_hash,
+            emblem_icon=char.emblem_icon,
+            light=char.light,
+            last_played=char.last_played,
+            level=char.level,
+            member_id=char.member_id,
+            member_type=char.member_type,
+            gender=char.gender,
+            race=char.race,
+            total_played_time=char.total_played_time,
+            title_hash=char.title_hash,
+            stats=char.stats,
+        )
+
+    async def warlock(self) -&gt; Character:
+        &#34;&#34;&#34;Returns the Warlock character of the profile owner.&#34;&#34;&#34;
+        char: Character = await self.app.rest.fetch_character(
+            self.id, self.type, enums.Class.WARLOCK
+        )
+        return Character(
+            id=char.id,
+            class_type=char.class_type,
+            emblem=char.emblem,
+            emblem_hash=char.emblem_hash,
+            emblem_icon=char.emblem_icon,
+            light=char.light,
+            last_played=char.last_played,
+            level=char.level,
+            member_id=char.member_id,
+            member_type=char.member_type,
+            gender=char.gender,
+            race=char.race,
+            total_played_time=char.total_played_time,
+            title_hash=char.title_hash,
+            stats=char.stats,
+        )</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>abc.ABC</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="aiobungie.objects.profile.Profile" href="#aiobungie.objects.profile.Profile">Profile</a></li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="aiobungie.objects.profile.ProfileComponentImpl.app"><code class="name">var <span class="ident">app</span> : <a title="aiobungie.internal.impl.RESTful" href="../internal/impl.html#aiobungie.internal.impl.RESTful">RESTful</a></code></dt>
+<dd>
+<div class="desc"><p>A client that we may to make rest requests.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+@abc.abstractmethod
+def app(self) -&gt; impl.RESTful:
+    &#34;&#34;&#34;A client that we may to make rest requests.&#34;&#34;&#34;</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.objects.profile.ProfileComponentImpl.character_ids"><code class="name">var <span class="ident">character_ids</span> : List[int]</code></dt>
+<dd>
+<div class="desc"><p>A list of the profile's character ids.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+@abc.abstractmethod
+def character_ids(self) -&gt; typing.List[int]:
+    &#34;&#34;&#34;A list of the profile&#39;s character ids.&#34;&#34;&#34;</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.objects.profile.ProfileComponentImpl.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
+<dd>
+<div class="desc"><p>The profile's id.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+@abc.abstractmethod
+def id(self) -&gt; int:
+    &#34;&#34;&#34;The profile&#39;s id.&#34;&#34;&#34;</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.objects.profile.ProfileComponentImpl.is_public"><code class="name">var <span class="ident">is_public</span> : bool</code></dt>
+<dd>
+<div class="desc"><p>Profile's privacy status.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+@abc.abstractmethod
+def is_public(self) -&gt; bool:
+    &#34;&#34;&#34;Profile&#39;s privacy status.&#34;&#34;&#34;</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.objects.profile.ProfileComponentImpl.last_played"><code class="name">var <span class="ident">last_played</span> : datetime.datetime</code></dt>
+<dd>
+<div class="desc"><p>The profile user's last played date time.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+@abc.abstractmethod
+def last_played(self) -&gt; datetime.datetime:
+    &#34;&#34;&#34;The profile user&#39;s last played date time.&#34;&#34;&#34;</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.objects.profile.ProfileComponentImpl.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
+<dd>
+<div class="desc"><p>Profile's name</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+@abc.abstractmethod
+def name(self) -&gt; str:
+    &#34;&#34;&#34;Profile&#39;s name&#34;&#34;&#34;</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.objects.profile.ProfileComponentImpl.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="../internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
+<dd>
+<div class="desc"><p>Profile's membership type.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+@abc.abstractmethod
+def type(self) -&gt; enums.MembershipType:
+    &#34;&#34;&#34;Profile&#39;s membership type.&#34;&#34;&#34;</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="aiobungie.objects.profile.ProfileComponentImpl.hunter"><code class="name flex">
+<span>async def <span class="ident">hunter</span></span>(<span>self) ‑> <a title="aiobungie.objects.character.Character" href="character.html#aiobungie.objects.character.Character">Character</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the hunter character of the profile owner.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def hunter(self) -&gt; Character:
+    &#34;&#34;&#34;Returns the hunter character of the profile owner.&#34;&#34;&#34;
+    char: Character = await self.app.rest.fetch_character(
+        self.id, self.type, enums.Class.HUNTER
+    )
+    return Character(
+        id=char.id,
+        class_type=char.class_type,
+        emblem=char.emblem,
+        emblem_hash=char.emblem_hash,
+        emblem_icon=char.emblem_icon,
+        light=char.light,
+        last_played=char.last_played,
+        level=char.level,
+        member_id=char.member_id,
+        member_type=char.member_type,
+        gender=char.gender,
+        race=char.race,
+        total_played_time=char.total_played_time,
+        title_hash=char.title_hash,
+        stats=char.stats,
+    )</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.objects.profile.ProfileComponentImpl.titan"><code class="name flex">
+<span>async def <span class="ident">titan</span></span>(<span>self) ‑> <a title="aiobungie.objects.character.Character" href="character.html#aiobungie.objects.character.Character">Character</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the titan character of the profile owner.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def titan(self) -&gt; Character:
+    &#34;&#34;&#34;Returns the titan character of the profile owner.&#34;&#34;&#34;
+    # We&#39;re ignoring the types for the character since
+    char: Character = await self.app.rest.fetch_character(
+        int(self.id), self.type, enums.Class.TITAN
+    )
+    return Character(
+        id=char.id,
+        class_type=char.class_type,
+        emblem=char.emblem,
+        emblem_hash=char.emblem_hash,
+        emblem_icon=char.emblem_icon,
+        light=char.light,
+        last_played=char.last_played,
+        level=char.level,
+        member_id=char.member_id,
+        member_type=char.member_type,
+        gender=char.gender,
+        race=char.race,
+        total_played_time=char.total_played_time,
+        title_hash=char.title_hash,
+        stats=char.stats,
+    )</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.objects.profile.ProfileComponentImpl.warlock"><code class="name flex">
+<span>async def <span class="ident">warlock</span></span>(<span>self) ‑> <a title="aiobungie.objects.character.Character" href="character.html#aiobungie.objects.character.Character">Character</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the Warlock character of the profile owner.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def warlock(self) -&gt; Character:
+    &#34;&#34;&#34;Returns the Warlock character of the profile owner.&#34;&#34;&#34;
+    char: Character = await self.app.rest.fetch_character(
+        self.id, self.type, enums.Class.WARLOCK
+    )
+    return Character(
+        id=char.id,
+        class_type=char.class_type,
+        emblem=char.emblem,
+        emblem_hash=char.emblem_hash,
+        emblem_icon=char.emblem_icon,
+        light=char.light,
+        last_played=char.last_played,
+        level=char.level,
+        member_id=char.member_id,
+        member_type=char.member_type,
+        gender=char.gender,
+        race=char.race,
+        total_played_time=char.total_played_time,
+        title_hash=char.title_hash,
+        stats=char.stats,
+    )</code></pre>
+</details>
 </dd>
 </dl>
 </dd>
@@ -528,12 +905,30 @@ setTimeout(() => input.focus(), 100);
 <li><code><a title="aiobungie.objects.profile.Profile.as_dict" href="#aiobungie.objects.profile.Profile.as_dict">as_dict</a></code></li>
 <li><code><a title="aiobungie.objects.profile.Profile.character_ids" href="#aiobungie.objects.profile.Profile.character_ids">character_ids</a></code></li>
 <li><code><a title="aiobungie.objects.profile.Profile.human_timedelta" href="#aiobungie.objects.profile.Profile.human_timedelta">human_timedelta</a></code></li>
+<li><code><a title="aiobungie.objects.profile.Profile.hunter" href="#aiobungie.objects.profile.Profile.hunter">hunter</a></code></li>
 <li><code><a title="aiobungie.objects.profile.Profile.id" href="#aiobungie.objects.profile.Profile.id">id</a></code></li>
 <li><code><a title="aiobungie.objects.profile.Profile.is_public" href="#aiobungie.objects.profile.Profile.is_public">is_public</a></code></li>
 <li><code><a title="aiobungie.objects.profile.Profile.last_played" href="#aiobungie.objects.profile.Profile.last_played">last_played</a></code></li>
 <li><code><a title="aiobungie.objects.profile.Profile.name" href="#aiobungie.objects.profile.Profile.name">name</a></code></li>
 <li><code><a title="aiobungie.objects.profile.Profile.power_cap" href="#aiobungie.objects.profile.Profile.power_cap">power_cap</a></code></li>
+<li><code><a title="aiobungie.objects.profile.Profile.titan" href="#aiobungie.objects.profile.Profile.titan">titan</a></code></li>
 <li><code><a title="aiobungie.objects.profile.Profile.type" href="#aiobungie.objects.profile.Profile.type">type</a></code></li>
+<li><code><a title="aiobungie.objects.profile.Profile.warlock" href="#aiobungie.objects.profile.Profile.warlock">warlock</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="aiobungie.objects.profile.ProfileComponentImpl" href="#aiobungie.objects.profile.ProfileComponentImpl">ProfileComponentImpl</a></code></h4>
+<ul class="two-column">
+<li><code><a title="aiobungie.objects.profile.ProfileComponentImpl.app" href="#aiobungie.objects.profile.ProfileComponentImpl.app">app</a></code></li>
+<li><code><a title="aiobungie.objects.profile.ProfileComponentImpl.character_ids" href="#aiobungie.objects.profile.ProfileComponentImpl.character_ids">character_ids</a></code></li>
+<li><code><a title="aiobungie.objects.profile.ProfileComponentImpl.hunter" href="#aiobungie.objects.profile.ProfileComponentImpl.hunter">hunter</a></code></li>
+<li><code><a title="aiobungie.objects.profile.ProfileComponentImpl.id" href="#aiobungie.objects.profile.ProfileComponentImpl.id">id</a></code></li>
+<li><code><a title="aiobungie.objects.profile.ProfileComponentImpl.is_public" href="#aiobungie.objects.profile.ProfileComponentImpl.is_public">is_public</a></code></li>
+<li><code><a title="aiobungie.objects.profile.ProfileComponentImpl.last_played" href="#aiobungie.objects.profile.ProfileComponentImpl.last_played">last_played</a></code></li>
+<li><code><a title="aiobungie.objects.profile.ProfileComponentImpl.name" href="#aiobungie.objects.profile.ProfileComponentImpl.name">name</a></code></li>
+<li><code><a title="aiobungie.objects.profile.ProfileComponentImpl.titan" href="#aiobungie.objects.profile.ProfileComponentImpl.titan">titan</a></code></li>
+<li><code><a title="aiobungie.objects.profile.ProfileComponentImpl.type" href="#aiobungie.objects.profile.ProfileComponentImpl.type">type</a></code></li>
+<li><code><a title="aiobungie.objects.profile.ProfileComponentImpl.warlock" href="#aiobungie.objects.profile.ProfileComponentImpl.warlock">warlock</a></code></li>
 </ul>
 </li>
 </ul>

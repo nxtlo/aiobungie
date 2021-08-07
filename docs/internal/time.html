@@ -54,10 +54,11 @@
 
 from __future__ import annotations
 
-__all__ = (&#34;Time&#34;,)
+__all__: typing.Sequence[str] = [&#34;Time&#34;]
 
 import calendar
 import math
+import typing
 from datetime import datetime
 
 from dateutil.parser import parse

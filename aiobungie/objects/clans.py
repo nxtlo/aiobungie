@@ -25,24 +25,86 @@
 
 from __future__ import annotations
 
-__all__: Sequence[str] = ["Clan", "ClanOwner"]
+__all__: typing.List[str] = ["Clan", "ClanOwner", "ClanMember"]
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence
+
+import typing
 
 import attr
 
 from aiobungie import url
+from aiobungie.internal import impl
 
-from ..internal import Image, Time
+from ..internal import Image
+from ..internal import Time
 from ..internal.enums import MembershipType
 from .user import UserLike
 
-if TYPE_CHECKING:
+if typing.TYPE_CHECKING:
+    import types
     from datetime import datetime
 
 
-class ClanMembers:
-    __slots__: Sequence[str] = ()
+@attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
+class ClanMember(UserLike):
+    """Represents a Destiny 2 clan member."""
+
+    id: int = attr.field(repr=True, hash=True)
+    """Clan member's id"""
+
+    name: str = attr.field(repr=True)
+    """Clan member's name"""
+
+    type: MembershipType = attr.field(repr=True)
+    """Clan member's membership type."""
+
+    icon: Image = attr.field(repr=False)
+    """Clan member's icon"""
+
+    is_public: bool = attr.field(repr=True)
+    """`builtins.True` if the clan member is public."""
+
+    group_id: int = attr.field(repr=True)
+    """The member's group id."""
+
+    is_online: bool = attr.field(repr=True)
+    """True if the clan member is online or not."""
+
+    last_online: datetime = attr.field(repr=False)
+    """The date of the clan member's last online in UTC time zone."""
+
+    joined_at: datetime = attr.field(repr=False)
+    """The clan member's join date in UTC time zone."""
+
+    @property
+    def link(self) -> typing.Optional[str]:
+        """Clan member's profile link."""
+        return f"{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}"
+
+    @property
+    def as_dict(self) -> typing.Dict[str, typing.Any]:
+        return attr.asdict(self)
+
+    # These are not implemented yet
+    # Since they requires OAuth2.
+
+    async def ban(self) -> None:
+        """Bans a clan member from the clan.
+        This requires OAuth2: AdminGroups scope.
+        """
+        raise NotImplementedError
+
+    async def unban(self) -> None:
+        """Unbans a clan member clan.
+        This requires OAuth2: AdminGroups scope.
+        """
+        raise NotImplementedError
+
+    async def kick(self) -> None:
+        """Kicks a clan member from the clan.
+        The requires OAuth2: AdminsGroup scope.
+        """
+        raise NotImplementedError
 
 
 @attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
@@ -80,13 +142,15 @@ class ClanOwner(UserLike):
     name: str = attr.field(repr=True)
     """The user name."""
 
-    is_public: Optional[bool] = attr.field(hash=False, repr=True, eq=False)
+    is_public: typing.Optional[bool] = attr.field(hash=False, repr=True, eq=False)
     """Returns if the user profile is public or no."""
 
     type: MembershipType = attr.field(hash=False, repr=True, eq=True)
     """Returns the membership type of the user."""
 
-    types: Optional[List[int]] = attr.field(hash=True, repr=False, eq=False)
+    types: typing.Optional[typing.List[int]] = attr.field(
+        hash=True, repr=False, eq=False
+    )
     """Returns a list of the member ship's membership types."""
 
     last_online: datetime = attr.field(repr=False)
@@ -107,23 +171,23 @@ class ClanOwner(UserLike):
         return Time.human_timedelta(self.last_online)
 
     @property
-    def link(self) -> Optional[str]:
+    def link(self) -> typing.Optional[str]:
         """Returns the user's profile link."""
         return f"{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}"
 
     @property
-    def as_dict(self) -> Dict[str, Any]:
+    def as_dict(self) -> typing.Dict[str, typing.Any]:
         """Returns a dict object of the clan owner,
         This function is useful if you're binding to other REST apis.
         """
         return attr.asdict(self)
-    
-    
+
     def __int__(self) -> int:
         return self.id
 
     def __str__(self) -> str:
         return self.name
+
 
 @attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
 class Clan:
@@ -154,6 +218,9 @@ class Clan:
         See `aiobungie.objects.ClanOwner` for info.
     """
 
+    app: impl.RESTful = attr.field(repr=False, eq=False, hash=False)
+    """A client app the we may use for external requests."""
+
     id: int = attr.field(hash=True, repr=True, eq=True)
     """The clan id"""
 
@@ -181,11 +248,75 @@ class Clan:
     about: str = attr.field(repr=True, eq=False)
     """Clan's about title."""
 
-    tags: List[str] = attr.field(repr=False)
+    tags: typing.List[str] = attr.field(repr=False)
     """A list of the clan's tags."""
 
     owner: ClanOwner = attr.field(repr=True)
     """The clan owner."""
+
+    async def fetch_member(
+        self, name: str, type: MembershipType = MembershipType.NONE, /
+    ) -> ClanMember:
+        """Fetch a specific clan member by their name and membership type.
+
+        if the memberhship type is None we will
+        try to return the first member matches the name.
+        its also better to leave this parameter on None
+        since usually only one player has this name.
+
+        Parameters
+        ----------
+        name: `builtins.str`
+            The clan member name.
+        type: `aiobungie.MembershipType`
+            The member's membership type. Default is 0
+            which returns any member matches the name.
+
+        Returns
+        --------
+        `ClanMember`
+        """
+        return await self.app.rest.fetch_clan_member(self.id, name, type)
+
+    async def fetch_members(
+        self, type: MembershipType = MembershipType.NONE, /
+    ) -> typing.Dict[str, int]:
+        """Fetch the members of the clan.
+
+        if the memberhship type is None it will
+        All membership types.
+
+        Parameters
+        ----------
+        type: `aiobungie.MembershipType`
+            Filters the membership types to return.
+            Default is 0 which returns all membership types.
+
+        Returns
+        --------
+        `typing.Dict[str, int]`
+            A dict that holds a key of the clan members's name
+            and a value of the clan members's id.
+        """
+        return await self.app.rest.fetch_clan_members(self.id, type)
+
+    async def fetch_banned_members(
+        self, page: int = 1, /
+    ) -> typing.Sequence[ClanMember]:
+        """Fetch members who has been banned from the clan.
+
+        Parameters
+        ----------
+        page: `buildint.int`
+            The page number to return.
+
+        Returns
+        --------
+        `typing.Sequence[aiobungie.objects.clans.ClanMember]`
+            A sequence of clan members.
+        name
+        """
+        raise NotImplementedError
 
     @property
     def human_timedelta(self) -> str:
@@ -197,12 +328,12 @@ class Clan:
         return f"{url.BASE}/en/ClanV2/Index?groupId={self.id}"
 
     @property
-    def as_dict(self) -> Dict[str, Any]:
+    def as_dict(self) -> typing.Dict[str, typing.Any]:
         """Returns an instance of the object as a dict"""
         return attr.asdict(self)
-    
+
     def __int__(self) -> int:
         return self.id
 
     def __str__(self) -> str:
-        return self.name 
+        return self.name

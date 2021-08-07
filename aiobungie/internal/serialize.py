@@ -1,5 +1,4 @@
 # MIT License
-# mypy: ignore-errors
 # Copyright (c) 2020 - Present nxtlo
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,17 +25,28 @@ from __future__ import annotations
 
 __all__: typing.Sequence[str] = ["Deserialize"]
 
+import datetime
+import functools
+import itertools
 import logging
 import typing
 
-# Utils
 from aiobungie import error
-from aiobungie.internal import Image, Time, enums, impl
-from aiobungie.internal.helpers import JsonDict, JsonList, Undefined, Unknown
-
-# Objects
+from aiobungie.internal import Image
+from aiobungie.internal import Time
+from aiobungie.internal import enums
+from aiobungie.internal import impl
+from aiobungie.internal.helpers import JsonDict
+from aiobungie.internal.helpers import JsonList
+from aiobungie.internal.helpers import Undefined
+from aiobungie.internal.helpers import Unknown
 from aiobungie.objects import application as app
-from aiobungie.objects import character, clans, entity, player, profile, user
+from aiobungie.objects import character
+from aiobungie.objects import clans
+from aiobungie.objects import entity
+from aiobungie.objects import player
+from aiobungie.objects import profile
+from aiobungie.objects import user
 
 _LOG: typing.Final[logging.Logger] = logging.getLogger(__name__)
 
@@ -137,6 +147,7 @@ class Deserialize:
         tags = data["detail"]["tags"]
 
         return clans.Clan(
+            app=self._rest,
             id=id,
             name=name,
             created_at=Time.clean_date(created_at),
@@ -149,6 +160,65 @@ class Deserialize:
             tags=tags,
             owner=self.deseialize_clan_owner(data["founder"]),
         )
+
+    def deserialize_clan_member(
+        self, data: JsonDict, member: str = None, /
+    ) -> clans.ClanMember:
+
+        if (payload := data["results"]) is not None:
+            attrs = payload[0]
+            last_online: datetime.datetime = Time.from_timestamp(
+                int(attrs["lastOnlineStatusChange"])
+            )
+            is_online: bool = attrs["isOnline"]
+            group_id: int = attrs["groupId"]
+            joined_at: datetime.datetime = Time.clean_date(str(attrs["joinDate"]))
+
+            try:
+                payload = payload[0]["destinyUserInfo"]
+            except KeyError:
+                raise error.NotFound("The clan has no members.")
+
+            id: int = payload["membershipId"]
+            name: str = payload["displayName"]
+            type: enums.MembershipType = payload["membershipType"]
+            is_public: bool = payload["isPublic"]
+            icon: Image = Image(str(payload["iconPath"]))
+
+        return clans.ClanMember(
+            group_id=int(group_id),
+            is_online=is_online,
+            last_online=last_online,
+            id=int(id),
+            joined_at=joined_at,
+            name=name,
+            type=enums.MembershipType(type),
+            is_public=is_public,
+            icon=icon,
+        )
+
+    def deserialize_clan_members(self, data: JsonDict, /) -> typing.Dict[str, int]:
+
+        if (payload := data["results"]) is not None:
+
+            # We return the clan members
+            # if no specific member was selected.
+            try:
+                _member = [m["destinyUserInfo"] for m in payload]
+            except KeyError:
+                pass
+
+            # we return a dict of the clan members
+            # Key: id, Value: Name
+            members = {
+                name["displayName"]: int(id["membershipId"])
+                for name in _member
+                for id in _member
+            }
+            if members is None:
+                return {}
+
+        return members
 
     def deserialize_app_owner(self, payload: JsonDict) -> app.ApplicationOwner:
         return app.ApplicationOwner(
@@ -236,86 +306,73 @@ class Deserialize:
             app=self._rest,
         )
 
-    def deserialize_entity(self, payload: JsonDict, /) -> entity.Entity:
+    def deserialize_inventory_entity(
+        self, payload: JsonDict, /
+    ) -> entity.InventoryEntity:
         try:
             # All Bungie entities has a display propetie
             # if we don't find it means the entitiy was not found.
             props: JsonDict = payload["displayProperties"]
         except KeyError:
-            raise error.NotFound(
-                "The entity hash or the definition type is invalid"
-            ) from None
+            raise error.NotFound("The entity inventory item hash is invalid") from None
 
         # Some entities have an inventory which
         # Includes its hash types.
         # Most entites has this
         # and for some it doesn't exists
-        inventory: JsonDict = {}
 
-        if (raw_inventory := payload.get("inventory")) is not None:
+        if (raw_inventory := payload.get("inventory", {})) is not None:
             inventory: JsonDict = raw_inventory
 
-        # Entity tier type. Most entities have tier
+        # Entity tier type. Most entities have a tier
         # and some doesn't exists so we have to check.
 
-        bucket_type: typing.Optional[int] = None
-        tier: typing.Optional[enums.ItemTier] = None
-        tier_name: typing.Optional[str] = None
-
-        if (raw_bucket := inventory.get("bucketTypeHash")) is not None:
+        if (raw_bucket := inventory.get("bucketTypeHash", None)) is not None:
             bucket_type: int = raw_bucket
 
-        if (raw_tier := inventory.get("tierTypeHash")) is not None:
+        if (raw_tier := inventory.get("tierTypeHash", None)) is not None:
             tier: enums.ItemTier = enums.ItemTier(raw_tier)
 
-        if (raw_tier_name := inventory.get("tierTypeName")) is not None:
+        if (raw_tier_name := inventory.get("tierTypeName", None)) is not None:
             tier_name: str = raw_tier_name
 
-        if (name := props.get("name")) == Unknown:
+        if (name := props.get("name", Unknown)) == Unknown:
             name = Undefined
 
         if (type_name := payload.get("itemTypeDisplayName")) == Unknown:
             type_name = Undefined
 
-        if (description := props.get("description")) == Unknown:
+        if (description := props.get("description", Unknown)) == Unknown:
             description = Undefined
 
         if (about := payload.get("flavorText")) == Unknown:
             about = Undefined
 
-        icon: typing.Optional[Image] = None
-        if (raw_icon := props.get("icon")) is not None:
+        if (raw_icon := props.get("icon", None)) is not None:
             icon: Image = Image(str(raw_icon))
 
-        water_mark: typing.Optional[Image] = None
-        if (raw_watermark := payload.get("iconWatermark")) is not None:
+        if (raw_watermark := payload.get("iconWatermark", None)) is not None:
             water_mark: Image = Image(str(raw_watermark))
 
-        banner: typing.Optional[Image] = None
-        if (screenshot := payload.get("screenshot")) is not None:
+        if (screenshot := payload.get("screenshot", None)) is not None:
             banner: Image = Image(str(screenshot))
 
-        damage: typing.Optional[enums.DamageType] = None
-        if (damage_type := payload.get("defaultDamageTypeHash")) is not None:
+        if (damage_type := payload.get("defaultDamageTypeHash", None)) is not None:
             damage: enums.DamageType = enums.DamageType(damage_type)
 
-        summary_hash: typing.Optional[int] = None
-        if (raw_summary_hash := payload.get("summaryItemHash")) is not None:
+        if (raw_summary_hash := payload.get("summaryItemHash", None)) is not None:
             summary_hash: int = int(raw_summary_hash)
 
-        stats: typing.Optional[JsonDict] = {}
-        if (raw_stats := payload.get("stats")) is not None:
+        if (raw_stats := payload.get("stats", {})) is not None:
             stats: JsonDict = raw_stats
 
-        block: typing.Optional[enums.AmmoType] = None
-        if (ammo := payload.get("equippingBlock")) is not None:
+        if (ammo := payload.get("equippingBlock", None)) is not None:
             block: enums.AmmoType = enums.AmmoType(ammo["ammoType"])
 
-        item_class: typing.Optional[enums.Class] = None
-        if (raw_item_class := payload.get("classType")) is not None:
+        if (raw_item_class := payload.get("classType", None)) is not None:
             item_class: enums.Class = enums.Class(raw_item_class)
 
-        return entity.Entity(
+        return entity.InventoryEntity(
             app=self._rest,
             name=name,
             description=description,

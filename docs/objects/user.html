@@ -54,82 +54,82 @@
 
 from __future__ import annotations
 
-__all__: Sequence[str] = [&#34;User&#34;, &#34;PartialUser&#34;, &#34;UserLike&#34;]
+__all__: typing.Sequence[str] = [&#34;User&#34;, &#34;PartialUser&#34;, &#34;UserLike&#34;]
 
-from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Any, Dict, Optional, Sequence
+import abc
+import typing
 
 import attr
 
-from ..internal import Image, Time, enums
+from ..internal import Image
+from ..internal import Time
+from ..internal import enums
 
-if TYPE_CHECKING:
+if typing.TYPE_CHECKING:
     from datetime import datetime
 
 
 @attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
-class PartialUser(ABC):
+class PartialUser(abc.ABC):
     &#34;&#34;&#34;The partial user object.&#34;&#34;&#34;
 
-    __slots__: Sequence[str] = ()
-
     @property
-    @abstractmethod
-    def steam_name(self) -&gt; Optional[str]:
+    @abc.abstractmethod
+    def steam_name(self) -&gt; typing.Optional[str]:
         &#34;&#34;&#34;The user&#39;s steam username or None.&#34;&#34;&#34;
 
     @property
-    @abstractmethod
-    def twitch_name(self) -&gt; Optional[str]:
+    @abc.abstractmethod
+    def twitch_name(self) -&gt; typing.Optional[str]:
         &#34;&#34;&#34;The user&#39;s twitch username or None.&#34;&#34;&#34;
 
     @property
-    @abstractmethod
-    def blizzard_name(self) -&gt; Optional[str]:
+    @abc.abstractmethod
+    def blizzard_name(self) -&gt; typing.Optional[str]:
         &#34;&#34;&#34;The user&#39;s blizzard username or None.&#34;&#34;&#34;
 
     @property
-    @abstractmethod
-    def psn_name(self) -&gt; Optional[str]:
+    @abc.abstractmethod
+    def psn_name(self) -&gt; typing.Optional[str]:
         &#34;&#34;&#34;The user&#39;s psn username or None.&#34;&#34;&#34;
 
     @property
-    @abstractmethod
-    def about(self) -&gt; Optional[str]:
+    @abc.abstractmethod
+    def about(self) -&gt; typing.Optional[str]:
         &#34;&#34;&#34;The user&#39;s about section.&#34;&#34;&#34;
 
     @property
-    @abstractmethod
-    def locale(self) -&gt; Optional[str]:
+    @abc.abstractmethod
+    def locale(self) -&gt; typing.Optional[str]:
         &#34;&#34;&#34;The user&#39;s profile locale.&#34;&#34;&#34;
 
     @property
-    @abstractmethod
+    @abc.abstractmethod
     def name(self) -&gt; str:
         &#34;&#34;&#34;The user&#39;s name.&#34;&#34;&#34;
 
     @property
-    @abstractmethod
-    def picture(self) -&gt; Optional[Image]:
+    @abc.abstractmethod
+    def picture(self) -&gt; typing.Optional[Image]:
         &#34;&#34;&#34;The user&#39;s profile picture if its set.&#34;&#34;&#34;
 
     @property
-    @abstractmethod
+    @abc.abstractmethod
     def updated_at(self) -&gt; datetime:
         &#34;&#34;&#34;The user&#39;s last profile update.&#34;&#34;&#34;
 
     @property
-    @abstractmethod
+    @abc.abstractmethod
     def is_deleted(self) -&gt; bool:
         &#34;&#34;&#34;Determines if the user is deleted or not.&#34;&#34;&#34;
 
     @property
-    @abstractmethod
-    def status(self) -&gt; Optional[str]:
+    @abc.abstractmethod
+    def status(self) -&gt; typing.Optional[str]:
         &#34;&#34;&#34;The user&#39;s profile status.&#34;&#34;&#34;
 
     @property
-    @abstractmethod
+    @abc.abstractmethod
     def created_at(self) -&gt; datetime:
         &#34;&#34;&#34;Retruns the user&#39;s creation date in UTC timezone.&#34;&#34;&#34;
 
@@ -150,23 +150,23 @@ class User(PartialUser):
             The user&#39;s name.
     is_deleted: `builtins.bool`
             Returns True if the user is deleted
-    about: typing.Optional[builtins.str]
+    about: typing.typing.Optional[builtins.str]
             The user&#39;s about, Default is None if nothing is Found.
     created_at: `datetime.datetime`
             The user&#39;s creation date in UTC date.
     updated_at: `datetime.datetime`
             The user&#39;s last updated om UTC date.
-    psn_name: typing.Optional[builtins.str]
+    psn_name: typing.typing.Optional[builtins.str]
             The user&#39;s psn id if it exists.
-    twitch_name: typing.Optional[builtins.str]
+    twitch_name: typing.typing.Optional[builtins.str]
             The user&#39;s twitch name if it exists.
-    blizzard_name: typing.Optional[builtins.str]
+    blizzard_name: typing.typing.Optional[builtins.str]
             The user&#39;s blizzard name if it exists.
-    steam_name: typing.Optional[builtins.str]
+    steam_name: typing.typing.Optional[builtins.str]
             The user&#39;s steam name if it exists
-    status: typing.Optional[builtins.str]
+    status: typing.typing.Optional[builtins.str]
             The user&#39;s bungie status text
-    locale: typing.Optional[builtins.str]
+    locale: typing.typing.Optional[builtins.str]
             The user&#39;s locale.
     picture: aiobungie.internal.assets.Image
             The user&#39;s avatar.
@@ -184,74 +184,76 @@ class User(PartialUser):
     is_deleted: bool = attr.field(repr=True, eq=False, hash=False)
     &#34;&#34;&#34;Returns True if the user is deleted&#34;&#34;&#34;
 
-    about: Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    about: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s about, Default is None if nothing is Found.&#34;&#34;&#34;
 
     updated_at: datetime = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s last updated om UTC date.&#34;&#34;&#34;
 
-    psn_name: Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    psn_name: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s psn id if it exists.&#34;&#34;&#34;
 
-    steam_name: Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    steam_name: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s steam name if it exists&#34;&#34;&#34;
 
-    twitch_name: Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    twitch_name: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s twitch name if it exists.&#34;&#34;&#34;
 
-    blizzard_name: Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    blizzard_name: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s blizzard name if it exists.&#34;&#34;&#34;
 
-    status: Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    status: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s bungie status text&#34;&#34;&#34;
 
-    locale: Optional[str] = attr.field(repr=False, hash=False, eq=False)
+    locale: typing.Optional[str] = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s locale.&#34;&#34;&#34;
 
     picture: Image = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s profile picture.&#34;&#34;&#34;
 
     @property
-    def as_dict(self) -&gt; Dict[str, Any]:
+    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
         &#34;&#34;&#34;Returns a dict object of the user,
         This function is useful if you&#39;re binding to other REST apis.
         &#34;&#34;&#34;
         return attr.asdict(self)
 
 
-class UserLike(ABC):
+@attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
+class UserLike(abc.ABC):
     &#34;&#34;&#34;The is meant for any Member / user / like objects.&#34;&#34;&#34;
 
-    __slots__: Sequence[str] = ()
-
     @property
-    @abstractmethod
+    @abc.abstractmethod
     def name(self) -&gt; str:
         &#34;&#34;&#34;The user&#39;s name.&#34;&#34;&#34;
 
     @property
-    @abstractmethod
-    def is_public(self) -&gt; Optional[bool]:
+    @abc.abstractmethod
+    def is_public(self) -&gt; typing.Optional[bool]:
         &#34;&#34;&#34;Returns if the user profile is public or no.&#34;&#34;&#34;
 
     @property
-    @abstractmethod
-    def type(self) -&gt; Optional[enums.MembershipType]:
+    @abc.abstractmethod
+    def type(self) -&gt; typing.Optional[enums.MembershipType]:
         &#34;&#34;&#34;Returns the user type of the user.&#34;&#34;&#34;
 
     @property
-    @abstractmethod
+    @abc.abstractmethod
     def icon(self) -&gt; Image:
         &#34;&#34;&#34;The user&#39;s icon.&#34;&#34;&#34;
 
     @property
-    def link(self) -&gt; Optional[str]:
+    def link(self) -&gt; typing.Optional[str]:
         &#34;&#34;&#34;Returns the user&#39;s profile link.&#34;&#34;&#34;
 
     @property
-    @abstractmethod
-    def as_dict(self) -&gt; Dict[str, Any]:
-        &#34;&#34;&#34;Returns an instance of the object attrs as a dict.&#34;&#34;&#34;</code></pre>
+    @abc.abstractmethod
+    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
+        &#34;&#34;&#34;Returns an instance of the object attrs as a dict.&#34;&#34;&#34;
+
+    def __str__(self) -&gt; str:
+        return self.name</code></pre>
 </details>
 </section>
 <section>
@@ -274,68 +276,66 @@ class UserLike(ABC):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
-class PartialUser(ABC):
+class PartialUser(abc.ABC):
     &#34;&#34;&#34;The partial user object.&#34;&#34;&#34;
 
-    __slots__: Sequence[str] = ()
-
     @property
-    @abstractmethod
-    def steam_name(self) -&gt; Optional[str]:
+    @abc.abstractmethod
+    def steam_name(self) -&gt; typing.Optional[str]:
         &#34;&#34;&#34;The user&#39;s steam username or None.&#34;&#34;&#34;
 
     @property
-    @abstractmethod
-    def twitch_name(self) -&gt; Optional[str]:
+    @abc.abstractmethod
+    def twitch_name(self) -&gt; typing.Optional[str]:
         &#34;&#34;&#34;The user&#39;s twitch username or None.&#34;&#34;&#34;
 
     @property
-    @abstractmethod
-    def blizzard_name(self) -&gt; Optional[str]:
+    @abc.abstractmethod
+    def blizzard_name(self) -&gt; typing.Optional[str]:
         &#34;&#34;&#34;The user&#39;s blizzard username or None.&#34;&#34;&#34;
 
     @property
-    @abstractmethod
-    def psn_name(self) -&gt; Optional[str]:
+    @abc.abstractmethod
+    def psn_name(self) -&gt; typing.Optional[str]:
         &#34;&#34;&#34;The user&#39;s psn username or None.&#34;&#34;&#34;
 
     @property
-    @abstractmethod
-    def about(self) -&gt; Optional[str]:
+    @abc.abstractmethod
+    def about(self) -&gt; typing.Optional[str]:
         &#34;&#34;&#34;The user&#39;s about section.&#34;&#34;&#34;
 
     @property
-    @abstractmethod
-    def locale(self) -&gt; Optional[str]:
+    @abc.abstractmethod
+    def locale(self) -&gt; typing.Optional[str]:
         &#34;&#34;&#34;The user&#39;s profile locale.&#34;&#34;&#34;
 
     @property
-    @abstractmethod
+    @abc.abstractmethod
     def name(self) -&gt; str:
         &#34;&#34;&#34;The user&#39;s name.&#34;&#34;&#34;
 
     @property
-    @abstractmethod
-    def picture(self) -&gt; Optional[Image]:
+    @abc.abstractmethod
+    def picture(self) -&gt; typing.Optional[Image]:
         &#34;&#34;&#34;The user&#39;s profile picture if its set.&#34;&#34;&#34;
 
     @property
-    @abstractmethod
+    @abc.abstractmethod
     def updated_at(self) -&gt; datetime:
         &#34;&#34;&#34;The user&#39;s last profile update.&#34;&#34;&#34;
 
     @property
-    @abstractmethod
+    @abc.abstractmethod
     def is_deleted(self) -&gt; bool:
         &#34;&#34;&#34;Determines if the user is deleted or not.&#34;&#34;&#34;
 
     @property
-    @abstractmethod
-    def status(self) -&gt; Optional[str]:
+    @abc.abstractmethod
+    def status(self) -&gt; typing.Optional[str]:
         &#34;&#34;&#34;The user&#39;s profile status.&#34;&#34;&#34;
 
     @property
-    @abstractmethod
+    @abc.abstractmethod
     def created_at(self) -&gt; datetime:
         &#34;&#34;&#34;Retruns the user&#39;s creation date in UTC timezone.&#34;&#34;&#34;
 
@@ -361,8 +361,8 @@ class PartialUser(ABC):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-@abstractmethod
-def about(self) -&gt; Optional[str]:
+@abc.abstractmethod
+def about(self) -&gt; typing.Optional[str]:
     &#34;&#34;&#34;The user&#39;s about section.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
@@ -374,8 +374,8 @@ def about(self) -&gt; Optional[str]:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-@abstractmethod
-def blizzard_name(self) -&gt; Optional[str]:
+@abc.abstractmethod
+def blizzard_name(self) -&gt; typing.Optional[str]:
     &#34;&#34;&#34;The user&#39;s blizzard username or None.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
@@ -387,7 +387,7 @@ def blizzard_name(self) -&gt; Optional[str]:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-@abstractmethod
+@abc.abstractmethod
 def created_at(self) -&gt; datetime:
     &#34;&#34;&#34;Retruns the user&#39;s creation date in UTC timezone.&#34;&#34;&#34;</code></pre>
 </details>
@@ -412,7 +412,7 @@ def human_timedelta(self) -&gt; str:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-@abstractmethod
+@abc.abstractmethod
 def is_deleted(self) -&gt; bool:
     &#34;&#34;&#34;Determines if the user is deleted or not.&#34;&#34;&#34;</code></pre>
 </details>
@@ -425,8 +425,8 @@ def is_deleted(self) -&gt; bool:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-@abstractmethod
-def locale(self) -&gt; Optional[str]:
+@abc.abstractmethod
+def locale(self) -&gt; typing.Optional[str]:
     &#34;&#34;&#34;The user&#39;s profile locale.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
@@ -438,7 +438,7 @@ def locale(self) -&gt; Optional[str]:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-@abstractmethod
+@abc.abstractmethod
 def name(self) -&gt; str:
     &#34;&#34;&#34;The user&#39;s name.&#34;&#34;&#34;</code></pre>
 </details>
@@ -451,8 +451,8 @@ def name(self) -&gt; str:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-@abstractmethod
-def picture(self) -&gt; Optional[Image]:
+@abc.abstractmethod
+def picture(self) -&gt; typing.Optional[Image]:
     &#34;&#34;&#34;The user&#39;s profile picture if its set.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
@@ -464,8 +464,8 @@ def picture(self) -&gt; Optional[Image]:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-@abstractmethod
-def psn_name(self) -&gt; Optional[str]:
+@abc.abstractmethod
+def psn_name(self) -&gt; typing.Optional[str]:
     &#34;&#34;&#34;The user&#39;s psn username or None.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
@@ -477,8 +477,8 @@ def psn_name(self) -&gt; Optional[str]:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-@abstractmethod
-def status(self) -&gt; Optional[str]:
+@abc.abstractmethod
+def status(self) -&gt; typing.Optional[str]:
     &#34;&#34;&#34;The user&#39;s profile status.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
@@ -490,8 +490,8 @@ def status(self) -&gt; Optional[str]:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-@abstractmethod
-def steam_name(self) -&gt; Optional[str]:
+@abc.abstractmethod
+def steam_name(self) -&gt; typing.Optional[str]:
     &#34;&#34;&#34;The user&#39;s steam username or None.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
@@ -503,8 +503,8 @@ def steam_name(self) -&gt; Optional[str]:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-@abstractmethod
-def twitch_name(self) -&gt; Optional[str]:
+@abc.abstractmethod
+def twitch_name(self) -&gt; typing.Optional[str]:
     &#34;&#34;&#34;The user&#39;s twitch username or None.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
@@ -516,7 +516,7 @@ def twitch_name(self) -&gt; Optional[str]:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-@abstractmethod
+@abc.abstractmethod
 def updated_at(self) -&gt; datetime:
     &#34;&#34;&#34;The user&#39;s last profile update.&#34;&#34;&#34;</code></pre>
 </details>
@@ -525,7 +525,7 @@ def updated_at(self) -&gt; datetime:
 </dd>
 <dt id="aiobungie.objects.user.User"><code class="flex name class">
 <span>class <span class="ident">User</span></span>
-<span>(</span><span>*, id: int, created_at: datetime, name: str, is_deleted: bool, about: Optional[str], updated_at: datetime, psn_name: Optional[str], steam_name: Optional[str], twitch_name: Optional[str], blizzard_name: Optional[str], status: Optional[str], locale: Optional[str], picture: Image)</span>
+<span>(</span><span>*, id: int, created_at: datetime, name: str, is_deleted: bool, about: typing.Optional[str], updated_at: datetime, psn_name: typing.Optional[str], steam_name: typing.Optional[str], twitch_name: typing.Optional[str], blizzard_name: typing.Optional[str], status: typing.Optional[str], locale: typing.Optional[str], picture: Image)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Represents Bungie User object.</p>
@@ -537,23 +537,23 @@ def updated_at(self) -&gt; datetime:
 <dd>The user's name.</dd>
 <dt><strong><code>is_deleted</code></strong> :&ensp;<code>builtins.bool</code></dt>
 <dd>Returns True if the user is deleted</dd>
-<dt><strong><code>about</code></strong> :&ensp;<code>typing.Optional[builtins.str]</code></dt>
+<dt><strong><code>about</code></strong> :&ensp;<code>typing.typing.Optional[builtins.str]</code></dt>
 <dd>The user's about, Default is None if nothing is Found.</dd>
 <dt><strong><code>created_at</code></strong> :&ensp;<code>datetime.datetime</code></dt>
 <dd>The user's creation date in UTC date.</dd>
 <dt><strong><code>updated_at</code></strong> :&ensp;<code>datetime.datetime</code></dt>
 <dd>The user's last updated om UTC date.</dd>
-<dt><strong><code>psn_name</code></strong> :&ensp;<code>typing.Optional[builtins.str]</code></dt>
+<dt><strong><code>psn_name</code></strong> :&ensp;<code>typing.typing.Optional[builtins.str]</code></dt>
 <dd>The user's psn id if it exists.</dd>
-<dt><strong><code>twitch_name</code></strong> :&ensp;<code>typing.Optional[builtins.str]</code></dt>
+<dt><strong><code>twitch_name</code></strong> :&ensp;<code>typing.typing.Optional[builtins.str]</code></dt>
 <dd>The user's twitch name if it exists.</dd>
-<dt><strong><code>blizzard_name</code></strong> :&ensp;<code>typing.Optional[builtins.str]</code></dt>
+<dt><strong><code>blizzard_name</code></strong> :&ensp;<code>typing.typing.Optional[builtins.str]</code></dt>
 <dd>The user's blizzard name if it exists.</dd>
-<dt><strong><code>steam_name</code></strong> :&ensp;<code>typing.Optional[builtins.str]</code></dt>
+<dt><strong><code>steam_name</code></strong> :&ensp;<code>typing.typing.Optional[builtins.str]</code></dt>
 <dd>The user's steam name if it exists</dd>
-<dt><strong><code>status</code></strong> :&ensp;<code>typing.Optional[builtins.str]</code></dt>
+<dt><strong><code>status</code></strong> :&ensp;<code>typing.typing.Optional[builtins.str]</code></dt>
 <dd>The user's bungie status text</dd>
-<dt><strong><code>locale</code></strong> :&ensp;<code>typing.Optional[builtins.str]</code></dt>
+<dt><strong><code>locale</code></strong> :&ensp;<code>typing.typing.Optional[builtins.str]</code></dt>
 <dd>The user's locale.</dd>
 <dt><strong><code>picture</code></strong> :&ensp;<code><a title="aiobungie.internal.assets.Image" href="../internal/assets.html#aiobungie.internal.assets.Image">Image</a></code></dt>
 <dd>The user's avatar.</dd>
@@ -575,23 +575,23 @@ class User(PartialUser):
             The user&#39;s name.
     is_deleted: `builtins.bool`
             Returns True if the user is deleted
-    about: typing.Optional[builtins.str]
+    about: typing.typing.Optional[builtins.str]
             The user&#39;s about, Default is None if nothing is Found.
     created_at: `datetime.datetime`
             The user&#39;s creation date in UTC date.
     updated_at: `datetime.datetime`
             The user&#39;s last updated om UTC date.
-    psn_name: typing.Optional[builtins.str]
+    psn_name: typing.typing.Optional[builtins.str]
             The user&#39;s psn id if it exists.
-    twitch_name: typing.Optional[builtins.str]
+    twitch_name: typing.typing.Optional[builtins.str]
             The user&#39;s twitch name if it exists.
-    blizzard_name: typing.Optional[builtins.str]
+    blizzard_name: typing.typing.Optional[builtins.str]
             The user&#39;s blizzard name if it exists.
-    steam_name: typing.Optional[builtins.str]
+    steam_name: typing.typing.Optional[builtins.str]
             The user&#39;s steam name if it exists
-    status: typing.Optional[builtins.str]
+    status: typing.typing.Optional[builtins.str]
             The user&#39;s bungie status text
-    locale: typing.Optional[builtins.str]
+    locale: typing.typing.Optional[builtins.str]
             The user&#39;s locale.
     picture: aiobungie.internal.assets.Image
             The user&#39;s avatar.
@@ -609,35 +609,35 @@ class User(PartialUser):
     is_deleted: bool = attr.field(repr=True, eq=False, hash=False)
     &#34;&#34;&#34;Returns True if the user is deleted&#34;&#34;&#34;
 
-    about: Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    about: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s about, Default is None if nothing is Found.&#34;&#34;&#34;
 
     updated_at: datetime = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s last updated om UTC date.&#34;&#34;&#34;
 
-    psn_name: Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    psn_name: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s psn id if it exists.&#34;&#34;&#34;
 
-    steam_name: Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    steam_name: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s steam name if it exists&#34;&#34;&#34;
 
-    twitch_name: Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    twitch_name: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s twitch name if it exists.&#34;&#34;&#34;
 
-    blizzard_name: Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    blizzard_name: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s blizzard name if it exists.&#34;&#34;&#34;
 
-    status: Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    status: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s bungie status text&#34;&#34;&#34;
 
-    locale: Optional[str] = attr.field(repr=False, hash=False, eq=False)
+    locale: typing.Optional[str] = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s locale.&#34;&#34;&#34;
 
     picture: Image = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s profile picture.&#34;&#34;&#34;
 
     @property
-    def as_dict(self) -&gt; Dict[str, Any]:
+    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
         &#34;&#34;&#34;Returns a dict object of the user,
         This function is useful if you&#39;re binding to other REST apis.
         &#34;&#34;&#34;
@@ -663,7 +663,7 @@ This function is useful if you're binding to other REST apis.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def as_dict(self) -&gt; Dict[str, Any]:
+def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
     &#34;&#34;&#34;Returns a dict object of the user,
     This function is useful if you&#39;re binding to other REST apis.
     &#34;&#34;&#34;
@@ -728,44 +728,47 @@ def as_dict(self) -&gt; Dict[str, Any]:
 <span>class <span class="ident">UserLike</span></span>
 </code></dt>
 <dd>
-<div class="desc"><p>The is meant for any Member / user / like objects.</p></div>
+<div class="desc"><p>The is meant for any Member / user / like objects.</p>
+<p>Method generated by attrs for class UserLike.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class UserLike(ABC):
+<pre><code class="python">@attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
+class UserLike(abc.ABC):
     &#34;&#34;&#34;The is meant for any Member / user / like objects.&#34;&#34;&#34;
 
-    __slots__: Sequence[str] = ()
-
     @property
-    @abstractmethod
+    @abc.abstractmethod
     def name(self) -&gt; str:
         &#34;&#34;&#34;The user&#39;s name.&#34;&#34;&#34;
 
     @property
-    @abstractmethod
-    def is_public(self) -&gt; Optional[bool]:
+    @abc.abstractmethod
+    def is_public(self) -&gt; typing.Optional[bool]:
         &#34;&#34;&#34;Returns if the user profile is public or no.&#34;&#34;&#34;
 
     @property
-    @abstractmethod
-    def type(self) -&gt; Optional[enums.MembershipType]:
+    @abc.abstractmethod
+    def type(self) -&gt; typing.Optional[enums.MembershipType]:
         &#34;&#34;&#34;Returns the user type of the user.&#34;&#34;&#34;
 
     @property
-    @abstractmethod
+    @abc.abstractmethod
     def icon(self) -&gt; Image:
         &#34;&#34;&#34;The user&#39;s icon.&#34;&#34;&#34;
 
     @property
-    def link(self) -&gt; Optional[str]:
+    def link(self) -&gt; typing.Optional[str]:
         &#34;&#34;&#34;Returns the user&#39;s profile link.&#34;&#34;&#34;
 
     @property
-    @abstractmethod
-    def as_dict(self) -&gt; Dict[str, Any]:
-        &#34;&#34;&#34;Returns an instance of the object attrs as a dict.&#34;&#34;&#34;</code></pre>
+    @abc.abstractmethod
+    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
+        &#34;&#34;&#34;Returns an instance of the object attrs as a dict.&#34;&#34;&#34;
+
+    def __str__(self) -&gt; str:
+        return self.name</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -774,6 +777,7 @@ def as_dict(self) -&gt; Dict[str, Any]:
 <h3>Subclasses</h3>
 <ul class="hlist">
 <li><a title="aiobungie.objects.application.ApplicationOwner" href="application.html#aiobungie.objects.application.ApplicationOwner">ApplicationOwner</a></li>
+<li><a title="aiobungie.objects.clans.ClanMember" href="clans.html#aiobungie.objects.clans.ClanMember">ClanMember</a></li>
 <li><a title="aiobungie.objects.clans.ClanOwner" href="clans.html#aiobungie.objects.clans.ClanOwner">ClanOwner</a></li>
 <li><a title="aiobungie.objects.player.Player" href="player.html#aiobungie.objects.player.Player">Player</a></li>
 </ul>
@@ -787,8 +791,8 @@ def as_dict(self) -&gt; Dict[str, Any]:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-@abstractmethod
-def as_dict(self) -&gt; Dict[str, Any]:
+@abc.abstractmethod
+def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
     &#34;&#34;&#34;Returns an instance of the object attrs as a dict.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
@@ -800,7 +804,7 @@ def as_dict(self) -&gt; Dict[str, Any]:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-@abstractmethod
+@abc.abstractmethod
 def icon(self) -&gt; Image:
     &#34;&#34;&#34;The user&#39;s icon.&#34;&#34;&#34;</code></pre>
 </details>
@@ -813,8 +817,8 @@ def icon(self) -&gt; Image:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-@abstractmethod
-def is_public(self) -&gt; Optional[bool]:
+@abc.abstractmethod
+def is_public(self) -&gt; typing.Optional[bool]:
     &#34;&#34;&#34;Returns if the user profile is public or no.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
@@ -826,7 +830,7 @@ def is_public(self) -&gt; Optional[bool]:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def link(self) -&gt; Optional[str]:
+def link(self) -&gt; typing.Optional[str]:
     &#34;&#34;&#34;Returns the user&#39;s profile link.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
@@ -838,7 +842,7 @@ def link(self) -&gt; Optional[str]:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-@abstractmethod
+@abc.abstractmethod
 def name(self) -&gt; str:
     &#34;&#34;&#34;The user&#39;s name.&#34;&#34;&#34;</code></pre>
 </details>
@@ -851,8 +855,8 @@ def name(self) -&gt; str:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-@abstractmethod
-def type(self) -&gt; Optional[enums.MembershipType]:
+@abc.abstractmethod
+def type(self) -&gt; typing.Optional[enums.MembershipType]:
     &#34;&#34;&#34;Returns the user type of the user.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>

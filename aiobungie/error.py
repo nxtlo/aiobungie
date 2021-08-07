@@ -24,7 +24,7 @@
 
 from __future__ import annotations
 
-__all__: Sequence[str] = [
+__all__: typing.Sequence[str] = [
     "AiobungieError",
     "PlayerNotFound",
     "ActivityNotFound",
@@ -40,7 +40,7 @@ __all__: Sequence[str] = [
     "ResponseError",
 ]
 
-from typing import Sequence, final
+import typing
 
 import attr
 
@@ -60,52 +60,52 @@ class NotFound(AiobungieError):
     """Raised when an unknown request was not found."""
 
 
-@final
+@typing.final
 class ResponseError(AiobungieError):
     """Typical Responses error."""
 
 
-@final
+@typing.final
 class PlayerNotFound(NotFound):
     """Raised when a `aiobungie.objects.Player` is not found."""
 
 
-@final
+@typing.final
 class Forbidden(HTTPException):
     """Exception that's raised for when status code 403 occurs."""
 
 
-@final
+@typing.final
 class Unauthorized(HTTPException):
     """Unauthorized access."""
 
 
-@final
+@typing.final
 class ActivityNotFound(NotFound):
     """Raised when a `aiobungie.objects.Activity` not found."""
 
 
-@final
+@typing.final
 class CharacterError(HTTPException):
     """Raised when a `aiobungie.objects.Character` not found."""
 
 
-@final
+@typing.final
 class ClanNotFound(NotFound):
     """Raised when a `aiobungie.objects.Clan` not found."""
 
 
-@final
+@typing.final
 class UserNotFound(NotFound):
     """Raised when a `aiobungie.objects.User` not found."""
 
 
-@final
+@typing.final
 class ComponentError(HTTPException):
     """Raised when someone uses the wrong `aiobungie.internal.enums.Component.`"""
 
 
-@final
+@typing.final
 class MembershipTypeError(HTTPException):
     """Raised when the memberhsip type is invalid.
     or The object you're trying to fetch doesn't have

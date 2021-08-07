@@ -27,10 +27,16 @@ import asyncio
 import time
 
 import aiobungie
-from aiobungie import objects
-from aiobungie.objects import (Activity, Application, Character, Clan, Player,
-                               Profile, User)
-from tests.config import TOKEN, data
+from aiobungie.objects import Activity
+from aiobungie.objects import Application
+from aiobungie.objects import Character
+from aiobungie.objects import Clan
+from aiobungie.objects import Player
+from aiobungie.objects import Profile
+from aiobungie.objects import User
+from aiobungie.objects import ClanMember
+from tests.config import TOKEN
+from tests.config import data
 
 
 class ClientTest(aiobungie.Client):
@@ -40,7 +46,6 @@ class ClientTest(aiobungie.Client):
     async def app_test(self):
         app: Application = await self.fetch_app(data["app"])
         print(app.as_dict)
-        
 
     async def player_test(self) -> None:
         player: Player = await self.fetch_player(
@@ -95,25 +100,26 @@ class ClientTest(aiobungie.Client):
             data["memid"], data["memtype"], data["char"]
         )
         print(char.as_dict)
-        
 
     async def clan_id_test(self):
-        clan: Clan = await self.fetch_clan_from_id(data["clanid"])
+        clan: Clan = await self.fetch_clan_from_id(313096)
+        members: dict[str, int] = await clan.fetch_members()
         print(clan.as_dict)
+        print(members)
 
     async def clan_test(self):
-        clan: Clan = await self.fetch_clan("PotatoSalad")
+        clan: Clan = await self.fetch_clan("Nuanceㅤ")
+        member: ClanMember = await clan.fetch_member("Fate")
         print(clan.as_dict)
+        print(member.as_dict)
 
     async def user_test(self):
         user: User = await self.fetch_user("Fate", position=24)
         print(user.as_dict)
-        
 
     async def user_id_test(self):
         user: User = await self.fetch_user_from_id(data["id"])
         print(user.as_dict)
-        
 
     async def profile_test(self) -> None:
         profile: Profile = await self.fetch_profile(
@@ -121,7 +127,6 @@ class ClientTest(aiobungie.Client):
             aiobungie.MembershipType.STEAM,
         )
         print(profile.as_dict)
-        
 
     async def titan_test(self) -> None:
         profile: Profile = await self.fetch_profile(
@@ -129,15 +134,13 @@ class ClientTest(aiobungie.Client):
         )
         char: Character = await profile.titan()
         print(char.as_dict)
-        
-        
+
     async def hunter_test(self) -> None:
         profile: Profile = await self.fetch_profile(
             data["memid"], aiobungie.MembershipType.STEAM
         )
         char: Character = await profile.hunter()
         print(char.as_dict)
-        
 
     async def warlock_test(self) -> None:
         profile: Profile = await self.fetch_profile(
@@ -149,20 +152,21 @@ class ClientTest(aiobungie.Client):
 
 client = ClientTest(TOKEN)
 
+
 async def main() -> None:
     before = time.time()
     coros = [
-      client.char_test(),
-      client.clan_id_test(),
-      client.clan_test(),
-      client.app_test(),
-      client.user_id_test(),
-      client.user_test(),
-      client.player_test(),
-      client.profile_test(),
-      client.titan_test(),
-      client.hunter_test(),
-      client.warlock_test(),
+        client.char_test(),
+        client.clan_id_test(),
+        client.clan_test(),
+        client.app_test(),
+        client.user_id_test(),
+        client.user_test(),
+        client.player_test(),
+        client.profile_test(),
+        client.titan_test(),
+        client.hunter_test(),
+        client.warlock_test(),
     ]
     await asyncio.gather(*coros)
     full = before - time.time()

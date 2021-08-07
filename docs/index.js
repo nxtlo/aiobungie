@@ -17,12 +17,13 @@ URLS=[
 "aiobungie/objects/index.html",
 "aiobungie/objects/user.html",
 "aiobungie/objects/character.html",
+"aiobungie/objects/profile.html",
+"aiobungie/objects/entity.html",
 "aiobungie/objects/activity.html",
 "aiobungie/objects/application.html",
 "aiobungie/objects/clans.html",
-"aiobungie/objects/entity.html",
 "aiobungie/objects/player.html",
-"aiobungie/objects/profile.html",
+"aiobungie/objects/season.html",
 "aiobungie/url.html"
 ];
 INDEX=[
@@ -130,9 +131,21 @@ INDEX=[
 "func":1
 },
 {
-"ref":"aiobungie.Client.fetch_entity",
+"ref":"aiobungie.Client.fetch_clan_member",
 "url":0,
-"doc":"Fetches a static definition of an entity given a type and its hash. Paramaters      type:  builtins.str Entity's type definition. hash:  builtins.int Entity's hash. Returns    -  aiobungie.objects.Entity An aiobungie entity object.",
+"doc":"",
+"func":1
+},
+{
+"ref":"aiobungie.Client.fetch_clan_members",
+"url":0,
+"doc":"",
+"func":1
+},
+{
+"ref":"aiobungie.Client.fetch_inventory_item",
+"url":0,
+"doc":"Fetches a static inventory item entity given a its hash. Paramaters      type:  builtins.str Entity's type definition. hash:  builtins.int Entity's hash. Returns    -  aiobungie.objects.InventoryEntity A bungie inventory item.",
 "func":1
 },
 {
@@ -1214,9 +1227,21 @@ INDEX=[
 "func":1
 },
 {
-"ref":"aiobungie.client.Client.fetch_entity",
+"ref":"aiobungie.client.Client.fetch_clan_member",
 "url":1,
-"doc":"Fetches a static definition of an entity given a type and its hash. Paramaters      type:  builtins.str Entity's type definition. hash:  builtins.int Entity's hash. Returns    -  aiobungie.objects.Entity An aiobungie entity object.",
+"doc":"",
+"func":1
+},
+{
+"ref":"aiobungie.client.Client.fetch_clan_members",
+"url":1,
+"doc":"",
+"func":1
+},
+{
+"ref":"aiobungie.client.Client.fetch_inventory_item",
+"url":1,
+"doc":"Fetches a static inventory item entity given a its hash. Paramaters      type:  builtins.str Entity's type definition. hash:  builtins.int Entity's hash. Returns    -  aiobungie.objects.InventoryEntity A bungie inventory item.",
 "func":1
 },
 {
@@ -1500,6 +1525,18 @@ INDEX=[
 "func":1
 },
 {
+"ref":"aiobungie.http.HTTPClient.fetch_inventory_item",
+"url":5,
+"doc":"",
+"func":1
+},
+{
+"ref":"aiobungie.http.HTTPClient.fetch_clan_members",
+"url":5,
+"doc":"",
+"func":1
+},
+{
 "ref":"aiobungie.internal",
 "url":6,
 "doc":"Package contains internal and helpers for aiobungie."
@@ -1641,19 +1678,19 @@ INDEX=[
 {
 "ref":"aiobungie.internal.cache.Hash.set",
 "url":8,
-"doc":"Creates a new hash with field name and a value. Parameters      - hash:  builtins.str The hash name. field:  typing.Any The field name. value:  typing.Any The value for the field.",
+"doc":"Creates a new hash with field name and a value. Parameters      - hash:  builtins.str The hash name. field:  typing.typing.Any The field name. value:  typing.typing.Any The value for the field.",
 "func":1
 },
 {
 "ref":"aiobungie.internal.cache.Hash.setx",
 "url":8,
-"doc":"A method thats similar to  Hash.set but will not replace the value if one is already exists. Parameters      hash:  builtins.str The hash name. field:  typing.Any The field name value:  typing.Any The value of the field.",
+"doc":"A method thats similar to  Hash.set but will not replace the value if one is already exists. Parameters      hash:  builtins.str The hash name. field:  typing.typing.Any The field name value:  typing.typing.Any The value of the field.",
 "func":1
 },
 {
 "ref":"aiobungie.internal.cache.Hash.flush",
 "url":8,
-"doc":"Removes a hash. Parameters      - hashes:  typing.Sequence[builtins.str] The hashes you desire to delete.",
+"doc":"Removes a hash. Parameters      - hashes:  typing.typing.Sequence[builtins.str] The hashes you desire to delete.",
 "func":1
 },
 {
@@ -1671,25 +1708,25 @@ INDEX=[
 {
 "ref":"aiobungie.internal.cache.Hash.all",
 "url":8,
-"doc":"Returns all values from a hash. Parameters      - hash:  builtins.str The hash name. Returns    -  typing.List[builtins.str] A list of string values.",
+"doc":"Returns all values from a hash. Parameters      - hash:  builtins.str The hash name. Returns    -  typing.typing.List[builtins.str] A list of string values.",
 "func":1
 },
 {
 "ref":"aiobungie.internal.cache.Hash.delete",
 "url":8,
-"doc":"Deletes a field from the provided hash. Parameters      hash:  builtins.str The hash name. field:  typing.Any The field you want to delete.",
+"doc":"Deletes a field from the provided hash. Parameters      hash:  builtins.str The hash name. field:  typing.typing.Any The field you want to delete.",
 "func":1
 },
 {
 "ref":"aiobungie.internal.cache.Hash.exists",
 "url":8,
-"doc":"Returns True if the field exists in the hash. Parameters      hash:  builtins.str The hash name. field:  typing.Any The field name Returns:  builtins.bool True if field exists in hash and False if not.",
+"doc":"Returns True if the field exists in the hash. Parameters      hash:  builtins.str The hash name. field:  typing.typing.Any The field name Returns:  builtins.bool True if field exists in hash and False if not.",
 "func":1
 },
 {
 "ref":"aiobungie.internal.cache.Hash.get",
 "url":8,
-"doc":"Returns the value associated with field in the hash stored at key. Parameters      hash:  builtins.str The hash name. field:  typing.Any The field name",
+"doc":"Returns the value associated with field in the hash stored at key. Parameters      hash:  builtins.str The hash name. field:  typing.typing.Any The field name",
 "func":1
 },
 {
@@ -2806,6 +2843,18 @@ INDEX=[
 "func":1
 },
 {
+"ref":"aiobungie.internal.serialize.Deserialize.deserialize_clan_member",
+"url":13,
+"doc":"",
+"func":1
+},
+{
+"ref":"aiobungie.internal.serialize.Deserialize.deserialize_clan_members",
+"url":13,
+"doc":"",
+"func":1
+},
+{
 "ref":"aiobungie.internal.serialize.Deserialize.deserialize_app_owner",
 "url":13,
 "doc":"",
@@ -2830,7 +2879,7 @@ INDEX=[
 "func":1
 },
 {
-"ref":"aiobungie.internal.serialize.Deserialize.deserialize_entity",
+"ref":"aiobungie.internal.serialize.Deserialize.deserialize_inventory_entity",
 "url":13,
 "doc":"",
 "func":1
@@ -2946,6 +2995,24 @@ INDEX=[
 "doc":"Represents a Bungie clan object. Attributes      - name:  builtins.str The clan's name id:  builtins.int The clans's id created_at:  datetime.datetime Returns the clan's creation date in UTC time. description:  builtins.str The clan's description. is_public:  builtins.bool Returns True if the clan is public and False if not. banner:  aiobungie.internal.assets.Image Returns the clan's banner avatar:  aiobungie.internal.assets.Image Returns the clan's avatar about:  builtins.str The clan's about. tags:  builtins.str The clan's tags owner:  aiobungie.objects.ClanOwner Returns an object of the clan's owner. See  aiobungie.objects.ClanOwner for info. Method generated by attrs for class Clan."
 },
 {
+"ref":"aiobungie.objects.Clan.fetch_member",
+"url":15,
+"doc":"Fetch a specific clan member by their name and membership type. if the memberhship type is None we will try to return the first member matches the name. its also better to leave this parameter on None since usually only one player has this name. Parameters      name:  builtins.str The clan member name. type:  aiobungie.MembershipType The member's membership type. Default is 0 which returns any member matches the name. Returns      ClanMember ",
+"func":1
+},
+{
+"ref":"aiobungie.objects.Clan.fetch_members",
+"url":15,
+"doc":"Fetch the members of the clan. if the memberhship type is None it will All membership types. Parameters      type:  aiobungie.MembershipType Filters the membership types to return. Default is 0 which returns all membership types. Returns      typing.Dict[str, int] A dict that holds a key of the clan members's name and a value of the clan members's id.",
+"func":1
+},
+{
+"ref":"aiobungie.objects.Clan.fetch_banned_members",
+"url":15,
+"doc":"Fetch members who has been banned from the clan. Parameters      page:  buildint.int The page number to return. Returns      typing.Sequence[aiobungie.objects.clans.ClanMember] A sequence of clan members. name",
+"func":1
+},
+{
 "ref":"aiobungie.objects.Clan.human_timedelta",
 "url":15,
 "doc":"Returns a human readble date of the clan's creation date."
@@ -2964,6 +3031,11 @@ INDEX=[
 "ref":"aiobungie.objects.Clan.about",
 "url":15,
 "doc":"Clan's about title."
+},
+{
+"ref":"aiobungie.objects.Clan.app",
+"url":15,
+"doc":"A client app the we may use for external requests."
 },
 {
 "ref":"aiobungie.objects.Clan.avatar",
@@ -3151,9 +3223,89 @@ INDEX=[
 "doc":"The player's last played time in a human readble date."
 },
 {
+"ref":"aiobungie.objects.CharacterComponent",
+"url":15,
+"doc":"An interface for a Bungie character component. Method generated by attrs for class CharacterComponent."
+},
+{
+"ref":"aiobungie.objects.CharacterComponent.member_type",
+"url":15,
+"doc":"The character's membership type."
+},
+{
+"ref":"aiobungie.objects.CharacterComponent.id",
+"url":15,
+"doc":"The character's member id."
+},
+{
+"ref":"aiobungie.objects.CharacterComponent.light",
+"url":15,
+"doc":"The character's light."
+},
+{
+"ref":"aiobungie.objects.CharacterComponent.stats",
+"url":15,
+"doc":"The character's stats."
+},
+{
+"ref":"aiobungie.objects.CharacterComponent.url",
+"url":15,
+"doc":"The character's url at bungie.net."
+},
+{
+"ref":"aiobungie.objects.CharacterComponent.emblem",
+"url":15,
+"doc":"The character's current equipped emblem."
+},
+{
+"ref":"aiobungie.objects.CharacterComponent.last_played",
+"url":15,
+"doc":"The character's last played time."
+},
+{
+"ref":"aiobungie.objects.CharacterComponent.emblem_icon",
+"url":15,
+"doc":"The character's current equipped emblem icon."
+},
+{
+"ref":"aiobungie.objects.CharacterComponent.emblem_hash",
+"url":15,
+"doc":"The character's current equipped emblem hash."
+},
+{
+"ref":"aiobungie.objects.CharacterComponent.race",
+"url":15,
+"doc":"The character's race."
+},
+{
+"ref":"aiobungie.objects.CharacterComponent.gender",
+"url":15,
+"doc":"The character's gender."
+},
+{
+"ref":"aiobungie.objects.CharacterComponent.total_played_time",
+"url":15,
+"doc":"Character's total played time in hours."
+},
+{
+"ref":"aiobungie.objects.CharacterComponent.class_type",
+"url":15,
+"doc":"The character's class."
+},
+{
+"ref":"aiobungie.objects.CharacterComponent.title_hash",
+"url":15,
+"doc":"The character's title hash. This is Optional and can be None if no title was found."
+},
+{
+"ref":"aiobungie.objects.CharacterComponent.human_timedelta",
+"url":15,
+"doc":"The player's last played time in a human readble date."
+},
+{
 "ref":"aiobungie.objects.Activity",
 "url":15,
-"doc":"Represents a Bungie Activity object. An activity can be one of  aiobungie.internal.enums.GameMode . Attributes      - mode:  aiobungie.internal.enums.GameMode The activity mode or type. is_completed:  builtins.str Check if the activity was completed or no. hash:  builtins.int The activity's hash. duration:  builtins.str A string of The activity's duration, Example format  7m 42s kills:  builtins.int Activity's Total kills deaths:  builtins.int Activity's total deaths. assists:  builtins.int Activity's Total assists kd:  builtins.int Activity's kd ration. member_type:  aiobungie.internal.enums.MembershipType The activity member's membership type. players_count:  builtins.int Total players in the activity. when: typing.Optional[datetime.datetime] When did the activity occurred in UTC datetime. Method generated by attrs for class Activity."
+"doc":"Represents a Bungie Activity object. An activity can be one of  aiobungie.internal.enums.GameMode . Attributes      - mode:  aiobungie.internal.enums.GameMode The activity mode or type. is_completed:  builtins.str Check if the activity was completed or no. hash:  builtins.int The activity's hash. duration:  builtins.str A string of The activity's duration, Example format  7m 42s kills:  builtins.int Activity's Total kills deaths:  builtins.int Activity's total deaths. assists:  builtins.int Activity's Total assists kd:  builtins.int Activity's kd ration. member_type:  aiobungie.internal.enums.MembershipType The activity member's membership type. players_count:  builtins.int Total players in the activity. when: typing.typing.Optional[datetime.datetime] When did the activity occurred in UTC datetime. Method generated by attrs for class Activity."
 },
 {
 "ref":"aiobungie.objects.Activity.as_dict",
@@ -3218,7 +3370,7 @@ INDEX=[
 {
 "ref":"aiobungie.objects.User",
 "url":15,
-"doc":"Represents Bungie User object. Attributes      id:  builtins.int The user's id name:  builtins.str The user's name. is_deleted:  builtins.bool Returns True if the user is deleted about: typing.Optional[builtins.str] The user's about, Default is None if nothing is Found. created_at:  datetime.datetime The user's creation date in UTC date. updated_at:  datetime.datetime The user's last updated om UTC date. psn_name: typing.Optional[builtins.str] The user's psn id if it exists. twitch_name: typing.Optional[builtins.str] The user's twitch name if it exists. blizzard_name: typing.Optional[builtins.str] The user's blizzard name if it exists. steam_name: typing.Optional[builtins.str] The user's steam name if it exists status: typing.Optional[builtins.str] The user's bungie status text locale: typing.Optional[builtins.str] The user's locale. picture: aiobungie.internal.assets.Image The user's avatar. Method generated by attrs for class User."
+"doc":"Represents Bungie User object. Attributes      id:  builtins.int The user's id name:  builtins.str The user's name. is_deleted:  builtins.bool Returns True if the user is deleted about: typing.typing.Optional[builtins.str] The user's about, Default is None if nothing is Found. created_at:  datetime.datetime The user's creation date in UTC date. updated_at:  datetime.datetime The user's last updated om UTC date. psn_name: typing.typing.Optional[builtins.str] The user's psn id if it exists. twitch_name: typing.typing.Optional[builtins.str] The user's twitch name if it exists. blizzard_name: typing.typing.Optional[builtins.str] The user's blizzard name if it exists. steam_name: typing.typing.Optional[builtins.str] The user's steam name if it exists status: typing.typing.Optional[builtins.str] The user's bungie status text locale: typing.typing.Optional[builtins.str] The user's locale. picture: aiobungie.internal.assets.Image The user's avatar. Method generated by attrs for class User."
 },
 {
 "ref":"aiobungie.objects.User.as_dict",
@@ -3356,6 +3508,84 @@ INDEX=[
 "doc":"Returns a list of the member ship's membership types."
 },
 {
+"ref":"aiobungie.objects.ClanMember",
+"url":15,
+"doc":"Represents a Destiny 2 clan member. Method generated by attrs for class ClanMember."
+},
+{
+"ref":"aiobungie.objects.ClanMember.link",
+"url":15,
+"doc":"Clan member's profile link."
+},
+{
+"ref":"aiobungie.objects.ClanMember.as_dict",
+"url":15,
+"doc":"Returns an instance of the object attrs as a dict."
+},
+{
+"ref":"aiobungie.objects.ClanMember.ban",
+"url":15,
+"doc":"Bans a clan member from the clan. This requires OAuth2: AdminGroups scope.",
+"func":1
+},
+{
+"ref":"aiobungie.objects.ClanMember.unban",
+"url":15,
+"doc":"Unbans a clan member clan. This requires OAuth2: AdminGroups scope.",
+"func":1
+},
+{
+"ref":"aiobungie.objects.ClanMember.kick",
+"url":15,
+"doc":"Kicks a clan member from the clan. The requires OAuth2: AdminsGroup scope.",
+"func":1
+},
+{
+"ref":"aiobungie.objects.ClanMember.group_id",
+"url":15,
+"doc":"The member's group id."
+},
+{
+"ref":"aiobungie.objects.ClanMember.icon",
+"url":15,
+"doc":"Clan member's icon"
+},
+{
+"ref":"aiobungie.objects.ClanMember.id",
+"url":15,
+"doc":"Clan member's id"
+},
+{
+"ref":"aiobungie.objects.ClanMember.is_online",
+"url":15,
+"doc":"True if the clan member is online or not."
+},
+{
+"ref":"aiobungie.objects.ClanMember.is_public",
+"url":15,
+"doc":" builtins.True if the clan member is public."
+},
+{
+"ref":"aiobungie.objects.ClanMember.joined_at",
+"url":15,
+"doc":"The clan member's join date in UTC time zone."
+},
+{
+"ref":"aiobungie.objects.ClanMember.last_online",
+"url":15,
+"doc":"The date of the clan member's last online in UTC time zone."
+},
+{
+"ref":"aiobungie.objects.ClanMember.name",
+"url":15,
+"doc":"Clan member's name"
+},
+{
+"ref":"aiobungie.objects.ClanMember.type",
+"url":15,
+"doc":"Clan member's membership type."
+},
+{
 "ref":"aiobungie.objects.ApplicationOwner",
 "url":15,
 "doc":"Represents a Bungie Application owner. Attributes      - name:  builtins.str The application owner name. id:  builtins.int The application owner bungie id. icon:  aiobungie.internal.assets.Image The application owner profile icon. is_public:  builtins.bool Determines if the application owner's profile was public or private type:  aiobungie.internal.enums.MembershipType The application owner's bungie membership type. Method generated by attrs for class ApplicationOwner."
@@ -3451,24 +3681,245 @@ INDEX=[
 "doc":"Profile's type."
 },
 {
-"ref":"aiobungie.objects.Entity",
-"url":15,
-"doc":"A concrate implementation of a Bungie Item Definition Entity. As bungie says. using this endpoint is still in beta and may experience rough edges and bugs. Method generated by attrs for class Entity."
+"ref":"aiobungie.objects.Profile.titan",
+"url":18,
+"doc":"Returns the titan character of the profile owner.",
+"func":1
 },
 {
-"ref":"aiobungie.objects.Entity.as_dict",
-"url":15,
-"doc":"Returns an instance of the object as a dict"
+"ref":"aiobungie.objects.Profile.hunter",
+"url":18,
+"doc":"Returns the hunter character of the profile owner.",
+"func":1
 },
 {
-"ref":"aiobungie.objects.Entity.about",
+"ref":"aiobungie.objects.Profile.warlock",
+"url":18,
+"doc":"Returns the Warlock character of the profile owner.",
+"func":1
+},
+{
+"ref":"aiobungie.objects.InventoryEntity",
+"url":15,
+"doc":"Represents a bungie inventory item entity. This derives from  DestinyInventoryItemDefinition definition. Method generated by attrs for class InventoryEntity."
+},
+{
+"ref":"aiobungie.objects.InventoryEntity.about",
 "url":15,
 "doc":"Entity's about."
 },
 {
-"ref":"aiobungie.objects.Entity.ammo_type",
+"ref":"aiobungie.objects.InventoryEntity.ammo_type",
 "url":15,
 "doc":"Entity's ammo type if it was a wepon, otherwise it will return None"
+},
+{
+"ref":"aiobungie.objects.InventoryEntity.app",
+"url":15,
+"doc":"A client that we may use to make rest calls."
+},
+{
+"ref":"aiobungie.objects.InventoryEntity.banner",
+"url":15,
+"doc":"Entity's banner."
+},
+{
+"ref":"aiobungie.objects.InventoryEntity.bucket_type",
+"url":15,
+"doc":"The entity's bucket type, None if unknown"
+},
+{
+"ref":"aiobungie.objects.InventoryEntity.damage",
+"url":15,
+"doc":"Entity's damage type. Only works for weapons."
+},
+{
+"ref":"aiobungie.objects.InventoryEntity.description",
+"url":15,
+"doc":"Entity's description."
+},
+{
+"ref":"aiobungie.objects.InventoryEntity.has_icon",
+"url":15,
+"doc":"A boolean that returns True if the entity has an icon."
+},
+{
+"ref":"aiobungie.objects.InventoryEntity.hash",
+"url":15,
+"doc":"Entity's hash."
+},
+{
+"ref":"aiobungie.objects.InventoryEntity.icon",
+"url":15,
+"doc":"Entity's icon"
+},
+{
+"ref":"aiobungie.objects.InventoryEntity.index",
+"url":15,
+"doc":"Entity's index."
+},
+{
+"ref":"aiobungie.objects.InventoryEntity.is_equippable",
+"url":15,
+"doc":"True if the entity can be equipped or False."
+},
+{
+"ref":"aiobungie.objects.InventoryEntity.item_class",
+"url":15,
+"doc":"The entity's class type."
+},
+{
+"ref":"aiobungie.objects.InventoryEntity.lore_hash",
+"url":15,
+"doc":"The entity's lore hash"
+},
+{
+"ref":"aiobungie.objects.InventoryEntity.name",
+"url":15,
+"doc":"Entity's name"
+},
+{
+"ref":"aiobungie.objects.InventoryEntity.stats",
+"url":15,
+"doc":"Entity's stats. this currently returns a dict object of the stats."
+},
+{
+"ref":"aiobungie.objects.InventoryEntity.sub_type",
+"url":15,
+"doc":"The subtype of the entity. A type is a weapon or armor. A subtype is a handcannonn or leg armor for an example."
+},
+{
+"ref":"aiobungie.objects.InventoryEntity.summary_hash",
+"url":15,
+"doc":"Entity's summary hash."
+},
+{
+"ref":"aiobungie.objects.InventoryEntity.tier",
+"url":15,
+"doc":"Entity's \"tier."
+},
+{
+"ref":"aiobungie.objects.InventoryEntity.tier_name",
+"url":15,
+"doc":"A string version of the item tier."
+},
+{
+"ref":"aiobungie.objects.InventoryEntity.type",
+"url":15,
+"doc":"Entity's type."
+},
+{
+"ref":"aiobungie.objects.InventoryEntity.type_name",
+"url":15,
+"doc":"Entity's type name. i.e.,  Grenade Launcher "
+},
+{
+"ref":"aiobungie.objects.InventoryEntity.water_mark",
+"url":15,
+"doc":"Entity's water mark."
+},
+{
+"ref":"aiobungie.objects.InventoryEntity.as_dict",
+"url":19,
+"doc":"Returns an instance of the object as a dict"
+},
+{
+"ref":"aiobungie.objects.UserLike",
+"url":15,
+"doc":"The is meant for any Member / user / like objects. Method generated by attrs for class UserLike."
+},
+{
+"ref":"aiobungie.objects.UserLike.name",
+"url":15,
+"doc":"The user's name."
+},
+{
+"ref":"aiobungie.objects.UserLike.is_public",
+"url":15,
+"doc":"Returns if the user profile is public or no."
+},
+{
+"ref":"aiobungie.objects.UserLike.type",
+"url":15,
+"doc":"Returns the user type of the user."
+},
+{
+"ref":"aiobungie.objects.UserLike.icon",
+"url":15,
+"doc":"The user's icon."
+},
+{
+"ref":"aiobungie.objects.UserLike.link",
+"url":15,
+"doc":"Returns the user's profile link."
+},
+{
+"ref":"aiobungie.objects.UserLike.as_dict",
+"url":15,
+"doc":"Returns an instance of the object attrs as a dict."
+},
+{
+"ref":"aiobungie.objects.ProfileComponentImpl",
+"url":15,
+"doc":"A partial interface that will/include all bungie profile components. Some fields may or may not be available here. Method generated by attrs for class ProfileComponentImpl."
+},
+{
+"ref":"aiobungie.objects.ProfileComponentImpl.app",
+"url":15,
+"doc":"A client that we may to make rest requests."
+},
+{
+"ref":"aiobungie.objects.ProfileComponentImpl.name",
+"url":15,
+"doc":"Profile's name"
+},
+{
+"ref":"aiobungie.objects.ProfileComponentImpl.type",
+"url":15,
+"doc":"Profile's membership type."
+},
+{
+"ref":"aiobungie.objects.ProfileComponentImpl.last_played",
+"url":15,
+"doc":"The profile user's last played date time."
+},
+{
+"ref":"aiobungie.objects.ProfileComponentImpl.is_public",
+"url":15,
+"doc":"Profile's privacy status."
+},
+{
+"ref":"aiobungie.objects.ProfileComponentImpl.character_ids",
+"url":15,
+"doc":"A list of the profile's character ids."
+},
+{
+"ref":"aiobungie.objects.ProfileComponentImpl.id",
+"url":15,
+"doc":"The profile's id."
+},
+{
+"ref":"aiobungie.objects.ProfileComponentImpl.titan",
+"url":15,
+"doc":"Returns the titan character of the profile owner.",
+"func":1
+},
+{
+"ref":"aiobungie.objects.ProfileComponentImpl.hunter",
+"url":15,
+"doc":"Returns the hunter character of the profile owner.",
+"func":1
+},
+{
+"ref":"aiobungie.objects.ProfileComponentImpl.warlock",
+"url":15,
+"doc":"Returns the Warlock character of the profile owner.",
+"func":1
+},
+{
+"ref":"aiobungie.objects.Entity",
+"url":15,
+"doc":"An Implementation of a Bungie Item Definition Entity. This is the main entity which all other entities should inherit from. it holds general information that all bungie entities has. Method generated by attrs for class Entity."
 },
 {
 "ref":"aiobungie.objects.Entity.app",
@@ -3476,24 +3927,14 @@ INDEX=[
 "doc":"A client that we may use to make rest calls."
 },
 {
-"ref":"aiobungie.objects.Entity.banner",
+"ref":"aiobungie.objects.Entity.name",
 "url":15,
-"doc":"Entity's banner."
+"doc":"Entity's name"
 },
 {
-"ref":"aiobungie.objects.Entity.bucket_type",
+"ref":"aiobungie.objects.Entity.icon",
 "url":15,
-"doc":"The entity's bucket type, None if unknown"
-},
-{
-"ref":"aiobungie.objects.Entity.damage",
-"url":15,
-"doc":"Entity's damage type. Only works for weapons."
-},
-{
-"ref":"aiobungie.objects.Entity.description",
-"url":15,
-"doc":"Entity's description. most entities don't use this so consider using  Entity.about if you found an empty string."
+"doc":"An optional entity's icon if its filled."
 },
 {
 "ref":"aiobungie.objects.Entity.has_icon",
@@ -3501,253 +3942,198 @@ INDEX=[
 "doc":"A boolean that returns True if the entity has an icon."
 },
 {
+"ref":"aiobungie.objects.Entity.description",
+"url":15,
+"doc":"Entity's description"
+},
+{
+"ref":"aiobungie.objects.Entity.index",
+"url":15,
+"doc":"The entity's index."
+},
+{
 "ref":"aiobungie.objects.Entity.hash",
 "url":15,
 "doc":"Entity's hash."
 },
 {
-"ref":"aiobungie.objects.Entity.icon",
+"ref":"aiobungie.objects.Entity.as_dict",
 "url":15,
-"doc":"Entity's icon"
-},
-{
-"ref":"aiobungie.objects.Entity.index",
-"url":15,
-"doc":"Entity's index."
-},
-{
-"ref":"aiobungie.objects.Entity.is_equippable",
-"url":15,
-"doc":"True if the entity can be equipped or False."
-},
-{
-"ref":"aiobungie.objects.Entity.item_class",
-"url":15,
-"doc":"The entity's class type."
-},
-{
-"ref":"aiobungie.objects.Entity.lore_hash",
-"url":15,
-"doc":"The entity's lore hash"
-},
-{
-"ref":"aiobungie.objects.Entity.name",
-"url":15,
-"doc":"Entity's name"
-},
-{
-"ref":"aiobungie.objects.Entity.stats",
-"url":15,
-"doc":"Entity's stats. this currently returns a dict object of the stats."
-},
-{
-"ref":"aiobungie.objects.Entity.sub_type",
-"url":15,
-"doc":"The subtype of the entity. A type is a weapon or armor. A subtype is a handcannonn or leg armor for an example."
-},
-{
-"ref":"aiobungie.objects.Entity.summary_hash",
-"url":15,
-"doc":"Entity's summary hash."
-},
-{
-"ref":"aiobungie.objects.Entity.tier",
-"url":15,
-"doc":"Entity's \"tier."
-},
-{
-"ref":"aiobungie.objects.Entity.tier_name",
-"url":15,
-"doc":"A string version of the item tier."
-},
-{
-"ref":"aiobungie.objects.Entity.type",
-"url":15,
-"doc":"Entity's type."
-},
-{
-"ref":"aiobungie.objects.Entity.type_name",
-"url":15,
-"doc":"Entity's type name. i.e.,  Grenade Launcher "
-},
-{
-"ref":"aiobungie.objects.Entity.water_mark",
-"url":15,
-"doc":"Entity's water mark."
+"doc":"Returns an instance of the object as a dict"
 },
 {
 "ref":"aiobungie.objects.activity",
-"url":18,
+"url":20,
 "doc":"Basic implementation for a Bungie a activity."
 },
 {
 "ref":"aiobungie.objects.activity.Activity",
-"url":18,
-"doc":"Represents a Bungie Activity object. An activity can be one of  aiobungie.internal.enums.GameMode . Attributes      - mode:  aiobungie.internal.enums.GameMode The activity mode or type. is_completed:  builtins.str Check if the activity was completed or no. hash:  builtins.int The activity's hash. duration:  builtins.str A string of The activity's duration, Example format  7m 42s kills:  builtins.int Activity's Total kills deaths:  builtins.int Activity's total deaths. assists:  builtins.int Activity's Total assists kd:  builtins.int Activity's kd ration. member_type:  aiobungie.internal.enums.MembershipType The activity member's membership type. players_count:  builtins.int Total players in the activity. when: typing.Optional[datetime.datetime] When did the activity occurred in UTC datetime. Method generated by attrs for class Activity."
+"url":20,
+"doc":"Represents a Bungie Activity object. An activity can be one of  aiobungie.internal.enums.GameMode . Attributes      - mode:  aiobungie.internal.enums.GameMode The activity mode or type. is_completed:  builtins.str Check if the activity was completed or no. hash:  builtins.int The activity's hash. duration:  builtins.str A string of The activity's duration, Example format  7m 42s kills:  builtins.int Activity's Total kills deaths:  builtins.int Activity's total deaths. assists:  builtins.int Activity's Total assists kd:  builtins.int Activity's kd ration. member_type:  aiobungie.internal.enums.MembershipType The activity member's membership type. players_count:  builtins.int Total players in the activity. when: typing.typing.Optional[datetime.datetime] When did the activity occurred in UTC datetime. Method generated by attrs for class Activity."
 },
 {
 "ref":"aiobungie.objects.activity.Activity.as_dict",
-"url":18,
+"url":20,
 "doc":"Returns a dict object of the Activity, This function is useful if you're binding to other REST apis."
 },
 {
 "ref":"aiobungie.objects.activity.Activity.assists",
-"url":18,
+"url":20,
 "doc":"Activity's total assists."
 },
 {
 "ref":"aiobungie.objects.activity.Activity.deaths",
-"url":18,
+"url":20,
 "doc":"Activity's total deaths."
 },
 {
 "ref":"aiobungie.objects.activity.Activity.duration",
-"url":18,
+"url":20,
 "doc":"A string of The activity's duration, Example format  7m 42s "
 },
 {
 "ref":"aiobungie.objects.activity.Activity.hash",
-"url":18,
+"url":20,
 "doc":"The activity's hash."
 },
 {
 "ref":"aiobungie.objects.activity.Activity.is_completed",
-"url":18,
+"url":20,
 "doc":"Returns  Ok if the activity is completed and 'No' if not."
 },
 {
 "ref":"aiobungie.objects.activity.Activity.kd",
-"url":18,
+"url":20,
 "doc":"Activity's kill/death ration."
 },
 {
 "ref":"aiobungie.objects.activity.Activity.kills",
-"url":18,
+"url":20,
 "doc":"Activity's total kills."
 },
 {
 "ref":"aiobungie.objects.activity.Activity.member_type",
-"url":18,
+"url":20,
 "doc":"Return an attribute of instance, which is of type owner."
 },
 {
 "ref":"aiobungie.objects.activity.Activity.mode",
-"url":18,
+"url":20,
 "doc":"Activity's game mode."
 },
 {
 "ref":"aiobungie.objects.activity.Activity.player_count",
-"url":18,
+"url":20,
 "doc":"Return an attribute of instance, which is of type owner."
 },
 {
 "ref":"aiobungie.objects.activity.Activity.when",
-"url":18,
+"url":20,
 "doc":"A UTC datetime object of when was the activivy started."
 },
 {
 "ref":"aiobungie.objects.application",
-"url":19,
+"url":21,
 "doc":"Basic implementation for a Bungie a application."
 },
 {
 "ref":"aiobungie.objects.application.Application",
-"url":19,
+"url":21,
 "doc":"Represents a Bungie developer application. Attributes      - name:  builtins.str The app's name id:  builtins.int The app's id. redirect_url: typing.Optional[ builtins.str ]: The app's redirect url, None if not Found. created_at:  datetime.datetime The application's creation date in UTC time. published_at:  datetime.datetime The application's publish date in UTC time. link:  builtins.str The app's link if it exists. status:  builtins.str The app's status. owner:  aiobungie.objects.ApplicationOwner An object of The application owner. scope:  builtins.str The app's scope Method generated by attrs for class Application."
 },
 {
 "ref":"aiobungie.objects.application.Application.human_timedelta",
-"url":19,
+"url":21,
 "doc":"Returns a human readble date of the app's creation date."
 },
 {
 "ref":"aiobungie.objects.application.Application.as_dict",
-"url":19,
+"url":21,
 "doc":"Returns a dict object of the application, This function is useful if you're binding to other REST apis."
 },
 {
 "ref":"aiobungie.objects.application.Application.created_at",
-"url":19,
+"url":21,
 "doc":"App creation date in UTC timezone"
 },
 {
 "ref":"aiobungie.objects.application.Application.id",
-"url":19,
+"url":21,
 "doc":"App id"
 },
 {
 "ref":"aiobungie.objects.application.Application.link",
-"url":19,
+"url":21,
 "doc":"App's link"
 },
 {
 "ref":"aiobungie.objects.application.Application.name",
-"url":19,
+"url":21,
 "doc":"App name"
 },
 {
 "ref":"aiobungie.objects.application.Application.owner",
-"url":19,
+"url":21,
 "doc":"App's owner"
 },
 {
 "ref":"aiobungie.objects.application.Application.published_at",
-"url":19,
+"url":21,
 "doc":"App's publish date in UTC timezone"
 },
 {
 "ref":"aiobungie.objects.application.Application.redirect_url",
-"url":19,
+"url":21,
 "doc":"App redirect url"
 },
 {
 "ref":"aiobungie.objects.application.Application.scope",
-"url":19,
+"url":21,
 "doc":"App's scope"
 },
 {
 "ref":"aiobungie.objects.application.Application.status",
-"url":19,
+"url":21,
 "doc":"App's status"
 },
 {
 "ref":"aiobungie.objects.application.ApplicationOwner",
-"url":19,
+"url":21,
 "doc":"Represents a Bungie Application owner. Attributes      - name:  builtins.str The application owner name. id:  builtins.int The application owner bungie id. icon:  aiobungie.internal.assets.Image The application owner profile icon. is_public:  builtins.bool Determines if the application owner's profile was public or private type:  aiobungie.internal.enums.MembershipType The application owner's bungie membership type. Method generated by attrs for class ApplicationOwner."
 },
 {
 "ref":"aiobungie.objects.application.ApplicationOwner.link",
-"url":19,
+"url":21,
 "doc":"Returns the user's profile link."
 },
 {
 "ref":"aiobungie.objects.application.ApplicationOwner.as_dict",
-"url":19,
+"url":21,
 "doc":"Returns a dict object of the application owner, This function is useful if you're binding to other REST apis."
 },
 {
 "ref":"aiobungie.objects.application.ApplicationOwner.icon",
-"url":19,
+"url":21,
 "doc":"The application owner's icon."
 },
 {
 "ref":"aiobungie.objects.application.ApplicationOwner.id",
-"url":19,
+"url":21,
 "doc":"The application owner's id."
 },
 {
 "ref":"aiobungie.objects.application.ApplicationOwner.is_public",
-"url":19,
+"url":21,
 "doc":"The application owner's profile privacy."
 },
 {
 "ref":"aiobungie.objects.application.ApplicationOwner.name",
-"url":19,
+"url":21,
 "doc":"The application owner name."
 },
 {
 "ref":"aiobungie.objects.application.ApplicationOwner.type",
-"url":19,
+"url":21,
 "doc":"The membership of the application owner."
 },
 {
@@ -3932,427 +4318,463 @@ INDEX=[
 },
 {
 "ref":"aiobungie.objects.clans",
-"url":20,
+"url":22,
 "doc":"Basic implementation for a Bungie a clan."
 },
 {
 "ref":"aiobungie.objects.clans.Clan",
-"url":20,
+"url":22,
 "doc":"Represents a Bungie clan object. Attributes      - name:  builtins.str The clan's name id:  builtins.int The clans's id created_at:  datetime.datetime Returns the clan's creation date in UTC time. description:  builtins.str The clan's description. is_public:  builtins.bool Returns True if the clan is public and False if not. banner:  aiobungie.internal.assets.Image Returns the clan's banner avatar:  aiobungie.internal.assets.Image Returns the clan's avatar about:  builtins.str The clan's about. tags:  builtins.str The clan's tags owner:  aiobungie.objects.ClanOwner Returns an object of the clan's owner. See  aiobungie.objects.ClanOwner for info. Method generated by attrs for class Clan."
 },
 {
+"ref":"aiobungie.objects.clans.Clan.fetch_member",
+"url":22,
+"doc":"Fetch a specific clan member by their name and membership type. if the memberhship type is None we will try to return the first member matches the name. its also better to leave this parameter on None since usually only one player has this name. Parameters      name:  builtins.str The clan member name. type:  aiobungie.MembershipType The member's membership type. Default is 0 which returns any member matches the name. Returns      ClanMember ",
+"func":1
+},
+{
+"ref":"aiobungie.objects.clans.Clan.fetch_members",
+"url":22,
+"doc":"Fetch the members of the clan. if the memberhship type is None it will All membership types. Parameters      type:  aiobungie.MembershipType Filters the membership types to return. Default is 0 which returns all membership types. Returns      typing.Dict[str, int] A dict that holds a key of the clan members's name and a value of the clan members's id.",
+"func":1
+},
+{
+"ref":"aiobungie.objects.clans.Clan.fetch_banned_members",
+"url":22,
+"doc":"Fetch members who has been banned from the clan. Parameters      page:  buildint.int The page number to return. Returns      typing.Sequence[aiobungie.objects.clans.ClanMember] A sequence of clan members. name",
+"func":1
+},
+{
 "ref":"aiobungie.objects.clans.Clan.human_timedelta",
-"url":20,
+"url":22,
 "doc":"Returns a human readble date of the clan's creation date."
 },
 {
 "ref":"aiobungie.objects.clans.Clan.url",
-"url":20,
+"url":22,
 "doc":""
 },
 {
 "ref":"aiobungie.objects.clans.Clan.as_dict",
-"url":20,
+"url":22,
 "doc":"Returns an instance of the object as a dict"
 },
 {
 "ref":"aiobungie.objects.clans.Clan.about",
-"url":20,
+"url":22,
 "doc":"Clan's about title."
 },
 {
+"ref":"aiobungie.objects.clans.Clan.app",
+"url":22,
+"doc":"A client app the we may use for external requests."
+},
+{
 "ref":"aiobungie.objects.clans.Clan.avatar",
-"url":20,
+"url":22,
 "doc":"Clan's avatar"
 },
 {
 "ref":"aiobungie.objects.clans.Clan.banner",
-"url":20,
+"url":22,
 "doc":"Clan's banner"
 },
 {
 "ref":"aiobungie.objects.clans.Clan.created_at",
-"url":20,
+"url":22,
 "doc":"Clan's creation date time in UTC."
 },
 {
 "ref":"aiobungie.objects.clans.Clan.description",
-"url":20,
+"url":22,
 "doc":"Clan's description"
 },
 {
 "ref":"aiobungie.objects.clans.Clan.id",
-"url":20,
+"url":22,
 "doc":"The clan id"
 },
 {
 "ref":"aiobungie.objects.clans.Clan.is_public",
-"url":20,
+"url":22,
 "doc":"Clan's privacy status."
 },
 {
 "ref":"aiobungie.objects.clans.Clan.member_count",
-"url":20,
+"url":22,
 "doc":"Clan's member count."
 },
 {
 "ref":"aiobungie.objects.clans.Clan.name",
-"url":20,
+"url":22,
 "doc":"The clan's name"
 },
 {
 "ref":"aiobungie.objects.clans.Clan.owner",
-"url":20,
+"url":22,
 "doc":"The clan owner."
 },
 {
 "ref":"aiobungie.objects.clans.Clan.tags",
-"url":20,
+"url":22,
 "doc":"A list of the clan's tags."
 },
 {
 "ref":"aiobungie.objects.clans.ClanOwner",
-"url":20,
+"url":22,
 "doc":"Represents a Bungie clan owner. Attributes      - id:  builtins.int The clan owner's membership id name:  builtins.str The clan owner's display name last_online:  builtins.str An aware  builtins.str version of a  datetime.datetime object. type:  aiobungie.internal.enums.MembershipType Returns the clan owner's membership type. This could be Xbox, Steam, PSN, Blizzard or ALL, if the membership type is not recognized it will return  builtins.NoneType . clan_id:  builtins.int The clan owner's clan id joined_at: Optional[datetime.datetime]: The clan owner's join date in UTC. icon:  aiobungie.internal.assets.Image Returns the clan owner's icon from Image. is_public:  builtins.bool Returns True if the clan's owner profile is public or False if not. types: typing.List[builtins.int]: returns a List of  builtins.int of the clan owner's types. Method generated by attrs for class ClanOwner."
 },
 {
 "ref":"aiobungie.objects.clans.ClanOwner.human_timedelta",
-"url":20,
+"url":22,
 "doc":"Returns a human readble date of the clan owner's last login."
 },
 {
 "ref":"aiobungie.objects.clans.ClanOwner.link",
-"url":20,
+"url":22,
 "doc":"Returns the user's profile link."
 },
 {
 "ref":"aiobungie.objects.clans.ClanOwner.as_dict",
-"url":20,
+"url":22,
 "doc":"Returns a dict object of the clan owner, This function is useful if you're binding to other REST apis."
 },
 {
 "ref":"aiobungie.objects.clans.ClanOwner.clan_id",
-"url":20,
+"url":22,
 "doc":"Owner's current clan id."
 },
 {
 "ref":"aiobungie.objects.clans.ClanOwner.icon",
-"url":20,
+"url":22,
 "doc":"Owner's profile icom"
 },
 {
 "ref":"aiobungie.objects.clans.ClanOwner.id",
-"url":20,
+"url":22,
 "doc":"The user id."
 },
 {
 "ref":"aiobungie.objects.clans.ClanOwner.is_public",
-"url":20,
+"url":22,
 "doc":"Returns if the user profile is public or no."
 },
 {
 "ref":"aiobungie.objects.clans.ClanOwner.joined_at",
-"url":20,
+"url":22,
 "doc":"Owner's bungie join date."
 },
 {
 "ref":"aiobungie.objects.clans.ClanOwner.last_online",
-"url":20,
+"url":22,
 "doc":"An aware  datetime.datetime object of the user's last online date UTC."
 },
 {
 "ref":"aiobungie.objects.clans.ClanOwner.name",
-"url":20,
+"url":22,
 "doc":"The user name."
 },
 {
 "ref":"aiobungie.objects.clans.ClanOwner.type",
-"url":20,
+"url":22,
 "doc":"Returns the membership type of the user."
 },
 {
 "ref":"aiobungie.objects.clans.ClanOwner.types",
-"url":20,
+"url":22,
 "doc":"Returns a list of the member ship's membership types."
 },
 {
+"ref":"aiobungie.objects.clans.ClanMember",
+"url":22,
+"doc":"Represents a Destiny 2 clan member. Method generated by attrs for class ClanMember."
+},
+{
+"ref":"aiobungie.objects.clans.ClanMember.link",
+"url":22,
+"doc":"Clan member's profile link."
+},
+{
+"ref":"aiobungie.objects.clans.ClanMember.as_dict",
+"url":22,
+"doc":"Returns an instance of the object attrs as a dict."
+},
+{
+"ref":"aiobungie.objects.clans.ClanMember.ban",
+"url":22,
+"doc":"Bans a clan member from the clan. This requires OAuth2: AdminGroups scope.",
+"func":1
+},
+{
+"ref":"aiobungie.objects.clans.ClanMember.unban",
+"url":22,
+"doc":"Unbans a clan member clan. This requires OAuth2: AdminGroups scope.",
+"func":1
+},
+{
+"ref":"aiobungie.objects.clans.ClanMember.kick",
+"url":22,
+"doc":"Kicks a clan member from the clan. The requires OAuth2: AdminsGroup scope.",
+"func":1
+},
+{
+"ref":"aiobungie.objects.clans.ClanMember.group_id",
+"url":22,
+"doc":"The member's group id."
+},
+{
+"ref":"aiobungie.objects.clans.ClanMember.icon",
+"url":22,
+"doc":"Clan member's icon"
+},
+{
+"ref":"aiobungie.objects.clans.ClanMember.id",
+"url":22,
+"doc":"Clan member's id"
+},
+{
+"ref":"aiobungie.objects.clans.ClanMember.is_online",
+"url":22,
+"doc":"True if the clan member is online or not."
+},
+{
+"ref":"aiobungie.objects.clans.ClanMember.is_public",
+"url":22,
+"doc":" builtins.True if the clan member is public."
+},
+{
+"ref":"aiobungie.objects.clans.ClanMember.joined_at",
+"url":22,
+"doc":"The clan member's join date in UTC time zone."
+},
+{
+"ref":"aiobungie.objects.clans.ClanMember.last_online",
+"url":22,
+"doc":"The date of the clan member's last online in UTC time zone."
+},
+{
+"ref":"aiobungie.objects.clans.ClanMember.name",
+"url":22,
+"doc":"Clan member's name"
+},
+{
+"ref":"aiobungie.objects.clans.ClanMember.type",
+"url":22,
+"doc":"Clan member's membership type."
+},
+{
 "ref":"aiobungie.objects.entity",
-"url":21,
-"doc":"A basic bungie entity definition implementation. This is still not fully implemented and you may experince bugs."
+"url":19,
+"doc":"Bungie entity definitions implementation. This is still not fully implemented and you may experince bugs. This will include all Bungie Definitions."
 },
 {
-"ref":"aiobungie.objects.entity.PartialEntity",
-"url":21,
-"doc":"A partial interface for a bungie entity All bungie entities has a hash and an index. but other fields are optional. it may or may not be present. Method generated by attrs for class PartialEntity."
+"ref":"aiobungie.objects.entity.InventoryEntity",
+"url":19,
+"doc":"Represents a bungie inventory item entity. This derives from  DestinyInventoryItemDefinition definition. Method generated by attrs for class InventoryEntity."
 },
 {
-"ref":"aiobungie.objects.entity.PartialEntity.app",
-"url":21,
-"doc":"A client that we may use to make rest calls."
-},
-{
-"ref":"aiobungie.objects.entity.PartialEntity.name",
-"url":21,
-"doc":"Entity's name"
-},
-{
-"ref":"aiobungie.objects.entity.PartialEntity.icon",
-"url":21,
-"doc":"An optional entity's icon if its filled."
-},
-{
-"ref":"aiobungie.objects.entity.PartialEntity.banner",
-"url":21,
-"doc":"An optional benner of the entity if its filled."
-},
-{
-"ref":"aiobungie.objects.entity.PartialEntity.has_icon",
-"url":21,
-"doc":"A boolean that returns True if the entity has an icon."
-},
-{
-"ref":"aiobungie.objects.entity.PartialEntity.description",
-"url":21,
-"doc":"Entity's description"
-},
-{
-"ref":"aiobungie.objects.entity.PartialEntity.type_name",
-"url":21,
-"doc":"Entity's type name. i.e.,  Grenade Launcher "
-},
-{
-"ref":"aiobungie.objects.entity.PartialEntity.water_mark",
-"url":21,
-"doc":"Entity's water mark."
-},
-{
-"ref":"aiobungie.objects.entity.PartialEntity.tier",
-"url":21,
-"doc":"Entity's \"tier."
-},
-{
-"ref":"aiobungie.objects.entity.PartialEntity.tier_name",
-"url":21,
-"doc":"A  builtins.str version of the entity's tier and name."
-},
-{
-"ref":"aiobungie.objects.entity.PartialEntity.type",
-"url":21,
-"doc":"The entity's type, None if unknown"
-},
-{
-"ref":"aiobungie.objects.entity.PartialEntity.bucket_type",
-"url":21,
-"doc":"Entity's bucket type."
-},
-{
-"ref":"aiobungie.objects.entity.PartialEntity.stats",
-"url":21,
-"doc":"Entity's stats. this currently returns a dict object of the stats."
-},
-{
-"ref":"aiobungie.objects.entity.PartialEntity.ammo_type",
-"url":21,
-"doc":"Entity's ammo type if it was a wepon, otherwise it will return None"
-},
-{
-"ref":"aiobungie.objects.entity.PartialEntity.lore_hash",
-"url":21,
-"doc":"The entity's lore hash"
-},
-{
-"ref":"aiobungie.objects.entity.PartialEntity.item_class",
-"url":21,
-"doc":"The entity's class type."
-},
-{
-"ref":"aiobungie.objects.entity.PartialEntity.sub_type",
-"url":21,
-"doc":"The subtype of the entity. A type is a weapon or armor. A subtype is a handcannonn or leg armor for an example."
-},
-{
-"ref":"aiobungie.objects.entity.PartialEntity.is_equippable",
-"url":21,
-"doc":"True if the entity can be equipped or False."
-},
-{
-"ref":"aiobungie.objects.entity.PartialEntity.summary_hash",
-"url":21,
-"doc":"Entity's summary hash."
-},
-{
-"ref":"aiobungie.objects.entity.PartialEntity.damage",
-"url":21,
-"doc":"Entity's damage type. Only works for weapons."
-},
-{
-"ref":"aiobungie.objects.entity.PartialEntity.about",
-"url":21,
-"doc":"Entity's about. you probably wanna use this instaed  Entity.description "
-},
-{
-"ref":"aiobungie.objects.entity.Entity",
-"url":21,
-"doc":"A concrate implementation of a Bungie Item Definition Entity. As bungie says. using this endpoint is still in beta and may experience rough edges and bugs. Method generated by attrs for class Entity."
-},
-{
-"ref":"aiobungie.objects.entity.Entity.as_dict",
-"url":21,
-"doc":"Returns an instance of the object as a dict"
-},
-{
-"ref":"aiobungie.objects.entity.Entity.about",
-"url":21,
+"ref":"aiobungie.objects.entity.InventoryEntity.about",
+"url":19,
 "doc":"Entity's about."
 },
 {
-"ref":"aiobungie.objects.entity.Entity.ammo_type",
-"url":21,
+"ref":"aiobungie.objects.entity.InventoryEntity.ammo_type",
+"url":19,
 "doc":"Entity's ammo type if it was a wepon, otherwise it will return None"
 },
 {
-"ref":"aiobungie.objects.entity.Entity.app",
-"url":21,
+"ref":"aiobungie.objects.entity.InventoryEntity.app",
+"url":19,
 "doc":"A client that we may use to make rest calls."
 },
 {
-"ref":"aiobungie.objects.entity.Entity.banner",
-"url":21,
+"ref":"aiobungie.objects.entity.InventoryEntity.banner",
+"url":19,
 "doc":"Entity's banner."
 },
 {
-"ref":"aiobungie.objects.entity.Entity.bucket_type",
-"url":21,
+"ref":"aiobungie.objects.entity.InventoryEntity.bucket_type",
+"url":19,
 "doc":"The entity's bucket type, None if unknown"
 },
 {
-"ref":"aiobungie.objects.entity.Entity.damage",
-"url":21,
+"ref":"aiobungie.objects.entity.InventoryEntity.damage",
+"url":19,
 "doc":"Entity's damage type. Only works for weapons."
 },
 {
-"ref":"aiobungie.objects.entity.Entity.description",
-"url":21,
-"doc":"Entity's description. most entities don't use this so consider using  Entity.about if you found an empty string."
+"ref":"aiobungie.objects.entity.InventoryEntity.description",
+"url":19,
+"doc":"Entity's description."
 },
 {
-"ref":"aiobungie.objects.entity.Entity.has_icon",
-"url":21,
+"ref":"aiobungie.objects.entity.InventoryEntity.has_icon",
+"url":19,
 "doc":"A boolean that returns True if the entity has an icon."
 },
 {
-"ref":"aiobungie.objects.entity.Entity.hash",
-"url":21,
+"ref":"aiobungie.objects.entity.InventoryEntity.hash",
+"url":19,
 "doc":"Entity's hash."
 },
 {
-"ref":"aiobungie.objects.entity.Entity.icon",
-"url":21,
+"ref":"aiobungie.objects.entity.InventoryEntity.icon",
+"url":19,
 "doc":"Entity's icon"
 },
 {
-"ref":"aiobungie.objects.entity.Entity.index",
-"url":21,
+"ref":"aiobungie.objects.entity.InventoryEntity.index",
+"url":19,
 "doc":"Entity's index."
 },
 {
-"ref":"aiobungie.objects.entity.Entity.is_equippable",
-"url":21,
+"ref":"aiobungie.objects.entity.InventoryEntity.is_equippable",
+"url":19,
 "doc":"True if the entity can be equipped or False."
 },
 {
-"ref":"aiobungie.objects.entity.Entity.item_class",
-"url":21,
+"ref":"aiobungie.objects.entity.InventoryEntity.item_class",
+"url":19,
 "doc":"The entity's class type."
 },
 {
-"ref":"aiobungie.objects.entity.Entity.lore_hash",
-"url":21,
+"ref":"aiobungie.objects.entity.InventoryEntity.lore_hash",
+"url":19,
 "doc":"The entity's lore hash"
 },
 {
-"ref":"aiobungie.objects.entity.Entity.name",
-"url":21,
+"ref":"aiobungie.objects.entity.InventoryEntity.name",
+"url":19,
 "doc":"Entity's name"
 },
 {
-"ref":"aiobungie.objects.entity.Entity.stats",
-"url":21,
+"ref":"aiobungie.objects.entity.InventoryEntity.stats",
+"url":19,
 "doc":"Entity's stats. this currently returns a dict object of the stats."
 },
 {
-"ref":"aiobungie.objects.entity.Entity.sub_type",
-"url":21,
+"ref":"aiobungie.objects.entity.InventoryEntity.sub_type",
+"url":19,
 "doc":"The subtype of the entity. A type is a weapon or armor. A subtype is a handcannonn or leg armor for an example."
 },
 {
-"ref":"aiobungie.objects.entity.Entity.summary_hash",
-"url":21,
+"ref":"aiobungie.objects.entity.InventoryEntity.summary_hash",
+"url":19,
 "doc":"Entity's summary hash."
 },
 {
-"ref":"aiobungie.objects.entity.Entity.tier",
-"url":21,
+"ref":"aiobungie.objects.entity.InventoryEntity.tier",
+"url":19,
 "doc":"Entity's \"tier."
 },
 {
-"ref":"aiobungie.objects.entity.Entity.tier_name",
-"url":21,
+"ref":"aiobungie.objects.entity.InventoryEntity.tier_name",
+"url":19,
 "doc":"A string version of the item tier."
 },
 {
-"ref":"aiobungie.objects.entity.Entity.type",
-"url":21,
+"ref":"aiobungie.objects.entity.InventoryEntity.type",
+"url":19,
 "doc":"Entity's type."
 },
 {
-"ref":"aiobungie.objects.entity.Entity.type_name",
-"url":21,
+"ref":"aiobungie.objects.entity.InventoryEntity.type_name",
+"url":19,
 "doc":"Entity's type name. i.e.,  Grenade Launcher "
 },
 {
-"ref":"aiobungie.objects.entity.Entity.water_mark",
-"url":21,
+"ref":"aiobungie.objects.entity.InventoryEntity.water_mark",
+"url":19,
 "doc":"Entity's water mark."
 },
 {
+"ref":"aiobungie.objects.entity.InventoryEntity.as_dict",
+"url":19,
+"doc":"Returns an instance of the object as a dict"
+},
+{
+"ref":"aiobungie.objects.entity.Entity",
+"url":19,
+"doc":"An Implementation of a Bungie Item Definition Entity. This is the main entity which all other entities should inherit from. it holds general information that all bungie entities has. Method generated by attrs for class Entity."
+},
+{
+"ref":"aiobungie.objects.entity.Entity.app",
+"url":19,
+"doc":"A client that we may use to make rest calls."
+},
+{
+"ref":"aiobungie.objects.entity.Entity.name",
+"url":19,
+"doc":"Entity's name"
+},
+{
+"ref":"aiobungie.objects.entity.Entity.icon",
+"url":19,
+"doc":"An optional entity's icon if its filled."
+},
+{
+"ref":"aiobungie.objects.entity.Entity.has_icon",
+"url":19,
+"doc":"A boolean that returns True if the entity has an icon."
+},
+{
+"ref":"aiobungie.objects.entity.Entity.description",
+"url":19,
+"doc":"Entity's description"
+},
+{
+"ref":"aiobungie.objects.entity.Entity.index",
+"url":19,
+"doc":"The entity's index."
+},
+{
+"ref":"aiobungie.objects.entity.Entity.hash",
+"url":19,
+"doc":"Entity's hash."
+},
+{
+"ref":"aiobungie.objects.entity.Entity.as_dict",
+"url":19,
+"doc":"Returns an instance of the object as a dict"
+},
+{
 "ref":"aiobungie.objects.player",
-"url":22,
+"url":23,
 "doc":"Basic implementation for a Bungie a player."
 },
 {
 "ref":"aiobungie.objects.player.Player",
-"url":22,
+"url":23,
 "doc":"Represents a Bungie Destiny 2 Player. Attributes      icon:  aiobungie.internal.Image The player's icon. id:  builtins.int The player's id. name:  builtins.str The player's name. is_public:  builtins.bool A boolean True if the user's profile is public and False if not. type:  aiobungie.internal.enums.MembershipType The player's membership type. Method generated by attrs for class Player."
 },
 {
 "ref":"aiobungie.objects.player.Player.as_dict",
-"url":22,
+"url":23,
 "doc":"Returns a dict object of the player, This function is useful if you're binding to other REST apis."
 },
 {
 "ref":"aiobungie.objects.player.Player.icon",
-"url":22,
+"url":23,
 "doc":"The player's icon."
 },
 {
 "ref":"aiobungie.objects.player.Player.id",
-"url":22,
+"url":23,
 "doc":"The player's id."
 },
 {
 "ref":"aiobungie.objects.player.Player.is_public",
-"url":22,
+"url":23,
 "doc":"The player's profile privacy."
 },
 {
 "ref":"aiobungie.objects.player.Player.name",
-"url":22,
+"url":23,
 "doc":"The player's name"
 },
 {
 "ref":"aiobungie.objects.player.Player.type",
-"url":22,
+"url":23,
 "doc":"The profile's membership type."
 },
 {
@@ -4362,63 +4784,229 @@ INDEX=[
 },
 {
 "ref":"aiobungie.objects.profile",
-"url":23,
+"url":18,
 "doc":"Implementation for a Bungie a Profile."
 },
 {
 "ref":"aiobungie.objects.profile.Profile",
-"url":23,
+"url":18,
 "doc":"Represents a Bungie member Profile. Bungie profiles requires components. but in aiobungie you don't need to select a specific component since they will all/will be implemented. for an example: to access the  Character component you'll need to pass  ?component=200 right?. in aiobungie you can just do this.   profile = await client.fetch_profile(\"Fate\")  access the character component and get my warlock. warlock = await profile.warlock() assert warlock.light  1320   Attributes      id:  builtins.int Profile's id name:  builtins.str Profile's name type:  aiobungie.internal.enums.MembershipType The profile's membership type. last_played:  datetime.datetime The profile owner's last played date in UTC character_ids:  typing.List[builtins.int] A list of the profile's character ids. power_cap:  builtins.int The profile's current season power cap. Method generated by attrs for class Profile."
 },
 {
 "ref":"aiobungie.objects.profile.Profile.as_dict",
-"url":23,
+"url":18,
 "doc":"Returns a dict object of the profile, This function is useful if you're binding to other REST apis."
 },
 {
 "ref":"aiobungie.objects.profile.Profile.human_timedelta",
-"url":23,
+"url":18,
 "doc":"Returns last_played attr but in human delta date."
 },
 {
 "ref":"aiobungie.objects.profile.Profile.app",
-"url":23,
+"url":18,
 "doc":"A client that we may to make rest requests."
 },
 {
 "ref":"aiobungie.objects.profile.Profile.character_ids",
-"url":23,
+"url":18,
 "doc":"A list of the profile's character ids."
 },
 {
 "ref":"aiobungie.objects.profile.Profile.id",
-"url":23,
+"url":18,
 "doc":"Profile's id"
 },
 {
 "ref":"aiobungie.objects.profile.Profile.is_public",
-"url":23,
+"url":18,
 "doc":"Profile's privacy status."
 },
 {
 "ref":"aiobungie.objects.profile.Profile.last_played",
-"url":23,
+"url":18,
 "doc":"Profile's last played Destiny 2 played date."
 },
 {
 "ref":"aiobungie.objects.profile.Profile.name",
-"url":23,
+"url":18,
 "doc":"Profile's name."
 },
 {
 "ref":"aiobungie.objects.profile.Profile.power_cap",
-"url":23,
+"url":18,
 "doc":"The profile's current seaspn power cap."
 },
 {
 "ref":"aiobungie.objects.profile.Profile.type",
-"url":23,
+"url":18,
 "doc":"Profile's type."
+},
+{
+"ref":"aiobungie.objects.profile.Profile.titan",
+"url":18,
+"doc":"Returns the titan character of the profile owner.",
+"func":1
+},
+{
+"ref":"aiobungie.objects.profile.Profile.hunter",
+"url":18,
+"doc":"Returns the hunter character of the profile owner.",
+"func":1
+},
+{
+"ref":"aiobungie.objects.profile.Profile.warlock",
+"url":18,
+"doc":"Returns the Warlock character of the profile owner.",
+"func":1
+},
+{
+"ref":"aiobungie.objects.profile.ProfileComponentImpl",
+"url":18,
+"doc":"A partial interface that will/include all bungie profile components. Some fields may or may not be available here. Method generated by attrs for class ProfileComponentImpl."
+},
+{
+"ref":"aiobungie.objects.profile.ProfileComponentImpl.app",
+"url":18,
+"doc":"A client that we may to make rest requests."
+},
+{
+"ref":"aiobungie.objects.profile.ProfileComponentImpl.name",
+"url":18,
+"doc":"Profile's name"
+},
+{
+"ref":"aiobungie.objects.profile.ProfileComponentImpl.type",
+"url":18,
+"doc":"Profile's membership type."
+},
+{
+"ref":"aiobungie.objects.profile.ProfileComponentImpl.last_played",
+"url":18,
+"doc":"The profile user's last played date time."
+},
+{
+"ref":"aiobungie.objects.profile.ProfileComponentImpl.is_public",
+"url":18,
+"doc":"Profile's privacy status."
+},
+{
+"ref":"aiobungie.objects.profile.ProfileComponentImpl.character_ids",
+"url":18,
+"doc":"A list of the profile's character ids."
+},
+{
+"ref":"aiobungie.objects.profile.ProfileComponentImpl.id",
+"url":18,
+"doc":"The profile's id."
+},
+{
+"ref":"aiobungie.objects.profile.ProfileComponentImpl.titan",
+"url":18,
+"doc":"Returns the titan character of the profile owner.",
+"func":1
+},
+{
+"ref":"aiobungie.objects.profile.ProfileComponentImpl.hunter",
+"url":18,
+"doc":"Returns the hunter character of the profile owner.",
+"func":1
+},
+{
+"ref":"aiobungie.objects.profile.ProfileComponentImpl.warlock",
+"url":18,
+"doc":"Returns the Warlock character of the profile owner.",
+"func":1
+},
+{
+"ref":"aiobungie.objects.season",
+"url":24,
+"doc":"A basic implementations of a destiny 2 season. This includes all season that can be found in a regular season i.e, season artifact, season content etc."
+},
+{
+"ref":"aiobungie.objects.season.Artifact",
+"url":24,
+"doc":"Concrate interface of a Destiny 2 Season artifact. Method generated by attrs for class Artifact."
+},
+{
+"ref":"aiobungie.objects.season.Artifact.acquired_points",
+"url":24,
+"doc":"The total acquired artifact points"
+},
+{
+"ref":"aiobungie.objects.season.Artifact.app",
+"url":24,
+"doc":"A client app we may use to make external requests."
+},
+{
+"ref":"aiobungie.objects.season.Artifact.bonus",
+"url":24,
+"doc":"Information about the artifact's power bonus."
+},
+{
+"ref":"aiobungie.objects.season.Artifact.hash",
+"url":24,
+"doc":"The season artifact's hash."
+},
+{
+"ref":"aiobungie.objects.season.Artifact.points",
+"url":24,
+"doc":"Information about the artifact's power points"
+},
+{
+"ref":"aiobungie.objects.season.Artifact.power_bonus",
+"url":24,
+"doc":"Season artifact's power bonus."
+},
+{
+"ref":"aiobungie.objects.season.PowerBonus",
+"url":24,
+"doc":"Represents a Destiny 2 artifact power bonus information. Method generated by attrs for class PowerBonus."
+},
+{
+"ref":"aiobungie.objects.season.PowerBonus.cap",
+"url":24,
+"doc":"The cap of the power bonus."
+},
+{
+"ref":"aiobungie.objects.season.PowerBonus.current_progress",
+"url":24,
+"doc":"Power bonus's current progress."
+},
+{
+"ref":"aiobungie.objects.season.PowerBonus.daily_limit",
+"url":24,
+"doc":"Power bonus's daily limit."
+},
+{
+"ref":"aiobungie.objects.season.PowerBonus.daily_progress",
+"url":24,
+"doc":"Power bonus's daily progress."
+},
+{
+"ref":"aiobungie.objects.season.PowerBonus.level",
+"url":24,
+"doc":"Power bonus's current level aka The total earned bonus."
+},
+{
+"ref":"aiobungie.objects.season.PowerBonus.needed",
+"url":24,
+"doc":"The needed progress to earn the next level."
+},
+{
+"ref":"aiobungie.objects.season.PowerBonus.next_level",
+"url":24,
+"doc":"Power bonus's next level at."
+},
+{
+"ref":"aiobungie.objects.season.PowerBonus.progression_hash",
+"url":24,
+"doc":"The hash of the power bonus."
+},
+{
+"ref":"aiobungie.objects.season.PowerBonus.weekly_limit",
+"url":24,
+"doc":"Power bonus's weekly limit."
 },
 {
 "ref":"aiobungie.objects.user",
@@ -4428,7 +5016,7 @@ INDEX=[
 {
 "ref":"aiobungie.objects.user.User",
 "url":16,
-"doc":"Represents Bungie User object. Attributes      id:  builtins.int The user's id name:  builtins.str The user's name. is_deleted:  builtins.bool Returns True if the user is deleted about: typing.Optional[builtins.str] The user's about, Default is None if nothing is Found. created_at:  datetime.datetime The user's creation date in UTC date. updated_at:  datetime.datetime The user's last updated om UTC date. psn_name: typing.Optional[builtins.str] The user's psn id if it exists. twitch_name: typing.Optional[builtins.str] The user's twitch name if it exists. blizzard_name: typing.Optional[builtins.str] The user's blizzard name if it exists. steam_name: typing.Optional[builtins.str] The user's steam name if it exists status: typing.Optional[builtins.str] The user's bungie status text locale: typing.Optional[builtins.str] The user's locale. picture: aiobungie.internal.assets.Image The user's avatar. Method generated by attrs for class User."
+"doc":"Represents Bungie User object. Attributes      id:  builtins.int The user's id name:  builtins.str The user's name. is_deleted:  builtins.bool Returns True if the user is deleted about: typing.typing.Optional[builtins.str] The user's about, Default is None if nothing is Found. created_at:  datetime.datetime The user's creation date in UTC date. updated_at:  datetime.datetime The user's last updated om UTC date. psn_name: typing.typing.Optional[builtins.str] The user's psn id if it exists. twitch_name: typing.typing.Optional[builtins.str] The user's twitch name if it exists. blizzard_name: typing.typing.Optional[builtins.str] The user's blizzard name if it exists. steam_name: typing.typing.Optional[builtins.str] The user's steam name if it exists status: typing.typing.Optional[builtins.str] The user's bungie status text locale: typing.typing.Optional[builtins.str] The user's locale. picture: aiobungie.internal.assets.Image The user's avatar. Method generated by attrs for class User."
 },
 {
 "ref":"aiobungie.objects.user.User.as_dict",
@@ -4573,7 +5161,7 @@ INDEX=[
 {
 "ref":"aiobungie.objects.user.UserLike",
 "url":16,
-"doc":"The is meant for any Member / user / like objects."
+"doc":"The is meant for any Member / user / like objects. Method generated by attrs for class UserLike."
 },
 {
 "ref":"aiobungie.objects.user.UserLike.name",
@@ -4607,27 +5195,27 @@ INDEX=[
 },
 {
 "ref":"aiobungie.url",
-"url":24,
+"url":25,
 "doc":"Bungie API endpoint urls."
 },
 {
 "ref":"aiobungie.url.BASE",
-"url":24,
+"url":25,
 "doc":"Base bungie url"
 },
 {
 "ref":"aiobungie.url.REST_EP",
-"url":24,
+"url":25,
 "doc":"REST API endpoint"
 },
 {
 "ref":"aiobungie.url.OAUTH_EP",
-"url":24,
+"url":25,
 "doc":"OAuth endpoint"
 },
 {
 "ref":"aiobungie.url.TOKEN_EP",
-"url":24,
+"url":25,
 "doc":"OAuth token endpoint"
 }
 ]

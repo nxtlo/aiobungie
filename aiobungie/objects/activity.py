@@ -25,15 +25,16 @@
 
 from __future__ import annotations
 
-__all__: Sequence[str] = ("Activity",)
+__all__: typing.Sequence[str] = ("Activity",)
 
-from typing import TYPE_CHECKING, Any, Dict, Optional, Sequence
+import typing
 
 from aiobungie.internal import time
 
-from ..internal.enums import GameMode, MembershipType
+from ..internal.enums import GameMode
+from ..internal.enums import MembershipType
 
-if TYPE_CHECKING:
+if typing.TYPE_CHECKING:
     from datetime import datetime
 
 import abc
@@ -74,7 +75,7 @@ class PartialActivity(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def when(self) -> Optional[datetime]:
+    def when(self) -> typing.Optional[datetime]:
         """A UTC datetime object of when was the activivy started."""
 
     @property
@@ -126,7 +127,7 @@ class Activity(PartialActivity):
             The activity member's membership type.
     players_count: `builtins.int`
             Total players in the activity.
-    when: typing.Optional[datetime.datetime]
+    when: typing.typing.Optional[datetime.datetime]
             When did the activity occurred in UTC datetime.
     """
 
@@ -140,7 +141,7 @@ class Activity(PartialActivity):
 
     deaths: int = attr.field(repr=False, eq=False, hash=False)
 
-    when: Optional[datetime] = attr.field(repr=True, eq=False, hash=False)
+    when: typing.Optional[datetime] = attr.field(repr=True, eq=False, hash=False)
 
     assists: int = attr.field(repr=False, eq=False, hash=False)
 
@@ -153,7 +154,7 @@ class Activity(PartialActivity):
     kd: int = attr.field(repr=True, eq=False, hash=False)
 
     @property
-    def as_dict(self) -> Dict[str, Any]:
+    def as_dict(self) -> typing.Dict[str, typing.Any]:
         """Returns a dict object of the Activity,
         This function is useful if you're binding to other REST apis.
         """

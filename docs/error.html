@@ -53,7 +53,7 @@
 
 from __future__ import annotations
 
-__all__: Sequence[str] = [
+__all__: typing.Sequence[str] = [
     &#34;AiobungieError&#34;,
     &#34;PlayerNotFound&#34;,
     &#34;ActivityNotFound&#34;,
@@ -69,7 +69,7 @@ __all__: Sequence[str] = [
     &#34;ResponseError&#34;,
 ]
 
-from typing import Sequence, final
+import typing
 
 import attr
 
@@ -89,52 +89,52 @@ class NotFound(AiobungieError):
     &#34;&#34;&#34;Raised when an unknown request was not found.&#34;&#34;&#34;
 
 
-@final
+@typing.final
 class ResponseError(AiobungieError):
     &#34;&#34;&#34;Typical Responses error.&#34;&#34;&#34;
 
 
-@final
+@typing.final
 class PlayerNotFound(NotFound):
     &#34;&#34;&#34;Raised when a `aiobungie.objects.Player` is not found.&#34;&#34;&#34;
 
 
-@final
+@typing.final
 class Forbidden(HTTPException):
     &#34;&#34;&#34;Exception that&#39;s raised for when status code 403 occurs.&#34;&#34;&#34;
 
 
-@final
+@typing.final
 class Unauthorized(HTTPException):
     &#34;&#34;&#34;Unauthorized access.&#34;&#34;&#34;
 
 
-@final
+@typing.final
 class ActivityNotFound(NotFound):
     &#34;&#34;&#34;Raised when a `aiobungie.objects.Activity` not found.&#34;&#34;&#34;
 
 
-@final
+@typing.final
 class CharacterError(HTTPException):
     &#34;&#34;&#34;Raised when a `aiobungie.objects.Character` not found.&#34;&#34;&#34;
 
 
-@final
+@typing.final
 class ClanNotFound(NotFound):
     &#34;&#34;&#34;Raised when a `aiobungie.objects.Clan` not found.&#34;&#34;&#34;
 
 
-@final
+@typing.final
 class UserNotFound(NotFound):
     &#34;&#34;&#34;Raised when a `aiobungie.objects.User` not found.&#34;&#34;&#34;
 
 
-@final
+@typing.final
 class ComponentError(HTTPException):
     &#34;&#34;&#34;Raised when someone uses the wrong `aiobungie.internal.enums.Component.`&#34;&#34;&#34;
 
 
-@final
+@typing.final
 class MembershipTypeError(HTTPException):
     &#34;&#34;&#34;Raised when the memberhsip type is invalid.
     or The object you&#39;re trying to fetch doesn&#39;t have
@@ -161,7 +161,7 @@ class MembershipTypeError(HTTPException):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@final
+<pre><code class="python">@typing.final
 class ActivityNotFound(NotFound):
     &#34;&#34;&#34;Raised when a `aiobungie.objects.Activity` not found.&#34;&#34;&#34;</code></pre>
 </details>
@@ -209,7 +209,7 @@ class ActivityNotFound(NotFound):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@final
+<pre><code class="python">@typing.final
 class CharacterError(HTTPException):
     &#34;&#34;&#34;Raised when a `aiobungie.objects.Character` not found.&#34;&#34;&#34;</code></pre>
 </details>
@@ -242,7 +242,7 @@ class CharacterError(HTTPException):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@final
+<pre><code class="python">@typing.final
 class ClanNotFound(NotFound):
     &#34;&#34;&#34;Raised when a `aiobungie.objects.Clan` not found.&#34;&#34;&#34;</code></pre>
 </details>
@@ -265,7 +265,7 @@ class ClanNotFound(NotFound):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@final
+<pre><code class="python">@typing.final
 class ComponentError(HTTPException):
     &#34;&#34;&#34;Raised when someone uses the wrong `aiobungie.internal.enums.Component.`&#34;&#34;&#34;</code></pre>
 </details>
@@ -299,7 +299,7 @@ class ComponentError(HTTPException):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@final
+<pre><code class="python">@typing.final
 class Forbidden(HTTPException):
     &#34;&#34;&#34;Exception that&#39;s raised for when status code 403 occurs.&#34;&#34;&#34;</code></pre>
 </details>
@@ -374,7 +374,7 @@ The requested membership type.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@final
+<pre><code class="python">@typing.final
 class MembershipTypeError(HTTPException):
     &#34;&#34;&#34;Raised when the memberhsip type is invalid.
     or The object you&#39;re trying to fetch doesn&#39;t have
@@ -437,7 +437,7 @@ class MembershipTypeError(HTTPException):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@final
+<pre><code class="python">@typing.final
 class PlayerNotFound(NotFound):
     &#34;&#34;&#34;Raised when a `aiobungie.objects.Player` is not found.&#34;&#34;&#34;</code></pre>
 </details>
@@ -459,7 +459,7 @@ class PlayerNotFound(NotFound):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@final
+<pre><code class="python">@typing.final
 class ResponseError(AiobungieError):
     &#34;&#34;&#34;Typical Responses error.&#34;&#34;&#34;</code></pre>
 </details>
@@ -481,7 +481,7 @@ class ResponseError(AiobungieError):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@final
+<pre><code class="python">@typing.final
 class Unauthorized(HTTPException):
     &#34;&#34;&#34;Unauthorized access.&#34;&#34;&#34;</code></pre>
 </details>
@@ -514,7 +514,7 @@ class Unauthorized(HTTPException):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@final
+<pre><code class="python">@typing.final
 class UserNotFound(NotFound):
     &#34;&#34;&#34;Raised when a `aiobungie.objects.User` not found.&#34;&#34;&#34;</code></pre>
 </details>

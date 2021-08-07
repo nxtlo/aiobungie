@@ -25,17 +25,17 @@
 
 from __future__ import annotations
 
-__all__: Sequence[str] = ("Cache", "Hash")
+__all__: typing.Sequence[str] = ("Cache", "Hash")
 
 import asyncio
 import logging
-from typing import Any, Final, List, Sequence
+import typing
 
 import aredis
 
 from aiobungie.objects import user as user
 
-log: Final[logging.Logger] = logging.getLogger(__name__)
+log: typing.Final[logging.Logger] = logging.getLogger(__name__)
 log.setLevel("DEBUG")
 
 
@@ -48,26 +48,26 @@ class Hash:
         an Injector for your redis client.
     """
 
-    __slots__: Sequence[str] = ("_injector",)
+    __slots__: typing.Sequence[str] = ("_injector",)
 
     def __init__(self, inject: aredis.StrictRedis, /) -> None:
         self._injector = inject
 
-    async def set(self, hash: str, field: Any, value: Any) -> None:
+    async def set(self, hash: str, field: typing.Any, value: typing.Any) -> None:
         """Creates a new hash with field name and a value.
 
         Parameters
         -----------
         hash: `builtins.str`
                 The hash name.
-        field: `typing.Any`
+        field: `typing.typing.Any`
                 The field name.
-        value: `typing.Any`
+        value: `typing.typing.Any`
                 The value for the field.
         """
         await self._injector.execute_command("HSET {} {} {}".format(hash, field, value))
 
-    async def setx(self, hash: str, field: Any, value: Any) -> None:
+    async def setx(self, hash: str, field: typing.Any, value: typing.Any) -> None:
         """A method thats similar to `Hash.set`
         but will not replace the value if one is already exists.
 
@@ -75,19 +75,19 @@ class Hash:
         ----------
         hash: `builtins.str`
                 The hash name.
-        field: `typing.Any`
+        field: `typing.typing.Any`
                 The field name
-        value: `typing.Any`
+        value: `typing.typing.Any`
             The value of the field.
         """
         await self._injector.execute_command(f"HSETNX {hash} {field} {value}")
 
-    async def flush(self, *hashes: Sequence[str]) -> None:
+    async def flush(self, *hashes: typing.Sequence[str]) -> None:
         """Removes a hash.
 
         Parameters
         -----------
-        hashes: `typing.Sequence[builtins.str]`
+        hashes: `typing.typing.Sequence[builtins.str]`
                     The hashes you desire to delete.
         """
         fmt = [h for h in [*tuple(hashes)]]
@@ -112,7 +112,7 @@ class Hash:
         """
         return await self._injector.execute_command("HLEN {}".format(hash))
 
-    async def hashes(self) -> List[str]:
+    async def hashes(self) -> typing.List[str]:
         """Returns all hashes in the cache."""
         keys = await self._injector.execute_command("KEYS *")
         try:
@@ -121,7 +121,7 @@ class Hash:
             raise
         return key
 
-    async def all(self, hash: str) -> List[str]:
+    async def all(self, hash: str) -> typing.List[str]:
         """Returns all values from a hash.
 
         Parameters
@@ -131,7 +131,7 @@ class Hash:
 
         Returns
         -------
-        `typing.List[builtins.str]`
+        `typing.typing.List[builtins.str]`
             A list of string values.
         """
         coro = await self._injector.execute_command(f"HVALS {hash}")
@@ -141,26 +141,26 @@ class Hash:
             raise
         return found
 
-    async def delete(self, hash: str, field: Any) -> None:
+    async def delete(self, hash: str, field: typing.Any) -> None:
         """Deletes a field from the provided hash.
 
         Parameters
         ----------
         hash: `builtins.str`
                 The hash name.
-        field: `typing.Any`
+        field: `typing.typing.Any`
                 The field you want to delete.
         """
         await self._injector.execute_command(f"HDEL {hash} {field}")
 
-    async def exists(self, hash: str, field: Any) -> bool:
+    async def exists(self, hash: str, field: typing.Any) -> bool:
         """Returns True if the field exists in the hash.
 
         Parameters
         ----------
         hash: `builtins.str`
                 The hash name.
-        field: `typing.Any`
+        field: `typing.typing.Any`
                 The field name
 
         Returns: `builtins.bool`
@@ -170,14 +170,14 @@ class Hash:
             return True
         return False
 
-    async def get(self, hash: str, field: Any) -> str:
+    async def get(self, hash: str, field: typing.Any) -> str:
         """Returns the value associated with field in the hash stored at key.
 
         Parameters
         ----------
         hash: `builtins.str`
                 The hash name.
-        field: `typing.Any`
+        field: `typing.typing.Any`
                 The field name
         """
         coro = await self._injector.execute_command(f"HGET {hash} {field}")
@@ -192,7 +192,7 @@ class Hash:
 class Cache:
     """Redis Cache for interacting with aiobungie."""
 
-    __slots__: Sequence[str] = ("_pool", "hash")
+    __slots__: typing.Sequence[str] = ("_pool", "hash")
 
     def __init__(
         self,
@@ -220,10 +220,10 @@ class Cache:
     async def flush(self) -> None:
         await self._pool.flushdb()
 
-    async def ttl(self, key: str) -> Any:
+    async def ttl(self, key: str) -> typing.Any:
         return await self._pool.ttl(key)
 
-    async def get(self, key: Any) -> Any:
+    async def get(self, key: typing.Any) -> typing.Any:
         try:
             result = await self._pool.get(key)
             result = str(result, "utf-8")
@@ -231,7 +231,7 @@ class Cache:
             raise
         return result
 
-    async def put(self, key: Any, value: Any, expires: int = 0) -> None:
+    async def put(self, key: typing.Any, value: typing.Any, expires: int = 0) -> None:
         await self._pool.set(key, value)
         if expires:
             await self.expire(key, expires)

@@ -33,7 +33,6 @@ import asyncio
 import typing
 
 from aiobungie.ext import Manifest
-from aiobungie.internal import cache as cache_
 from aiobungie.internal import deprecated
 from aiobungie.internal import impl
 from aiobungie.internal import serialize as serialize_
@@ -57,7 +56,7 @@ class Client(impl.BaseClient):
         asyncio event loop.
     """
 
-    __slots__: typing.Sequence[str] = ("loop", "http", "_cache", "_serialize", "_token")
+    __slots__: typing.Sequence[str] = ("loop", "http", "_serialize", "_token")
 
     def __init__(self, token: str, *, loop: asyncio.AbstractEventLoop = None) -> None:
         self.loop: asyncio.AbstractEventLoop = (  # asyncio loop.
@@ -66,7 +65,6 @@ class Client(impl.BaseClient):
 
         # Redis hash cache for testing purposes only.
         # This requires a redis server running for usage.
-        self._cache = cache_.Cache(loop=self.loop)
 
         if not token:
             raise ValueError("Missing the API key!")
@@ -85,10 +83,6 @@ class Client(impl.BaseClient):
 
     async def __aexit__(self, exc_type, exc_val, exc_tb) -> None:
         pass
-
-    @property
-    def cache(self) -> cache_.Cache:
-        return self._cache
 
     @property
     def serialize(self) -> serialize_.Deserialize:

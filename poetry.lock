@@ -26,14 +26,6 @@ optional = false
 python-versions = "*"
 
 [[package]]
-name = "aredis"
-version = "1.1.8"
-description = "Python async client for Redis key-value store"
-category = "main"
-optional = false
-python-versions = "*"
-
-[[package]]
 name = "argcomplete"
 version = "1.12.3"
 description = "Bash tab completion for argparse"
@@ -467,7 +459,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "a7d47f986afa188d2a377991a798173b418d91afef0cd19512ad3cc2f089c720"
+content-hash = "9a3c50ca6327ceff0a6f50e80229e929875fe0c879ca0a7fb578d5a563df9523"
 
 [metadata.files]
 aiohttp = [
@@ -512,9 +504,6 @@ aiohttp = [
 appdirs = [
     {file = "appdirs-1.4.4-py2.py3-none-any.whl", hash = "sha256:a841dacd6b99318a741b166adb07e19ee71a274450e68237b4650ca1055ab128"},
     {file = "appdirs-1.4.4.tar.gz", hash = "sha256:7d5d0167b2b1ba821647616af46a749d1c653740dd0d2415100fe26e27afdf41"},
-]
-aredis = [
-    {file = "aredis-1.1.8.tar.gz", hash = "sha256:880bcf91c4f89b919311cc93626bbc70901c6e5c4fdb3dcba643411e3ee40bcf"},
 ]
 argcomplete = [
     {file = "argcomplete-1.12.3-py2.py3-none-any.whl", hash = "sha256:291f0beca7fd49ce285d2f10e4c1c77e9460cf823eef2de54df0c0fec88b0d81"},

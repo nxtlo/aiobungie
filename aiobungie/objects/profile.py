@@ -224,6 +224,21 @@ class Profile(ProfileComponentImpl):
         return int(self.id)
 
     @property
+    def titan_id(self) -> int:
+        """The titan id of the profile player."""
+        return int(self.character_ids[0])
+
+    @property
+    def hunter_id(self) -> int:
+        """The huter id of the profile player."""
+        return int(self.character_ids[1])
+
+    @property
+    def warlock_id(self) -> int:
+        """The warlock id of the profile player."""
+        return int(self.character_ids[2])
+
+    @property
     def as_dict(self) -> typing.Dict[str, typing.Any]:
         """Returns a dict object of the profile,
         This function is useful if you're binding to other REST apis.

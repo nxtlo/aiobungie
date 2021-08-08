@@ -24,22 +24,11 @@
 
 from __future__ import annotations
 
-__all__: typing.Sequence[str] = ["BaseCache", "BaseClient", "RESTful"]
+__all__: typing.Sequence[str] = ["BaseClient", "RESTful"]
 
 import typing
 
 from aiobungie import client as client_
-from aiobungie.internal import cache as cache_
-
-
-@typing.runtime_checkable
-class BaseCache(typing.Protocol):
-    __slots__: typing.Sequence[str] = ()
-
-    @property
-    def cache(self) -> cache_.Cache:
-        """A redis hash cache for testing purposes."""
-        raise NotImplementedError
 
 
 @typing.runtime_checkable
@@ -54,7 +43,7 @@ class RESTful(typing.Protocol):
 
 
 @typing.runtime_checkable
-class BaseClient(BaseCache, RESTful, typing.Protocol):
+class BaseClient(RESTful, typing.Protocol):
     __slots__: typing.Sequence[str] = ()
 
     def run(

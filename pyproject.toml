@@ -33,7 +33,6 @@ classifiers = [
 python = "^3.8"
 python-dateutil = "2.8.2"
 aiohttp = "3.7.4.post0"
-aredis = "1.1.8"
 attrs = "21.2.0"
 
 [tool.poetry.dev-dependencies]

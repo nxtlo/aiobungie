@@ -25,6 +25,7 @@
 
 import asyncio
 import time
+import os
 
 import aiobungie
 from aiobungie.objects import Activity
@@ -38,6 +39,14 @@ from aiobungie.objects import ClanMember
 from tests.config import TOKEN
 from tests.config import data
 
+# Using uvloop for speedups.
+if os.name != "nt":
+    try:
+        import uvloop
+    except ImportError:
+        pass
+    else:
+        uvloop.install()
 
 class ClientTest(aiobungie.Client):
     def __init__(self, token: str) -> None:
@@ -102,7 +111,7 @@ class ClientTest(aiobungie.Client):
         print(char.as_dict)
 
     async def clan_id_test(self):
-        clan: Clan = await self.fetch_clan_from_id(313096)
+        clan: Clan = await self.fetch_clan_from_id(data['clanid'])
         members: dict[str, int] = await clan.fetch_members()
         print(clan.as_dict)
         print(members)
@@ -126,6 +135,7 @@ class ClientTest(aiobungie.Client):
             data["memid"],
             aiobungie.MembershipType.STEAM,
         )
+        print(profile.warlock_id, profile.titan_id, profile.hunter_id)
         print(profile.as_dict)
 
     async def titan_test(self) -> None:

@@ -162,7 +162,7 @@ class Deserialize:
         )
 
     def deserialize_clan_member(
-        self, data: JsonDict, member: str = None, /
+        self, data: JsonDict, /
     ) -> clans.ClanMember:
 
         if (payload := data["results"]) is not None:
@@ -177,7 +177,7 @@ class Deserialize:
             try:
                 payload = payload[0]["destinyUserInfo"]
             except KeyError:
-                raise error.NotFound("The clan has no members.")
+                raise error.NotFound("Clan member not found.")
 
             id: int = payload["membershipId"]
             name: str = payload["displayName"]

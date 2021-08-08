@@ -396,7 +396,7 @@ class Client(impl.BaseClient):
 
         resp = await self.http.fetch_clan_members(id, type, name)
         assert isinstance(resp, dict)
-        return self._serialize.deserialize_clan_member(resp, name)
+        return self._serialize.deserialize_clan_member(resp)
 
     async def fetch_clan_members(
         self, id: int, type: MembershipType = MembershipType.NONE, /

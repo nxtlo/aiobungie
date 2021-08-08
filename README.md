@@ -16,9 +16,6 @@
     <a href="https://github.com/nxtlo/aiobungie/blob/master/LICENSE">
     <img src="https://img.shields.io/pypi/l/aiobungie"/>
     </a>
-    <a href="https://github.com/nxtlo/aiobungie/blob/master/LICENSE">
-    <img src="https://img.shields.io/pypi/l/aiobungie"/>
-    </a>
     <a href="https://www.codefactor.io/repository/github/nxtlo/aiobungie/">
     <img src="https://www.codefactor.io/repository/github/nxtlo/aiobungie/badge">
     </a>

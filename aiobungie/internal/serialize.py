@@ -145,11 +145,25 @@ class Deserialize:
         banner = Image(str(data["detail"]["bannerPath"]))
         avatar = Image(str(data["detail"]["avatarPath"]))
         tags = data["detail"]["tags"]
+        features = data['detail']['features']
+        type = data['detail']['groupType']
+
+        features_obj = clans.ClanFeatures(
+            max_members=features["maximumMembers"],
+            max_membership_types=features["maximumMembershipsOfGroupType"],
+            capabilities=features["capabilities"],
+            membership_types=features["membershipTypes"],
+            invite_permissions=features["invitePermissionOverride"],
+            update_banner_permissions=features["updateBannerPermissionOverride"],
+            update_culture_permissions=features["updateCulturePermissionOverride"],
+            join_level=features["joinLevel"]
+        )
 
         return clans.Clan(
             app=self._rest,
             id=id,
             name=name,
+            type=enums.GroupType(type),
             created_at=Time.clean_date(created_at),
             member_count=member_count,
             description=description,
@@ -158,6 +172,7 @@ class Deserialize:
             banner=banner,
             avatar=avatar,
             tags=tags,
+            features=features_obj,
             owner=self.deseialize_clan_owner(data["founder"]),
         )
 
@@ -186,6 +201,7 @@ class Deserialize:
             icon: Image = Image(str(payload["iconPath"]))
 
         return clans.ClanMember(
+            app=self._rest,
             group_id=int(group_id),
             is_online=is_online,
             last_online=last_online,

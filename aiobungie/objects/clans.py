@@ -25,7 +25,7 @@
 
 from __future__ import annotations
 
-__all__: typing.List[str] = ["Clan", "ClanOwner", "ClanMember"]
+__all__: typing.List[str] = ["Clan", "ClanOwner", "ClanMember", "ClanFeatures"]
 
 
 import typing
@@ -37,7 +37,7 @@ from aiobungie.internal import impl
 
 from ..internal import Image
 from ..internal import Time
-from ..internal.enums import MembershipType
+from ..internal.enums import MembershipType, GroupType
 from .user import UserLike
 
 if typing.TYPE_CHECKING:
@@ -46,8 +46,39 @@ if typing.TYPE_CHECKING:
 
 
 @attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
+class ClanFeatures:
+    """Implementation of a bungie clan features."""
+
+    max_members: int = attr.field(repr=True)
+    """The maximum members the clan can have"""
+
+    max_membership_types: int = attr.field(repr=False)
+    """The maximum membership types the clan can have"""
+
+    capabilities: int = attr.field(repr=False)
+    """An int that represents the clan's capabilities."""
+
+    membership_types: typing.List[MembershipType] = attr.field(repr=True)
+    """The clan's membership types."""
+
+    invite_permissions: bool = attr.field(repr=False)
+    """True if the clan has permissions to invite."""
+
+    update_banner_permissions: bool = attr.field(repr=False)
+    """True if the clan has permissions to updates its banner."""
+
+    update_culture_permissions: bool = attr.field(repr=False)
+
+    join_level: int = attr.field(repr=True)
+    """The clan's join level."""
+
+
+@attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
 class ClanMember(UserLike):
     """Represents a Destiny 2 clan member."""
+
+    app: impl.RESTful = attr.field(repr=False)
+    """A client app that we may use for externalr requests."""
 
     id: int = attr.field(repr=True, hash=True)
     """Clan member's id"""
@@ -224,6 +255,9 @@ class Clan:
     id: int = attr.field(hash=True, repr=True, eq=True)
     """The clan id"""
 
+    type: GroupType = attr.field(repr=True)
+    """The clan type."""
+
     name: str = attr.field(repr=True)
     """The clan's name"""
 
@@ -253,6 +287,9 @@ class Clan:
 
     owner: ClanOwner = attr.field(repr=True)
     """The clan owner."""
+
+    features: ClanFeatures = attr.field(repr=False, hash=False, eq=False)
+    """The clan features."""
 
     async def fetch_member(
         self, name: str, type: MembershipType = MembershipType.NONE, /
@@ -300,21 +337,43 @@ class Clan:
         """
         return await self.app.rest.fetch_clan_members(self.id, type)
 
+    # These ones is not implemented since it 
+    # requires OAUth2
+
     async def fetch_banned_members(
-        self, page: int = 1, /
+        self
     ) -> typing.Sequence[ClanMember]:
         """Fetch members who has been banned from the clan.
-
-        Parameters
-        ----------
-        page: `buildint.int`
-            The page number to return.
 
         Returns
         --------
         `typing.Sequence[aiobungie.objects.clans.ClanMember]`
-            A sequence of clan members.
-        name
+            A sequence of clan members or are banned.
+        """
+        raise NotImplementedError
+
+    async def fetch_pending_members(
+        self
+    ) -> typing.Sequence[ClanMember]:
+        """Fetch members who are waiting to get accepted.
+
+        Returns
+        --------
+        `typing.Sequence[aiobungie.objects.clans.ClanMember]`
+            A sequence of clan members who are awaiting 
+            to get accepted to the clan.
+        """
+        raise NotImplementedError
+
+    async def fetch_invited_members(
+        self
+    ) -> typing.Sequence[ClanMember]:
+        """Fetch members who has been invited.
+
+        Returns
+        --------
+        `typing.Sequence[aiobungie.objects.clans.ClanMember]`
+            A sequence of members who have been invited.
         """
         raise NotImplementedError
 

@@ -44,6 +44,8 @@ __all__: typing.Sequence[str] = (
     "Place",
     "ItemTier",
     "AmmoType",
+    "GroupType",
+    "CredentialType"
 )
 
 import enum
@@ -487,6 +489,45 @@ class AmmoType(int, enum.Enum):
     PRIMARY = 1
     SPECIAL = 2
     HEAVY = 3
+
+    def __int__(self) -> int:
+        return int(self.value)
+
+    def __str__(self) -> str:
+        return self.name
+
+
+@typing.final
+class GroupType(int, enum.Enum):
+    """An enums for the known bungie group types."""
+
+    GENERAL = 0
+    CLAN = 1
+
+    def __int__(self) -> int:
+        return int(self.value)
+
+    def __str__(self) -> str:
+        return self.name
+
+
+@typing.final
+class CredentialType(int, enum.Enum):
+    """The types of the accounts system suports at bungie."""
+
+    NONE =  0
+    XUID =  1
+    PSNID = 2
+    WILD = 3
+    FAKE = 4
+    FACEBOOK = 5
+    GOOGLE = 8
+    WINDOWS = 9
+    DEMONID = 10
+    STEAMID = 12
+    BATTLENETID = 14
+    STADIAID = 16
+    TWITCHID = 18
 
     def __int__(self) -> int:
         return int(self.value)

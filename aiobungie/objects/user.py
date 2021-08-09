@@ -31,6 +31,7 @@ import abc
 import typing
 
 import attr
+from aiobungie.internal import impl
 
 from ..internal import Image
 from ..internal import Time
@@ -193,6 +194,11 @@ class User(PartialUser):
 @attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
 class UserLike(abc.ABC):
     """The is meant for any Member / user / like objects."""
+
+    @property
+    @abc.abstractmethod
+    def app(self) -> impl.RESTful:
+        """A client app that we may use for external requests."""
 
     @property
     @abc.abstractmethod

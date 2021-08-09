@@ -394,7 +394,7 @@ class Client(impl.BaseClient):
 
     async def fetch_clan_members(
         self, id: int, type: MembershipType = MembershipType.NONE, /
-    ) -> typing.Dict[str, int]:
+    ) -> typing.Dict[str, typing.Tuple[int, MembershipType]]:
 
         resp = await self.http.fetch_clan_members(id, type, page=1)
         assert isinstance(resp, dict)

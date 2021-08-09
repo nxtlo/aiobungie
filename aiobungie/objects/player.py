@@ -29,9 +29,9 @@ __all__: typing.Sequence[str] = ["Player"]
 
 
 import typing
-
 import attr
 
+from aiobungie.internal import impl
 from ..internal import Image
 from ..internal.enums import MembershipType
 from .user import UserLike
@@ -54,6 +54,9 @@ class Player(UserLike):
     type: `aiobungie.internal.enums.MembershipType`
         The player's membership type.
     """
+    
+    app: impl.RESTful = attr.field(repr=False)
+
 
     icon: Image = attr.field(repr=False, hash=False, eq=False)
     """The player's icon."""

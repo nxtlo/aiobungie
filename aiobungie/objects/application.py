@@ -33,6 +33,7 @@ import attr
 
 from aiobungie import url
 
+from aiobungie.internal import impl
 from ..internal import Image
 from ..internal import Time
 from ..internal import enums
@@ -74,6 +75,10 @@ class ApplicationOwner(UserLike):
 
     is_public: bool = attr.field(repr=True)
     """The application owner's profile privacy."""
+    
+    @property
+    def app(self) -> impl.RESTful:
+        return self.app
 
     @property
     def link(self) -> str:

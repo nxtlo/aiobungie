@@ -113,9 +113,7 @@ class ClientTest(aiobungie.Client):
     async def clan_id_test(self):
         clan: Clan = await self.fetch_clan_from_id(data['clanid'])
         members: dict[str, int] = await clan.fetch_members()
-        print(repr(clan.features))
-        print(repr(clan))
-        print(repr(members))
+        print(members)
 
     async def clan_test(self):
         clan: Clan = await self.fetch_clan("Nuanceㅤ")
@@ -168,10 +166,10 @@ async def main() -> None:
     before = time.time()
     coros = [
         # client.char_test(),
-        # client.clan_id_test(),
+        client.clan_id_test(),
         # client.clan_test(),
         # client.app_test(),
-        client.user_id_test(),
+        # client.user_id_test(),
         # client.user_test(),
         # client.player_test(),
         # client.profile_test(),

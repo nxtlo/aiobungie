@@ -103,6 +103,7 @@ class Deserialize:
                 raise error.PlayerNotFound("Player was not found.") from None
 
         return player.Player(
+            app=self._rest,
             name=data["displayName"],
             id=int(data["membershipId"]),
             is_public=data["isPublic"],
@@ -201,7 +202,6 @@ class Deserialize:
             icon: Image = Image(str(payload["iconPath"]))
 
         return clans.ClanMember(
-            app=self._rest,
             group_id=int(group_id),
             is_online=is_online,
             last_online=last_online,
@@ -213,27 +213,34 @@ class Deserialize:
             icon=icon,
         )
 
-    def deserialize_clan_members(self, data: JsonDict, /) -> typing.Dict[str, int]:
+    def deserialize_clan_members(
+        self, 
+        data: JsonDict, /
+        ) -> typing.Dict[str, typing.Tuple[int, enums.MembershipType]]:
 
         if (payload := data["results"]) is not None:
-
-            # We return the clan members
-            # if no specific member was selected.
             try:
                 _member = [m["destinyUserInfo"] for m in payload]
             except KeyError:
                 pass
 
-            # we return a dict of the clan members
-            # Key: id, Value: Name
+            # for some weird reason if we iterate
+            # over the names as the key, All members will have
+            # the same name. Not sure whats causing this
+            # But iterating over the names seems working fine.
+
             members = {
-                name["displayName"]: int(id["membershipId"])
+                str(name["displayName"]): (
+                    int(id['membershipId']), 
+                    enums.MembershipType(type['membershipType'])
+                )
                 for name in _member
                 for id in _member
+                for type in _member
             }
-            if members is None:
-                return {}
 
+            if members is None:
+                return None
         return members
 
     def deserialize_app_owner(self, payload: JsonDict) -> app.ApplicationOwner:

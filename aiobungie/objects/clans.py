@@ -77,9 +77,6 @@ class ClanFeatures:
 class ClanMember(UserLike):
     """Represents a Destiny 2 clan member."""
 
-    app: impl.RESTful = attr.field(repr=False)
-    """A client app that we may use for externalr requests."""
-
     id: int = attr.field(repr=True, hash=True)
     """Clan member's id"""
 
@@ -106,6 +103,10 @@ class ClanMember(UserLike):
 
     joined_at: datetime = attr.field(repr=False)
     """The clan member's join date in UTC time zone."""
+    
+    @property
+    def app(self) -> impl.RESTful:
+        return self.app
 
     @property
     def link(self) -> typing.Optional[str]:
@@ -166,6 +167,7 @@ class ClanOwner(UserLike):
     types: typing.List[builtins.int]:
         returns a List of `builtins.int` of the clan owner's types.
     """
+    
 
     id: int = attr.field(hash=True, repr=True)
     """The user id."""
@@ -195,6 +197,10 @@ class ClanOwner(UserLike):
 
     joined_at: datetime = attr.field(repr=True)
     """Owner's bungie join date."""
+    
+    @property
+    def app(self) -> impl.RESTful:
+        return self.app
 
     @property
     def human_timedelta(self) -> str:
@@ -317,7 +323,7 @@ class Clan:
 
     async def fetch_members(
         self, type: MembershipType = MembershipType.NONE, /
-    ) -> typing.Dict[str, int]:
+    ) -> typing.Dict[str, typing.Tuple[int, MembershipType]]:
         """Fetch the members of the clan.
 
         if the memberhship type is None it will
@@ -331,9 +337,10 @@ class Clan:
 
         Returns
         --------
-        `typing.Dict[str, int]`
-            A dict that holds a key of the clan members's name
-            and a value of the clan members's id.
+        typing.Dict[str, tuple[int, aiobungie.MembershipType]]
+            The clan members in this clan, Represented as
+            a dict of the member name to a tuple of the member id
+            and membership type object.
         """
         return await self.app.rest.fetch_clan_members(self.id, type)
 

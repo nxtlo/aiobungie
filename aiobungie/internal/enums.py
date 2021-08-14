@@ -45,7 +45,7 @@ __all__: typing.Sequence[str] = (
     "ItemTier",
     "AmmoType",
     "GroupType",
-    "CredentialType"
+    "CredentialType",
 )
 
 import enum
@@ -515,8 +515,8 @@ class GroupType(int, enum.Enum):
 class CredentialType(int, enum.Enum):
     """The types of the accounts system suports at bungie."""
 
-    NONE =  0
-    XUID =  1
+    NONE = 0
+    XUID = 1
     PSNID = 2
     WILD = 3
     FAKE = 4

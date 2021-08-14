@@ -20,13 +20,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Basic aiobungie objects implementation."""
+"""Basic implementations of aiobungie client crates.
+
+These crates are used to organize the flow and how things stracture
+for functional usage for the Bungie API objects.
+"""
 
 
 from __future__ import annotations
 
 __all__: Seq[str] = [
     "Application",
+    "PostActivity",
     "Clan",
     "Player",
     "Character",
@@ -41,11 +46,13 @@ __all__: Seq[str] = [
     "UserLike",
     "ProfileComponentImpl",
     "Entity",
+    "HardLinkedMembership"
 ]
 
 from typing import Sequence as Seq
 
 from .activity import Activity
+from .activity import PostActivity
 from .application import Application
 from .application import ApplicationOwner
 from .character import Character
@@ -60,3 +67,4 @@ from .profile import Profile
 from .profile import ProfileComponentImpl
 from .user import User
 from .user import UserLike
+from .user import HardLinkedMembership

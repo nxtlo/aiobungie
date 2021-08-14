@@ -27,7 +27,10 @@
 # You can fetch the bungie profile, Destiny 2 player, Bungie user.
 
 import aiobungie
-from aiobungie.objects import Character, Player, Profile, User
+from aiobungie.crate import Character
+from aiobungie.crate import Player
+from aiobungie.crate import Profile
+from aiobungie.crate import User
 
 client = aiobungie.Client("YOUR_TOKEN_HERE")
 

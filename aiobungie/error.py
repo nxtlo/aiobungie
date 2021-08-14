@@ -67,7 +67,7 @@ class ResponseError(AiobungieError):
 
 @typing.final
 class PlayerNotFound(NotFound):
-    """Raised when a `aiobungie.objects.Player` is not found."""
+    """Raised when a `aiobungie.crate.Player` is not found."""
 
 
 @typing.final
@@ -82,22 +82,22 @@ class Unauthorized(HTTPException):
 
 @typing.final
 class ActivityNotFound(NotFound):
-    """Raised when a `aiobungie.objects.Activity` not found."""
+    """Raised when a `aiobungie.crate.Activity` not found."""
 
 
 @typing.final
 class CharacterError(HTTPException):
-    """Raised when a `aiobungie.objects.Character` not found."""
+    """Raised when a `aiobungie.crate.Character` not found."""
 
 
 @typing.final
 class ClanNotFound(NotFound):
-    """Raised when a `aiobungie.objects.Clan` not found."""
+    """Raised when a `aiobungie.crate.Clan` not found."""
 
 
 @typing.final
 class UserNotFound(NotFound):
-    """Raised when a `aiobungie.objects.User` not found."""
+    """Raised when a `aiobungie.crate.User` not found."""
 
 
 @typing.final
@@ -108,6 +108,6 @@ class ComponentError(HTTPException):
 @typing.final
 class MembershipTypeError(HTTPException):
     """Raised when the memberhsip type is invalid.
-    or The object you're trying to fetch doesn't have
+    or The crate you're trying to fetch doesn't have
     The requested membership type.
     """

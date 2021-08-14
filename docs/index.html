@@ -553,6 +553,7 @@ __all__: Sequence[str] = (
     &#34;DamageType&#34;,
     &#34;Item&#34;,
     &#34;Place&#34;,
+    &#34;CredentialType&#34;
 )
 
 from typing import Sequence
@@ -579,6 +580,12 @@ __email__ = &#34;dhmony-99@hotmail.com&#34;</code></pre>
                             <p>The base aiobungie Client that your should inherit from / use.</p>
                         </div>
                     </dd>
+                    <dt><code class="name"><a title="aiobungie.crate" href="crate/index.html">aiobungie.crate</a></code></dt>
+                    <dd>
+                        <div class="desc">
+                            <p>Basic implementations of aiobungie client crates …</p>
+                        </div>
+                    </dd>
                     <dt><code class="name"><a title="aiobungie.error" href="error.html">aiobungie.error</a></code></dt>
                     <dd>
                         <div class="desc">
@@ -603,12 +610,6 @@ __email__ = &#34;dhmony-99@hotmail.com&#34;</code></pre>
                             <p>Package contains internal and helpers for aiobungie.</p>
                         </div>
                     </dd>
-                    <dt><code class="name"><a title="aiobungie.objects" href="objects/index.html">aiobungie.objects</a></code></dt>
-                    <dd>
-                        <div class="desc">
-                            <p>Basic aiobungie objects implementation.</p>
-                        </div>
-                    </dd>
                     <dt><code class="name"><a title="aiobungie.url" href="url.html">aiobungie.url</a></code></dt>
                     <dd>
                         <div class="desc">
@@ -630,7 +631,7 @@ __email__ = &#34;dhmony-99@hotmail.com&#34;</code></pre>
 </code></dt>
                     <dd>
                         <div class="desc">
-                            <p>Raised when a <code><a title="aiobungie.objects.Activity" href="objects/index.html#aiobungie.objects.Activity">Activity</a></code> not found.</p>
+                            <p>Raised when a <code><a title="aiobungie.crate.Activity" href="crate/index.html#aiobungie.crate.Activity">Activity</a></code> not found.</p>
                         </div>
                         <details class="source">
                             <summary>
@@ -638,7 +639,7 @@ __email__ = &#34;dhmony-99@hotmail.com&#34;</code></pre>
                             </summary>
                             <pre><code class="python">@typing.final
 class ActivityNotFound(NotFound):
-    &#34;&#34;&#34;Raised when a `aiobungie.objects.Activity` not found.&#34;&#34;&#34;</code></pre>
+    &#34;&#34;&#34;Raised when a `aiobungie.crate.Activity` not found.&#34;&#34;&#34;</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
@@ -654,7 +655,7 @@ class ActivityNotFound(NotFound):
 </code></dt>
                     <dd>
                         <div class="desc">
-                            <p>Raised when a <code><a title="aiobungie.objects.Clan" href="objects/index.html#aiobungie.objects.Clan">Clan</a></code> not found.</p>
+                            <p>Raised when a <code><a title="aiobungie.crate.Clan" href="crate/index.html#aiobungie.crate.Clan">Clan</a></code> not found.</p>
                         </div>
                         <details class="source">
                             <summary>
@@ -662,7 +663,7 @@ class ActivityNotFound(NotFound):
                             </summary>
                             <pre><code class="python">@typing.final
 class ClanNotFound(NotFound):
-    &#34;&#34;&#34;Raised when a `aiobungie.objects.Clan` not found.&#34;&#34;&#34;</code></pre>
+    &#34;&#34;&#34;Raised when a `aiobungie.crate.Clan` not found.&#34;&#34;&#34;</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
@@ -754,7 +755,7 @@ class Class(int, enum.Enum):
         asyncio event loop.
     &#34;&#34;&#34;
 
-    __slots__: typing.Sequence[str] = (&#34;loop&#34;, &#34;http&#34;, &#34;_cache&#34;, &#34;_serialize&#34;, &#34;_token&#34;)
+    __slots__: typing.Sequence[str] = (&#34;loop&#34;, &#34;http&#34;, &#34;_serialize&#34;, &#34;_token&#34;)
 
     def __init__(self, token: str, *, loop: asyncio.AbstractEventLoop = None) -&gt; None:
         self.loop: asyncio.AbstractEventLoop = (  # asyncio loop.
@@ -763,7 +764,6 @@ class Class(int, enum.Enum):
 
         # Redis hash cache for testing purposes only.
         # This requires a redis server running for usage.
-        self._cache = cache_.Cache(loop=self.loop)
 
         if not token:
             raise ValueError(&#34;Missing the API key!&#34;)
@@ -782,10 +782,6 @@ class Class(int, enum.Enum):
 
     async def __aexit__(self, exc_type, exc_val, exc_tb) -&gt; None:
         pass
-
-    @property
-    def cache(self) -&gt; cache_.Cache:
-        return self._cache
 
     @property
     def serialize(self) -&gt; serialize_.Deserialize:
@@ -847,12 +843,12 @@ class Class(int, enum.Enum):
         Returns
         -------
         `aiobungie.ext.Manifest`
-            A Manifest object.
+            A Manifest crate.
         &#34;&#34;&#34;
         resp = await self.http.fetch_manifest()
         return Manifest(self._token, resp)
 
-    async def fetch_user(self, name: str, *, position: int = 0) -&gt; objects.User:
+    async def fetch_user(self, name: str, *, position: int = 0) -&gt; crate.User:
         &#34;&#34;&#34;Fetches a Bungie user by their name.
 
         Parameters
@@ -873,7 +869,7 @@ class Class(int, enum.Enum):
         user_mod = self._serialize.deserialize_user(data, position)
         return user_mod
 
-    async def fetch_user_from_id(self, id: int) -&gt; objects.User:
+    async def fetch_user_from_id(self, id: int) -&gt; crate.User:
         &#34;&#34;&#34;Fetches a Bungie user by their id.
 
         Parameters
@@ -893,17 +889,51 @@ class Class(int, enum.Enum):
         assert isinstance(payload, dict)
         # User and User from id has the same attrs but different return types so we have to ignore here.
         return self._serialize.deserialize_user(payload)  # type: ignore
+    
+    async def fetch_hard_types(
+        self, 
+        credential: int, 
+        type: CredentialType = CredentialType.STEAMID, /
+        ) -&gt; crate.user.HardLinkedMembership:
+        &#34;&#34;&#34;Gets any hard linked membership given a credential. 
+        Only works for credentials that are public just STEAMID from `aiobungie.CredentialType` right now. 
+        Cross Save aware.
+        
+        Parameters
+        ----------
+        credential: `builtins.int`
+            A valid SteamID64
+        type: `aiobungie.CredentialType`
+            The crededntial type. This must not be changed
+            Since its only credential that works &#34;currently&#34;
+
+        Returns
+        -------
+        `aiobungie.crate.user.HardLinkedMembership`
+            Information about the hard linked data.
+        &#34;&#34;&#34;
+        
+        # This doens&#39;t really needs to be serialized like other stuff
+        # since the dict only contains 3 keys.
+        payload = await self.http.fetch_hard_linked(credential, type)
+        assert isinstance(payload, dict)
+
+        return crate.user.HardLinkedMembership(
+            id=int(payload[&#39;membershipId&#39;]),
+            type=MembershipType(payload[&#39;membershipType&#39;]),
+            cross_save_type=MembershipType(payload[&#39;CrossSaveOverriddenType&#39;])
+        )
 
     async def fetch_profile(
         self,
         memberid: int,
         type: MembershipType,
         /,
-    ) -&gt; objects.Profile:
+    ) -&gt; crate.Profile:
         &#34;&#34;&#34;
         Fetches a bungie profile.
 
-        See `aiobungie.objects.Profile` to access other components.
+        See `aiobungie.crate.Profile` to access other components.
 
         Paramaters
         ----------
@@ -914,7 +944,7 @@ class Class(int, enum.Enum):
 
         Returns
         --------
-        `aiobungie.objects.Profile`
+        `aiobungie.crate.Profile`
             An aiobungie member profile.
         &#34;&#34;&#34;
         data = await self.http.fetch_profile(memberid, type)
@@ -923,7 +953,7 @@ class Class(int, enum.Enum):
 
     async def fetch_player(
         self, name: str, type: MembershipType, *, position: int = 0
-    ) -&gt; objects.Player:
+    ) -&gt; crate.Player:
         &#34;&#34;&#34;Fetches a Destiny2 Player.
 
         Parameters
@@ -937,8 +967,8 @@ class Class(int, enum.Enum):
 
         Returns
         --------
-        `aiobungie.objects.Player`
-            An aiobungie Destiny 2 Player object
+        `aiobungie.crate.Player`
+            An aiobungie Destiny 2 Player crate
         &#34;&#34;&#34;
         resp = await self.http.fetch_player(name, type)
         assert isinstance(resp, list)
@@ -946,7 +976,7 @@ class Class(int, enum.Enum):
 
     async def fetch_character(
         self, memberid: int, type: MembershipType, character: Class
-    ) -&gt; objects.Character:
+    ) -&gt; crate.Character:
         &#34;&#34;&#34;Fetches a Destiny 2 character.
 
         Parameters
@@ -960,8 +990,8 @@ class Class(int, enum.Enum):
 
         Returns
         -------
-        `aiobungie.objects.Character`
-            An aiobungie character object.
+        `aiobungie.crate.Character`
+            An aiobungie character crate.
 
         Raises
         ------
@@ -981,28 +1011,27 @@ class Class(int, enum.Enum):
         &#34;&#34;&#34;Fetch vendor sales.&#34;&#34;&#34;
         return await self.http.fetch_vendor_sales()
 
-    @deprecated
     async def fetch_activity(
         self,
-        userid: int,
-        charid: int,
+        member_id: int,
+        character_id: int,
         mode: GameMode,
-        memtype: MembershipType,
+        membership_type: MembershipType,
         *,
         page: typing.Optional[int] = 1,
         limit: typing.Optional[int] = 1,
-    ) -&gt; None:
+    ) -&gt; crate.activity.Activity:
         &#34;&#34;&#34;Fetches a Destiny 2 activity for the specified user id and character.
 
         Parameters
         ----------
-        userid: `builtins.int`
+        member_id: `builtins.int`
             The user id that starts with `4611`.
-        charaid: `builtins.int`
+        character_id: `builtins.int`
             The id of the character to retrieve.
         mode: `aiobungie.internal.enums.GameMode`
             This parameter filters the game mode, Nightfall, Strike, Iron Banner, etc.
-        memtype: `aiobungie.internal.enums.MembershipType`
+        membership_type: `aiobungie.internal.enums.MembershipType`
             The Member ship type, if nothing was passed than it will return all.
         page: typing.Optional[builtins.int]
             The page number
@@ -1011,22 +1040,43 @@ class Class(int, enum.Enum):
 
         Returns
         -------
-        `aiobungie.objects.Activity`
-            An aiobungie Activity object.
+        `aiobungie.crate.Activity`
+            An aiobungie Activity crate.
 
         Raises
         ------
-        `AttributeError`
-            Using `aiobungie.objects.Activity.hash` for non raid activies.
         `aiobungie.error.ActivityNotFound`
-            Any other errors occures during the response.
+            The activity was not found.
         &#34;&#34;&#34;
         resp = await self.http.fetch_activity(
-            userid, charid, mode, memtype=memtype, page=page, limit=limit
+            member_id,
+            character_id,
+            mode,
+            membership_type=membership_type,
+            page=page,
+            limit=limit,
         )
-        pass
+        assert isinstance(resp, dict)
+        return self.serialize.deserialize_activity(resp)
 
-    async def fetch_app(self, appid: int, /) -&gt; objects.Application:
+    async def fetch_post_activity(self, instance: int, /) -&gt; crate.activity.PostActivity:
+        &#34;&#34;&#34;Fetchs a post activity details.
+
+        Parameters
+        ----------
+        instance: `builtins.int`
+            The activity instance id.
+
+        Returns
+        -------
+        `aiobungie.crate.activity.PostActivity`
+           Information about the requested post activity.
+        &#34;&#34;&#34;
+        resp = await self.http.fetch_post_activity(instance)
+        # assert isinstance(resp, list)
+        raise NotImplementedError
+
+    async def fetch_app(self, appid: int, /) -&gt; crate.Application:
         &#34;&#34;&#34;Fetches a Bungie Application.
 
         Parameters
@@ -1036,14 +1086,14 @@ class Class(int, enum.Enum):
 
         Returns
         --------
-        `aiobungie.objects.Application`
-            An aiobungie application object.
+        `aiobungie.crate.Application`
+            An aiobungie application crate.
         &#34;&#34;&#34;
         resp = await self.http.fetch_app(appid)
         assert isinstance(resp, dict)
         return self._serialize.deserialize_app(resp)
 
-    async def fetch_clan_from_id(self, id: int, /) -&gt; objects.Clan:
+    async def fetch_clan_from_id(self, id: int, /) -&gt; crate.Clan:
         &#34;&#34;&#34;Fetches a Bungie Clan by its id.
 
         Parameters
@@ -1053,14 +1103,14 @@ class Class(int, enum.Enum):
 
         Returns
         --------
-        `aiobungie.objects.Clan`
-            An aioungie clan object
+        `aiobungie.crate.Clan`
+            An aioungie clan crate
         &#34;&#34;&#34;
         resp = await self.http.fetch_clan_from_id(id)
         assert isinstance(resp, dict)
         return self._serialize.deseialize_clan(resp)
 
-    async def fetch_clan(self, name: str, /, type: int = 1) -&gt; objects.Clan:
+    async def fetch_clan(self, name: str, /, type: int = 1) -&gt; crate.Clan:
         &#34;&#34;&#34;Fetches a Clan by its name and returns the first result.
 
         Parameters
@@ -1072,16 +1122,16 @@ class Class(int, enum.Enum):
 
         Returns
         -------
-        `aiobungie.objects.Clan`
-            An aiobungie clan object.
+        `aiobungie.crate.Clan`
+            An aiobungie clan crate.
         &#34;&#34;&#34;
         resp = await self.http.fetch_clan(name, type)
         assert isinstance(resp, dict)
         return self._serialize.deseialize_clan(resp)
 
     # These are not documented for a reason.
-    # See: `aiobungie.objects.Clan.fetch_member()`
-    # and `aiobungie.objects.Clan.fetch_members()`
+    # See: `aiobungie.crate.Clan.fetch_member()`
+    # and `aiobungie.crate.Clan.fetch_members()`
 
     async def fetch_clan_member(
         self,
@@ -1089,23 +1139,21 @@ class Class(int, enum.Enum):
         name: typing.Optional[str] = None,
         type: MembershipType = MembershipType.NONE,
         /,
-    ) -&gt; objects.clans.ClanMember:
+    ) -&gt; crate.clans.ClanMember:
 
         resp = await self.http.fetch_clan_members(id, type, name)
         assert isinstance(resp, dict)
-        return self._serialize.deserialize_clan_member(resp, name)
+        return self._serialize.deserialize_clan_member(resp)
 
     async def fetch_clan_members(
         self, id: int, type: MembershipType = MembershipType.NONE, /
-    ) -&gt; typing.Dict[str, int]:
+    ) -&gt; typing.Dict[str, typing.Tuple[int, MembershipType]]:
 
         resp = await self.http.fetch_clan_members(id, type, page=1)
         assert isinstance(resp, dict)
         return self._serialize.deserialize_clan_members(resp)
 
-    async def fetch_inventory_item(
-        self, hash: int, /
-    ) -&gt; objects.entity.InventoryEntity:
+    async def fetch_inventory_item(self, hash: int, /) -&gt; crate.entity.InventoryEntity:
         &#34;&#34;&#34;Fetches a static inventory item entity given a its hash.
 
         Paramaters
@@ -1117,7 +1165,7 @@ class Class(int, enum.Enum):
 
         Returns
         -------
-        `aiobungie.objects.InventoryEntity`
+        `aiobungie.crate.InventoryEntity`
             A bungie inventory item.
         &#34;&#34;&#34;
         resp = await self.http.fetch_inventory_item(hash)
@@ -1127,31 +1175,12 @@ class Class(int, enum.Enum):
                         <h3>Ancestors</h3>
                         <ul class="hlist">
                             <li><a title="aiobungie.internal.impl.BaseClient" href="internal/impl.html#aiobungie.internal.impl.BaseClient">BaseClient</a></li>
-                            <li><a title="aiobungie.internal.impl.BaseCache" href="internal/impl.html#aiobungie.internal.impl.BaseCache">BaseCache</a></li>
                             <li><a title="aiobungie.internal.impl.RESTful" href="internal/impl.html#aiobungie.internal.impl.RESTful">RESTful</a></li>
                             <li>typing.Protocol</li>
                             <li>typing.Generic</li>
                         </ul>
                         <h3>Instance variables</h3>
                         <dl>
-                            <dt id="aiobungie.Client.cache"><code class="name">var <span class="ident">cache</span> : <a title="aiobungie.internal.cache.Cache" href="internal/cache.html#aiobungie.internal.cache.Cache">Cache</a></code></dt>
-                            <dd>
-                                <p class="inheritance">
-                                    <em>Inherited from:</em>
-                                    <code><a title="aiobungie.internal.impl.BaseClient" href="internal/impl.html#aiobungie.internal.impl.BaseClient">BaseClient</a></code>.<code><a title="aiobungie.internal.impl.BaseClient.cache" href="internal/impl.html#aiobungie.internal.impl.BaseClient.cache">cache</a></code>
-                                </p>
-                                <div class="desc inherited">
-                                    <p>A redis hash cache for testing purposes.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def cache(self) -&gt; cache_.Cache:
-    return self._cache</code></pre>
-                                </details>
-                            </dd>
                             <dt id="aiobungie.Client.http"><code class="name">var <span class="ident">http</span></code></dt>
                             <dd>
                                 <div class="desc">
@@ -1198,20 +1227,20 @@ def serialize(self) -&gt; serialize_.Deserialize:
                         <h3>Methods</h3>
                         <dl>
                             <dt id="aiobungie.Client.fetch_activity"><code class="name flex">
-<span>async def <span class="ident">fetch_activity</span></span>(<span>self, userid: int, charid: int, mode: <a title="aiobungie.GameMode" href="#aiobungie.GameMode">GameMode</a>, memtype: <a title="aiobungie.MembershipType" href="#aiobungie.MembershipType">MembershipType</a>, *, page: typing.Optional[int] = 1, limit: typing.Optional[int] = 1) ‑> NoneType</span>
+<span>async def <span class="ident">fetch_activity</span></span>(<span>self, member_id: int, character_id: int, mode: <a title="aiobungie.GameMode" href="#aiobungie.GameMode">GameMode</a>, membership_type: <a title="aiobungie.MembershipType" href="#aiobungie.MembershipType">MembershipType</a>, *, page: typing.Optional[int] = 1, limit: typing.Optional[int] = 1) ‑> <a title="aiobungie.crate.activity.Activity" href="crate/activity.html#aiobungie.crate.activity.Activity">Activity</a></span>
 </code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>Fetches a Destiny 2 activity for the specified user id and character.</p>
                                     <h2 id="parameters">Parameters</h2>
                                     <dl>
-                                        <dt><strong><code>userid</code></strong> :&ensp;<code>builtins.int</code></dt>
+                                        <dt><strong><code>member_id</code></strong> :&ensp;<code>builtins.int</code></dt>
                                         <dd>The user id that starts with <code>4611</code>.</dd>
-                                        <dt><strong><code>charaid</code></strong> :&ensp;<code>builtins.int</code></dt>
+                                        <dt><strong><code>character_id</code></strong> :&ensp;<code>builtins.int</code></dt>
                                         <dd>The id of the character to retrieve.</dd>
                                         <dt><strong><code>mode</code></strong> :&ensp;<code><a title="aiobungie.internal.enums.GameMode" href="internal/enums.html#aiobungie.internal.enums.GameMode">GameMode</a></code></dt>
                                         <dd>This parameter filters the game mode, Nightfall, Strike, Iron Banner, etc.</dd>
-                                        <dt><strong><code>memtype</code></strong> :&ensp;<code><a title="aiobungie.internal.enums.MembershipType" href="internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
+                                        <dt><strong><code>membership_type</code></strong> :&ensp;<code><a title="aiobungie.internal.enums.MembershipType" href="internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
                                         <dd>The Member ship type, if nothing was passed than it will return all.</dd>
                                         <dt><strong><code>page</code></strong> :&ensp;<code>typing.Optional[builtins.int]</code></dt>
                                         <dd>The page number</dd>
@@ -1219,37 +1248,35 @@ def serialize(self) -&gt; serialize_.Deserialize:
                                         <dd>Limit the returned result.</dd>
                                     </dl>
                                     <h2 id="returns">Returns</h2>
-                                    <p><code><a title="aiobungie.objects.Activity" href="objects/index.html#aiobungie.objects.Activity">Activity</a></code> An aiobungie Activity object.</p>
+                                    <p><code><a title="aiobungie.crate.Activity" href="crate/index.html#aiobungie.crate.Activity">Activity</a></code> An aiobungie Activity crate.</p>
                                     <h2 id="raises">Raises</h2>
-                                    <p><code>AttributeError</code> Using <code><a title="aiobungie.objects.Activity.hash" href="objects/index.html#aiobungie.objects.Activity.hash">Activity.hash</a></code> for non raid activies.
-                                        <code><a title="aiobungie.error.ActivityNotFound" href="error.html#aiobungie.error.ActivityNotFound">ActivityNotFound</a></code> Any other errors occures during the response.</p>
+                                    <p><code><a title="aiobungie.error.ActivityNotFound" href="error.html#aiobungie.error.ActivityNotFound">ActivityNotFound</a></code> The activity was not found.</p>
                                 </div>
                                 <details class="source">
                                     <summary>
                                         <span>Expand source code</span>
                                     </summary>
-                                    <pre><code class="python">@deprecated
-async def fetch_activity(
+                                    <pre><code class="python">async def fetch_activity(
     self,
-    userid: int,
-    charid: int,
+    member_id: int,
+    character_id: int,
     mode: GameMode,
-    memtype: MembershipType,
+    membership_type: MembershipType,
     *,
     page: typing.Optional[int] = 1,
     limit: typing.Optional[int] = 1,
-) -&gt; None:
+) -&gt; crate.activity.Activity:
     &#34;&#34;&#34;Fetches a Destiny 2 activity for the specified user id and character.
 
     Parameters
     ----------
-    userid: `builtins.int`
+    member_id: `builtins.int`
         The user id that starts with `4611`.
-    charaid: `builtins.int`
+    character_id: `builtins.int`
         The id of the character to retrieve.
     mode: `aiobungie.internal.enums.GameMode`
         This parameter filters the game mode, Nightfall, Strike, Iron Banner, etc.
-    memtype: `aiobungie.internal.enums.MembershipType`
+    membership_type: `aiobungie.internal.enums.MembershipType`
         The Member ship type, if nothing was passed than it will return all.
     page: typing.Optional[builtins.int]
         The page number
@@ -1258,24 +1285,28 @@ async def fetch_activity(
 
     Returns
     -------
-    `aiobungie.objects.Activity`
-        An aiobungie Activity object.
+    `aiobungie.crate.Activity`
+        An aiobungie Activity crate.
 
     Raises
     ------
-    `AttributeError`
-        Using `aiobungie.objects.Activity.hash` for non raid activies.
     `aiobungie.error.ActivityNotFound`
-        Any other errors occures during the response.
+        The activity was not found.
     &#34;&#34;&#34;
     resp = await self.http.fetch_activity(
-        userid, charid, mode, memtype=memtype, page=page, limit=limit
+        member_id,
+        character_id,
+        mode,
+        membership_type=membership_type,
+        page=page,
+        limit=limit,
     )
-    pass</code></pre>
+    assert isinstance(resp, dict)
+    return self.serialize.deserialize_activity(resp)</code></pre>
                                 </details>
                             </dd>
                             <dt id="aiobungie.Client.fetch_app"><code class="name flex">
-<span>async def <span class="ident">fetch_app</span></span>(<span>self, appid: int, /) ‑> <a title="aiobungie.objects.application.Application" href="objects/application.html#aiobungie.objects.application.Application">Application</a></span>
+<span>async def <span class="ident">fetch_app</span></span>(<span>self, appid: int, /) ‑> <a title="aiobungie.crate.application.Application" href="crate/application.html#aiobungie.crate.application.Application">Application</a></span>
 </code></dt>
                             <dd>
                                 <div class="desc">
@@ -1286,13 +1317,13 @@ async def fetch_activity(
                                         <dd>The application id.</dd>
                                     </dl>
                                     <h2 id="returns">Returns</h2>
-                                    <p><code><a title="aiobungie.objects.Application" href="objects/index.html#aiobungie.objects.Application">Application</a></code> An aiobungie application object.</p>
+                                    <p><code><a title="aiobungie.crate.Application" href="crate/index.html#aiobungie.crate.Application">Application</a></code> An aiobungie application crate.</p>
                                 </div>
                                 <details class="source">
                                     <summary>
                                         <span>Expand source code</span>
                                     </summary>
-                                    <pre><code class="python">async def fetch_app(self, appid: int, /) -&gt; objects.Application:
+                                    <pre><code class="python">async def fetch_app(self, appid: int, /) -&gt; crate.Application:
     &#34;&#34;&#34;Fetches a Bungie Application.
 
     Parameters
@@ -1302,8 +1333,8 @@ async def fetch_activity(
 
     Returns
     --------
-    `aiobungie.objects.Application`
-        An aiobungie application object.
+    `aiobungie.crate.Application`
+        An aiobungie application crate.
     &#34;&#34;&#34;
     resp = await self.http.fetch_app(appid)
     assert isinstance(resp, dict)
@@ -1311,7 +1342,7 @@ async def fetch_activity(
                                 </details>
                             </dd>
                             <dt id="aiobungie.Client.fetch_character"><code class="name flex">
-<span>async def <span class="ident">fetch_character</span></span>(<span>self, memberid: int, type: <a title="aiobungie.MembershipType" href="#aiobungie.MembershipType">MembershipType</a>, character: <a title="aiobungie.Class" href="#aiobungie.Class">Class</a>) ‑> <a title="aiobungie.objects.character.Character" href="objects/character.html#aiobungie.objects.character.Character">Character</a></span>
+<span>async def <span class="ident">fetch_character</span></span>(<span>self, memberid: int, type: <a title="aiobungie.MembershipType" href="#aiobungie.MembershipType">MembershipType</a>, character: <a title="aiobungie.Class" href="#aiobungie.Class">Class</a>) ‑> <a title="aiobungie.crate.character.Character" href="crate/character.html#aiobungie.crate.character.Character">Character</a></span>
 </code></dt>
                             <dd>
                                 <div class="desc">
@@ -1326,7 +1357,7 @@ async def fetch_activity(
                                         <dd>The member's membership type.</dd>
                                     </dl>
                                     <h2 id="returns">Returns</h2>
-                                    <p><code><a title="aiobungie.objects.Character" href="objects/index.html#aiobungie.objects.Character">Character</a></code> An aiobungie character object.</p>
+                                    <p><code><a title="aiobungie.crate.Character" href="crate/index.html#aiobungie.crate.Character">Character</a></code> An aiobungie character crate.</p>
                                     <h2 id="raises">Raises</h2>
                                     <p><code><a title="aiobungie.error.CharacterError" href="error.html#aiobungie.error.CharacterError">CharacterError</a></code> raised if the Character was not found.</p>
                                 </div>
@@ -1336,7 +1367,7 @@ async def fetch_activity(
                                     </summary>
                                     <pre><code class="python">async def fetch_character(
     self, memberid: int, type: MembershipType, character: Class
-) -&gt; objects.Character:
+) -&gt; crate.Character:
     &#34;&#34;&#34;Fetches a Destiny 2 character.
 
     Parameters
@@ -1350,8 +1381,8 @@ async def fetch_activity(
 
     Returns
     -------
-    `aiobungie.objects.Character`
-        An aiobungie character object.
+    `aiobungie.crate.Character`
+        An aiobungie character crate.
 
     Raises
     ------
@@ -1367,7 +1398,7 @@ async def fetch_activity(
                                 </details>
                             </dd>
                             <dt id="aiobungie.Client.fetch_clan"><code class="name flex">
-<span>async def <span class="ident">fetch_clan</span></span>(<span>self, name: str, /, type: int = 1) ‑> <a title="aiobungie.objects.clans.Clan" href="objects/clans.html#aiobungie.objects.clans.Clan">Clan</a></span>
+<span>async def <span class="ident">fetch_clan</span></span>(<span>self, name: str, /, type: int = 1) ‑> <a title="aiobungie.crate.clans.Clan" href="crate/clans.html#aiobungie.crate.clans.Clan">Clan</a></span>
 </code></dt>
                             <dd>
                                 <div class="desc">
@@ -1379,13 +1410,13 @@ async def fetch_activity(
                                     </dl>
                                     <p>type <code>builtins.int</code> The group type, Default is one.</p>
                                     <h2 id="returns">Returns</h2>
-                                    <p><code><a title="aiobungie.objects.Clan" href="objects/index.html#aiobungie.objects.Clan">Clan</a></code> An aiobungie clan object.</p>
+                                    <p><code><a title="aiobungie.crate.Clan" href="crate/index.html#aiobungie.crate.Clan">Clan</a></code> An aiobungie clan crate.</p>
                                 </div>
                                 <details class="source">
                                     <summary>
                                         <span>Expand source code</span>
                                     </summary>
-                                    <pre><code class="python">async def fetch_clan(self, name: str, /, type: int = 1) -&gt; objects.Clan:
+                                    <pre><code class="python">async def fetch_clan(self, name: str, /, type: int = 1) -&gt; crate.Clan:
     &#34;&#34;&#34;Fetches a Clan by its name and returns the first result.
 
     Parameters
@@ -1397,8 +1428,8 @@ async def fetch_activity(
 
     Returns
     -------
-    `aiobungie.objects.Clan`
-        An aiobungie clan object.
+    `aiobungie.crate.Clan`
+        An aiobungie clan crate.
     &#34;&#34;&#34;
     resp = await self.http.fetch_clan(name, type)
     assert isinstance(resp, dict)
@@ -1406,7 +1437,7 @@ async def fetch_activity(
                                 </details>
                             </dd>
                             <dt id="aiobungie.Client.fetch_clan_from_id"><code class="name flex">
-<span>async def <span class="ident">fetch_clan_from_id</span></span>(<span>self, id: int, /) ‑> <a title="aiobungie.objects.clans.Clan" href="objects/clans.html#aiobungie.objects.clans.Clan">Clan</a></span>
+<span>async def <span class="ident">fetch_clan_from_id</span></span>(<span>self, id: int, /) ‑> <a title="aiobungie.crate.clans.Clan" href="crate/clans.html#aiobungie.crate.clans.Clan">Clan</a></span>
 </code></dt>
                             <dd>
                                 <div class="desc">
@@ -1417,13 +1448,13 @@ async def fetch_activity(
                                         <dd>The clan id.</dd>
                                     </dl>
                                     <h2 id="returns">Returns</h2>
-                                    <p><code><a title="aiobungie.objects.Clan" href="objects/index.html#aiobungie.objects.Clan">Clan</a></code> An aioungie clan object</p>
+                                    <p><code><a title="aiobungie.crate.Clan" href="crate/index.html#aiobungie.crate.Clan">Clan</a></code> An aioungie clan crate</p>
                                 </div>
                                 <details class="source">
                                     <summary>
                                         <span>Expand source code</span>
                                     </summary>
-                                    <pre><code class="python">async def fetch_clan_from_id(self, id: int, /) -&gt; objects.Clan:
+                                    <pre><code class="python">async def fetch_clan_from_id(self, id: int, /) -&gt; crate.Clan:
     &#34;&#34;&#34;Fetches a Bungie Clan by its id.
 
     Parameters
@@ -1433,8 +1464,8 @@ async def fetch_activity(
 
     Returns
     --------
-    `aiobungie.objects.Clan`
-        An aioungie clan object
+    `aiobungie.crate.Clan`
+        An aioungie clan crate
     &#34;&#34;&#34;
     resp = await self.http.fetch_clan_from_id(id)
     assert isinstance(resp, dict)
@@ -1442,7 +1473,7 @@ async def fetch_activity(
                                 </details>
                             </dd>
                             <dt id="aiobungie.Client.fetch_clan_member"><code class="name flex">
-<span>async def <span class="ident">fetch_clan_member</span></span>(<span>self, id: int, name: typing.Optional[str] = None, type: <a title="aiobungie.MembershipType" href="#aiobungie.MembershipType">MembershipType</a> = NONE, /) ‑> <a title="aiobungie.objects.clans.ClanMember" href="objects/clans.html#aiobungie.objects.clans.ClanMember">ClanMember</a></span>
+<span>async def <span class="ident">fetch_clan_member</span></span>(<span>self, id: int, name: typing.Optional[str] = None, type: <a title="aiobungie.MembershipType" href="#aiobungie.MembershipType">MembershipType</a> = NONE, /) ‑> <a title="aiobungie.crate.clans.ClanMember" href="crate/clans.html#aiobungie.crate.clans.ClanMember">ClanMember</a></span>
 </code></dt>
                             <dd>
                                 <div class="desc"></div>
@@ -1456,15 +1487,15 @@ async def fetch_activity(
     name: typing.Optional[str] = None,
     type: MembershipType = MembershipType.NONE,
     /,
-) -&gt; objects.clans.ClanMember:
+) -&gt; crate.clans.ClanMember:
 
     resp = await self.http.fetch_clan_members(id, type, name)
     assert isinstance(resp, dict)
-    return self._serialize.deserialize_clan_member(resp, name)</code></pre>
+    return self._serialize.deserialize_clan_member(resp)</code></pre>
                                 </details>
                             </dd>
                             <dt id="aiobungie.Client.fetch_clan_members"><code class="name flex">
-<span>async def <span class="ident">fetch_clan_members</span></span>(<span>self, id: int, type: <a title="aiobungie.MembershipType" href="#aiobungie.MembershipType">MembershipType</a> = NONE, /) ‑> Dict[str, int]</span>
+<span>async def <span class="ident">fetch_clan_members</span></span>(<span>self, id: int, type: <a title="aiobungie.MembershipType" href="#aiobungie.MembershipType">MembershipType</a> = NONE, /) ‑> Dict[str, Tuple[int, <a title="aiobungie.internal.enums.MembershipType" href="internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a>]]</span>
 </code></dt>
                             <dd>
                                 <div class="desc"></div>
@@ -1474,15 +1505,71 @@ async def fetch_activity(
                                     </summary>
                                     <pre><code class="python">async def fetch_clan_members(
     self, id: int, type: MembershipType = MembershipType.NONE, /
-) -&gt; typing.Dict[str, int]:
+) -&gt; typing.Dict[str, typing.Tuple[int, MembershipType]]:
 
     resp = await self.http.fetch_clan_members(id, type, page=1)
     assert isinstance(resp, dict)
     return self._serialize.deserialize_clan_members(resp)</code></pre>
                                 </details>
                             </dd>
+                            <dt id="aiobungie.Client.fetch_hard_types"><code class="name flex">
+<span>async def <span class="ident">fetch_hard_types</span></span>(<span>self, credential: int, type: <a title="aiobungie.CredentialType" href="#aiobungie.CredentialType">CredentialType</a> = STEAMID, /) ‑> <a title="aiobungie.crate.user.HardLinkedMembership" href="crate/user.html#aiobungie.crate.user.HardLinkedMembership">HardLinkedMembership</a></span>
+</code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Gets any hard linked membership given a credential. Only works for credentials that are public just STEAMID from <code><a title="aiobungie.CredentialType" href="#aiobungie.CredentialType">CredentialType</a></code> right
+                                        now. Cross Save aware.</p>
+                                    <h2 id="parameters">Parameters</h2>
+                                    <dl>
+                                        <dt><strong><code>credential</code></strong> :&ensp;<code>builtins.int</code></dt>
+                                        <dd>A valid SteamID64</dd>
+                                        <dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.CredentialType" href="#aiobungie.CredentialType">CredentialType</a></code></dt>
+                                        <dd>The crededntial type. This must not be changed Since its only credential that works "currently"</dd>
+                                    </dl>
+                                    <h2 id="returns">Returns</h2>
+                                    <p><code><a title="aiobungie.crate.user.HardLinkedMembership" href="crate/user.html#aiobungie.crate.user.HardLinkedMembership">HardLinkedMembership</a></code> Information about the hard linked data.</p>
+                                </div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">async def fetch_hard_types(
+    self, 
+    credential: int, 
+    type: CredentialType = CredentialType.STEAMID, /
+    ) -&gt; crate.user.HardLinkedMembership:
+    &#34;&#34;&#34;Gets any hard linked membership given a credential. 
+    Only works for credentials that are public just STEAMID from `aiobungie.CredentialType` right now. 
+    Cross Save aware.
+    
+    Parameters
+    ----------
+    credential: `builtins.int`
+        A valid SteamID64
+    type: `aiobungie.CredentialType`
+        The crededntial type. This must not be changed
+        Since its only credential that works &#34;currently&#34;
+
+    Returns
+    -------
+    `aiobungie.crate.user.HardLinkedMembership`
+        Information about the hard linked data.
+    &#34;&#34;&#34;
+    
+    # This doens&#39;t really needs to be serialized like other stuff
+    # since the dict only contains 3 keys.
+    payload = await self.http.fetch_hard_linked(credential, type)
+    assert isinstance(payload, dict)
+
+    return crate.user.HardLinkedMembership(
+        id=int(payload[&#39;membershipId&#39;]),
+        type=MembershipType(payload[&#39;membershipType&#39;]),
+        cross_save_type=MembershipType(payload[&#39;CrossSaveOverriddenType&#39;])
+    )</code></pre>
+                                </details>
+                            </dd>
                             <dt id="aiobungie.Client.fetch_inventory_item"><code class="name flex">
-<span>async def <span class="ident">fetch_inventory_item</span></span>(<span>self, hash: int, /) ‑> <a title="aiobungie.objects.entity.InventoryEntity" href="objects/entity.html#aiobungie.objects.entity.InventoryEntity">InventoryEntity</a></span>
+<span>async def <span class="ident">fetch_inventory_item</span></span>(<span>self, hash: int, /) ‑> <a title="aiobungie.crate.entity.InventoryEntity" href="crate/entity.html#aiobungie.crate.entity.InventoryEntity">InventoryEntity</a></span>
 </code></dt>
                             <dd>
                                 <div class="desc">
@@ -1490,15 +1577,13 @@ async def fetch_activity(
                                     <h2 id="paramaters">Paramaters</h2>
                                     <p>type: <code>builtins.str</code> Entity's type definition. hash: <code>builtins.int</code> Entity's hash.</p>
                                     <h2 id="returns">Returns</h2>
-                                    <p><code><a title="aiobungie.objects.InventoryEntity" href="objects/index.html#aiobungie.objects.InventoryEntity">InventoryEntity</a></code> A bungie inventory item.</p>
+                                    <p><code><a title="aiobungie.crate.InventoryEntity" href="crate/index.html#aiobungie.crate.InventoryEntity">InventoryEntity</a></code> A bungie inventory item.</p>
                                 </div>
                                 <details class="source">
                                     <summary>
                                         <span>Expand source code</span>
                                     </summary>
-                                    <pre><code class="python">async def fetch_inventory_item(
-    self, hash: int, /
-) -&gt; objects.entity.InventoryEntity:
+                                    <pre><code class="python">async def fetch_inventory_item(self, hash: int, /) -&gt; crate.entity.InventoryEntity:
     &#34;&#34;&#34;Fetches a static inventory item entity given a its hash.
 
     Paramaters
@@ -1510,7 +1595,7 @@ async def fetch_activity(
 
     Returns
     -------
-    `aiobungie.objects.InventoryEntity`
+    `aiobungie.crate.InventoryEntity`
         A bungie inventory item.
     &#34;&#34;&#34;
     resp = await self.http.fetch_inventory_item(hash)
@@ -1525,7 +1610,7 @@ async def fetch_activity(
                                 <div class="desc">
                                     <p>Access The bungie Manifest.</p>
                                     <h2 id="returns">Returns</h2>
-                                    <p><code><a title="aiobungie.ext.Manifest" href="ext/index.html#aiobungie.ext.Manifest">Manifest</a></code> A Manifest object.</p>
+                                    <p><code><a title="aiobungie.ext.Manifest" href="ext/index.html#aiobungie.ext.Manifest">Manifest</a></code> A Manifest crate.</p>
                                 </div>
                                 <details class="source">
                                     <summary>
@@ -1537,14 +1622,14 @@ async def fetch_activity(
     Returns
     -------
     `aiobungie.ext.Manifest`
-        A Manifest object.
+        A Manifest crate.
     &#34;&#34;&#34;
     resp = await self.http.fetch_manifest()
     return Manifest(self._token, resp)</code></pre>
                                 </details>
                             </dd>
                             <dt id="aiobungie.Client.fetch_player"><code class="name flex">
-<span>async def <span class="ident">fetch_player</span></span>(<span>self, name: str, type: <a title="aiobungie.MembershipType" href="#aiobungie.MembershipType">MembershipType</a>, *, position: int = 0) ‑> <a title="aiobungie.objects.player.Player" href="objects/player.html#aiobungie.objects.player.Player">Player</a></span>
+<span>async def <span class="ident">fetch_player</span></span>(<span>self, name: str, type: <a title="aiobungie.MembershipType" href="#aiobungie.MembershipType">MembershipType</a>, *, position: int = 0) ‑> <a title="aiobungie.crate.player.Player" href="crate/player.html#aiobungie.crate.player.Player">Player</a></span>
 </code></dt>
                             <dd>
                                 <div class="desc">
@@ -1559,7 +1644,7 @@ async def fetch_activity(
                                         <dd>Which player position to return, first player will return if None.</dd>
                                     </dl>
                                     <h2 id="returns">Returns</h2>
-                                    <p><code><a title="aiobungie.objects.Player" href="objects/index.html#aiobungie.objects.Player">Player</a></code> An aiobungie Destiny 2 Player object</p>
+                                    <p><code><a title="aiobungie.crate.Player" href="crate/index.html#aiobungie.crate.Player">Player</a></code> An aiobungie Destiny 2 Player crate</p>
                                 </div>
                                 <details class="source">
                                     <summary>
@@ -1567,7 +1652,7 @@ async def fetch_activity(
                                     </summary>
                                     <pre><code class="python">async def fetch_player(
     self, name: str, type: MembershipType, *, position: int = 0
-) -&gt; objects.Player:
+) -&gt; crate.Player:
     &#34;&#34;&#34;Fetches a Destiny2 Player.
 
     Parameters
@@ -1581,25 +1666,61 @@ async def fetch_activity(
 
     Returns
     --------
-    `aiobungie.objects.Player`
-        An aiobungie Destiny 2 Player object
+    `aiobungie.crate.Player`
+        An aiobungie Destiny 2 Player crate
     &#34;&#34;&#34;
     resp = await self.http.fetch_player(name, type)
     assert isinstance(resp, list)
     return self._serialize.deserialize_player(payload=resp, position=position)</code></pre>
                                 </details>
                             </dd>
+                            <dt id="aiobungie.Client.fetch_post_activity"><code class="name flex">
+<span>async def <span class="ident">fetch_post_activity</span></span>(<span>self, instance: int, /) ‑> <a title="aiobungie.crate.activity.PostActivity" href="crate/activity.html#aiobungie.crate.activity.PostActivity">PostActivity</a></span>
+</code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Fetchs a post activity details.</p>
+                                    <h2 id="parameters">Parameters</h2>
+                                    <dl>
+                                        <dt><strong><code>instance</code></strong> :&ensp;<code>builtins.int</code></dt>
+                                        <dd>The activity instance id.</dd>
+                                    </dl>
+                                    <h2 id="returns">Returns</h2>
+                                    <p><code><a title="aiobungie.crate.activity.PostActivity" href="crate/activity.html#aiobungie.crate.activity.PostActivity">PostActivity</a></code> Information about the requested post activity.</p>
+                                </div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">async def fetch_post_activity(self, instance: int, /) -&gt; crate.activity.PostActivity:
+    &#34;&#34;&#34;Fetchs a post activity details.
+
+    Parameters
+    ----------
+    instance: `builtins.int`
+        The activity instance id.
+
+    Returns
+    -------
+    `aiobungie.crate.activity.PostActivity`
+       Information about the requested post activity.
+    &#34;&#34;&#34;
+    resp = await self.http.fetch_post_activity(instance)
+    # assert isinstance(resp, list)
+    raise NotImplementedError</code></pre>
+                                </details>
+                            </dd>
                             <dt id="aiobungie.Client.fetch_profile"><code class="name flex">
-<span>async def <span class="ident">fetch_profile</span></span>(<span>self, memberid: int, type: <a title="aiobungie.MembershipType" href="#aiobungie.MembershipType">MembershipType</a>, /) ‑> <a title="aiobungie.objects.profile.Profile" href="objects/profile.html#aiobungie.objects.profile.Profile">Profile</a></span>
+<span>async def <span class="ident">fetch_profile</span></span>(<span>self, memberid: int, type: <a title="aiobungie.MembershipType" href="#aiobungie.MembershipType">MembershipType</a>, /) ‑> <a title="aiobungie.crate.profile.Profile" href="crate/profile.html#aiobungie.crate.profile.Profile">Profile</a></span>
 </code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>Fetches a bungie profile.</p>
-                                    <p>See <code><a title="aiobungie.objects.Profile" href="objects/index.html#aiobungie.objects.Profile">Profile</a></code> to access other components.</p>
+                                    <p>See <code><a title="aiobungie.crate.Profile" href="crate/index.html#aiobungie.crate.Profile">Profile</a></code> to access other components.</p>
                                     <h2 id="paramaters">Paramaters</h2>
                                     <p>memberid: <code>builtins.int</code> The member's id. type: <code><a title="aiobungie.MembershipType" href="#aiobungie.MembershipType">MembershipType</a></code> A valid membership type.</p>
                                     <h2 id="returns">Returns</h2>
-                                    <p><code><a title="aiobungie.objects.Profile" href="objects/index.html#aiobungie.objects.Profile">Profile</a></code> An aiobungie member profile.</p>
+                                    <p><code><a title="aiobungie.crate.Profile" href="crate/index.html#aiobungie.crate.Profile">Profile</a></code> An aiobungie member profile.</p>
                                 </div>
                                 <details class="source">
                                     <summary>
@@ -1610,11 +1731,11 @@ async def fetch_activity(
     memberid: int,
     type: MembershipType,
     /,
-) -&gt; objects.Profile:
+) -&gt; crate.Profile:
     &#34;&#34;&#34;
     Fetches a bungie profile.
 
-    See `aiobungie.objects.Profile` to access other components.
+    See `aiobungie.crate.Profile` to access other components.
 
     Paramaters
     ----------
@@ -1625,7 +1746,7 @@ async def fetch_activity(
 
     Returns
     --------
-    `aiobungie.objects.Profile`
+    `aiobungie.crate.Profile`
         An aiobungie member profile.
     &#34;&#34;&#34;
     data = await self.http.fetch_profile(memberid, type)
@@ -1634,7 +1755,7 @@ async def fetch_activity(
                                 </details>
                             </dd>
                             <dt id="aiobungie.Client.fetch_user"><code class="name flex">
-<span>async def <span class="ident">fetch_user</span></span>(<span>self, name: str, *, position: int = 0) ‑> <a title="aiobungie.objects.user.User" href="objects/user.html#aiobungie.objects.user.User">User</a></span>
+<span>async def <span class="ident">fetch_user</span></span>(<span>self, name: str, *, position: int = 0) ‑> <a title="aiobungie.crate.user.User" href="crate/user.html#aiobungie.crate.user.User">User</a></span>
 </code></dt>
                             <dd>
                                 <div class="desc">
@@ -1653,7 +1774,7 @@ async def fetch_activity(
                                     <summary>
                                         <span>Expand source code</span>
                                     </summary>
-                                    <pre><code class="python">async def fetch_user(self, name: str, *, position: int = 0) -&gt; objects.User:
+                                    <pre><code class="python">async def fetch_user(self, name: str, *, position: int = 0) -&gt; crate.User:
     &#34;&#34;&#34;Fetches a Bungie user by their name.
 
     Parameters
@@ -1676,7 +1797,7 @@ async def fetch_activity(
                                 </details>
                             </dd>
                             <dt id="aiobungie.Client.fetch_user_from_id"><code class="name flex">
-<span>async def <span class="ident">fetch_user_from_id</span></span>(<span>self, id: int) ‑> <a title="aiobungie.objects.user.User" href="objects/user.html#aiobungie.objects.user.User">User</a></span>
+<span>async def <span class="ident">fetch_user_from_id</span></span>(<span>self, id: int) ‑> <a title="aiobungie.crate.user.User" href="crate/user.html#aiobungie.crate.user.User">User</a></span>
 </code></dt>
                             <dd>
                                 <div class="desc">
@@ -1695,7 +1816,7 @@ async def fetch_activity(
                                     <summary>
                                         <span>Expand source code</span>
                                     </summary>
-                                    <pre><code class="python">async def fetch_user_from_id(self, id: int) -&gt; objects.User:
+                                    <pre><code class="python">async def fetch_user_from_id(self, id: int) -&gt; crate.User:
     &#34;&#34;&#34;Fetches a Bungie user by their id.
 
     Parameters
@@ -1906,6 +2027,103 @@ class Component(int, enum.Enum):
                                 <div class="desc"></div>
                             </dd>
                             <dt id="aiobungie.Component.VENDOR_SALES"><code class="name">var <span class="ident">VENDOR_SALES</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                        </dl>
+                    </dd>
+                    <dt id="aiobungie.CredentialType"><code class="flex name class">
+<span>class <span class="ident">CredentialType</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+                    <dd>
+                        <div class="desc">
+                            <p>The types of the accounts system suports at bungie.</p>
+                        </div>
+                        <details class="source">
+                            <summary>
+                                <span>Expand source code</span>
+                            </summary>
+                            <pre><code class="python">@typing.final
+class CredentialType(int, enum.Enum):
+    &#34;&#34;&#34;The types of the accounts system suports at bungie.&#34;&#34;&#34;
+
+    NONE = 0
+    XUID = 1
+    PSNID = 2
+    WILD = 3
+    FAKE = 4
+    FACEBOOK = 5
+    GOOGLE = 8
+    WINDOWS = 9
+    DEMONID = 10
+    STEAMID = 12
+    BATTLENETID = 14
+    STADIAID = 16
+    TWITCHID = 18
+
+    def __int__(self) -&gt; int:
+        return int(self.value)
+
+    def __str__(self) -&gt; str:
+        return self.name</code></pre>
+                        </details>
+                        <h3>Ancestors</h3>
+                        <ul class="hlist">
+                            <li>builtins.int</li>
+                            <li>enum.Enum</li>
+                        </ul>
+                        <h3>Class variables</h3>
+                        <dl>
+                            <dt id="aiobungie.CredentialType.BATTLENETID"><code class="name">var <span class="ident">BATTLENETID</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.CredentialType.DEMONID"><code class="name">var <span class="ident">DEMONID</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.CredentialType.FACEBOOK"><code class="name">var <span class="ident">FACEBOOK</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.CredentialType.FAKE"><code class="name">var <span class="ident">FAKE</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.CredentialType.GOOGLE"><code class="name">var <span class="ident">GOOGLE</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.CredentialType.NONE"><code class="name">var <span class="ident">NONE</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.CredentialType.PSNID"><code class="name">var <span class="ident">PSNID</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.CredentialType.STADIAID"><code class="name">var <span class="ident">STADIAID</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.CredentialType.STEAMID"><code class="name">var <span class="ident">STEAMID</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.CredentialType.TWITCHID"><code class="name">var <span class="ident">TWITCHID</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.CredentialType.WILD"><code class="name">var <span class="ident">WILD</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.CredentialType.WINDOWS"><code class="name">var <span class="ident">WINDOWS</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.CredentialType.XUID"><code class="name">var <span class="ident">XUID</span></code></dt>
                             <dd>
                                 <div class="desc"></div>
                             </dd>
@@ -2685,7 +2903,7 @@ class MembershipType(int, enum.Enum):
 </code></dt>
                     <dd>
                         <div class="desc">
-                            <p>Raised when the memberhsip type is invalid. or The object you're trying to fetch doesn't have The requested membership type.</p>
+                            <p>Raised when the memberhsip type is invalid. or The crate you're trying to fetch doesn't have The requested membership type.</p>
                             <p>Method generated by attrs for class HTTPException.</p>
                         </div>
                         <details class="source">
@@ -2695,7 +2913,7 @@ class MembershipType(int, enum.Enum):
                             <pre><code class="python">@typing.final
 class MembershipTypeError(HTTPException):
     &#34;&#34;&#34;Raised when the memberhsip type is invalid.
-    or The object you&#39;re trying to fetch doesn&#39;t have
+    or The crate you&#39;re trying to fetch doesn&#39;t have
     The requested membership type.
     &#34;&#34;&#34;</code></pre>
                         </details>
@@ -2990,7 +3208,7 @@ class Planet(int, enum.Enum):
 </code></dt>
                     <dd>
                         <div class="desc">
-                            <p>Raised when a <code><a title="aiobungie.objects.Player" href="objects/index.html#aiobungie.objects.Player">Player</a></code> is not found.</p>
+                            <p>Raised when a <code><a title="aiobungie.crate.Player" href="crate/index.html#aiobungie.crate.Player">Player</a></code> is not found.</p>
                         </div>
                         <details class="source">
                             <summary>
@@ -2998,7 +3216,7 @@ class Planet(int, enum.Enum):
                             </summary>
                             <pre><code class="python">@typing.final
 class PlayerNotFound(NotFound):
-    &#34;&#34;&#34;Raised when a `aiobungie.objects.Player` is not found.&#34;&#34;&#34;</code></pre>
+    &#34;&#34;&#34;Raised when a `aiobungie.crate.Player` is not found.&#34;&#34;&#34;</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
@@ -3261,7 +3479,7 @@ class Unauthorized(HTTPException):
 </code></dt>
                     <dd>
                         <div class="desc">
-                            <p>Raised when a <code><a title="aiobungie.objects.User" href="objects/index.html#aiobungie.objects.User">User</a></code> not found.</p>
+                            <p>Raised when a <code><a title="aiobungie.crate.User" href="crate/index.html#aiobungie.crate.User">User</a></code> not found.</p>
                         </div>
                         <details class="source">
                             <summary>
@@ -3269,7 +3487,7 @@ class Unauthorized(HTTPException):
                             </summary>
                             <pre><code class="python">@typing.final
 class UserNotFound(NotFound):
-    &#34;&#34;&#34;Raised when a `aiobungie.objects.User` not found.&#34;&#34;&#34;</code></pre>
+    &#34;&#34;&#34;Raised when a `aiobungie.crate.User` not found.&#34;&#34;&#34;</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
@@ -3534,11 +3752,11 @@ class WeaponType(int, enum.Enum):
                     <h3><a href="#header-submodules">Sub-modules</a></h3>
                     <ul>
                         <li><code><a title="aiobungie.client" href="client.html">aiobungie.client</a></code></li>
+                        <li><code><a title="aiobungie.crate" href="crate/index.html">aiobungie.crate</a></code></li>
                         <li><code><a title="aiobungie.error" href="error.html">aiobungie.error</a></code></li>
                         <li><code><a title="aiobungie.ext" href="ext/index.html">aiobungie.ext</a></code></li>
                         <li><code><a title="aiobungie.http" href="http.html">aiobungie.http</a></code></li>
                         <li><code><a title="aiobungie.internal" href="internal/index.html">aiobungie.internal</a></code></li>
-                        <li><code><a title="aiobungie.objects" href="objects/index.html">aiobungie.objects</a></code></li>
                         <li><code><a title="aiobungie.url" href="url.html">aiobungie.url</a></code></li>
                     </ul>
                 </li>
@@ -3563,7 +3781,6 @@ class WeaponType(int, enum.Enum):
                         <li>
                             <h4><code><a title="aiobungie.Client" href="#aiobungie.Client">Client</a></code></h4>
                             <ul class="">
-                                <li><code><a title="aiobungie.Client.cache" href="#aiobungie.Client.cache">cache</a></code></li>
                                 <li><code><a title="aiobungie.Client.fetch_activity" href="#aiobungie.Client.fetch_activity">fetch_activity</a></code></li>
                                 <li><code><a title="aiobungie.Client.fetch_app" href="#aiobungie.Client.fetch_app">fetch_app</a></code></li>
                                 <li><code><a title="aiobungie.Client.fetch_character" href="#aiobungie.Client.fetch_character">fetch_character</a></code></li>
@@ -3571,9 +3788,11 @@ class WeaponType(int, enum.Enum):
                                 <li><code><a title="aiobungie.Client.fetch_clan_from_id" href="#aiobungie.Client.fetch_clan_from_id">fetch_clan_from_id</a></code></li>
                                 <li><code><a title="aiobungie.Client.fetch_clan_member" href="#aiobungie.Client.fetch_clan_member">fetch_clan_member</a></code></li>
                                 <li><code><a title="aiobungie.Client.fetch_clan_members" href="#aiobungie.Client.fetch_clan_members">fetch_clan_members</a></code></li>
+                                <li><code><a title="aiobungie.Client.fetch_hard_types" href="#aiobungie.Client.fetch_hard_types">fetch_hard_types</a></code></li>
                                 <li><code><a title="aiobungie.Client.fetch_inventory_item" href="#aiobungie.Client.fetch_inventory_item">fetch_inventory_item</a></code></li>
                                 <li><code><a title="aiobungie.Client.fetch_manifest" href="#aiobungie.Client.fetch_manifest">fetch_manifest</a></code></li>
                                 <li><code><a title="aiobungie.Client.fetch_player" href="#aiobungie.Client.fetch_player">fetch_player</a></code></li>
+                                <li><code><a title="aiobungie.Client.fetch_post_activity" href="#aiobungie.Client.fetch_post_activity">fetch_post_activity</a></code></li>
                                 <li><code><a title="aiobungie.Client.fetch_profile" href="#aiobungie.Client.fetch_profile">fetch_profile</a></code></li>
                                 <li><code><a title="aiobungie.Client.fetch_user" href="#aiobungie.Client.fetch_user">fetch_user</a></code></li>
                                 <li><code><a title="aiobungie.Client.fetch_user_from_id" href="#aiobungie.Client.fetch_user_from_id">fetch_user_from_id</a></code></li>
@@ -3601,6 +3820,24 @@ class WeaponType(int, enum.Enum):
                                 <li><code><a title="aiobungie.Component.SILVER" href="#aiobungie.Component.SILVER">SILVER</a></code></li>
                                 <li><code><a title="aiobungie.Component.VENDORS" href="#aiobungie.Component.VENDORS">VENDORS</a></code></li>
                                 <li><code><a title="aiobungie.Component.VENDOR_SALES" href="#aiobungie.Component.VENDOR_SALES">VENDOR_SALES</a></code></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <h4><code><a title="aiobungie.CredentialType" href="#aiobungie.CredentialType">CredentialType</a></code></h4>
+                            <ul class="two-column">
+                                <li><code><a title="aiobungie.CredentialType.BATTLENETID" href="#aiobungie.CredentialType.BATTLENETID">BATTLENETID</a></code></li>
+                                <li><code><a title="aiobungie.CredentialType.DEMONID" href="#aiobungie.CredentialType.DEMONID">DEMONID</a></code></li>
+                                <li><code><a title="aiobungie.CredentialType.FACEBOOK" href="#aiobungie.CredentialType.FACEBOOK">FACEBOOK</a></code></li>
+                                <li><code><a title="aiobungie.CredentialType.FAKE" href="#aiobungie.CredentialType.FAKE">FAKE</a></code></li>
+                                <li><code><a title="aiobungie.CredentialType.GOOGLE" href="#aiobungie.CredentialType.GOOGLE">GOOGLE</a></code></li>
+                                <li><code><a title="aiobungie.CredentialType.NONE" href="#aiobungie.CredentialType.NONE">NONE</a></code></li>
+                                <li><code><a title="aiobungie.CredentialType.PSNID" href="#aiobungie.CredentialType.PSNID">PSNID</a></code></li>
+                                <li><code><a title="aiobungie.CredentialType.STADIAID" href="#aiobungie.CredentialType.STADIAID">STADIAID</a></code></li>
+                                <li><code><a title="aiobungie.CredentialType.STEAMID" href="#aiobungie.CredentialType.STEAMID">STEAMID</a></code></li>
+                                <li><code><a title="aiobungie.CredentialType.TWITCHID" href="#aiobungie.CredentialType.TWITCHID">TWITCHID</a></code></li>
+                                <li><code><a title="aiobungie.CredentialType.WILD" href="#aiobungie.CredentialType.WILD">WILD</a></code></li>
+                                <li><code><a title="aiobungie.CredentialType.WINDOWS" href="#aiobungie.CredentialType.WINDOWS">WINDOWS</a></code></li>
+                                <li><code><a title="aiobungie.CredentialType.XUID" href="#aiobungie.CredentialType.XUID">XUID</a></code></li>
                             </ul>
                         </li>
                         <li>

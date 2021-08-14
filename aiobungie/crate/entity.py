@@ -32,7 +32,6 @@ __all__: typing.Sequence[str] = ["InventoryEntity", "Entity"]
 
 import abc
 import typing
-
 import attr
 
 from aiobungie.internal import assets
@@ -85,7 +84,7 @@ class Entity(abc.ABC):
 
     @property
     def as_dict(self) -> typing.Dict[str, typing.Any]:
-        """Returns an instance of the object as a dict"""
+        """Returns an instance of the entity as a dict"""
         return attr.asdict(self)
 
     def __str__(self) -> str:

@@ -22,23 +22,22 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Basic Implementation for a Bungie Character."""
+"""Basic Implementation of a Bungie Character."""
 
 from __future__ import annotations
 
 __all__: typing.Sequence[str] = ("CharacterComponent", "Character")
 
 import abc
+import attr
 import datetime
 import logging
 import typing
 
-import attr
-
-from .. import url
-from ..internal import Image
-from ..internal import Time
-from ..internal import enums
+from aiobungie import url
+from aiobungie.internal import Image
+from aiobungie.internal import Time
+from aiobungie.internal import enums
 
 log: typing.Final[logging.Logger] = logging.getLogger(__name__)
 
@@ -120,6 +119,66 @@ class CharacterComponent(abc.ABC):
         This is Optional and can be None if no title was found.
         """
 
+    async def equip(self, item: int, /) -> None:
+        """Equip an item to this character.
+
+        This requires the OAuth2: MoveEquipDestinyItems scope.
+        Also You must have a valid Destiny account, and either be
+        in a social space, in orbit or offline.
+
+        Parameters
+        ----------
+        item: `builtins.int`
+            The item id you want to equip for this character.
+
+        Returns
+        -------
+        `builtins.None`.
+
+        Raises
+        ------
+        `NotImplementedError`
+            This endpoint is currently not implemented.
+        """
+
+        # Required params:
+        # POST requrest.
+        # itemId: item,
+        # characterId: self,
+        # membershipType: int(self.member_type)
+
+        raise NotImplementedError
+
+    async def equip_items(self, items: typing.List[int], /) -> None:
+        """Equip multiple items to this character.
+
+        This requires the OAuth2: MoveEquipDestinyItems scope.
+        Also You must have a valid Destiny account, and either be
+        in a social space, in orbit or offline.
+
+        Parameters
+        ----------
+        items: `typing.List[builtins.int]`
+            A list of item ids you want to equip for this character.
+
+        Returns
+        -------
+        `builtins.None`.
+
+        Raises
+        ------
+        `NotImplementedError`
+            This endpoint is currently not implemented.
+        """
+
+        # Required params:
+        # POST requrest.
+        # items: List[items],
+        # characterId: self,
+        # membershipType: int(self.member_type)
+
+        raise NotImplementedError
+
     @property
     def human_timedelta(self) -> str:
         """The player's last played time in a human readble date."""
@@ -128,44 +187,7 @@ class CharacterComponent(abc.ABC):
 
 @attr.s(kw_only=True, hash=True, weakref_slot=False, slots=True, init=True, eq=True)
 class Character(CharacterComponent):
-    """An implementation for a Bungie character.
-
-    A Bungie character object can be a Warlock, Titan or a Hunter.
-
-    This can only be accessed using the `aiobungie.Component` CHARACTERS component.
-
-    Attributes
-    -----------
-    light: `builtins.int`
-            The character's light
-    id: `builtins.int`
-            The character's id
-    gender: `aiobungie.internal.enums.Gender`
-            The character's gender
-    race: `aiobungie.internal.enums.Race`
-            The character's race
-    emblem: `aiobungie.internal.assets.Image`
-            The character's currnt equipped emblem.
-    emblem_icon: `aiobungie.internal.assets.Image`
-            The character's current icon for the equipped emblem.
-    emblem_hash: `builtins.int`
-            Character's emblem hash.
-    last_played: `datetime.datetime`
-            When was this character last played date in UTC.
-    total_played: `builtins.int`
-            Returns the total played time in seconds for the chosen character.
-    member_id: `builtins.int`
-            The character's member id.
-    class_type: `aiobungie.internal.enums.Class`
-            The character's class.
-    level: `builtins.int`
-            Character's base level.
-    stats: `aiobungie.internal.enums.Stat`
-            Character's current stats.
-    title_hash: `typing.Optional[builtins.int]`
-            The hash of the character's equipped title, Returns `builtins.NoneType`
-            if no title is equipped.
-    """
+    """An implementation for a Bungie character."""
 
     id: int = attr.field(hash=True, repr=True)
     """Character's id"""
@@ -219,9 +241,7 @@ class Character(CharacterComponent):
 
     @property
     def as_dict(self) -> typing.Dict[str, typing.Any]:
-        """Returns a dict object of the character,
-        This function is useful if you're binding to other REST apis.
-        """
+        """Returns a dict crate of the character."""
         return attr.asdict(self)
 
     def __int__(self) -> int:

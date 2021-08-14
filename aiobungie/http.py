@@ -25,24 +25,19 @@ and Where all the magic happenes.
 """
 
 from __future__ import annotations
-
-import types
-import typing
+from aiobungie.internal.helpers import JsonDict
 
 __all__ = ("HTTPClient",)
 
 import http
+import types
 import typing
-
 import aiohttp
 
-from . import error
-from . import url
-from .internal import helpers
-from .internal.enums import Class
-from .internal.enums import Component
-from .internal.enums import GameMode
-from .internal.enums import MembershipType
+from aiobungie import error
+from aiobungie import url
+from aiobungie.internal import helpers
+from aiobungie.internal import enums
 
 if typing.TYPE_CHECKING:
     T = typing.TypeVar("T")
@@ -198,12 +193,6 @@ class HTTPClient:
     ) -> typing.NoReturn:
         raise await handle_errors(response, msg)
 
-    # Currently some of the funcs return Response[typing.Any]
-    # And not the actual type, The reason for that Character
-    # And Activity objects are much complicated, so that'l
-    # take Some time, but for Manifest and static search will
-    # not return typing.Any types. So they will be typing.Any.
-
     def fetch_user(self, name: str) -> Response[helpers.JsonList]:
         return self.fetch("GET", f"User/SearchUsers/?q={name}")
 
@@ -217,7 +206,7 @@ class HTTPClient:
         return self.fetch("GET", path)
 
     def fetch_player(
-        self, name: str, type: MembershipType
+        self, name: str, type: enums.MembershipType
     ) -> Response[helpers.JsonDict]:
         return self.fetch("GET", f"Destiny2/SearchDestinyPlayer/{int(type)}/{name}")
 
@@ -231,42 +220,44 @@ class HTTPClient:
         return self.fetch("GET", f"App/Application/{appid}")
 
     def fetch_character(
-        self, memberid: int, type: MembershipType, character: Class
+        self, memberid: int, type: enums.MembershipType, character: enums.Class
     ) -> Response[helpers.JsonDict]:
         return self.fetch(
             "GET",
-            f"Destiny2/{int(type)}/Profile/{memberid}/?components={int(Component.CHARECTERS)}",
+            f"Destiny2/{int(type)}/Profile/{memberid}/?components={int(enums.Component.CHARECTERS)}",
         )
 
     def fetch_activity(
         self,
-        userid: int,
-        charid: int,
-        mode: GameMode,
-        memtype: MembershipType,
+        member_id: int,
+        character_id: int,
+        mode: enums.GameMode,
+        membership_type: enums.MembershipType,
         *,
-        page: typing.Optional[int] = 1,
+        page: typing.Optional[int] = 0,
         limit: typing.Optional[int] = 1,
     ) -> Response[typing.Any]:
         return self.fetch(
             "GET",
-            f"Destiny2/{int(memtype)}/Account/ \
-            {userid}/Character/{charid}/Stats/ \
-            Activities/?page={page}&count={limit} \
-            &mode={int(mode)}",
+            f"Destiny2/{int(membership_type)}/Account/"
+            f"{member_id}/Character/{character_id}/Stats/Activities"
+            f"/?mode={int(mode)}&count={limit}&page={page}",
         )
+
+    def fetch_post_activity(self, instance: int, /) -> Response[helpers.JsonDict]:
+        return self.fetch("GET", f"Destiny2/Stats/PostGameCarnageReport/{instance}")
 
     def fetch_vendor_sales(self) -> Response[typing.Any]:
         return self.fetch(
-            "GET", f"Destiny2/Vendors/?components={int(Component.VENDOR_SALES)}"
+            "GET", f"Destiny2/Vendors/?components={int(enums.Component.VENDOR_SALES)}"
         )
 
     def fetch_profile(
-        self, memberid: int, type: MembershipType, /
+        self, memberid: int, type: enums.MembershipType, /
     ) -> Response[helpers.JsonDict]:
         return self.fetch(
             "GET",
-            f"Destiny2/{int(type)}/Profile/{int(memberid)}/?components={int(Component.PROFILE)}",
+            f"Destiny2/{int(type)}/Profile/{int(memberid)}/?components={int(enums.Component.PROFILE)}",
         )
 
     def fetch_entity(self, type: str, hash: int) -> Response[helpers.JsonDict]:
@@ -278,7 +269,7 @@ class HTTPClient:
     def fetch_clan_members(
         self,
         id: int,
-        type: MembershipType = MembershipType.NONE,
+        type: enums.MembershipType = enums.MembershipType.NONE,
         name: typing.Optional[str] = None,
         /,
         *,
@@ -288,3 +279,13 @@ class HTTPClient:
             "GET",
             f"/GroupV2/{id}/Members/?memberType={int(type)}&nameSearch={name if name else ''}&currentpage={page}",
         )
+        
+    def fetch_hard_linked(
+        self, 
+        credential: int, 
+        type: enums.CredentialType = enums.CredentialType.STADIAID, /
+        ) -> Response[JsonDict]:
+        return self.fetch(
+            "GET",
+            f"User/GetMembershipFromHardLinkedCredential/{int(type)}/{credential}/"
+            )

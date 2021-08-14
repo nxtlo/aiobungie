@@ -29,25 +29,22 @@ __all__: typing.List[str] = ["Clan", "ClanOwner", "ClanMember", "ClanFeatures"]
 
 
 import typing
-
 import attr
 
 from aiobungie import url
 from aiobungie.internal import impl
+from aiobungie.internal import Image
+from aiobungie.internal import Time
+from aiobungie.internal.enums import GroupType
+from aiobungie.internal.enums import MembershipType
+from aiobungie.crate.user import UserLike
 
-from ..internal import Image
-from ..internal import Time
-from ..internal.enums import MembershipType, GroupType
-from .user import UserLike
-
-if typing.TYPE_CHECKING:
-    import types
-    from datetime import datetime
+from datetime import datetime
 
 
 @attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
 class ClanFeatures:
-    """Implementation of a bungie clan features."""
+    """Represents Bungie clan features."""
 
     max_members: int = attr.field(repr=True)
     """The maximum members the clan can have"""
@@ -103,7 +100,7 @@ class ClanMember(UserLike):
 
     joined_at: datetime = attr.field(repr=False)
     """The clan member's join date in UTC time zone."""
-    
+
     @property
     def app(self) -> impl.RESTful:
         return self.app
@@ -141,33 +138,7 @@ class ClanMember(UserLike):
 
 @attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
 class ClanOwner(UserLike):
-    """Represents a Bungie clan owner.
-
-
-    Attributes
-    -----------
-    id: `builtins.int`
-        The clan owner's membership id
-    name: `builtins.str`
-        The clan owner's display name
-    last_online: `builtins.str`
-        An aware `builtins.str` version of a `datetime.datetime` object.
-    type: `aiobungie.internal.enums.MembershipType`
-        Returns the clan owner's membership type.
-        This could be Xbox, Steam, PSN, Blizzard or ALL,
-        if the membership type is not recognized it will return `builtins.NoneType`.
-    clan_id: `builtins.int`
-        The clan owner's clan id
-    joined_at: Optional[datetime.datetime]:
-        The clan owner's join date in UTC.
-    icon: `aiobungie.internal.assets.Image`
-        Returns the clan owner's icon from Image.
-    is_public: `builtins.bool`
-        Returns True if the clan's owner profile is public or False if not.
-    types: typing.List[builtins.int]:
-        returns a List of `builtins.int` of the clan owner's types.
-    """
-    
+    """Represents a Bungie clan owner."""
 
     id: int = attr.field(hash=True, repr=True)
     """The user id."""
@@ -197,7 +168,7 @@ class ClanOwner(UserLike):
 
     joined_at: datetime = attr.field(repr=True)
     """Owner's bungie join date."""
-    
+
     @property
     def app(self) -> impl.RESTful:
         return self.app
@@ -228,32 +199,7 @@ class ClanOwner(UserLike):
 
 @attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
 class Clan:
-    """Represents a Bungie clan object.
-
-    Attributes
-    -----------
-    name: `builtins.str`
-        The clan's name
-    id: `builtins.int`
-        The clans's id
-    created_at: `datetime.datetime`
-        Returns the clan's creation date in UTC time.
-    description: `builtins.str`
-        The clan's description.
-    is_public: `builtins.bool`
-        Returns True if the clan is public and False if not.
-    banner: `aiobungie.internal.assets.Image`
-        Returns the clan's banner
-    avatar: `aiobungie.internal.assets.Image`
-        Returns the clan's avatar
-    about: `builtins.str`
-        The clan's about.
-    tags: `builtins.str`
-        The clan's tags
-    owner: `aiobungie.objects.ClanOwner`
-        Returns an object of the clan's owner.
-        See `aiobungie.objects.ClanOwner` for info.
-    """
+    """Represents a Bungie clan."""
 
     app: impl.RESTful = attr.field(repr=False, eq=False, hash=False)
     """A client app the we may use for external requests."""
@@ -344,42 +290,36 @@ class Clan:
         """
         return await self.app.rest.fetch_clan_members(self.id, type)
 
-    # These ones is not implemented since it 
+    # These ones is not implemented since it
     # requires OAUth2
 
-    async def fetch_banned_members(
-        self
-    ) -> typing.Sequence[ClanMember]:
+    async def fetch_banned_members(self) -> typing.Sequence[ClanMember]:
         """Fetch members who has been banned from the clan.
 
         Returns
         --------
-        `typing.Sequence[aiobungie.objects.clans.ClanMember]`
+        `typing.Sequence[aiobungie.crate.clans.ClanMember]`
             A sequence of clan members or are banned.
         """
         raise NotImplementedError
 
-    async def fetch_pending_members(
-        self
-    ) -> typing.Sequence[ClanMember]:
+    async def fetch_pending_members(self) -> typing.Sequence[ClanMember]:
         """Fetch members who are waiting to get accepted.
 
         Returns
         --------
-        `typing.Sequence[aiobungie.objects.clans.ClanMember]`
-            A sequence of clan members who are awaiting 
+        `typing.Sequence[aiobungie.crate.clans.ClanMember]`
+            A sequence of clan members who are awaiting
             to get accepted to the clan.
         """
         raise NotImplementedError
 
-    async def fetch_invited_members(
-        self
-    ) -> typing.Sequence[ClanMember]:
+    async def fetch_invited_members(self) -> typing.Sequence[ClanMember]:
         """Fetch members who has been invited.
 
         Returns
         --------
-        `typing.Sequence[aiobungie.objects.clans.ClanMember]`
+        `typing.Sequence[aiobungie.crate.clans.ClanMember]`
             A sequence of members who have been invited.
         """
         raise NotImplementedError
@@ -395,7 +335,7 @@ class Clan:
 
     @property
     def as_dict(self) -> typing.Dict[str, typing.Any]:
-        """Returns an instance of the object as a dict"""
+        """Returns an instance of the clan as a dict"""
         return attr.asdict(self)
 
     def __int__(self) -> int:

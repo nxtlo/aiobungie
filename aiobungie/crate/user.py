@@ -25,25 +25,40 @@
 
 from __future__ import annotations
 
-__all__: typing.Sequence[str] = ["User", "PartialUser", "UserLike"]
+__all__: typing.Sequence[str] = ["User", "PartialUser", "UserLike", "HardLinkedMembership"]
 
 import abc
 import typing
-
 import attr
+
 from aiobungie.internal import impl
+from aiobungie.internal import Image
+from aiobungie.internal import Time
+from aiobungie.internal import enums
 
-from ..internal import Image
-from ..internal import Time
-from ..internal import enums
-
-if typing.TYPE_CHECKING:
-    from datetime import datetime
+from datetime import datetime
 
 
 @attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
+class HardLinkedMembership:
+    """Represents hard linked Bungie user membership.
+    
+    This currently only supports SteamID which's a public credenitial.
+    Also Cross-Save Aware.
+    """
+
+    type: enums.MembershipType = attr.field(repr=True)
+    """The hard link user membership type."""
+    
+    id: int = attr.field(repr=True, hash=True, eq=False)
+    """The hard link user id"""
+    
+    cross_save_type: enums.MembershipType = attr.field(repr=True, hash=False, eq=False, default=enums.MembershipType.NONE)
+    """The hard link user's crpss save membership type. Default is set to None-0"""
+
+@attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
 class PartialUser(abc.ABC):
-    """The partial user object."""
+    """A partial user crate."""
 
     @property
     @abc.abstractmethod
@@ -112,37 +127,7 @@ class PartialUser(abc.ABC):
 
 @attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
 class User(PartialUser):
-    """Represents Bungie User object.
-
-    Attributes
-    ----------
-    id: `builtins.int`
-            The user's id
-    name: `builtins.str`
-            The user's name.
-    is_deleted: `builtins.bool`
-            Returns True if the user is deleted
-    about: typing.typing.Optional[builtins.str]
-            The user's about, Default is None if nothing is Found.
-    created_at: `datetime.datetime`
-            The user's creation date in UTC date.
-    updated_at: `datetime.datetime`
-            The user's last updated om UTC date.
-    psn_name: typing.typing.Optional[builtins.str]
-            The user's psn id if it exists.
-    twitch_name: typing.typing.Optional[builtins.str]
-            The user's twitch name if it exists.
-    blizzard_name: typing.typing.Optional[builtins.str]
-            The user's blizzard name if it exists.
-    steam_name: typing.typing.Optional[builtins.str]
-            The user's steam name if it exists
-    status: typing.typing.Optional[builtins.str]
-            The user's bungie status text
-    locale: typing.typing.Optional[builtins.str]
-            The user's locale.
-    picture: aiobungie.internal.assets.Image
-            The user's avatar.
-    """
+    """Represents Bungie user."""
 
     id: int = attr.field(hash=True, repr=True)
     """The user's id"""
@@ -185,15 +170,13 @@ class User(PartialUser):
 
     @property
     def as_dict(self) -> typing.Dict[str, typing.Any]:
-        """Returns a dict object of the user,
-        This function is useful if you're binding to other REST apis.
-        """
+        """Returns a dict object of the user."""
         return attr.asdict(self)
 
 
 @attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
 class UserLike(abc.ABC):
-    """The is meant for any Member / user / like objects."""
+    """The is meant for any Member / user / like crate."""
 
     @property
     @abc.abstractmethod
@@ -227,7 +210,7 @@ class UserLike(abc.ABC):
     @property
     @abc.abstractmethod
     def as_dict(self) -> typing.Dict[str, typing.Any]:
-        """Returns an instance of the object attrs as a dict."""
+        """Returns an instance of the UserLike as a dict."""
 
     def __str__(self) -> str:
         return self.name

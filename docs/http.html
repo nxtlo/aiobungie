@@ -515,24 +515,19 @@ and Where all the magic happenes.
 &#34;&#34;&#34;
 
 from __future__ import annotations
-
-import types
-import typing
+from aiobungie.internal.helpers import JsonDict
 
 __all__ = (&#34;HTTPClient&#34;,)
 
 import http
+import types
 import typing
-
 import aiohttp
 
-from . import error
-from . import url
-from .internal import helpers
-from .internal.enums import Class
-from .internal.enums import Component
-from .internal.enums import GameMode
-from .internal.enums import MembershipType
+from aiobungie import error
+from aiobungie import url
+from aiobungie.internal import helpers
+from aiobungie.internal import enums
 
 if typing.TYPE_CHECKING:
     T = typing.TypeVar(&#34;T&#34;)
@@ -688,12 +683,6 @@ class HTTPClient:
     ) -&gt; typing.NoReturn:
         raise await handle_errors(response, msg)
 
-    # Currently some of the funcs return Response[typing.Any]
-    # And not the actual type, The reason for that Character
-    # And Activity objects are much complicated, so that&#39;l
-    # take Some time, but for Manifest and static search will
-    # not return typing.Any types. So they will be typing.Any.
-
     def fetch_user(self, name: str) -&gt; Response[helpers.JsonList]:
         return self.fetch(&#34;GET&#34;, f&#34;User/SearchUsers/?q={name}&#34;)
 
@@ -707,7 +696,7 @@ class HTTPClient:
         return self.fetch(&#34;GET&#34;, path)
 
     def fetch_player(
-        self, name: str, type: MembershipType
+        self, name: str, type: enums.MembershipType
     ) -&gt; Response[helpers.JsonDict]:
         return self.fetch(&#34;GET&#34;, f&#34;Destiny2/SearchDestinyPlayer/{int(type)}/{name}&#34;)
 
@@ -721,42 +710,44 @@ class HTTPClient:
         return self.fetch(&#34;GET&#34;, f&#34;App/Application/{appid}&#34;)
 
     def fetch_character(
-        self, memberid: int, type: MembershipType, character: Class
+        self, memberid: int, type: enums.MembershipType, character: enums.Class
     ) -&gt; Response[helpers.JsonDict]:
         return self.fetch(
             &#34;GET&#34;,
-            f&#34;Destiny2/{int(type)}/Profile/{memberid}/?components={int(Component.CHARECTERS)}&#34;,
+            f&#34;Destiny2/{int(type)}/Profile/{memberid}/?components={int(enums.Component.CHARECTERS)}&#34;,
         )
 
     def fetch_activity(
         self,
-        userid: int,
-        charid: int,
-        mode: GameMode,
-        memtype: MembershipType,
+        member_id: int,
+        character_id: int,
+        mode: enums.GameMode,
+        membership_type: enums.MembershipType,
         *,
-        page: typing.Optional[int] = 1,
+        page: typing.Optional[int] = 0,
         limit: typing.Optional[int] = 1,
     ) -&gt; Response[typing.Any]:
         return self.fetch(
             &#34;GET&#34;,
-            f&#34;Destiny2/{int(memtype)}/Account/ \
-            {userid}/Character/{charid}/Stats/ \
-            Activities/?page={page}&amp;count={limit} \
-            &amp;mode={int(mode)}&#34;,
+            f&#34;Destiny2/{int(membership_type)}/Account/&#34;
+            f&#34;{member_id}/Character/{character_id}/Stats/Activities&#34;
+            f&#34;/?mode={int(mode)}&amp;count={limit}&amp;page={page}&#34;,
         )
+
+    def fetch_post_activity(self, instance: int, /) -&gt; Response[helpers.JsonDict]:
+        return self.fetch(&#34;GET&#34;, f&#34;Destiny2/Stats/PostGameCarnageReport/{instance}&#34;)
 
     def fetch_vendor_sales(self) -&gt; Response[typing.Any]:
         return self.fetch(
-            &#34;GET&#34;, f&#34;Destiny2/Vendors/?components={int(Component.VENDOR_SALES)}&#34;
+            &#34;GET&#34;, f&#34;Destiny2/Vendors/?components={int(enums.Component.VENDOR_SALES)}&#34;
         )
 
     def fetch_profile(
-        self, memberid: int, type: MembershipType, /
+        self, memberid: int, type: enums.MembershipType, /
     ) -&gt; Response[helpers.JsonDict]:
         return self.fetch(
             &#34;GET&#34;,
-            f&#34;Destiny2/{int(type)}/Profile/{int(memberid)}/?components={int(Component.PROFILE)}&#34;,
+            f&#34;Destiny2/{int(type)}/Profile/{int(memberid)}/?components={int(enums.Component.PROFILE)}&#34;,
         )
 
     def fetch_entity(self, type: str, hash: int) -&gt; Response[helpers.JsonDict]:
@@ -768,7 +759,7 @@ class HTTPClient:
     def fetch_clan_members(
         self,
         id: int,
-        type: MembershipType = MembershipType.NONE,
+        type: enums.MembershipType = enums.MembershipType.NONE,
         name: typing.Optional[str] = None,
         /,
         *,
@@ -777,7 +768,17 @@ class HTTPClient:
         return self.fetch(
             &#34;GET&#34;,
             f&#34;/GroupV2/{id}/Members/?memberType={int(type)}&amp;nameSearch={name if name else &#39;&#39;}&amp;currentpage={page}&#34;,
-        )</code></pre>
+        )
+        
+    def fetch_hard_linked(
+        self, 
+        credential: int, 
+        type: enums.CredentialType = enums.CredentialType.STADIAID, /
+        ) -&gt; Response[JsonDict]:
+        return self.fetch(
+            &#34;GET&#34;,
+            f&#34;User/GetMembershipFromHardLinkedCredential/{int(type)}/{credential}/&#34;
+            )</code></pre>
                 </details>
             </section>
             <section>
@@ -891,12 +892,6 @@ class HTTPClient:
     ) -&gt; typing.NoReturn:
         raise await handle_errors(response, msg)
 
-    # Currently some of the funcs return Response[typing.Any]
-    # And not the actual type, The reason for that Character
-    # And Activity objects are much complicated, so that&#39;l
-    # take Some time, but for Manifest and static search will
-    # not return typing.Any types. So they will be typing.Any.
-
     def fetch_user(self, name: str) -&gt; Response[helpers.JsonList]:
         return self.fetch(&#34;GET&#34;, f&#34;User/SearchUsers/?q={name}&#34;)
 
@@ -910,7 +905,7 @@ class HTTPClient:
         return self.fetch(&#34;GET&#34;, path)
 
     def fetch_player(
-        self, name: str, type: MembershipType
+        self, name: str, type: enums.MembershipType
     ) -&gt; Response[helpers.JsonDict]:
         return self.fetch(&#34;GET&#34;, f&#34;Destiny2/SearchDestinyPlayer/{int(type)}/{name}&#34;)
 
@@ -924,42 +919,44 @@ class HTTPClient:
         return self.fetch(&#34;GET&#34;, f&#34;App/Application/{appid}&#34;)
 
     def fetch_character(
-        self, memberid: int, type: MembershipType, character: Class
+        self, memberid: int, type: enums.MembershipType, character: enums.Class
     ) -&gt; Response[helpers.JsonDict]:
         return self.fetch(
             &#34;GET&#34;,
-            f&#34;Destiny2/{int(type)}/Profile/{memberid}/?components={int(Component.CHARECTERS)}&#34;,
+            f&#34;Destiny2/{int(type)}/Profile/{memberid}/?components={int(enums.Component.CHARECTERS)}&#34;,
         )
 
     def fetch_activity(
         self,
-        userid: int,
-        charid: int,
-        mode: GameMode,
-        memtype: MembershipType,
+        member_id: int,
+        character_id: int,
+        mode: enums.GameMode,
+        membership_type: enums.MembershipType,
         *,
-        page: typing.Optional[int] = 1,
+        page: typing.Optional[int] = 0,
         limit: typing.Optional[int] = 1,
     ) -&gt; Response[typing.Any]:
         return self.fetch(
             &#34;GET&#34;,
-            f&#34;Destiny2/{int(memtype)}/Account/ \
-            {userid}/Character/{charid}/Stats/ \
-            Activities/?page={page}&amp;count={limit} \
-            &amp;mode={int(mode)}&#34;,
+            f&#34;Destiny2/{int(membership_type)}/Account/&#34;
+            f&#34;{member_id}/Character/{character_id}/Stats/Activities&#34;
+            f&#34;/?mode={int(mode)}&amp;count={limit}&amp;page={page}&#34;,
         )
+
+    def fetch_post_activity(self, instance: int, /) -&gt; Response[helpers.JsonDict]:
+        return self.fetch(&#34;GET&#34;, f&#34;Destiny2/Stats/PostGameCarnageReport/{instance}&#34;)
 
     def fetch_vendor_sales(self) -&gt; Response[typing.Any]:
         return self.fetch(
-            &#34;GET&#34;, f&#34;Destiny2/Vendors/?components={int(Component.VENDOR_SALES)}&#34;
+            &#34;GET&#34;, f&#34;Destiny2/Vendors/?components={int(enums.Component.VENDOR_SALES)}&#34;
         )
 
     def fetch_profile(
-        self, memberid: int, type: MembershipType, /
+        self, memberid: int, type: enums.MembershipType, /
     ) -&gt; Response[helpers.JsonDict]:
         return self.fetch(
             &#34;GET&#34;,
-            f&#34;Destiny2/{int(type)}/Profile/{int(memberid)}/?components={int(Component.PROFILE)}&#34;,
+            f&#34;Destiny2/{int(type)}/Profile/{int(memberid)}/?components={int(enums.Component.PROFILE)}&#34;,
         )
 
     def fetch_entity(self, type: str, hash: int) -&gt; Response[helpers.JsonDict]:
@@ -971,7 +968,7 @@ class HTTPClient:
     def fetch_clan_members(
         self,
         id: int,
-        type: MembershipType = MembershipType.NONE,
+        type: enums.MembershipType = enums.MembershipType.NONE,
         name: typing.Optional[str] = None,
         /,
         *,
@@ -980,7 +977,17 @@ class HTTPClient:
         return self.fetch(
             &#34;GET&#34;,
             f&#34;/GroupV2/{id}/Members/?memberType={int(type)}&amp;nameSearch={name if name else &#39;&#39;}&amp;currentpage={page}&#34;,
-        )</code></pre>
+        )
+        
+    def fetch_hard_linked(
+        self, 
+        credential: int, 
+        type: enums.CredentialType = enums.CredentialType.STADIAID, /
+        ) -&gt; Response[JsonDict]:
+        return self.fetch(
+            &#34;GET&#34;,
+            f&#34;User/GetMembershipFromHardLinkedCredential/{int(type)}/{credential}/&#34;
+            )</code></pre>
                         </details>
                         <h3>Methods</h3>
                         <dl>
@@ -1064,7 +1071,7 @@ async def fetch(
                                 </details>
                             </dd>
                             <dt id="aiobungie.http.HTTPClient.fetch_activity"><code class="name flex">
-<span>def <span class="ident">fetch_activity</span></span>(<span>self, userid: int, charid: int, mode: GameMode, memtype: MembershipType, *, page: typing.Optional[int] = 1, limit: typing.Optional[int] = 1) ‑> Response[typing.Any]</span>
+<span>def <span class="ident">fetch_activity</span></span>(<span>self, member_id: int, character_id: int, mode: enums.GameMode, membership_type: enums.MembershipType, *, page: typing.Optional[int] = 0, limit: typing.Optional[int] = 1) ‑> Response[typing.Any]</span>
 </code></dt>
                             <dd>
                                 <div class="desc"></div>
@@ -1074,20 +1081,19 @@ async def fetch(
                                     </summary>
                                     <pre><code class="python">def fetch_activity(
     self,
-    userid: int,
-    charid: int,
-    mode: GameMode,
-    memtype: MembershipType,
+    member_id: int,
+    character_id: int,
+    mode: enums.GameMode,
+    membership_type: enums.MembershipType,
     *,
-    page: typing.Optional[int] = 1,
+    page: typing.Optional[int] = 0,
     limit: typing.Optional[int] = 1,
 ) -&gt; Response[typing.Any]:
     return self.fetch(
         &#34;GET&#34;,
-        f&#34;Destiny2/{int(memtype)}/Account/ \
-        {userid}/Character/{charid}/Stats/ \
-        Activities/?page={page}&amp;count={limit} \
-        &amp;mode={int(mode)}&#34;,
+        f&#34;Destiny2/{int(membership_type)}/Account/&#34;
+        f&#34;{member_id}/Character/{character_id}/Stats/Activities&#34;
+        f&#34;/?mode={int(mode)}&amp;count={limit}&amp;page={page}&#34;,
     )</code></pre>
                                 </details>
                             </dd>
@@ -1105,7 +1111,7 @@ async def fetch(
                                 </details>
                             </dd>
                             <dt id="aiobungie.http.HTTPClient.fetch_character"><code class="name flex">
-<span>def <span class="ident">fetch_character</span></span>(<span>self, memberid: int, type: MembershipType, character: Class) ‑> Response[helpers.JsonDict]</span>
+<span>def <span class="ident">fetch_character</span></span>(<span>self, memberid: int, type: enums.MembershipType, character: enums.Class) ‑> Response[helpers.JsonDict]</span>
 </code></dt>
                             <dd>
                                 <div class="desc"></div>
@@ -1114,11 +1120,11 @@ async def fetch(
                                         <span>Expand source code</span>
                                     </summary>
                                     <pre><code class="python">def fetch_character(
-    self, memberid: int, type: MembershipType, character: Class
+    self, memberid: int, type: enums.MembershipType, character: enums.Class
 ) -&gt; Response[helpers.JsonDict]:
     return self.fetch(
         &#34;GET&#34;,
-        f&#34;Destiny2/{int(type)}/Profile/{memberid}/?components={int(Component.CHARECTERS)}&#34;,
+        f&#34;Destiny2/{int(type)}/Profile/{memberid}/?components={int(enums.Component.CHARECTERS)}&#34;,
     )</code></pre>
                                 </details>
                             </dd>
@@ -1149,7 +1155,7 @@ async def fetch(
                                 </details>
                             </dd>
                             <dt id="aiobungie.http.HTTPClient.fetch_clan_members"><code class="name flex">
-<span>def <span class="ident">fetch_clan_members</span></span>(<span>self, id: int, type: MembershipType = NONE, name: typing.Optional[str] = None, /, *, page: int = 1) ‑> Response[helpers.JsonDict]</span>
+<span>def <span class="ident">fetch_clan_members</span></span>(<span>self, id: int, type: enums.MembershipType = NONE, name: typing.Optional[str] = None, /, *, page: int = 1) ‑> Response[helpers.JsonDict]</span>
 </code></dt>
                             <dd>
                                 <div class="desc"></div>
@@ -1160,7 +1166,7 @@ async def fetch(
                                     <pre><code class="python">def fetch_clan_members(
     self,
     id: int,
-    type: MembershipType = MembershipType.NONE,
+    type: enums.MembershipType = enums.MembershipType.NONE,
     name: typing.Optional[str] = None,
     /,
     *,
@@ -1183,6 +1189,26 @@ async def fetch(
                                     </summary>
                                     <pre><code class="python">def fetch_entity(self, type: str, hash: int) -&gt; Response[helpers.JsonDict]:
     return self.fetch(&#34;GET&#34;, route=f&#34;Destiny2/Manifest/{type}/{hash}&#34;)</code></pre>
+                                </details>
+                            </dd>
+                            <dt id="aiobungie.http.HTTPClient.fetch_hard_linked"><code class="name flex">
+<span>def <span class="ident">fetch_hard_linked</span></span>(<span>self, credential: int, type: enums.CredentialType = STADIAID, /) ‑> Response[JsonDict]</span>
+</code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">def fetch_hard_linked(
+    self, 
+    credential: int, 
+    type: enums.CredentialType = enums.CredentialType.STADIAID, /
+    ) -&gt; Response[JsonDict]:
+    return self.fetch(
+        &#34;GET&#34;,
+        f&#34;User/GetMembershipFromHardLinkedCredential/{int(type)}/{credential}/&#34;
+        )</code></pre>
                                 </details>
                             </dd>
                             <dt id="aiobungie.http.HTTPClient.fetch_inventory_item"><code class="name flex">
@@ -1212,7 +1238,7 @@ async def fetch(
                                 </details>
                             </dd>
                             <dt id="aiobungie.http.HTTPClient.fetch_player"><code class="name flex">
-<span>def <span class="ident">fetch_player</span></span>(<span>self, name: str, type: MembershipType) ‑> Response[helpers.JsonDict]</span>
+<span>def <span class="ident">fetch_player</span></span>(<span>self, name: str, type: enums.MembershipType) ‑> Response[helpers.JsonDict]</span>
 </code></dt>
                             <dd>
                                 <div class="desc"></div>
@@ -1221,13 +1247,26 @@ async def fetch(
                                         <span>Expand source code</span>
                                     </summary>
                                     <pre><code class="python">def fetch_player(
-    self, name: str, type: MembershipType
+    self, name: str, type: enums.MembershipType
 ) -&gt; Response[helpers.JsonDict]:
     return self.fetch(&#34;GET&#34;, f&#34;Destiny2/SearchDestinyPlayer/{int(type)}/{name}&#34;)</code></pre>
                                 </details>
                             </dd>
+                            <dt id="aiobungie.http.HTTPClient.fetch_post_activity"><code class="name flex">
+<span>def <span class="ident">fetch_post_activity</span></span>(<span>self, instance: int, /) ‑> Response[helpers.JsonDict]</span>
+</code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">def fetch_post_activity(self, instance: int, /) -&gt; Response[helpers.JsonDict]:
+    return self.fetch(&#34;GET&#34;, f&#34;Destiny2/Stats/PostGameCarnageReport/{instance}&#34;)</code></pre>
+                                </details>
+                            </dd>
                             <dt id="aiobungie.http.HTTPClient.fetch_profile"><code class="name flex">
-<span>def <span class="ident">fetch_profile</span></span>(<span>self, memberid: int, type: MembershipType, /) ‑> Response[helpers.JsonDict]</span>
+<span>def <span class="ident">fetch_profile</span></span>(<span>self, memberid: int, type: enums.MembershipType, /) ‑> Response[helpers.JsonDict]</span>
 </code></dt>
                             <dd>
                                 <div class="desc"></div>
@@ -1236,11 +1275,11 @@ async def fetch(
                                         <span>Expand source code</span>
                                     </summary>
                                     <pre><code class="python">def fetch_profile(
-    self, memberid: int, type: MembershipType, /
+    self, memberid: int, type: enums.MembershipType, /
 ) -&gt; Response[helpers.JsonDict]:
     return self.fetch(
         &#34;GET&#34;,
-        f&#34;Destiny2/{int(type)}/Profile/{int(memberid)}/?components={int(Component.PROFILE)}&#34;,
+        f&#34;Destiny2/{int(type)}/Profile/{int(memberid)}/?components={int(enums.Component.PROFILE)}&#34;,
     )</code></pre>
                                 </details>
                             </dd>
@@ -1281,7 +1320,7 @@ async def fetch(
                                     </summary>
                                     <pre><code class="python">def fetch_vendor_sales(self) -&gt; Response[typing.Any]:
     return self.fetch(
-        &#34;GET&#34;, f&#34;Destiny2/Vendors/?components={int(Component.VENDOR_SALES)}&#34;
+        &#34;GET&#34;, f&#34;Destiny2/Vendors/?components={int(enums.Component.VENDOR_SALES)}&#34;
     )</code></pre>
                                 </details>
                             </dd>
@@ -1382,9 +1421,11 @@ async def fetch(
                                 <li><code><a title="aiobungie.http.HTTPClient.fetch_clan_from_id" href="#aiobungie.http.HTTPClient.fetch_clan_from_id">fetch_clan_from_id</a></code></li>
                                 <li><code><a title="aiobungie.http.HTTPClient.fetch_clan_members" href="#aiobungie.http.HTTPClient.fetch_clan_members">fetch_clan_members</a></code></li>
                                 <li><code><a title="aiobungie.http.HTTPClient.fetch_entity" href="#aiobungie.http.HTTPClient.fetch_entity">fetch_entity</a></code></li>
+                                <li><code><a title="aiobungie.http.HTTPClient.fetch_hard_linked" href="#aiobungie.http.HTTPClient.fetch_hard_linked">fetch_hard_linked</a></code></li>
                                 <li><code><a title="aiobungie.http.HTTPClient.fetch_inventory_item" href="#aiobungie.http.HTTPClient.fetch_inventory_item">fetch_inventory_item</a></code></li>
                                 <li><code><a title="aiobungie.http.HTTPClient.fetch_manifest" href="#aiobungie.http.HTTPClient.fetch_manifest">fetch_manifest</a></code></li>
                                 <li><code><a title="aiobungie.http.HTTPClient.fetch_player" href="#aiobungie.http.HTTPClient.fetch_player">fetch_player</a></code></li>
+                                <li><code><a title="aiobungie.http.HTTPClient.fetch_post_activity" href="#aiobungie.http.HTTPClient.fetch_post_activity">fetch_post_activity</a></code></li>
                                 <li><code><a title="aiobungie.http.HTTPClient.fetch_profile" href="#aiobungie.http.HTTPClient.fetch_profile">fetch_profile</a></code></li>
                                 <li><code><a title="aiobungie.http.HTTPClient.fetch_user" href="#aiobungie.http.HTTPClient.fetch_user">fetch_user</a></code></li>
                                 <li><code><a title="aiobungie.http.HTTPClient.fetch_user_from_id" href="#aiobungie.http.HTTPClient.fetch_user_from_id">fetch_user_from_id</a></code></li>

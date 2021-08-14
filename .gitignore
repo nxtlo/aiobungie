@@ -16,3 +16,4 @@ venv/
 .cache/
 dropped/
 pyrightconfig.json
+season.py

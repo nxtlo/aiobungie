@@ -32,31 +32,17 @@ import typing
 import attr
 
 from aiobungie.internal import impl
-from ..internal import Image
-from ..internal.enums import MembershipType
-from .user import UserLike
+from aiobungie.internal import Image
+from aiobungie.internal.enums import MembershipType
+
+from aiobungie.crate.user import UserLike
 
 
 @attr.s(hash=True, repr=True, init=True, kw_only=True, weakref_slot=False, slots=True)
 class Player(UserLike):
-    """Represents a Bungie Destiny 2 Player.
+    """Represents a Bungie Destiny 2 Player."""
 
-    Attributes
-    ----------
-    icon: `aiobungie.internal.Image`
-        The player's icon.
-    id: `builtins.int`
-        The player's id.
-    name: `builtins.str`
-        The player's name.
-    is_public: `builtins.bool`
-        A boolean True if the user's profile is public and False if not.
-    type: `aiobungie.internal.enums.MembershipType`
-        The player's membership type.
-    """
-    
     app: impl.RESTful = attr.field(repr=False)
-
 
     icon: Image = attr.field(repr=False, hash=False, eq=False)
     """The player's icon."""
@@ -75,9 +61,7 @@ class Player(UserLike):
 
     @property
     def as_dict(self) -> typing.Dict[str, typing.Any]:
-        """Returns a dict object of the player,
-        This function is useful if you're binding to other REST apis.
-        """
+        """Returns a dict object of the player."""
 
         return attr.asdict(self)
 

@@ -26,7 +26,7 @@ import asyncio
 import pytest
 
 import aiobungie
-from aiobungie import objects
+from aiobungie import crate
 from tests.config import TOKEN
 from tests.config import types
 
@@ -37,7 +37,7 @@ class EntityTest(aiobungie.Client):
 
     #     @pytest.mark.asyncio()
     #     async def place_definition(self) -> None:
-    #         earth: objects.Entity = await self.fetch_entity(types['place_def'], int(aiobungie.Planet.EARTH))
+    #         earth: crate.Entity = await self.fetch_entity(types['place_def'], int(aiobungie.Planet.EARTH))
     #         assert earth.name == "Earth"
     #         assert earth.description == "Mankind's cradle, full of shattered glory, ready to be reclaimed."
     #         assert earth.hash == 3747705955
@@ -47,9 +47,7 @@ class EntityTest(aiobungie.Client):
     @pytest.mark.asyncio()
     async def inventory_item_test(self) -> None:
 
-        thunderlord: objects.InventoryEntity = await self.fetch_inventory_item(
-            3325463374
-        )
+        thunderlord: crate.InventoryEntity = await self.fetch_inventory_item(3325463374)
 
         print(thunderlord.name)
         print(thunderlord.description)
@@ -67,7 +65,7 @@ class EntityTest(aiobungie.Client):
 
     #  @pytest.mark.asyncio()
     #  async def activity_definition(self) -> None:
-    #      scourge: objects.Entity = await self.fetch_entity(types['activity_def'], 548750096)
+    #      scourge: crate.Entity = await self.fetch_entity(types['activity_def'], 548750096)
     #
     #      assert scourge.name == "Scourge of the Past"
     #      assert scourge.index == 501

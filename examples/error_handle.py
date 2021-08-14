@@ -22,16 +22,11 @@
 
 """A simple example with error handle."""
 
-
-# NOTE: This will only work on python 3.10
-# If you want to test this on older versions
-# Change `Character | None` to Union[Character, None]
-
 import asyncio
 import logging
 
 import aiobungie
-from aiobungie.objects import Character, Profile
+from aiobungie.crate import Character
 
 
 class HandleMyErrors:
@@ -39,7 +34,7 @@ class HandleMyErrors:
         self.type = aiobungie.MembershipType.STEAM
         self.id = 4611686018484639825
 
-    async def my_titan(self) -> Character | None:  # Supports Python 3.10 union types.
+    async def my_titan(self) -> Character:
         try:
             async with aiobungie.Client("YOUR_TOKEN_HERE") as client:
                 titan: Character = await client.fetch_character(

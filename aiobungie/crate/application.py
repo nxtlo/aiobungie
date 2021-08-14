@@ -28,38 +28,21 @@ from __future__ import annotations
 __all__: typing.Sequence[str] = ("Application", "ApplicationOwner")
 
 import typing
-
 import attr
 
 from aiobungie import url
-
 from aiobungie.internal import impl
-from ..internal import Image
-from ..internal import Time
-from ..internal import enums
-from .user import UserLike
+from aiobungie.internal import Image
+from aiobungie.internal import Time
+from aiobungie.internal import enums
+from aiobungie.crate.user import UserLike
 
-if typing.TYPE_CHECKING:
-    from datetime import datetime
+from datetime import datetime
 
 
 @attr.s(hash=True, repr=True, init=True, kw_only=True, weakref_slot=False, slots=True)
 class ApplicationOwner(UserLike):
-    """Represents a Bungie Application owner.
-
-    Attributes
-    -----------
-    name: `builtins.str`
-        The application owner name.
-    id: `builtins.int`
-        The application owner bungie id.
-    icon: `aiobungie.internal.assets.Image`
-        The application owner profile icon.
-    is_public: `builtins.bool`
-        Determines if the application owner's profile was public or private
-    type: `aiobungie.internal.enums.MembershipType`
-        The application owner's bungie membership type.
-    """
+    """Represents a Bungie Application owner."""
 
     name: str = attr.field(repr=True, hash=False, eq=False)
     """The application owner name."""
@@ -75,7 +58,7 @@ class ApplicationOwner(UserLike):
 
     is_public: bool = attr.field(repr=True)
     """The application owner's profile privacy."""
-    
+
     @property
     def app(self) -> impl.RESTful:
         return self.app
@@ -86,9 +69,7 @@ class ApplicationOwner(UserLike):
 
     @property
     def as_dict(self) -> typing.Dict[str, typing.Any]:
-        """Returns a dict object of the application owner,
-        This function is useful if you're binding to other REST apis.
-        """
+        """Returns a dict object of the application owner."""
         return dict(
             id=self.id,
             name=self.name,
@@ -100,29 +81,7 @@ class ApplicationOwner(UserLike):
 
 @attr.s(hash=True, repr=True, init=True, kw_only=True, weakref_slot=False, slots=True)
 class Application:
-    """Represents a Bungie developer application.
-
-    Attributes
-    -----------
-    name: `builtins.str`
-        The app's name
-    id: `builtins.int`
-        The app's id.
-    redirect_url: typing.Optional[`builtins.str`]:
-        The app's redirect url, None if not Found.
-    created_at: `datetime.datetime`
-        The application's creation date in UTC time.
-    published_at: `datetime.datetime`
-        The application's publish date in UTC time.
-    link: `builtins.str`
-        The app's link if it exists.
-    status: `builtins.str`
-        The app's status.
-    owner: `aiobungie.objects.ApplicationOwner`
-        An object of The application owner.
-    scope: `builtins.str`
-        The app's scope
-    """
+    """Represents a Bungie developer application."""
 
     id: int = attr.field(repr=True, hash=True, eq=True)
     """App id"""
@@ -158,7 +117,7 @@ class Application:
 
     @property
     def as_dict(self) -> typing.Dict[str, typing.Any]:
-        """Returns a dict object of the application,
+        """Returns a dict crate of the application,
         This function is useful if you're binding to other REST apis.
         """
         return attr.asdict(self)

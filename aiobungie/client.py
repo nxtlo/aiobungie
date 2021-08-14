@@ -34,13 +34,12 @@ import typing
 
 from aiobungie.ext import Manifest
 from aiobungie.internal import deprecated
-from aiobungie.internal import impl
 from aiobungie.internal import serialize as serialize_
-from aiobungie.objects import activity
+from aiobungie.internal import impl
 
-from . import objects
+from . import crate
 from .http import HTTPClient
-from .internal.enums import Class
+from .internal.enums import Class, CredentialType
 from .internal.enums import GameMode
 from .internal.enums import MembershipType
 
@@ -144,12 +143,12 @@ class Client(impl.BaseClient):
         Returns
         -------
         `aiobungie.ext.Manifest`
-            A Manifest object.
+            A Manifest crate.
         """
         resp = await self.http.fetch_manifest()
         return Manifest(self._token, resp)
 
-    async def fetch_user(self, name: str, *, position: int = 0) -> objects.User:
+    async def fetch_user(self, name: str, *, position: int = 0) -> crate.User:
         """Fetches a Bungie user by their name.
 
         Parameters
@@ -170,7 +169,7 @@ class Client(impl.BaseClient):
         user_mod = self._serialize.deserialize_user(data, position)
         return user_mod
 
-    async def fetch_user_from_id(self, id: int) -> objects.User:
+    async def fetch_user_from_id(self, id: int) -> crate.User:
         """Fetches a Bungie user by their id.
 
         Parameters
@@ -190,17 +189,51 @@ class Client(impl.BaseClient):
         assert isinstance(payload, dict)
         # User and User from id has the same attrs but different return types so we have to ignore here.
         return self._serialize.deserialize_user(payload)  # type: ignore
+    
+    async def fetch_hard_types(
+        self, 
+        credential: int, 
+        type: CredentialType = CredentialType.STEAMID, /
+        ) -> crate.user.HardLinkedMembership:
+        """Gets any hard linked membership given a credential. 
+        Only works for credentials that are public just STEAMID from `aiobungie.CredentialType` right now. 
+        Cross Save aware.
+        
+        Parameters
+        ----------
+        credential: `builtins.int`
+            A valid SteamID64
+        type: `aiobungie.CredentialType`
+            The crededntial type. This must not be changed
+            Since its only credential that works "currently"
+
+        Returns
+        -------
+        `aiobungie.crate.user.HardLinkedMembership`
+            Information about the hard linked data.
+        """
+        
+        # This doens't really needs to be serialized like other stuff
+        # since the dict only contains 3 keys.
+        payload = await self.http.fetch_hard_linked(credential, type)
+        assert isinstance(payload, dict)
+
+        return crate.user.HardLinkedMembership(
+            id=int(payload['membershipId']),
+            type=MembershipType(payload['membershipType']),
+            cross_save_type=MembershipType(payload['CrossSaveOverriddenType'])
+        )
 
     async def fetch_profile(
         self,
         memberid: int,
         type: MembershipType,
         /,
-    ) -> objects.Profile:
+    ) -> crate.Profile:
         """
         Fetches a bungie profile.
 
-        See `aiobungie.objects.Profile` to access other components.
+        See `aiobungie.crate.Profile` to access other components.
 
         Paramaters
         ----------
@@ -211,7 +244,7 @@ class Client(impl.BaseClient):
 
         Returns
         --------
-        `aiobungie.objects.Profile`
+        `aiobungie.crate.Profile`
             An aiobungie member profile.
         """
         data = await self.http.fetch_profile(memberid, type)
@@ -220,7 +253,7 @@ class Client(impl.BaseClient):
 
     async def fetch_player(
         self, name: str, type: MembershipType, *, position: int = 0
-    ) -> objects.Player:
+    ) -> crate.Player:
         """Fetches a Destiny2 Player.
 
         Parameters
@@ -234,8 +267,8 @@ class Client(impl.BaseClient):
 
         Returns
         --------
-        `aiobungie.objects.Player`
-            An aiobungie Destiny 2 Player object
+        `aiobungie.crate.Player`
+            An aiobungie Destiny 2 Player crate
         """
         resp = await self.http.fetch_player(name, type)
         assert isinstance(resp, list)
@@ -243,7 +276,7 @@ class Client(impl.BaseClient):
 
     async def fetch_character(
         self, memberid: int, type: MembershipType, character: Class
-    ) -> objects.Character:
+    ) -> crate.Character:
         """Fetches a Destiny 2 character.
 
         Parameters
@@ -257,8 +290,8 @@ class Client(impl.BaseClient):
 
         Returns
         -------
-        `aiobungie.objects.Character`
-            An aiobungie character object.
+        `aiobungie.crate.Character`
+            An aiobungie character crate.
 
         Raises
         ------
@@ -278,28 +311,27 @@ class Client(impl.BaseClient):
         """Fetch vendor sales."""
         return await self.http.fetch_vendor_sales()
 
-    @deprecated
     async def fetch_activity(
         self,
-        userid: int,
-        charid: int,
+        member_id: int,
+        character_id: int,
         mode: GameMode,
-        memtype: MembershipType,
+        membership_type: MembershipType,
         *,
         page: typing.Optional[int] = 1,
         limit: typing.Optional[int] = 1,
-    ) -> None:
+    ) -> crate.activity.Activity:
         """Fetches a Destiny 2 activity for the specified user id and character.
 
         Parameters
         ----------
-        userid: `builtins.int`
+        member_id: `builtins.int`
             The user id that starts with `4611`.
-        charaid: `builtins.int`
+        character_id: `builtins.int`
             The id of the character to retrieve.
         mode: `aiobungie.internal.enums.GameMode`
             This parameter filters the game mode, Nightfall, Strike, Iron Banner, etc.
-        memtype: `aiobungie.internal.enums.MembershipType`
+        membership_type: `aiobungie.internal.enums.MembershipType`
             The Member ship type, if nothing was passed than it will return all.
         page: typing.Optional[builtins.int]
             The page number
@@ -308,22 +340,43 @@ class Client(impl.BaseClient):
 
         Returns
         -------
-        `aiobungie.objects.Activity`
-            An aiobungie Activity object.
+        `aiobungie.crate.Activity`
+            An aiobungie Activity crate.
 
         Raises
         ------
-        `AttributeError`
-            Using `aiobungie.objects.Activity.hash` for non raid activies.
         `aiobungie.error.ActivityNotFound`
-            Any other errors occures during the response.
+            The activity was not found.
         """
         resp = await self.http.fetch_activity(
-            userid, charid, mode, memtype=memtype, page=page, limit=limit
+            member_id,
+            character_id,
+            mode,
+            membership_type=membership_type,
+            page=page,
+            limit=limit,
         )
-        pass
+        assert isinstance(resp, dict)
+        return self.serialize.deserialize_activity(resp)
 
-    async def fetch_app(self, appid: int, /) -> objects.Application:
+    async def fetch_post_activity(self, instance: int, /) -> crate.activity.PostActivity:
+        """Fetchs a post activity details.
+
+        Parameters
+        ----------
+        instance: `builtins.int`
+            The activity instance id.
+
+        Returns
+        -------
+        `aiobungie.crate.activity.PostActivity`
+           Information about the requested post activity.
+        """
+        resp = await self.http.fetch_post_activity(instance)
+        # assert isinstance(resp, list)
+        raise NotImplementedError
+
+    async def fetch_app(self, appid: int, /) -> crate.Application:
         """Fetches a Bungie Application.
 
         Parameters
@@ -333,14 +386,14 @@ class Client(impl.BaseClient):
 
         Returns
         --------
-        `aiobungie.objects.Application`
-            An aiobungie application object.
+        `aiobungie.crate.Application`
+            An aiobungie application crate.
         """
         resp = await self.http.fetch_app(appid)
         assert isinstance(resp, dict)
         return self._serialize.deserialize_app(resp)
 
-    async def fetch_clan_from_id(self, id: int, /) -> objects.Clan:
+    async def fetch_clan_from_id(self, id: int, /) -> crate.Clan:
         """Fetches a Bungie Clan by its id.
 
         Parameters
@@ -350,14 +403,14 @@ class Client(impl.BaseClient):
 
         Returns
         --------
-        `aiobungie.objects.Clan`
-            An aioungie clan object
+        `aiobungie.crate.Clan`
+            An aioungie clan crate
         """
         resp = await self.http.fetch_clan_from_id(id)
         assert isinstance(resp, dict)
         return self._serialize.deseialize_clan(resp)
 
-    async def fetch_clan(self, name: str, /, type: int = 1) -> objects.Clan:
+    async def fetch_clan(self, name: str, /, type: int = 1) -> crate.Clan:
         """Fetches a Clan by its name and returns the first result.
 
         Parameters
@@ -369,16 +422,16 @@ class Client(impl.BaseClient):
 
         Returns
         -------
-        `aiobungie.objects.Clan`
-            An aiobungie clan object.
+        `aiobungie.crate.Clan`
+            An aiobungie clan crate.
         """
         resp = await self.http.fetch_clan(name, type)
         assert isinstance(resp, dict)
         return self._serialize.deseialize_clan(resp)
 
     # These are not documented for a reason.
-    # See: `aiobungie.objects.Clan.fetch_member()`
-    # and `aiobungie.objects.Clan.fetch_members()`
+    # See: `aiobungie.crate.Clan.fetch_member()`
+    # and `aiobungie.crate.Clan.fetch_members()`
 
     async def fetch_clan_member(
         self,
@@ -386,7 +439,7 @@ class Client(impl.BaseClient):
         name: typing.Optional[str] = None,
         type: MembershipType = MembershipType.NONE,
         /,
-    ) -> objects.clans.ClanMember:
+    ) -> crate.clans.ClanMember:
 
         resp = await self.http.fetch_clan_members(id, type, name)
         assert isinstance(resp, dict)
@@ -400,9 +453,7 @@ class Client(impl.BaseClient):
         assert isinstance(resp, dict)
         return self._serialize.deserialize_clan_members(resp)
 
-    async def fetch_inventory_item(
-        self, hash: int, /
-    ) -> objects.entity.InventoryEntity:
+    async def fetch_inventory_item(self, hash: int, /) -> crate.entity.InventoryEntity:
         """Fetches a static inventory item entity given a its hash.
 
         Paramaters
@@ -414,7 +465,7 @@ class Client(impl.BaseClient):
 
         Returns
         -------
-        `aiobungie.objects.InventoryEntity`
+        `aiobungie.crate.InventoryEntity`
             A bungie inventory item.
         """
         resp = await self.http.fetch_inventory_item(hash)

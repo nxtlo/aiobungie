@@ -26,12 +26,18 @@ from __future__ import annotations
 __all__: typing.Sequence[str] = ["Deserialize"]
 
 import datetime
-import functools
-import itertools
 import logging
 import typing
 
 from aiobungie import error
+from aiobungie.crate import activity
+from aiobungie.crate import application as app
+from aiobungie.crate import character
+from aiobungie.crate import clans
+from aiobungie.crate import entity
+from aiobungie.crate import player
+from aiobungie.crate import profile
+from aiobungie.crate import user
 from aiobungie.internal import Image
 from aiobungie.internal import Time
 from aiobungie.internal import enums
@@ -40,19 +46,12 @@ from aiobungie.internal.helpers import JsonDict
 from aiobungie.internal.helpers import JsonList
 from aiobungie.internal.helpers import Undefined
 from aiobungie.internal.helpers import Unknown
-from aiobungie.objects import application as app
-from aiobungie.objects import character
-from aiobungie.objects import clans
-from aiobungie.objects import entity
-from aiobungie.objects import player
-from aiobungie.objects import profile
-from aiobungie.objects import user
 
 _LOG: typing.Final[logging.Logger] = logging.getLogger(__name__)
 
 
 class Deserialize:
-    """The base Deserialization class for all aiobungie objects."""
+    """The base Deserialization class for all aiobungie crate."""
 
     # This is actually inspired by hikari's entity factory.
 
@@ -146,8 +145,8 @@ class Deserialize:
         banner = Image(str(data["detail"]["bannerPath"]))
         avatar = Image(str(data["detail"]["avatarPath"]))
         tags = data["detail"]["tags"]
-        features = data['detail']['features']
-        type = data['detail']['groupType']
+        features = data["detail"]["features"]
+        type = data["detail"]["groupType"]
 
         features_obj = clans.ClanFeatures(
             max_members=features["maximumMembers"],
@@ -157,7 +156,7 @@ class Deserialize:
             invite_permissions=features["invitePermissionOverride"],
             update_banner_permissions=features["updateBannerPermissionOverride"],
             update_culture_permissions=features["updateCulturePermissionOverride"],
-            join_level=features["joinLevel"]
+            join_level=features["joinLevel"],
         )
 
         return clans.Clan(
@@ -177,9 +176,7 @@ class Deserialize:
             owner=self.deseialize_clan_owner(data["founder"]),
         )
 
-    def deserialize_clan_member(
-        self, data: JsonDict, /
-    ) -> clans.ClanMember:
+    def deserialize_clan_member(self, data: JsonDict, /) -> clans.ClanMember:
 
         if (payload := data["results"]) is not None:
             attrs = payload[0]
@@ -214,9 +211,8 @@ class Deserialize:
         )
 
     def deserialize_clan_members(
-        self, 
-        data: JsonDict, /
-        ) -> typing.Dict[str, typing.Tuple[int, enums.MembershipType]]:
+        self, data: JsonDict, /
+    ) -> typing.Dict[str, typing.Tuple[int, enums.MembershipType]]:
 
         if (payload := data["results"]) is not None:
             try:
@@ -231,8 +227,8 @@ class Deserialize:
 
             members = {
                 str(name["displayName"]): (
-                    int(id['membershipId']), 
-                    enums.MembershipType(type['membershipType'])
+                    int(id["membershipId"]),
+                    enums.MembershipType(type["membershipType"]),
                 )
                 for name in _member
                 for id in _member
@@ -419,4 +415,55 @@ class Deserialize:
             stats=stats,
             ammo_type=block,
             lore_hash=payload.get("loreHash", None),
+        )
+
+    def deserialize_activity(
+        self, payload: JsonDict, /, *, limit: int = 1
+    ) -> activity.Activity:
+
+        if (activs := payload.get("activities")) is not None:
+            activs = dict(*activs)
+            period: datetime.datetime = Time.clean_date(str(activs["period"]))
+
+            if (details := activs.get("activityDetails")) is not None:
+                id: int = details["referenceId"]
+                instance_id: int = int(details["instanceId"])
+
+                if game_mode := details.get("mode"):
+                    mode: enums.GameMode = enums.GameMode(game_mode)
+
+                if game_modes := details.get("modes"):
+                    appended_modes: typing.List[enums.GameMode] = []
+                    for _mode in game_modes:
+                        appended_modes.append(enums.GameMode(_mode))
+
+                member_type: enums.MembershipType = enums.MembershipType(
+                    details["membershipType"]
+                )
+                if (inner := activs.get("values")) is not None:
+                    # values: typing.List[typing.Dict[str, typing.Any]] = [v['basic']['value'] for v in inner]
+                    values = dict(inner.items()).values()
+                    data = [
+                        basic_data["basic"]["displayValue"] for basic_data in values
+                    ]
+
+        return activity.Activity(
+            app=self._rest,
+            period=period,
+            id=id,
+            instance_id=instance_id,
+            mode=mode,
+            modes=appended_modes,
+            member_type=member_type,
+            assists=int(data[0]),
+            is_completed=data[1],
+            deaths=int(data[2]),
+            kills=int(data[3]),
+            opponents_defeated=int(data[4]),
+            efficiency=float(data[5]),
+            kd=float(data[6]),
+            score=int(data[8]),
+            duration=data[9],
+            completion_reason=data[11],
+            player_count=int(data[15]),
         )

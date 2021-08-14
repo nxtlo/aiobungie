@@ -26,18 +26,17 @@ from __future__ import annotations
 
 __all__: typing.Sequence[str] = ("Profile", "ProfileComponentImpl")
 
+import attr
 import abc
 import datetime
 import logging
 import typing
 
-import attr
-
 from aiobungie.internal import Time
 from aiobungie.internal import enums
 from aiobungie.internal import impl
 
-from .character import Character
+from aiobungie.crate.character import Character
 
 log: typing.Final[logging.Logger] = logging.getLogger(__name__)
 
@@ -175,21 +174,6 @@ class Profile(ProfileComponentImpl):
 
     assert warlock.light == 1320
     ```
-
-    Attributes
-    ----------
-    id: `builtins.int`
-            Profile's id
-    name: `builtins.str`
-            Profile's name
-    type: `aiobungie.internal.enums.MembershipType`
-            The profile's membership type.
-    last_played: `datetime.datetime`
-            The profile owner's last played date in UTC
-    character_ids: `typing.List[builtins.int]`
-            A list of the profile's character ids.
-    power_cap: `builtins.int`
-            The profile's current season power cap.
     """
 
     id: int = attr.field(repr=True, hash=True, eq=False)
@@ -240,9 +224,7 @@ class Profile(ProfileComponentImpl):
 
     @property
     def as_dict(self) -> typing.Dict[str, typing.Any]:
-        """Returns a dict object of the profile,
-        This function is useful if you're binding to other REST apis.
-        """
+        """Returns a dict object of the profile."""
         return attr.asdict(self)
 
     @property

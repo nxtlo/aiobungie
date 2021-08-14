@@ -5,8 +5,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
     <meta name="generator" content="pdoc 0.9.2" />
-    <title>aiobungie.internal.impl API documentation</title>
-    <meta name="description" content="A base module for all client implementation." />
+    <title>aiobungie.ext.meta API documentation</title>
+    <meta name="description" content="A very basic helper for the bungie Manifest." />
     <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
     <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
     <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/atom-one-dark.min.css" crossorigin>
@@ -479,10 +479,10 @@
     <main>
         <article id="content">
             <header>
-                <h1 class="title">Module <code>aiobungie.internal.impl</code></h1>
+                <h1 class="title">Module <code>aiobungie.ext.meta</code></h1>
             </header>
             <section id="section-intro">
-                <p>A base module for all client implementation.</p>
+                <p>A very basic helper for the bungie Manifest.</p>
                 <details class="source">
                     <summary>
                         <span>Expand source code</span>
@@ -509,54 +509,112 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-&#34;&#34;&#34;A base module for all client implementation.&#34;&#34;&#34;
+&#34;&#34;&#34;A very basic helper for the bungie Manifest.&#34;&#34;&#34;
+
 
 from __future__ import annotations
 
-__all__: typing.Sequence[str] = [&#34;BaseClient&#34;, &#34;RESTful&#34;]
+from sqlite3.dbapi2 import OptimizedUnicode
 
-import typing
+__all__: t.Sequence[str] = (&#34;Manifest&#34;,)
 
-from aiobungie import client as client_
+import logging
+import os
+import os.path
+import typing as t
+import zipfile
+
+from aiobungie.http import HTTPClient
+from aiobungie.internal import Image
+from aiobungie.internal.db import Database
+from aiobungie.internal.enums import Raid
+
+log: t.Final[logging.Logger] = logging.getLogger(__name__)
 
 
-@typing.runtime_checkable
-class RESTful(typing.Protocol):
-    __slots__: typing.Sequence[str] = ()
+class Manifest:
+    __slots__: t.Sequence[str] = (&#34;db&#34;, &#34;_http&#34;, &#34;_path&#34;, &#34;version&#34;)
 
-    @property
-    def rest(self) -&gt; client_.Client:
-        &#34;&#34;&#34;Returns resful of the client instance for other requests.&#34;&#34;&#34;
+    def __init__(self, token: str, path: t.Dict[str, t.Any]) -&gt; None:
+        self._path = path
+        self.version: str = path[&#34;version&#34;]
+        self._http = HTTPClient(token)
 
-        raise NotImplementedError
+    def __dbinit__(self) -&gt; None:
+        self.db = Database(&#34;./.cache/destiny.sqlite3&#34;)
 
+    async def download(self, *, force: bool = False) -&gt; None:
+        if os.path.isfile(&#34;./.cache/destiny.sqlite3&#34;):
+            if not force:
+                if self.db.version != self.version:  # type: ignore[has-type]
+                    log.warning(&#34;A newer Manifest version is available.&#34;)
+                    force = True
+                    await self.download(force=force)
+                return
+            elif force:
+                os.remove(&#34;./.cache/destiny.sqlite3&#34;)
 
-@typing.runtime_checkable
-class BaseClient(RESTful, typing.Protocol):
-    __slots__: typing.Sequence[str] = ()
+        if os.path.isfile(&#34;./.cache/file.zip&#34;):
+            os.remove(&#34;./.cache/file.zip&#34;)
+        try:
+            log.debug(&#34;Downloading manifest...&#34;)
+            req = await self._http.fetch(
+                method=&#34;GET&#34;,
+                route=self._path[&#34;mobileWorldContentPaths&#34;][&#34;en&#34;],
+                base=True,
+                type=&#34;read&#34;,
+            )
 
-    def run(
-        self, future: typing.Coroutine[typing.Any, None, None], debug: bool = False
-    ) -&gt; None:
-        &#34;&#34;&#34;Runs a Coro function until its complete.
-        This is equivalent to asyncio.get_event_loop().run_until_complete(...)
+            if not os.path.exists(&#34;./.cache&#34;):
+                os.mkdir(&#34;./.cache&#34;)
+
+            with open(&#34;./.cache/file.zip&#34;, &#34;wb&#34;) as afile:  # Manifest bytes.
+                afile.write(req)
+                with zipfile.ZipFile(&#34;./.cache/file.zip&#34;) as zipped:
+                    name = zipped.namelist()
+                    zipped.extractall()
+                os.rename(name[0], &#34;./.cache/destiny.sqlite3&#34;)
+
+                # The only reason we&#39;re doing the db stuff here
+                # Because we don&#39;t want to declare `self.db` in the `__init__()`
+                self.__dbinit__()
+                self.db.create_table(&#34;versions&#34;, &#34;version&#34;, &#34;TEXT&#34;)
+                self.db.insert_version(self.version)
+
+                log.info(&#34;Database finished downloading.&#34;)
+        except Exception:
+            raise
+
+    def get_raid_image(self, raid: Raid) -&gt; Image:
+        image = self.db.fetch(
+            &#34;SELECT json FROM DestinyActivityDefinition WHERE id = ?&#34;,
+            (int(raid),),
+            &#34;pgcrImage&#34;,
+        )
+        return Image(path=str(image))
+
+    def fetch(
+        self, definition: str, id: int, item: t.Optional[str] = None
+    ) -&gt; t.Optional[t.Dict[t.Any, t.Any]]:
+        &#34;&#34;&#34;Fetch something from the manifest databse.
+        This returns a `typing.Dict[typing.Any, typing.Any]`
 
         Parameters
         ----------
-        future: `typing.Coroutine[typing.Any, typing.Any, typing.Any]`
-            Your coro function.
+        definition: `builtins.str`
+            The definition you want to fetch from.
+        id: `builtins.int`
+            The id of the entity.
+        item: `typing.Optional[builsint.str]`
+            An item to get from the dict.
 
-        Example
+        Returns
         -------
-        ```py
-        async def main() -&gt; None:
-            player = await client.fetch_player(&#34;Fate&#34;)
-            print(player.name)
-
-        client.run(main())
-        ```
+        `typing.Optional[typing.Dict[typing.Any, typing.Any]]`
         &#34;&#34;&#34;
-        raise NotImplementedError</code></pre>
+        return self.db.fetch(
+            &#34;SELECT json FROM {} WHERE id = ?&#34;.format(definition), (id,), item
+        )</code></pre>
                 </details>
             </section>
             <section>
@@ -568,205 +626,231 @@ class BaseClient(RESTful, typing.Protocol):
             <section>
                 <h2 class="section-title" id="header-classes">Classes</h2>
                 <dl>
-                    <dt id="aiobungie.internal.impl.BaseClient"><code class="flex name class">
-<span>class <span class="ident">BaseClient</span></span>
-<span>(</span><span>*args, **kwargs)</span>
+                    <dt id="aiobungie.ext.meta.Manifest"><code class="flex name class">
+<span>class <span class="ident">Manifest</span></span>
+<span>(</span><span>token: str, path: t.Dict[str, t.Any])</span>
 </code></dt>
                     <dd>
-                        <div class="desc">
-                            <p>Base class for protocol classes.</p>
-                            <p>Protocol classes are defined as::</p>
-                            <pre><code>class Proto(Protocol):
-    def meth(self) -&gt; int:
-        ...
-</code></pre>
-                            <p>Such classes are primarily used with static type checkers that recognize structural subtyping (static duck-typing), for example::</p>
-                            <pre><code>class C:
-    def meth(self) -&gt; int:
-        return 0
-
-def func(x: Proto) -&gt; int:
-    return x.meth()
-
-func(C())  # Passes static type check
-</code></pre>
-                            <p>See PEP 544 for details. Protocol classes decorated with @typing.runtime_checkable act as simple-minded runtime protocols that check only the presence of given attributes, ignoring their type signatures. Protocol classes can
-                                be generic, they are defined as::</p>
-                            <pre><code>class GenProto(Protocol[T]):
-    def meth(self) -&gt; T:
-        ...
-</code></pre></div>
+                        <div class="desc"></div>
                         <details class="source">
                             <summary>
                                 <span>Expand source code</span>
                             </summary>
-                            <pre><code class="python">@typing.runtime_checkable
-class BaseClient(RESTful, typing.Protocol):
-    __slots__: typing.Sequence[str] = ()
+                            <pre><code class="python">class Manifest:
+    __slots__: t.Sequence[str] = (&#34;db&#34;, &#34;_http&#34;, &#34;_path&#34;, &#34;version&#34;)
 
-    def run(
-        self, future: typing.Coroutine[typing.Any, None, None], debug: bool = False
-    ) -&gt; None:
-        &#34;&#34;&#34;Runs a Coro function until its complete.
-        This is equivalent to asyncio.get_event_loop().run_until_complete(...)
+    def __init__(self, token: str, path: t.Dict[str, t.Any]) -&gt; None:
+        self._path = path
+        self.version: str = path[&#34;version&#34;]
+        self._http = HTTPClient(token)
+
+    def __dbinit__(self) -&gt; None:
+        self.db = Database(&#34;./.cache/destiny.sqlite3&#34;)
+
+    async def download(self, *, force: bool = False) -&gt; None:
+        if os.path.isfile(&#34;./.cache/destiny.sqlite3&#34;):
+            if not force:
+                if self.db.version != self.version:  # type: ignore[has-type]
+                    log.warning(&#34;A newer Manifest version is available.&#34;)
+                    force = True
+                    await self.download(force=force)
+                return
+            elif force:
+                os.remove(&#34;./.cache/destiny.sqlite3&#34;)
+
+        if os.path.isfile(&#34;./.cache/file.zip&#34;):
+            os.remove(&#34;./.cache/file.zip&#34;)
+        try:
+            log.debug(&#34;Downloading manifest...&#34;)
+            req = await self._http.fetch(
+                method=&#34;GET&#34;,
+                route=self._path[&#34;mobileWorldContentPaths&#34;][&#34;en&#34;],
+                base=True,
+                type=&#34;read&#34;,
+            )
+
+            if not os.path.exists(&#34;./.cache&#34;):
+                os.mkdir(&#34;./.cache&#34;)
+
+            with open(&#34;./.cache/file.zip&#34;, &#34;wb&#34;) as afile:  # Manifest bytes.
+                afile.write(req)
+                with zipfile.ZipFile(&#34;./.cache/file.zip&#34;) as zipped:
+                    name = zipped.namelist()
+                    zipped.extractall()
+                os.rename(name[0], &#34;./.cache/destiny.sqlite3&#34;)
+
+                # The only reason we&#39;re doing the db stuff here
+                # Because we don&#39;t want to declare `self.db` in the `__init__()`
+                self.__dbinit__()
+                self.db.create_table(&#34;versions&#34;, &#34;version&#34;, &#34;TEXT&#34;)
+                self.db.insert_version(self.version)
+
+                log.info(&#34;Database finished downloading.&#34;)
+        except Exception:
+            raise
+
+    def get_raid_image(self, raid: Raid) -&gt; Image:
+        image = self.db.fetch(
+            &#34;SELECT json FROM DestinyActivityDefinition WHERE id = ?&#34;,
+            (int(raid),),
+            &#34;pgcrImage&#34;,
+        )
+        return Image(path=str(image))
+
+    def fetch(
+        self, definition: str, id: int, item: t.Optional[str] = None
+    ) -&gt; t.Optional[t.Dict[t.Any, t.Any]]:
+        &#34;&#34;&#34;Fetch something from the manifest databse.
+        This returns a `typing.Dict[typing.Any, typing.Any]`
 
         Parameters
         ----------
-        future: `typing.Coroutine[typing.Any, typing.Any, typing.Any]`
-            Your coro function.
+        definition: `builtins.str`
+            The definition you want to fetch from.
+        id: `builtins.int`
+            The id of the entity.
+        item: `typing.Optional[builsint.str]`
+            An item to get from the dict.
 
-        Example
+        Returns
         -------
-        ```py
-        async def main() -&gt; None:
-            player = await client.fetch_player(&#34;Fate&#34;)
-            print(player.name)
-
-        client.run(main())
-        ```
+        `typing.Optional[typing.Dict[typing.Any, typing.Any]]`
         &#34;&#34;&#34;
-        raise NotImplementedError</code></pre>
+        return self.db.fetch(
+            &#34;SELECT json FROM {} WHERE id = ?&#34;.format(definition), (id,), item
+        )</code></pre>
                         </details>
-                        <h3>Ancestors</h3>
-                        <ul class="hlist">
-                            <li><a title="aiobungie.internal.impl.RESTful" href="#aiobungie.internal.impl.RESTful">RESTful</a></li>
-                            <li>typing.Protocol</li>
-                            <li>typing.Generic</li>
-                        </ul>
-                        <h3>Subclasses</h3>
-                        <ul class="hlist">
-                            <li><a title="aiobungie.client.Client" href="./client.html#aiobungie.client.Client">Client</a></li>
-                        </ul>
                         <h3>Instance variables</h3>
                         <dl>
-                            <dt id="aiobungie.internal.impl.BaseClient.rest"><code class="name">var <span class="ident">rest</span> : <a title="aiobungie.client.Client" href="./client.html#aiobungie.client.Client">Client</a></code></dt>
+                            <dt id="aiobungie.ext.meta.Manifest.db"><code class="name">var <span class="ident">db</span></code></dt>
                             <dd>
-                                <p class="inheritance">
-                                    <em>Inherited from:</em>
-                                    <code><a title="aiobungie.internal.impl.RESTful" href="#aiobungie.internal.impl.RESTful">RESTful</a></code>.<code><a title="aiobungie.internal.impl.RESTful.rest" href="#aiobungie.internal.impl.RESTful.rest">rest</a></code>
-                                </p>
-                                <div class="desc inherited">
-                                    <p>Returns resful of the client instance for other requests.</p>
+                                <div class="desc">
+                                    <p>Return an attribute of instance, which is of type owner.</p>
+                                </div>
+                            </dd>
+                            <dt id="aiobungie.ext.meta.Manifest.version"><code class="name">var <span class="ident">version</span></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Return an attribute of instance, which is of type owner.</p>
                                 </div>
                             </dd>
                         </dl>
                         <h3>Methods</h3>
                         <dl>
-                            <dt id="aiobungie.internal.impl.BaseClient.run"><code class="name flex">
-<span>def <span class="ident">run</span></span>(<span>self, future: typing.Coroutine[typing.Any, None, None], debug: bool = False) ‑> NoneType</span>
+                            <dt id="aiobungie.ext.meta.Manifest.download"><code class="name flex">
+<span>async def <span class="ident">download</span></span>(<span>self, *, force: bool = False) ‑> NoneType</span>
 </code></dt>
                             <dd>
-                                <div class="desc">
-                                    <p>Runs a Coro function until its complete. This is equivalent to asyncio.get_event_loop().run_until_complete(&hellip;)</p>
-                                    <h2 id="parameters">Parameters</h2>
-                                    <dl>
-                                        <dt><strong><code>future</code></strong> :&ensp;<code>typing.Coroutine[typing.Any, typing.Any, typing.Any]</code></dt>
-                                        <dd>Your coro function.</dd>
-                                    </dl>
-                                    <h2 id="example">Example</h2>
-                                    <pre><code class="language-py">async def main() -&gt; None:
-    player = await client.fetch_player(&quot;Fate&quot;)
-    print(player.name)
-
-client.run(main())
-</code></pre></div>
+                                <div class="desc"></div>
                                 <details class="source">
                                     <summary>
                                         <span>Expand source code</span>
                                     </summary>
-                                    <pre><code class="python">def run(
-    self, future: typing.Coroutine[typing.Any, None, None], debug: bool = False
-) -&gt; None:
-    &#34;&#34;&#34;Runs a Coro function until its complete.
-    This is equivalent to asyncio.get_event_loop().run_until_complete(...)
+                                    <pre><code class="python">async def download(self, *, force: bool = False) -&gt; None:
+    if os.path.isfile(&#34;./.cache/destiny.sqlite3&#34;):
+        if not force:
+            if self.db.version != self.version:  # type: ignore[has-type]
+                log.warning(&#34;A newer Manifest version is available.&#34;)
+                force = True
+                await self.download(force=force)
+            return
+        elif force:
+            os.remove(&#34;./.cache/destiny.sqlite3&#34;)
 
-    Parameters
-    ----------
-    future: `typing.Coroutine[typing.Any, typing.Any, typing.Any]`
-        Your coro function.
+    if os.path.isfile(&#34;./.cache/file.zip&#34;):
+        os.remove(&#34;./.cache/file.zip&#34;)
+    try:
+        log.debug(&#34;Downloading manifest...&#34;)
+        req = await self._http.fetch(
+            method=&#34;GET&#34;,
+            route=self._path[&#34;mobileWorldContentPaths&#34;][&#34;en&#34;],
+            base=True,
+            type=&#34;read&#34;,
+        )
 
-    Example
-    -------
-    ```py
-    async def main() -&gt; None:
-        player = await client.fetch_player(&#34;Fate&#34;)
-        print(player.name)
+        if not os.path.exists(&#34;./.cache&#34;):
+            os.mkdir(&#34;./.cache&#34;)
 
-    client.run(main())
-    ```
-    &#34;&#34;&#34;
-    raise NotImplementedError</code></pre>
+        with open(&#34;./.cache/file.zip&#34;, &#34;wb&#34;) as afile:  # Manifest bytes.
+            afile.write(req)
+            with zipfile.ZipFile(&#34;./.cache/file.zip&#34;) as zipped:
+                name = zipped.namelist()
+                zipped.extractall()
+            os.rename(name[0], &#34;./.cache/destiny.sqlite3&#34;)
+
+            # The only reason we&#39;re doing the db stuff here
+            # Because we don&#39;t want to declare `self.db` in the `__init__()`
+            self.__dbinit__()
+            self.db.create_table(&#34;versions&#34;, &#34;version&#34;, &#34;TEXT&#34;)
+            self.db.insert_version(self.version)
+
+            log.info(&#34;Database finished downloading.&#34;)
+    except Exception:
+        raise</code></pre>
                                 </details>
                             </dd>
-                        </dl>
-                    </dd>
-                    <dt id="aiobungie.internal.impl.RESTful"><code class="flex name class">
-<span>class <span class="ident">RESTful</span></span>
-<span>(</span><span>*args, **kwargs)</span>
+                            <dt id="aiobungie.ext.meta.Manifest.fetch"><code class="name flex">
+<span>def <span class="ident">fetch</span></span>(<span>self, definition: str, id: int, item: t.Optional[str] = None) ‑> Optional[Dict[Any, Any]]</span>
 </code></dt>
-                    <dd>
-                        <div class="desc">
-                            <p>Base class for protocol classes.</p>
-                            <p>Protocol classes are defined as::</p>
-                            <pre><code>class Proto(Protocol):
-    def meth(self) -&gt; int:
-        ...
-</code></pre>
-                            <p>Such classes are primarily used with static type checkers that recognize structural subtyping (static duck-typing), for example::</p>
-                            <pre><code>class C:
-    def meth(self) -&gt; int:
-        return 0
-
-def func(x: Proto) -&gt; int:
-    return x.meth()
-
-func(C())  # Passes static type check
-</code></pre>
-                            <p>See PEP 544 for details. Protocol classes decorated with @typing.runtime_checkable act as simple-minded runtime protocols that check only the presence of given attributes, ignoring their type signatures. Protocol classes can
-                                be generic, they are defined as::</p>
-                            <pre><code>class GenProto(Protocol[T]):
-    def meth(self) -&gt; T:
-        ...
-</code></pre></div>
-                        <details class="source">
-                            <summary>
-                                <span>Expand source code</span>
-                            </summary>
-                            <pre><code class="python">@typing.runtime_checkable
-class RESTful(typing.Protocol):
-    __slots__: typing.Sequence[str] = ()
-
-    @property
-    def rest(self) -&gt; client_.Client:
-        &#34;&#34;&#34;Returns resful of the client instance for other requests.&#34;&#34;&#34;
-
-        raise NotImplementedError</code></pre>
-                        </details>
-                        <h3>Ancestors</h3>
-                        <ul class="hlist">
-                            <li>typing.Protocol</li>
-                            <li>typing.Generic</li>
-                        </ul>
-                        <h3>Subclasses</h3>
-                        <ul class="hlist">
-                            <li><a title="aiobungie.internal.impl.BaseClient" href="#aiobungie.internal.impl.BaseClient">BaseClient</a></li>
-                        </ul>
-                        <h3>Instance variables</h3>
-                        <dl>
-                            <dt id="aiobungie.internal.impl.RESTful.rest"><code class="name">var <span class="ident">rest</span> : <a title="aiobungie.client.Client" href="./client.html#aiobungie.client.Client">Client</a></code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>Returns resful of the client instance for other requests.</p>
+                                    <p>Fetch something from the manifest databse. This returns a <code>typing.Dict[typing.Any, typing.Any]</code></p>
+                                    <h2 id="parameters">Parameters</h2>
+                                    <dl>
+                                        <dt><strong><code>definition</code></strong> :&ensp;<code>builtins.str</code></dt>
+                                        <dd>The definition you want to fetch from.</dd>
+                                        <dt><strong><code>id</code></strong> :&ensp;<code>builtins.int</code></dt>
+                                        <dd>The id of the entity.</dd>
+                                        <dt><strong><code>item</code></strong> :&ensp;<code>typing.Optional[builsint.str]</code></dt>
+                                        <dd>An item to get from the dict.</dd>
+                                    </dl>
+                                    <h2 id="returns">Returns</h2>
+                                    <p><code>typing.Optional[typing.Dict[typing.Any, typing.Any]]</code></p>
                                 </div>
                                 <details class="source">
                                     <summary>
                                         <span>Expand source code</span>
                                     </summary>
-                                    <pre><code class="python">@property
-def rest(self) -&gt; client_.Client:
-    &#34;&#34;&#34;Returns resful of the client instance for other requests.&#34;&#34;&#34;
+                                    <pre><code class="python">def fetch(
+    self, definition: str, id: int, item: t.Optional[str] = None
+) -&gt; t.Optional[t.Dict[t.Any, t.Any]]:
+    &#34;&#34;&#34;Fetch something from the manifest databse.
+    This returns a `typing.Dict[typing.Any, typing.Any]`
 
-    raise NotImplementedError</code></pre>
+    Parameters
+    ----------
+    definition: `builtins.str`
+        The definition you want to fetch from.
+    id: `builtins.int`
+        The id of the entity.
+    item: `typing.Optional[builsint.str]`
+        An item to get from the dict.
+
+    Returns
+    -------
+    `typing.Optional[typing.Dict[typing.Any, typing.Any]]`
+    &#34;&#34;&#34;
+    return self.db.fetch(
+        &#34;SELECT json FROM {} WHERE id = ?&#34;.format(definition), (id,), item
+    )</code></pre>
+                                </details>
+                            </dd>
+                            <dt id="aiobungie.ext.meta.Manifest.get_raid_image"><code class="name flex">
+<span>def <span class="ident">get_raid_image</span></span>(<span>self, raid: Raid) ‑> <a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a></span>
+</code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">def get_raid_image(self, raid: Raid) -&gt; Image:
+    image = self.db.fetch(
+        &#34;SELECT json FROM DestinyActivityDefinition WHERE id = ?&#34;,
+        (int(raid),),
+        &#34;pgcrImage&#34;,
+    )
+    return Image(path=str(image))</code></pre>
                                 </details>
                             </dd>
                         </dl>
@@ -836,23 +920,20 @@ def rest(self) -&gt; client_.Client:
                 <li>
                     <h3>Super-module</h3>
                     <ul>
-                        <li><code><a title="aiobungie.internal" href="index.html">aiobungie.internal</a></code></li>
+                        <li><code><a title="aiobungie.ext" href="index.html">aiobungie.ext</a></code></li>
                     </ul>
                 </li>
                 <li>
                     <h3><a href="#header-classes">Classes</a></h3>
                     <ul>
                         <li>
-                            <h4><code><a title="aiobungie.internal.impl.BaseClient" href="#aiobungie.internal.impl.BaseClient">BaseClient</a></code></h4>
+                            <h4><code><a title="aiobungie.ext.meta.Manifest" href="#aiobungie.ext.meta.Manifest">Manifest</a></code></h4>
                             <ul class="">
-                                <li><code><a title="aiobungie.internal.impl.BaseClient.rest" href="#aiobungie.internal.impl.BaseClient.rest">rest</a></code></li>
-                                <li><code><a title="aiobungie.internal.impl.BaseClient.run" href="#aiobungie.internal.impl.BaseClient.run">run</a></code></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <h4><code><a title="aiobungie.internal.impl.RESTful" href="#aiobungie.internal.impl.RESTful">RESTful</a></code></h4>
-                            <ul class="">
-                                <li><code><a title="aiobungie.internal.impl.RESTful.rest" href="#aiobungie.internal.impl.RESTful.rest">rest</a></code></li>
+                                <li><code><a title="aiobungie.ext.meta.Manifest.db" href="#aiobungie.ext.meta.Manifest.db">db</a></code></li>
+                                <li><code><a title="aiobungie.ext.meta.Manifest.download" href="#aiobungie.ext.meta.Manifest.download">download</a></code></li>
+                                <li><code><a title="aiobungie.ext.meta.Manifest.fetch" href="#aiobungie.ext.meta.Manifest.fetch">fetch</a></code></li>
+                                <li><code><a title="aiobungie.ext.meta.Manifest.get_raid_image" href="#aiobungie.ext.meta.Manifest.get_raid_image">get_raid_image</a></code></li>
+                                <li><code><a title="aiobungie.ext.meta.Manifest.version" href="#aiobungie.ext.meta.Manifest.version">version</a></code></li>
                             </ul>
                         </li>
                     </ul>

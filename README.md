@@ -26,7 +26,7 @@
 
 </div>
 
-# Key Features
+# Features
 
 * Asynchronous.
 * Simplicity.
@@ -53,18 +53,22 @@ See [Examples for more.](https://github.com/nxtlo/aiobungie/tree/master/examples
 
 ```python
 import aiobungie
-from aiobungie import objects
+from aiobungie import crate
+
+# crates in aiobungie are implementations 
+# of Bungie's objects to provide
+# more functionality.
 
 client = aiobungie.Client(key='YOUR_API_KEY')
 
 async def main() -> None:
     
     # fetch a clan
-    clan: objects.Clan = await client.fetch_clan("Nuanceㅤ")
+    clan: crate.Clan = await client.fetch_clan("Nuanceㅤ")
     print(clan.name, clan.id, clan.owner.name, clan.owner.id, ...)
 
     # fetch a member from the clan.
-    member: objects.ClanMember = await clan.fetch_member("Fate怒")
+    member: crate.ClanMember = await clan.fetch_member("Fate怒")
     print(member.name, member.id, member.type, ...)
 
     # fetch the clan members and return only steam players
@@ -72,7 +76,7 @@ async def main() -> None:
     print(members)
 
     # fetch my profile.
-    profile: objects.Profile = await client.fetch_profile(member.id, member.type)
+    profile: crate.Profile = await client.fetch_profile(member.id, member.type)
     print(profile.name, profile.id, profile.type, ...)
 
     # You can fetch a character in two ways.
@@ -80,11 +84,11 @@ async def main() -> None:
     # using `fetch_character()` method.
     
     # The profile way.
-    warlock: objects.Character = await profile.warlock()
+    warlock: crate.Character = await profile.warlock()
     print(warlock.light, warlock.id, warlock.gender, warlock.race, ...)
 
     # the fetch_character() way using the profile attrs.
-    character: objects.Character = await client.fetch_character(profile.id, profile.type, profile.warlock_id)
+    character: crate.Character = await client.fetch_character(profile.id, profile.type, profile.warlock_id)
     print(character.light, character.id, character.gender, character.race, ...)
 ```
 

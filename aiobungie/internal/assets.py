@@ -25,14 +25,26 @@
 
 from __future__ import annotations
 
-__all__ = ("Image",)
+__all__: typing.List[str] = ["Image"] 
 
+import typing
+from aiobungie.internal import helpers
+from aiobungie import url
 
 class Image:
-    BASE = "https://bungie.net"
 
     def __init__(self, path: str) -> None:
         self.path = path
 
-    def __str__(self):
-        return self.BASE + self.path
+    def __str__(self) -> str:
+        return url.BASE + self.path
+
+    @property
+    def url(self) -> str:
+        return str(self)
+
+    @property
+    def partial(self) -> str:
+        if self.path is not None:
+            return self.path
+        return f'Image<{helpers.Undefined}>'

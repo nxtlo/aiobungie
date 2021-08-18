@@ -36,7 +36,7 @@ import typing
 
 from aiobungie import url
 from aiobungie.internal import Image
-from aiobungie.internal import Time
+from aiobungie.internal import time
 from aiobungie.internal import enums
 
 log: typing.Final[logging.Logger] = logging.getLogger(__name__)
@@ -182,7 +182,7 @@ class CharacterComponent(abc.ABC):
     @property
     def human_timedelta(self) -> str:
         """The player's last played time in a human readble date."""
-        return Time.human_timedelta(Time.clean_date(str(self.last_played)))
+        return time.human_timedelta(time.clean_date(str(self.last_played)))
 
 
 @attr.s(kw_only=True, hash=True, weakref_slot=False, slots=True, init=True, eq=True)

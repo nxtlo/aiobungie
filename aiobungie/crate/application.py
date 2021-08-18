@@ -33,7 +33,7 @@ import attr
 from aiobungie import url
 from aiobungie.internal import impl
 from aiobungie.internal import Image
-from aiobungie.internal import Time
+from aiobungie.internal import time
 from aiobungie.internal import enums
 from aiobungie.crate.user import UserLike
 
@@ -60,8 +60,9 @@ class ApplicationOwner(UserLike):
     """The application owner's profile privacy."""
 
     @property
-    def app(self) -> impl.RESTful:
-        return self.app
+    def net(self) -> impl.Netrunner:
+        """A network state used for making external requests."""
+        return self.net
 
     @property
     def link(self) -> str:
@@ -113,7 +114,7 @@ class Application:
     @property
     def human_timedelta(self) -> str:
         """Returns a human readble date of the app's creation date."""
-        return Time.human_timedelta(self.created_at)
+        return time.human_timedelta(self.created_at)
 
     @property
     def as_dict(self) -> typing.Dict[str, typing.Any]:

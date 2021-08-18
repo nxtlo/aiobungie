@@ -33,7 +33,7 @@ import attr
 
 from aiobungie.internal import impl
 from aiobungie.internal import Image
-from aiobungie.internal import Time
+from aiobungie.internal import time
 from aiobungie.internal import enums
 
 from datetime import datetime
@@ -122,7 +122,7 @@ class PartialUser(abc.ABC):
 
     @property
     def human_timedelta(self) -> str:
-        return Time.human_timedelta(self.created_at)
+        return time.human_timedelta(self.created_at)
 
 
 @attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
@@ -180,8 +180,8 @@ class UserLike(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def app(self) -> impl.RESTful:
-        """A client app that we may use for external requests."""
+    def net(self) -> impl.Netrunner:
+        """A network state used for making external requests."""
 
     @property
     @abc.abstractmethod

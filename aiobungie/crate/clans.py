@@ -34,7 +34,7 @@ import attr
 from aiobungie import url
 from aiobungie.internal import impl
 from aiobungie.internal import Image
-from aiobungie.internal import Time
+from aiobungie.internal import time
 from aiobungie.internal.enums import GroupType
 from aiobungie.internal.enums import MembershipType
 from aiobungie.crate.user import UserLike
@@ -102,8 +102,9 @@ class ClanMember(UserLike):
     """The clan member's join date in UTC time zone."""
 
     @property
-    def app(self) -> impl.RESTful:
-        return self.app
+    def net(self) -> impl.Netrunner:
+        """A network state used for making external requests."""
+        return self.net
 
     @property
     def link(self) -> typing.Optional[str]:
@@ -170,13 +171,14 @@ class ClanOwner(UserLike):
     """Owner's bungie join date."""
 
     @property
-    def app(self) -> impl.RESTful:
-        return self.app
+    def net(self) -> impl.Netrunner:
+        """A network state used for making external requests."""
+        return self.net
 
     @property
     def human_timedelta(self) -> str:
         """Returns a human readble date of the clan owner's last login."""
-        return Time.human_timedelta(self.last_online)
+        return time.human_timedelta(self.last_online)
 
     @property
     def link(self) -> typing.Optional[str]:
@@ -201,8 +203,8 @@ class ClanOwner(UserLike):
 class Clan:
     """Represents a Bungie clan."""
 
-    app: impl.RESTful = attr.field(repr=False, eq=False, hash=False)
-    """A client app the we may use for external requests."""
+    net: impl.Netrunner = attr.field(repr=False, eq=False, hash=False)
+    """A network state used for making external requests."""
 
     id: int = attr.field(hash=True, repr=True, eq=True)
     """The clan id"""
@@ -265,7 +267,11 @@ class Clan:
         --------
         `ClanMember`
         """
-        return await self.app.rest.fetch_clan_member(self.id, name, type)
+        return await self.net.request.fetch_clan_member(self.id, name, type)
+
+    # TODO we should really return all clan members as a sequence of ClanMember
+    # instead of a dict. 
+    # Something like this [ClanMember(...), ClanMember(...), ...]
 
     async def fetch_members(
         self, type: MembershipType = MembershipType.NONE, /
@@ -288,7 +294,7 @@ class Clan:
             a dict of the member name to a tuple of the member id
             and membership type object.
         """
-        return await self.app.rest.fetch_clan_members(self.id, type)
+        return await self.net.request.fetch_clan_members(self.id, type)
 
     # These ones is not implemented since it
     # requires OAUth2
@@ -327,7 +333,7 @@ class Clan:
     @property
     def human_timedelta(self) -> str:
         """Returns a human readble date of the clan's creation date."""
-        return Time.human_timedelta(self.created_at)
+        return time.human_timedelta(self.created_at)
 
     @property
     def url(self) -> str:

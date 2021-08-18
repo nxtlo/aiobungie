@@ -55,7 +55,12 @@ class Client(impl.BaseClient):
         asyncio event loop.
     """
 
-    __slots__: typing.Sequence[str] = ("loop", "http", "_serialize", "_token")
+    __slots__: typing.Sequence[str] = (
+        "loop", 
+        "http", 
+        "_serialize", 
+        "_token"
+     )
 
     def __init__(self, token: str, *, loop: asyncio.AbstractEventLoop = None) -> None:
         self.loop: asyncio.AbstractEventLoop = (  # asyncio loop.
@@ -88,7 +93,7 @@ class Client(impl.BaseClient):
         return self._serialize
 
     @property
-    def rest(self) -> "Client":
+    def request(self) -> Client:
         return self
 
     def run(
@@ -166,7 +171,7 @@ class Client(impl.BaseClient):
         """
         data = await self.http.fetch_user(name=name)
         assert isinstance(data, list)
-        user_mod = self._serialize.deserialize_user(data, position)
+        user_mod = self.serialize.deserialize_user(data, position)
         return user_mod
 
     async def fetch_user_from_id(self, id: int) -> crate.User:
@@ -188,7 +193,7 @@ class Client(impl.BaseClient):
         payload = await self.http.fetch_user_from_id(id)
         assert isinstance(payload, dict)
         # User and User from id has the same attrs but different return types so we have to ignore here.
-        return self._serialize.deserialize_user(payload)  # type: ignore
+        return self.serialize.deserialize_user(payload)  # type: ignore
     
     async def fetch_hard_types(
         self, 
@@ -249,7 +254,7 @@ class Client(impl.BaseClient):
         """
         data = await self.http.fetch_profile(memberid, type)
         assert isinstance(data, dict)
-        return self._serialize.deserialize_profile(data)
+        return self.serialize.deserialize_profile(data)
 
     async def fetch_player(
         self, name: str, type: MembershipType, *, position: int = 0
@@ -272,7 +277,7 @@ class Client(impl.BaseClient):
         """
         resp = await self.http.fetch_player(name, type)
         assert isinstance(resp, list)
-        return self._serialize.deserialize_player(payload=resp, position=position)
+        return self.serialize.deserialize_player(payload=resp, position=position)
 
     async def fetch_character(
         self, memberid: int, type: MembershipType, character: Class
@@ -391,7 +396,7 @@ class Client(impl.BaseClient):
         """
         resp = await self.http.fetch_app(appid)
         assert isinstance(resp, dict)
-        return self._serialize.deserialize_app(resp)
+        return self.serialize.deserialize_app(resp)
 
     async def fetch_clan_from_id(self, id: int, /) -> crate.Clan:
         """Fetches a Bungie Clan by its id.
@@ -408,7 +413,7 @@ class Client(impl.BaseClient):
         """
         resp = await self.http.fetch_clan_from_id(id)
         assert isinstance(resp, dict)
-        return self._serialize.deseialize_clan(resp)
+        return self.serialize.deseialize_clan(resp)
 
     async def fetch_clan(self, name: str, /, type: int = 1) -> crate.Clan:
         """Fetches a Clan by its name and returns the first result.
@@ -427,7 +432,7 @@ class Client(impl.BaseClient):
         """
         resp = await self.http.fetch_clan(name, type)
         assert isinstance(resp, dict)
-        return self._serialize.deseialize_clan(resp)
+        return self.serialize.deseialize_clan(resp)
 
     # These are not documented for a reason.
     # See: `aiobungie.crate.Clan.fetch_member()`
@@ -443,7 +448,7 @@ class Client(impl.BaseClient):
 
         resp = await self.http.fetch_clan_members(id, type, name)
         assert isinstance(resp, dict)
-        return self._serialize.deserialize_clan_member(resp)
+        return self.serialize.deserialize_clan_member(resp)
 
     async def fetch_clan_members(
         self, id: int, type: MembershipType = MembershipType.NONE, /
@@ -451,7 +456,7 @@ class Client(impl.BaseClient):
 
         resp = await self.http.fetch_clan_members(id, type, page=1)
         assert isinstance(resp, dict)
-        return self._serialize.deserialize_clan_members(resp)
+        return self.serialize.deserialize_clan_members(resp)
 
     async def fetch_inventory_item(self, hash: int, /) -> crate.entity.InventoryEntity:
         """Fetches a static inventory item entity given a its hash.
@@ -470,4 +475,4 @@ class Client(impl.BaseClient):
         """
         resp = await self.http.fetch_inventory_item(hash)
         assert isinstance(resp, dict)
-        return self._serialize.deserialize_inventory_entity(resp)
+        return self.serialize.deserialize_inventory_entity(resp)

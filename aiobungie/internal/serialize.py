@@ -39,7 +39,7 @@ from aiobungie.crate import player
 from aiobungie.crate import profile
 from aiobungie.crate import user
 from aiobungie.internal import Image
-from aiobungie.internal import Time
+from aiobungie.internal import time
 from aiobungie.internal import enums
 from aiobungie.internal import impl
 from aiobungie.internal.helpers import JsonDict
@@ -52,13 +52,12 @@ _LOG: typing.Final[logging.Logger] = logging.getLogger(__name__)
 
 class Deserialize:
     """The base Deserialization class for all aiobungie crate."""
-
     # This is actually inspired by hikari's entity factory.
 
-    __slots__: typing.Sequence[str] = ("_rest",)
+    __slots__: typing.Sequence[str] = ("_net",)
 
-    def __init__(self, rest: impl.RESTful) -> None:
-        self._rest = rest
+    def __init__(self, net: impl.Netrunner) -> None:
+        self._net = net
 
     def deserialize_user(self, payload: JsonList, position: int = 0) -> user.User:
         from_id = payload
@@ -72,11 +71,11 @@ class Deserialize:
 
         return user.User(
             id=int(data["membershipId"]),
-            created_at=Time.clean_date(data["firstAccess"]),
+            created_at=time.clean_date(data["firstAccess"]),
             name=data["displayName"],
             is_deleted=data["isDeleted"],
             about=data["about"],
-            updated_at=Time.clean_date(data["lastUpdate"]),
+            updated_at=time.clean_date(data["lastUpdate"]),
             psn_name=data.get("psnDisplayName", None),
             steam_name=data.get("steamDisplayName", None),
             twitch_name=data.get("twitchDisplayName", None),
@@ -102,7 +101,7 @@ class Deserialize:
                 raise error.PlayerNotFound("Player was not found.") from None
 
         return player.Player(
-            app=self._rest,
+            net=self._net,
             name=data["displayName"],
             id=int(data["membershipId"]),
             is_public=data["isPublic"],
@@ -115,7 +114,7 @@ class Deserialize:
         name = data["destinyUserInfo"]["displayName"]
         icon = Image(str(data["destinyUserInfo"]["iconPath"]))
         convert = int(data["lastOnlineStatusChange"])
-        last_online = Time.from_timestamp(convert)
+        last_online = time.from_timestamp(convert)
         clan_id = data["groupId"]
         joined_at = data["joinDate"]
         types = data["destinyUserInfo"]["applicableMembershipTypes"]
@@ -128,7 +127,7 @@ class Deserialize:
             icon=icon,
             last_online=last_online,
             clan_id=clan_id,
-            joined_at=Time.clean_date(joined_at),
+            joined_at=time.clean_date(joined_at),
             types=types,
             is_public=is_public,
             type=type,
@@ -160,11 +159,11 @@ class Deserialize:
         )
 
         return clans.Clan(
-            app=self._rest,
+            net=self._net,
             id=id,
             name=name,
             type=enums.GroupType(type),
-            created_at=Time.clean_date(created_at),
+            created_at=time.clean_date(created_at),
             member_count=member_count,
             description=description,
             about=about,
@@ -180,12 +179,12 @@ class Deserialize:
 
         if (payload := data["results"]) is not None:
             attrs = payload[0]
-            last_online: datetime.datetime = Time.from_timestamp(
+            last_online: datetime.datetime = time.from_timestamp(
                 int(attrs["lastOnlineStatusChange"])
             )
             is_online: bool = attrs["isOnline"]
             group_id: int = attrs["groupId"]
-            joined_at: datetime.datetime = Time.clean_date(str(attrs["joinDate"]))
+            joined_at: datetime.datetime = time.clean_date(str(attrs["joinDate"]))
 
             try:
                 payload = payload[0]["destinyUserInfo"]
@@ -255,8 +254,8 @@ class Deserialize:
             link=payload["link"],
             status=payload["status"],
             redirect_url=payload["redirectUrl"],
-            created_at=Time.clean_date(str(payload["creationDate"])),
-            published_at=Time.clean_date(str(payload["firstPublished"])),
+            created_at=time.clean_date(str(payload["creationDate"])),
+            published_at=time.clean_date(str(payload["firstPublished"])),
             owner=self.deserialize_app_owner(payload["team"][0]["user"]),  # type: ignore
             scope=payload["scope"],
         )
@@ -283,7 +282,7 @@ class Deserialize:
             )
             payload = payload[0]  # type: ignore
 
-        total_time = Time.format_played(int(payload["minutesPlayedTotal"]), suffix=True)
+        total_time = time.format_played(int(payload["minutesPlayedTotal"]), suffix=True)
 
         return character.Character(
             id=payload["characterId"],
@@ -310,7 +309,7 @@ class Deserialize:
         name = payload["userInfo"]["displayName"]
         is_public = payload["userInfo"]["isPublic"]
         type = enums.MembershipType(payload["userInfo"]["membershipType"])
-        last_played = Time.clean_date(str(payload["dateLastPlayed"]))
+        last_played = time.clean_date(str(payload["dateLastPlayed"]))
         character_ids = payload["characterIds"]
         power_cap = payload["currentSeasonRewardPowerCap"]
 
@@ -322,7 +321,7 @@ class Deserialize:
             last_played=last_played,
             character_ids=character_ids,
             power_cap=power_cap,
-            app=self._rest,
+            net=self._net,
         )
 
     def deserialize_inventory_entity(
@@ -392,7 +391,7 @@ class Deserialize:
             item_class: enums.Class = enums.Class(raw_item_class)
 
         return entity.InventoryEntity(
-            app=self._rest,
+            net=self._net,
             name=name,
             description=description,
             hash=payload["hash"],
@@ -423,7 +422,7 @@ class Deserialize:
 
         if (activs := payload.get("activities")) is not None:
             activs = dict(*activs)
-            period: datetime.datetime = Time.clean_date(str(activs["period"]))
+            period: datetime.datetime = time.clean_date(str(activs["period"]))
 
             if (details := activs.get("activityDetails")) is not None:
                 id: int = details["referenceId"]
@@ -448,7 +447,7 @@ class Deserialize:
                     ]
 
         return activity.Activity(
-            app=self._rest,
+            net=self._net,
             period=period,
             id=id,
             instance_id=instance_id,

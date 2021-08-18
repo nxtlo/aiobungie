@@ -43,7 +43,7 @@ data: Dict[str, Any] = {
     "vendor": aiobungie.Vendor.SPIDER,
 }
 
-
+# make this an enum maybe?
 types: Dict[str, str] = {
     "inventory_item_def": "DestinyInventoryItemDefinition",
     "place_def": "DestinyPlaceDefinition",

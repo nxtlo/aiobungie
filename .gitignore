@@ -15,5 +15,4 @@ venv/
 .nox
 .cache/
 dropped/
-pyrightconfig.json
 season.py

@@ -32,7 +32,7 @@ import datetime
 import logging
 import typing
 
-from aiobungie.internal import Time
+from aiobungie.internal import time
 from aiobungie.internal import enums
 from aiobungie.internal import impl
 
@@ -51,8 +51,8 @@ class ProfileComponentImpl(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def app(self) -> impl.RESTful:
-        """A client that we may to make rest requests."""
+    def net(self) -> impl.Netrunner:
+        """A network state used for making external requests."""
 
     @property
     @abc.abstractmethod
@@ -87,7 +87,7 @@ class ProfileComponentImpl(abc.ABC):
     async def titan(self) -> Character:
         """Returns the titan character of the profile owner."""
         # We're ignoring the types for the character since
-        char: Character = await self.app.rest.fetch_character(
+        char: Character = await self.net.request.fetch_character(
             int(self.id), self.type, enums.Class.TITAN
         )
         return Character(
@@ -110,7 +110,7 @@ class ProfileComponentImpl(abc.ABC):
 
     async def hunter(self) -> Character:
         """Returns the hunter character of the profile owner."""
-        char: Character = await self.app.rest.fetch_character(
+        char: Character = await self.net.request.fetch_character(
             self.id, self.type, enums.Class.HUNTER
         )
         return Character(
@@ -133,7 +133,7 @@ class ProfileComponentImpl(abc.ABC):
 
     async def warlock(self) -> Character:
         """Returns the Warlock character of the profile owner."""
-        char: Character = await self.app.rest.fetch_character(
+        char: Character = await self.net.request.fetch_character(
             self.id, self.type, enums.Class.WARLOCK
         )
         return Character(
@@ -159,14 +159,22 @@ class ProfileComponentImpl(abc.ABC):
 class Profile(ProfileComponentImpl):
     """Represents a Bungie member Profile.
 
-    Bungie profiles requires components. but in aiobungie
-    you don't need to select a specific component since they will all/will be
-    implemented.
+    Bungie profiles requires components. 
+    But its kinda boring to pass multiple components to a parameter.
+    So. The `.Profile` crate will include all Bungie components.
+    to be accessiable as a crate.
 
-    for an example: to access the `Character` component you'll need to pass `?component=200` right?.
-    in aiobungie you can just do this.
+    How?.
+    For an example: to access the `Characters` component you'll need to pass `?component=200`.
+    But here you can just return the character itself from the profile 
+    using `await .Profile.titan()` and the other character methods
+    which returns a `aiobungie.crate.Character` crate.
+    crates are basically classes/objects.
 
+    Example
+    -------
     ```py
+    client = aiobungie.Client(...)
     profile = await client.fetch_profile("Fate")
 
     # access the character component and get my warlock.
@@ -179,7 +187,8 @@ class Profile(ProfileComponentImpl):
     id: int = attr.field(repr=True, hash=True, eq=False)
     """Profile's id"""
 
-    app: impl.RESTful = attr.field(repr=False, hash=False, eq=False)
+    net: impl.Netrunner = attr.field(repr=False, hash=False, eq=False)
+    """A network state used for making external requests."""
 
     name: str = attr.field(repr=True, hash=False, eq=False)
     """Profile's name."""
@@ -198,8 +207,6 @@ class Profile(ProfileComponentImpl):
 
     power_cap: int = attr.field(repr=False, hash=False, eq=False)
     """The profile's current seaspn power cap."""
-
-    # Components
 
     def __str__(self) -> str:
         return self.name
@@ -230,4 +237,4 @@ class Profile(ProfileComponentImpl):
     @property
     def human_timedelta(self) -> str:
         """Returns last_played attr but in human delta date."""
-        return Time.human_timedelta(self.last_played)
+        return time.human_timedelta(self.last_played)

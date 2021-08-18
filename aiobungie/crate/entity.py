@@ -41,16 +41,16 @@ from aiobungie.internal import impl
 
 @attr.s(kw_only=True, hash=True, weakref_slot=False, slots=True, init=True, eq=True)
 class Entity(abc.ABC):
-    """An Implementation of a Bungie Item Definition Entity.
+    """An interface of a Bungie Definition Entity.
 
     This is the main entity which all other entities should inherit from.
-    it holds general information that all bungie entities has.
+    it holds core information that all bungie entities has.
     """
 
     @property
     @abc.abstractmethod
-    def app(self) -> impl.RESTful:
-        """A client that we may use to make rest calls."""
+    def net(self) -> impl.Netrunner:
+        """A network state used for making external requests."""
 
     @property
     @abc.abstractmethod
@@ -101,14 +101,14 @@ class InventoryEntity(Entity):
     This derives from `DestinyInventoryItemDefinition` definition.
     """
 
+    net: impl.Netrunner = attr.field(repr=False, hash=False, eq=False)
+    """A network state used for making external requests."""
+
     hash: int = attr.field(repr=True, hash=True, eq=True)
     """Entity's hash."""
 
     index: int = attr.field(repr=True, hash=False, eq=False)
     """Entity's index."""
-
-    app: impl.RESTful = attr.field(repr=False, hash=False, eq=False)
-    """A client that we may use to make rest calls."""
 
     name: str = attr.field(repr=True, hash=False, eq=False)
     """Entity's name"""

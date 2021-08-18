@@ -42,7 +42,8 @@ from aiobungie.crate.user import UserLike
 class Player(UserLike):
     """Represents a Bungie Destiny 2 Player."""
 
-    app: impl.RESTful = attr.field(repr=False)
+    net: impl.Netrunner = attr.field(repr=False)
+    """A network state used for making external requests."""
 
     icon: Image = attr.field(repr=False, hash=False, eq=False)
     """The player's icon."""

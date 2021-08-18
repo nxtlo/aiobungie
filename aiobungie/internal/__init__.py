@@ -28,7 +28,6 @@ from __future__ import annotations
 from typing import Sequence
 
 __all__: Sequence[str] = [
-    "Time",
     "Image",
     "enums",
     "deprecated",
@@ -37,4 +36,3 @@ __all__: Sequence[str] = [
 from . import enums
 from .assets import Image
 from .helpers import deprecated
-from .time import Time

@@ -32,15 +32,14 @@ from aiobungie import crate
 from tests.config import TOKEN
 from tests.config import data
 
+
 # Using uvloop for speedups.
 if os.name != "nt":
     try:
         import uvloop
+        uvloop.install()
     except ImportError:
         pass
-    else:
-        uvloop.install()
-
 
 class ClientTest(aiobungie.Client):
     def __init__(self, token: str) -> None:
@@ -141,9 +140,7 @@ class ClientTest(aiobungie.Client):
         )
         print(user.id, user.cross_save_type, user.type)
 
-
 client = ClientTest(TOKEN)
-
 
 async def main() -> None:
     before = time.time()

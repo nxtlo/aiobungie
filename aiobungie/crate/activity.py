@@ -96,8 +96,8 @@ class PostActivity:
 class Activity:
     """Represents a Bungie Activity."""
 
-    app: impl.RESTful = attr.field(repr=False)
-    """A client app that we may use to make external calls."""
+    net: impl.Netrunner = attr.field(repr=False)
+    """A network state used for making external requests."""
 
     is_completed: str = attr.field(repr=True, hash=False, eq=False)
     """Check if the activity was completed or no."""
@@ -157,7 +157,7 @@ class Activity:
         -------
         `.PostActivity`
         """
-        return await self.app.rest.fetch_post_activity(self.instance_id)
+        return await self.net.request.fetch_post_activity(self.instance_id)
 
     @property
     def as_dict(self) -> typing.Dict[str, typing.Any]:

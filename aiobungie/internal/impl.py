@@ -24,7 +24,7 @@
 
 from __future__ import annotations
 
-__all__: typing.Sequence[str] = ["BaseClient", "RESTful"]
+__all__: typing.Sequence[str] = ["BaseClient", "Netrunner"]
 
 import typing
 
@@ -32,18 +32,16 @@ from aiobungie import client as client_
 
 
 @typing.runtime_checkable
-class RESTful(typing.Protocol):
+class Netrunner(typing.Protocol):
     __slots__: typing.Sequence[str] = ()
 
     @property
-    def rest(self) -> client_.Client:
-        """Returns resful of the client instance for other requests."""
-
+    def request(self) -> client_.Client:
+        """Returns a client network state for making external requests."""
         raise NotImplementedError
 
-
 @typing.runtime_checkable
-class BaseClient(RESTful, typing.Protocol):
+class BaseClient(Netrunner, typing.Protocol):
     __slots__: typing.Sequence[str] = ()
 
     def run(

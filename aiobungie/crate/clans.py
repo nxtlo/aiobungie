@@ -24,6 +24,7 @@
 
 
 from __future__ import annotations
+from inspect import FullArgSpec
 
 __all__: typing.List[str] = ["Clan", "ClanOwner", "ClanMember", "ClanFeatures"]
 
@@ -86,7 +87,7 @@ class ClanMember(UserLike):
     icon: Image = attr.field(repr=False)
     """Clan member's icon"""
 
-    is_public: bool = attr.field(repr=True)
+    is_public: bool = attr.field(repr=False)
     """`builtins.True` if the clan member is public."""
 
     group_id: int = attr.field(repr=True)
@@ -221,10 +222,10 @@ class Clan:
     member_count: int = attr.field(repr=True)
     """Clan's member count."""
 
-    description: str = attr.field(repr=True, eq=False)
+    description: str = attr.field(repr=False, eq=False)
     """Clan's description"""
 
-    is_public: bool = attr.field(repr=True, eq=False)
+    is_public: bool = attr.field(repr=False, eq=False)
     """Clan's privacy status."""
 
     banner: Image = attr.field(repr=False)
@@ -233,7 +234,7 @@ class Clan:
     avatar: Image = attr.field(repr=False)
     """Clan's avatar"""
 
-    about: str = attr.field(repr=True, eq=False)
+    about: str = attr.field(repr=False, eq=False)
     """Clan's about title."""
 
     tags: typing.List[str] = attr.field(repr=False)
@@ -269,13 +270,9 @@ class Clan:
         """
         return await self.net.request.fetch_clan_member(self.id, name, type)
 
-    # TODO we should really return all clan members as a sequence of ClanMember
-    # instead of a dict. 
-    # Something like this [ClanMember(...), ClanMember(...), ...]
-
     async def fetch_members(
         self, type: MembershipType = MembershipType.NONE, /
-    ) -> typing.Dict[str, typing.Tuple[int, MembershipType]]:
+    ) -> typing.Sequence[ClanMember]:
         """Fetch the members of the clan.
 
         if the memberhship type is None it will
@@ -289,10 +286,8 @@ class Clan:
 
         Returns
         --------
-        typing.Dict[str, tuple[int, aiobungie.MembershipType]]
-            The clan members in this clan, Represented as
-            a dict of the member name to a tuple of the member id
-            and membership type object.
+        `typing.Sequence[ClanMember]`
+            A sequence of the clan members found in this clan.
         """
         return await self.net.request.fetch_clan_members(self.id, type)
 

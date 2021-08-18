@@ -22,6 +22,7 @@
 """Deserialization for all bungie incoming json payloads."""
 
 from __future__ import annotations
+from os import name, stat
 
 __all__: typing.Sequence[str] = ["Deserialize"]
 
@@ -46,6 +47,7 @@ from aiobungie.internal.helpers import JsonDict
 from aiobungie.internal.helpers import JsonList
 from aiobungie.internal.helpers import Undefined
 from aiobungie.internal.helpers import Unknown
+from aiobungie.internal.helpers import just
 
 _LOG: typing.Final[logging.Logger] = logging.getLogger(__name__)
 
@@ -209,34 +211,50 @@ class Deserialize:
             icon=icon,
         )
 
-    def deserialize_clan_members(
-        self, data: JsonDict, /
-    ) -> typing.Dict[str, typing.Tuple[int, enums.MembershipType]]:
-
+    @staticmethod
+    def set_clan_attrs(data: JsonDict) -> dict[int, clans.ClanMember]:
         if (payload := data["results"]) is not None:
+
+            for stat in just(payload, "isOnline"):
+                is_online: bool = stat 
+            
+            for lon in just(payload, "lastOnlineStatusChange"):
+                last_online: datetime.datetime = \
+                    time.from_timestamp(
+                    int(lon)
+                )
+
+            for gid in just(payload, "groupId"):
+                group_id: int = int(gid)
+
+            for raw_joined_at in just(payload, "joinDate"):
+                joined_at: datetime.date = time.clean_date(
+                    str(raw_joined_at))
+            
             try:
-                _member = [m["destinyUserInfo"] for m in payload]
+                members = just(payload, "destinyUserInfo")
             except KeyError:
                 pass
 
-            # for some weird reason if we iterate
-            # over the names as the key, All members will have
-            # the same name. Not sure whats causing this
-            # But iterating over the names seems working fine.
+        for member in members:
+            mapper: dict[int, clans.ClanMember] = {}
+            mapper[int(member['membershipId'])] = clans.ClanMember(
+                group_id=group_id,
+                id=int(member['membershipId']),
+                name=member['displayName'],
+                type=enums.MembershipType(member["membershipType"]),
+                icon=member["iconPath"],
+                is_public=member["isPublic"],
+                is_online=is_online,
+                last_online=last_online,
+                joined_at=joined_at,
+            )
+        if mapper is None:
+            return []
+        return mapper
 
-            members = {
-                str(name["displayName"]): (
-                    int(id["membershipId"]),
-                    enums.MembershipType(type["membershipType"]),
-                )
-                for name in _member
-                for id in _member
-                for type in _member
-            }
-
-            if members is None:
-                return None
-        return members
+    def deserialize_clan_members(self, data: JsonDict, /) -> typing.Sequence[clans.ClanMember]:
+        return list(self.set_clan_attrs(data).values())
 
     def deserialize_app_owner(self, payload: JsonDict) -> app.ApplicationOwner:
         return app.ApplicationOwner(

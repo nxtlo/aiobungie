@@ -26,6 +26,7 @@
 import asyncio
 import os
 import time
+import inspect
 
 import aiobungie
 from aiobungie import crate
@@ -56,12 +57,7 @@ class ClientTest(aiobungie.Client):
         print(player.as_dict)
 
     async def vendor_test(self):
-        resp = await self.fetch_vendor_sales(
-            vendor=data["vendor"],
-            memberid=data["memid"],
-            charid=data["charid"],
-            type=data["memtype"],
-        )
+        resp = await self.fetch_vendor_sales()
         print(resp)
 
     async def with_enter(self) -> None:
@@ -89,11 +85,11 @@ class ClientTest(aiobungie.Client):
     async def clan_id_test(self):
         clan: crate.Clan = await self.fetch_clan_from_id(data["clanid"])
         members = await clan.fetch_members()
-        print(members)
+        print(repr(members))
 
     async def clan_test(self):
         clan: crate.Clan = await self.fetch_clan("Nuanceㅤ")
-        member: ClanMember = await clan.fetch_member("Fate")
+        member: crate.ClanMember = await clan.fetch_member("Fate")
         print(clan.as_dict)
         print(member.as_dict)
 
@@ -145,19 +141,20 @@ client = ClientTest(TOKEN)
 async def main() -> None:
     before = time.time()
     coros = [
-        client.activity_test(),
-        client.hard_linked_test(),
-        client.warlock_test(),
-        client.hunter_test(),
-        client.titan_test(),
-        client.char_test(),
-        client.user_id_test(),
-        client.user_test(),
-        client.clan_id_test(),
-        client.clan_test(),
         client.app_test(),
         client.player_test(),
+        client.activity_test(),
+        client.char_test(),
+        client.clan_id_test(),
+        client.clan_test(),
+        client.user_test(),
+        client.user_id_test(),
         client.profile_test(),
+        client.hunter_test(),
+        client.titan_test(),
+        client.warlock_test(),
+        client.hard_linked_test()
+
     ]
     await asyncio.gather(*coros)
     full = before - time.time()

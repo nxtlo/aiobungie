@@ -310,9 +310,8 @@ class Client(impl.BaseClient):
         char_module = self.serialize.deserialize_character(resp, chartype=character)
         return char_module
 
-    async def fetch_vendor_sales(
-        self,
-    ) -> typing.Any:
+    @deprecated
+    async def fetch_vendor_sales(self) -> typing.Any:
         """Fetch vendor sales."""
         return await self.http.fetch_vendor_sales()
 
@@ -452,7 +451,7 @@ class Client(impl.BaseClient):
 
     async def fetch_clan_members(
         self, id: int, type: MembershipType = MembershipType.NONE, /
-    ) -> typing.Dict[str, typing.Tuple[int, MembershipType]]:
+    ) -> typing.Sequence[crate.clans.ClanMember]:
 
         resp = await self.http.fetch_clan_members(id, type, page=1)
         assert isinstance(resp, dict)

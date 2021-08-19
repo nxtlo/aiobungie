@@ -25,36 +25,44 @@
 
 from __future__ import annotations
 
-__all__: typing.Sequence[str] = ["User", "PartialUser", "UserLike", "HardLinkedMembership"]
+__all__: typing.Sequence[str] = [
+    "User",
+    "PartialUser",
+    "UserLike",
+    "HardLinkedMembership",
+]
 
 import abc
 import typing
+from datetime import datetime
+
 import attr
 
-from aiobungie.internal import impl
 from aiobungie.internal import Image
-from aiobungie.internal import time
 from aiobungie.internal import enums
-
-from datetime import datetime
+from aiobungie.internal import impl
+from aiobungie.internal import time
 
 
 @attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
 class HardLinkedMembership:
     """Represents hard linked Bungie user membership.
-    
+
     This currently only supports SteamID which's a public credenitial.
     Also Cross-Save Aware.
     """
 
     type: enums.MembershipType = attr.field(repr=True)
     """The hard link user membership type."""
-    
+
     id: int = attr.field(repr=True, hash=True, eq=False)
     """The hard link user id"""
-    
-    cross_save_type: enums.MembershipType = attr.field(repr=True, hash=False, eq=False, default=enums.MembershipType.NONE)
+
+    cross_save_type: enums.MembershipType = attr.field(
+        repr=True, hash=False, eq=False, default=enums.MembershipType.NONE
+    )
     """The hard link user's crpss save membership type. Default is set to None-0"""
+
 
 @attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
 class PartialUser(abc.ABC):

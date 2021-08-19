@@ -22,7 +22,6 @@
 """Deserialization for all bungie incoming json payloads."""
 
 from __future__ import annotations
-from os import name, stat
 
 __all__: typing.Sequence[str] = ["Deserialize"]
 
@@ -40,9 +39,9 @@ from aiobungie.crate import player
 from aiobungie.crate import profile
 from aiobungie.crate import user
 from aiobungie.internal import Image
-from aiobungie.internal import time
 from aiobungie.internal import enums
 from aiobungie.internal import impl
+from aiobungie.internal import time
 from aiobungie.internal.helpers import JsonDict
 from aiobungie.internal.helpers import JsonList
 from aiobungie.internal.helpers import Undefined
@@ -54,6 +53,7 @@ _LOG: typing.Final[logging.Logger] = logging.getLogger(__name__)
 
 class Deserialize:
     """The base Deserialization class for all aiobungie crate."""
+
     # This is actually inspired by hikari's entity factory.
 
     __slots__: typing.Sequence[str] = ("_net",)
@@ -216,21 +216,17 @@ class Deserialize:
         if (payload := data["results"]) is not None:
 
             for stat in just(payload, "isOnline"):
-                is_online: bool = stat 
-            
+                is_online: bool = stat
+
             for lon in just(payload, "lastOnlineStatusChange"):
-                last_online: datetime.datetime = \
-                    time.from_timestamp(
-                    int(lon)
-                )
+                last_online: datetime.datetime = time.from_timestamp(int(lon))
 
             for gid in just(payload, "groupId"):
                 group_id: int = int(gid)
 
             for raw_joined_at in just(payload, "joinDate"):
-                joined_at: datetime.date = time.clean_date(
-                    str(raw_joined_at))
-            
+                joined_at: datetime.datetime = time.clean_date(str(raw_joined_at))
+
             try:
                 members = just(payload, "destinyUserInfo")
             except KeyError:
@@ -238,10 +234,10 @@ class Deserialize:
 
         for member in members:
             mapper: dict[int, clans.ClanMember] = {}
-            mapper[int(member['membershipId'])] = clans.ClanMember(
+            mapper[int(member["membershipId"])] = clans.ClanMember(
                 group_id=group_id,
-                id=int(member['membershipId']),
-                name=member['displayName'],
+                id=int(member["membershipId"]),
+                name=member["displayName"],
                 type=enums.MembershipType(member["membershipType"]),
                 icon=member["iconPath"],
                 is_public=member["isPublic"],
@@ -253,7 +249,9 @@ class Deserialize:
             return []
         return mapper
 
-    def deserialize_clan_members(self, data: JsonDict, /) -> typing.Sequence[clans.ClanMember]:
+    def deserialize_clan_members(
+        self, data: JsonDict, /
+    ) -> typing.Sequence[clans.ClanMember]:
         return list(self.set_clan_attrs(data).values())
 
     def deserialize_app_owner(self, payload: JsonDict) -> app.ApplicationOwner:

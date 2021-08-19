@@ -32,6 +32,7 @@ __all__: typing.Sequence[str] = ["InventoryEntity", "Entity"]
 
 import abc
 import typing
+
 import attr
 
 from aiobungie.internal import assets

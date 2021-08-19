@@ -26,17 +26,17 @@ from __future__ import annotations
 
 __all__: typing.Sequence[str] = ("Profile", "ProfileComponentImpl")
 
-import attr
 import abc
 import datetime
 import logging
 import typing
 
-from aiobungie.internal import time
-from aiobungie.internal import enums
-from aiobungie.internal import impl
+import attr
 
 from aiobungie.crate.character import Character
+from aiobungie.internal import enums
+from aiobungie.internal import impl
+from aiobungie.internal import time
 
 log: typing.Final[logging.Logger] = logging.getLogger(__name__)
 
@@ -159,14 +159,14 @@ class ProfileComponentImpl(abc.ABC):
 class Profile(ProfileComponentImpl):
     """Represents a Bungie member Profile.
 
-    Bungie profiles requires components. 
+    Bungie profiles requires components.
     But its kinda boring to pass multiple components to a parameter.
     So. The `.Profile` crate will include all Bungie components.
     to be accessiable as a crate.
 
     How?.
     For an example: to access the `Characters` component you'll need to pass `?component=200`.
-    But here you can just return the character itself from the profile 
+    But here you can just return the character itself from the profile
     using `await .Profile.titan()` and the other character methods
     which returns a `aiobungie.crate.Character` crate.
     crates are basically classes/objects.

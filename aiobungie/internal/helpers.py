@@ -31,7 +31,7 @@ __all__: typing.Sequence[str] = [
     "JsonList",
     "Undefined",
     "Unknown",
-    "just"
+    "just",
 ]
 
 import typing
@@ -47,21 +47,27 @@ Undefined: str = "Undefined"
 # For unknown stuff.
 Unknown: typing.Optional[str] = ""
 
+
 def just(lst: list[dict[str, typing.Any]], lookup: str) -> list[typing.Any]:
     """A helper function that returns items from a dict key."""
     return list(map(lambda dct: dct[lookup], lst))
 
-def deprecated(func: object) -> typing.Callable[[None], typing.Any]:
+
+def deprecated(func):
     """
     functions with this decorator will not work or is not implemented yet.
     """
+
     @wraps(func)
     def wrapper(*args: typing.Any, **kwargs: typing.Any) -> None:
         warnings.warn(
-            f"function {func.__name__!r} deprecated until further notice.", 
-            stacklevel=2, category=DeprecationWarning)
+            f"function {func.__name__!r} deprecated until further notice.",
+            stacklevel=2,
+            category=DeprecationWarning,
+        )
         func.__doc__ += " DEPRECATED FUNCTION."
         print(func.__doc__)
         coro = func(*args, **kwargs)
         return coro
+
     return wrapper

@@ -27,10 +27,10 @@ from __future__ import annotations
 
 __all__: typing.Sequence[str] = [
     "format_played",
-    "from_timestamp", 
-    "clean_date", 
-    "to_timestamp", 
-    "human_timedelta"
+    "from_timestamp",
+    "clean_date",
+    "to_timestamp",
+    "human_timedelta",
 ]
 
 import calendar
@@ -87,11 +87,13 @@ def format_played(mins: int, *, suffix: bool = False) -> str:
     seconds = math.floor(mins % 60)
     return f"{hrs} hours{' and' if suffix else ''} {seconds} seconds."
 
+
 def from_timestamp(timer: int) -> datetime:
     """
     Converts timestamp to `datetime.datetime`
     """
     return datetime.utcfromtimestamp(timer)
+
 
 def clean_date(date: str) -> datetime:
     """Formats `datetime.datetime` to a readble date."""
@@ -99,6 +101,7 @@ def clean_date(date: str) -> datetime:
     ts = to_timestamp(parsed)  # had to do it in two ways.
     ft = from_timestamp(ts)
     return ft
+
 
 def to_timestamp(date: datetime) -> int:
     """
@@ -108,6 +111,7 @@ def to_timestamp(date: datetime) -> int:
         return calendar.timegm(date.timetuple())
     except Exception as e:
         raise e
+
 
 def human_timedelta(
     dt: datetime, *, source=None, accuracy: int = 3, brief=False, suffix=True

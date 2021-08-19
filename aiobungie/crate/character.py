@@ -29,15 +29,16 @@ from __future__ import annotations
 __all__: typing.Sequence[str] = ("CharacterComponent", "Character")
 
 import abc
-import attr
 import datetime
 import logging
 import typing
 
+import attr
+
 from aiobungie import url
 from aiobungie.internal import Image
-from aiobungie.internal import time
 from aiobungie.internal import enums
+from aiobungie.internal import time
 
 log: typing.Final[logging.Logger] = logging.getLogger(__name__)
 

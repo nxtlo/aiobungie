@@ -25,7 +25,6 @@
 
 from __future__ import annotations
 
-from sqlite3.dbapi2 import OptimizedUnicode
 
 __all__: t.Sequence[str] = ("Manifest",)
 

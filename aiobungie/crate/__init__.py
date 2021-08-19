@@ -46,7 +46,7 @@ __all__: Seq[str] = [
     "UserLike",
     "ProfileComponentImpl",
     "Entity",
-    "HardLinkedMembership"
+    "HardLinkedMembership",
 ]
 
 from typing import Sequence as Seq
@@ -65,6 +65,6 @@ from .entity import InventoryEntity
 from .player import Player
 from .profile import Profile
 from .profile import ProfileComponentImpl
+from .user import HardLinkedMembership
 from .user import User
 from .user import UserLike
-from .user import HardLinkedMembership

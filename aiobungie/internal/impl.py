@@ -40,6 +40,7 @@ class Netrunner(typing.Protocol):
         """Returns a client network state for making external requests."""
         raise NotImplementedError
 
+
 @typing.runtime_checkable
 class BaseClient(Netrunner, typing.Protocol):
     __slots__: typing.Sequence[str] = ()

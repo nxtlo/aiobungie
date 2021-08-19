@@ -64,7 +64,7 @@ __all__: Sequence[str] = (
     "DamageType",
     "Item",
     "Place",
-    "CredentialType"
+    "CredentialType",
 )
 
 from typing import Sequence

@@ -29,13 +29,13 @@ __all__: typing.Sequence[str] = ["Player"]
 
 
 import typing
+
 import attr
 
-from aiobungie.internal import impl
-from aiobungie.internal import Image
-from aiobungie.internal.enums import MembershipType
-
 from aiobungie.crate.user import UserLike
+from aiobungie.internal import Image
+from aiobungie.internal import impl
+from aiobungie.internal.enums import MembershipType
 
 
 @attr.s(hash=True, repr=True, init=True, kw_only=True, weakref_slot=False, slots=True)

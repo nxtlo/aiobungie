@@ -34,12 +34,13 @@ import typing
 
 from aiobungie.ext import Manifest
 from aiobungie.internal import deprecated
-from aiobungie.internal import serialize as serialize_
 from aiobungie.internal import impl
+from aiobungie.internal import serialize as serialize_
 
 from . import crate
 from .http import HTTPClient
-from .internal.enums import Class, CredentialType
+from .internal.enums import Class
+from .internal.enums import CredentialType
 from .internal.enums import GameMode
 from .internal.enums import MembershipType
 
@@ -55,12 +56,7 @@ class Client(impl.BaseClient):
         asyncio event loop.
     """
 
-    __slots__: typing.Sequence[str] = (
-        "loop", 
-        "http", 
-        "_serialize", 
-        "_token"
-     )
+    __slots__: typing.Sequence[str] = ("loop", "http", "_serialize", "_token")
 
     def __init__(self, token: str, *, loop: asyncio.AbstractEventLoop = None) -> None:
         self.loop: asyncio.AbstractEventLoop = (  # asyncio loop.
@@ -194,16 +190,14 @@ class Client(impl.BaseClient):
         assert isinstance(payload, dict)
         # User and User from id has the same attrs but different return types so we have to ignore here.
         return self.serialize.deserialize_user(payload)  # type: ignore
-    
+
     async def fetch_hard_types(
-        self, 
-        credential: int, 
-        type: CredentialType = CredentialType.STEAMID, /
-        ) -> crate.user.HardLinkedMembership:
-        """Gets any hard linked membership given a credential. 
-        Only works for credentials that are public just STEAMID from `aiobungie.CredentialType` right now. 
+        self, credential: int, type: CredentialType = CredentialType.STEAMID, /
+    ) -> crate.user.HardLinkedMembership:
+        """Gets any hard linked membership given a credential.
+        Only works for credentials that are public just STEAMID from `aiobungie.CredentialType` right now.
         Cross Save aware.
-        
+
         Parameters
         ----------
         credential: `builtins.int`
@@ -217,16 +211,16 @@ class Client(impl.BaseClient):
         `aiobungie.crate.user.HardLinkedMembership`
             Information about the hard linked data.
         """
-        
+
         # This doens't really needs to be serialized like other stuff
         # since the dict only contains 3 keys.
         payload = await self.http.fetch_hard_linked(credential, type)
         assert isinstance(payload, dict)
 
         return crate.user.HardLinkedMembership(
-            id=int(payload['membershipId']),
-            type=MembershipType(payload['membershipType']),
-            cross_save_type=MembershipType(payload['CrossSaveOverriddenType'])
+            id=int(payload["membershipId"]),
+            type=MembershipType(payload["membershipType"]),
+            cross_save_type=MembershipType(payload["CrossSaveOverriddenType"]),
         )
 
     async def fetch_profile(
@@ -363,7 +357,9 @@ class Client(impl.BaseClient):
         assert isinstance(resp, dict)
         return self.serialize.deserialize_activity(resp)
 
-    async def fetch_post_activity(self, instance: int, /) -> crate.activity.PostActivity:
+    async def fetch_post_activity(
+        self, instance: int, /
+    ) -> crate.activity.PostActivity:
         """Fetchs a post activity details.
 
         Parameters
@@ -376,7 +372,7 @@ class Client(impl.BaseClient):
         `aiobungie.crate.activity.PostActivity`
            Information about the requested post activity.
         """
-        resp = await self.http.fetch_post_activity(instance)
+        # resp = await self.http.fetch_post_activity(instance)
         # assert isinstance(resp, list)
         raise NotImplementedError
 

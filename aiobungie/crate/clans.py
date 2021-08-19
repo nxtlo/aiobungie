@@ -24,23 +24,22 @@
 
 
 from __future__ import annotations
-from inspect import FullArgSpec
 
 __all__: typing.List[str] = ["Clan", "ClanOwner", "ClanMember", "ClanFeatures"]
 
 
 import typing
+from datetime import datetime
+
 import attr
 
 from aiobungie import url
-from aiobungie.internal import impl
+from aiobungie.crate.user import UserLike
 from aiobungie.internal import Image
+from aiobungie.internal import impl
 from aiobungie.internal import time
 from aiobungie.internal.enums import GroupType
 from aiobungie.internal.enums import MembershipType
-from aiobungie.crate.user import UserLike
-
-from datetime import datetime
 
 
 @attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)

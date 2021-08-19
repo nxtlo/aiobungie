@@ -31,15 +31,13 @@ from __future__ import annotations
 __all__: typing.Sequence[str] = ("Activity", "PostActivity")
 
 import typing
+from datetime import datetime
+
 import attr
 
 from aiobungie.crate import player
 from aiobungie.internal import enums
 from aiobungie.internal import impl
-from aiobungie.internal import time
-from aiobungie.internal.helpers import Undefined
-
-from datetime import datetime
 
 
 @attr.s(hash=True, slots=True, weakref_slot=False, eq=True, kw_only=True)
@@ -50,9 +48,8 @@ class PostActivity:
     """The post activity's period utc date."""
 
     starting_phase: int = attr.field(repr=True, eq=False, hash=False)
-    """The postt activity starting phase index. 
-    for an example if it was 0 that means it's a fresh run
-    """
+    """The postt activity starting phase index.
+    For an example if it was 0 that means it's a fresh run"""
 
     reference_id: int = attr.field(repr=True, eq=False, hash=False)
     """The post activity reference id. AKA the activity hash."""
@@ -81,8 +78,8 @@ class PostActivity:
             isplayer["player"]["destinyUserInfo"] for isplayer in self.players
         ]
 
-        for player in players_entries:
-            players_entries.append(player)
+        for raw_player in players_entries:
+            players_entries.append(raw_player)
 
         return players_entries
 

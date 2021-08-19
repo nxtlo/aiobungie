@@ -25,14 +25,15 @@
 
 from __future__ import annotations
 
-__all__: typing.List[str] = ["Image"] 
+__all__: typing.List[str] = ["Image"]
 
 import typing
-from aiobungie.internal import helpers
+
 from aiobungie import url
+from aiobungie.internal import helpers
+
 
 class Image:
-
     def __init__(self, path: str) -> None:
         self.path = path
 
@@ -47,4 +48,4 @@ class Image:
     def partial(self) -> str:
         if self.path is not None:
             return self.path
-        return f'Image<{helpers.Undefined}>'
+        return f"Image<{helpers.Undefined}>"

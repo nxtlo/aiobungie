@@ -25,6 +25,7 @@ and Where all the magic happenes.
 """
 
 from __future__ import annotations
+
 from aiobungie.internal.helpers import JsonDict
 
 __all__ = ("HTTPClient",)
@@ -32,12 +33,13 @@ __all__ = ("HTTPClient",)
 import http
 import types
 import typing
+
 import aiohttp
 
 from aiobungie import error
 from aiobungie import url
-from aiobungie.internal import helpers
 from aiobungie.internal import enums
+from aiobungie.internal import helpers
 
 if typing.TYPE_CHECKING:
     T = typing.TypeVar("T")
@@ -279,13 +281,14 @@ class HTTPClient:
             "GET",
             f"/GroupV2/{id}/Members/?memberType={int(type)}&nameSearch={name if name else ''}&currentpage={page}",
         )
-        
+
     def fetch_hard_linked(
-        self, 
-        credential: int, 
-        type: enums.CredentialType = enums.CredentialType.STADIAID, /
-        ) -> Response[JsonDict]:
+        self,
+        credential: int,
+        type: enums.CredentialType = enums.CredentialType.STADIAID,
+        /,
+    ) -> Response[JsonDict]:
         return self.fetch(
             "GET",
-            f"User/GetMembershipFromHardLinkedCredential/{int(type)}/{credential}/"
-            )
+            f"User/GetMembershipFromHardLinkedCredential/{int(type)}/{credential}/",
+        )

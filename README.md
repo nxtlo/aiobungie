@@ -71,7 +71,11 @@ async def main() -> None:
 
     # fetch the clan members and return only steam players
     members = await clan.fetch_members(aiobungie.MembershipType.STEAM)
-    print(members)
+    for member in members:
+        if member.name == "Fate怒" or member.id == 4611686018484639825:
+            print(...)
+        else:
+            print(member.name, member.id, member.type)
 
     # fetch my profile.
     profile: crate.Profile = await client.fetch_profile(member.id, member.type)

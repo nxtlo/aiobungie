@@ -1,6 +1,6 @@
 <div align="center">
     <h1>aiobungie</h1>
-    <p>An Asynchronous statically typed API wrapper for the bungie API written in Python.</p>
+    <p>An asynchronous statically typed API wrapper for the Bungie API written in Python.</p>
     <a href="https://codeclimate.com/github/nxtlo/aiobungie/maintainability">
     <img src="https://api.codeclimate.com/v1/badges/09e71a0374875d4594f4/maintainability"/>
     </a>
@@ -26,24 +26,22 @@
 
 </div>
 
-# Features
-
-* Asynchronous.
-* Simplicity.
-* Statically typed.
-* All endpoints will be implemented.
-
 # Installing
 
-Official release.
+_IT IS recommended_ to use the latest release from master
+since `0.2.4` is missing features from `0.2.5`.
 
-```s
+Theoretically you probably will encounter breaking changes every `0.2.5x` release.
+
+PyPI stable release.
+
+```sh
 $ pip install aiobungie
 ```
 
-Development
+From master __Recommended Currently__.
 
-```s
+```sh
 $ pip install git+https://github.com/nxtlo/aiobungie
 ```
 
@@ -55,14 +53,14 @@ See [Examples for more.](https://github.com/nxtlo/aiobungie/tree/master/examples
 import aiobungie
 from aiobungie import crate
 
-# crates in aiobungie are implementations 
+# crates in aiobungie are implementations
 # of Bungie's objects to provide
 # more functionality.
 
 client = aiobungie.Client(key='YOUR_API_KEY')
 
 async def main() -> None:
-    
+
     # fetch a clan
     clan: crate.Clan = await client.fetch_clan("Nuanceㅤ")
     print(clan.name, clan.id, clan.owner.name, clan.owner.id, ...)
@@ -82,7 +80,7 @@ async def main() -> None:
     # You can fetch a character in two ways.
     # Whether from the player's profile or
     # using `fetch_character()` method.
-    
+
     # The profile way.
     warlock: crate.Character = await profile.warlock()
     print(warlock.light, warlock.id, warlock.gender, warlock.race, ...)
@@ -93,7 +91,7 @@ async def main() -> None:
 ```
 
 ### Requirements
-* Python >=3.8
+* Python >=3.8 ,<=3.12
 * aiohttp
 * attrs.
 

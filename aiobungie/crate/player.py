@@ -42,8 +42,6 @@ from aiobungie.internal.enums import MembershipType
 class Player(UserLike):
     """Represents a Bungie Destiny 2 Player."""
 
-    net: impl.Netrunner = attr.field(repr=False)
-    """A network state used for making external requests."""
 
     icon: Image = attr.field(repr=False, hash=False, eq=False)
     """The player's icon."""
@@ -59,6 +57,11 @@ class Player(UserLike):
 
     type: MembershipType = attr.field(repr=True, eq=True, hash=False)
     """The profile's membership type."""
+    
+    @property
+    def net(self) -> impl.Netrunner:
+        """A network state used for making external requests."""
+        return self.net
 
     @property
     def as_dict(self) -> typing.Dict[str, typing.Any]:

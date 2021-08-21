@@ -79,6 +79,12 @@ class ApplicationOwner(UserLike):
             type=self.type,
         )
 
+    def __int__(self) -> int:
+        return self.id
+
+    def __str__(self) -> str:
+        return self.name
+
 
 @attr.s(hash=True, repr=True, init=True, kw_only=True, weakref_slot=False, slots=True)
 class Application:

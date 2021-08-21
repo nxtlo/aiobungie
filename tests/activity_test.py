@@ -19,38 +19,3 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
-import os
-from typing import Any
-from typing import Dict
-
-from dotenv import load_dotenv
-
-import aiobungie
-
-load_dotenv()
-TOKEN = str(os.environ["TOKEN"])
-
-data: Dict[str, Any] = {
-    "me": "Fate怒",
-    "id": 20315338,
-    "app": 33226,
-    "clanid": 4389205,
-    "memid": 4611686018484639825,
-    "charid": 2305843009444904605,
-    "char": aiobungie.Class.WARLOCK,
-    "memtype": aiobungie.MembershipType.STEAM,
-    "vendor": aiobungie.Vendor.SPIDER,
-}
-
-# make this an enum maybe?
-types: Dict[str, str] = {
-    "inventory_item_def": "DestinyInventoryItemDefinition",
-    "place_def": "DestinyPlaceDefinition",
-    "activ_def": "DestinyActivityDefinition",
-    "activ_type_def": "DestinyActivityTypeDefinition",
-    "activity_mode_def": "DestinyActivityModeDefinition",
-    "class_def": "DestinyClassDefinition",
-    "bucket_def": "DestinyInventoryBucketDefinition",
-    "milestone_def": "DestinyMilestoneDefinition",
-}

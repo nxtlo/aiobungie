@@ -181,6 +181,12 @@ class User(PartialUser):
         """Returns a dict object of the user."""
         return attr.asdict(self)
 
+    def __str__(self) -> str:
+        return self.name
+
+    def __int__(self) -> int:
+        return int(self.id)
+
 
 @attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
 class UserLike(abc.ABC):

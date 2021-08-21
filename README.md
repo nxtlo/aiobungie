@@ -104,6 +104,9 @@ async def main() -> None:
 * cchardet
 * uvloop
 
+## Contributing
+See the [manual](https://github.com/nxtlo/aiobungie/blob/master/CONTRIBUTING.md)
+
 ### Getting Help
 * Discord: `Fate 怒#0008` | `350750086357057537`
 * Docs: [Here](https://nxtlo.github.io/aiobungie/).

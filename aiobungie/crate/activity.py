@@ -47,7 +47,7 @@ class PostActivity:
     period: datetime = attr.field(repr=True, eq=False, hash=False)
     """The post activity's period utc date."""
 
-    starting_phase: int = attr.field(repr=True, eq=False, hash=False)
+    starting_phase: int = attr.field(repr=False, eq=False, hash=False)
     """The postt activity starting phase index.
     For an example if it was 0 that means it's a fresh run"""
 
@@ -60,7 +60,7 @@ class PostActivity:
     modes: typing.List[enums.GameMode] = attr.field(repr=False, eq=False, hash=False)
     """A list of the post activity's game mode."""
 
-    membership_type: enums.MembershipType = attr.field(repr=False, eq=False, hash=False)
+    membership_type: enums.MembershipType = attr.field(repr=True, eq=False, hash=False)
     """The post activity's memebership type."""
 
     players: typing.Sequence[typing.Dict[str, typing.Any]] = attr.field(repr=False)
@@ -88,6 +88,9 @@ class PostActivity:
         """Determines if the activity was fresh or no."""
         return self.starting_phase == 0
 
+    def __int__(self) -> int:
+        return self.reference_id
+
 
 @attr.s(hash=True, repr=True, slots=True, weakref_slot=False, eq=True, kw_only=True)
 class Activity:
@@ -96,10 +99,10 @@ class Activity:
     net: impl.Netrunner = attr.field(repr=False)
     """A network state used for making external requests."""
 
-    is_completed: str = attr.field(repr=True, hash=False, eq=False)
+    is_completed: str = attr.field(repr=False, hash=False, eq=False)
     """Check if the activity was completed or no."""
 
-    id: int = attr.field(hash=True, repr=True, eq=False)
+    hash: int = attr.field(hash=True, repr=True, eq=False)
     """The activity's hash."""
 
     instance_id: int = attr.field(repr=True)
@@ -162,3 +165,6 @@ class Activity:
         This function is useful if you're binding to other REST apis.
         """
         return attr.asdict(self)
+
+    def __int__(self) -> int:
+        return self.instance_id

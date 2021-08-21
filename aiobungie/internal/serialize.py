@@ -246,7 +246,7 @@ class Deserialize:
                 joined_at=joined_at,
             )
         if mapper is None:
-            return []
+            return dict()
         return mapper
 
     def deserialize_clan_members(
@@ -433,7 +433,7 @@ class Deserialize:
         )
 
     def deserialize_activity(
-        self, payload: JsonDict, /, *, limit: int = 1
+        self, payload: JsonDict, /, *, limit: typing.Optional[int] = 1
     ) -> activity.Activity:
 
         if (activs := payload.get("activities")) is not None:
@@ -456,7 +456,6 @@ class Deserialize:
                     details["membershipType"]
                 )
                 if (inner := activs.get("values")) is not None:
-                    # values: typing.List[typing.Dict[str, typing.Any]] = [v['basic']['value'] for v in inner]
                     values = dict(inner.items()).values()
                     data = [
                         basic_data["basic"]["displayValue"] for basic_data in values
@@ -465,7 +464,7 @@ class Deserialize:
         return activity.Activity(
             net=self._net,
             period=period,
-            id=id,
+            hash=id,
             instance_id=instance_id,
             mode=mode,
             modes=appended_modes,

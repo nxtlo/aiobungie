@@ -19,3 +19,40 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
+import mock
+import pytest
+
+import aiobungie
+from aiobungie import crate
+from aiobungie import internal
+
+
+@pytest.fixture()
+def mock_client():
+    return mock.Mock(spec_set=aiobungie.Client)
+
+
+class TestPlayer:
+    @pytest.fixture()
+    def model(self):
+        return crate.Player(
+            net=mock.Mock(spec_set=aiobungie.Client),
+            name="RoberGamer321",
+            id=40001,
+            icon=internal.Image("4a2dc9dca0b4.jpg"),
+            is_public=True,
+            type=aiobungie.MembershipType.STADIA,
+        )
+
+    def test_str_op(self, model):
+        assert str(model) == "RoberGamer321"
+
+    def test_player_asdict(self, model):
+        assert isinstance(model.as_dict, dict)
+
+    def test_player_type(self, model):
+        assert (
+            isinstance(model.type, aiobungie.MembershipType)
+            and model.type is aiobungie.MembershipType.STADIA
+        )

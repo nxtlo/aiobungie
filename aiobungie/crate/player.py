@@ -68,3 +68,6 @@ class Player(UserLike):
 
     def __int__(self) -> int:
         return int(self.id)
+
+    def __str__(self) -> str:
+        return self.name

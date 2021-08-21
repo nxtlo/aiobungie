@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""A helper module for useful decorators and other stuff."""
+"""A helper module for useful decorators, functions and types."""
 
 
 from __future__ import annotations
@@ -32,6 +32,7 @@ __all__: typing.Sequence[str] = [
     "Undefined",
     "Unknown",
     "just",
+    "NoneOr",
 ]
 
 import typing
@@ -41,15 +42,23 @@ from functools import wraps
 JsonDict = typing.Dict[str, typing.Any]
 JsonList = typing.List[typing.Dict[str, typing.Any]]
 
-# For stuff thats == ''
 Undefined: str = "Undefined"
+"""A helper that checks if stuff are unknown / empty string and Undefine them if they're."""
 
-# For unknown stuff.
-Unknown: typing.Optional[str] = ""
+Unknown: str = ""
+"""Stuff that are empty strings."""
+
+T = typing.TypeVar("T", covariant=True)
+"""A type var thats associated with NoneOr[T]"""
+
+NoneOr = typing.Union[None, T]
+"""A Union type thats similar to to Optional[T]"""
 
 
 def just(lst: list[dict[str, typing.Any]], lookup: str) -> list[typing.Any]:
-    """A helper function that returns items from a dict key."""
+    """A helper function that takes a list of dicts and return a list of
+    all keys found inside the dict
+    """
     return list(map(lambda dct: dct[lookup], lst))
 
 

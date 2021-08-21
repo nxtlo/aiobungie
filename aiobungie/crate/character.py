@@ -54,6 +54,11 @@ class CharacterComponent(abc.ABC):
 
     @property
     @abc.abstractmethod
+    def member_id(self) -> int:
+        """The profile's member id."""
+
+    @property
+    @abc.abstractmethod
     def id(self) -> int:
         """The character's member id."""
 
@@ -64,7 +69,7 @@ class CharacterComponent(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def stats(self) -> enums.Stat:
+    def stats(self) -> dict[int, int]:
         """The character's stats."""
 
     @property
@@ -232,7 +237,7 @@ class Character(CharacterComponent):
     level: int = attr.field(repr=False, hash=False)
     """Character's base level."""
 
-    stats: enums.Stat = attr.field(repr=False, hash=False)
+    stats: dict[int, int] = attr.field(repr=False, hash=False)
     """Character stats."""
 
     @property

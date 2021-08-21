@@ -17,6 +17,7 @@ __email__: str
 #   ClanNotFound
 #   Class
 #   Component
+#   CredentialType
 #   DamageType
 #   Dungeon
 #   Forbidden

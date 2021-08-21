@@ -1,18 +1,29 @@
-__pycache__/
-venv
+# PyPI packages.
 *.egg-info
 dist/
 build/
+
+# Enviroments
+venv
 .env
 .venv/
 venv/
-*.sqlite3
-*.sqlite
-*.zip
+
+# VS code configs.
 .vscode/
-*.db
-.mypy_cache/
+
+# pipelines and workflow.
 .nox
-.cache/
+
+# aiobungie stuff.
+*.zip
+*.sqlite3
+*.sqlite*.db
 dropped/
 season.py
+
+# Cache
+.cache/
+__pycache__/
+.mypy_cache/
+.pytest_cache

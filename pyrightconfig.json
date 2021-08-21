@@ -1,5 +1,5 @@
 {
-    "reportGeneralTypeIssues": false,
+    "reportGeneralTypeIssues": "error",
     "typeCheckingMode": "basic",
     "venvPath": ".",
     "venv": ".venv",

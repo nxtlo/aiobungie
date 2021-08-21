@@ -20,34 +20,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Bungie Manifest tests."""
-
-import asyncio
-
-import aiobungie
-from aiobungie.ext import Manifest
-from tests import config
+import nox
 
 
-class ClientTest(aiobungie.Client):
-    def __init__(self, token: str) -> None:
-        super().__init__(token=token)
-
-    async def man_test(self) -> None:
-
-        man: Manifest = await self.fetch_manifest()
-        await man.download(force=True)
-
-        print(man.get_raid_image(raid=aiobungie.Raid.DSC))
-
-
-client = ClientTest(config.TOKEN)
-
-
-async def main() -> None:
-    coros = [client.man_test()]
-    await asyncio.gather(*coros)
-
-
-if __name__ == "__main__":
-    client.run(main())
+@nox.session(reuse_venv=True)
+def pytest(session: nox.Session) -> None:
+    session.install("-r", "requirements.txt", "-r", "dev-requirements.txt")
+    session.run("python", "-m", "pytest", "tests", "-c", "pytest.init", "--showlocals")

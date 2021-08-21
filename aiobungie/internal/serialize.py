@@ -103,7 +103,6 @@ class Deserialize:
                 raise error.PlayerNotFound("Player was not found.") from None
 
         return player.Player(
-            net=self._net,
             name=data["displayName"],
             id=int(data["membershipId"]),
             is_public=data["isPublic"],

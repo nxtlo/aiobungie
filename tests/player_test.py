@@ -20,24 +20,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import mock
 import pytest
 
 import aiobungie
 from aiobungie import crate
 from aiobungie import internal
 
-
-@pytest.fixture()
-def mock_client():
-    return mock.Mock(spec_set=aiobungie.Client)
-
-
 class TestPlayer:
     @pytest.fixture()
     def model(self):
         return crate.Player(
-            net=mock.Mock(spec_set=aiobungie.Client),
             name="RoberGamer321",
             id=40001,
             icon=internal.Image("4a2dc9dca0b4.jpg"),

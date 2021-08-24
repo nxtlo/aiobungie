@@ -26,8 +26,6 @@ and Where all the magic happenes.
 
 from __future__ import annotations
 
-from aiobungie.internal.helpers import JsonDict
-
 __all__ = ("HTTPClient",)
 
 import http
@@ -308,7 +306,7 @@ class HTTPClient:
         credential: int,
         type: enums.CredentialType = enums.CredentialType.STADIAID,
         /,
-    ) -> Response[JsonDict]:
+    ) -> Response[helpers.JsonDict]:
         return self.fetch(
             "GET",
             f"User/GetMembershipFromHardLinkedCredential/{int(type)}/{credential}/",

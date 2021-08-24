@@ -25,7 +25,7 @@
 
 from __future__ import annotations
 
-__all__: typing.Sequence[str] = [
+__all__: tuple[str, ...] = (
     "deprecated",
     "JsonDict",
     "JsonList",
@@ -33,7 +33,7 @@ __all__: typing.Sequence[str] = [
     "Unknown",
     "just",
     "NoneOr",
-]
+)
 
 import typing
 import warnings

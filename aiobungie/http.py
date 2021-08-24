@@ -28,7 +28,7 @@ from __future__ import annotations
 
 from aiobungie.internal.helpers import JsonDict
 
-__all__ = ("HTTPClient",)
+__all__: tuple[str, ...] = ("HTTPClient",)
 
 import http
 import types
@@ -84,7 +84,7 @@ async def handle_errors(
 
 class PreLock:
 
-    __slots__: typing.Sequence[str] = ("_lock",)
+    __slots__: tuple[str, ...] = ("_lock",)
 
     def __init__(self, locker: asyncio.Lock) -> None:
         self._lock: asyncio.Lock = locker

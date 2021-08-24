@@ -25,7 +25,7 @@
 
 from __future__ import annotations
 
-__all__: typing.Sequence[str] = [
+__all__: list[str] = [
     "format_played",
     "from_timestamp",
     "clean_date",
@@ -35,7 +35,6 @@ __all__: typing.Sequence[str] = [
 
 import calendar
 import math
-import typing
 from datetime import datetime
 
 from dateutil.parser import parse

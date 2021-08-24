@@ -25,7 +25,7 @@
 
 from __future__ import annotations
 
-__all__: typing.List[str] = ["Clan", "ClanOwner", "ClanMember", "ClanFeatures"]
+__all__: tuple[str, ...] = ("Clan", "ClanOwner", "ClanMember", "ClanFeatures")
 
 
 import typing

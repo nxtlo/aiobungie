@@ -25,12 +25,12 @@
 
 from __future__ import annotations
 
-__all__: typing.Sequence[str] = [
+__all__: tuple[str, ...] = (
     "User",
     "PartialUser",
     "UserLike",
     "HardLinkedMembership",
-]
+)
 
 import abc
 import typing

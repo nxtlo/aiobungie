@@ -25,9 +25,7 @@
 
 from __future__ import annotations
 
-from typing import Sequence
-
-__all__: Sequence[str] = [
+__all__: list[str] = [
     "Image",
     "enums",
     "deprecated",

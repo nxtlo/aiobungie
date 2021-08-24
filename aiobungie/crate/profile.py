@@ -24,7 +24,7 @@
 
 from __future__ import annotations
 
-__all__: typing.Sequence[str] = ("Profile", "ProfileComponentImpl")
+__all__: tuple[str, ...] = ("Profile", "ProfileComponentImpl")
 
 import abc
 import datetime

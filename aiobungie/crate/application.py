@@ -25,7 +25,7 @@
 
 from __future__ import annotations
 
-__all__: typing.Sequence[str] = ("Application", "ApplicationOwner")
+__all__: tuple[str, ...] = ("Application", "ApplicationOwner")
 
 import typing
 from datetime import datetime

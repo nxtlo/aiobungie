@@ -28,7 +28,7 @@ This will include all Bungie Definitions.
 
 from __future__ import annotations
 
-__all__: typing.Sequence[str] = ["InventoryEntity", "Entity"]
+__all__: tuple[str, ...] = ("InventoryEntity", "Entity")
 
 import abc
 import typing

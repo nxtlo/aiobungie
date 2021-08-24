@@ -25,9 +25,7 @@
 
 from __future__ import annotations
 
-__all__: typing.List[str] = ["Image"]
-
-import typing
+__all__: list[str] = ["Image"]
 
 from aiobungie import url
 from aiobungie.internal import helpers

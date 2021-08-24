@@ -23,7 +23,7 @@
 
 from __future__ import annotations
 
-__all__: typing.Sequence[str] = ["Deserialize"]
+__all__: tuple[str, ...] = ("Deserialize",)
 
 import datetime
 import logging

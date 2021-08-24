@@ -24,8 +24,6 @@
 
 from __future__ import annotations
 
-__all__: typing.Sequence[str] = ["Manifest"]
-
-import typing
+__all__: tuple[str, ...] = ("Manifest",)
 
 from .meta import Manifest

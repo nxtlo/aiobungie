@@ -24,7 +24,7 @@
 
 from __future__ import annotations
 
-__all__: typing.Sequence[str] = ["BaseClient", "Netrunner"]
+__all__: tuple[str, ...] = ("BaseClient", "Netrunner")
 
 import typing
 

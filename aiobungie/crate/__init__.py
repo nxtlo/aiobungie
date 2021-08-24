@@ -29,7 +29,7 @@ for functional usage for the Bungie API objects.
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = (
+__all__ = (
     "Application",
     "PostActivity",
     "Clan",

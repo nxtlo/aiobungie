@@ -26,7 +26,7 @@
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = ("CharacterComponent", "Character")
+__all__ = ("CharacterComponent", "Character")
 
 import abc
 import datetime
@@ -148,7 +148,7 @@ class CharacterComponent(abc.ABC):
         """
 
         # Required params:
-        # POST requrest.
+        # POST request.
         # itemId: item,
         # characterId: self,
         # membershipType: int(self.member_type)
@@ -178,7 +178,7 @@ class CharacterComponent(abc.ABC):
         """
 
         # Required params:
-        # POST requrest.
+        # POST request.
         # items: List[items],
         # characterId: self,
         # membershipType: int(self.member_type)
@@ -187,7 +187,7 @@ class CharacterComponent(abc.ABC):
 
     @property
     def human_timedelta(self) -> str:
-        """The player's last played time in a human readble date."""
+        """The player's last played time in a human readable date."""
         return time.human_timedelta(time.clean_date(str(self.last_played)))
 
 

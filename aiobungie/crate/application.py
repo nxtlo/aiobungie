@@ -25,7 +25,7 @@
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = ("Application", "ApplicationOwner")
+__all__ = ("Application", "ApplicationOwner")
 
 import typing
 from datetime import datetime
@@ -119,7 +119,7 @@ class Application:
 
     @property
     def human_timedelta(self) -> str:
-        """Returns a human readble date of the app's creation date."""
+        """Returns a human readable date of the app's creation date."""
         return time.human_timedelta(self.created_at)
 
     @property

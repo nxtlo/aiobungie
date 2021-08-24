@@ -24,7 +24,7 @@
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = ("BASE", "REST_EP", "OAUTH_EP", "TOKEN_EP")
+__all__ = ("BASE", "REST_EP", "OAUTH_EP", "TOKEN_EP")
 
 import typing
 

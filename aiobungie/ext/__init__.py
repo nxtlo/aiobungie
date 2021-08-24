@@ -24,6 +24,6 @@
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = ("Manifest",)
+__all__ = ("Manifest",)
 
 from .meta import Manifest

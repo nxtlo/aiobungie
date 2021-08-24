@@ -23,7 +23,7 @@
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = ("Deserialize",)
+__all__ = ("Deserialize",)
 
 import datetime
 import logging
@@ -44,6 +44,7 @@ from aiobungie.internal import impl
 from aiobungie.internal import time
 from aiobungie.internal.helpers import JsonDict
 from aiobungie.internal.helpers import JsonList
+from aiobungie.internal.helpers import NoneOr
 from aiobungie.internal.helpers import Undefined
 from aiobungie.internal.helpers import Unknown
 from aiobungie.internal.helpers import just
@@ -86,6 +87,30 @@ class Deserialize:
             locale=data["locale"],
             picture=Image(path=str(data["profilePicturePath"])),
         )
+
+    @staticmethod
+    def set_themese_attrs(payload: JsonList, /) -> typing.ValuesView[user.UserThemes]:
+        if isinstance(payload, list):
+            if payload is None:
+                raise ValueError("No themes found.")
+
+            theme_map: dict[int, user.UserThemes] = {}
+            theme_ids: list[int] = just(payload, "userThemeId")
+            theme_names: list[NoneOr[str]] = just(payload, "userThemeName")
+            theme_descriptions: list[NoneOr[str]] = just(
+                payload, "userThemeDescription"
+            )
+
+            for t_id, t_name, t_desc in zip(theme_ids, theme_names, theme_descriptions):
+                theme_map[t_id] = user.UserThemes(
+                    id=t_id, name=t_name, description=t_desc
+                )
+        return theme_map.values()
+
+    def deserialize_user_themes(
+        self, payload: JsonList
+    ) -> typing.Sequence[user.UserThemes]:
+        return list(self.set_themese_attrs(payload))
 
     def deserialize_player(self, payload: JsonDict, position: int = 0) -> player.Player:
         old_data = payload
@@ -211,47 +236,39 @@ class Deserialize:
         )
 
     @staticmethod
-    def set_clan_attrs(data: JsonDict) -> dict[int, clans.ClanMember]:
+    def set_clan_attrs(data: JsonDict, /) -> typing.ValuesView[clans.ClanMember]:
+        mapper: dict[int, clans.ClanMember] = {}
         if (payload := data["results"]) is not None:
+            is_on: list[bool] = just(payload, "isOnline")
+            last_sts: list[int] = just(payload, "lastOnlineStatusChange")
+            group_id: list[int] = just(payload, "groupId")
+            jdate: list[str] = just(payload, "joinDate")
 
-            for stat in just(payload, "isOnline"):
-                is_online: bool = stat
+            for is_online, raw_joined_at, lon in zip(is_on, jdate, last_sts):
+                last_online = time.from_timestamp(int(lon))
+                joined_at = time.clean_date(raw_joined_at)
 
-            for lon in just(payload, "lastOnlineStatusChange"):
-                last_online: datetime.datetime = time.from_timestamp(int(lon))
-
-            for gid in just(payload, "groupId"):
-                group_id: int = int(gid)
-
-            for raw_joined_at in just(payload, "joinDate"):
-                joined_at: datetime.datetime = time.clean_date(str(raw_joined_at))
-
-            try:
-                members = just(payload, "destinyUserInfo")
-            except KeyError:
-                pass
-
+        members = just(payload, "destinyUserInfo")
         for member in members:
-            mapper: dict[int, clans.ClanMember] = {}
             mapper[int(member["membershipId"])] = clans.ClanMember(
-                group_id=group_id,
                 id=int(member["membershipId"]),
                 name=member["displayName"],
                 type=enums.MembershipType(member["membershipType"]),
                 icon=member["iconPath"],
                 is_public=member["isPublic"],
+                group_id=int(group_id[0]),
                 is_online=is_online,
                 last_online=last_online,
                 joined_at=joined_at,
             )
         if mapper is None:
-            return dict()
-        return mapper
+            return dict().values()
+        return mapper.values()
 
     def deserialize_clan_members(
         self, data: JsonDict, /
     ) -> typing.Sequence[clans.ClanMember]:
-        return list(self.set_clan_attrs(data).values())
+        return list(self.set_clan_attrs(data))
 
     def deserialize_app_owner(self, payload: JsonDict) -> app.ApplicationOwner:
         return app.ApplicationOwner(
@@ -344,14 +361,14 @@ class Deserialize:
     ) -> entity.InventoryEntity:
         try:
             # All Bungie entities has a display propetie
-            # if we don't find it means the entitiy was not found.
+            # if we don't find it means the entity was not found.
             props: JsonDict = payload["displayProperties"]
         except KeyError:
             raise error.NotFound("The entity inventory item hash is invalid") from None
 
         # Some entities have an inventory which
         # Includes its hash types.
-        # Most entites has this
+        # Most entities has this
         # and for some it doesn't exists
 
         if (raw_inventory := payload.get("inventory", {})) is not None:

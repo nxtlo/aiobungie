@@ -25,7 +25,7 @@
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = ("Clan", "ClanOwner", "ClanMember", "ClanFeatures")
+__all__ = ("Clan", "ClanOwner", "ClanMember", "ClanFeatures")
 
 
 import typing
@@ -177,7 +177,7 @@ class ClanOwner(UserLike):
 
     @property
     def human_timedelta(self) -> str:
-        """Returns a human readble date of the clan owner's last login."""
+        """Returns a human readable date of the clan owner's last login."""
         return time.human_timedelta(self.last_online)
 
     @property
@@ -266,6 +266,14 @@ class Clan:
         Returns
         --------
         `ClanMember`
+
+        Raises
+        ------
+        `aiobungie.ClanNotFound`
+            The clan was not found.
+
+        `aiobungie.NotFound`
+            The member was not found
         """
         return await self.net.request.fetch_clan_member(self.id, name, type)
 
@@ -287,6 +295,11 @@ class Clan:
         --------
         `typing.Sequence[ClanMember]`
             A sequence of the clan members found in this clan.
+
+        Raises
+        ------
+        `aiobungie.ClanNotFound`
+            The clan was not found.
         """
         return await self.net.request.fetch_clan_members(self.id, type)
 
@@ -326,7 +339,7 @@ class Clan:
 
     @property
     def human_timedelta(self) -> str:
-        """Returns a human readble date of the clan's creation date."""
+        """Returns a human readable date of the clan's creation date."""
         return time.human_timedelta(self.created_at)
 
     @property

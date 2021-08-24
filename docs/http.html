@@ -515,19 +515,23 @@ and Where all the magic happenes.
 &#34;&#34;&#34;
 
 from __future__ import annotations
+
 from aiobungie.internal.helpers import JsonDict
 
 __all__ = (&#34;HTTPClient&#34;,)
 
 import http
+import sys
 import types
 import typing
+
 import aiohttp
 
+from aiobungie import _info as info
 from aiobungie import error
 from aiobungie import url
-from aiobungie.internal import helpers
 from aiobungie.internal import enums
+from aiobungie.internal import helpers
 
 if typing.TYPE_CHECKING:
     T = typing.TypeVar(&#34;T&#34;)
@@ -560,6 +564,7 @@ async def handle_errors(
         # High order errors
         if msg == &#34;ClanNotFound&#34;:
             return error.ClanNotFound(msg)
+
         elif msg == &#34;DestinyInvalidMembershipType&#34;:
             return error.MembershipTypeError(msg)
         elif msg == &#34;GroupNotFound&#34;:
@@ -572,7 +577,7 @@ async def handle_errors(
 
 class PreLock:
 
-    __slots__: typing.Sequence[str] = (&#34;_lock&#34;,)
+    __slots__ = (&#34;_lock&#34;,)
 
     def __init__(self, locker: asyncio.Lock) -&gt; None:
         self._lock: asyncio.Lock = locker
@@ -617,16 +622,20 @@ class HTTPClient:
         **kwargs: typing.Any,
     ) -&gt; typing.Any:
 
+        user_agent: typing.Final[
+            str
+        ] = f&#34;AiobungieClient/{info.__version__} ({info.__url__}) Python/{sys.version_info}&#34;
         locker = asyncio.Lock()
+
         if isinstance(self.key, str) and self.key is not None:
-            kwargs[&#34;headers&#34;] = {&#34;X-API-KEY&#34;: self.key}
+            kwargs[&#34;headers&#34;] = {&#34;X-API-KEY&#34;: self.key, &#34;User-Agent&#34;: user_agent}
         else:
             raise ValueError(&#34;No API KEY was passed.&#34;)
 
         if &#34;json&#34; in kwargs:
             kwargs[&#34;Content-Type&#34;] = &#34;application/json&#34;
 
-        for tries in range(5):
+        for t in range(5):
             async with PreLock(locker):
                 try:
                     async with aiohttp.ClientSession(
@@ -640,6 +649,11 @@ class HTTPClient:
 
                             data = await response.json()
                             msg: str = data[&#34;ErrorStatus&#34;]
+
+                            # Don&#39;t worry. API is down :D.
+                            if msg == &#34;SystemDisabled&#34;:
+                                raise OSError(&#34;API IS DOWN&#34;, data[&#34;Message&#34;])
+
                             if 300 &gt; response.status &gt;= 200:
                                 if (
                                     type == &#34;read&#34;
@@ -667,7 +681,7 @@ class HTTPClient:
                             if response.status in {500, 502, 504}:
                                 await self._handle_err(response, msg)
 
-                                await asyncio.sleep(tries + 0x01 * 0x02)
+                                await asyncio.sleep(t + 0x01 * 0x02)
                                 continue
 
                 except aiohttp.ContentTypeError:
@@ -689,6 +703,9 @@ class HTTPClient:
     def fetch_user_from_id(self, id: int) -&gt; Response[helpers.JsonDict]:
         return self.fetch(&#34;GET&#34;, f&#34;User/GetBungieNetUserById/{id}/&#34;)
 
+    def fetch_user_themes(self) -&gt; Response[helpers.JsonList]:
+        return self.fetch(&#34;GET&#34;, &#34;User/GetAvailableThemes/&#34;)
+
     def fetch_manifest(self) -&gt; Response[typing.Any]:
         return self.fetch(&#34;GET&#34;, &#34;Destiny2/Manifest/&#34;)
 
@@ -703,8 +720,10 @@ class HTTPClient:
     def fetch_clan_from_id(self, id: int) -&gt; Response[helpers.JsonDict]:
         return self.fetch(&#34;GET&#34;, f&#34;GroupV2/{id}&#34;)
 
-    def fetch_clan(self, name: str, type: int = 1) -&gt; Response[helpers.JsonDict]:
-        return self.fetch(&#34;GET&#34;, f&#34;GroupV2/Name/{name}/{type}&#34;)
+    def fetch_clan(
+        self, name: str, type: enums.GroupType = enums.GroupType.CLAN
+    ) -&gt; Response[helpers.JsonDict]:
+        return self.fetch(&#34;GET&#34;, f&#34;GroupV2/Name/{name}/{int(type)}&#34;)
 
     def fetch_app(self, appid: int, /) -&gt; Response[helpers.JsonDict]:
         return self.fetch(&#34;GET&#34;, f&#34;App/Application/{appid}&#34;)
@@ -769,16 +788,17 @@ class HTTPClient:
             &#34;GET&#34;,
             f&#34;/GroupV2/{id}/Members/?memberType={int(type)}&amp;nameSearch={name if name else &#39;&#39;}&amp;currentpage={page}&#34;,
         )
-        
+
     def fetch_hard_linked(
-        self, 
-        credential: int, 
-        type: enums.CredentialType = enums.CredentialType.STADIAID, /
-        ) -&gt; Response[JsonDict]:
+        self,
+        credential: int,
+        type: enums.CredentialType = enums.CredentialType.STADIAID,
+        /,
+    ) -&gt; Response[JsonDict]:
         return self.fetch(
             &#34;GET&#34;,
-            f&#34;User/GetMembershipFromHardLinkedCredential/{int(type)}/{credential}/&#34;
-            )</code></pre>
+            f&#34;User/GetMembershipFromHardLinkedCredential/{int(type)}/{credential}/&#34;,
+        )</code></pre>
                 </details>
             </section>
             <section>
@@ -826,16 +846,20 @@ class HTTPClient:
         **kwargs: typing.Any,
     ) -&gt; typing.Any:
 
+        user_agent: typing.Final[
+            str
+        ] = f&#34;AiobungieClient/{info.__version__} ({info.__url__}) Python/{sys.version_info}&#34;
         locker = asyncio.Lock()
+
         if isinstance(self.key, str) and self.key is not None:
-            kwargs[&#34;headers&#34;] = {&#34;X-API-KEY&#34;: self.key}
+            kwargs[&#34;headers&#34;] = {&#34;X-API-KEY&#34;: self.key, &#34;User-Agent&#34;: user_agent}
         else:
             raise ValueError(&#34;No API KEY was passed.&#34;)
 
         if &#34;json&#34; in kwargs:
             kwargs[&#34;Content-Type&#34;] = &#34;application/json&#34;
 
-        for tries in range(5):
+        for t in range(5):
             async with PreLock(locker):
                 try:
                     async with aiohttp.ClientSession(
@@ -849,6 +873,11 @@ class HTTPClient:
 
                             data = await response.json()
                             msg: str = data[&#34;ErrorStatus&#34;]
+
+                            # Don&#39;t worry. API is down :D.
+                            if msg == &#34;SystemDisabled&#34;:
+                                raise OSError(&#34;API IS DOWN&#34;, data[&#34;Message&#34;])
+
                             if 300 &gt; response.status &gt;= 200:
                                 if (
                                     type == &#34;read&#34;
@@ -876,7 +905,7 @@ class HTTPClient:
                             if response.status in {500, 502, 504}:
                                 await self._handle_err(response, msg)
 
-                                await asyncio.sleep(tries + 0x01 * 0x02)
+                                await asyncio.sleep(t + 0x01 * 0x02)
                                 continue
 
                 except aiohttp.ContentTypeError:
@@ -898,6 +927,9 @@ class HTTPClient:
     def fetch_user_from_id(self, id: int) -&gt; Response[helpers.JsonDict]:
         return self.fetch(&#34;GET&#34;, f&#34;User/GetBungieNetUserById/{id}/&#34;)
 
+    def fetch_user_themes(self) -&gt; Response[helpers.JsonList]:
+        return self.fetch(&#34;GET&#34;, &#34;User/GetAvailableThemes/&#34;)
+
     def fetch_manifest(self) -&gt; Response[typing.Any]:
         return self.fetch(&#34;GET&#34;, &#34;Destiny2/Manifest/&#34;)
 
@@ -912,8 +944,10 @@ class HTTPClient:
     def fetch_clan_from_id(self, id: int) -&gt; Response[helpers.JsonDict]:
         return self.fetch(&#34;GET&#34;, f&#34;GroupV2/{id}&#34;)
 
-    def fetch_clan(self, name: str, type: int = 1) -&gt; Response[helpers.JsonDict]:
-        return self.fetch(&#34;GET&#34;, f&#34;GroupV2/Name/{name}/{type}&#34;)
+    def fetch_clan(
+        self, name: str, type: enums.GroupType = enums.GroupType.CLAN
+    ) -&gt; Response[helpers.JsonDict]:
+        return self.fetch(&#34;GET&#34;, f&#34;GroupV2/Name/{name}/{int(type)}&#34;)
 
     def fetch_app(self, appid: int, /) -&gt; Response[helpers.JsonDict]:
         return self.fetch(&#34;GET&#34;, f&#34;App/Application/{appid}&#34;)
@@ -978,16 +1012,17 @@ class HTTPClient:
             &#34;GET&#34;,
             f&#34;/GroupV2/{id}/Members/?memberType={int(type)}&amp;nameSearch={name if name else &#39;&#39;}&amp;currentpage={page}&#34;,
         )
-        
+
     def fetch_hard_linked(
-        self, 
-        credential: int, 
-        type: enums.CredentialType = enums.CredentialType.STADIAID, /
-        ) -&gt; Response[JsonDict]:
+        self,
+        credential: int,
+        type: enums.CredentialType = enums.CredentialType.STADIAID,
+        /,
+    ) -&gt; Response[JsonDict]:
         return self.fetch(
             &#34;GET&#34;,
-            f&#34;User/GetMembershipFromHardLinkedCredential/{int(type)}/{credential}/&#34;
-            )</code></pre>
+            f&#34;User/GetMembershipFromHardLinkedCredential/{int(type)}/{credential}/&#34;,
+        )</code></pre>
                         </details>
                         <h3>Methods</h3>
                         <dl>
@@ -1010,16 +1045,20 @@ async def fetch(
     **kwargs: typing.Any,
 ) -&gt; typing.Any:
 
+    user_agent: typing.Final[
+        str
+    ] = f&#34;AiobungieClient/{info.__version__} ({info.__url__}) Python/{sys.version_info}&#34;
     locker = asyncio.Lock()
+
     if isinstance(self.key, str) and self.key is not None:
-        kwargs[&#34;headers&#34;] = {&#34;X-API-KEY&#34;: self.key}
+        kwargs[&#34;headers&#34;] = {&#34;X-API-KEY&#34;: self.key, &#34;User-Agent&#34;: user_agent}
     else:
         raise ValueError(&#34;No API KEY was passed.&#34;)
 
     if &#34;json&#34; in kwargs:
         kwargs[&#34;Content-Type&#34;] = &#34;application/json&#34;
 
-    for tries in range(5):
+    for t in range(5):
         async with PreLock(locker):
             try:
                 async with aiohttp.ClientSession(
@@ -1033,6 +1072,11 @@ async def fetch(
 
                         data = await response.json()
                         msg: str = data[&#34;ErrorStatus&#34;]
+
+                        # Don&#39;t worry. API is down :D.
+                        if msg == &#34;SystemDisabled&#34;:
+                            raise OSError(&#34;API IS DOWN&#34;, data[&#34;Message&#34;])
+
                         if 300 &gt; response.status &gt;= 200:
                             if (
                                 type == &#34;read&#34;
@@ -1060,7 +1104,7 @@ async def fetch(
                         if response.status in {500, 502, 504}:
                             await self._handle_err(response, msg)
 
-                            await asyncio.sleep(tries + 0x01 * 0x02)
+                            await asyncio.sleep(t + 0x01 * 0x02)
                             continue
 
             except aiohttp.ContentTypeError:
@@ -1129,7 +1173,7 @@ async def fetch(
                                 </details>
                             </dd>
                             <dt id="aiobungie.http.HTTPClient.fetch_clan"><code class="name flex">
-<span>def <span class="ident">fetch_clan</span></span>(<span>self, name: str, type: int = 1) ‑> Response[helpers.JsonDict]</span>
+<span>def <span class="ident">fetch_clan</span></span>(<span>self, name: str, type: enums.GroupType = CLAN) ‑> Response[helpers.JsonDict]</span>
 </code></dt>
                             <dd>
                                 <div class="desc"></div>
@@ -1137,8 +1181,10 @@ async def fetch(
                                     <summary>
                                         <span>Expand source code</span>
                                     </summary>
-                                    <pre><code class="python">def fetch_clan(self, name: str, type: int = 1) -&gt; Response[helpers.JsonDict]:
-    return self.fetch(&#34;GET&#34;, f&#34;GroupV2/Name/{name}/{type}&#34;)</code></pre>
+                                    <pre><code class="python">def fetch_clan(
+    self, name: str, type: enums.GroupType = enums.GroupType.CLAN
+) -&gt; Response[helpers.JsonDict]:
+    return self.fetch(&#34;GET&#34;, f&#34;GroupV2/Name/{name}/{int(type)}&#34;)</code></pre>
                                 </details>
                             </dd>
                             <dt id="aiobungie.http.HTTPClient.fetch_clan_from_id"><code class="name flex">
@@ -1201,14 +1247,15 @@ async def fetch(
                                         <span>Expand source code</span>
                                     </summary>
                                     <pre><code class="python">def fetch_hard_linked(
-    self, 
-    credential: int, 
-    type: enums.CredentialType = enums.CredentialType.STADIAID, /
-    ) -&gt; Response[JsonDict]:
+    self,
+    credential: int,
+    type: enums.CredentialType = enums.CredentialType.STADIAID,
+    /,
+) -&gt; Response[JsonDict]:
     return self.fetch(
         &#34;GET&#34;,
-        f&#34;User/GetMembershipFromHardLinkedCredential/{int(type)}/{credential}/&#34;
-        )</code></pre>
+        f&#34;User/GetMembershipFromHardLinkedCredential/{int(type)}/{credential}/&#34;,
+    )</code></pre>
                                 </details>
                             </dd>
                             <dt id="aiobungie.http.HTTPClient.fetch_inventory_item"><code class="name flex">
@@ -1307,6 +1354,19 @@ async def fetch(
                                     </summary>
                                     <pre><code class="python">def fetch_user_from_id(self, id: int) -&gt; Response[helpers.JsonDict]:
     return self.fetch(&#34;GET&#34;, f&#34;User/GetBungieNetUserById/{id}/&#34;)</code></pre>
+                                </details>
+                            </dd>
+                            <dt id="aiobungie.http.HTTPClient.fetch_user_themes"><code class="name flex">
+<span>def <span class="ident">fetch_user_themes</span></span>(<span>self) ‑> Response[helpers.JsonList]</span>
+</code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">def fetch_user_themes(self) -&gt; Response[helpers.JsonList]:
+    return self.fetch(&#34;GET&#34;, &#34;User/GetAvailableThemes/&#34;)</code></pre>
                                 </details>
                             </dd>
                             <dt id="aiobungie.http.HTTPClient.fetch_vendor_sales"><code class="name flex">
@@ -1429,6 +1489,7 @@ async def fetch(
                                 <li><code><a title="aiobungie.http.HTTPClient.fetch_profile" href="#aiobungie.http.HTTPClient.fetch_profile">fetch_profile</a></code></li>
                                 <li><code><a title="aiobungie.http.HTTPClient.fetch_user" href="#aiobungie.http.HTTPClient.fetch_user">fetch_user</a></code></li>
                                 <li><code><a title="aiobungie.http.HTTPClient.fetch_user_from_id" href="#aiobungie.http.HTTPClient.fetch_user_from_id">fetch_user_from_id</a></code></li>
+                                <li><code><a title="aiobungie.http.HTTPClient.fetch_user_themes" href="#aiobungie.http.HTTPClient.fetch_user_themes">fetch_user_themes</a></code></li>
                                 <li><code><a title="aiobungie.http.HTTPClient.fetch_vendor_sales" href="#aiobungie.http.HTTPClient.fetch_vendor_sales">fetch_vendor_sales</a></code></li>
                                 <li><code><a title="aiobungie.http.HTTPClient.static_search" href="#aiobungie.http.HTTPClient.static_search">static_search</a></code></li>
                             </ul>

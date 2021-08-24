@@ -20,7 +20,6 @@ venv/
 *.sqlite3
 *.sqlite*.db
 dropped/
-season.py
 
 # Cache
 .cache/

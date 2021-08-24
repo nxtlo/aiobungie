@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Time formating module."""
+"""Time formatting module."""
 
 
 from __future__ import annotations
@@ -80,7 +80,7 @@ def human_join(seq: list, delim: str = ", ", final: str = "or") -> str:
 def format_played(mins: int, *, suffix: bool = False) -> str:
     """
     Converts A Bungie's total played time in minutes
-    to a a readble time.
+    to a a readable time.
     """
     hrs = math.floor(mins // 60)
     seconds = math.floor(mins % 60)
@@ -95,7 +95,7 @@ def from_timestamp(timer: int) -> datetime:
 
 
 def clean_date(date: str) -> datetime:
-    """Formats `datetime.datetime` to a readble date."""
+    """Formats `datetime.datetime` to a readable date."""
     parsed = parse(date)
     ts = to_timestamp(parsed)  # had to do it in two ways.
     ft = from_timestamp(ts)

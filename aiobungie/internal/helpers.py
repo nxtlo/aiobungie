@@ -25,7 +25,7 @@
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = (
+__all__ = (
     "deprecated",
     "JsonDict",
     "JsonList",
@@ -49,10 +49,10 @@ Unknown: str = ""
 """Stuff that are empty strings."""
 
 T = typing.TypeVar("T", covariant=True)
-"""A type var thats associated with NoneOr[T]"""
+"""A type var that's associated with NoneOr[T]"""
 
 NoneOr = typing.Union[None, T]
-"""A Union type thats similar to to Optional[T]"""
+"""A Union type that's similar to to Optional[T]"""
 
 
 def just(lst: list[dict[str, typing.Any]], lookup: str) -> list[typing.Any]:
@@ -75,7 +75,6 @@ def deprecated(func):
             category=DeprecationWarning,
         )
         func.__doc__ += " DEPRECATED FUNCTION."
-        print(func.__doc__)
         coro = func(*args, **kwargs)
         return coro
 

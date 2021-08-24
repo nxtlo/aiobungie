@@ -518,18 +518,16 @@ and you might face some major bugs.
 
 from __future__ import annotations
 
-__all__: typing.Sequence[str] = (&#34;Activity&#34;, &#34;PostActivity&#34;)
+__all__ = (&#34;Activity&#34;, &#34;PostActivity&#34;)
 
 import typing
+from datetime import datetime
+
 import attr
 
 from aiobungie.crate import player
 from aiobungie.internal import enums
 from aiobungie.internal import impl
-from aiobungie.internal import time
-from aiobungie.internal.helpers import Undefined
-
-from datetime import datetime
 
 
 @attr.s(hash=True, slots=True, weakref_slot=False, eq=True, kw_only=True)
@@ -539,10 +537,9 @@ class PostActivity:
     period: datetime = attr.field(repr=True, eq=False, hash=False)
     &#34;&#34;&#34;The post activity&#39;s period utc date.&#34;&#34;&#34;
 
-    starting_phase: int = attr.field(repr=True, eq=False, hash=False)
-    &#34;&#34;&#34;The postt activity starting phase index. 
-    for an example if it was 0 that means it&#39;s a fresh run
-    &#34;&#34;&#34;
+    starting_phase: int = attr.field(repr=False, eq=False, hash=False)
+    &#34;&#34;&#34;The postt activity starting phase index.
+    For an example if it was 0 that means it&#39;s a fresh run&#34;&#34;&#34;
 
     reference_id: int = attr.field(repr=True, eq=False, hash=False)
     &#34;&#34;&#34;The post activity reference id. AKA the activity hash.&#34;&#34;&#34;
@@ -553,7 +550,7 @@ class PostActivity:
     modes: typing.List[enums.GameMode] = attr.field(repr=False, eq=False, hash=False)
     &#34;&#34;&#34;A list of the post activity&#39;s game mode.&#34;&#34;&#34;
 
-    membership_type: enums.MembershipType = attr.field(repr=False, eq=False, hash=False)
+    membership_type: enums.MembershipType = attr.field(repr=True, eq=False, hash=False)
     &#34;&#34;&#34;The post activity&#39;s memebership type.&#34;&#34;&#34;
 
     players: typing.Sequence[typing.Dict[str, typing.Any]] = attr.field(repr=False)
@@ -571,8 +568,8 @@ class PostActivity:
             isplayer[&#34;player&#34;][&#34;destinyUserInfo&#34;] for isplayer in self.players
         ]
 
-        for player in players_entries:
-            players_entries.append(player)
+        for raw_player in players_entries:
+            players_entries.append(raw_player)
 
         return players_entries
 
@@ -581,18 +578,21 @@ class PostActivity:
         &#34;&#34;&#34;Determines if the activity was fresh or no.&#34;&#34;&#34;
         return self.starting_phase == 0
 
+    def __int__(self) -&gt; int:
+        return self.reference_id
+
 
 @attr.s(hash=True, repr=True, slots=True, weakref_slot=False, eq=True, kw_only=True)
 class Activity:
     &#34;&#34;&#34;Represents a Bungie Activity.&#34;&#34;&#34;
 
-    app: impl.RESTful = attr.field(repr=False)
-    &#34;&#34;&#34;A client app that we may use to make external calls.&#34;&#34;&#34;
+    net: impl.Netrunner = attr.field(repr=False)
+    &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
 
-    is_completed: str = attr.field(repr=True, hash=False, eq=False)
+    is_completed: str = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;Check if the activity was completed or no.&#34;&#34;&#34;
 
-    id: int = attr.field(hash=True, repr=True, eq=False)
+    hash: int = attr.field(hash=True, repr=True, eq=False)
     &#34;&#34;&#34;The activity&#39;s hash.&#34;&#34;&#34;
 
     instance_id: int = attr.field(repr=True)
@@ -647,14 +647,17 @@ class Activity:
         -------
         `.PostActivity`
         &#34;&#34;&#34;
-        return await self.app.rest.fetch_post_activity(self.instance_id)
+        return await self.net.request.fetch_post_activity(self.instance_id)
 
     @property
     def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
         &#34;&#34;&#34;Returns a dict crate of the Activity,
         This function is useful if you&#39;re binding to other REST apis.
         &#34;&#34;&#34;
-        return attr.asdict(self)</code></pre>
+        return attr.asdict(self)
+
+    def __int__(self) -&gt; int:
+        return self.instance_id</code></pre>
                 </details>
             </section>
             <section>
@@ -668,7 +671,7 @@ class Activity:
                 <dl>
                     <dt id="aiobungie.crate.activity.Activity"><code class="flex name class">
 <span>class <span class="ident">Activity</span></span>
-<span>(</span><span>*, app: impl.RESTful, is_completed: str, id: int, instance_id: int, mode: enums.GameMode, kills: int, deaths: int, period: datetime, assists: int, duration: str, player_count: int, member_type: enums.MembershipType, kd: float, modes: typing.List[enums.GameMode], opponents_defeated: int, efficiency: float, score: int, completion_reason: str)</span>
+<span>(</span><span>*, net: impl.Netrunner, is_completed: str, hash: int, instance_id: int, mode: enums.GameMode, kills: int, deaths: int, period: datetime, assists: int, duration: str, player_count: int, member_type: enums.MembershipType, kd: float, modes: typing.List[enums.GameMode], opponents_defeated: int, efficiency: float, score: int, completion_reason: str)</span>
 </code></dt>
                     <dd>
                         <div class="desc">
@@ -683,13 +686,13 @@ class Activity:
 class Activity:
     &#34;&#34;&#34;Represents a Bungie Activity.&#34;&#34;&#34;
 
-    app: impl.RESTful = attr.field(repr=False)
-    &#34;&#34;&#34;A client app that we may use to make external calls.&#34;&#34;&#34;
+    net: impl.Netrunner = attr.field(repr=False)
+    &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
 
-    is_completed: str = attr.field(repr=True, hash=False, eq=False)
+    is_completed: str = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;Check if the activity was completed or no.&#34;&#34;&#34;
 
-    id: int = attr.field(hash=True, repr=True, eq=False)
+    hash: int = attr.field(hash=True, repr=True, eq=False)
     &#34;&#34;&#34;The activity&#39;s hash.&#34;&#34;&#34;
 
     instance_id: int = attr.field(repr=True)
@@ -744,23 +747,20 @@ class Activity:
         -------
         `.PostActivity`
         &#34;&#34;&#34;
-        return await self.app.rest.fetch_post_activity(self.instance_id)
+        return await self.net.request.fetch_post_activity(self.instance_id)
 
     @property
     def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
         &#34;&#34;&#34;Returns a dict crate of the Activity,
         This function is useful if you&#39;re binding to other REST apis.
         &#34;&#34;&#34;
-        return attr.asdict(self)</code></pre>
+        return attr.asdict(self)
+
+    def __int__(self) -&gt; int:
+        return self.instance_id</code></pre>
                         </details>
                         <h3>Instance variables</h3>
                         <dl>
-                            <dt id="aiobungie.crate.activity.Activity.app"><code class="name">var <span class="ident">app</span> : <a title="aiobungie.internal.impl.RESTful" href="./internal/impl.html#aiobungie.internal.impl.RESTful">RESTful</a></code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>A client app that we may use to make external calls.</p>
-                                </div>
-                            </dd>
                             <dt id="aiobungie.crate.activity.Activity.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
                             <dd>
                                 <div class="desc">
@@ -808,7 +808,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                     <p>Activity's efficienty.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.activity.Activity.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
+                            <dt id="aiobungie.crate.activity.Activity.hash"><code class="name">var <span class="ident">hash</span> : int</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>The activity's hash.</p>
@@ -854,6 +854,12 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                             <dd>
                                 <div class="desc">
                                     <p>A list of the post activity's game mode.</p>
+                                </div>
+                            </dd>
+                            <dt id="aiobungie.crate.activity.Activity.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.impl.Netrunner" href="./internal/impl.html#aiobungie.internal.impl.Netrunner">Netrunner</a></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>A network state used for making external requests.</p>
                                 </div>
                             </dd>
                             <dt id="aiobungie.crate.activity.Activity.opponents_defeated"><code class="name">var <span class="ident">opponents_defeated</span> : int</code></dt>
@@ -903,7 +909,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
     -------
     `.PostActivity`
     &#34;&#34;&#34;
-    return await self.app.rest.fetch_post_activity(self.instance_id)</code></pre>
+    return await self.net.request.fetch_post_activity(self.instance_id)</code></pre>
                                 </details>
                             </dd>
                         </dl>
@@ -928,10 +934,9 @@ class PostActivity:
     period: datetime = attr.field(repr=True, eq=False, hash=False)
     &#34;&#34;&#34;The post activity&#39;s period utc date.&#34;&#34;&#34;
 
-    starting_phase: int = attr.field(repr=True, eq=False, hash=False)
-    &#34;&#34;&#34;The postt activity starting phase index. 
-    for an example if it was 0 that means it&#39;s a fresh run
-    &#34;&#34;&#34;
+    starting_phase: int = attr.field(repr=False, eq=False, hash=False)
+    &#34;&#34;&#34;The postt activity starting phase index.
+    For an example if it was 0 that means it&#39;s a fresh run&#34;&#34;&#34;
 
     reference_id: int = attr.field(repr=True, eq=False, hash=False)
     &#34;&#34;&#34;The post activity reference id. AKA the activity hash.&#34;&#34;&#34;
@@ -942,7 +947,7 @@ class PostActivity:
     modes: typing.List[enums.GameMode] = attr.field(repr=False, eq=False, hash=False)
     &#34;&#34;&#34;A list of the post activity&#39;s game mode.&#34;&#34;&#34;
 
-    membership_type: enums.MembershipType = attr.field(repr=False, eq=False, hash=False)
+    membership_type: enums.MembershipType = attr.field(repr=True, eq=False, hash=False)
     &#34;&#34;&#34;The post activity&#39;s memebership type.&#34;&#34;&#34;
 
     players: typing.Sequence[typing.Dict[str, typing.Any]] = attr.field(repr=False)
@@ -960,15 +965,18 @@ class PostActivity:
             isplayer[&#34;player&#34;][&#34;destinyUserInfo&#34;] for isplayer in self.players
         ]
 
-        for player in players_entries:
-            players_entries.append(player)
+        for raw_player in players_entries:
+            players_entries.append(raw_player)
 
         return players_entries
 
     @property
     def is_fresh(self) -&gt; bool:
         &#34;&#34;&#34;Determines if the activity was fresh or no.&#34;&#34;&#34;
-        return self.starting_phase == 0</code></pre>
+        return self.starting_phase == 0
+
+    def __int__(self) -&gt; int:
+        return self.reference_id</code></pre>
                         </details>
                         <h3>Instance variables</h3>
                         <dl>
@@ -1026,7 +1034,7 @@ def is_fresh(self) -&gt; bool:
                             <dt id="aiobungie.crate.activity.PostActivity.starting_phase"><code class="name">var <span class="ident">starting_phase</span> : int</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>The postt activity starting phase index. for an example if it was 0 that means it's a fresh run</p>
+                                    <p>The postt activity starting phase index. For an example if it was 0 that means it's a fresh run</p>
                                 </div>
                             </dd>
                         </dl>
@@ -1058,8 +1066,8 @@ def is_fresh(self) -&gt; bool:
         isplayer[&#34;player&#34;][&#34;destinyUserInfo&#34;] for isplayer in self.players
     ]
 
-    for player in players_entries:
-        players_entries.append(player)
+    for raw_player in players_entries:
+        players_entries.append(raw_player)
 
     return players_entries</code></pre>
                                 </details>
@@ -1140,14 +1148,13 @@ def is_fresh(self) -&gt; bool:
                         <li>
                             <h4><code><a title="aiobungie.crate.activity.Activity" href="#aiobungie.crate.activity.Activity">Activity</a></code></h4>
                             <ul class="two-column">
-                                <li><code><a title="aiobungie.crate.activity.Activity.app" href="#aiobungie.crate.activity.Activity.app">app</a></code></li>
                                 <li><code><a title="aiobungie.crate.activity.Activity.as_dict" href="#aiobungie.crate.activity.Activity.as_dict">as_dict</a></code></li>
                                 <li><code><a title="aiobungie.crate.activity.Activity.assists" href="#aiobungie.crate.activity.Activity.assists">assists</a></code></li>
                                 <li><code><a title="aiobungie.crate.activity.Activity.completion_reason" href="#aiobungie.crate.activity.Activity.completion_reason">completion_reason</a></code></li>
                                 <li><code><a title="aiobungie.crate.activity.Activity.deaths" href="#aiobungie.crate.activity.Activity.deaths">deaths</a></code></li>
                                 <li><code><a title="aiobungie.crate.activity.Activity.duration" href="#aiobungie.crate.activity.Activity.duration">duration</a></code></li>
                                 <li><code><a title="aiobungie.crate.activity.Activity.efficiency" href="#aiobungie.crate.activity.Activity.efficiency">efficiency</a></code></li>
-                                <li><code><a title="aiobungie.crate.activity.Activity.id" href="#aiobungie.crate.activity.Activity.id">id</a></code></li>
+                                <li><code><a title="aiobungie.crate.activity.Activity.hash" href="#aiobungie.crate.activity.Activity.hash">hash</a></code></li>
                                 <li><code><a title="aiobungie.crate.activity.Activity.instance_id" href="#aiobungie.crate.activity.Activity.instance_id">instance_id</a></code></li>
                                 <li><code><a title="aiobungie.crate.activity.Activity.is_completed" href="#aiobungie.crate.activity.Activity.is_completed">is_completed</a></code></li>
                                 <li><code><a title="aiobungie.crate.activity.Activity.kd" href="#aiobungie.crate.activity.Activity.kd">kd</a></code></li>
@@ -1155,6 +1162,7 @@ def is_fresh(self) -&gt; bool:
                                 <li><code><a title="aiobungie.crate.activity.Activity.member_type" href="#aiobungie.crate.activity.Activity.member_type">member_type</a></code></li>
                                 <li><code><a title="aiobungie.crate.activity.Activity.mode" href="#aiobungie.crate.activity.Activity.mode">mode</a></code></li>
                                 <li><code><a title="aiobungie.crate.activity.Activity.modes" href="#aiobungie.crate.activity.Activity.modes">modes</a></code></li>
+                                <li><code><a title="aiobungie.crate.activity.Activity.net" href="#aiobungie.crate.activity.Activity.net">net</a></code></li>
                                 <li><code><a title="aiobungie.crate.activity.Activity.opponents_defeated" href="#aiobungie.crate.activity.Activity.opponents_defeated">opponents_defeated</a></code></li>
                                 <li><code><a title="aiobungie.crate.activity.Activity.period" href="#aiobungie.crate.activity.Activity.period">period</a></code></li>
                                 <li><code><a title="aiobungie.crate.activity.Activity.player_count" href="#aiobungie.crate.activity.Activity.player_count">player_count</a></code></li>

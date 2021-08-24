@@ -22,9 +22,11 @@
 
 import nox
 
+WORDS: list[str] = ["crate"]
+
 
 @nox.session(reuse_venv=True)
-def format_and_sort(session: nox.Session) -> None:
+def format(session: nox.Session) -> None:
     session.install("-r", "dev-requirements.txt")
     session.run("isort", ".")
     session.run("black", ".")
@@ -34,3 +36,15 @@ def format_and_sort(session: nox.Session) -> None:
 def check_black(session: nox.Session) -> None:
     session.install("black")
     session.run("black", ".", "--check")
+
+
+@nox.session(reuse_venv=True)
+def spell(session: nox.Session) -> None:
+    session.install("codespell")
+    session.run(
+        "codespell",
+        "aiobungie",
+        "--write-changes",
+        "-L",
+        " ,".join(word for word in WORDS),
+    )

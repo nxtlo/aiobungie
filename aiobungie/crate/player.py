@@ -25,7 +25,7 @@
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = ("Player",)
+__all__ = ("Player",)
 
 
 import typing

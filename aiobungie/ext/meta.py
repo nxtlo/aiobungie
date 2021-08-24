@@ -25,7 +25,7 @@
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = ("Manifest",)
+__all__ = ("Manifest",)
 
 import logging
 import os
@@ -105,7 +105,7 @@ class Manifest:
     def fetch(
         self, definition: str, id: int, item: t.Optional[str] = None
     ) -> t.Optional[t.Dict[t.Any, t.Any]]:
-        """Fetch something from the manifest databse.
+        """Fetch something from the manifest database.
         This returns a `typing.Dict[typing.Any, typing.Any]`
 
         Parameters

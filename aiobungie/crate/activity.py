@@ -28,7 +28,7 @@ and you might face some major bugs.
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = ("Activity", "PostActivity")
+__all__ = ("Activity", "PostActivity")
 
 import typing
 from datetime import datetime
@@ -61,7 +61,7 @@ class PostActivity:
     """A list of the post activity's game mode."""
 
     membership_type: enums.MembershipType = attr.field(repr=True, eq=False, hash=False)
-    """The post activity's memebership type."""
+    """The post activity's membership type."""
 
     players: typing.Sequence[typing.Dict[str, typing.Any]] = attr.field(repr=False)
 

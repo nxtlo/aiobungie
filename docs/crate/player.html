@@ -514,24 +514,22 @@
 
 from __future__ import annotations
 
-__all__: typing.Sequence[str] = [&#34;Player&#34;]
+__all__ = (&#34;Player&#34;,)
 
 
 import typing
+
 import attr
 
-from aiobungie.internal import impl
-from aiobungie.internal import Image
-from aiobungie.internal.enums import MembershipType
-
 from aiobungie.crate.user import UserLike
+from aiobungie.internal import Image
+from aiobungie.internal import impl
+from aiobungie.internal.enums import MembershipType
 
 
 @attr.s(hash=True, repr=True, init=True, kw_only=True, weakref_slot=False, slots=True)
 class Player(UserLike):
     &#34;&#34;&#34;Represents a Bungie Destiny 2 Player.&#34;&#34;&#34;
-
-    app: impl.RESTful = attr.field(repr=False)
 
     icon: Image = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;The player&#39;s icon.&#34;&#34;&#34;
@@ -549,13 +547,21 @@ class Player(UserLike):
     &#34;&#34;&#34;The profile&#39;s membership type.&#34;&#34;&#34;
 
     @property
+    def net(self) -&gt; impl.Netrunner:
+        &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
+        return self.net
+
+    @property
     def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
         &#34;&#34;&#34;Returns a dict object of the player.&#34;&#34;&#34;
 
         return attr.asdict(self)
 
     def __int__(self) -&gt; int:
-        return int(self.id)</code></pre>
+        return int(self.id)
+
+    def __str__(self) -&gt; str:
+        return self.name</code></pre>
                 </details>
             </section>
             <section>
@@ -569,7 +575,7 @@ class Player(UserLike):
                 <dl>
                     <dt id="aiobungie.crate.player.Player"><code class="flex name class">
 <span>class <span class="ident">Player</span></span>
-<span>(</span><span>*, app: impl.RESTful, icon: Image, id: int, name: str, is_public: bool, type: MembershipType)</span>
+<span>(</span><span>*, icon: Image, id: int, name: str, is_public: bool, type: MembershipType)</span>
 </code></dt>
                     <dd>
                         <div class="desc">
@@ -584,8 +590,6 @@ class Player(UserLike):
 class Player(UserLike):
     &#34;&#34;&#34;Represents a Bungie Destiny 2 Player.&#34;&#34;&#34;
 
-    app: impl.RESTful = attr.field(repr=False)
-
     icon: Image = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;The player&#39;s icon.&#34;&#34;&#34;
 
@@ -602,13 +606,21 @@ class Player(UserLike):
     &#34;&#34;&#34;The profile&#39;s membership type.&#34;&#34;&#34;
 
     @property
+    def net(self) -&gt; impl.Netrunner:
+        &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
+        return self.net
+
+    @property
     def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
         &#34;&#34;&#34;Returns a dict object of the player.&#34;&#34;&#34;
 
         return attr.asdict(self)
 
     def __int__(self) -&gt; int:
-        return int(self.id)</code></pre>
+        return int(self.id)
+
+    def __str__(self) -&gt; str:
+        return self.name</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
@@ -617,16 +629,6 @@ class Player(UserLike):
                         </ul>
                         <h3>Instance variables</h3>
                         <dl>
-                            <dt id="aiobungie.crate.player.Player.app"><code class="name">var <span class="ident">app</span> : <a title="aiobungie.internal.impl.RESTful" href="./internal/impl.html#aiobungie.internal.impl.RESTful">RESTful</a></code></dt>
-                            <dd>
-                                <p class="inheritance">
-                                    <em>Inherited from:</em>
-                                    <code><a title="aiobungie.crate.user.UserLike" href="user.html#aiobungie.crate.user.UserLike">UserLike</a></code>.<code><a title="aiobungie.crate.user.UserLike.app" href="user.html#aiobungie.crate.user.UserLike.app">app</a></code>
-                                </p>
-                                <div class="desc inherited">
-                                    <p>A client app that we may use for external requests.</p>
-                                </div>
-                            </dd>
                             <dt id="aiobungie.crate.player.Player.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
                             <dd>
                                 <div class="desc">
@@ -676,6 +678,25 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                 <div class="desc">
                                     <p>The player's name</p>
                                 </div>
+                            </dd>
+                            <dt id="aiobungie.crate.player.Player.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.impl.Netrunner" href="./internal/impl.html#aiobungie.internal.impl.Netrunner">Netrunner</a></code></dt>
+                            <dd>
+                                <p class="inheritance">
+                                    <em>Inherited from:</em>
+                                    <code><a title="aiobungie.crate.user.UserLike" href="user.html#aiobungie.crate.user.UserLike">UserLike</a></code>.<code><a title="aiobungie.crate.user.UserLike.net" href="user.html#aiobungie.crate.user.UserLike.net">net</a></code>
+                                </p>
+                                <div class="desc inherited">
+                                    <p>A network state used for making external requests.</p>
+                                </div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">@property
+def net(self) -&gt; impl.Netrunner:
+    &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
+    return self.net</code></pre>
+                                </details>
                             </dd>
                             <dt id="aiobungie.crate.player.Player.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
                             <dd>
@@ -759,13 +780,13 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                         <li>
                             <h4><code><a title="aiobungie.crate.player.Player" href="#aiobungie.crate.player.Player">Player</a></code></h4>
                             <ul class="two-column">
-                                <li><code><a title="aiobungie.crate.player.Player.app" href="#aiobungie.crate.player.Player.app">app</a></code></li>
                                 <li><code><a title="aiobungie.crate.player.Player.as_dict" href="#aiobungie.crate.player.Player.as_dict">as_dict</a></code></li>
                                 <li><code><a title="aiobungie.crate.player.Player.icon" href="#aiobungie.crate.player.Player.icon">icon</a></code></li>
                                 <li><code><a title="aiobungie.crate.player.Player.id" href="#aiobungie.crate.player.Player.id">id</a></code></li>
                                 <li><code><a title="aiobungie.crate.player.Player.is_public" href="#aiobungie.crate.player.Player.is_public">is_public</a></code></li>
                                 <li><code><a title="aiobungie.crate.player.Player.link" href="user.html#aiobungie.crate.player.Player.link">link</a></code></li>
                                 <li><code><a title="aiobungie.crate.player.Player.name" href="#aiobungie.crate.player.Player.name">name</a></code></li>
+                                <li><code><a title="aiobungie.crate.player.Player.net" href="#aiobungie.crate.player.Player.net">net</a></code></li>
                                 <li><code><a title="aiobungie.crate.player.Player.type" href="#aiobungie.crate.player.Player.type">type</a></code></li>
                             </ul>
                         </li>

@@ -26,6 +26,7 @@ import aiobungie
 from aiobungie import crate
 from aiobungie import internal
 
+
 class TestPlayer:
     @pytest.fixture()
     def model(self):

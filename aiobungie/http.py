@@ -28,14 +28,16 @@ from __future__ import annotations
 
 from aiobungie.internal.helpers import JsonDict
 
-__all__: tuple[str, ...] = ("HTTPClient",)
+__all__ = ("HTTPClient",)
 
 import http
+import sys
 import types
 import typing
 
 import aiohttp
 
+from aiobungie import _info as info
 from aiobungie import error
 from aiobungie import url
 from aiobungie.internal import enums
@@ -84,7 +86,7 @@ async def handle_errors(
 
 class PreLock:
 
-    __slots__: tuple[str, ...] = ("_lock",)
+    __slots__ = ("_lock",)
 
     def __init__(self, locker: asyncio.Lock) -> None:
         self._lock: asyncio.Lock = locker
@@ -129,16 +131,20 @@ class HTTPClient:
         **kwargs: typing.Any,
     ) -> typing.Any:
 
+        user_agent: typing.Final[
+            str
+        ] = f"AiobungieClient/{info.__version__} ({info.__url__}) Python/{sys.version_info}"
         locker = asyncio.Lock()
+
         if isinstance(self.key, str) and self.key is not None:
-            kwargs["headers"] = {"X-API-KEY": self.key}
+            kwargs["headers"] = {"X-API-KEY": self.key, "User-Agent": user_agent}
         else:
             raise ValueError("No API KEY was passed.")
 
         if "json" in kwargs:
             kwargs["Content-Type"] = "application/json"
 
-        for tries in range(5):
+        for t in range(5):
             async with PreLock(locker):
                 try:
                     async with aiohttp.ClientSession(
@@ -152,6 +158,16 @@ class HTTPClient:
 
                             data = await response.json()
                             msg: str = data["ErrorStatus"]
+
+                            # There's no point of making requests here.
+                            # A VERY LITTLE amount of endpoints does not
+                            # require the API to be up and running, Which are
+                            # The themes afaik. Not making any difference though so
+                            # Just to be careful we raise this here.
+
+                            if msg == "SystemDisabled":
+                                raise OSError("API IS DOWN!", data["Message"])
+
                             if 300 > response.status >= 200:
                                 if (
                                     type == "read"
@@ -179,7 +195,7 @@ class HTTPClient:
                             if response.status in {500, 502, 504}:
                                 await self._handle_err(response, msg)
 
-                                await asyncio.sleep(tries + 0x01 * 0x02)
+                                await asyncio.sleep(t + 0x01 * 0x02)
                                 continue
 
                 except aiohttp.ContentTypeError:
@@ -201,6 +217,9 @@ class HTTPClient:
     def fetch_user_from_id(self, id: int) -> Response[helpers.JsonDict]:
         return self.fetch("GET", f"User/GetBungieNetUserById/{id}/")
 
+    def fetch_user_themes(self) -> Response[helpers.JsonList]:
+        return self.fetch("GET", "User/GetAvailableThemes/")
+
     def fetch_manifest(self) -> Response[typing.Any]:
         return self.fetch("GET", "Destiny2/Manifest/")
 
@@ -215,8 +234,10 @@ class HTTPClient:
     def fetch_clan_from_id(self, id: int) -> Response[helpers.JsonDict]:
         return self.fetch("GET", f"GroupV2/{id}")
 
-    def fetch_clan(self, name: str, type: int = 1) -> Response[helpers.JsonDict]:
-        return self.fetch("GET", f"GroupV2/Name/{name}/{type}")
+    def fetch_clan(
+        self, name: str, type: enums.GroupType = enums.GroupType.CLAN
+    ) -> Response[helpers.JsonDict]:
+        return self.fetch("GET", f"GroupV2/Name/{name}/{int(type)}")
 
     def fetch_app(self, appid: int, /) -> Response[helpers.JsonDict]:
         return self.fetch("GET", f"App/Application/{appid}")
@@ -226,7 +247,7 @@ class HTTPClient:
     ) -> Response[helpers.JsonDict]:
         return self.fetch(
             "GET",
-            f"Destiny2/{int(type)}/Profile/{memberid}/?components={int(enums.Component.CHARECTERS)}",
+            f"Destiny2/{int(type)}/Profile/{memberid}/?components={int(enums.Component.CHARACTERS)}",
         )
 
     def fetch_activity(

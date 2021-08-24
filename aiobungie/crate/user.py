@@ -25,12 +25,7 @@
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = (
-    "User",
-    "PartialUser",
-    "UserLike",
-    "HardLinkedMembership",
-)
+__all__ = ("User", "PartialUser", "UserLike", "HardLinkedMembership", "UserThemes")
 
 import abc
 import typing
@@ -40,6 +35,7 @@ import attr
 
 from aiobungie.internal import Image
 from aiobungie.internal import enums
+from aiobungie.internal import helpers
 from aiobungie.internal import impl
 from aiobungie.internal import time
 
@@ -62,6 +58,20 @@ class HardLinkedMembership:
         repr=True, hash=False, eq=False, default=enums.MembershipType.NONE
     )
     """The hard link user's crpss save membership type. Default is set to None-0"""
+
+
+@attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
+class UserThemes:
+    """Represents a Bungie User theme."""
+
+    id: int = attr.field(repr=True)
+    """The theme id."""
+
+    name: helpers.NoneOr[str] = attr.field(repr=True)
+    """An optional theme name. if not found this field will be `None`"""
+
+    description: helpers.NoneOr[str] = attr.field(repr=True)
+    """An optional theme description. This field could be `None` if no description found."""
 
 
 @attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
@@ -126,7 +136,7 @@ class PartialUser(abc.ABC):
     @property
     @abc.abstractmethod
     def created_at(self) -> datetime:
-        """Retruns the user's creation date in UTC timezone."""
+        """Returns the user's creation date in UTC timezone."""
 
     @property
     def human_timedelta(self) -> str:

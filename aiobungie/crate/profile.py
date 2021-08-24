@@ -24,7 +24,7 @@
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = ("Profile", "ProfileComponentImpl")
+__all__ = ("Profile", "ProfileComponentImpl")
 
 import abc
 import datetime

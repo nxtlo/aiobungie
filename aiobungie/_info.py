@@ -20,46 +20,28 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""A Pythonic `async`/`await` framework / wrapper for interacting with the Bungie API."""
+"""Information about aiobungie"""
 
-
-from __future__ import annotations
+# This is only used to avoid circular imports errors.
 
 __all__ = (
-    # client.py
-    "Client",
-    # error.py
-    "PlayerNotFound",
-    "ActivityNotFound",
-    "ClanNotFound",
-    "NotFound",
-    "HTTPException",
-    "UserNotFound",
-    "ResponseError",
-    "Unauthorized",
-    "Forbidden",
-    "MembershipTypeError",
-    # enums.py
-    "GameMode",
-    "MembershipType",
-    "Class",
-    "MilestoneType",
-    "Race",
-    "Vendor",
-    "Raid",
-    "Dungeon",
-    "Gender",
-    "Component",
-    "Planet",
-    "Stat",
-    "WeaponType",
-    "DamageType",
-    "Item",
-    "Place",
-    "CredentialType",
-    "GroupType",
+    "__version__",
+    "__about__",
+    "__author__",
+    "__docs__",
+    "__license__",
+    "__url__",
+    "__email__",
 )
 
-from .client import Client
-from .error import *
-from .internal.enums import *
+import typing
+
+__version__: typing.Final[str] = "0.2.5b6"
+__about__: typing.Final[
+    str
+] = "A Pythonic `async`/`await` framework / wrapper for interacting with the Bungie API."
+__author__: typing.Final[str] = "nxtlo"
+__docs__: typing.Final[str] = "https://nxtlo.github.io/aiobungie/"
+__license__: typing.Final[str] = "MIT"
+__url__: typing.Final[str] = "https://github.com/nxtlo/aiobungie"
+__email__: typing.Final[str] = "dhmony-99@hotmail.com"

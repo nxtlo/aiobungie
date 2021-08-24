@@ -514,11 +514,16 @@
 
 from __future__ import annotations
 
-__all__: typing.Sequence[str] = [&#34;Time&#34;]
+__all__: list[str] = [
+    &#34;format_played&#34;,
+    &#34;from_timestamp&#34;,
+    &#34;clean_date&#34;,
+    &#34;to_timestamp&#34;,
+    &#34;human_timedelta&#34;,
+]
 
 import calendar
 import math
-import typing
 from datetime import datetime
 
 from dateutil.parser import parse
@@ -561,265 +566,6 @@ def human_join(seq: list, delim: str = &#34;, &#34;, final: str = &#34;or&#34;) 
     return delim.join(seq[:-1]) + f&#34; {final} {seq[-1]}&#34;
 
 
-class Time:
-    @staticmethod
-    def format_played(mins: int, *, suffix: bool = False) -&gt; str:
-        &#34;&#34;&#34;
-        Converts A Bungie&#39;s total played time in minutes
-        to a a readble time.
-        &#34;&#34;&#34;
-        hrs = math.floor(mins // 60)
-        seconds = math.floor(mins % 60)
-        return f&#34;{hrs} hours{&#39; and&#39; if suffix else &#39;&#39;} {seconds} seconds.&#34;
-
-    @staticmethod
-    def from_timestamp(timer: int) -&gt; datetime:
-        &#34;&#34;&#34;
-        Converts timestamp to `datetime.datetime`
-        &#34;&#34;&#34;
-        return datetime.utcfromtimestamp(timer)
-
-    @staticmethod
-    def clean_date(date: str) -&gt; datetime:
-        &#34;&#34;&#34;Formats `datetime.datetime` to a readble date.&#34;&#34;&#34;
-        parsed = parse(date)
-        ts = Time.to_timestamp(parsed)  # had to do it in two ways.
-        ft = Time.from_timestamp(ts)
-        return ft
-
-    @staticmethod
-    def to_timestamp(date: datetime) -&gt; int:
-        &#34;&#34;&#34;
-        Converts datetime.datetime.utctimetuple() to timestamp.
-        &#34;&#34;&#34;
-        try:
-            return calendar.timegm(date.timetuple())
-        except Exception as e:
-            raise e
-
-    @staticmethod
-    def human_timedelta(
-        dt: datetime, *, source=None, accuracy: int = 3, brief=False, suffix=True
-    ) -&gt; str:
-        &#34;&#34;&#34;
-        Rapptz :&gt;)
-        &#34;&#34;&#34;
-        now = source or datetime.utcnow()
-        # Microsecond free zone
-        now = now.replace(microsecond=0)
-        dt = dt.replace(microsecond=0)
-
-        # This implementation uses relativedelta instead of the much more obvious
-        # divmod approach with seconds because the seconds approach is not entirely
-        # accurate once you go over 1 week in terms of accuracy since you have to
-        # hardcode a month as 30 or 31 days.
-        # A query like &#34;11 months&#34; can be interpreted as &#34;!1 months and 6 days&#34;
-        if dt &gt; now:
-            delta = relativedelta(dt, now)
-            suffix = &#34;&#34;
-        else:
-            delta = relativedelta(now, dt)
-            suffix = &#34; ago&#34; if suffix else &#34;&#34;
-
-        attrs = [
-            (&#34;year&#34;, &#34;y&#34;),
-            (&#34;month&#34;, &#34;mo&#34;),
-            (&#34;day&#34;, &#34;d&#34;),
-            (&#34;hour&#34;, &#34;h&#34;),
-            (&#34;minute&#34;, &#34;m&#34;),
-            (&#34;second&#34;, &#34;s&#34;),
-        ]
-
-        output = []
-        for attr, brief_attr in attrs:
-            elem = getattr(delta, attr + &#34;s&#34;)
-            if not elem:
-                continue
-
-            if attr == &#34;day&#34;:
-                weeks = delta.weeks
-                if weeks:
-                    elem -= weeks * 7
-                    if not brief:
-                        output.append(format(plural(weeks), &#34;week&#34;))
-                    else:
-                        output.append(f&#34;{weeks}w&#34;)
-
-            if elem &lt;= 0:
-                continue
-
-            if brief:
-                output.append(f&#34;{elem}{brief_attr}&#34;)
-            else:
-                output.append(format(plural(elem), attr))
-
-        if accuracy is not None:
-            output = output[:accuracy]
-
-        if len(output) == 0:
-            return &#34;now&#34;
-        else:
-            if not brief:
-                return human_join(output, final=&#34;and&#34;) + suffix
-            else:
-                return &#34; &#34;.join(output) + suffix</code></pre>
-                </details>
-            </section>
-            <section>
-            </section>
-            <section>
-            </section>
-            <section>
-            </section>
-            <section>
-                <h2 class="section-title" id="header-classes">Classes</h2>
-                <dl>
-                    <dt id="aiobungie.internal.time.Time"><code class="flex name class">
-<span>class <span class="ident">Time</span></span>
-</code></dt>
-                    <dd>
-                        <div class="desc"></div>
-                        <details class="source">
-                            <summary>
-                                <span>Expand source code</span>
-                            </summary>
-                            <pre><code class="python">class Time:
-    @staticmethod
-    def format_played(mins: int, *, suffix: bool = False) -&gt; str:
-        &#34;&#34;&#34;
-        Converts A Bungie&#39;s total played time in minutes
-        to a a readble time.
-        &#34;&#34;&#34;
-        hrs = math.floor(mins // 60)
-        seconds = math.floor(mins % 60)
-        return f&#34;{hrs} hours{&#39; and&#39; if suffix else &#39;&#39;} {seconds} seconds.&#34;
-
-    @staticmethod
-    def from_timestamp(timer: int) -&gt; datetime:
-        &#34;&#34;&#34;
-        Converts timestamp to `datetime.datetime`
-        &#34;&#34;&#34;
-        return datetime.utcfromtimestamp(timer)
-
-    @staticmethod
-    def clean_date(date: str) -&gt; datetime:
-        &#34;&#34;&#34;Formats `datetime.datetime` to a readble date.&#34;&#34;&#34;
-        parsed = parse(date)
-        ts = Time.to_timestamp(parsed)  # had to do it in two ways.
-        ft = Time.from_timestamp(ts)
-        return ft
-
-    @staticmethod
-    def to_timestamp(date: datetime) -&gt; int:
-        &#34;&#34;&#34;
-        Converts datetime.datetime.utctimetuple() to timestamp.
-        &#34;&#34;&#34;
-        try:
-            return calendar.timegm(date.timetuple())
-        except Exception as e:
-            raise e
-
-    @staticmethod
-    def human_timedelta(
-        dt: datetime, *, source=None, accuracy: int = 3, brief=False, suffix=True
-    ) -&gt; str:
-        &#34;&#34;&#34;
-        Rapptz :&gt;)
-        &#34;&#34;&#34;
-        now = source or datetime.utcnow()
-        # Microsecond free zone
-        now = now.replace(microsecond=0)
-        dt = dt.replace(microsecond=0)
-
-        # This implementation uses relativedelta instead of the much more obvious
-        # divmod approach with seconds because the seconds approach is not entirely
-        # accurate once you go over 1 week in terms of accuracy since you have to
-        # hardcode a month as 30 or 31 days.
-        # A query like &#34;11 months&#34; can be interpreted as &#34;!1 months and 6 days&#34;
-        if dt &gt; now:
-            delta = relativedelta(dt, now)
-            suffix = &#34;&#34;
-        else:
-            delta = relativedelta(now, dt)
-            suffix = &#34; ago&#34; if suffix else &#34;&#34;
-
-        attrs = [
-            (&#34;year&#34;, &#34;y&#34;),
-            (&#34;month&#34;, &#34;mo&#34;),
-            (&#34;day&#34;, &#34;d&#34;),
-            (&#34;hour&#34;, &#34;h&#34;),
-            (&#34;minute&#34;, &#34;m&#34;),
-            (&#34;second&#34;, &#34;s&#34;),
-        ]
-
-        output = []
-        for attr, brief_attr in attrs:
-            elem = getattr(delta, attr + &#34;s&#34;)
-            if not elem:
-                continue
-
-            if attr == &#34;day&#34;:
-                weeks = delta.weeks
-                if weeks:
-                    elem -= weeks * 7
-                    if not brief:
-                        output.append(format(plural(weeks), &#34;week&#34;))
-                    else:
-                        output.append(f&#34;{weeks}w&#34;)
-
-            if elem &lt;= 0:
-                continue
-
-            if brief:
-                output.append(f&#34;{elem}{brief_attr}&#34;)
-            else:
-                output.append(format(plural(elem), attr))
-
-        if accuracy is not None:
-            output = output[:accuracy]
-
-        if len(output) == 0:
-            return &#34;now&#34;
-        else:
-            if not brief:
-                return human_join(output, final=&#34;and&#34;) + suffix
-            else:
-                return &#34; &#34;.join(output) + suffix</code></pre>
-                        </details>
-                        <h3>Static methods</h3>
-                        <dl>
-                            <dt id="aiobungie.internal.time.Time.clean_date"><code class="name flex">
-<span>def <span class="ident">clean_date</span></span>(<span>date: str) ‑> datetime.datetime</span>
-</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Formats <code>datetime.datetime</code> to a readble date.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@staticmethod
-def clean_date(date: str) -&gt; datetime:
-    &#34;&#34;&#34;Formats `datetime.datetime` to a readble date.&#34;&#34;&#34;
-    parsed = parse(date)
-    ts = Time.to_timestamp(parsed)  # had to do it in two ways.
-    ft = Time.from_timestamp(ts)
-    return ft</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.internal.time.Time.format_played"><code class="name flex">
-<span>def <span class="ident">format_played</span></span>(<span>mins: int, *, suffix: bool = False) ‑> str</span>
-</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Converts A Bungie's total played time in minutes to a a readble time.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@staticmethod
 def format_played(mins: int, *, suffix: bool = False) -&gt; str:
     &#34;&#34;&#34;
     Converts A Bungie&#39;s total played time in minutes
@@ -827,40 +573,34 @@ def format_played(mins: int, *, suffix: bool = False) -&gt; str:
     &#34;&#34;&#34;
     hrs = math.floor(mins // 60)
     seconds = math.floor(mins % 60)
-    return f&#34;{hrs} hours{&#39; and&#39; if suffix else &#39;&#39;} {seconds} seconds.&#34;</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.internal.time.Time.from_timestamp"><code class="name flex">
-<span>def <span class="ident">from_timestamp</span></span>(<span>timer: int) ‑> datetime.datetime</span>
-</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Converts timestamp to <code>datetime.datetime</code></p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@staticmethod
+    return f&#34;{hrs} hours{&#39; and&#39; if suffix else &#39;&#39;} {seconds} seconds.&#34;
+
+
 def from_timestamp(timer: int) -&gt; datetime:
     &#34;&#34;&#34;
     Converts timestamp to `datetime.datetime`
     &#34;&#34;&#34;
-    return datetime.utcfromtimestamp(timer)</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.internal.time.Time.human_timedelta"><code class="name flex">
-<span>def <span class="ident">human_timedelta</span></span>(<span>dt: datetime, *, source=None, accuracy: int = 3, brief=False, suffix=True) ‑> str</span>
-</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Rapptz :&gt;)</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@staticmethod
+    return datetime.utcfromtimestamp(timer)
+
+
+def clean_date(date: str) -&gt; datetime:
+    &#34;&#34;&#34;Formats `datetime.datetime` to a readble date.&#34;&#34;&#34;
+    parsed = parse(date)
+    ts = to_timestamp(parsed)  # had to do it in two ways.
+    ft = from_timestamp(ts)
+    return ft
+
+
+def to_timestamp(date: datetime) -&gt; int:
+    &#34;&#34;&#34;
+    Converts datetime.datetime.utctimetuple() to timestamp.
+    &#34;&#34;&#34;
+    try:
+        return calendar.timegm(date.timetuple())
+    except Exception as e:
+        raise e
+
+
 def human_timedelta(
     dt: datetime, *, source=None, accuracy: int = 3, brief=False, suffix=True
 ) -&gt; str:
@@ -926,21 +666,163 @@ def human_timedelta(
             return human_join(output, final=&#34;and&#34;) + suffix
         else:
             return &#34; &#34;.join(output) + suffix</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.internal.time.Time.to_timestamp"><code class="name flex">
+                </details>
+            </section>
+            <section>
+            </section>
+            <section>
+            </section>
+            <section>
+                <h2 class="section-title" id="header-functions">Functions</h2>
+                <dl>
+                    <dt id="aiobungie.internal.time.clean_date"><code class="name flex">
+<span>def <span class="ident">clean_date</span></span>(<span>date: str) ‑> datetime.datetime</span>
+</code></dt>
+                    <dd>
+                        <div class="desc">
+                            <p>Formats <code>datetime.datetime</code> to a readble date.</p>
+                        </div>
+                        <details class="source">
+                            <summary>
+                                <span>Expand source code</span>
+                            </summary>
+                            <pre><code class="python">def clean_date(date: str) -&gt; datetime:
+    &#34;&#34;&#34;Formats `datetime.datetime` to a readble date.&#34;&#34;&#34;
+    parsed = parse(date)
+    ts = to_timestamp(parsed)  # had to do it in two ways.
+    ft = from_timestamp(ts)
+    return ft</code></pre>
+                        </details>
+                    </dd>
+                    <dt id="aiobungie.internal.time.format_played"><code class="name flex">
+<span>def <span class="ident">format_played</span></span>(<span>mins: int, *, suffix: bool = False) ‑> str</span>
+</code></dt>
+                    <dd>
+                        <div class="desc">
+                            <p>Converts A Bungie's total played time in minutes to a a readble time.</p>
+                        </div>
+                        <details class="source">
+                            <summary>
+                                <span>Expand source code</span>
+                            </summary>
+                            <pre><code class="python">def format_played(mins: int, *, suffix: bool = False) -&gt; str:
+    &#34;&#34;&#34;
+    Converts A Bungie&#39;s total played time in minutes
+    to a a readble time.
+    &#34;&#34;&#34;
+    hrs = math.floor(mins // 60)
+    seconds = math.floor(mins % 60)
+    return f&#34;{hrs} hours{&#39; and&#39; if suffix else &#39;&#39;} {seconds} seconds.&#34;</code></pre>
+                        </details>
+                    </dd>
+                    <dt id="aiobungie.internal.time.from_timestamp"><code class="name flex">
+<span>def <span class="ident">from_timestamp</span></span>(<span>timer: int) ‑> datetime.datetime</span>
+</code></dt>
+                    <dd>
+                        <div class="desc">
+                            <p>Converts timestamp to <code>datetime.datetime</code></p>
+                        </div>
+                        <details class="source">
+                            <summary>
+                                <span>Expand source code</span>
+                            </summary>
+                            <pre><code class="python">def from_timestamp(timer: int) -&gt; datetime:
+    &#34;&#34;&#34;
+    Converts timestamp to `datetime.datetime`
+    &#34;&#34;&#34;
+    return datetime.utcfromtimestamp(timer)</code></pre>
+                        </details>
+                    </dd>
+                    <dt id="aiobungie.internal.time.human_timedelta"><code class="name flex">
+<span>def <span class="ident">human_timedelta</span></span>(<span>dt: datetime, *, source=None, accuracy: int = 3, brief=False, suffix=True) ‑> str</span>
+</code></dt>
+                    <dd>
+                        <div class="desc">
+                            <p>Rapptz :&gt;)</p>
+                        </div>
+                        <details class="source">
+                            <summary>
+                                <span>Expand source code</span>
+                            </summary>
+                            <pre><code class="python">def human_timedelta(
+    dt: datetime, *, source=None, accuracy: int = 3, brief=False, suffix=True
+) -&gt; str:
+    &#34;&#34;&#34;
+    Rapptz :&gt;)
+    &#34;&#34;&#34;
+    now = source or datetime.utcnow()
+    # Microsecond free zone
+    now = now.replace(microsecond=0)
+    dt = dt.replace(microsecond=0)
+
+    # This implementation uses relativedelta instead of the much more obvious
+    # divmod approach with seconds because the seconds approach is not entirely
+    # accurate once you go over 1 week in terms of accuracy since you have to
+    # hardcode a month as 30 or 31 days.
+    # A query like &#34;11 months&#34; can be interpreted as &#34;!1 months and 6 days&#34;
+    if dt &gt; now:
+        delta = relativedelta(dt, now)
+        suffix = &#34;&#34;
+    else:
+        delta = relativedelta(now, dt)
+        suffix = &#34; ago&#34; if suffix else &#34;&#34;
+
+    attrs = [
+        (&#34;year&#34;, &#34;y&#34;),
+        (&#34;month&#34;, &#34;mo&#34;),
+        (&#34;day&#34;, &#34;d&#34;),
+        (&#34;hour&#34;, &#34;h&#34;),
+        (&#34;minute&#34;, &#34;m&#34;),
+        (&#34;second&#34;, &#34;s&#34;),
+    ]
+
+    output = []
+    for attr, brief_attr in attrs:
+        elem = getattr(delta, attr + &#34;s&#34;)
+        if not elem:
+            continue
+
+        if attr == &#34;day&#34;:
+            weeks = delta.weeks
+            if weeks:
+                elem -= weeks * 7
+                if not brief:
+                    output.append(format(plural(weeks), &#34;week&#34;))
+                else:
+                    output.append(f&#34;{weeks}w&#34;)
+
+        if elem &lt;= 0:
+            continue
+
+        if brief:
+            output.append(f&#34;{elem}{brief_attr}&#34;)
+        else:
+            output.append(format(plural(elem), attr))
+
+    if accuracy is not None:
+        output = output[:accuracy]
+
+    if len(output) == 0:
+        return &#34;now&#34;
+    else:
+        if not brief:
+            return human_join(output, final=&#34;and&#34;) + suffix
+        else:
+            return &#34; &#34;.join(output) + suffix</code></pre>
+                        </details>
+                    </dd>
+                    <dt id="aiobungie.internal.time.to_timestamp"><code class="name flex">
 <span>def <span class="ident">to_timestamp</span></span>(<span>date: datetime) ‑> int</span>
 </code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Converts datetime.datetime.utctimetuple() to timestamp.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@staticmethod
-def to_timestamp(date: datetime) -&gt; int:
+                    <dd>
+                        <div class="desc">
+                            <p>Converts datetime.datetime.utctimetuple() to timestamp.</p>
+                        </div>
+                        <details class="source">
+                            <summary>
+                                <span>Expand source code</span>
+                            </summary>
+                            <pre><code class="python">def to_timestamp(date: datetime) -&gt; int:
     &#34;&#34;&#34;
     Converts datetime.datetime.utctimetuple() to timestamp.
     &#34;&#34;&#34;
@@ -948,11 +830,11 @@ def to_timestamp(date: datetime) -&gt; int:
         return calendar.timegm(date.timetuple())
     except Exception as e:
         raise e</code></pre>
-                                </details>
-                            </dd>
-                        </dl>
+                        </details>
                     </dd>
                 </dl>
+            </section>
+            <section>
             </section>
         </article>
         <nav id="sidebar">
@@ -1021,18 +903,13 @@ def to_timestamp(date: datetime) -&gt; int:
                     </ul>
                 </li>
                 <li>
-                    <h3><a href="#header-classes">Classes</a></h3>
-                    <ul>
-                        <li>
-                            <h4><code><a title="aiobungie.internal.time.Time" href="#aiobungie.internal.time.Time">Time</a></code></h4>
-                            <ul class="">
-                                <li><code><a title="aiobungie.internal.time.Time.clean_date" href="#aiobungie.internal.time.Time.clean_date">clean_date</a></code></li>
-                                <li><code><a title="aiobungie.internal.time.Time.format_played" href="#aiobungie.internal.time.Time.format_played">format_played</a></code></li>
-                                <li><code><a title="aiobungie.internal.time.Time.from_timestamp" href="#aiobungie.internal.time.Time.from_timestamp">from_timestamp</a></code></li>
-                                <li><code><a title="aiobungie.internal.time.Time.human_timedelta" href="#aiobungie.internal.time.Time.human_timedelta">human_timedelta</a></code></li>
-                                <li><code><a title="aiobungie.internal.time.Time.to_timestamp" href="#aiobungie.internal.time.Time.to_timestamp">to_timestamp</a></code></li>
-                            </ul>
-                        </li>
+                    <h3><a href="#header-functions">Functions</a></h3>
+                    <ul class="">
+                        <li><code><a title="aiobungie.internal.time.clean_date" href="#aiobungie.internal.time.clean_date">clean_date</a></code></li>
+                        <li><code><a title="aiobungie.internal.time.format_played" href="#aiobungie.internal.time.format_played">format_played</a></code></li>
+                        <li><code><a title="aiobungie.internal.time.from_timestamp" href="#aiobungie.internal.time.from_timestamp">from_timestamp</a></code></li>
+                        <li><code><a title="aiobungie.internal.time.human_timedelta" href="#aiobungie.internal.time.human_timedelta">human_timedelta</a></code></li>
+                        <li><code><a title="aiobungie.internal.time.to_timestamp" href="#aiobungie.internal.time.to_timestamp">to_timestamp</a></code></li>
                     </ul>
                 </li>
             </ul>

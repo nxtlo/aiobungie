@@ -515,18 +515,19 @@
 
 from __future__ import annotations
 
-__all__: typing.Sequence[str] = (&#34;CharacterComponent&#34;, &#34;Character&#34;)
+__all__ = (&#34;CharacterComponent&#34;, &#34;Character&#34;)
 
 import abc
-import attr
 import datetime
 import logging
 import typing
 
+import attr
+
 from aiobungie import url
 from aiobungie.internal import Image
-from aiobungie.internal import Time
 from aiobungie.internal import enums
+from aiobungie.internal import time
 
 log: typing.Final[logging.Logger] = logging.getLogger(__name__)
 
@@ -542,6 +543,11 @@ class CharacterComponent(abc.ABC):
 
     @property
     @abc.abstractmethod
+    def member_id(self) -&gt; int:
+        &#34;&#34;&#34;The profile&#39;s member id.&#34;&#34;&#34;
+
+    @property
+    @abc.abstractmethod
     def id(self) -&gt; int:
         &#34;&#34;&#34;The character&#39;s member id.&#34;&#34;&#34;
 
@@ -552,7 +558,7 @@ class CharacterComponent(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def stats(self) -&gt; enums.Stat:
+    def stats(self) -&gt; dict[int, int]:
         &#34;&#34;&#34;The character&#39;s stats.&#34;&#34;&#34;
 
     @property
@@ -671,7 +677,7 @@ class CharacterComponent(abc.ABC):
     @property
     def human_timedelta(self) -&gt; str:
         &#34;&#34;&#34;The player&#39;s last played time in a human readble date.&#34;&#34;&#34;
-        return Time.human_timedelta(Time.clean_date(str(self.last_played)))
+        return time.human_timedelta(time.clean_date(str(self.last_played)))
 
 
 @attr.s(kw_only=True, hash=True, weakref_slot=False, slots=True, init=True, eq=True)
@@ -720,7 +726,7 @@ class Character(CharacterComponent):
     level: int = attr.field(repr=False, hash=False)
     &#34;&#34;&#34;Character&#39;s base level.&#34;&#34;&#34;
 
-    stats: enums.Stat = attr.field(repr=False, hash=False)
+    stats: dict[int, int] = attr.field(repr=False, hash=False)
     &#34;&#34;&#34;Character stats.&#34;&#34;&#34;
 
     @property
@@ -748,7 +754,7 @@ class Character(CharacterComponent):
                 <dl>
                     <dt id="aiobungie.crate.character.Character"><code class="flex name class">
 <span>class <span class="ident">Character</span></span>
-<span>(</span><span>*, id: int, member_id: int, member_type: enums.MembershipType, light: int, gender: enums.Gender, race: enums.Race, emblem: Image, emblem_icon: Image, emblem_hash: int, last_played: datetime.datetime, total_played_time: str, class_type: enums.Class, title_hash: typing.Optional[int], level: int, stats: enums.Stat)</span>
+<span>(</span><span>*, id: int, member_id: int, member_type: enums.MembershipType, light: int, gender: enums.Gender, race: enums.Race, emblem: Image, emblem_icon: Image, emblem_hash: int, last_played: datetime.datetime, total_played_time: str, class_type: enums.Class, title_hash: typing.Optional[int], level: int, stats: dict[int, int])</span>
 </code></dt>
                     <dd>
                         <div class="desc">
@@ -805,7 +811,7 @@ class Character(CharacterComponent):
     level: int = attr.field(repr=False, hash=False)
     &#34;&#34;&#34;Character&#39;s base level.&#34;&#34;&#34;
 
-    stats: enums.Stat = attr.field(repr=False, hash=False)
+    stats: dict[int, int] = attr.field(repr=False, hash=False)
     &#34;&#34;&#34;Character stats.&#34;&#34;&#34;
 
     @property
@@ -925,7 +931,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                     <p>Character's race</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.character.Character.stats"><code class="name">var <span class="ident">stats</span> : <a title="aiobungie.internal.enums.Stat" href="./internal/enums.html#aiobungie.internal.enums.Stat">Stat</a></code></dt>
+                            <dt id="aiobungie.crate.character.Character.stats"><code class="name">var <span class="ident">stats</span> : dict</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>Character stats.</p>
@@ -1010,6 +1016,11 @@ class CharacterComponent(abc.ABC):
 
     @property
     @abc.abstractmethod
+    def member_id(self) -&gt; int:
+        &#34;&#34;&#34;The profile&#39;s member id.&#34;&#34;&#34;
+
+    @property
+    @abc.abstractmethod
     def id(self) -&gt; int:
         &#34;&#34;&#34;The character&#39;s member id.&#34;&#34;&#34;
 
@@ -1020,7 +1031,7 @@ class CharacterComponent(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def stats(self) -&gt; enums.Stat:
+    def stats(self) -&gt; dict[int, int]:
         &#34;&#34;&#34;The character&#39;s stats.&#34;&#34;&#34;
 
     @property
@@ -1139,7 +1150,7 @@ class CharacterComponent(abc.ABC):
     @property
     def human_timedelta(self) -&gt; str:
         &#34;&#34;&#34;The player&#39;s last played time in a human readble date.&#34;&#34;&#34;
-        return Time.human_timedelta(Time.clean_date(str(self.last_played)))</code></pre>
+        return time.human_timedelta(time.clean_date(str(self.last_played)))</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
@@ -1238,7 +1249,7 @@ def gender(self) -&gt; enums.Gender:
                                     <pre><code class="python">@property
 def human_timedelta(self) -&gt; str:
     &#34;&#34;&#34;The player&#39;s last played time in a human readble date.&#34;&#34;&#34;
-    return Time.human_timedelta(Time.clean_date(str(self.last_played)))</code></pre>
+    return time.human_timedelta(time.clean_date(str(self.last_played)))</code></pre>
                                 </details>
                             </dd>
                             <dt id="aiobungie.crate.character.CharacterComponent.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
@@ -1286,6 +1297,21 @@ def light(self) -&gt; int:
     &#34;&#34;&#34;The character&#39;s light.&#34;&#34;&#34;</code></pre>
                                 </details>
                             </dd>
+                            <dt id="aiobungie.crate.character.CharacterComponent.member_id"><code class="name">var <span class="ident">member_id</span> : int</code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>The profile's member id.</p>
+                                </div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">@property
+@abc.abstractmethod
+def member_id(self) -&gt; int:
+    &#34;&#34;&#34;The profile&#39;s member id.&#34;&#34;&#34;</code></pre>
+                                </details>
+                            </dd>
                             <dt id="aiobungie.crate.character.CharacterComponent.member_type"><code class="name">var <span class="ident">member_type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
                             <dd>
                                 <div class="desc">
@@ -1316,7 +1342,7 @@ def race(self) -&gt; enums.Race:
     &#34;&#34;&#34;The character&#39;s race.&#34;&#34;&#34;</code></pre>
                                 </details>
                             </dd>
-                            <dt id="aiobungie.crate.character.CharacterComponent.stats"><code class="name">var <span class="ident">stats</span> : <a title="aiobungie.internal.enums.Stat" href="./internal/enums.html#aiobungie.internal.enums.Stat">Stat</a></code></dt>
+                            <dt id="aiobungie.crate.character.CharacterComponent.stats"><code class="name">var <span class="ident">stats</span> : dict</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>The character's stats.</p>
@@ -1327,7 +1353,7 @@ def race(self) -&gt; enums.Race:
                                     </summary>
                                     <pre><code class="python">@property
 @abc.abstractmethod
-def stats(self) -&gt; enums.Stat:
+def stats(self) -&gt; dict[int, int]:
     &#34;&#34;&#34;The character&#39;s stats.&#34;&#34;&#34;</code></pre>
                                 </details>
                             </dd>
@@ -1598,6 +1624,7 @@ def url(self) -&gt; str:
                                 <li><code><a title="aiobungie.crate.character.CharacterComponent.id" href="#aiobungie.crate.character.CharacterComponent.id">id</a></code></li>
                                 <li><code><a title="aiobungie.crate.character.CharacterComponent.last_played" href="#aiobungie.crate.character.CharacterComponent.last_played">last_played</a></code></li>
                                 <li><code><a title="aiobungie.crate.character.CharacterComponent.light" href="#aiobungie.crate.character.CharacterComponent.light">light</a></code></li>
+                                <li><code><a title="aiobungie.crate.character.CharacterComponent.member_id" href="#aiobungie.crate.character.CharacterComponent.member_id">member_id</a></code></li>
                                 <li><code><a title="aiobungie.crate.character.CharacterComponent.member_type" href="#aiobungie.crate.character.CharacterComponent.member_type">member_type</a></code></li>
                                 <li><code><a title="aiobungie.crate.character.CharacterComponent.race" href="#aiobungie.crate.character.CharacterComponent.race">race</a></code></li>
                                 <li><code><a title="aiobungie.crate.character.CharacterComponent.stats" href="#aiobungie.crate.character.CharacterComponent.stats">stats</a></code></li>

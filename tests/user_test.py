@@ -48,6 +48,30 @@ class TestHardLinkedUser:
         assert model.cross_save_type is aiobungie.MembershipType.STADIA
 
 
+class TestUserThemes:
+    @pytest.fixture()
+    def mod(self):
+        return crate.user.UserThemes(id=1122, name="d2_1", description=None)
+
+    @pytest.fixture()
+    def list_objs(self):
+        return [
+            crate.user.UserThemes(id=1, name=None, description=None),
+            crate.user.UserThemes(id=239, name=None, description="D2_11"),
+            crate.user.UserThemes(
+                id=22, name="Ok", description=internal.helpers.Undefined
+            ),
+        ]
+
+    def test_model_meta(self, mod):
+        assert isinstance(mod, crate.user.UserThemes)
+        assert mod is not None
+        assert mod.description is None
+
+    def test_list_of_objs(self, list_objs):
+        assert isinstance(list_objs, list)
+
+
 class TestPartialUser:
     # Not testing ABCs currently.
     @pytest.fixture()

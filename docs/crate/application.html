@@ -514,19 +514,19 @@
 
 from __future__ import annotations
 
-__all__: typing.Sequence[str] = (&#34;Application&#34;, &#34;ApplicationOwner&#34;)
+__all__ = (&#34;Application&#34;, &#34;ApplicationOwner&#34;)
 
 import typing
+from datetime import datetime
+
 import attr
 
 from aiobungie import url
-from aiobungie.internal import impl
-from aiobungie.internal import Image
-from aiobungie.internal import Time
-from aiobungie.internal import enums
 from aiobungie.crate.user import UserLike
-
-from datetime import datetime
+from aiobungie.internal import Image
+from aiobungie.internal import enums
+from aiobungie.internal import impl
+from aiobungie.internal import time
 
 
 @attr.s(hash=True, repr=True, init=True, kw_only=True, weakref_slot=False, slots=True)
@@ -549,8 +549,9 @@ class ApplicationOwner(UserLike):
     &#34;&#34;&#34;The application owner&#39;s profile privacy.&#34;&#34;&#34;
 
     @property
-    def app(self) -&gt; impl.RESTful:
-        return self.app
+    def net(self) -&gt; impl.Netrunner:
+        &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
+        return self.net
 
     @property
     def link(self) -&gt; str:
@@ -566,6 +567,12 @@ class ApplicationOwner(UserLike):
             icon=str(self.icon),
             type=self.type,
         )
+
+    def __int__(self) -&gt; int:
+        return self.id
+
+    def __str__(self) -&gt; str:
+        return self.name
 
 
 @attr.s(hash=True, repr=True, init=True, kw_only=True, weakref_slot=False, slots=True)
@@ -602,7 +609,7 @@ class Application:
     @property
     def human_timedelta(self) -&gt; str:
         &#34;&#34;&#34;Returns a human readble date of the app&#39;s creation date.&#34;&#34;&#34;
-        return Time.human_timedelta(self.created_at)
+        return time.human_timedelta(self.created_at)
 
     @property
     def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
@@ -674,7 +681,7 @@ class Application:
     @property
     def human_timedelta(self) -&gt; str:
         &#34;&#34;&#34;Returns a human readble date of the app&#39;s creation date.&#34;&#34;&#34;
-        return Time.human_timedelta(self.created_at)
+        return time.human_timedelta(self.created_at)
 
     @property
     def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
@@ -726,7 +733,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                     <pre><code class="python">@property
 def human_timedelta(self) -&gt; str:
     &#34;&#34;&#34;Returns a human readble date of the app&#39;s creation date.&#34;&#34;&#34;
-    return Time.human_timedelta(self.created_at)</code></pre>
+    return time.human_timedelta(self.created_at)</code></pre>
                                 </details>
                             </dd>
                             <dt id="aiobungie.crate.application.Application.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
@@ -812,8 +819,9 @@ class ApplicationOwner(UserLike):
     &#34;&#34;&#34;The application owner&#39;s profile privacy.&#34;&#34;&#34;
 
     @property
-    def app(self) -&gt; impl.RESTful:
-        return self.app
+    def net(self) -&gt; impl.Netrunner:
+        &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
+        return self.net
 
     @property
     def link(self) -&gt; str:
@@ -828,7 +836,13 @@ class ApplicationOwner(UserLike):
             is_public=self.is_public,
             icon=str(self.icon),
             type=self.type,
-        )</code></pre>
+        )
+
+    def __int__(self) -&gt; int:
+        return self.id
+
+    def __str__(self) -&gt; str:
+        return self.name</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
@@ -837,24 +851,6 @@ class ApplicationOwner(UserLike):
                         </ul>
                         <h3>Instance variables</h3>
                         <dl>
-                            <dt id="aiobungie.crate.application.ApplicationOwner.app"><code class="name">var <span class="ident">app</span> : <a title="aiobungie.internal.impl.RESTful" href="./internal/impl.html#aiobungie.internal.impl.RESTful">RESTful</a></code></dt>
-                            <dd>
-                                <p class="inheritance">
-                                    <em>Inherited from:</em>
-                                    <code><a title="aiobungie.crate.user.UserLike" href="user.html#aiobungie.crate.user.UserLike">UserLike</a></code>.<code><a title="aiobungie.crate.user.UserLike.app" href="user.html#aiobungie.crate.user.UserLike.app">app</a></code>
-                                </p>
-                                <div class="desc inherited">
-                                    <p>A client app that we may use for external requests.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def app(self) -&gt; impl.RESTful:
-    return self.app</code></pre>
-                                </details>
-                            </dd>
                             <dt id="aiobungie.crate.application.ApplicationOwner.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
                             <dd>
                                 <div class="desc">
@@ -917,6 +913,25 @@ def link(self) -&gt; str:
                                 <div class="desc">
                                     <p>The application owner name.</p>
                                 </div>
+                            </dd>
+                            <dt id="aiobungie.crate.application.ApplicationOwner.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.impl.Netrunner" href="./internal/impl.html#aiobungie.internal.impl.Netrunner">Netrunner</a></code></dt>
+                            <dd>
+                                <p class="inheritance">
+                                    <em>Inherited from:</em>
+                                    <code><a title="aiobungie.crate.user.UserLike" href="user.html#aiobungie.crate.user.UserLike">UserLike</a></code>.<code><a title="aiobungie.crate.user.UserLike.net" href="user.html#aiobungie.crate.user.UserLike.net">net</a></code>
+                                </p>
+                                <div class="desc inherited">
+                                    <p>A network state used for making external requests.</p>
+                                </div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">@property
+def net(self) -&gt; impl.Netrunner:
+    &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
+    return self.net</code></pre>
+                                </details>
                             </dd>
                             <dt id="aiobungie.crate.application.ApplicationOwner.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
                             <dd>
@@ -1016,13 +1031,13 @@ def link(self) -&gt; str:
                         <li>
                             <h4><code><a title="aiobungie.crate.application.ApplicationOwner" href="#aiobungie.crate.application.ApplicationOwner">ApplicationOwner</a></code></h4>
                             <ul class="two-column">
-                                <li><code><a title="aiobungie.crate.application.ApplicationOwner.app" href="#aiobungie.crate.application.ApplicationOwner.app">app</a></code></li>
                                 <li><code><a title="aiobungie.crate.application.ApplicationOwner.as_dict" href="#aiobungie.crate.application.ApplicationOwner.as_dict">as_dict</a></code></li>
                                 <li><code><a title="aiobungie.crate.application.ApplicationOwner.icon" href="#aiobungie.crate.application.ApplicationOwner.icon">icon</a></code></li>
                                 <li><code><a title="aiobungie.crate.application.ApplicationOwner.id" href="#aiobungie.crate.application.ApplicationOwner.id">id</a></code></li>
                                 <li><code><a title="aiobungie.crate.application.ApplicationOwner.is_public" href="#aiobungie.crate.application.ApplicationOwner.is_public">is_public</a></code></li>
                                 <li><code><a title="aiobungie.crate.application.ApplicationOwner.link" href="#aiobungie.crate.application.ApplicationOwner.link">link</a></code></li>
                                 <li><code><a title="aiobungie.crate.application.ApplicationOwner.name" href="#aiobungie.crate.application.ApplicationOwner.name">name</a></code></li>
+                                <li><code><a title="aiobungie.crate.application.ApplicationOwner.net" href="#aiobungie.crate.application.ApplicationOwner.net">net</a></code></li>
                                 <li><code><a title="aiobungie.crate.application.ApplicationOwner.type" href="#aiobungie.crate.application.ApplicationOwner.type">type</a></code></li>
                             </ul>
                         </li>

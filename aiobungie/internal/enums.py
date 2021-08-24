@@ -25,7 +25,7 @@
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = (
+__all__ = (
     "GameMode",
     "MembershipType",
     "Class",
@@ -246,7 +246,7 @@ class Component(int, enum.Enum):
     SILVER = 105
     PROGRESSION = 104
     INVENTORIES = 102
-    CHARECTERS = 200
+    CHARACTERS = 200
     CHAR_INVENTORY = 201
     CHARECTER_PROGRESSION = 202
     EQUIPED_ITEMS = 205
@@ -513,7 +513,7 @@ class GroupType(int, enum.Enum):
 
 @typing.final
 class CredentialType(int, enum.Enum):
-    """The types of the accounts system suports at bungie."""
+    """The types of the accounts system supports at bungie."""
 
     NONE = 0
     XUID = 1

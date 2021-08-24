@@ -57,4 +57,4 @@ jobs:
           poetry-version: 1.1.7
 
       - name: Publish
-        run: poetry publish
+        run: poetry publish --build

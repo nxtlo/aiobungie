@@ -27,6 +27,10 @@ nox is a helper to run all the tests for you. We have 6 tests
     * docs generator.
 * pytest
     * for testing and mocking aiobungie itself.
+* codespell
+    * File text spell checks.
+
+You can list all available session by typing `nox -l`
 
 ## Pull requests
 

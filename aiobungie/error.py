@@ -24,7 +24,7 @@
 
 from __future__ import annotations
 
-__all__: typing.Sequence[str] = [
+__all__: list[str] = [
     "AiobungieError",
     "PlayerNotFound",
     "ActivityNotFound",

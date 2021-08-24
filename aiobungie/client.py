@@ -25,9 +25,7 @@
 
 from __future__ import annotations
 
-__all__: typing.Sequence[str] = [
-    "Client",
-]
+__all__: list[str] = ["Client"]
 
 import asyncio
 import typing
@@ -56,7 +54,7 @@ class Client(impl.BaseClient):
         asyncio event loop.
     """
 
-    __slots__: typing.Sequence[str] = ("loop", "http", "_serialize", "_token")
+    __slots__: tuple[str, ...] = ("loop", "http", "_serialize", "_token")
 
     def __init__(self, token: str, *, loop: asyncio.AbstractEventLoop = None) -> None:
         self.loop: asyncio.AbstractEventLoop = (  # asyncio loop.

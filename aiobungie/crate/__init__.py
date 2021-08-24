@@ -29,7 +29,7 @@ for functional usage for the Bungie API objects.
 
 from __future__ import annotations
 
-__all__: Seq[str] = [
+__all__: tuple[str, ...] = (
     "Application",
     "PostActivity",
     "Clan",
@@ -47,9 +47,7 @@ __all__: Seq[str] = [
     "ProfileComponentImpl",
     "Entity",
     "HardLinkedMembership",
-]
-
-from typing import Sequence as Seq
+)
 
 from .activity import Activity
 from .activity import PostActivity

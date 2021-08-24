@@ -25,8 +25,7 @@
 
 from __future__ import annotations
 
-
-__all__: t.Sequence[str] = ("Manifest",)
+__all__: tuple[str, ...] = ("Manifest",)
 
 import logging
 import os

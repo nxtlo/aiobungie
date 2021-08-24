@@ -28,7 +28,7 @@ and you might face some major bugs.
 
 from __future__ import annotations
 
-__all__: typing.Sequence[str] = ("Activity", "PostActivity")
+__all__: tuple[str, ...] = ("Activity", "PostActivity")
 
 import typing
 from datetime import datetime

@@ -26,7 +26,7 @@
 
 from __future__ import annotations
 
-__all__: typing.Sequence[str] = ("CharacterComponent", "Character")
+__all__: tuple[str, ...] = ("CharacterComponent", "Character")
 
 import abc
 import datetime

@@ -25,7 +25,7 @@
 
 from __future__ import annotations
 
-__all__: Sequence[str] = (
+__all__: tuple[str, ...] = (
     # __init__.py
     "__about__",
     "__author__",
@@ -66,8 +66,6 @@ __all__: Sequence[str] = (
     "Place",
     "CredentialType",
 )
-
-from typing import Sequence
 
 from .client import Client
 from .error import *

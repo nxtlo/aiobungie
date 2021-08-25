@@ -86,6 +86,8 @@ class Deserialize:
             status=data["statusText"],
             locale=data["locale"],
             picture=Image(path=str(data["profilePicturePath"])),
+            displayname_code=data.get("cachedBungieGlobalDisplayNameCode", None),
+            unique_name=data.get("uniqueName", None),
         )
 
     @staticmethod
@@ -112,20 +114,15 @@ class Deserialize:
     ) -> typing.Sequence[user.UserThemes]:
         return list(self.set_themese_attrs(payload))
 
-    def deserialize_player(self, payload: JsonDict, position: int = 0) -> player.Player:
-        old_data = payload
+    def deserialize_player(self, payload: JsonDict, /) -> player.Player:
         try:
-            data = payload[position]  # type: ignore
+            data = payload[0]  # type: ignore
         except IndexError:
-            try:
-                # This is kinda cluster fuck
-                # if we're out of index the first time
-                # we try to return the first player
-                # otherwise the list is empty meaning
-                # the player was not found.
-                data = old_data[0]  # type: ignore
-            except IndexError:
-                raise error.PlayerNotFound("Player was not found.") from None
+            raise error.PlayerNotFound("Player was not found.") from None
+
+        types: list[enums.MembershipType] = []
+        for type in data["applicableMembershipTypes"]:
+            types.append(enums.MembershipType(type))
 
         return player.Player(
             name=data["displayName"],
@@ -133,6 +130,9 @@ class Deserialize:
             is_public=data["isPublic"],
             icon=Image(str(data["iconPath"])),
             type=enums.MembershipType(data["membershipType"]),
+            displayname_code=data.get("bungieGlobalDisplayNameCode", None),
+            types=types,
+            crossave_override=int(data["crossSaveOverride"]),
         )
 
     def deseialize_clan_owner(self, data: JsonDict) -> clans.ClanOwner:
@@ -157,6 +157,7 @@ class Deserialize:
             types=types,
             is_public=is_public,
             type=type,
+            displayname_code=data.get("bungieGlobalDisplayNameCode", None),
         )
 
     def deseialize_clan(self, data: JsonDict) -> clans.Clan:
@@ -222,6 +223,12 @@ class Deserialize:
             type: enums.MembershipType = payload["membershipType"]
             is_public: bool = payload["isPublic"]
             icon: Image = Image(str(payload["iconPath"]))
+            type_entires: list[enums.MembershipType] = []
+
+            for member_type in payload["applicableMembershipTypes"]:
+                if member_type is None:
+                    continue
+                type_entires.append(enums.MembershipType(member_type))
 
         return clans.ClanMember(
             group_id=int(group_id),
@@ -233,42 +240,64 @@ class Deserialize:
             type=enums.MembershipType(type),
             is_public=is_public,
             icon=icon,
+            displayname_code=payload.get("bungieGlobalDisplayNameCode", None),
+            types=type_entires,
         )
 
     @staticmethod
-    def set_clan_attrs(data: JsonDict, /) -> typing.ValuesView[clans.ClanMember]:
-        mapper: dict[int, clans.ClanMember] = {}
+    def set_clan_members_attrs(
+        data: JsonDict, /
+    ) -> typing.ValuesView[clans.ClanMember]:
+        member_view: dict[int, clans.ClanMember] = {}
         if (payload := data["results"]) is not None:
-            is_on: list[bool] = just(payload, "isOnline")
-            last_sts: list[int] = just(payload, "lastOnlineStatusChange")
+
+            raw_is_on: list[bool] = just(payload, "isOnline")
+            raw_last_sts: list[int] = just(payload, "lastOnlineStatusChange")
+            raw_join_date: list[str] = just(payload, "joinDate")
             group_id: list[int] = just(payload, "groupId")
-            jdate: list[str] = just(payload, "joinDate")
 
-            for is_online, raw_joined_at, lon in zip(is_on, jdate, last_sts):
-                last_online = time.from_timestamp(int(lon))
-                joined_at = time.clean_date(raw_joined_at)
+            for is_online, last_online, join_date in zip(
+                raw_is_on, raw_last_sts, raw_join_date
+            ):
+                last_online_fmt: datetime.datetime = time.from_timestamp(
+                    int(last_online)
+                )
+                join_date_fmt: datetime.datetime = time.clean_date(join_date)
 
-        members = just(payload, "destinyUserInfo")
-        for member in members:
-            mapper[int(member["membershipId"])] = clans.ClanMember(
-                id=int(member["membershipId"]),
-                name=member["displayName"],
-                type=enums.MembershipType(member["membershipType"]),
-                icon=member["iconPath"],
-                is_public=member["isPublic"],
-                group_id=int(group_id[0]),
-                is_online=is_online,
-                last_online=last_online,
-                joined_at=joined_at,
-            )
-        if mapper is None:
+            for member in just(payload, "destinyUserInfo"):
+                # Some bungie display names apper as ''
+                # so we just make sure that the name is not an empty string.
+                # otherwise we just grab the last seen name.
+                if (name := member["bungieGlobalDisplayName"]) == Unknown:
+                    name: str = member["LastSeenDisplayName"]  # type: ignore
+                type_entires: list[enums.MembershipType] = []
+
+                for member_type in member["applicableMembershipTypes"]:
+                    assert member_type is not None
+                    type_entires.append(enums.MembershipType(member_type))
+
+                member_view[int(member["membershipId"])] = clans.ClanMember(
+                    id=int(member["membershipId"]),
+                    name=name,
+                    type=enums.MembershipType(member["membershipType"]),
+                    icon=Image(str(member["iconPath"])),
+                    is_public=member["isPublic"],
+                    group_id=int(group_id[0]),
+                    is_online=is_online,
+                    last_online=last_online_fmt,
+                    joined_at=join_date_fmt,
+                    displayname_code=member.get("bungieGlobalDisplayNameCode", None),
+                    types=type_entires,
+                )
+
+        if member_view is None:
             return dict().values()
-        return mapper.values()
+        return member_view.values()
 
     def deserialize_clan_members(
         self, data: JsonDict, /
     ) -> typing.Sequence[clans.ClanMember]:
-        return list(self.set_clan_attrs(data))
+        return list(self.set_clan_members_attrs(data))
 
     def deserialize_app_owner(self, payload: JsonDict) -> app.ApplicationOwner:
         return app.ApplicationOwner(
@@ -277,6 +306,7 @@ class Deserialize:
             type=enums.MembershipType(payload["membershipType"]),
             icon=Image(str(payload["iconPath"])),
             is_public=payload["isPublic"],
+            displayname_code=payload.get("bungieGlobalDisplayNameCode", None),
         )
 
     def deserialize_app(self, payload: JsonDict) -> app.Application:

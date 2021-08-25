@@ -37,13 +37,9 @@ client = aiobungie.Client("YOUR_TOKEN_HERE")
 
 async def fetch_me() -> None:
 
-    # fetch a Destiny 2 Player and return the second player we find.
+    # fetch a Destiny 2 Player.
 
-    fate: Player = await client.fetch_player(
-        name="Fate",
-        type=aiobungie.MembershipType.STEAM,  # Fetch only Steam players.
-        position=3,
-    )
+    fate: Player = await client.fetch_player("Fate怒#4275")
 
     print(fate.name, fate.type, fate.id)
 
@@ -65,7 +61,7 @@ async def fetch_me() -> None:
     # to fetch the exact profile since bungie doesn't
     # return all bungie users
     # a bungie user id looks like this 20315338
-    user: User = await client.fetch_user_from_id(20315338)
+    user: User = await client.fetch_user(20315338)
     print(
         user.name,
         user.about,

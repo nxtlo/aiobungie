@@ -35,6 +35,7 @@ __all__ = (
     "NoneOr",
 )
 
+import inspect
 import typing
 import warnings
 from functools import wraps
@@ -69,13 +70,16 @@ def deprecated(func):
 
     @wraps(func)
     def wrapper(*args: typing.Any, **kwargs: typing.Any) -> None:
-        warnings.warn(
-            f"function {func.__name__!r} deprecated until further notice.",
-            stacklevel=2,
-            category=DeprecationWarning,
-        )
-        func.__doc__ += " DEPRECATED FUNCTION."
-        coro = func(*args, **kwargs)
-        return coro
+        if inspect.isfunction(func):
+            warnings.warn(
+                f"function {func.__name__!r} is deprecated.",
+                stacklevel=2,
+                category=DeprecationWarning,
+            )
+            func.__doc__ += """!!! warning
+            
+            This function is a DEPRECATED.
+            """
+        return func(*args, **kwargs)
 
     return wrapper

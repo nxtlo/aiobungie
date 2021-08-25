@@ -84,6 +84,8 @@ class TestClanMember:
             is_online=True,
             joined_at=datetime.datetime(2021, 9, 6),
             last_online=datetime.datetime(2021, 5, 1),
+            displayname_code=5432,
+            types=[aiobungie.MembershipType.STEAM, aiobungie.MembershipType.STADIA],
         )
 
     def test_clan_member_link(self, obj):
@@ -136,6 +138,7 @@ class TestClanOwner:
             last_online=datetime.datetime(2021, 5, 1),
             types=self.types,
             clan_id=998271,
+            displayname_code=5432,
         )
 
     def test_clan_owner_is_userlike(self, obj):

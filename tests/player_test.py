@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from __future__ import unicode_literals
+
 import pytest
 
 import aiobungie
@@ -36,6 +38,9 @@ class TestPlayer:
             icon=internal.Image("4a2dc9dca0b4.jpg"),
             is_public=True,
             type=aiobungie.MembershipType.STADIA,
+            types=[aiobungie.MembershipType.STEAM],
+            displayname_code=7462,
+            crossave_override=1,
         )
 
     def test_str_op(self, model):

@@ -25,6 +25,8 @@
 
 from __future__ import annotations
 
+from aiobungie.internal.helpers import NoneOr
+
 __all__ = ("Application", "ApplicationOwner")
 
 import typing
@@ -58,6 +60,21 @@ class ApplicationOwner(UserLike):
 
     is_public: bool = attr.field(repr=True)
     """The application owner's profile privacy."""
+
+    displayname_code: NoneOr[int] = attr.field(repr=True)
+    """The user like's unique display name code. 
+    This can be None if the user hasn't logged in after season of the lost update.
+
+    .. versionadded:: 0.2.5b7
+    """
+
+    @property
+    def unique_name(self) -> NoneOr[str]:
+        """The user like's display name. This includes the full name with the user name code.
+
+        .. versionadded:: 0.2.5b7
+        """
+        return f"{self.name}#{self.displayname_code}"
 
     @property
     def net(self) -> impl.Netrunner:

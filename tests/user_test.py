@@ -104,7 +104,7 @@ class TestUser:
             psn_name=None,
             twitch_name="fate_ttv",  # Fake o:
             unique_name="Fate怒#4275",
-            displayname_code=4275,
+            code=4275,
         )
 
     def test_str_op(self, model):

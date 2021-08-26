@@ -38,7 +38,7 @@ class TestAppOwner:
             id=411098,
             is_public=True,
             icon=internal.Image("dndlkwadjnh9.jpg"),
-            displayname_code=2463,
+            code=2463,
         )
 
     @pytest.fixture()

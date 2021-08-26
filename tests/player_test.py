@@ -39,7 +39,7 @@ class TestPlayer:
             is_public=True,
             type=aiobungie.MembershipType.STADIA,
             types=[aiobungie.MembershipType.STEAM],
-            displayname_code=7462,
+            code=7462,
             crossave_override=1,
         )
 

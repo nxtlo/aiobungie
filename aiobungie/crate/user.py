@@ -81,11 +81,11 @@ class UserLike(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def displayname_code(self) -> helpers.NoneOr[int]:
+    def code(self) -> helpers.NoneOr[int]:
         """The user like's unique display name code.
         This can be None if the user hasn't logged in after season of the lost update.
 
-        .. versionadded:: 0.2.5b7
+        .. versionadded:: 0.2.5
         """
 
     @property
@@ -93,7 +93,7 @@ class UserLike(abc.ABC):
     def unique_name(self) -> helpers.NoneOr[str]:
         """The user like's display name. This includes the full name with the user name code.
 
-        .. versionadded:: 0.2.5b7
+        .. versionadded:: 0.2.5
         """
 
     @property
@@ -159,7 +159,7 @@ class User:
     """The user's unique name which includes their unique code.
     This field could be None if no unique name found.
     
-    .. versionadded:: 0.2.5b7
+    .. versionadded:: 0.2.5
     """
 
     is_deleted: bool = attr.field(repr=False, eq=False, hash=False)
@@ -192,11 +192,11 @@ class User:
     picture: Image = attr.field(repr=False, hash=False, eq=False)
     """The user's profile picture."""
 
-    displayname_code: helpers.NoneOr[int] = attr.field(repr=True)
+    code: helpers.NoneOr[int] = attr.field(repr=True)
     """The user's unique display name code. 
     This can be None if the user hasn't logged in after season of the lost update.
     
-    .. versionadded:: 0.2.5b7
+    .. versionadded:: 0.2.5
     """
 
     def __str__(self) -> str:

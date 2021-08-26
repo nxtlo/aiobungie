@@ -105,7 +105,7 @@ class ClanMember(UserLike):
     joined_at: datetime = attr.field(repr=False)
     """The clan member's join date in UTC time zone."""
 
-    displayname_code: helpers.NoneOr[int] = attr.field(repr=True)
+    code: helpers.NoneOr[int] = attr.field(repr=True)
     """The clan member's bungie display name code
     This is new and was added in Season of the lost update
     
@@ -117,9 +117,9 @@ class ClanMember(UserLike):
         """The user's unique name which includes their unique code.
         This field could be None if no unique name found.
 
-        .. versionadded:: 0.2.5b7
+        .. versionadded:: 0.2.5
         """
-        return f"{self.name}#{self.displayname_code}"
+        return f"{self.name}#{self.code}"
 
     @property
     def net(self) -> impl.Netrunner:
@@ -190,11 +190,11 @@ class ClanOwner(UserLike):
     joined_at: datetime = attr.field(repr=True)
     """Owner's bungie join date."""
 
-    displayname_code: helpers.NoneOr[int] = attr.field(repr=True)
+    code: helpers.NoneOr[int] = attr.field(repr=True)
     """The user's unique display name code. 
     This can be None if the user hasn't logged in after season of the lost update.
     
-    .. versionadded:: 0.2.5b7
+    .. versionadded:: 0.2.5
     """
 
     @property
@@ -212,9 +212,9 @@ class ClanOwner(UserLike):
         """The user's unique name which includes their unique code.
         This field could be None if no unique name found.
 
-        .. versionadded:: 0.2.5b7
+        .. versionadded:: 0.2.5
         """
-        return f"{self.name}#{self.displayname_code}"
+        return f"{self.name}#{self.code}"
 
     @property
     def link(self) -> str:

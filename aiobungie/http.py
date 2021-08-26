@@ -25,7 +25,6 @@ and Where all the magic happenes.
 """
 
 from __future__ import annotations
-import re
 
 __all__ = ("HTTPClient",)
 

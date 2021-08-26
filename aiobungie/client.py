@@ -172,8 +172,7 @@ class Client(impl.BaseClient):
         """
         payload = await self.http.fetch_user(id)
         assert isinstance(payload, dict)
-        # User and User from id has the same attrs but different return types so we have to ignore here.
-        return self.serialize.deserialize_user(payload)  # type: ignore
+        return self.serialize.deserialize_user(payload)
 
     async def fetch_user_themes(self) -> typing.Sequence[crate.user.UserThemes]:
         """Fetch all available user themes.

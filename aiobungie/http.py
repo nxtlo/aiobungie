@@ -25,6 +25,7 @@ and Where all the magic happenes.
 """
 
 from __future__ import annotations
+import re
 
 __all__ = ("HTTPClient",)
 
@@ -35,6 +36,7 @@ import typing
 from urllib.parse import quote
 
 import aiohttp
+import yarl
 
 from aiobungie import _info as info
 from aiobungie import error
@@ -70,13 +72,15 @@ async def handle_errors(
     if 400 <= status < 500:
         return error.ResponseError(*data, status)
     elif 500 <= status < 600:
-        # High order errors
+        # High order errors.
         if msg == "ClanNotFound":
             return error.ClanNotFound(msg)
         elif msg == "DestinyInvalidMembershipType":
             return error.MembershipTypeError(msg)
         elif msg == "GroupNotFound":
             return error.ClanNotFound(msg)
+        elif msg == "UserCannotFindRequestedUser":
+            return error.UserNotFound(msg)
         else:
             return error.AiobungieError(msg)
     else:
@@ -95,9 +99,9 @@ class PreLock:
 
     async def __aexit__(
         self,
-        ext_type: typing.Optional[BaseException],
-        exc: typing.Optional[BaseException],
-        exc_tb: typing.Optional[types.TracebackType],
+        _: typing.Optional[BaseException],
+        __: typing.Optional[BaseException],
+        ___: typing.Optional[types.TracebackType],
     ) -> None:
         self._lock.release()
 
@@ -117,8 +121,8 @@ class HTTPClient:
         loop: asyncio.AbstractEventLoop = None,
     ) -> None:
         self.key: str = key
-        self.connector = connector
         self.loop = loop or asyncio.get_event_loop()
+        self.__connector = connector
 
     @typing.final
     async def fetch(
@@ -143,14 +147,13 @@ class HTTPClient:
         async with PreLock(locker):
             try:
                 async with aiohttp.ClientSession(
-                    loop=self.loop, connector=self.connector
+                    loop=self.loop, connector=self.__connector
                 ) as session:
                     async with session.request(
                         method=method,
-                        url=f"{url.REST_EP if not base else url.BASE}/{route}",
+                        url=f"{url.REST_EP}/{route}",
                         **kwargs,
                     ) as response:
-                        print(kwargs["headers"])
 
                         data = await response.json()
                         msg: str = data["ErrorStatus"]
@@ -179,11 +182,13 @@ class HTTPClient:
                                 )
                             )
                             try:
-                                # Almost all bungie json objects are
-                                # wrapped inside a dict[Response=...], but
-                                # sometimes it returns a List so this check
-                                # is needed
+                                # All bungie responses
+                                # are in a Response key
+                                # So its easier to deserialize later.
                                 return data["Response"]
+
+                            # In case we didn't find the Response key
+                            # its safer to just return the data.
                             except KeyError:
                                 return data
 
@@ -216,9 +221,9 @@ class HTTPClient:
 
     def fetch_player(
         self, name: str, type: enums.MembershipType, /
-    ) -> Response[helpers.JsonDict]:
+    ) -> Response[helpers.JsonList]:
         return self.fetch(
-            "GET", f"Destiny2/SearchDestinyPlayer/{int(type)}/{quote(name)}/"
+            "GET", f"Destiny2/SearchDestinyPlayer/{int(type)}/{quote(name)}"
         )
 
     def fetch_clan_from_id(self, id: int) -> Response[helpers.JsonDict]:

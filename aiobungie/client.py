@@ -159,9 +159,6 @@ class Client(impl.BaseClient):
         ----------
         id: `builtins.int`
             The user id.
-        position: `builtins.int`
-            The user position/index in the list to return,
-            Will returns the first one if not specified.
 
         Returns
         -------
@@ -272,8 +269,6 @@ class Client(impl.BaseClient):
 
         type: `aiobungie.internal.enums.MembershipType`
             The player's membership type, e,g. XBOX, STEAM, PSN
-        position: `builtins.int`
-            Which player position to return, first player will return if None.
 
         Returns
         --------

@@ -67,13 +67,7 @@ INDEX=[
 {
 "ref":"aiobungie.Client.fetch_user",
 "url":0,
-"doc":"Fetches a Bungie user by their name. Parameters      name:  builtins.str The user name. position:  builtins.int The user position/index in the list to return, Will returns the first one if not specified. Returns    -  aiobungie.crate.User A Bungie user. Raises     aiobungie.error.UserNotFound The user wasa not found.",
-"func":1
-},
-{
-"ref":"aiobungie.Client.fetch_user_from_id",
-"url":0,
-"doc":"Fetches a Bungie user by their id. Parameters      id:  builtins.int The user id. position:  builtins.int The user position/index in the list to return, Will returns the first one if not specified. Returns    -  aiobungie.crate.User A Bungie user. Raises     aiobungie.error.UserNotFound The user was not found.",
+"doc":"Fetches a Bungie user by their id. Parameters      id:  builtins.int The user id. Returns    -  aiobungie.crate.User A Bungie user. Raises     aiobungie.error.UserNotFound The user was not found.",
 "func":1
 },
 {
@@ -85,7 +79,7 @@ INDEX=[
 {
 "ref":"aiobungie.Client.fetch_hard_types",
 "url":0,
-"doc":"Gets any hard linked membership given a credential. Only works for credentials that are public just STEAMID from  aiobungie.CredentialType right now. Cross Save aware. Parameters      credential:  builtins.int A valid SteamID64 type:  aiobungie.CredentialType The crededntial type. This must not be changed Since its only credential that works \"currently\" Returns    -  aiobungie.crate.user.HardLinkedMembership Information about the hard linked data.",
+"doc":"Gets any hard linked membership given a credential. Only works for credentials that are public just  aiobungie.CredentialType.STEAMID right now. Cross Save aware. Parameters      credential:  builtins.int A valid SteamID64 type:  aiobungie.CredentialType The crededntial type. This must not be changed Since its only credential that works \"currently\" Returns    -  aiobungie.crate.user.HardLinkedMembership Information about the hard linked data.",
 "func":1
 },
 {
@@ -97,7 +91,7 @@ INDEX=[
 {
 "ref":"aiobungie.Client.fetch_player",
 "url":0,
-"doc":"Fetches a Destiny 2 Player. Parameters      - name:  builtins.str The Player's Name type:  aiobungie.internal.enums.MembershipType The player's membership type, e,g. XBOX, STEAM, PSN position:  builtins.int Which player position to return, first player will return if None. Returns      aiobungie.crate.Player A Destiny 2 Player. Raises     aiobungie.PlayerNotFound The player was not found.  aiobungie.MembershipTypeError The provided membership type was invalid.",
+"doc":"Fetches a Destiny 2 Player. Parameters      - name:  builtins.str The Player's Name.  ! note You must also pass the player's unique code. A full name parameter should look like this  Fate\u6012 4275 type:  aiobungie.internal.enums.MembershipType The player's membership type, e,g. XBOX, STEAM, PSN Returns      aiobungie.crate.Player A Destiny 2 Player. Raises     aiobungie.PlayerNotFound The player was not found.  aiobungie.MembershipTypeError The provided membership type was invalid.",
 "func":1
 },
 {
@@ -1261,13 +1255,7 @@ INDEX=[
 {
 "ref":"aiobungie.client.Client.fetch_user",
 "url":1,
-"doc":"Fetches a Bungie user by their name. Parameters      name:  builtins.str The user name. position:  builtins.int The user position/index in the list to return, Will returns the first one if not specified. Returns    -  aiobungie.crate.User A Bungie user. Raises     aiobungie.error.UserNotFound The user wasa not found.",
-"func":1
-},
-{
-"ref":"aiobungie.client.Client.fetch_user_from_id",
-"url":1,
-"doc":"Fetches a Bungie user by their id. Parameters      id:  builtins.int The user id. position:  builtins.int The user position/index in the list to return, Will returns the first one if not specified. Returns    -  aiobungie.crate.User A Bungie user. Raises     aiobungie.error.UserNotFound The user was not found.",
+"doc":"Fetches a Bungie user by their id. Parameters      id:  builtins.int The user id. Returns    -  aiobungie.crate.User A Bungie user. Raises     aiobungie.error.UserNotFound The user was not found.",
 "func":1
 },
 {
@@ -1279,7 +1267,7 @@ INDEX=[
 {
 "ref":"aiobungie.client.Client.fetch_hard_types",
 "url":1,
-"doc":"Gets any hard linked membership given a credential. Only works for credentials that are public just STEAMID from  aiobungie.CredentialType right now. Cross Save aware. Parameters      credential:  builtins.int A valid SteamID64 type:  aiobungie.CredentialType The crededntial type. This must not be changed Since its only credential that works \"currently\" Returns    -  aiobungie.crate.user.HardLinkedMembership Information about the hard linked data.",
+"doc":"Gets any hard linked membership given a credential. Only works for credentials that are public just  aiobungie.CredentialType.STEAMID right now. Cross Save aware. Parameters      credential:  builtins.int A valid SteamID64 type:  aiobungie.CredentialType The crededntial type. This must not be changed Since its only credential that works \"currently\" Returns    -  aiobungie.crate.user.HardLinkedMembership Information about the hard linked data.",
 "func":1
 },
 {
@@ -1291,7 +1279,7 @@ INDEX=[
 {
 "ref":"aiobungie.client.Client.fetch_player",
 "url":1,
-"doc":"Fetches a Destiny 2 Player. Parameters      - name:  builtins.str The Player's Name type:  aiobungie.internal.enums.MembershipType The player's membership type, e,g. XBOX, STEAM, PSN position:  builtins.int Which player position to return, first player will return if None. Returns      aiobungie.crate.Player A Destiny 2 Player. Raises     aiobungie.PlayerNotFound The player was not found.  aiobungie.MembershipTypeError The provided membership type was invalid.",
+"doc":"Fetches a Destiny 2 Player. Parameters      - name:  builtins.str The Player's Name.  ! note You must also pass the player's unique code. A full name parameter should look like this  Fate\u6012 4275 type:  aiobungie.internal.enums.MembershipType The player's membership type, e,g. XBOX, STEAM, PSN Returns      aiobungie.crate.Player A Destiny 2 Player. Raises     aiobungie.PlayerNotFound The player was not found.  aiobungie.MembershipTypeError The provided membership type was invalid.",
 "func":1
 },
 {
@@ -1606,6 +1594,11 @@ INDEX=[
 "doc":"Represents a Bungie Destiny 2 Player. Method generated by attrs for class Player."
 },
 {
+"ref":"aiobungie.crate.Player.unique_name",
+"url":2,
+"doc":"The user's unique display name code. This can be None if the user hasn't logged in after season of the lost update.  versionadded 0.2.5"
+},
+{
 "ref":"aiobungie.crate.Player.net",
 "url":2,
 "doc":"A network state used for making external requests."
@@ -1614,6 +1607,16 @@ INDEX=[
 "ref":"aiobungie.crate.Player.as_dict",
 "url":2,
 "doc":"Returns a dict object of the player."
+},
+{
+"ref":"aiobungie.crate.Player.code",
+"url":2,
+"doc":"The clan member's bungie display name code This is new and was added in Season of the lost update  versionadded 0.2.5"
+},
+{
+"ref":"aiobungie.crate.Player.crossave_override",
+"url":2,
+"doc":"Returns  1 if the user has a cross save override in effect and 0 if not.  versionadded 0.2.5"
 },
 {
 "ref":"aiobungie.crate.Player.icon",
@@ -1641,9 +1644,14 @@ INDEX=[
 "doc":"The profile's membership type."
 },
 {
+"ref":"aiobungie.crate.Player.types",
+"url":2,
+"doc":"A list of the player's membership types.  versionadded 0.2.5"
+},
+{
 "ref":"aiobungie.crate.Player.link",
 "url":3,
-"doc":"Returns the user's profile link."
+"doc":"The user like's profile link."
 },
 {
 "ref":"aiobungie.crate.Character",
@@ -1961,9 +1969,14 @@ INDEX=[
 "doc":"Represents Bungie user. Method generated by attrs for class User."
 },
 {
+"ref":"aiobungie.crate.User.human_timedelta",
+"url":2,
+"doc":"A human readable date version of the user's creation date."
+},
+{
 "ref":"aiobungie.crate.User.as_dict",
 "url":2,
-"doc":"Returns a dict object of the user."
+"doc":"a dict object of the user."
 },
 {
 "ref":"aiobungie.crate.User.about",
@@ -1974,6 +1987,11 @@ INDEX=[
 "ref":"aiobungie.crate.User.blizzard_name",
 "url":2,
 "doc":"The user's blizzard name if it exists."
+},
+{
+"ref":"aiobungie.crate.User.code",
+"url":2,
+"doc":"The user's unique display name code. This can be None if the user hasn't logged in after season of the lost update.  versionadded 0.2.5"
 },
 {
 "ref":"aiobungie.crate.User.created_at",
@@ -1988,7 +2006,7 @@ INDEX=[
 {
 "ref":"aiobungie.crate.User.is_deleted",
 "url":2,
-"doc":"Returns True if the user is deleted"
+"doc":"True if the user is deleted"
 },
 {
 "ref":"aiobungie.crate.User.locale",
@@ -2026,6 +2044,11 @@ INDEX=[
 "doc":"The user's twitch name if it exists."
 },
 {
+"ref":"aiobungie.crate.User.unique_name",
+"url":2,
+"doc":"The user's unique name which includes their unique code. This field could be None if no unique name found.  versionadded 0.2.5"
+},
+{
 "ref":"aiobungie.crate.User.updated_at",
 "url":2,
 "doc":"The user's last updated om UTC date."
@@ -2046,6 +2069,11 @@ INDEX=[
 "doc":"Returns a human readable date of the clan owner's last login."
 },
 {
+"ref":"aiobungie.crate.ClanOwner.unique_name",
+"url":2,
+"doc":"The user's unique name which includes their unique code. This field could be None if no unique name found.  versionadded 0.2.5"
+},
+{
 "ref":"aiobungie.crate.ClanOwner.link",
 "url":2,
 "doc":"Returns the user's profile link."
@@ -2059,6 +2087,11 @@ INDEX=[
 "ref":"aiobungie.crate.ClanOwner.clan_id",
 "url":2,
 "doc":"Owner's current clan id."
+},
+{
+"ref":"aiobungie.crate.ClanOwner.code",
+"url":2,
+"doc":"The user's unique display name code. This can be None if the user hasn't logged in after season of the lost update.  versionadded 0.2.5"
 },
 {
 "ref":"aiobungie.crate.ClanOwner.icon",
@@ -2106,6 +2139,11 @@ INDEX=[
 "doc":"Represents a Destiny 2 clan member. Method generated by attrs for class ClanMember."
 },
 {
+"ref":"aiobungie.crate.ClanMember.unique_name",
+"url":2,
+"doc":"The user's unique name which includes their unique code. This field could be None if no unique name found.  versionadded 0.2.5"
+},
+{
 "ref":"aiobungie.crate.ClanMember.net",
 "url":2,
 "doc":"A network state used for making external requests."
@@ -2118,7 +2156,7 @@ INDEX=[
 {
 "ref":"aiobungie.crate.ClanMember.as_dict",
 "url":2,
-"doc":"Returns an instance of the UserLike as a dict."
+"doc":"An instance of the UserLike as a dict."
 },
 {
 "ref":"aiobungie.crate.ClanMember.ban",
@@ -2137,6 +2175,11 @@ INDEX=[
 "url":2,
 "doc":"Kicks a clan member from the clan. The requires OAuth2: AdminsGroup scope.",
 "func":1
+},
+{
+"ref":"aiobungie.crate.ClanMember.code",
+"url":2,
+"doc":"The clan member's bungie display name code This is new and was added in Season of the lost update  versionadded 0.2.5"
 },
 {
 "ref":"aiobungie.crate.ClanMember.group_id",
@@ -2184,9 +2227,19 @@ INDEX=[
 "doc":"Clan member's membership type."
 },
 {
+"ref":"aiobungie.crate.ClanMember.types",
+"url":2,
+"doc":"A list of the available clan member membership types."
+},
+{
 "ref":"aiobungie.crate.ApplicationOwner",
 "url":2,
 "doc":"Represents a Bungie Application owner. Method generated by attrs for class ApplicationOwner."
+},
+{
+"ref":"aiobungie.crate.ApplicationOwner.unique_name",
+"url":2,
+"doc":"The user like's display name. This includes the full name with the user name code.  versionadded 0.2.5"
 },
 {
 "ref":"aiobungie.crate.ApplicationOwner.net",
@@ -2196,12 +2249,17 @@ INDEX=[
 {
 "ref":"aiobungie.crate.ApplicationOwner.link",
 "url":2,
-"doc":"Returns the user's profile link."
+"doc":"The user like's profile link."
 },
 {
 "ref":"aiobungie.crate.ApplicationOwner.as_dict",
 "url":2,
 "doc":"Returns a dict object of the application owner."
+},
+{
+"ref":"aiobungie.crate.ApplicationOwner.code",
+"url":2,
+"doc":"The user like's unique display name code. This can be None if the user hasn't logged in after season of the lost update.  versionadded 0.2.5"
 },
 {
 "ref":"aiobungie.crate.ApplicationOwner.icon",
@@ -2444,7 +2502,7 @@ INDEX=[
 {
 "ref":"aiobungie.crate.UserLike",
 "url":2,
-"doc":"The is meant for any Member / user / like crate. Method generated by attrs for class UserLike."
+"doc":"The is meant for any bungie userlike object. Method generated by attrs for class UserLike."
 },
 {
 "ref":"aiobungie.crate.UserLike.net",
@@ -2452,34 +2510,49 @@ INDEX=[
 "doc":"A network state used for making external requests."
 },
 {
+"ref":"aiobungie.crate.UserLike.id",
+"url":2,
+"doc":"The user like's id."
+},
+{
 "ref":"aiobungie.crate.UserLike.name",
 "url":2,
-"doc":"The user's name."
+"doc":"The user like's name."
 },
 {
 "ref":"aiobungie.crate.UserLike.is_public",
 "url":2,
-"doc":"Returns if the user profile is public or no."
+"doc":"True if the user profile is public or no."
 },
 {
 "ref":"aiobungie.crate.UserLike.type",
 "url":2,
-"doc":"Returns the user type of the user."
+"doc":"The user type of the user."
 },
 {
 "ref":"aiobungie.crate.UserLike.icon",
 "url":2,
-"doc":"The user's icon."
-},
-{
-"ref":"aiobungie.crate.UserLike.link",
-"url":2,
-"doc":"Returns the user's profile link."
+"doc":"The user like's icon."
 },
 {
 "ref":"aiobungie.crate.UserLike.as_dict",
 "url":2,
-"doc":"Returns an instance of the UserLike as a dict."
+"doc":"An instance of the UserLike as a dict."
+},
+{
+"ref":"aiobungie.crate.UserLike.code",
+"url":2,
+"doc":"The user like's unique display name code. This can be None if the user hasn't logged in after season of the lost update.  versionadded 0.2.5"
+},
+{
+"ref":"aiobungie.crate.UserLike.unique_name",
+"url":2,
+"doc":"The user like's display name. This includes the full name with the user name code.  versionadded 0.2.5"
+},
+{
+"ref":"aiobungie.crate.UserLike.link",
+"url":2,
+"doc":"The user like's profile link."
 },
 {
 "ref":"aiobungie.crate.ProfileComponentImpl",
@@ -2837,6 +2910,11 @@ INDEX=[
 "doc":"Represents a Bungie Application owner. Method generated by attrs for class ApplicationOwner."
 },
 {
+"ref":"aiobungie.crate.application.ApplicationOwner.unique_name",
+"url":8,
+"doc":"The user like's display name. This includes the full name with the user name code.  versionadded 0.2.5"
+},
+{
 "ref":"aiobungie.crate.application.ApplicationOwner.net",
 "url":8,
 "doc":"A network state used for making external requests."
@@ -2844,12 +2922,17 @@ INDEX=[
 {
 "ref":"aiobungie.crate.application.ApplicationOwner.link",
 "url":8,
-"doc":"Returns the user's profile link."
+"doc":"The user like's profile link."
 },
 {
 "ref":"aiobungie.crate.application.ApplicationOwner.as_dict",
 "url":8,
 "doc":"Returns a dict object of the application owner."
+},
+{
+"ref":"aiobungie.crate.application.ApplicationOwner.code",
+"url":8,
+"doc":"The user like's unique display name code. This can be None if the user hasn't logged in after season of the lost update.  versionadded 0.2.5"
 },
 {
 "ref":"aiobungie.crate.application.ApplicationOwner.icon",
@@ -3226,6 +3309,11 @@ INDEX=[
 "doc":"Returns a human readable date of the clan owner's last login."
 },
 {
+"ref":"aiobungie.crate.clans.ClanOwner.unique_name",
+"url":9,
+"doc":"The user's unique name which includes their unique code. This field could be None if no unique name found.  versionadded 0.2.5"
+},
+{
 "ref":"aiobungie.crate.clans.ClanOwner.link",
 "url":9,
 "doc":"Returns the user's profile link."
@@ -3239,6 +3327,11 @@ INDEX=[
 "ref":"aiobungie.crate.clans.ClanOwner.clan_id",
 "url":9,
 "doc":"Owner's current clan id."
+},
+{
+"ref":"aiobungie.crate.clans.ClanOwner.code",
+"url":9,
+"doc":"The user's unique display name code. This can be None if the user hasn't logged in after season of the lost update.  versionadded 0.2.5"
 },
 {
 "ref":"aiobungie.crate.clans.ClanOwner.icon",
@@ -3286,6 +3379,11 @@ INDEX=[
 "doc":"Represents a Destiny 2 clan member. Method generated by attrs for class ClanMember."
 },
 {
+"ref":"aiobungie.crate.clans.ClanMember.unique_name",
+"url":9,
+"doc":"The user's unique name which includes their unique code. This field could be None if no unique name found.  versionadded 0.2.5"
+},
+{
 "ref":"aiobungie.crate.clans.ClanMember.net",
 "url":9,
 "doc":"A network state used for making external requests."
@@ -3298,7 +3396,7 @@ INDEX=[
 {
 "ref":"aiobungie.crate.clans.ClanMember.as_dict",
 "url":9,
-"doc":"Returns an instance of the UserLike as a dict."
+"doc":"An instance of the UserLike as a dict."
 },
 {
 "ref":"aiobungie.crate.clans.ClanMember.ban",
@@ -3317,6 +3415,11 @@ INDEX=[
 "url":9,
 "doc":"Kicks a clan member from the clan. The requires OAuth2: AdminsGroup scope.",
 "func":1
+},
+{
+"ref":"aiobungie.crate.clans.ClanMember.code",
+"url":9,
+"doc":"The clan member's bungie display name code This is new and was added in Season of the lost update  versionadded 0.2.5"
 },
 {
 "ref":"aiobungie.crate.clans.ClanMember.group_id",
@@ -3362,6 +3465,11 @@ INDEX=[
 "ref":"aiobungie.crate.clans.ClanMember.type",
 "url":9,
 "doc":"Clan member's membership type."
+},
+{
+"ref":"aiobungie.crate.clans.ClanMember.types",
+"url":9,
+"doc":"A list of the available clan member membership types."
 },
 {
 "ref":"aiobungie.crate.clans.ClanFeatures",
@@ -3594,6 +3702,11 @@ INDEX=[
 "doc":"Represents a Bungie Destiny 2 Player. Method generated by attrs for class Player."
 },
 {
+"ref":"aiobungie.crate.player.Player.unique_name",
+"url":10,
+"doc":"The user's unique display name code. This can be None if the user hasn't logged in after season of the lost update.  versionadded 0.2.5"
+},
+{
 "ref":"aiobungie.crate.player.Player.net",
 "url":10,
 "doc":"A network state used for making external requests."
@@ -3602,6 +3715,16 @@ INDEX=[
 "ref":"aiobungie.crate.player.Player.as_dict",
 "url":10,
 "doc":"Returns a dict object of the player."
+},
+{
+"ref":"aiobungie.crate.player.Player.code",
+"url":10,
+"doc":"The clan member's bungie display name code This is new and was added in Season of the lost update  versionadded 0.2.5"
+},
+{
+"ref":"aiobungie.crate.player.Player.crossave_override",
+"url":10,
+"doc":"Returns  1 if the user has a cross save override in effect and 0 if not.  versionadded 0.2.5"
 },
 {
 "ref":"aiobungie.crate.player.Player.icon",
@@ -3629,9 +3752,14 @@ INDEX=[
 "doc":"The profile's membership type."
 },
 {
+"ref":"aiobungie.crate.player.Player.types",
+"url":10,
+"doc":"A list of the player's membership types.  versionadded 0.2.5"
+},
+{
 "ref":"aiobungie.crate.player.Player.link",
 "url":3,
-"doc":"Returns the user's profile link."
+"doc":"The user like's profile link."
 },
 {
 "ref":"aiobungie.crate.profile",
@@ -3800,9 +3928,14 @@ INDEX=[
 "doc":"Represents Bungie user. Method generated by attrs for class User."
 },
 {
+"ref":"aiobungie.crate.user.User.human_timedelta",
+"url":3,
+"doc":"A human readable date version of the user's creation date."
+},
+{
 "ref":"aiobungie.crate.user.User.as_dict",
 "url":3,
-"doc":"Returns a dict object of the user."
+"doc":"a dict object of the user."
 },
 {
 "ref":"aiobungie.crate.user.User.about",
@@ -3813,6 +3946,11 @@ INDEX=[
 "ref":"aiobungie.crate.user.User.blizzard_name",
 "url":3,
 "doc":"The user's blizzard name if it exists."
+},
+{
+"ref":"aiobungie.crate.user.User.code",
+"url":3,
+"doc":"The user's unique display name code. This can be None if the user hasn't logged in after season of the lost update.  versionadded 0.2.5"
 },
 {
 "ref":"aiobungie.crate.user.User.created_at",
@@ -3827,7 +3965,7 @@ INDEX=[
 {
 "ref":"aiobungie.crate.user.User.is_deleted",
 "url":3,
-"doc":"Returns True if the user is deleted"
+"doc":"True if the user is deleted"
 },
 {
 "ref":"aiobungie.crate.user.User.locale",
@@ -3865,84 +4003,19 @@ INDEX=[
 "doc":"The user's twitch name if it exists."
 },
 {
+"ref":"aiobungie.crate.user.User.unique_name",
+"url":3,
+"doc":"The user's unique name which includes their unique code. This field could be None if no unique name found.  versionadded 0.2.5"
+},
+{
 "ref":"aiobungie.crate.user.User.updated_at",
 "url":3,
 "doc":"The user's last updated om UTC date."
 },
 {
-"ref":"aiobungie.crate.user.PartialUser",
-"url":3,
-"doc":"A partial user crate. Method generated by attrs for class PartialUser."
-},
-{
-"ref":"aiobungie.crate.user.PartialUser.steam_name",
-"url":3,
-"doc":"The user's steam username or None."
-},
-{
-"ref":"aiobungie.crate.user.PartialUser.twitch_name",
-"url":3,
-"doc":"The user's twitch username or None."
-},
-{
-"ref":"aiobungie.crate.user.PartialUser.blizzard_name",
-"url":3,
-"doc":"The user's blizzard username or None."
-},
-{
-"ref":"aiobungie.crate.user.PartialUser.psn_name",
-"url":3,
-"doc":"The user's psn username or None."
-},
-{
-"ref":"aiobungie.crate.user.PartialUser.about",
-"url":3,
-"doc":"The user's about section."
-},
-{
-"ref":"aiobungie.crate.user.PartialUser.locale",
-"url":3,
-"doc":"The user's profile locale."
-},
-{
-"ref":"aiobungie.crate.user.PartialUser.name",
-"url":3,
-"doc":"The user's name."
-},
-{
-"ref":"aiobungie.crate.user.PartialUser.picture",
-"url":3,
-"doc":"The user's profile picture if its set."
-},
-{
-"ref":"aiobungie.crate.user.PartialUser.updated_at",
-"url":3,
-"doc":"The user's last profile update."
-},
-{
-"ref":"aiobungie.crate.user.PartialUser.is_deleted",
-"url":3,
-"doc":"Determines if the user is deleted or not."
-},
-{
-"ref":"aiobungie.crate.user.PartialUser.status",
-"url":3,
-"doc":"The user's profile status."
-},
-{
-"ref":"aiobungie.crate.user.PartialUser.created_at",
-"url":3,
-"doc":"Returns the user's creation date in UTC timezone."
-},
-{
-"ref":"aiobungie.crate.user.PartialUser.human_timedelta",
-"url":3,
-"doc":""
-},
-{
 "ref":"aiobungie.crate.user.UserLike",
 "url":3,
-"doc":"The is meant for any Member / user / like crate. Method generated by attrs for class UserLike."
+"doc":"The is meant for any bungie userlike object. Method generated by attrs for class UserLike."
 },
 {
 "ref":"aiobungie.crate.user.UserLike.net",
@@ -3950,34 +4023,49 @@ INDEX=[
 "doc":"A network state used for making external requests."
 },
 {
+"ref":"aiobungie.crate.user.UserLike.id",
+"url":3,
+"doc":"The user like's id."
+},
+{
 "ref":"aiobungie.crate.user.UserLike.name",
 "url":3,
-"doc":"The user's name."
+"doc":"The user like's name."
 },
 {
 "ref":"aiobungie.crate.user.UserLike.is_public",
 "url":3,
-"doc":"Returns if the user profile is public or no."
+"doc":"True if the user profile is public or no."
 },
 {
 "ref":"aiobungie.crate.user.UserLike.type",
 "url":3,
-"doc":"Returns the user type of the user."
+"doc":"The user type of the user."
 },
 {
 "ref":"aiobungie.crate.user.UserLike.icon",
 "url":3,
-"doc":"The user's icon."
-},
-{
-"ref":"aiobungie.crate.user.UserLike.link",
-"url":3,
-"doc":"Returns the user's profile link."
+"doc":"The user like's icon."
 },
 {
 "ref":"aiobungie.crate.user.UserLike.as_dict",
 "url":3,
-"doc":"Returns an instance of the UserLike as a dict."
+"doc":"An instance of the UserLike as a dict."
+},
+{
+"ref":"aiobungie.crate.user.UserLike.code",
+"url":3,
+"doc":"The user like's unique display name code. This can be None if the user hasn't logged in after season of the lost update.  versionadded 0.2.5"
+},
+{
+"ref":"aiobungie.crate.user.UserLike.unique_name",
+"url":3,
+"doc":"The user like's display name. This includes the full name with the user name code.  versionadded 0.2.5"
+},
+{
+"ref":"aiobungie.crate.user.UserLike.link",
+"url":3,
+"doc":"The user like's profile link."
 },
 {
 "ref":"aiobungie.crate.user.HardLinkedMembership",
@@ -4213,12 +4301,6 @@ INDEX=[
 },
 {
 "ref":"aiobungie.http.HTTPClient.fetch_user",
-"url":15,
-"doc":"",
-"func":1
-},
-{
-"ref":"aiobungie.http.HTTPClient.fetch_user_from_id",
 "url":15,
 "doc":"",
 "func":1
@@ -5510,25 +5592,25 @@ INDEX=[
 "doc":"A base module for all client implementation."
 },
 {
-"ref":"aiobungie.internal.impl.BaseClient",
+"ref":"aiobungie.internal.impl.RESTful",
 "url":21,
-"doc":"Base class for protocol classes. Protocol classes are defined as class Proto(Protocol): def meth(self) -> int:  . Such classes are primarily used with static type checkers that recognize structural subtyping (static duck-typing), for example class C: def meth(self) -> int: return 0 def func(x: Proto) -> int: return x.meth() func(C(  Passes static type check See PEP 544 for details. Protocol classes decorated with @typing.runtime_checkable act as simple-minded runtime protocols that check only the presence of given attributes, ignoring their type signatures. Protocol classes can be generic, they are defined as class GenProto(Protocol[T]): def meth(self) -> T:  ."
+"doc":"A Resuful and netrunner client protocol."
 },
 {
-"ref":"aiobungie.internal.impl.BaseClient.run",
+"ref":"aiobungie.internal.impl.RESTful.run",
 "url":21,
 "doc":"Runs a Coro function until its complete. This is equivalent to asyncio.get_event_loop().run_until_complete( .) Parameters      future:  typing.Coroutine[typing.Any, typing.Any, typing.Any] Your coro function. Example    -   async def main() -> None: player = await client.fetch_player(\"Fate\") print(player.name) client.run(main(  ",
 "func":1
 },
 {
-"ref":"aiobungie.internal.impl.BaseClient.request",
+"ref":"aiobungie.internal.impl.RESTful.request",
 "url":21,
 "doc":"Returns a client network state for making external requests."
 },
 {
 "ref":"aiobungie.internal.impl.Netrunner",
 "url":21,
-"doc":"Base class for protocol classes. Protocol classes are defined as class Proto(Protocol): def meth(self) -> int:  . Such classes are primarily used with static type checkers that recognize structural subtyping (static duck-typing), for example class C: def meth(self) -> int: return 0 def func(x: Proto) -> int: return x.meth() func(C(  Passes static type check See PEP 544 for details. Protocol classes decorated with @typing.runtime_checkable act as simple-minded runtime protocols that check only the presence of given attributes, ignoring their type signatures. Protocol classes can be generic, they are defined as class GenProto(Protocol[T]): def meth(self) -> T:  ."
+"doc":"A netrunner client represents The rest client. This is only used for making external requests."
 },
 {
 "ref":"aiobungie.internal.impl.Netrunner.request",
@@ -5588,7 +5670,7 @@ INDEX=[
 "func":1
 },
 {
-"ref":"aiobungie.internal.serialize.Deserialize.set_clan_attrs",
+"ref":"aiobungie.internal.serialize.Deserialize.set_clan_members_attrs",
 "url":22,
 "doc":"",
 "func":1

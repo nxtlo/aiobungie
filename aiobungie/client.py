@@ -44,7 +44,7 @@ from .internal.enums import GroupType
 from .internal.enums import MembershipType
 
 
-class Client(impl.BaseClient):
+class Client(impl.RESTful):
     """Represents a client that connects to the Bungie API
 
     Attributes
@@ -189,7 +189,7 @@ class Client(impl.BaseClient):
         self, credential: int, type: CredentialType = CredentialType.STEAMID, /
     ) -> crate.user.HardLinkedMembership:
         """Gets any hard linked membership given a credential.
-        Only works for credentials that are public just STEAMID from `aiobungie.CredentialType` right now.
+        Only works for credentials that are public just `aiobungie.CredentialType.STEAMID` right now.
         Cross Save aware.
 
         Parameters

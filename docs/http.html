@@ -516,14 +516,13 @@ and Where all the magic happenes.
 
 from __future__ import annotations
 
-from aiobungie.internal.helpers import JsonDict
-
 __all__ = (&#34;HTTPClient&#34;,)
 
 import http
 import sys
 import types
 import typing
+from urllib.parse import quote
 
 import aiohttp
 
@@ -561,14 +560,15 @@ async def handle_errors(
     if 400 &lt;= status &lt; 500:
         return error.ResponseError(*data, status)
     elif 500 &lt;= status &lt; 600:
-        # High order errors
+        # High order errors.
         if msg == &#34;ClanNotFound&#34;:
             return error.ClanNotFound(msg)
-
         elif msg == &#34;DestinyInvalidMembershipType&#34;:
             return error.MembershipTypeError(msg)
         elif msg == &#34;GroupNotFound&#34;:
             return error.ClanNotFound(msg)
+        elif msg == &#34;UserCannotFindRequestedUser&#34;:
+            return error.UserNotFound(msg)
         else:
             return error.AiobungieError(msg)
     else:
@@ -587,9 +587,9 @@ class PreLock:
 
     async def __aexit__(
         self,
-        ext_type: typing.Optional[BaseException],
-        exc: typing.Optional[BaseException],
-        exc_tb: typing.Optional[types.TracebackType],
+        _: typing.Optional[BaseException],
+        __: typing.Optional[BaseException],
+        ___: typing.Optional[types.TracebackType],
     ) -&gt; None:
         self._lock.release()
 
@@ -609,8 +609,8 @@ class HTTPClient:
         loop: asyncio.AbstractEventLoop = None,
     ) -&gt; None:
         self.key: str = key
-        self.connector = connector
         self.loop = loop or asyncio.get_event_loop()
+        self.__connector = connector
 
     @typing.final
     async def fetch(
@@ -632,63 +632,61 @@ class HTTPClient:
         else:
             raise ValueError(&#34;No API KEY was passed.&#34;)
 
-        if &#34;json&#34; in kwargs:
-            kwargs[&#34;Content-Type&#34;] = &#34;application/json&#34;
+        async with PreLock(locker):
+            try:
+                async with aiohttp.ClientSession(
+                    loop=self.loop, connector=self.__connector
+                ) as session:
+                    async with session.request(
+                        method=method,
+                        url=f&#34;{url.REST_EP if not base else url.BASE}/{route}&#34;,
+                        **kwargs,
+                    ) as response:
 
-        for t in range(5):
-            async with PreLock(locker):
-                try:
-                    async with aiohttp.ClientSession(
-                        loop=self.loop, connector=self.connector
-                    ) as session:
-                        async with session.request(
-                            method=method,
-                            url=f&#34;{url.REST_EP if not base else url.BASE}/{route}&#34;,
-                            **kwargs,
-                        ) as response:
+                        data = await response.json()
+                        msg: str = data[&#34;ErrorStatus&#34;]
 
-                            data = await response.json()
-                            msg: str = data[&#34;ErrorStatus&#34;]
+                        # There&#39;s no point of making requests here.
+                        # A VERY LITTLE amount of endpoints does not
+                        # require the API to be up and running, Which are
+                        # The themes afaik. Not making any difference though so
+                        # Just to be careful we raise this here.
 
-                            # Don&#39;t worry. API is down :D.
-                            if msg == &#34;SystemDisabled&#34;:
-                                raise OSError(&#34;API IS DOWN&#34;, data[&#34;Message&#34;])
+                        if msg == &#34;SystemDisabled&#34;:
+                            raise OSError(&#34;API IS DOWN!&#34;, data[&#34;Message&#34;])
 
-                            if 300 &gt; response.status &gt;= 200:
-                                if (
-                                    type == &#34;read&#34;
-                                ):  # We want to read the bytes for the manifest response.
-                                    data = await response.read()
-                                    return data
+                        if 300 &gt; response.status &gt;= 200:
+                            if (
+                                type == &#34;read&#34;
+                            ):  # We want to read the bytes for the manifest response.
+                                data = await response.read()
+                                return data
 
-                                _LOG.debug(
-                                    &#34;{} Request success from {} with status {}&#34;.format(
-                                        method,
-                                        f&#34;{url.REST_EP}/{route}&#34;,
-                                        data[&#34;Message&#34;],
-                                    )
+                            _LOG.debug(
+                                &#34;{} Request success from {} with status {}&#34;.format(
+                                    method,
+                                    f&#34;{url.REST_EP}/{route}&#34;,
+                                    data[&#34;Message&#34;],
                                 )
-                                try:
-                                    # Almost all bungie json objects are
-                                    # wrapped inside a dict[Response=...], but
-                                    # sometimes it returns a List so this check
-                                    # is needed
-                                    return data[&#34;Response&#34;]
-                                except KeyError:
-                                    return data
+                            )
+                            try:
+                                # All bungie responses
+                                # are in a Response key
+                                # So its easier to deserialize later.
+                                return data[&#34;Response&#34;]
 
-                            # We continue here.
-                            if response.status in {500, 502, 504}:
-                                await self._handle_err(response, msg)
+                            # In case we didn&#39;t find the Response key
+                            # its safer to just return the data.
+                            except KeyError:
+                                return data
 
-                                await asyncio.sleep(t + 0x01 * 0x02)
-                                continue
+                        await self._handle_err(response, f&#34;{msg}, {data[&#39;Message&#39;]}&#34;)
 
-                except aiohttp.ContentTypeError:
-                    return await response.text(encoding=&#34;utf-8&#34;)
+            except aiohttp.ContentTypeError:
+                return await response.text(encoding=&#34;utf-8&#34;)
 
-                except aiohttp.ClientError:
-                    raise
+            except aiohttp.ClientError:
+                raise
 
     @staticmethod
     @typing.final
@@ -697,10 +695,7 @@ class HTTPClient:
     ) -&gt; typing.NoReturn:
         raise await handle_errors(response, msg)
 
-    def fetch_user(self, name: str) -&gt; Response[helpers.JsonList]:
-        return self.fetch(&#34;GET&#34;, f&#34;User/SearchUsers/?q={name}&#34;)
-
-    def fetch_user_from_id(self, id: int) -&gt; Response[helpers.JsonDict]:
+    def fetch_user(self, id: int) -&gt; Response[helpers.JsonDict]:
         return self.fetch(&#34;GET&#34;, f&#34;User/GetBungieNetUserById/{id}/&#34;)
 
     def fetch_user_themes(self) -&gt; Response[helpers.JsonList]:
@@ -713,9 +708,11 @@ class HTTPClient:
         return self.fetch(&#34;GET&#34;, path)
 
     def fetch_player(
-        self, name: str, type: enums.MembershipType
-    ) -&gt; Response[helpers.JsonDict]:
-        return self.fetch(&#34;GET&#34;, f&#34;Destiny2/SearchDestinyPlayer/{int(type)}/{name}&#34;)
+        self, name: str, type: enums.MembershipType, /
+    ) -&gt; Response[helpers.JsonList]:
+        return self.fetch(
+            &#34;GET&#34;, f&#34;Destiny2/SearchDestinyPlayer/{int(type)}/{quote(name)}/&#34;
+        )
 
     def fetch_clan_from_id(self, id: int) -&gt; Response[helpers.JsonDict]:
         return self.fetch(&#34;GET&#34;, f&#34;GroupV2/{id}&#34;)
@@ -733,7 +730,7 @@ class HTTPClient:
     ) -&gt; Response[helpers.JsonDict]:
         return self.fetch(
             &#34;GET&#34;,
-            f&#34;Destiny2/{int(type)}/Profile/{memberid}/?components={int(enums.Component.CHARECTERS)}&#34;,
+            f&#34;Destiny2/{int(type)}/Profile/{memberid}/?components={int(enums.Component.CHARACTERS)}&#34;,
         )
 
     def fetch_activity(
@@ -794,7 +791,7 @@ class HTTPClient:
         credential: int,
         type: enums.CredentialType = enums.CredentialType.STADIAID,
         /,
-    ) -&gt; Response[JsonDict]:
+    ) -&gt; Response[helpers.JsonDict]:
         return self.fetch(
             &#34;GET&#34;,
             f&#34;User/GetMembershipFromHardLinkedCredential/{int(type)}/{credential}/&#34;,
@@ -833,8 +830,8 @@ class HTTPClient:
         loop: asyncio.AbstractEventLoop = None,
     ) -&gt; None:
         self.key: str = key
-        self.connector = connector
         self.loop = loop or asyncio.get_event_loop()
+        self.__connector = connector
 
     @typing.final
     async def fetch(
@@ -856,63 +853,61 @@ class HTTPClient:
         else:
             raise ValueError(&#34;No API KEY was passed.&#34;)
 
-        if &#34;json&#34; in kwargs:
-            kwargs[&#34;Content-Type&#34;] = &#34;application/json&#34;
+        async with PreLock(locker):
+            try:
+                async with aiohttp.ClientSession(
+                    loop=self.loop, connector=self.__connector
+                ) as session:
+                    async with session.request(
+                        method=method,
+                        url=f&#34;{url.REST_EP if not base else url.BASE}/{route}&#34;,
+                        **kwargs,
+                    ) as response:
 
-        for t in range(5):
-            async with PreLock(locker):
-                try:
-                    async with aiohttp.ClientSession(
-                        loop=self.loop, connector=self.connector
-                    ) as session:
-                        async with session.request(
-                            method=method,
-                            url=f&#34;{url.REST_EP if not base else url.BASE}/{route}&#34;,
-                            **kwargs,
-                        ) as response:
+                        data = await response.json()
+                        msg: str = data[&#34;ErrorStatus&#34;]
 
-                            data = await response.json()
-                            msg: str = data[&#34;ErrorStatus&#34;]
+                        # There&#39;s no point of making requests here.
+                        # A VERY LITTLE amount of endpoints does not
+                        # require the API to be up and running, Which are
+                        # The themes afaik. Not making any difference though so
+                        # Just to be careful we raise this here.
 
-                            # Don&#39;t worry. API is down :D.
-                            if msg == &#34;SystemDisabled&#34;:
-                                raise OSError(&#34;API IS DOWN&#34;, data[&#34;Message&#34;])
+                        if msg == &#34;SystemDisabled&#34;:
+                            raise OSError(&#34;API IS DOWN!&#34;, data[&#34;Message&#34;])
 
-                            if 300 &gt; response.status &gt;= 200:
-                                if (
-                                    type == &#34;read&#34;
-                                ):  # We want to read the bytes for the manifest response.
-                                    data = await response.read()
-                                    return data
+                        if 300 &gt; response.status &gt;= 200:
+                            if (
+                                type == &#34;read&#34;
+                            ):  # We want to read the bytes for the manifest response.
+                                data = await response.read()
+                                return data
 
-                                _LOG.debug(
-                                    &#34;{} Request success from {} with status {}&#34;.format(
-                                        method,
-                                        f&#34;{url.REST_EP}/{route}&#34;,
-                                        data[&#34;Message&#34;],
-                                    )
+                            _LOG.debug(
+                                &#34;{} Request success from {} with status {}&#34;.format(
+                                    method,
+                                    f&#34;{url.REST_EP}/{route}&#34;,
+                                    data[&#34;Message&#34;],
                                 )
-                                try:
-                                    # Almost all bungie json objects are
-                                    # wrapped inside a dict[Response=...], but
-                                    # sometimes it returns a List so this check
-                                    # is needed
-                                    return data[&#34;Response&#34;]
-                                except KeyError:
-                                    return data
+                            )
+                            try:
+                                # All bungie responses
+                                # are in a Response key
+                                # So its easier to deserialize later.
+                                return data[&#34;Response&#34;]
 
-                            # We continue here.
-                            if response.status in {500, 502, 504}:
-                                await self._handle_err(response, msg)
+                            # In case we didn&#39;t find the Response key
+                            # its safer to just return the data.
+                            except KeyError:
+                                return data
 
-                                await asyncio.sleep(t + 0x01 * 0x02)
-                                continue
+                        await self._handle_err(response, f&#34;{msg}, {data[&#39;Message&#39;]}&#34;)
 
-                except aiohttp.ContentTypeError:
-                    return await response.text(encoding=&#34;utf-8&#34;)
+            except aiohttp.ContentTypeError:
+                return await response.text(encoding=&#34;utf-8&#34;)
 
-                except aiohttp.ClientError:
-                    raise
+            except aiohttp.ClientError:
+                raise
 
     @staticmethod
     @typing.final
@@ -921,10 +916,7 @@ class HTTPClient:
     ) -&gt; typing.NoReturn:
         raise await handle_errors(response, msg)
 
-    def fetch_user(self, name: str) -&gt; Response[helpers.JsonList]:
-        return self.fetch(&#34;GET&#34;, f&#34;User/SearchUsers/?q={name}&#34;)
-
-    def fetch_user_from_id(self, id: int) -&gt; Response[helpers.JsonDict]:
+    def fetch_user(self, id: int) -&gt; Response[helpers.JsonDict]:
         return self.fetch(&#34;GET&#34;, f&#34;User/GetBungieNetUserById/{id}/&#34;)
 
     def fetch_user_themes(self) -&gt; Response[helpers.JsonList]:
@@ -937,9 +929,11 @@ class HTTPClient:
         return self.fetch(&#34;GET&#34;, path)
 
     def fetch_player(
-        self, name: str, type: enums.MembershipType
-    ) -&gt; Response[helpers.JsonDict]:
-        return self.fetch(&#34;GET&#34;, f&#34;Destiny2/SearchDestinyPlayer/{int(type)}/{name}&#34;)
+        self, name: str, type: enums.MembershipType, /
+    ) -&gt; Response[helpers.JsonList]:
+        return self.fetch(
+            &#34;GET&#34;, f&#34;Destiny2/SearchDestinyPlayer/{int(type)}/{quote(name)}/&#34;
+        )
 
     def fetch_clan_from_id(self, id: int) -&gt; Response[helpers.JsonDict]:
         return self.fetch(&#34;GET&#34;, f&#34;GroupV2/{id}&#34;)
@@ -957,7 +951,7 @@ class HTTPClient:
     ) -&gt; Response[helpers.JsonDict]:
         return self.fetch(
             &#34;GET&#34;,
-            f&#34;Destiny2/{int(type)}/Profile/{memberid}/?components={int(enums.Component.CHARECTERS)}&#34;,
+            f&#34;Destiny2/{int(type)}/Profile/{memberid}/?components={int(enums.Component.CHARACTERS)}&#34;,
         )
 
     def fetch_activity(
@@ -1018,7 +1012,7 @@ class HTTPClient:
         credential: int,
         type: enums.CredentialType = enums.CredentialType.STADIAID,
         /,
-    ) -&gt; Response[JsonDict]:
+    ) -&gt; Response[helpers.JsonDict]:
         return self.fetch(
             &#34;GET&#34;,
             f&#34;User/GetMembershipFromHardLinkedCredential/{int(type)}/{credential}/&#34;,
@@ -1055,63 +1049,61 @@ async def fetch(
     else:
         raise ValueError(&#34;No API KEY was passed.&#34;)
 
-    if &#34;json&#34; in kwargs:
-        kwargs[&#34;Content-Type&#34;] = &#34;application/json&#34;
+    async with PreLock(locker):
+        try:
+            async with aiohttp.ClientSession(
+                loop=self.loop, connector=self.__connector
+            ) as session:
+                async with session.request(
+                    method=method,
+                    url=f&#34;{url.REST_EP if not base else url.BASE}/{route}&#34;,
+                    **kwargs,
+                ) as response:
 
-    for t in range(5):
-        async with PreLock(locker):
-            try:
-                async with aiohttp.ClientSession(
-                    loop=self.loop, connector=self.connector
-                ) as session:
-                    async with session.request(
-                        method=method,
-                        url=f&#34;{url.REST_EP if not base else url.BASE}/{route}&#34;,
-                        **kwargs,
-                    ) as response:
+                    data = await response.json()
+                    msg: str = data[&#34;ErrorStatus&#34;]
 
-                        data = await response.json()
-                        msg: str = data[&#34;ErrorStatus&#34;]
+                    # There&#39;s no point of making requests here.
+                    # A VERY LITTLE amount of endpoints does not
+                    # require the API to be up and running, Which are
+                    # The themes afaik. Not making any difference though so
+                    # Just to be careful we raise this here.
 
-                        # Don&#39;t worry. API is down :D.
-                        if msg == &#34;SystemDisabled&#34;:
-                            raise OSError(&#34;API IS DOWN&#34;, data[&#34;Message&#34;])
+                    if msg == &#34;SystemDisabled&#34;:
+                        raise OSError(&#34;API IS DOWN!&#34;, data[&#34;Message&#34;])
 
-                        if 300 &gt; response.status &gt;= 200:
-                            if (
-                                type == &#34;read&#34;
-                            ):  # We want to read the bytes for the manifest response.
-                                data = await response.read()
-                                return data
+                    if 300 &gt; response.status &gt;= 200:
+                        if (
+                            type == &#34;read&#34;
+                        ):  # We want to read the bytes for the manifest response.
+                            data = await response.read()
+                            return data
 
-                            _LOG.debug(
-                                &#34;{} Request success from {} with status {}&#34;.format(
-                                    method,
-                                    f&#34;{url.REST_EP}/{route}&#34;,
-                                    data[&#34;Message&#34;],
-                                )
+                        _LOG.debug(
+                            &#34;{} Request success from {} with status {}&#34;.format(
+                                method,
+                                f&#34;{url.REST_EP}/{route}&#34;,
+                                data[&#34;Message&#34;],
                             )
-                            try:
-                                # Almost all bungie json objects are
-                                # wrapped inside a dict[Response=...], but
-                                # sometimes it returns a List so this check
-                                # is needed
-                                return data[&#34;Response&#34;]
-                            except KeyError:
-                                return data
+                        )
+                        try:
+                            # All bungie responses
+                            # are in a Response key
+                            # So its easier to deserialize later.
+                            return data[&#34;Response&#34;]
 
-                        # We continue here.
-                        if response.status in {500, 502, 504}:
-                            await self._handle_err(response, msg)
+                        # In case we didn&#39;t find the Response key
+                        # its safer to just return the data.
+                        except KeyError:
+                            return data
 
-                            await asyncio.sleep(t + 0x01 * 0x02)
-                            continue
+                    await self._handle_err(response, f&#34;{msg}, {data[&#39;Message&#39;]}&#34;)
 
-            except aiohttp.ContentTypeError:
-                return await response.text(encoding=&#34;utf-8&#34;)
+        except aiohttp.ContentTypeError:
+            return await response.text(encoding=&#34;utf-8&#34;)
 
-            except aiohttp.ClientError:
-                raise</code></pre>
+        except aiohttp.ClientError:
+            raise</code></pre>
                                 </details>
                             </dd>
                             <dt id="aiobungie.http.HTTPClient.fetch_activity"><code class="name flex">
@@ -1168,7 +1160,7 @@ async def fetch(
 ) -&gt; Response[helpers.JsonDict]:
     return self.fetch(
         &#34;GET&#34;,
-        f&#34;Destiny2/{int(type)}/Profile/{memberid}/?components={int(enums.Component.CHARECTERS)}&#34;,
+        f&#34;Destiny2/{int(type)}/Profile/{memberid}/?components={int(enums.Component.CHARACTERS)}&#34;,
     )</code></pre>
                                 </details>
                             </dd>
@@ -1238,7 +1230,7 @@ async def fetch(
                                 </details>
                             </dd>
                             <dt id="aiobungie.http.HTTPClient.fetch_hard_linked"><code class="name flex">
-<span>def <span class="ident">fetch_hard_linked</span></span>(<span>self, credential: int, type: enums.CredentialType = STADIAID, /) ‑> Response[JsonDict]</span>
+<span>def <span class="ident">fetch_hard_linked</span></span>(<span>self, credential: int, type: enums.CredentialType = STADIAID, /) ‑> Response[helpers.JsonDict]</span>
 </code></dt>
                             <dd>
                                 <div class="desc"></div>
@@ -1251,7 +1243,7 @@ async def fetch(
     credential: int,
     type: enums.CredentialType = enums.CredentialType.STADIAID,
     /,
-) -&gt; Response[JsonDict]:
+) -&gt; Response[helpers.JsonDict]:
     return self.fetch(
         &#34;GET&#34;,
         f&#34;User/GetMembershipFromHardLinkedCredential/{int(type)}/{credential}/&#34;,
@@ -1285,7 +1277,7 @@ async def fetch(
                                 </details>
                             </dd>
                             <dt id="aiobungie.http.HTTPClient.fetch_player"><code class="name flex">
-<span>def <span class="ident">fetch_player</span></span>(<span>self, name: str, type: enums.MembershipType) ‑> Response[helpers.JsonDict]</span>
+<span>def <span class="ident">fetch_player</span></span>(<span>self, name: str, type: enums.MembershipType, /) ‑> Response[helpers.JsonList]</span>
 </code></dt>
                             <dd>
                                 <div class="desc"></div>
@@ -1294,9 +1286,11 @@ async def fetch(
                                         <span>Expand source code</span>
                                     </summary>
                                     <pre><code class="python">def fetch_player(
-    self, name: str, type: enums.MembershipType
-) -&gt; Response[helpers.JsonDict]:
-    return self.fetch(&#34;GET&#34;, f&#34;Destiny2/SearchDestinyPlayer/{int(type)}/{name}&#34;)</code></pre>
+    self, name: str, type: enums.MembershipType, /
+) -&gt; Response[helpers.JsonList]:
+    return self.fetch(
+        &#34;GET&#34;, f&#34;Destiny2/SearchDestinyPlayer/{int(type)}/{quote(name)}/&#34;
+    )</code></pre>
                                 </details>
                             </dd>
                             <dt id="aiobungie.http.HTTPClient.fetch_post_activity"><code class="name flex">
@@ -1331,7 +1325,7 @@ async def fetch(
                                 </details>
                             </dd>
                             <dt id="aiobungie.http.HTTPClient.fetch_user"><code class="name flex">
-<span>def <span class="ident">fetch_user</span></span>(<span>self, name: str) ‑> Response[helpers.JsonList]</span>
+<span>def <span class="ident">fetch_user</span></span>(<span>self, id: int) ‑> Response[helpers.JsonDict]</span>
 </code></dt>
                             <dd>
                                 <div class="desc"></div>
@@ -1339,20 +1333,7 @@ async def fetch(
                                     <summary>
                                         <span>Expand source code</span>
                                     </summary>
-                                    <pre><code class="python">def fetch_user(self, name: str) -&gt; Response[helpers.JsonList]:
-    return self.fetch(&#34;GET&#34;, f&#34;User/SearchUsers/?q={name}&#34;)</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.http.HTTPClient.fetch_user_from_id"><code class="name flex">
-<span>def <span class="ident">fetch_user_from_id</span></span>(<span>self, id: int) ‑> Response[helpers.JsonDict]</span>
-</code></dt>
-                            <dd>
-                                <div class="desc"></div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">def fetch_user_from_id(self, id: int) -&gt; Response[helpers.JsonDict]:
+                                    <pre><code class="python">def fetch_user(self, id: int) -&gt; Response[helpers.JsonDict]:
     return self.fetch(&#34;GET&#34;, f&#34;User/GetBungieNetUserById/{id}/&#34;)</code></pre>
                                 </details>
                             </dd>
@@ -1488,7 +1469,6 @@ async def fetch(
                                 <li><code><a title="aiobungie.http.HTTPClient.fetch_post_activity" href="#aiobungie.http.HTTPClient.fetch_post_activity">fetch_post_activity</a></code></li>
                                 <li><code><a title="aiobungie.http.HTTPClient.fetch_profile" href="#aiobungie.http.HTTPClient.fetch_profile">fetch_profile</a></code></li>
                                 <li><code><a title="aiobungie.http.HTTPClient.fetch_user" href="#aiobungie.http.HTTPClient.fetch_user">fetch_user</a></code></li>
-                                <li><code><a title="aiobungie.http.HTTPClient.fetch_user_from_id" href="#aiobungie.http.HTTPClient.fetch_user_from_id">fetch_user_from_id</a></code></li>
                                 <li><code><a title="aiobungie.http.HTTPClient.fetch_user_themes" href="#aiobungie.http.HTTPClient.fetch_user_themes">fetch_user_themes</a></code></li>
                                 <li><code><a title="aiobungie.http.HTTPClient.fetch_vendor_sales" href="#aiobungie.http.HTTPClient.fetch_vendor_sales">fetch_vendor_sales</a></code></li>
                                 <li><code><a title="aiobungie.http.HTTPClient.static_search" href="#aiobungie.http.HTTPClient.static_search">static_search</a></code></li>

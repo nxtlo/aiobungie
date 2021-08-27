@@ -35,7 +35,6 @@ import typing
 from urllib.parse import quote
 
 import aiohttp
-import yarl
 
 from aiobungie import _info as info
 from aiobungie import error
@@ -150,7 +149,7 @@ class HTTPClient:
                 ) as session:
                     async with session.request(
                         method=method,
-                        url=f"{url.REST_EP}/{route}",
+                        url=f"{url.REST_EP if not base else url.BASE}/{route}",
                         **kwargs,
                     ) as response:
 
@@ -222,7 +221,7 @@ class HTTPClient:
         self, name: str, type: enums.MembershipType, /
     ) -> Response[helpers.JsonList]:
         return self.fetch(
-            "GET", f"Destiny2/SearchDestinyPlayer/{int(type)}/{quote(name)}"
+            "GET", f"Destiny2/SearchDestinyPlayer/{int(type)}/{quote(name)}/"
         )
 
     def fetch_clan_from_id(self, id: int) -> Response[helpers.JsonDict]:

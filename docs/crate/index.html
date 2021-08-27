@@ -915,7 +915,7 @@ class Application:
 
     @property
     def human_timedelta(self) -&gt; str:
-        &#34;&#34;&#34;Returns a human readble date of the app&#39;s creation date.&#34;&#34;&#34;
+        &#34;&#34;&#34;Returns a human readable date of the app&#39;s creation date.&#34;&#34;&#34;
         return time.human_timedelta(self.created_at)
 
     @property
@@ -959,7 +959,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                             <dt id="aiobungie.crate.Application.human_timedelta"><code class="name">var <span class="ident">human_timedelta</span> : str</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>Returns a human readble date of the app's creation date.</p>
+                                    <p>Returns a human readable date of the app's creation date.</p>
                                 </div>
                                 <details class="source">
                                     <summary>
@@ -967,7 +967,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                     </summary>
                                     <pre><code class="python">@property
 def human_timedelta(self) -&gt; str:
-    &#34;&#34;&#34;Returns a human readble date of the app&#39;s creation date.&#34;&#34;&#34;
+    &#34;&#34;&#34;Returns a human readable date of the app&#39;s creation date.&#34;&#34;&#34;
     return time.human_timedelta(self.created_at)</code></pre>
                                 </details>
                             </dd>
@@ -1023,7 +1023,7 @@ def human_timedelta(self) -&gt; str:
                     </dd>
                     <dt id="aiobungie.crate.ApplicationOwner"><code class="flex name class">
 <span>class <span class="ident">ApplicationOwner</span></span>
-<span>(</span><span>*, name: str, type: enums.MembershipType, id: int, icon: Image, is_public: bool)</span>
+<span>(</span><span>*, name: str, type: enums.MembershipType, id: int, icon: Image, is_public: bool, code: NoneOr[int])</span>
 </code></dt>
                     <dd>
                         <div class="desc">
@@ -1052,6 +1052,21 @@ class ApplicationOwner(UserLike):
 
     is_public: bool = attr.field(repr=True)
     &#34;&#34;&#34;The application owner&#39;s profile privacy.&#34;&#34;&#34;
+
+    code: NoneOr[int] = attr.field(repr=True)
+    &#34;&#34;&#34;The user like&#39;s unique display name code. 
+    This can be None if the user hasn&#39;t logged in after season of the lost update.
+
+    .. versionadded:: 0.2.5
+    &#34;&#34;&#34;
+
+    @property
+    def unique_name(self) -&gt; NoneOr[str]:
+        &#34;&#34;&#34;The user like&#39;s display name. This includes the full name with the user name code.
+
+        .. versionadded:: 0.2.5
+        &#34;&#34;&#34;
+        return f&#34;{self.name}#{self.code}&#34;
 
     @property
     def net(self) -&gt; impl.Netrunner:
@@ -1107,6 +1122,15 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
     )</code></pre>
                                 </details>
                             </dd>
+                            <dt id="aiobungie.crate.ApplicationOwner.code"><code class="name">var <span class="ident">code</span> : Optional[int]</code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>The user like's unique display name code. This can be None if the user hasn't logged in after season of the lost update.</p>
+                                    <div class="admonition versionadded">
+                                        <p class="admonition-title">Added in version:&ensp;0.2.5</p>
+                                    </div>
+                                </div>
+                            </dd>
                             <dt id="aiobungie.crate.ApplicationOwner.icon"><code class="name">var <span class="ident">icon</span> : <a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a></code></dt>
                             <dd>
                                 <div class="desc">
@@ -1132,7 +1156,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                     <code><a title="aiobungie.crate.user.UserLike" href="user.html#aiobungie.crate.user.UserLike">UserLike</a></code>.<code><a title="aiobungie.crate.user.UserLike.link" href="user.html#aiobungie.crate.user.UserLike.link">link</a></code>
                                 </p>
                                 <div class="desc inherited">
-                                    <p>Returns the user's profile link.</p>
+                                    <p>The user like's profile link.</p>
                                 </div>
                                 <details class="source">
                                     <summary>
@@ -1173,6 +1197,28 @@ def net(self) -&gt; impl.Netrunner:
                                 <div class="desc">
                                     <p>The membership of the application owner.</p>
                                 </div>
+                            </dd>
+                            <dt id="aiobungie.crate.ApplicationOwner.unique_name"><code class="name">var <span class="ident">unique_name</span> : Optional[str]</code></dt>
+                            <dd>
+                                <p class="inheritance">
+                                    <em>Inherited from:</em>
+                                    <code><a title="aiobungie.crate.user.UserLike" href="user.html#aiobungie.crate.user.UserLike">UserLike</a></code>.<code><a title="aiobungie.crate.user.UserLike.unique_name" href="user.html#aiobungie.crate.user.UserLike.unique_name">unique_name</a></code>
+                                </p>
+                                <div class="desc inherited">
+                                    <p>The user like's display name. This includes the full name with the user name code …</p>
+                                </div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">@property
+def unique_name(self) -&gt; NoneOr[str]:
+    &#34;&#34;&#34;The user like&#39;s display name. This includes the full name with the user name code.
+
+    .. versionadded:: 0.2.5
+    &#34;&#34;&#34;
+    return f&#34;{self.name}#{self.code}&#34;</code></pre>
+                                </details>
                             </dd>
                         </dl>
                     </dd>
@@ -1310,7 +1356,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                     <code><a title="aiobungie.crate.character.CharacterComponent" href="character.html#aiobungie.crate.character.CharacterComponent">CharacterComponent</a></code>.<code><a title="aiobungie.crate.character.CharacterComponent.human_timedelta" href="character.html#aiobungie.crate.character.CharacterComponent.human_timedelta">human_timedelta</a></code>
                                 </p>
                                 <div class="desc inherited">
-                                    <p>The player's last played time in a human readble date.</p>
+                                    <p>The player's last played time in a human readable date.</p>
                                 </div>
                             </dd>
                             <dt id="aiobungie.crate.Character.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
@@ -1534,7 +1580,7 @@ class CharacterComponent(abc.ABC):
         &#34;&#34;&#34;
 
         # Required params:
-        # POST requrest.
+        # POST request.
         # itemId: item,
         # characterId: self,
         # membershipType: int(self.member_type)
@@ -1564,7 +1610,7 @@ class CharacterComponent(abc.ABC):
         &#34;&#34;&#34;
 
         # Required params:
-        # POST requrest.
+        # POST request.
         # items: List[items],
         # characterId: self,
         # membershipType: int(self.member_type)
@@ -1573,7 +1619,7 @@ class CharacterComponent(abc.ABC):
 
     @property
     def human_timedelta(self) -&gt; str:
-        &#34;&#34;&#34;The player&#39;s last played time in a human readble date.&#34;&#34;&#34;
+        &#34;&#34;&#34;The player&#39;s last played time in a human readable date.&#34;&#34;&#34;
         return time.human_timedelta(time.clean_date(str(self.last_played)))</code></pre>
                         </details>
                         <h3>Ancestors</h3>
@@ -1664,7 +1710,7 @@ def gender(self) -&gt; enums.Gender:
                             <dt id="aiobungie.crate.CharacterComponent.human_timedelta"><code class="name">var <span class="ident">human_timedelta</span> : str</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>The player's last played time in a human readble date.</p>
+                                    <p>The player's last played time in a human readable date.</p>
                                 </div>
                                 <details class="source">
                                     <summary>
@@ -1672,7 +1718,7 @@ def gender(self) -&gt; enums.Gender:
                                     </summary>
                                     <pre><code class="python">@property
 def human_timedelta(self) -&gt; str:
-    &#34;&#34;&#34;The player&#39;s last played time in a human readble date.&#34;&#34;&#34;
+    &#34;&#34;&#34;The player&#39;s last played time in a human readable date.&#34;&#34;&#34;
     return time.human_timedelta(time.clean_date(str(self.last_played)))</code></pre>
                                 </details>
                             </dd>
@@ -1876,7 +1922,7 @@ def url(self) -&gt; str:
     &#34;&#34;&#34;
 
     # Required params:
-    # POST requrest.
+    # POST request.
     # itemId: item,
     # characterId: self,
     # membershipType: int(self.member_type)
@@ -1928,7 +1974,7 @@ def url(self) -&gt; str:
     &#34;&#34;&#34;
 
     # Required params:
-    # POST requrest.
+    # POST request.
     # items: List[items],
     # characterId: self,
     # membershipType: int(self.member_type)
@@ -2091,7 +2137,7 @@ class Clan:
 
     @property
     def human_timedelta(self) -&gt; str:
-        &#34;&#34;&#34;Returns a human readble date of the clan&#39;s creation date.&#34;&#34;&#34;
+        &#34;&#34;&#34;Returns a human readable date of the clan&#39;s creation date.&#34;&#34;&#34;
         return time.human_timedelta(self.created_at)
 
     @property
@@ -2165,7 +2211,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                             <dt id="aiobungie.crate.Clan.human_timedelta"><code class="name">var <span class="ident">human_timedelta</span> : str</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>Returns a human readble date of the clan's creation date.</p>
+                                    <p>Returns a human readable date of the clan's creation date.</p>
                                 </div>
                                 <details class="source">
                                     <summary>
@@ -2173,7 +2219,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                     </summary>
                                     <pre><code class="python">@property
 def human_timedelta(self) -&gt; str:
-    &#34;&#34;&#34;Returns a human readble date of the clan&#39;s creation date.&#34;&#34;&#34;
+    &#34;&#34;&#34;Returns a human readable date of the clan&#39;s creation date.&#34;&#34;&#34;
     return time.human_timedelta(self.created_at)</code></pre>
                                 </details>
                             </dd>
@@ -2422,7 +2468,7 @@ def url(self) -&gt; str:
                     </dd>
                     <dt id="aiobungie.crate.ClanMember"><code class="flex name class">
 <span>class <span class="ident">ClanMember</span></span>
-<span>(</span><span>*, id: int, name: str, type: MembershipType, icon: Image, is_public: bool, group_id: int, is_online: bool, last_online: datetime, joined_at: datetime)</span>
+<span>(</span><span>*, id: int, name: str, type: MembershipType, types: list[MembershipType], icon: Image, is_public: bool, group_id: int, is_online: bool, last_online: datetime, joined_at: datetime, code: helpers.NoneOr[int])</span>
 </code></dt>
                     <dd>
                         <div class="desc">
@@ -2446,6 +2492,9 @@ class ClanMember(UserLike):
     type: MembershipType = attr.field(repr=True)
     &#34;&#34;&#34;Clan member&#39;s membership type.&#34;&#34;&#34;
 
+    types: list[MembershipType] = attr.field(repr=False)
+    &#34;&#34;&#34;A list of the available clan member membership types.&#34;&#34;&#34;
+
     icon: Image = attr.field(repr=False)
     &#34;&#34;&#34;Clan member&#39;s icon&#34;&#34;&#34;
 
@@ -2455,7 +2504,7 @@ class ClanMember(UserLike):
     group_id: int = attr.field(repr=True)
     &#34;&#34;&#34;The member&#39;s group id.&#34;&#34;&#34;
 
-    is_online: bool = attr.field(repr=True)
+    is_online: bool = attr.field(repr=False)
     &#34;&#34;&#34;True if the clan member is online or not.&#34;&#34;&#34;
 
     last_online: datetime = attr.field(repr=False)
@@ -2464,13 +2513,29 @@ class ClanMember(UserLike):
     joined_at: datetime = attr.field(repr=False)
     &#34;&#34;&#34;The clan member&#39;s join date in UTC time zone.&#34;&#34;&#34;
 
+    code: helpers.NoneOr[int] = attr.field(repr=True)
+    &#34;&#34;&#34;The clan member&#39;s bungie display name code
+    This is new and was added in Season of the lost update
+    
+    .. versionadded:: 0.2.5
+    &#34;&#34;&#34;
+
+    @property
+    def unique_name(self) -&gt; helpers.NoneOr[str]:
+        &#34;&#34;&#34;The user&#39;s unique name which includes their unique code.
+        This field could be None if no unique name found.
+
+        .. versionadded:: 0.2.5
+        &#34;&#34;&#34;
+        return f&#34;{self.name}#{self.code}&#34;
+
     @property
     def net(self) -&gt; impl.Netrunner:
         &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
         return self.net
 
     @property
-    def link(self) -&gt; typing.Optional[str]:
+    def link(self) -&gt; str:
         &#34;&#34;&#34;Clan member&#39;s profile link.&#34;&#34;&#34;
         return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;
 
@@ -2513,7 +2578,7 @@ class ClanMember(UserLike):
                                     <code><a title="aiobungie.crate.user.UserLike" href="user.html#aiobungie.crate.user.UserLike">UserLike</a></code>.<code><a title="aiobungie.crate.user.UserLike.as_dict" href="user.html#aiobungie.crate.user.UserLike.as_dict">as_dict</a></code>
                                 </p>
                                 <div class="desc inherited">
-                                    <p>Returns an instance of the UserLike as a dict.</p>
+                                    <p>An instance of the UserLike as a dict.</p>
                                 </div>
                                 <details class="source">
                                     <summary>
@@ -2523,6 +2588,15 @@ class ClanMember(UserLike):
 def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
     return attr.asdict(self)</code></pre>
                                 </details>
+                            </dd>
+                            <dt id="aiobungie.crate.ClanMember.code"><code class="name">var <span class="ident">code</span> : Optional[int]</code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>The clan member's bungie display name code This is new and was added in Season of the lost update</p>
+                                    <div class="admonition versionadded">
+                                        <p class="admonition-title">Added in version:&ensp;0.2.5</p>
+                                    </div>
+                                </div>
                             </dd>
                             <dt id="aiobungie.crate.ClanMember.group_id"><code class="name">var <span class="ident">group_id</span> : int</code></dt>
                             <dd>
@@ -2566,7 +2640,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                     <p>The date of the clan member's last online in UTC time zone.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.ClanMember.link"><code class="name">var <span class="ident">link</span> : Optional[str]</code></dt>
+                            <dt id="aiobungie.crate.ClanMember.link"><code class="name">var <span class="ident">link</span> : str</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>Clan member's profile link.</p>
@@ -2576,7 +2650,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                         <span>Expand source code</span>
                                     </summary>
                                     <pre><code class="python">@property
-def link(self) -&gt; typing.Optional[str]:
+def link(self) -&gt; str:
     &#34;&#34;&#34;Clan member&#39;s profile link.&#34;&#34;&#34;
     return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;</code></pre>
                                 </details>
@@ -2611,6 +2685,34 @@ def net(self) -&gt; impl.Netrunner:
                                 <div class="desc">
                                     <p>Clan member's membership type.</p>
                                 </div>
+                            </dd>
+                            <dt id="aiobungie.crate.ClanMember.types"><code class="name">var <span class="ident">types</span> : list</code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>A list of the available clan member membership types.</p>
+                                </div>
+                            </dd>
+                            <dt id="aiobungie.crate.ClanMember.unique_name"><code class="name">var <span class="ident">unique_name</span> : Optional[str]</code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>The user's unique name which includes their unique code. This field could be None if no unique name found.</p>
+                                    <div class="admonition versionadded">
+                                        <p class="admonition-title">Added in version:&ensp;0.2.5</p>
+                                    </div>
+                                </div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">@property
+def unique_name(self) -&gt; helpers.NoneOr[str]:
+    &#34;&#34;&#34;The user&#39;s unique name which includes their unique code.
+    This field could be None if no unique name found.
+
+    .. versionadded:: 0.2.5
+    &#34;&#34;&#34;
+    return f&#34;{self.name}#{self.code}&#34;</code></pre>
+                                </details>
                             </dd>
                         </dl>
                         <h3>Methods</h3>
@@ -2673,7 +2775,7 @@ def net(self) -&gt; impl.Netrunner:
                     </dd>
                     <dt id="aiobungie.crate.ClanOwner"><code class="flex name class">
 <span>class <span class="ident">ClanOwner</span></span>
-<span>(</span><span>*, id: int, name: str, is_public: typing.Optional[bool], type: MembershipType, types: typing.Optional[typing.List[int]], last_online: datetime, clan_id: int, icon: Image, joined_at: datetime)</span>
+<span>(</span><span>*, id: int, name: str, is_public: bool, type: MembershipType, types: typing.Optional[typing.List[int]], last_online: datetime, clan_id: int, icon: Image, joined_at: datetime, code: helpers.NoneOr[int])</span>
 </code></dt>
                     <dd>
                         <div class="desc">
@@ -2694,7 +2796,7 @@ class ClanOwner(UserLike):
     name: str = attr.field(repr=True)
     &#34;&#34;&#34;The user name.&#34;&#34;&#34;
 
-    is_public: typing.Optional[bool] = attr.field(hash=False, repr=True, eq=False)
+    is_public: bool = attr.field(hash=False, repr=True, eq=False)
     &#34;&#34;&#34;Returns if the user profile is public or no.&#34;&#34;&#34;
 
     type: MembershipType = attr.field(hash=False, repr=True, eq=True)
@@ -2717,6 +2819,13 @@ class ClanOwner(UserLike):
     joined_at: datetime = attr.field(repr=True)
     &#34;&#34;&#34;Owner&#39;s bungie join date.&#34;&#34;&#34;
 
+    code: helpers.NoneOr[int] = attr.field(repr=True)
+    &#34;&#34;&#34;The user&#39;s unique display name code. 
+    This can be None if the user hasn&#39;t logged in after season of the lost update.
+    
+    .. versionadded:: 0.2.5
+    &#34;&#34;&#34;
+
     @property
     def net(self) -&gt; impl.Netrunner:
         &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
@@ -2724,11 +2833,20 @@ class ClanOwner(UserLike):
 
     @property
     def human_timedelta(self) -&gt; str:
-        &#34;&#34;&#34;Returns a human readble date of the clan owner&#39;s last login.&#34;&#34;&#34;
+        &#34;&#34;&#34;Returns a human readable date of the clan owner&#39;s last login.&#34;&#34;&#34;
         return time.human_timedelta(self.last_online)
 
     @property
-    def link(self) -&gt; typing.Optional[str]:
+    def unique_name(self) -&gt; helpers.NoneOr[str]:
+        &#34;&#34;&#34;The user&#39;s unique name which includes their unique code.
+        This field could be None if no unique name found.
+
+        .. versionadded:: 0.2.5
+        &#34;&#34;&#34;
+        return f&#34;{self.name}#{self.code}&#34;
+
+    @property
+    def link(self) -&gt; str:
         &#34;&#34;&#34;Returns the user&#39;s profile link.&#34;&#34;&#34;
         return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;
 
@@ -2737,13 +2855,7 @@ class ClanOwner(UserLike):
         &#34;&#34;&#34;Returns a dict object of the clan owner,
         This function is useful if you&#39;re binding to other REST apis.
         &#34;&#34;&#34;
-        return attr.asdict(self)
-
-    def __int__(self) -&gt; int:
-        return self.id
-
-    def __str__(self) -&gt; str:
-        return self.name</code></pre>
+        return attr.asdict(self)</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
@@ -2775,10 +2887,19 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                     <p>Owner's current clan id.</p>
                                 </div>
                             </dd>
+                            <dt id="aiobungie.crate.ClanOwner.code"><code class="name">var <span class="ident">code</span> : Optional[int]</code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>The user's unique display name code. This can be None if the user hasn't logged in after season of the lost update.</p>
+                                    <div class="admonition versionadded">
+                                        <p class="admonition-title">Added in version:&ensp;0.2.5</p>
+                                    </div>
+                                </div>
+                            </dd>
                             <dt id="aiobungie.crate.ClanOwner.human_timedelta"><code class="name">var <span class="ident">human_timedelta</span> : str</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>Returns a human readble date of the clan owner's last login.</p>
+                                    <p>Returns a human readable date of the clan owner's last login.</p>
                                 </div>
                                 <details class="source">
                                     <summary>
@@ -2786,7 +2907,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                     </summary>
                                     <pre><code class="python">@property
 def human_timedelta(self) -&gt; str:
-    &#34;&#34;&#34;Returns a human readble date of the clan owner&#39;s last login.&#34;&#34;&#34;
+    &#34;&#34;&#34;Returns a human readable date of the clan owner&#39;s last login.&#34;&#34;&#34;
     return time.human_timedelta(self.last_online)</code></pre>
                                 </details>
                             </dd>
@@ -2802,13 +2923,9 @@ def human_timedelta(self) -&gt; str:
                                     <p>The user id.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.ClanOwner.is_public"><code class="name">var <span class="ident">is_public</span> : Optional[bool]</code></dt>
+                            <dt id="aiobungie.crate.ClanOwner.is_public"><code class="name">var <span class="ident">is_public</span> : bool</code></dt>
                             <dd>
-                                <p class="inheritance">
-                                    <em>Inherited from:</em>
-                                    <code><a title="aiobungie.crate.user.UserLike" href="user.html#aiobungie.crate.user.UserLike">UserLike</a></code>.<code><a title="aiobungie.crate.user.UserLike.is_public" href="user.html#aiobungie.crate.user.UserLike.is_public">is_public</a></code>
-                                </p>
-                                <div class="desc inherited">
+                                <div class="desc">
                                     <p>Returns if the user profile is public or no.</p>
                                 </div>
                             </dd>
@@ -2824,13 +2941,9 @@ def human_timedelta(self) -&gt; str:
                                     <p>An aware <code>datetime.datetime</code> object of the user's last online date UTC.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.ClanOwner.link"><code class="name">var <span class="ident">link</span> : Optional[str]</code></dt>
+                            <dt id="aiobungie.crate.ClanOwner.link"><code class="name">var <span class="ident">link</span> : str</code></dt>
                             <dd>
-                                <p class="inheritance">
-                                    <em>Inherited from:</em>
-                                    <code><a title="aiobungie.crate.user.UserLike" href="user.html#aiobungie.crate.user.UserLike">UserLike</a></code>.<code><a title="aiobungie.crate.user.UserLike.link" href="user.html#aiobungie.crate.user.UserLike.link">link</a></code>
-                                </p>
-                                <div class="desc inherited">
+                                <div class="desc">
                                     <p>Returns the user's profile link.</p>
                                 </div>
                                 <details class="source">
@@ -2838,7 +2951,7 @@ def human_timedelta(self) -&gt; str:
                                         <span>Expand source code</span>
                                     </summary>
                                     <pre><code class="python">@property
-def link(self) -&gt; typing.Optional[str]:
+def link(self) -&gt; str:
     &#34;&#34;&#34;Returns the user&#39;s profile link.&#34;&#34;&#34;
     return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;</code></pre>
                                 </details>
@@ -2879,6 +2992,28 @@ def net(self) -&gt; impl.Netrunner:
                                 <div class="desc">
                                     <p>Returns a list of the member ship's membership types.</p>
                                 </div>
+                            </dd>
+                            <dt id="aiobungie.crate.ClanOwner.unique_name"><code class="name">var <span class="ident">unique_name</span> : Optional[str]</code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>The user's unique name which includes their unique code. This field could be None if no unique name found.</p>
+                                    <div class="admonition versionadded">
+                                        <p class="admonition-title">Added in version:&ensp;0.2.5</p>
+                                    </div>
+                                </div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">@property
+def unique_name(self) -&gt; helpers.NoneOr[str]:
+    &#34;&#34;&#34;The user&#39;s unique name which includes their unique code.
+    This field could be None if no unique name found.
+
+    .. versionadded:: 0.2.5
+    &#34;&#34;&#34;
+    return f&#34;{self.name}#{self.code}&#34;</code></pre>
+                                </details>
                             </dd>
                         </dl>
                     </dd>
@@ -3419,7 +3554,7 @@ class InventoryEntity(Entity):
                     </dd>
                     <dt id="aiobungie.crate.Player"><code class="flex name class">
 <span>class <span class="ident">Player</span></span>
-<span>(</span><span>*, icon: Image, id: int, name: str, is_public: bool, type: MembershipType)</span>
+<span>(</span><span>*, icon: Image, id: int, name: str, is_public: bool, type: MembershipType, code: helpers.NoneOr[int], crossave_override: int, types: list[MembershipType])</span>
 </code></dt>
                     <dd>
                         <div class="desc">
@@ -3449,6 +3584,34 @@ class Player(UserLike):
     type: MembershipType = attr.field(repr=True, eq=True, hash=False)
     &#34;&#34;&#34;The profile&#39;s membership type.&#34;&#34;&#34;
 
+    code: helpers.NoneOr[int] = attr.field(repr=True)
+    &#34;&#34;&#34;The clan member&#39;s bungie display name code
+    This is new and was added in Season of the lost update
+    
+    .. versionadded:: 0.2.5
+    &#34;&#34;&#34;
+
+    crossave_override: int = attr.field(repr=False)
+    &#34;&#34;&#34;Returns `1` if the user has a cross save override in effect and 0 if not.
+    
+    .. versionadded:: 0.2.5
+    &#34;&#34;&#34;
+
+    types: list[MembershipType] = attr.field(repr=False)
+    &#34;&#34;&#34;A list of the player&#39;s membership types.
+    
+    .. versionadded:: 0.2.5
+    &#34;&#34;&#34;
+
+    @property
+    def unique_name(self) -&gt; helpers.NoneOr[str]:
+        &#34;&#34;&#34;The user&#39;s unique display name code.
+        This can be None if the user hasn&#39;t logged in after season of the lost update.
+
+        .. versionadded:: 0.2.5
+        &#34;&#34;&#34;
+        return f&#34;{self.name}#{self.code}&#34;
+
     @property
     def net(self) -&gt; impl.Netrunner:
         &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
@@ -3458,13 +3621,7 @@ class Player(UserLike):
     def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
         &#34;&#34;&#34;Returns a dict object of the player.&#34;&#34;&#34;
 
-        return attr.asdict(self)
-
-    def __int__(self) -&gt; int:
-        return int(self.id)
-
-    def __str__(self) -&gt; str:
-        return self.name</code></pre>
+        return attr.asdict(self)</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
@@ -3489,6 +3646,24 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
     return attr.asdict(self)</code></pre>
                                 </details>
                             </dd>
+                            <dt id="aiobungie.crate.Player.code"><code class="name">var <span class="ident">code</span> : Optional[int]</code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>The clan member's bungie display name code This is new and was added in Season of the lost update</p>
+                                    <div class="admonition versionadded">
+                                        <p class="admonition-title">Added in version:&ensp;0.2.5</p>
+                                    </div>
+                                </div>
+                            </dd>
+                            <dt id="aiobungie.crate.Player.crossave_override"><code class="name">var <span class="ident">crossave_override</span> : int</code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Returns <code>1</code> if the user has a cross save override in effect and 0 if not.</p>
+                                    <div class="admonition versionadded">
+                                        <p class="admonition-title">Added in version:&ensp;0.2.5</p>
+                                    </div>
+                                </div>
+                            </dd>
                             <dt id="aiobungie.crate.Player.icon"><code class="name">var <span class="ident">icon</span> : <a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a></code></dt>
                             <dd>
                                 <div class="desc">
@@ -3507,14 +3682,14 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                     <p>The player's profile privacy.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.Player.link"><code class="name">var <span class="ident">link</span> : Optional[str]</code></dt>
+                            <dt id="aiobungie.crate.Player.link"><code class="name">var <span class="ident">link</span> : str</code></dt>
                             <dd>
                                 <p class="inheritance">
                                     <em>Inherited from:</em>
                                     <code><a title="aiobungie.crate.user.UserLike" href="user.html#aiobungie.crate.user.UserLike">UserLike</a></code>.<code><a title="aiobungie.crate.user.UserLike.link" href="user.html#aiobungie.crate.user.UserLike.link">link</a></code>
                                 </p>
                                 <div class="desc inherited">
-                                    <p>Returns the user's profile link.</p>
+                                    <p>The user like's profile link.</p>
                                 </div>
                             </dd>
                             <dt id="aiobungie.crate.Player.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
@@ -3547,6 +3722,37 @@ def net(self) -&gt; impl.Netrunner:
                                 <div class="desc">
                                     <p>The profile's membership type.</p>
                                 </div>
+                            </dd>
+                            <dt id="aiobungie.crate.Player.types"><code class="name">var <span class="ident">types</span> : list</code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>A list of the player's membership types.</p>
+                                    <div class="admonition versionadded">
+                                        <p class="admonition-title">Added in version:&ensp;0.2.5</p>
+                                    </div>
+                                </div>
+                            </dd>
+                            <dt id="aiobungie.crate.Player.unique_name"><code class="name">var <span class="ident">unique_name</span> : Optional[str]</code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>The user's unique display name code. This can be None if the user hasn't logged in after season of the lost update.</p>
+                                    <div class="admonition versionadded">
+                                        <p class="admonition-title">Added in version:&ensp;0.2.5</p>
+                                    </div>
+                                </div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">@property
+def unique_name(self) -&gt; helpers.NoneOr[str]:
+    &#34;&#34;&#34;The user&#39;s unique display name code.
+    This can be None if the user hasn&#39;t logged in after season of the lost update.
+
+    .. versionadded:: 0.2.5
+    &#34;&#34;&#34;
+    return f&#34;{self.name}#{self.code}&#34;</code></pre>
+                                </details>
                             </dd>
                         </dl>
                     </dd>
@@ -3584,7 +3790,7 @@ class PostActivity:
     &#34;&#34;&#34;A list of the post activity&#39;s game mode.&#34;&#34;&#34;
 
     membership_type: enums.MembershipType = attr.field(repr=True, eq=False, hash=False)
-    &#34;&#34;&#34;The post activity&#39;s memebership type.&#34;&#34;&#34;
+    &#34;&#34;&#34;The post activity&#39;s membership type.&#34;&#34;&#34;
 
     players: typing.Sequence[typing.Dict[str, typing.Any]] = attr.field(repr=False)
 
@@ -3634,7 +3840,7 @@ def is_fresh(self) -&gt; bool:
                             <dt id="aiobungie.crate.PostActivity.membership_type"><code class="name">var <span class="ident">membership_type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>The post activity's memebership type.</p>
+                                    <p>The post activity's membership type.</p>
                                 </div>
                             </dd>
                             <dt id="aiobungie.crate.PostActivity.mode"><code class="name">var <span class="ident">mode</span> : Optional[<a title="aiobungie.internal.enums.GameMode" href="./internal/enums.html#aiobungie.internal.enums.GameMode">GameMode</a>]</code></dt>
@@ -4356,7 +4562,7 @@ def type(self) -&gt; enums.MembershipType:
                     </dd>
                     <dt id="aiobungie.crate.User"><code class="flex name class">
 <span>class <span class="ident">User</span></span>
-<span>(</span><span>*, id: int, created_at: datetime, name: str, is_deleted: bool, about: typing.Optional[str], updated_at: datetime, psn_name: typing.Optional[str], steam_name: typing.Optional[str], twitch_name: typing.Optional[str], blizzard_name: typing.Optional[str], status: typing.Optional[str], locale: typing.Optional[str], picture: Image)</span>
+<span>(</span><span>*, id: int, created_at: datetime, name: str, unique_name: helpers.NoneOr[str], is_deleted: bool, about: typing.Optional[str], updated_at: datetime, psn_name: typing.Optional[str], steam_name: typing.Optional[str], twitch_name: typing.Optional[str], blizzard_name: typing.Optional[str], status: typing.Optional[str], locale: typing.Optional[str], picture: Image, code: helpers.NoneOr[int])</span>
 </code></dt>
                     <dd>
                         <div class="desc">
@@ -4368,7 +4574,7 @@ def type(self) -&gt; enums.MembershipType:
                                 <span>Expand source code</span>
                             </summary>
                             <pre><code class="python">@attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
-class User(PartialUser):
+class User:
     &#34;&#34;&#34;Represents Bungie user.&#34;&#34;&#34;
 
     id: int = attr.field(hash=True, repr=True)
@@ -4380,28 +4586,35 @@ class User(PartialUser):
     name: str = attr.field(hash=False, eq=False, repr=True)
     &#34;&#34;&#34;The user&#39;s name.&#34;&#34;&#34;
 
-    is_deleted: bool = attr.field(repr=True, eq=False, hash=False)
-    &#34;&#34;&#34;Returns True if the user is deleted&#34;&#34;&#34;
+    unique_name: helpers.NoneOr[str] = attr.field(repr=False)
+    &#34;&#34;&#34;The user&#39;s unique name which includes their unique code.
+    This field could be None if no unique name found.
+    
+    .. versionadded:: 0.2.5
+    &#34;&#34;&#34;
+
+    is_deleted: bool = attr.field(repr=False, eq=False, hash=False)
+    &#34;&#34;&#34; True if the user is deleted&#34;&#34;&#34;
 
     about: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s about, Default is None if nothing is Found.&#34;&#34;&#34;
 
-    updated_at: datetime = attr.field(repr=True, hash=False, eq=False)
+    updated_at: datetime = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s last updated om UTC date.&#34;&#34;&#34;
 
-    psn_name: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    psn_name: typing.Optional[str] = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s psn id if it exists.&#34;&#34;&#34;
 
-    steam_name: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    steam_name: typing.Optional[str] = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s steam name if it exists&#34;&#34;&#34;
 
-    twitch_name: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    twitch_name: typing.Optional[str] = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s twitch name if it exists.&#34;&#34;&#34;
 
-    blizzard_name: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    blizzard_name: typing.Optional[str] = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s blizzard name if it exists.&#34;&#34;&#34;
 
-    status: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    status: typing.Optional[str] = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s bungie status text&#34;&#34;&#34;
 
     locale: typing.Optional[str] = attr.field(repr=False, hash=False, eq=False)
@@ -4410,22 +4623,29 @@ class User(PartialUser):
     picture: Image = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s profile picture.&#34;&#34;&#34;
 
-    @property
-    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        &#34;&#34;&#34;Returns a dict object of the user.&#34;&#34;&#34;
-        return attr.asdict(self)
+    code: helpers.NoneOr[int] = attr.field(repr=True)
+    &#34;&#34;&#34;The user&#39;s unique display name code. 
+    This can be None if the user hasn&#39;t logged in after season of the lost update.
+    
+    .. versionadded:: 0.2.5
+    &#34;&#34;&#34;
 
     def __str__(self) -&gt; str:
         return self.name
 
     def __int__(self) -&gt; int:
-        return int(self.id)</code></pre>
+        return self.id
+
+    @property
+    def human_timedelta(self) -&gt; str:
+        &#34;&#34;&#34;A human readable date version of the user&#39;s creation date.&#34;&#34;&#34;
+        return time.human_timedelta(self.created_at)
+
+    @property
+    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
+        &#34;&#34;&#34;a dict object of the user.&#34;&#34;&#34;
+        return attr.asdict(self)</code></pre>
                         </details>
-                        <h3>Ancestors</h3>
-                        <ul class="hlist">
-                            <li><a title="aiobungie.crate.user.PartialUser" href="user.html#aiobungie.crate.user.PartialUser">PartialUser</a></li>
-                            <li>abc.ABC</li>
-                        </ul>
                         <h3>Instance variables</h3>
                         <dl>
                             <dt id="aiobungie.crate.User.about"><code class="name">var <span class="ident">about</span> : Optional[str]</code></dt>
@@ -4437,7 +4657,7 @@ class User(PartialUser):
                             <dt id="aiobungie.crate.User.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>Returns a dict object of the user.</p>
+                                    <p>a dict object of the user.</p>
                                 </div>
                                 <details class="source">
                                     <summary>
@@ -4445,7 +4665,7 @@ class User(PartialUser):
                                     </summary>
                                     <pre><code class="python">@property
 def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-    &#34;&#34;&#34;Returns a dict object of the user.&#34;&#34;&#34;
+    &#34;&#34;&#34;a dict object of the user.&#34;&#34;&#34;
     return attr.asdict(self)</code></pre>
                                 </details>
                             </dd>
@@ -4455,11 +4675,35 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                     <p>The user's blizzard name if it exists.</p>
                                 </div>
                             </dd>
+                            <dt id="aiobungie.crate.User.code"><code class="name">var <span class="ident">code</span> : Optional[int]</code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>The user's unique display name code. This can be None if the user hasn't logged in after season of the lost update.</p>
+                                    <div class="admonition versionadded">
+                                        <p class="admonition-title">Added in version:&ensp;0.2.5</p>
+                                    </div>
+                                </div>
+                            </dd>
                             <dt id="aiobungie.crate.User.created_at"><code class="name">var <span class="ident">created_at</span> : datetime.datetime</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>The user's creation date in UTC timezone.</p>
                                 </div>
+                            </dd>
+                            <dt id="aiobungie.crate.User.human_timedelta"><code class="name">var <span class="ident">human_timedelta</span> : str</code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>A human readable date version of the user's creation date.</p>
+                                </div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">@property
+def human_timedelta(self) -&gt; str:
+    &#34;&#34;&#34;A human readable date version of the user&#39;s creation date.&#34;&#34;&#34;
+    return time.human_timedelta(self.created_at)</code></pre>
+                                </details>
                             </dd>
                             <dt id="aiobungie.crate.User.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
                             <dd>
@@ -4470,7 +4714,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                             <dt id="aiobungie.crate.User.is_deleted"><code class="name">var <span class="ident">is_deleted</span> : bool</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>Returns True if the user is deleted</p>
+                                    <p>True if the user is deleted</p>
                                 </div>
                             </dd>
                             <dt id="aiobungie.crate.User.locale"><code class="name">var <span class="ident">locale</span> : Optional[str]</code></dt>
@@ -4481,11 +4725,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                             </dd>
                             <dt id="aiobungie.crate.User.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
                             <dd>
-                                <p class="inheritance">
-                                    <em>Inherited from:</em>
-                                    <code><a title="aiobungie.crate.user.PartialUser" href="user.html#aiobungie.crate.user.PartialUser">PartialUser</a></code>.<code><a title="aiobungie.crate.user.PartialUser.name" href="user.html#aiobungie.crate.user.PartialUser.name">name</a></code>
-                                </p>
-                                <div class="desc inherited">
+                                <div class="desc">
                                     <p>The user's name.</p>
                                 </div>
                             </dd>
@@ -4519,6 +4759,15 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                     <p>The user's twitch name if it exists.</p>
                                 </div>
                             </dd>
+                            <dt id="aiobungie.crate.User.unique_name"><code class="name">var <span class="ident">unique_name</span> : Optional[str]</code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>The user's unique name which includes their unique code. This field could be None if no unique name found.</p>
+                                    <div class="admonition versionadded">
+                                        <p class="admonition-title">Added in version:&ensp;0.2.5</p>
+                                    </div>
+                                </div>
+                            </dd>
                             <dt id="aiobungie.crate.User.updated_at"><code class="name">var <span class="ident">updated_at</span> : datetime.datetime</code></dt>
                             <dd>
                                 <div class="desc">
@@ -4532,7 +4781,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
 </code></dt>
                     <dd>
                         <div class="desc">
-                            <p>The is meant for any Member / user / like crate.</p>
+                            <p>The is meant for any bungie userlike object.</p>
                             <p>Method generated by attrs for class UserLike.</p>
                         </div>
                         <details class="source">
@@ -4541,7 +4790,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                             </summary>
                             <pre><code class="python">@attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
 class UserLike(abc.ABC):
-    &#34;&#34;&#34;The is meant for any Member / user / like crate.&#34;&#34;&#34;
+    &#34;&#34;&#34;The is meant for any bungie userlike object.&#34;&#34;&#34;
 
     @property
     @abc.abstractmethod
@@ -4550,35 +4799,61 @@ class UserLike(abc.ABC):
 
     @property
     @abc.abstractmethod
+    def id(self) -&gt; int:
+        &#34;&#34;&#34;The user like&#39;s id.&#34;&#34;&#34;
+
+    @property
+    @abc.abstractmethod
     def name(self) -&gt; str:
-        &#34;&#34;&#34;The user&#39;s name.&#34;&#34;&#34;
+        &#34;&#34;&#34;The user like&#39;s name.&#34;&#34;&#34;
 
     @property
     @abc.abstractmethod
-    def is_public(self) -&gt; typing.Optional[bool]:
-        &#34;&#34;&#34;Returns if the user profile is public or no.&#34;&#34;&#34;
+    def is_public(self) -&gt; bool:
+        &#34;&#34;&#34;True if the user profile is public or no.&#34;&#34;&#34;
 
     @property
     @abc.abstractmethod
-    def type(self) -&gt; typing.Optional[enums.MembershipType]:
-        &#34;&#34;&#34;Returns the user type of the user.&#34;&#34;&#34;
+    def type(self) -&gt; enums.MembershipType:
+        &#34;&#34;&#34;The user type of the user.&#34;&#34;&#34;
 
     @property
     @abc.abstractmethod
     def icon(self) -&gt; Image:
-        &#34;&#34;&#34;The user&#39;s icon.&#34;&#34;&#34;
-
-    @property
-    def link(self) -&gt; typing.Optional[str]:
-        &#34;&#34;&#34;Returns the user&#39;s profile link.&#34;&#34;&#34;
+        &#34;&#34;&#34;The user like&#39;s icon.&#34;&#34;&#34;
 
     @property
     @abc.abstractmethod
     def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        &#34;&#34;&#34;Returns an instance of the UserLike as a dict.&#34;&#34;&#34;
+        &#34;&#34;&#34;An instance of the UserLike as a dict.&#34;&#34;&#34;
+
+    @property
+    @abc.abstractmethod
+    def code(self) -&gt; helpers.NoneOr[int]:
+        &#34;&#34;&#34;The user like&#39;s unique display name code.
+        This can be None if the user hasn&#39;t logged in after season of the lost update.
+
+        .. versionadded:: 0.2.5
+        &#34;&#34;&#34;
+
+    @property
+    @abc.abstractmethod
+    def unique_name(self) -&gt; helpers.NoneOr[str]:
+        &#34;&#34;&#34;The user like&#39;s display name. This includes the full name with the user name code.
+
+        .. versionadded:: 0.2.5
+        &#34;&#34;&#34;
+
+    @property
+    def link(self) -&gt; str:
+        &#34;&#34;&#34;The user like&#39;s profile link.&#34;&#34;&#34;
+        raise NotImplementedError
 
     def __str__(self) -&gt; str:
-        return self.name</code></pre>
+        return self.name
+
+    def __int__(self) -&gt; int:
+        return self.id</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
@@ -4596,7 +4871,7 @@ class UserLike(abc.ABC):
                             <dt id="aiobungie.crate.UserLike.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>Returns an instance of the UserLike as a dict.</p>
+                                    <p>An instance of the UserLike as a dict.</p>
                                 </div>
                                 <details class="source">
                                     <summary>
@@ -4605,13 +4880,35 @@ class UserLike(abc.ABC):
                                     <pre><code class="python">@property
 @abc.abstractmethod
 def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-    &#34;&#34;&#34;Returns an instance of the UserLike as a dict.&#34;&#34;&#34;</code></pre>
+    &#34;&#34;&#34;An instance of the UserLike as a dict.&#34;&#34;&#34;</code></pre>
+                                </details>
+                            </dd>
+                            <dt id="aiobungie.crate.UserLike.code"><code class="name">var <span class="ident">code</span> : Optional[int]</code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>The user like's unique display name code. This can be None if the user hasn't logged in after season of the lost update.</p>
+                                    <div class="admonition versionadded">
+                                        <p class="admonition-title">Added in version:&ensp;0.2.5</p>
+                                    </div>
+                                </div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">@property
+@abc.abstractmethod
+def code(self) -&gt; helpers.NoneOr[int]:
+    &#34;&#34;&#34;The user like&#39;s unique display name code.
+    This can be None if the user hasn&#39;t logged in after season of the lost update.
+
+    .. versionadded:: 0.2.5
+    &#34;&#34;&#34;</code></pre>
                                 </details>
                             </dd>
                             <dt id="aiobungie.crate.UserLike.icon"><code class="name">var <span class="ident">icon</span> : <a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a></code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>The user's icon.</p>
+                                    <p>The user like's icon.</p>
                                 </div>
                                 <details class="source">
                                     <summary>
@@ -4620,13 +4917,13 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                     <pre><code class="python">@property
 @abc.abstractmethod
 def icon(self) -&gt; Image:
-    &#34;&#34;&#34;The user&#39;s icon.&#34;&#34;&#34;</code></pre>
+    &#34;&#34;&#34;The user like&#39;s icon.&#34;&#34;&#34;</code></pre>
                                 </details>
                             </dd>
-                            <dt id="aiobungie.crate.UserLike.is_public"><code class="name">var <span class="ident">is_public</span> : Optional[bool]</code></dt>
+                            <dt id="aiobungie.crate.UserLike.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>Returns if the user profile is public or no.</p>
+                                    <p>The user like's id.</p>
                                 </div>
                                 <details class="source">
                                     <summary>
@@ -4634,28 +4931,44 @@ def icon(self) -&gt; Image:
                                     </summary>
                                     <pre><code class="python">@property
 @abc.abstractmethod
-def is_public(self) -&gt; typing.Optional[bool]:
-    &#34;&#34;&#34;Returns if the user profile is public or no.&#34;&#34;&#34;</code></pre>
+def id(self) -&gt; int:
+    &#34;&#34;&#34;The user like&#39;s id.&#34;&#34;&#34;</code></pre>
                                 </details>
                             </dd>
-                            <dt id="aiobungie.crate.UserLike.link"><code class="name">var <span class="ident">link</span> : Optional[str]</code></dt>
+                            <dt id="aiobungie.crate.UserLike.is_public"><code class="name">var <span class="ident">is_public</span> : bool</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>Returns the user's profile link.</p>
+                                    <p>True if the user profile is public or no.</p>
                                 </div>
                                 <details class="source">
                                     <summary>
                                         <span>Expand source code</span>
                                     </summary>
                                     <pre><code class="python">@property
-def link(self) -&gt; typing.Optional[str]:
-    &#34;&#34;&#34;Returns the user&#39;s profile link.&#34;&#34;&#34;</code></pre>
+@abc.abstractmethod
+def is_public(self) -&gt; bool:
+    &#34;&#34;&#34;True if the user profile is public or no.&#34;&#34;&#34;</code></pre>
+                                </details>
+                            </dd>
+                            <dt id="aiobungie.crate.UserLike.link"><code class="name">var <span class="ident">link</span> : str</code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>The user like's profile link.</p>
+                                </div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">@property
+def link(self) -&gt; str:
+    &#34;&#34;&#34;The user like&#39;s profile link.&#34;&#34;&#34;
+    raise NotImplementedError</code></pre>
                                 </details>
                             </dd>
                             <dt id="aiobungie.crate.UserLike.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>The user's name.</p>
+                                    <p>The user like's name.</p>
                                 </div>
                                 <details class="source">
                                     <summary>
@@ -4664,7 +4977,7 @@ def link(self) -&gt; typing.Optional[str]:
                                     <pre><code class="python">@property
 @abc.abstractmethod
 def name(self) -&gt; str:
-    &#34;&#34;&#34;The user&#39;s name.&#34;&#34;&#34;</code></pre>
+    &#34;&#34;&#34;The user like&#39;s name.&#34;&#34;&#34;</code></pre>
                                 </details>
                             </dd>
                             <dt id="aiobungie.crate.UserLike.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.impl.Netrunner" href="./internal/impl.html#aiobungie.internal.impl.Netrunner">Netrunner</a></code></dt>
@@ -4682,10 +4995,10 @@ def net(self) -&gt; impl.Netrunner:
     &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;</code></pre>
                                 </details>
                             </dd>
-                            <dt id="aiobungie.crate.UserLike.type"><code class="name">var <span class="ident">type</span> : Optional[<a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a>]</code></dt>
+                            <dt id="aiobungie.crate.UserLike.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>Returns the user type of the user.</p>
+                                    <p>The user type of the user.</p>
                                 </div>
                                 <details class="source">
                                     <summary>
@@ -4693,8 +5006,29 @@ def net(self) -&gt; impl.Netrunner:
                                     </summary>
                                     <pre><code class="python">@property
 @abc.abstractmethod
-def type(self) -&gt; typing.Optional[enums.MembershipType]:
-    &#34;&#34;&#34;Returns the user type of the user.&#34;&#34;&#34;</code></pre>
+def type(self) -&gt; enums.MembershipType:
+    &#34;&#34;&#34;The user type of the user.&#34;&#34;&#34;</code></pre>
+                                </details>
+                            </dd>
+                            <dt id="aiobungie.crate.UserLike.unique_name"><code class="name">var <span class="ident">unique_name</span> : Optional[str]</code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>The user like's display name. This includes the full name with the user name code.</p>
+                                    <div class="admonition versionadded">
+                                        <p class="admonition-title">Added in version:&ensp;0.2.5</p>
+                                    </div>
+                                </div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">@property
+@abc.abstractmethod
+def unique_name(self) -&gt; helpers.NoneOr[str]:
+    &#34;&#34;&#34;The user like&#39;s display name. This includes the full name with the user name code.
+
+    .. versionadded:: 0.2.5
+    &#34;&#34;&#34;</code></pre>
                                 </details>
                             </dd>
                         </dl>
@@ -4829,6 +5163,7 @@ def type(self) -&gt; typing.Optional[enums.MembershipType]:
                             <h4><code><a title="aiobungie.crate.ApplicationOwner" href="#aiobungie.crate.ApplicationOwner">ApplicationOwner</a></code></h4>
                             <ul class="two-column">
                                 <li><code><a title="aiobungie.crate.ApplicationOwner.as_dict" href="#aiobungie.crate.ApplicationOwner.as_dict">as_dict</a></code></li>
+                                <li><code><a title="aiobungie.crate.ApplicationOwner.code" href="#aiobungie.crate.ApplicationOwner.code">code</a></code></li>
                                 <li><code><a title="aiobungie.crate.ApplicationOwner.icon" href="#aiobungie.crate.ApplicationOwner.icon">icon</a></code></li>
                                 <li><code><a title="aiobungie.crate.ApplicationOwner.id" href="#aiobungie.crate.ApplicationOwner.id">id</a></code></li>
                                 <li><code><a title="aiobungie.crate.ApplicationOwner.is_public" href="#aiobungie.crate.ApplicationOwner.is_public">is_public</a></code></li>
@@ -4836,6 +5171,7 @@ def type(self) -&gt; typing.Optional[enums.MembershipType]:
                                 <li><code><a title="aiobungie.crate.ApplicationOwner.name" href="#aiobungie.crate.ApplicationOwner.name">name</a></code></li>
                                 <li><code><a title="aiobungie.crate.ApplicationOwner.net" href="#aiobungie.crate.ApplicationOwner.net">net</a></code></li>
                                 <li><code><a title="aiobungie.crate.ApplicationOwner.type" href="#aiobungie.crate.ApplicationOwner.type">type</a></code></li>
+                                <li><code><a title="aiobungie.crate.ApplicationOwner.unique_name" href="#aiobungie.crate.ApplicationOwner.unique_name">unique_name</a></code></li>
                             </ul>
                         </li>
                         <li>
@@ -4918,6 +5254,7 @@ def type(self) -&gt; typing.Optional[enums.MembershipType]:
                             <ul class="two-column">
                                 <li><code><a title="aiobungie.crate.ClanMember.as_dict" href="#aiobungie.crate.ClanMember.as_dict">as_dict</a></code></li>
                                 <li><code><a title="aiobungie.crate.ClanMember.ban" href="#aiobungie.crate.ClanMember.ban">ban</a></code></li>
+                                <li><code><a title="aiobungie.crate.ClanMember.code" href="#aiobungie.crate.ClanMember.code">code</a></code></li>
                                 <li><code><a title="aiobungie.crate.ClanMember.group_id" href="#aiobungie.crate.ClanMember.group_id">group_id</a></code></li>
                                 <li><code><a title="aiobungie.crate.ClanMember.icon" href="#aiobungie.crate.ClanMember.icon">icon</a></code></li>
                                 <li><code><a title="aiobungie.crate.ClanMember.id" href="#aiobungie.crate.ClanMember.id">id</a></code></li>
@@ -4930,7 +5267,9 @@ def type(self) -&gt; typing.Optional[enums.MembershipType]:
                                 <li><code><a title="aiobungie.crate.ClanMember.name" href="#aiobungie.crate.ClanMember.name">name</a></code></li>
                                 <li><code><a title="aiobungie.crate.ClanMember.net" href="#aiobungie.crate.ClanMember.net">net</a></code></li>
                                 <li><code><a title="aiobungie.crate.ClanMember.type" href="#aiobungie.crate.ClanMember.type">type</a></code></li>
+                                <li><code><a title="aiobungie.crate.ClanMember.types" href="#aiobungie.crate.ClanMember.types">types</a></code></li>
                                 <li><code><a title="aiobungie.crate.ClanMember.unban" href="#aiobungie.crate.ClanMember.unban">unban</a></code></li>
+                                <li><code><a title="aiobungie.crate.ClanMember.unique_name" href="#aiobungie.crate.ClanMember.unique_name">unique_name</a></code></li>
                             </ul>
                         </li>
                         <li>
@@ -4938,6 +5277,7 @@ def type(self) -&gt; typing.Optional[enums.MembershipType]:
                             <ul class="two-column">
                                 <li><code><a title="aiobungie.crate.ClanOwner.as_dict" href="#aiobungie.crate.ClanOwner.as_dict">as_dict</a></code></li>
                                 <li><code><a title="aiobungie.crate.ClanOwner.clan_id" href="#aiobungie.crate.ClanOwner.clan_id">clan_id</a></code></li>
+                                <li><code><a title="aiobungie.crate.ClanOwner.code" href="#aiobungie.crate.ClanOwner.code">code</a></code></li>
                                 <li><code><a title="aiobungie.crate.ClanOwner.human_timedelta" href="#aiobungie.crate.ClanOwner.human_timedelta">human_timedelta</a></code></li>
                                 <li><code><a title="aiobungie.crate.ClanOwner.icon" href="#aiobungie.crate.ClanOwner.icon">icon</a></code></li>
                                 <li><code><a title="aiobungie.crate.ClanOwner.id" href="#aiobungie.crate.ClanOwner.id">id</a></code></li>
@@ -4949,6 +5289,7 @@ def type(self) -&gt; typing.Optional[enums.MembershipType]:
                                 <li><code><a title="aiobungie.crate.ClanOwner.net" href="#aiobungie.crate.ClanOwner.net">net</a></code></li>
                                 <li><code><a title="aiobungie.crate.ClanOwner.type" href="#aiobungie.crate.ClanOwner.type">type</a></code></li>
                                 <li><code><a title="aiobungie.crate.ClanOwner.types" href="#aiobungie.crate.ClanOwner.types">types</a></code></li>
+                                <li><code><a title="aiobungie.crate.ClanOwner.unique_name" href="#aiobungie.crate.ClanOwner.unique_name">unique_name</a></code></li>
                             </ul>
                         </li>
                         <li>
@@ -5005,6 +5346,8 @@ def type(self) -&gt; typing.Optional[enums.MembershipType]:
                             <h4><code><a title="aiobungie.crate.Player" href="#aiobungie.crate.Player">Player</a></code></h4>
                             <ul class="two-column">
                                 <li><code><a title="aiobungie.crate.Player.as_dict" href="#aiobungie.crate.Player.as_dict">as_dict</a></code></li>
+                                <li><code><a title="aiobungie.crate.Player.code" href="#aiobungie.crate.Player.code">code</a></code></li>
+                                <li><code><a title="aiobungie.crate.Player.crossave_override" href="#aiobungie.crate.Player.crossave_override">crossave_override</a></code></li>
                                 <li><code><a title="aiobungie.crate.Player.icon" href="#aiobungie.crate.Player.icon">icon</a></code></li>
                                 <li><code><a title="aiobungie.crate.Player.id" href="#aiobungie.crate.Player.id">id</a></code></li>
                                 <li><code><a title="aiobungie.crate.Player.is_public" href="#aiobungie.crate.Player.is_public">is_public</a></code></li>
@@ -5012,6 +5355,8 @@ def type(self) -&gt; typing.Optional[enums.MembershipType]:
                                 <li><code><a title="aiobungie.crate.Player.name" href="#aiobungie.crate.Player.name">name</a></code></li>
                                 <li><code><a title="aiobungie.crate.Player.net" href="#aiobungie.crate.Player.net">net</a></code></li>
                                 <li><code><a title="aiobungie.crate.Player.type" href="#aiobungie.crate.Player.type">type</a></code></li>
+                                <li><code><a title="aiobungie.crate.Player.types" href="#aiobungie.crate.Player.types">types</a></code></li>
+                                <li><code><a title="aiobungie.crate.Player.unique_name" href="#aiobungie.crate.Player.unique_name">unique_name</a></code></li>
                             </ul>
                         </li>
                         <li>
@@ -5070,7 +5415,9 @@ def type(self) -&gt; typing.Optional[enums.MembershipType]:
                                 <li><code><a title="aiobungie.crate.User.about" href="#aiobungie.crate.User.about">about</a></code></li>
                                 <li><code><a title="aiobungie.crate.User.as_dict" href="#aiobungie.crate.User.as_dict">as_dict</a></code></li>
                                 <li><code><a title="aiobungie.crate.User.blizzard_name" href="#aiobungie.crate.User.blizzard_name">blizzard_name</a></code></li>
+                                <li><code><a title="aiobungie.crate.User.code" href="#aiobungie.crate.User.code">code</a></code></li>
                                 <li><code><a title="aiobungie.crate.User.created_at" href="#aiobungie.crate.User.created_at">created_at</a></code></li>
+                                <li><code><a title="aiobungie.crate.User.human_timedelta" href="#aiobungie.crate.User.human_timedelta">human_timedelta</a></code></li>
                                 <li><code><a title="aiobungie.crate.User.id" href="#aiobungie.crate.User.id">id</a></code></li>
                                 <li><code><a title="aiobungie.crate.User.is_deleted" href="#aiobungie.crate.User.is_deleted">is_deleted</a></code></li>
                                 <li><code><a title="aiobungie.crate.User.locale" href="#aiobungie.crate.User.locale">locale</a></code></li>
@@ -5080,6 +5427,7 @@ def type(self) -&gt; typing.Optional[enums.MembershipType]:
                                 <li><code><a title="aiobungie.crate.User.status" href="#aiobungie.crate.User.status">status</a></code></li>
                                 <li><code><a title="aiobungie.crate.User.steam_name" href="#aiobungie.crate.User.steam_name">steam_name</a></code></li>
                                 <li><code><a title="aiobungie.crate.User.twitch_name" href="#aiobungie.crate.User.twitch_name">twitch_name</a></code></li>
+                                <li><code><a title="aiobungie.crate.User.unique_name" href="#aiobungie.crate.User.unique_name">unique_name</a></code></li>
                                 <li><code><a title="aiobungie.crate.User.updated_at" href="#aiobungie.crate.User.updated_at">updated_at</a></code></li>
                             </ul>
                         </li>
@@ -5087,12 +5435,15 @@ def type(self) -&gt; typing.Optional[enums.MembershipType]:
                             <h4><code><a title="aiobungie.crate.UserLike" href="#aiobungie.crate.UserLike">UserLike</a></code></h4>
                             <ul class="two-column">
                                 <li><code><a title="aiobungie.crate.UserLike.as_dict" href="#aiobungie.crate.UserLike.as_dict">as_dict</a></code></li>
+                                <li><code><a title="aiobungie.crate.UserLike.code" href="#aiobungie.crate.UserLike.code">code</a></code></li>
                                 <li><code><a title="aiobungie.crate.UserLike.icon" href="#aiobungie.crate.UserLike.icon">icon</a></code></li>
+                                <li><code><a title="aiobungie.crate.UserLike.id" href="#aiobungie.crate.UserLike.id">id</a></code></li>
                                 <li><code><a title="aiobungie.crate.UserLike.is_public" href="#aiobungie.crate.UserLike.is_public">is_public</a></code></li>
                                 <li><code><a title="aiobungie.crate.UserLike.link" href="#aiobungie.crate.UserLike.link">link</a></code></li>
                                 <li><code><a title="aiobungie.crate.UserLike.name" href="#aiobungie.crate.UserLike.name">name</a></code></li>
                                 <li><code><a title="aiobungie.crate.UserLike.net" href="#aiobungie.crate.UserLike.net">net</a></code></li>
                                 <li><code><a title="aiobungie.crate.UserLike.type" href="#aiobungie.crate.UserLike.type">type</a></code></li>
+                                <li><code><a title="aiobungie.crate.UserLike.unique_name" href="#aiobungie.crate.UserLike.unique_name">unique_name</a></code></li>
                             </ul>
                         </li>
                     </ul>

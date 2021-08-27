@@ -551,7 +551,7 @@ class PostActivity:
     &#34;&#34;&#34;A list of the post activity&#39;s game mode.&#34;&#34;&#34;
 
     membership_type: enums.MembershipType = attr.field(repr=True, eq=False, hash=False)
-    &#34;&#34;&#34;The post activity&#39;s memebership type.&#34;&#34;&#34;
+    &#34;&#34;&#34;The post activity&#39;s membership type.&#34;&#34;&#34;
 
     players: typing.Sequence[typing.Dict[str, typing.Any]] = attr.field(repr=False)
 
@@ -948,7 +948,7 @@ class PostActivity:
     &#34;&#34;&#34;A list of the post activity&#39;s game mode.&#34;&#34;&#34;
 
     membership_type: enums.MembershipType = attr.field(repr=True, eq=False, hash=False)
-    &#34;&#34;&#34;The post activity&#39;s memebership type.&#34;&#34;&#34;
+    &#34;&#34;&#34;The post activity&#39;s membership type.&#34;&#34;&#34;
 
     players: typing.Sequence[typing.Dict[str, typing.Any]] = attr.field(repr=False)
 
@@ -998,7 +998,7 @@ def is_fresh(self) -&gt; bool:
                             <dt id="aiobungie.crate.activity.PostActivity.membership_type"><code class="name">var <span class="ident">membership_type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>The post activity's memebership type.</p>
+                                    <p>The post activity's membership type.</p>
                                 </div>
                             </dd>
                             <dt id="aiobungie.crate.activity.PostActivity.mode"><code class="name">var <span class="ident">mode</span> : Optional[<a title="aiobungie.internal.enums.GameMode" href="./internal/enums.html#aiobungie.internal.enums.GameMode">GameMode</a>]</code></dt>

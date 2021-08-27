@@ -524,6 +524,7 @@ __all__ = (
     &#34;NoneOr&#34;,
 )
 
+import inspect
 import typing
 import warnings
 from functools import wraps
@@ -538,10 +539,10 @@ Unknown: str = &#34;&#34;
 &#34;&#34;&#34;Stuff that are empty strings.&#34;&#34;&#34;
 
 T = typing.TypeVar(&#34;T&#34;, covariant=True)
-&#34;&#34;&#34;A type var thats associated with NoneOr[T]&#34;&#34;&#34;
+&#34;&#34;&#34;A type var that&#39;s associated with NoneOr[T]&#34;&#34;&#34;
 
 NoneOr = typing.Union[None, T]
-&#34;&#34;&#34;A Union type thats similar to to Optional[T]&#34;&#34;&#34;
+&#34;&#34;&#34;A Union type that&#39;s similar to to Optional[T]&#34;&#34;&#34;
 
 
 def just(lst: list[dict[str, typing.Any]], lookup: str) -&gt; list[typing.Any]:
@@ -558,14 +559,17 @@ def deprecated(func):
 
     @wraps(func)
     def wrapper(*args: typing.Any, **kwargs: typing.Any) -&gt; None:
-        warnings.warn(
-            f&#34;function {func.__name__!r} deprecated until further notice.&#34;,
-            stacklevel=2,
-            category=DeprecationWarning,
-        )
-        func.__doc__ += &#34; DEPRECATED FUNCTION.&#34;
-        coro = func(*args, **kwargs)
-        return coro
+        if inspect.isfunction(func):
+            warnings.warn(
+                f&#34;function {func.__name__!r} is deprecated.&#34;,
+                stacklevel=2,
+                category=DeprecationWarning,
+            )
+            func.__doc__ += &#34;&#34;&#34;!!! warning
+            
+            This function is a DEPRECATED.
+            &#34;&#34;&#34;
+        return func(*args, **kwargs)
 
     return wrapper</code></pre>
                 </details>
@@ -578,7 +582,7 @@ def deprecated(func):
                     <dt id="aiobungie.internal.helpers.NoneOr"><code class="name">var <span class="ident">NoneOr</span></code></dt>
                     <dd>
                         <div class="desc">
-                            <p>A Union type thats similar to to Optional[T]</p>
+                            <p>A Union type that's similar to to Optional[T]</p>
                         </div>
                     </dd>
                     <dt id="aiobungie.internal.helpers.Undefined"><code class="name">var <span class="ident">Undefined</span> : str</code></dt>
@@ -616,14 +620,17 @@ def deprecated(func):
 
     @wraps(func)
     def wrapper(*args: typing.Any, **kwargs: typing.Any) -&gt; None:
-        warnings.warn(
-            f&#34;function {func.__name__!r} deprecated until further notice.&#34;,
-            stacklevel=2,
-            category=DeprecationWarning,
-        )
-        func.__doc__ += &#34; DEPRECATED FUNCTION.&#34;
-        coro = func(*args, **kwargs)
-        return coro
+        if inspect.isfunction(func):
+            warnings.warn(
+                f&#34;function {func.__name__!r} is deprecated.&#34;,
+                stacklevel=2,
+                category=DeprecationWarning,
+            )
+            func.__doc__ += &#34;&#34;&#34;!!! warning
+            
+            This function is a DEPRECATED.
+            &#34;&#34;&#34;
+        return func(*args, **kwargs)
 
     return wrapper</code></pre>
                         </details>

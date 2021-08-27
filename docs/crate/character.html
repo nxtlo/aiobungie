@@ -637,7 +637,7 @@ class CharacterComponent(abc.ABC):
         &#34;&#34;&#34;
 
         # Required params:
-        # POST requrest.
+        # POST request.
         # itemId: item,
         # characterId: self,
         # membershipType: int(self.member_type)
@@ -667,7 +667,7 @@ class CharacterComponent(abc.ABC):
         &#34;&#34;&#34;
 
         # Required params:
-        # POST requrest.
+        # POST request.
         # items: List[items],
         # characterId: self,
         # membershipType: int(self.member_type)
@@ -676,7 +676,7 @@ class CharacterComponent(abc.ABC):
 
     @property
     def human_timedelta(self) -&gt; str:
-        &#34;&#34;&#34;The player&#39;s last played time in a human readble date.&#34;&#34;&#34;
+        &#34;&#34;&#34;The player&#39;s last played time in a human readable date.&#34;&#34;&#34;
         return time.human_timedelta(time.clean_date(str(self.last_played)))
 
 
@@ -886,7 +886,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                     <code><a title="aiobungie.crate.character.CharacterComponent" href="#aiobungie.crate.character.CharacterComponent">CharacterComponent</a></code>.<code><a title="aiobungie.crate.character.CharacterComponent.human_timedelta" href="#aiobungie.crate.character.CharacterComponent.human_timedelta">human_timedelta</a></code>
                                 </p>
                                 <div class="desc inherited">
-                                    <p>The player's last played time in a human readble date.</p>
+                                    <p>The player's last played time in a human readable date.</p>
                                 </div>
                             </dd>
                             <dt id="aiobungie.crate.character.Character.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
@@ -1110,7 +1110,7 @@ class CharacterComponent(abc.ABC):
         &#34;&#34;&#34;
 
         # Required params:
-        # POST requrest.
+        # POST request.
         # itemId: item,
         # characterId: self,
         # membershipType: int(self.member_type)
@@ -1140,7 +1140,7 @@ class CharacterComponent(abc.ABC):
         &#34;&#34;&#34;
 
         # Required params:
-        # POST requrest.
+        # POST request.
         # items: List[items],
         # characterId: self,
         # membershipType: int(self.member_type)
@@ -1149,7 +1149,7 @@ class CharacterComponent(abc.ABC):
 
     @property
     def human_timedelta(self) -&gt; str:
-        &#34;&#34;&#34;The player&#39;s last played time in a human readble date.&#34;&#34;&#34;
+        &#34;&#34;&#34;The player&#39;s last played time in a human readable date.&#34;&#34;&#34;
         return time.human_timedelta(time.clean_date(str(self.last_played)))</code></pre>
                         </details>
                         <h3>Ancestors</h3>
@@ -1240,7 +1240,7 @@ def gender(self) -&gt; enums.Gender:
                             <dt id="aiobungie.crate.character.CharacterComponent.human_timedelta"><code class="name">var <span class="ident">human_timedelta</span> : str</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>The player's last played time in a human readble date.</p>
+                                    <p>The player's last played time in a human readable date.</p>
                                 </div>
                                 <details class="source">
                                     <summary>
@@ -1248,7 +1248,7 @@ def gender(self) -&gt; enums.Gender:
                                     </summary>
                                     <pre><code class="python">@property
 def human_timedelta(self) -&gt; str:
-    &#34;&#34;&#34;The player&#39;s last played time in a human readble date.&#34;&#34;&#34;
+    &#34;&#34;&#34;The player&#39;s last played time in a human readable date.&#34;&#34;&#34;
     return time.human_timedelta(time.clean_date(str(self.last_played)))</code></pre>
                                 </details>
                             </dd>
@@ -1452,7 +1452,7 @@ def url(self) -&gt; str:
     &#34;&#34;&#34;
 
     # Required params:
-    # POST requrest.
+    # POST request.
     # itemId: item,
     # characterId: self,
     # membershipType: int(self.member_type)
@@ -1504,7 +1504,7 @@ def url(self) -&gt; str:
     &#34;&#34;&#34;
 
     # Required params:
-    # POST requrest.
+    # POST request.
     # items: List[items],
     # characterId: self,
     # membershipType: int(self.member_type)

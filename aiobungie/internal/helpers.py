@@ -41,7 +41,16 @@ import warnings
 from functools import wraps
 
 JsonDict = typing.Dict[str, typing.Any]
+"""A json like dict of string key and any value.
+
+i.e., {"Key": 1, "Key2": "Value"}
+"""
+
 JsonList = typing.List[typing.Dict[str, typing.Any]]
+"""A json like list of dicts of string key and any value
+
+i.e., [{"Key": 1}, {"Key2": "Value"}]
+"""
 
 Undefined: str = "Undefined"
 """A helper that checks if stuff are unknown / empty string and Undefine them if they're."""

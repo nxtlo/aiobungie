@@ -514,6 +514,8 @@
 
 from __future__ import annotations
 
+from aiobungie.internal.helpers import NoneOr
+
 __all__ = (&#34;Application&#34;, &#34;ApplicationOwner&#34;)
 
 import typing
@@ -547,6 +549,21 @@ class ApplicationOwner(UserLike):
 
     is_public: bool = attr.field(repr=True)
     &#34;&#34;&#34;The application owner&#39;s profile privacy.&#34;&#34;&#34;
+
+    code: NoneOr[int] = attr.field(repr=True)
+    &#34;&#34;&#34;The user like&#39;s unique display name code. 
+    This can be None if the user hasn&#39;t logged in after season of the lost update.
+
+    .. versionadded:: 0.2.5
+    &#34;&#34;&#34;
+
+    @property
+    def unique_name(self) -&gt; NoneOr[str]:
+        &#34;&#34;&#34;The user like&#39;s display name. This includes the full name with the user name code.
+
+        .. versionadded:: 0.2.5
+        &#34;&#34;&#34;
+        return f&#34;{self.name}#{self.code}&#34;
 
     @property
     def net(self) -&gt; impl.Netrunner:
@@ -608,7 +625,7 @@ class Application:
 
     @property
     def human_timedelta(self) -&gt; str:
-        &#34;&#34;&#34;Returns a human readble date of the app&#39;s creation date.&#34;&#34;&#34;
+        &#34;&#34;&#34;Returns a human readable date of the app&#39;s creation date.&#34;&#34;&#34;
         return time.human_timedelta(self.created_at)
 
     @property
@@ -680,7 +697,7 @@ class Application:
 
     @property
     def human_timedelta(self) -&gt; str:
-        &#34;&#34;&#34;Returns a human readble date of the app&#39;s creation date.&#34;&#34;&#34;
+        &#34;&#34;&#34;Returns a human readable date of the app&#39;s creation date.&#34;&#34;&#34;
         return time.human_timedelta(self.created_at)
 
     @property
@@ -724,7 +741,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                             <dt id="aiobungie.crate.application.Application.human_timedelta"><code class="name">var <span class="ident">human_timedelta</span> : str</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>Returns a human readble date of the app's creation date.</p>
+                                    <p>Returns a human readable date of the app's creation date.</p>
                                 </div>
                                 <details class="source">
                                     <summary>
@@ -732,7 +749,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                     </summary>
                                     <pre><code class="python">@property
 def human_timedelta(self) -&gt; str:
-    &#34;&#34;&#34;Returns a human readble date of the app&#39;s creation date.&#34;&#34;&#34;
+    &#34;&#34;&#34;Returns a human readable date of the app&#39;s creation date.&#34;&#34;&#34;
     return time.human_timedelta(self.created_at)</code></pre>
                                 </details>
                             </dd>
@@ -788,7 +805,7 @@ def human_timedelta(self) -&gt; str:
                     </dd>
                     <dt id="aiobungie.crate.application.ApplicationOwner"><code class="flex name class">
 <span>class <span class="ident">ApplicationOwner</span></span>
-<span>(</span><span>*, name: str, type: enums.MembershipType, id: int, icon: Image, is_public: bool)</span>
+<span>(</span><span>*, name: str, type: enums.MembershipType, id: int, icon: Image, is_public: bool, code: NoneOr[int])</span>
 </code></dt>
                     <dd>
                         <div class="desc">
@@ -817,6 +834,21 @@ class ApplicationOwner(UserLike):
 
     is_public: bool = attr.field(repr=True)
     &#34;&#34;&#34;The application owner&#39;s profile privacy.&#34;&#34;&#34;
+
+    code: NoneOr[int] = attr.field(repr=True)
+    &#34;&#34;&#34;The user like&#39;s unique display name code. 
+    This can be None if the user hasn&#39;t logged in after season of the lost update.
+
+    .. versionadded:: 0.2.5
+    &#34;&#34;&#34;
+
+    @property
+    def unique_name(self) -&gt; NoneOr[str]:
+        &#34;&#34;&#34;The user like&#39;s display name. This includes the full name with the user name code.
+
+        .. versionadded:: 0.2.5
+        &#34;&#34;&#34;
+        return f&#34;{self.name}#{self.code}&#34;
 
     @property
     def net(self) -&gt; impl.Netrunner:
@@ -872,6 +904,15 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
     )</code></pre>
                                 </details>
                             </dd>
+                            <dt id="aiobungie.crate.application.ApplicationOwner.code"><code class="name">var <span class="ident">code</span> : Optional[int]</code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>The user like's unique display name code. This can be None if the user hasn't logged in after season of the lost update.</p>
+                                    <div class="admonition versionadded">
+                                        <p class="admonition-title">Added in version:&ensp;0.2.5</p>
+                                    </div>
+                                </div>
+                            </dd>
                             <dt id="aiobungie.crate.application.ApplicationOwner.icon"><code class="name">var <span class="ident">icon</span> : <a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a></code></dt>
                             <dd>
                                 <div class="desc">
@@ -897,7 +938,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                     <code><a title="aiobungie.crate.user.UserLike" href="user.html#aiobungie.crate.user.UserLike">UserLike</a></code>.<code><a title="aiobungie.crate.user.UserLike.link" href="user.html#aiobungie.crate.user.UserLike.link">link</a></code>
                                 </p>
                                 <div class="desc inherited">
-                                    <p>Returns the user's profile link.</p>
+                                    <p>The user like's profile link.</p>
                                 </div>
                                 <details class="source">
                                     <summary>
@@ -938,6 +979,28 @@ def net(self) -&gt; impl.Netrunner:
                                 <div class="desc">
                                     <p>The membership of the application owner.</p>
                                 </div>
+                            </dd>
+                            <dt id="aiobungie.crate.application.ApplicationOwner.unique_name"><code class="name">var <span class="ident">unique_name</span> : Optional[str]</code></dt>
+                            <dd>
+                                <p class="inheritance">
+                                    <em>Inherited from:</em>
+                                    <code><a title="aiobungie.crate.user.UserLike" href="user.html#aiobungie.crate.user.UserLike">UserLike</a></code>.<code><a title="aiobungie.crate.user.UserLike.unique_name" href="user.html#aiobungie.crate.user.UserLike.unique_name">unique_name</a></code>
+                                </p>
+                                <div class="desc inherited">
+                                    <p>The user like's display name. This includes the full name with the user name code …</p>
+                                </div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">@property
+def unique_name(self) -&gt; NoneOr[str]:
+    &#34;&#34;&#34;The user like&#39;s display name. This includes the full name with the user name code.
+
+    .. versionadded:: 0.2.5
+    &#34;&#34;&#34;
+    return f&#34;{self.name}#{self.code}&#34;</code></pre>
+                                </details>
                             </dd>
                         </dl>
                     </dd>
@@ -1032,6 +1095,7 @@ def net(self) -&gt; impl.Netrunner:
                             <h4><code><a title="aiobungie.crate.application.ApplicationOwner" href="#aiobungie.crate.application.ApplicationOwner">ApplicationOwner</a></code></h4>
                             <ul class="two-column">
                                 <li><code><a title="aiobungie.crate.application.ApplicationOwner.as_dict" href="#aiobungie.crate.application.ApplicationOwner.as_dict">as_dict</a></code></li>
+                                <li><code><a title="aiobungie.crate.application.ApplicationOwner.code" href="#aiobungie.crate.application.ApplicationOwner.code">code</a></code></li>
                                 <li><code><a title="aiobungie.crate.application.ApplicationOwner.icon" href="#aiobungie.crate.application.ApplicationOwner.icon">icon</a></code></li>
                                 <li><code><a title="aiobungie.crate.application.ApplicationOwner.id" href="#aiobungie.crate.application.ApplicationOwner.id">id</a></code></li>
                                 <li><code><a title="aiobungie.crate.application.ApplicationOwner.is_public" href="#aiobungie.crate.application.ApplicationOwner.is_public">is_public</a></code></li>
@@ -1039,6 +1103,7 @@ def net(self) -&gt; impl.Netrunner:
                                 <li><code><a title="aiobungie.crate.application.ApplicationOwner.name" href="#aiobungie.crate.application.ApplicationOwner.name">name</a></code></li>
                                 <li><code><a title="aiobungie.crate.application.ApplicationOwner.net" href="#aiobungie.crate.application.ApplicationOwner.net">net</a></code></li>
                                 <li><code><a title="aiobungie.crate.application.ApplicationOwner.type" href="#aiobungie.crate.application.ApplicationOwner.type">type</a></code></li>
+                                <li><code><a title="aiobungie.crate.application.ApplicationOwner.unique_name" href="#aiobungie.crate.application.ApplicationOwner.unique_name">unique_name</a></code></li>
                             </ul>
                         </li>
                     </ul>

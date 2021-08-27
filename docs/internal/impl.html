@@ -513,7 +513,7 @@
 
 from __future__ import annotations
 
-__all__ = (&#34;BaseClient&#34;, &#34;Netrunner&#34;)
+__all__ = (&#34;RESTful&#34;, &#34;Netrunner&#34;)
 
 import typing
 
@@ -522,6 +522,10 @@ from aiobungie import client as client_
 
 @typing.runtime_checkable
 class Netrunner(typing.Protocol):
+    &#34;&#34;&#34;A netrunner client represents The rest client.
+    This is only used for making external requests.
+    &#34;&#34;&#34;
+
     __slots__: typing.Sequence[str] = ()
 
     @property
@@ -531,7 +535,9 @@ class Netrunner(typing.Protocol):
 
 
 @typing.runtime_checkable
-class BaseClient(Netrunner, typing.Protocol):
+class RESTful(Netrunner, typing.Protocol):
+    &#34;&#34;&#34;A Resuful and netrunner client protocol.&#34;&#34;&#34;
+
     __slots__: typing.Sequence[str] = ()
 
     def run(
@@ -567,40 +573,75 @@ class BaseClient(Netrunner, typing.Protocol):
             <section>
                 <h2 class="section-title" id="header-classes">Classes</h2>
                 <dl>
-                    <dt id="aiobungie.internal.impl.BaseClient"><code class="flex name class">
-<span>class <span class="ident">BaseClient</span></span>
+                    <dt id="aiobungie.internal.impl.Netrunner"><code class="flex name class">
+<span>class <span class="ident">Netrunner</span></span>
 <span>(</span><span>*args, **kwargs)</span>
 </code></dt>
                     <dd>
                         <div class="desc">
-                            <p>Base class for protocol classes.</p>
-                            <p>Protocol classes are defined as::</p>
-                            <pre><code>class Proto(Protocol):
-    def meth(self) -&gt; int:
-        ...
-</code></pre>
-                            <p>Such classes are primarily used with static type checkers that recognize structural subtyping (static duck-typing), for example::</p>
-                            <pre><code>class C:
-    def meth(self) -&gt; int:
-        return 0
-
-def func(x: Proto) -&gt; int:
-    return x.meth()
-
-func(C())  # Passes static type check
-</code></pre>
-                            <p>See PEP 544 for details. Protocol classes decorated with @typing.runtime_checkable act as simple-minded runtime protocols that check only the presence of given attributes, ignoring their type signatures. Protocol classes can
-                                be generic, they are defined as::</p>
-                            <pre><code>class GenProto(Protocol[T]):
-    def meth(self) -&gt; T:
-        ...
-</code></pre></div>
+                            <p>A netrunner client represents The rest client. This is only used for making external requests.</p>
+                        </div>
                         <details class="source">
                             <summary>
                                 <span>Expand source code</span>
                             </summary>
                             <pre><code class="python">@typing.runtime_checkable
-class BaseClient(Netrunner, typing.Protocol):
+class Netrunner(typing.Protocol):
+    &#34;&#34;&#34;A netrunner client represents The rest client.
+    This is only used for making external requests.
+    &#34;&#34;&#34;
+
+    __slots__: typing.Sequence[str] = ()
+
+    @property
+    def request(self) -&gt; client_.Client:
+        &#34;&#34;&#34;Returns a client network state for making external requests.&#34;&#34;&#34;
+        raise NotImplementedError</code></pre>
+                        </details>
+                        <h3>Ancestors</h3>
+                        <ul class="hlist">
+                            <li>typing.Protocol</li>
+                            <li>typing.Generic</li>
+                        </ul>
+                        <h3>Subclasses</h3>
+                        <ul class="hlist">
+                            <li><a title="aiobungie.internal.impl.RESTful" href="#aiobungie.internal.impl.RESTful">RESTful</a></li>
+                        </ul>
+                        <h3>Instance variables</h3>
+                        <dl>
+                            <dt id="aiobungie.internal.impl.Netrunner.request"><code class="name">var <span class="ident">request</span> : <a title="aiobungie.client.Client" href="./client.html#aiobungie.client.Client">Client</a></code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Returns a client network state for making external requests.</p>
+                                </div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">@property
+def request(self) -&gt; client_.Client:
+    &#34;&#34;&#34;Returns a client network state for making external requests.&#34;&#34;&#34;
+    raise NotImplementedError</code></pre>
+                                </details>
+                            </dd>
+                        </dl>
+                    </dd>
+                    <dt id="aiobungie.internal.impl.RESTful"><code class="flex name class">
+<span>class <span class="ident">RESTful</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+                    <dd>
+                        <div class="desc">
+                            <p>A Resuful and netrunner client protocol.</p>
+                        </div>
+                        <details class="source">
+                            <summary>
+                                <span>Expand source code</span>
+                            </summary>
+                            <pre><code class="python">@typing.runtime_checkable
+class RESTful(Netrunner, typing.Protocol):
+    &#34;&#34;&#34;A Resuful and netrunner client protocol.&#34;&#34;&#34;
+
     __slots__: typing.Sequence[str] = ()
 
     def run(
@@ -638,7 +679,7 @@ class BaseClient(Netrunner, typing.Protocol):
                         </ul>
                         <h3>Instance variables</h3>
                         <dl>
-                            <dt id="aiobungie.internal.impl.BaseClient.request"><code class="name">var <span class="ident">request</span> : <a title="aiobungie.client.Client" href="./client.html#aiobungie.client.Client">Client</a></code></dt>
+                            <dt id="aiobungie.internal.impl.RESTful.request"><code class="name">var <span class="ident">request</span> : <a title="aiobungie.client.Client" href="./client.html#aiobungie.client.Client">Client</a></code></dt>
                             <dd>
                                 <p class="inheritance">
                                     <em>Inherited from:</em>
@@ -651,7 +692,7 @@ class BaseClient(Netrunner, typing.Protocol):
                         </dl>
                         <h3>Methods</h3>
                         <dl>
-                            <dt id="aiobungie.internal.impl.BaseClient.run"><code class="name flex">
+                            <dt id="aiobungie.internal.impl.RESTful.run"><code class="name flex">
 <span>def <span class="ident">run</span></span>(<span>self, future: typing.Coroutine[typing.Any, None, None], debug: bool = False) ‑> NoneType</span>
 </code></dt>
                             <dd>
@@ -694,75 +735,6 @@ client.run(main())
     client.run(main())
     ```
     &#34;&#34;&#34;
-    raise NotImplementedError</code></pre>
-                                </details>
-                            </dd>
-                        </dl>
-                    </dd>
-                    <dt id="aiobungie.internal.impl.Netrunner"><code class="flex name class">
-<span>class <span class="ident">Netrunner</span></span>
-<span>(</span><span>*args, **kwargs)</span>
-</code></dt>
-                    <dd>
-                        <div class="desc">
-                            <p>Base class for protocol classes.</p>
-                            <p>Protocol classes are defined as::</p>
-                            <pre><code>class Proto(Protocol):
-    def meth(self) -&gt; int:
-        ...
-</code></pre>
-                            <p>Such classes are primarily used with static type checkers that recognize structural subtyping (static duck-typing), for example::</p>
-                            <pre><code>class C:
-    def meth(self) -&gt; int:
-        return 0
-
-def func(x: Proto) -&gt; int:
-    return x.meth()
-
-func(C())  # Passes static type check
-</code></pre>
-                            <p>See PEP 544 for details. Protocol classes decorated with @typing.runtime_checkable act as simple-minded runtime protocols that check only the presence of given attributes, ignoring their type signatures. Protocol classes can
-                                be generic, they are defined as::</p>
-                            <pre><code>class GenProto(Protocol[T]):
-    def meth(self) -&gt; T:
-        ...
-</code></pre></div>
-                        <details class="source">
-                            <summary>
-                                <span>Expand source code</span>
-                            </summary>
-                            <pre><code class="python">@typing.runtime_checkable
-class Netrunner(typing.Protocol):
-    __slots__: typing.Sequence[str] = ()
-
-    @property
-    def request(self) -&gt; client_.Client:
-        &#34;&#34;&#34;Returns a client network state for making external requests.&#34;&#34;&#34;
-        raise NotImplementedError</code></pre>
-                        </details>
-                        <h3>Ancestors</h3>
-                        <ul class="hlist">
-                            <li>typing.Protocol</li>
-                            <li>typing.Generic</li>
-                        </ul>
-                        <h3>Subclasses</h3>
-                        <ul class="hlist">
-                            <li><a title="aiobungie.internal.impl.BaseClient" href="#aiobungie.internal.impl.BaseClient">BaseClient</a></li>
-                        </ul>
-                        <h3>Instance variables</h3>
-                        <dl>
-                            <dt id="aiobungie.internal.impl.Netrunner.request"><code class="name">var <span class="ident">request</span> : <a title="aiobungie.client.Client" href="./client.html#aiobungie.client.Client">Client</a></code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Returns a client network state for making external requests.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def request(self) -&gt; client_.Client:
-    &#34;&#34;&#34;Returns a client network state for making external requests.&#34;&#34;&#34;
     raise NotImplementedError</code></pre>
                                 </details>
                             </dd>
@@ -840,16 +812,16 @@ def request(self) -&gt; client_.Client:
                     <h3><a href="#header-classes">Classes</a></h3>
                     <ul>
                         <li>
-                            <h4><code><a title="aiobungie.internal.impl.BaseClient" href="#aiobungie.internal.impl.BaseClient">BaseClient</a></code></h4>
-                            <ul class="">
-                                <li><code><a title="aiobungie.internal.impl.BaseClient.request" href="#aiobungie.internal.impl.BaseClient.request">request</a></code></li>
-                                <li><code><a title="aiobungie.internal.impl.BaseClient.run" href="#aiobungie.internal.impl.BaseClient.run">run</a></code></li>
-                            </ul>
-                        </li>
-                        <li>
                             <h4><code><a title="aiobungie.internal.impl.Netrunner" href="#aiobungie.internal.impl.Netrunner">Netrunner</a></code></h4>
                             <ul class="">
                                 <li><code><a title="aiobungie.internal.impl.Netrunner.request" href="#aiobungie.internal.impl.Netrunner.request">request</a></code></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <h4><code><a title="aiobungie.internal.impl.RESTful" href="#aiobungie.internal.impl.RESTful">RESTful</a></code></h4>
+                            <ul class="">
+                                <li><code><a title="aiobungie.internal.impl.RESTful.request" href="#aiobungie.internal.impl.RESTful.request">request</a></code></li>
+                                <li><code><a title="aiobungie.internal.impl.RESTful.run" href="#aiobungie.internal.impl.RESTful.run">run</a></code></li>
                             </ul>
                         </li>
                     </ul>

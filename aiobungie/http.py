@@ -32,6 +32,7 @@ import http
 import sys
 import types
 import typing
+from urllib.parse import quote
 
 import aiohttp
 
@@ -69,13 +70,15 @@ async def handle_errors(
     if 400 <= status < 500:
         return error.ResponseError(*data, status)
     elif 500 <= status < 600:
-        # High order errors
+        # High order errors.
         if msg == "ClanNotFound":
             return error.ClanNotFound(msg)
         elif msg == "DestinyInvalidMembershipType":
             return error.MembershipTypeError(msg)
         elif msg == "GroupNotFound":
             return error.ClanNotFound(msg)
+        elif msg == "UserCannotFindRequestedUser":
+            return error.UserNotFound(msg)
         else:
             return error.AiobungieError(msg)
     else:
@@ -94,9 +97,9 @@ class PreLock:
 
     async def __aexit__(
         self,
-        ext_type: typing.Optional[BaseException],
-        exc: typing.Optional[BaseException],
-        exc_tb: typing.Optional[types.TracebackType],
+        _: typing.Optional[BaseException],
+        __: typing.Optional[BaseException],
+        ___: typing.Optional[types.TracebackType],
     ) -> None:
         self._lock.release()
 
@@ -116,8 +119,8 @@ class HTTPClient:
         loop: asyncio.AbstractEventLoop = None,
     ) -> None:
         self.key: str = key
-        self.connector = connector
         self.loop = loop or asyncio.get_event_loop()
+        self.__connector = connector
 
     @typing.final
     async def fetch(
@@ -139,68 +142,61 @@ class HTTPClient:
         else:
             raise ValueError("No API KEY was passed.")
 
-        if "json" in kwargs:
-            kwargs["Content-Type"] = "application/json"
+        async with PreLock(locker):
+            try:
+                async with aiohttp.ClientSession(
+                    loop=self.loop, connector=self.__connector
+                ) as session:
+                    async with session.request(
+                        method=method,
+                        url=f"{url.REST_EP if not base else url.BASE}/{route}",
+                        **kwargs,
+                    ) as response:
 
-        for t in range(5):
-            async with PreLock(locker):
-                try:
-                    async with aiohttp.ClientSession(
-                        loop=self.loop, connector=self.connector
-                    ) as session:
-                        async with session.request(
-                            method=method,
-                            url=f"{url.REST_EP if not base else url.BASE}/{route}",
-                            **kwargs,
-                        ) as response:
+                        data = await response.json()
+                        msg: str = data["ErrorStatus"]
 
-                            data = await response.json()
-                            msg: str = data["ErrorStatus"]
+                        # There's no point of making requests here.
+                        # A VERY LITTLE amount of endpoints does not
+                        # require the API to be up and running, Which are
+                        # The themes afaik. Not making any difference though so
+                        # Just to be careful we raise this here.
 
-                            # There's no point of making requests here.
-                            # A VERY LITTLE amount of endpoints does not
-                            # require the API to be up and running, Which are
-                            # The themes afaik. Not making any difference though so
-                            # Just to be careful we raise this here.
+                        if msg == "SystemDisabled":
+                            raise OSError("API IS DOWN!", data["Message"])
 
-                            if msg == "SystemDisabled":
-                                raise OSError("API IS DOWN!", data["Message"])
+                        if 300 > response.status >= 200:
+                            if (
+                                type == "read"
+                            ):  # We want to read the bytes for the manifest response.
+                                data = await response.read()
+                                return data
 
-                            if 300 > response.status >= 200:
-                                if (
-                                    type == "read"
-                                ):  # We want to read the bytes for the manifest response.
-                                    data = await response.read()
-                                    return data
-
-                                _LOG.debug(
-                                    "{} Request success from {} with status {}".format(
-                                        method,
-                                        f"{url.REST_EP}/{route}",
-                                        data["Message"],
-                                    )
+                            _LOG.debug(
+                                "{} Request success from {} with status {}".format(
+                                    method,
+                                    f"{url.REST_EP}/{route}",
+                                    data["Message"],
                                 )
-                                try:
-                                    # Almost all bungie json objects are
-                                    # wrapped inside a dict[Response=...], but
-                                    # sometimes it returns a List so this check
-                                    # is needed
-                                    return data["Response"]
-                                except KeyError:
-                                    return data
+                            )
+                            try:
+                                # All bungie responses
+                                # are in a Response key
+                                # So its easier to deserialize later.
+                                return data["Response"]
 
-                            # We continue here.
-                            if response.status in {500, 502, 504}:
-                                await self._handle_err(response, msg)
+                            # In case we didn't find the Response key
+                            # its safer to just return the data.
+                            except KeyError:
+                                return data
 
-                                await asyncio.sleep(t + 0x01 * 0x02)
-                                continue
+                        await self._handle_err(response, f"{msg}, {data['Message']}")
 
-                except aiohttp.ContentTypeError:
-                    return await response.text(encoding="utf-8")
+            except aiohttp.ContentTypeError:
+                return await response.text(encoding="utf-8")
 
-                except aiohttp.ClientError:
-                    raise
+            except aiohttp.ClientError:
+                raise
 
     @staticmethod
     @typing.final
@@ -209,10 +205,7 @@ class HTTPClient:
     ) -> typing.NoReturn:
         raise await handle_errors(response, msg)
 
-    def fetch_user(self, name: str) -> Response[helpers.JsonList]:
-        return self.fetch("GET", f"User/SearchUsers/?q={name}")
-
-    def fetch_user_from_id(self, id: int) -> Response[helpers.JsonDict]:
+    def fetch_user(self, id: int) -> Response[helpers.JsonDict]:
         return self.fetch("GET", f"User/GetBungieNetUserById/{id}/")
 
     def fetch_user_themes(self) -> Response[helpers.JsonList]:
@@ -225,9 +218,11 @@ class HTTPClient:
         return self.fetch("GET", path)
 
     def fetch_player(
-        self, name: str, type: enums.MembershipType
-    ) -> Response[helpers.JsonDict]:
-        return self.fetch("GET", f"Destiny2/SearchDestinyPlayer/{int(type)}/{name}")
+        self, name: str, type: enums.MembershipType, /
+    ) -> Response[helpers.JsonList]:
+        return self.fetch(
+            "GET", f"Destiny2/SearchDestinyPlayer/{int(type)}/{quote(name)}/"
+        )
 
     def fetch_clan_from_id(self, id: int) -> Response[helpers.JsonDict]:
         return self.fetch("GET", f"GroupV2/{id}")

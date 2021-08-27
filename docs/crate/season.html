@@ -522,7 +522,7 @@ from __future__ import annotations
 # We let pdoc3 not generate pages for this.
 
 __pdoc__: dict[str, bool] = {}
-__all__: typing.Sequence[str] = [&#34;Artifact&#34;, &#34;PowerBonus&#34;]
+__all__: list[str] = [&#34;Artifact&#34;, &#34;PowerBonus&#34;]
 
 for _cls in __all__:
     __pdoc__[_cls] = False

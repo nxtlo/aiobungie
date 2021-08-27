@@ -36,6 +36,7 @@ import attr
 from aiobungie import url
 from aiobungie.crate.user import UserLike
 from aiobungie.internal import Image
+from aiobungie.internal import helpers
 from aiobungie.internal import impl
 from aiobungie.internal import time
 from aiobungie.internal.enums import GroupType
@@ -83,6 +84,9 @@ class ClanMember(UserLike):
     type: MembershipType = attr.field(repr=True)
     """Clan member's membership type."""
 
+    types: list[MembershipType] = attr.field(repr=False)
+    """A list of the available clan member membership types."""
+
     icon: Image = attr.field(repr=False)
     """Clan member's icon"""
 
@@ -92,7 +96,7 @@ class ClanMember(UserLike):
     group_id: int = attr.field(repr=True)
     """The member's group id."""
 
-    is_online: bool = attr.field(repr=True)
+    is_online: bool = attr.field(repr=False)
     """True if the clan member is online or not."""
 
     last_online: datetime = attr.field(repr=False)
@@ -101,13 +105,29 @@ class ClanMember(UserLike):
     joined_at: datetime = attr.field(repr=False)
     """The clan member's join date in UTC time zone."""
 
+    code: helpers.NoneOr[int] = attr.field(repr=True)
+    """The clan member's bungie display name code
+    This is new and was added in Season of the lost update
+    
+    .. versionadded:: 0.2.5
+    """
+
+    @property
+    def unique_name(self) -> helpers.NoneOr[str]:
+        """The user's unique name which includes their unique code.
+        This field could be None if no unique name found.
+
+        .. versionadded:: 0.2.5
+        """
+        return f"{self.name}#{self.code}"
+
     @property
     def net(self) -> impl.Netrunner:
         """A network state used for making external requests."""
         return self.net
 
     @property
-    def link(self) -> typing.Optional[str]:
+    def link(self) -> str:
         """Clan member's profile link."""
         return f"{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}"
 
@@ -147,7 +167,7 @@ class ClanOwner(UserLike):
     name: str = attr.field(repr=True)
     """The user name."""
 
-    is_public: typing.Optional[bool] = attr.field(hash=False, repr=True, eq=False)
+    is_public: bool = attr.field(hash=False, repr=True, eq=False)
     """Returns if the user profile is public or no."""
 
     type: MembershipType = attr.field(hash=False, repr=True, eq=True)
@@ -170,6 +190,13 @@ class ClanOwner(UserLike):
     joined_at: datetime = attr.field(repr=True)
     """Owner's bungie join date."""
 
+    code: helpers.NoneOr[int] = attr.field(repr=True)
+    """The user's unique display name code. 
+    This can be None if the user hasn't logged in after season of the lost update.
+    
+    .. versionadded:: 0.2.5
+    """
+
     @property
     def net(self) -> impl.Netrunner:
         """A network state used for making external requests."""
@@ -181,7 +208,16 @@ class ClanOwner(UserLike):
         return time.human_timedelta(self.last_online)
 
     @property
-    def link(self) -> typing.Optional[str]:
+    def unique_name(self) -> helpers.NoneOr[str]:
+        """The user's unique name which includes their unique code.
+        This field could be None if no unique name found.
+
+        .. versionadded:: 0.2.5
+        """
+        return f"{self.name}#{self.code}"
+
+    @property
+    def link(self) -> str:
         """Returns the user's profile link."""
         return f"{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}"
 
@@ -191,12 +227,6 @@ class ClanOwner(UserLike):
         This function is useful if you're binding to other REST apis.
         """
         return attr.asdict(self)
-
-    def __int__(self) -> int:
-        return self.id
-
-    def __str__(self) -> str:
-        return self.name
 
 
 @attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)

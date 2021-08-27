@@ -514,13 +514,7 @@
 
 from __future__ import annotations
 
-__all__ = (
-    &#34;User&#34;,
-    &#34;PartialUser&#34;,
-    &#34;UserLike&#34;,
-    &#34;HardLinkedMembership&#34;,
-    &#34;UserThemes&#34;
-)
+__all__ = (&#34;User&#34;, &#34;UserLike&#34;, &#34;HardLinkedMembership&#34;, &#34;UserThemes&#34;)
 
 import abc
 import typing
@@ -533,6 +527,74 @@ from aiobungie.internal import enums
 from aiobungie.internal import helpers
 from aiobungie.internal import impl
 from aiobungie.internal import time
+
+
+@attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
+class UserLike(abc.ABC):
+    &#34;&#34;&#34;The is meant for any bungie userlike object.&#34;&#34;&#34;
+
+    @property
+    @abc.abstractmethod
+    def net(self) -&gt; impl.Netrunner:
+        &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
+
+    @property
+    @abc.abstractmethod
+    def id(self) -&gt; int:
+        &#34;&#34;&#34;The user like&#39;s id.&#34;&#34;&#34;
+
+    @property
+    @abc.abstractmethod
+    def name(self) -&gt; str:
+        &#34;&#34;&#34;The user like&#39;s name.&#34;&#34;&#34;
+
+    @property
+    @abc.abstractmethod
+    def is_public(self) -&gt; bool:
+        &#34;&#34;&#34;True if the user profile is public or no.&#34;&#34;&#34;
+
+    @property
+    @abc.abstractmethod
+    def type(self) -&gt; enums.MembershipType:
+        &#34;&#34;&#34;The user type of the user.&#34;&#34;&#34;
+
+    @property
+    @abc.abstractmethod
+    def icon(self) -&gt; Image:
+        &#34;&#34;&#34;The user like&#39;s icon.&#34;&#34;&#34;
+
+    @property
+    @abc.abstractmethod
+    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
+        &#34;&#34;&#34;An instance of the UserLike as a dict.&#34;&#34;&#34;
+
+    @property
+    @abc.abstractmethod
+    def code(self) -&gt; helpers.NoneOr[int]:
+        &#34;&#34;&#34;The user like&#39;s unique display name code.
+        This can be None if the user hasn&#39;t logged in after season of the lost update.
+
+        .. versionadded:: 0.2.5
+        &#34;&#34;&#34;
+
+    @property
+    @abc.abstractmethod
+    def unique_name(self) -&gt; helpers.NoneOr[str]:
+        &#34;&#34;&#34;The user like&#39;s display name. This includes the full name with the user name code.
+
+        .. versionadded:: 0.2.5
+        &#34;&#34;&#34;
+
+    @property
+    def link(self) -&gt; str:
+        &#34;&#34;&#34;The user like&#39;s profile link.&#34;&#34;&#34;
+        raise NotImplementedError
+
+    def __str__(self) -&gt; str:
+        return self.name
+
+    def __int__(self) -&gt; int:
+        return self.id
 
 
 @attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
@@ -570,76 +632,7 @@ class UserThemes:
 
 
 @attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
-class PartialUser(abc.ABC):
-    &#34;&#34;&#34;A partial user crate.&#34;&#34;&#34;
-
-    @property
-    @abc.abstractmethod
-    def steam_name(self) -&gt; typing.Optional[str]:
-        &#34;&#34;&#34;The user&#39;s steam username or None.&#34;&#34;&#34;
-
-    @property
-    @abc.abstractmethod
-    def twitch_name(self) -&gt; typing.Optional[str]:
-        &#34;&#34;&#34;The user&#39;s twitch username or None.&#34;&#34;&#34;
-
-    @property
-    @abc.abstractmethod
-    def blizzard_name(self) -&gt; typing.Optional[str]:
-        &#34;&#34;&#34;The user&#39;s blizzard username or None.&#34;&#34;&#34;
-
-    @property
-    @abc.abstractmethod
-    def psn_name(self) -&gt; typing.Optional[str]:
-        &#34;&#34;&#34;The user&#39;s psn username or None.&#34;&#34;&#34;
-
-    @property
-    @abc.abstractmethod
-    def about(self) -&gt; typing.Optional[str]:
-        &#34;&#34;&#34;The user&#39;s about section.&#34;&#34;&#34;
-
-    @property
-    @abc.abstractmethod
-    def locale(self) -&gt; typing.Optional[str]:
-        &#34;&#34;&#34;The user&#39;s profile locale.&#34;&#34;&#34;
-
-    @property
-    @abc.abstractmethod
-    def name(self) -&gt; str:
-        &#34;&#34;&#34;The user&#39;s name.&#34;&#34;&#34;
-
-    @property
-    @abc.abstractmethod
-    def picture(self) -&gt; typing.Optional[Image]:
-        &#34;&#34;&#34;The user&#39;s profile picture if its set.&#34;&#34;&#34;
-
-    @property
-    @abc.abstractmethod
-    def updated_at(self) -&gt; datetime:
-        &#34;&#34;&#34;The user&#39;s last profile update.&#34;&#34;&#34;
-
-    @property
-    @abc.abstractmethod
-    def is_deleted(self) -&gt; bool:
-        &#34;&#34;&#34;Determines if the user is deleted or not.&#34;&#34;&#34;
-
-    @property
-    @abc.abstractmethod
-    def status(self) -&gt; typing.Optional[str]:
-        &#34;&#34;&#34;The user&#39;s profile status.&#34;&#34;&#34;
-
-    @property
-    @abc.abstractmethod
-    def created_at(self) -&gt; datetime:
-        &#34;&#34;&#34;Retruns the user&#39;s creation date in UTC timezone.&#34;&#34;&#34;
-
-    @property
-    def human_timedelta(self) -&gt; str:
-        return time.human_timedelta(self.created_at)
-
-
-@attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
-class User(PartialUser):
+class User:
     &#34;&#34;&#34;Represents Bungie user.&#34;&#34;&#34;
 
     id: int = attr.field(hash=True, repr=True)
@@ -651,28 +644,35 @@ class User(PartialUser):
     name: str = attr.field(hash=False, eq=False, repr=True)
     &#34;&#34;&#34;The user&#39;s name.&#34;&#34;&#34;
 
-    is_deleted: bool = attr.field(repr=True, eq=False, hash=False)
-    &#34;&#34;&#34;Returns True if the user is deleted&#34;&#34;&#34;
+    unique_name: helpers.NoneOr[str] = attr.field(repr=False)
+    &#34;&#34;&#34;The user&#39;s unique name which includes their unique code.
+    This field could be None if no unique name found.
+    
+    .. versionadded:: 0.2.5
+    &#34;&#34;&#34;
+
+    is_deleted: bool = attr.field(repr=False, eq=False, hash=False)
+    &#34;&#34;&#34; True if the user is deleted&#34;&#34;&#34;
 
     about: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s about, Default is None if nothing is Found.&#34;&#34;&#34;
 
-    updated_at: datetime = attr.field(repr=True, hash=False, eq=False)
+    updated_at: datetime = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s last updated om UTC date.&#34;&#34;&#34;
 
-    psn_name: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    psn_name: typing.Optional[str] = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s psn id if it exists.&#34;&#34;&#34;
 
-    steam_name: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    steam_name: typing.Optional[str] = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s steam name if it exists&#34;&#34;&#34;
 
-    twitch_name: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    twitch_name: typing.Optional[str] = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s twitch name if it exists.&#34;&#34;&#34;
 
-    blizzard_name: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    blizzard_name: typing.Optional[str] = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s blizzard name if it exists.&#34;&#34;&#34;
 
-    status: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    status: typing.Optional[str] = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s bungie status text&#34;&#34;&#34;
 
     locale: typing.Optional[str] = attr.field(repr=False, hash=False, eq=False)
@@ -681,58 +681,28 @@ class User(PartialUser):
     picture: Image = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s profile picture.&#34;&#34;&#34;
 
-    @property
-    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        &#34;&#34;&#34;Returns a dict object of the user.&#34;&#34;&#34;
-        return attr.asdict(self)
+    code: helpers.NoneOr[int] = attr.field(repr=True)
+    &#34;&#34;&#34;The user&#39;s unique display name code. 
+    This can be None if the user hasn&#39;t logged in after season of the lost update.
+    
+    .. versionadded:: 0.2.5
+    &#34;&#34;&#34;
 
     def __str__(self) -&gt; str:
         return self.name
 
     def __int__(self) -&gt; int:
-        return int(self.id)
-
-
-@attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
-class UserLike(abc.ABC):
-    &#34;&#34;&#34;The is meant for any Member / user / like crate.&#34;&#34;&#34;
+        return self.id
 
     @property
-    @abc.abstractmethod
-    def net(self) -&gt; impl.Netrunner:
-        &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
+    def human_timedelta(self) -&gt; str:
+        &#34;&#34;&#34;A human readable date version of the user&#39;s creation date.&#34;&#34;&#34;
+        return time.human_timedelta(self.created_at)
 
     @property
-    @abc.abstractmethod
-    def name(self) -&gt; str:
-        &#34;&#34;&#34;The user&#39;s name.&#34;&#34;&#34;
-
-    @property
-    @abc.abstractmethod
-    def is_public(self) -&gt; typing.Optional[bool]:
-        &#34;&#34;&#34;Returns if the user profile is public or no.&#34;&#34;&#34;
-
-    @property
-    @abc.abstractmethod
-    def type(self) -&gt; typing.Optional[enums.MembershipType]:
-        &#34;&#34;&#34;Returns the user type of the user.&#34;&#34;&#34;
-
-    @property
-    @abc.abstractmethod
-    def icon(self) -&gt; Image:
-        &#34;&#34;&#34;The user&#39;s icon.&#34;&#34;&#34;
-
-    @property
-    def link(self) -&gt; typing.Optional[str]:
-        &#34;&#34;&#34;Returns the user&#39;s profile link.&#34;&#34;&#34;
-
-    @property
-    @abc.abstractmethod
     def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        &#34;&#34;&#34;Returns an instance of the UserLike as a dict.&#34;&#34;&#34;
-
-    def __str__(self) -&gt; str:
-        return self.name</code></pre>
+        &#34;&#34;&#34;a dict object of the user.&#34;&#34;&#34;
+        return attr.asdict(self)</code></pre>
                 </details>
             </section>
             <section>
@@ -799,293 +769,9 @@ class HardLinkedMembership:
                             </dd>
                         </dl>
                     </dd>
-                    <dt id="aiobungie.crate.user.PartialUser"><code class="flex name class">
-<span>class <span class="ident">PartialUser</span></span>
-</code></dt>
-                    <dd>
-                        <div class="desc">
-                            <p>A partial user crate.</p>
-                            <p>Method generated by attrs for class PartialUser.</p>
-                        </div>
-                        <details class="source">
-                            <summary>
-                                <span>Expand source code</span>
-                            </summary>
-                            <pre><code class="python">@attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
-class PartialUser(abc.ABC):
-    &#34;&#34;&#34;A partial user crate.&#34;&#34;&#34;
-
-    @property
-    @abc.abstractmethod
-    def steam_name(self) -&gt; typing.Optional[str]:
-        &#34;&#34;&#34;The user&#39;s steam username or None.&#34;&#34;&#34;
-
-    @property
-    @abc.abstractmethod
-    def twitch_name(self) -&gt; typing.Optional[str]:
-        &#34;&#34;&#34;The user&#39;s twitch username or None.&#34;&#34;&#34;
-
-    @property
-    @abc.abstractmethod
-    def blizzard_name(self) -&gt; typing.Optional[str]:
-        &#34;&#34;&#34;The user&#39;s blizzard username or None.&#34;&#34;&#34;
-
-    @property
-    @abc.abstractmethod
-    def psn_name(self) -&gt; typing.Optional[str]:
-        &#34;&#34;&#34;The user&#39;s psn username or None.&#34;&#34;&#34;
-
-    @property
-    @abc.abstractmethod
-    def about(self) -&gt; typing.Optional[str]:
-        &#34;&#34;&#34;The user&#39;s about section.&#34;&#34;&#34;
-
-    @property
-    @abc.abstractmethod
-    def locale(self) -&gt; typing.Optional[str]:
-        &#34;&#34;&#34;The user&#39;s profile locale.&#34;&#34;&#34;
-
-    @property
-    @abc.abstractmethod
-    def name(self) -&gt; str:
-        &#34;&#34;&#34;The user&#39;s name.&#34;&#34;&#34;
-
-    @property
-    @abc.abstractmethod
-    def picture(self) -&gt; typing.Optional[Image]:
-        &#34;&#34;&#34;The user&#39;s profile picture if its set.&#34;&#34;&#34;
-
-    @property
-    @abc.abstractmethod
-    def updated_at(self) -&gt; datetime:
-        &#34;&#34;&#34;The user&#39;s last profile update.&#34;&#34;&#34;
-
-    @property
-    @abc.abstractmethod
-    def is_deleted(self) -&gt; bool:
-        &#34;&#34;&#34;Determines if the user is deleted or not.&#34;&#34;&#34;
-
-    @property
-    @abc.abstractmethod
-    def status(self) -&gt; typing.Optional[str]:
-        &#34;&#34;&#34;The user&#39;s profile status.&#34;&#34;&#34;
-
-    @property
-    @abc.abstractmethod
-    def created_at(self) -&gt; datetime:
-        &#34;&#34;&#34;Retruns the user&#39;s creation date in UTC timezone.&#34;&#34;&#34;
-
-    @property
-    def human_timedelta(self) -&gt; str:
-        return time.human_timedelta(self.created_at)</code></pre>
-                        </details>
-                        <h3>Ancestors</h3>
-                        <ul class="hlist">
-                            <li>abc.ABC</li>
-                        </ul>
-                        <h3>Subclasses</h3>
-                        <ul class="hlist">
-                            <li><a title="aiobungie.crate.user.User" href="#aiobungie.crate.user.User">User</a></li>
-                        </ul>
-                        <h3>Instance variables</h3>
-                        <dl>
-                            <dt id="aiobungie.crate.user.PartialUser.about"><code class="name">var <span class="ident">about</span> : Optional[str]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user's about section.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-@abc.abstractmethod
-def about(self) -&gt; typing.Optional[str]:
-    &#34;&#34;&#34;The user&#39;s about section.&#34;&#34;&#34;</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.crate.user.PartialUser.blizzard_name"><code class="name">var <span class="ident">blizzard_name</span> : Optional[str]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user's blizzard username or None.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-@abc.abstractmethod
-def blizzard_name(self) -&gt; typing.Optional[str]:
-    &#34;&#34;&#34;The user&#39;s blizzard username or None.&#34;&#34;&#34;</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.crate.user.PartialUser.created_at"><code class="name">var <span class="ident">created_at</span> : datetime.datetime</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Retruns the user's creation date in UTC timezone.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-@abc.abstractmethod
-def created_at(self) -&gt; datetime:
-    &#34;&#34;&#34;Retruns the user&#39;s creation date in UTC timezone.&#34;&#34;&#34;</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.crate.user.PartialUser.human_timedelta"><code class="name">var <span class="ident">human_timedelta</span> : str</code></dt>
-                            <dd>
-                                <div class="desc"></div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def human_timedelta(self) -&gt; str:
-    return time.human_timedelta(self.created_at)</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.crate.user.PartialUser.is_deleted"><code class="name">var <span class="ident">is_deleted</span> : bool</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Determines if the user is deleted or not.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-@abc.abstractmethod
-def is_deleted(self) -&gt; bool:
-    &#34;&#34;&#34;Determines if the user is deleted or not.&#34;&#34;&#34;</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.crate.user.PartialUser.locale"><code class="name">var <span class="ident">locale</span> : Optional[str]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user's profile locale.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-@abc.abstractmethod
-def locale(self) -&gt; typing.Optional[str]:
-    &#34;&#34;&#34;The user&#39;s profile locale.&#34;&#34;&#34;</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.crate.user.PartialUser.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user's name.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-@abc.abstractmethod
-def name(self) -&gt; str:
-    &#34;&#34;&#34;The user&#39;s name.&#34;&#34;&#34;</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.crate.user.PartialUser.picture"><code class="name">var <span class="ident">picture</span> : Optional[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user's profile picture if its set.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-@abc.abstractmethod
-def picture(self) -&gt; typing.Optional[Image]:
-    &#34;&#34;&#34;The user&#39;s profile picture if its set.&#34;&#34;&#34;</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.crate.user.PartialUser.psn_name"><code class="name">var <span class="ident">psn_name</span> : Optional[str]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user's psn username or None.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-@abc.abstractmethod
-def psn_name(self) -&gt; typing.Optional[str]:
-    &#34;&#34;&#34;The user&#39;s psn username or None.&#34;&#34;&#34;</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.crate.user.PartialUser.status"><code class="name">var <span class="ident">status</span> : Optional[str]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user's profile status.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-@abc.abstractmethod
-def status(self) -&gt; typing.Optional[str]:
-    &#34;&#34;&#34;The user&#39;s profile status.&#34;&#34;&#34;</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.crate.user.PartialUser.steam_name"><code class="name">var <span class="ident">steam_name</span> : Optional[str]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user's steam username or None.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-@abc.abstractmethod
-def steam_name(self) -&gt; typing.Optional[str]:
-    &#34;&#34;&#34;The user&#39;s steam username or None.&#34;&#34;&#34;</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.crate.user.PartialUser.twitch_name"><code class="name">var <span class="ident">twitch_name</span> : Optional[str]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user's twitch username or None.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-@abc.abstractmethod
-def twitch_name(self) -&gt; typing.Optional[str]:
-    &#34;&#34;&#34;The user&#39;s twitch username or None.&#34;&#34;&#34;</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.crate.user.PartialUser.updated_at"><code class="name">var <span class="ident">updated_at</span> : datetime.datetime</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user's last profile update.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-@abc.abstractmethod
-def updated_at(self) -&gt; datetime:
-    &#34;&#34;&#34;The user&#39;s last profile update.&#34;&#34;&#34;</code></pre>
-                                </details>
-                            </dd>
-                        </dl>
-                    </dd>
                     <dt id="aiobungie.crate.user.User"><code class="flex name class">
 <span>class <span class="ident">User</span></span>
-<span>(</span><span>*, id: int, created_at: datetime, name: str, is_deleted: bool, about: typing.Optional[str], updated_at: datetime, psn_name: typing.Optional[str], steam_name: typing.Optional[str], twitch_name: typing.Optional[str], blizzard_name: typing.Optional[str], status: typing.Optional[str], locale: typing.Optional[str], picture: Image)</span>
+<span>(</span><span>*, id: int, created_at: datetime, name: str, unique_name: helpers.NoneOr[str], is_deleted: bool, about: typing.Optional[str], updated_at: datetime, psn_name: typing.Optional[str], steam_name: typing.Optional[str], twitch_name: typing.Optional[str], blizzard_name: typing.Optional[str], status: typing.Optional[str], locale: typing.Optional[str], picture: Image, code: helpers.NoneOr[int])</span>
 </code></dt>
                     <dd>
                         <div class="desc">
@@ -1097,7 +783,7 @@ def updated_at(self) -&gt; datetime:
                                 <span>Expand source code</span>
                             </summary>
                             <pre><code class="python">@attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
-class User(PartialUser):
+class User:
     &#34;&#34;&#34;Represents Bungie user.&#34;&#34;&#34;
 
     id: int = attr.field(hash=True, repr=True)
@@ -1109,28 +795,35 @@ class User(PartialUser):
     name: str = attr.field(hash=False, eq=False, repr=True)
     &#34;&#34;&#34;The user&#39;s name.&#34;&#34;&#34;
 
-    is_deleted: bool = attr.field(repr=True, eq=False, hash=False)
-    &#34;&#34;&#34;Returns True if the user is deleted&#34;&#34;&#34;
+    unique_name: helpers.NoneOr[str] = attr.field(repr=False)
+    &#34;&#34;&#34;The user&#39;s unique name which includes their unique code.
+    This field could be None if no unique name found.
+    
+    .. versionadded:: 0.2.5
+    &#34;&#34;&#34;
+
+    is_deleted: bool = attr.field(repr=False, eq=False, hash=False)
+    &#34;&#34;&#34; True if the user is deleted&#34;&#34;&#34;
 
     about: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s about, Default is None if nothing is Found.&#34;&#34;&#34;
 
-    updated_at: datetime = attr.field(repr=True, hash=False, eq=False)
+    updated_at: datetime = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s last updated om UTC date.&#34;&#34;&#34;
 
-    psn_name: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    psn_name: typing.Optional[str] = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s psn id if it exists.&#34;&#34;&#34;
 
-    steam_name: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    steam_name: typing.Optional[str] = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s steam name if it exists&#34;&#34;&#34;
 
-    twitch_name: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    twitch_name: typing.Optional[str] = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s twitch name if it exists.&#34;&#34;&#34;
 
-    blizzard_name: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    blizzard_name: typing.Optional[str] = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s blizzard name if it exists.&#34;&#34;&#34;
 
-    status: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    status: typing.Optional[str] = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s bungie status text&#34;&#34;&#34;
 
     locale: typing.Optional[str] = attr.field(repr=False, hash=False, eq=False)
@@ -1139,22 +832,29 @@ class User(PartialUser):
     picture: Image = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;The user&#39;s profile picture.&#34;&#34;&#34;
 
-    @property
-    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        &#34;&#34;&#34;Returns a dict object of the user.&#34;&#34;&#34;
-        return attr.asdict(self)
+    code: helpers.NoneOr[int] = attr.field(repr=True)
+    &#34;&#34;&#34;The user&#39;s unique display name code. 
+    This can be None if the user hasn&#39;t logged in after season of the lost update.
+    
+    .. versionadded:: 0.2.5
+    &#34;&#34;&#34;
 
     def __str__(self) -&gt; str:
         return self.name
 
     def __int__(self) -&gt; int:
-        return int(self.id)</code></pre>
+        return self.id
+
+    @property
+    def human_timedelta(self) -&gt; str:
+        &#34;&#34;&#34;A human readable date version of the user&#39;s creation date.&#34;&#34;&#34;
+        return time.human_timedelta(self.created_at)
+
+    @property
+    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
+        &#34;&#34;&#34;a dict object of the user.&#34;&#34;&#34;
+        return attr.asdict(self)</code></pre>
                         </details>
-                        <h3>Ancestors</h3>
-                        <ul class="hlist">
-                            <li><a title="aiobungie.crate.user.PartialUser" href="#aiobungie.crate.user.PartialUser">PartialUser</a></li>
-                            <li>abc.ABC</li>
-                        </ul>
                         <h3>Instance variables</h3>
                         <dl>
                             <dt id="aiobungie.crate.user.User.about"><code class="name">var <span class="ident">about</span> : Optional[str]</code></dt>
@@ -1166,7 +866,7 @@ class User(PartialUser):
                             <dt id="aiobungie.crate.user.User.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>Returns a dict object of the user.</p>
+                                    <p>a dict object of the user.</p>
                                 </div>
                                 <details class="source">
                                     <summary>
@@ -1174,7 +874,7 @@ class User(PartialUser):
                                     </summary>
                                     <pre><code class="python">@property
 def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-    &#34;&#34;&#34;Returns a dict object of the user.&#34;&#34;&#34;
+    &#34;&#34;&#34;a dict object of the user.&#34;&#34;&#34;
     return attr.asdict(self)</code></pre>
                                 </details>
                             </dd>
@@ -1184,11 +884,35 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                     <p>The user's blizzard name if it exists.</p>
                                 </div>
                             </dd>
+                            <dt id="aiobungie.crate.user.User.code"><code class="name">var <span class="ident">code</span> : Optional[int]</code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>The user's unique display name code. This can be None if the user hasn't logged in after season of the lost update.</p>
+                                    <div class="admonition versionadded">
+                                        <p class="admonition-title">Added in version:&ensp;0.2.5</p>
+                                    </div>
+                                </div>
+                            </dd>
                             <dt id="aiobungie.crate.user.User.created_at"><code class="name">var <span class="ident">created_at</span> : datetime.datetime</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>The user's creation date in UTC timezone.</p>
                                 </div>
+                            </dd>
+                            <dt id="aiobungie.crate.user.User.human_timedelta"><code class="name">var <span class="ident">human_timedelta</span> : str</code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>A human readable date version of the user's creation date.</p>
+                                </div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">@property
+def human_timedelta(self) -&gt; str:
+    &#34;&#34;&#34;A human readable date version of the user&#39;s creation date.&#34;&#34;&#34;
+    return time.human_timedelta(self.created_at)</code></pre>
+                                </details>
                             </dd>
                             <dt id="aiobungie.crate.user.User.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
                             <dd>
@@ -1199,7 +923,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                             <dt id="aiobungie.crate.user.User.is_deleted"><code class="name">var <span class="ident">is_deleted</span> : bool</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>Returns True if the user is deleted</p>
+                                    <p>True if the user is deleted</p>
                                 </div>
                             </dd>
                             <dt id="aiobungie.crate.user.User.locale"><code class="name">var <span class="ident">locale</span> : Optional[str]</code></dt>
@@ -1210,11 +934,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                             </dd>
                             <dt id="aiobungie.crate.user.User.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
                             <dd>
-                                <p class="inheritance">
-                                    <em>Inherited from:</em>
-                                    <code><a title="aiobungie.crate.user.PartialUser" href="#aiobungie.crate.user.PartialUser">PartialUser</a></code>.<code><a title="aiobungie.crate.user.PartialUser.name" href="#aiobungie.crate.user.PartialUser.name">name</a></code>
-                                </p>
-                                <div class="desc inherited">
+                                <div class="desc">
                                     <p>The user's name.</p>
                                 </div>
                             </dd>
@@ -1248,6 +968,15 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                     <p>The user's twitch name if it exists.</p>
                                 </div>
                             </dd>
+                            <dt id="aiobungie.crate.user.User.unique_name"><code class="name">var <span class="ident">unique_name</span> : Optional[str]</code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>The user's unique name which includes their unique code. This field could be None if no unique name found.</p>
+                                    <div class="admonition versionadded">
+                                        <p class="admonition-title">Added in version:&ensp;0.2.5</p>
+                                    </div>
+                                </div>
+                            </dd>
                             <dt id="aiobungie.crate.user.User.updated_at"><code class="name">var <span class="ident">updated_at</span> : datetime.datetime</code></dt>
                             <dd>
                                 <div class="desc">
@@ -1261,7 +990,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
 </code></dt>
                     <dd>
                         <div class="desc">
-                            <p>The is meant for any Member / user / like crate.</p>
+                            <p>The is meant for any bungie userlike object.</p>
                             <p>Method generated by attrs for class UserLike.</p>
                         </div>
                         <details class="source">
@@ -1270,7 +999,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                             </summary>
                             <pre><code class="python">@attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
 class UserLike(abc.ABC):
-    &#34;&#34;&#34;The is meant for any Member / user / like crate.&#34;&#34;&#34;
+    &#34;&#34;&#34;The is meant for any bungie userlike object.&#34;&#34;&#34;
 
     @property
     @abc.abstractmethod
@@ -1279,35 +1008,61 @@ class UserLike(abc.ABC):
 
     @property
     @abc.abstractmethod
+    def id(self) -&gt; int:
+        &#34;&#34;&#34;The user like&#39;s id.&#34;&#34;&#34;
+
+    @property
+    @abc.abstractmethod
     def name(self) -&gt; str:
-        &#34;&#34;&#34;The user&#39;s name.&#34;&#34;&#34;
+        &#34;&#34;&#34;The user like&#39;s name.&#34;&#34;&#34;
 
     @property
     @abc.abstractmethod
-    def is_public(self) -&gt; typing.Optional[bool]:
-        &#34;&#34;&#34;Returns if the user profile is public or no.&#34;&#34;&#34;
+    def is_public(self) -&gt; bool:
+        &#34;&#34;&#34;True if the user profile is public or no.&#34;&#34;&#34;
 
     @property
     @abc.abstractmethod
-    def type(self) -&gt; typing.Optional[enums.MembershipType]:
-        &#34;&#34;&#34;Returns the user type of the user.&#34;&#34;&#34;
+    def type(self) -&gt; enums.MembershipType:
+        &#34;&#34;&#34;The user type of the user.&#34;&#34;&#34;
 
     @property
     @abc.abstractmethod
     def icon(self) -&gt; Image:
-        &#34;&#34;&#34;The user&#39;s icon.&#34;&#34;&#34;
-
-    @property
-    def link(self) -&gt; typing.Optional[str]:
-        &#34;&#34;&#34;Returns the user&#39;s profile link.&#34;&#34;&#34;
+        &#34;&#34;&#34;The user like&#39;s icon.&#34;&#34;&#34;
 
     @property
     @abc.abstractmethod
     def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        &#34;&#34;&#34;Returns an instance of the UserLike as a dict.&#34;&#34;&#34;
+        &#34;&#34;&#34;An instance of the UserLike as a dict.&#34;&#34;&#34;
+
+    @property
+    @abc.abstractmethod
+    def code(self) -&gt; helpers.NoneOr[int]:
+        &#34;&#34;&#34;The user like&#39;s unique display name code.
+        This can be None if the user hasn&#39;t logged in after season of the lost update.
+
+        .. versionadded:: 0.2.5
+        &#34;&#34;&#34;
+
+    @property
+    @abc.abstractmethod
+    def unique_name(self) -&gt; helpers.NoneOr[str]:
+        &#34;&#34;&#34;The user like&#39;s display name. This includes the full name with the user name code.
+
+        .. versionadded:: 0.2.5
+        &#34;&#34;&#34;
+
+    @property
+    def link(self) -&gt; str:
+        &#34;&#34;&#34;The user like&#39;s profile link.&#34;&#34;&#34;
+        raise NotImplementedError
 
     def __str__(self) -&gt; str:
-        return self.name</code></pre>
+        return self.name
+
+    def __int__(self) -&gt; int:
+        return self.id</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
@@ -1325,7 +1080,7 @@ class UserLike(abc.ABC):
                             <dt id="aiobungie.crate.user.UserLike.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>Returns an instance of the UserLike as a dict.</p>
+                                    <p>An instance of the UserLike as a dict.</p>
                                 </div>
                                 <details class="source">
                                     <summary>
@@ -1334,13 +1089,35 @@ class UserLike(abc.ABC):
                                     <pre><code class="python">@property
 @abc.abstractmethod
 def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-    &#34;&#34;&#34;Returns an instance of the UserLike as a dict.&#34;&#34;&#34;</code></pre>
+    &#34;&#34;&#34;An instance of the UserLike as a dict.&#34;&#34;&#34;</code></pre>
+                                </details>
+                            </dd>
+                            <dt id="aiobungie.crate.user.UserLike.code"><code class="name">var <span class="ident">code</span> : Optional[int]</code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>The user like's unique display name code. This can be None if the user hasn't logged in after season of the lost update.</p>
+                                    <div class="admonition versionadded">
+                                        <p class="admonition-title">Added in version:&ensp;0.2.5</p>
+                                    </div>
+                                </div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">@property
+@abc.abstractmethod
+def code(self) -&gt; helpers.NoneOr[int]:
+    &#34;&#34;&#34;The user like&#39;s unique display name code.
+    This can be None if the user hasn&#39;t logged in after season of the lost update.
+
+    .. versionadded:: 0.2.5
+    &#34;&#34;&#34;</code></pre>
                                 </details>
                             </dd>
                             <dt id="aiobungie.crate.user.UserLike.icon"><code class="name">var <span class="ident">icon</span> : <a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a></code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>The user's icon.</p>
+                                    <p>The user like's icon.</p>
                                 </div>
                                 <details class="source">
                                     <summary>
@@ -1349,13 +1126,13 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                     <pre><code class="python">@property
 @abc.abstractmethod
 def icon(self) -&gt; Image:
-    &#34;&#34;&#34;The user&#39;s icon.&#34;&#34;&#34;</code></pre>
+    &#34;&#34;&#34;The user like&#39;s icon.&#34;&#34;&#34;</code></pre>
                                 </details>
                             </dd>
-                            <dt id="aiobungie.crate.user.UserLike.is_public"><code class="name">var <span class="ident">is_public</span> : Optional[bool]</code></dt>
+                            <dt id="aiobungie.crate.user.UserLike.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>Returns if the user profile is public or no.</p>
+                                    <p>The user like's id.</p>
                                 </div>
                                 <details class="source">
                                     <summary>
@@ -1363,28 +1140,44 @@ def icon(self) -&gt; Image:
                                     </summary>
                                     <pre><code class="python">@property
 @abc.abstractmethod
-def is_public(self) -&gt; typing.Optional[bool]:
-    &#34;&#34;&#34;Returns if the user profile is public or no.&#34;&#34;&#34;</code></pre>
+def id(self) -&gt; int:
+    &#34;&#34;&#34;The user like&#39;s id.&#34;&#34;&#34;</code></pre>
                                 </details>
                             </dd>
-                            <dt id="aiobungie.crate.user.UserLike.link"><code class="name">var <span class="ident">link</span> : Optional[str]</code></dt>
+                            <dt id="aiobungie.crate.user.UserLike.is_public"><code class="name">var <span class="ident">is_public</span> : bool</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>Returns the user's profile link.</p>
+                                    <p>True if the user profile is public or no.</p>
                                 </div>
                                 <details class="source">
                                     <summary>
                                         <span>Expand source code</span>
                                     </summary>
                                     <pre><code class="python">@property
-def link(self) -&gt; typing.Optional[str]:
-    &#34;&#34;&#34;Returns the user&#39;s profile link.&#34;&#34;&#34;</code></pre>
+@abc.abstractmethod
+def is_public(self) -&gt; bool:
+    &#34;&#34;&#34;True if the user profile is public or no.&#34;&#34;&#34;</code></pre>
+                                </details>
+                            </dd>
+                            <dt id="aiobungie.crate.user.UserLike.link"><code class="name">var <span class="ident">link</span> : str</code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>The user like's profile link.</p>
+                                </div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">@property
+def link(self) -&gt; str:
+    &#34;&#34;&#34;The user like&#39;s profile link.&#34;&#34;&#34;
+    raise NotImplementedError</code></pre>
                                 </details>
                             </dd>
                             <dt id="aiobungie.crate.user.UserLike.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>The user's name.</p>
+                                    <p>The user like's name.</p>
                                 </div>
                                 <details class="source">
                                     <summary>
@@ -1393,7 +1186,7 @@ def link(self) -&gt; typing.Optional[str]:
                                     <pre><code class="python">@property
 @abc.abstractmethod
 def name(self) -&gt; str:
-    &#34;&#34;&#34;The user&#39;s name.&#34;&#34;&#34;</code></pre>
+    &#34;&#34;&#34;The user like&#39;s name.&#34;&#34;&#34;</code></pre>
                                 </details>
                             </dd>
                             <dt id="aiobungie.crate.user.UserLike.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.impl.Netrunner" href="./internal/impl.html#aiobungie.internal.impl.Netrunner">Netrunner</a></code></dt>
@@ -1411,10 +1204,10 @@ def net(self) -&gt; impl.Netrunner:
     &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;</code></pre>
                                 </details>
                             </dd>
-                            <dt id="aiobungie.crate.user.UserLike.type"><code class="name">var <span class="ident">type</span> : Optional[<a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a>]</code></dt>
+                            <dt id="aiobungie.crate.user.UserLike.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>Returns the user type of the user.</p>
+                                    <p>The user type of the user.</p>
                                 </div>
                                 <details class="source">
                                     <summary>
@@ -1422,8 +1215,29 @@ def net(self) -&gt; impl.Netrunner:
                                     </summary>
                                     <pre><code class="python">@property
 @abc.abstractmethod
-def type(self) -&gt; typing.Optional[enums.MembershipType]:
-    &#34;&#34;&#34;Returns the user type of the user.&#34;&#34;&#34;</code></pre>
+def type(self) -&gt; enums.MembershipType:
+    &#34;&#34;&#34;The user type of the user.&#34;&#34;&#34;</code></pre>
+                                </details>
+                            </dd>
+                            <dt id="aiobungie.crate.user.UserLike.unique_name"><code class="name">var <span class="ident">unique_name</span> : Optional[str]</code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>The user like's display name. This includes the full name with the user name code.</p>
+                                    <div class="admonition versionadded">
+                                        <p class="admonition-title">Added in version:&ensp;0.2.5</p>
+                                    </div>
+                                </div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">@property
+@abc.abstractmethod
+def unique_name(self) -&gt; helpers.NoneOr[str]:
+    &#34;&#34;&#34;The user like&#39;s display name. This includes the full name with the user name code.
+
+    .. versionadded:: 0.2.5
+    &#34;&#34;&#34;</code></pre>
                                 </details>
                             </dd>
                         </dl>
@@ -1556,30 +1370,14 @@ class UserThemes:
                             </ul>
                         </li>
                         <li>
-                            <h4><code><a title="aiobungie.crate.user.PartialUser" href="#aiobungie.crate.user.PartialUser">PartialUser</a></code></h4>
-                            <ul class="two-column">
-                                <li><code><a title="aiobungie.crate.user.PartialUser.about" href="#aiobungie.crate.user.PartialUser.about">about</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.PartialUser.blizzard_name" href="#aiobungie.crate.user.PartialUser.blizzard_name">blizzard_name</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.PartialUser.created_at" href="#aiobungie.crate.user.PartialUser.created_at">created_at</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.PartialUser.human_timedelta" href="#aiobungie.crate.user.PartialUser.human_timedelta">human_timedelta</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.PartialUser.is_deleted" href="#aiobungie.crate.user.PartialUser.is_deleted">is_deleted</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.PartialUser.locale" href="#aiobungie.crate.user.PartialUser.locale">locale</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.PartialUser.name" href="#aiobungie.crate.user.PartialUser.name">name</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.PartialUser.picture" href="#aiobungie.crate.user.PartialUser.picture">picture</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.PartialUser.psn_name" href="#aiobungie.crate.user.PartialUser.psn_name">psn_name</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.PartialUser.status" href="#aiobungie.crate.user.PartialUser.status">status</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.PartialUser.steam_name" href="#aiobungie.crate.user.PartialUser.steam_name">steam_name</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.PartialUser.twitch_name" href="#aiobungie.crate.user.PartialUser.twitch_name">twitch_name</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.PartialUser.updated_at" href="#aiobungie.crate.user.PartialUser.updated_at">updated_at</a></code></li>
-                            </ul>
-                        </li>
-                        <li>
                             <h4><code><a title="aiobungie.crate.user.User" href="#aiobungie.crate.user.User">User</a></code></h4>
                             <ul class="two-column">
                                 <li><code><a title="aiobungie.crate.user.User.about" href="#aiobungie.crate.user.User.about">about</a></code></li>
                                 <li><code><a title="aiobungie.crate.user.User.as_dict" href="#aiobungie.crate.user.User.as_dict">as_dict</a></code></li>
                                 <li><code><a title="aiobungie.crate.user.User.blizzard_name" href="#aiobungie.crate.user.User.blizzard_name">blizzard_name</a></code></li>
+                                <li><code><a title="aiobungie.crate.user.User.code" href="#aiobungie.crate.user.User.code">code</a></code></li>
                                 <li><code><a title="aiobungie.crate.user.User.created_at" href="#aiobungie.crate.user.User.created_at">created_at</a></code></li>
+                                <li><code><a title="aiobungie.crate.user.User.human_timedelta" href="#aiobungie.crate.user.User.human_timedelta">human_timedelta</a></code></li>
                                 <li><code><a title="aiobungie.crate.user.User.id" href="#aiobungie.crate.user.User.id">id</a></code></li>
                                 <li><code><a title="aiobungie.crate.user.User.is_deleted" href="#aiobungie.crate.user.User.is_deleted">is_deleted</a></code></li>
                                 <li><code><a title="aiobungie.crate.user.User.locale" href="#aiobungie.crate.user.User.locale">locale</a></code></li>
@@ -1589,6 +1387,7 @@ class UserThemes:
                                 <li><code><a title="aiobungie.crate.user.User.status" href="#aiobungie.crate.user.User.status">status</a></code></li>
                                 <li><code><a title="aiobungie.crate.user.User.steam_name" href="#aiobungie.crate.user.User.steam_name">steam_name</a></code></li>
                                 <li><code><a title="aiobungie.crate.user.User.twitch_name" href="#aiobungie.crate.user.User.twitch_name">twitch_name</a></code></li>
+                                <li><code><a title="aiobungie.crate.user.User.unique_name" href="#aiobungie.crate.user.User.unique_name">unique_name</a></code></li>
                                 <li><code><a title="aiobungie.crate.user.User.updated_at" href="#aiobungie.crate.user.User.updated_at">updated_at</a></code></li>
                             </ul>
                         </li>
@@ -1596,12 +1395,15 @@ class UserThemes:
                             <h4><code><a title="aiobungie.crate.user.UserLike" href="#aiobungie.crate.user.UserLike">UserLike</a></code></h4>
                             <ul class="two-column">
                                 <li><code><a title="aiobungie.crate.user.UserLike.as_dict" href="#aiobungie.crate.user.UserLike.as_dict">as_dict</a></code></li>
+                                <li><code><a title="aiobungie.crate.user.UserLike.code" href="#aiobungie.crate.user.UserLike.code">code</a></code></li>
                                 <li><code><a title="aiobungie.crate.user.UserLike.icon" href="#aiobungie.crate.user.UserLike.icon">icon</a></code></li>
+                                <li><code><a title="aiobungie.crate.user.UserLike.id" href="#aiobungie.crate.user.UserLike.id">id</a></code></li>
                                 <li><code><a title="aiobungie.crate.user.UserLike.is_public" href="#aiobungie.crate.user.UserLike.is_public">is_public</a></code></li>
                                 <li><code><a title="aiobungie.crate.user.UserLike.link" href="#aiobungie.crate.user.UserLike.link">link</a></code></li>
                                 <li><code><a title="aiobungie.crate.user.UserLike.name" href="#aiobungie.crate.user.UserLike.name">name</a></code></li>
                                 <li><code><a title="aiobungie.crate.user.UserLike.net" href="#aiobungie.crate.user.UserLike.net">net</a></code></li>
                                 <li><code><a title="aiobungie.crate.user.UserLike.type" href="#aiobungie.crate.user.UserLike.type">type</a></code></li>
+                                <li><code><a title="aiobungie.crate.user.UserLike.unique_name" href="#aiobungie.crate.user.UserLike.unique_name">unique_name</a></code></li>
                             </ul>
                         </li>
                         <li>

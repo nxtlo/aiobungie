@@ -44,7 +44,7 @@ from .internal.enums import GroupType
 from .internal.enums import MembershipType
 
 
-class Client(impl.BaseClient):
+class Client(impl.RESTful):
     """Represents a client that connects to the Bungie API
 
     Attributes
@@ -152,42 +152,13 @@ class Client(impl.BaseClient):
 
     # * User methods.
 
-    async def fetch_user(self, name: str, *, position: int = 0) -> crate.User:
-        """Fetches a Bungie user by their name.
-
-        Parameters
-        ----------
-        name: `builtins.str`
-            The user name.
-        position: `builtins.int`
-            The user position/index in the list to return,
-            Will returns the first one if not specified.
-
-        Returns
-        -------
-        `aiobungie.crate.User`
-            A Bungie user.
-
-        Raises
-        ------
-        `aiobungie.error.UserNotFound`
-            The user wasa not found.
-        """
-        data = await self.http.fetch_user(name=name)
-        assert isinstance(data, list)
-        user_mod = self.serialize.deserialize_user(data, position)
-        return user_mod
-
-    async def fetch_user_from_id(self, id: int) -> crate.User:
+    async def fetch_user(self, id: int) -> crate.User:
         """Fetches a Bungie user by their id.
 
         Parameters
         ----------
         id: `builtins.int`
             The user id.
-        position: `builtins.int`
-            The user position/index in the list to return,
-            Will returns the first one if not specified.
 
         Returns
         -------
@@ -199,10 +170,9 @@ class Client(impl.BaseClient):
         `aiobungie.error.UserNotFound`
             The user was not found.
         """
-        payload = await self.http.fetch_user_from_id(id)
+        payload = await self.http.fetch_user(id)
         assert isinstance(payload, dict)
-        # User and User from id has the same attrs but different return types so we have to ignore here.
-        return self.serialize.deserialize_user(payload)  # type: ignore
+        return self.serialize.deserialize_user(payload)
 
     async def fetch_user_themes(self) -> typing.Sequence[crate.user.UserThemes]:
         """Fetch all available user themes.
@@ -219,7 +189,7 @@ class Client(impl.BaseClient):
         self, credential: int, type: CredentialType = CredentialType.STEAMID, /
     ) -> crate.user.HardLinkedMembership:
         """Gets any hard linked membership given a credential.
-        Only works for credentials that are public just STEAMID from `aiobungie.CredentialType` right now.
+        Only works for credentials that are public just `aiobungie.CredentialType.STEAMID` right now.
         Cross Save aware.
 
         Parameters
@@ -282,18 +252,22 @@ class Client(impl.BaseClient):
         return self.serialize.deserialize_profile(data)
 
     async def fetch_player(
-        self, name: str, type: MembershipType, *, position: int = 0
+        self, name: str, type: MembershipType = MembershipType.ALL, /
     ) -> crate.Player:
         """Fetches a Destiny 2 Player.
 
         Parameters
         -----------
         name: `builtins.str`
-            The Player's Name
+            The Player's Name.
+
+        !!! note
+            You must also pass the player's unique code.
+            A full name parameter should look like this
+            `Fate怒#4275`
+
         type: `aiobungie.internal.enums.MembershipType`
             The player's membership type, e,g. XBOX, STEAM, PSN
-        position: `builtins.int`
-            Which player position to return, first player will return if None.
 
         Returns
         --------
@@ -310,7 +284,7 @@ class Client(impl.BaseClient):
         """
         resp = await self.http.fetch_player(name, type)
         assert isinstance(resp, list)
-        return self.serialize.deserialize_player(payload=resp, position=position)
+        return self.serialize.deserialize_player(resp)
 
     async def fetch_character(
         self, memberid: int, type: MembershipType, character: Class

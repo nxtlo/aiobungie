@@ -24,7 +24,7 @@
 
 from __future__ import annotations
 
-__all__ = ("BaseClient", "Netrunner")
+__all__ = ("RESTful", "Netrunner")
 
 import typing
 
@@ -33,6 +33,10 @@ from aiobungie import client as client_
 
 @typing.runtime_checkable
 class Netrunner(typing.Protocol):
+    """A netrunner client represents The rest client.
+    This is only used for making external requests.
+    """
+
     __slots__: typing.Sequence[str] = ()
 
     @property
@@ -42,7 +46,9 @@ class Netrunner(typing.Protocol):
 
 
 @typing.runtime_checkable
-class BaseClient(Netrunner, typing.Protocol):
+class RESTful(Netrunner, typing.Protocol):
+    """A Resuful and netrunner client protocol."""
+
     __slots__: typing.Sequence[str] = ()
 
     def run(

@@ -25,7 +25,7 @@
 
 from __future__ import annotations
 
-__all__ = ("User", "PartialUser", "UserLike", "HardLinkedMembership", "UserThemes")
+__all__ = ("User", "UserLike", "HardLinkedMembership", "UserThemes")
 
 import abc
 import typing
@@ -38,6 +38,74 @@ from aiobungie.internal import enums
 from aiobungie.internal import helpers
 from aiobungie.internal import impl
 from aiobungie.internal import time
+
+
+@attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
+class UserLike(abc.ABC):
+    """The is meant for any bungie userlike object."""
+
+    @property
+    @abc.abstractmethod
+    def net(self) -> impl.Netrunner:
+        """A network state used for making external requests."""
+
+    @property
+    @abc.abstractmethod
+    def id(self) -> int:
+        """The user like's id."""
+
+    @property
+    @abc.abstractmethod
+    def name(self) -> str:
+        """The user like's name."""
+
+    @property
+    @abc.abstractmethod
+    def is_public(self) -> bool:
+        """True if the user profile is public or no."""
+
+    @property
+    @abc.abstractmethod
+    def type(self) -> enums.MembershipType:
+        """The user type of the user."""
+
+    @property
+    @abc.abstractmethod
+    def icon(self) -> Image:
+        """The user like's icon."""
+
+    @property
+    @abc.abstractmethod
+    def as_dict(self) -> typing.Dict[str, typing.Any]:
+        """An instance of the UserLike as a dict."""
+
+    @property
+    @abc.abstractmethod
+    def code(self) -> helpers.NoneOr[int]:
+        """The user like's unique display name code.
+        This can be None if the user hasn't logged in after season of the lost update.
+
+        .. versionadded:: 0.2.5
+        """
+
+    @property
+    @abc.abstractmethod
+    def unique_name(self) -> helpers.NoneOr[str]:
+        """The user like's display name. This includes the full name with the user name code.
+
+        .. versionadded:: 0.2.5
+        """
+
+    @property
+    def link(self) -> str:
+        """The user like's profile link."""
+        raise NotImplementedError
+
+    def __str__(self) -> str:
+        return self.name
+
+    def __int__(self) -> int:
+        return self.id
 
 
 @attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
@@ -75,76 +143,7 @@ class UserThemes:
 
 
 @attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
-class PartialUser(abc.ABC):
-    """A partial user crate."""
-
-    @property
-    @abc.abstractmethod
-    def steam_name(self) -> typing.Optional[str]:
-        """The user's steam username or None."""
-
-    @property
-    @abc.abstractmethod
-    def twitch_name(self) -> typing.Optional[str]:
-        """The user's twitch username or None."""
-
-    @property
-    @abc.abstractmethod
-    def blizzard_name(self) -> typing.Optional[str]:
-        """The user's blizzard username or None."""
-
-    @property
-    @abc.abstractmethod
-    def psn_name(self) -> typing.Optional[str]:
-        """The user's psn username or None."""
-
-    @property
-    @abc.abstractmethod
-    def about(self) -> typing.Optional[str]:
-        """The user's about section."""
-
-    @property
-    @abc.abstractmethod
-    def locale(self) -> typing.Optional[str]:
-        """The user's profile locale."""
-
-    @property
-    @abc.abstractmethod
-    def name(self) -> str:
-        """The user's name."""
-
-    @property
-    @abc.abstractmethod
-    def picture(self) -> typing.Optional[Image]:
-        """The user's profile picture if its set."""
-
-    @property
-    @abc.abstractmethod
-    def updated_at(self) -> datetime:
-        """The user's last profile update."""
-
-    @property
-    @abc.abstractmethod
-    def is_deleted(self) -> bool:
-        """Determines if the user is deleted or not."""
-
-    @property
-    @abc.abstractmethod
-    def status(self) -> typing.Optional[str]:
-        """The user's profile status."""
-
-    @property
-    @abc.abstractmethod
-    def created_at(self) -> datetime:
-        """Returns the user's creation date in UTC timezone."""
-
-    @property
-    def human_timedelta(self) -> str:
-        return time.human_timedelta(self.created_at)
-
-
-@attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
-class User(PartialUser):
+class User:
     """Represents Bungie user."""
 
     id: int = attr.field(hash=True, repr=True)
@@ -156,28 +155,35 @@ class User(PartialUser):
     name: str = attr.field(hash=False, eq=False, repr=True)
     """The user's name."""
 
-    is_deleted: bool = attr.field(repr=True, eq=False, hash=False)
-    """Returns True if the user is deleted"""
+    unique_name: helpers.NoneOr[str] = attr.field(repr=False)
+    """The user's unique name which includes their unique code.
+    This field could be None if no unique name found.
+    
+    .. versionadded:: 0.2.5
+    """
+
+    is_deleted: bool = attr.field(repr=False, eq=False, hash=False)
+    """ True if the user is deleted"""
 
     about: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
     """The user's about, Default is None if nothing is Found."""
 
-    updated_at: datetime = attr.field(repr=True, hash=False, eq=False)
+    updated_at: datetime = attr.field(repr=False, hash=False, eq=False)
     """The user's last updated om UTC date."""
 
-    psn_name: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    psn_name: typing.Optional[str] = attr.field(repr=False, hash=False, eq=False)
     """The user's psn id if it exists."""
 
-    steam_name: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    steam_name: typing.Optional[str] = attr.field(repr=False, hash=False, eq=False)
     """The user's steam name if it exists"""
 
-    twitch_name: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    twitch_name: typing.Optional[str] = attr.field(repr=False, hash=False, eq=False)
     """The user's twitch name if it exists."""
 
-    blizzard_name: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    blizzard_name: typing.Optional[str] = attr.field(repr=False, hash=False, eq=False)
     """The user's blizzard name if it exists."""
 
-    status: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    status: typing.Optional[str] = attr.field(repr=False, hash=False, eq=False)
     """The user's bungie status text"""
 
     locale: typing.Optional[str] = attr.field(repr=False, hash=False, eq=False)
@@ -186,55 +192,25 @@ class User(PartialUser):
     picture: Image = attr.field(repr=False, hash=False, eq=False)
     """The user's profile picture."""
 
-    @property
-    def as_dict(self) -> typing.Dict[str, typing.Any]:
-        """Returns a dict object of the user."""
-        return attr.asdict(self)
+    code: helpers.NoneOr[int] = attr.field(repr=True)
+    """The user's unique display name code. 
+    This can be None if the user hasn't logged in after season of the lost update.
+    
+    .. versionadded:: 0.2.5
+    """
 
     def __str__(self) -> str:
         return self.name
 
     def __int__(self) -> int:
-        return int(self.id)
-
-
-@attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
-class UserLike(abc.ABC):
-    """The is meant for any Member / user / like crate."""
+        return self.id
 
     @property
-    @abc.abstractmethod
-    def net(self) -> impl.Netrunner:
-        """A network state used for making external requests."""
+    def human_timedelta(self) -> str:
+        """A human readable date version of the user's creation date."""
+        return time.human_timedelta(self.created_at)
 
     @property
-    @abc.abstractmethod
-    def name(self) -> str:
-        """The user's name."""
-
-    @property
-    @abc.abstractmethod
-    def is_public(self) -> typing.Optional[bool]:
-        """Returns if the user profile is public or no."""
-
-    @property
-    @abc.abstractmethod
-    def type(self) -> typing.Optional[enums.MembershipType]:
-        """Returns the user type of the user."""
-
-    @property
-    @abc.abstractmethod
-    def icon(self) -> Image:
-        """The user's icon."""
-
-    @property
-    def link(self) -> typing.Optional[str]:
-        """Returns the user's profile link."""
-
-    @property
-    @abc.abstractmethod
     def as_dict(self) -> typing.Dict[str, typing.Any]:
-        """Returns an instance of the UserLike as a dict."""
-
-    def __str__(self) -> str:
-        return self.name
+        """a dict object of the user."""
+        return attr.asdict(self)

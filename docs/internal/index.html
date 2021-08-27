@@ -567,7 +567,7 @@ from .helpers import deprecated</code></pre>
                     <dt><code class="name"><a title="aiobungie.internal.time" href="time.html">aiobungie.internal.time</a></code></dt>
                     <dd>
                         <div class="desc">
-                            <p>Time formating module.</p>
+                            <p>Time formatting module.</p>
                         </div>
                     </dd>
                 </dl>
@@ -595,14 +595,17 @@ from .helpers import deprecated</code></pre>
 
     @wraps(func)
     def wrapper(*args: typing.Any, **kwargs: typing.Any) -&gt; None:
-        warnings.warn(
-            f&#34;function {func.__name__!r} deprecated until further notice.&#34;,
-            stacklevel=2,
-            category=DeprecationWarning,
-        )
-        func.__doc__ += &#34; DEPRECATED FUNCTION.&#34;
-        coro = func(*args, **kwargs)
-        return coro
+        if inspect.isfunction(func):
+            warnings.warn(
+                f&#34;function {func.__name__!r} is deprecated.&#34;,
+                stacklevel=2,
+                category=DeprecationWarning,
+            )
+            func.__doc__ += &#34;&#34;&#34;!!! warning
+            
+            This function is a DEPRECATED.
+            &#34;&#34;&#34;
+        return func(*args, **kwargs)
 
     return wrapper</code></pre>
                         </details>

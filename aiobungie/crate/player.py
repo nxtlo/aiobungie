@@ -34,6 +34,7 @@ import attr
 
 from aiobungie.crate.user import UserLike
 from aiobungie.internal import Image
+from aiobungie.internal import helpers
 from aiobungie.internal import impl
 from aiobungie.internal.enums import MembershipType
 
@@ -57,6 +58,34 @@ class Player(UserLike):
     type: MembershipType = attr.field(repr=True, eq=True, hash=False)
     """The profile's membership type."""
 
+    code: helpers.NoneOr[int] = attr.field(repr=True)
+    """The clan member's bungie display name code
+    This is new and was added in Season of the lost update
+    
+    .. versionadded:: 0.2.5
+    """
+
+    crossave_override: int = attr.field(repr=False)
+    """Returns `1` if the user has a cross save override in effect and 0 if not.
+    
+    .. versionadded:: 0.2.5
+    """
+
+    types: list[MembershipType] = attr.field(repr=False)
+    """A list of the player's membership types.
+    
+    .. versionadded:: 0.2.5
+    """
+
+    @property
+    def unique_name(self) -> helpers.NoneOr[str]:
+        """The user's unique display name code.
+        This can be None if the user hasn't logged in after season of the lost update.
+
+        .. versionadded:: 0.2.5
+        """
+        return f"{self.name}#{self.code}"
+
     @property
     def net(self) -> impl.Netrunner:
         """A network state used for making external requests."""
@@ -67,9 +96,3 @@ class Player(UserLike):
         """Returns a dict object of the player."""
 
         return attr.asdict(self)
-
-    def __int__(self) -> int:
-        return int(self.id)
-
-    def __str__(self) -> str:
-        return self.name

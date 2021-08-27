@@ -22,32 +22,32 @@
 
 """A simple example to fetch or search for destiny 2 players."""
 
-
-# There're different types to fetch someone
-# You can fetch the bungie profile, Destiny 2 player, Bungie user.
+from typing import Sequence
 
 import aiobungie
-from aiobungie.crate import Character
-from aiobungie.crate import Player
-from aiobungie.crate import Profile
-from aiobungie.crate import User
+from aiobungie import crate
+
+# crates in aiobungie are used to organaize
+# The flow and how aiobungie is structured
+# for simplecity and performance
+
 
 client = aiobungie.Client("YOUR_TOKEN_HERE")
 
 
 async def fetch_me() -> None:
 
-    # fetch a Destiny 2 Player and return the second player we find.
+    # fetch a Destiny 2 Player.
 
-    fate: Player = await client.fetch_player(
-        name="Fate",
-        type=aiobungie.MembershipType.STEAM,  # Fetch only Steam players.
-        position=3,
-    )
+    # NOTE that the name has to be the new bungie name
+    # With the code as well like this one.
+    fate: crate.Player = await client.fetch_player(
+        "Fate怒#4275"
+    )  # returns a Destiny 2 Player crate.
 
     print(fate.name, fate.type, fate.id)
 
-    fate_warlock: Character = await client.fetch_character(  # A Destiny 2 player character.
+    fate_warlock: crate.Character = await client.fetch_character(  # returns a Destiny 2 player character crate.
         fate.id,
         fate.type,
         character=aiobungie.Class.WARLOCK,  # The character we want to return is the warlock.
@@ -65,7 +65,7 @@ async def fetch_me() -> None:
     # to fetch the exact profile since bungie doesn't
     # return all bungie users
     # a bungie user id looks like this 20315338
-    user: User = await client.fetch_user_from_id(20315338)
+    user: crate.User = await client.fetch_user(20315338)  # Returns a Bungie user crate.
     print(
         user.name,
         user.about,
@@ -74,13 +74,34 @@ async def fetch_me() -> None:
         user.steam_name,  # You can get the steam name if it exists.
     )
 
+    clan: crate.Clan = await client.fetch_clan(
+        "Fast"
+    )  # returns a Destiny 1/2 clan crate.
+    # You can use the from_id(1234) to fetch the clan givin an id.
+
+    # Fetching the members is kinda expensive operation
+    # since they're http requests. You can implement your own cache
+    # strategy to cache the members instead of making an http request
+    # every time.
+
+    members: Sequence[
+        crate.ClanMember
+    ] = await clan.fetch_members()  # get the clan members.
+    for m in members:
+        print(m.unique_name, m.code, m.id, m.type)
+
+    specific_member: crate.ClanMember = await clan.fetch_member(
+        "Bj"
+    )  # get a player name starts with or has Bj.
+    print(specific_member.name, specific_member.id)
+
     # You can also fetch a profile then get the exact character.
 
-    profile: Profile = await client.fetch_profile(
+    profile: crate.Profile = await client.fetch_profile(
         4611686018484639825, aiobungie.MembershipType.STEAM
     )
     # Hunter
-    hunter: Character = await profile.hunter()
+    hunter: crate.Character = await profile.hunter()
 
     # Warlock
     # warlock: Character = await profile.warlock()

@@ -28,7 +28,7 @@ __all__ = ("BASE", "REST_EP", "OAUTH_EP", "TOKEN_EP")
 
 import typing
 
-BASE: typing.Final[str] = "https://bungie.net"
+BASE: typing.Final[str] = "https://www.bungie.net"
 """Base bungie url"""
 
 REST_EP: typing.Final[str] = f"{BASE}/Platform"

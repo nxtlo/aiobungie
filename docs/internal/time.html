@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
     <meta name="generator" content="pdoc 0.9.2" />
     <title>aiobungie.internal.time API documentation</title>
-    <meta name="description" content="Time formating module." />
+    <meta name="description" content="Time formatting module." />
     <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
     <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
     <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/atom-one-dark.min.css" crossorigin>
@@ -482,7 +482,7 @@
                 <h1 class="title">Module <code>aiobungie.internal.time</code></h1>
             </header>
             <section id="section-intro">
-                <p>Time formating module.</p>
+                <p>Time formatting module.</p>
                 <details class="source">
                     <summary>
                         <span>Expand source code</span>
@@ -509,7 +509,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-&#34;&#34;&#34;Time formating module.&#34;&#34;&#34;
+&#34;&#34;&#34;Time formatting module.&#34;&#34;&#34;
 
 
 from __future__ import annotations
@@ -569,7 +569,7 @@ def human_join(seq: list, delim: str = &#34;, &#34;, final: str = &#34;or&#34;) 
 def format_played(mins: int, *, suffix: bool = False) -&gt; str:
     &#34;&#34;&#34;
     Converts A Bungie&#39;s total played time in minutes
-    to a a readble time.
+    to a a readable time.
     &#34;&#34;&#34;
     hrs = math.floor(mins // 60)
     seconds = math.floor(mins % 60)
@@ -584,7 +584,7 @@ def from_timestamp(timer: int) -&gt; datetime:
 
 
 def clean_date(date: str) -&gt; datetime:
-    &#34;&#34;&#34;Formats `datetime.datetime` to a readble date.&#34;&#34;&#34;
+    &#34;&#34;&#34;Formats `datetime.datetime` to a readable date.&#34;&#34;&#34;
     parsed = parse(date)
     ts = to_timestamp(parsed)  # had to do it in two ways.
     ft = from_timestamp(ts)
@@ -680,14 +680,14 @@ def human_timedelta(
 </code></dt>
                     <dd>
                         <div class="desc">
-                            <p>Formats <code>datetime.datetime</code> to a readble date.</p>
+                            <p>Formats <code>datetime.datetime</code> to a readable date.</p>
                         </div>
                         <details class="source">
                             <summary>
                                 <span>Expand source code</span>
                             </summary>
                             <pre><code class="python">def clean_date(date: str) -&gt; datetime:
-    &#34;&#34;&#34;Formats `datetime.datetime` to a readble date.&#34;&#34;&#34;
+    &#34;&#34;&#34;Formats `datetime.datetime` to a readable date.&#34;&#34;&#34;
     parsed = parse(date)
     ts = to_timestamp(parsed)  # had to do it in two ways.
     ft = from_timestamp(ts)
@@ -699,7 +699,7 @@ def human_timedelta(
 </code></dt>
                     <dd>
                         <div class="desc">
-                            <p>Converts A Bungie's total played time in minutes to a a readble time.</p>
+                            <p>Converts A Bungie's total played time in minutes to a a readable time.</p>
                         </div>
                         <details class="source">
                             <summary>
@@ -708,7 +708,7 @@ def human_timedelta(
                             <pre><code class="python">def format_played(mins: int, *, suffix: bool = False) -&gt; str:
     &#34;&#34;&#34;
     Converts A Bungie&#39;s total played time in minutes
-    to a a readble time.
+    to a a readable time.
     &#34;&#34;&#34;
     hrs = math.floor(mins // 60)
     seconds = math.floor(mins % 60)

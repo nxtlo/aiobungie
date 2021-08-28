@@ -47,6 +47,7 @@ __all__ = (
     "ProfileComponentImpl",
     "Entity",
     "HardLinkedMembership",
+    "Friend",
 )
 
 from .activity import Activity
@@ -60,6 +61,7 @@ from .clans import ClanMember
 from .clans import ClanOwner
 from .entity import Entity
 from .entity import InventoryEntity
+from .friends import Friend
 from .player import Player
 from .profile import Profile
 from .profile import ProfileComponentImpl

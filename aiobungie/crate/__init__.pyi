@@ -13,6 +13,7 @@ from .user import (
     User as User,
     UserLike as UserLike,
 )
+from .friends import Friend as Friend
 from typing import Any
 
 __all__: Any

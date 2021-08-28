@@ -47,30 +47,34 @@ __all__ = (
     "GroupType",
     "CredentialType",
     "Presence",
+    "Relationship",
 )
 
 import enum as __enum
 import typing
-
 
 _EnumT = typing.TypeVar("_EnumT", bound="Enum", covariant=True)
 
 
 class IntEnum(__enum.IntEnum):
     """An int only enum."""
+
     def __int__(self) -> int:
         return int(self.value)
-    
+
     def __str__(self) -> str:
         return self.name
 
+
 class Enum(typing.Generic[_EnumT], __enum.Enum):
     """An enum that can be an int or a string."""
+
     def __str__(self) -> str:
         return self.name
-    
+
     def __int__(self) -> int:
         return int(self.value)
+
 
 @typing.final
 class Raid(IntEnum):
@@ -116,6 +120,8 @@ class Dungeon(IntEnum):
 
     SHATTERED = 2032534090
     """Shattered Throne"""
+
+
 @typing.final
 class Planet(IntEnum):
     """An Enum for all available planets in Destiny 2."""
@@ -150,6 +156,7 @@ class Planet(IntEnum):
     EUROPA = 1729879943
     """Europa"""
 
+
 @typing.final
 class Place(IntEnum):
     """An Enum for Destiny 2 Places and NOT Planets"""
@@ -158,6 +165,7 @@ class Place(IntEnum):
     SOCIAL = 4151112093
     LIGHT_HOUSE = 4276116472
     EXPLORE = 3497767639
+
 
 @typing.final
 class Vendor(IntEnum):
@@ -187,6 +195,7 @@ class Vendor(IntEnum):
     """COSMODROME Guy"""
     VARIKS = 2531198101
 
+
 @typing.final
 class GameMode(IntEnum):
     """An Enum for all available gamemodes in Destiny 2."""
@@ -215,6 +224,7 @@ class GameMode(IntEnum):
     MAYHEM = 3517186939
     SURVIVAL = 2175955486
 
+
 @typing.final
 class Component(IntEnum):
     """An Enum for Destiny 2 Components."""
@@ -232,6 +242,7 @@ class Component(IntEnum):
     RECORDS = 900
     VENDOR_SALES = 402
 
+
 @typing.final
 class MembershipType(IntEnum):
     """An Enum for Bungie membership types."""
@@ -245,6 +256,7 @@ class MembershipType(IntEnum):
     BUNGIE = 254
     ALL = -1
 
+
 @typing.final
 class Class(IntEnum):
     """An Enum for Destiny character classes."""
@@ -254,6 +266,7 @@ class Class(IntEnum):
     WARLOCK = 2
     UNKNOWN = 3
 
+
 @typing.final
 class Gender(IntEnum):
     """An Enum for Destiny Genders."""
@@ -261,6 +274,7 @@ class Gender(IntEnum):
     MALE = 0
     FEMALE = 1
     UNKNOWN = 2
+
 
 @typing.final
 class Race(IntEnum):
@@ -270,6 +284,7 @@ class Race(IntEnum):
     AWOKEN = 1
     EXO = 2
     UNKNOWN = 3
+
 
 @typing.final
 class MilestoneType(IntEnum):
@@ -281,6 +296,7 @@ class MilestoneType(IntEnum):
     WEEKLY = 3
     DAILY = 4
     SPECIAL = 5
+
 
 @typing.final
 class Stat(IntEnum):
@@ -294,6 +310,7 @@ class Stat(IntEnum):
     INTELLECT = 144602215
     STRENGTH = 4244567218
 
+
 @typing.final
 class WeaponType(IntEnum):
     """Enums for The three Destiny Weapon Types"""
@@ -302,6 +319,7 @@ class WeaponType(IntEnum):
     KINETIC = 1498876634
     ENERGY = 2465295065
     POWER = 953998645
+
 
 @typing.final
 class DamageType(IntEnum):
@@ -315,6 +333,7 @@ class DamageType(IntEnum):
     STASIS = 151347233
     RAID = 1067729826
     """This is a special damage type reserved for some raid activity encounters."""
+
 
 @typing.final
 class Item(IntEnum):
@@ -370,6 +389,8 @@ class Item(IntEnum):
     KINETIC = 1498876634
     ENERGY = 2465295065
     POWER = 953998645
+
+
 @typing.final
 class ItemTier(IntEnum):
     """An enum for a Destiny 2 item tier."""
@@ -381,6 +402,7 @@ class ItemTier(IntEnum):
     LEGENDERY = 4008398120
     EXOTIC = 2759499571
 
+
 @typing.final
 class AmmoType(IntEnum):
     """AN enum for Detyiny 2 ammo types."""
@@ -390,12 +412,14 @@ class AmmoType(IntEnum):
     SPECIAL = 2
     HEAVY = 3
 
+
 @typing.final
 class GroupType(IntEnum):
     """An enums for the known bungie group types."""
 
     GENERAL = 0
     CLAN = 1
+
 
 @typing.final
 class CredentialType(IntEnum):
@@ -414,9 +438,21 @@ class CredentialType(IntEnum):
     BATTLENETID = 14
     STADIAID = 16
     TWITCHID = 18
+
+
 @typing.final
 class Presence(IntEnum):
     """An enum for a bungie friend status."""
-    
+
     OFFLINE_OR_UNKNOWN = 0
     ONLINE = 1
+
+
+@typing.final
+class Relationship(IntEnum):
+    """An enum for bungie friends relationship types."""
+
+    UNKNWON = 0
+    FRIEND = 1
+    INCOMING_REQUEST = 2
+    OUTGOING_REQUEST = 3

@@ -55,7 +55,7 @@ class Friend(user_.UserLike):
     name: str = attr.field(repr=True)
     """The friend's last seen global display name. This field could be None if the player hasn't logged in yet."""
 
-    unqiue_name: helpers.NoneOr[str] = attr.field(repr=True)
+    unique_name: helpers.NoneOr[str] = attr.field(repr=True)
     """The friend's global unqiue display name. This field could be None if the player hasn't logged in yet."""
 
     code: helpers.NoneOr[int] = attr.field(repr=True)

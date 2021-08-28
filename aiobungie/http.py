@@ -53,7 +53,7 @@ _LOG: typing.Final[logging.Logger] = logging.getLogger("aiobungie.http")
 
 
 async def handle_errors(
-    response: aiohttp.ClientResponse, msg: str
+    response: aiohttp.ClientResponse, msg: str, long: str
 ) -> error.AiobungieError:
     from_json = await response.json()
     data = [str(response.real_url), from_json, msg]
@@ -66,23 +66,26 @@ async def handle_errors(
         return error.Unauthorized(*data)
 
     status = http.HTTPStatus(response.status)
+    why = [msg, long]
 
     if 400 <= status < 500:
         return error.ResponseError(*data, status)
     elif 500 <= status < 600:
         # High order errors.
         if msg == "ClanNotFound":
-            return error.ClanNotFound(msg)
+            return error.ClanNotFound(*why)
+        elif msg == "NotFound":
+            return error.NotFound(*why)
         elif msg == "DestinyInvalidMembershipType":
-            return error.MembershipTypeError(msg)
+            return error.MembershipTypeError(*why)
         elif msg == "GroupNotFound":
-            return error.ClanNotFound(msg)
+            return error.ClanNotFound(*why)
         elif msg == "UserCannotFindRequestedUser":
-            return error.UserNotFound(msg)
+            return error.UserNotFound(*why)
         else:
-            return error.AiobungieError(msg)
+            return error.AiobungieError(*why)
     else:
-        return error.HTTPException(msg)
+        return error.HTTPException(*why)
 
 
 class PreLock:
@@ -192,7 +195,7 @@ class HTTPClient:
                             except KeyError:
                                 return data
 
-                        await self._handle_err(response, f"{msg}, {data['Message']}")
+                        await self._handle_err(response, msg, data["Message"])
 
             except aiohttp.ContentTypeError:
                 return await response.text(encoding="utf-8")
@@ -203,9 +206,9 @@ class HTTPClient:
     @staticmethod
     @typing.final
     async def _handle_err(
-        response: aiohttp.ClientResponse, msg: str
+        response: aiohttp.ClientResponse, msg: str, long: str
     ) -> typing.NoReturn:
-        raise await handle_errors(response, msg)
+        raise await handle_errors(response, msg, long)
 
     def fetch_user(self, id: int) -> Response[helpers.JsonDict]:
         return self.fetch("GET", f"User/GetBungieNetUserById/{id}/")

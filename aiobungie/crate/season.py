@@ -138,7 +138,7 @@ class FetchableArtifact(entity.InventoryEntity):
     name: str = attr.field(repr=True, hash=False, eq=False)
     """Entity's name"""
 
-    icon: typing.Optional[assets.Image] = attr.field(repr=False, hash=False, eq=False)
+    icon: assets.MaybeImage = attr.field(repr=False, hash=False, eq=False)
     """Entity's icon"""
 
     has_icon: bool = attr.field(repr=False, hash=False, eq=False)

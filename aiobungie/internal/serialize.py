@@ -38,10 +38,11 @@ from aiobungie.crate import entity
 from aiobungie.crate import player
 from aiobungie.crate import profile
 from aiobungie.crate import user
-from aiobungie.internal import Image
 from aiobungie.internal import enums
 from aiobungie.internal import impl
 from aiobungie.internal import time
+from aiobungie.internal.assets import Image
+from aiobungie.internal.assets import MaybeImage
 from aiobungie.internal.helpers import JsonDict
 from aiobungie.internal.helpers import JsonList
 from aiobungie.internal.helpers import NoneOr
@@ -391,20 +392,21 @@ class Deserialize:
         # Most entities has this
         # and for some it doesn't exists
 
-        if (raw_inventory := payload.get("inventory", {})) is not None:
+        if (
+            raw_inventory := payload.get("inventory", {Undefined: Undefined})
+        ) is not None:
             inventory: JsonDict = raw_inventory
 
         # Entity tier type. Most entities have a tier
         # and some doesn't exists so we have to check.
 
-        if (raw_bucket := inventory.get("bucketTypeHash", None)) is not None:
-            bucket_type: int = raw_bucket
+        bucket_type: int = inventory.get("bucketTypeHash", 0)
 
-        if (raw_tier := inventory.get("tierTypeHash", None)) is not None:
-            tier: enums.ItemTier = enums.ItemTier(raw_tier)
+        tier: enums.ItemTier = enums.ItemTier(
+            int(inventory.get("tierTypeHash", enums.ItemTier.NONE))
+        )
 
-        if (raw_tier_name := inventory.get("tierTypeName", None)) is not None:
-            tier_name: str = raw_tier_name
+        tier_name: str = inventory.get("tierTypeName", None)
 
         if (name := props.get("name", Unknown)) == Unknown:
             name = Undefined
@@ -418,29 +420,34 @@ class Deserialize:
         if (about := payload.get("flavorText")) == Unknown:
             about = Undefined
 
-        if (raw_icon := props.get("icon", None)) is not None:
+        if (raw_icon := props.get("icon", Image.partial())) is not None:
             icon: Image = Image(str(raw_icon))
 
-        if (raw_watermark := payload.get("iconWatermark", None)) is not None:
+        if (raw_watermark := payload.get("iconWatermark", Image.partial())) is not None:
             water_mark: Image = Image(str(raw_watermark))
 
-        if (screenshot := payload.get("screenshot", None)) is not None:
-            banner: Image = Image(str(screenshot))
+        if (raw_banner := payload.get("screenshot", Image.partial())) is not None:
+            banner = Image(str(raw_banner))
 
-        if (damage_type := payload.get("defaultDamageTypeHash", None)) is not None:
-            damage: enums.DamageType = enums.DamageType(damage_type)
+        damage: typing.Union[enums.DamageType, str] = Undefined
+        if (raw_damage := payload.get("defaultDamageTypeHash")) is not None:
+            damage = enums.DamageType(raw_damage)
 
-        if (raw_summary_hash := payload.get("summaryItemHash", None)) is not None:
-            summary_hash: int = int(raw_summary_hash)
+        # Ignoring those two so mypy doesn't cry.
+        summary_hash: int = 0
+        if (raw_summary_hash := payload.get("summaryItemHash")) is not None:
+            summary_hash: int = int(raw_summary_hash)  # type: ignore
 
-        if (raw_stats := payload.get("stats", {})) is not None:
+        if (raw_stats := payload.get("stats", {Undefined: Undefined})) is not None:
             stats: JsonDict = raw_stats
 
-        if (ammo := payload.get("equippingBlock", None)) is not None:
-            block: enums.AmmoType = enums.AmmoType(ammo["ammoType"])
+        block = enums.AmmoType.NONE
+        if (ammo := payload.get("equippingBlock")) is not None:
+            block: enums.AmmoType = enums.AmmoType(ammo["ammoType"])  # type: ignore
 
-        if (raw_item_class := payload.get("classType", None)) is not None:
-            item_class: enums.Class = enums.Class(raw_item_class)
+        item_class: enums.Class = enums.Class(
+            payload.get("classType", enums.Class.UNKNOWN)
+        )
 
         return entity.InventoryEntity(
             net=self._net,
@@ -453,19 +460,19 @@ class Deserialize:
             water_mark=water_mark,
             banner=banner,
             about=about,
-            type=payload.get("itemType", None),
+            type=payload.get("itemType", Undefined),
             bucket_type=bucket_type,
             tier=tier,
             tier_name=tier_name,
             type_name=type_name,
-            sub_type=payload.get("itemSubType", None),
+            sub_type=payload.get("itemSubType", Undefined),
             item_class=item_class,
             damage=damage,
             summary_hash=summary_hash,
-            is_equippable=payload.get("equippable", None),
+            is_equippable=payload.get("equippable", False),
             stats=stats,
             ammo_type=block,
-            lore_hash=payload.get("loreHash", None),
+            lore_hash=payload.get("loreHash", Undefined),
         )
 
     def deserialize_activity(

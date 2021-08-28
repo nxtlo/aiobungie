@@ -60,7 +60,7 @@ class Entity(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def icon(self) -> typing.Optional[assets.Image]:
+    def icon(self) -> assets.MaybeImage:
         """An optional entity's icon if its filled."""
 
     @property
@@ -117,14 +117,14 @@ class InventoryEntity(Entity):
     description: str = attr.field(repr=True)
     """Entity's description."""
 
-    icon: typing.Optional[assets.Image] = attr.field(repr=False, hash=False, eq=False)
+    icon: assets.MaybeImage = attr.field(repr=False, hash=False, eq=False)
     """Entity's icon"""
 
     has_icon: bool = attr.field(repr=False, hash=False, eq=False)
     """A boolean that returns True if the entity has an icon."""
 
-    type: typing.Optional[enums.Item] = attr.field(repr=True, hash=False)
-    """Entity's type."""
+    type: typing.Union[enums.Item, str] = attr.field(repr=True, hash=False)
+    """Entity's type. Can be undefined if nothing was found."""
 
     type_name: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
     """Entity's type name. i.e., `Grenade Launcher`"""
@@ -155,15 +155,17 @@ class InventoryEntity(Entity):
     )
     """Entity's ammo type if it was a wepon, otherwise it will return None"""
 
-    lore_hash: typing.Optional[int] = attr.field(repr=False, hash=False, eq=False)
-    """The entity's lore hash"""
+    lore_hash: typing.Union[int, str] = attr.field(repr=False, hash=False, eq=False)
+    """The entity's lore hash. Can be undefined if no lore hash found."""
 
     item_class: typing.Optional[enums.Class] = attr.field(
         repr=False, hash=False, eq=False
     )
     """The entity's class type."""
 
-    sub_type: typing.Optional[enums.Item] = attr.field(repr=False, hash=False, eq=False)
+    sub_type: typing.Union[enums.Item, str] = attr.field(
+        repr=False, hash=False, eq=False
+    )
     """The subtype of the entity. A type is a weapon or armor.
     A subtype is a handcannonn or leg armor for an example.
     """
@@ -174,7 +176,7 @@ class InventoryEntity(Entity):
     summary_hash: typing.Optional[int] = attr.field(repr=False, hash=False, eq=False)
     """Entity's summary hash."""
 
-    damage: typing.Optional[enums.DamageType] = attr.field(
+    damage: typing.Union[enums.DamageType, str] = attr.field(
         repr=False, hash=False, eq=False
     )
     """Entity's damage type. Only works for weapons."""

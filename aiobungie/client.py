@@ -122,7 +122,7 @@ class Client(impl.RESTful):
 
     # * Unspecified methods. *#
 
-    async def from_path(self, path: str) -> typing.Any:
+    async def from_path(self, path: str, **kwargs: typing.Any) -> typing.Any:
         """Raw http search given a valid bungie endpoint.
 
         Parameters
@@ -131,13 +131,15 @@ class Client(impl.RESTful):
             The bungie endpoint or path.
             A path must look something like this
             "Destiny2/3/Profile/46111239123/..."
+        kwargs: `typing.Any`
+            Any other key words you'd like to pass through.
 
         Returns
         -------
         `typing.Any`
             Any object.
         """
-        return await self.http.static_search(path)
+        return await self.http.static_search(path, **kwargs)
 
     async def fetch_manifest(self) -> Manifest:
         """Access The bungie Manifest.

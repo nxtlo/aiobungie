@@ -46,14 +46,34 @@ __all__ = (
     "AmmoType",
     "GroupType",
     "CredentialType",
+    "Presence",
 )
 
-import enum
+import enum as __enum
 import typing
 
 
+_EnumT = typing.TypeVar("_EnumT", bound="Enum", covariant=True)
+
+
+class IntEnum(__enum.IntEnum):
+    """An int only enum."""
+    def __int__(self) -> int:
+        return int(self.value)
+    
+    def __str__(self) -> str:
+        return self.name
+
+class Enum(typing.Generic[_EnumT], __enum.Enum):
+    """An enum that can be an int or a string."""
+    def __str__(self) -> str:
+        return self.name
+    
+    def __int__(self) -> int:
+        return int(self.value)
+
 @typing.final
-class Raid(int, enum.Enum):
+class Raid(IntEnum):
     """An Enum for all available raids in Destiny 2."""
 
     DSC = 910380154
@@ -76,7 +96,7 @@ class Raid(int, enum.Enum):
 
 
 @typing.final
-class Dungeon(int, enum.Enum):
+class Dungeon(IntEnum):
     """An Enum for all available Dungeon/Like missions in Destiny 2."""
 
     NORMAL_PRESAGE = 2124066889
@@ -111,7 +131,7 @@ class Dungeon(int, enum.Enum):
 
 
 @typing.final
-class Planet(int, enum.Enum):
+class Planet(IntEnum):
     """An Enum for all available planets in Destiny 2."""
 
     UNKNOWN = 0
@@ -152,7 +172,7 @@ class Planet(int, enum.Enum):
 
 
 @typing.final
-class Place(int, enum.Enum):
+class Place(IntEnum):
     """An Enum for Destiny 2 Places and NOT Planets"""
 
     ORBIT = 2961497387
@@ -168,7 +188,7 @@ class Place(int, enum.Enum):
 
 
 @typing.final
-class Vendor(int, enum.Enum):
+class Vendor(IntEnum):
     """An Enum for all available vendors in Destiny 2."""
 
     ZAVALA = 69482069
@@ -203,7 +223,7 @@ class Vendor(int, enum.Enum):
 
 
 @typing.final
-class GameMode(int, enum.Enum):
+class GameMode(IntEnum):
     """An Enum for all available gamemodes in Destiny 2."""
 
     NONE = 0
@@ -238,7 +258,7 @@ class GameMode(int, enum.Enum):
 
 
 @typing.final
-class Component(int, enum.Enum):
+class Component(IntEnum):
     """An Enum for Destiny 2 Components."""
 
     NONE = 0
@@ -262,7 +282,7 @@ class Component(int, enum.Enum):
 
 
 @typing.final
-class MembershipType(int, enum.Enum):
+class MembershipType(IntEnum):
     """An Enum for Bungie membership types."""
 
     NONE = 0
@@ -282,7 +302,7 @@ class MembershipType(int, enum.Enum):
 
 
 @typing.final
-class Class(int, enum.Enum):
+class Class(IntEnum):
     """An Enum for Destiny character classes."""
 
     TITAN = 0
@@ -298,7 +318,7 @@ class Class(int, enum.Enum):
 
 
 @typing.final
-class Gender(int, enum.Enum):
+class Gender(IntEnum):
     """An Enum for Destiny Genders."""
 
     MALE = 0
@@ -313,7 +333,7 @@ class Gender(int, enum.Enum):
 
 
 @typing.final
-class Race(int, enum.Enum):
+class Race(IntEnum):
     """An Enum for Destiny races."""
 
     HUMAN = 0
@@ -329,7 +349,7 @@ class Race(int, enum.Enum):
 
 
 @typing.final
-class MilestoneType(int, enum.Enum):
+class MilestoneType(IntEnum):
     """An Enum for Destiny 2 milestone types."""
 
     UNKNOWN = 0
@@ -347,7 +367,7 @@ class MilestoneType(int, enum.Enum):
 
 
 @typing.final
-class Stat(int, enum.Enum):
+class Stat(IntEnum):
     """An Enum for Destiny 2 character stats."""
 
     NONE = 0
@@ -366,7 +386,7 @@ class Stat(int, enum.Enum):
 
 
 @typing.final
-class WeaponType(int, enum.Enum):
+class WeaponType(IntEnum):
     """Enums for The three Destiny Weapon Types"""
 
     NONE = 0
@@ -382,7 +402,7 @@ class WeaponType(int, enum.Enum):
 
 
 @typing.final
-class DamageType(int, enum.Enum):
+class DamageType(IntEnum):
     """Enums for Destiny Damage types"""
 
     NONE = 0
@@ -402,7 +422,7 @@ class DamageType(int, enum.Enum):
 
 
 @typing.final
-class Item(int, enum.Enum):
+class Item(IntEnum):
     """Enums for Destiny2's inventory bucket items"""
 
     NONE = 0
@@ -464,7 +484,7 @@ class Item(int, enum.Enum):
 
 
 @typing.final
-class ItemTier(int, enum.Enum):
+class ItemTier(IntEnum):
     """An enum for a Destiny 2 item tier."""
 
     NONE = 0
@@ -482,7 +502,7 @@ class ItemTier(int, enum.Enum):
 
 
 @typing.final
-class AmmoType(int, enum.Enum):
+class AmmoType(IntEnum):
     """AN enum for Detyiny 2 ammo types."""
 
     NONE = 0
@@ -498,7 +518,7 @@ class AmmoType(int, enum.Enum):
 
 
 @typing.final
-class GroupType(int, enum.Enum):
+class GroupType(IntEnum):
     """An enums for the known bungie group types."""
 
     GENERAL = 0
@@ -512,7 +532,7 @@ class GroupType(int, enum.Enum):
 
 
 @typing.final
-class CredentialType(int, enum.Enum):
+class CredentialType(IntEnum):
     """The types of the accounts system supports at bungie."""
 
     NONE = 0
@@ -529,6 +549,19 @@ class CredentialType(int, enum.Enum):
     STADIAID = 16
     TWITCHID = 18
 
+    def __int__(self) -> int:
+        return int(self.value)
+
+    def __str__(self) -> str:
+        return self.name
+
+@typing.final
+class Presence(IntEnum):
+    """An enum for a bungie friend status."""
+    
+    OFFLINE_OR_UNKNOWN = 0
+    ONLINE = 1
+    
     def __int__(self) -> int:
         return int(self.value)
 

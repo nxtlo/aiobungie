@@ -138,7 +138,9 @@ class HTTPClient:
         locker = asyncio.Lock()
 
         if isinstance(self.key, str) and self.key is not None:
-            kwargs["headers"] = {"X-API-KEY": self.key, "User-Agent": user_agent}
+            kwargs["headers"] = headers = {}
+            headers["X-API-KEY"] = self.key
+            headers["User-Agent"] = user_agent
         else:
             raise ValueError("No API KEY was passed.")
 
@@ -214,8 +216,8 @@ class HTTPClient:
     def fetch_manifest(self) -> Response[typing.Any]:
         return self.fetch("GET", "Destiny2/Manifest/")
 
-    def static_search(self, path: str) -> Response[typing.Any]:
-        return self.fetch("GET", path)
+    def static_search(self, path: str, **kwargs: typing.Any) -> Response[typing.Any]:
+        return self.fetch("GET", path, **kwargs)
 
     def fetch_player(
         self, name: str, type: enums.MembershipType, /

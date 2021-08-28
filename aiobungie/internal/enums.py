@@ -53,8 +53,6 @@ __all__ = (
 import enum as __enum
 import typing
 
-_EnumT = typing.TypeVar("_EnumT", bound="Enum", covariant=True)
-
 
 class IntEnum(__enum.IntEnum):
     """An int only enum."""
@@ -66,7 +64,7 @@ class IntEnum(__enum.IntEnum):
         return self.name
 
 
-class Enum(typing.Generic[_EnumT], __enum.Enum):
+class Enum(type, __enum.Enum):
     """An enum that can be an int or a string."""
 
     def __str__(self) -> str:

@@ -230,6 +230,27 @@ class ClanOwner(UserLike):
 
 
 @attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
+class ClanAdmin(UserLike):
+    """Represents a clan admin."""
+
+    member_type: ClanMemberType = attr.field(repr=True)
+    """The clan admin's member type.
+    This can be Admin or owner or any other type.
+
+    .. versionadded:: 0.2.5
+    """
+
+    is_online: bool = attr.field(repr=False)
+    """True if the clan admin is online and False if not."""
+
+    group_id: int = attr.field(repr=True)
+    """The clan admin's group id which's the clan id he represents."""
+
+    join_date: datetime = attr.field(repr=False)
+    """The clan admin's clan join date."""
+
+
+@attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
 class Clan:
     """Represents a Bungie clan."""
 

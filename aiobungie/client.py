@@ -315,9 +315,7 @@ class Client(traits.RESTful):
         `aiobungie.MembershipTypeError`
             The provided membership type was invalid.
         """
-        resp = await self.http.fetch_character(
-            memberid=memberid, type=type, character=character
-        )
+        resp = await self.http.fetch_character(memberid, type)
         assert isinstance(resp, dict)
         char_module = self.serialize.deserialize_character(resp, chartype=character)
         return char_module

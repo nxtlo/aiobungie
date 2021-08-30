@@ -240,7 +240,7 @@ class HTTPClient:
         return self.fetch("GET", f"App/Application/{appid}")
 
     def fetch_character(
-        self, memberid: int, type: enums.MembershipType, character: enums.Class
+        self, memberid: int, type: enums.MembershipType, /
     ) -> Response[helpers.JsonDict]:
         return self.fetch(
             "GET",

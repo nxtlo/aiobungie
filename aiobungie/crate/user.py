@@ -34,6 +34,7 @@ from datetime import datetime
 import attr
 
 from aiobungie.internal import Image
+from aiobungie.internal import assets
 from aiobungie.internal import enums
 from aiobungie.internal import helpers
 from aiobungie.internal import time
@@ -106,6 +107,20 @@ class UserLike(abc.ABC):
 
     def __int__(self) -> int:
         return self.id
+
+
+@attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
+class BungieUser(UserLike):
+    """Represents a Bungie user."""
+
+    unique_name: helpers.NoneOr[str] = attr.field(repr=True)
+    """The user's unique_name."""
+
+    name: str = attr.field(repr=False)
+    """The user's name."""
+
+    id: int = attr.field(repr=True, hash=True, eq=True)
+    """The user's id."""
 
 
 @attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)

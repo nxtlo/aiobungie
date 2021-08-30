@@ -61,7 +61,7 @@ class IntEnum(__enum.IntEnum):
         return int(self.value)
 
     def __str__(self) -> str:
-        return self.nam
+        return self.name
 
 
 class Enum(__enum.Enum):

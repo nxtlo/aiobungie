@@ -449,7 +449,7 @@ class Presence(IntEnum):
 class Relationship(IntEnum):
     """An enum for bungie friends relationship types."""
 
-    UNKNWON = 0
+    UNKNOWN = 0
     FRIEND = 1
     INCOMING_REQUEST = 2
     OUTGOING_REQUEST = 3

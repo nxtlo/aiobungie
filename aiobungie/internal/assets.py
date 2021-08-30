@@ -25,25 +25,39 @@
 
 from __future__ import annotations
 
-__all__: list[str] = ["Image"]
+__all__: list[str] = ["Image", "MaybeImage"]
+
+import typing
 
 from aiobungie import url
 from aiobungie.internal import helpers
 
 
 class Image:
-    def __init__(self, path: str) -> None:
+    def __init__(self, path: typing.Optional[str] = None) -> None:
         self.path = path
 
     def __str__(self) -> str:
-        return url.BASE + self.path
+        return url.BASE + self.path if self.path is not None else self.partial()
 
     @property
     def url(self) -> str:
         return str(self)
 
     @property
-    def partial(self) -> str:
-        if self.path is not None:
-            return self.path
-        return f"Image<{helpers.Undefined}>"
+    def is_jpg(self) -> bool:
+        """Checks if the given path for the image is a JPEG type."""
+        if self.path is not None and self.path.endswith(".jpg"):
+            return True
+        return False
+
+    @staticmethod
+    def partial() -> str:
+        """A partial image that just returns undefined."""
+        return helpers.Undefined
+
+
+MaybeImage = typing.Union[Image, str, None]
+"""A type hint for images that may or may not exists in the api.
+Images returned from the api as None will be replaced with `Image.partial`.
+"""

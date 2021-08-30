@@ -54,6 +54,7 @@ class HTTPException(AiobungieError):
     """Exception for handling `aiobungie.http.HTTPClient` requests errors."""
 
     message: str = attr.field()
+    long_message: typing.Optional[str] = attr.field(default=None)
 
 
 class NotFound(AiobungieError):

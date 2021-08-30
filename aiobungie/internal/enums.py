@@ -53,6 +53,7 @@ __all__ = (
 import enum as __enum
 import typing
 
+
 class IntEnum(__enum.IntEnum):
     """An int only enum."""
 

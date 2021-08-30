@@ -8,8 +8,6 @@ venv
 .env
 .venv/
 venv/
-# For python 3.10 testings.
-.venv_10/
 
 # VS code configs.
 .vscode/
@@ -27,4 +25,4 @@ dropped/
 .cache/
 __pycache__/
 .mypy_cache/
-.pytest_cache/
+.pytest_cache

@@ -41,7 +41,7 @@ jobs:
         nox -s pytest
 
   lint:
-    runs-on: ubuntu-20-04
+    runs-on: ubuntu-20.04
 
     steps:
       - name: Checkout
@@ -58,7 +58,7 @@ jobs:
           nox -s format spell type_check check_black
 
   docs:
-    runs-on: ubuntu-20-04
+    runs-on: ubuntu-20.04
 
     steps:
       - name: Checkout

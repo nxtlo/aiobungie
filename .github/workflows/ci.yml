@@ -51,15 +51,12 @@ jobs:
         uses: actions/setup-python@v2.2.2
         with:
           python-version: 3.8
-      
       - name: Linting
         run: |
           pip install nox
           nox -s gen_stubs
           nox -s format spell type_check check_black
-  
-  # We have to build the pages with 3.8
-  # Since Pdoc3 doesn't support 3.10-dev
+
   docs:
     runs-on: ubuntu-20-04
 
@@ -71,13 +68,10 @@ jobs:
         uses: actions/setup-python@v2.2.2
         with:
           python-version: 3.8
-        
         - name: Build
           run: |
             pip install nox
             nox -s pdoc
-
-
   # This is still broken.
   deploy:
     if: github.event_name == 'release'

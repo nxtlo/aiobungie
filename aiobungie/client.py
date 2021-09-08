@@ -32,8 +32,8 @@ import typing
 
 from aiobungie.ext import Manifest
 from aiobungie.internal import deprecated
-from aiobungie.internal import impl
 from aiobungie.internal import serialize as serialize_
+from aiobungie.internal import traits
 
 from . import crate
 from .http import HTTPClient
@@ -44,7 +44,7 @@ from .internal.enums import GroupType
 from .internal.enums import MembershipType
 
 
-class Client(impl.RESTful):
+class Client(traits.RESTful):
     """Represents a client that connects to the Bungie API
 
     Attributes

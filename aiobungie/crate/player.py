@@ -35,7 +35,7 @@ import attr
 from aiobungie.crate.user import UserLike
 from aiobungie.internal import Image
 from aiobungie.internal import helpers
-from aiobungie.internal import impl
+from aiobungie.internal import traits
 from aiobungie.internal.enums import MembershipType
 
 
@@ -87,7 +87,7 @@ class Player(UserLike):
         return f"{self.name}#{self.code}"
 
     @property
-    def net(self) -> impl.Netrunner:
+    def net(self) -> traits.Netrunner:
         """A network state used for making external requests."""
         return self.net
 

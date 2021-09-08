@@ -1,6 +1,7 @@
 # Using these since mypy cry when
 # using the builtins list[...] and dict[...]
 from typing import Any as __Any
+from typing import Callable as __Callable
 from typing import Dict as __Dict
 from typing import List as __List
 from typing import TypeVar as __TypeVar
@@ -18,4 +19,4 @@ Undefined: str = "Undefined"
 Unknown: str = ""
 
 def just(lst: list[dict[str, __Any]], lookup: str) -> list[__Any]: ...
-def deprecated(func): ...
+def deprecated(func: __Callable[..., __Any]) -> __Callable[..., None]: ...

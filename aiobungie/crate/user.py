@@ -36,8 +36,8 @@ import attr
 from aiobungie.internal import Image
 from aiobungie.internal import enums
 from aiobungie.internal import helpers
-from aiobungie.internal import impl
 from aiobungie.internal import time
+from aiobungie.internal import traits
 
 
 @attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
@@ -46,7 +46,7 @@ class UserLike(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def net(self) -> impl.Netrunner:
+    def net(self) -> traits.Netrunner:
         """A network state used for making external requests."""
 
     @property

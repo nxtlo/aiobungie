@@ -35,8 +35,8 @@ import attr
 
 from aiobungie.crate.character import Character
 from aiobungie.internal import enums
-from aiobungie.internal import impl
 from aiobungie.internal import time
+from aiobungie.internal import traits
 
 log: typing.Final[logging.Logger] = logging.getLogger(__name__)
 
@@ -51,7 +51,7 @@ class ProfileComponentImpl(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def net(self) -> impl.Netrunner:
+    def net(self) -> traits.Netrunner:
         """A network state used for making external requests."""
 
     @property
@@ -187,7 +187,7 @@ class Profile(ProfileComponentImpl):
     id: int = attr.field(repr=True, hash=True, eq=False)
     """Profile's id"""
 
-    net: impl.Netrunner = attr.field(repr=False, hash=False, eq=False)
+    net: traits.Netrunner = attr.field(repr=False, hash=False, eq=False)
     """A network state used for making external requests."""
 
     name: str = attr.field(repr=True, hash=False, eq=False)

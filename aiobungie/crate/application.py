@@ -38,8 +38,8 @@ from aiobungie import url
 from aiobungie.crate.user import UserLike
 from aiobungie.internal import Image
 from aiobungie.internal import enums
-from aiobungie.internal import impl
 from aiobungie.internal import time
+from aiobungie.internal import traits
 
 
 @attr.s(hash=True, repr=True, init=True, kw_only=True, weakref_slot=False, slots=True)
@@ -77,7 +77,7 @@ class ApplicationOwner(UserLike):
         return f"{self.name}#{self.code}"
 
     @property
-    def net(self) -> impl.Netrunner:
+    def net(self) -> traits.Netrunner:
         """A network state used for making external requests."""
         return self.net
 

@@ -39,10 +39,9 @@ from aiobungie.crate import player
 from aiobungie.crate import profile
 from aiobungie.crate import user
 from aiobungie.internal import enums
-from aiobungie.internal import impl
 from aiobungie.internal import time
+from aiobungie.internal import traits
 from aiobungie.internal.assets import Image
-from aiobungie.internal.assets import MaybeImage
 from aiobungie.internal.helpers import JsonDict
 from aiobungie.internal.helpers import JsonList
 from aiobungie.internal.helpers import NoneOr
@@ -60,7 +59,7 @@ class Deserialize:
 
     __slots__: typing.Sequence[str] = ("_net",)
 
-    def __init__(self, net: impl.Netrunner) -> None:
+    def __init__(self, net: traits.Netrunner) -> None:
         self._net = net
 
     def deserialize_user(self, data: JsonDict) -> user.User:

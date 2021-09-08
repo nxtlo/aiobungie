@@ -39,6 +39,7 @@ from aiobungie.internal import Image
 from aiobungie.internal import helpers
 from aiobungie.internal import time
 from aiobungie.internal import traits
+from aiobungie.internal.enums import ClanMemberType
 from aiobungie.internal.enums import GroupType
 from aiobungie.internal.enums import MembershipType
 

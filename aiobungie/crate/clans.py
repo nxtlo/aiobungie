@@ -37,8 +37,8 @@ from aiobungie import url
 from aiobungie.crate.user import UserLike
 from aiobungie.internal import Image
 from aiobungie.internal import helpers
-from aiobungie.internal import impl
 from aiobungie.internal import time
+from aiobungie.internal import traits
 from aiobungie.internal.enums import GroupType
 from aiobungie.internal.enums import MembershipType
 
@@ -122,7 +122,7 @@ class ClanMember(UserLike):
         return f"{self.name}#{self.code}"
 
     @property
-    def net(self) -> impl.Netrunner:
+    def net(self) -> traits.Netrunner:
         """A network state used for making external requests."""
         return self.net
 
@@ -198,7 +198,7 @@ class ClanOwner(UserLike):
     """
 
     @property
-    def net(self) -> impl.Netrunner:
+    def net(self) -> traits.Netrunner:
         """A network state used for making external requests."""
         return self.net
 
@@ -233,7 +233,7 @@ class ClanOwner(UserLike):
 class Clan:
     """Represents a Bungie clan."""
 
-    net: impl.Netrunner = attr.field(repr=False, eq=False, hash=False)
+    net: traits.Netrunner = attr.field(repr=False, eq=False, hash=False)
     """A network state used for making external requests."""
 
     id: int = attr.field(hash=True, repr=True, eq=True)

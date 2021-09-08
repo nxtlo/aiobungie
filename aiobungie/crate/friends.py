@@ -33,7 +33,7 @@ import attr
 from aiobungie.crate import user as user_
 from aiobungie.internal import enums
 from aiobungie.internal import helpers
-from aiobungie.internal import impl
+from aiobungie.internal import traits
 
 
 @attr.define(slots=True, init=True, weakref_slot=False, hash=True, repr=True)
@@ -43,7 +43,7 @@ class Friend(user_.UserLike):
     .. versionadded:: 0.2.5
     """
 
-    net: impl.Netrunner = attr.field(repr=False)
+    net: traits.Netrunner = attr.field(repr=False)
     """A network state we use to make external requests."""
 
     id: int = attr.field(repr=False, hash=True)

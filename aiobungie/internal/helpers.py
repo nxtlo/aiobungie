@@ -38,7 +38,6 @@ __all__ = (
 import inspect
 import typing
 import warnings
-from functools import wraps
 
 JsonDict = typing.Dict[str, typing.Any]
 """A json like dict of string key and any value.
@@ -72,23 +71,17 @@ def just(lst: list[dict[str, typing.Any]], lookup: str) -> list[typing.Any]:
     return list(map(lambda dct: dct[lookup], lst))
 
 
-def deprecated(func):
+def deprecated(func: typing.Callable[..., typing.Any]) -> typing.Callable[..., None]:
     """
     functions with this decorator will not work or is not implemented yet.
     """
-
-    @wraps(func)
-    def wrapper(*args: typing.Any, **kwargs: typing.Any) -> None:
-        if inspect.isfunction(func):
-            warnings.warn(
-                f"function {func.__name__!r} is deprecated.",
-                stacklevel=2,
-                category=DeprecationWarning,
-            )
-            func.__doc__ += """!!! warning
-            
-            This function is a DEPRECATED.
-            """
-        return func(*args, **kwargs)
-
-    return wrapper
+    if inspect.isfunction(func):
+        warnings.warn(
+            f"function {func.__name__!r} is deprecated.",
+            stacklevel=2,
+            category=DeprecationWarning,
+        )
+        func.__doc__ += """!!! warning
+        This function is a DEPRECATED.
+        """  # type: ignore # Pyright bug
+    return lambda *args, **kwargs: func(*args, **kwargs)

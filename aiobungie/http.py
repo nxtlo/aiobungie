@@ -89,11 +89,10 @@ async def handle_errors(
 
 
 class PreLock:
-
     __slots__ = ("_lock",)
 
-    def __init__(self, locker: asyncio.Lock) -> None:
-        self._lock: asyncio.Lock = locker
+    def __init__(self) -> None:
+        self._lock = asyncio.Lock()
 
     async def __aenter__(self) -> None:
         await self.acquire()
@@ -147,7 +146,7 @@ class HTTPClient:
         else:
             raise ValueError("No API KEY was passed.")
 
-        async with PreLock(locker):
+        async with PreLock():
             try:
                 async with aiohttp.ClientSession(
                     loop=self.loop, connector=self.__connector

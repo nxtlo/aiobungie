@@ -37,7 +37,7 @@ import attr
 
 from aiobungie.crate import player
 from aiobungie.internal import enums
-from aiobungie.internal import impl
+from aiobungie.internal import traits
 
 
 @attr.s(hash=True, slots=True, weakref_slot=False, eq=True, kw_only=True)
@@ -96,7 +96,7 @@ class PostActivity:
 class Activity:
     """Represents a Bungie Activity."""
 
-    net: impl.Netrunner = attr.field(repr=False)
+    net: traits.Netrunner = attr.field(repr=False)
     """A network state used for making external requests."""
 
     is_completed: str = attr.field(repr=False, hash=False, eq=False)

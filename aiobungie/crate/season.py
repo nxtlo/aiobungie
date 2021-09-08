@@ -45,8 +45,8 @@ import attr
 from aiobungie.crate import entity
 from aiobungie.internal import assets
 from aiobungie.internal import enums
-from aiobungie.internal import impl
 from aiobungie.internal import time
+from aiobungie.internal import traits
 
 # The artifact tires.
 Tiers: list[dict[int, dict[str, typing.Any]]]
@@ -132,7 +132,7 @@ class FetchableArtifact(entity.InventoryEntity):
     index: int = attr.field(repr=True, hash=False, eq=False)
     """Entity's index."""
 
-    app: impl.Netrunner = attr.field(repr=False, hash=False, eq=False)
+    app: traits.Netrunner = attr.field(repr=False, hash=False, eq=False)
     """A client that we may use to make rest calls."""
 
     name: str = attr.field(repr=True, hash=False, eq=False)
@@ -152,7 +152,7 @@ class FetchableArtifact(entity.InventoryEntity):
 class Artifact:
     """Represents a Destiny 2 Season artifact."""
 
-    net: impl.Netrunner = attr.field(repr=False, eq=False, hash=False)
+    net: traits.Netrunner = attr.field(repr=False, eq=False, hash=False)
     """A client app we may use to make external requests."""
 
     hash: int = attr.field(repr=True, hash=True)

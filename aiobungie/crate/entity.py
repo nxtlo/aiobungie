@@ -37,7 +37,7 @@ import attr
 
 from aiobungie.internal import assets
 from aiobungie.internal import enums
-from aiobungie.internal import impl
+from aiobungie.internal import traits
 
 
 @attr.s(kw_only=True, hash=True, weakref_slot=False, slots=True, init=True, eq=True)
@@ -50,7 +50,7 @@ class Entity(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def net(self) -> impl.Netrunner:
+    def net(self) -> traits.Netrunner:
         """A network state used for making external requests."""
 
     @property
@@ -102,7 +102,7 @@ class InventoryEntity(Entity):
     This derives from `DestinyInventoryItemDefinition` definition.
     """
 
-    net: impl.Netrunner = attr.field(repr=False, hash=False, eq=False)
+    net: traits.Netrunner = attr.field(repr=False, hash=False, eq=False)
     """A network state used for making external requests."""
 
     hash: int = attr.field(repr=True, hash=True, eq=True)

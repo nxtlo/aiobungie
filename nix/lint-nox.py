@@ -20,35 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import pytest
+import nox
 
-import aiobungie
-from aiobungie import crate
-from aiobungie import internal
-
-
-class TestPlayer:
-    @pytest.fixture()
-    def model(self):
-        return crate.Player(
-            name="RoberGamer321",
-            id=40001,
-            icon=internal.Image("4a2dc9dca0b4.jpg"),
-            is_public=True,
-            type=aiobungie.MembershipType.STADIA,
-            types=[aiobungie.MembershipType.STEAM],
-            code=7462,
-            crossave_override=1,
-        )
-
-    def test_str_op(self, model):
-        assert str(model) == "RoberGamer321"
-
-    def test_player_asdict(self, model):
-        assert isinstance(model.as_dict, dict)
-
-    def test_player_type(self, model):
-        assert (
-            isinstance(model.type, aiobungie.MembershipType)
-            and model.type is aiobungie.MembershipType.STADIA
-        )
+@nox.session(reuse_venv=True)
+def lint(session: nox.Session) -> None:
+    session.install("flake8")
+    session.run("flake8", "--config", "./.flake8", "aiobungie")

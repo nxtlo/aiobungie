@@ -39,7 +39,7 @@ from aiobungie.internal import traits
 from aiobungie.internal.enums import MembershipType
 
 
-@attr.s(hash=True, repr=True, init=True, kw_only=True, weakref_slot=False, slots=True)
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class Player(UserLike):
     """Represents a Bungie Destiny 2 Player."""
 
@@ -61,19 +61,19 @@ class Player(UserLike):
     code: helpers.NoneOr[int] = attr.field(repr=True)
     """The clan member's bungie display name code
     This is new and was added in Season of the lost update
-    
+
     .. versionadded:: 0.2.5
     """
 
     crossave_override: int = attr.field(repr=False)
     """Returns `1` if the user has a cross save override in effect and 0 if not.
-    
+
     .. versionadded:: 0.2.5
     """
 
     types: list[MembershipType] = attr.field(repr=False)
     """A list of the player's membership types.
-    
+
     .. versionadded:: 0.2.5
     """
 

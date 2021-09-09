@@ -1,5 +1,6 @@
 # Using these since mypy cry when
 # using the builtins list[...] and dict[...]
+import asyncio
 from typing import Any as __Any
 from typing import Callable as __Callable
 from typing import Dict as __Dict
@@ -20,3 +21,4 @@ Unknown: str = ""
 
 def just(lst: list[dict[str, __Any]], lookup: str) -> list[__Any]: ...
 def deprecated(func: __Callable[..., __Any]) -> __Callable[..., None]: ...
+def get_or_make_loop() -> asyncio.AbstractEventLoop: ...

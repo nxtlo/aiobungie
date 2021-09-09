@@ -24,7 +24,7 @@
 
 from __future__ import annotations
 
-__all__ = ("Profile", "ProfileComponentImpl")
+__all__ = ("Profile", "ProfileComponent")
 
 import abc
 import datetime
@@ -41,13 +41,12 @@ from aiobungie.internal import traits
 log: typing.Final[logging.Logger] = logging.getLogger(__name__)
 
 
-@attr.s(kw_only=True, hash=True, weakref_slot=False, slots=True, init=True, eq=True)
-class ProfileComponentImpl(abc.ABC):
-    """
-    A partial interface that will/include all bungie profile components.
-
+class ProfileComponent(abc.ABC):
+    """An interface that include all bungie profile components.
     Some fields may or may not be available here.
     """
+
+    __slots__: typing.Sequence[str] = ()
 
     @property
     @abc.abstractmethod
@@ -155,8 +154,8 @@ class ProfileComponentImpl(abc.ABC):
         )
 
 
-@attr.s(kw_only=True, hash=True, weakref_slot=False, slots=True, init=True, eq=True)
-class Profile(ProfileComponentImpl):
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
+class Profile(ProfileComponent):
     """Represents a Bungie member Profile.
 
     Bungie profiles requires components.

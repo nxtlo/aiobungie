@@ -44,7 +44,7 @@ from aiobungie.internal.enums import GroupType
 from aiobungie.internal.enums import MembershipType
 
 
-@attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
+@attr.define(kw_only=True, hash=False, weakref_slot=False)
 class ClanFeatures:
     """Represents Bungie clan features."""
 
@@ -72,7 +72,7 @@ class ClanFeatures:
     """The clan's join level."""
 
 
-@attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
+@attr.define(hash=True, kw_only=True, weakref_slot=False)
 class ClanMember(UserLike):
     """Represents a Destiny 2 clan member."""
 
@@ -109,7 +109,7 @@ class ClanMember(UserLike):
     code: helpers.NoneOr[int] = attr.field(repr=True)
     """The clan member's bungie display name code
     This is new and was added in Season of the lost update
-    
+
     .. versionadded:: 0.2.5
     """
 
@@ -158,7 +158,7 @@ class ClanMember(UserLike):
         raise NotImplementedError
 
 
-@attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
+@attr.define(hash=True, kw_only=True, weakref_slot=False)
 class ClanOwner(UserLike):
     """Represents a Bungie clan owner."""
 
@@ -192,9 +192,9 @@ class ClanOwner(UserLike):
     """Owner's bungie join date."""
 
     code: helpers.NoneOr[int] = attr.field(repr=True)
-    """The user's unique display name code. 
+    """The user's unique display name code.
     This can be None if the user hasn't logged in after season of the lost update.
-    
+
     .. versionadded:: 0.2.5
     """
 
@@ -230,7 +230,7 @@ class ClanOwner(UserLike):
         return attr.asdict(self)
 
 
-@attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
+@attr.define(hash=True, kw_only=True, weakref_slot=False)
 class ClanAdmin(UserLike):
     """Represents a clan admin."""
 
@@ -251,7 +251,7 @@ class ClanAdmin(UserLike):
     """The clan admin's clan join date."""
 
 
-@attr.s(eq=True, hash=True, init=True, kw_only=True, slots=True, weakref_slot=False)
+@attr.define(hash=True, kw_only=True, weakref_slot=False)
 class Clan:
     """Represents a Bungie clan."""
 
@@ -341,7 +341,7 @@ class Clan:
         ----------
         type: `aiobungie.MembershipType`
             Filters the membership types to return.
-            Default is 0 which returns all membership types.
+            Default is `aiobungie.MembershipType.NONE` which returns all membership types.
 
         Returns
         --------

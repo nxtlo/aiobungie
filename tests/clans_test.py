@@ -142,7 +142,7 @@ class TestClanOwner:
         )
 
     def test_clan_owner_is_userlike(self, obj):
-        assert issubclass(obj.__class__, crate.UserLike)
+        assert issubclass(obj.__class__, crate.user.UserLike)
 
     def test_clan_owner_meta(self, obj):
         assert obj.id == 2938

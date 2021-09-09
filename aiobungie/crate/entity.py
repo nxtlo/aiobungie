@@ -40,13 +40,14 @@ from aiobungie.internal import enums
 from aiobungie.internal import traits
 
 
-@attr.s(kw_only=True, hash=True, weakref_slot=False, slots=True, init=True, eq=True)
 class Entity(abc.ABC):
     """An interface of a Bungie Definition Entity.
 
     This is the main entity which all other entities should inherit from.
     it holds core information that all bungie entities has.
     """
+
+    __slots__: typing.Sequence[str] = ()
 
     @property
     @abc.abstractmethod
@@ -95,7 +96,7 @@ class Entity(abc.ABC):
         return self.hash
 
 
-@attr.s(kw_only=True, hash=True, weakref_slot=False, slots=True, init=True, eq=True)
+@attr.define(kw_only=True, hash=False, weakref_slot=False)
 class InventoryEntity(Entity):
     """Represents a bungie inventory item entity.
 

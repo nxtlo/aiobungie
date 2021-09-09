@@ -121,7 +121,6 @@ class HTTPClient:
         loop: asyncio.AbstractEventLoop = None,
     ) -> None:
         self.key: str = key
-        self.loop = loop or asyncio.get_event_loop()
         self.__connector = connector
 
     @typing.final
@@ -137,7 +136,6 @@ class HTTPClient:
         user_agent: typing.Final[
             str
         ] = f"AiobungieClient/{info.__version__} ({info.__url__}) Python/{sys.version_info}"
-        locker = asyncio.Lock()
 
         if isinstance(self.key, str) and self.key is not None:
             kwargs["headers"] = headers = {}
@@ -148,9 +146,7 @@ class HTTPClient:
 
         async with PreLock():
             try:
-                async with aiohttp.ClientSession(
-                    loop=self.loop, connector=self.__connector
-                ) as session:
+                async with aiohttp.ClientSession(connector=self.__connector) as session:
                     async with session.request(
                         method=method,
                         url=f"{url.REST_EP if not base else url.BASE}/{route}",
@@ -214,6 +210,11 @@ class HTTPClient:
 
     def fetch_user_themes(self) -> Response[helpers.JsonList]:
         return self.fetch("GET", "User/GetAvailableThemes/")
+
+    def fetch_membership_from_id(
+        self, id: int, type: enums.MembershipType = enums.MembershipType.NONE, /
+    ) -> Response[helpers.JsonDict]:
+        return self.fetch("GET", f"User/GetMembershipsById/{id}/{type}")
 
     def fetch_manifest(self) -> Response[typing.Any]:
         return self.fetch("GET", "Destiny2/Manifest/")

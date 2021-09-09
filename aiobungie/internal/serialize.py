@@ -62,8 +62,8 @@ class Deserialize:
     def __init__(self, net: traits.Netrunner) -> None:
         self._net = net
 
-    def deserialize_user(self, data: JsonDict) -> user.User:
-        return user.User(
+    def deserialize_bungie_user(self, data: JsonDict) -> user.BungieUser:
+        return user.BungieUser(
             id=int(data["membershipId"]),
             created_at=time.clean_date(data["firstAccess"]),
             name=data["displayName"],
@@ -71,6 +71,7 @@ class Deserialize:
             about=data["about"],
             updated_at=time.clean_date(data["lastUpdate"]),
             psn_name=data.get("psnDisplayName", None),
+            stadia_name=data.get("stadiaDisplayName", None),
             steam_name=data.get("steamDisplayName", None),
             twitch_name=data.get("twitchDisplayName", None),
             blizzard_name=data.get("blizzardDisplayName", None),
@@ -79,6 +80,138 @@ class Deserialize:
             picture=Image(path=str(data["profilePicturePath"])),
             code=data.get("cachedBungieGlobalDisplayNameCode", None),
             unique_name=data.get("uniqueName", None),
+            theme_id=int(data["profileTheme"]),
+            show_activity=bool(data["showActivity"]),
+            theme_name=data["profileThemeName"],
+            display_title=data["userTitleDisplay"],
+        )
+
+    # TODO: Make this return one obj at once?
+
+    def deserialize_members(
+        self, data: JsonDict
+    ) -> typing.Sequence[user.DestinyUser | None]:
+
+        xbox: int = 0
+        psn: int = 1
+        steam: int = 2
+        stadia: int = 3
+
+        if (members_ := data.get("destinyMemberships", [])) is None:
+            raise error.NotFound("Member has to destiny memberships.")
+
+        stadia_obj: NoneOr[user.DestinyUser] = None  # type: ignore[name-defined]
+        try:
+            stadia_member = members_[stadia]
+        except IndexError:
+            pass
+        else:
+            stadia_name: str = Undefined
+
+            if (raw_name := stadia_member["bungieGlobalDisplayName"]) != Unknown:
+                stadia_name = raw_name
+
+            stadia_member_types: list[enums.MembershipType] = []
+            for member_type in stadia_member["applicableMembershipTypes"]:
+                stadia_member_types.append(enums.MembershipType(member_type))
+
+            stadia_obj = user.DestinyUser(
+                name=stadia_name,
+                last_seen_name=stadia_member["LastSeenDisplayName"],
+                id=int(stadia_member["membershipId"]),
+                type=enums.MembershipType(int(stadia_member["membershipType"])),
+                icon=stadia_member.get(
+                    Image(stadia_member["iconPath"]), Image.partial()
+                ),
+                code=int(stadia_member.get("bungieGlobalDisplayNameCode", None)),
+                is_public=bool(stadia_member["isPublic"]),
+                types=stadia_member_types,
+            )
+
+        xbox_obj: NoneOr[user.DestinyUser] = None  # type: ignore[name-defined]
+        try:
+            xbox_member = members_[xbox]
+        except IndexError:
+            pass
+        else:
+            xbox_name: str = Undefined
+
+            if (raw_name := xbox_member["bungieGlobalDisplayName"]) != Unknown:
+                xbox_name = raw_name
+
+            xbox_member_types: list[enums.MembershipType] = []
+            for member_type in xbox_member["applicableMembershipTypes"]:
+                xbox_member_types.append(enums.MembershipType(member_type))
+
+            xbox_obj = user.DestinyUser(
+                name=xbox_name,
+                last_seen_name=xbox_member["LastSeenDisplayName"],
+                id=int(xbox_member["membershipId"]),
+                type=enums.MembershipType(int(xbox_member["membershipType"])),
+                icon=xbox_member.get(Image(xbox_member["iconPath"]), Image.partial()),
+                code=int(xbox_member.get("bungieGlobalDisplayNameCode", None)),
+                is_public=bool(xbox_member["isPublic"]),
+                types=xbox_member_types,
+            )
+
+        steam_obj: NoneOr[user.DestinyUser] = None  # type: ignore[name-defined]
+        try:
+            steam_member = members_[steam]
+        except IndexError:
+            pass
+        else:
+            steam_name: str = Undefined
+
+            if (raw_name := steam_member["bungieGlobalDisplayName"]) != Unknown:
+                steam_name = raw_name
+
+            steam_member_types: list[enums.MembershipType] = []
+            for member_type in steam_member["applicableMembershipTypes"]:
+                steam_member_types.append(enums.MembershipType(member_type))
+
+            steam_obj = user.DestinyUser(
+                last_seen_name=steam_member["LastSeenDisplayName"],
+                name=steam_name,
+                id=int(steam_member["membershipId"]),
+                type=enums.MembershipType(int(steam_member["membershipType"])),
+                icon=steam_member.get(Image(steam_member["iconPath"]), Image.partial()),
+                code=int(steam_member.get("bungieGlobalDisplayNameCode", None)),
+                is_public=bool(steam_member["isPublic"]),
+                types=steam_member_types,
+            )
+
+        psn_obj: NoneOr[user.DestinyUser] = None  # type: ignore[name-defined]
+        try:
+            psn_member = members_[psn]
+        except IndexError:
+            pass
+        else:
+            psn_name: str = Undefined
+
+            if (raw_name := psn_member["bungieGlobalDisplayName"]) != Unknown:
+                psn_name = raw_name
+
+            psn_member_types: list[enums.MembershipType] = []
+            for member_type in psn_member["applicableMembershipTypes"]:
+                psn_member_types.append(enums.MembershipType(member_type))
+
+            psn_obj = user.DestinyUser(
+                last_seen_name=psn_member["LastSeenDisplayName"],
+                name=psn_name,
+                id=int(psn_member["membershipId"]),
+                type=enums.MembershipType(int(psn_member["membershipType"])),
+                icon=psn_member.get(Image(psn_member["iconPath"]), Image.partial()),
+                code=int(psn_member.get("bungieGlobalDisplayNameCode", None)),
+                is_public=bool(psn_member["isPublic"]),
+                types=psn_member_types,
+            )
+
+        return [xbox_obj, psn_obj, steam_obj, stadia_obj]
+
+    def deserialize_user(self, data: JsonDict) -> user.User:
+        return user.User(
+            bungie=self.deserialize_bungie_user(data["bungieNetUser"]),
+            destiny=self.deserialize_members(data),
         )
 
     @staticmethod

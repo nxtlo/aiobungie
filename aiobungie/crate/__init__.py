@@ -35,7 +35,6 @@ __all__ = (
     "Clan",
     "Player",
     "Character",
-    "CharacterComponent",
     "Activity",
     "User",
     "ClanOwner",
@@ -43,11 +42,13 @@ __all__ = (
     "ApplicationOwner",
     "Profile",
     "InventoryEntity",
-    "UserLike",
-    "ProfileComponentImpl",
     "Entity",
     "HardLinkedMembership",
     "Friend",
+    "UserThemes",
+    "DestinyUser",
+    "BungieUser",
+    "ClanFeatures",
 )
 
 from .activity import Activity
@@ -55,8 +56,8 @@ from .activity import PostActivity
 from .application import Application
 from .application import ApplicationOwner
 from .character import Character
-from .character import CharacterComponent
 from .clans import Clan
+from .clans import ClanFeatures
 from .clans import ClanMember
 from .clans import ClanOwner
 from .entity import Entity
@@ -64,7 +65,8 @@ from .entity import InventoryEntity
 from .friends import Friend
 from .player import Player
 from .profile import Profile
-from .profile import ProfileComponentImpl
+from .user import BungieUser
+from .user import DestinyUser
 from .user import HardLinkedMembership
 from .user import User
-from .user import UserLike
+from .user import UserThemes

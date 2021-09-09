@@ -33,8 +33,10 @@ __all__ = (
     "Unknown",
     "just",
     "NoneOr",
+    "get_or_make_loop",
 )
 
+import asyncio
 import inspect
 import typing
 import warnings
@@ -81,7 +83,31 @@ def deprecated(func: typing.Callable[..., typing.Any]) -> typing.Callable[..., N
             stacklevel=2,
             category=DeprecationWarning,
         )
-        func.__doc__ += """!!! warning
+        func.__doc__ += """.. warning::
         This function is a DEPRECATED.
         """  # type: ignore # Pyright bug
     return lambda *args, **kwargs: func(*args, **kwargs)
+
+
+# Source [https://github.com/hikari-py/hikari/blob/master/hikari/internal/aio.py]
+def get_or_make_loop() -> asyncio.AbstractEventLoop:
+    """Get the current usable event loop or create a new one.
+    Returns
+    -------
+    asyncio.AbstractEventLoop
+    """
+    # get_event_loop will error under oddly specific cases such as if set_event_loop has been called before even
+    # if it was just called with None or if it's called on a thread which isn't the main Thread.
+    try:
+        loop = asyncio.get_event_loop_policy().get_event_loop()
+
+        # Closed loops cannot be re-used.
+        if not loop.is_closed():
+            return loop
+
+    except RuntimeError:
+        pass
+
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    return loop

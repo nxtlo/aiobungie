@@ -30,11 +30,11 @@ def pdoc(session: nox.Session) -> None:
         "python",
         "-m",
         "pdoc",
-        "aiobungie",
         "--html",
         "--output-dir",
-        "docs",
+        "./docs",
         "--template-dir",
         "templates",
         "--force",
+        "./aiobungie",
     )

@@ -174,7 +174,7 @@ class Friend(user_.UserLike):
     async def remove_request(self, id: int, /) -> None:
         """Removed an existing friend request.
 
-        !!! note
+        .. note::
             The friend request must be on your friend request list.
 
         Parameters

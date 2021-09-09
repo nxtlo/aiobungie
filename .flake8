@@ -8,10 +8,8 @@ ignore =
     E704, # Multiple statements in one line.
 
 per-file-ignores =
-    # This is only for __init__.pyi stubs when importing * from and never used.
-    aiobungie/__init__.pyi: F401,F403,F405
-    aiobungie/crate/__init__.pyi: F401,F403,F405
-    aiobungie/internal/__init__.pyi: F401,F403,F405
+    # This is only for __init__.py stubs when importing * from and never used.
+    aiobungie/__init__.py: F401,F403,F405
 
 max-complexity = 20
 max-function-length = 120

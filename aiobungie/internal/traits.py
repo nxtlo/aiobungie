@@ -42,7 +42,6 @@ class Netrunner(typing.Protocol):
     @property
     def request(self) -> client_.Client:
         """Returns a client network state for making external requests."""
-        raise NotImplementedError
 
 
 @typing.runtime_checkable
@@ -72,4 +71,3 @@ class RESTful(Netrunner, typing.Protocol):
         client.run(main())
         ```
         """
-        raise NotImplementedError

@@ -22,7 +22,7 @@
 
 """A basic implementations of stuff that a Destiny 2 season contains.
 
-This includes all season that can be found in a regular season i.e, 
+This includes all season that can be found in a regular season i.e,
 season artifact, season content, season pass, etc.
 """
 
@@ -37,22 +37,19 @@ __all__: list[str] = ["Artifact", "PowerBonus"]
 for _cls in __all__:
     __pdoc__[_cls] = False
 
-import datetime
 import typing
 
 import attr
 
 from aiobungie.crate import entity
 from aiobungie.internal import assets
-from aiobungie.internal import enums
-from aiobungie.internal import time
 from aiobungie.internal import traits
 
 # The artifact tires.
 Tiers: list[dict[int, dict[str, typing.Any]]]
 
 
-@attr.s(init=True, slots=True, weakref_slot=False, eq=True, hash=True, kw_only=True)
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class PowerBonus:
     """Represents a Destiny 2 artifact power bonus information."""
 
@@ -84,7 +81,7 @@ class PowerBonus:
     """Power bonus's next level at."""
 
 
-@attr.s(init=True, slots=True, weakref_slot=False, eq=True, hash=True, kw_only=True)
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class ArtifactPoint:
     """Represents a Destiny 2 artifact points information."""
 
@@ -148,7 +145,7 @@ class FetchableArtifact(entity.InventoryEntity):
     """Entity's description."""
 
 
-@attr.s(init=True, slots=True, weakref_slot=False, eq=True, hash=True, kw_only=True)
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class Artifact:
     """Represents a Destiny 2 Season artifact."""
 

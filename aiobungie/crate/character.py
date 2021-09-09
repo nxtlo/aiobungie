@@ -43,9 +43,10 @@ from aiobungie.internal import time
 log: typing.Final[logging.Logger] = logging.getLogger(__name__)
 
 
-@attr.s(kw_only=True, hash=True, weakref_slot=False, slots=True, init=True, eq=True)
 class CharacterComponent(abc.ABC):
     """An interface for a Bungie character component."""
+
+    __slots__: typing.Sequence[str] = ()
 
     @property
     @abc.abstractmethod
@@ -191,7 +192,7 @@ class CharacterComponent(abc.ABC):
         return time.human_timedelta(time.clean_date(str(self.last_played)))
 
 
-@attr.s(kw_only=True, hash=True, weakref_slot=False, slots=True, init=True, eq=True)
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class Character(CharacterComponent):
     """An implementation for a Bungie character."""
 

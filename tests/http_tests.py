@@ -46,7 +46,7 @@ MID = 4611686018484639825
 
 
 @pytest.mark.asyncio()
-async def test_users() -> crate.User:
+async def test_users() -> crate.user.BungieUser:
     u = await client.fetch_user(20315338)
     return u
 
@@ -129,6 +129,10 @@ async def test_char() -> crate.Character:
     )
     return c
 
+@pytest.mark.asyncio()
+async def test_membership_types_from_id() -> crate.User:
+    u = await client.fetch_membership_from_id(MID)
+    return u
 
 @pytest.mark.asyncio()
 async def main():
@@ -144,8 +148,9 @@ async def main():
         test_fetch_app(),
         test_fetch_inventory_item(),
         test_char(),
+        test_membership_types_from_id()
     ]
-    print(await asyncio.gather(*coros))
+    await asyncio.gather(*coros)
 
 
 if __name__ == "__main__":

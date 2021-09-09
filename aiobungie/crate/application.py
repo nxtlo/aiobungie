@@ -42,7 +42,7 @@ from aiobungie.internal import time
 from aiobungie.internal import traits
 
 
-@attr.s(hash=True, repr=True, init=True, kw_only=True, weakref_slot=False, slots=True)
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class ApplicationOwner(UserLike):
     """Represents a Bungie Application owner."""
 
@@ -62,7 +62,7 @@ class ApplicationOwner(UserLike):
     """The application owner's profile privacy."""
 
     code: NoneOr[int] = attr.field(repr=True)
-    """The user like's unique display name code. 
+    """The user like's unique display name code.
     This can be None if the user hasn't logged in after season of the lost update.
 
     .. versionadded:: 0.2.5
@@ -103,7 +103,7 @@ class ApplicationOwner(UserLike):
         return self.name
 
 
-@attr.s(hash=True, repr=True, init=True, kw_only=True, weakref_slot=False, slots=True)
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class Application:
     """Represents a Bungie developer application."""
 

@@ -72,24 +72,15 @@ class TestUserThemes:
         assert isinstance(list_objs, list)
 
 
-class TestPartialUser:
-    # Not testing ABCs currently.
-    @pytest.fixture()
-    def model(self):
-        assert None
-
-
 class TestUserLike:
     # Not testing ABCs currently.
     @pytest.fixture()
     def model(self):
         assert None
-
-
-class TestUser:
+class TestBungieUser:
     @pytest.fixture()
     def model(self):
-        return crate.User(
+        return crate.user.BungieUser(
             id=205432,
             name="Fate",
             created_at=datetime.utcnow(),
@@ -105,6 +96,11 @@ class TestUser:
             twitch_name="fate_ttv",  # Fake o:
             unique_name="Fate怒#4275",
             code=4275,
+            theme_id=1234,
+            show_activity=True,
+            theme_name="some_theme_name",
+            display_title='Newbie',
+            stadia_name=None
         )
 
     def test_str_op(self, model):
@@ -115,4 +111,13 @@ class TestUser:
 
     def test_user_status_when_None(self, model):
         model.status = None
-        assert isinstance(model, crate.User) and model.status is None
+        assert isinstance(model, crate.user.BungieUser) and model.status is None
+
+class TestDestinyUser:
+    @pytest.fixture()
+    def obj(self):
+        ...
+class TestUser:
+    @pytest.fixture()
+    def obj(self):
+        ...

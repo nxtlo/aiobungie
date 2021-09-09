@@ -40,7 +40,7 @@ from aiobungie.internal import enums
 from aiobungie.internal import traits
 
 
-@attr.s(hash=True, slots=True, weakref_slot=False, eq=True, kw_only=True)
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class PostActivity:
     """Represents a Destiny 2 post activity details."""
 
@@ -92,7 +92,7 @@ class PostActivity:
         return self.reference_id
 
 
-@attr.s(hash=True, repr=True, slots=True, weakref_slot=False, eq=True, kw_only=True)
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class Activity:
     """Represents a Bungie Activity."""
 

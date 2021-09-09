@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-    <meta name="generator" content="pdoc 0.9.2" />
+    <meta name="generator" content="pdoc 0.10.0" />
     <title>aiobungie.internal.helpers API documentation</title>
     <meta name="description" content="A helper module for useful decorators, functions and types." />
     <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -522,15 +522,25 @@ __all__ = (
     &#34;Unknown&#34;,
     &#34;just&#34;,
     &#34;NoneOr&#34;,
+    &#34;get_or_make_loop&#34;,
 )
 
+import asyncio
 import inspect
 import typing
 import warnings
-from functools import wraps
 
 JsonDict = typing.Dict[str, typing.Any]
+&#34;&#34;&#34;A json like dict of string key and any value.
+
+i.e., {&#34;Key&#34;: 1, &#34;Key2&#34;: &#34;Value&#34;}
+&#34;&#34;&#34;
+
 JsonList = typing.List[typing.Dict[str, typing.Any]]
+&#34;&#34;&#34;A json like list of dicts of string key and any value
+
+i.e., [{&#34;Key&#34;: 1}, {&#34;Key2&#34;: &#34;Value&#34;}]
+&#34;&#34;&#34;
 
 Undefined: str = &#34;Undefined&#34;
 &#34;&#34;&#34;A helper that checks if stuff are unknown / empty string and Undefine them if they&#39;re.&#34;&#34;&#34;
@@ -552,26 +562,44 @@ def just(lst: list[dict[str, typing.Any]], lookup: str) -&gt; list[typing.Any]:
     return list(map(lambda dct: dct[lookup], lst))
 
 
-def deprecated(func):
+def deprecated(func: typing.Callable[..., typing.Any]) -&gt; typing.Callable[..., None]:
     &#34;&#34;&#34;
     functions with this decorator will not work or is not implemented yet.
     &#34;&#34;&#34;
+    if inspect.isfunction(func):
+        warnings.warn(
+            f&#34;function {func.__name__!r} is deprecated.&#34;,
+            stacklevel=2,
+            category=DeprecationWarning,
+        )
+        func.__doc__ += &#34;&#34;&#34;.. warning::
+        This function is a DEPRECATED.
+        &#34;&#34;&#34;  # type: ignore # Pyright bug
+    return lambda *args, **kwargs: func(*args, **kwargs)
 
-    @wraps(func)
-    def wrapper(*args: typing.Any, **kwargs: typing.Any) -&gt; None:
-        if inspect.isfunction(func):
-            warnings.warn(
-                f&#34;function {func.__name__!r} is deprecated.&#34;,
-                stacklevel=2,
-                category=DeprecationWarning,
-            )
-            func.__doc__ += &#34;&#34;&#34;!!! warning
-            
-            This function is a DEPRECATED.
-            &#34;&#34;&#34;
-        return func(*args, **kwargs)
 
-    return wrapper</code></pre>
+# Source [https://github.com/hikari-py/hikari/blob/master/hikari/internal/aio.py]
+def get_or_make_loop() -&gt; asyncio.AbstractEventLoop:
+    &#34;&#34;&#34;Get the current usable event loop or create a new one.
+    Returns
+    -------
+    asyncio.AbstractEventLoop
+    &#34;&#34;&#34;
+    # get_event_loop will error under oddly specific cases such as if set_event_loop has been called before even
+    # if it was just called with None or if it&#39;s called on a thread which isn&#39;t the main Thread.
+    try:
+        loop = asyncio.get_event_loop_policy().get_event_loop()
+
+        # Closed loops cannot be re-used.
+        if not loop.is_closed():
+            return loop
+
+    except RuntimeError:
+        pass
+
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    return loop</code></pre>
                 </details>
             </section>
             <section>
@@ -579,6 +607,20 @@ def deprecated(func):
             <section>
                 <h2 class="section-title" id="header-variables">Global variables</h2>
                 <dl>
+                    <dt id="aiobungie.internal.helpers.JsonDict"><code class="name">var <span class="ident">JsonDict</span></code></dt>
+                    <dd>
+                        <div class="desc">
+                            <p>A json like dict of string key and any value.</p>
+                            <p>i.e., {"Key": 1, "Key2": "Value"}</p>
+                        </div>
+                    </dd>
+                    <dt id="aiobungie.internal.helpers.JsonList"><code class="name">var <span class="ident">JsonList</span></code></dt>
+                    <dd>
+                        <div class="desc">
+                            <p>A json like list of dicts of string key and any value</p>
+                            <p>i.e., [{"Key": 1}, {"Key2": "Value"}]</p>
+                        </div>
+                    </dd>
                     <dt id="aiobungie.internal.helpers.NoneOr"><code class="name">var <span class="ident">NoneOr</span></code></dt>
                     <dd>
                         <div class="desc">
@@ -603,7 +645,7 @@ def deprecated(func):
                 <h2 class="section-title" id="header-functions">Functions</h2>
                 <dl>
                     <dt id="aiobungie.internal.helpers.deprecated"><code class="name flex">
-<span>def <span class="ident">deprecated</span></span>(<span>func)</span>
+<span>def <span class="ident">deprecated</span></span>(<span>func: typing.Callable[..., typing.Any]) ‑> Callable[..., None]</span>
 </code></dt>
                     <dd>
                         <div class="desc">
@@ -613,26 +655,60 @@ def deprecated(func):
                             <summary>
                                 <span>Expand source code</span>
                             </summary>
-                            <pre><code class="python">def deprecated(func):
+                            <pre><code class="python">def deprecated(func: typing.Callable[..., typing.Any]) -&gt; typing.Callable[..., None]:
     &#34;&#34;&#34;
     functions with this decorator will not work or is not implemented yet.
     &#34;&#34;&#34;
+    if inspect.isfunction(func):
+        warnings.warn(
+            f&#34;function {func.__name__!r} is deprecated.&#34;,
+            stacklevel=2,
+            category=DeprecationWarning,
+        )
+        func.__doc__ += &#34;&#34;&#34;.. warning::
+        This function is a DEPRECATED.
+        &#34;&#34;&#34;  # type: ignore # Pyright bug
+    return lambda *args, **kwargs: func(*args, **kwargs)</code></pre>
+                        </details>
+                    </dd>
+                    <dt id="aiobungie.internal.helpers.get_or_make_loop"><code class="name flex">
+<span>def <span class="ident">get_or_make_loop</span></span>(<span>) ‑> asyncio.events.AbstractEventLoop</span>
+</code></dt>
+                    <dd>
+                        <div class="desc">
+                            <p>Get the current usable event loop or create a new one. Returns
+                            </p>
+                            <hr>
+                            <dl>
+                                <dt><code>asyncio.AbstractEventLoop</code></dt>
+                                <dd>&nbsp;</dd>
+                            </dl>
+                        </div>
+                        <details class="source">
+                            <summary>
+                                <span>Expand source code</span>
+                            </summary>
+                            <pre><code class="python">def get_or_make_loop() -&gt; asyncio.AbstractEventLoop:
+    &#34;&#34;&#34;Get the current usable event loop or create a new one.
+    Returns
+    -------
+    asyncio.AbstractEventLoop
+    &#34;&#34;&#34;
+    # get_event_loop will error under oddly specific cases such as if set_event_loop has been called before even
+    # if it was just called with None or if it&#39;s called on a thread which isn&#39;t the main Thread.
+    try:
+        loop = asyncio.get_event_loop_policy().get_event_loop()
 
-    @wraps(func)
-    def wrapper(*args: typing.Any, **kwargs: typing.Any) -&gt; None:
-        if inspect.isfunction(func):
-            warnings.warn(
-                f&#34;function {func.__name__!r} is deprecated.&#34;,
-                stacklevel=2,
-                category=DeprecationWarning,
-            )
-            func.__doc__ += &#34;&#34;&#34;!!! warning
-            
-            This function is a DEPRECATED.
-            &#34;&#34;&#34;
-        return func(*args, **kwargs)
+        # Closed loops cannot be re-used.
+        if not loop.is_closed():
+            return loop
 
-    return wrapper</code></pre>
+    except RuntimeError:
+        pass
+
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    return loop</code></pre>
                         </details>
                     </dd>
                     <dt id="aiobungie.internal.helpers.just"><code class="name flex">
@@ -726,6 +802,8 @@ def deprecated(func):
                 <li>
                     <h3><a href="#header-variables">Global variables</a></h3>
                     <ul class="">
+                        <li><code><a title="aiobungie.internal.helpers.JsonDict" href="#aiobungie.internal.helpers.JsonDict">JsonDict</a></code></li>
+                        <li><code><a title="aiobungie.internal.helpers.JsonList" href="#aiobungie.internal.helpers.JsonList">JsonList</a></code></li>
                         <li><code><a title="aiobungie.internal.helpers.NoneOr" href="#aiobungie.internal.helpers.NoneOr">NoneOr</a></code></li>
                         <li><code><a title="aiobungie.internal.helpers.Undefined" href="#aiobungie.internal.helpers.Undefined">Undefined</a></code></li>
                         <li><code><a title="aiobungie.internal.helpers.Unknown" href="#aiobungie.internal.helpers.Unknown">Unknown</a></code></li>
@@ -735,6 +813,7 @@ def deprecated(func):
                     <h3><a href="#header-functions">Functions</a></h3>
                     <ul class="">
                         <li><code><a title="aiobungie.internal.helpers.deprecated" href="#aiobungie.internal.helpers.deprecated">deprecated</a></code></li>
+                        <li><code><a title="aiobungie.internal.helpers.get_or_make_loop" href="#aiobungie.internal.helpers.get_or_make_loop">get_or_make_loop</a></code></li>
                         <li><code><a title="aiobungie.internal.helpers.just" href="#aiobungie.internal.helpers.just">just</a></code></li>
                     </ul>
                 </li>
@@ -742,7 +821,7 @@ def deprecated(func):
         </nav>
     </main>
     <footer id="footer">
-        <p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.9.2</a>.</p>
+        <p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
     </footer>
 </body>
 

@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-    <meta name="generator" content="pdoc 0.9.2" />
+    <meta name="generator" content="pdoc 0.10.0" />
     <title>aiobungie.crate.player API documentation</title>
     <meta name="description" content="Basic implementation for a Bungie a player." />
     <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -524,11 +524,11 @@ import attr
 from aiobungie.crate.user import UserLike
 from aiobungie.internal import Image
 from aiobungie.internal import helpers
-from aiobungie.internal import impl
+from aiobungie.internal import traits
 from aiobungie.internal.enums import MembershipType
 
 
-@attr.s(hash=True, repr=True, init=True, kw_only=True, weakref_slot=False, slots=True)
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class Player(UserLike):
     &#34;&#34;&#34;Represents a Bungie Destiny 2 Player.&#34;&#34;&#34;
 
@@ -550,19 +550,19 @@ class Player(UserLike):
     code: helpers.NoneOr[int] = attr.field(repr=True)
     &#34;&#34;&#34;The clan member&#39;s bungie display name code
     This is new and was added in Season of the lost update
-    
+
     .. versionadded:: 0.2.5
     &#34;&#34;&#34;
 
     crossave_override: int = attr.field(repr=False)
     &#34;&#34;&#34;Returns `1` if the user has a cross save override in effect and 0 if not.
-    
+
     .. versionadded:: 0.2.5
     &#34;&#34;&#34;
 
     types: list[MembershipType] = attr.field(repr=False)
     &#34;&#34;&#34;A list of the player&#39;s membership types.
-    
+
     .. versionadded:: 0.2.5
     &#34;&#34;&#34;
 
@@ -576,7 +576,7 @@ class Player(UserLike):
         return f&#34;{self.name}#{self.code}&#34;
 
     @property
-    def net(self) -&gt; impl.Netrunner:
+    def net(self) -&gt; traits.Netrunner:
         &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
         return self.net
 
@@ -609,7 +609,7 @@ class Player(UserLike):
                             <summary>
                                 <span>Expand source code</span>
                             </summary>
-                            <pre><code class="python">@attr.s(hash=True, repr=True, init=True, kw_only=True, weakref_slot=False, slots=True)
+                            <pre><code class="python">@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class Player(UserLike):
     &#34;&#34;&#34;Represents a Bungie Destiny 2 Player.&#34;&#34;&#34;
 
@@ -631,19 +631,19 @@ class Player(UserLike):
     code: helpers.NoneOr[int] = attr.field(repr=True)
     &#34;&#34;&#34;The clan member&#39;s bungie display name code
     This is new and was added in Season of the lost update
-    
+
     .. versionadded:: 0.2.5
     &#34;&#34;&#34;
 
     crossave_override: int = attr.field(repr=False)
     &#34;&#34;&#34;Returns `1` if the user has a cross save override in effect and 0 if not.
-    
+
     .. versionadded:: 0.2.5
     &#34;&#34;&#34;
 
     types: list[MembershipType] = attr.field(repr=False)
     &#34;&#34;&#34;A list of the player&#39;s membership types.
-    
+
     .. versionadded:: 0.2.5
     &#34;&#34;&#34;
 
@@ -657,7 +657,7 @@ class Player(UserLike):
         return f&#34;{self.name}#{self.code}&#34;
 
     @property
-    def net(self) -&gt; impl.Netrunner:
+    def net(self) -&gt; traits.Netrunner:
         &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
         return self.net
 
@@ -690,7 +690,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
     return attr.asdict(self)</code></pre>
                                 </details>
                             </dd>
-                            <dt id="aiobungie.crate.player.Player.code"><code class="name">var <span class="ident">code</span> : Optional[int]</code></dt>
+                            <dt id="aiobungie.crate.player.Player.code"><code class="name">var <span class="ident">code</span> : Optional[None]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>The clan member's bungie display name code This is new and was added in Season of the lost update</p>
@@ -742,13 +742,9 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                     <p>The player's name</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.player.Player.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.impl.Netrunner" href="./internal/impl.html#aiobungie.internal.impl.Netrunner">Netrunner</a></code></dt>
+                            <dt id="aiobungie.crate.player.Player.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.traits.Netrunner" href="./internal/traits.html#aiobungie.internal.traits.Netrunner">Netrunner</a></code></dt>
                             <dd>
-                                <p class="inheritance">
-                                    <em>Inherited from:</em>
-                                    <code><a title="aiobungie.crate.user.UserLike" href="user.html#aiobungie.crate.user.UserLike">UserLike</a></code>.<code><a title="aiobungie.crate.user.UserLike.net" href="user.html#aiobungie.crate.user.UserLike.net">net</a></code>
-                                </p>
-                                <div class="desc inherited">
+                                <div class="desc">
                                     <p>A network state used for making external requests.</p>
                                 </div>
                                 <details class="source">
@@ -756,7 +752,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                         <span>Expand source code</span>
                                     </summary>
                                     <pre><code class="python">@property
-def net(self) -&gt; impl.Netrunner:
+def net(self) -&gt; traits.Netrunner:
     &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
     return self.net</code></pre>
                                 </details>
@@ -894,7 +890,7 @@ def unique_name(self) -&gt; helpers.NoneOr[str]:
         </nav>
     </main>
     <footer id="footer">
-        <p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.9.2</a>.</p>
+        <p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
     </footer>
 </body>
 

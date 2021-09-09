@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-    <meta name="generator" content="pdoc 0.9.2" />
+    <meta name="generator" content="pdoc 0.10.0" />
     <title>aiobungie.http API documentation</title>
     <meta name="description" content="An HTTPClient for sending requests to the Bungie API
 and Where all the magic happenes." />
@@ -543,7 +543,7 @@ _LOG: typing.Final[logging.Logger] = logging.getLogger(&#34;aiobungie.http&#34;)
 
 
 async def handle_errors(
-    response: aiohttp.ClientResponse, msg: str
+    response: aiohttp.ClientResponse, msg: str, long: str
 ) -&gt; error.AiobungieError:
     from_json = await response.json()
     data = [str(response.real_url), from_json, msg]
@@ -556,31 +556,33 @@ async def handle_errors(
         return error.Unauthorized(*data)
 
     status = http.HTTPStatus(response.status)
+    why = [msg, long]
 
     if 400 &lt;= status &lt; 500:
         return error.ResponseError(*data, status)
     elif 500 &lt;= status &lt; 600:
         # High order errors.
         if msg == &#34;ClanNotFound&#34;:
-            return error.ClanNotFound(msg)
+            return error.ClanNotFound(*why)
+        elif msg == &#34;NotFound&#34;:
+            return error.NotFound(*why)
         elif msg == &#34;DestinyInvalidMembershipType&#34;:
-            return error.MembershipTypeError(msg)
+            return error.MembershipTypeError(*why)
         elif msg == &#34;GroupNotFound&#34;:
-            return error.ClanNotFound(msg)
+            return error.ClanNotFound(*why)
         elif msg == &#34;UserCannotFindRequestedUser&#34;:
-            return error.UserNotFound(msg)
+            return error.UserNotFound(*why)
         else:
-            return error.AiobungieError(msg)
+            return error.AiobungieError(*why)
     else:
-        return error.HTTPException(msg)
+        return error.HTTPException(*why)
 
 
 class PreLock:
-
     __slots__ = (&#34;_lock&#34;,)
 
-    def __init__(self, locker: asyncio.Lock) -&gt; None:
-        self._lock: asyncio.Lock = locker
+    def __init__(self) -&gt; None:
+        self._lock = asyncio.Lock()
 
     async def __aenter__(self) -&gt; None:
         await self.acquire()
@@ -609,7 +611,6 @@ class HTTPClient:
         loop: asyncio.AbstractEventLoop = None,
     ) -&gt; None:
         self.key: str = key
-        self.loop = loop or asyncio.get_event_loop()
         self.__connector = connector
 
     @typing.final
@@ -625,18 +626,17 @@ class HTTPClient:
         user_agent: typing.Final[
             str
         ] = f&#34;AiobungieClient/{info.__version__} ({info.__url__}) Python/{sys.version_info}&#34;
-        locker = asyncio.Lock()
 
         if isinstance(self.key, str) and self.key is not None:
-            kwargs[&#34;headers&#34;] = {&#34;X-API-KEY&#34;: self.key, &#34;User-Agent&#34;: user_agent}
+            kwargs[&#34;headers&#34;] = headers = {}
+            headers[&#34;X-API-KEY&#34;] = self.key
+            headers[&#34;User-Agent&#34;] = user_agent
         else:
             raise ValueError(&#34;No API KEY was passed.&#34;)
 
-        async with PreLock(locker):
+        async with PreLock():
             try:
-                async with aiohttp.ClientSession(
-                    loop=self.loop, connector=self.__connector
-                ) as session:
+                async with aiohttp.ClientSession(connector=self.__connector) as session:
                     async with session.request(
                         method=method,
                         url=f&#34;{url.REST_EP if not base else url.BASE}/{route}&#34;,
@@ -680,7 +680,7 @@ class HTTPClient:
                             except KeyError:
                                 return data
 
-                        await self._handle_err(response, f&#34;{msg}, {data[&#39;Message&#39;]}&#34;)
+                        await self._handle_err(response, msg, data[&#34;Message&#34;])
 
             except aiohttp.ContentTypeError:
                 return await response.text(encoding=&#34;utf-8&#34;)
@@ -691,9 +691,9 @@ class HTTPClient:
     @staticmethod
     @typing.final
     async def _handle_err(
-        response: aiohttp.ClientResponse, msg: str
+        response: aiohttp.ClientResponse, msg: str, long: str
     ) -&gt; typing.NoReturn:
-        raise await handle_errors(response, msg)
+        raise await handle_errors(response, msg, long)
 
     def fetch_user(self, id: int) -&gt; Response[helpers.JsonDict]:
         return self.fetch(&#34;GET&#34;, f&#34;User/GetBungieNetUserById/{id}/&#34;)
@@ -701,11 +701,16 @@ class HTTPClient:
     def fetch_user_themes(self) -&gt; Response[helpers.JsonList]:
         return self.fetch(&#34;GET&#34;, &#34;User/GetAvailableThemes/&#34;)
 
+    def fetch_membership_from_id(
+        self, id: int, type: enums.MembershipType = enums.MembershipType.NONE, /
+    ) -&gt; Response[helpers.JsonDict]:
+        return self.fetch(&#34;GET&#34;, f&#34;User/GetMembershipsById/{id}/{type}&#34;)
+
     def fetch_manifest(self) -&gt; Response[typing.Any]:
         return self.fetch(&#34;GET&#34;, &#34;Destiny2/Manifest/&#34;)
 
-    def static_search(self, path: str) -&gt; Response[typing.Any]:
-        return self.fetch(&#34;GET&#34;, path)
+    def static_search(self, path: str, **kwargs: typing.Any) -&gt; Response[typing.Any]:
+        return self.fetch(&#34;GET&#34;, path, **kwargs)
 
     def fetch_player(
         self, name: str, type: enums.MembershipType, /
@@ -726,7 +731,7 @@ class HTTPClient:
         return self.fetch(&#34;GET&#34;, f&#34;App/Application/{appid}&#34;)
 
     def fetch_character(
-        self, memberid: int, type: enums.MembershipType, character: enums.Class
+        self, memberid: int, type: enums.MembershipType, /
     ) -&gt; Response[helpers.JsonDict]:
         return self.fetch(
             &#34;GET&#34;,
@@ -830,7 +835,6 @@ class HTTPClient:
         loop: asyncio.AbstractEventLoop = None,
     ) -&gt; None:
         self.key: str = key
-        self.loop = loop or asyncio.get_event_loop()
         self.__connector = connector
 
     @typing.final
@@ -846,18 +850,17 @@ class HTTPClient:
         user_agent: typing.Final[
             str
         ] = f&#34;AiobungieClient/{info.__version__} ({info.__url__}) Python/{sys.version_info}&#34;
-        locker = asyncio.Lock()
 
         if isinstance(self.key, str) and self.key is not None:
-            kwargs[&#34;headers&#34;] = {&#34;X-API-KEY&#34;: self.key, &#34;User-Agent&#34;: user_agent}
+            kwargs[&#34;headers&#34;] = headers = {}
+            headers[&#34;X-API-KEY&#34;] = self.key
+            headers[&#34;User-Agent&#34;] = user_agent
         else:
             raise ValueError(&#34;No API KEY was passed.&#34;)
 
-        async with PreLock(locker):
+        async with PreLock():
             try:
-                async with aiohttp.ClientSession(
-                    loop=self.loop, connector=self.__connector
-                ) as session:
+                async with aiohttp.ClientSession(connector=self.__connector) as session:
                     async with session.request(
                         method=method,
                         url=f&#34;{url.REST_EP if not base else url.BASE}/{route}&#34;,
@@ -901,7 +904,7 @@ class HTTPClient:
                             except KeyError:
                                 return data
 
-                        await self._handle_err(response, f&#34;{msg}, {data[&#39;Message&#39;]}&#34;)
+                        await self._handle_err(response, msg, data[&#34;Message&#34;])
 
             except aiohttp.ContentTypeError:
                 return await response.text(encoding=&#34;utf-8&#34;)
@@ -912,9 +915,9 @@ class HTTPClient:
     @staticmethod
     @typing.final
     async def _handle_err(
-        response: aiohttp.ClientResponse, msg: str
+        response: aiohttp.ClientResponse, msg: str, long: str
     ) -&gt; typing.NoReturn:
-        raise await handle_errors(response, msg)
+        raise await handle_errors(response, msg, long)
 
     def fetch_user(self, id: int) -&gt; Response[helpers.JsonDict]:
         return self.fetch(&#34;GET&#34;, f&#34;User/GetBungieNetUserById/{id}/&#34;)
@@ -922,11 +925,16 @@ class HTTPClient:
     def fetch_user_themes(self) -&gt; Response[helpers.JsonList]:
         return self.fetch(&#34;GET&#34;, &#34;User/GetAvailableThemes/&#34;)
 
+    def fetch_membership_from_id(
+        self, id: int, type: enums.MembershipType = enums.MembershipType.NONE, /
+    ) -&gt; Response[helpers.JsonDict]:
+        return self.fetch(&#34;GET&#34;, f&#34;User/GetMembershipsById/{id}/{type}&#34;)
+
     def fetch_manifest(self) -&gt; Response[typing.Any]:
         return self.fetch(&#34;GET&#34;, &#34;Destiny2/Manifest/&#34;)
 
-    def static_search(self, path: str) -&gt; Response[typing.Any]:
-        return self.fetch(&#34;GET&#34;, path)
+    def static_search(self, path: str, **kwargs: typing.Any) -&gt; Response[typing.Any]:
+        return self.fetch(&#34;GET&#34;, path, **kwargs)
 
     def fetch_player(
         self, name: str, type: enums.MembershipType, /
@@ -947,7 +955,7 @@ class HTTPClient:
         return self.fetch(&#34;GET&#34;, f&#34;App/Application/{appid}&#34;)
 
     def fetch_character(
-        self, memberid: int, type: enums.MembershipType, character: enums.Class
+        self, memberid: int, type: enums.MembershipType, /
     ) -&gt; Response[helpers.JsonDict]:
         return self.fetch(
             &#34;GET&#34;,
@@ -1042,18 +1050,17 @@ async def fetch(
     user_agent: typing.Final[
         str
     ] = f&#34;AiobungieClient/{info.__version__} ({info.__url__}) Python/{sys.version_info}&#34;
-    locker = asyncio.Lock()
 
     if isinstance(self.key, str) and self.key is not None:
-        kwargs[&#34;headers&#34;] = {&#34;X-API-KEY&#34;: self.key, &#34;User-Agent&#34;: user_agent}
+        kwargs[&#34;headers&#34;] = headers = {}
+        headers[&#34;X-API-KEY&#34;] = self.key
+        headers[&#34;User-Agent&#34;] = user_agent
     else:
         raise ValueError(&#34;No API KEY was passed.&#34;)
 
-    async with PreLock(locker):
+    async with PreLock():
         try:
-            async with aiohttp.ClientSession(
-                loop=self.loop, connector=self.__connector
-            ) as session:
+            async with aiohttp.ClientSession(connector=self.__connector) as session:
                 async with session.request(
                     method=method,
                     url=f&#34;{url.REST_EP if not base else url.BASE}/{route}&#34;,
@@ -1097,7 +1104,7 @@ async def fetch(
                         except KeyError:
                             return data
 
-                    await self._handle_err(response, f&#34;{msg}, {data[&#39;Message&#39;]}&#34;)
+                    await self._handle_err(response, msg, data[&#34;Message&#34;])
 
         except aiohttp.ContentTypeError:
             return await response.text(encoding=&#34;utf-8&#34;)
@@ -1147,7 +1154,7 @@ async def fetch(
                                 </details>
                             </dd>
                             <dt id="aiobungie.http.HTTPClient.fetch_character"><code class="name flex">
-<span>def <span class="ident">fetch_character</span></span>(<span>self, memberid: int, type: enums.MembershipType, character: enums.Class) ‑> Response[helpers.JsonDict]</span>
+<span>def <span class="ident">fetch_character</span></span>(<span>self, memberid: int, type: enums.MembershipType, /) ‑> Response[helpers.JsonDict]</span>
 </code></dt>
                             <dd>
                                 <div class="desc"></div>
@@ -1156,7 +1163,7 @@ async def fetch(
                                         <span>Expand source code</span>
                                     </summary>
                                     <pre><code class="python">def fetch_character(
-    self, memberid: int, type: enums.MembershipType, character: enums.Class
+    self, memberid: int, type: enums.MembershipType, /
 ) -&gt; Response[helpers.JsonDict]:
     return self.fetch(
         &#34;GET&#34;,
@@ -1276,6 +1283,21 @@ async def fetch(
     return self.fetch(&#34;GET&#34;, &#34;Destiny2/Manifest/&#34;)</code></pre>
                                 </details>
                             </dd>
+                            <dt id="aiobungie.http.HTTPClient.fetch_membership_from_id"><code class="name flex">
+<span>def <span class="ident">fetch_membership_from_id</span></span>(<span>self, id: int, type: enums.MembershipType = NONE, /) ‑> Response[helpers.JsonDict]</span>
+</code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">def fetch_membership_from_id(
+    self, id: int, type: enums.MembershipType = enums.MembershipType.NONE, /
+) -&gt; Response[helpers.JsonDict]:
+    return self.fetch(&#34;GET&#34;, f&#34;User/GetMembershipsById/{id}/{type}&#34;)</code></pre>
+                                </details>
+                            </dd>
                             <dt id="aiobungie.http.HTTPClient.fetch_player"><code class="name flex">
 <span>def <span class="ident">fetch_player</span></span>(<span>self, name: str, type: enums.MembershipType, /) ‑> Response[helpers.JsonList]</span>
 </code></dt>
@@ -1366,7 +1388,7 @@ async def fetch(
                                 </details>
                             </dd>
                             <dt id="aiobungie.http.HTTPClient.static_search"><code class="name flex">
-<span>def <span class="ident">static_search</span></span>(<span>self, path: str) ‑> Response[typing.Any]</span>
+<span>def <span class="ident">static_search</span></span>(<span>self, path: str, **kwargs: typing.Any) ‑> Response[typing.Any]</span>
 </code></dt>
                             <dd>
                                 <div class="desc"></div>
@@ -1374,8 +1396,8 @@ async def fetch(
                                     <summary>
                                         <span>Expand source code</span>
                                     </summary>
-                                    <pre><code class="python">def static_search(self, path: str) -&gt; Response[typing.Any]:
-    return self.fetch(&#34;GET&#34;, path)</code></pre>
+                                    <pre><code class="python">def static_search(self, path: str, **kwargs: typing.Any) -&gt; Response[typing.Any]:
+    return self.fetch(&#34;GET&#34;, path, **kwargs)</code></pre>
                                 </details>
                             </dd>
                         </dl>
@@ -1465,6 +1487,7 @@ async def fetch(
                                 <li><code><a title="aiobungie.http.HTTPClient.fetch_hard_linked" href="#aiobungie.http.HTTPClient.fetch_hard_linked">fetch_hard_linked</a></code></li>
                                 <li><code><a title="aiobungie.http.HTTPClient.fetch_inventory_item" href="#aiobungie.http.HTTPClient.fetch_inventory_item">fetch_inventory_item</a></code></li>
                                 <li><code><a title="aiobungie.http.HTTPClient.fetch_manifest" href="#aiobungie.http.HTTPClient.fetch_manifest">fetch_manifest</a></code></li>
+                                <li><code><a title="aiobungie.http.HTTPClient.fetch_membership_from_id" href="#aiobungie.http.HTTPClient.fetch_membership_from_id">fetch_membership_from_id</a></code></li>
                                 <li><code><a title="aiobungie.http.HTTPClient.fetch_player" href="#aiobungie.http.HTTPClient.fetch_player">fetch_player</a></code></li>
                                 <li><code><a title="aiobungie.http.HTTPClient.fetch_post_activity" href="#aiobungie.http.HTTPClient.fetch_post_activity">fetch_post_activity</a></code></li>
                                 <li><code><a title="aiobungie.http.HTTPClient.fetch_profile" href="#aiobungie.http.HTTPClient.fetch_profile">fetch_profile</a></code></li>
@@ -1480,7 +1503,7 @@ async def fetch(
         </nav>
     </main>
     <footer id="footer">
-        <p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.9.2</a>.</p>
+        <p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
     </footer>
 </body>
 

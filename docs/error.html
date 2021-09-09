@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-    <meta name="generator" content="pdoc 0.9.2" />
+    <meta name="generator" content="pdoc 0.10.0" />
     <title>aiobungie.error API documentation</title>
     <meta name="description" content="aiobungie Exceptions." />
     <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -543,6 +543,7 @@ class HTTPException(AiobungieError):
     &#34;&#34;&#34;Exception for handling `aiobungie.http.HTTPClient` requests errors.&#34;&#34;&#34;
 
     message: str = attr.field()
+    long_message: typing.Optional[str] = attr.field(default=None)
 
 
 class NotFound(AiobungieError):
@@ -664,7 +665,7 @@ class ActivityNotFound(NotFound):
                     </dd>
                     <dt id="aiobungie.error.CharacterError"><code class="flex name class">
 <span>class <span class="ident">CharacterError</span></span>
-<span>(</span><span>message: str)</span>
+<span>(</span><span>message: str, long_message: typing.Optional[str] = None)</span>
 </code></dt>
                     <dd>
                         <div class="desc">
@@ -688,6 +689,16 @@ class CharacterError(HTTPException):
                         </ul>
                         <h3>Instance variables</h3>
                         <dl>
+                            <dt id="aiobungie.error.CharacterError.long_message"><code class="name">var <span class="ident">long_message</span> : Optional[str]</code></dt>
+                            <dd>
+                                <p class="inheritance">
+                                    <em>Inherited from:</em>
+                                    <code><a title="aiobungie.error.HTTPException" href="#aiobungie.error.HTTPException">HTTPException</a></code>.<code><a title="aiobungie.error.HTTPException.long_message" href="#aiobungie.error.HTTPException.long_message">long_message</a></code>
+                                </p>
+                                <div class="desc inherited">
+                                    <p>Return an attribute of instance, which is of type owner.</p>
+                                </div>
+                            </dd>
                             <dt id="aiobungie.error.CharacterError.message"><code class="name">var <span class="ident">message</span> : str</code></dt>
                             <dd>
                                 <p class="inheritance">
@@ -726,7 +737,7 @@ class ClanNotFound(NotFound):
                     </dd>
                     <dt id="aiobungie.error.ComponentError"><code class="flex name class">
 <span>class <span class="ident">ComponentError</span></span>
-<span>(</span><span>message: str)</span>
+<span>(</span><span>message: str, long_message: typing.Optional[str] = None)</span>
 </code></dt>
                     <dd>
                         <div class="desc">
@@ -750,6 +761,16 @@ class ComponentError(HTTPException):
                         </ul>
                         <h3>Instance variables</h3>
                         <dl>
+                            <dt id="aiobungie.error.ComponentError.long_message"><code class="name">var <span class="ident">long_message</span> : Optional[str]</code></dt>
+                            <dd>
+                                <p class="inheritance">
+                                    <em>Inherited from:</em>
+                                    <code><a title="aiobungie.error.HTTPException" href="#aiobungie.error.HTTPException">HTTPException</a></code>.<code><a title="aiobungie.error.HTTPException.long_message" href="#aiobungie.error.HTTPException.long_message">long_message</a></code>
+                                </p>
+                                <div class="desc inherited">
+                                    <p>Return an attribute of instance, which is of type owner.</p>
+                                </div>
+                            </dd>
                             <dt id="aiobungie.error.ComponentError.message"><code class="name">var <span class="ident">message</span> : str</code></dt>
                             <dd>
                                 <p class="inheritance">
@@ -764,7 +785,7 @@ class ComponentError(HTTPException):
                     </dd>
                     <dt id="aiobungie.error.Forbidden"><code class="flex name class">
 <span>class <span class="ident">Forbidden</span></span>
-<span>(</span><span>message: str)</span>
+<span>(</span><span>message: str, long_message: typing.Optional[str] = None)</span>
 </code></dt>
                     <dd>
                         <div class="desc">
@@ -788,6 +809,16 @@ class Forbidden(HTTPException):
                         </ul>
                         <h3>Instance variables</h3>
                         <dl>
+                            <dt id="aiobungie.error.Forbidden.long_message"><code class="name">var <span class="ident">long_message</span> : Optional[str]</code></dt>
+                            <dd>
+                                <p class="inheritance">
+                                    <em>Inherited from:</em>
+                                    <code><a title="aiobungie.error.HTTPException" href="#aiobungie.error.HTTPException">HTTPException</a></code>.<code><a title="aiobungie.error.HTTPException.long_message" href="#aiobungie.error.HTTPException.long_message">long_message</a></code>
+                                </p>
+                                <div class="desc inherited">
+                                    <p>Return an attribute of instance, which is of type owner.</p>
+                                </div>
+                            </dd>
                             <dt id="aiobungie.error.Forbidden.message"><code class="name">var <span class="ident">message</span> : str</code></dt>
                             <dd>
                                 <p class="inheritance">
@@ -802,7 +833,7 @@ class Forbidden(HTTPException):
                     </dd>
                     <dt id="aiobungie.error.HTTPException"><code class="flex name class">
 <span>class <span class="ident">HTTPException</span></span>
-<span>(</span><span>message: str)</span>
+<span>(</span><span>message: str, long_message: typing.Optional[str] = None)</span>
 </code></dt>
                     <dd>
                         <div class="desc">
@@ -817,7 +848,8 @@ class Forbidden(HTTPException):
 class HTTPException(AiobungieError):
     &#34;&#34;&#34;Exception for handling `aiobungie.http.HTTPClient` requests errors.&#34;&#34;&#34;
 
-    message: str = attr.field()</code></pre>
+    message: str = attr.field()
+    long_message: typing.Optional[str] = attr.field(default=None)</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
@@ -835,6 +867,12 @@ class HTTPException(AiobungieError):
                         </ul>
                         <h3>Instance variables</h3>
                         <dl>
+                            <dt id="aiobungie.error.HTTPException.long_message"><code class="name">var <span class="ident">long_message</span> : Optional[str]</code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Return an attribute of instance, which is of type owner.</p>
+                                </div>
+                            </dd>
                             <dt id="aiobungie.error.HTTPException.message"><code class="name">var <span class="ident">message</span> : str</code></dt>
                             <dd>
                                 <div class="desc">
@@ -845,7 +883,7 @@ class HTTPException(AiobungieError):
                     </dd>
                     <dt id="aiobungie.error.MembershipTypeError"><code class="flex name class">
 <span>class <span class="ident">MembershipTypeError</span></span>
-<span>(</span><span>message: str)</span>
+<span>(</span><span>message: str, long_message: typing.Optional[str] = None)</span>
 </code></dt>
                     <dd>
                         <div class="desc">
@@ -872,6 +910,16 @@ class MembershipTypeError(HTTPException):
                         </ul>
                         <h3>Instance variables</h3>
                         <dl>
+                            <dt id="aiobungie.error.MembershipTypeError.long_message"><code class="name">var <span class="ident">long_message</span> : Optional[str]</code></dt>
+                            <dd>
+                                <p class="inheritance">
+                                    <em>Inherited from:</em>
+                                    <code><a title="aiobungie.error.HTTPException" href="#aiobungie.error.HTTPException">HTTPException</a></code>.<code><a title="aiobungie.error.HTTPException.long_message" href="#aiobungie.error.HTTPException.long_message">long_message</a></code>
+                                </p>
+                                <div class="desc inherited">
+                                    <p>Return an attribute of instance, which is of type owner.</p>
+                                </div>
+                            </dd>
                             <dt id="aiobungie.error.MembershipTypeError.message"><code class="name">var <span class="ident">message</span> : str</code></dt>
                             <dd>
                                 <p class="inheritance">
@@ -962,7 +1010,7 @@ class ResponseError(AiobungieError):
                     </dd>
                     <dt id="aiobungie.error.Unauthorized"><code class="flex name class">
 <span>class <span class="ident">Unauthorized</span></span>
-<span>(</span><span>message: str)</span>
+<span>(</span><span>message: str, long_message: typing.Optional[str] = None)</span>
 </code></dt>
                     <dd>
                         <div class="desc">
@@ -986,6 +1034,16 @@ class Unauthorized(HTTPException):
                         </ul>
                         <h3>Instance variables</h3>
                         <dl>
+                            <dt id="aiobungie.error.Unauthorized.long_message"><code class="name">var <span class="ident">long_message</span> : Optional[str]</code></dt>
+                            <dd>
+                                <p class="inheritance">
+                                    <em>Inherited from:</em>
+                                    <code><a title="aiobungie.error.HTTPException" href="#aiobungie.error.HTTPException">HTTPException</a></code>.<code><a title="aiobungie.error.HTTPException.long_message" href="#aiobungie.error.HTTPException.long_message">long_message</a></code>
+                                </p>
+                                <div class="desc inherited">
+                                    <p>Return an attribute of instance, which is of type owner.</p>
+                                </div>
+                            </dd>
                             <dt id="aiobungie.error.Unauthorized.message"><code class="name">var <span class="ident">message</span> : str</code></dt>
                             <dd>
                                 <p class="inheritance">
@@ -1102,6 +1160,7 @@ class UserNotFound(NotFound):
                         <li>
                             <h4><code><a title="aiobungie.error.CharacterError" href="#aiobungie.error.CharacterError">CharacterError</a></code></h4>
                             <ul class="">
+                                <li><code><a title="aiobungie.error.CharacterError.long_message" href="#aiobungie.error.CharacterError.long_message">long_message</a></code></li>
                                 <li><code><a title="aiobungie.error.CharacterError.message" href="#aiobungie.error.CharacterError.message">message</a></code></li>
                             </ul>
                         </li>
@@ -1111,24 +1170,28 @@ class UserNotFound(NotFound):
                         <li>
                             <h4><code><a title="aiobungie.error.ComponentError" href="#aiobungie.error.ComponentError">ComponentError</a></code></h4>
                             <ul class="">
+                                <li><code><a title="aiobungie.error.ComponentError.long_message" href="#aiobungie.error.ComponentError.long_message">long_message</a></code></li>
                                 <li><code><a title="aiobungie.error.ComponentError.message" href="#aiobungie.error.ComponentError.message">message</a></code></li>
                             </ul>
                         </li>
                         <li>
                             <h4><code><a title="aiobungie.error.Forbidden" href="#aiobungie.error.Forbidden">Forbidden</a></code></h4>
                             <ul class="">
+                                <li><code><a title="aiobungie.error.Forbidden.long_message" href="#aiobungie.error.Forbidden.long_message">long_message</a></code></li>
                                 <li><code><a title="aiobungie.error.Forbidden.message" href="#aiobungie.error.Forbidden.message">message</a></code></li>
                             </ul>
                         </li>
                         <li>
                             <h4><code><a title="aiobungie.error.HTTPException" href="#aiobungie.error.HTTPException">HTTPException</a></code></h4>
                             <ul class="">
+                                <li><code><a title="aiobungie.error.HTTPException.long_message" href="#aiobungie.error.HTTPException.long_message">long_message</a></code></li>
                                 <li><code><a title="aiobungie.error.HTTPException.message" href="#aiobungie.error.HTTPException.message">message</a></code></li>
                             </ul>
                         </li>
                         <li>
                             <h4><code><a title="aiobungie.error.MembershipTypeError" href="#aiobungie.error.MembershipTypeError">MembershipTypeError</a></code></h4>
                             <ul class="">
+                                <li><code><a title="aiobungie.error.MembershipTypeError.long_message" href="#aiobungie.error.MembershipTypeError.long_message">long_message</a></code></li>
                                 <li><code><a title="aiobungie.error.MembershipTypeError.message" href="#aiobungie.error.MembershipTypeError.message">message</a></code></li>
                             </ul>
                         </li>
@@ -1144,6 +1207,7 @@ class UserNotFound(NotFound):
                         <li>
                             <h4><code><a title="aiobungie.error.Unauthorized" href="#aiobungie.error.Unauthorized">Unauthorized</a></code></h4>
                             <ul class="">
+                                <li><code><a title="aiobungie.error.Unauthorized.long_message" href="#aiobungie.error.Unauthorized.long_message">long_message</a></code></li>
                                 <li><code><a title="aiobungie.error.Unauthorized.message" href="#aiobungie.error.Unauthorized.message">message</a></code></li>
                             </ul>
                         </li>
@@ -1156,7 +1220,7 @@ class UserNotFound(NotFound):
         </nav>
     </main>
     <footer id="footer">
-        <p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.9.2</a>.</p>
+        <p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
     </footer>
 </body>
 

@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-    <meta name="generator" content="pdoc 0.9.2" />
+    <meta name="generator" content="pdoc 0.10.0" />
     <title>aiobungie.internal.enums API documentation</title>
     <meta name="description" content="Bungie enums impl for aiobungie." />
     <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -535,14 +535,37 @@ __all__ = (
     &#34;AmmoType&#34;,
     &#34;GroupType&#34;,
     &#34;CredentialType&#34;,
+    &#34;Presence&#34;,
+    &#34;Relationship&#34;,
+    &#34;ClanMemberType&#34;,
 )
 
-import enum
+import enum as __enum
 import typing
 
 
+class IntEnum(__enum.IntEnum):
+    &#34;&#34;&#34;An int only enum.&#34;&#34;&#34;
+
+    def __int__(self) -&gt; int:
+        return int(self.value)
+
+    def __str__(self) -&gt; str:
+        return self.name
+
+
+class Enum(__enum.Enum):
+    &#34;&#34;&#34;An enum that can be an int or a string.&#34;&#34;&#34;
+
+    def __str__(self) -&gt; str:
+        return self.name
+
+    def __int__(self) -&gt; int:
+        return int(self.value)
+
+
 @typing.final
-class Raid(int, enum.Enum):
+class Raid(IntEnum):
     &#34;&#34;&#34;An Enum for all available raids in Destiny 2.&#34;&#34;&#34;
 
     DSC = 910380154
@@ -557,15 +580,9 @@ class Raid(int, enum.Enum):
     GOS = 3458480158
     &#34;&#34;&#34;Garden Of Salvation&#34;&#34;&#34;
 
-    def __int__(self) -&gt; int:
-        return int(self.value)
-
-    def __str__(self) -&gt; str:
-        return str(self.name)
-
 
 @typing.final
-class Dungeon(int, enum.Enum):
+class Dungeon(IntEnum):
     &#34;&#34;&#34;An Enum for all available Dungeon/Like missions in Destiny 2.&#34;&#34;&#34;
 
     NORMAL_PRESAGE = 2124066889
@@ -592,15 +609,9 @@ class Dungeon(int, enum.Enum):
     SHATTERED = 2032534090
     &#34;&#34;&#34;Shattered Throne&#34;&#34;&#34;
 
-    def __str__(self) -&gt; str:
-        return str(self.name)
-
-    def __int__(self) -&gt; int:
-        return int(self.value)
-
 
 @typing.final
-class Planet(int, enum.Enum):
+class Planet(IntEnum):
     &#34;&#34;&#34;An Enum for all available planets in Destiny 2.&#34;&#34;&#34;
 
     UNKNOWN = 0
@@ -633,15 +644,9 @@ class Planet(int, enum.Enum):
     EUROPA = 1729879943
     &#34;&#34;&#34;Europa&#34;&#34;&#34;
 
-    def __str__(self) -&gt; str:
-        return str(self.name)
-
-    def __int__(self) -&gt; int:
-        return int(self.value)
-
 
 @typing.final
-class Place(int, enum.Enum):
+class Place(IntEnum):
     &#34;&#34;&#34;An Enum for Destiny 2 Places and NOT Planets&#34;&#34;&#34;
 
     ORBIT = 2961497387
@@ -649,15 +654,9 @@ class Place(int, enum.Enum):
     LIGHT_HOUSE = 4276116472
     EXPLORE = 3497767639
 
-    def __str__(self) -&gt; str:
-        return self.name
-
-    def __int__(self) -&gt; int:
-        return int(self.value)
-
 
 @typing.final
-class Vendor(int, enum.Enum):
+class Vendor(IntEnum):
     &#34;&#34;&#34;An Enum for all available vendors in Destiny 2.&#34;&#34;&#34;
 
     ZAVALA = 69482069
@@ -684,15 +683,9 @@ class Vendor(int, enum.Enum):
     &#34;&#34;&#34;COSMODROME Guy&#34;&#34;&#34;
     VARIKS = 2531198101
 
-    def __str__(self) -&gt; str:
-        return str(self.name)
-
-    def __int__(self) -&gt; int:
-        return int(self.value)
-
 
 @typing.final
-class GameMode(int, enum.Enum):
+class GameMode(IntEnum):
     &#34;&#34;&#34;An Enum for all available gamemodes in Destiny 2.&#34;&#34;&#34;
 
     NONE = 0
@@ -719,15 +712,9 @@ class GameMode(int, enum.Enum):
     MAYHEM = 3517186939
     SURVIVAL = 2175955486
 
-    def __str__(self) -&gt; str:
-        return str(self.name)
-
-    def __int__(self) -&gt; int:
-        return int(self.value)
-
 
 @typing.final
-class Component(int, enum.Enum):
+class Component(IntEnum):
     &#34;&#34;&#34;An Enum for Destiny 2 Components.&#34;&#34;&#34;
 
     NONE = 0
@@ -743,15 +730,9 @@ class Component(int, enum.Enum):
     RECORDS = 900
     VENDOR_SALES = 402
 
-    def __str__(self) -&gt; str:
-        return str(self.name)
-
-    def __int__(self) -&gt; int:
-        return int(self.value)
-
 
 @typing.final
-class MembershipType(int, enum.Enum):
+class MembershipType(IntEnum):
     &#34;&#34;&#34;An Enum for Bungie membership types.&#34;&#34;&#34;
 
     NONE = 0
@@ -763,15 +744,9 @@ class MembershipType(int, enum.Enum):
     BUNGIE = 254
     ALL = -1
 
-    def __str__(self) -&gt; str:
-        return str(self.name)
-
-    def __int__(self) -&gt; int:
-        return int(self.value)
-
 
 @typing.final
-class Class(int, enum.Enum):
+class Class(IntEnum):
     &#34;&#34;&#34;An Enum for Destiny character classes.&#34;&#34;&#34;
 
     TITAN = 0
@@ -779,30 +754,18 @@ class Class(int, enum.Enum):
     WARLOCK = 2
     UNKNOWN = 3
 
-    def __str__(self) -&gt; str:
-        return str(self.name)
-
-    def __int__(self) -&gt; int:
-        return int(self.value)
-
 
 @typing.final
-class Gender(int, enum.Enum):
+class Gender(IntEnum):
     &#34;&#34;&#34;An Enum for Destiny Genders.&#34;&#34;&#34;
 
     MALE = 0
     FEMALE = 1
     UNKNOWN = 2
 
-    def __str__(self) -&gt; str:
-        return str(self.name)
-
-    def __int__(self) -&gt; int:
-        return int(self.value)
-
 
 @typing.final
-class Race(int, enum.Enum):
+class Race(IntEnum):
     &#34;&#34;&#34;An Enum for Destiny races.&#34;&#34;&#34;
 
     HUMAN = 0
@@ -810,15 +773,9 @@ class Race(int, enum.Enum):
     EXO = 2
     UNKNOWN = 3
 
-    def __str__(self) -&gt; str:
-        return str(self.name)
-
-    def __int__(self) -&gt; int:
-        return int(self.value)
-
 
 @typing.final
-class MilestoneType(int, enum.Enum):
+class MilestoneType(IntEnum):
     &#34;&#34;&#34;An Enum for Destiny 2 milestone types.&#34;&#34;&#34;
 
     UNKNOWN = 0
@@ -828,15 +785,9 @@ class MilestoneType(int, enum.Enum):
     DAILY = 4
     SPECIAL = 5
 
-    def __int__(self) -&gt; int:
-        return int(self.value)
-
-    def __str__(self) -&gt; str:
-        return str(self.name)
-
 
 @typing.final
-class Stat(int, enum.Enum):
+class Stat(IntEnum):
     &#34;&#34;&#34;An Enum for Destiny 2 character stats.&#34;&#34;&#34;
 
     NONE = 0
@@ -847,15 +798,9 @@ class Stat(int, enum.Enum):
     INTELLECT = 144602215
     STRENGTH = 4244567218
 
-    def __int__(self) -&gt; int:
-        return int(self.value)
-
-    def __str__(self) -&gt; str:
-        return str(self.name)
-
 
 @typing.final
-class WeaponType(int, enum.Enum):
+class WeaponType(IntEnum):
     &#34;&#34;&#34;Enums for The three Destiny Weapon Types&#34;&#34;&#34;
 
     NONE = 0
@@ -863,15 +808,9 @@ class WeaponType(int, enum.Enum):
     ENERGY = 2465295065
     POWER = 953998645
 
-    def __str__(self) -&gt; str:
-        return str(self.name)
-
-    def __int__(self) -&gt; int:
-        return int(self.value)
-
 
 @typing.final
-class DamageType(int, enum.Enum):
+class DamageType(IntEnum):
     &#34;&#34;&#34;Enums for Destiny Damage types&#34;&#34;&#34;
 
     NONE = 0
@@ -883,15 +822,9 @@ class DamageType(int, enum.Enum):
     RAID = 1067729826
     &#34;&#34;&#34;This is a special damage type reserved for some raid activity encounters.&#34;&#34;&#34;
 
-    def __str__(self) -&gt; str:
-        return str(self.name)
-
-    def __int__(self) -&gt; int:
-        return int(self.value)
-
 
 @typing.final
-class Item(int, enum.Enum):
+class Item(IntEnum):
     &#34;&#34;&#34;Enums for Destiny2&#39;s inventory bucket items&#34;&#34;&#34;
 
     NONE = 0
@@ -945,15 +878,9 @@ class Item(int, enum.Enum):
     ENERGY = 2465295065
     POWER = 953998645
 
-    def __str__(self) -&gt; str:
-        return str(self.name)
-
-    def __int__(self) -&gt; int:
-        return int(self.value)
-
 
 @typing.final
-class ItemTier(int, enum.Enum):
+class ItemTier(IntEnum):
     &#34;&#34;&#34;An enum for a Destiny 2 item tier.&#34;&#34;&#34;
 
     NONE = 0
@@ -963,15 +890,9 @@ class ItemTier(int, enum.Enum):
     LEGENDERY = 4008398120
     EXOTIC = 2759499571
 
-    def __int__(self) -&gt; int:
-        return int(self.value)
-
-    def __str__(self) -&gt; str:
-        return self.name
-
 
 @typing.final
-class AmmoType(int, enum.Enum):
+class AmmoType(IntEnum):
     &#34;&#34;&#34;AN enum for Detyiny 2 ammo types.&#34;&#34;&#34;
 
     NONE = 0
@@ -979,29 +900,17 @@ class AmmoType(int, enum.Enum):
     SPECIAL = 2
     HEAVY = 3
 
-    def __int__(self) -&gt; int:
-        return int(self.value)
-
-    def __str__(self) -&gt; str:
-        return self.name
-
 
 @typing.final
-class GroupType(int, enum.Enum):
+class GroupType(IntEnum):
     &#34;&#34;&#34;An enums for the known bungie group types.&#34;&#34;&#34;
 
     GENERAL = 0
     CLAN = 1
 
-    def __int__(self) -&gt; int:
-        return int(self.value)
-
-    def __str__(self) -&gt; str:
-        return self.name
-
 
 @typing.final
-class CredentialType(int, enum.Enum):
+class CredentialType(IntEnum):
     &#34;&#34;&#34;The types of the accounts system supports at bungie.&#34;&#34;&#34;
 
     NONE = 0
@@ -1018,11 +927,34 @@ class CredentialType(int, enum.Enum):
     STADIAID = 16
     TWITCHID = 18
 
-    def __int__(self) -&gt; int:
-        return int(self.value)
 
-    def __str__(self) -&gt; str:
-        return self.name</code></pre>
+@typing.final
+class Presence(IntEnum):
+    &#34;&#34;&#34;An enum for a bungie friend status.&#34;&#34;&#34;
+
+    OFFLINE_OR_UNKNOWN = 0
+    ONLINE = 1
+
+
+@typing.final
+class Relationship(IntEnum):
+    &#34;&#34;&#34;An enum for bungie friends relationship types.&#34;&#34;&#34;
+
+    UNKNOWN = 0
+    FRIEND = 1
+    INCOMING_REQUEST = 2
+    OUTGOING_REQUEST = 3
+
+
+@typing.final
+class ClanMemberType(IntEnum):
+
+    NONE = 0
+    BEGINNER = 1
+    MEMBER = 2
+    ADMIN = 3
+    ACTING_FOUNDER = 4
+    FOUNDER = 5</code></pre>
                 </details>
             </section>
             <section>
@@ -1047,22 +979,18 @@ class CredentialType(int, enum.Enum):
                                 <span>Expand source code</span>
                             </summary>
                             <pre><code class="python">@typing.final
-class AmmoType(int, enum.Enum):
+class AmmoType(IntEnum):
     &#34;&#34;&#34;AN enum for Detyiny 2 ammo types.&#34;&#34;&#34;
 
     NONE = 0
     PRIMARY = 1
     SPECIAL = 2
-    HEAVY = 3
-
-    def __int__(self) -&gt; int:
-        return int(self.value)
-
-    def __str__(self) -&gt; str:
-        return self.name</code></pre>
+    HEAVY = 3</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
+                            <li>aiobungie.internal.enums.IntEnum</li>
+                            <li>enum.IntEnum</li>
                             <li>builtins.int</li>
                             <li>enum.Enum</li>
                         </ul>
@@ -1086,6 +1014,63 @@ class AmmoType(int, enum.Enum):
                             </dd>
                         </dl>
                     </dd>
+                    <dt id="aiobungie.internal.enums.ClanMemberType"><code class="flex name class">
+<span>class <span class="ident">ClanMemberType</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+                    <dd>
+                        <div class="desc">
+                            <p>An enumeration.</p>
+                        </div>
+                        <details class="source">
+                            <summary>
+                                <span>Expand source code</span>
+                            </summary>
+                            <pre><code class="python">@typing.final
+class ClanMemberType(IntEnum):
+
+    NONE = 0
+    BEGINNER = 1
+    MEMBER = 2
+    ADMIN = 3
+    ACTING_FOUNDER = 4
+    FOUNDER = 5</code></pre>
+                        </details>
+                        <h3>Ancestors</h3>
+                        <ul class="hlist">
+                            <li>aiobungie.internal.enums.IntEnum</li>
+                            <li>enum.IntEnum</li>
+                            <li>builtins.int</li>
+                            <li>enum.Enum</li>
+                        </ul>
+                        <h3>Class variables</h3>
+                        <dl>
+                            <dt id="aiobungie.internal.enums.ClanMemberType.ACTING_FOUNDER"><code class="name">var <span class="ident">ACTING_FOUNDER</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.ClanMemberType.ADMIN"><code class="name">var <span class="ident">ADMIN</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.ClanMemberType.BEGINNER"><code class="name">var <span class="ident">BEGINNER</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.ClanMemberType.FOUNDER"><code class="name">var <span class="ident">FOUNDER</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.ClanMemberType.MEMBER"><code class="name">var <span class="ident">MEMBER</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.ClanMemberType.NONE"><code class="name">var <span class="ident">NONE</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                        </dl>
+                    </dd>
                     <dt id="aiobungie.internal.enums.Class"><code class="flex name class">
 <span>class <span class="ident">Class</span></span>
 <span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
@@ -1099,22 +1084,18 @@ class AmmoType(int, enum.Enum):
                                 <span>Expand source code</span>
                             </summary>
                             <pre><code class="python">@typing.final
-class Class(int, enum.Enum):
+class Class(IntEnum):
     &#34;&#34;&#34;An Enum for Destiny character classes.&#34;&#34;&#34;
 
     TITAN = 0
     HUNTER = 1
     WARLOCK = 2
-    UNKNOWN = 3
-
-    def __str__(self) -&gt; str:
-        return str(self.name)
-
-    def __int__(self) -&gt; int:
-        return int(self.value)</code></pre>
+    UNKNOWN = 3</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
+                            <li>aiobungie.internal.enums.IntEnum</li>
+                            <li>enum.IntEnum</li>
                             <li>builtins.int</li>
                             <li>enum.Enum</li>
                         </ul>
@@ -1151,7 +1132,7 @@ class Class(int, enum.Enum):
                                 <span>Expand source code</span>
                             </summary>
                             <pre><code class="python">@typing.final
-class Component(int, enum.Enum):
+class Component(IntEnum):
     &#34;&#34;&#34;An Enum for Destiny 2 Components.&#34;&#34;&#34;
 
     NONE = 0
@@ -1165,16 +1146,12 @@ class Component(int, enum.Enum):
     EQUIPED_ITEMS = 205
     VENDORS = 400
     RECORDS = 900
-    VENDOR_SALES = 402
-
-    def __str__(self) -&gt; str:
-        return str(self.name)
-
-    def __int__(self) -&gt; int:
-        return int(self.value)</code></pre>
+    VENDOR_SALES = 402</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
+                            <li>aiobungie.internal.enums.IntEnum</li>
+                            <li>enum.IntEnum</li>
                             <li>builtins.int</li>
                             <li>enum.Enum</li>
                         </ul>
@@ -1243,7 +1220,7 @@ class Component(int, enum.Enum):
                                 <span>Expand source code</span>
                             </summary>
                             <pre><code class="python">@typing.final
-class CredentialType(int, enum.Enum):
+class CredentialType(IntEnum):
     &#34;&#34;&#34;The types of the accounts system supports at bungie.&#34;&#34;&#34;
 
     NONE = 0
@@ -1258,16 +1235,12 @@ class CredentialType(int, enum.Enum):
     STEAMID = 12
     BATTLENETID = 14
     STADIAID = 16
-    TWITCHID = 18
-
-    def __int__(self) -&gt; int:
-        return int(self.value)
-
-    def __str__(self) -&gt; str:
-        return self.name</code></pre>
+    TWITCHID = 18</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
+                            <li>aiobungie.internal.enums.IntEnum</li>
+                            <li>enum.IntEnum</li>
                             <li>builtins.int</li>
                             <li>enum.Enum</li>
                         </ul>
@@ -1340,7 +1313,7 @@ class CredentialType(int, enum.Enum):
                                 <span>Expand source code</span>
                             </summary>
                             <pre><code class="python">@typing.final
-class DamageType(int, enum.Enum):
+class DamageType(IntEnum):
     &#34;&#34;&#34;Enums for Destiny Damage types&#34;&#34;&#34;
 
     NONE = 0
@@ -1350,16 +1323,12 @@ class DamageType(int, enum.Enum):
     ARC = 2303181850
     STASIS = 151347233
     RAID = 1067729826
-    &#34;&#34;&#34;This is a special damage type reserved for some raid activity encounters.&#34;&#34;&#34;
-
-    def __str__(self) -&gt; str:
-        return str(self.name)
-
-    def __int__(self) -&gt; int:
-        return int(self.value)</code></pre>
+    &#34;&#34;&#34;This is a special damage type reserved for some raid activity encounters.&#34;&#34;&#34;</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
+                            <li>aiobungie.internal.enums.IntEnum</li>
+                            <li>enum.IntEnum</li>
                             <li>builtins.int</li>
                             <li>enum.Enum</li>
                         </ul>
@@ -1410,7 +1379,7 @@ class DamageType(int, enum.Enum):
                                 <span>Expand source code</span>
                             </summary>
                             <pre><code class="python">@typing.final
-class Dungeon(int, enum.Enum):
+class Dungeon(IntEnum):
     &#34;&#34;&#34;An Enum for all available Dungeon/Like missions in Destiny 2.&#34;&#34;&#34;
 
     NORMAL_PRESAGE = 2124066889
@@ -1435,16 +1404,12 @@ class Dungeon(int, enum.Enum):
     &#34;&#34;&#34;Normal Pit of Heresy.&#34;&#34;&#34;
 
     SHATTERED = 2032534090
-    &#34;&#34;&#34;Shattered Throne&#34;&#34;&#34;
-
-    def __str__(self) -&gt; str:
-        return str(self.name)
-
-    def __int__(self) -&gt; int:
-        return int(self.value)</code></pre>
+    &#34;&#34;&#34;Shattered Throne&#34;&#34;&#34;</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
+                            <li>aiobungie.internal.enums.IntEnum</li>
+                            <li>enum.IntEnum</li>
                             <li>builtins.int</li>
                             <li>enum.Enum</li>
                         </ul>
@@ -1513,7 +1478,7 @@ class Dungeon(int, enum.Enum):
                                 <span>Expand source code</span>
                             </summary>
                             <pre><code class="python">@typing.final
-class GameMode(int, enum.Enum):
+class GameMode(IntEnum):
     &#34;&#34;&#34;An Enum for all available gamemodes in Destiny 2.&#34;&#34;&#34;
 
     NONE = 0
@@ -1538,16 +1503,12 @@ class GameMode(int, enum.Enum):
     DOUBLES = 4288302346
     CLASH = 3954711135
     MAYHEM = 3517186939
-    SURVIVAL = 2175955486
-
-    def __str__(self) -&gt; str:
-        return str(self.name)
-
-    def __int__(self) -&gt; int:
-        return int(self.value)</code></pre>
+    SURVIVAL = 2175955486</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
+                            <li>aiobungie.internal.enums.IntEnum</li>
+                            <li>enum.IntEnum</li>
                             <li>builtins.int</li>
                             <li>enum.Enum</li>
                         </ul>
@@ -1658,21 +1619,17 @@ class GameMode(int, enum.Enum):
                                 <span>Expand source code</span>
                             </summary>
                             <pre><code class="python">@typing.final
-class Gender(int, enum.Enum):
+class Gender(IntEnum):
     &#34;&#34;&#34;An Enum for Destiny Genders.&#34;&#34;&#34;
 
     MALE = 0
     FEMALE = 1
-    UNKNOWN = 2
-
-    def __str__(self) -&gt; str:
-        return str(self.name)
-
-    def __int__(self) -&gt; int:
-        return int(self.value)</code></pre>
+    UNKNOWN = 2</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
+                            <li>aiobungie.internal.enums.IntEnum</li>
+                            <li>enum.IntEnum</li>
                             <li>builtins.int</li>
                             <li>enum.Enum</li>
                         </ul>
@@ -1705,20 +1662,16 @@ class Gender(int, enum.Enum):
                                 <span>Expand source code</span>
                             </summary>
                             <pre><code class="python">@typing.final
-class GroupType(int, enum.Enum):
+class GroupType(IntEnum):
     &#34;&#34;&#34;An enums for the known bungie group types.&#34;&#34;&#34;
 
     GENERAL = 0
-    CLAN = 1
-
-    def __int__(self) -&gt; int:
-        return int(self.value)
-
-    def __str__(self) -&gt; str:
-        return self.name</code></pre>
+    CLAN = 1</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
+                            <li>aiobungie.internal.enums.IntEnum</li>
+                            <li>enum.IntEnum</li>
                             <li>builtins.int</li>
                             <li>enum.Enum</li>
                         </ul>
@@ -1747,7 +1700,7 @@ class GroupType(int, enum.Enum):
                                 <span>Expand source code</span>
                             </summary>
                             <pre><code class="python">@typing.final
-class Item(int, enum.Enum):
+class Item(IntEnum):
     &#34;&#34;&#34;Enums for Destiny2&#39;s inventory bucket items&#34;&#34;&#34;
 
     NONE = 0
@@ -1799,16 +1752,12 @@ class Item(int, enum.Enum):
     # All bungie items are entities.
     KINETIC = 1498876634
     ENERGY = 2465295065
-    POWER = 953998645
-
-    def __str__(self) -&gt; str:
-        return str(self.name)
-
-    def __int__(self) -&gt; int:
-        return int(self.value)</code></pre>
+    POWER = 953998645</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
+                            <li>aiobungie.internal.enums.IntEnum</li>
+                            <li>enum.IntEnum</li>
                             <li>builtins.int</li>
                             <li>enum.Enum</li>
                         </ul>
@@ -1997,7 +1946,7 @@ class Item(int, enum.Enum):
                                 <span>Expand source code</span>
                             </summary>
                             <pre><code class="python">@typing.final
-class ItemTier(int, enum.Enum):
+class ItemTier(IntEnum):
     &#34;&#34;&#34;An enum for a Destiny 2 item tier.&#34;&#34;&#34;
 
     NONE = 0
@@ -2005,16 +1954,12 @@ class ItemTier(int, enum.Enum):
     COMMON = 2395677314
     RARE = 2127292149
     LEGENDERY = 4008398120
-    EXOTIC = 2759499571
-
-    def __int__(self) -&gt; int:
-        return int(self.value)
-
-    def __str__(self) -&gt; str:
-        return self.name</code></pre>
+    EXOTIC = 2759499571</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
+                            <li>aiobungie.internal.enums.IntEnum</li>
+                            <li>enum.IntEnum</li>
                             <li>builtins.int</li>
                             <li>enum.Enum</li>
                         </ul>
@@ -2059,7 +2004,7 @@ class ItemTier(int, enum.Enum):
                                 <span>Expand source code</span>
                             </summary>
                             <pre><code class="python">@typing.final
-class MembershipType(int, enum.Enum):
+class MembershipType(IntEnum):
     &#34;&#34;&#34;An Enum for Bungie membership types.&#34;&#34;&#34;
 
     NONE = 0
@@ -2069,16 +2014,12 @@ class MembershipType(int, enum.Enum):
     BLIZZARD = 4
     STADIA = 5
     BUNGIE = 254
-    ALL = -1
-
-    def __str__(self) -&gt; str:
-        return str(self.name)
-
-    def __int__(self) -&gt; int:
-        return int(self.value)</code></pre>
+    ALL = -1</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
+                            <li>aiobungie.internal.enums.IntEnum</li>
+                            <li>enum.IntEnum</li>
                             <li>builtins.int</li>
                             <li>enum.Enum</li>
                         </ul>
@@ -2131,7 +2072,7 @@ class MembershipType(int, enum.Enum):
                                 <span>Expand source code</span>
                             </summary>
                             <pre><code class="python">@typing.final
-class MilestoneType(int, enum.Enum):
+class MilestoneType(IntEnum):
     &#34;&#34;&#34;An Enum for Destiny 2 milestone types.&#34;&#34;&#34;
 
     UNKNOWN = 0
@@ -2139,16 +2080,12 @@ class MilestoneType(int, enum.Enum):
     ONETIME = 2
     WEEKLY = 3
     DAILY = 4
-    SPECIAL = 5
-
-    def __int__(self) -&gt; int:
-        return int(self.value)
-
-    def __str__(self) -&gt; str:
-        return str(self.name)</code></pre>
+    SPECIAL = 5</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
+                            <li>aiobungie.internal.enums.IntEnum</li>
+                            <li>enum.IntEnum</li>
                             <li>builtins.int</li>
                             <li>enum.Enum</li>
                         </ul>
@@ -2193,22 +2130,18 @@ class MilestoneType(int, enum.Enum):
                                 <span>Expand source code</span>
                             </summary>
                             <pre><code class="python">@typing.final
-class Place(int, enum.Enum):
+class Place(IntEnum):
     &#34;&#34;&#34;An Enum for Destiny 2 Places and NOT Planets&#34;&#34;&#34;
 
     ORBIT = 2961497387
     SOCIAL = 4151112093
     LIGHT_HOUSE = 4276116472
-    EXPLORE = 3497767639
-
-    def __str__(self) -&gt; str:
-        return self.name
-
-    def __int__(self) -&gt; int:
-        return int(self.value)</code></pre>
+    EXPLORE = 3497767639</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
+                            <li>aiobungie.internal.enums.IntEnum</li>
+                            <li>enum.IntEnum</li>
                             <li>builtins.int</li>
                             <li>enum.Enum</li>
                         </ul>
@@ -2245,7 +2178,7 @@ class Place(int, enum.Enum):
                                 <span>Expand source code</span>
                             </summary>
                             <pre><code class="python">@typing.final
-class Planet(int, enum.Enum):
+class Planet(IntEnum):
     &#34;&#34;&#34;An Enum for all available planets in Destiny 2.&#34;&#34;&#34;
 
     UNKNOWN = 0
@@ -2276,16 +2209,12 @@ class Planet(int, enum.Enum):
     &#34;&#34;&#34;European Aerial Zone&#34;&#34;&#34;
 
     EUROPA = 1729879943
-    &#34;&#34;&#34;Europa&#34;&#34;&#34;
-
-    def __str__(self) -&gt; str:
-        return str(self.name)
-
-    def __int__(self) -&gt; int:
-        return int(self.value)</code></pre>
+    &#34;&#34;&#34;Europa&#34;&#34;&#34;</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
+                            <li>aiobungie.internal.enums.IntEnum</li>
+                            <li>enum.IntEnum</li>
                             <li>builtins.int</li>
                             <li>enum.Enum</li>
                         </ul>
@@ -2353,6 +2282,44 @@ class Planet(int, enum.Enum):
                             </dd>
                         </dl>
                     </dd>
+                    <dt id="aiobungie.internal.enums.Presence"><code class="flex name class">
+<span>class <span class="ident">Presence</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+                    <dd>
+                        <div class="desc">
+                            <p>An enum for a bungie friend status.</p>
+                        </div>
+                        <details class="source">
+                            <summary>
+                                <span>Expand source code</span>
+                            </summary>
+                            <pre><code class="python">@typing.final
+class Presence(IntEnum):
+    &#34;&#34;&#34;An enum for a bungie friend status.&#34;&#34;&#34;
+
+    OFFLINE_OR_UNKNOWN = 0
+    ONLINE = 1</code></pre>
+                        </details>
+                        <h3>Ancestors</h3>
+                        <ul class="hlist">
+                            <li>aiobungie.internal.enums.IntEnum</li>
+                            <li>enum.IntEnum</li>
+                            <li>builtins.int</li>
+                            <li>enum.Enum</li>
+                        </ul>
+                        <h3>Class variables</h3>
+                        <dl>
+                            <dt id="aiobungie.internal.enums.Presence.OFFLINE_OR_UNKNOWN"><code class="name">var <span class="ident">OFFLINE_OR_UNKNOWN</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Presence.ONLINE"><code class="name">var <span class="ident">ONLINE</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                        </dl>
+                    </dd>
                     <dt id="aiobungie.internal.enums.Race"><code class="flex name class">
 <span>class <span class="ident">Race</span></span>
 <span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
@@ -2366,22 +2333,18 @@ class Planet(int, enum.Enum):
                                 <span>Expand source code</span>
                             </summary>
                             <pre><code class="python">@typing.final
-class Race(int, enum.Enum):
+class Race(IntEnum):
     &#34;&#34;&#34;An Enum for Destiny races.&#34;&#34;&#34;
 
     HUMAN = 0
     AWOKEN = 1
     EXO = 2
-    UNKNOWN = 3
-
-    def __str__(self) -&gt; str:
-        return str(self.name)
-
-    def __int__(self) -&gt; int:
-        return int(self.value)</code></pre>
+    UNKNOWN = 3</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
+                            <li>aiobungie.internal.enums.IntEnum</li>
+                            <li>enum.IntEnum</li>
                             <li>builtins.int</li>
                             <li>enum.Enum</li>
                         </ul>
@@ -2418,7 +2381,7 @@ class Race(int, enum.Enum):
                                 <span>Expand source code</span>
                             </summary>
                             <pre><code class="python">@typing.final
-class Raid(int, enum.Enum):
+class Raid(IntEnum):
     &#34;&#34;&#34;An Enum for all available raids in Destiny 2.&#34;&#34;&#34;
 
     DSC = 910380154
@@ -2431,16 +2394,12 @@ class Raid(int, enum.Enum):
     &#34;&#34;&#34;Normal Valut of Glass&#34;&#34;&#34;
 
     GOS = 3458480158
-    &#34;&#34;&#34;Garden Of Salvation&#34;&#34;&#34;
-
-    def __int__(self) -&gt; int:
-        return int(self.value)
-
-    def __str__(self) -&gt; str:
-        return str(self.name)</code></pre>
+    &#34;&#34;&#34;Garden Of Salvation&#34;&#34;&#34;</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
+                            <li>aiobungie.internal.enums.IntEnum</li>
+                            <li>enum.IntEnum</li>
                             <li>builtins.int</li>
                             <li>enum.Enum</li>
                         </ul>
@@ -2472,6 +2431,54 @@ class Raid(int, enum.Enum):
                             </dd>
                         </dl>
                     </dd>
+                    <dt id="aiobungie.internal.enums.Relationship"><code class="flex name class">
+<span>class <span class="ident">Relationship</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+                    <dd>
+                        <div class="desc">
+                            <p>An enum for bungie friends relationship types.</p>
+                        </div>
+                        <details class="source">
+                            <summary>
+                                <span>Expand source code</span>
+                            </summary>
+                            <pre><code class="python">@typing.final
+class Relationship(IntEnum):
+    &#34;&#34;&#34;An enum for bungie friends relationship types.&#34;&#34;&#34;
+
+    UNKNOWN = 0
+    FRIEND = 1
+    INCOMING_REQUEST = 2
+    OUTGOING_REQUEST = 3</code></pre>
+                        </details>
+                        <h3>Ancestors</h3>
+                        <ul class="hlist">
+                            <li>aiobungie.internal.enums.IntEnum</li>
+                            <li>enum.IntEnum</li>
+                            <li>builtins.int</li>
+                            <li>enum.Enum</li>
+                        </ul>
+                        <h3>Class variables</h3>
+                        <dl>
+                            <dt id="aiobungie.internal.enums.Relationship.FRIEND"><code class="name">var <span class="ident">FRIEND</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Relationship.INCOMING_REQUEST"><code class="name">var <span class="ident">INCOMING_REQUEST</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Relationship.OUTGOING_REQUEST"><code class="name">var <span class="ident">OUTGOING_REQUEST</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                            <dt id="aiobungie.internal.enums.Relationship.UNKNOWN"><code class="name">var <span class="ident">UNKNOWN</span></code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                            </dd>
+                        </dl>
+                    </dd>
                     <dt id="aiobungie.internal.enums.Stat"><code class="flex name class">
 <span>class <span class="ident">Stat</span></span>
 <span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
@@ -2485,7 +2492,7 @@ class Raid(int, enum.Enum):
                                 <span>Expand source code</span>
                             </summary>
                             <pre><code class="python">@typing.final
-class Stat(int, enum.Enum):
+class Stat(IntEnum):
     &#34;&#34;&#34;An Enum for Destiny 2 character stats.&#34;&#34;&#34;
 
     NONE = 0
@@ -2494,16 +2501,12 @@ class Stat(int, enum.Enum):
     RECOVERY = 1943323491
     DISCIPLINE = 1735777505
     INTELLECT = 144602215
-    STRENGTH = 4244567218
-
-    def __int__(self) -&gt; int:
-        return int(self.value)
-
-    def __str__(self) -&gt; str:
-        return str(self.name)</code></pre>
+    STRENGTH = 4244567218</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
+                            <li>aiobungie.internal.enums.IntEnum</li>
+                            <li>enum.IntEnum</li>
                             <li>builtins.int</li>
                             <li>enum.Enum</li>
                         </ul>
@@ -2552,7 +2555,7 @@ class Stat(int, enum.Enum):
                                 <span>Expand source code</span>
                             </summary>
                             <pre><code class="python">@typing.final
-class Vendor(int, enum.Enum):
+class Vendor(IntEnum):
     &#34;&#34;&#34;An Enum for all available vendors in Destiny 2.&#34;&#34;&#34;
 
     ZAVALA = 69482069
@@ -2577,16 +2580,12 @@ class Vendor(int, enum.Enum):
     ERIS_MORN = 1616085565
     SHAW_HAWN = 1816541247
     &#34;&#34;&#34;COSMODROME Guy&#34;&#34;&#34;
-    VARIKS = 2531198101
-
-    def __str__(self) -&gt; str:
-        return str(self.name)
-
-    def __int__(self) -&gt; int:
-        return int(self.value)</code></pre>
+    VARIKS = 2531198101</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
+                            <li>aiobungie.internal.enums.IntEnum</li>
+                            <li>enum.IntEnum</li>
                             <li>builtins.int</li>
                             <li>enum.Enum</li>
                         </ul>
@@ -2689,22 +2688,18 @@ class Vendor(int, enum.Enum):
                                 <span>Expand source code</span>
                             </summary>
                             <pre><code class="python">@typing.final
-class WeaponType(int, enum.Enum):
+class WeaponType(IntEnum):
     &#34;&#34;&#34;Enums for The three Destiny Weapon Types&#34;&#34;&#34;
 
     NONE = 0
     KINETIC = 1498876634
     ENERGY = 2465295065
-    POWER = 953998645
-
-    def __str__(self) -&gt; str:
-        return str(self.name)
-
-    def __int__(self) -&gt; int:
-        return int(self.value)</code></pre>
+    POWER = 953998645</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
+                            <li>aiobungie.internal.enums.IntEnum</li>
+                            <li>enum.IntEnum</li>
                             <li>builtins.int</li>
                             <li>enum.Enum</li>
                         </ul>
@@ -2806,6 +2801,17 @@ class WeaponType(int, enum.Enum):
                                 <li><code><a title="aiobungie.internal.enums.AmmoType.NONE" href="#aiobungie.internal.enums.AmmoType.NONE">NONE</a></code></li>
                                 <li><code><a title="aiobungie.internal.enums.AmmoType.PRIMARY" href="#aiobungie.internal.enums.AmmoType.PRIMARY">PRIMARY</a></code></li>
                                 <li><code><a title="aiobungie.internal.enums.AmmoType.SPECIAL" href="#aiobungie.internal.enums.AmmoType.SPECIAL">SPECIAL</a></code></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <h4><code><a title="aiobungie.internal.enums.ClanMemberType" href="#aiobungie.internal.enums.ClanMemberType">ClanMemberType</a></code></h4>
+                            <ul class="two-column">
+                                <li><code><a title="aiobungie.internal.enums.ClanMemberType.ACTING_FOUNDER" href="#aiobungie.internal.enums.ClanMemberType.ACTING_FOUNDER">ACTING_FOUNDER</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.ClanMemberType.ADMIN" href="#aiobungie.internal.enums.ClanMemberType.ADMIN">ADMIN</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.ClanMemberType.BEGINNER" href="#aiobungie.internal.enums.ClanMemberType.BEGINNER">BEGINNER</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.ClanMemberType.FOUNDER" href="#aiobungie.internal.enums.ClanMemberType.FOUNDER">FOUNDER</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.ClanMemberType.MEMBER" href="#aiobungie.internal.enums.ClanMemberType.MEMBER">MEMBER</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.ClanMemberType.NONE" href="#aiobungie.internal.enums.ClanMemberType.NONE">NONE</a></code></li>
                             </ul>
                         </li>
                         <li>
@@ -3026,6 +3032,13 @@ class WeaponType(int, enum.Enum):
                             </ul>
                         </li>
                         <li>
+                            <h4><code><a title="aiobungie.internal.enums.Presence" href="#aiobungie.internal.enums.Presence">Presence</a></code></h4>
+                            <ul class="">
+                                <li><code><a title="aiobungie.internal.enums.Presence.OFFLINE_OR_UNKNOWN" href="#aiobungie.internal.enums.Presence.OFFLINE_OR_UNKNOWN">OFFLINE_OR_UNKNOWN</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Presence.ONLINE" href="#aiobungie.internal.enums.Presence.ONLINE">ONLINE</a></code></li>
+                            </ul>
+                        </li>
+                        <li>
                             <h4><code><a title="aiobungie.internal.enums.Race" href="#aiobungie.internal.enums.Race">Race</a></code></h4>
                             <ul class="">
                                 <li><code><a title="aiobungie.internal.enums.Race.AWOKEN" href="#aiobungie.internal.enums.Race.AWOKEN">AWOKEN</a></code></li>
@@ -3041,6 +3054,15 @@ class WeaponType(int, enum.Enum):
                                 <li><code><a title="aiobungie.internal.enums.Raid.GOS" href="#aiobungie.internal.enums.Raid.GOS">GOS</a></code></li>
                                 <li><code><a title="aiobungie.internal.enums.Raid.LW" href="#aiobungie.internal.enums.Raid.LW">LW</a></code></li>
                                 <li><code><a title="aiobungie.internal.enums.Raid.VOG" href="#aiobungie.internal.enums.Raid.VOG">VOG</a></code></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <h4><code><a title="aiobungie.internal.enums.Relationship" href="#aiobungie.internal.enums.Relationship">Relationship</a></code></h4>
+                            <ul class="">
+                                <li><code><a title="aiobungie.internal.enums.Relationship.FRIEND" href="#aiobungie.internal.enums.Relationship.FRIEND">FRIEND</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Relationship.INCOMING_REQUEST" href="#aiobungie.internal.enums.Relationship.INCOMING_REQUEST">INCOMING_REQUEST</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Relationship.OUTGOING_REQUEST" href="#aiobungie.internal.enums.Relationship.OUTGOING_REQUEST">OUTGOING_REQUEST</a></code></li>
+                                <li><code><a title="aiobungie.internal.enums.Relationship.UNKNOWN" href="#aiobungie.internal.enums.Relationship.UNKNOWN">UNKNOWN</a></code></li>
                             </ul>
                         </li>
                         <li>
@@ -3093,7 +3115,7 @@ class WeaponType(int, enum.Enum):
         </nav>
     </main>
     <footer id="footer">
-        <p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.9.2</a>.</p>
+        <p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
     </footer>
 </body>
 

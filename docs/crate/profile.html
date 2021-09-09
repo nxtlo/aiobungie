@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-    <meta name="generator" content="pdoc 0.9.2" />
+    <meta name="generator" content="pdoc 0.10.0" />
     <title>aiobungie.crate.profile API documentation</title>
     <meta name="description" content="Implementation for a Bungie a Profile." />
     <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -513,7 +513,7 @@
 
 from __future__ import annotations
 
-__all__ = (&#34;Profile&#34;, &#34;ProfileComponentImpl&#34;)
+__all__ = (&#34;Profile&#34;, &#34;ProfileComponent&#34;)
 
 import abc
 import datetime
@@ -524,23 +524,22 @@ import attr
 
 from aiobungie.crate.character import Character
 from aiobungie.internal import enums
-from aiobungie.internal import impl
 from aiobungie.internal import time
+from aiobungie.internal import traits
 
 log: typing.Final[logging.Logger] = logging.getLogger(__name__)
 
 
-@attr.s(kw_only=True, hash=True, weakref_slot=False, slots=True, init=True, eq=True)
-class ProfileComponentImpl(abc.ABC):
-    &#34;&#34;&#34;
-    A partial interface that will/include all bungie profile components.
-
+class ProfileComponent(abc.ABC):
+    &#34;&#34;&#34;An interface that include all bungie profile components.
     Some fields may or may not be available here.
     &#34;&#34;&#34;
 
+    __slots__: typing.Sequence[str] = ()
+
     @property
     @abc.abstractmethod
-    def net(self) -&gt; impl.Netrunner:
+    def net(self) -&gt; traits.Netrunner:
         &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
 
     @property
@@ -644,8 +643,8 @@ class ProfileComponentImpl(abc.ABC):
         )
 
 
-@attr.s(kw_only=True, hash=True, weakref_slot=False, slots=True, init=True, eq=True)
-class Profile(ProfileComponentImpl):
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
+class Profile(ProfileComponent):
     &#34;&#34;&#34;Represents a Bungie member Profile.
 
     Bungie profiles requires components.
@@ -676,7 +675,7 @@ class Profile(ProfileComponentImpl):
     id: int = attr.field(repr=True, hash=True, eq=False)
     &#34;&#34;&#34;Profile&#39;s id&#34;&#34;&#34;
 
-    net: impl.Netrunner = attr.field(repr=False, hash=False, eq=False)
+    net: traits.Netrunner = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
 
     name: str = attr.field(repr=True, hash=False, eq=False)
@@ -740,14 +739,14 @@ class Profile(ProfileComponentImpl):
                 <dl>
                     <dt id="aiobungie.crate.profile.Profile"><code class="flex name class">
 <span>class <span class="ident">Profile</span></span>
-<span>(</span><span>*, id: int, net: impl.Netrunner, name: str, type: enums.MembershipType, is_public: bool, last_played: datetime.datetime, character_ids: typing.List[int], power_cap: int)</span>
+<span>(</span><span>*, id: int, net: traits.Netrunner, name: str, type: enums.MembershipType, is_public: bool, last_played: datetime.datetime, character_ids: typing.List[int], power_cap: int)</span>
 </code></dt>
                     <dd>
                         <div class="desc">
                             <p>Represents a Bungie member Profile.</p>
                             <p>Bungie profiles requires components. But its kinda boring to pass multiple components to a parameter. So. The <code>.<a title="aiobungie.crate.profile.Profile" href="#aiobungie.crate.profile.Profile">Profile</a></code> crate
                                 will include all Bungie components. to be accessiable as a crate.</p>
-                            <p>How?. For an example: to access the <code>Characters</code> component you'll need to pass <code>?component=200</code>. But here you can just return the character itself from the profile using <code>await .<a title="aiobungie.crate.profile.Profile.titan" href="#aiobungie.crate.profile.Profile.titan">ProfileComponentImpl.titan()</a></code>                                and the other character methods which returns a <code><a title="aiobungie.crate.Character" href="index.html#aiobungie.crate.Character">Character</a></code> crate. crates are basically classes/objects.</p>
+                            <p>How?. For an example: to access the <code>Characters</code> component you'll need to pass <code>?component=200</code>. But here you can just return the character itself from the profile using <code>await .<a title="aiobungie.crate.profile.Profile.titan" href="#aiobungie.crate.profile.Profile.titan">ProfileComponent.titan()</a></code>                                and the other character methods which returns a <code><a title="aiobungie.crate.Character" href="index.html#aiobungie.crate.Character">Character</a></code> crate. crates are basically classes/objects.</p>
                             <h2 id="example">Example</h2>
                             <pre><code class="language-py">client = aiobungie.Client(...)
 profile = await client.fetch_profile(&quot;Fate&quot;)
@@ -763,8 +762,8 @@ assert warlock.light == 1320
                             <summary>
                                 <span>Expand source code</span>
                             </summary>
-                            <pre><code class="python">@attr.s(kw_only=True, hash=True, weakref_slot=False, slots=True, init=True, eq=True)
-class Profile(ProfileComponentImpl):
+                            <pre><code class="python">@attr.define(hash=False, kw_only=True, weakref_slot=False)
+class Profile(ProfileComponent):
     &#34;&#34;&#34;Represents a Bungie member Profile.
 
     Bungie profiles requires components.
@@ -795,7 +794,7 @@ class Profile(ProfileComponentImpl):
     id: int = attr.field(repr=True, hash=True, eq=False)
     &#34;&#34;&#34;Profile&#39;s id&#34;&#34;&#34;
 
-    net: impl.Netrunner = attr.field(repr=False, hash=False, eq=False)
+    net: traits.Netrunner = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
 
     name: str = attr.field(repr=True, hash=False, eq=False)
@@ -849,7 +848,7 @@ class Profile(ProfileComponentImpl):
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
-                            <li><a title="aiobungie.crate.profile.ProfileComponentImpl" href="#aiobungie.crate.profile.ProfileComponentImpl">ProfileComponentImpl</a></li>
+                            <li><a title="aiobungie.crate.profile.ProfileComponent" href="#aiobungie.crate.profile.ProfileComponent">ProfileComponent</a></li>
                             <li>abc.ABC</li>
                         </ul>
                         <h3>Instance variables</h3>
@@ -873,7 +872,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                             <dd>
                                 <p class="inheritance">
                                     <em>Inherited from:</em>
-                                    <code><a title="aiobungie.crate.profile.ProfileComponentImpl" href="#aiobungie.crate.profile.ProfileComponentImpl">ProfileComponentImpl</a></code>.<code><a title="aiobungie.crate.profile.ProfileComponentImpl.character_ids" href="#aiobungie.crate.profile.ProfileComponentImpl.character_ids">character_ids</a></code>
+                                    <code><a title="aiobungie.crate.profile.ProfileComponent" href="#aiobungie.crate.profile.ProfileComponent">ProfileComponent</a></code>.<code><a title="aiobungie.crate.profile.ProfileComponent.character_ids" href="#aiobungie.crate.profile.ProfileComponent.character_ids">character_ids</a></code>
                                 </p>
                                 <div class="desc inherited">
                                     <p>A list of the profile's character ids.</p>
@@ -919,7 +918,7 @@ def hunter_id(self) -&gt; int:
                             <dd>
                                 <p class="inheritance">
                                     <em>Inherited from:</em>
-                                    <code><a title="aiobungie.crate.profile.ProfileComponentImpl" href="#aiobungie.crate.profile.ProfileComponentImpl">ProfileComponentImpl</a></code>.<code><a title="aiobungie.crate.profile.ProfileComponentImpl.is_public" href="#aiobungie.crate.profile.ProfileComponentImpl.is_public">is_public</a></code>
+                                    <code><a title="aiobungie.crate.profile.ProfileComponent" href="#aiobungie.crate.profile.ProfileComponent">ProfileComponent</a></code>.<code><a title="aiobungie.crate.profile.ProfileComponent.is_public" href="#aiobungie.crate.profile.ProfileComponent.is_public">is_public</a></code>
                                 </p>
                                 <div class="desc inherited">
                                     <p>Profile's privacy status.</p>
@@ -937,11 +936,11 @@ def hunter_id(self) -&gt; int:
                                     <p>Profile's name.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.profile.Profile.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.impl.Netrunner" href="./internal/impl.html#aiobungie.internal.impl.Netrunner">Netrunner</a></code></dt>
+                            <dt id="aiobungie.crate.profile.Profile.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.traits.Netrunner" href="./internal/traits.html#aiobungie.internal.traits.Netrunner">Netrunner</a></code></dt>
                             <dd>
                                 <p class="inheritance">
                                     <em>Inherited from:</em>
-                                    <code><a title="aiobungie.crate.profile.ProfileComponentImpl" href="#aiobungie.crate.profile.ProfileComponentImpl">ProfileComponentImpl</a></code>.<code><a title="aiobungie.crate.profile.ProfileComponentImpl.net" href="#aiobungie.crate.profile.ProfileComponentImpl.net">net</a></code>
+                                    <code><a title="aiobungie.crate.profile.ProfileComponent" href="#aiobungie.crate.profile.ProfileComponent">ProfileComponent</a></code>.<code><a title="aiobungie.crate.profile.ProfileComponent.net" href="#aiobungie.crate.profile.ProfileComponent.net">net</a></code>
                                 </p>
                                 <div class="desc inherited">
                                     <p>A network state used for making external requests.</p>
@@ -998,7 +997,7 @@ def warlock_id(self) -&gt; int:
                             <dd>
                                 <p class="inheritance">
                                     <em>Inherited from:</em>
-                                    <code><a title="aiobungie.crate.profile.ProfileComponentImpl" href="#aiobungie.crate.profile.ProfileComponentImpl">ProfileComponentImpl</a></code>.<code><a title="aiobungie.crate.profile.ProfileComponentImpl.hunter" href="#aiobungie.crate.profile.ProfileComponentImpl.hunter">hunter</a></code>
+                                    <code><a title="aiobungie.crate.profile.ProfileComponent" href="#aiobungie.crate.profile.ProfileComponent">ProfileComponent</a></code>.<code><a title="aiobungie.crate.profile.ProfileComponent.hunter" href="#aiobungie.crate.profile.ProfileComponent.hunter">hunter</a></code>
                                 </p>
                                 <div class="desc inherited">
                                     <p>Returns the hunter character of the profile owner.</p>
@@ -1010,7 +1009,7 @@ def warlock_id(self) -&gt; int:
                             <dd>
                                 <p class="inheritance">
                                     <em>Inherited from:</em>
-                                    <code><a title="aiobungie.crate.profile.ProfileComponentImpl" href="#aiobungie.crate.profile.ProfileComponentImpl">ProfileComponentImpl</a></code>.<code><a title="aiobungie.crate.profile.ProfileComponentImpl.titan" href="#aiobungie.crate.profile.ProfileComponentImpl.titan">titan</a></code>
+                                    <code><a title="aiobungie.crate.profile.ProfileComponent" href="#aiobungie.crate.profile.ProfileComponent">ProfileComponent</a></code>.<code><a title="aiobungie.crate.profile.ProfileComponent.titan" href="#aiobungie.crate.profile.ProfileComponent.titan">titan</a></code>
                                 </p>
                                 <div class="desc inherited">
                                     <p>Returns the titan character of the profile owner.</p>
@@ -1022,7 +1021,7 @@ def warlock_id(self) -&gt; int:
                             <dd>
                                 <p class="inheritance">
                                     <em>Inherited from:</em>
-                                    <code><a title="aiobungie.crate.profile.ProfileComponentImpl" href="#aiobungie.crate.profile.ProfileComponentImpl">ProfileComponentImpl</a></code>.<code><a title="aiobungie.crate.profile.ProfileComponentImpl.warlock" href="#aiobungie.crate.profile.ProfileComponentImpl.warlock">warlock</a></code>
+                                    <code><a title="aiobungie.crate.profile.ProfileComponent" href="#aiobungie.crate.profile.ProfileComponent">ProfileComponent</a></code>.<code><a title="aiobungie.crate.profile.ProfileComponent.warlock" href="#aiobungie.crate.profile.ProfileComponent.warlock">warlock</a></code>
                                 </p>
                                 <div class="desc inherited">
                                     <p>Returns the Warlock character of the profile owner.</p>
@@ -1030,30 +1029,27 @@ def warlock_id(self) -&gt; int:
                             </dd>
                         </dl>
                     </dd>
-                    <dt id="aiobungie.crate.profile.ProfileComponentImpl"><code class="flex name class">
-<span>class <span class="ident">ProfileComponentImpl</span></span>
+                    <dt id="aiobungie.crate.profile.ProfileComponent"><code class="flex name class">
+<span>class <span class="ident">ProfileComponent</span></span>
 </code></dt>
                     <dd>
                         <div class="desc">
-                            <p>A partial interface that will/include all bungie profile components.</p>
-                            <p>Some fields may or may not be available here.</p>
-                            <p>Method generated by attrs for class ProfileComponentImpl.</p>
+                            <p>An interface that include all bungie profile components. Some fields may or may not be available here.</p>
                         </div>
                         <details class="source">
                             <summary>
                                 <span>Expand source code</span>
                             </summary>
-                            <pre><code class="python">@attr.s(kw_only=True, hash=True, weakref_slot=False, slots=True, init=True, eq=True)
-class ProfileComponentImpl(abc.ABC):
-    &#34;&#34;&#34;
-    A partial interface that will/include all bungie profile components.
-
+                            <pre><code class="python">class ProfileComponent(abc.ABC):
+    &#34;&#34;&#34;An interface that include all bungie profile components.
     Some fields may or may not be available here.
     &#34;&#34;&#34;
 
+    __slots__: typing.Sequence[str] = ()
+
     @property
     @abc.abstractmethod
-    def net(self) -&gt; impl.Netrunner:
+    def net(self) -&gt; traits.Netrunner:
         &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
 
     @property
@@ -1166,7 +1162,7 @@ class ProfileComponentImpl(abc.ABC):
                         </ul>
                         <h3>Instance variables</h3>
                         <dl>
-                            <dt id="aiobungie.crate.profile.ProfileComponentImpl.character_ids"><code class="name">var <span class="ident">character_ids</span> : List[int]</code></dt>
+                            <dt id="aiobungie.crate.profile.ProfileComponent.character_ids"><code class="name">var <span class="ident">character_ids</span> : List[int]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>A list of the profile's character ids.</p>
@@ -1181,7 +1177,7 @@ def character_ids(self) -&gt; typing.List[int]:
     &#34;&#34;&#34;A list of the profile&#39;s character ids.&#34;&#34;&#34;</code></pre>
                                 </details>
                             </dd>
-                            <dt id="aiobungie.crate.profile.ProfileComponentImpl.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
+                            <dt id="aiobungie.crate.profile.ProfileComponent.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>The profile's id.</p>
@@ -1196,7 +1192,7 @@ def id(self) -&gt; int:
     &#34;&#34;&#34;The profile&#39;s id.&#34;&#34;&#34;</code></pre>
                                 </details>
                             </dd>
-                            <dt id="aiobungie.crate.profile.ProfileComponentImpl.is_public"><code class="name">var <span class="ident">is_public</span> : bool</code></dt>
+                            <dt id="aiobungie.crate.profile.ProfileComponent.is_public"><code class="name">var <span class="ident">is_public</span> : bool</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>Profile's privacy status.</p>
@@ -1211,7 +1207,7 @@ def is_public(self) -&gt; bool:
     &#34;&#34;&#34;Profile&#39;s privacy status.&#34;&#34;&#34;</code></pre>
                                 </details>
                             </dd>
-                            <dt id="aiobungie.crate.profile.ProfileComponentImpl.last_played"><code class="name">var <span class="ident">last_played</span> : datetime.datetime</code></dt>
+                            <dt id="aiobungie.crate.profile.ProfileComponent.last_played"><code class="name">var <span class="ident">last_played</span> : datetime.datetime</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>The profile user's last played date time.</p>
@@ -1226,7 +1222,7 @@ def last_played(self) -&gt; datetime.datetime:
     &#34;&#34;&#34;The profile user&#39;s last played date time.&#34;&#34;&#34;</code></pre>
                                 </details>
                             </dd>
-                            <dt id="aiobungie.crate.profile.ProfileComponentImpl.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
+                            <dt id="aiobungie.crate.profile.ProfileComponent.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>Profile's name</p>
@@ -1241,7 +1237,7 @@ def name(self) -&gt; str:
     &#34;&#34;&#34;Profile&#39;s name&#34;&#34;&#34;</code></pre>
                                 </details>
                             </dd>
-                            <dt id="aiobungie.crate.profile.ProfileComponentImpl.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.impl.Netrunner" href="./internal/impl.html#aiobungie.internal.impl.Netrunner">Netrunner</a></code></dt>
+                            <dt id="aiobungie.crate.profile.ProfileComponent.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.traits.Netrunner" href="./internal/traits.html#aiobungie.internal.traits.Netrunner">Netrunner</a></code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>A network state used for making external requests.</p>
@@ -1252,11 +1248,11 @@ def name(self) -&gt; str:
                                     </summary>
                                     <pre><code class="python">@property
 @abc.abstractmethod
-def net(self) -&gt; impl.Netrunner:
+def net(self) -&gt; traits.Netrunner:
     &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;</code></pre>
                                 </details>
                             </dd>
-                            <dt id="aiobungie.crate.profile.ProfileComponentImpl.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
+                            <dt id="aiobungie.crate.profile.ProfileComponent.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>Profile's membership type.</p>
@@ -1274,7 +1270,7 @@ def type(self) -&gt; enums.MembershipType:
                         </dl>
                         <h3>Methods</h3>
                         <dl>
-                            <dt id="aiobungie.crate.profile.ProfileComponentImpl.hunter"><code class="name flex">
+                            <dt id="aiobungie.crate.profile.ProfileComponent.hunter"><code class="name flex">
 <span>async def <span class="ident">hunter</span></span>(<span>self) ‑> <a title="aiobungie.crate.character.Character" href="character.html#aiobungie.crate.character.Character">Character</a></span>
 </code></dt>
                             <dd>
@@ -1309,7 +1305,7 @@ def type(self) -&gt; enums.MembershipType:
     )</code></pre>
                                 </details>
                             </dd>
-                            <dt id="aiobungie.crate.profile.ProfileComponentImpl.titan"><code class="name flex">
+                            <dt id="aiobungie.crate.profile.ProfileComponent.titan"><code class="name flex">
 <span>async def <span class="ident">titan</span></span>(<span>self) ‑> <a title="aiobungie.crate.character.Character" href="character.html#aiobungie.crate.character.Character">Character</a></span>
 </code></dt>
                             <dd>
@@ -1345,7 +1341,7 @@ def type(self) -&gt; enums.MembershipType:
     )</code></pre>
                                 </details>
                             </dd>
-                            <dt id="aiobungie.crate.profile.ProfileComponentImpl.warlock"><code class="name flex">
+                            <dt id="aiobungie.crate.profile.ProfileComponent.warlock"><code class="name flex">
 <span>async def <span class="ident">warlock</span></span>(<span>self) ‑> <a title="aiobungie.crate.character.Character" href="character.html#aiobungie.crate.character.Character">Character</a></span>
 </code></dt>
                             <dd>
@@ -1475,18 +1471,18 @@ def type(self) -&gt; enums.MembershipType:
                             </ul>
                         </li>
                         <li>
-                            <h4><code><a title="aiobungie.crate.profile.ProfileComponentImpl" href="#aiobungie.crate.profile.ProfileComponentImpl">ProfileComponentImpl</a></code></h4>
+                            <h4><code><a title="aiobungie.crate.profile.ProfileComponent" href="#aiobungie.crate.profile.ProfileComponent">ProfileComponent</a></code></h4>
                             <ul class="two-column">
-                                <li><code><a title="aiobungie.crate.profile.ProfileComponentImpl.character_ids" href="#aiobungie.crate.profile.ProfileComponentImpl.character_ids">character_ids</a></code></li>
-                                <li><code><a title="aiobungie.crate.profile.ProfileComponentImpl.hunter" href="#aiobungie.crate.profile.ProfileComponentImpl.hunter">hunter</a></code></li>
-                                <li><code><a title="aiobungie.crate.profile.ProfileComponentImpl.id" href="#aiobungie.crate.profile.ProfileComponentImpl.id">id</a></code></li>
-                                <li><code><a title="aiobungie.crate.profile.ProfileComponentImpl.is_public" href="#aiobungie.crate.profile.ProfileComponentImpl.is_public">is_public</a></code></li>
-                                <li><code><a title="aiobungie.crate.profile.ProfileComponentImpl.last_played" href="#aiobungie.crate.profile.ProfileComponentImpl.last_played">last_played</a></code></li>
-                                <li><code><a title="aiobungie.crate.profile.ProfileComponentImpl.name" href="#aiobungie.crate.profile.ProfileComponentImpl.name">name</a></code></li>
-                                <li><code><a title="aiobungie.crate.profile.ProfileComponentImpl.net" href="#aiobungie.crate.profile.ProfileComponentImpl.net">net</a></code></li>
-                                <li><code><a title="aiobungie.crate.profile.ProfileComponentImpl.titan" href="#aiobungie.crate.profile.ProfileComponentImpl.titan">titan</a></code></li>
-                                <li><code><a title="aiobungie.crate.profile.ProfileComponentImpl.type" href="#aiobungie.crate.profile.ProfileComponentImpl.type">type</a></code></li>
-                                <li><code><a title="aiobungie.crate.profile.ProfileComponentImpl.warlock" href="#aiobungie.crate.profile.ProfileComponentImpl.warlock">warlock</a></code></li>
+                                <li><code><a title="aiobungie.crate.profile.ProfileComponent.character_ids" href="#aiobungie.crate.profile.ProfileComponent.character_ids">character_ids</a></code></li>
+                                <li><code><a title="aiobungie.crate.profile.ProfileComponent.hunter" href="#aiobungie.crate.profile.ProfileComponent.hunter">hunter</a></code></li>
+                                <li><code><a title="aiobungie.crate.profile.ProfileComponent.id" href="#aiobungie.crate.profile.ProfileComponent.id">id</a></code></li>
+                                <li><code><a title="aiobungie.crate.profile.ProfileComponent.is_public" href="#aiobungie.crate.profile.ProfileComponent.is_public">is_public</a></code></li>
+                                <li><code><a title="aiobungie.crate.profile.ProfileComponent.last_played" href="#aiobungie.crate.profile.ProfileComponent.last_played">last_played</a></code></li>
+                                <li><code><a title="aiobungie.crate.profile.ProfileComponent.name" href="#aiobungie.crate.profile.ProfileComponent.name">name</a></code></li>
+                                <li><code><a title="aiobungie.crate.profile.ProfileComponent.net" href="#aiobungie.crate.profile.ProfileComponent.net">net</a></code></li>
+                                <li><code><a title="aiobungie.crate.profile.ProfileComponent.titan" href="#aiobungie.crate.profile.ProfileComponent.titan">titan</a></code></li>
+                                <li><code><a title="aiobungie.crate.profile.ProfileComponent.type" href="#aiobungie.crate.profile.ProfileComponent.type">type</a></code></li>
+                                <li><code><a title="aiobungie.crate.profile.ProfileComponent.warlock" href="#aiobungie.crate.profile.ProfileComponent.warlock">warlock</a></code></li>
                             </ul>
                         </li>
                     </ul>
@@ -1495,7 +1491,7 @@ def type(self) -&gt; enums.MembershipType:
         </nav>
     </main>
     <footer id="footer">
-        <p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.9.2</a>.</p>
+        <p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
     </footer>
 </body>
 

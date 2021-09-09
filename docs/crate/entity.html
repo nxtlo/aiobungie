@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-    <meta name="generator" content="pdoc 0.9.2" />
+    <meta name="generator" content="pdoc 0.10.0" />
     <title>aiobungie.crate.entity API documentation</title>
     <meta name="description" content="Bungie entity definitions implementation …" />
     <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -527,10 +527,9 @@ import attr
 
 from aiobungie.internal import assets
 from aiobungie.internal import enums
-from aiobungie.internal import impl
+from aiobungie.internal import traits
 
 
-@attr.s(kw_only=True, hash=True, weakref_slot=False, slots=True, init=True, eq=True)
 class Entity(abc.ABC):
     &#34;&#34;&#34;An interface of a Bungie Definition Entity.
 
@@ -538,9 +537,11 @@ class Entity(abc.ABC):
     it holds core information that all bungie entities has.
     &#34;&#34;&#34;
 
+    __slots__: typing.Sequence[str] = ()
+
     @property
     @abc.abstractmethod
-    def net(self) -&gt; impl.Netrunner:
+    def net(self) -&gt; traits.Netrunner:
         &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
 
     @property
@@ -550,7 +551,7 @@ class Entity(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def icon(self) -&gt; typing.Optional[assets.Image]:
+    def icon(self) -&gt; assets.MaybeImage:
         &#34;&#34;&#34;An optional entity&#39;s icon if its filled.&#34;&#34;&#34;
 
     @property
@@ -585,14 +586,14 @@ class Entity(abc.ABC):
         return self.hash
 
 
-@attr.s(kw_only=True, hash=True, weakref_slot=False, slots=True, init=True, eq=True)
+@attr.define(kw_only=True, hash=False, weakref_slot=False)
 class InventoryEntity(Entity):
     &#34;&#34;&#34;Represents a bungie inventory item entity.
 
     This derives from `DestinyInventoryItemDefinition` definition.
     &#34;&#34;&#34;
 
-    net: impl.Netrunner = attr.field(repr=False, hash=False, eq=False)
+    net: traits.Netrunner = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
 
     hash: int = attr.field(repr=True, hash=True, eq=True)
@@ -607,14 +608,14 @@ class InventoryEntity(Entity):
     description: str = attr.field(repr=True)
     &#34;&#34;&#34;Entity&#39;s description.&#34;&#34;&#34;
 
-    icon: typing.Optional[assets.Image] = attr.field(repr=False, hash=False, eq=False)
+    icon: assets.MaybeImage = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;Entity&#39;s icon&#34;&#34;&#34;
 
     has_icon: bool = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;A boolean that returns True if the entity has an icon.&#34;&#34;&#34;
 
-    type: typing.Optional[enums.Item] = attr.field(repr=True, hash=False)
-    &#34;&#34;&#34;Entity&#39;s type.&#34;&#34;&#34;
+    type: typing.Union[enums.Item, str] = attr.field(repr=True, hash=False)
+    &#34;&#34;&#34;Entity&#39;s type. Can be undefined if nothing was found.&#34;&#34;&#34;
 
     type_name: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;Entity&#39;s type name. i.e., `Grenade Launcher`&#34;&#34;&#34;
@@ -645,15 +646,17 @@ class InventoryEntity(Entity):
     )
     &#34;&#34;&#34;Entity&#39;s ammo type if it was a wepon, otherwise it will return None&#34;&#34;&#34;
 
-    lore_hash: typing.Optional[int] = attr.field(repr=False, hash=False, eq=False)
-    &#34;&#34;&#34;The entity&#39;s lore hash&#34;&#34;&#34;
+    lore_hash: typing.Union[int, str] = attr.field(repr=False, hash=False, eq=False)
+    &#34;&#34;&#34;The entity&#39;s lore hash. Can be undefined if no lore hash found.&#34;&#34;&#34;
 
     item_class: typing.Optional[enums.Class] = attr.field(
         repr=False, hash=False, eq=False
     )
     &#34;&#34;&#34;The entity&#39;s class type.&#34;&#34;&#34;
 
-    sub_type: typing.Optional[enums.Item] = attr.field(repr=False, hash=False, eq=False)
+    sub_type: typing.Union[enums.Item, str] = attr.field(
+        repr=False, hash=False, eq=False
+    )
     &#34;&#34;&#34;The subtype of the entity. A type is a weapon or armor.
     A subtype is a handcannonn or leg armor for an example.
     &#34;&#34;&#34;
@@ -664,7 +667,7 @@ class InventoryEntity(Entity):
     summary_hash: typing.Optional[int] = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;Entity&#39;s summary hash.&#34;&#34;&#34;
 
-    damage: typing.Optional[enums.DamageType] = attr.field(
+    damage: typing.Union[enums.DamageType, str] = attr.field(
         repr=False, hash=False, eq=False
     )
     &#34;&#34;&#34;Entity&#39;s damage type. Only works for weapons.&#34;&#34;&#34;
@@ -692,23 +695,23 @@ class InventoryEntity(Entity):
                         <div class="desc">
                             <p>An interface of a Bungie Definition Entity.</p>
                             <p>This is the main entity which all other entities should inherit from. it holds core information that all bungie entities has.</p>
-                            <p>Method generated by attrs for class Entity.</p>
                         </div>
                         <details class="source">
                             <summary>
                                 <span>Expand source code</span>
                             </summary>
-                            <pre><code class="python">@attr.s(kw_only=True, hash=True, weakref_slot=False, slots=True, init=True, eq=True)
-class Entity(abc.ABC):
+                            <pre><code class="python">class Entity(abc.ABC):
     &#34;&#34;&#34;An interface of a Bungie Definition Entity.
 
     This is the main entity which all other entities should inherit from.
     it holds core information that all bungie entities has.
     &#34;&#34;&#34;
 
+    __slots__: typing.Sequence[str] = ()
+
     @property
     @abc.abstractmethod
-    def net(self) -&gt; impl.Netrunner:
+    def net(self) -&gt; traits.Netrunner:
         &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
 
     @property
@@ -718,7 +721,7 @@ class Entity(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def icon(self) -&gt; typing.Optional[assets.Image]:
+    def icon(self) -&gt; assets.MaybeImage:
         &#34;&#34;&#34;An optional entity&#39;s icon if its filled.&#34;&#34;&#34;
 
     @property
@@ -822,7 +825,7 @@ def hash(self) -&gt; int:
     &#34;&#34;&#34;Entity&#39;s hash.&#34;&#34;&#34;</code></pre>
                                 </details>
                             </dd>
-                            <dt id="aiobungie.crate.entity.Entity.icon"><code class="name">var <span class="ident">icon</span> : Optional[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>]</code></dt>
+                            <dt id="aiobungie.crate.entity.Entity.icon"><code class="name">var <span class="ident">icon</span> : Union[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>An optional entity's icon if its filled.</p>
@@ -833,7 +836,7 @@ def hash(self) -&gt; int:
                                     </summary>
                                     <pre><code class="python">@property
 @abc.abstractmethod
-def icon(self) -&gt; typing.Optional[assets.Image]:
+def icon(self) -&gt; assets.MaybeImage:
     &#34;&#34;&#34;An optional entity&#39;s icon if its filled.&#34;&#34;&#34;</code></pre>
                                 </details>
                             </dd>
@@ -867,7 +870,7 @@ def name(self) -&gt; str:
     &#34;&#34;&#34;Entity&#39;s name&#34;&#34;&#34;</code></pre>
                                 </details>
                             </dd>
-                            <dt id="aiobungie.crate.entity.Entity.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.impl.Netrunner" href="./internal/impl.html#aiobungie.internal.impl.Netrunner">Netrunner</a></code></dt>
+                            <dt id="aiobungie.crate.entity.Entity.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.traits.Netrunner" href="./internal/traits.html#aiobungie.internal.traits.Netrunner">Netrunner</a></code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>A network state used for making external requests.</p>
@@ -878,7 +881,7 @@ def name(self) -&gt; str:
                                     </summary>
                                     <pre><code class="python">@property
 @abc.abstractmethod
-def net(self) -&gt; impl.Netrunner:
+def net(self) -&gt; traits.Netrunner:
     &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;</code></pre>
                                 </details>
                             </dd>
@@ -886,7 +889,7 @@ def net(self) -&gt; impl.Netrunner:
                     </dd>
                     <dt id="aiobungie.crate.entity.InventoryEntity"><code class="flex name class">
 <span>class <span class="ident">InventoryEntity</span></span>
-<span>(</span><span>*, net: impl.Netrunner, hash: int, index: int, name: str, description: str, icon: typing.Optional[assets.Image], has_icon: bool, type: typing.Optional[enums.Item], type_name: typing.Optional[str], water_mark: typing.Optional[assets.Image], tier: typing.Optional[enums.ItemTier], tier_name: typing.Optional[str], bucket_type: typing.Optional[int], stats: typing.Optional[typing.Dict[str, typing.Any]], ammo_type: typing.Optional[enums.AmmoType], lore_hash: typing.Optional[int], item_class: typing.Optional[enums.Class], sub_type: typing.Optional[enums.Item], is_equippable: typing.Optional[bool], summary_hash: typing.Optional[int], damage: typing.Optional[enums.DamageType], about: typing.Optional[str], banner: typing.Optional[assets.Image])</span>
+<span>(</span><span>*, net: traits.Netrunner, hash: int, index: int, name: str, description: str, icon: assets.MaybeImage, has_icon: bool, type: typing.Union[enums.Item, str], type_name: typing.Optional[str], water_mark: typing.Optional[assets.Image], tier: typing.Optional[enums.ItemTier], tier_name: typing.Optional[str], bucket_type: typing.Optional[int], stats: typing.Optional[typing.Dict[str, typing.Any]], ammo_type: typing.Optional[enums.AmmoType], lore_hash: typing.Union[int, str], item_class: typing.Optional[enums.Class], sub_type: typing.Union[enums.Item, str], is_equippable: typing.Optional[bool], summary_hash: typing.Optional[int], damage: typing.Union[enums.DamageType, str], about: typing.Optional[str], banner: typing.Optional[assets.Image])</span>
 </code></dt>
                     <dd>
                         <div class="desc">
@@ -898,14 +901,14 @@ def net(self) -&gt; impl.Netrunner:
                             <summary>
                                 <span>Expand source code</span>
                             </summary>
-                            <pre><code class="python">@attr.s(kw_only=True, hash=True, weakref_slot=False, slots=True, init=True, eq=True)
+                            <pre><code class="python">@attr.define(kw_only=True, hash=False, weakref_slot=False)
 class InventoryEntity(Entity):
     &#34;&#34;&#34;Represents a bungie inventory item entity.
 
     This derives from `DestinyInventoryItemDefinition` definition.
     &#34;&#34;&#34;
 
-    net: impl.Netrunner = attr.field(repr=False, hash=False, eq=False)
+    net: traits.Netrunner = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
 
     hash: int = attr.field(repr=True, hash=True, eq=True)
@@ -920,14 +923,14 @@ class InventoryEntity(Entity):
     description: str = attr.field(repr=True)
     &#34;&#34;&#34;Entity&#39;s description.&#34;&#34;&#34;
 
-    icon: typing.Optional[assets.Image] = attr.field(repr=False, hash=False, eq=False)
+    icon: assets.MaybeImage = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;Entity&#39;s icon&#34;&#34;&#34;
 
     has_icon: bool = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;A boolean that returns True if the entity has an icon.&#34;&#34;&#34;
 
-    type: typing.Optional[enums.Item] = attr.field(repr=True, hash=False)
-    &#34;&#34;&#34;Entity&#39;s type.&#34;&#34;&#34;
+    type: typing.Union[enums.Item, str] = attr.field(repr=True, hash=False)
+    &#34;&#34;&#34;Entity&#39;s type. Can be undefined if nothing was found.&#34;&#34;&#34;
 
     type_name: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;Entity&#39;s type name. i.e., `Grenade Launcher`&#34;&#34;&#34;
@@ -958,15 +961,17 @@ class InventoryEntity(Entity):
     )
     &#34;&#34;&#34;Entity&#39;s ammo type if it was a wepon, otherwise it will return None&#34;&#34;&#34;
 
-    lore_hash: typing.Optional[int] = attr.field(repr=False, hash=False, eq=False)
-    &#34;&#34;&#34;The entity&#39;s lore hash&#34;&#34;&#34;
+    lore_hash: typing.Union[int, str] = attr.field(repr=False, hash=False, eq=False)
+    &#34;&#34;&#34;The entity&#39;s lore hash. Can be undefined if no lore hash found.&#34;&#34;&#34;
 
     item_class: typing.Optional[enums.Class] = attr.field(
         repr=False, hash=False, eq=False
     )
     &#34;&#34;&#34;The entity&#39;s class type.&#34;&#34;&#34;
 
-    sub_type: typing.Optional[enums.Item] = attr.field(repr=False, hash=False, eq=False)
+    sub_type: typing.Union[enums.Item, str] = attr.field(
+        repr=False, hash=False, eq=False
+    )
     &#34;&#34;&#34;The subtype of the entity. A type is a weapon or armor.
     A subtype is a handcannonn or leg armor for an example.
     &#34;&#34;&#34;
@@ -977,7 +982,7 @@ class InventoryEntity(Entity):
     summary_hash: typing.Optional[int] = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;Entity&#39;s summary hash.&#34;&#34;&#34;
 
-    damage: typing.Optional[enums.DamageType] = attr.field(
+    damage: typing.Union[enums.DamageType, str] = attr.field(
         repr=False, hash=False, eq=False
     )
     &#34;&#34;&#34;Entity&#39;s damage type. Only works for weapons.&#34;&#34;&#34;
@@ -1027,13 +1032,13 @@ class InventoryEntity(Entity):
                                     <p>Entity's banner.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.bucket_type"><code class="name">var <span class="ident">bucket_type</span> : Optional[int]</code></dt>
+                            <dt id="aiobungie.crate.entity.InventoryEntity.bucket_type"><code class="name">var <span class="ident">bucket_type</span> : Optional[None]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>The entity's bucket type, None if unknown</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.damage"><code class="name">var <span class="ident">damage</span> : Optional[<a title="aiobungie.internal.enums.DamageType" href="./internal/enums.html#aiobungie.internal.enums.DamageType">DamageType</a>]</code></dt>
+                            <dt id="aiobungie.crate.entity.InventoryEntity.damage"><code class="name">var <span class="ident">damage</span> : Union[<a title="aiobungie.internal.enums.DamageType" href="./internal/enums.html#aiobungie.internal.enums.DamageType">DamageType</a>, str]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>Entity's damage type. Only works for weapons.</p>
@@ -1065,7 +1070,7 @@ class InventoryEntity(Entity):
                                     <p>Entity's hash.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.icon"><code class="name">var <span class="ident">icon</span> : Optional[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>]</code></dt>
+                            <dt id="aiobungie.crate.entity.InventoryEntity.icon"><code class="name">var <span class="ident">icon</span> : Union[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>Entity's icon</p>
@@ -1089,10 +1094,10 @@ class InventoryEntity(Entity):
                                     <p>The entity's class type.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.lore_hash"><code class="name">var <span class="ident">lore_hash</span> : Optional[int]</code></dt>
+                            <dt id="aiobungie.crate.entity.InventoryEntity.lore_hash"><code class="name">var <span class="ident">lore_hash</span> : Union[int, str]</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>The entity's lore hash</p>
+                                    <p>The entity's lore hash. Can be undefined if no lore hash found.</p>
                                 </div>
                             </dd>
                             <dt id="aiobungie.crate.entity.InventoryEntity.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
@@ -1105,7 +1110,7 @@ class InventoryEntity(Entity):
                                     <p>Entity's name</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.impl.Netrunner" href="./internal/impl.html#aiobungie.internal.impl.Netrunner">Netrunner</a></code></dt>
+                            <dt id="aiobungie.crate.entity.InventoryEntity.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.traits.Netrunner" href="./internal/traits.html#aiobungie.internal.traits.Netrunner">Netrunner</a></code></dt>
                             <dd>
                                 <p class="inheritance">
                                     <em>Inherited from:</em>
@@ -1121,13 +1126,13 @@ class InventoryEntity(Entity):
                                     <p>Entity's stats. this currently returns a dict object of the stats.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.sub_type"><code class="name">var <span class="ident">sub_type</span> : Optional[<a title="aiobungie.internal.enums.Item" href="./internal/enums.html#aiobungie.internal.enums.Item">Item</a>]</code></dt>
+                            <dt id="aiobungie.crate.entity.InventoryEntity.sub_type"><code class="name">var <span class="ident">sub_type</span> : Union[<a title="aiobungie.internal.enums.Item" href="./internal/enums.html#aiobungie.internal.enums.Item">Item</a>, str]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>The subtype of the entity. A type is a weapon or armor. A subtype is a handcannonn or leg armor for an example.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.summary_hash"><code class="name">var <span class="ident">summary_hash</span> : Optional[int]</code></dt>
+                            <dt id="aiobungie.crate.entity.InventoryEntity.summary_hash"><code class="name">var <span class="ident">summary_hash</span> : Optional[None]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>Entity's summary hash.</p>
@@ -1145,10 +1150,10 @@ class InventoryEntity(Entity):
                                     <p>A string version of the item tier.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.type"><code class="name">var <span class="ident">type</span> : Optional[<a title="aiobungie.internal.enums.Item" href="./internal/enums.html#aiobungie.internal.enums.Item">Item</a>]</code></dt>
+                            <dt id="aiobungie.crate.entity.InventoryEntity.type"><code class="name">var <span class="ident">type</span> : Union[<a title="aiobungie.internal.enums.Item" href="./internal/enums.html#aiobungie.internal.enums.Item">Item</a>, str]</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>Entity's type.</p>
+                                    <p>Entity's type. Can be undefined if nothing was found.</p>
                                 </div>
                             </dd>
                             <dt id="aiobungie.crate.entity.InventoryEntity.type_name"><code class="name">var <span class="ident">type_name</span> : Optional[str]</code></dt>
@@ -1284,7 +1289,7 @@ class InventoryEntity(Entity):
         </nav>
     </main>
     <footer id="footer">
-        <p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.9.2</a>.</p>
+        <p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
     </footer>
 </body>
 

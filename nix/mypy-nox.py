@@ -35,7 +35,7 @@ def gen_stubs(session: nox.Session) -> None:
     session.run("stubgen", *FILES, "-o", ".", "--include-private", "--no-import")
 
 
-@nox.session(reuse_venv=True, name="mypy")
+@nox.session(reuse_venv=True)
 def type_check(session: nox.Session) -> None:
     session.install("-r", "requirements.txt", "-r", "dev-requirements.txt")
     session.run("mypy", "aiobungie")

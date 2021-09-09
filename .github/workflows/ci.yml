@@ -40,6 +40,22 @@ jobs:
         pip install nox
         nox -s pytest
 
+  format:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.4
+
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Format
+        run: |
+          pip install nox
+          nox -s format spell check_black
+
   lint:
     runs-on: ubuntu-20.04
 
@@ -54,8 +70,24 @@ jobs:
       - name: Linting
         run: |
           pip install nox
+          nox -s lint 
+
+  type_check:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.4
+
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Type Check
+        run: |
+          pip install nox
           nox -s gen_stubs
-          nox -s format spell type_check check_black
+          nox -s type_check 
 
   docs:
     runs-on: ubuntu-20.04

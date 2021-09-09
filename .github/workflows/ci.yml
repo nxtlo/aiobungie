@@ -70,7 +70,7 @@ jobs:
       - name: Linting
         run: |
           pip install nox
-          nox -s lint 
+          nox -s lint
 
   type_check:
     runs-on: ubuntu-20.04
@@ -87,7 +87,7 @@ jobs:
         run: |
           pip install nox
           nox -s gen_stubs
-          nox -s type_check 
+          nox -s type_check
 
   docs:
     runs-on: ubuntu-20.04

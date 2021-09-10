@@ -47,7 +47,7 @@ class RESTInterface(abc.ABC):
 
     __slots__: typing.Sequence[str] = ()
 
-    def from_path(self, path: str, **kwargs: typing.Any) -> ResponseSig[typing.Any]:
+    def static_search(self, path: str, **kwargs: typing.Any) -> ResponseSig[typing.Any]:
         """Raw http search given a valid bungie endpoint.
 
         Parameters

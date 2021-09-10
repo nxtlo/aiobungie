@@ -24,29 +24,40 @@
 
 from __future__ import annotations
 
-__all__ = ("RESTful", "Netrunner")
+__all__ = ("RESTful", "Netrunner", "Serializable")
 
 import typing
 
-from aiobungie import client as client_
+from aiobungie import client
+from aiobungie import rest as rest_client
+from aiobungie.internal import serialize as serialize_
 
 
 @typing.runtime_checkable
 class Netrunner(typing.Protocol):
-    """A netrunner client represents The rest client.
-    This is only used for making external requests.
-    """
+    """A protocol represents The main client That's only used for making external requests."""
 
     __slots__: typing.Sequence[str] = ()
 
     @property
-    def request(self) -> client_.Client:
+    def request(self) -> client.Client:
         """Returns a client network state for making external requests."""
 
 
 @typing.runtime_checkable
-class RESTful(Netrunner, typing.Protocol):
-    """A Resuful and netrunner client protocol."""
+class Serializable(typing.Protocol):
+    """A protocol that uses `aiobungie.internal.serialize.Deserialize` for deseializing objects."""
+
+    __slots__: typing.Sequence[str] = ()
+
+    @property
+    def serialize(self) -> serialize_.Deserialize:
+        """A property that returns a deserializer object for the client."""
+
+
+@typing.runtime_checkable
+class RESTful(Netrunner, Serializable, typing.Protocol):
+    """A RESTful, serializble and netrunner client protocol."""
 
     __slots__: typing.Sequence[str] = ()
 
@@ -71,3 +82,7 @@ class RESTful(Netrunner, typing.Protocol):
         client.run(main())
         ```
         """
+
+    @property
+    def rest(self) -> rest_client.RESTClient:
+        """The rest client we make the http request to the API with."""

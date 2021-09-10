@@ -20,49 +20,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""A Pythonic `async`/`await` framework / wrapper for interacting with the Bungie API."""
-
+"""Aiobungie Interfaces provides abstracted objects for implementations."""
 
 from __future__ import annotations
 
-__all__ = (
-    # client.py
-    "Client",
-    # rest.py
-    "RESTClient",
-    # error.py
-    "PlayerNotFound",
-    "ActivityNotFound",
-    "ClanNotFound",
-    "NotFound",
-    "HTTPException",
-    "UserNotFound",
-    "ResponseError",
-    "Unauthorized",
-    "Forbidden",
-    "MembershipTypeError",
-    # enums.py
-    "GameMode",
-    "MembershipType",
-    "Class",
-    "MilestoneType",
-    "Race",
-    "Vendor",
-    "Raid",
-    "Dungeon",
-    "Gender",
-    "Component",
-    "Planet",
-    "Stat",
-    "WeaponType",
-    "DamageType",
-    "Item",
-    "Place",
-    "CredentialType",
-    "GroupType",
-)
+__all__: tuple[str, ...] = ("RESTInterface",)
 
-from .client import Client
-from .error import *
-from .internal.enums import *
-from .rest import RESTClient
+from .rest import RESTInterface

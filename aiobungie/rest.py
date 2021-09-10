@@ -20,15 +20,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""An HTTPClient for sending requests to the Bungie API
-and Where all the magic happenes.
-"""
+"""A basic REST only client to interact with Bungie's REST API."""
 
 from __future__ import annotations
 
-__all__ = ("HTTPClient",)
+__all__: tuple[str, ...] = ("RESTClient",)
 
+import asyncio
 import http
+import logging
 import sys
 import types
 import typing
@@ -38,16 +38,18 @@ import aiohttp
 
 from aiobungie import _info as info
 from aiobungie import error
+from aiobungie import interfaces
 from aiobungie import url
 from aiobungie.internal import enums
 from aiobungie.internal import helpers
 
-if typing.TYPE_CHECKING:
-    T = typing.TypeVar("T")
-    Response = typing.Coroutine[typing.Any, typing.Any, T]
+ResponseSigT = typing.TypeVar("ResponseSigT")
+"""The type of the response signature."""
 
-import asyncio
-import logging
+ResponseSig = typing.Coroutine[typing.Any, typing.Any, ResponseSigT]
+"""A type hint for a general coro method that returns a type
+that's mostly going to be on of `aiobungie.internal.helpers.JsonDict` or `aiobungie.internal.helpers.JsonList`
+"""
 
 _LOG: typing.Final[logging.Logger] = logging.getLogger("aiobungie.http")
 
@@ -110,26 +112,30 @@ class PreLock:
             await self._lock.acquire()
 
 
-class HTTPClient:
-    """An HTTP Client for sending http requests to the Bungie API"""
+class RESTClient(interfaces.RESTInterface):
+    """A REST only client implementation for interacting with Bungie's REST API.
+
+    Attributes
+    ----------
+    token : `builtins.str`
+        A valid application token from Bungie's developer portal.
+    """
+
+    __slots__: typing.Sequence[str] = ("_token", "__connector")
 
     def __init__(
-        self,
-        key: str,
-        connector: typing.Optional[aiohttp.BaseConnector] = None,
-        *,
-        loop: asyncio.AbstractEventLoop = None,
+        self, token: str, connector: typing.Optional[aiohttp.BaseConnector] = None
     ) -> None:
-        self.key: str = key
+        self._token: str = token
         self.__connector = connector
 
     @typing.final
-    async def fetch(
+    async def _fetch(
         self,
         method: str,
         route: str,
         base: bool = False,
-        type: str = "json",
+        type: typing.Literal["json", typing.Literal["read"]] = "json",
         **kwargs: typing.Any,
     ) -> typing.Any:
 
@@ -137,9 +143,9 @@ class HTTPClient:
             str
         ] = f"AiobungieClient/{info.__version__} ({info.__url__}) Python/{sys.version_info}"
 
-        if isinstance(self.key, str) and self.key is not None:
+        if isinstance(self._token, str) and self._token is not None:
             kwargs["headers"] = headers = {}
-            headers["X-API-KEY"] = self.key
+            headers["X-API-KEY"] = self._token
             headers["User-Agent"] = user_agent
         else:
             raise ValueError("No API KEY was passed.")
@@ -149,7 +155,7 @@ class HTTPClient:
                 async with aiohttp.ClientSession(connector=self.__connector) as session:
                     async with session.request(
                         method=method,
-                        url=f"{url.REST_EP if not base else url.BASE}/{route}",
+                        url=f"{url.REST_EP if base is False else url.BASE}/{route}",
                         **kwargs,
                     ) as response:
 
@@ -166,9 +172,8 @@ class HTTPClient:
                             raise OSError("API IS DOWN!", data["Message"])
 
                         if 300 > response.status >= 200:
-                            if (
-                                type == "read"
-                            ):  # We want to read the bytes for the manifest response.
+                            if type == "read":
+                                # We want to read the bytes for the manifest response.
                                 data = await response.read()
                                 return data
 
@@ -180,9 +185,6 @@ class HTTPClient:
                                 )
                             )
                             try:
-                                # All bungie responses
-                                # are in a Response key
-                                # So its easier to deserialize later.
                                 return data["Response"]
 
                             # In case we didn't find the Response key
@@ -193,10 +195,9 @@ class HTTPClient:
                         await self._handle_err(response, msg, data["Message"])
 
             except aiohttp.ContentTypeError:
-                return await response.text(encoding="utf-8")
-
-            except aiohttp.ClientError:
-                raise
+                raise error.HTTPException(
+                    f"Expected json content but got {response.content_type=}, {response.real_url=!r}"
+                ) from None
 
     @staticmethod
     @typing.final
@@ -205,45 +206,42 @@ class HTTPClient:
     ) -> typing.NoReturn:
         raise await handle_errors(response, msg, long)
 
-    def fetch_user(self, id: int) -> Response[helpers.JsonDict]:
-        return self.fetch("GET", f"User/GetBungieNetUserById/{id}/")
+    def fetch_user(self, id: int) -> ResponseSig[helpers.JsonDict]:
+        return self._fetch("GET", f"User/GetBungieNetUserById/{id}/")
 
-    def fetch_user_themes(self) -> Response[helpers.JsonList]:
-        return self.fetch("GET", "User/GetAvailableThemes/")
+    def fetch_user_themes(self) -> ResponseSig[helpers.JsonList]:
+        return self._fetch("GET", "User/GetAvailableThemes/")
 
     def fetch_membership_from_id(
         self, id: int, type: enums.MembershipType = enums.MembershipType.NONE, /
-    ) -> Response[helpers.JsonDict]:
-        return self.fetch("GET", f"User/GetMembershipsById/{id}/{type}")
+    ) -> ResponseSig[helpers.JsonDict]:
+        return self._fetch("GET", f"User/GetMembershipsById/{id}/{type}")
 
-    def fetch_manifest(self) -> Response[typing.Any]:
-        return self.fetch("GET", "Destiny2/Manifest/")
-
-    def static_search(self, path: str, **kwargs: typing.Any) -> Response[typing.Any]:
-        return self.fetch("GET", path, **kwargs)
+    def static_search(self, path: str, **kwargs: typing.Any) -> ResponseSig[typing.Any]:
+        return self._fetch("GET", path, **kwargs)
 
     def fetch_player(
-        self, name: str, type: enums.MembershipType, /
-    ) -> Response[helpers.JsonList]:
-        return self.fetch(
+        self, name: str, type: enums.MembershipType = enums.MembershipType.ALL, /
+    ) -> ResponseSig[helpers.JsonList]:
+        return self._fetch(
             "GET", f"Destiny2/SearchDestinyPlayer/{int(type)}/{quote(name)}/"
         )
 
-    def fetch_clan_from_id(self, id: int) -> Response[helpers.JsonDict]:
-        return self.fetch("GET", f"GroupV2/{id}")
+    def fetch_clan_from_id(self, id: int) -> ResponseSig[helpers.JsonDict]:
+        return self._fetch("GET", f"GroupV2/{id}")
 
     def fetch_clan(
         self, name: str, type: enums.GroupType = enums.GroupType.CLAN
-    ) -> Response[helpers.JsonDict]:
-        return self.fetch("GET", f"GroupV2/Name/{name}/{int(type)}")
+    ) -> ResponseSig[helpers.JsonDict]:
+        return self._fetch("GET", f"GroupV2/Name/{name}/{int(type)}")
 
-    def fetch_app(self, appid: int, /) -> Response[helpers.JsonDict]:
-        return self.fetch("GET", f"App/Application/{appid}")
+    def fetch_app(self, appid: int, /) -> ResponseSig[helpers.JsonDict]:
+        return self._fetch("GET", f"App/Application/{appid}")
 
     def fetch_character(
         self, memberid: int, type: enums.MembershipType, /
-    ) -> Response[helpers.JsonDict]:
-        return self.fetch(
+    ) -> ResponseSig[helpers.JsonDict]:
+        return self._fetch(
             "GET",
             f"Destiny2/{int(type)}/Profile/{memberid}/?components={int(enums.Component.CHARACTERS)}",
         )
@@ -257,34 +255,35 @@ class HTTPClient:
         *,
         page: typing.Optional[int] = 0,
         limit: typing.Optional[int] = 1,
-    ) -> Response[typing.Any]:
-        return self.fetch(
+    ) -> ResponseSig[typing.Any]:
+        return self._fetch(
             "GET",
             f"Destiny2/{int(membership_type)}/Account/"
             f"{member_id}/Character/{character_id}/Stats/Activities"
             f"/?mode={int(mode)}&count={limit}&page={page}",
         )
 
-    def fetch_post_activity(self, instance: int, /) -> Response[helpers.JsonDict]:
-        return self.fetch("GET", f"Destiny2/Stats/PostGameCarnageReport/{instance}")
+    def fetch_post_activity(self, instance: int, /) -> ResponseSig[helpers.JsonDict]:
+        # return self._fetch("GET", f"Destiny2/Stats/PostGameCarnageReport/{instance}")
+        raise NotImplementedError
 
-    def fetch_vendor_sales(self) -> Response[typing.Any]:
-        return self.fetch(
+    def fetch_vendor_sales(self) -> ResponseSig[typing.Any]:
+        return self._fetch(
             "GET", f"Destiny2/Vendors/?components={int(enums.Component.VENDOR_SALES)}"
         )
 
     def fetch_profile(
         self, memberid: int, type: enums.MembershipType, /
-    ) -> Response[helpers.JsonDict]:
-        return self.fetch(
+    ) -> ResponseSig[helpers.JsonDict]:
+        return self._fetch(
             "GET",
             f"Destiny2/{int(type)}/Profile/{int(memberid)}/?components={int(enums.Component.PROFILE)}",
         )
 
-    def fetch_entity(self, type: str, hash: int) -> Response[helpers.JsonDict]:
-        return self.fetch("GET", route=f"Destiny2/Manifest/{type}/{hash}")
+    def fetch_entity(self, type: str, hash: int) -> ResponseSig[helpers.JsonDict]:
+        return self._fetch("GET", route=f"Destiny2/Manifest/{type}/{hash}")
 
-    def fetch_inventory_item(self, hash: int) -> Response[helpers.JsonDict]:
+    def fetch_inventory_item(self, hash: int) -> ResponseSig[helpers.JsonDict]:
         return self.fetch_entity("DestinyInventoryItemDefinition", hash)
 
     def fetch_clan_members(
@@ -293,12 +292,10 @@ class HTTPClient:
         type: enums.MembershipType = enums.MembershipType.NONE,
         name: typing.Optional[str] = None,
         /,
-        *,
-        page: int = 1,
-    ) -> Response[helpers.JsonDict]:
-        return self.fetch(
+    ) -> ResponseSig[helpers.JsonDict]:
+        return self._fetch(
             "GET",
-            f"/GroupV2/{id}/Members/?memberType={int(type)}&nameSearch={name if name else ''}&currentpage={page}",
+            f"/GroupV2/{id}/Members/?memberType={int(type)}&nameSearch={name if name else ''}&currentpage=1",
         )
 
     def fetch_hard_linked(
@@ -306,8 +303,18 @@ class HTTPClient:
         credential: int,
         type: enums.CredentialType = enums.CredentialType.STADIAID,
         /,
-    ) -> Response[helpers.JsonDict]:
-        return self.fetch(
+    ) -> ResponseSig[helpers.JsonDict]:
+        return self._fetch(
             "GET",
             f"User/GetMembershipFromHardLinkedCredential/{int(type)}/{credential}/",
         )
+
+    async def fetch_manifest_path(self) -> str:
+        request = await self._fetch("GET", "Destiny2/Manifest")
+        return request["mobileWorldContentPaths"]["en"]
+
+    async def fetch_manifest(self) -> bytes:
+        content = await self.fetch_manifest_path()
+        resp = await self._fetch("GET", content, type="read", base=True)
+        print(resp)
+        return resp

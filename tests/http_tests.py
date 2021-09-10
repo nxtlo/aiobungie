@@ -33,9 +33,7 @@ try:
     load_dotenv()
     token = os.environ['TOKEN']
 except (ImportError, KeyError):
-    # if you don't have a .env file nor want to install
-    # dotenv you can just put your token down here.
-    token = ""
+    token = ""  # <-- TOKEN GOES HERE
 
 import aiobungie
 from aiobungie import crate
@@ -43,7 +41,6 @@ from aiobungie import crate
 
 client = aiobungie.Client(token)
 MID = 4611686018484639825
-
 
 @pytest.mark.asyncio()
 async def test_users() -> crate.user.BungieUser:
@@ -134,8 +131,13 @@ async def test_membership_types_from_id() -> crate.User:
     u = await client.fetch_membership_from_id(MID)
     return u
 
+async def test_manifest() -> None:
+    # from_rest = await rest.fetch_manifest_path()
+    from_client = await client.fetch_manifest()
+    await from_client.download(force=True)
+
 @pytest.mark.asyncio()
-async def main():
+async def main() -> None:
     coros = [
         test_users(),
         test_user_themese(),
@@ -150,8 +152,8 @@ async def main():
         test_char(),
         test_membership_types_from_id()
     ]
-    await asyncio.gather(*coros)
+    print(await asyncio.gather(*coros))
 
 
 if __name__ == "__main__":
-    client.run(main(), True)
+    client.run(main())

@@ -111,7 +111,7 @@ class RESTInterface(abc.ABC):
             A JSON array of user themes.
         """
 
-    def fetch_hard_types(
+    def fetch_hard_linked(
         self,
         credential: int,
         type: enums.CredentialType = enums.CredentialType.STEAMID,

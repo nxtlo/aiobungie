@@ -159,12 +159,5 @@ class Activity:
         """
         return await self.net.request.fetch_post_activity(self.instance_id)
 
-    @property
-    def as_dict(self) -> typing.Dict[str, typing.Any]:
-        """Returns a dict crate of the Activity,
-        This function is useful if you're binding to other REST apis.
-        """
-        return attr.asdict(self)
-
     def __int__(self) -> int:
         return self.instance_id

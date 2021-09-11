@@ -49,8 +49,8 @@ class StadiaMember(user.UserLike):
     id: int = attr.field(repr=True, hash=True, eq=True)
     """The member's id."""
 
-    name: str = attr.field(repr=True, eq=False)
-    """The member's name."""
+    name: helpers.UndefinedOr[str] = attr.field(repr=True, eq=False)
+    """The member's name. This can be `UNDEFINED` if not found."""
 
     last_seen_name: str = attr.field(repr=True)
     """The member's last seen display name. You may use this field if `StadiaMember.name` is `Undefined`."""
@@ -71,13 +71,9 @@ class StadiaMember(user.UserLike):
     """The member's profile privacy status."""
 
     @property
-    def unique_name(self) -> helpers.NoneOr[str]:
-        """The member's unique name. This field may be `None` or `Undefined` if not found."""
-        return f"{self.name}#{self.code}"
-
-    @property
-    def as_dict(self) -> typing.Dict[str, typing.Any]:
-        return attr.asdict(self)
+    def unique_name(self) -> str:
+        """Member's unique name."""
+        return self.unique_name
 
 
 @attr.define(hash=True, kw_only=True, weakref_slot=False)
@@ -91,6 +87,7 @@ class XboxMember(user.UserLike):
     """The member's id."""
 
     name: str = attr.field(repr=True, eq=False)
+    """The member's name. This can be `UNDEFINED` if not found."""
     """The member's name."""
 
     last_seen_name: str = attr.field(repr=True)
@@ -112,13 +109,9 @@ class XboxMember(user.UserLike):
     """The member's profile privacy status."""
 
     @property
-    def unique_name(self) -> helpers.NoneOr[str]:
-        """The member's unique name. This field may be `None` or `Undefined` if not found."""
-        return f"{self.name}#{self.code}"
-
-    @property
-    def as_dict(self) -> typing.Dict[str, typing.Any]:
-        return attr.asdict(self)
+    def unique_name(self) -> str:
+        """Member's unique name."""
+        return self.unique_name
 
 
 @attr.define(hash=True, kw_only=True, weakref_slot=False)
@@ -132,7 +125,7 @@ class PSNMember(user.UserLike):
     """The member's id."""
 
     name: str = attr.field(repr=True, eq=False)
-    """The member's name."""
+    """The member's name. This can be `UNDEFINED` if not found."""
 
     last_seen_name: str = attr.field(repr=True)
     """The member's last seen display name. You may use this field if `PSNMember.name` is `Undefined`."""
@@ -153,13 +146,9 @@ class PSNMember(user.UserLike):
     """The member's profile privacy status."""
 
     @property
-    def unique_name(self) -> helpers.NoneOr[str]:
-        """The member's unique name. This field may be `None` or `Undefined` if not found."""
-        return f"{self.name}#{self.code}"
-
-    @property
-    def as_dict(self) -> typing.Dict[str, typing.Any]:
-        return attr.asdict(self)
+    def unique_name(self) -> str:
+        """Member's unique name."""
+        return self.unique_name
 
 
 @attr.define(hash=True, kw_only=True, weakref_slot=False)
@@ -173,7 +162,7 @@ class SteamMember(user.UserLike):
     """The member's id."""
 
     name: str = attr.field(repr=True, eq=False)
-    """The member's name."""
+    """The member's name. This can be `UNDEFINED` if not found."""
 
     last_seen_name: str = attr.field(repr=True)
     """The member's last seen display name. You may use this field if `SteamMember.name` is `Undefined`."""
@@ -194,10 +183,6 @@ class SteamMember(user.UserLike):
     """The member's profile privacy status."""
 
     @property
-    def unique_name(self) -> helpers.NoneOr[str]:
-        """The member's unique name. This field may be `None` or `Undefined` if not found."""
-        return f"{self.name}#{self.code}"
-
-    @property
-    def as_dict(self) -> typing.Dict[str, typing.Any]:
-        return attr.asdict(self)
+    def unique_name(self) -> str:
+        """Member's unique name."""
+        return self.unique_name

@@ -28,19 +28,16 @@ from __future__ import annotations
 __all__ = ("Player",)
 
 
-import typing
-
 import attr
 
-from aiobungie.crate.user import UserLike
+from aiobungie.crate import user
 from aiobungie.internal import Image
 from aiobungie.internal import helpers
-from aiobungie.internal import traits
 from aiobungie.internal.enums import MembershipType
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
-class Player(UserLike):
+class Player(user.DestinyUser):
     """Represents a Bungie Destiny 2 Player."""
 
     icon: Image = attr.field(repr=False, hash=False, eq=False)
@@ -59,8 +56,7 @@ class Player(UserLike):
     """The profile's membership type."""
 
     code: helpers.NoneOr[int] = attr.field(repr=True)
-    """The clan member's bungie display name code
-    This is new and was added in Season of the lost update
+    """The clan member's bungie display name code. This can be `None` if not found.
 
     .. versionadded:: 0.2.5
     """
@@ -78,21 +74,9 @@ class Player(UserLike):
     """
 
     @property
-    def unique_name(self) -> helpers.NoneOr[str]:
-        """The user's unique display name code.
-        This can be None if the user hasn't logged in after season of the lost update.
+    def unique_name(self) -> str:
+        """The user's unique name.
 
         .. versionadded:: 0.2.5
         """
         return f"{self.name}#{self.code}"
-
-    @property
-    def net(self) -> traits.Netrunner:
-        """A network state used for making external requests."""
-        return self.net
-
-    @property
-    def as_dict(self) -> typing.Dict[str, typing.Any]:
-        """Returns a dict object of the player."""
-
-        return attr.asdict(self)

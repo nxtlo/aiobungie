@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""A helper module for useful decorators, functions and types."""
+"""A module for helper functions and types."""
 
 
 from __future__ import annotations
@@ -30,6 +30,8 @@ __all__ = (
     "JsonDict",
     "JsonList",
     "Undefined",
+    "UndefinedOr",
+    "UndefinedType",
     "Unknown",
     "just",
     "NoneOr",
@@ -53,17 +55,13 @@ JsonList = typing.List[typing.Dict[str, typing.Any]]
 i.e., [{"Key": 1}, {"Key2": "Value"}]
 """
 
-Undefined: str = "Undefined"
-"""A helper that checks if stuff are unknown / empty string and Undefine them if they're."""
-
 Unknown: str = ""
 """Stuff that are empty strings."""
 
 T = typing.TypeVar("T", covariant=True)
-"""A type var that's associated with NoneOr[T]"""
 
 NoneOr = typing.Union[None, T]
-"""A Union type that's similar to to Optional[T]"""
+"""A Union type that's similar to to `Optional[T]`"""
 
 
 def just(lst: list[dict[str, typing.Any]], lookup: str) -> list[typing.Any]:
@@ -111,3 +109,33 @@ def get_or_make_loop() -> asyncio.AbstractEventLoop:
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     return loop
+
+
+class UndefinedType:
+    """An `UNDEFINED` type."""
+
+    __instance__: typing.ClassVar[UndefinedType]
+
+    def __bool__(self) -> typing.Literal[False]:
+        return False
+
+    def __repr__(self) -> str:
+        return "UNDEFINED"
+
+    def __str__(self) -> str:
+        return "UNDEFINED"
+
+    def __new__(cls) -> UndefinedType:
+        try:
+            return cls.__instance__
+        except AttributeError:
+            o = super().__new__(cls)
+            cls.__instance__ = o
+            return cls.__instance__
+
+
+Undefined: typing.Final[UndefinedType] = UndefinedType()
+"""An undefined type for attribs that may be undefined and not None."""
+
+UndefinedOr = typing.Union[UndefinedType, T]
+"""A union version of the Undefined type which can be undefined or any other type."""

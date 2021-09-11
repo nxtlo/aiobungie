@@ -35,7 +35,6 @@ import attr
 
 from aiobungie.crate.character import Character
 from aiobungie.internal import enums
-from aiobungie.internal import time
 from aiobungie.internal import traits
 
 log: typing.Final[logging.Logger] = logging.getLogger(__name__)
@@ -227,13 +226,3 @@ class Profile(ProfileComponent):
     def warlock_id(self) -> int:
         """The warlock id of the profile player."""
         return int(self.character_ids[2])
-
-    @property
-    def as_dict(self) -> typing.Dict[str, typing.Any]:
-        """Returns a dict object of the profile."""
-        return attr.asdict(self)
-
-    @property
-    def human_timedelta(self) -> str:
-        """Returns last_played attr but in human delta date."""
-        return time.human_timedelta(self.last_played)

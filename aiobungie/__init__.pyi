@@ -1,10 +1,7 @@
 from .error import *
 from .internal.enums import *
 from .client import Client as Client
-from typing import Any
 from .rest import RESTClient as RESTClient
-
-__all__: Any
 
 # Names in __all__ with no definition:
 #   ActivityNotFound

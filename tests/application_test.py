@@ -52,10 +52,6 @@ class TestAppOwner:
         assert obj.is_public is True
         assert obj.icon is not None and isinstance(obj.icon, internal.Image)
 
-    def test_app_owner_as_dict(self, obj):
-        assert isinstance(obj.as_dict, dict)
-
-
 class TestApplication:
     @pytest.fixture()
     def obj(self):
@@ -84,6 +80,3 @@ class TestApplication:
         assert app.name == "aiobungie"
         assert app.redirect_url is None
         assert app.owner is not None and isinstance(app.owner, crate.ApplicationOwner)
-
-    def test_app_as_dict(self, obj):
-        assert isinstance(obj.as_dict, dict)

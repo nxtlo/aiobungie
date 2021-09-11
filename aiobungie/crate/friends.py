@@ -52,11 +52,8 @@ class Friend(user_.UserLike):
     type: enums.MembershipType = attr.field(repr=True)
     """The friend's last seen membership type."""
 
-    name: str = attr.field(repr=True)
-    """The friend's last seen global display name. This field could be None if the player hasn't logged in yet."""
-
-    unique_name: helpers.NoneOr[str] = attr.field(repr=True)
-    """The friend's global unique display name. This field could be None if the player hasn't logged in yet."""
+    name: helpers.UndefinedOr[str] = attr.field(repr=True)
+    """The friend's last seen global display name. This field could be Undefined if the player hasn't logged in yet."""
 
     code: helpers.NoneOr[int] = attr.field(repr=True)
     """The friend's last seen global code. This field could be None if the player hasn't logged in yet."""
@@ -72,6 +69,11 @@ class Friend(user_.UserLike):
 
     user: helpers.NoneOr[user_.User] = attr.field(repr=True)
     """The friend's bungie user account. This field is optional and can be None in some states."""
+
+    @property
+    def unique_name(self) -> str:
+        """The friend's global unique display name. This field could be None if the player hasn't logged in yet."""
+        return self.unique_name
 
     # POST methods will not be implemented currently.
 

@@ -37,7 +37,6 @@ from aiobungie import url
 from aiobungie.crate.user import UserLike
 from aiobungie.internal import Image
 from aiobungie.internal import helpers
-from aiobungie.internal import time
 from aiobungie.internal import traits
 from aiobungie.internal.enums import ClanMemberType
 from aiobungie.internal.enums import GroupType
@@ -72,15 +71,21 @@ class ClanFeatures:
     """The clan's join level."""
 
 
-@attr.define(hash=True, kw_only=True, weakref_slot=False)
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class ClanMember(UserLike):
     """Represents a Destiny 2 clan member."""
+
+    net: traits.Netrunner = attr.field(repr=False)
+    """A network state used for making external requests."""
 
     id: int = attr.field(repr=True, hash=True)
     """Clan member's id"""
 
-    name: str = attr.field(repr=True)
-    """Clan member's name"""
+    name: helpers.UndefinedOr[str] = attr.field(repr=True)
+    """Clan member's name. This can be `UNDEFINED` if not found."""
+
+    last_seen_name: str = attr.field(repr=True)
+    """The clan member's last seen display name"""
 
     type: MembershipType = attr.field(repr=True)
     """Clan member's membership type."""
@@ -114,27 +119,17 @@ class ClanMember(UserLike):
     """
 
     @property
-    def unique_name(self) -> helpers.NoneOr[str]:
+    def unique_name(self) -> str:
         """The user's unique name which includes their unique code.
-        This field could be None if no unique name found.
 
         .. versionadded:: 0.2.5
         """
         return f"{self.name}#{self.code}"
 
     @property
-    def net(self) -> traits.Netrunner:
-        """A network state used for making external requests."""
-        return self.net
-
-    @property
     def link(self) -> str:
         """Clan member's profile link."""
         return f"{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}"
-
-    @property
-    def as_dict(self) -> typing.Dict[str, typing.Any]:
-        return attr.asdict(self)
 
     # These are not implemented yet
     # Since they requires OAuth2.
@@ -158,15 +153,18 @@ class ClanMember(UserLike):
         raise NotImplementedError
 
 
-@attr.define(hash=True, kw_only=True, weakref_slot=False)
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class ClanOwner(UserLike):
     """Represents a Bungie clan owner."""
 
     id: int = attr.field(hash=True, repr=True)
     """The user id."""
 
-    name: str = attr.field(repr=True)
+    name: helpers.UndefinedOr[str] = attr.field(repr=True)
     """The user name."""
+
+    last_seen_name: str = attr.field(repr=True)
+    """The clan member's last seen display name"""
 
     is_public: bool = attr.field(hash=False, repr=True, eq=False)
     """Returns if the user profile is public or no."""
@@ -199,17 +197,7 @@ class ClanOwner(UserLike):
     """
 
     @property
-    def net(self) -> traits.Netrunner:
-        """A network state used for making external requests."""
-        return self.net
-
-    @property
-    def human_timedelta(self) -> str:
-        """Returns a human readable date of the clan owner's last login."""
-        return time.human_timedelta(self.last_online)
-
-    @property
-    def unique_name(self) -> helpers.NoneOr[str]:
+    def unique_name(self) -> str:
         """The user's unique name which includes their unique code.
         This field could be None if no unique name found.
 
@@ -222,15 +210,8 @@ class ClanOwner(UserLike):
         """Returns the user's profile link."""
         return f"{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}"
 
-    @property
-    def as_dict(self) -> typing.Dict[str, typing.Any]:
-        """Returns a dict object of the clan owner,
-        This function is useful if you're binding to other REST apis.
-        """
-        return attr.asdict(self)
 
-
-@attr.define(hash=True, kw_only=True, weakref_slot=False)
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class ClanAdmin(UserLike):
     """Represents a clan admin."""
 
@@ -251,7 +232,7 @@ class ClanAdmin(UserLike):
     """The clan admin's clan join date."""
 
 
-@attr.define(hash=True, kw_only=True, weakref_slot=False)
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class Clan:
     """Represents a Bungie clan."""
 
@@ -273,8 +254,8 @@ class Clan:
     member_count: int = attr.field(repr=True)
     """Clan's member count."""
 
-    description: str = attr.field(repr=False, eq=False)
-    """Clan's description"""
+    motto: str = attr.field(repr=False, eq=False)
+    """Clan's motto."""
 
     is_public: bool = attr.field(repr=False, eq=False)
     """Clan's privacy status."""
@@ -390,18 +371,8 @@ class Clan:
         raise NotImplementedError
 
     @property
-    def human_timedelta(self) -> str:
-        """Returns a human readable date of the clan's creation date."""
-        return time.human_timedelta(self.created_at)
-
-    @property
     def url(self) -> str:
         return f"{url.BASE}/en/ClanV2/Index?groupId={self.id}"
-
-    @property
-    def as_dict(self) -> typing.Dict[str, typing.Any]:
-        """Returns an instance of the clan as a dict"""
-        return attr.asdict(self)
 
     def __int__(self) -> int:
         return self.id

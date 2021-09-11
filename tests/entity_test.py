@@ -54,7 +54,7 @@ class TestInventoryItemEntity:
             tier=aiobungie.ItemTier.LEGENDERY,
             tier_name="Legendery",
             bucket_type=aiobungie.Item.KINETIC,
-            stats={internal.helpers.Undefined: None},
+            stats={},
             ammo_type=aiobungie.AmmoType.PRIMARY,
             lore_hash=123230123,
             item_class=aiobungie.Class.UNKNOWN,

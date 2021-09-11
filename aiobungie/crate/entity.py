@@ -37,6 +37,7 @@ import attr
 
 from aiobungie.internal import assets
 from aiobungie.internal import enums
+from aiobungie.internal import helpers
 from aiobungie.internal import traits
 
 
@@ -56,8 +57,8 @@ class Entity(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def name(self) -> str:
-        """Entity's name"""
+    def name(self) -> helpers.UndefinedOr[str]:
+        """Entity's name. This can be `UNDEFINED` if not found."""
 
     @property
     @abc.abstractmethod
@@ -71,7 +72,7 @@ class Entity(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def description(self) -> str:
+    def description(self) -> helpers.UndefinedOr[str]:
         """Entity's description"""
 
     @property
@@ -83,11 +84,6 @@ class Entity(abc.ABC):
     @abc.abstractmethod
     def hash(self) -> int:
         """Entity's hash."""
-
-    @property
-    def as_dict(self) -> typing.Dict[str, typing.Any]:
-        """Returns an instance of the entity as a dict"""
-        return attr.asdict(self)
 
     def __str__(self) -> str:
         return str(self.name)
@@ -112,10 +108,10 @@ class InventoryEntity(Entity):
     index: int = attr.field(repr=True, hash=False, eq=False)
     """Entity's index."""
 
-    name: str = attr.field(repr=True, hash=False, eq=False)
-    """Entity's name"""
+    name: helpers.UndefinedOr[str] = attr.field(repr=True, hash=False, eq=False)
+    """Entity's name. This can be `UNDEFINED` if not found."""
 
-    description: str = attr.field(repr=True)
+    description: helpers.UndefinedOr[str] = attr.field(repr=True)
     """Entity's description."""
 
     icon: assets.MaybeImage = attr.field(repr=False, hash=False, eq=False)
@@ -124,10 +120,10 @@ class InventoryEntity(Entity):
     has_icon: bool = attr.field(repr=False, hash=False, eq=False)
     """A boolean that returns True if the entity has an icon."""
 
-    type: typing.Union[enums.Item, str] = attr.field(repr=True, hash=False)
+    type: helpers.UndefinedOr[enums.Item] = attr.field(repr=True, hash=False)
     """Entity's type. Can be undefined if nothing was found."""
 
-    type_name: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    type_name: helpers.UndefinedOr[str] = attr.field(repr=True, hash=False, eq=False)
     """Entity's type name. i.e., `Grenade Launcher`"""
 
     water_mark: typing.Optional[assets.Image] = attr.field(
@@ -138,7 +134,7 @@ class InventoryEntity(Entity):
     tier: typing.Optional[enums.ItemTier] = attr.field(repr=True, hash=False, eq=False)
     """Entity's "tier."""
 
-    tier_name: typing.Optional[str] = attr.field(repr=False, eq=False)
+    tier_name: helpers.UndefinedOr[str] = attr.field(repr=False, eq=False)
     """A string version of the item tier."""
 
     bucket_type: typing.Optional[int] = attr.field(repr=True, hash=False, eq=False)
@@ -156,7 +152,7 @@ class InventoryEntity(Entity):
     )
     """Entity's ammo type if it was a wepon, otherwise it will return None"""
 
-    lore_hash: typing.Union[int, str] = attr.field(repr=False, hash=False, eq=False)
+    lore_hash: typing.Optional[int] = attr.field(repr=False, hash=False, eq=False)
     """The entity's lore hash. Can be undefined if no lore hash found."""
 
     item_class: typing.Optional[enums.Class] = attr.field(
@@ -164,25 +160,27 @@ class InventoryEntity(Entity):
     )
     """The entity's class type."""
 
-    sub_type: typing.Union[enums.Item, str] = attr.field(
+    sub_type: helpers.UndefinedOr[enums.Item] = attr.field(
         repr=False, hash=False, eq=False
     )
     """The subtype of the entity. A type is a weapon or armor.
     A subtype is a handcannonn or leg armor for an example.
     """
 
-    is_equippable: typing.Optional[bool] = attr.field(repr=False, hash=False, eq=False)
+    is_equippable: helpers.UndefinedOr[bool] = attr.field(
+        repr=False, hash=False, eq=False
+    )
     """True if the entity can be equipped or False."""
 
     summary_hash: typing.Optional[int] = attr.field(repr=False, hash=False, eq=False)
     """Entity's summary hash."""
 
-    damage: typing.Union[enums.DamageType, str] = attr.field(
+    damage: helpers.UndefinedOr[enums.DamageType] = attr.field(
         repr=False, hash=False, eq=False
     )
     """Entity's damage type. Only works for weapons."""
 
-    about: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    about: helpers.UndefinedOr[str] = attr.field(repr=True, hash=False, eq=False)
     """Entity's about."""
 
     banner: typing.Optional[assets.Image] = attr.field(repr=False, eq=False, hash=False)

@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from aiobungie.internal import helpers
 from datetime import datetime
 
 import pytest
@@ -51,22 +52,22 @@ class TestHardLinkedUser:
 class TestUserThemes:
     @pytest.fixture()
     def mod(self):
-        return crate.user.UserThemes(id=1122, name="d2_1", description=None)
+        return crate.user.UserThemes(id=1122, name="d2_1", description=helpers.Undefined)
 
     @pytest.fixture()
     def list_objs(self):
         return [
-            crate.user.UserThemes(id=1, name=None, description=None),
-            crate.user.UserThemes(id=239, name=None, description="D2_11"),
+            crate.user.UserThemes(id=1, name=helpers.Undefined, description=helpers.Undefined),
+            crate.user.UserThemes(id=239, name="theme name", description="D2_11"),
             crate.user.UserThemes(
-                id=22, name="Ok", description=internal.helpers.Undefined
+                id=22, name="Ok", description=helpers.Undefined
             ),
         ]
 
     def test_model_meta(self, mod):
         assert isinstance(mod, crate.user.UserThemes)
         assert mod is not None
-        assert mod.description is None
+        assert mod.description is helpers.Undefined
 
     def test_list_of_objs(self, list_objs):
         assert isinstance(list_objs, list)
@@ -82,15 +83,15 @@ class TestBungieUser:
     def model(self):
         return crate.user.BungieUser(
             id=205432,
-            name="Fate",
+            name=helpers.Undefined,
             created_at=datetime.utcnow(),
             is_deleted=True,
             about=None,
             picture=internal.Image("1029312dnoi12.jpg"),
             locale="eu",
             updated_at=datetime(2019, 4, 5),
-            status=internal.helpers.Undefined,
-            blizzard_name=internal.helpers.Undefined,
+            status=None,
+            blizzard_name=None,
             steam_name="Fate",
             psn_name=None,
             twitch_name="fate_ttv",  # Fake o:
@@ -104,7 +105,7 @@ class TestBungieUser:
         )
 
     def test_str_op(self, model):
-        assert str(model) == "Fate"
+        assert str(model) is str(helpers.Undefined)
 
     def test_int_op(self, model):
         assert int(model) == 205432

@@ -54,7 +54,7 @@ class Image:
     @staticmethod
     def partial() -> str:
         """A partial image that just returns undefined."""
-        return helpers.Undefined
+        return f"Image <{helpers.Undefined}>"
 
 
 MaybeImage = typing.Union[Image, str, None]

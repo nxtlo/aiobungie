@@ -75,6 +75,7 @@ class TestClanMember:
     @fixture()
     def obj(self):
         return crate.ClanMember(
+            net=mock_client,
             id=4432,
             name="thom",
             type=aiobungie.MembershipType.STEAM,
@@ -86,6 +87,7 @@ class TestClanMember:
             last_online=datetime.datetime(2021, 5, 1),
             code=5432,
             types=[aiobungie.MembershipType.STEAM, aiobungie.MembershipType.STADIA],
+            last_seen_name="YOYONAME"
         )
 
     def test_clan_member_link(self, obj):
@@ -108,9 +110,6 @@ class TestClanMember:
     async def test_clan_member_kick(self, obj):
         with pytest.raises(NotImplementedError):
             await obj.kick()
-
-    def test_clan_member_as_dict(self, obj):
-        assert isinstance(obj.as_dict, dict) and obj.as_dict["id"] == 4432
 
     def test_clan_member_meta(self, obj):
         assert (
@@ -139,6 +138,7 @@ class TestClanOwner:
             types=self.types,
             clan_id=998271,
             code=5432,
+            last_seen_name="Some name"
         )
 
     def test_clan_owner_is_userlike(self, obj):
@@ -148,19 +148,15 @@ class TestClanOwner:
         assert obj.id == 2938
         assert obj.type is aiobungie.MembershipType.STEAM
         assert all(types in obj.types for types in self.types)
-        assert isinstance(obj.as_dict, dict)
 
     def test_clan_owner_int_over(self, obj):
         assert int(obj) == obj.id
 
     def test_clan_owner_str_over(self, obj):
-        assert str(obj) == obj.name
+        assert str(obj) == obj.last_seen_name
 
     def test_clan_owner_link(self, obj):
         assert obj.id, int(obj.type) in obj.link
-
-    def test_clan_owner_human_deltatime(self, obj):
-        assert isinstance(obj.human_timedelta, str)
 
 
 class TestClan:
@@ -175,7 +171,7 @@ class TestClan:
             name="Cool clan",
             created_at=datetime.datetime(2018, 9, 3, 11, 13, 12),
             member_count=2,
-            description=internal.helpers.Undefined,
+            motto=str(internal.helpers.Undefined),
             is_public=True,
             banner=internal.Image("xxx.jpg"),
             avatar=internal.Image("zzz.jpg"),

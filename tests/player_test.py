@@ -39,13 +39,11 @@ class TestPlayer:
             types=[aiobungie.MembershipType.STEAM],
             code=7462,
             crossave_override=1,
+            last_seen_name="RoberGamer321"
         )
 
     def test_str_op(self, model):
         assert str(model) == "RoberGamer321"
-
-    def test_player_asdict(self, model):
-        assert isinstance(model.as_dict, dict)
 
     def test_player_type(self, model):
         assert (

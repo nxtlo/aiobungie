@@ -25,8 +25,6 @@
 
 from __future__ import annotations
 
-from aiobungie.internal.helpers import NoneOr
-
 __all__ = ("Application", "ApplicationOwner")
 
 import typing
@@ -36,18 +34,17 @@ import attr
 
 from aiobungie import url
 from aiobungie.crate.user import UserLike
-from aiobungie.internal import Image
+from aiobungie.internal import assets
 from aiobungie.internal import enums
-from aiobungie.internal import time
-from aiobungie.internal import traits
+from aiobungie.internal import helpers
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
 class ApplicationOwner(UserLike):
     """Represents a Bungie Application owner."""
 
-    name: str = attr.field(repr=True, hash=False, eq=False)
-    """The application owner name."""
+    name: helpers.UndefinedOr[str] = attr.field(repr=True, hash=False, eq=False)
+    """The application owner name. This can be `UNDEFINED` if not found."""
 
     type: enums.MembershipType = attr.field(repr=True, hash=False, eq=True)
     """The membership of the application owner."""
@@ -55,13 +52,13 @@ class ApplicationOwner(UserLike):
     id: int = attr.field(repr=True, hash=True, eq=True)
     """The application owner's id."""
 
-    icon: Image = attr.field(repr=False)
+    icon: assets.MaybeImage = attr.field(repr=False)
     """The application owner's icon."""
 
     is_public: bool = attr.field(repr=True)
     """The application owner's profile privacy."""
 
-    code: NoneOr[int] = attr.field(repr=True)
+    code: helpers.NoneOr[int] = attr.field(repr=True)
     """The user like's unique display name code.
     This can be None if the user hasn't logged in after season of the lost update.
 
@@ -69,38 +66,19 @@ class ApplicationOwner(UserLike):
     """
 
     @property
-    def unique_name(self) -> NoneOr[str]:
-        """The user like's display name. This includes the full name with the user name code.
-
-        .. versionadded:: 0.2.5
-        """
-        return f"{self.name}#{self.code}"
+    def unique_name(self) -> str:
+        """The application owner's unique name."""
+        return self.unique_name
 
     @property
-    def net(self) -> traits.Netrunner:
-        """A network state used for making external requests."""
-        return self.net
+    def last_seen_name(self) -> str:
+        # This is always undefined since an application
+        # dev doesn't have this field.
+        return str(helpers.Undefined)
 
     @property
     def link(self) -> str:
         return f"{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}"
-
-    @property
-    def as_dict(self) -> typing.Dict[str, typing.Any]:
-        """Returns a dict object of the application owner."""
-        return dict(
-            id=self.id,
-            name=self.name,
-            is_public=self.is_public,
-            icon=str(self.icon),
-            type=self.type,
-        )
-
-    def __int__(self) -> int:
-        return self.id
-
-    def __str__(self) -> str:
-        return self.name
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
@@ -128,23 +106,11 @@ class Application:
     status: int = attr.field(repr=False)
     """App's status"""
 
-    scope: str = attr.field(repr=False)
+    scope: helpers.UndefinedOr[str] = attr.field(repr=False)
     """App's scope"""
 
     owner: ApplicationOwner = attr.field(repr=True)
     """App's owner"""
-
-    @property
-    def human_timedelta(self) -> str:
-        """Returns a human readable date of the app's creation date."""
-        return time.human_timedelta(self.created_at)
-
-    @property
-    def as_dict(self) -> typing.Dict[str, typing.Any]:
-        """Returns a dict crate of the application,
-        This function is useful if you're binding to other REST apis.
-        """
-        return attr.asdict(self)
 
     def __str__(self) -> str:
         return self.name

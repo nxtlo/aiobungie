@@ -22,10 +22,12 @@
 # SOFTWARE.
 
 """This file is for real api tests."""
+from __future__ import annotations
 
 import asyncio
 import os
 from typing import Sequence
+import typing
 
 import pytest
 try:
@@ -114,8 +116,8 @@ async def test_profile() -> crate.Profile:
 
 
 @pytest.mark.asyncio()
-async def test_player() -> crate.Player:
-    p = await client.fetch_player("Fate怒#4275")
+async def test_player() -> typing.Sequence[typing.Optional[crate.DestinyUser]]:
+    p = await client.fetch_player("Datto#6446")
     return p
 
 
@@ -131,29 +133,13 @@ async def test_membership_types_from_id() -> crate.User:
     u = await client.fetch_membership_from_id(MID)
     return u
 
-async def test_manifest() -> None:
-    # from_rest = await rest.fetch_manifest_path()
-    from_client = await client.fetch_manifest()
-    await from_client.download(force=True)
 
 @pytest.mark.asyncio()
 async def main() -> None:
     coros = [
-        test_users(),
-        test_user_themese(),
-        test_hard_types(),
-        test_clan_from_id(),
-        test_clan(),
-        test_fetch_clan_member(),
-        test_fetch_clan_members(),
-        test_profile(),
-        test_fetch_app(),
-        test_fetch_inventory_item(),
-        test_char(),
-        test_membership_types_from_id()
+        test_player(),
     ]
     print(await asyncio.gather(*coros))
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     client.run(main())

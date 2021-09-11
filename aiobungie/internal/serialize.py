@@ -35,7 +35,6 @@ from aiobungie.crate import application as app
 from aiobungie.crate import character
 from aiobungie.crate import clans
 from aiobungie.crate import entity
-from aiobungie.crate import player
 from aiobungie.crate import profile
 from aiobungie.crate import user
 from aiobungie.internal import enums
@@ -46,6 +45,7 @@ from aiobungie.internal.helpers import JsonDict
 from aiobungie.internal.helpers import JsonList
 from aiobungie.internal.helpers import NoneOr
 from aiobungie.internal.helpers import Undefined
+from aiobungie.internal.helpers import UndefinedOr
 from aiobungie.internal.helpers import Unknown
 from aiobungie.internal.helpers import just
 
@@ -66,7 +66,7 @@ class Deserialize:
         return user.BungieUser(
             id=int(data["membershipId"]),
             created_at=time.clean_date(data["firstAccess"]),
-            name=data["displayName"],
+            name=data.get("cachedBungieGlobalDisplayName", Undefined),
             is_deleted=data["isDeleted"],
             about=data["about"],
             updated_at=time.clean_date(data["lastUpdate"]),
@@ -89,119 +89,119 @@ class Deserialize:
     # TODO: Make this return one obj at once?
 
     def deserialize_members(
-        self, data: JsonDict
+        self, data: typing.Union[JsonDict, JsonList], *, bound: bool = False
     ) -> typing.Sequence[user.DestinyUser | None]:
-
         xbox: int = 0
         psn: int = 1
         steam: int = 2
         stadia: int = 3
 
-        if (members_ := data.get("destinyMemberships", [])) is None:
-            raise error.NotFound("Member has to destiny memberships.")
+        # In order to bind this method between deserializing
+        # other objects we have to check if the data was
+        # a json object or a json array of objects.
+
+        raw_members: typing.Union[JsonList, JsonDict, dict[int, typing.Any]] = data
+
+        if bound:
+            members_ = raw_members  # type: ignore
+
+        elif (
+            isinstance(data, dict)
+            and (  # noqa: W503 LINE BREAK
+                raw_members := data.get("destinyMemberships", [])
+            )
+            is not None
+        ):
+            members_: dict[int, typing.Any] = raw_members  # type: ignore
 
         stadia_obj: NoneOr[user.DestinyUser] = None  # type: ignore[name-defined]
         try:
-            stadia_member = members_[stadia]
+            stadia_member = members_[stadia]  # type: ignore[index]
         except IndexError:
             pass
         else:
-            stadia_name: str = Undefined
-
-            if (raw_name := stadia_member["bungieGlobalDisplayName"]) != Unknown:
-                stadia_name = raw_name
-
             stadia_member_types: list[enums.MembershipType] = []
             for member_type in stadia_member["applicableMembershipTypes"]:
                 stadia_member_types.append(enums.MembershipType(member_type))
 
             stadia_obj = user.DestinyUser(
-                name=stadia_name,
-                last_seen_name=stadia_member["LastSeenDisplayName"],
+                name=stadia_member.get("bungieGlobalDisplayName", Undefined),
+                last_seen_name=stadia_member.get("LastSeenDisplayName", Undefined),
                 id=int(stadia_member["membershipId"]),
                 type=enums.MembershipType(int(stadia_member["membershipType"])),
                 icon=stadia_member.get(
-                    Image(stadia_member["iconPath"]), Image.partial()
+                    str(Image(stadia_member["iconPath"])), Image.partial()
                 ),
-                code=int(stadia_member.get("bungieGlobalDisplayNameCode", None)),
+                code=stadia_member.get("bungieGlobalDisplayNameCode", None),
                 is_public=bool(stadia_member["isPublic"]),
                 types=stadia_member_types,
             )
 
         xbox_obj: NoneOr[user.DestinyUser] = None  # type: ignore[name-defined]
         try:
-            xbox_member = members_[xbox]
+            xbox_member = members_[xbox]  # type: ignore[index]
         except IndexError:
             pass
         else:
-            xbox_name: str = Undefined
-
-            if (raw_name := xbox_member["bungieGlobalDisplayName"]) != Unknown:
-                xbox_name = raw_name
-
             xbox_member_types: list[enums.MembershipType] = []
             for member_type in xbox_member["applicableMembershipTypes"]:
                 xbox_member_types.append(enums.MembershipType(member_type))
 
             xbox_obj = user.DestinyUser(
-                name=xbox_name,
-                last_seen_name=xbox_member["LastSeenDisplayName"],
+                name=xbox_member.get("bungieGlobalDisplayName", Undefined),
+                last_seen_name=xbox_member.get("LastSeenDisplayName", Undefined),
                 id=int(xbox_member["membershipId"]),
                 type=enums.MembershipType(int(xbox_member["membershipType"])),
-                icon=xbox_member.get(Image(xbox_member["iconPath"]), Image.partial()),
-                code=int(xbox_member.get("bungieGlobalDisplayNameCode", None)),
+                icon=xbox_member.get(
+                    str(Image(xbox_member["iconPath"])), Image.partial()
+                ),
+                code=xbox_member.get("bungieGlobalDisplayNameCode", None),
                 is_public=bool(xbox_member["isPublic"]),
                 types=xbox_member_types,
             )
 
         steam_obj: NoneOr[user.DestinyUser] = None  # type: ignore[name-defined]
         try:
-            steam_member = members_[steam]
+            steam_member = members_[steam]  # type: ignore[index]
         except IndexError:
             pass
         else:
-            steam_name: str = Undefined
-
-            if (raw_name := steam_member["bungieGlobalDisplayName"]) != Unknown:
-                steam_name = raw_name
-
             steam_member_types: list[enums.MembershipType] = []
             for member_type in steam_member["applicableMembershipTypes"]:
                 steam_member_types.append(enums.MembershipType(member_type))
 
             steam_obj = user.DestinyUser(
-                last_seen_name=steam_member["LastSeenDisplayName"],
-                name=steam_name,
+                last_seen_name=steam_member.get("LastSeenDisplayName", Undefined),
+                name=steam_member.get("bungieGlobalDisplayName", Undefined),
                 id=int(steam_member["membershipId"]),
                 type=enums.MembershipType(int(steam_member["membershipType"])),
-                icon=steam_member.get(Image(steam_member["iconPath"]), Image.partial()),
-                code=int(steam_member.get("bungieGlobalDisplayNameCode", None)),
+                icon=steam_member.get(
+                    str(Image(steam_member["iconPath"])), Image.partial()
+                ),
+                code=steam_member.get("bungieGlobalDisplayNameCode", None),
                 is_public=bool(steam_member["isPublic"]),
                 types=steam_member_types,
             )
 
         psn_obj: NoneOr[user.DestinyUser] = None  # type: ignore[name-defined]
         try:
-            psn_member = members_[psn]
+            psn_member = members_[psn]  # type: ignore[index]
         except IndexError:
             pass
         else:
-            psn_name: str = Undefined
-
-            if (raw_name := psn_member["bungieGlobalDisplayName"]) != Unknown:
-                psn_name = raw_name
-
             psn_member_types: list[enums.MembershipType] = []
             for member_type in psn_member["applicableMembershipTypes"]:
                 psn_member_types.append(enums.MembershipType(member_type))
 
             psn_obj = user.DestinyUser(
-                last_seen_name=psn_member["LastSeenDisplayName"],
-                name=psn_name,
+                last_seen_name=psn_member.get("LastSeenDisplayName", Undefined),
+                name=psn_member.get("bungieGlobalDisplayName", Undefined),
                 id=int(psn_member["membershipId"]),
                 type=enums.MembershipType(int(psn_member["membershipType"])),
-                icon=psn_member.get(Image(psn_member["iconPath"]), Image.partial()),
-                code=int(psn_member.get("bungieGlobalDisplayNameCode", None)),
+                icon=psn_member.get(
+                    str(Image(psn_member["iconPath"])), Image.partial()
+                ),
+                code=psn_member.get("bungieGlobalDisplayNameCode", None),
                 is_public=bool(psn_member["isPublic"]),
                 types=psn_member_types,
             )
@@ -215,7 +215,7 @@ class Deserialize:
         )
 
     @staticmethod
-    def set_themese_attrs(payload: JsonList, /) -> typing.ValuesView[user.UserThemes]:
+    def set_themese_attrs(payload: JsonList, /) -> typing.Collection[user.UserThemes]:
         if isinstance(payload, list):
             if payload is None:
                 raise ValueError("No themes found.")
@@ -229,7 +229,9 @@ class Deserialize:
 
             for t_id, t_name, t_desc in zip(theme_ids, theme_names, theme_descriptions):
                 theme_map[t_id] = user.UserThemes(
-                    id=int(t_id), name=t_name, description=t_desc
+                    id=int(t_id),
+                    name=t_name or Undefined,
+                    description=t_desc or Undefined,
                 )
         return theme_map.values()
 
@@ -238,30 +240,19 @@ class Deserialize:
     ) -> typing.Sequence[user.UserThemes]:
         return list(self.set_themese_attrs(payload))
 
-    def deserialize_player(self, payload: JsonList, /) -> player.Player:
-        try:
-            data = payload[0]  # type: ignore
-        except IndexError:
+    def deserialize_player(
+        self, payload: JsonList, /
+    ) -> typing.Sequence[user.DestinyUser | None]:
+        if payload is None:
             raise error.PlayerNotFound("Player was not found.") from None
 
-        types: list[enums.MembershipType] = []
-        for type in data["applicableMembershipTypes"]:
-            types.append(enums.MembershipType(type))
-
-        return player.Player(
-            name=data["displayName"],
-            id=int(data["membershipId"]),
-            is_public=data["isPublic"],
-            icon=Image(str(data["iconPath"])),
-            type=enums.MembershipType(data["membershipType"]),
-            code=data.get("bungieGlobalDisplayNameCode", None),
-            types=types,
-            crossave_override=int(data["crossSaveOverride"]),
-        )
+        return self.deserialize_members(payload, bound=True)
 
     def deseialize_clan_owner(self, data: JsonDict) -> clans.ClanOwner:
         id = data["destinyUserInfo"]["membershipId"]
-        name = data["destinyUserInfo"]["displayName"]
+        name: UndefinedOr[str] = data["destinyUserInfo"].get(
+            "bungieGlobalDisplayName", Undefined
+        )
         icon = Image(str(data["destinyUserInfo"]["iconPath"]))
         convert = int(data["lastOnlineStatusChange"])
         last_online = time.from_timestamp(convert)
@@ -270,8 +261,10 @@ class Deserialize:
         types = data["destinyUserInfo"]["applicableMembershipTypes"]
         is_public = data["destinyUserInfo"]["isPublic"]
         type = enums.MembershipType(data["destinyUserInfo"].get("membershipType", None))
+        last_seen_name = data["destinyUserInfo"]["LastSeenDisplayName"]
 
         return clans.ClanOwner(
+            last_seen_name=last_seen_name,
             id=int(id),
             name=name,
             icon=icon,
@@ -289,8 +282,8 @@ class Deserialize:
         name = data["detail"]["name"]
         created_at = data["detail"]["creationDate"]
         member_count = data["detail"]["memberCount"]
-        description = data["detail"]["about"]
-        about = data["detail"]["motto"]
+        about = data["detail"]["about"]
+        motto = data["detail"]["motto"]
         is_public = data["detail"]["isPublic"]
         banner = Image(str(data["detail"]["bannerPath"]))
         avatar = Image(str(data["detail"]["avatarPath"]))
@@ -316,7 +309,7 @@ class Deserialize:
             type=enums.GroupType(type),
             created_at=time.clean_date(created_at),
             member_count=member_count,
-            description=description,
+            motto=motto,
             about=about,
             is_public=is_public,
             banner=banner,
@@ -336,7 +329,12 @@ class Deserialize:
                 raise error.NotFound("Clan member not found.") from None
 
             id: int = payload["membershipId"]
-            name: str = payload["displayName"]
+            raw_name: UndefinedOr[str] = payload["displayName"]
+            if raw_name != Unknown:
+                name = raw_name
+            else:
+                raw_name = Undefined
+
             type: enums.MembershipType = payload["membershipType"]
             is_public: bool = payload["isPublic"]
             icon: Image = Image(str(payload["iconPath"]))
@@ -354,6 +352,7 @@ class Deserialize:
                 type_entires.append(enums.MembershipType(member_type))
 
         return clans.ClanMember(
+            net=self._net,
             group_id=int(group_id),
             is_online=is_online,
             last_online=last_online,
@@ -365,12 +364,12 @@ class Deserialize:
             icon=icon,
             code=payload.get("bungieGlobalDisplayNameCode", None),
             types=type_entires,
+            last_seen_name=payload["LastSeenDisplayName"],
         )
 
-    @staticmethod
     def set_clan_members_attrs(
-        data: JsonDict, /
-    ) -> typing.ValuesView[clans.ClanMember]:
+        self, data: JsonDict, /
+    ) -> typing.Collection[clans.ClanMember]:
         member_view: dict[int, clans.ClanMember] = {}
         if (payload := data["results"]) is not None:
 
@@ -392,7 +391,8 @@ class Deserialize:
                 # so we just make sure that the name is not an empty string.
                 # otherwise we just grab the last seen name.
                 if (name := member["bungieGlobalDisplayName"]) == Unknown:
-                    name: str = member["LastSeenDisplayName"]  # type: ignore
+                    name = Undefined
+                last_seen_name: str = member["LastSeenDisplayName"]
                 type_entires: list[enums.MembershipType] = []
 
                 for member_type in member["applicableMembershipTypes"]:
@@ -400,6 +400,7 @@ class Deserialize:
                     type_entires.append(enums.MembershipType(member_type))
 
                 member_view[int(member["membershipId"])] = clans.ClanMember(
+                    net=self._net,
                     id=int(member["membershipId"]),
                     name=name,
                     type=enums.MembershipType(member["membershipType"]),
@@ -411,6 +412,7 @@ class Deserialize:
                     joined_at=join_date_fmt,
                     code=member.get("bungieGlobalDisplayNameCode", None),
                     types=type_entires,
+                    last_seen_name=last_seen_name,
                 )
 
         if member_view is None:
@@ -424,7 +426,7 @@ class Deserialize:
 
     def deserialize_app_owner(self, payload: JsonDict) -> app.ApplicationOwner:
         return app.ApplicationOwner(
-            name=payload["displayName"],
+            name=payload.get("bungieGlobalDisplayName", Undefined),
             id=int(payload["membershipId"]),
             type=enums.MembershipType(payload["membershipType"]),
             icon=Image(str(payload["iconPath"])),
@@ -438,11 +440,11 @@ class Deserialize:
             name=payload["name"],
             link=payload["link"],
             status=payload["status"],
-            redirect_url=payload["redirectUrl"],
+            redirect_url=payload.get("redirectUrl", None),
             created_at=time.clean_date(str(payload["creationDate"])),
             published_at=time.clean_date(str(payload["firstPublished"])),
             owner=self.deserialize_app_owner(payload["team"][0]["user"]),  # type: ignore
-            scope=payload["scope"],
+            scope=payload.get("scope", Undefined),
         )
 
     def deserialize_character(
@@ -524,9 +526,7 @@ class Deserialize:
         # Most entities has this
         # and for some it doesn't exists
 
-        if (
-            raw_inventory := payload.get("inventory", {Undefined: Undefined})
-        ) is not None:
+        if (raw_inventory := payload.get("inventory", {})) is not None:
             inventory: JsonDict = raw_inventory
 
         # Entity tier type. Most entities have a tier
@@ -543,13 +543,13 @@ class Deserialize:
         if (name := props.get("name", Unknown)) == Unknown:
             name = Undefined
 
-        if (type_name := payload.get("itemTypeDisplayName")) == Unknown:
+        if (type_name := payload.get("itemTypeDisplayName", Unknown)) == Unknown:
             type_name = Undefined
 
         if (description := props.get("description", Unknown)) == Unknown:
             description = Undefined
 
-        if (about := payload.get("flavorText")) == Unknown:
+        if (about := payload.get("flavorText", Unknown)) == Unknown:
             about = Undefined
 
         if (raw_icon := props.get("icon", Image.partial())) is not None:
@@ -561,7 +561,7 @@ class Deserialize:
         if (raw_banner := payload.get("screenshot", Image.partial())) is not None:
             banner = Image(str(raw_banner))
 
-        damage: typing.Union[enums.DamageType, str] = Undefined
+        damage: UndefinedOr[enums.DamageType] = Undefined
         if (raw_damage := payload.get("defaultDamageTypeHash")) is not None:
             damage = enums.DamageType(raw_damage)
 
@@ -570,7 +570,7 @@ class Deserialize:
         if (raw_summary_hash := payload.get("summaryItemHash")) is not None:
             summary_hash: int = int(raw_summary_hash)  # type: ignore
 
-        if (raw_stats := payload.get("stats", {Undefined: Undefined})) is not None:
+        if (raw_stats := payload.get("stats", {})) is not None:
             stats: JsonDict = raw_stats
 
         block = enums.AmmoType.NONE
@@ -604,7 +604,7 @@ class Deserialize:
             is_equippable=payload.get("equippable", False),
             stats=stats,
             ammo_type=block,
-            lore_hash=payload.get("loreHash", Undefined),
+            lore_hash=payload.get("loreHash", None),
         )
 
     def deserialize_activity(

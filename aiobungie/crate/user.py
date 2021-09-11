@@ -43,7 +43,6 @@ import attr
 from aiobungie.internal import assets
 from aiobungie.internal import enums
 from aiobungie.internal import helpers
-from aiobungie.internal import time
 
 
 class UserLike(abc.ABC):
@@ -58,8 +57,13 @@ class UserLike(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def name(self) -> str:
+    def name(self) -> helpers.UndefinedOr[str]:
         """The user like's name."""
+
+    @property
+    @abc.abstractmethod
+    def last_seen_name(self) -> str:
+        """The user like's last seen name."""
 
     @property
     @abc.abstractmethod
@@ -75,11 +79,7 @@ class UserLike(abc.ABC):
     @abc.abstractmethod
     def icon(self) -> assets.MaybeImage:
         """The user like's icon."""
-
-    @property
-    @abc.abstractmethod
-    def as_dict(self) -> typing.Dict[str, typing.Any]:
-        """An instance of the UserLike as a dict."""
+        return assets.Image.partial()
 
     @property
     @abc.abstractmethod
@@ -92,24 +92,25 @@ class UserLike(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def unique_name(self) -> helpers.NoneOr[str]:
+    def unique_name(self) -> str:
         """The user like's display name. This includes the full name with the user name code.
 
         .. versionadded:: 0.2.5
         """
+        return f"{self.name}#{self.code}"
 
     @property
     def link(self) -> str:
         """The user like's profile link."""
 
     def __str__(self) -> str:
-        return self.name
+        return self.last_seen_name
 
     def __int__(self) -> int:
         return self.id
 
 
-@attr.define(hash=True, kw_only=True, weakref_slot=False)
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class BungieUser:
     """Represents a Bungie user."""
 
@@ -119,10 +120,10 @@ class BungieUser:
     created_at: datetime = attr.field(hash=True, repr=True, eq=False)
     """The user's creation date in UTC timezone."""
 
-    name: str = attr.field(hash=False, eq=False, repr=True)
+    name: helpers.UndefinedOr[str] = attr.field(hash=False, eq=False, repr=True)
     """The user's name."""
 
-    unique_name: helpers.NoneOr[str] = attr.field(repr=False)
+    unique_name: str = attr.field(repr=False)
     """The user's unique name which includes their unique code.
     This field could be None if no unique name found.
 
@@ -197,18 +198,13 @@ class BungieUser:
     """
 
     def __str__(self) -> str:
-        return self.name
+        return str(self.name)
 
     def __int__(self) -> int:
         return self.id
 
-    @property
-    def human_timedelta(self) -> str:
-        """A human readable date version of the user's creation date."""
-        return time.human_timedelta(self.created_at)
 
-
-@attr.define(hash=False, kw_only=True, weakref_slot=False)
+@attr.define(hash=False, kw_only=False, weakref_slot=False)
 class DestinyUser(UserLike):
     """Represents a Bungie user's Destiny memberships.
 
@@ -218,7 +214,7 @@ class DestinyUser(UserLike):
     id: int = attr.field(repr=True, hash=True, eq=True)
     """The member's id."""
 
-    name: str = attr.field(repr=True, eq=False)
+    name: helpers.UndefinedOr[str] = attr.field(repr=True, eq=False)
     """The member's name."""
 
     last_seen_name: str = attr.field(repr=True)
@@ -233,23 +229,19 @@ class DestinyUser(UserLike):
     icon: assets.MaybeImage = attr.field(repr=False)
     """The profile's icon if it was present."""
 
-    code: helpers.NoneOr[int] = attr.field(repr=True, eq=True, hash=False)
+    code: helpers.NoneOr[int] = attr.field(repr=True, eq=True, hash=False, default=0)
     """The member's name code. This field may be `None` if not found."""
 
-    is_public: bool = attr.field(repr=False)
+    is_public: bool = attr.field(repr=False, default=False)
     """The member's profile privacy status."""
 
     @property
-    def unique_name(self) -> helpers.NoneOr[str]:
+    def unique_name(self) -> str:
         """The member's unique name. This field may be `Undefined` if not found."""
         return f"{self.name}#{self.code}"
 
-    @property
-    def as_dict(self) -> typing.Dict[str, typing.Any]:
-        return attr.asdict(self)
 
-
-@attr.define(hash=True, kw_only=True, weakref_slot=False)
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class HardLinkedMembership:
     """Represents hard linked Bungie user membership.
 
@@ -272,24 +264,24 @@ class HardLinkedMembership:
         return self.id
 
 
-@attr.define(hash=True, kw_only=True, weakref_slot=False)
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class UserThemes:
     """Represents a Bungie User theme."""
 
-    id: int = attr.field(repr=True)
+    id: int = attr.field(repr=True, hash=True)
     """The theme id."""
 
-    name: helpers.NoneOr[str] = attr.field(repr=True)
+    name: helpers.UndefinedOr[str] = attr.field(repr=True)
     """An optional theme name. if not found this field will be `None`"""
 
-    description: helpers.NoneOr[str] = attr.field(repr=True)
+    description: helpers.UndefinedOr[str] = attr.field(repr=True)
     """An optional theme description. This field could be `None` if no description found."""
 
     def __int__(self) -> int:
         return self.id
 
 
-@attr.define(hash=True, kw_only=True, weakref_slot=False)
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class User:
     """Concrete representtion of a Bungie user.
 
@@ -307,8 +299,3 @@ class User:
 
     .. versionadded:: 0.2.5
     """
-
-    @property
-    def as_dict(self) -> typing.Dict[str, typing.Any]:
-        """a dict object of the user."""
-        return attr.asdict(self)

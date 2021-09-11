@@ -51,7 +51,7 @@ ResponseSig = typing.Coroutine[typing.Any, typing.Any, ResponseSigT]
 that's mostly going to be on of `aiobungie.internal.helpers.JsonDict` or `aiobungie.internal.helpers.JsonList`
 """
 
-_LOG: typing.Final[logging.Logger] = logging.getLogger("aiobungie.http")
+_LOG: typing.Final[logging.Logger] = logging.getLogger("aiobungie.rest")
 
 
 async def handle_errors(

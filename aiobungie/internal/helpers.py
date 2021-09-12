@@ -114,7 +114,7 @@ def get_or_make_loop() -> asyncio.AbstractEventLoop:
 class UndefinedType:
     """An `UNDEFINED` type."""
 
-    __instance__: typing.ClassVar[UndefinedType]
+    __instance: typing.ClassVar[UndefinedType]
 
     def __bool__(self) -> typing.Literal[False]:
         return False
@@ -127,11 +127,11 @@ class UndefinedType:
 
     def __new__(cls) -> UndefinedType:
         try:
-            return cls.__instance__
+            return cls.__instance
         except AttributeError:
             o = super().__new__(cls)
-            cls.__instance__ = o
-            return cls.__instance__
+            cls.__instance = o
+            return cls.__instance
 
 
 Undefined: typing.Final[UndefinedType] = UndefinedType()

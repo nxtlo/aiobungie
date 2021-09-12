@@ -22,18 +22,15 @@
     <a href="https://github.com/nxtlo/aiobungie/actions/workflows/ci.yml">
     <img src="https://github.com/nxtlo/aiobungie/actions/workflows/ci.yml/badge.svg?branch=master">
     </a>
-    <a href="https://codeclimate.com/github/nxtlo/aiobungie/test_coverage"><img src="https://api.codeclimate.com/v1/badges/09e71a0374875d4594f4/test_coverage" /></a>
-
 </div>
 
 # Installing
 
-_IT IS recommended_ to use the latest release from master
+_IT IS recommended_ to use the latest pre-release from master
 since `0.2.4` is missing features from `0.2.5`.
 
-Theoretically you probably will encounter breaking changes every `0.2.5x` release.
 
-PyPI stable release.
+PyPI stable release. __Not Recommended Currently__.
 
 ```sh
 $ pip install aiobungie
@@ -92,6 +89,24 @@ async def main() -> None:
     # the fetch_character() way using the profile attrs.
     character: crate.Character = await client.fetch_character(profile.id, profile.type, profile.warlock_id)
     print(character.light, character.id, character.gender, character.race, ...)
+```
+
+## REST-Only client
+If for some reason you only want to interact with the API directly without any `OOP`,
+you can use the `RESTClient`.
+
+### Simple Example
+```py
+import aiobungie
+import asyncio
+
+rest_client = aiobungie.RESTClient("TOKEN")
+
+async def main() -> None:
+    my_player = await rest_client.fetch_player("Name#1234")
+    print(*my_player)
+
+asyncio.run(main())
 ```
 
 ### Requirements

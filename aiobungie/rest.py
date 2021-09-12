@@ -150,54 +150,55 @@ class RESTClient(interfaces.RESTInterface):
         else:
             raise ValueError("No API KEY was passed.")
 
-        async with PreLock():
-            try:
-                async with aiohttp.ClientSession(connector=self.__connector) as session:
-                    async with session.request(
-                        method=method,
-                        url=f"{url.REST_EP if base is False else url.BASE}/{route}",
-                        **kwargs,
-                    ) as response:
+        while True:
+            async with PreLock():
+                try:
+                    async with aiohttp.ClientSession(connector=self.__connector) as session:
+                        async with session.request(
+                            method=method,
+                            url=f"{url.REST_EP if base is False else url.BASE}/{route}",
+                            **kwargs,
+                        ) as response:
 
-                        data = await response.json()
-                        msg: str = data["ErrorStatus"]
+                            data = await response.json()
+                            msg: str = data["ErrorStatus"]
 
-                        # There's no point of making requests here.
-                        # A VERY LITTLE amount of endpoints does not
-                        # require the API to be up and running, Which are
-                        # The themes afaik. Not making any difference though so
-                        # Just to be careful we raise this here.
+                            # There's no point of making requests here.
+                            # A VERY LITTLE amount of endpoints does not
+                            # require the API to be up and running, Which are
+                            # The themes afaik. Not making any difference though so
+                            # Just to be careful we raise this here.
 
-                        if msg == "SystemDisabled":
-                            raise OSError("API IS DOWN!", data["Message"])
+                            if msg == "SystemDisabled":
+                                raise OSError("API IS DOWN!", data["Message"])
 
-                        if 300 > response.status >= 200:
-                            if type == "read":
-                                # We want to read the bytes for the manifest response.
-                                data = await response.read()
-                                return data
+                            if 300 > response.status >= 200:
+                                if type == "read":
+                                    # We want to read the bytes for the manifest response.
+                                    data = await response.read()
+                                    return data
 
-                            _LOG.debug(
-                                "{} Request success from {} with status {}".format(
-                                    method,
-                                    f"{url.REST_EP}/{route}",
-                                    data["Message"],
+                                _LOG.debug(
+                                    "{} Request success from {} with status {}".format(
+                                        method,
+                                        f"{url.REST_EP}/{route}",
+                                        response.status,
+                                    )
                                 )
-                            )
-                            try:
-                                return data["Response"]
+                                try:
+                                    return data["Response"]
 
-                            # In case we didn't find the Response key
-                            # its safer to just return the data.
-                            except KeyError:
-                                return data
+                                # In case we didn't find the Response key
+                                # its safer to just return the data.
+                                except KeyError:
+                                    return data
 
-                        await self._handle_err(response, msg, data["Message"])
+                            await self._handle_err(response, msg, data["Message"])
 
-            except aiohttp.ContentTypeError:
-                raise error.HTTPException(
-                    f"Expected json content but got {response.content_type=}, {response.real_url=!r}"
-                ) from None
+                except aiohttp.ContentTypeError:
+                    raise error.HTTPException(
+                        f"Expected json content but got {response.content_type=}, {response.real_url=!r}"
+                    ) from None
 
     @staticmethod
     @typing.final

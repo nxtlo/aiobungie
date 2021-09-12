@@ -26,10 +26,8 @@ from __future__ import annotations
 
 import asyncio
 import os
-from typing import Sequence
 import typing
 
-import pytest
 try:
     from dotenv import load_dotenv
     load_dotenv()
@@ -40,29 +38,36 @@ except (ImportError, KeyError):
 import aiobungie
 from aiobungie import crate
 
-
 client = aiobungie.Client(token)
+rest_client = aiobungie.RESTClient(token)
 MID = 4611686018484639825
 
-@pytest.mark.asyncio()
+def view(func: typing.Callable[[], typing.Any]) -> typing.Callable[..., typing.Any]:
+    import logging
+    log = logging.getLogger(__name__)
+    logging.basicConfig(level=logging.DEBUG)
+    log.debug(f"Func {func.__name__} Returns {func.__annotations__['return']} Passed.")
+    return lambda *args, **kwargs: func(*args, **kwargs)
+
+@view
 async def test_users() -> crate.user.BungieUser:
     u = await client.fetch_user(20315338)
     return u
 
 
-@pytest.mark.asyncio()
-async def test_user_themese() -> Sequence[crate.user.UserThemes]:
+@view
+async def test_user_themese() -> typing.Sequence[crate.user.UserThemes]:
     ut = await client.fetch_user_themes()
     return ut
 
 
-@pytest.mark.asyncio()
+@view
 async def test_hard_types() -> crate.user.HardLinkedMembership:
     uht = await client.fetch_hard_types(76561198141430157)
     return uht
 
 
-@pytest.mark.asyncio()
+@view
 async def test_clan_from_id() -> crate.Clan:
     c = await client.fetch_clan_from_id(4389205)
     members = await c.fetch_members()
@@ -71,41 +76,41 @@ async def test_clan_from_id() -> crate.Clan:
     return c
 
 
-@pytest.mark.asyncio()
+@view
 async def test_clan() -> crate.Clan:
-    c = await client.fetch_clan("Fast")
+    c = await client.fetch_clan("Nuanceㅤ ")
     members = await c.fetch_members()
-    member = await c.fetch_member("Bj")
+    member = await c.fetch_member("Hizxr")
     print(members, member)
     return c
 
 
-@pytest.mark.asyncio()
+@view
 async def test_fetch_clan_member() -> crate.ClanMember:
     m = await client.fetch_clan_member(4389205, "Fate")
     return m
 
 
-@pytest.mark.asyncio()
-async def test_fetch_clan_members() -> Sequence[crate.ClanMember]:
+@view
+async def test_fetch_clan_members() -> typing.Sequence[crate.ClanMember]:
     ms = await client.fetch_clan_members(4389205)
     return ms
 
 
-@pytest.mark.asyncio()
+@view
 async def test_fetch_inventory_item() -> crate.InventoryEntity:
     i = await client.fetch_inventory_item(1397707366)
     print(i.about, i.damage, i.description, i.icon)
     return i
 
 
-@pytest.mark.asyncio()
+@view
 async def test_fetch_app() -> crate.Application:
     a = await client.fetch_app(33226)
     return a
 
 
-@pytest.mark.asyncio()
+@view
 async def test_profile() -> crate.Profile:
     pf = await client.fetch_profile(MID, aiobungie.MembershipType.STEAM)
     warlock = await pf.warlock()
@@ -115,29 +120,44 @@ async def test_profile() -> crate.Profile:
     return pf
 
 
-@pytest.mark.asyncio()
+@view
 async def test_player() -> typing.Sequence[typing.Optional[crate.DestinyUser]]:
     p = await client.fetch_player("Datto#6446")
     return p
 
 
-@pytest.mark.asyncio()
+@view
 async def test_char() -> crate.Character:
     c = await client.fetch_character(
         MID, aiobungie.MembershipType.STEAM, aiobungie.Class.WARLOCK
     )
     return c
 
-@pytest.mark.asyncio()
+@view
 async def test_membership_types_from_id() -> crate.User:
     u = await client.fetch_membership_from_id(MID)
     return u
 
+@view
+async def test_rest() -> None:
+    my_player = await rest_client.fetch_player("Fate怒#4275")
+    print(*my_player)
 
-@pytest.mark.asyncio()
 async def main() -> None:
     coros = [
         test_player(),
+        test_users(),
+        test_user_themese(),
+        test_hard_types(),
+        test_clan(),
+        test_clan_from_id(),
+        test_fetch_clan_member(),
+        test_fetch_clan_members(),
+        test_fetch_inventory_item(),
+        test_profile(),
+        test_char(),
+        test_membership_types_from_id(),
+        test_rest(),
     ]
     print(await asyncio.gather(*coros))
 

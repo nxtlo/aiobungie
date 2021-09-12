@@ -90,7 +90,7 @@ class Deserialize:
 
     def deserialize_members(
         self, data: typing.Union[JsonDict, JsonList], *, bound: bool = False
-    ) -> typing.Sequence[user.DestinyUser | None]:
+    ) -> typing.Sequence[typing.Optional[user.DestinyUser]]:
         xbox: int = 0
         psn: int = 1
         steam: int = 2
@@ -242,7 +242,7 @@ class Deserialize:
 
     def deserialize_player(
         self, payload: JsonList, /
-    ) -> typing.Sequence[user.DestinyUser | None]:
+    ) -> typing.Sequence[typing.Optional[user.DestinyUser]]:
         if payload is None:
             raise error.PlayerNotFound("Player was not found.") from None
 

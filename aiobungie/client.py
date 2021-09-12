@@ -266,7 +266,7 @@ class Client(traits.RESTful):
 
     async def fetch_player(
         self, name: str, type: MembershipType = MembershipType.ALL, /
-    ) -> typing.Sequence[crate.user.DestinyUser | None]:
+    ) -> typing.Sequence[typing.Optional[crate.user.DestinyUser]]:
         """Fetch a Destiny 2 Player.
 
         Parameters

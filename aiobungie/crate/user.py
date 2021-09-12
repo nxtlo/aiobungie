@@ -294,7 +294,7 @@ class User:
     .. versionadded:: 0.2.5
     """
 
-    destiny: typing.Sequence[DestinyUser | None] = attr.field(repr=True)
+    destiny: typing.Sequence[typing.Optional[DestinyUser]] = attr.field(repr=True)
     """A sequence of the user's Destiny memberships.
 
     .. versionadded:: 0.2.5

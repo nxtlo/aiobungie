@@ -47,6 +47,7 @@ class RESTInterface(abc.ABC):
 
     __slots__: typing.Sequence[str] = ()
 
+    @abc.abstractmethod
     def static_search(self, path: str, **kwargs: typing.Any) -> ResponseSig[typing.Any]:
         """Raw http search given a valid bungie endpoint.
 
@@ -65,6 +66,7 @@ class RESTInterface(abc.ABC):
             Any object.
         """
 
+    @abc.abstractmethod
     async def fetch_manifest(self) -> bytes:
         """Access The bungie Manifest.
 
@@ -74,6 +76,7 @@ class RESTInterface(abc.ABC):
             The bytes to read and write the manifest database.
         """
 
+    @abc.abstractmethod
     async def fetch_manifest_path(self) -> str:
         """Return a string of the bungie manifest database url.
 
@@ -83,6 +86,7 @@ class RESTInterface(abc.ABC):
             A downloadable url for the bungie manifest database.
         """
 
+    @abc.abstractmethod
     def fetch_user(self, id: int) -> ResponseSig[helpers.JsonDict]:
         """Fetch a Bungie user by their id.
 
@@ -102,6 +106,7 @@ class RESTInterface(abc.ABC):
             The user was not found.
         """
 
+    @abc.abstractmethod
     def fetch_user_themes(self) -> ResponseSig[helpers.JsonList]:
         """Fetch all available user themes.
 
@@ -111,6 +116,7 @@ class RESTInterface(abc.ABC):
             A JSON array of user themes.
         """
 
+    @abc.abstractmethod
     def fetch_hard_linked(
         self,
         credential: int,
@@ -135,6 +141,7 @@ class RESTInterface(abc.ABC):
             A JSON object of the found user hard linked types.
         """
 
+    @abc.abstractmethod
     def fetch_membership_from_id(
         self, id: int, type: enums.MembershipType = enums.MembershipType.NONE, /
     ) -> ResponseSig[JsonDict]:
@@ -158,6 +165,7 @@ class RESTInterface(abc.ABC):
             The requested user was not found.
         """
 
+    @abc.abstractmethod
     def fetch_profile(
         self,
         memberid: int,
@@ -185,6 +193,7 @@ class RESTInterface(abc.ABC):
             The provided membership type was invalid.
         """
 
+    @abc.abstractmethod
     def fetch_player(
         self, name: str, type: enums.MembershipType = enums.MembershipType.ALL, /
     ) -> ResponseSig[helpers.JsonList]:
@@ -217,6 +226,7 @@ class RESTInterface(abc.ABC):
             The provided membership type was invalid.
         """
 
+    @abc.abstractmethod
     def fetch_character(
         self, memberid: int, type: enums.MembershipType, /
     ) -> ResponseSig[helpers.JsonDict]:
@@ -243,6 +253,7 @@ class RESTInterface(abc.ABC):
             The provided membership type was invalid.
         """
 
+    @abc.abstractmethod
     def fetch_activity(
         self,
         member_id: int,
@@ -284,6 +295,7 @@ class RESTInterface(abc.ABC):
             The provided membership type was invalid.
         """
 
+    @abc.abstractmethod
     def fetch_post_activity(self, instance: int, /) -> ResponseSig[helpers.JsonDict]:
         """Fetch a post activity details.
 
@@ -302,6 +314,7 @@ class RESTInterface(abc.ABC):
             A JSON object of the post activity.
         """
 
+    @abc.abstractmethod
     def fetch_clan_from_id(self, id: int, /) -> ResponseSig[helpers.JsonDict]:
         """Fetch a Bungie Clan by its id.
 
@@ -321,6 +334,7 @@ class RESTInterface(abc.ABC):
             The clan was not found.
         """
 
+    @abc.abstractmethod
     def fetch_clan(
         self, name: str, /, type: enums.GroupType = enums.GroupType.CLAN
     ) -> ResponseSig[helpers.JsonDict]:
@@ -345,6 +359,7 @@ class RESTInterface(abc.ABC):
             The clan was not found.
         """
 
+    @abc.abstractmethod
     def fetch_clan_members(
         self,
         clan_id: int,
@@ -378,6 +393,7 @@ class RESTInterface(abc.ABC):
             The clan was not found.
         """
 
+    @abc.abstractmethod
     def fetch_inventory_item(self, hash: int, /) -> ResponseSig[JsonDict]:
         """Fetch a static inventory item entity given a its hash.
 
@@ -394,6 +410,7 @@ class RESTInterface(abc.ABC):
             A JSON array object of the inventory item.
         """
 
+    @abc.abstractmethod
     def fetch_app(self, appid: int, /) -> ResponseSig[JsonDict]:
         """Fetch a Bungie Application.
 

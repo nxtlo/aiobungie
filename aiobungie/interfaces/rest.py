@@ -31,14 +31,13 @@ import typing
 
 from aiobungie.internal import enums
 from aiobungie.internal import helpers
-from aiobungie.internal.helpers import JsonDict
 
 ResponseSigT = typing.TypeVar("ResponseSigT")
 """The type of the response signature."""
 
 ResponseSig = typing.Coroutine[typing.Any, typing.Any, ResponseSigT]
 """A type hint for a general coro method that returns a type
-that's mostly going to be on of `aiobungie.internal.helpers.JsonDict` or `aiobungie.internal.helpers.JsonList`
+that's mostly going to be on of `aiobungie.internal.helpers.JsonObject` or `aiobungie.internal.helpers.JsonArray`
 """
 
 
@@ -87,7 +86,7 @@ class RESTInterface(abc.ABC):
         """
 
     @abc.abstractmethod
-    def fetch_user(self, id: int) -> ResponseSig[helpers.JsonDict]:
+    def fetch_user(self, id: int) -> ResponseSig[helpers.JsonObject]:
         """Fetch a Bungie user by their id.
 
         Parameters
@@ -97,7 +96,7 @@ class RESTInterface(abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.internal.helpers.JsonDict]`
+        `ResponseSig[aiobungie.internal.helpers.JsonObject]`
             A JSON object of users objects.
 
         Raises
@@ -107,12 +106,33 @@ class RESTInterface(abc.ABC):
         """
 
     @abc.abstractmethod
-    def fetch_user_themes(self) -> ResponseSig[helpers.JsonList]:
+    def search_users(self, name: str, /) -> ResponseSig[helpers.JsonArray]:
+        """Search for users by their global name and return all users who share this name.
+
+        Parameters
+        ----------
+        name : `str`
+            The user name.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.internal.helpers.JsonArray]`
+            A JSON array of the found users.
+
+        Raises
+        ------
+        `aiobungie.NotFound`
+            The user(s) was not found.
+
+        """
+
+    @abc.abstractmethod
+    def fetch_user_themes(self) -> ResponseSig[helpers.JsonArray]:
         """Fetch all available user themes.
 
         Returns
         -------
-        `ResponseSig[aiobungie.internal.helpers.JsonList]`
+        `ResponseSig[aiobungie.internal.helpers.JsonArray]`
             A JSON array of user themes.
         """
 
@@ -122,7 +142,7 @@ class RESTInterface(abc.ABC):
         credential: int,
         type: enums.CredentialType = enums.CredentialType.STEAMID,
         /,
-    ) -> ResponseSig[helpers.JsonDict]:
+    ) -> ResponseSig[helpers.JsonObject]:
         """Gets any hard linked membership given a credential.
         Only works for credentials that are public just `aiobungie.CredentialType.STEAMID` right now.
         Cross Save aware.
@@ -137,14 +157,14 @@ class RESTInterface(abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.internal.helpers.JsonDict]`
+        `ResponseSig[aiobungie.internal.helpers.JsonObject]`
             A JSON object of the found user hard linked types.
         """
 
     @abc.abstractmethod
     def fetch_membership_from_id(
         self, id: int, type: enums.MembershipType = enums.MembershipType.NONE, /
-    ) -> ResponseSig[JsonDict]:
+    ) -> ResponseSig[helpers.JsonObject]:
         """Fetch Bungie user's memberships from their id.
 
         Parameters
@@ -156,7 +176,7 @@ class RESTInterface(abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.internal.helpers.JsonDict]`
+        `ResponseSig[aiobungie.internal.helpers.JsonObject]`
             A JSON object of the found user.
 
         Raises
@@ -171,7 +191,7 @@ class RESTInterface(abc.ABC):
         memberid: int,
         type: enums.MembershipType,
         /,
-    ) -> ResponseSig[helpers.JsonDict]:
+    ) -> ResponseSig[helpers.JsonObject]:
         """
         Fetche a bungie profile.
 
@@ -184,7 +204,7 @@ class RESTInterface(abc.ABC):
 
         Returns
         --------
-        `ResponseSig[aiobungie.internal.helpers.JsonDict]`
+        `ResponseSig[aiobungie.internal.helpers.JsonObject]`
             A JSON object of the found profile.
 
         Raises
@@ -196,7 +216,7 @@ class RESTInterface(abc.ABC):
     @abc.abstractmethod
     def fetch_player(
         self, name: str, type: enums.MembershipType = enums.MembershipType.ALL, /
-    ) -> ResponseSig[helpers.JsonList]:
+    ) -> ResponseSig[helpers.JsonArray]:
         """Fetch a Destiny 2 Player.
 
         Parameters
@@ -214,7 +234,7 @@ class RESTInterface(abc.ABC):
 
         Returns
         --------
-        `ResponseSig[aiobungie.internal.helpers.JsonList]`
+        `ResponseSig[aiobungie.internal.helpers.JsonArray]`
             A JSON array of the found players.
 
         Raises
@@ -229,7 +249,7 @@ class RESTInterface(abc.ABC):
     @abc.abstractmethod
     def fetch_character(
         self, memberid: int, type: enums.MembershipType, /
-    ) -> ResponseSig[helpers.JsonDict]:
+    ) -> ResponseSig[helpers.JsonObject]:
         """Fetch a Destiny 2 player's characters.
 
         Parameters
@@ -241,7 +261,7 @@ class RESTInterface(abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.internal.helpers.JsonDict]`
+        `ResponseSig[aiobungie.internal.helpers.JsonObject]`
             A JSON object of the requested character.
 
         Raises
@@ -263,7 +283,7 @@ class RESTInterface(abc.ABC):
         *,
         page: typing.Optional[int] = 1,
         limit: typing.Optional[int] = 1,
-    ) -> ResponseSig[helpers.JsonDict]:
+    ) -> ResponseSig[helpers.JsonObject]:
         """Fetch a Destiny 2 activity for the specified user id and character.
 
         Parameters
@@ -283,7 +303,7 @@ class RESTInterface(abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.internal.helpers.JsonDict]`
+        `ResponseSig[aiobungie.internal.helpers.JsonObject]`
             A JSON object of the player's activities.
 
         Raises
@@ -296,7 +316,7 @@ class RESTInterface(abc.ABC):
         """
 
     @abc.abstractmethod
-    def fetch_post_activity(self, instance: int, /) -> ResponseSig[helpers.JsonDict]:
+    def fetch_post_activity(self, instance: int, /) -> ResponseSig[helpers.JsonObject]:
         """Fetch a post activity details.
 
         .. warning::
@@ -310,12 +330,12 @@ class RESTInterface(abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.internal.helpers.JsonDict]`
+        `ResponseSig[aiobungie.internal.helpers.JsonObject]`
             A JSON object of the post activity.
         """
 
     @abc.abstractmethod
-    def fetch_clan_from_id(self, id: int, /) -> ResponseSig[helpers.JsonDict]:
+    def fetch_clan_from_id(self, id: int, /) -> ResponseSig[helpers.JsonObject]:
         """Fetch a Bungie Clan by its id.
 
         Parameters
@@ -325,7 +345,7 @@ class RESTInterface(abc.ABC):
 
         Returns
         --------
-        `ResponseSig[aiobungie.internal.helpers.JsonDict]`
+        `ResponseSig[aiobungie.internal.helpers.JsonObject]`
             A JSON object of the clan.
 
         Raises
@@ -337,7 +357,7 @@ class RESTInterface(abc.ABC):
     @abc.abstractmethod
     def fetch_clan(
         self, name: str, /, type: enums.GroupType = enums.GroupType.CLAN
-    ) -> ResponseSig[helpers.JsonDict]:
+    ) -> ResponseSig[helpers.JsonObject]:
         """Fetch a Clan by its name.
         This method will return the first clan found with given name name.
 
@@ -350,7 +370,7 @@ class RESTInterface(abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.internal.helpers.JsonDict]`
+        `ResponseSig[aiobungie.internal.helpers.JsonObject]`
             A JSON object of the clan.
 
         Raises
@@ -366,7 +386,7 @@ class RESTInterface(abc.ABC):
         type: enums.MembershipType = enums.MembershipType.NONE,
         name: typing.Optional[str] = None,
         /,
-    ) -> ResponseSig[helpers.JsonDict]:
+    ) -> ResponseSig[helpers.JsonObject]:
         """Fetch all Bungie Clan members. if no members found in the clan.
 
         Parameters
@@ -384,7 +404,7 @@ class RESTInterface(abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.internal.helpers.JsonDict]`
+        `ResponseSig[aiobungie.internal.helpers.JsonObject]`
             A JSON object of clan members object.
 
         Raises
@@ -394,7 +414,7 @@ class RESTInterface(abc.ABC):
         """
 
     @abc.abstractmethod
-    def fetch_inventory_item(self, hash: int, /) -> ResponseSig[JsonDict]:
+    def fetch_inventory_item(self, hash: int, /) -> ResponseSig[helpers.JsonObject]:
         """Fetch a static inventory item entity given a its hash.
 
         Parameters
@@ -406,12 +426,12 @@ class RESTInterface(abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.internal.helpers.JsonDict]`
+        `ResponseSig[aiobungie.internal.helpers.JsonObject]`
             A JSON array object of the inventory item.
         """
 
     @abc.abstractmethod
-    def fetch_app(self, appid: int, /) -> ResponseSig[JsonDict]:
+    def fetch_app(self, appid: int, /) -> ResponseSig[helpers.JsonObject]:
         """Fetch a Bungie Application.
 
         Parameters
@@ -421,6 +441,6 @@ class RESTInterface(abc.ABC):
 
         Returns
         --------
-        `ResponseSig[aiobungie.internal.helpers.JsonDict]`
+        `ResponseSig[aiobungie.internal.helpers.JsonObject]`
             A JSON object of the application.
         """

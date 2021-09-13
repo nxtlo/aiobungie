@@ -23,7 +23,7 @@
 
 from __future__ import annotations
 
-__all__ = ("Deserialize",)
+__all__ = ("Factory",)
 
 import datetime
 import logging
@@ -41,8 +41,8 @@ from aiobungie.internal import enums
 from aiobungie.internal import time
 from aiobungie.internal import traits
 from aiobungie.internal.assets import Image
-from aiobungie.internal.helpers import JsonDict
-from aiobungie.internal.helpers import JsonList
+from aiobungie.internal.helpers import JsonObject
+from aiobungie.internal.helpers import JsonArray
 from aiobungie.internal.helpers import NoneOr
 from aiobungie.internal.helpers import Undefined
 from aiobungie.internal.helpers import UndefinedOr
@@ -52,17 +52,16 @@ from aiobungie.internal.helpers import just
 _LOG: typing.Final[logging.Logger] = logging.getLogger(__name__)
 
 
-class Deserialize:
-    """The base Deserialization class for all aiobungie crate."""
-
-    # This is actually inspired by hikari's entity factory.
+class Factory:
+    """The base Deserialization factory class for all aiobungie objects."""
+    # This is kinda inspired by hikari's entity factory :p.
 
     __slots__: typing.Sequence[str] = ("_net",)
 
     def __init__(self, net: traits.Netrunner) -> None:
         self._net = net
 
-    def deserialize_bungie_user(self, data: JsonDict) -> user.BungieUser:
+    def deserialize_bungie_user(self, data: JsonObject) -> user.BungieUser:
         return user.BungieUser(
             id=int(data["membershipId"]),
             created_at=time.clean_date(data["firstAccess"]),
@@ -89,8 +88,8 @@ class Deserialize:
     # TODO: Make this return one obj at once?
 
     def deserialize_members(
-        self, data: typing.Union[JsonDict, JsonList], *, bound: bool = False
-    ) -> typing.Sequence[typing.Optional[user.DestinyUser]]:
+        self, data: typing.Union[JsonObject, JsonArray], *, bound: bool = False
+    ) -> typing.Sequence[user.DestinyUser]:
         xbox: int = 0
         psn: int = 1
         steam: int = 2
@@ -100,7 +99,7 @@ class Deserialize:
         # other objects we have to check if the data was
         # a json object or a json array of objects.
 
-        raw_members: typing.Union[JsonList, JsonDict, dict[int, typing.Any]] = data
+        raw_members: typing.Union[JsonArray, JsonObject, dict[int, typing.Any]] = data
 
         if bound:
             members_ = raw_members  # type: ignore
@@ -117,7 +116,7 @@ class Deserialize:
         stadia_obj: NoneOr[user.DestinyUser] = None  # type: ignore[name-defined]
         try:
             stadia_member = members_[stadia]  # type: ignore[index]
-        except IndexError:
+        except (KeyError, IndexError):
             pass
         else:
             stadia_member_types: list[enums.MembershipType] = []
@@ -140,7 +139,7 @@ class Deserialize:
         xbox_obj: NoneOr[user.DestinyUser] = None  # type: ignore[name-defined]
         try:
             xbox_member = members_[xbox]  # type: ignore[index]
-        except IndexError:
+        except (KeyError, IndexError):
             pass
         else:
             xbox_member_types: list[enums.MembershipType] = []
@@ -163,7 +162,7 @@ class Deserialize:
         steam_obj: NoneOr[user.DestinyUser] = None  # type: ignore[name-defined]
         try:
             steam_member = members_[steam]  # type: ignore[index]
-        except IndexError:
+        except (KeyError, IndexError):
             pass
         else:
             steam_member_types: list[enums.MembershipType] = []
@@ -186,7 +185,7 @@ class Deserialize:
         psn_obj: NoneOr[user.DestinyUser] = None  # type: ignore[name-defined]
         try:
             psn_member = members_[psn]  # type: ignore[index]
-        except IndexError:
+        except (KeyError, IndexError):
             pass
         else:
             psn_member_types: list[enums.MembershipType] = []
@@ -206,16 +205,38 @@ class Deserialize:
                 types=psn_member_types,
             )
 
-        return [xbox_obj, psn_obj, steam_obj, stadia_obj]
+        vec: list[user.DestinyUser] = []
+        objs = [xbox_obj, psn_obj, steam_obj, stadia_obj]
+        # No point of returning NoneType objects.
+        for obj in objs:
+            if obj is None:
+                continue
+            vec.append(obj)
+        return vec
 
-    def deserialize_user(self, data: JsonDict) -> user.User:
+    def deserialize_user(self, data: JsonObject) -> user.User:
         return user.User(
             bungie=self.deserialize_bungie_user(data["bungieNetUser"]),
             destiny=self.deserialize_members(data),
         )
 
+    def deseialize_found_users(self, payload: JsonObject) -> typing.Sequence[user.DestinyUser]:
+        result = payload['searchResults']
+        if result is None:
+            raise error.NotFound("User not found.")
+
+        vec: list[user.DestinyUser] = []
+        for player in result:
+            # TODO: Figuire out how to merge this with DestinyUser objects.
+            #  name: UndefinedOr[str] = player.get("bungieGlobalDisplayName", Undefined)
+            #  code: NoneOr[int] = player.get("bungieGlobalDisplayNameCode", None)
+            #  bungie_id: UndefinedOr[int] = player.get('bungieNetMembershipId', Undefined)
+            for mship in self.deserialize_members(player):
+                vec.append(mship)
+        return vec
+
     @staticmethod
-    def set_themese_attrs(payload: JsonList, /) -> typing.Collection[user.UserThemes]:
+    def set_themese_attrs(payload: JsonArray, /) -> typing.Collection[user.UserThemes]:
         if isinstance(payload, list):
             if payload is None:
                 raise ValueError("No themes found.")
@@ -236,19 +257,19 @@ class Deserialize:
         return theme_map.values()
 
     def deserialize_user_themes(
-        self, payload: JsonList
+        self, payload: JsonArray
     ) -> typing.Sequence[user.UserThemes]:
         return list(self.set_themese_attrs(payload))
 
     def deserialize_player(
-        self, payload: JsonList, /
-    ) -> typing.Sequence[typing.Optional[user.DestinyUser]]:
+        self, payload: JsonArray, /
+    ) -> typing.Sequence[user.DestinyUser]:
         if payload is None:
             raise error.PlayerNotFound("Player was not found.") from None
 
         return self.deserialize_members(payload, bound=True)
 
-    def deseialize_clan_owner(self, data: JsonDict) -> clans.ClanOwner:
+    def deseialize_clan_owner(self, data: JsonObject) -> clans.ClanOwner:
         id = data["destinyUserInfo"]["membershipId"]
         name: UndefinedOr[str] = data["destinyUserInfo"].get(
             "bungieGlobalDisplayName", Undefined
@@ -277,7 +298,7 @@ class Deserialize:
             code=data.get("bungieGlobalDisplayNameCode", None),
         )
 
-    def deseialize_clan(self, data: JsonDict) -> clans.Clan:
+    def deseialize_clan(self, data: JsonObject) -> clans.Clan:
         id = data["detail"]["groupId"]
         name = data["detail"]["name"]
         created_at = data["detail"]["creationDate"]
@@ -319,7 +340,7 @@ class Deserialize:
             owner=self.deseialize_clan_owner(data["founder"]),
         )
 
-    def deserialize_clan_member(self, data: JsonDict, /) -> clans.ClanMember:
+    def deserialize_clan_member(self, data: JsonObject, /) -> clans.ClanMember:
 
         if (payload := data["results"]) is not None:
             try:
@@ -368,7 +389,7 @@ class Deserialize:
         )
 
     def set_clan_members_attrs(
-        self, data: JsonDict, /
+        self, data: JsonObject, /
     ) -> typing.Collection[clans.ClanMember]:
         member_view: dict[int, clans.ClanMember] = {}
         if (payload := data["results"]) is not None:
@@ -420,11 +441,11 @@ class Deserialize:
         return member_view.values()
 
     def deserialize_clan_members(
-        self, data: JsonDict, /
+        self, data: JsonObject, /
     ) -> typing.Sequence[clans.ClanMember]:
         return list(self.set_clan_members_attrs(data))
 
-    def deserialize_app_owner(self, payload: JsonDict) -> app.ApplicationOwner:
+    def deserialize_app_owner(self, payload: JsonObject) -> app.ApplicationOwner:
         return app.ApplicationOwner(
             name=payload.get("bungieGlobalDisplayName", Undefined),
             id=int(payload["membershipId"]),
@@ -434,7 +455,7 @@ class Deserialize:
             code=payload.get("bungieGlobalDisplayNameCode", None),
         )
 
-    def deserialize_app(self, payload: JsonDict) -> app.Application:
+    def deserialize_app(self, payload: JsonObject) -> app.Application:
         return app.Application(
             id=int(payload["applicationId"]),
             name=payload["name"],
@@ -448,7 +469,7 @@ class Deserialize:
         )
 
     def deserialize_character(
-        self, payload: JsonDict, *, chartype: enums.Class
+        self, payload: JsonObject, *, chartype: enums.Class
     ) -> character.Character:
 
         try:
@@ -489,7 +510,7 @@ class Deserialize:
             stats=payload["stats"],
         )
 
-    def deserialize_profile(self, payload: JsonDict, /) -> profile.Profile:
+    def deserialize_profile(self, payload: JsonObject, /) -> profile.Profile:
 
         payload = payload["profile"]["data"]
         id = int(payload["userInfo"]["membershipId"])
@@ -512,12 +533,12 @@ class Deserialize:
         )
 
     def deserialize_inventory_entity(
-        self, payload: JsonDict, /
+        self, payload: JsonObject, /
     ) -> entity.InventoryEntity:
         try:
             # All Bungie entities has a display propetie
             # if we don't find it means the entity was not found.
-            props: JsonDict = payload["displayProperties"]
+            props: JsonObject = payload["displayProperties"]
         except KeyError:
             raise error.NotFound("The entity inventory item hash is invalid") from None
 
@@ -527,7 +548,7 @@ class Deserialize:
         # and for some it doesn't exists
 
         if (raw_inventory := payload.get("inventory", {})) is not None:
-            inventory: JsonDict = raw_inventory
+            inventory: JsonObject = raw_inventory
 
         # Entity tier type. Most entities have a tier
         # and some doesn't exists so we have to check.
@@ -571,7 +592,7 @@ class Deserialize:
             summary_hash: int = int(raw_summary_hash)  # type: ignore
 
         if (raw_stats := payload.get("stats", {})) is not None:
-            stats: JsonDict = raw_stats
+            stats: JsonObject = raw_stats
 
         block = enums.AmmoType.NONE
         if (ammo := payload.get("equippingBlock")) is not None:
@@ -608,7 +629,7 @@ class Deserialize:
         )
 
     def deserialize_activity(
-        self, payload: JsonDict, /, *, limit: typing.Optional[int] = 1
+        self, payload: JsonObject, /, *, limit: typing.Optional[int] = 1
     ) -> activity.Activity:
 
         if (activs := payload.get("activities")) is not None:

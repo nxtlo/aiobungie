@@ -48,7 +48,8 @@ ResponseSigT = typing.TypeVar("ResponseSigT")
 
 ResponseSig = typing.Coroutine[typing.Any, typing.Any, ResponseSigT]
 """A type hint for a general coro method that returns a type
-that's mostly going to be on of `aiobungie.internal.helpers.JsonDict` or `aiobungie.internal.helpers.JsonList`
+that's mostly going to be on of `aiobungie.internal.helpers.JsonObject`
+or `aiobungie.internal.helpers.JsonArray`
 """
 
 _LOG: typing.Final[logging.Logger] = logging.getLogger("aiobungie.rest")
@@ -121,13 +122,13 @@ class RESTClient(interfaces.RESTInterface):
         A valid application token from Bungie's developer portal.
     """
 
-    __slots__: typing.Sequence[str] = ("_token", "__connector")
+    __slots__: typing.Sequence[str] = ("_token", "_kwargs")
 
     def __init__(
-        self, token: str, connector: typing.Optional[aiohttp.BaseConnector] = None
+        self, token: str, /, **kwargs: typing.Any
     ) -> None:
+        self._kwargs = kwargs
         self._token: str = token
-        self.__connector = connector
 
     @typing.final
     async def _fetch(
@@ -135,7 +136,7 @@ class RESTClient(interfaces.RESTInterface):
         method: str,
         route: str,
         base: bool = False,
-        type: typing.Literal["json", typing.Literal["read"]] = "json",
+        type: typing.Literal["json", "read"] = "json",
         **kwargs: typing.Any,
     ) -> typing.Any:
 
@@ -153,7 +154,7 @@ class RESTClient(interfaces.RESTInterface):
         while True:
             async with PreLock():
                 try:
-                    async with aiohttp.ClientSession(connector=self.__connector) as session:
+                    async with aiohttp.ClientSession() as session:
                         async with session.request(
                             method=method,
                             url=f"{url.REST_EP if base is False else url.BASE}/{route}",
@@ -207,15 +208,15 @@ class RESTClient(interfaces.RESTInterface):
     ) -> typing.NoReturn:
         raise await handle_errors(response, msg, long)
 
-    def fetch_user(self, id: int) -> ResponseSig[helpers.JsonDict]:
+    def fetch_user(self, id: int) -> ResponseSig[helpers.JsonObject]:
         return self._fetch("GET", f"User/GetBungieNetUserById/{id}/")
 
-    def fetch_user_themes(self) -> ResponseSig[helpers.JsonList]:
+    def fetch_user_themes(self) -> ResponseSig[helpers.JsonArray]:
         return self._fetch("GET", "User/GetAvailableThemes/")
 
     def fetch_membership_from_id(
         self, id: int, type: enums.MembershipType = enums.MembershipType.NONE, /
-    ) -> ResponseSig[helpers.JsonDict]:
+    ) -> ResponseSig[helpers.JsonObject]:
         return self._fetch("GET", f"User/GetMembershipsById/{id}/{type}")
 
     def static_search(self, path: str, **kwargs: typing.Any) -> ResponseSig[typing.Any]:
@@ -223,25 +224,28 @@ class RESTClient(interfaces.RESTInterface):
 
     def fetch_player(
         self, name: str, type: enums.MembershipType = enums.MembershipType.ALL, /
-    ) -> ResponseSig[helpers.JsonList]:
+    ) -> ResponseSig[helpers.JsonArray]:
         return self._fetch(
             "GET", f"Destiny2/SearchDestinyPlayer/{int(type)}/{quote(name)}/"
         )
 
-    def fetch_clan_from_id(self, id: int) -> ResponseSig[helpers.JsonDict]:
+    def search_users(self, name: str, /) -> ResponseSig[helpers.JsonArray]:
+        return self._fetch("GET", f"User/Search/Prefix/{name}/0")
+
+    def fetch_clan_from_id(self, id: int) -> ResponseSig[helpers.JsonObject]:
         return self._fetch("GET", f"GroupV2/{id}")
 
     def fetch_clan(
         self, name: str, type: enums.GroupType = enums.GroupType.CLAN
-    ) -> ResponseSig[helpers.JsonDict]:
+    ) -> ResponseSig[helpers.JsonObject]:
         return self._fetch("GET", f"GroupV2/Name/{name}/{int(type)}")
 
-    def fetch_app(self, appid: int, /) -> ResponseSig[helpers.JsonDict]:
+    def fetch_app(self, appid: int, /) -> ResponseSig[helpers.JsonObject]:
         return self._fetch("GET", f"App/Application/{appid}")
 
     def fetch_character(
         self, memberid: int, type: enums.MembershipType, /
-    ) -> ResponseSig[helpers.JsonDict]:
+    ) -> ResponseSig[helpers.JsonObject]:
         return self._fetch(
             "GET",
             f"Destiny2/{int(type)}/Profile/{memberid}/?components={int(enums.Component.CHARACTERS)}",
@@ -264,7 +268,7 @@ class RESTClient(interfaces.RESTInterface):
             f"/?mode={int(mode)}&count={limit}&page={page}",
         )
 
-    def fetch_post_activity(self, instance: int, /) -> ResponseSig[helpers.JsonDict]:
+    def fetch_post_activity(self, instance: int, /) -> ResponseSig[helpers.JsonObject]:
         # return self._fetch("GET", f"Destiny2/Stats/PostGameCarnageReport/{instance}")
         raise NotImplementedError
 
@@ -275,16 +279,16 @@ class RESTClient(interfaces.RESTInterface):
 
     def fetch_profile(
         self, memberid: int, type: enums.MembershipType, /
-    ) -> ResponseSig[helpers.JsonDict]:
+    ) -> ResponseSig[helpers.JsonObject]:
         return self._fetch(
             "GET",
             f"Destiny2/{int(type)}/Profile/{int(memberid)}/?components={int(enums.Component.PROFILE)}",
         )
 
-    def fetch_entity(self, type: str, hash: int) -> ResponseSig[helpers.JsonDict]:
+    def fetch_entity(self, type: str, hash: int) -> ResponseSig[helpers.JsonObject]:
         return self._fetch("GET", route=f"Destiny2/Manifest/{type}/{hash}")
 
-    def fetch_inventory_item(self, hash: int) -> ResponseSig[helpers.JsonDict]:
+    def fetch_inventory_item(self, hash: int) -> ResponseSig[helpers.JsonObject]:
         return self.fetch_entity("DestinyInventoryItemDefinition", hash)
 
     def fetch_clan_members(
@@ -293,7 +297,7 @@ class RESTClient(interfaces.RESTInterface):
         type: enums.MembershipType = enums.MembershipType.NONE,
         name: typing.Optional[str] = None,
         /,
-    ) -> ResponseSig[helpers.JsonDict]:
+    ) -> ResponseSig[helpers.JsonObject]:
         return self._fetch(
             "GET",
             f"/GroupV2/{id}/Members/?memberType={int(type)}&nameSearch={name if name else ''}&currentpage=1",
@@ -304,7 +308,7 @@ class RESTClient(interfaces.RESTInterface):
         credential: int,
         type: enums.CredentialType = enums.CredentialType.STADIAID,
         /,
-    ) -> ResponseSig[helpers.JsonDict]:
+    ) -> ResponseSig[helpers.JsonObject]:
         return self._fetch(
             "GET",
             f"User/GetMembershipFromHardLinkedCredential/{int(type)}/{credential}/",

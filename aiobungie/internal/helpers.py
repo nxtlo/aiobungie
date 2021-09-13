@@ -27,8 +27,8 @@ from __future__ import annotations
 
 __all__ = (
     "deprecated",
-    "JsonDict",
-    "JsonList",
+    "JsonObject",
+    "JsonArray",
     "Undefined",
     "UndefinedOr",
     "UndefinedType",
@@ -43,19 +43,19 @@ import inspect
 import typing
 import warnings
 
-JsonDict = typing.Dict[str, typing.Any]
+JsonObject = typing.Dict[str, typing.Any]
 """A json like dict of string key and any value.
 
 i.e., {"Key": 1, "Key2": "Value"}
 """
 
-JsonList = typing.List[typing.Dict[str, typing.Any]]
+JsonArray = typing.List[typing.Dict[str, typing.Any]]
 """A json like list of dicts of string key and any value
 
 i.e., [{"Key": 1}, {"Key2": "Value"}]
 """
 
-Unknown: str = ""
+Unknown: typing.Final[str] = ""
 """Stuff that are empty strings."""
 
 T = typing.TypeVar("T", covariant=True)

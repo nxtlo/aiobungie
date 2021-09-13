@@ -54,20 +54,21 @@ class Client(traits.RESTful):
         Your Bungie's API key or Token from the developer's portal.
     """
 
-    __slots__ = ("_rest", "_serialize", "_token", "_loop")
+    __slots__ = ("_rest", "_serialize", "_token", "_loop", "_kwargs")
 
-    def __init__(self, token: str, **kwargs: typing.Any) -> None:
+    def __init__(self, token: str, /, **kwargs: typing.Any) -> None:
         self._loop: asyncio.AbstractEventLoop = helpers.get_or_make_loop()
+        self._kwargs = kwargs
 
         if not token:
             raise ValueError("Missing the API key!")
 
-        self._rest = rest_.RESTClient(token=token)
-        self._serialize = serialize_.Deserialize(self)
+        self._rest = rest_.RESTClient(token)
+        self._serialize = serialize_.Factory(self)
         self._token = token  # We need the token For Manifest.
 
     @property
-    def serialize(self) -> serialize_.Deserialize:
+    def serialize(self) -> serialize_.Factory:
         return self._serialize
 
     @property
@@ -153,6 +154,11 @@ class Client(traits.RESTful):
         payload = await self.rest.fetch_user(id)
         assert isinstance(payload, dict)
         return self.serialize.deserialize_bungie_user(payload)
+
+    async def search_users(self, name: str, /) -> typing.Sequence[crate.DestinyUser]:
+        payload = await self.rest.search_users(name)
+        assert isinstance(payload, dict)
+        return self.serialize.deseialize_found_users(payload)
 
     async def fetch_user_themes(self) -> typing.Sequence[crate.user.UserThemes]:
         """Fetch all available user themes.
@@ -266,7 +272,7 @@ class Client(traits.RESTful):
 
     async def fetch_player(
         self, name: str, type: MembershipType = MembershipType.ALL, /
-    ) -> typing.Sequence[typing.Optional[crate.user.DestinyUser]]:
+    ) -> typing.Sequence[crate.user.DestinyUser]:
         """Fetch a Destiny 2 Player.
 
         Parameters

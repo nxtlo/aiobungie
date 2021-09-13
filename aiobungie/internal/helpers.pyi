@@ -15,11 +15,11 @@ from typing import Union as __Union
 
 T = __TypeVar("T", covariant=True)
 
-JsonDict = __Dict[str, __Any]
-JsonList = __List[__Dict[str, __Any]]
+JsonObject = __Dict[str, __Any]
+JsonArray = __List[__Dict[str, __Any]]
 NoneOr = __Union[T, None]
 
-Unknown: str = ""
+Unknown: __Final[str]
 
 def just(lst: list[dict[str, __Any]], lookup: str) -> list[__Any]: ...
 def deprecated(func: __Callable[..., __Any]) -> __Callable[..., None]: ...
@@ -30,6 +30,7 @@ class UndefinedType:
     def __repr__(self) -> str: ...
     def __str__(self) -> str: ...
     def __new__(cls) -> UndefinedType: ...
+
 
 Undefined: __Final[UndefinedType]
 

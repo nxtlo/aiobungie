@@ -46,12 +46,12 @@ class Netrunner(typing.Protocol):
 
 @typing.runtime_checkable
 class Serializable(typing.Protocol):
-    """A protocol that uses `aiobungie.internal.serialize.Deserialize` for deseializing objects."""
+    """A protocol that uses `aiobungie.internal.serialize.Factory` for deseializing objects."""
 
     __slots__: typing.Sequence[str] = ()
 
     @property
-    def serialize(self) -> serialize_.Deserialize:
+    def serialize(self) -> serialize_.Factory:
         """A property that returns a deserializer object for the client."""
 
 

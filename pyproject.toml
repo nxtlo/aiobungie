@@ -36,7 +36,7 @@ aiohttp = "3.7.4.post0"
 attrs = "21.2.0"
 
 [tool.poetry.dev-dependencies]
-black = "21.8b0"
+black = "21.9b0"
 mypy = "0.910"
 nox = "2021.6.12"
 pdoc3 = "0.10.0"

@@ -16,7 +16,7 @@ from typing import Union as __Union
 T = __TypeVar("T", covariant=True)
 
 JsonObject = __Dict[str, __Any]
-JsonArray = __List[__Dict[str, __Any]]
+JsonArray = __List[__Any]
 NoneOr = __Union[T, None]
 
 Unknown: __Final[str]
@@ -30,7 +30,6 @@ class UndefinedType:
     def __repr__(self) -> str: ...
     def __str__(self) -> str: ...
     def __new__(cls) -> UndefinedType: ...
-
 
 Undefined: __Final[UndefinedType]
 

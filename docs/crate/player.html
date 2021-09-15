@@ -517,19 +517,16 @@ from __future__ import annotations
 __all__ = (&#34;Player&#34;,)
 
 
-import typing
-
 import attr
 
-from aiobungie.crate.user import UserLike
+from aiobungie.crate import user
 from aiobungie.internal import Image
 from aiobungie.internal import helpers
-from aiobungie.internal import traits
 from aiobungie.internal.enums import MembershipType
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
-class Player(UserLike):
+class Player(user.DestinyUser):
     &#34;&#34;&#34;Represents a Bungie Destiny 2 Player.&#34;&#34;&#34;
 
     icon: Image = attr.field(repr=False, hash=False, eq=False)
@@ -548,8 +545,7 @@ class Player(UserLike):
     &#34;&#34;&#34;The profile&#39;s membership type.&#34;&#34;&#34;
 
     code: helpers.NoneOr[int] = attr.field(repr=True)
-    &#34;&#34;&#34;The clan member&#39;s bungie display name code
-    This is new and was added in Season of the lost update
+    &#34;&#34;&#34;The clan member&#39;s bungie display name code. This can be `None` if not found.
 
     .. versionadded:: 0.2.5
     &#34;&#34;&#34;
@@ -567,24 +563,12 @@ class Player(UserLike):
     &#34;&#34;&#34;
 
     @property
-    def unique_name(self) -&gt; helpers.NoneOr[str]:
-        &#34;&#34;&#34;The user&#39;s unique display name code.
-        This can be None if the user hasn&#39;t logged in after season of the lost update.
+    def unique_name(self) -&gt; str:
+        &#34;&#34;&#34;The user&#39;s unique name.
 
         .. versionadded:: 0.2.5
         &#34;&#34;&#34;
-        return f&#34;{self.name}#{self.code}&#34;
-
-    @property
-    def net(self) -&gt; traits.Netrunner:
-        &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
-        return self.net
-
-    @property
-    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        &#34;&#34;&#34;Returns a dict object of the player.&#34;&#34;&#34;
-
-        return attr.asdict(self)</code></pre>
+        return f&#34;{self.name}#{self.code}&#34;</code></pre>
                 </details>
             </section>
             <section>
@@ -598,7 +582,7 @@ class Player(UserLike):
                 <dl>
                     <dt id="aiobungie.crate.player.Player"><code class="flex name class">
 <span>class <span class="ident">Player</span></span>
-<span>(</span><span>*, icon: Image, id: int, name: str, is_public: bool, type: MembershipType, code: helpers.NoneOr[int], crossave_override: int, types: list[MembershipType])</span>
+<span>(</span><span>*, last_seen_name: str, icon: Image, id: int, name: str, is_public: bool, type: MembershipType, code: helpers.NoneOr[int], crossave_override: int, types: list[MembershipType])</span>
 </code></dt>
                     <dd>
                         <div class="desc">
@@ -610,7 +594,7 @@ class Player(UserLike):
                                 <span>Expand source code</span>
                             </summary>
                             <pre><code class="python">@attr.define(hash=False, kw_only=True, weakref_slot=False)
-class Player(UserLike):
+class Player(user.DestinyUser):
     &#34;&#34;&#34;Represents a Bungie Destiny 2 Player.&#34;&#34;&#34;
 
     icon: Image = attr.field(repr=False, hash=False, eq=False)
@@ -629,8 +613,7 @@ class Player(UserLike):
     &#34;&#34;&#34;The profile&#39;s membership type.&#34;&#34;&#34;
 
     code: helpers.NoneOr[int] = attr.field(repr=True)
-    &#34;&#34;&#34;The clan member&#39;s bungie display name code
-    This is new and was added in Season of the lost update
+    &#34;&#34;&#34;The clan member&#39;s bungie display name code. This can be `None` if not found.
 
     .. versionadded:: 0.2.5
     &#34;&#34;&#34;
@@ -648,52 +631,25 @@ class Player(UserLike):
     &#34;&#34;&#34;
 
     @property
-    def unique_name(self) -&gt; helpers.NoneOr[str]:
-        &#34;&#34;&#34;The user&#39;s unique display name code.
-        This can be None if the user hasn&#39;t logged in after season of the lost update.
+    def unique_name(self) -&gt; str:
+        &#34;&#34;&#34;The user&#39;s unique name.
 
         .. versionadded:: 0.2.5
         &#34;&#34;&#34;
-        return f&#34;{self.name}#{self.code}&#34;
-
-    @property
-    def net(self) -&gt; traits.Netrunner:
-        &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
-        return self.net
-
-    @property
-    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        &#34;&#34;&#34;Returns a dict object of the player.&#34;&#34;&#34;
-
-        return attr.asdict(self)</code></pre>
+        return f&#34;{self.name}#{self.code}&#34;</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
+                            <li><a title="aiobungie.crate.user.DestinyUser" href="user.html#aiobungie.crate.user.DestinyUser">DestinyUser</a></li>
                             <li><a title="aiobungie.crate.user.UserLike" href="user.html#aiobungie.crate.user.UserLike">UserLike</a></li>
                             <li>abc.ABC</li>
                         </ul>
                         <h3>Instance variables</h3>
                         <dl>
-                            <dt id="aiobungie.crate.player.Player.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Returns a dict object of the player.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-    &#34;&#34;&#34;Returns a dict object of the player.&#34;&#34;&#34;
-
-    return attr.asdict(self)</code></pre>
-                                </details>
-                            </dd>
                             <dt id="aiobungie.crate.player.Player.code"><code class="name">var <span class="ident">code</span> : Optional[None]</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>The clan member's bungie display name code This is new and was added in Season of the lost update</p>
+                                    <p>The clan member's bungie display name code. This can be <code>None</code> if not found.</p>
                                     <div class="admonition versionadded">
                                         <p class="admonition-title">Added in version:&ensp;0.2.5</p>
                                     </div>
@@ -726,11 +682,21 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                     <p>The player's profile privacy.</p>
                                 </div>
                             </dd>
+                            <dt id="aiobungie.crate.player.Player.last_seen_name"><code class="name">var <span class="ident">last_seen_name</span> : str</code></dt>
+                            <dd>
+                                <p class="inheritance">
+                                    <em>Inherited from:</em>
+                                    <code><a title="aiobungie.crate.user.DestinyUser" href="user.html#aiobungie.crate.user.DestinyUser">DestinyUser</a></code>.<code><a title="aiobungie.crate.user.DestinyUser.last_seen_name" href="user.html#aiobungie.crate.user.DestinyUser.last_seen_name">last_seen_name</a></code>
+                                </p>
+                                <div class="desc inherited">
+                                    <p>The member's last seen display name. You may use this field if <code>DestinyUser.name</code> is <code>Undefined</code>.</p>
+                                </div>
+                            </dd>
                             <dt id="aiobungie.crate.player.Player.link"><code class="name">var <span class="ident">link</span> : str</code></dt>
                             <dd>
                                 <p class="inheritance">
                                     <em>Inherited from:</em>
-                                    <code><a title="aiobungie.crate.user.UserLike" href="user.html#aiobungie.crate.user.UserLike">UserLike</a></code>.<code><a title="aiobungie.crate.user.UserLike.link" href="user.html#aiobungie.crate.user.UserLike.link">link</a></code>
+                                    <code><a title="aiobungie.crate.user.DestinyUser" href="user.html#aiobungie.crate.user.DestinyUser">DestinyUser</a></code>.<code><a title="aiobungie.crate.user.DestinyUser.link" href="user.html#aiobungie.crate.user.DestinyUser.link">link</a></code>
                                 </p>
                                 <div class="desc inherited">
                                     <p>The user like's profile link.</p>
@@ -741,21 +707,6 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                 <div class="desc">
                                     <p>The player's name</p>
                                 </div>
-                            </dd>
-                            <dt id="aiobungie.crate.player.Player.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.traits.Netrunner" href="./internal/traits.html#aiobungie.internal.traits.Netrunner">Netrunner</a></code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>A network state used for making external requests.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def net(self) -&gt; traits.Netrunner:
-    &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
-    return self.net</code></pre>
-                                </details>
                             </dd>
                             <dt id="aiobungie.crate.player.Player.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
                             <dd>
@@ -772,10 +723,10 @@ def net(self) -&gt; traits.Netrunner:
                                     </div>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.player.Player.unique_name"><code class="name">var <span class="ident">unique_name</span> : Optional[str]</code></dt>
+                            <dt id="aiobungie.crate.player.Player.unique_name"><code class="name">var <span class="ident">unique_name</span> : str</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>The user's unique display name code. This can be None if the user hasn't logged in after season of the lost update.</p>
+                                    <p>The user's unique name.</p>
                                     <div class="admonition versionadded">
                                         <p class="admonition-title">Added in version:&ensp;0.2.5</p>
                                     </div>
@@ -785,9 +736,8 @@ def net(self) -&gt; traits.Netrunner:
                                         <span>Expand source code</span>
                                     </summary>
                                     <pre><code class="python">@property
-def unique_name(self) -&gt; helpers.NoneOr[str]:
-    &#34;&#34;&#34;The user&#39;s unique display name code.
-    This can be None if the user hasn&#39;t logged in after season of the lost update.
+def unique_name(self) -&gt; str:
+    &#34;&#34;&#34;The user&#39;s unique name.
 
     .. versionadded:: 0.2.5
     &#34;&#34;&#34;
@@ -870,15 +820,14 @@ def unique_name(self) -&gt; helpers.NoneOr[str]:
                         <li>
                             <h4><code><a title="aiobungie.crate.player.Player" href="#aiobungie.crate.player.Player">Player</a></code></h4>
                             <ul class="two-column">
-                                <li><code><a title="aiobungie.crate.player.Player.as_dict" href="#aiobungie.crate.player.Player.as_dict">as_dict</a></code></li>
                                 <li><code><a title="aiobungie.crate.player.Player.code" href="#aiobungie.crate.player.Player.code">code</a></code></li>
                                 <li><code><a title="aiobungie.crate.player.Player.crossave_override" href="#aiobungie.crate.player.Player.crossave_override">crossave_override</a></code></li>
                                 <li><code><a title="aiobungie.crate.player.Player.icon" href="#aiobungie.crate.player.Player.icon">icon</a></code></li>
                                 <li><code><a title="aiobungie.crate.player.Player.id" href="#aiobungie.crate.player.Player.id">id</a></code></li>
                                 <li><code><a title="aiobungie.crate.player.Player.is_public" href="#aiobungie.crate.player.Player.is_public">is_public</a></code></li>
+                                <li><code><a title="aiobungie.crate.player.Player.last_seen_name" href="user.html#aiobungie.crate.player.Player.last_seen_name">last_seen_name</a></code></li>
                                 <li><code><a title="aiobungie.crate.player.Player.link" href="user.html#aiobungie.crate.player.Player.link">link</a></code></li>
                                 <li><code><a title="aiobungie.crate.player.Player.name" href="#aiobungie.crate.player.Player.name">name</a></code></li>
-                                <li><code><a title="aiobungie.crate.player.Player.net" href="#aiobungie.crate.player.Player.net">net</a></code></li>
                                 <li><code><a title="aiobungie.crate.player.Player.type" href="#aiobungie.crate.player.Player.type">type</a></code></li>
                                 <li><code><a title="aiobungie.crate.player.Player.types" href="#aiobungie.crate.player.Player.types">types</a></code></li>
                                 <li><code><a title="aiobungie.crate.player.Player.unique_name" href="#aiobungie.crate.player.Player.unique_name">unique_name</a></code></li>

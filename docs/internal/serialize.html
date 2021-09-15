@@ -512,7 +512,7 @@
 
 from __future__ import annotations
 
-__all__ = (&#34;Deserialize&#34;,)
+__all__ = (&#34;Factory&#34;,)
 
 import datetime
 import logging
@@ -524,38 +524,38 @@ from aiobungie.crate import application as app
 from aiobungie.crate import character
 from aiobungie.crate import clans
 from aiobungie.crate import entity
-from aiobungie.crate import player
 from aiobungie.crate import profile
 from aiobungie.crate import user
 from aiobungie.internal import enums
 from aiobungie.internal import time
 from aiobungie.internal import traits
 from aiobungie.internal.assets import Image
-from aiobungie.internal.helpers import JsonDict
-from aiobungie.internal.helpers import JsonList
+from aiobungie.internal.helpers import JsonArray
+from aiobungie.internal.helpers import JsonObject
 from aiobungie.internal.helpers import NoneOr
 from aiobungie.internal.helpers import Undefined
+from aiobungie.internal.helpers import UndefinedOr
 from aiobungie.internal.helpers import Unknown
 from aiobungie.internal.helpers import just
 
 _LOG: typing.Final[logging.Logger] = logging.getLogger(__name__)
 
 
-class Deserialize:
-    &#34;&#34;&#34;The base Deserialization class for all aiobungie crate.&#34;&#34;&#34;
+class Factory:
+    &#34;&#34;&#34;The base Deserialization factory class for all aiobungie objects.&#34;&#34;&#34;
 
-    # This is actually inspired by hikari&#39;s entity factory.
+    # This is kinda inspired by hikari&#39;s entity factory :p.
 
     __slots__: typing.Sequence[str] = (&#34;_net&#34;,)
 
     def __init__(self, net: traits.Netrunner) -&gt; None:
         self._net = net
 
-    def deserialize_bungie_user(self, data: JsonDict) -&gt; user.BungieUser:
+    def deserialize_bungie_user(self, data: JsonObject) -&gt; user.BungieUser:
         return user.BungieUser(
             id=int(data[&#34;membershipId&#34;]),
             created_at=time.clean_date(data[&#34;firstAccess&#34;]),
-            name=data[&#34;displayName&#34;],
+            name=data.get(&#34;cachedBungieGlobalDisplayName&#34;, Undefined),
             is_deleted=data[&#34;isDeleted&#34;],
             about=data[&#34;about&#34;],
             updated_at=time.clean_date(data[&#34;lastUpdate&#34;]),
@@ -575,136 +575,148 @@ class Deserialize:
             display_title=data[&#34;userTitleDisplay&#34;],
         )
 
-    # TODO: Make this return one obj at once?
+    # Deserializer for a `bungieNetUserInfo`
+    @staticmethod
+    def deserialize_partial_bungie_user(
+        payload: JsonObject, *, noeq: bool = False
+    ) -&gt; user.PartialBungieUser:
+        if noeq is True:
+            bungie_info = payload
+        else:
+            bungie_info = payload[&#34;bungieNetUserInfo&#34;]
+        return user.PartialBungieUser(
+            name=bungie_info.get(&#34;displayName&#34;, Undefined),
+            id=int(bungie_info[&#34;membershipId&#34;]),
+            crossave_override=enums.MembershipType(bungie_info[&#34;crossSaveOverride&#34;]),
+            is_public=bungie_info[&#34;isPublic&#34;],
+            icon=Image(bungie_info.get(&#34;iconPath&#34;, Image.partial())),
+            type=enums.MembershipType(bungie_info[&#34;membershipType&#34;]),
+        )
 
-    def deserialize_members(
-        self, data: JsonDict
-    ) -&gt; typing.Sequence[user.DestinyUser | None]:
+    # Deserializer for a `destinyUserInfo`
+    @staticmethod
+    def deserialize_destiny_user(
+        payload: JsonObject, *, noeq: bool = False
+    ) -&gt; user.DestinyUser:
+        if noeq is True:
+            user_info = payload
+        else:
+            user_info = payload[&#34;destinyUserInfo&#34;]
 
+        memberships = []
+        for m_ship in user_info[&#34;applicableMembershipTypes&#34;]:
+            memberships.append(enums.MembershipType(m_ship))
+
+        if (raw_name := user_info[&#34;bungieGlobalDisplayName&#34;]) == Unknown:
+            name = Undefined
+        else:
+            name = raw_name
+
+        return user.DestinyUser(
+            id=int(user_info[&#34;membershipId&#34;]),
+            name=name,
+            code=user_info.get(&#34;bungieGlobalDisplayNameCode&#34;, None),
+            last_seen_name=user_info.get(&#34;LastSeenDisplayName&#34;, &#34;displayName&#34;),
+            type=enums.MembershipType(user_info[&#34;membershipType&#34;]),
+            is_public=user_info[&#34;isPublic&#34;],
+            crossave_override=enums.MembershipType(user_info[&#34;crossSaveOverride&#34;]),
+            icon=Image(user_info.get(&#34;iconPath&#34;, Image.partial())),
+            types=memberships,
+        )
+
+    # Deserialize a list of `destinyUserInfo`
+    def deserialize_destiny_members(
+        self, data: typing.Union[JsonObject, JsonArray], *, bound: bool = False
+    ) -&gt; typing.Sequence[user.DestinyUser]:
         xbox: int = 0
         psn: int = 1
         steam: int = 2
         stadia: int = 3
 
-        if (members_ := data.get(&#34;destinyMemberships&#34;, [])) is None:
-            raise error.NotFound(&#34;Member has to destiny memberships.&#34;)
+        # In order to bind this method between deserializing
+        # other objects we have to check if the data was
+        # a json object or a json array of objects.
+
+        raw_members: typing.Union[JsonArray, JsonObject, dict[int, typing.Any]] = data
+
+        if bound:
+            members_ = raw_members  # type: ignore
+
+        elif (
+            isinstance(data, dict)
+            and (  # noqa: W503 LINE BREAK
+                raw_members := data.get(&#34;destinyMemberships&#34;, [])
+            )
+            is not None
+        ):
+            members_: dict[int, typing.Any] = raw_members  # type: ignore
 
         stadia_obj: NoneOr[user.DestinyUser] = None  # type: ignore[name-defined]
         try:
-            stadia_member = members_[stadia]
-        except IndexError:
+            stadia_member = members_[stadia]  # type: ignore[index]
+        except (KeyError, IndexError):
             pass
         else:
-            stadia_name: str = Undefined
-
-            if (raw_name := stadia_member[&#34;bungieGlobalDisplayName&#34;]) != Unknown:
-                stadia_name = raw_name
-
-            stadia_member_types: list[enums.MembershipType] = []
-            for member_type in stadia_member[&#34;applicableMembershipTypes&#34;]:
-                stadia_member_types.append(enums.MembershipType(member_type))
-
-            stadia_obj = user.DestinyUser(
-                name=stadia_name,
-                last_seen_name=stadia_member[&#34;LastSeenDisplayName&#34;],
-                id=int(stadia_member[&#34;membershipId&#34;]),
-                type=enums.MembershipType(int(stadia_member[&#34;membershipType&#34;])),
-                icon=stadia_member.get(
-                    Image(stadia_member[&#34;iconPath&#34;]), Image.partial()
-                ),
-                code=int(stadia_member.get(&#34;bungieGlobalDisplayNameCode&#34;, None)),
-                is_public=bool(stadia_member[&#34;isPublic&#34;]),
-                types=stadia_member_types,
-            )
+            stadia_obj = self.deserialize_destiny_user(stadia_member, noeq=True)
 
         xbox_obj: NoneOr[user.DestinyUser] = None  # type: ignore[name-defined]
         try:
-            xbox_member = members_[xbox]
-        except IndexError:
+            xbox_member = members_[xbox]  # type: ignore[index]
+        except (KeyError, IndexError):
             pass
         else:
-            xbox_name: str = Undefined
-
-            if (raw_name := xbox_member[&#34;bungieGlobalDisplayName&#34;]) != Unknown:
-                xbox_name = raw_name
-
-            xbox_member_types: list[enums.MembershipType] = []
-            for member_type in xbox_member[&#34;applicableMembershipTypes&#34;]:
-                xbox_member_types.append(enums.MembershipType(member_type))
-
-            xbox_obj = user.DestinyUser(
-                name=xbox_name,
-                last_seen_name=xbox_member[&#34;LastSeenDisplayName&#34;],
-                id=int(xbox_member[&#34;membershipId&#34;]),
-                type=enums.MembershipType(int(xbox_member[&#34;membershipType&#34;])),
-                icon=xbox_member.get(Image(xbox_member[&#34;iconPath&#34;]), Image.partial()),
-                code=int(xbox_member.get(&#34;bungieGlobalDisplayNameCode&#34;, None)),
-                is_public=bool(xbox_member[&#34;isPublic&#34;]),
-                types=xbox_member_types,
-            )
+            xbox_obj = self.deserialize_destiny_user(xbox_member, noeq=True)
 
         steam_obj: NoneOr[user.DestinyUser] = None  # type: ignore[name-defined]
         try:
-            steam_member = members_[steam]
-        except IndexError:
+            steam_member = members_[steam]  # type: ignore[index]
+        except (KeyError, IndexError):
             pass
         else:
-            steam_name: str = Undefined
-
-            if (raw_name := steam_member[&#34;bungieGlobalDisplayName&#34;]) != Unknown:
-                steam_name = raw_name
-
-            steam_member_types: list[enums.MembershipType] = []
-            for member_type in steam_member[&#34;applicableMembershipTypes&#34;]:
-                steam_member_types.append(enums.MembershipType(member_type))
-
-            steam_obj = user.DestinyUser(
-                last_seen_name=steam_member[&#34;LastSeenDisplayName&#34;],
-                name=steam_name,
-                id=int(steam_member[&#34;membershipId&#34;]),
-                type=enums.MembershipType(int(steam_member[&#34;membershipType&#34;])),
-                icon=steam_member.get(Image(steam_member[&#34;iconPath&#34;]), Image.partial()),
-                code=int(steam_member.get(&#34;bungieGlobalDisplayNameCode&#34;, None)),
-                is_public=bool(steam_member[&#34;isPublic&#34;]),
-                types=steam_member_types,
-            )
+            steam_obj = self.deserialize_destiny_user(steam_member, noeq=True)
 
         psn_obj: NoneOr[user.DestinyUser] = None  # type: ignore[name-defined]
         try:
-            psn_member = members_[psn]
-        except IndexError:
+            psn_member = members_[psn]  # type: ignore[index]
+        except (KeyError, IndexError):
             pass
         else:
-            psn_name: str = Undefined
+            psn_obj = self.deserialize_destiny_user(psn_member, noeq=True)
 
-            if (raw_name := psn_member[&#34;bungieGlobalDisplayName&#34;]) != Unknown:
-                psn_name = raw_name
+        vec: list[user.DestinyUser] = []
+        objs = [xbox_obj, psn_obj, steam_obj, stadia_obj]
+        # No point of returning NoneType objects.
+        for obj in objs:
+            if obj is None:
+                continue
+            vec.append(obj)
+        return vec
 
-            psn_member_types: list[enums.MembershipType] = []
-            for member_type in psn_member[&#34;applicableMembershipTypes&#34;]:
-                psn_member_types.append(enums.MembershipType(member_type))
-
-            psn_obj = user.DestinyUser(
-                last_seen_name=psn_member[&#34;LastSeenDisplayName&#34;],
-                name=psn_name,
-                id=int(psn_member[&#34;membershipId&#34;]),
-                type=enums.MembershipType(int(psn_member[&#34;membershipType&#34;])),
-                icon=psn_member.get(Image(psn_member[&#34;iconPath&#34;]), Image.partial()),
-                code=int(psn_member.get(&#34;bungieGlobalDisplayNameCode&#34;, None)),
-                is_public=bool(psn_member[&#34;isPublic&#34;]),
-                types=psn_member_types,
-            )
-
-        return [xbox_obj, psn_obj, steam_obj, stadia_obj]
-
-    def deserialize_user(self, data: JsonDict) -&gt; user.User:
+    def deserialize_user(self, data: JsonObject) -&gt; user.User:
         return user.User(
             bungie=self.deserialize_bungie_user(data[&#34;bungieNetUser&#34;]),
-            destiny=self.deserialize_members(data),
+            destiny=self.deserialize_destiny_members(data),
         )
 
+    def deseialize_found_users(
+        self, payload: JsonObject
+    ) -&gt; typing.Sequence[user.DestinyUser]:
+        result = payload[&#34;searchResults&#34;]
+        if result is None:
+            raise error.NotFound(&#34;User not found.&#34;)
+
+        vec: list[user.DestinyUser] = []
+        for player in result:
+            # TODO: Figuire out how to merge this with DestinyUser objects.
+            #  name: UndefinedOr[str] = player.get(&#34;bungieGlobalDisplayName&#34;, Undefined)
+            #  code: NoneOr[int] = player.get(&#34;bungieGlobalDisplayNameCode&#34;, None)
+            #  bungie_id: UndefinedOr[int] = player.get(&#39;bungieNetMembershipId&#39;, Undefined)
+            for mship in self.deserialize_destiny_members(player):
+                vec.append(mship)
+        return vec
+
     @staticmethod
-    def set_themese_attrs(payload: JsonList, /) -&gt; typing.ValuesView[user.UserThemes]:
+    def set_themese_attrs(payload: JsonArray, /) -&gt; typing.Collection[user.UserThemes]:
         if isinstance(payload, list):
             if payload is None:
                 raise ValueError(&#34;No themes found.&#34;)
@@ -718,68 +730,52 @@ class Deserialize:
 
             for t_id, t_name, t_desc in zip(theme_ids, theme_names, theme_descriptions):
                 theme_map[t_id] = user.UserThemes(
-                    id=int(t_id), name=t_name, description=t_desc
+                    id=int(t_id),
+                    name=t_name or Undefined,
+                    description=t_desc or Undefined,
                 )
         return theme_map.values()
 
     def deserialize_user_themes(
-        self, payload: JsonList
+        self, payload: JsonArray
     ) -&gt; typing.Sequence[user.UserThemes]:
         return list(self.set_themese_attrs(payload))
 
-    def deserialize_player(self, payload: JsonList, /) -&gt; player.Player:
-        try:
-            data = payload[0]  # type: ignore
-        except IndexError:
+    def deserialize_player(
+        self, payload: JsonArray, /
+    ) -&gt; typing.Sequence[user.DestinyUser]:
+        if payload is None:
             raise error.PlayerNotFound(&#34;Player was not found.&#34;) from None
 
-        types: list[enums.MembershipType] = []
-        for type in data[&#34;applicableMembershipTypes&#34;]:
-            types.append(enums.MembershipType(type))
+        return self.deserialize_destiny_members(payload, bound=True)
 
-        return player.Player(
-            name=data[&#34;displayName&#34;],
-            id=int(data[&#34;membershipId&#34;]),
-            is_public=data[&#34;isPublic&#34;],
-            icon=Image(str(data[&#34;iconPath&#34;])),
-            type=enums.MembershipType(data[&#34;membershipType&#34;]),
-            code=data.get(&#34;bungieGlobalDisplayNameCode&#34;, None),
-            types=types,
-            crossave_override=int(data[&#34;crossSaveOverride&#34;]),
-        )
-
-    def deseialize_clan_owner(self, data: JsonDict) -&gt; clans.ClanOwner:
-        id = data[&#34;destinyUserInfo&#34;][&#34;membershipId&#34;]
-        name = data[&#34;destinyUserInfo&#34;][&#34;displayName&#34;]
-        icon = Image(str(data[&#34;destinyUserInfo&#34;][&#34;iconPath&#34;]))
-        convert = int(data[&#34;lastOnlineStatusChange&#34;])
-        last_online = time.from_timestamp(convert)
-        clan_id = data[&#34;groupId&#34;]
+    def deseialize_clan_owner(self, data: JsonObject) -&gt; clans.ClanOwner:
         joined_at = data[&#34;joinDate&#34;]
-        types = data[&#34;destinyUserInfo&#34;][&#34;applicableMembershipTypes&#34;]
-        is_public = data[&#34;destinyUserInfo&#34;][&#34;isPublic&#34;]
-        type = enums.MembershipType(data[&#34;destinyUserInfo&#34;].get(&#34;membershipType&#34;, None))
+        last_online = time.from_timestamp(int(data[&#34;lastOnlineStatusChange&#34;]))
+        clan_id = data[&#34;groupId&#34;]
+        destiny_user = self.deserialize_destiny_user(data)
 
         return clans.ClanOwner(
-            id=int(id),
-            name=name,
-            icon=icon,
+            last_seen_name=destiny_user.last_seen_name,
+            id=destiny_user.id,
+            name=destiny_user.name,
+            icon=destiny_user.icon,
             last_online=last_online,
             clan_id=int(clan_id),
             joined_at=time.clean_date(joined_at),
-            types=types,
-            is_public=is_public,
-            type=type,
-            code=data.get(&#34;bungieGlobalDisplayNameCode&#34;, None),
+            types=destiny_user.types,
+            is_public=destiny_user.is_public,
+            type=destiny_user.type,
+            code=destiny_user.code,
         )
 
-    def deseialize_clan(self, data: JsonDict) -&gt; clans.Clan:
+    def deseialize_clan(self, data: JsonObject) -&gt; clans.Clan:
         id = data[&#34;detail&#34;][&#34;groupId&#34;]
         name = data[&#34;detail&#34;][&#34;name&#34;]
         created_at = data[&#34;detail&#34;][&#34;creationDate&#34;]
         member_count = data[&#34;detail&#34;][&#34;memberCount&#34;]
-        description = data[&#34;detail&#34;][&#34;about&#34;]
-        about = data[&#34;detail&#34;][&#34;motto&#34;]
+        about = data[&#34;detail&#34;][&#34;about&#34;]
+        motto = data[&#34;detail&#34;][&#34;motto&#34;]
         is_public = data[&#34;detail&#34;][&#34;isPublic&#34;]
         banner = Image(str(data[&#34;detail&#34;][&#34;bannerPath&#34;]))
         avatar = Image(str(data[&#34;detail&#34;][&#34;avatarPath&#34;]))
@@ -805,7 +801,7 @@ class Deserialize:
             type=enums.GroupType(type),
             created_at=time.clean_date(created_at),
             member_count=member_count,
-            description=description,
+            motto=motto,
             about=about,
             is_public=is_public,
             banner=banner,
@@ -815,7 +811,7 @@ class Deserialize:
             owner=self.deseialize_clan_owner(data[&#34;founder&#34;]),
         )
 
-    def deserialize_clan_member(self, data: JsonDict, /) -&gt; clans.ClanMember:
+    def deserialize_clan_member(self, data: JsonObject, /) -&gt; clans.ClanMember:
 
         if (payload := data[&#34;results&#34;]) is not None:
             try:
@@ -824,12 +820,7 @@ class Deserialize:
             except (KeyError, IndexError):
                 raise error.NotFound(&#34;Clan member not found.&#34;) from None
 
-            id: int = payload[&#34;membershipId&#34;]
-            name: str = payload[&#34;displayName&#34;]
-            type: enums.MembershipType = payload[&#34;membershipType&#34;]
-            is_public: bool = payload[&#34;isPublic&#34;]
-            icon: Image = Image(str(payload[&#34;iconPath&#34;]))
-            type_entires: list[enums.MembershipType] = []
+            destiny_member = self.deserialize_destiny_user(payload, noeq=True)
             last_online: datetime.datetime = time.from_timestamp(
                 int(attrs[&#34;lastOnlineStatusChange&#34;])
             )
@@ -837,36 +828,36 @@ class Deserialize:
             group_id: int = attrs[&#34;groupId&#34;]
             joined_at: datetime.datetime = time.clean_date(str(attrs[&#34;joinDate&#34;]))
 
-            for member_type in payload[&#34;applicableMembershipTypes&#34;]:
-                if member_type is None:
-                    continue
-                type_entires.append(enums.MembershipType(member_type))
-
         return clans.ClanMember(
+            net=self._net,
             group_id=int(group_id),
             is_online=is_online,
             last_online=last_online,
-            id=int(id),
+            id=destiny_member.id,
             joined_at=joined_at,
-            name=name,
-            type=enums.MembershipType(type),
-            is_public=is_public,
-            icon=icon,
-            code=payload.get(&#34;bungieGlobalDisplayNameCode&#34;, None),
-            types=type_entires,
+            name=destiny_member.name,
+            type=destiny_member.type,
+            is_public=destiny_member.is_public,
+            icon=destiny_member.icon,
+            code=destiny_member.code,
+            types=destiny_member.types,
+            last_seen_name=destiny_member.last_seen_name,
         )
 
-    @staticmethod
-    def set_clan_members_attrs(
-        data: JsonDict, /
-    ) -&gt; typing.ValuesView[clans.ClanMember]:
-        member_view: dict[int, clans.ClanMember] = {}
+    def deserialize_clan_members(
+        self, data: JsonObject, /
+    ) -&gt; typing.Sequence[clans.ClanMember]:
+        members_vec: list[clans.ClanMember] = []
         if (payload := data[&#34;results&#34;]) is not None:
 
-            raw_is_on: list[bool] = just(payload, &#34;isOnline&#34;)
-            raw_last_sts: list[int] = just(payload, &#34;lastOnlineStatusChange&#34;)
-            raw_join_date: list[str] = just(payload, &#34;joinDate&#34;)
-            group_id: list[int] = just(payload, &#34;groupId&#34;)
+            for memberships in payload:
+                wrap = lambda m: m[&#34;destinyUserInfo&#34;]  # noqa: E731 Lambdas
+                member = self.deserialize_destiny_user(wrap(memberships), noeq=True)
+
+                raw_is_on: list[bool] = just(payload, &#34;isOnline&#34;)
+                raw_last_sts: list[int] = just(payload, &#34;lastOnlineStatusChange&#34;)
+                raw_join_date: list[str] = just(payload, &#34;joinDate&#34;)
+                group_id: list[int] = just(payload, &#34;groupId&#34;)
 
             for is_online, last_online, join_date in zip(
                 raw_is_on, raw_last_sts, raw_join_date
@@ -876,44 +867,27 @@ class Deserialize:
                 )
                 join_date_fmt: datetime.datetime = time.clean_date(join_date)
 
-            for member in just(payload, &#34;destinyUserInfo&#34;):
-                # Some bungie display names apper as &#39;&#39;
-                # so we just make sure that the name is not an empty string.
-                # otherwise we just grab the last seen name.
-                if (name := member[&#34;bungieGlobalDisplayName&#34;]) == Unknown:
-                    name: str = member[&#34;LastSeenDisplayName&#34;]  # type: ignore
-                type_entires: list[enums.MembershipType] = []
-
-                for member_type in member[&#34;applicableMembershipTypes&#34;]:
-                    assert member_type is not None
-                    type_entires.append(enums.MembershipType(member_type))
-
-                member_view[int(member[&#34;membershipId&#34;])] = clans.ClanMember(
-                    id=int(member[&#34;membershipId&#34;]),
-                    name=name,
-                    type=enums.MembershipType(member[&#34;membershipType&#34;]),
-                    icon=Image(str(member[&#34;iconPath&#34;])),
-                    is_public=member[&#34;isPublic&#34;],
-                    group_id=int(group_id[0]),
+                member_obj = clans.ClanMember(
+                    net=self._net,
+                    id=member.id,
+                    name=member.name,
+                    type=member.type,
+                    icon=member.icon,
+                    is_public=member.is_public,
+                    code=member.code,
+                    types=member.types,
+                    last_seen_name=member.last_seen_name,
                     is_online=is_online,
                     last_online=last_online_fmt,
                     joined_at=join_date_fmt,
-                    code=member.get(&#34;bungieGlobalDisplayNameCode&#34;, None),
-                    types=type_entires,
+                    group_id=group_id[0],
                 )
+                members_vec.append(member_obj)
+        return members_vec
 
-        if member_view is None:
-            return dict().values()
-        return member_view.values()
-
-    def deserialize_clan_members(
-        self, data: JsonDict, /
-    ) -&gt; typing.Sequence[clans.ClanMember]:
-        return list(self.set_clan_members_attrs(data))
-
-    def deserialize_app_owner(self, payload: JsonDict) -&gt; app.ApplicationOwner:
+    def deserialize_app_owner(self, payload: JsonObject) -&gt; app.ApplicationOwner:
         return app.ApplicationOwner(
-            name=payload[&#34;displayName&#34;],
+            name=payload.get(&#34;bungieGlobalDisplayName&#34;, Undefined),
             id=int(payload[&#34;membershipId&#34;]),
             type=enums.MembershipType(payload[&#34;membershipType&#34;]),
             icon=Image(str(payload[&#34;iconPath&#34;])),
@@ -921,21 +895,21 @@ class Deserialize:
             code=payload.get(&#34;bungieGlobalDisplayNameCode&#34;, None),
         )
 
-    def deserialize_app(self, payload: JsonDict) -&gt; app.Application:
+    def deserialize_app(self, payload: JsonObject) -&gt; app.Application:
         return app.Application(
             id=int(payload[&#34;applicationId&#34;]),
             name=payload[&#34;name&#34;],
             link=payload[&#34;link&#34;],
             status=payload[&#34;status&#34;],
-            redirect_url=payload[&#34;redirectUrl&#34;],
+            redirect_url=payload.get(&#34;redirectUrl&#34;, None),
             created_at=time.clean_date(str(payload[&#34;creationDate&#34;])),
             published_at=time.clean_date(str(payload[&#34;firstPublished&#34;])),
             owner=self.deserialize_app_owner(payload[&#34;team&#34;][0][&#34;user&#34;]),  # type: ignore
-            scope=payload[&#34;scope&#34;],
+            scope=payload.get(&#34;scope&#34;, Undefined),
         )
 
     def deserialize_character(
-        self, payload: JsonDict, *, chartype: enums.Class
+        self, payload: JsonObject, *, chartype: enums.Class
     ) -&gt; character.Character:
 
         try:
@@ -976,7 +950,7 @@ class Deserialize:
             stats=payload[&#34;stats&#34;],
         )
 
-    def deserialize_profile(self, payload: JsonDict, /) -&gt; profile.Profile:
+    def deserialize_profile(self, payload: JsonObject, /) -&gt; profile.Profile:
 
         payload = payload[&#34;profile&#34;][&#34;data&#34;]
         id = int(payload[&#34;userInfo&#34;][&#34;membershipId&#34;])
@@ -999,12 +973,12 @@ class Deserialize:
         )
 
     def deserialize_inventory_entity(
-        self, payload: JsonDict, /
+        self, payload: JsonObject, /
     ) -&gt; entity.InventoryEntity:
         try:
             # All Bungie entities has a display propetie
             # if we don&#39;t find it means the entity was not found.
-            props: JsonDict = payload[&#34;displayProperties&#34;]
+            props: JsonObject = payload[&#34;displayProperties&#34;]
         except KeyError:
             raise error.NotFound(&#34;The entity inventory item hash is invalid&#34;) from None
 
@@ -1013,10 +987,8 @@ class Deserialize:
         # Most entities has this
         # and for some it doesn&#39;t exists
 
-        if (
-            raw_inventory := payload.get(&#34;inventory&#34;, {Undefined: Undefined})
-        ) is not None:
-            inventory: JsonDict = raw_inventory
+        if (raw_inventory := payload.get(&#34;inventory&#34;, {})) is not None:
+            inventory: JsonObject = raw_inventory
 
         # Entity tier type. Most entities have a tier
         # and some doesn&#39;t exists so we have to check.
@@ -1032,13 +1004,13 @@ class Deserialize:
         if (name := props.get(&#34;name&#34;, Unknown)) == Unknown:
             name = Undefined
 
-        if (type_name := payload.get(&#34;itemTypeDisplayName&#34;)) == Unknown:
+        if (type_name := payload.get(&#34;itemTypeDisplayName&#34;, Unknown)) == Unknown:
             type_name = Undefined
 
         if (description := props.get(&#34;description&#34;, Unknown)) == Unknown:
             description = Undefined
 
-        if (about := payload.get(&#34;flavorText&#34;)) == Unknown:
+        if (about := payload.get(&#34;flavorText&#34;, Unknown)) == Unknown:
             about = Undefined
 
         if (raw_icon := props.get(&#34;icon&#34;, Image.partial())) is not None:
@@ -1050,7 +1022,7 @@ class Deserialize:
         if (raw_banner := payload.get(&#34;screenshot&#34;, Image.partial())) is not None:
             banner = Image(str(raw_banner))
 
-        damage: typing.Union[enums.DamageType, str] = Undefined
+        damage: UndefinedOr[enums.DamageType] = Undefined
         if (raw_damage := payload.get(&#34;defaultDamageTypeHash&#34;)) is not None:
             damage = enums.DamageType(raw_damage)
 
@@ -1059,8 +1031,8 @@ class Deserialize:
         if (raw_summary_hash := payload.get(&#34;summaryItemHash&#34;)) is not None:
             summary_hash: int = int(raw_summary_hash)  # type: ignore
 
-        if (raw_stats := payload.get(&#34;stats&#34;, {Undefined: Undefined})) is not None:
-            stats: JsonDict = raw_stats
+        if (raw_stats := payload.get(&#34;stats&#34;, {})) is not None:
+            stats: JsonObject = raw_stats
 
         block = enums.AmmoType.NONE
         if (ammo := payload.get(&#34;equippingBlock&#34;)) is not None:
@@ -1093,11 +1065,11 @@ class Deserialize:
             is_equippable=payload.get(&#34;equippable&#34;, False),
             stats=stats,
             ammo_type=block,
-            lore_hash=payload.get(&#34;loreHash&#34;, Undefined),
+            lore_hash=payload.get(&#34;loreHash&#34;, None),
         )
 
     def deserialize_activity(
-        self, payload: JsonDict, /, *, limit: typing.Optional[int] = 1
+        self, payload: JsonObject, /, *, limit: typing.Optional[int] = 1
     ) -&gt; activity.Activity:
 
         if (activs := payload.get(&#34;activities&#34;)) is not None:
@@ -1156,33 +1128,33 @@ class Deserialize:
             <section>
                 <h2 class="section-title" id="header-classes">Classes</h2>
                 <dl>
-                    <dt id="aiobungie.internal.serialize.Deserialize"><code class="flex name class">
-<span>class <span class="ident">Deserialize</span></span>
+                    <dt id="aiobungie.internal.serialize.Factory"><code class="flex name class">
+<span>class <span class="ident">Factory</span></span>
 <span>(</span><span>net: traits.Netrunner)</span>
 </code></dt>
                     <dd>
                         <div class="desc">
-                            <p>The base Deserialization class for all aiobungie crate.</p>
+                            <p>The base Deserialization factory class for all aiobungie objects.</p>
                         </div>
                         <details class="source">
                             <summary>
                                 <span>Expand source code</span>
                             </summary>
-                            <pre><code class="python">class Deserialize:
-    &#34;&#34;&#34;The base Deserialization class for all aiobungie crate.&#34;&#34;&#34;
+                            <pre><code class="python">class Factory:
+    &#34;&#34;&#34;The base Deserialization factory class for all aiobungie objects.&#34;&#34;&#34;
 
-    # This is actually inspired by hikari&#39;s entity factory.
+    # This is kinda inspired by hikari&#39;s entity factory :p.
 
     __slots__: typing.Sequence[str] = (&#34;_net&#34;,)
 
     def __init__(self, net: traits.Netrunner) -&gt; None:
         self._net = net
 
-    def deserialize_bungie_user(self, data: JsonDict) -&gt; user.BungieUser:
+    def deserialize_bungie_user(self, data: JsonObject) -&gt; user.BungieUser:
         return user.BungieUser(
             id=int(data[&#34;membershipId&#34;]),
             created_at=time.clean_date(data[&#34;firstAccess&#34;]),
-            name=data[&#34;displayName&#34;],
+            name=data.get(&#34;cachedBungieGlobalDisplayName&#34;, Undefined),
             is_deleted=data[&#34;isDeleted&#34;],
             about=data[&#34;about&#34;],
             updated_at=time.clean_date(data[&#34;lastUpdate&#34;]),
@@ -1202,136 +1174,148 @@ class Deserialize:
             display_title=data[&#34;userTitleDisplay&#34;],
         )
 
-    # TODO: Make this return one obj at once?
+    # Deserializer for a `bungieNetUserInfo`
+    @staticmethod
+    def deserialize_partial_bungie_user(
+        payload: JsonObject, *, noeq: bool = False
+    ) -&gt; user.PartialBungieUser:
+        if noeq is True:
+            bungie_info = payload
+        else:
+            bungie_info = payload[&#34;bungieNetUserInfo&#34;]
+        return user.PartialBungieUser(
+            name=bungie_info.get(&#34;displayName&#34;, Undefined),
+            id=int(bungie_info[&#34;membershipId&#34;]),
+            crossave_override=enums.MembershipType(bungie_info[&#34;crossSaveOverride&#34;]),
+            is_public=bungie_info[&#34;isPublic&#34;],
+            icon=Image(bungie_info.get(&#34;iconPath&#34;, Image.partial())),
+            type=enums.MembershipType(bungie_info[&#34;membershipType&#34;]),
+        )
 
-    def deserialize_members(
-        self, data: JsonDict
-    ) -&gt; typing.Sequence[user.DestinyUser | None]:
+    # Deserializer for a `destinyUserInfo`
+    @staticmethod
+    def deserialize_destiny_user(
+        payload: JsonObject, *, noeq: bool = False
+    ) -&gt; user.DestinyUser:
+        if noeq is True:
+            user_info = payload
+        else:
+            user_info = payload[&#34;destinyUserInfo&#34;]
 
+        memberships = []
+        for m_ship in user_info[&#34;applicableMembershipTypes&#34;]:
+            memberships.append(enums.MembershipType(m_ship))
+
+        if (raw_name := user_info[&#34;bungieGlobalDisplayName&#34;]) == Unknown:
+            name = Undefined
+        else:
+            name = raw_name
+
+        return user.DestinyUser(
+            id=int(user_info[&#34;membershipId&#34;]),
+            name=name,
+            code=user_info.get(&#34;bungieGlobalDisplayNameCode&#34;, None),
+            last_seen_name=user_info.get(&#34;LastSeenDisplayName&#34;, &#34;displayName&#34;),
+            type=enums.MembershipType(user_info[&#34;membershipType&#34;]),
+            is_public=user_info[&#34;isPublic&#34;],
+            crossave_override=enums.MembershipType(user_info[&#34;crossSaveOverride&#34;]),
+            icon=Image(user_info.get(&#34;iconPath&#34;, Image.partial())),
+            types=memberships,
+        )
+
+    # Deserialize a list of `destinyUserInfo`
+    def deserialize_destiny_members(
+        self, data: typing.Union[JsonObject, JsonArray], *, bound: bool = False
+    ) -&gt; typing.Sequence[user.DestinyUser]:
         xbox: int = 0
         psn: int = 1
         steam: int = 2
         stadia: int = 3
 
-        if (members_ := data.get(&#34;destinyMemberships&#34;, [])) is None:
-            raise error.NotFound(&#34;Member has to destiny memberships.&#34;)
+        # In order to bind this method between deserializing
+        # other objects we have to check if the data was
+        # a json object or a json array of objects.
+
+        raw_members: typing.Union[JsonArray, JsonObject, dict[int, typing.Any]] = data
+
+        if bound:
+            members_ = raw_members  # type: ignore
+
+        elif (
+            isinstance(data, dict)
+            and (  # noqa: W503 LINE BREAK
+                raw_members := data.get(&#34;destinyMemberships&#34;, [])
+            )
+            is not None
+        ):
+            members_: dict[int, typing.Any] = raw_members  # type: ignore
 
         stadia_obj: NoneOr[user.DestinyUser] = None  # type: ignore[name-defined]
         try:
-            stadia_member = members_[stadia]
-        except IndexError:
+            stadia_member = members_[stadia]  # type: ignore[index]
+        except (KeyError, IndexError):
             pass
         else:
-            stadia_name: str = Undefined
-
-            if (raw_name := stadia_member[&#34;bungieGlobalDisplayName&#34;]) != Unknown:
-                stadia_name = raw_name
-
-            stadia_member_types: list[enums.MembershipType] = []
-            for member_type in stadia_member[&#34;applicableMembershipTypes&#34;]:
-                stadia_member_types.append(enums.MembershipType(member_type))
-
-            stadia_obj = user.DestinyUser(
-                name=stadia_name,
-                last_seen_name=stadia_member[&#34;LastSeenDisplayName&#34;],
-                id=int(stadia_member[&#34;membershipId&#34;]),
-                type=enums.MembershipType(int(stadia_member[&#34;membershipType&#34;])),
-                icon=stadia_member.get(
-                    Image(stadia_member[&#34;iconPath&#34;]), Image.partial()
-                ),
-                code=int(stadia_member.get(&#34;bungieGlobalDisplayNameCode&#34;, None)),
-                is_public=bool(stadia_member[&#34;isPublic&#34;]),
-                types=stadia_member_types,
-            )
+            stadia_obj = self.deserialize_destiny_user(stadia_member, noeq=True)
 
         xbox_obj: NoneOr[user.DestinyUser] = None  # type: ignore[name-defined]
         try:
-            xbox_member = members_[xbox]
-        except IndexError:
+            xbox_member = members_[xbox]  # type: ignore[index]
+        except (KeyError, IndexError):
             pass
         else:
-            xbox_name: str = Undefined
-
-            if (raw_name := xbox_member[&#34;bungieGlobalDisplayName&#34;]) != Unknown:
-                xbox_name = raw_name
-
-            xbox_member_types: list[enums.MembershipType] = []
-            for member_type in xbox_member[&#34;applicableMembershipTypes&#34;]:
-                xbox_member_types.append(enums.MembershipType(member_type))
-
-            xbox_obj = user.DestinyUser(
-                name=xbox_name,
-                last_seen_name=xbox_member[&#34;LastSeenDisplayName&#34;],
-                id=int(xbox_member[&#34;membershipId&#34;]),
-                type=enums.MembershipType(int(xbox_member[&#34;membershipType&#34;])),
-                icon=xbox_member.get(Image(xbox_member[&#34;iconPath&#34;]), Image.partial()),
-                code=int(xbox_member.get(&#34;bungieGlobalDisplayNameCode&#34;, None)),
-                is_public=bool(xbox_member[&#34;isPublic&#34;]),
-                types=xbox_member_types,
-            )
+            xbox_obj = self.deserialize_destiny_user(xbox_member, noeq=True)
 
         steam_obj: NoneOr[user.DestinyUser] = None  # type: ignore[name-defined]
         try:
-            steam_member = members_[steam]
-        except IndexError:
+            steam_member = members_[steam]  # type: ignore[index]
+        except (KeyError, IndexError):
             pass
         else:
-            steam_name: str = Undefined
-
-            if (raw_name := steam_member[&#34;bungieGlobalDisplayName&#34;]) != Unknown:
-                steam_name = raw_name
-
-            steam_member_types: list[enums.MembershipType] = []
-            for member_type in steam_member[&#34;applicableMembershipTypes&#34;]:
-                steam_member_types.append(enums.MembershipType(member_type))
-
-            steam_obj = user.DestinyUser(
-                last_seen_name=steam_member[&#34;LastSeenDisplayName&#34;],
-                name=steam_name,
-                id=int(steam_member[&#34;membershipId&#34;]),
-                type=enums.MembershipType(int(steam_member[&#34;membershipType&#34;])),
-                icon=steam_member.get(Image(steam_member[&#34;iconPath&#34;]), Image.partial()),
-                code=int(steam_member.get(&#34;bungieGlobalDisplayNameCode&#34;, None)),
-                is_public=bool(steam_member[&#34;isPublic&#34;]),
-                types=steam_member_types,
-            )
+            steam_obj = self.deserialize_destiny_user(steam_member, noeq=True)
 
         psn_obj: NoneOr[user.DestinyUser] = None  # type: ignore[name-defined]
         try:
-            psn_member = members_[psn]
-        except IndexError:
+            psn_member = members_[psn]  # type: ignore[index]
+        except (KeyError, IndexError):
             pass
         else:
-            psn_name: str = Undefined
+            psn_obj = self.deserialize_destiny_user(psn_member, noeq=True)
 
-            if (raw_name := psn_member[&#34;bungieGlobalDisplayName&#34;]) != Unknown:
-                psn_name = raw_name
+        vec: list[user.DestinyUser] = []
+        objs = [xbox_obj, psn_obj, steam_obj, stadia_obj]
+        # No point of returning NoneType objects.
+        for obj in objs:
+            if obj is None:
+                continue
+            vec.append(obj)
+        return vec
 
-            psn_member_types: list[enums.MembershipType] = []
-            for member_type in psn_member[&#34;applicableMembershipTypes&#34;]:
-                psn_member_types.append(enums.MembershipType(member_type))
-
-            psn_obj = user.DestinyUser(
-                last_seen_name=psn_member[&#34;LastSeenDisplayName&#34;],
-                name=psn_name,
-                id=int(psn_member[&#34;membershipId&#34;]),
-                type=enums.MembershipType(int(psn_member[&#34;membershipType&#34;])),
-                icon=psn_member.get(Image(psn_member[&#34;iconPath&#34;]), Image.partial()),
-                code=int(psn_member.get(&#34;bungieGlobalDisplayNameCode&#34;, None)),
-                is_public=bool(psn_member[&#34;isPublic&#34;]),
-                types=psn_member_types,
-            )
-
-        return [xbox_obj, psn_obj, steam_obj, stadia_obj]
-
-    def deserialize_user(self, data: JsonDict) -&gt; user.User:
+    def deserialize_user(self, data: JsonObject) -&gt; user.User:
         return user.User(
             bungie=self.deserialize_bungie_user(data[&#34;bungieNetUser&#34;]),
-            destiny=self.deserialize_members(data),
+            destiny=self.deserialize_destiny_members(data),
         )
 
+    def deseialize_found_users(
+        self, payload: JsonObject
+    ) -&gt; typing.Sequence[user.DestinyUser]:
+        result = payload[&#34;searchResults&#34;]
+        if result is None:
+            raise error.NotFound(&#34;User not found.&#34;)
+
+        vec: list[user.DestinyUser] = []
+        for player in result:
+            # TODO: Figuire out how to merge this with DestinyUser objects.
+            #  name: UndefinedOr[str] = player.get(&#34;bungieGlobalDisplayName&#34;, Undefined)
+            #  code: NoneOr[int] = player.get(&#34;bungieGlobalDisplayNameCode&#34;, None)
+            #  bungie_id: UndefinedOr[int] = player.get(&#39;bungieNetMembershipId&#39;, Undefined)
+            for mship in self.deserialize_destiny_members(player):
+                vec.append(mship)
+        return vec
+
     @staticmethod
-    def set_themese_attrs(payload: JsonList, /) -&gt; typing.ValuesView[user.UserThemes]:
+    def set_themese_attrs(payload: JsonArray, /) -&gt; typing.Collection[user.UserThemes]:
         if isinstance(payload, list):
             if payload is None:
                 raise ValueError(&#34;No themes found.&#34;)
@@ -1345,68 +1329,52 @@ class Deserialize:
 
             for t_id, t_name, t_desc in zip(theme_ids, theme_names, theme_descriptions):
                 theme_map[t_id] = user.UserThemes(
-                    id=int(t_id), name=t_name, description=t_desc
+                    id=int(t_id),
+                    name=t_name or Undefined,
+                    description=t_desc or Undefined,
                 )
         return theme_map.values()
 
     def deserialize_user_themes(
-        self, payload: JsonList
+        self, payload: JsonArray
     ) -&gt; typing.Sequence[user.UserThemes]:
         return list(self.set_themese_attrs(payload))
 
-    def deserialize_player(self, payload: JsonList, /) -&gt; player.Player:
-        try:
-            data = payload[0]  # type: ignore
-        except IndexError:
+    def deserialize_player(
+        self, payload: JsonArray, /
+    ) -&gt; typing.Sequence[user.DestinyUser]:
+        if payload is None:
             raise error.PlayerNotFound(&#34;Player was not found.&#34;) from None
 
-        types: list[enums.MembershipType] = []
-        for type in data[&#34;applicableMembershipTypes&#34;]:
-            types.append(enums.MembershipType(type))
+        return self.deserialize_destiny_members(payload, bound=True)
 
-        return player.Player(
-            name=data[&#34;displayName&#34;],
-            id=int(data[&#34;membershipId&#34;]),
-            is_public=data[&#34;isPublic&#34;],
-            icon=Image(str(data[&#34;iconPath&#34;])),
-            type=enums.MembershipType(data[&#34;membershipType&#34;]),
-            code=data.get(&#34;bungieGlobalDisplayNameCode&#34;, None),
-            types=types,
-            crossave_override=int(data[&#34;crossSaveOverride&#34;]),
-        )
-
-    def deseialize_clan_owner(self, data: JsonDict) -&gt; clans.ClanOwner:
-        id = data[&#34;destinyUserInfo&#34;][&#34;membershipId&#34;]
-        name = data[&#34;destinyUserInfo&#34;][&#34;displayName&#34;]
-        icon = Image(str(data[&#34;destinyUserInfo&#34;][&#34;iconPath&#34;]))
-        convert = int(data[&#34;lastOnlineStatusChange&#34;])
-        last_online = time.from_timestamp(convert)
-        clan_id = data[&#34;groupId&#34;]
+    def deseialize_clan_owner(self, data: JsonObject) -&gt; clans.ClanOwner:
         joined_at = data[&#34;joinDate&#34;]
-        types = data[&#34;destinyUserInfo&#34;][&#34;applicableMembershipTypes&#34;]
-        is_public = data[&#34;destinyUserInfo&#34;][&#34;isPublic&#34;]
-        type = enums.MembershipType(data[&#34;destinyUserInfo&#34;].get(&#34;membershipType&#34;, None))
+        last_online = time.from_timestamp(int(data[&#34;lastOnlineStatusChange&#34;]))
+        clan_id = data[&#34;groupId&#34;]
+        destiny_user = self.deserialize_destiny_user(data)
 
         return clans.ClanOwner(
-            id=int(id),
-            name=name,
-            icon=icon,
+            last_seen_name=destiny_user.last_seen_name,
+            id=destiny_user.id,
+            name=destiny_user.name,
+            icon=destiny_user.icon,
             last_online=last_online,
             clan_id=int(clan_id),
             joined_at=time.clean_date(joined_at),
-            types=types,
-            is_public=is_public,
-            type=type,
-            code=data.get(&#34;bungieGlobalDisplayNameCode&#34;, None),
+            types=destiny_user.types,
+            is_public=destiny_user.is_public,
+            type=destiny_user.type,
+            code=destiny_user.code,
         )
 
-    def deseialize_clan(self, data: JsonDict) -&gt; clans.Clan:
+    def deseialize_clan(self, data: JsonObject) -&gt; clans.Clan:
         id = data[&#34;detail&#34;][&#34;groupId&#34;]
         name = data[&#34;detail&#34;][&#34;name&#34;]
         created_at = data[&#34;detail&#34;][&#34;creationDate&#34;]
         member_count = data[&#34;detail&#34;][&#34;memberCount&#34;]
-        description = data[&#34;detail&#34;][&#34;about&#34;]
-        about = data[&#34;detail&#34;][&#34;motto&#34;]
+        about = data[&#34;detail&#34;][&#34;about&#34;]
+        motto = data[&#34;detail&#34;][&#34;motto&#34;]
         is_public = data[&#34;detail&#34;][&#34;isPublic&#34;]
         banner = Image(str(data[&#34;detail&#34;][&#34;bannerPath&#34;]))
         avatar = Image(str(data[&#34;detail&#34;][&#34;avatarPath&#34;]))
@@ -1432,7 +1400,7 @@ class Deserialize:
             type=enums.GroupType(type),
             created_at=time.clean_date(created_at),
             member_count=member_count,
-            description=description,
+            motto=motto,
             about=about,
             is_public=is_public,
             banner=banner,
@@ -1442,7 +1410,7 @@ class Deserialize:
             owner=self.deseialize_clan_owner(data[&#34;founder&#34;]),
         )
 
-    def deserialize_clan_member(self, data: JsonDict, /) -&gt; clans.ClanMember:
+    def deserialize_clan_member(self, data: JsonObject, /) -&gt; clans.ClanMember:
 
         if (payload := data[&#34;results&#34;]) is not None:
             try:
@@ -1451,12 +1419,7 @@ class Deserialize:
             except (KeyError, IndexError):
                 raise error.NotFound(&#34;Clan member not found.&#34;) from None
 
-            id: int = payload[&#34;membershipId&#34;]
-            name: str = payload[&#34;displayName&#34;]
-            type: enums.MembershipType = payload[&#34;membershipType&#34;]
-            is_public: bool = payload[&#34;isPublic&#34;]
-            icon: Image = Image(str(payload[&#34;iconPath&#34;]))
-            type_entires: list[enums.MembershipType] = []
+            destiny_member = self.deserialize_destiny_user(payload, noeq=True)
             last_online: datetime.datetime = time.from_timestamp(
                 int(attrs[&#34;lastOnlineStatusChange&#34;])
             )
@@ -1464,36 +1427,36 @@ class Deserialize:
             group_id: int = attrs[&#34;groupId&#34;]
             joined_at: datetime.datetime = time.clean_date(str(attrs[&#34;joinDate&#34;]))
 
-            for member_type in payload[&#34;applicableMembershipTypes&#34;]:
-                if member_type is None:
-                    continue
-                type_entires.append(enums.MembershipType(member_type))
-
         return clans.ClanMember(
+            net=self._net,
             group_id=int(group_id),
             is_online=is_online,
             last_online=last_online,
-            id=int(id),
+            id=destiny_member.id,
             joined_at=joined_at,
-            name=name,
-            type=enums.MembershipType(type),
-            is_public=is_public,
-            icon=icon,
-            code=payload.get(&#34;bungieGlobalDisplayNameCode&#34;, None),
-            types=type_entires,
+            name=destiny_member.name,
+            type=destiny_member.type,
+            is_public=destiny_member.is_public,
+            icon=destiny_member.icon,
+            code=destiny_member.code,
+            types=destiny_member.types,
+            last_seen_name=destiny_member.last_seen_name,
         )
 
-    @staticmethod
-    def set_clan_members_attrs(
-        data: JsonDict, /
-    ) -&gt; typing.ValuesView[clans.ClanMember]:
-        member_view: dict[int, clans.ClanMember] = {}
+    def deserialize_clan_members(
+        self, data: JsonObject, /
+    ) -&gt; typing.Sequence[clans.ClanMember]:
+        members_vec: list[clans.ClanMember] = []
         if (payload := data[&#34;results&#34;]) is not None:
 
-            raw_is_on: list[bool] = just(payload, &#34;isOnline&#34;)
-            raw_last_sts: list[int] = just(payload, &#34;lastOnlineStatusChange&#34;)
-            raw_join_date: list[str] = just(payload, &#34;joinDate&#34;)
-            group_id: list[int] = just(payload, &#34;groupId&#34;)
+            for memberships in payload:
+                wrap = lambda m: m[&#34;destinyUserInfo&#34;]  # noqa: E731 Lambdas
+                member = self.deserialize_destiny_user(wrap(memberships), noeq=True)
+
+                raw_is_on: list[bool] = just(payload, &#34;isOnline&#34;)
+                raw_last_sts: list[int] = just(payload, &#34;lastOnlineStatusChange&#34;)
+                raw_join_date: list[str] = just(payload, &#34;joinDate&#34;)
+                group_id: list[int] = just(payload, &#34;groupId&#34;)
 
             for is_online, last_online, join_date in zip(
                 raw_is_on, raw_last_sts, raw_join_date
@@ -1503,44 +1466,27 @@ class Deserialize:
                 )
                 join_date_fmt: datetime.datetime = time.clean_date(join_date)
 
-            for member in just(payload, &#34;destinyUserInfo&#34;):
-                # Some bungie display names apper as &#39;&#39;
-                # so we just make sure that the name is not an empty string.
-                # otherwise we just grab the last seen name.
-                if (name := member[&#34;bungieGlobalDisplayName&#34;]) == Unknown:
-                    name: str = member[&#34;LastSeenDisplayName&#34;]  # type: ignore
-                type_entires: list[enums.MembershipType] = []
-
-                for member_type in member[&#34;applicableMembershipTypes&#34;]:
-                    assert member_type is not None
-                    type_entires.append(enums.MembershipType(member_type))
-
-                member_view[int(member[&#34;membershipId&#34;])] = clans.ClanMember(
-                    id=int(member[&#34;membershipId&#34;]),
-                    name=name,
-                    type=enums.MembershipType(member[&#34;membershipType&#34;]),
-                    icon=Image(str(member[&#34;iconPath&#34;])),
-                    is_public=member[&#34;isPublic&#34;],
-                    group_id=int(group_id[0]),
+                member_obj = clans.ClanMember(
+                    net=self._net,
+                    id=member.id,
+                    name=member.name,
+                    type=member.type,
+                    icon=member.icon,
+                    is_public=member.is_public,
+                    code=member.code,
+                    types=member.types,
+                    last_seen_name=member.last_seen_name,
                     is_online=is_online,
                     last_online=last_online_fmt,
                     joined_at=join_date_fmt,
-                    code=member.get(&#34;bungieGlobalDisplayNameCode&#34;, None),
-                    types=type_entires,
+                    group_id=group_id[0],
                 )
+                members_vec.append(member_obj)
+        return members_vec
 
-        if member_view is None:
-            return dict().values()
-        return member_view.values()
-
-    def deserialize_clan_members(
-        self, data: JsonDict, /
-    ) -&gt; typing.Sequence[clans.ClanMember]:
-        return list(self.set_clan_members_attrs(data))
-
-    def deserialize_app_owner(self, payload: JsonDict) -&gt; app.ApplicationOwner:
+    def deserialize_app_owner(self, payload: JsonObject) -&gt; app.ApplicationOwner:
         return app.ApplicationOwner(
-            name=payload[&#34;displayName&#34;],
+            name=payload.get(&#34;bungieGlobalDisplayName&#34;, Undefined),
             id=int(payload[&#34;membershipId&#34;]),
             type=enums.MembershipType(payload[&#34;membershipType&#34;]),
             icon=Image(str(payload[&#34;iconPath&#34;])),
@@ -1548,21 +1494,21 @@ class Deserialize:
             code=payload.get(&#34;bungieGlobalDisplayNameCode&#34;, None),
         )
 
-    def deserialize_app(self, payload: JsonDict) -&gt; app.Application:
+    def deserialize_app(self, payload: JsonObject) -&gt; app.Application:
         return app.Application(
             id=int(payload[&#34;applicationId&#34;]),
             name=payload[&#34;name&#34;],
             link=payload[&#34;link&#34;],
             status=payload[&#34;status&#34;],
-            redirect_url=payload[&#34;redirectUrl&#34;],
+            redirect_url=payload.get(&#34;redirectUrl&#34;, None),
             created_at=time.clean_date(str(payload[&#34;creationDate&#34;])),
             published_at=time.clean_date(str(payload[&#34;firstPublished&#34;])),
             owner=self.deserialize_app_owner(payload[&#34;team&#34;][0][&#34;user&#34;]),  # type: ignore
-            scope=payload[&#34;scope&#34;],
+            scope=payload.get(&#34;scope&#34;, Undefined),
         )
 
     def deserialize_character(
-        self, payload: JsonDict, *, chartype: enums.Class
+        self, payload: JsonObject, *, chartype: enums.Class
     ) -&gt; character.Character:
 
         try:
@@ -1603,7 +1549,7 @@ class Deserialize:
             stats=payload[&#34;stats&#34;],
         )
 
-    def deserialize_profile(self, payload: JsonDict, /) -&gt; profile.Profile:
+    def deserialize_profile(self, payload: JsonObject, /) -&gt; profile.Profile:
 
         payload = payload[&#34;profile&#34;][&#34;data&#34;]
         id = int(payload[&#34;userInfo&#34;][&#34;membershipId&#34;])
@@ -1626,12 +1572,12 @@ class Deserialize:
         )
 
     def deserialize_inventory_entity(
-        self, payload: JsonDict, /
+        self, payload: JsonObject, /
     ) -&gt; entity.InventoryEntity:
         try:
             # All Bungie entities has a display propetie
             # if we don&#39;t find it means the entity was not found.
-            props: JsonDict = payload[&#34;displayProperties&#34;]
+            props: JsonObject = payload[&#34;displayProperties&#34;]
         except KeyError:
             raise error.NotFound(&#34;The entity inventory item hash is invalid&#34;) from None
 
@@ -1640,10 +1586,8 @@ class Deserialize:
         # Most entities has this
         # and for some it doesn&#39;t exists
 
-        if (
-            raw_inventory := payload.get(&#34;inventory&#34;, {Undefined: Undefined})
-        ) is not None:
-            inventory: JsonDict = raw_inventory
+        if (raw_inventory := payload.get(&#34;inventory&#34;, {})) is not None:
+            inventory: JsonObject = raw_inventory
 
         # Entity tier type. Most entities have a tier
         # and some doesn&#39;t exists so we have to check.
@@ -1659,13 +1603,13 @@ class Deserialize:
         if (name := props.get(&#34;name&#34;, Unknown)) == Unknown:
             name = Undefined
 
-        if (type_name := payload.get(&#34;itemTypeDisplayName&#34;)) == Unknown:
+        if (type_name := payload.get(&#34;itemTypeDisplayName&#34;, Unknown)) == Unknown:
             type_name = Undefined
 
         if (description := props.get(&#34;description&#34;, Unknown)) == Unknown:
             description = Undefined
 
-        if (about := payload.get(&#34;flavorText&#34;)) == Unknown:
+        if (about := payload.get(&#34;flavorText&#34;, Unknown)) == Unknown:
             about = Undefined
 
         if (raw_icon := props.get(&#34;icon&#34;, Image.partial())) is not None:
@@ -1677,7 +1621,7 @@ class Deserialize:
         if (raw_banner := payload.get(&#34;screenshot&#34;, Image.partial())) is not None:
             banner = Image(str(raw_banner))
 
-        damage: typing.Union[enums.DamageType, str] = Undefined
+        damage: UndefinedOr[enums.DamageType] = Undefined
         if (raw_damage := payload.get(&#34;defaultDamageTypeHash&#34;)) is not None:
             damage = enums.DamageType(raw_damage)
 
@@ -1686,8 +1630,8 @@ class Deserialize:
         if (raw_summary_hash := payload.get(&#34;summaryItemHash&#34;)) is not None:
             summary_hash: int = int(raw_summary_hash)  # type: ignore
 
-        if (raw_stats := payload.get(&#34;stats&#34;, {Undefined: Undefined})) is not None:
-            stats: JsonDict = raw_stats
+        if (raw_stats := payload.get(&#34;stats&#34;, {})) is not None:
+            stats: JsonObject = raw_stats
 
         block = enums.AmmoType.NONE
         if (ammo := payload.get(&#34;equippingBlock&#34;)) is not None:
@@ -1720,11 +1664,11 @@ class Deserialize:
             is_equippable=payload.get(&#34;equippable&#34;, False),
             stats=stats,
             ammo_type=block,
-            lore_hash=payload.get(&#34;loreHash&#34;, Undefined),
+            lore_hash=payload.get(&#34;loreHash&#34;, None),
         )
 
     def deserialize_activity(
-        self, payload: JsonDict, /, *, limit: typing.Optional[int] = 1
+        self, payload: JsonObject, /, *, limit: typing.Optional[int] = 1
     ) -&gt; activity.Activity:
 
         if (activs := payload.get(&#34;activities&#34;)) is not None:
@@ -1775,8 +1719,8 @@ class Deserialize:
                         </details>
                         <h3>Static methods</h3>
                         <dl>
-                            <dt id="aiobungie.internal.serialize.Deserialize.set_clan_members_attrs"><code class="name flex">
-<span>def <span class="ident">set_clan_members_attrs</span></span>(<span>data: JsonDict, /) ‑> ValuesView[<a title="aiobungie.crate.clans.ClanMember" href="./crate/clans.html#aiobungie.crate.clans.ClanMember">ClanMember</a>]</span>
+                            <dt id="aiobungie.internal.serialize.Factory.deserialize_destiny_user"><code class="name flex">
+<span>def <span class="ident">deserialize_destiny_user</span></span>(<span>payload: JsonObject, *, noeq: bool = False) ‑> <a title="aiobungie.crate.user.DestinyUser" href="./crate/user.html#aiobungie.crate.user.DestinyUser">DestinyUser</a></span>
 </code></dt>
                             <dd>
                                 <div class="desc"></div>
@@ -1785,58 +1729,38 @@ class Deserialize:
                                         <span>Expand source code</span>
                                     </summary>
                                     <pre><code class="python">@staticmethod
-def set_clan_members_attrs(
-    data: JsonDict, /
-) -&gt; typing.ValuesView[clans.ClanMember]:
-    member_view: dict[int, clans.ClanMember] = {}
-    if (payload := data[&#34;results&#34;]) is not None:
+def deserialize_destiny_user(
+    payload: JsonObject, *, noeq: bool = False
+) -&gt; user.DestinyUser:
+    if noeq is True:
+        user_info = payload
+    else:
+        user_info = payload[&#34;destinyUserInfo&#34;]
 
-        raw_is_on: list[bool] = just(payload, &#34;isOnline&#34;)
-        raw_last_sts: list[int] = just(payload, &#34;lastOnlineStatusChange&#34;)
-        raw_join_date: list[str] = just(payload, &#34;joinDate&#34;)
-        group_id: list[int] = just(payload, &#34;groupId&#34;)
+    memberships = []
+    for m_ship in user_info[&#34;applicableMembershipTypes&#34;]:
+        memberships.append(enums.MembershipType(m_ship))
 
-        for is_online, last_online, join_date in zip(
-            raw_is_on, raw_last_sts, raw_join_date
-        ):
-            last_online_fmt: datetime.datetime = time.from_timestamp(
-                int(last_online)
-            )
-            join_date_fmt: datetime.datetime = time.clean_date(join_date)
+    if (raw_name := user_info[&#34;bungieGlobalDisplayName&#34;]) == Unknown:
+        name = Undefined
+    else:
+        name = raw_name
 
-        for member in just(payload, &#34;destinyUserInfo&#34;):
-            # Some bungie display names apper as &#39;&#39;
-            # so we just make sure that the name is not an empty string.
-            # otherwise we just grab the last seen name.
-            if (name := member[&#34;bungieGlobalDisplayName&#34;]) == Unknown:
-                name: str = member[&#34;LastSeenDisplayName&#34;]  # type: ignore
-            type_entires: list[enums.MembershipType] = []
-
-            for member_type in member[&#34;applicableMembershipTypes&#34;]:
-                assert member_type is not None
-                type_entires.append(enums.MembershipType(member_type))
-
-            member_view[int(member[&#34;membershipId&#34;])] = clans.ClanMember(
-                id=int(member[&#34;membershipId&#34;]),
-                name=name,
-                type=enums.MembershipType(member[&#34;membershipType&#34;]),
-                icon=Image(str(member[&#34;iconPath&#34;])),
-                is_public=member[&#34;isPublic&#34;],
-                group_id=int(group_id[0]),
-                is_online=is_online,
-                last_online=last_online_fmt,
-                joined_at=join_date_fmt,
-                code=member.get(&#34;bungieGlobalDisplayNameCode&#34;, None),
-                types=type_entires,
-            )
-
-    if member_view is None:
-        return dict().values()
-    return member_view.values()</code></pre>
+    return user.DestinyUser(
+        id=int(user_info[&#34;membershipId&#34;]),
+        name=name,
+        code=user_info.get(&#34;bungieGlobalDisplayNameCode&#34;, None),
+        last_seen_name=user_info.get(&#34;LastSeenDisplayName&#34;, &#34;displayName&#34;),
+        type=enums.MembershipType(user_info[&#34;membershipType&#34;]),
+        is_public=user_info[&#34;isPublic&#34;],
+        crossave_override=enums.MembershipType(user_info[&#34;crossSaveOverride&#34;]),
+        icon=Image(user_info.get(&#34;iconPath&#34;, Image.partial())),
+        types=memberships,
+    )</code></pre>
                                 </details>
                             </dd>
-                            <dt id="aiobungie.internal.serialize.Deserialize.set_themese_attrs"><code class="name flex">
-<span>def <span class="ident">set_themese_attrs</span></span>(<span>payload: JsonList, /) ‑> ValuesView[<a title="aiobungie.crate.user.UserThemes" href="./crate/user.html#aiobungie.crate.user.UserThemes">UserThemes</a>]</span>
+                            <dt id="aiobungie.internal.serialize.Factory.deserialize_partial_bungie_user"><code class="name flex">
+<span>def <span class="ident">deserialize_partial_bungie_user</span></span>(<span>payload: JsonObject, *, noeq: bool = False) ‑> <a title="aiobungie.crate.user.PartialBungieUser" href="./crate/user.html#aiobungie.crate.user.PartialBungieUser">PartialBungieUser</a></span>
 </code></dt>
                             <dd>
                                 <div class="desc"></div>
@@ -1845,7 +1769,34 @@ def set_clan_members_attrs(
                                         <span>Expand source code</span>
                                     </summary>
                                     <pre><code class="python">@staticmethod
-def set_themese_attrs(payload: JsonList, /) -&gt; typing.ValuesView[user.UserThemes]:
+def deserialize_partial_bungie_user(
+    payload: JsonObject, *, noeq: bool = False
+) -&gt; user.PartialBungieUser:
+    if noeq is True:
+        bungie_info = payload
+    else:
+        bungie_info = payload[&#34;bungieNetUserInfo&#34;]
+    return user.PartialBungieUser(
+        name=bungie_info.get(&#34;displayName&#34;, Undefined),
+        id=int(bungie_info[&#34;membershipId&#34;]),
+        crossave_override=enums.MembershipType(bungie_info[&#34;crossSaveOverride&#34;]),
+        is_public=bungie_info[&#34;isPublic&#34;],
+        icon=Image(bungie_info.get(&#34;iconPath&#34;, Image.partial())),
+        type=enums.MembershipType(bungie_info[&#34;membershipType&#34;]),
+    )</code></pre>
+                                </details>
+                            </dd>
+                            <dt id="aiobungie.internal.serialize.Factory.set_themese_attrs"><code class="name flex">
+<span>def <span class="ident">set_themese_attrs</span></span>(<span>payload: JsonArray, /) ‑> Collection[<a title="aiobungie.crate.user.UserThemes" href="./crate/user.html#aiobungie.crate.user.UserThemes">UserThemes</a>]</span>
+</code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">@staticmethod
+def set_themese_attrs(payload: JsonArray, /) -&gt; typing.Collection[user.UserThemes]:
     if isinstance(payload, list):
         if payload is None:
             raise ValueError(&#34;No themes found.&#34;)
@@ -1859,7 +1810,9 @@ def set_themese_attrs(payload: JsonList, /) -&gt; typing.ValuesView[user.UserThe
 
         for t_id, t_name, t_desc in zip(theme_ids, theme_names, theme_descriptions):
             theme_map[t_id] = user.UserThemes(
-                id=int(t_id), name=t_name, description=t_desc
+                id=int(t_id),
+                name=t_name or Undefined,
+                description=t_desc or Undefined,
             )
     return theme_map.values()</code></pre>
                                 </details>
@@ -1867,8 +1820,8 @@ def set_themese_attrs(payload: JsonList, /) -&gt; typing.ValuesView[user.UserThe
                         </dl>
                         <h3>Methods</h3>
                         <dl>
-                            <dt id="aiobungie.internal.serialize.Deserialize.deseialize_clan"><code class="name flex">
-<span>def <span class="ident">deseialize_clan</span></span>(<span>self, data: JsonDict) ‑> <a title="aiobungie.crate.clans.Clan" href="./crate/clans.html#aiobungie.crate.clans.Clan">Clan</a></span>
+                            <dt id="aiobungie.internal.serialize.Factory.deseialize_clan"><code class="name flex">
+<span>def <span class="ident">deseialize_clan</span></span>(<span>self, data: JsonObject) ‑> <a title="aiobungie.crate.clans.Clan" href="./crate/clans.html#aiobungie.crate.clans.Clan">Clan</a></span>
 </code></dt>
                             <dd>
                                 <div class="desc"></div>
@@ -1876,13 +1829,13 @@ def set_themese_attrs(payload: JsonList, /) -&gt; typing.ValuesView[user.UserThe
                                     <summary>
                                         <span>Expand source code</span>
                                     </summary>
-                                    <pre><code class="python">def deseialize_clan(self, data: JsonDict) -&gt; clans.Clan:
+                                    <pre><code class="python">def deseialize_clan(self, data: JsonObject) -&gt; clans.Clan:
     id = data[&#34;detail&#34;][&#34;groupId&#34;]
     name = data[&#34;detail&#34;][&#34;name&#34;]
     created_at = data[&#34;detail&#34;][&#34;creationDate&#34;]
     member_count = data[&#34;detail&#34;][&#34;memberCount&#34;]
-    description = data[&#34;detail&#34;][&#34;about&#34;]
-    about = data[&#34;detail&#34;][&#34;motto&#34;]
+    about = data[&#34;detail&#34;][&#34;about&#34;]
+    motto = data[&#34;detail&#34;][&#34;motto&#34;]
     is_public = data[&#34;detail&#34;][&#34;isPublic&#34;]
     banner = Image(str(data[&#34;detail&#34;][&#34;bannerPath&#34;]))
     avatar = Image(str(data[&#34;detail&#34;][&#34;avatarPath&#34;]))
@@ -1908,7 +1861,7 @@ def set_themese_attrs(payload: JsonList, /) -&gt; typing.ValuesView[user.UserThe
         type=enums.GroupType(type),
         created_at=time.clean_date(created_at),
         member_count=member_count,
-        description=description,
+        motto=motto,
         about=about,
         is_public=is_public,
         banner=banner,
@@ -1919,8 +1872,8 @@ def set_themese_attrs(payload: JsonList, /) -&gt; typing.ValuesView[user.UserThe
     )</code></pre>
                                 </details>
                             </dd>
-                            <dt id="aiobungie.internal.serialize.Deserialize.deseialize_clan_owner"><code class="name flex">
-<span>def <span class="ident">deseialize_clan_owner</span></span>(<span>self, data: JsonDict) ‑> <a title="aiobungie.crate.clans.ClanOwner" href="./crate/clans.html#aiobungie.crate.clans.ClanOwner">ClanOwner</a></span>
+                            <dt id="aiobungie.internal.serialize.Factory.deseialize_clan_owner"><code class="name flex">
+<span>def <span class="ident">deseialize_clan_owner</span></span>(<span>self, data: JsonObject) ‑> <a title="aiobungie.crate.clans.ClanOwner" href="./crate/clans.html#aiobungie.crate.clans.ClanOwner">ClanOwner</a></span>
 </code></dt>
                             <dd>
                                 <div class="desc"></div>
@@ -1928,34 +1881,56 @@ def set_themese_attrs(payload: JsonList, /) -&gt; typing.ValuesView[user.UserThe
                                     <summary>
                                         <span>Expand source code</span>
                                     </summary>
-                                    <pre><code class="python">def deseialize_clan_owner(self, data: JsonDict) -&gt; clans.ClanOwner:
-    id = data[&#34;destinyUserInfo&#34;][&#34;membershipId&#34;]
-    name = data[&#34;destinyUserInfo&#34;][&#34;displayName&#34;]
-    icon = Image(str(data[&#34;destinyUserInfo&#34;][&#34;iconPath&#34;]))
-    convert = int(data[&#34;lastOnlineStatusChange&#34;])
-    last_online = time.from_timestamp(convert)
-    clan_id = data[&#34;groupId&#34;]
+                                    <pre><code class="python">def deseialize_clan_owner(self, data: JsonObject) -&gt; clans.ClanOwner:
     joined_at = data[&#34;joinDate&#34;]
-    types = data[&#34;destinyUserInfo&#34;][&#34;applicableMembershipTypes&#34;]
-    is_public = data[&#34;destinyUserInfo&#34;][&#34;isPublic&#34;]
-    type = enums.MembershipType(data[&#34;destinyUserInfo&#34;].get(&#34;membershipType&#34;, None))
+    last_online = time.from_timestamp(int(data[&#34;lastOnlineStatusChange&#34;]))
+    clan_id = data[&#34;groupId&#34;]
+    destiny_user = self.deserialize_destiny_user(data)
 
     return clans.ClanOwner(
-        id=int(id),
-        name=name,
-        icon=icon,
+        last_seen_name=destiny_user.last_seen_name,
+        id=destiny_user.id,
+        name=destiny_user.name,
+        icon=destiny_user.icon,
         last_online=last_online,
         clan_id=int(clan_id),
         joined_at=time.clean_date(joined_at),
-        types=types,
-        is_public=is_public,
-        type=type,
-        code=data.get(&#34;bungieGlobalDisplayNameCode&#34;, None),
+        types=destiny_user.types,
+        is_public=destiny_user.is_public,
+        type=destiny_user.type,
+        code=destiny_user.code,
     )</code></pre>
                                 </details>
                             </dd>
-                            <dt id="aiobungie.internal.serialize.Deserialize.deserialize_activity"><code class="name flex">
-<span>def <span class="ident">deserialize_activity</span></span>(<span>self, payload: JsonDict, /, *, limit: typing.Optional[int] = 1) ‑> <a title="aiobungie.crate.activity.Activity" href="./crate/activity.html#aiobungie.crate.activity.Activity">Activity</a></span>
+                            <dt id="aiobungie.internal.serialize.Factory.deseialize_found_users"><code class="name flex">
+<span>def <span class="ident">deseialize_found_users</span></span>(<span>self, payload: JsonObject) ‑> Sequence[<a title="aiobungie.crate.user.DestinyUser" href="./crate/user.html#aiobungie.crate.user.DestinyUser">DestinyUser</a>]</span>
+</code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">def deseialize_found_users(
+    self, payload: JsonObject
+) -&gt; typing.Sequence[user.DestinyUser]:
+    result = payload[&#34;searchResults&#34;]
+    if result is None:
+        raise error.NotFound(&#34;User not found.&#34;)
+
+    vec: list[user.DestinyUser] = []
+    for player in result:
+        # TODO: Figuire out how to merge this with DestinyUser objects.
+        #  name: UndefinedOr[str] = player.get(&#34;bungieGlobalDisplayName&#34;, Undefined)
+        #  code: NoneOr[int] = player.get(&#34;bungieGlobalDisplayNameCode&#34;, None)
+        #  bungie_id: UndefinedOr[int] = player.get(&#39;bungieNetMembershipId&#39;, Undefined)
+        for mship in self.deserialize_destiny_members(player):
+            vec.append(mship)
+    return vec</code></pre>
+                                </details>
+                            </dd>
+                            <dt id="aiobungie.internal.serialize.Factory.deserialize_activity"><code class="name flex">
+<span>def <span class="ident">deserialize_activity</span></span>(<span>self, payload: JsonObject, /, *, limit: typing.Optional[int] = 1) ‑> <a title="aiobungie.crate.activity.Activity" href="./crate/activity.html#aiobungie.crate.activity.Activity">Activity</a></span>
 </code></dt>
                             <dd>
                                 <div class="desc"></div>
@@ -1964,7 +1939,7 @@ def set_themese_attrs(payload: JsonList, /) -&gt; typing.ValuesView[user.UserThe
                                         <span>Expand source code</span>
                                     </summary>
                                     <pre><code class="python">def deserialize_activity(
-    self, payload: JsonDict, /, *, limit: typing.Optional[int] = 1
+    self, payload: JsonObject, /, *, limit: typing.Optional[int] = 1
 ) -&gt; activity.Activity:
 
     if (activs := payload.get(&#34;activities&#34;)) is not None:
@@ -2014,8 +1989,8 @@ def set_themese_attrs(payload: JsonList, /) -&gt; typing.ValuesView[user.UserThe
     )</code></pre>
                                 </details>
                             </dd>
-                            <dt id="aiobungie.internal.serialize.Deserialize.deserialize_app"><code class="name flex">
-<span>def <span class="ident">deserialize_app</span></span>(<span>self, payload: JsonDict) ‑> <a title="aiobungie.crate.application.Application" href="./crate/application.html#aiobungie.crate.application.Application">Application</a></span>
+                            <dt id="aiobungie.internal.serialize.Factory.deserialize_app"><code class="name flex">
+<span>def <span class="ident">deserialize_app</span></span>(<span>self, payload: JsonObject) ‑> <a title="aiobungie.crate.application.Application" href="./crate/application.html#aiobungie.crate.application.Application">Application</a></span>
 </code></dt>
                             <dd>
                                 <div class="desc"></div>
@@ -2023,22 +1998,22 @@ def set_themese_attrs(payload: JsonList, /) -&gt; typing.ValuesView[user.UserThe
                                     <summary>
                                         <span>Expand source code</span>
                                     </summary>
-                                    <pre><code class="python">def deserialize_app(self, payload: JsonDict) -&gt; app.Application:
+                                    <pre><code class="python">def deserialize_app(self, payload: JsonObject) -&gt; app.Application:
     return app.Application(
         id=int(payload[&#34;applicationId&#34;]),
         name=payload[&#34;name&#34;],
         link=payload[&#34;link&#34;],
         status=payload[&#34;status&#34;],
-        redirect_url=payload[&#34;redirectUrl&#34;],
+        redirect_url=payload.get(&#34;redirectUrl&#34;, None),
         created_at=time.clean_date(str(payload[&#34;creationDate&#34;])),
         published_at=time.clean_date(str(payload[&#34;firstPublished&#34;])),
         owner=self.deserialize_app_owner(payload[&#34;team&#34;][0][&#34;user&#34;]),  # type: ignore
-        scope=payload[&#34;scope&#34;],
+        scope=payload.get(&#34;scope&#34;, Undefined),
     )</code></pre>
                                 </details>
                             </dd>
-                            <dt id="aiobungie.internal.serialize.Deserialize.deserialize_app_owner"><code class="name flex">
-<span>def <span class="ident">deserialize_app_owner</span></span>(<span>self, payload: JsonDict) ‑> <a title="aiobungie.crate.application.ApplicationOwner" href="./crate/application.html#aiobungie.crate.application.ApplicationOwner">ApplicationOwner</a></span>
+                            <dt id="aiobungie.internal.serialize.Factory.deserialize_app_owner"><code class="name flex">
+<span>def <span class="ident">deserialize_app_owner</span></span>(<span>self, payload: JsonObject) ‑> <a title="aiobungie.crate.application.ApplicationOwner" href="./crate/application.html#aiobungie.crate.application.ApplicationOwner">ApplicationOwner</a></span>
 </code></dt>
                             <dd>
                                 <div class="desc"></div>
@@ -2046,9 +2021,9 @@ def set_themese_attrs(payload: JsonList, /) -&gt; typing.ValuesView[user.UserThe
                                     <summary>
                                         <span>Expand source code</span>
                                     </summary>
-                                    <pre><code class="python">def deserialize_app_owner(self, payload: JsonDict) -&gt; app.ApplicationOwner:
+                                    <pre><code class="python">def deserialize_app_owner(self, payload: JsonObject) -&gt; app.ApplicationOwner:
     return app.ApplicationOwner(
-        name=payload[&#34;displayName&#34;],
+        name=payload.get(&#34;bungieGlobalDisplayName&#34;, Undefined),
         id=int(payload[&#34;membershipId&#34;]),
         type=enums.MembershipType(payload[&#34;membershipType&#34;]),
         icon=Image(str(payload[&#34;iconPath&#34;])),
@@ -2057,8 +2032,8 @@ def set_themese_attrs(payload: JsonList, /) -&gt; typing.ValuesView[user.UserThe
     )</code></pre>
                                 </details>
                             </dd>
-                            <dt id="aiobungie.internal.serialize.Deserialize.deserialize_bungie_user"><code class="name flex">
-<span>def <span class="ident">deserialize_bungie_user</span></span>(<span>self, data: JsonDict) ‑> <a title="aiobungie.crate.user.BungieUser" href="./crate/user.html#aiobungie.crate.user.BungieUser">BungieUser</a></span>
+                            <dt id="aiobungie.internal.serialize.Factory.deserialize_bungie_user"><code class="name flex">
+<span>def <span class="ident">deserialize_bungie_user</span></span>(<span>self, data: JsonObject) ‑> <a title="aiobungie.crate.user.BungieUser" href="./crate/user.html#aiobungie.crate.user.BungieUser">BungieUser</a></span>
 </code></dt>
                             <dd>
                                 <div class="desc"></div>
@@ -2066,11 +2041,11 @@ def set_themese_attrs(payload: JsonList, /) -&gt; typing.ValuesView[user.UserThe
                                     <summary>
                                         <span>Expand source code</span>
                                     </summary>
-                                    <pre><code class="python">def deserialize_bungie_user(self, data: JsonDict) -&gt; user.BungieUser:
+                                    <pre><code class="python">def deserialize_bungie_user(self, data: JsonObject) -&gt; user.BungieUser:
     return user.BungieUser(
         id=int(data[&#34;membershipId&#34;]),
         created_at=time.clean_date(data[&#34;firstAccess&#34;]),
-        name=data[&#34;displayName&#34;],
+        name=data.get(&#34;cachedBungieGlobalDisplayName&#34;, Undefined),
         is_deleted=data[&#34;isDeleted&#34;],
         about=data[&#34;about&#34;],
         updated_at=time.clean_date(data[&#34;lastUpdate&#34;]),
@@ -2091,8 +2066,8 @@ def set_themese_attrs(payload: JsonList, /) -&gt; typing.ValuesView[user.UserThe
     )</code></pre>
                                 </details>
                             </dd>
-                            <dt id="aiobungie.internal.serialize.Deserialize.deserialize_character"><code class="name flex">
-<span>def <span class="ident">deserialize_character</span></span>(<span>self, payload: JsonDict, *, chartype: enums.Class) ‑> <a title="aiobungie.crate.character.Character" href="./crate/character.html#aiobungie.crate.character.Character">Character</a></span>
+                            <dt id="aiobungie.internal.serialize.Factory.deserialize_character"><code class="name flex">
+<span>def <span class="ident">deserialize_character</span></span>(<span>self, payload: JsonObject, *, chartype: enums.Class) ‑> <a title="aiobungie.crate.character.Character" href="./crate/character.html#aiobungie.crate.character.Character">Character</a></span>
 </code></dt>
                             <dd>
                                 <div class="desc"></div>
@@ -2101,7 +2076,7 @@ def set_themese_attrs(payload: JsonList, /) -&gt; typing.ValuesView[user.UserThe
                                         <span>Expand source code</span>
                                     </summary>
                                     <pre><code class="python">def deserialize_character(
-    self, payload: JsonDict, *, chartype: enums.Class
+    self, payload: JsonObject, *, chartype: enums.Class
 ) -&gt; character.Character:
 
     try:
@@ -2143,8 +2118,8 @@ def set_themese_attrs(payload: JsonList, /) -&gt; typing.ValuesView[user.UserThe
     )</code></pre>
                                 </details>
                             </dd>
-                            <dt id="aiobungie.internal.serialize.Deserialize.deserialize_clan_member"><code class="name flex">
-<span>def <span class="ident">deserialize_clan_member</span></span>(<span>self, data: JsonDict, /) ‑> <a title="aiobungie.crate.clans.ClanMember" href="./crate/clans.html#aiobungie.crate.clans.ClanMember">ClanMember</a></span>
+                            <dt id="aiobungie.internal.serialize.Factory.deserialize_clan_member"><code class="name flex">
+<span>def <span class="ident">deserialize_clan_member</span></span>(<span>self, data: JsonObject, /) ‑> <a title="aiobungie.crate.clans.ClanMember" href="./crate/clans.html#aiobungie.crate.clans.ClanMember">ClanMember</a></span>
 </code></dt>
                             <dd>
                                 <div class="desc"></div>
@@ -2152,7 +2127,7 @@ def set_themese_attrs(payload: JsonList, /) -&gt; typing.ValuesView[user.UserThe
                                     <summary>
                                         <span>Expand source code</span>
                                     </summary>
-                                    <pre><code class="python">def deserialize_clan_member(self, data: JsonDict, /) -&gt; clans.ClanMember:
+                                    <pre><code class="python">def deserialize_clan_member(self, data: JsonObject, /) -&gt; clans.ClanMember:
 
     if (payload := data[&#34;results&#34;]) is not None:
         try:
@@ -2161,12 +2136,7 @@ def set_themese_attrs(payload: JsonList, /) -&gt; typing.ValuesView[user.UserThe
         except (KeyError, IndexError):
             raise error.NotFound(&#34;Clan member not found.&#34;) from None
 
-        id: int = payload[&#34;membershipId&#34;]
-        name: str = payload[&#34;displayName&#34;]
-        type: enums.MembershipType = payload[&#34;membershipType&#34;]
-        is_public: bool = payload[&#34;isPublic&#34;]
-        icon: Image = Image(str(payload[&#34;iconPath&#34;]))
-        type_entires: list[enums.MembershipType] = []
+        destiny_member = self.deserialize_destiny_user(payload, noeq=True)
         last_online: datetime.datetime = time.from_timestamp(
             int(attrs[&#34;lastOnlineStatusChange&#34;])
         )
@@ -2174,28 +2144,25 @@ def set_themese_attrs(payload: JsonList, /) -&gt; typing.ValuesView[user.UserThe
         group_id: int = attrs[&#34;groupId&#34;]
         joined_at: datetime.datetime = time.clean_date(str(attrs[&#34;joinDate&#34;]))
 
-        for member_type in payload[&#34;applicableMembershipTypes&#34;]:
-            if member_type is None:
-                continue
-            type_entires.append(enums.MembershipType(member_type))
-
     return clans.ClanMember(
+        net=self._net,
         group_id=int(group_id),
         is_online=is_online,
         last_online=last_online,
-        id=int(id),
+        id=destiny_member.id,
         joined_at=joined_at,
-        name=name,
-        type=enums.MembershipType(type),
-        is_public=is_public,
-        icon=icon,
-        code=payload.get(&#34;bungieGlobalDisplayNameCode&#34;, None),
-        types=type_entires,
+        name=destiny_member.name,
+        type=destiny_member.type,
+        is_public=destiny_member.is_public,
+        icon=destiny_member.icon,
+        code=destiny_member.code,
+        types=destiny_member.types,
+        last_seen_name=destiny_member.last_seen_name,
     )</code></pre>
                                 </details>
                             </dd>
-                            <dt id="aiobungie.internal.serialize.Deserialize.deserialize_clan_members"><code class="name flex">
-<span>def <span class="ident">deserialize_clan_members</span></span>(<span>self, data: JsonDict, /) ‑> Sequence[<a title="aiobungie.crate.clans.ClanMember" href="./crate/clans.html#aiobungie.crate.clans.ClanMember">ClanMember</a>]</span>
+                            <dt id="aiobungie.internal.serialize.Factory.deserialize_clan_members"><code class="name flex">
+<span>def <span class="ident">deserialize_clan_members</span></span>(<span>self, data: JsonObject, /) ‑> Sequence[<a title="aiobungie.crate.clans.ClanMember" href="./crate/clans.html#aiobungie.crate.clans.ClanMember">ClanMember</a>]</span>
 </code></dt>
                             <dd>
                                 <div class="desc"></div>
@@ -2204,13 +2171,126 @@ def set_themese_attrs(payload: JsonList, /) -&gt; typing.ValuesView[user.UserThe
                                         <span>Expand source code</span>
                                     </summary>
                                     <pre><code class="python">def deserialize_clan_members(
-    self, data: JsonDict, /
+    self, data: JsonObject, /
 ) -&gt; typing.Sequence[clans.ClanMember]:
-    return list(self.set_clan_members_attrs(data))</code></pre>
+    members_vec: list[clans.ClanMember] = []
+    if (payload := data[&#34;results&#34;]) is not None:
+
+        for memberships in payload:
+            wrap = lambda m: m[&#34;destinyUserInfo&#34;]  # noqa: E731 Lambdas
+            member = self.deserialize_destiny_user(wrap(memberships), noeq=True)
+
+            raw_is_on: list[bool] = just(payload, &#34;isOnline&#34;)
+            raw_last_sts: list[int] = just(payload, &#34;lastOnlineStatusChange&#34;)
+            raw_join_date: list[str] = just(payload, &#34;joinDate&#34;)
+            group_id: list[int] = just(payload, &#34;groupId&#34;)
+
+        for is_online, last_online, join_date in zip(
+            raw_is_on, raw_last_sts, raw_join_date
+        ):
+            last_online_fmt: datetime.datetime = time.from_timestamp(
+                int(last_online)
+            )
+            join_date_fmt: datetime.datetime = time.clean_date(join_date)
+
+            member_obj = clans.ClanMember(
+                net=self._net,
+                id=member.id,
+                name=member.name,
+                type=member.type,
+                icon=member.icon,
+                is_public=member.is_public,
+                code=member.code,
+                types=member.types,
+                last_seen_name=member.last_seen_name,
+                is_online=is_online,
+                last_online=last_online_fmt,
+                joined_at=join_date_fmt,
+                group_id=group_id[0],
+            )
+            members_vec.append(member_obj)
+    return members_vec</code></pre>
                                 </details>
                             </dd>
-                            <dt id="aiobungie.internal.serialize.Deserialize.deserialize_inventory_entity"><code class="name flex">
-<span>def <span class="ident">deserialize_inventory_entity</span></span>(<span>self, payload: JsonDict, /) ‑> <a title="aiobungie.crate.entity.InventoryEntity" href="./crate/entity.html#aiobungie.crate.entity.InventoryEntity">InventoryEntity</a></span>
+                            <dt id="aiobungie.internal.serialize.Factory.deserialize_destiny_members"><code class="name flex">
+<span>def <span class="ident">deserialize_destiny_members</span></span>(<span>self, data: typing.Union[JsonObject, JsonArray], *, bound: bool = False) ‑> Sequence[<a title="aiobungie.crate.user.DestinyUser" href="./crate/user.html#aiobungie.crate.user.DestinyUser">DestinyUser</a>]</span>
+</code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">def deserialize_destiny_members(
+    self, data: typing.Union[JsonObject, JsonArray], *, bound: bool = False
+) -&gt; typing.Sequence[user.DestinyUser]:
+    xbox: int = 0
+    psn: int = 1
+    steam: int = 2
+    stadia: int = 3
+
+    # In order to bind this method between deserializing
+    # other objects we have to check if the data was
+    # a json object or a json array of objects.
+
+    raw_members: typing.Union[JsonArray, JsonObject, dict[int, typing.Any]] = data
+
+    if bound:
+        members_ = raw_members  # type: ignore
+
+    elif (
+        isinstance(data, dict)
+        and (  # noqa: W503 LINE BREAK
+            raw_members := data.get(&#34;destinyMemberships&#34;, [])
+        )
+        is not None
+    ):
+        members_: dict[int, typing.Any] = raw_members  # type: ignore
+
+    stadia_obj: NoneOr[user.DestinyUser] = None  # type: ignore[name-defined]
+    try:
+        stadia_member = members_[stadia]  # type: ignore[index]
+    except (KeyError, IndexError):
+        pass
+    else:
+        stadia_obj = self.deserialize_destiny_user(stadia_member, noeq=True)
+
+    xbox_obj: NoneOr[user.DestinyUser] = None  # type: ignore[name-defined]
+    try:
+        xbox_member = members_[xbox]  # type: ignore[index]
+    except (KeyError, IndexError):
+        pass
+    else:
+        xbox_obj = self.deserialize_destiny_user(xbox_member, noeq=True)
+
+    steam_obj: NoneOr[user.DestinyUser] = None  # type: ignore[name-defined]
+    try:
+        steam_member = members_[steam]  # type: ignore[index]
+    except (KeyError, IndexError):
+        pass
+    else:
+        steam_obj = self.deserialize_destiny_user(steam_member, noeq=True)
+
+    psn_obj: NoneOr[user.DestinyUser] = None  # type: ignore[name-defined]
+    try:
+        psn_member = members_[psn]  # type: ignore[index]
+    except (KeyError, IndexError):
+        pass
+    else:
+        psn_obj = self.deserialize_destiny_user(psn_member, noeq=True)
+
+    vec: list[user.DestinyUser] = []
+    objs = [xbox_obj, psn_obj, steam_obj, stadia_obj]
+    # No point of returning NoneType objects.
+    for obj in objs:
+        if obj is None:
+            continue
+        vec.append(obj)
+    return vec</code></pre>
+                                </details>
+                            </dd>
+                            <dt id="aiobungie.internal.serialize.Factory.deserialize_inventory_entity"><code class="name flex">
+<span>def <span class="ident">deserialize_inventory_entity</span></span>(<span>self, payload: JsonObject, /) ‑> <a title="aiobungie.crate.entity.InventoryEntity" href="./crate/entity.html#aiobungie.crate.entity.InventoryEntity">InventoryEntity</a></span>
 </code></dt>
                             <dd>
                                 <div class="desc"></div>
@@ -2219,12 +2299,12 @@ def set_themese_attrs(payload: JsonList, /) -&gt; typing.ValuesView[user.UserThe
                                         <span>Expand source code</span>
                                     </summary>
                                     <pre><code class="python">def deserialize_inventory_entity(
-    self, payload: JsonDict, /
+    self, payload: JsonObject, /
 ) -&gt; entity.InventoryEntity:
     try:
         # All Bungie entities has a display propetie
         # if we don&#39;t find it means the entity was not found.
-        props: JsonDict = payload[&#34;displayProperties&#34;]
+        props: JsonObject = payload[&#34;displayProperties&#34;]
     except KeyError:
         raise error.NotFound(&#34;The entity inventory item hash is invalid&#34;) from None
 
@@ -2233,10 +2313,8 @@ def set_themese_attrs(payload: JsonList, /) -&gt; typing.ValuesView[user.UserThe
     # Most entities has this
     # and for some it doesn&#39;t exists
 
-    if (
-        raw_inventory := payload.get(&#34;inventory&#34;, {Undefined: Undefined})
-    ) is not None:
-        inventory: JsonDict = raw_inventory
+    if (raw_inventory := payload.get(&#34;inventory&#34;, {})) is not None:
+        inventory: JsonObject = raw_inventory
 
     # Entity tier type. Most entities have a tier
     # and some doesn&#39;t exists so we have to check.
@@ -2252,13 +2330,13 @@ def set_themese_attrs(payload: JsonList, /) -&gt; typing.ValuesView[user.UserThe
     if (name := props.get(&#34;name&#34;, Unknown)) == Unknown:
         name = Undefined
 
-    if (type_name := payload.get(&#34;itemTypeDisplayName&#34;)) == Unknown:
+    if (type_name := payload.get(&#34;itemTypeDisplayName&#34;, Unknown)) == Unknown:
         type_name = Undefined
 
     if (description := props.get(&#34;description&#34;, Unknown)) == Unknown:
         description = Undefined
 
-    if (about := payload.get(&#34;flavorText&#34;)) == Unknown:
+    if (about := payload.get(&#34;flavorText&#34;, Unknown)) == Unknown:
         about = Undefined
 
     if (raw_icon := props.get(&#34;icon&#34;, Image.partial())) is not None:
@@ -2270,7 +2348,7 @@ def set_themese_attrs(payload: JsonList, /) -&gt; typing.ValuesView[user.UserThe
     if (raw_banner := payload.get(&#34;screenshot&#34;, Image.partial())) is not None:
         banner = Image(str(raw_banner))
 
-    damage: typing.Union[enums.DamageType, str] = Undefined
+    damage: UndefinedOr[enums.DamageType] = Undefined
     if (raw_damage := payload.get(&#34;defaultDamageTypeHash&#34;)) is not None:
         damage = enums.DamageType(raw_damage)
 
@@ -2279,8 +2357,8 @@ def set_themese_attrs(payload: JsonList, /) -&gt; typing.ValuesView[user.UserThe
     if (raw_summary_hash := payload.get(&#34;summaryItemHash&#34;)) is not None:
         summary_hash: int = int(raw_summary_hash)  # type: ignore
 
-    if (raw_stats := payload.get(&#34;stats&#34;, {Undefined: Undefined})) is not None:
-        stats: JsonDict = raw_stats
+    if (raw_stats := payload.get(&#34;stats&#34;, {})) is not None:
+        stats: JsonObject = raw_stats
 
     block = enums.AmmoType.NONE
     if (ammo := payload.get(&#34;equippingBlock&#34;)) is not None:
@@ -2313,12 +2391,12 @@ def set_themese_attrs(payload: JsonList, /) -&gt; typing.ValuesView[user.UserThe
         is_equippable=payload.get(&#34;equippable&#34;, False),
         stats=stats,
         ammo_type=block,
-        lore_hash=payload.get(&#34;loreHash&#34;, Undefined),
+        lore_hash=payload.get(&#34;loreHash&#34;, None),
     )</code></pre>
                                 </details>
                             </dd>
-                            <dt id="aiobungie.internal.serialize.Deserialize.deserialize_members"><code class="name flex">
-<span>def <span class="ident">deserialize_members</span></span>(<span>self, data: JsonDict) ‑> typing.Sequence[user.DestinyUser | None]</span>
+                            <dt id="aiobungie.internal.serialize.Factory.deserialize_player"><code class="name flex">
+<span>def <span class="ident">deserialize_player</span></span>(<span>self, payload: JsonArray, /) ‑> Sequence[<a title="aiobungie.crate.user.DestinyUser" href="./crate/user.html#aiobungie.crate.user.DestinyUser">DestinyUser</a>]</span>
 </code></dt>
                             <dd>
                                 <div class="desc"></div>
@@ -2326,160 +2404,17 @@ def set_themese_attrs(payload: JsonList, /) -&gt; typing.ValuesView[user.UserThe
                                     <summary>
                                         <span>Expand source code</span>
                                     </summary>
-                                    <pre><code class="python">def deserialize_members(
-    self, data: JsonDict
-) -&gt; typing.Sequence[user.DestinyUser | None]:
-
-    xbox: int = 0
-    psn: int = 1
-    steam: int = 2
-    stadia: int = 3
-
-    if (members_ := data.get(&#34;destinyMemberships&#34;, [])) is None:
-        raise error.NotFound(&#34;Member has to destiny memberships.&#34;)
-
-    stadia_obj: NoneOr[user.DestinyUser] = None  # type: ignore[name-defined]
-    try:
-        stadia_member = members_[stadia]
-    except IndexError:
-        pass
-    else:
-        stadia_name: str = Undefined
-
-        if (raw_name := stadia_member[&#34;bungieGlobalDisplayName&#34;]) != Unknown:
-            stadia_name = raw_name
-
-        stadia_member_types: list[enums.MembershipType] = []
-        for member_type in stadia_member[&#34;applicableMembershipTypes&#34;]:
-            stadia_member_types.append(enums.MembershipType(member_type))
-
-        stadia_obj = user.DestinyUser(
-            name=stadia_name,
-            last_seen_name=stadia_member[&#34;LastSeenDisplayName&#34;],
-            id=int(stadia_member[&#34;membershipId&#34;]),
-            type=enums.MembershipType(int(stadia_member[&#34;membershipType&#34;])),
-            icon=stadia_member.get(
-                Image(stadia_member[&#34;iconPath&#34;]), Image.partial()
-            ),
-            code=int(stadia_member.get(&#34;bungieGlobalDisplayNameCode&#34;, None)),
-            is_public=bool(stadia_member[&#34;isPublic&#34;]),
-            types=stadia_member_types,
-        )
-
-    xbox_obj: NoneOr[user.DestinyUser] = None  # type: ignore[name-defined]
-    try:
-        xbox_member = members_[xbox]
-    except IndexError:
-        pass
-    else:
-        xbox_name: str = Undefined
-
-        if (raw_name := xbox_member[&#34;bungieGlobalDisplayName&#34;]) != Unknown:
-            xbox_name = raw_name
-
-        xbox_member_types: list[enums.MembershipType] = []
-        for member_type in xbox_member[&#34;applicableMembershipTypes&#34;]:
-            xbox_member_types.append(enums.MembershipType(member_type))
-
-        xbox_obj = user.DestinyUser(
-            name=xbox_name,
-            last_seen_name=xbox_member[&#34;LastSeenDisplayName&#34;],
-            id=int(xbox_member[&#34;membershipId&#34;]),
-            type=enums.MembershipType(int(xbox_member[&#34;membershipType&#34;])),
-            icon=xbox_member.get(Image(xbox_member[&#34;iconPath&#34;]), Image.partial()),
-            code=int(xbox_member.get(&#34;bungieGlobalDisplayNameCode&#34;, None)),
-            is_public=bool(xbox_member[&#34;isPublic&#34;]),
-            types=xbox_member_types,
-        )
-
-    steam_obj: NoneOr[user.DestinyUser] = None  # type: ignore[name-defined]
-    try:
-        steam_member = members_[steam]
-    except IndexError:
-        pass
-    else:
-        steam_name: str = Undefined
-
-        if (raw_name := steam_member[&#34;bungieGlobalDisplayName&#34;]) != Unknown:
-            steam_name = raw_name
-
-        steam_member_types: list[enums.MembershipType] = []
-        for member_type in steam_member[&#34;applicableMembershipTypes&#34;]:
-            steam_member_types.append(enums.MembershipType(member_type))
-
-        steam_obj = user.DestinyUser(
-            last_seen_name=steam_member[&#34;LastSeenDisplayName&#34;],
-            name=steam_name,
-            id=int(steam_member[&#34;membershipId&#34;]),
-            type=enums.MembershipType(int(steam_member[&#34;membershipType&#34;])),
-            icon=steam_member.get(Image(steam_member[&#34;iconPath&#34;]), Image.partial()),
-            code=int(steam_member.get(&#34;bungieGlobalDisplayNameCode&#34;, None)),
-            is_public=bool(steam_member[&#34;isPublic&#34;]),
-            types=steam_member_types,
-        )
-
-    psn_obj: NoneOr[user.DestinyUser] = None  # type: ignore[name-defined]
-    try:
-        psn_member = members_[psn]
-    except IndexError:
-        pass
-    else:
-        psn_name: str = Undefined
-
-        if (raw_name := psn_member[&#34;bungieGlobalDisplayName&#34;]) != Unknown:
-            psn_name = raw_name
-
-        psn_member_types: list[enums.MembershipType] = []
-        for member_type in psn_member[&#34;applicableMembershipTypes&#34;]:
-            psn_member_types.append(enums.MembershipType(member_type))
-
-        psn_obj = user.DestinyUser(
-            last_seen_name=psn_member[&#34;LastSeenDisplayName&#34;],
-            name=psn_name,
-            id=int(psn_member[&#34;membershipId&#34;]),
-            type=enums.MembershipType(int(psn_member[&#34;membershipType&#34;])),
-            icon=psn_member.get(Image(psn_member[&#34;iconPath&#34;]), Image.partial()),
-            code=int(psn_member.get(&#34;bungieGlobalDisplayNameCode&#34;, None)),
-            is_public=bool(psn_member[&#34;isPublic&#34;]),
-            types=psn_member_types,
-        )
-
-    return [xbox_obj, psn_obj, steam_obj, stadia_obj]</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.internal.serialize.Deserialize.deserialize_player"><code class="name flex">
-<span>def <span class="ident">deserialize_player</span></span>(<span>self, payload: JsonList, /) ‑> <a title="aiobungie.crate.player.Player" href="./crate/player.html#aiobungie.crate.player.Player">Player</a></span>
-</code></dt>
-                            <dd>
-                                <div class="desc"></div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">def deserialize_player(self, payload: JsonList, /) -&gt; player.Player:
-    try:
-        data = payload[0]  # type: ignore
-    except IndexError:
+                                    <pre><code class="python">def deserialize_player(
+    self, payload: JsonArray, /
+) -&gt; typing.Sequence[user.DestinyUser]:
+    if payload is None:
         raise error.PlayerNotFound(&#34;Player was not found.&#34;) from None
 
-    types: list[enums.MembershipType] = []
-    for type in data[&#34;applicableMembershipTypes&#34;]:
-        types.append(enums.MembershipType(type))
-
-    return player.Player(
-        name=data[&#34;displayName&#34;],
-        id=int(data[&#34;membershipId&#34;]),
-        is_public=data[&#34;isPublic&#34;],
-        icon=Image(str(data[&#34;iconPath&#34;])),
-        type=enums.MembershipType(data[&#34;membershipType&#34;]),
-        code=data.get(&#34;bungieGlobalDisplayNameCode&#34;, None),
-        types=types,
-        crossave_override=int(data[&#34;crossSaveOverride&#34;]),
-    )</code></pre>
+    return self.deserialize_destiny_members(payload, bound=True)</code></pre>
                                 </details>
                             </dd>
-                            <dt id="aiobungie.internal.serialize.Deserialize.deserialize_profile"><code class="name flex">
-<span>def <span class="ident">deserialize_profile</span></span>(<span>self, payload: JsonDict, /) ‑> <a title="aiobungie.crate.profile.Profile" href="./crate/profile.html#aiobungie.crate.profile.Profile">Profile</a></span>
+                            <dt id="aiobungie.internal.serialize.Factory.deserialize_profile"><code class="name flex">
+<span>def <span class="ident">deserialize_profile</span></span>(<span>self, payload: JsonObject, /) ‑> <a title="aiobungie.crate.profile.Profile" href="./crate/profile.html#aiobungie.crate.profile.Profile">Profile</a></span>
 </code></dt>
                             <dd>
                                 <div class="desc"></div>
@@ -2487,7 +2422,7 @@ def set_themese_attrs(payload: JsonList, /) -&gt; typing.ValuesView[user.UserThe
                                     <summary>
                                         <span>Expand source code</span>
                                     </summary>
-                                    <pre><code class="python">def deserialize_profile(self, payload: JsonDict, /) -&gt; profile.Profile:
+                                    <pre><code class="python">def deserialize_profile(self, payload: JsonObject, /) -&gt; profile.Profile:
 
     payload = payload[&#34;profile&#34;][&#34;data&#34;]
     id = int(payload[&#34;userInfo&#34;][&#34;membershipId&#34;])
@@ -2510,8 +2445,8 @@ def set_themese_attrs(payload: JsonList, /) -&gt; typing.ValuesView[user.UserThe
     )</code></pre>
                                 </details>
                             </dd>
-                            <dt id="aiobungie.internal.serialize.Deserialize.deserialize_user"><code class="name flex">
-<span>def <span class="ident">deserialize_user</span></span>(<span>self, data: JsonDict) ‑> <a title="aiobungie.crate.user.User" href="./crate/user.html#aiobungie.crate.user.User">User</a></span>
+                            <dt id="aiobungie.internal.serialize.Factory.deserialize_user"><code class="name flex">
+<span>def <span class="ident">deserialize_user</span></span>(<span>self, data: JsonObject) ‑> <a title="aiobungie.crate.user.User" href="./crate/user.html#aiobungie.crate.user.User">User</a></span>
 </code></dt>
                             <dd>
                                 <div class="desc"></div>
@@ -2519,15 +2454,15 @@ def set_themese_attrs(payload: JsonList, /) -&gt; typing.ValuesView[user.UserThe
                                     <summary>
                                         <span>Expand source code</span>
                                     </summary>
-                                    <pre><code class="python">def deserialize_user(self, data: JsonDict) -&gt; user.User:
+                                    <pre><code class="python">def deserialize_user(self, data: JsonObject) -&gt; user.User:
     return user.User(
         bungie=self.deserialize_bungie_user(data[&#34;bungieNetUser&#34;]),
-        destiny=self.deserialize_members(data),
+        destiny=self.deserialize_destiny_members(data),
     )</code></pre>
                                 </details>
                             </dd>
-                            <dt id="aiobungie.internal.serialize.Deserialize.deserialize_user_themes"><code class="name flex">
-<span>def <span class="ident">deserialize_user_themes</span></span>(<span>self, payload: JsonList) ‑> Sequence[<a title="aiobungie.crate.user.UserThemes" href="./crate/user.html#aiobungie.crate.user.UserThemes">UserThemes</a>]</span>
+                            <dt id="aiobungie.internal.serialize.Factory.deserialize_user_themes"><code class="name flex">
+<span>def <span class="ident">deserialize_user_themes</span></span>(<span>self, payload: JsonArray) ‑> Sequence[<a title="aiobungie.crate.user.UserThemes" href="./crate/user.html#aiobungie.crate.user.UserThemes">UserThemes</a>]</span>
 </code></dt>
                             <dd>
                                 <div class="desc"></div>
@@ -2536,7 +2471,7 @@ def set_themese_attrs(payload: JsonList, /) -&gt; typing.ValuesView[user.UserThe
                                         <span>Expand source code</span>
                                     </summary>
                                     <pre><code class="python">def deserialize_user_themes(
-    self, payload: JsonList
+    self, payload: JsonArray
 ) -&gt; typing.Sequence[user.UserThemes]:
     return list(self.set_themese_attrs(payload))</code></pre>
                                 </details>
@@ -2615,25 +2550,27 @@ def set_themese_attrs(payload: JsonList, /) -&gt; typing.ValuesView[user.UserThe
                     <h3><a href="#header-classes">Classes</a></h3>
                     <ul>
                         <li>
-                            <h4><code><a title="aiobungie.internal.serialize.Deserialize" href="#aiobungie.internal.serialize.Deserialize">Deserialize</a></code></h4>
+                            <h4><code><a title="aiobungie.internal.serialize.Factory" href="#aiobungie.internal.serialize.Factory">Factory</a></code></h4>
                             <ul class="">
-                                <li><code><a title="aiobungie.internal.serialize.Deserialize.deseialize_clan" href="#aiobungie.internal.serialize.Deserialize.deseialize_clan">deseialize_clan</a></code></li>
-                                <li><code><a title="aiobungie.internal.serialize.Deserialize.deseialize_clan_owner" href="#aiobungie.internal.serialize.Deserialize.deseialize_clan_owner">deseialize_clan_owner</a></code></li>
-                                <li><code><a title="aiobungie.internal.serialize.Deserialize.deserialize_activity" href="#aiobungie.internal.serialize.Deserialize.deserialize_activity">deserialize_activity</a></code></li>
-                                <li><code><a title="aiobungie.internal.serialize.Deserialize.deserialize_app" href="#aiobungie.internal.serialize.Deserialize.deserialize_app">deserialize_app</a></code></li>
-                                <li><code><a title="aiobungie.internal.serialize.Deserialize.deserialize_app_owner" href="#aiobungie.internal.serialize.Deserialize.deserialize_app_owner">deserialize_app_owner</a></code></li>
-                                <li><code><a title="aiobungie.internal.serialize.Deserialize.deserialize_bungie_user" href="#aiobungie.internal.serialize.Deserialize.deserialize_bungie_user">deserialize_bungie_user</a></code></li>
-                                <li><code><a title="aiobungie.internal.serialize.Deserialize.deserialize_character" href="#aiobungie.internal.serialize.Deserialize.deserialize_character">deserialize_character</a></code></li>
-                                <li><code><a title="aiobungie.internal.serialize.Deserialize.deserialize_clan_member" href="#aiobungie.internal.serialize.Deserialize.deserialize_clan_member">deserialize_clan_member</a></code></li>
-                                <li><code><a title="aiobungie.internal.serialize.Deserialize.deserialize_clan_members" href="#aiobungie.internal.serialize.Deserialize.deserialize_clan_members">deserialize_clan_members</a></code></li>
-                                <li><code><a title="aiobungie.internal.serialize.Deserialize.deserialize_inventory_entity" href="#aiobungie.internal.serialize.Deserialize.deserialize_inventory_entity">deserialize_inventory_entity</a></code></li>
-                                <li><code><a title="aiobungie.internal.serialize.Deserialize.deserialize_members" href="#aiobungie.internal.serialize.Deserialize.deserialize_members">deserialize_members</a></code></li>
-                                <li><code><a title="aiobungie.internal.serialize.Deserialize.deserialize_player" href="#aiobungie.internal.serialize.Deserialize.deserialize_player">deserialize_player</a></code></li>
-                                <li><code><a title="aiobungie.internal.serialize.Deserialize.deserialize_profile" href="#aiobungie.internal.serialize.Deserialize.deserialize_profile">deserialize_profile</a></code></li>
-                                <li><code><a title="aiobungie.internal.serialize.Deserialize.deserialize_user" href="#aiobungie.internal.serialize.Deserialize.deserialize_user">deserialize_user</a></code></li>
-                                <li><code><a title="aiobungie.internal.serialize.Deserialize.deserialize_user_themes" href="#aiobungie.internal.serialize.Deserialize.deserialize_user_themes">deserialize_user_themes</a></code></li>
-                                <li><code><a title="aiobungie.internal.serialize.Deserialize.set_clan_members_attrs" href="#aiobungie.internal.serialize.Deserialize.set_clan_members_attrs">set_clan_members_attrs</a></code></li>
-                                <li><code><a title="aiobungie.internal.serialize.Deserialize.set_themese_attrs" href="#aiobungie.internal.serialize.Deserialize.set_themese_attrs">set_themese_attrs</a></code></li>
+                                <li><code><a title="aiobungie.internal.serialize.Factory.deseialize_clan" href="#aiobungie.internal.serialize.Factory.deseialize_clan">deseialize_clan</a></code></li>
+                                <li><code><a title="aiobungie.internal.serialize.Factory.deseialize_clan_owner" href="#aiobungie.internal.serialize.Factory.deseialize_clan_owner">deseialize_clan_owner</a></code></li>
+                                <li><code><a title="aiobungie.internal.serialize.Factory.deseialize_found_users" href="#aiobungie.internal.serialize.Factory.deseialize_found_users">deseialize_found_users</a></code></li>
+                                <li><code><a title="aiobungie.internal.serialize.Factory.deserialize_activity" href="#aiobungie.internal.serialize.Factory.deserialize_activity">deserialize_activity</a></code></li>
+                                <li><code><a title="aiobungie.internal.serialize.Factory.deserialize_app" href="#aiobungie.internal.serialize.Factory.deserialize_app">deserialize_app</a></code></li>
+                                <li><code><a title="aiobungie.internal.serialize.Factory.deserialize_app_owner" href="#aiobungie.internal.serialize.Factory.deserialize_app_owner">deserialize_app_owner</a></code></li>
+                                <li><code><a title="aiobungie.internal.serialize.Factory.deserialize_bungie_user" href="#aiobungie.internal.serialize.Factory.deserialize_bungie_user">deserialize_bungie_user</a></code></li>
+                                <li><code><a title="aiobungie.internal.serialize.Factory.deserialize_character" href="#aiobungie.internal.serialize.Factory.deserialize_character">deserialize_character</a></code></li>
+                                <li><code><a title="aiobungie.internal.serialize.Factory.deserialize_clan_member" href="#aiobungie.internal.serialize.Factory.deserialize_clan_member">deserialize_clan_member</a></code></li>
+                                <li><code><a title="aiobungie.internal.serialize.Factory.deserialize_clan_members" href="#aiobungie.internal.serialize.Factory.deserialize_clan_members">deserialize_clan_members</a></code></li>
+                                <li><code><a title="aiobungie.internal.serialize.Factory.deserialize_destiny_members" href="#aiobungie.internal.serialize.Factory.deserialize_destiny_members">deserialize_destiny_members</a></code></li>
+                                <li><code><a title="aiobungie.internal.serialize.Factory.deserialize_destiny_user" href="#aiobungie.internal.serialize.Factory.deserialize_destiny_user">deserialize_destiny_user</a></code></li>
+                                <li><code><a title="aiobungie.internal.serialize.Factory.deserialize_inventory_entity" href="#aiobungie.internal.serialize.Factory.deserialize_inventory_entity">deserialize_inventory_entity</a></code></li>
+                                <li><code><a title="aiobungie.internal.serialize.Factory.deserialize_partial_bungie_user" href="#aiobungie.internal.serialize.Factory.deserialize_partial_bungie_user">deserialize_partial_bungie_user</a></code></li>
+                                <li><code><a title="aiobungie.internal.serialize.Factory.deserialize_player" href="#aiobungie.internal.serialize.Factory.deserialize_player">deserialize_player</a></code></li>
+                                <li><code><a title="aiobungie.internal.serialize.Factory.deserialize_profile" href="#aiobungie.internal.serialize.Factory.deserialize_profile">deserialize_profile</a></code></li>
+                                <li><code><a title="aiobungie.internal.serialize.Factory.deserialize_user" href="#aiobungie.internal.serialize.Factory.deserialize_user">deserialize_user</a></code></li>
+                                <li><code><a title="aiobungie.internal.serialize.Factory.deserialize_user_themes" href="#aiobungie.internal.serialize.Factory.deserialize_user_themes">deserialize_user_themes</a></code></li>
+                                <li><code><a title="aiobungie.internal.serialize.Factory.set_themese_attrs" href="#aiobungie.internal.serialize.Factory.set_themese_attrs">set_themese_attrs</a></code></li>
                             </ul>
                         </li>
                     </ul>

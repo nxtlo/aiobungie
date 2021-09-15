@@ -526,7 +526,7 @@ from aiobungie.internal import serialize as serialize_
 from aiobungie.internal import traits
 
 from . import crate
-from .http import HTTPClient
+from . import rest as rest_
 from .internal.enums import Class
 from .internal.enums import CredentialType
 from .internal.enums import GameMode
@@ -535,43 +535,34 @@ from .internal.enums import MembershipType
 
 
 class Client(traits.RESTful):
-    &#34;&#34;&#34;Basic implementation for a Client that interacts with Bungie&#39;s REST API
+    &#34;&#34;&#34;Basic implementation for a client that interacts with Bungie&#39;s API.
 
     Attributes
     -----------
     token: `builtins.str`
         Your Bungie&#39;s API key or Token from the developer&#39;s portal.
-    loop: `asyncio.AbstractEventLoop`
-        asyncio event loop.
     &#34;&#34;&#34;
 
-    __slots__ = (&#34;loop&#34;, &#34;http&#34;, &#34;_serialize&#34;, &#34;_token&#34;)
+    __slots__ = (&#34;_rest&#34;, &#34;_serialize&#34;, &#34;_token&#34;, &#34;_loop&#34;, &#34;_kwargs&#34;)
 
-    def __init__(self, token: str, *, loop: asyncio.AbstractEventLoop = None) -&gt; None:
-        # Asyncio loop.
-        self.loop: asyncio.AbstractEventLoop = helpers.get_or_make_loop()
+    def __init__(self, token: str, /, **kwargs: typing.Any) -&gt; None:
+        self._loop: asyncio.AbstractEventLoop = helpers.get_or_make_loop()
+        self._kwargs = kwargs
 
         if not token:
             raise ValueError(&#34;Missing the API key!&#34;)
 
-        # HTTP Client
-        self.http: HTTPClient = HTTPClient(key=token)
-
-        # DeSerilaizing payloads
-        self._serialize = serialize_.Deserialize(self)
-
+        self._rest = rest_.RESTClient(token)
+        self._serialize = serialize_.Factory(self)
         self._token = token  # We need the token For Manifest.
-        super().__init__()
-
-    async def __aenter__(self):
-        return self
-
-    async def __aexit__(self, _, __, ___) -&gt; None:
-        return None
 
     @property
-    def serialize(self) -&gt; serialize_.Deserialize:
+    def serialize(self) -&gt; serialize_.Factory:
         return self._serialize
+
+    @property
+    def rest(self) -&gt; rest_.RESTClient:
+        return self._rest
 
     @property
     def request(self) -&gt; Client:
@@ -580,31 +571,19 @@ class Client(traits.RESTful):
     def run(
         self, future: typing.Coroutine[typing.Any, None, None], debug: bool = False
     ) -&gt; None:
-        &#34;&#34;&#34;Runs a Coro function until its complete.
-        This is equivalent to asyncio.get_event_loop().run_until_complete(...)
-
-        Parameters
-        ----------
-        future: `typing.Coroutine[typing.Any, typing.Any, typing.Any]`
-            Your coro function.
-
-        Example
-        -------
-        ```py
-        async def main() -&gt; None:
-            player = await client.fetch_player(&#34;Fate&#34;)
-            print(player.name)
-
-        client.run(main())
-        ```
-        &#34;&#34;&#34;
         try:
-            if not self.loop.is_running():
+            if not self._loop.is_running():
                 if debug:
-                    self.loop.set_debug(True)
-                self.loop.run_until_complete(future)
+                    self._loop.set_debug(True)
+                self._loop.run_until_complete(future)
         except Exception as exc:
             raise RuntimeError(f&#34;Failed to run {future.__name__}&#34;, exc)
+
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, _, __, ___) -&gt; None:
+        return None
 
     # * Unspecified methods. *#
 
@@ -625,7 +604,7 @@ class Client(traits.RESTful):
         `typing.Any`
             Any object.
         &#34;&#34;&#34;
-        return await self.http.static_search(path, **kwargs)
+        return await self.rest.static_search(path, **kwargs)
 
     async def fetch_manifest(self) -&gt; Manifest:
         &#34;&#34;&#34;Access The bungie Manifest.
@@ -635,8 +614,7 @@ class Client(traits.RESTful):
         `aiobungie.ext.Manifest`
             A Manifest crate.
         &#34;&#34;&#34;
-        resp = await self.http.fetch_manifest()
-        return Manifest(self._token, resp)
+        return Manifest(self._token)
 
     # * User methods.
 
@@ -662,9 +640,14 @@ class Client(traits.RESTful):
         `aiobungie.error.UserNotFound`
             The user was not found.
         &#34;&#34;&#34;
-        payload = await self.http.fetch_user(id)
+        payload = await self.rest.fetch_user(id)
         assert isinstance(payload, dict)
         return self.serialize.deserialize_bungie_user(payload)
+
+    async def search_users(self, name: str, /) -&gt; typing.Sequence[crate.DestinyUser]:
+        payload = await self.rest.search_users(name)
+        assert isinstance(payload, dict)
+        return self.serialize.deseialize_found_users(payload)
 
     async def fetch_user_themes(self) -&gt; typing.Sequence[crate.user.UserThemes]:
         &#34;&#34;&#34;Fetch all available user themes.
@@ -674,7 +657,7 @@ class Client(traits.RESTful):
         `typing.Sequence[aiobungie.crate.user.UserThemes]`
             A sequence of user themes.
         &#34;&#34;&#34;
-        data = await self.http.fetch_user_themes()
+        data = await self.rest.fetch_user_themes()
         return self.serialize.deserialize_user_themes(data)
 
     async def fetch_hard_types(
@@ -700,7 +683,7 @@ class Client(traits.RESTful):
 
         # This doesn&#39;t really needs to be serialized like other stuff
         # since the dict only contains 3 keys.
-        payload = await self.http.fetch_hard_linked(credential, type)
+        payload = await self.rest.fetch_hard_linked(credential, type)
         assert isinstance(payload, dict)
 
         return crate.user.HardLinkedMembership(
@@ -738,7 +721,7 @@ class Client(traits.RESTful):
         aiobungie.UserNotFound
             The requested user was not found.
         &#34;&#34;&#34;
-        payload = await self.http.fetch_membership_from_id(id, type)
+        payload = await self.rest.fetch_membership_from_id(id, type)
         assert isinstance(payload, dict)
         return self.serialize.deserialize_user(payload)
 
@@ -772,13 +755,13 @@ class Client(traits.RESTful):
         `aiobungie.MembershipTypeError`
             The provided membership type was invalid.
         &#34;&#34;&#34;
-        data = await self.http.fetch_profile(memberid, type)
+        data = await self.rest.fetch_profile(memberid, type)
         assert isinstance(data, dict)
         return self.serialize.deserialize_profile(data)
 
     async def fetch_player(
         self, name: str, type: MembershipType = MembershipType.ALL, /
-    ) -&gt; crate.Player:
+    ) -&gt; typing.Sequence[crate.user.DestinyUser]:
         &#34;&#34;&#34;Fetch a Destiny 2 Player.
 
         Parameters
@@ -796,8 +779,8 @@ class Client(traits.RESTful):
 
         Returns
         --------
-        `aiobungie.crate.Player`
-            A Destiny 2 Player.
+        `typing.Sequence[aiobungie.crate.Player]`
+            A sequence of the found Destiny 2 Player memberships.
 
         Raises
         ------
@@ -807,7 +790,7 @@ class Client(traits.RESTful):
         `aiobungie.MembershipTypeError`
             The provided membership type was invalid.
         &#34;&#34;&#34;
-        resp = await self.http.fetch_player(name, type)
+        resp = await self.rest.fetch_player(name, type)
         assert isinstance(resp, list)
         return self.serialize.deserialize_player(resp)
 
@@ -838,7 +821,7 @@ class Client(traits.RESTful):
         `aiobungie.MembershipTypeError`
             The provided membership type was invalid.
         &#34;&#34;&#34;
-        resp = await self.http.fetch_character(memberid, type)
+        resp = await self.rest.fetch_character(memberid, type)
         assert isinstance(resp, dict)
         char_module = self.serialize.deserialize_character(resp, chartype=character)
         return char_module
@@ -846,7 +829,7 @@ class Client(traits.RESTful):
     @deprecated
     async def fetch_vendor_sales(self) -&gt; typing.Any:
         &#34;&#34;&#34;Fetch vendor sales.&#34;&#34;&#34;
-        return await self.http.fetch_vendor_sales()
+        return await self.rest.fetch_vendor_sales()
 
     # * Destiny 2 Activities.
 
@@ -890,7 +873,7 @@ class Client(traits.RESTful):
         `aiobungie.MembershipTypeError`
             The provided membership type was invalid.
         &#34;&#34;&#34;
-        resp = await self.http.fetch_activity(
+        resp = await self.rest.fetch_activity(
             member_id,
             character_id,
             mode,
@@ -920,7 +903,7 @@ class Client(traits.RESTful):
         `aiobungie.crate.activity.PostActivity`
            Information about the requested post activity.
         &#34;&#34;&#34;
-        # resp = await self.http.fetch_post_activity(instance)
+        # resp = await self.rest.fetch_post_activity(instance)
         # assert isinstance(resp, list)
         raise NotImplementedError
 
@@ -944,7 +927,7 @@ class Client(traits.RESTful):
         `aiobungie.ClanNotFound`
             The clan was not found.
         &#34;&#34;&#34;
-        resp = await self.http.fetch_clan_from_id(id)
+        resp = await self.rest.fetch_clan_from_id(id)
         assert isinstance(resp, dict)
         return self.serialize.deseialize_clan(resp)
 
@@ -971,7 +954,7 @@ class Client(traits.RESTful):
         `aiobungie.ClanNotFound`
             The clan was not found.
         &#34;&#34;&#34;
-        resp = await self.http.fetch_clan(name, type)
+        resp = await self.rest.fetch_clan(name, type)
         assert isinstance(resp, dict)
         return self.serialize.deseialize_clan(resp)
 
@@ -1014,7 +997,7 @@ class Client(traits.RESTful):
             The member was not found.
         &#34;&#34;&#34;
 
-        resp = await self.http.fetch_clan_members(clan_id, type, name)
+        resp = await self.rest.fetch_clan_members(clan_id, type, name)
         assert isinstance(resp, dict)
         return self.serialize.deserialize_clan_member(resp)
 
@@ -1033,8 +1016,6 @@ class Client(traits.RESTful):
         ----------
         clan_id : `builsins.int`
             The clans id
-        name : `builtins.str`
-            The clan member&#39;s name
         type : `aiobungie.MembershipType`
             An optional clan member&#39;s membership type.
             Default is set to `aiobungie.MembershipType.NONE`
@@ -1050,7 +1031,7 @@ class Client(traits.RESTful):
         `aiobungie.ClanNotFound`
             The clan was not found.
         &#34;&#34;&#34;
-        resp = await self.http.fetch_clan_members(clan_id, type, page=1)
+        resp = await self.rest.fetch_clan_members(clan_id, type)
         assert isinstance(resp, dict)
         return self.serialize.deserialize_clan_members(resp)
 
@@ -1071,7 +1052,7 @@ class Client(traits.RESTful):
         `aiobungie.crate.InventoryEntity`
             A bungie inventory item.
         &#34;&#34;&#34;
-        resp = await self.http.fetch_inventory_item(hash)
+        resp = await self.rest.fetch_inventory_item(hash)
         assert isinstance(resp, dict)
         return self.serialize.deserialize_inventory_entity(resp)
 
@@ -1091,7 +1072,7 @@ class Client(traits.RESTful):
         `aiobungie.crate.Application`
             A Bungie application.
         &#34;&#34;&#34;
-        resp = await self.http.fetch_app(appid)
+        resp = await self.rest.fetch_app(appid)
         assert isinstance(resp, dict)
         return self.serialize.deserialize_app(resp)</code></pre>
                 </details>
@@ -1107,17 +1088,15 @@ class Client(traits.RESTful):
                 <dl>
                     <dt id="aiobungie.client.Client"><code class="flex name class">
 <span>class <span class="ident">Client</span></span>
-<span>(</span><span>token: str, *, loop: asyncio.AbstractEventLoop = None)</span>
+<span>(</span><span>token: str, /, **kwargs: typing.Any)</span>
 </code></dt>
                     <dd>
                         <div class="desc">
-                            <p>Basic implementation for a Client that interacts with Bungie's REST API</p>
+                            <p>Basic implementation for a client that interacts with Bungie's API.</p>
                             <h2 id="attributes">Attributes</h2>
                             <dl>
                                 <dt><strong><code>token</code></strong> :&ensp;<code>builtins.str</code></dt>
                                 <dd>Your Bungie's API key or Token from the developer's portal.</dd>
-                                <dt><strong><code>loop</code></strong> :&ensp;<code>asyncio.AbstractEventLoop</code></dt>
-                                <dd>asyncio event loop.</dd>
                             </dl>
                         </div>
                         <details class="source">
@@ -1125,43 +1104,34 @@ class Client(traits.RESTful):
                                 <span>Expand source code</span>
                             </summary>
                             <pre><code class="python">class Client(traits.RESTful):
-    &#34;&#34;&#34;Basic implementation for a Client that interacts with Bungie&#39;s REST API
+    &#34;&#34;&#34;Basic implementation for a client that interacts with Bungie&#39;s API.
 
     Attributes
     -----------
     token: `builtins.str`
         Your Bungie&#39;s API key or Token from the developer&#39;s portal.
-    loop: `asyncio.AbstractEventLoop`
-        asyncio event loop.
     &#34;&#34;&#34;
 
-    __slots__ = (&#34;loop&#34;, &#34;http&#34;, &#34;_serialize&#34;, &#34;_token&#34;)
+    __slots__ = (&#34;_rest&#34;, &#34;_serialize&#34;, &#34;_token&#34;, &#34;_loop&#34;, &#34;_kwargs&#34;)
 
-    def __init__(self, token: str, *, loop: asyncio.AbstractEventLoop = None) -&gt; None:
-        # Asyncio loop.
-        self.loop: asyncio.AbstractEventLoop = helpers.get_or_make_loop()
+    def __init__(self, token: str, /, **kwargs: typing.Any) -&gt; None:
+        self._loop: asyncio.AbstractEventLoop = helpers.get_or_make_loop()
+        self._kwargs = kwargs
 
         if not token:
             raise ValueError(&#34;Missing the API key!&#34;)
 
-        # HTTP Client
-        self.http: HTTPClient = HTTPClient(key=token)
-
-        # DeSerilaizing payloads
-        self._serialize = serialize_.Deserialize(self)
-
+        self._rest = rest_.RESTClient(token)
+        self._serialize = serialize_.Factory(self)
         self._token = token  # We need the token For Manifest.
-        super().__init__()
-
-    async def __aenter__(self):
-        return self
-
-    async def __aexit__(self, _, __, ___) -&gt; None:
-        return None
 
     @property
-    def serialize(self) -&gt; serialize_.Deserialize:
+    def serialize(self) -&gt; serialize_.Factory:
         return self._serialize
+
+    @property
+    def rest(self) -&gt; rest_.RESTClient:
+        return self._rest
 
     @property
     def request(self) -&gt; Client:
@@ -1170,31 +1140,19 @@ class Client(traits.RESTful):
     def run(
         self, future: typing.Coroutine[typing.Any, None, None], debug: bool = False
     ) -&gt; None:
-        &#34;&#34;&#34;Runs a Coro function until its complete.
-        This is equivalent to asyncio.get_event_loop().run_until_complete(...)
-
-        Parameters
-        ----------
-        future: `typing.Coroutine[typing.Any, typing.Any, typing.Any]`
-            Your coro function.
-
-        Example
-        -------
-        ```py
-        async def main() -&gt; None:
-            player = await client.fetch_player(&#34;Fate&#34;)
-            print(player.name)
-
-        client.run(main())
-        ```
-        &#34;&#34;&#34;
         try:
-            if not self.loop.is_running():
+            if not self._loop.is_running():
                 if debug:
-                    self.loop.set_debug(True)
-                self.loop.run_until_complete(future)
+                    self._loop.set_debug(True)
+                self._loop.run_until_complete(future)
         except Exception as exc:
             raise RuntimeError(f&#34;Failed to run {future.__name__}&#34;, exc)
+
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, _, __, ___) -&gt; None:
+        return None
 
     # * Unspecified methods. *#
 
@@ -1215,7 +1173,7 @@ class Client(traits.RESTful):
         `typing.Any`
             Any object.
         &#34;&#34;&#34;
-        return await self.http.static_search(path, **kwargs)
+        return await self.rest.static_search(path, **kwargs)
 
     async def fetch_manifest(self) -&gt; Manifest:
         &#34;&#34;&#34;Access The bungie Manifest.
@@ -1225,8 +1183,7 @@ class Client(traits.RESTful):
         `aiobungie.ext.Manifest`
             A Manifest crate.
         &#34;&#34;&#34;
-        resp = await self.http.fetch_manifest()
-        return Manifest(self._token, resp)
+        return Manifest(self._token)
 
     # * User methods.
 
@@ -1252,9 +1209,14 @@ class Client(traits.RESTful):
         `aiobungie.error.UserNotFound`
             The user was not found.
         &#34;&#34;&#34;
-        payload = await self.http.fetch_user(id)
+        payload = await self.rest.fetch_user(id)
         assert isinstance(payload, dict)
         return self.serialize.deserialize_bungie_user(payload)
+
+    async def search_users(self, name: str, /) -&gt; typing.Sequence[crate.DestinyUser]:
+        payload = await self.rest.search_users(name)
+        assert isinstance(payload, dict)
+        return self.serialize.deseialize_found_users(payload)
 
     async def fetch_user_themes(self) -&gt; typing.Sequence[crate.user.UserThemes]:
         &#34;&#34;&#34;Fetch all available user themes.
@@ -1264,7 +1226,7 @@ class Client(traits.RESTful):
         `typing.Sequence[aiobungie.crate.user.UserThemes]`
             A sequence of user themes.
         &#34;&#34;&#34;
-        data = await self.http.fetch_user_themes()
+        data = await self.rest.fetch_user_themes()
         return self.serialize.deserialize_user_themes(data)
 
     async def fetch_hard_types(
@@ -1290,7 +1252,7 @@ class Client(traits.RESTful):
 
         # This doesn&#39;t really needs to be serialized like other stuff
         # since the dict only contains 3 keys.
-        payload = await self.http.fetch_hard_linked(credential, type)
+        payload = await self.rest.fetch_hard_linked(credential, type)
         assert isinstance(payload, dict)
 
         return crate.user.HardLinkedMembership(
@@ -1328,7 +1290,7 @@ class Client(traits.RESTful):
         aiobungie.UserNotFound
             The requested user was not found.
         &#34;&#34;&#34;
-        payload = await self.http.fetch_membership_from_id(id, type)
+        payload = await self.rest.fetch_membership_from_id(id, type)
         assert isinstance(payload, dict)
         return self.serialize.deserialize_user(payload)
 
@@ -1362,13 +1324,13 @@ class Client(traits.RESTful):
         `aiobungie.MembershipTypeError`
             The provided membership type was invalid.
         &#34;&#34;&#34;
-        data = await self.http.fetch_profile(memberid, type)
+        data = await self.rest.fetch_profile(memberid, type)
         assert isinstance(data, dict)
         return self.serialize.deserialize_profile(data)
 
     async def fetch_player(
         self, name: str, type: MembershipType = MembershipType.ALL, /
-    ) -&gt; crate.Player:
+    ) -&gt; typing.Sequence[crate.user.DestinyUser]:
         &#34;&#34;&#34;Fetch a Destiny 2 Player.
 
         Parameters
@@ -1386,8 +1348,8 @@ class Client(traits.RESTful):
 
         Returns
         --------
-        `aiobungie.crate.Player`
-            A Destiny 2 Player.
+        `typing.Sequence[aiobungie.crate.Player]`
+            A sequence of the found Destiny 2 Player memberships.
 
         Raises
         ------
@@ -1397,7 +1359,7 @@ class Client(traits.RESTful):
         `aiobungie.MembershipTypeError`
             The provided membership type was invalid.
         &#34;&#34;&#34;
-        resp = await self.http.fetch_player(name, type)
+        resp = await self.rest.fetch_player(name, type)
         assert isinstance(resp, list)
         return self.serialize.deserialize_player(resp)
 
@@ -1428,7 +1390,7 @@ class Client(traits.RESTful):
         `aiobungie.MembershipTypeError`
             The provided membership type was invalid.
         &#34;&#34;&#34;
-        resp = await self.http.fetch_character(memberid, type)
+        resp = await self.rest.fetch_character(memberid, type)
         assert isinstance(resp, dict)
         char_module = self.serialize.deserialize_character(resp, chartype=character)
         return char_module
@@ -1436,7 +1398,7 @@ class Client(traits.RESTful):
     @deprecated
     async def fetch_vendor_sales(self) -&gt; typing.Any:
         &#34;&#34;&#34;Fetch vendor sales.&#34;&#34;&#34;
-        return await self.http.fetch_vendor_sales()
+        return await self.rest.fetch_vendor_sales()
 
     # * Destiny 2 Activities.
 
@@ -1480,7 +1442,7 @@ class Client(traits.RESTful):
         `aiobungie.MembershipTypeError`
             The provided membership type was invalid.
         &#34;&#34;&#34;
-        resp = await self.http.fetch_activity(
+        resp = await self.rest.fetch_activity(
             member_id,
             character_id,
             mode,
@@ -1510,7 +1472,7 @@ class Client(traits.RESTful):
         `aiobungie.crate.activity.PostActivity`
            Information about the requested post activity.
         &#34;&#34;&#34;
-        # resp = await self.http.fetch_post_activity(instance)
+        # resp = await self.rest.fetch_post_activity(instance)
         # assert isinstance(resp, list)
         raise NotImplementedError
 
@@ -1534,7 +1496,7 @@ class Client(traits.RESTful):
         `aiobungie.ClanNotFound`
             The clan was not found.
         &#34;&#34;&#34;
-        resp = await self.http.fetch_clan_from_id(id)
+        resp = await self.rest.fetch_clan_from_id(id)
         assert isinstance(resp, dict)
         return self.serialize.deseialize_clan(resp)
 
@@ -1561,7 +1523,7 @@ class Client(traits.RESTful):
         `aiobungie.ClanNotFound`
             The clan was not found.
         &#34;&#34;&#34;
-        resp = await self.http.fetch_clan(name, type)
+        resp = await self.rest.fetch_clan(name, type)
         assert isinstance(resp, dict)
         return self.serialize.deseialize_clan(resp)
 
@@ -1604,7 +1566,7 @@ class Client(traits.RESTful):
             The member was not found.
         &#34;&#34;&#34;
 
-        resp = await self.http.fetch_clan_members(clan_id, type, name)
+        resp = await self.rest.fetch_clan_members(clan_id, type, name)
         assert isinstance(resp, dict)
         return self.serialize.deserialize_clan_member(resp)
 
@@ -1623,8 +1585,6 @@ class Client(traits.RESTful):
         ----------
         clan_id : `builsins.int`
             The clans id
-        name : `builtins.str`
-            The clan member&#39;s name
         type : `aiobungie.MembershipType`
             An optional clan member&#39;s membership type.
             Default is set to `aiobungie.MembershipType.NONE`
@@ -1640,7 +1600,7 @@ class Client(traits.RESTful):
         `aiobungie.ClanNotFound`
             The clan was not found.
         &#34;&#34;&#34;
-        resp = await self.http.fetch_clan_members(clan_id, type, page=1)
+        resp = await self.rest.fetch_clan_members(clan_id, type)
         assert isinstance(resp, dict)
         return self.serialize.deserialize_clan_members(resp)
 
@@ -1661,7 +1621,7 @@ class Client(traits.RESTful):
         `aiobungie.crate.InventoryEntity`
             A bungie inventory item.
         &#34;&#34;&#34;
-        resp = await self.http.fetch_inventory_item(hash)
+        resp = await self.rest.fetch_inventory_item(hash)
         assert isinstance(resp, dict)
         return self.serialize.deserialize_inventory_entity(resp)
 
@@ -1681,7 +1641,7 @@ class Client(traits.RESTful):
         `aiobungie.crate.Application`
             A Bungie application.
         &#34;&#34;&#34;
-        resp = await self.http.fetch_app(appid)
+        resp = await self.rest.fetch_app(appid)
         assert isinstance(resp, dict)
         return self.serialize.deserialize_app(resp)</code></pre>
                         </details>
@@ -1689,23 +1649,12 @@ class Client(traits.RESTful):
                         <ul class="hlist">
                             <li><a title="aiobungie.internal.traits.RESTful" href="internal/traits.html#aiobungie.internal.traits.RESTful">RESTful</a></li>
                             <li><a title="aiobungie.internal.traits.Netrunner" href="internal/traits.html#aiobungie.internal.traits.Netrunner">Netrunner</a></li>
+                            <li><a title="aiobungie.internal.traits.Serializable" href="internal/traits.html#aiobungie.internal.traits.Serializable">Serializable</a></li>
                             <li>typing.Protocol</li>
                             <li>typing.Generic</li>
                         </ul>
                         <h3>Instance variables</h3>
                         <dl>
-                            <dt id="aiobungie.client.Client.http"><code class="name">var <span class="ident">http</span></code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Return an attribute of instance, which is of type owner.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.client.Client.loop"><code class="name">var <span class="ident">loop</span></code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Return an attribute of instance, which is of type owner.</p>
-                                </div>
-                            </dd>
                             <dt id="aiobungie.client.Client.request"><code class="name">var <span class="ident">request</span> : <a title="aiobungie.client.Client" href="#aiobungie.client.Client">Client</a></code></dt>
                             <dd>
                                 <p class="inheritance">
@@ -1724,15 +1673,39 @@ def request(self) -&gt; Client:
     return self</code></pre>
                                 </details>
                             </dd>
-                            <dt id="aiobungie.client.Client.serialize"><code class="name">var <span class="ident">serialize</span> : <a title="aiobungie.internal.serialize.Deserialize" href="internal/serialize.html#aiobungie.internal.serialize.Deserialize">Deserialize</a></code></dt>
+                            <dt id="aiobungie.client.Client.rest"><code class="name">var <span class="ident">rest</span> : <a title="aiobungie.rest.RESTClient" href="rest.html#aiobungie.rest.RESTClient">RESTClient</a></code></dt>
                             <dd>
-                                <div class="desc"></div>
+                                <p class="inheritance">
+                                    <em>Inherited from:</em>
+                                    <code><a title="aiobungie.internal.traits.RESTful" href="internal/traits.html#aiobungie.internal.traits.RESTful">RESTful</a></code>.<code><a title="aiobungie.internal.traits.RESTful.rest" href="internal/traits.html#aiobungie.internal.traits.RESTful.rest">rest</a></code>
+                                </p>
+                                <div class="desc inherited">
+                                    <p>The rest client we make the http request to the API with.</p>
+                                </div>
                                 <details class="source">
                                     <summary>
                                         <span>Expand source code</span>
                                     </summary>
                                     <pre><code class="python">@property
-def serialize(self) -&gt; serialize_.Deserialize:
+def rest(self) -&gt; rest_.RESTClient:
+    return self._rest</code></pre>
+                                </details>
+                            </dd>
+                            <dt id="aiobungie.client.Client.serialize"><code class="name">var <span class="ident">serialize</span> : <a title="aiobungie.internal.serialize.Factory" href="internal/serialize.html#aiobungie.internal.serialize.Factory">Factory</a></code></dt>
+                            <dd>
+                                <p class="inheritance">
+                                    <em>Inherited from:</em>
+                                    <code><a title="aiobungie.internal.traits.RESTful" href="internal/traits.html#aiobungie.internal.traits.RESTful">RESTful</a></code>.<code><a title="aiobungie.internal.traits.RESTful.serialize" href="internal/traits.html#aiobungie.internal.traits.RESTful.serialize">serialize</a></code>
+                                </p>
+                                <div class="desc inherited">
+                                    <p>A property that returns a deserializer object for the client.</p>
+                                </div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">@property
+def serialize(self) -&gt; serialize_.Factory:
     return self._serialize</code></pre>
                                 </details>
                             </dd>
@@ -1810,7 +1783,7 @@ def serialize(self) -&gt; serialize_.Deserialize:
     `aiobungie.MembershipTypeError`
         The provided membership type was invalid.
     &#34;&#34;&#34;
-    resp = await self.http.fetch_activity(
+    resp = await self.rest.fetch_activity(
         member_id,
         character_id,
         mode,
@@ -1853,7 +1826,7 @@ def serialize(self) -&gt; serialize_.Deserialize:
     `aiobungie.crate.Application`
         A Bungie application.
     &#34;&#34;&#34;
-    resp = await self.http.fetch_app(appid)
+    resp = await self.rest.fetch_app(appid)
     assert isinstance(resp, dict)
     return self.serialize.deserialize_app(resp)</code></pre>
                                 </details>
@@ -1910,7 +1883,7 @@ def serialize(self) -&gt; serialize_.Deserialize:
     `aiobungie.MembershipTypeError`
         The provided membership type was invalid.
     &#34;&#34;&#34;
-    resp = await self.http.fetch_character(memberid, type)
+    resp = await self.rest.fetch_character(memberid, type)
     assert isinstance(resp, dict)
     char_module = self.serialize.deserialize_character(resp, chartype=character)
     return char_module</code></pre>
@@ -1960,7 +1933,7 @@ def serialize(self) -&gt; serialize_.Deserialize:
     `aiobungie.ClanNotFound`
         The clan was not found.
     &#34;&#34;&#34;
-    resp = await self.http.fetch_clan(name, type)
+    resp = await self.rest.fetch_clan(name, type)
     assert isinstance(resp, dict)
     return self.serialize.deseialize_clan(resp)</code></pre>
                                 </details>
@@ -2003,7 +1976,7 @@ def serialize(self) -&gt; serialize_.Deserialize:
     `aiobungie.ClanNotFound`
         The clan was not found.
     &#34;&#34;&#34;
-    resp = await self.http.fetch_clan_from_id(id)
+    resp = await self.rest.fetch_clan_from_id(id)
     assert isinstance(resp, dict)
     return self.serialize.deseialize_clan(resp)</code></pre>
                                 </details>
@@ -2078,7 +2051,7 @@ def serialize(self) -&gt; serialize_.Deserialize:
         The member was not found.
     &#34;&#34;&#34;
 
-    resp = await self.http.fetch_clan_members(clan_id, type, name)
+    resp = await self.rest.fetch_clan_members(clan_id, type, name)
     assert isinstance(resp, dict)
     return self.serialize.deserialize_clan_member(resp)</code></pre>
                                 </details>
@@ -2098,8 +2071,6 @@ def serialize(self) -&gt; serialize_.Deserialize:
                                     <dl>
                                         <dt><strong><code>clan_id</code></strong> :&ensp;<code>builsins.int</code></dt>
                                         <dd>The clans id</dd>
-                                        <dt><strong><code>name</code></strong> :&ensp;<code>builtins.str</code></dt>
-                                        <dd>The clan member's name</dd>
                                         <dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.MembershipType" href="index.html#aiobungie.MembershipType">MembershipType</a></code></dt>
                                         <dd>An optional clan member's membership type. Default is set to <code><a title="aiobungie.MembershipType.NONE" href="index.html#aiobungie.MembershipType.NONE">MembershipType.NONE</a></code> Which returns the first
                                             matched clan member by their name.</dd>
@@ -2128,8 +2099,6 @@ def serialize(self) -&gt; serialize_.Deserialize:
     ----------
     clan_id : `builsins.int`
         The clans id
-    name : `builtins.str`
-        The clan member&#39;s name
     type : `aiobungie.MembershipType`
         An optional clan member&#39;s membership type.
         Default is set to `aiobungie.MembershipType.NONE`
@@ -2145,7 +2114,7 @@ def serialize(self) -&gt; serialize_.Deserialize:
     `aiobungie.ClanNotFound`
         The clan was not found.
     &#34;&#34;&#34;
-    resp = await self.http.fetch_clan_members(clan_id, type, page=1)
+    resp = await self.rest.fetch_clan_members(clan_id, type)
     assert isinstance(resp, dict)
     return self.serialize.deserialize_clan_members(resp)</code></pre>
                                 </details>
@@ -2193,7 +2162,7 @@ def serialize(self) -&gt; serialize_.Deserialize:
 
     # This doesn&#39;t really needs to be serialized like other stuff
     # since the dict only contains 3 keys.
-    payload = await self.http.fetch_hard_linked(credential, type)
+    payload = await self.rest.fetch_hard_linked(credential, type)
     assert isinstance(payload, dict)
 
     return crate.user.HardLinkedMembership(
@@ -2238,7 +2207,7 @@ def serialize(self) -&gt; serialize_.Deserialize:
     `aiobungie.crate.InventoryEntity`
         A bungie inventory item.
     &#34;&#34;&#34;
-    resp = await self.http.fetch_inventory_item(hash)
+    resp = await self.rest.fetch_inventory_item(hash)
     assert isinstance(resp, dict)
     return self.serialize.deserialize_inventory_entity(resp)</code></pre>
                                 </details>
@@ -2264,8 +2233,7 @@ def serialize(self) -&gt; serialize_.Deserialize:
     `aiobungie.ext.Manifest`
         A Manifest crate.
     &#34;&#34;&#34;
-    resp = await self.http.fetch_manifest()
-    return Manifest(self._token, resp)</code></pre>
+    return Manifest(self._token)</code></pre>
                                 </details>
                             </dd>
                             <dt id="aiobungie.client.Client.fetch_membership_from_id"><code class="name flex">
@@ -2327,13 +2295,13 @@ def serialize(self) -&gt; serialize_.Deserialize:
     aiobungie.UserNotFound
         The requested user was not found.
     &#34;&#34;&#34;
-    payload = await self.http.fetch_membership_from_id(id, type)
+    payload = await self.rest.fetch_membership_from_id(id, type)
     assert isinstance(payload, dict)
     return self.serialize.deserialize_user(payload)</code></pre>
                                 </details>
                             </dd>
                             <dt id="aiobungie.client.Client.fetch_player"><code class="name flex">
-<span>async def <span class="ident">fetch_player</span></span>(<span>self, name: str, type: MembershipType = ALL, /) ‑> <a title="aiobungie.crate.player.Player" href="crate/player.html#aiobungie.crate.player.Player">Player</a></span>
+<span>async def <span class="ident">fetch_player</span></span>(<span>self, name: str, type: MembershipType = ALL, /) ‑> Sequence[<a title="aiobungie.crate.user.DestinyUser" href="crate/user.html#aiobungie.crate.user.DestinyUser">DestinyUser</a>]</span>
 </code></dt>
                             <dd>
                                 <div class="desc">
@@ -2353,7 +2321,7 @@ def serialize(self) -&gt; serialize_.Deserialize:
                                         <dd>The player's membership type, e,g. XBOX, STEAM, PSN</dd>
                                     </dl>
                                     <h2 id="returns">Returns</h2>
-                                    <p><code><a title="aiobungie.crate.Player" href="crate/index.html#aiobungie.crate.Player">Player</a></code> A Destiny 2 Player.</p>
+                                    <p><code>typing.Sequence[<a title="aiobungie.crate.Player" href="crate/index.html#aiobungie.crate.Player">Player</a>]</code> A sequence of the found Destiny 2 Player memberships.</p>
                                     <h2 id="raises">Raises</h2>
                                     <p><code><a title="aiobungie.PlayerNotFound" href="index.html#aiobungie.PlayerNotFound">PlayerNotFound</a></code> The player was not found.</p>
                                     <p><code><a title="aiobungie.MembershipTypeError" href="index.html#aiobungie.MembershipTypeError">MembershipTypeError</a></code> The provided membership type was invalid.</p>
@@ -2364,7 +2332,7 @@ def serialize(self) -&gt; serialize_.Deserialize:
                                     </summary>
                                     <pre><code class="python">async def fetch_player(
     self, name: str, type: MembershipType = MembershipType.ALL, /
-) -&gt; crate.Player:
+) -&gt; typing.Sequence[crate.user.DestinyUser]:
     &#34;&#34;&#34;Fetch a Destiny 2 Player.
 
     Parameters
@@ -2382,8 +2350,8 @@ def serialize(self) -&gt; serialize_.Deserialize:
 
     Returns
     --------
-    `aiobungie.crate.Player`
-        A Destiny 2 Player.
+    `typing.Sequence[aiobungie.crate.Player]`
+        A sequence of the found Destiny 2 Player memberships.
 
     Raises
     ------
@@ -2393,7 +2361,7 @@ def serialize(self) -&gt; serialize_.Deserialize:
     `aiobungie.MembershipTypeError`
         The provided membership type was invalid.
     &#34;&#34;&#34;
-    resp = await self.http.fetch_player(name, type)
+    resp = await self.rest.fetch_player(name, type)
     assert isinstance(resp, list)
     return self.serialize.deserialize_player(resp)</code></pre>
                                 </details>
@@ -2439,7 +2407,7 @@ def serialize(self) -&gt; serialize_.Deserialize:
     `aiobungie.crate.activity.PostActivity`
        Information about the requested post activity.
     &#34;&#34;&#34;
-    # resp = await self.http.fetch_post_activity(instance)
+    # resp = await self.rest.fetch_post_activity(instance)
     # assert isinstance(resp, list)
     raise NotImplementedError</code></pre>
                                 </details>
@@ -2495,7 +2463,7 @@ def serialize(self) -&gt; serialize_.Deserialize:
     `aiobungie.MembershipTypeError`
         The provided membership type was invalid.
     &#34;&#34;&#34;
-    data = await self.http.fetch_profile(memberid, type)
+    data = await self.rest.fetch_profile(memberid, type)
     assert isinstance(data, dict)
     return self.serialize.deserialize_profile(data)</code></pre>
                                 </details>
@@ -2546,7 +2514,7 @@ def serialize(self) -&gt; serialize_.Deserialize:
     `aiobungie.error.UserNotFound`
         The user was not found.
     &#34;&#34;&#34;
-    payload = await self.http.fetch_user(id)
+    payload = await self.rest.fetch_user(id)
     assert isinstance(payload, dict)
     return self.serialize.deserialize_bungie_user(payload)</code></pre>
                                 </details>
@@ -2572,7 +2540,7 @@ def serialize(self) -&gt; serialize_.Deserialize:
     `typing.Sequence[aiobungie.crate.user.UserThemes]`
         A sequence of user themes.
     &#34;&#34;&#34;
-    data = await self.http.fetch_user_themes()
+    data = await self.rest.fetch_user_themes()
     return self.serialize.deserialize_user_themes(data)</code></pre>
                                 </details>
                             </dd>
@@ -2626,7 +2594,7 @@ def serialize(self) -&gt; serialize_.Deserialize:
     `typing.Any`
         Any object.
     &#34;&#34;&#34;
-    return await self.http.static_search(path, **kwargs)</code></pre>
+    return await self.rest.static_search(path, **kwargs)</code></pre>
                                 </details>
                             </dd>
                             <dt id="aiobungie.client.Client.run"><code class="name flex">
@@ -2647,31 +2615,28 @@ def serialize(self) -&gt; serialize_.Deserialize:
                                     <pre><code class="python">def run(
     self, future: typing.Coroutine[typing.Any, None, None], debug: bool = False
 ) -&gt; None:
-    &#34;&#34;&#34;Runs a Coro function until its complete.
-    This is equivalent to asyncio.get_event_loop().run_until_complete(...)
-
-    Parameters
-    ----------
-    future: `typing.Coroutine[typing.Any, typing.Any, typing.Any]`
-        Your coro function.
-
-    Example
-    -------
-    ```py
-    async def main() -&gt; None:
-        player = await client.fetch_player(&#34;Fate&#34;)
-        print(player.name)
-
-    client.run(main())
-    ```
-    &#34;&#34;&#34;
     try:
-        if not self.loop.is_running():
+        if not self._loop.is_running():
             if debug:
-                self.loop.set_debug(True)
-            self.loop.run_until_complete(future)
+                self._loop.set_debug(True)
+            self._loop.run_until_complete(future)
     except Exception as exc:
         raise RuntimeError(f&#34;Failed to run {future.__name__}&#34;, exc)</code></pre>
+                                </details>
+                            </dd>
+                            <dt id="aiobungie.client.Client.search_users"><code class="name flex">
+<span>async def <span class="ident">search_users</span></span>(<span>self, name: str, /) ‑> Sequence[<a title="aiobungie.crate.user.DestinyUser" href="crate/user.html#aiobungie.crate.user.DestinyUser">DestinyUser</a>]</span>
+</code></dt>
+                            <dd>
+                                <div class="desc"></div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">async def search_users(self, name: str, /) -&gt; typing.Sequence[crate.DestinyUser]:
+    payload = await self.rest.search_users(name)
+    assert isinstance(payload, dict)
+    return self.serialize.deseialize_found_users(payload)</code></pre>
                                 </details>
                             </dd>
                         </dl>
@@ -2768,10 +2733,10 @@ def serialize(self) -&gt; serialize_.Deserialize:
                                 <li><code><a title="aiobungie.client.Client.fetch_user_themes" href="#aiobungie.client.Client.fetch_user_themes">fetch_user_themes</a></code></li>
                                 <li><code><a title="aiobungie.client.Client.fetch_vendor_sales" href="#aiobungie.client.Client.fetch_vendor_sales">fetch_vendor_sales</a></code></li>
                                 <li><code><a title="aiobungie.client.Client.from_path" href="#aiobungie.client.Client.from_path">from_path</a></code></li>
-                                <li><code><a title="aiobungie.client.Client.http" href="#aiobungie.client.Client.http">http</a></code></li>
-                                <li><code><a title="aiobungie.client.Client.loop" href="#aiobungie.client.Client.loop">loop</a></code></li>
                                 <li><code><a title="aiobungie.client.Client.request" href="#aiobungie.client.Client.request">request</a></code></li>
+                                <li><code><a title="aiobungie.client.Client.rest" href="#aiobungie.client.Client.rest">rest</a></code></li>
                                 <li><code><a title="aiobungie.client.Client.run" href="#aiobungie.client.Client.run">run</a></code></li>
+                                <li><code><a title="aiobungie.client.Client.search_users" href="#aiobungie.client.Client.search_users">search_users</a></code></li>
                                 <li><code><a title="aiobungie.client.Client.serialize" href="#aiobungie.client.Client.serialize">serialize</a></code></li>
                             </ul>
                         </li>

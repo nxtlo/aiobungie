@@ -514,8 +514,6 @@
 
 from __future__ import annotations
 
-from aiobungie.internal.helpers import NoneOr
-
 __all__ = (&#34;Application&#34;, &#34;ApplicationOwner&#34;)
 
 import typing
@@ -525,18 +523,17 @@ import attr
 
 from aiobungie import url
 from aiobungie.crate.user import UserLike
-from aiobungie.internal import Image
+from aiobungie.internal import assets
 from aiobungie.internal import enums
-from aiobungie.internal import time
-from aiobungie.internal import traits
+from aiobungie.internal import helpers
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
 class ApplicationOwner(UserLike):
     &#34;&#34;&#34;Represents a Bungie Application owner.&#34;&#34;&#34;
 
-    name: str = attr.field(repr=True, hash=False, eq=False)
-    &#34;&#34;&#34;The application owner name.&#34;&#34;&#34;
+    name: helpers.UndefinedOr[str] = attr.field(repr=True, hash=False, eq=False)
+    &#34;&#34;&#34;The application owner name. This can be `UNDEFINED` if not found.&#34;&#34;&#34;
 
     type: enums.MembershipType = attr.field(repr=True, hash=False, eq=True)
     &#34;&#34;&#34;The membership of the application owner.&#34;&#34;&#34;
@@ -544,13 +541,13 @@ class ApplicationOwner(UserLike):
     id: int = attr.field(repr=True, hash=True, eq=True)
     &#34;&#34;&#34;The application owner&#39;s id.&#34;&#34;&#34;
 
-    icon: Image = attr.field(repr=False)
+    icon: assets.MaybeImage = attr.field(repr=False)
     &#34;&#34;&#34;The application owner&#39;s icon.&#34;&#34;&#34;
 
     is_public: bool = attr.field(repr=True)
     &#34;&#34;&#34;The application owner&#39;s profile privacy.&#34;&#34;&#34;
 
-    code: NoneOr[int] = attr.field(repr=True)
+    code: helpers.NoneOr[int] = attr.field(repr=True)
     &#34;&#34;&#34;The user like&#39;s unique display name code.
     This can be None if the user hasn&#39;t logged in after season of the lost update.
 
@@ -558,38 +555,19 @@ class ApplicationOwner(UserLike):
     &#34;&#34;&#34;
 
     @property
-    def unique_name(self) -&gt; NoneOr[str]:
-        &#34;&#34;&#34;The user like&#39;s display name. This includes the full name with the user name code.
-
-        .. versionadded:: 0.2.5
-        &#34;&#34;&#34;
-        return f&#34;{self.name}#{self.code}&#34;
+    def unique_name(self) -&gt; str:
+        &#34;&#34;&#34;The application owner&#39;s unique name.&#34;&#34;&#34;
+        return self.unique_name
 
     @property
-    def net(self) -&gt; traits.Netrunner:
-        &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
-        return self.net
+    def last_seen_name(self) -&gt; str:
+        # This is always undefined since an application
+        # dev doesn&#39;t have this field.
+        return str(helpers.Undefined)
 
     @property
     def link(self) -&gt; str:
         return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;
-
-    @property
-    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        &#34;&#34;&#34;Returns a dict object of the application owner.&#34;&#34;&#34;
-        return dict(
-            id=self.id,
-            name=self.name,
-            is_public=self.is_public,
-            icon=str(self.icon),
-            type=self.type,
-        )
-
-    def __int__(self) -&gt; int:
-        return self.id
-
-    def __str__(self) -&gt; str:
-        return self.name
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
@@ -617,23 +595,11 @@ class Application:
     status: int = attr.field(repr=False)
     &#34;&#34;&#34;App&#39;s status&#34;&#34;&#34;
 
-    scope: str = attr.field(repr=False)
+    scope: helpers.UndefinedOr[str] = attr.field(repr=False)
     &#34;&#34;&#34;App&#39;s scope&#34;&#34;&#34;
 
     owner: ApplicationOwner = attr.field(repr=True)
     &#34;&#34;&#34;App&#39;s owner&#34;&#34;&#34;
-
-    @property
-    def human_timedelta(self) -&gt; str:
-        &#34;&#34;&#34;Returns a human readable date of the app&#39;s creation date.&#34;&#34;&#34;
-        return time.human_timedelta(self.created_at)
-
-    @property
-    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        &#34;&#34;&#34;Returns a dict crate of the application,
-        This function is useful if you&#39;re binding to other REST apis.
-        &#34;&#34;&#34;
-        return attr.asdict(self)
 
     def __str__(self) -&gt; str:
         return self.name
@@ -653,7 +619,7 @@ class Application:
                 <dl>
                     <dt id="aiobungie.crate.application.Application"><code class="flex name class">
 <span>class <span class="ident">Application</span></span>
-<span>(</span><span>*, id: int, name: str, redirect_url: typing.Optional[str], created_at: datetime, published_at: datetime, link: str, status: int, scope: str, owner: <a title="aiobungie.crate.application.ApplicationOwner" href="#aiobungie.crate.application.ApplicationOwner">ApplicationOwner</a>)</span>
+<span>(</span><span>*, id: int, name: str, redirect_url: typing.Optional[str], created_at: datetime, published_at: datetime, link: str, status: int, scope: helpers.UndefinedOr[str], owner: <a title="aiobungie.crate.application.ApplicationOwner" href="#aiobungie.crate.application.ApplicationOwner">ApplicationOwner</a>)</span>
 </code></dt>
                     <dd>
                         <div class="desc">
@@ -689,23 +655,11 @@ class Application:
     status: int = attr.field(repr=False)
     &#34;&#34;&#34;App&#39;s status&#34;&#34;&#34;
 
-    scope: str = attr.field(repr=False)
+    scope: helpers.UndefinedOr[str] = attr.field(repr=False)
     &#34;&#34;&#34;App&#39;s scope&#34;&#34;&#34;
 
     owner: ApplicationOwner = attr.field(repr=True)
     &#34;&#34;&#34;App&#39;s owner&#34;&#34;&#34;
-
-    @property
-    def human_timedelta(self) -&gt; str:
-        &#34;&#34;&#34;Returns a human readable date of the app&#39;s creation date.&#34;&#34;&#34;
-        return time.human_timedelta(self.created_at)
-
-    @property
-    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        &#34;&#34;&#34;Returns a dict crate of the application,
-        This function is useful if you&#39;re binding to other REST apis.
-        &#34;&#34;&#34;
-        return attr.asdict(self)
 
     def __str__(self) -&gt; str:
         return self.name
@@ -715,43 +669,11 @@ class Application:
                         </details>
                         <h3>Instance variables</h3>
                         <dl>
-                            <dt id="aiobungie.crate.application.Application.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Returns a dict crate of the application, This function is useful if you're binding to other REST apis.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-    &#34;&#34;&#34;Returns a dict crate of the application,
-    This function is useful if you&#39;re binding to other REST apis.
-    &#34;&#34;&#34;
-    return attr.asdict(self)</code></pre>
-                                </details>
-                            </dd>
                             <dt id="aiobungie.crate.application.Application.created_at"><code class="name">var <span class="ident">created_at</span> : datetime.datetime</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>App creation date in UTC timezone</p>
                                 </div>
-                            </dd>
-                            <dt id="aiobungie.crate.application.Application.human_timedelta"><code class="name">var <span class="ident">human_timedelta</span> : str</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Returns a human readable date of the app's creation date.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def human_timedelta(self) -&gt; str:
-    &#34;&#34;&#34;Returns a human readable date of the app&#39;s creation date.&#34;&#34;&#34;
-    return time.human_timedelta(self.created_at)</code></pre>
-                                </details>
                             </dd>
                             <dt id="aiobungie.crate.application.Application.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
                             <dd>
@@ -789,7 +711,7 @@ def human_timedelta(self) -&gt; str:
                                     <p>App redirect url</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.application.Application.scope"><code class="name">var <span class="ident">scope</span> : str</code></dt>
+                            <dt id="aiobungie.crate.application.Application.scope"><code class="name">var <span class="ident">scope</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>App's scope</p>
@@ -805,7 +727,7 @@ def human_timedelta(self) -&gt; str:
                     </dd>
                     <dt id="aiobungie.crate.application.ApplicationOwner"><code class="flex name class">
 <span>class <span class="ident">ApplicationOwner</span></span>
-<span>(</span><span>*, name: str, type: enums.MembershipType, id: int, icon: Image, is_public: bool, code: NoneOr[int])</span>
+<span>(</span><span>*, name: helpers.UndefinedOr[str], type: enums.MembershipType, id: int, icon: assets.MaybeImage, is_public: bool, code: helpers.NoneOr[int])</span>
 </code></dt>
                     <dd>
                         <div class="desc">
@@ -820,8 +742,8 @@ def human_timedelta(self) -&gt; str:
 class ApplicationOwner(UserLike):
     &#34;&#34;&#34;Represents a Bungie Application owner.&#34;&#34;&#34;
 
-    name: str = attr.field(repr=True, hash=False, eq=False)
-    &#34;&#34;&#34;The application owner name.&#34;&#34;&#34;
+    name: helpers.UndefinedOr[str] = attr.field(repr=True, hash=False, eq=False)
+    &#34;&#34;&#34;The application owner name. This can be `UNDEFINED` if not found.&#34;&#34;&#34;
 
     type: enums.MembershipType = attr.field(repr=True, hash=False, eq=True)
     &#34;&#34;&#34;The membership of the application owner.&#34;&#34;&#34;
@@ -829,13 +751,13 @@ class ApplicationOwner(UserLike):
     id: int = attr.field(repr=True, hash=True, eq=True)
     &#34;&#34;&#34;The application owner&#39;s id.&#34;&#34;&#34;
 
-    icon: Image = attr.field(repr=False)
+    icon: assets.MaybeImage = attr.field(repr=False)
     &#34;&#34;&#34;The application owner&#39;s icon.&#34;&#34;&#34;
 
     is_public: bool = attr.field(repr=True)
     &#34;&#34;&#34;The application owner&#39;s profile privacy.&#34;&#34;&#34;
 
-    code: NoneOr[int] = attr.field(repr=True)
+    code: helpers.NoneOr[int] = attr.field(repr=True)
     &#34;&#34;&#34;The user like&#39;s unique display name code.
     This can be None if the user hasn&#39;t logged in after season of the lost update.
 
@@ -843,38 +765,19 @@ class ApplicationOwner(UserLike):
     &#34;&#34;&#34;
 
     @property
-    def unique_name(self) -&gt; NoneOr[str]:
-        &#34;&#34;&#34;The user like&#39;s display name. This includes the full name with the user name code.
-
-        .. versionadded:: 0.2.5
-        &#34;&#34;&#34;
-        return f&#34;{self.name}#{self.code}&#34;
+    def unique_name(self) -&gt; str:
+        &#34;&#34;&#34;The application owner&#39;s unique name.&#34;&#34;&#34;
+        return self.unique_name
 
     @property
-    def net(self) -&gt; traits.Netrunner:
-        &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
-        return self.net
+    def last_seen_name(self) -&gt; str:
+        # This is always undefined since an application
+        # dev doesn&#39;t have this field.
+        return str(helpers.Undefined)
 
     @property
     def link(self) -&gt; str:
-        return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;
-
-    @property
-    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        &#34;&#34;&#34;Returns a dict object of the application owner.&#34;&#34;&#34;
-        return dict(
-            id=self.id,
-            name=self.name,
-            is_public=self.is_public,
-            icon=str(self.icon),
-            type=self.type,
-        )
-
-    def __int__(self) -&gt; int:
-        return self.id
-
-    def __str__(self) -&gt; str:
-        return self.name</code></pre>
+        return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
@@ -883,27 +786,6 @@ class ApplicationOwner(UserLike):
                         </ul>
                         <h3>Instance variables</h3>
                         <dl>
-                            <dt id="aiobungie.crate.application.ApplicationOwner.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Returns a dict object of the application owner.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-    &#34;&#34;&#34;Returns a dict object of the application owner.&#34;&#34;&#34;
-    return dict(
-        id=self.id,
-        name=self.name,
-        is_public=self.is_public,
-        icon=str(self.icon),
-        type=self.type,
-    )</code></pre>
-                                </details>
-                            </dd>
                             <dt id="aiobungie.crate.application.ApplicationOwner.code"><code class="name">var <span class="ident">code</span> : Optional[None]</code></dt>
                             <dd>
                                 <p class="inheritance">
@@ -914,7 +796,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                     <p>The user like's unique display name code. This can be None if the user hasn't logged in after season of the lost update …</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.application.ApplicationOwner.icon"><code class="name">var <span class="ident">icon</span> : <a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a></code></dt>
+                            <dt id="aiobungie.crate.application.ApplicationOwner.icon"><code class="name">var <span class="ident">icon</span> : Union[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>The application owner's icon.</p>
@@ -931,6 +813,26 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                 <div class="desc">
                                     <p>The application owner's profile privacy.</p>
                                 </div>
+                            </dd>
+                            <dt id="aiobungie.crate.application.ApplicationOwner.last_seen_name"><code class="name">var <span class="ident">last_seen_name</span> : str</code></dt>
+                            <dd>
+                                <p class="inheritance">
+                                    <em>Inherited from:</em>
+                                    <code><a title="aiobungie.crate.user.UserLike" href="user.html#aiobungie.crate.user.UserLike">UserLike</a></code>.<code><a title="aiobungie.crate.user.UserLike.last_seen_name" href="user.html#aiobungie.crate.user.UserLike.last_seen_name">last_seen_name</a></code>
+                                </p>
+                                <div class="desc inherited">
+                                    <p>The user like's last seen name.</p>
+                                </div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">@property
+def last_seen_name(self) -&gt; str:
+    # This is always undefined since an application
+    # dev doesn&#39;t have this field.
+    return str(helpers.Undefined)</code></pre>
+                                </details>
                             </dd>
                             <dt id="aiobungie.crate.application.ApplicationOwner.link"><code class="name">var <span class="ident">link</span> : str</code></dt>
                             <dd>
@@ -950,26 +852,11 @@ def link(self) -&gt; str:
     return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;</code></pre>
                                 </details>
                             </dd>
-                            <dt id="aiobungie.crate.application.ApplicationOwner.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
+                            <dt id="aiobungie.crate.application.ApplicationOwner.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>The application owner name.</p>
+                                    <p>The application owner name. This can be <code>UNDEFINED</code> if not found.</p>
                                 </div>
-                            </dd>
-                            <dt id="aiobungie.crate.application.ApplicationOwner.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.traits.Netrunner" href="./internal/traits.html#aiobungie.internal.traits.Netrunner">Netrunner</a></code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>A network state used for making external requests.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def net(self) -&gt; traits.Netrunner:
-    &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
-    return self.net</code></pre>
-                                </details>
                             </dd>
                             <dt id="aiobungie.crate.application.ApplicationOwner.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
                             <dd>
@@ -977,26 +864,19 @@ def net(self) -&gt; traits.Netrunner:
                                     <p>The membership of the application owner.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.application.ApplicationOwner.unique_name"><code class="name">var <span class="ident">unique_name</span> : Optional[str]</code></dt>
+                            <dt id="aiobungie.crate.application.ApplicationOwner.unique_name"><code class="name">var <span class="ident">unique_name</span> : str</code></dt>
                             <dd>
-                                <p class="inheritance">
-                                    <em>Inherited from:</em>
-                                    <code><a title="aiobungie.crate.user.UserLike" href="user.html#aiobungie.crate.user.UserLike">UserLike</a></code>.<code><a title="aiobungie.crate.user.UserLike.unique_name" href="user.html#aiobungie.crate.user.UserLike.unique_name">unique_name</a></code>
-                                </p>
-                                <div class="desc inherited">
-                                    <p>The user like's display name. This includes the full name with the user name code …</p>
+                                <div class="desc">
+                                    <p>The application owner's unique name.</p>
                                 </div>
                                 <details class="source">
                                     <summary>
                                         <span>Expand source code</span>
                                     </summary>
                                     <pre><code class="python">@property
-def unique_name(self) -&gt; NoneOr[str]:
-    &#34;&#34;&#34;The user like&#39;s display name. This includes the full name with the user name code.
-
-    .. versionadded:: 0.2.5
-    &#34;&#34;&#34;
-    return f&#34;{self.name}#{self.code}&#34;</code></pre>
+def unique_name(self) -&gt; str:
+    &#34;&#34;&#34;The application owner&#39;s unique name.&#34;&#34;&#34;
+    return self.unique_name</code></pre>
                                 </details>
                             </dd>
                         </dl>
@@ -1075,9 +955,7 @@ def unique_name(self) -&gt; NoneOr[str]:
                         <li>
                             <h4><code><a title="aiobungie.crate.application.Application" href="#aiobungie.crate.application.Application">Application</a></code></h4>
                             <ul class="two-column">
-                                <li><code><a title="aiobungie.crate.application.Application.as_dict" href="#aiobungie.crate.application.Application.as_dict">as_dict</a></code></li>
                                 <li><code><a title="aiobungie.crate.application.Application.created_at" href="#aiobungie.crate.application.Application.created_at">created_at</a></code></li>
-                                <li><code><a title="aiobungie.crate.application.Application.human_timedelta" href="#aiobungie.crate.application.Application.human_timedelta">human_timedelta</a></code></li>
                                 <li><code><a title="aiobungie.crate.application.Application.id" href="#aiobungie.crate.application.Application.id">id</a></code></li>
                                 <li><code><a title="aiobungie.crate.application.Application.link" href="#aiobungie.crate.application.Application.link">link</a></code></li>
                                 <li><code><a title="aiobungie.crate.application.Application.name" href="#aiobungie.crate.application.Application.name">name</a></code></li>
@@ -1091,14 +969,13 @@ def unique_name(self) -&gt; NoneOr[str]:
                         <li>
                             <h4><code><a title="aiobungie.crate.application.ApplicationOwner" href="#aiobungie.crate.application.ApplicationOwner">ApplicationOwner</a></code></h4>
                             <ul class="two-column">
-                                <li><code><a title="aiobungie.crate.application.ApplicationOwner.as_dict" href="#aiobungie.crate.application.ApplicationOwner.as_dict">as_dict</a></code></li>
                                 <li><code><a title="aiobungie.crate.application.ApplicationOwner.code" href="#aiobungie.crate.application.ApplicationOwner.code">code</a></code></li>
                                 <li><code><a title="aiobungie.crate.application.ApplicationOwner.icon" href="#aiobungie.crate.application.ApplicationOwner.icon">icon</a></code></li>
                                 <li><code><a title="aiobungie.crate.application.ApplicationOwner.id" href="#aiobungie.crate.application.ApplicationOwner.id">id</a></code></li>
                                 <li><code><a title="aiobungie.crate.application.ApplicationOwner.is_public" href="#aiobungie.crate.application.ApplicationOwner.is_public">is_public</a></code></li>
+                                <li><code><a title="aiobungie.crate.application.ApplicationOwner.last_seen_name" href="#aiobungie.crate.application.ApplicationOwner.last_seen_name">last_seen_name</a></code></li>
                                 <li><code><a title="aiobungie.crate.application.ApplicationOwner.link" href="#aiobungie.crate.application.ApplicationOwner.link">link</a></code></li>
                                 <li><code><a title="aiobungie.crate.application.ApplicationOwner.name" href="#aiobungie.crate.application.ApplicationOwner.name">name</a></code></li>
-                                <li><code><a title="aiobungie.crate.application.ApplicationOwner.net" href="#aiobungie.crate.application.ApplicationOwner.net">net</a></code></li>
                                 <li><code><a title="aiobungie.crate.application.ApplicationOwner.type" href="#aiobungie.crate.application.ApplicationOwner.type">type</a></code></li>
                                 <li><code><a title="aiobungie.crate.application.ApplicationOwner.unique_name" href="#aiobungie.crate.application.ApplicationOwner.unique_name">unique_name</a></code></li>
                             </ul>

@@ -94,6 +94,8 @@ async def test_fetch_clan_member() -> crate.ClanMember:
 @view
 async def test_fetch_clan_members() -> typing.Sequence[crate.ClanMember]:
     ms = await client.fetch_clan_members(4389205)
+    for x in ms:
+        print(x.joined_at, x.last_online, x.group_id, x.is_online)
     return ms
 
 
@@ -139,9 +141,17 @@ async def test_membership_types_from_id() -> crate.User:
     return u
 
 @view
-async def test_rest() -> None:
-    my_player = await rest_client.fetch_player("Fate怒#4275")
-    print(*my_player)
+async def test_rest() -> list:
+    # my_player = await rest_client.fetch_player("Fate怒#4275")
+    req = await rest_client.fetch_clan_members(4389205)
+    clan_members = req['results']  # type: ignore
+    vec = []
+    for i in clan_members:
+        x = {}
+        for k, v in i['destinyUserInfo'].items():
+            x[k] = v
+        vec.append(x)
+    return vec
 
 @view
 async def test_search_users() -> typing.Any:
@@ -151,19 +161,19 @@ async def test_search_users() -> typing.Any:
 
 async def main() -> None:
     coros = [
-        #  test_player(),
-        #  test_users(),
-        #  test_user_themese(),
-        #  test_hard_types(),
-        #  test_clan(),
-        #  test_clan_from_id(),
-        #  test_fetch_clan_member(),
-        #  test_fetch_clan_members(),
-        #  test_fetch_inventory_item(),
-        #  test_profile(),
-        #  test_char(),
-        #  test_membership_types_from_id(),
-        #  test_rest(),
+        test_player(),
+        test_users(),
+        test_user_themese(),
+        test_hard_types(),
+        test_clan(),
+        test_clan_from_id(),
+        test_fetch_clan_member(),
+        test_fetch_clan_members(),
+        test_fetch_inventory_item(),
+        test_profile(),
+        test_char(),
+        test_membership_types_from_id(),
+        test_rest(),
         test_search_users()
     ]
     print(await asyncio.gather(*coros))

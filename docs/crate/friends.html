@@ -541,11 +541,8 @@ class Friend(user_.UserLike):
     type: enums.MembershipType = attr.field(repr=True)
     &#34;&#34;&#34;The friend&#39;s last seen membership type.&#34;&#34;&#34;
 
-    name: str = attr.field(repr=True)
-    &#34;&#34;&#34;The friend&#39;s last seen global display name. This field could be None if the player hasn&#39;t logged in yet.&#34;&#34;&#34;
-
-    unique_name: helpers.NoneOr[str] = attr.field(repr=True)
-    &#34;&#34;&#34;The friend&#39;s global unique display name. This field could be None if the player hasn&#39;t logged in yet.&#34;&#34;&#34;
+    name: helpers.UndefinedOr[str] = attr.field(repr=True)
+    &#34;&#34;&#34;The friend&#39;s last seen global display name. This field could be Undefined if the player hasn&#39;t logged in yet.&#34;&#34;&#34;
 
     code: helpers.NoneOr[int] = attr.field(repr=True)
     &#34;&#34;&#34;The friend&#39;s last seen global code. This field could be None if the player hasn&#39;t logged in yet.&#34;&#34;&#34;
@@ -561,6 +558,11 @@ class Friend(user_.UserLike):
 
     user: helpers.NoneOr[user_.User] = attr.field(repr=True)
     &#34;&#34;&#34;The friend&#39;s bungie user account. This field is optional and can be None in some states.&#34;&#34;&#34;
+
+    @property
+    def unique_name(self) -&gt; str:
+        &#34;&#34;&#34;The friend&#39;s global unique display name. This field could be None if the player hasn&#39;t logged in yet.&#34;&#34;&#34;
+        return self.unique_name
 
     # POST methods will not be implemented currently.
 
@@ -711,7 +713,7 @@ class Friend(user_.UserLike):
                 <dl>
                     <dt id="aiobungie.crate.friends.Friend"><code class="flex name class">
 <span>class <span class="ident">Friend</span></span>
-<span>(</span><span>net: traits.Netrunner, id: int, type: enums.MembershipType, name: str, unique_name: helpers.NoneOr[str], code: helpers.NoneOr[int], online_status: enums.Presence, online_title: int, relationship: enums.Relationship, user: helpers.NoneOr[user_.User])</span>
+<span>(</span><span>net: traits.Netrunner, id: int, type: enums.MembershipType, name: helpers.UndefinedOr[str], code: helpers.NoneOr[int], online_status: enums.Presence, online_title: int, relationship: enums.Relationship, user: helpers.NoneOr[user_.User])</span>
 </code></dt>
                     <dd>
                         <div class="desc">
@@ -741,11 +743,8 @@ class Friend(user_.UserLike):
     type: enums.MembershipType = attr.field(repr=True)
     &#34;&#34;&#34;The friend&#39;s last seen membership type.&#34;&#34;&#34;
 
-    name: str = attr.field(repr=True)
-    &#34;&#34;&#34;The friend&#39;s last seen global display name. This field could be None if the player hasn&#39;t logged in yet.&#34;&#34;&#34;
-
-    unique_name: helpers.NoneOr[str] = attr.field(repr=True)
-    &#34;&#34;&#34;The friend&#39;s global unique display name. This field could be None if the player hasn&#39;t logged in yet.&#34;&#34;&#34;
+    name: helpers.UndefinedOr[str] = attr.field(repr=True)
+    &#34;&#34;&#34;The friend&#39;s last seen global display name. This field could be Undefined if the player hasn&#39;t logged in yet.&#34;&#34;&#34;
 
     code: helpers.NoneOr[int] = attr.field(repr=True)
     &#34;&#34;&#34;The friend&#39;s last seen global code. This field could be None if the player hasn&#39;t logged in yet.&#34;&#34;&#34;
@@ -761,6 +760,11 @@ class Friend(user_.UserLike):
 
     user: helpers.NoneOr[user_.User] = attr.field(repr=True)
     &#34;&#34;&#34;The friend&#39;s bungie user account. This field is optional and can be None in some states.&#34;&#34;&#34;
+
+    @property
+    def unique_name(self) -&gt; str:
+        &#34;&#34;&#34;The friend&#39;s global unique display name. This field could be None if the player hasn&#39;t logged in yet.&#34;&#34;&#34;
+        return self.unique_name
 
     # POST methods will not be implemented currently.
 
@@ -906,16 +910,6 @@ class Friend(user_.UserLike):
                         </ul>
                         <h3>Instance variables</h3>
                         <dl>
-                            <dt id="aiobungie.crate.friends.Friend.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
-                            <dd>
-                                <p class="inheritance">
-                                    <em>Inherited from:</em>
-                                    <code><a title="aiobungie.crate.user.UserLike" href="user.html#aiobungie.crate.user.UserLike">UserLike</a></code>.<code><a title="aiobungie.crate.user.UserLike.as_dict" href="user.html#aiobungie.crate.user.UserLike.as_dict">as_dict</a></code>
-                                </p>
-                                <div class="desc inherited">
-                                    <p>An instance of the UserLike as a dict.</p>
-                                </div>
-                            </dd>
                             <dt id="aiobungie.crate.friends.Friend.code"><code class="name">var <span class="ident">code</span> : Optional[None]</code></dt>
                             <dd>
                                 <div class="desc">
@@ -948,6 +942,16 @@ class Friend(user_.UserLike):
                                     <p>True if the user profile is public or no.</p>
                                 </div>
                             </dd>
+                            <dt id="aiobungie.crate.friends.Friend.last_seen_name"><code class="name">var <span class="ident">last_seen_name</span> : str</code></dt>
+                            <dd>
+                                <p class="inheritance">
+                                    <em>Inherited from:</em>
+                                    <code><a title="aiobungie.crate.user.UserLike" href="user.html#aiobungie.crate.user.UserLike">UserLike</a></code>.<code><a title="aiobungie.crate.user.UserLike.last_seen_name" href="user.html#aiobungie.crate.user.UserLike.last_seen_name">last_seen_name</a></code>
+                                </p>
+                                <div class="desc inherited">
+                                    <p>The user like's last seen name.</p>
+                                </div>
+                            </dd>
                             <dt id="aiobungie.crate.friends.Friend.link"><code class="name">var <span class="ident">link</span> : str</code></dt>
                             <dd>
                                 <p class="inheritance">
@@ -958,10 +962,10 @@ class Friend(user_.UserLike):
                                     <p>The user like's profile link.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.friends.Friend.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
+                            <dt id="aiobungie.crate.friends.Friend.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>The friend's last seen global display name. This field could be None if the player hasn't logged in yet.</p>
+                                    <p>The friend's last seen global display name. This field could be Undefined if the player hasn't logged in yet.</p>
                                 </div>
                             </dd>
                             <dt id="aiobungie.crate.friends.Friend.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.traits.Netrunner" href="./internal/traits.html#aiobungie.internal.traits.Netrunner">Netrunner</a></code></dt>
@@ -994,11 +998,20 @@ class Friend(user_.UserLike):
                                     <p>The friend's last seen membership type.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.friends.Friend.unique_name"><code class="name">var <span class="ident">unique_name</span> : Optional[str]</code></dt>
+                            <dt id="aiobungie.crate.friends.Friend.unique_name"><code class="name">var <span class="ident">unique_name</span> : str</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>The friend's global unique display name. This field could be None if the player hasn't logged in yet.</p>
                                 </div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">@property
+def unique_name(self) -&gt; str:
+    &#34;&#34;&#34;The friend&#39;s global unique display name. This field could be None if the player hasn&#39;t logged in yet.&#34;&#34;&#34;
+    return self.unique_name</code></pre>
+                                </details>
                             </dd>
                             <dt id="aiobungie.crate.friends.Friend.user"><code class="name">var <span class="ident">user</span> : Optional[None]</code></dt>
                             <dd>
@@ -1382,7 +1395,6 @@ class Friend(user_.UserLike):
                             <ul class="">
                                 <li><code><a title="aiobungie.crate.friends.Friend.accept" href="#aiobungie.crate.friends.Friend.accept">accept</a></code></li>
                                 <li><code><a title="aiobungie.crate.friends.Friend.add" href="#aiobungie.crate.friends.Friend.add">add</a></code></li>
-                                <li><code><a title="aiobungie.crate.friends.Friend.as_dict" href="user.html#aiobungie.crate.friends.Friend.as_dict">as_dict</a></code></li>
                                 <li><code><a title="aiobungie.crate.friends.Friend.code" href="#aiobungie.crate.friends.Friend.code">code</a></code></li>
                                 <li><code><a title="aiobungie.crate.friends.Friend.decline" href="#aiobungie.crate.friends.Friend.decline">decline</a></code></li>
                                 <li><code><a title="aiobungie.crate.friends.Friend.fetch_platform_friends" href="#aiobungie.crate.friends.Friend.fetch_platform_friends">fetch_platform_friends</a></code></li>
@@ -1390,6 +1402,7 @@ class Friend(user_.UserLike):
                                 <li><code><a title="aiobungie.crate.friends.Friend.id" href="#aiobungie.crate.friends.Friend.id">id</a></code></li>
                                 <li><code><a title="aiobungie.crate.friends.Friend.is_pending" href="#aiobungie.crate.friends.Friend.is_pending">is_pending</a></code></li>
                                 <li><code><a title="aiobungie.crate.friends.Friend.is_public" href="user.html#aiobungie.crate.friends.Friend.is_public">is_public</a></code></li>
+                                <li><code><a title="aiobungie.crate.friends.Friend.last_seen_name" href="user.html#aiobungie.crate.friends.Friend.last_seen_name">last_seen_name</a></code></li>
                                 <li><code><a title="aiobungie.crate.friends.Friend.link" href="user.html#aiobungie.crate.friends.Friend.link">link</a></code></li>
                                 <li><code><a title="aiobungie.crate.friends.Friend.name" href="#aiobungie.crate.friends.Friend.name">name</a></code></li>
                                 <li><code><a title="aiobungie.crate.friends.Friend.net" href="#aiobungie.crate.friends.Friend.net">net</a></code></li>

@@ -519,51 +519,17 @@ __all__: list[str] = [
     &#34;from_timestamp&#34;,
     &#34;clean_date&#34;,
     &#34;to_timestamp&#34;,
-    &#34;human_timedelta&#34;,
 ]
 
 import calendar
+import datetime
 import math
-from datetime import datetime
+import typing
 
 from dateutil.parser import parse
-from dateutil.relativedelta import relativedelta
 
-
-class plural:
-    &#34;&#34;&#34;
-    Rapptz :&gt;)
-    &#34;&#34;&#34;
-
-    def __init__(self, value: int) -&gt; None:
-        self.value = value
-
-    def __format__(self, format_spec: str) -&gt; str:
-        v = self.value
-        singular, sep, plural = format_spec.partition(&#34;|&#34;)
-        plural = plural or f&#34;{singular}s&#34;
-
-        if abs(v) != 1:
-            return f&#34;{v} {plural}&#34;
-
-        return f&#34;{v} {singular}&#34;
-
-
-def human_join(seq: list, delim: str = &#34;, &#34;, final: str = &#34;or&#34;) -&gt; str:
-    &#34;&#34;&#34;
-    Rapptz :&gt;)
-    &#34;&#34;&#34;
-    size = len(seq)
-    if size == 0:
-        return &#34;&#34;
-
-    if size == 1:
-        return seq[0]
-
-    if size == 2:
-        return f&#34;{seq[0]} {final} {seq[1]}&#34;
-
-    return delim.join(seq[:-1]) + f&#34; {final} {seq[-1]}&#34;
+DateSigT = typing.TypeVar(&#34;DateSigT&#34;, covariant=True)
+&#34;&#34;&#34;A type hint for the Date type signature.&#34;&#34;&#34;
 
 
 def format_played(mins: int, *, suffix: bool = False) -&gt; str:
@@ -576,14 +542,14 @@ def format_played(mins: int, *, suffix: bool = False) -&gt; str:
     return f&#34;{hrs} hours{&#39; and&#39; if suffix else &#39;&#39;} {seconds} seconds.&#34;
 
 
-def from_timestamp(timer: int) -&gt; datetime:
+def from_timestamp(timer: int) -&gt; datetime.datetime:
     &#34;&#34;&#34;
     Converts timestamp to `datetime.datetime`
     &#34;&#34;&#34;
-    return datetime.utcfromtimestamp(timer)
+    return datetime.datetime.utcfromtimestamp(timer)
 
 
-def clean_date(date: str) -&gt; datetime:
+def clean_date(date: str) -&gt; datetime.datetime:
     &#34;&#34;&#34;Formats `datetime.datetime` to a readable date.&#34;&#34;&#34;
     parsed = parse(date)
     ts = to_timestamp(parsed)  # had to do it in two ways.
@@ -591,7 +557,7 @@ def clean_date(date: str) -&gt; datetime:
     return ft
 
 
-def to_timestamp(date: datetime) -&gt; int:
+def to_timestamp(date: datetime.datetime) -&gt; int:
     &#34;&#34;&#34;
     Converts datetime.datetime.utctimetuple() to timestamp.
     &#34;&#34;&#34;
@@ -601,71 +567,38 @@ def to_timestamp(date: datetime) -&gt; int:
         raise e
 
 
-def human_timedelta(
-    dt: datetime, *, source=None, accuracy: int = 3, brief=False, suffix=True
-) -&gt; str:
+class DateAware(typing.Generic[DateSigT]):
+    &#34;&#34;&#34;A Generic date parser which converts ISO string datetime
+    to an aware datetime and from-to timestamp and datetime.
     &#34;&#34;&#34;
-    Rapptz :&gt;)
-    &#34;&#34;&#34;
-    now = source or datetime.utcnow()
-    # Microsecond free zone
-    now = now.replace(microsecond=0)
-    dt = dt.replace(microsecond=0)
 
-    # This implementation uses relativedelta instead of the much more obvious
-    # divmod approach with seconds because the seconds approach is not entirely
-    # accurate once you go over 1 week in terms of accuracy since you have to
-    # hardcode a month as 30 or 31 days.
-    # A query like &#34;11 months&#34; can be interpreted as &#34;!1 months and 6 days&#34;
-    if dt &gt; now:
-        delta = relativedelta(dt, now)
-        suffix = &#34;&#34;
-    else:
-        delta = relativedelta(now, dt)
-        suffix = &#34; ago&#34; if suffix else &#34;&#34;
+    __slots__: tuple[str, ...] = (&#34;_entry&#34;,)
 
-    attrs = [
-        (&#34;year&#34;, &#34;y&#34;),
-        (&#34;month&#34;, &#34;mo&#34;),
-        (&#34;day&#34;, &#34;d&#34;),
-        (&#34;hour&#34;, &#34;h&#34;),
-        (&#34;minute&#34;, &#34;m&#34;),
-        (&#34;second&#34;, &#34;s&#34;),
-    ]
+    def __init__(self, entry: DateSigT) -&gt; None:
+        self._entry = entry
 
-    output = []
-    for attr, brief_attr in attrs:
-        elem = getattr(delta, attr + &#34;s&#34;)
-        if not elem:
-            continue
+    @property
+    def raw(self) -&gt; DateSigT:
+        return self._entry
 
-        if attr == &#34;day&#34;:
-            weeks = delta.weeks
-            if weeks:
-                elem -= weeks * 7
-                if not brief:
-                    output.append(format(plural(weeks), &#34;week&#34;))
-                else:
-                    output.append(f&#34;{weeks}w&#34;)
+    def to_datetime(self) -&gt; datetime.datetime:
+        if isinstance(self._entry, str):
+            if self._entry.endswith((&#34;z&#34;, &#34;Z&#34;)):
+                new = self._entry[:-1]  # type: ignore
+                return datetime.datetime.fromisoformat(new)
 
-        if elem &lt;= 0:
-            continue
+        elif isinstance(self._entry, (float, int)):
+            return datetime.datetime.utcfromtimestamp(self._entry)
 
-        if brief:
-            output.append(f&#34;{elem}{brief_attr}&#34;)
-        else:
-            output.append(format(plural(elem), attr))
+        raise TypeError(
+            f&#34;Entry must be one of (float, str) not {type(self._entry).__name__}&#34;
+        )
 
-    if accuracy is not None:
-        output = output[:accuracy]
+    def to_timestamp(self) -&gt; float:
+        return datetime.datetime.timestamp(self.to_datetime())
 
-    if len(output) == 0:
-        return &#34;now&#34;
-    else:
-        if not brief:
-            return human_join(output, final=&#34;and&#34;) + suffix
-        else:
-            return &#34; &#34;.join(output) + suffix</code></pre>
+    def timestamp_to_datetime(self) -&gt; datetime.datetime:
+        return datetime.datetime.utcfromtimestamp(self.to_timestamp())</code></pre>
                 </details>
             </section>
             <section>
@@ -686,7 +619,7 @@ def human_timedelta(
                             <summary>
                                 <span>Expand source code</span>
                             </summary>
-                            <pre><code class="python">def clean_date(date: str) -&gt; datetime:
+                            <pre><code class="python">def clean_date(date: str) -&gt; datetime.datetime:
     &#34;&#34;&#34;Formats `datetime.datetime` to a readable date.&#34;&#34;&#34;
     parsed = parse(date)
     ts = to_timestamp(parsed)  # had to do it in two ways.
@@ -726,93 +659,15 @@ def human_timedelta(
                             <summary>
                                 <span>Expand source code</span>
                             </summary>
-                            <pre><code class="python">def from_timestamp(timer: int) -&gt; datetime:
+                            <pre><code class="python">def from_timestamp(timer: int) -&gt; datetime.datetime:
     &#34;&#34;&#34;
     Converts timestamp to `datetime.datetime`
     &#34;&#34;&#34;
-    return datetime.utcfromtimestamp(timer)</code></pre>
-                        </details>
-                    </dd>
-                    <dt id="aiobungie.internal.time.human_timedelta"><code class="name flex">
-<span>def <span class="ident">human_timedelta</span></span>(<span>dt: datetime, *, source=None, accuracy: int = 3, brief=False, suffix=True) ‑> str</span>
-</code></dt>
-                    <dd>
-                        <div class="desc">
-                            <p>Rapptz :&gt;)</p>
-                        </div>
-                        <details class="source">
-                            <summary>
-                                <span>Expand source code</span>
-                            </summary>
-                            <pre><code class="python">def human_timedelta(
-    dt: datetime, *, source=None, accuracy: int = 3, brief=False, suffix=True
-) -&gt; str:
-    &#34;&#34;&#34;
-    Rapptz :&gt;)
-    &#34;&#34;&#34;
-    now = source or datetime.utcnow()
-    # Microsecond free zone
-    now = now.replace(microsecond=0)
-    dt = dt.replace(microsecond=0)
-
-    # This implementation uses relativedelta instead of the much more obvious
-    # divmod approach with seconds because the seconds approach is not entirely
-    # accurate once you go over 1 week in terms of accuracy since you have to
-    # hardcode a month as 30 or 31 days.
-    # A query like &#34;11 months&#34; can be interpreted as &#34;!1 months and 6 days&#34;
-    if dt &gt; now:
-        delta = relativedelta(dt, now)
-        suffix = &#34;&#34;
-    else:
-        delta = relativedelta(now, dt)
-        suffix = &#34; ago&#34; if suffix else &#34;&#34;
-
-    attrs = [
-        (&#34;year&#34;, &#34;y&#34;),
-        (&#34;month&#34;, &#34;mo&#34;),
-        (&#34;day&#34;, &#34;d&#34;),
-        (&#34;hour&#34;, &#34;h&#34;),
-        (&#34;minute&#34;, &#34;m&#34;),
-        (&#34;second&#34;, &#34;s&#34;),
-    ]
-
-    output = []
-    for attr, brief_attr in attrs:
-        elem = getattr(delta, attr + &#34;s&#34;)
-        if not elem:
-            continue
-
-        if attr == &#34;day&#34;:
-            weeks = delta.weeks
-            if weeks:
-                elem -= weeks * 7
-                if not brief:
-                    output.append(format(plural(weeks), &#34;week&#34;))
-                else:
-                    output.append(f&#34;{weeks}w&#34;)
-
-        if elem &lt;= 0:
-            continue
-
-        if brief:
-            output.append(f&#34;{elem}{brief_attr}&#34;)
-        else:
-            output.append(format(plural(elem), attr))
-
-    if accuracy is not None:
-        output = output[:accuracy]
-
-    if len(output) == 0:
-        return &#34;now&#34;
-    else:
-        if not brief:
-            return human_join(output, final=&#34;and&#34;) + suffix
-        else:
-            return &#34; &#34;.join(output) + suffix</code></pre>
+    return datetime.datetime.utcfromtimestamp(timer)</code></pre>
                         </details>
                     </dd>
                     <dt id="aiobungie.internal.time.to_timestamp"><code class="name flex">
-<span>def <span class="ident">to_timestamp</span></span>(<span>date: datetime) ‑> int</span>
+<span>def <span class="ident">to_timestamp</span></span>(<span>date: datetime.datetime) ‑> int</span>
 </code></dt>
                     <dd>
                         <div class="desc">
@@ -822,7 +677,7 @@ def human_timedelta(
                             <summary>
                                 <span>Expand source code</span>
                             </summary>
-                            <pre><code class="python">def to_timestamp(date: datetime) -&gt; int:
+                            <pre><code class="python">def to_timestamp(date: datetime.datetime) -&gt; int:
     &#34;&#34;&#34;
     Converts datetime.datetime.utctimetuple() to timestamp.
     &#34;&#34;&#34;
@@ -908,7 +763,6 @@ def human_timedelta(
                         <li><code><a title="aiobungie.internal.time.clean_date" href="#aiobungie.internal.time.clean_date">clean_date</a></code></li>
                         <li><code><a title="aiobungie.internal.time.format_played" href="#aiobungie.internal.time.format_played">format_played</a></code></li>
                         <li><code><a title="aiobungie.internal.time.from_timestamp" href="#aiobungie.internal.time.from_timestamp">from_timestamp</a></code></li>
-                        <li><code><a title="aiobungie.internal.time.human_timedelta" href="#aiobungie.internal.time.human_timedelta">human_timedelta</a></code></li>
                         <li><code><a title="aiobungie.internal.time.to_timestamp" href="#aiobungie.internal.time.to_timestamp">to_timestamp</a></code></li>
                     </ul>
                 </li>

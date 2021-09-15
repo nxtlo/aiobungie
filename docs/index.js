@@ -5,10 +5,10 @@ URLS=[
 "aiobungie/crate/user.html",
 "aiobungie/crate/character.html",
 "aiobungie/crate/profile.html",
-"aiobungie/crate/entity.html",
 "aiobungie/crate/activity.html",
 "aiobungie/crate/application.html",
 "aiobungie/crate/clans.html",
+"aiobungie/crate/entity.html",
 "aiobungie/crate/friends.html",
 "aiobungie/crate/members.html",
 "aiobungie/crate/player.html",
@@ -16,15 +16,16 @@ URLS=[
 "aiobungie/error.html",
 "aiobungie/ext/index.html",
 "aiobungie/ext/meta.html",
-"aiobungie/http.html",
+"aiobungie/interfaces/index.html",
+"aiobungie/interfaces/rest.html",
 "aiobungie/internal/index.html",
 "aiobungie/internal/assets.html",
-"aiobungie/internal/db.html",
 "aiobungie/internal/enums.html",
 "aiobungie/internal/helpers.html",
 "aiobungie/internal/serialize.html",
 "aiobungie/internal/time.html",
 "aiobungie/internal/traits.html",
+"aiobungie/rest.html",
 "aiobungie/url.html"
 ];
 INDEX=[
@@ -36,12 +37,17 @@ INDEX=[
 {
 "ref":"aiobungie.Client",
 "url":0,
-"doc":"Basic implementation for a Client that interacts with Bungie's REST API Attributes      - token:  builtins.str Your Bungie's API key or Token from the developer's portal. loop:  asyncio.AbstractEventLoop asyncio event loop."
+"doc":"Basic implementation for a client that interacts with Bungie's API. Attributes      - token:  builtins.str Your Bungie's API key or Token from the developer's portal."
 },
 {
 "ref":"aiobungie.Client.serialize",
 "url":0,
-"doc":""
+"doc":"A property that returns a deserializer object for the client."
+},
+{
+"ref":"aiobungie.Client.rest",
+"url":0,
+"doc":"The rest client we make the http request to the API with."
 },
 {
 "ref":"aiobungie.Client.request",
@@ -73,6 +79,12 @@ INDEX=[
 "func":1
 },
 {
+"ref":"aiobungie.Client.search_users",
+"url":0,
+"doc":"",
+"func":1
+},
+{
 "ref":"aiobungie.Client.fetch_user_themes",
 "url":0,
 "doc":"Fetch all available user themes. Returns    -  typing.Sequence[aiobungie.crate.user.UserThemes] A sequence of user themes.",
@@ -99,7 +111,7 @@ INDEX=[
 {
 "ref":"aiobungie.Client.fetch_player",
 "url":0,
-"doc":"Fetch a Destiny 2 Player. Parameters      - name:  builtins.str The Player's Name.  note You must also pass the player's unique code. A full name parameter should look like this  Fate\u6012 4275 type:  aiobungie.internal.enums.MembershipType The player's membership type, e,g. XBOX, STEAM, PSN Returns      aiobungie.crate.Player A Destiny 2 Player. Raises     aiobungie.PlayerNotFound The player was not found.  aiobungie.MembershipTypeError The provided membership type was invalid.",
+"doc":"Fetch a Destiny 2 Player. Parameters      - name:  builtins.str The Player's Name.  note You must also pass the player's unique code. A full name parameter should look like this  Fate\u6012 4275 type:  aiobungie.internal.enums.MembershipType The player's membership type, e,g. XBOX, STEAM, PSN Returns      typing.Sequence[aiobungie.crate.Player] A sequence of the found Destiny 2 Player memberships. Raises     aiobungie.PlayerNotFound The player was not found.  aiobungie.MembershipTypeError The provided membership type was invalid.",
 "func":1
 },
 {
@@ -147,7 +159,7 @@ INDEX=[
 {
 "ref":"aiobungie.Client.fetch_clan_members",
 "url":0,
-"doc":"Fetch a Bungie Clan member. if no members found in the clan you will get an empty sequence.  note This method also can be also accessed via  aiobungie.crate.Clan.fetch_members() to fetch a member for the fetched clan. Parameters      clan_id :  builsins.int The clans id name :  builtins.str The clan member's name type :  aiobungie.MembershipType An optional clan member's membership type. Default is set to  aiobungie.MembershipType.NONE Which returns the first matched clan member by their name. Returns    -  typing.Sequence[aiobungie.crate.ClanMember] A sequence of bungie clan members. Raises     aiobungie.ClanNotFound The clan was not found.",
+"doc":"Fetch a Bungie Clan member. if no members found in the clan you will get an empty sequence.  note This method also can be also accessed via  aiobungie.crate.Clan.fetch_members() to fetch a member for the fetched clan. Parameters      clan_id :  builsins.int The clans id type :  aiobungie.MembershipType An optional clan member's membership type. Default is set to  aiobungie.MembershipType.NONE Which returns the first matched clan member by their name. Returns    -  typing.Sequence[aiobungie.crate.ClanMember] A sequence of bungie clan members. Raises     aiobungie.ClanNotFound The clan was not found.",
 "func":1
 },
 {
@@ -163,14 +175,129 @@ INDEX=[
 "func":1
 },
 {
-"ref":"aiobungie.Client.http",
+"ref":"aiobungie.RESTClient",
 "url":0,
-"doc":"Return an attribute of instance, which is of type owner."
+"doc":"A REST only client implementation for interacting with Bungie's REST API. Attributes      token :  builtins.str A valid application token from Bungie's developer portal."
 },
 {
-"ref":"aiobungie.Client.loop",
+"ref":"aiobungie.RESTClient.fetch_user",
 "url":0,
-"doc":"Return an attribute of instance, which is of type owner."
+"doc":"Fetch a Bungie user by their id. Parameters      id:  builtins.int The user id. Returns    -  ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON object of users objects. Raises     aiobungie.error.UserNotFound The user was not found.",
+"func":1
+},
+{
+"ref":"aiobungie.RESTClient.fetch_user_themes",
+"url":0,
+"doc":"Fetch all available user themes. Returns    -  ResponseSig[aiobungie.internal.helpers.JsonArray] A JSON array of user themes.",
+"func":1
+},
+{
+"ref":"aiobungie.RESTClient.fetch_membership_from_id",
+"url":0,
+"doc":"Fetch Bungie user's memberships from their id. Parameters      id :  builtins.int The user's id. type :  aiobungie.MembershipType The user's membership type. Returns    -  ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON object of the found user. Raises    aiobungie.UserNotFound The requested user was not found.",
+"func":1
+},
+{
+"ref":"aiobungie.RESTClient.static_search",
+"url":0,
+"doc":"Raw http search given a valid bungie endpoint. Parameters      path:  builtins.str The bungie endpoint or path. A path must look something like this \"Destiny2/3/Profile/46111239123/ .\" kwargs:  typing.Any Any other key words you'd like to pass through. Returns    -  typing.Any Any object.",
+"func":1
+},
+{
+"ref":"aiobungie.RESTClient.fetch_player",
+"url":0,
+"doc":"Fetch a Destiny 2 Player. Parameters      - name:  builtins.str The Player's Name.  note You must also pass the player's unique code. A full name parameter should look like this  Fate\u6012 4275 type:  aiobungie.internal.enums.MembershipType The player's membership type, e,g. XBOX, STEAM, PSN Returns      ResponseSig[aiobungie.internal.helpers.JsonArray] A JSON array of the found players. Raises     aiobungie.PlayerNotFound The player was not found.  aiobungie.MembershipTypeError The provided membership type was invalid.",
+"func":1
+},
+{
+"ref":"aiobungie.RESTClient.search_users",
+"url":0,
+"doc":"Search for users by their global name and return all users who share this name. Parameters      name :  str The user name. Returns    -  ResponseSig[aiobungie.internal.helpers.JsonArray] A JSON array of the found users. Raises     aiobungie.NotFound The user(s) was not found.",
+"func":1
+},
+{
+"ref":"aiobungie.RESTClient.fetch_clan_from_id",
+"url":0,
+"doc":"Fetch a Bungie Clan by its id. Parameters      - id:  builtins.int The clan id. Returns      ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON object of the clan. Raises     aiobungie.ClanNotFound The clan was not found.",
+"func":1
+},
+{
+"ref":"aiobungie.RESTClient.fetch_clan",
+"url":0,
+"doc":"Fetch a Clan by its name. This method will return the first clan found with given name name. Parameters      name:  builtins.str The clan name type  aiobungie.GroupType The group type, Default is one. Returns    -  ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON object of the clan. Raises     aiobungie.ClanNotFound The clan was not found.",
+"func":1
+},
+{
+"ref":"aiobungie.RESTClient.fetch_app",
+"url":0,
+"doc":"Fetch a Bungie Application. Parameters      - appid:  builtins.int The application id. Returns      ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON object of the application.",
+"func":1
+},
+{
+"ref":"aiobungie.RESTClient.fetch_character",
+"url":0,
+"doc":"Fetch a Destiny 2 player's characters. Parameters      memberid:  builtins.int A valid bungie member id. type:  aiobungie.internal.enums.MembershipType The member's membership type. Returns    -  ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON object of the requested character. Raises     aiobungie.error.CharacterError raised if the Character was not found.  aiobungie.MembershipTypeError The provided membership type was invalid.",
+"func":1
+},
+{
+"ref":"aiobungie.RESTClient.fetch_activity",
+"url":0,
+"doc":"Fetch a Destiny 2 activity for the specified user id and character. Parameters      member_id:  builtins.int The user id that starts with  4611 . character_id:  builtins.int The id of the character to retrieve. mode:  aiobungie.internal.enums.GameMode This parameter filters the game mode, Nightfall, Strike, Iron Banner, etc. membership_type:  aiobungie.internal.enums.MembershipType The Member ship type, if nothing was passed than it will return all. page: typing.Optional[builtins.int] The page number limit: typing.Optional[builtins.int] Limit the returned result. Returns    -  ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON object of the player's activities. Raises     aiobungie.error.ActivityNotFound The activity was not found.  aiobungie.MembershipTypeError The provided membership type was invalid.",
+"func":1
+},
+{
+"ref":"aiobungie.RESTClient.fetch_post_activity",
+"url":0,
+"doc":"Fetch a post activity details.  warning This http request is not implemented yet and it will raise  NotImplementedError Parameters      instance:  builtins.int The activity instance id. Returns    -  ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON object of the post activity.",
+"func":1
+},
+{
+"ref":"aiobungie.RESTClient.fetch_vendor_sales",
+"url":0,
+"doc":"",
+"func":1
+},
+{
+"ref":"aiobungie.RESTClient.fetch_profile",
+"url":0,
+"doc":"Fetche a bungie profile. Parameters      memberid:  builtins.int The member's id. type:  aiobungie.MembershipType A valid membership type. Returns      ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON object of the found profile. Raises     aiobungie.MembershipTypeError The provided membership type was invalid.",
+"func":1
+},
+{
+"ref":"aiobungie.RESTClient.fetch_entity",
+"url":0,
+"doc":"",
+"func":1
+},
+{
+"ref":"aiobungie.RESTClient.fetch_inventory_item",
+"url":0,
+"doc":"Fetch a static inventory item entity given a its hash. Parameters      type:  builtins.str Entity's type definition. hash:  builtins.int Entity's hash. Returns    -  ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON array object of the inventory item.",
+"func":1
+},
+{
+"ref":"aiobungie.RESTClient.fetch_clan_members",
+"url":0,
+"doc":"Fetch all Bungie Clan members. Parameters      clan_id :  builsins.int The clans id type :  aiobungie.MembershipType An optional clan member's membership type. Default is set to  aiobungie.MembershipType.NONE Which returns the first matched clan member by their name. name :  builtins.str This parameter is only provided here to keep the signature with the main client implementation, Which only works with the non-rest clients. It returns a specific clan member by their name. Returns    -  ResponseSig[aiobungie.internal.helpers.JsonArray] A JSON array of clan members. Raises     aiobungie.ClanNotFound The clan was not found.",
+"func":1
+},
+{
+"ref":"aiobungie.RESTClient.fetch_hard_linked",
+"url":0,
+"doc":"Gets any hard linked membership given a credential. Only works for credentials that are public just  aiobungie.CredentialType.STEAMID right now. Cross Save aware. Parameters      credential:  builtins.int A valid SteamID64 type:  aiobungie.CredentialType The crededntial type. This must not be changed Since its only credential that works \"currently\" Returns    -  ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON object of the found user hard linked types.",
+"func":1
+},
+{
+"ref":"aiobungie.RESTClient.fetch_manifest_path",
+"url":0,
+"doc":"Return a string of the bungie manifest database url. Returns    -  builtins.str A downloadable url for the bungie manifest database.",
+"func":1
+},
+{
+"ref":"aiobungie.RESTClient.fetch_manifest",
+"url":0,
+"doc":"Access The bungie Manifest. Returns    -  builtins.bytes The bytes to read and write the manifest database.",
+"func":1
 },
 {
 "ref":"aiobungie.PlayerNotFound",
@@ -195,7 +322,7 @@ INDEX=[
 {
 "ref":"aiobungie.HTTPException",
 "url":0,
-"doc":"Exception for handling  aiobungie.http.HTTPClient requests errors. Method generated by attrs for class HTTPException."
+"doc":"Exception for handling  aiobungie.rest.RESTClient requests errors. Method generated by attrs for class HTTPException."
 },
 {
 "ref":"aiobungie.HTTPException.long_message",
@@ -1250,12 +1377,17 @@ INDEX=[
 {
 "ref":"aiobungie.client.Client",
 "url":1,
-"doc":"Basic implementation for a Client that interacts with Bungie's REST API Attributes      - token:  builtins.str Your Bungie's API key or Token from the developer's portal. loop:  asyncio.AbstractEventLoop asyncio event loop."
+"doc":"Basic implementation for a client that interacts with Bungie's API. Attributes      - token:  builtins.str Your Bungie's API key or Token from the developer's portal."
 },
 {
 "ref":"aiobungie.client.Client.serialize",
 "url":1,
-"doc":""
+"doc":"A property that returns a deserializer object for the client."
+},
+{
+"ref":"aiobungie.client.Client.rest",
+"url":1,
+"doc":"The rest client we make the http request to the API with."
 },
 {
 "ref":"aiobungie.client.Client.request",
@@ -1287,6 +1419,12 @@ INDEX=[
 "func":1
 },
 {
+"ref":"aiobungie.client.Client.search_users",
+"url":1,
+"doc":"",
+"func":1
+},
+{
 "ref":"aiobungie.client.Client.fetch_user_themes",
 "url":1,
 "doc":"Fetch all available user themes. Returns    -  typing.Sequence[aiobungie.crate.user.UserThemes] A sequence of user themes.",
@@ -1313,7 +1451,7 @@ INDEX=[
 {
 "ref":"aiobungie.client.Client.fetch_player",
 "url":1,
-"doc":"Fetch a Destiny 2 Player. Parameters      - name:  builtins.str The Player's Name.  note You must also pass the player's unique code. A full name parameter should look like this  Fate\u6012 4275 type:  aiobungie.internal.enums.MembershipType The player's membership type, e,g. XBOX, STEAM, PSN Returns      aiobungie.crate.Player A Destiny 2 Player. Raises     aiobungie.PlayerNotFound The player was not found.  aiobungie.MembershipTypeError The provided membership type was invalid.",
+"doc":"Fetch a Destiny 2 Player. Parameters      - name:  builtins.str The Player's Name.  note You must also pass the player's unique code. A full name parameter should look like this  Fate\u6012 4275 type:  aiobungie.internal.enums.MembershipType The player's membership type, e,g. XBOX, STEAM, PSN Returns      typing.Sequence[aiobungie.crate.Player] A sequence of the found Destiny 2 Player memberships. Raises     aiobungie.PlayerNotFound The player was not found.  aiobungie.MembershipTypeError The provided membership type was invalid.",
 "func":1
 },
 {
@@ -1361,7 +1499,7 @@ INDEX=[
 {
 "ref":"aiobungie.client.Client.fetch_clan_members",
 "url":1,
-"doc":"Fetch a Bungie Clan member. if no members found in the clan you will get an empty sequence.  note This method also can be also accessed via  aiobungie.crate.Clan.fetch_members() to fetch a member for the fetched clan. Parameters      clan_id :  builsins.int The clans id name :  builtins.str The clan member's name type :  aiobungie.MembershipType An optional clan member's membership type. Default is set to  aiobungie.MembershipType.NONE Which returns the first matched clan member by their name. Returns    -  typing.Sequence[aiobungie.crate.ClanMember] A sequence of bungie clan members. Raises     aiobungie.ClanNotFound The clan was not found.",
+"doc":"Fetch a Bungie Clan member. if no members found in the clan you will get an empty sequence.  note This method also can be also accessed via  aiobungie.crate.Clan.fetch_members() to fetch a member for the fetched clan. Parameters      clan_id :  builsins.int The clans id type :  aiobungie.MembershipType An optional clan member's membership type. Default is set to  aiobungie.MembershipType.NONE Which returns the first matched clan member by their name. Returns    -  typing.Sequence[aiobungie.crate.ClanMember] A sequence of bungie clan members. Raises     aiobungie.ClanNotFound The clan was not found.",
 "func":1
 },
 {
@@ -1377,16 +1515,6 @@ INDEX=[
 "func":1
 },
 {
-"ref":"aiobungie.client.Client.http",
-"url":1,
-"doc":"Return an attribute of instance, which is of type owner."
-},
-{
-"ref":"aiobungie.client.Client.loop",
-"url":1,
-"doc":"Return an attribute of instance, which is of type owner."
-},
-{
 "ref":"aiobungie.crate",
 "url":2,
 "doc":"Basic implementations of aiobungie client crates. These crates are used to organize the flow and how things stracture for functional usage for the Bungie API objects."
@@ -1395,16 +1523,6 @@ INDEX=[
 "ref":"aiobungie.crate.Application",
 "url":2,
 "doc":"Represents a Bungie developer application. Method generated by attrs for class Application."
-},
-{
-"ref":"aiobungie.crate.Application.human_timedelta",
-"url":2,
-"doc":"Returns a human readable date of the app's creation date."
-},
-{
-"ref":"aiobungie.crate.Application.as_dict",
-"url":2,
-"doc":"Returns a dict crate of the application, This function is useful if you're binding to other REST apis."
 },
 {
 "ref":"aiobungie.crate.Application.created_at",
@@ -1538,19 +1656,9 @@ INDEX=[
 "func":1
 },
 {
-"ref":"aiobungie.crate.Clan.human_timedelta",
-"url":2,
-"doc":"Returns a human readable date of the clan's creation date."
-},
-{
 "ref":"aiobungie.crate.Clan.url",
 "url":2,
 "doc":""
-},
-{
-"ref":"aiobungie.crate.Clan.as_dict",
-"url":2,
-"doc":"Returns an instance of the clan as a dict"
 },
 {
 "ref":"aiobungie.crate.Clan.about",
@@ -1573,11 +1681,6 @@ INDEX=[
 "doc":"Clan's creation date time in UTC."
 },
 {
-"ref":"aiobungie.crate.Clan.description",
-"url":2,
-"doc":"Clan's description"
-},
-{
 "ref":"aiobungie.crate.Clan.features",
 "url":2,
 "doc":"The clan features."
@@ -1596,6 +1699,11 @@ INDEX=[
 "ref":"aiobungie.crate.Clan.member_count",
 "url":2,
 "doc":"Clan's member count."
+},
+{
+"ref":"aiobungie.crate.Clan.motto",
+"url":2,
+"doc":"Clan's motto."
 },
 {
 "ref":"aiobungie.crate.Clan.name",
@@ -1630,42 +1738,12 @@ INDEX=[
 {
 "ref":"aiobungie.crate.Player.unique_name",
 "url":2,
-"doc":"The user's unique display name code. This can be None if the user hasn't logged in after season of the lost update.  versionadded 0.2.5"
-},
-{
-"ref":"aiobungie.crate.Player.net",
-"url":2,
-"doc":"A network state used for making external requests."
-},
-{
-"ref":"aiobungie.crate.Player.as_dict",
-"url":2,
-"doc":"Returns a dict object of the player."
-},
-{
-"ref":"aiobungie.crate.Player.code",
-"url":2,
-"doc":"The clan member's bungie display name code This is new and was added in Season of the lost update  versionadded 0.2.5"
-},
-{
-"ref":"aiobungie.crate.Player.crossave_override",
-"url":2,
-"doc":"Returns  1 if the user has a cross save override in effect and 0 if not.  versionadded 0.2.5"
-},
-{
-"ref":"aiobungie.crate.Player.icon",
-"url":2,
-"doc":"The player's icon."
+"doc":"The user's unique name.  versionadded 0.2.5"
 },
 {
 "ref":"aiobungie.crate.Player.id",
 "url":2,
 "doc":"The player's id."
-},
-{
-"ref":"aiobungie.crate.Player.is_public",
-"url":2,
-"doc":"The player's profile privacy."
 },
 {
 "ref":"aiobungie.crate.Player.name",
@@ -1683,6 +1761,31 @@ INDEX=[
 "doc":"A list of the player's membership types.  versionadded 0.2.5"
 },
 {
+"ref":"aiobungie.crate.Player.icon",
+"url":2,
+"doc":"The player's icon."
+},
+{
+"ref":"aiobungie.crate.Player.code",
+"url":2,
+"doc":"The clan member's bungie display name code. This can be  None if not found.  versionadded 0.2.5"
+},
+{
+"ref":"aiobungie.crate.Player.is_public",
+"url":2,
+"doc":"The player's profile privacy."
+},
+{
+"ref":"aiobungie.crate.Player.crossave_override",
+"url":2,
+"doc":"Returns  1 if the user has a cross save override in effect and 0 if not.  versionadded 0.2.5"
+},
+{
+"ref":"aiobungie.crate.Player.last_seen_name",
+"url":3,
+"doc":"The member's last seen display name. You may use this field if  DestinyUser.name is  Undefined ."
+},
+{
 "ref":"aiobungie.crate.Player.link",
 "url":3,
 "doc":"The user like's profile link."
@@ -1696,11 +1799,6 @@ INDEX=[
 "ref":"aiobungie.crate.Character.url",
 "url":2,
 "doc":"A url for the character at bungie.net."
-},
-{
-"ref":"aiobungie.crate.Character.as_dict",
-"url":2,
-"doc":"Returns a dict crate of the character."
 },
 {
 "ref":"aiobungie.crate.Character.class_type",
@@ -1790,11 +1888,6 @@ INDEX=[
 "func":1
 },
 {
-"ref":"aiobungie.crate.Character.human_timedelta",
-"url":4,
-"doc":"The player's last played time in a human readable date."
-},
-{
 "ref":"aiobungie.crate.Activity",
 "url":2,
 "doc":"Represents a Bungie Activity. Method generated by attrs for class Activity."
@@ -1804,11 +1897,6 @@ INDEX=[
 "url":2,
 "doc":"Get activity's data after its finished. Returns    -  .PostActivity ",
 "func":1
-},
-{
-"ref":"aiobungie.crate.Activity.as_dict",
-"url":2,
-"doc":"Returns a dict crate of the Activity, This function is useful if you're binding to other REST apis."
 },
 {
 "ref":"aiobungie.crate.Activity.assists",
@@ -1906,11 +1994,6 @@ INDEX=[
 "doc":"Concrete representtion of a Bungie user. This includes both Bungie net and Destiny memberships information. Method generated by attrs for class User."
 },
 {
-"ref":"aiobungie.crate.User.as_dict",
-"url":2,
-"doc":"a dict object of the user."
-},
-{
 "ref":"aiobungie.crate.User.bungie",
 "url":2,
 "doc":"The user's bungie net membership.  versionadded 0.2.5"
@@ -1926,16 +2009,6 @@ INDEX=[
 "doc":"Represents a Bungie clan owner. Method generated by attrs for class ClanOwner."
 },
 {
-"ref":"aiobungie.crate.ClanOwner.net",
-"url":2,
-"doc":"A network state used for making external requests."
-},
-{
-"ref":"aiobungie.crate.ClanOwner.human_timedelta",
-"url":2,
-"doc":"Returns a human readable date of the clan owner's last login."
-},
-{
 "ref":"aiobungie.crate.ClanOwner.unique_name",
 "url":2,
 "doc":"The user's unique name which includes their unique code. This field could be None if no unique name found.  versionadded 0.2.5"
@@ -1944,11 +2017,6 @@ INDEX=[
 "ref":"aiobungie.crate.ClanOwner.link",
 "url":2,
 "doc":"Returns the user's profile link."
-},
-{
-"ref":"aiobungie.crate.ClanOwner.as_dict",
-"url":2,
-"doc":"Returns a dict object of the clan owner, This function is useful if you're binding to other REST apis."
 },
 {
 "ref":"aiobungie.crate.ClanOwner.clan_id",
@@ -1986,6 +2054,11 @@ INDEX=[
 "doc":"An aware  datetime.datetime object of the user's last online date UTC."
 },
 {
+"ref":"aiobungie.crate.ClanOwner.last_seen_name",
+"url":2,
+"doc":"The clan member's last seen display name"
+},
+{
 "ref":"aiobungie.crate.ClanOwner.name",
 "url":2,
 "doc":"The user name."
@@ -2008,22 +2081,12 @@ INDEX=[
 {
 "ref":"aiobungie.crate.ClanMember.unique_name",
 "url":2,
-"doc":"The user's unique name which includes their unique code. This field could be None if no unique name found.  versionadded 0.2.5"
-},
-{
-"ref":"aiobungie.crate.ClanMember.net",
-"url":2,
-"doc":"A network state used for making external requests."
+"doc":"The user's unique name which includes their unique code.  versionadded 0.2.5"
 },
 {
 "ref":"aiobungie.crate.ClanMember.link",
 "url":2,
 "doc":"Clan member's profile link."
-},
-{
-"ref":"aiobungie.crate.ClanMember.as_dict",
-"url":2,
-"doc":"An instance of the UserLike as a dict."
 },
 {
 "ref":"aiobungie.crate.ClanMember.ban",
@@ -2084,9 +2147,19 @@ INDEX=[
 "doc":"The date of the clan member's last online in UTC time zone."
 },
 {
+"ref":"aiobungie.crate.ClanMember.last_seen_name",
+"url":2,
+"doc":"The clan member's last seen display name"
+},
+{
 "ref":"aiobungie.crate.ClanMember.name",
 "url":2,
-"doc":"Clan member's name"
+"doc":"Clan member's name. This can be  UNDEFINED if not found."
+},
+{
+"ref":"aiobungie.crate.ClanMember.net",
+"url":2,
+"doc":"A network state used for making external requests."
 },
 {
 "ref":"aiobungie.crate.ClanMember.type",
@@ -2096,7 +2169,7 @@ INDEX=[
 {
 "ref":"aiobungie.crate.ClanMember.types",
 "url":2,
-"doc":"A list of the available clan member membership types."
+"doc":"A sequence of the available clan member membership types."
 },
 {
 "ref":"aiobungie.crate.ApplicationOwner",
@@ -2106,22 +2179,17 @@ INDEX=[
 {
 "ref":"aiobungie.crate.ApplicationOwner.unique_name",
 "url":2,
-"doc":"The user like's display name. This includes the full name with the user name code.  versionadded 0.2.5"
+"doc":"The application owner's unique name."
 },
 {
-"ref":"aiobungie.crate.ApplicationOwner.net",
+"ref":"aiobungie.crate.ApplicationOwner.last_seen_name",
 "url":2,
-"doc":"A network state used for making external requests."
+"doc":"The user like's last seen name."
 },
 {
 "ref":"aiobungie.crate.ApplicationOwner.link",
 "url":2,
 "doc":"The user like's profile link."
-},
-{
-"ref":"aiobungie.crate.ApplicationOwner.as_dict",
-"url":2,
-"doc":"Returns a dict object of the application owner."
 },
 {
 "ref":"aiobungie.crate.ApplicationOwner.code",
@@ -2146,7 +2214,7 @@ INDEX=[
 {
 "ref":"aiobungie.crate.ApplicationOwner.name",
 "url":2,
-"doc":"The application owner name."
+"doc":"The application owner name. This can be  UNDEFINED if not found."
 },
 {
 "ref":"aiobungie.crate.ApplicationOwner.type",
@@ -2172,16 +2240,6 @@ INDEX=[
 "ref":"aiobungie.crate.Profile.warlock_id",
 "url":2,
 "doc":"The warlock id of the profile player."
-},
-{
-"ref":"aiobungie.crate.Profile.as_dict",
-"url":2,
-"doc":"Returns a dict object of the profile."
-},
-{
-"ref":"aiobungie.crate.Profile.human_timedelta",
-"url":2,
-"doc":"Returns last_played attr but in human delta date."
 },
 {
 "ref":"aiobungie.crate.Profile.character_ids",
@@ -2314,7 +2372,7 @@ INDEX=[
 {
 "ref":"aiobungie.crate.InventoryEntity.name",
 "url":2,
-"doc":"Entity's name"
+"doc":"Entity's name. This can be  UNDEFINED if not found."
 },
 {
 "ref":"aiobungie.crate.InventoryEntity.net",
@@ -2362,11 +2420,6 @@ INDEX=[
 "doc":"Entity's water mark."
 },
 {
-"ref":"aiobungie.crate.InventoryEntity.as_dict",
-"url":6,
-"doc":"Returns an instance of the entity as a dict"
-},
-{
 "ref":"aiobungie.crate.Entity",
 "url":2,
 "doc":"An interface of a Bungie Definition Entity. This is the main entity which all other entities should inherit from. it holds core information that all bungie entities has."
@@ -2379,7 +2432,7 @@ INDEX=[
 {
 "ref":"aiobungie.crate.Entity.name",
 "url":2,
-"doc":"Entity's name"
+"doc":"Entity's name. This can be  UNDEFINED if not found."
 },
 {
 "ref":"aiobungie.crate.Entity.icon",
@@ -2407,11 +2460,6 @@ INDEX=[
 "doc":"Entity's hash."
 },
 {
-"ref":"aiobungie.crate.Entity.as_dict",
-"url":2,
-"doc":"Returns an instance of the entity as a dict"
-},
-{
 "ref":"aiobungie.crate.HardLinkedMembership",
 "url":2,
 "doc":"Represents hard linked Bungie user membership. This currently only supports SteamID which's a public credenitial. Also Cross-Save Aware. Method generated by attrs for class HardLinkedMembership."
@@ -2435,6 +2483,11 @@ INDEX=[
 "ref":"aiobungie.crate.Friend",
 "url":2,
 "doc":"Represents a bungie friend in your account  versionadded 0.2.5 Method generated by attrs for class Friend."
+},
+{
+"ref":"aiobungie.crate.Friend.unique_name",
+"url":2,
+"doc":"The friend's global unique display name. This field could be None if the player hasn't logged in yet."
 },
 {
 "ref":"aiobungie.crate.Friend.accept",
@@ -2497,7 +2550,7 @@ INDEX=[
 {
 "ref":"aiobungie.crate.Friend.name",
 "url":2,
-"doc":"The friend's last seen global display name. This field could be None if the player hasn't logged in yet."
+"doc":"The friend's last seen global display name. This field could be Undefined if the player hasn't logged in yet."
 },
 {
 "ref":"aiobungie.crate.Friend.net",
@@ -2525,14 +2578,14 @@ INDEX=[
 "doc":"The friend's last seen membership type."
 },
 {
-"ref":"aiobungie.crate.Friend.unique_name",
-"url":2,
-"doc":"The friend's global unique display name. This field could be None if the player hasn't logged in yet."
-},
-{
 "ref":"aiobungie.crate.Friend.user",
 "url":2,
 "doc":"The friend's bungie user account. This field is optional and can be None in some states."
+},
+{
+"ref":"aiobungie.crate.Friend.last_seen_name",
+"url":3,
+"doc":"The user like's last seen name."
 },
 {
 "ref":"aiobungie.crate.Friend.is_public",
@@ -2543,11 +2596,6 @@ INDEX=[
 "ref":"aiobungie.crate.Friend.icon",
 "url":3,
 "doc":"The user like's icon."
-},
-{
-"ref":"aiobungie.crate.Friend.as_dict",
-"url":3,
-"doc":"An instance of the UserLike as a dict."
 },
 {
 "ref":"aiobungie.crate.Friend.link",
@@ -2585,19 +2633,19 @@ INDEX=[
 "doc":"The member's unique name. This field may be  Undefined if not found."
 },
 {
-"ref":"aiobungie.crate.DestinyUser.as_dict",
-"url":2,
-"doc":"An instance of the UserLike as a dict."
-},
-{
 "ref":"aiobungie.crate.DestinyUser.code",
 "url":2,
 "doc":"The member's name code. This field may be  None if not found."
 },
 {
+"ref":"aiobungie.crate.DestinyUser.crossave_override",
+"url":2,
+"doc":"The member's corssave override membership type."
+},
+{
 "ref":"aiobungie.crate.DestinyUser.icon",
 "url":2,
-"doc":"The profile's icon if it was present."
+"doc":"The member's icon if it was present."
 },
 {
 "ref":"aiobungie.crate.DestinyUser.id",
@@ -2638,11 +2686,6 @@ INDEX=[
 "ref":"aiobungie.crate.BungieUser",
 "url":2,
 "doc":"Represents a Bungie user. Method generated by attrs for class BungieUser."
-},
-{
-"ref":"aiobungie.crate.BungieUser.human_timedelta",
-"url":2,
-"doc":"A human readable date version of the user's creation date."
 },
 {
 "ref":"aiobungie.crate.BungieUser.about",
@@ -2791,284 +2834,264 @@ INDEX=[
 },
 {
 "ref":"aiobungie.crate.activity",
-"url":7,
+"url":6,
 "doc":"Basic implementation for a Bungie a activity. NOTE that this is still under development ages, and you might face some major bugs."
 },
 {
 "ref":"aiobungie.crate.activity.Activity",
-"url":7,
+"url":6,
 "doc":"Represents a Bungie Activity. Method generated by attrs for class Activity."
 },
 {
 "ref":"aiobungie.crate.activity.Activity.post_report",
-"url":7,
+"url":6,
 "doc":"Get activity's data after its finished. Returns    -  .PostActivity ",
 "func":1
 },
 {
-"ref":"aiobungie.crate.activity.Activity.as_dict",
-"url":7,
-"doc":"Returns a dict crate of the Activity, This function is useful if you're binding to other REST apis."
-},
-{
 "ref":"aiobungie.crate.activity.Activity.assists",
-"url":7,
+"url":6,
 "doc":"Activity's assists"
 },
 {
 "ref":"aiobungie.crate.activity.Activity.completion_reason",
-"url":7,
+"url":6,
 "doc":"The reason why the activity was completed. usually its Unknown."
 },
 {
 "ref":"aiobungie.crate.activity.Activity.deaths",
-"url":7,
+"url":6,
 "doc":"Activity's deaths."
 },
 {
 "ref":"aiobungie.crate.activity.Activity.duration",
-"url":7,
+"url":6,
 "doc":"A string of The activity's duration, Example format  7m 42s "
 },
 {
 "ref":"aiobungie.crate.activity.Activity.efficiency",
-"url":7,
+"url":6,
 "doc":"Activity's efficienty."
 },
 {
 "ref":"aiobungie.crate.activity.Activity.hash",
-"url":7,
+"url":6,
 "doc":"The activity's hash."
 },
 {
 "ref":"aiobungie.crate.activity.Activity.instance_id",
-"url":7,
+"url":6,
 "doc":"The activity's instance id."
 },
 {
 "ref":"aiobungie.crate.activity.Activity.is_completed",
-"url":7,
+"url":6,
 "doc":"Check if the activity was completed or no."
 },
 {
 "ref":"aiobungie.crate.activity.Activity.kd",
-"url":7,
+"url":6,
 "doc":"Activity's kill/death ratio."
 },
 {
 "ref":"aiobungie.crate.activity.Activity.kills",
-"url":7,
+"url":6,
 "doc":"Activity's kills."
 },
 {
 "ref":"aiobungie.crate.activity.Activity.member_type",
-"url":7,
+"url":6,
 "doc":"The activity player's membership type."
 },
 {
 "ref":"aiobungie.crate.activity.Activity.mode",
-"url":7,
+"url":6,
 "doc":"The activity mode or type."
 },
 {
 "ref":"aiobungie.crate.activity.Activity.modes",
-"url":7,
+"url":6,
 "doc":"A list of the post activity's game mode."
 },
 {
 "ref":"aiobungie.crate.activity.Activity.net",
-"url":7,
+"url":6,
 "doc":"A network state used for making external requests."
 },
 {
 "ref":"aiobungie.crate.activity.Activity.opponents_defeated",
-"url":7,
+"url":6,
 "doc":"Activity's opponents kills."
 },
 {
 "ref":"aiobungie.crate.activity.Activity.period",
-"url":7,
+"url":6,
 "doc":"When did the activity occurred in UTC datetime."
 },
 {
 "ref":"aiobungie.crate.activity.Activity.player_count",
-"url":7,
+"url":6,
 "doc":"Activity's player count."
 },
 {
 "ref":"aiobungie.crate.activity.Activity.score",
-"url":7,
+"url":6,
 "doc":"Activity's score."
 },
 {
 "ref":"aiobungie.crate.activity.PostActivity",
-"url":7,
+"url":6,
 "doc":"Represents a Destiny 2 post activity details. Method generated by attrs for class PostActivity."
 },
 {
 "ref":"aiobungie.crate.activity.PostActivity.get_players",
-"url":7,
+"url":6,
 "doc":"Returns a sequence of the players that were in this activity. Returns    -  typing.Sequence[aiobungie.crate.Player] the players that were in this activity.",
 "func":1
 },
 {
 "ref":"aiobungie.crate.activity.PostActivity.is_fresh",
-"url":7,
+"url":6,
 "doc":"Determines if the activity was fresh or no."
 },
 {
 "ref":"aiobungie.crate.activity.PostActivity.membership_type",
-"url":7,
+"url":6,
 "doc":"The post activity's membership type."
 },
 {
 "ref":"aiobungie.crate.activity.PostActivity.mode",
-"url":7,
+"url":6,
 "doc":"The post activity's game mode, Can be  Undefined if unknown."
 },
 {
 "ref":"aiobungie.crate.activity.PostActivity.modes",
-"url":7,
+"url":6,
 "doc":"A list of the post activity's game mode."
 },
 {
 "ref":"aiobungie.crate.activity.PostActivity.period",
-"url":7,
+"url":6,
 "doc":"The post activity's period utc date."
 },
 {
 "ref":"aiobungie.crate.activity.PostActivity.players",
-"url":7,
+"url":6,
 "doc":"Return an attribute of instance, which is of type owner."
 },
 {
 "ref":"aiobungie.crate.activity.PostActivity.reference_id",
-"url":7,
+"url":6,
 "doc":"The post activity reference id. AKA the activity hash."
 },
 {
 "ref":"aiobungie.crate.activity.PostActivity.starting_phase",
-"url":7,
+"url":6,
 "doc":"The postt activity starting phase index. For an example if it was 0 that means it's a fresh run"
 },
 {
 "ref":"aiobungie.crate.application",
-"url":8,
+"url":7,
 "doc":"Basic implementation for a Bungie a application."
 },
 {
 "ref":"aiobungie.crate.application.Application",
-"url":8,
+"url":7,
 "doc":"Represents a Bungie developer application. Method generated by attrs for class Application."
 },
 {
-"ref":"aiobungie.crate.application.Application.human_timedelta",
-"url":8,
-"doc":"Returns a human readable date of the app's creation date."
-},
-{
-"ref":"aiobungie.crate.application.Application.as_dict",
-"url":8,
-"doc":"Returns a dict crate of the application, This function is useful if you're binding to other REST apis."
-},
-{
 "ref":"aiobungie.crate.application.Application.created_at",
-"url":8,
+"url":7,
 "doc":"App creation date in UTC timezone"
 },
 {
 "ref":"aiobungie.crate.application.Application.id",
-"url":8,
+"url":7,
 "doc":"App id"
 },
 {
 "ref":"aiobungie.crate.application.Application.link",
-"url":8,
+"url":7,
 "doc":"App's link"
 },
 {
 "ref":"aiobungie.crate.application.Application.name",
-"url":8,
+"url":7,
 "doc":"App name"
 },
 {
 "ref":"aiobungie.crate.application.Application.owner",
-"url":8,
+"url":7,
 "doc":"App's owner"
 },
 {
 "ref":"aiobungie.crate.application.Application.published_at",
-"url":8,
+"url":7,
 "doc":"App's publish date in UTC timezone"
 },
 {
 "ref":"aiobungie.crate.application.Application.redirect_url",
-"url":8,
+"url":7,
 "doc":"App redirect url"
 },
 {
 "ref":"aiobungie.crate.application.Application.scope",
-"url":8,
+"url":7,
 "doc":"App's scope"
 },
 {
 "ref":"aiobungie.crate.application.Application.status",
-"url":8,
+"url":7,
 "doc":"App's status"
 },
 {
 "ref":"aiobungie.crate.application.ApplicationOwner",
-"url":8,
+"url":7,
 "doc":"Represents a Bungie Application owner. Method generated by attrs for class ApplicationOwner."
 },
 {
 "ref":"aiobungie.crate.application.ApplicationOwner.unique_name",
-"url":8,
-"doc":"The user like's display name. This includes the full name with the user name code.  versionadded 0.2.5"
+"url":7,
+"doc":"The application owner's unique name."
 },
 {
-"ref":"aiobungie.crate.application.ApplicationOwner.net",
-"url":8,
-"doc":"A network state used for making external requests."
+"ref":"aiobungie.crate.application.ApplicationOwner.last_seen_name",
+"url":7,
+"doc":"The user like's last seen name."
 },
 {
 "ref":"aiobungie.crate.application.ApplicationOwner.link",
-"url":8,
+"url":7,
 "doc":"The user like's profile link."
 },
 {
-"ref":"aiobungie.crate.application.ApplicationOwner.as_dict",
-"url":8,
-"doc":"Returns a dict object of the application owner."
-},
-{
 "ref":"aiobungie.crate.application.ApplicationOwner.code",
-"url":8,
+"url":7,
 "doc":"The user like's unique display name code. This can be None if the user hasn't logged in after season of the lost update.  versionadded 0.2.5"
 },
 {
 "ref":"aiobungie.crate.application.ApplicationOwner.icon",
-"url":8,
+"url":7,
 "doc":"The application owner's icon."
 },
 {
 "ref":"aiobungie.crate.application.ApplicationOwner.id",
-"url":8,
+"url":7,
 "doc":"The application owner's id."
 },
 {
 "ref":"aiobungie.crate.application.ApplicationOwner.is_public",
-"url":8,
+"url":7,
 "doc":"The application owner's profile privacy."
 },
 {
 "ref":"aiobungie.crate.application.ApplicationOwner.name",
-"url":8,
-"doc":"The application owner name."
+"url":7,
+"doc":"The application owner name. This can be  UNDEFINED if not found."
 },
 {
 "ref":"aiobungie.crate.application.ApplicationOwner.type",
-"url":8,
+"url":7,
 "doc":"The membership of the application owner."
 },
 {
@@ -3169,11 +3192,6 @@ INDEX=[
 "func":1
 },
 {
-"ref":"aiobungie.crate.character.CharacterComponent.human_timedelta",
-"url":4,
-"doc":"The player's last played time in a human readable date."
-},
-{
 "ref":"aiobungie.crate.character.Character",
 "url":4,
 "doc":"An implementation for a Bungie character. Method generated by attrs for class Character."
@@ -3182,11 +3200,6 @@ INDEX=[
 "ref":"aiobungie.crate.character.Character.url",
 "url":4,
 "doc":"A url for the character at bungie.net."
-},
-{
-"ref":"aiobungie.crate.character.Character.as_dict",
-"url":4,
-"doc":"Returns a dict crate of the character."
 },
 {
 "ref":"aiobungie.crate.character.Character.class_type",
@@ -3276,532 +3289,497 @@ INDEX=[
 "func":1
 },
 {
-"ref":"aiobungie.crate.character.Character.human_timedelta",
-"url":4,
-"doc":"The player's last played time in a human readable date."
-},
-{
 "ref":"aiobungie.crate.clans",
-"url":9,
+"url":8,
 "doc":"Basic implementation for a Bungie a clan."
 },
 {
 "ref":"aiobungie.crate.clans.Clan",
-"url":9,
+"url":8,
 "doc":"Represents a Bungie clan. Method generated by attrs for class Clan."
 },
 {
 "ref":"aiobungie.crate.clans.Clan.fetch_member",
-"url":9,
+"url":8,
 "doc":"Fetch a specific clan member by their name and membership type. if the memberhship type is None we will try to return the first member matches the name. its also better to leave this parameter on None since usually only one player has this name. Parameters      name:  builtins.str The clan member name. type:  aiobungie.MembershipType The member's membership type. Default is 0 which returns any member matches the name. Returns      ClanMember Raises     aiobungie.ClanNotFound The clan was not found.  aiobungie.NotFound The member was not found",
 "func":1
 },
 {
 "ref":"aiobungie.crate.clans.Clan.fetch_members",
-"url":9,
+"url":8,
 "doc":"Fetch the members of the clan. if the memberhship type is None it will All membership types. Parameters      type:  aiobungie.MembershipType Filters the membership types to return. Default is  aiobungie.MembershipType.NONE which returns all membership types. Returns      typing.Sequence[ClanMember] A sequence of the clan members found in this clan. Raises     aiobungie.ClanNotFound The clan was not found.",
 "func":1
 },
 {
 "ref":"aiobungie.crate.clans.Clan.fetch_banned_members",
-"url":9,
+"url":8,
 "doc":"Fetch members who has been banned from the clan. Returns      typing.Sequence[aiobungie.crate.clans.ClanMember] A sequence of clan members or are banned.",
 "func":1
 },
 {
 "ref":"aiobungie.crate.clans.Clan.fetch_pending_members",
-"url":9,
+"url":8,
 "doc":"Fetch members who are waiting to get accepted. Returns      typing.Sequence[aiobungie.crate.clans.ClanMember] A sequence of clan members who are awaiting to get accepted to the clan.",
 "func":1
 },
 {
 "ref":"aiobungie.crate.clans.Clan.fetch_invited_members",
-"url":9,
+"url":8,
 "doc":"Fetch members who has been invited. Returns      typing.Sequence[aiobungie.crate.clans.ClanMember] A sequence of members who have been invited.",
 "func":1
 },
 {
-"ref":"aiobungie.crate.clans.Clan.human_timedelta",
-"url":9,
-"doc":"Returns a human readable date of the clan's creation date."
-},
-{
 "ref":"aiobungie.crate.clans.Clan.url",
-"url":9,
+"url":8,
 "doc":""
 },
 {
-"ref":"aiobungie.crate.clans.Clan.as_dict",
-"url":9,
-"doc":"Returns an instance of the clan as a dict"
-},
-{
 "ref":"aiobungie.crate.clans.Clan.about",
-"url":9,
+"url":8,
 "doc":"Clan's about title."
 },
 {
 "ref":"aiobungie.crate.clans.Clan.avatar",
-"url":9,
+"url":8,
 "doc":"Clan's avatar"
 },
 {
 "ref":"aiobungie.crate.clans.Clan.banner",
-"url":9,
+"url":8,
 "doc":"Clan's banner"
 },
 {
 "ref":"aiobungie.crate.clans.Clan.created_at",
-"url":9,
+"url":8,
 "doc":"Clan's creation date time in UTC."
 },
 {
-"ref":"aiobungie.crate.clans.Clan.description",
-"url":9,
-"doc":"Clan's description"
-},
-{
 "ref":"aiobungie.crate.clans.Clan.features",
-"url":9,
+"url":8,
 "doc":"The clan features."
 },
 {
 "ref":"aiobungie.crate.clans.Clan.id",
-"url":9,
+"url":8,
 "doc":"The clan id"
 },
 {
 "ref":"aiobungie.crate.clans.Clan.is_public",
-"url":9,
+"url":8,
 "doc":"Clan's privacy status."
 },
 {
 "ref":"aiobungie.crate.clans.Clan.member_count",
-"url":9,
+"url":8,
 "doc":"Clan's member count."
 },
 {
+"ref":"aiobungie.crate.clans.Clan.motto",
+"url":8,
+"doc":"Clan's motto."
+},
+{
 "ref":"aiobungie.crate.clans.Clan.name",
-"url":9,
+"url":8,
 "doc":"The clan's name"
 },
 {
 "ref":"aiobungie.crate.clans.Clan.net",
-"url":9,
+"url":8,
 "doc":"A network state used for making external requests."
 },
 {
 "ref":"aiobungie.crate.clans.Clan.owner",
-"url":9,
+"url":8,
 "doc":"The clan owner."
 },
 {
 "ref":"aiobungie.crate.clans.Clan.tags",
-"url":9,
+"url":8,
 "doc":"A list of the clan's tags."
 },
 {
 "ref":"aiobungie.crate.clans.Clan.type",
-"url":9,
+"url":8,
 "doc":"The clan type."
 },
 {
 "ref":"aiobungie.crate.clans.ClanOwner",
-"url":9,
+"url":8,
 "doc":"Represents a Bungie clan owner. Method generated by attrs for class ClanOwner."
 },
 {
-"ref":"aiobungie.crate.clans.ClanOwner.net",
-"url":9,
-"doc":"A network state used for making external requests."
-},
-{
-"ref":"aiobungie.crate.clans.ClanOwner.human_timedelta",
-"url":9,
-"doc":"Returns a human readable date of the clan owner's last login."
-},
-{
 "ref":"aiobungie.crate.clans.ClanOwner.unique_name",
-"url":9,
+"url":8,
 "doc":"The user's unique name which includes their unique code. This field could be None if no unique name found.  versionadded 0.2.5"
 },
 {
 "ref":"aiobungie.crate.clans.ClanOwner.link",
-"url":9,
+"url":8,
 "doc":"Returns the user's profile link."
 },
 {
-"ref":"aiobungie.crate.clans.ClanOwner.as_dict",
-"url":9,
-"doc":"Returns a dict object of the clan owner, This function is useful if you're binding to other REST apis."
-},
-{
 "ref":"aiobungie.crate.clans.ClanOwner.clan_id",
-"url":9,
+"url":8,
 "doc":"Owner's current clan id."
 },
 {
 "ref":"aiobungie.crate.clans.ClanOwner.code",
-"url":9,
+"url":8,
 "doc":"The user's unique display name code. This can be None if the user hasn't logged in after season of the lost update.  versionadded 0.2.5"
 },
 {
 "ref":"aiobungie.crate.clans.ClanOwner.icon",
-"url":9,
+"url":8,
 "doc":"Owner's profile icom"
 },
 {
 "ref":"aiobungie.crate.clans.ClanOwner.id",
-"url":9,
+"url":8,
 "doc":"The user id."
 },
 {
 "ref":"aiobungie.crate.clans.ClanOwner.is_public",
-"url":9,
+"url":8,
 "doc":"Returns if the user profile is public or no."
 },
 {
 "ref":"aiobungie.crate.clans.ClanOwner.joined_at",
-"url":9,
+"url":8,
 "doc":"Owner's bungie join date."
 },
 {
 "ref":"aiobungie.crate.clans.ClanOwner.last_online",
-"url":9,
+"url":8,
 "doc":"An aware  datetime.datetime object of the user's last online date UTC."
 },
 {
+"ref":"aiobungie.crate.clans.ClanOwner.last_seen_name",
+"url":8,
+"doc":"The clan member's last seen display name"
+},
+{
 "ref":"aiobungie.crate.clans.ClanOwner.name",
-"url":9,
+"url":8,
 "doc":"The user name."
 },
 {
 "ref":"aiobungie.crate.clans.ClanOwner.type",
-"url":9,
+"url":8,
 "doc":"Returns the membership type of the user."
 },
 {
 "ref":"aiobungie.crate.clans.ClanOwner.types",
-"url":9,
+"url":8,
 "doc":"Returns a list of the member ship's membership types."
 },
 {
 "ref":"aiobungie.crate.clans.ClanMember",
-"url":9,
+"url":8,
 "doc":"Represents a Destiny 2 clan member. Method generated by attrs for class ClanMember."
 },
 {
 "ref":"aiobungie.crate.clans.ClanMember.unique_name",
-"url":9,
-"doc":"The user's unique name which includes their unique code. This field could be None if no unique name found.  versionadded 0.2.5"
-},
-{
-"ref":"aiobungie.crate.clans.ClanMember.net",
-"url":9,
-"doc":"A network state used for making external requests."
+"url":8,
+"doc":"The user's unique name which includes their unique code.  versionadded 0.2.5"
 },
 {
 "ref":"aiobungie.crate.clans.ClanMember.link",
-"url":9,
+"url":8,
 "doc":"Clan member's profile link."
 },
 {
-"ref":"aiobungie.crate.clans.ClanMember.as_dict",
-"url":9,
-"doc":"An instance of the UserLike as a dict."
-},
-{
 "ref":"aiobungie.crate.clans.ClanMember.ban",
-"url":9,
+"url":8,
 "doc":"Bans a clan member from the clan. This requires OAuth2: AdminGroups scope.",
 "func":1
 },
 {
 "ref":"aiobungie.crate.clans.ClanMember.unban",
-"url":9,
+"url":8,
 "doc":"Unbans a clan member clan. This requires OAuth2: AdminGroups scope.",
 "func":1
 },
 {
 "ref":"aiobungie.crate.clans.ClanMember.kick",
-"url":9,
+"url":8,
 "doc":"Kicks a clan member from the clan. The requires OAuth2: AdminsGroup scope.",
 "func":1
 },
 {
 "ref":"aiobungie.crate.clans.ClanMember.code",
-"url":9,
+"url":8,
 "doc":"The clan member's bungie display name code This is new and was added in Season of the lost update  versionadded 0.2.5"
 },
 {
 "ref":"aiobungie.crate.clans.ClanMember.group_id",
-"url":9,
+"url":8,
 "doc":"The member's group id."
 },
 {
 "ref":"aiobungie.crate.clans.ClanMember.icon",
-"url":9,
+"url":8,
 "doc":"Clan member's icon"
 },
 {
 "ref":"aiobungie.crate.clans.ClanMember.id",
-"url":9,
+"url":8,
 "doc":"Clan member's id"
 },
 {
 "ref":"aiobungie.crate.clans.ClanMember.is_online",
-"url":9,
+"url":8,
 "doc":"True if the clan member is online or not."
 },
 {
 "ref":"aiobungie.crate.clans.ClanMember.is_public",
-"url":9,
+"url":8,
 "doc":" builtins.True if the clan member is public."
 },
 {
 "ref":"aiobungie.crate.clans.ClanMember.joined_at",
-"url":9,
+"url":8,
 "doc":"The clan member's join date in UTC time zone."
 },
 {
 "ref":"aiobungie.crate.clans.ClanMember.last_online",
-"url":9,
+"url":8,
 "doc":"The date of the clan member's last online in UTC time zone."
 },
 {
+"ref":"aiobungie.crate.clans.ClanMember.last_seen_name",
+"url":8,
+"doc":"The clan member's last seen display name"
+},
+{
 "ref":"aiobungie.crate.clans.ClanMember.name",
-"url":9,
-"doc":"Clan member's name"
+"url":8,
+"doc":"Clan member's name. This can be  UNDEFINED if not found."
+},
+{
+"ref":"aiobungie.crate.clans.ClanMember.net",
+"url":8,
+"doc":"A network state used for making external requests."
 },
 {
 "ref":"aiobungie.crate.clans.ClanMember.type",
-"url":9,
+"url":8,
 "doc":"Clan member's membership type."
 },
 {
 "ref":"aiobungie.crate.clans.ClanMember.types",
-"url":9,
-"doc":"A list of the available clan member membership types."
+"url":8,
+"doc":"A sequence of the available clan member membership types."
 },
 {
 "ref":"aiobungie.crate.clans.ClanFeatures",
-"url":9,
+"url":8,
 "doc":"Represents Bungie clan features. Method generated by attrs for class ClanFeatures."
 },
 {
 "ref":"aiobungie.crate.clans.ClanFeatures.capabilities",
-"url":9,
+"url":8,
 "doc":"An int that represents the clan's capabilities."
 },
 {
 "ref":"aiobungie.crate.clans.ClanFeatures.invite_permissions",
-"url":9,
+"url":8,
 "doc":"True if the clan has permissions to invite."
 },
 {
 "ref":"aiobungie.crate.clans.ClanFeatures.join_level",
-"url":9,
+"url":8,
 "doc":"The clan's join level."
 },
 {
 "ref":"aiobungie.crate.clans.ClanFeatures.max_members",
-"url":9,
+"url":8,
 "doc":"The maximum members the clan can have"
 },
 {
 "ref":"aiobungie.crate.clans.ClanFeatures.max_membership_types",
-"url":9,
+"url":8,
 "doc":"The maximum membership types the clan can have"
 },
 {
 "ref":"aiobungie.crate.clans.ClanFeatures.membership_types",
-"url":9,
+"url":8,
 "doc":"The clan's membership types."
 },
 {
 "ref":"aiobungie.crate.clans.ClanFeatures.update_banner_permissions",
-"url":9,
+"url":8,
 "doc":"True if the clan has permissions to updates its banner."
 },
 {
 "ref":"aiobungie.crate.clans.ClanFeatures.update_culture_permissions",
-"url":9,
+"url":8,
 "doc":"Return an attribute of instance, which is of type owner."
 },
 {
 "ref":"aiobungie.crate.entity",
-"url":6,
+"url":9,
 "doc":"Bungie entity definitions implementation. This is still not fully implemented and you may experince bugs. This will include all Bungie Definitions."
 },
 {
 "ref":"aiobungie.crate.entity.InventoryEntity",
-"url":6,
+"url":9,
 "doc":"Represents a bungie inventory item entity. This derives from  DestinyInventoryItemDefinition definition. Method generated by attrs for class InventoryEntity."
 },
 {
 "ref":"aiobungie.crate.entity.InventoryEntity.about",
-"url":6,
+"url":9,
 "doc":"Entity's about."
 },
 {
 "ref":"aiobungie.crate.entity.InventoryEntity.ammo_type",
-"url":6,
+"url":9,
 "doc":"Entity's ammo type if it was a wepon, otherwise it will return None"
 },
 {
 "ref":"aiobungie.crate.entity.InventoryEntity.banner",
-"url":6,
+"url":9,
 "doc":"Entity's banner."
 },
 {
 "ref":"aiobungie.crate.entity.InventoryEntity.bucket_type",
-"url":6,
+"url":9,
 "doc":"The entity's bucket type, None if unknown"
 },
 {
 "ref":"aiobungie.crate.entity.InventoryEntity.damage",
-"url":6,
+"url":9,
 "doc":"Entity's damage type. Only works for weapons."
 },
 {
 "ref":"aiobungie.crate.entity.InventoryEntity.description",
-"url":6,
+"url":9,
 "doc":"Entity's description."
 },
 {
 "ref":"aiobungie.crate.entity.InventoryEntity.has_icon",
-"url":6,
+"url":9,
 "doc":"A boolean that returns True if the entity has an icon."
 },
 {
 "ref":"aiobungie.crate.entity.InventoryEntity.hash",
-"url":6,
+"url":9,
 "doc":"Entity's hash."
 },
 {
 "ref":"aiobungie.crate.entity.InventoryEntity.icon",
-"url":6,
+"url":9,
 "doc":"Entity's icon"
 },
 {
 "ref":"aiobungie.crate.entity.InventoryEntity.index",
-"url":6,
+"url":9,
 "doc":"Entity's index."
 },
 {
 "ref":"aiobungie.crate.entity.InventoryEntity.is_equippable",
-"url":6,
+"url":9,
 "doc":"True if the entity can be equipped or False."
 },
 {
 "ref":"aiobungie.crate.entity.InventoryEntity.item_class",
-"url":6,
+"url":9,
 "doc":"The entity's class type."
 },
 {
 "ref":"aiobungie.crate.entity.InventoryEntity.lore_hash",
-"url":6,
+"url":9,
 "doc":"The entity's lore hash. Can be undefined if no lore hash found."
 },
 {
 "ref":"aiobungie.crate.entity.InventoryEntity.name",
-"url":6,
-"doc":"Entity's name"
+"url":9,
+"doc":"Entity's name. This can be  UNDEFINED if not found."
 },
 {
 "ref":"aiobungie.crate.entity.InventoryEntity.net",
-"url":6,
+"url":9,
 "doc":"A network state used for making external requests."
 },
 {
 "ref":"aiobungie.crate.entity.InventoryEntity.stats",
-"url":6,
+"url":9,
 "doc":"Entity's stats. this currently returns a dict object of the stats."
 },
 {
 "ref":"aiobungie.crate.entity.InventoryEntity.sub_type",
-"url":6,
+"url":9,
 "doc":"The subtype of the entity. A type is a weapon or armor. A subtype is a handcannonn or leg armor for an example."
 },
 {
 "ref":"aiobungie.crate.entity.InventoryEntity.summary_hash",
-"url":6,
+"url":9,
 "doc":"Entity's summary hash."
 },
 {
 "ref":"aiobungie.crate.entity.InventoryEntity.tier",
-"url":6,
+"url":9,
 "doc":"Entity's \"tier."
 },
 {
 "ref":"aiobungie.crate.entity.InventoryEntity.tier_name",
-"url":6,
+"url":9,
 "doc":"A string version of the item tier."
 },
 {
 "ref":"aiobungie.crate.entity.InventoryEntity.type",
-"url":6,
+"url":9,
 "doc":"Entity's type. Can be undefined if nothing was found."
 },
 {
 "ref":"aiobungie.crate.entity.InventoryEntity.type_name",
-"url":6,
+"url":9,
 "doc":"Entity's type name. i.e.,  Grenade Launcher "
 },
 {
 "ref":"aiobungie.crate.entity.InventoryEntity.water_mark",
-"url":6,
+"url":9,
 "doc":"Entity's water mark."
 },
 {
-"ref":"aiobungie.crate.entity.InventoryEntity.as_dict",
-"url":6,
-"doc":"Returns an instance of the entity as a dict"
-},
-{
 "ref":"aiobungie.crate.entity.Entity",
-"url":6,
+"url":9,
 "doc":"An interface of a Bungie Definition Entity. This is the main entity which all other entities should inherit from. it holds core information that all bungie entities has."
 },
 {
 "ref":"aiobungie.crate.entity.Entity.net",
-"url":6,
+"url":9,
 "doc":"A network state used for making external requests."
 },
 {
 "ref":"aiobungie.crate.entity.Entity.name",
-"url":6,
-"doc":"Entity's name"
+"url":9,
+"doc":"Entity's name. This can be  UNDEFINED if not found."
 },
 {
 "ref":"aiobungie.crate.entity.Entity.icon",
-"url":6,
+"url":9,
 "doc":"An optional entity's icon if its filled."
 },
 {
 "ref":"aiobungie.crate.entity.Entity.has_icon",
-"url":6,
+"url":9,
 "doc":"A boolean that returns True if the entity has an icon."
 },
 {
 "ref":"aiobungie.crate.entity.Entity.description",
-"url":6,
+"url":9,
 "doc":"Entity's description"
 },
 {
 "ref":"aiobungie.crate.entity.Entity.index",
-"url":6,
+"url":9,
 "doc":"The entity's index."
 },
 {
 "ref":"aiobungie.crate.entity.Entity.hash",
-"url":6,
+"url":9,
 "doc":"Entity's hash."
-},
-{
-"ref":"aiobungie.crate.entity.Entity.as_dict",
-"url":6,
-"doc":"Returns an instance of the entity as a dict"
 },
 {
 "ref":"aiobungie.crate.friends",
@@ -3812,6 +3790,11 @@ INDEX=[
 "ref":"aiobungie.crate.friends.Friend",
 "url":10,
 "doc":"Represents a bungie friend in your account  versionadded 0.2.5 Method generated by attrs for class Friend."
+},
+{
+"ref":"aiobungie.crate.friends.Friend.unique_name",
+"url":10,
+"doc":"The friend's global unique display name. This field could be None if the player hasn't logged in yet."
 },
 {
 "ref":"aiobungie.crate.friends.Friend.accept",
@@ -3874,7 +3857,7 @@ INDEX=[
 {
 "ref":"aiobungie.crate.friends.Friend.name",
 "url":10,
-"doc":"The friend's last seen global display name. This field could be None if the player hasn't logged in yet."
+"doc":"The friend's last seen global display name. This field could be Undefined if the player hasn't logged in yet."
 },
 {
 "ref":"aiobungie.crate.friends.Friend.net",
@@ -3902,14 +3885,14 @@ INDEX=[
 "doc":"The friend's last seen membership type."
 },
 {
-"ref":"aiobungie.crate.friends.Friend.unique_name",
-"url":10,
-"doc":"The friend's global unique display name. This field could be None if the player hasn't logged in yet."
-},
-{
 "ref":"aiobungie.crate.friends.Friend.user",
 "url":10,
 "doc":"The friend's bungie user account. This field is optional and can be None in some states."
+},
+{
+"ref":"aiobungie.crate.friends.Friend.last_seen_name",
+"url":3,
+"doc":"The user like's last seen name."
 },
 {
 "ref":"aiobungie.crate.friends.Friend.is_public",
@@ -3920,11 +3903,6 @@ INDEX=[
 "ref":"aiobungie.crate.friends.Friend.icon",
 "url":3,
 "doc":"The user like's icon."
-},
-{
-"ref":"aiobungie.crate.friends.Friend.as_dict",
-"url":3,
-"doc":"An instance of the UserLike as a dict."
 },
 {
 "ref":"aiobungie.crate.friends.Friend.link",
@@ -3944,12 +3922,7 @@ INDEX=[
 {
 "ref":"aiobungie.crate.members.StadiaMember.unique_name",
 "url":11,
-"doc":"The member's unique name. This field may be  None or  Undefined if not found."
-},
-{
-"ref":"aiobungie.crate.members.StadiaMember.as_dict",
-"url":11,
-"doc":"An instance of the UserLike as a dict."
+"doc":"Member's unique name."
 },
 {
 "ref":"aiobungie.crate.members.StadiaMember.code",
@@ -3979,7 +3952,7 @@ INDEX=[
 {
 "ref":"aiobungie.crate.members.StadiaMember.name",
 "url":11,
-"doc":"The member's name."
+"doc":"The member's name. This can be  UNDEFINED if not found."
 },
 {
 "ref":"aiobungie.crate.members.StadiaMember.type",
@@ -4004,12 +3977,7 @@ INDEX=[
 {
 "ref":"aiobungie.crate.members.XboxMember.unique_name",
 "url":11,
-"doc":"The member's unique name. This field may be  None or  Undefined if not found."
-},
-{
-"ref":"aiobungie.crate.members.XboxMember.as_dict",
-"url":11,
-"doc":"An instance of the UserLike as a dict."
+"doc":"Member's unique name."
 },
 {
 "ref":"aiobungie.crate.members.XboxMember.code",
@@ -4039,7 +4007,7 @@ INDEX=[
 {
 "ref":"aiobungie.crate.members.XboxMember.name",
 "url":11,
-"doc":"The member's name."
+"doc":"The member's name. This can be  UNDEFINED if not found."
 },
 {
 "ref":"aiobungie.crate.members.XboxMember.type",
@@ -4064,12 +4032,7 @@ INDEX=[
 {
 "ref":"aiobungie.crate.members.PSNMember.unique_name",
 "url":11,
-"doc":"The member's unique name. This field may be  None or  Undefined if not found."
-},
-{
-"ref":"aiobungie.crate.members.PSNMember.as_dict",
-"url":11,
-"doc":"An instance of the UserLike as a dict."
+"doc":"Member's unique name."
 },
 {
 "ref":"aiobungie.crate.members.PSNMember.code",
@@ -4099,7 +4062,7 @@ INDEX=[
 {
 "ref":"aiobungie.crate.members.PSNMember.name",
 "url":11,
-"doc":"The member's name."
+"doc":"The member's name. This can be  UNDEFINED if not found."
 },
 {
 "ref":"aiobungie.crate.members.PSNMember.type",
@@ -4124,12 +4087,7 @@ INDEX=[
 {
 "ref":"aiobungie.crate.members.SteamMember.unique_name",
 "url":11,
-"doc":"The member's unique name. This field may be  None or  Undefined if not found."
-},
-{
-"ref":"aiobungie.crate.members.SteamMember.as_dict",
-"url":11,
-"doc":"An instance of the UserLike as a dict."
+"doc":"Member's unique name."
 },
 {
 "ref":"aiobungie.crate.members.SteamMember.code",
@@ -4159,7 +4117,7 @@ INDEX=[
 {
 "ref":"aiobungie.crate.members.SteamMember.name",
 "url":11,
-"doc":"The member's name."
+"doc":"The member's name. This can be  UNDEFINED if not found."
 },
 {
 "ref":"aiobungie.crate.members.SteamMember.type",
@@ -4189,42 +4147,12 @@ INDEX=[
 {
 "ref":"aiobungie.crate.player.Player.unique_name",
 "url":12,
-"doc":"The user's unique display name code. This can be None if the user hasn't logged in after season of the lost update.  versionadded 0.2.5"
-},
-{
-"ref":"aiobungie.crate.player.Player.net",
-"url":12,
-"doc":"A network state used for making external requests."
-},
-{
-"ref":"aiobungie.crate.player.Player.as_dict",
-"url":12,
-"doc":"Returns a dict object of the player."
-},
-{
-"ref":"aiobungie.crate.player.Player.code",
-"url":12,
-"doc":"The clan member's bungie display name code This is new and was added in Season of the lost update  versionadded 0.2.5"
-},
-{
-"ref":"aiobungie.crate.player.Player.crossave_override",
-"url":12,
-"doc":"Returns  1 if the user has a cross save override in effect and 0 if not.  versionadded 0.2.5"
-},
-{
-"ref":"aiobungie.crate.player.Player.icon",
-"url":12,
-"doc":"The player's icon."
+"doc":"The user's unique name.  versionadded 0.2.5"
 },
 {
 "ref":"aiobungie.crate.player.Player.id",
 "url":12,
 "doc":"The player's id."
-},
-{
-"ref":"aiobungie.crate.player.Player.is_public",
-"url":12,
-"doc":"The player's profile privacy."
 },
 {
 "ref":"aiobungie.crate.player.Player.name",
@@ -4240,6 +4168,31 @@ INDEX=[
 "ref":"aiobungie.crate.player.Player.types",
 "url":12,
 "doc":"A list of the player's membership types.  versionadded 0.2.5"
+},
+{
+"ref":"aiobungie.crate.player.Player.icon",
+"url":12,
+"doc":"The player's icon."
+},
+{
+"ref":"aiobungie.crate.player.Player.code",
+"url":12,
+"doc":"The clan member's bungie display name code. This can be  None if not found.  versionadded 0.2.5"
+},
+{
+"ref":"aiobungie.crate.player.Player.is_public",
+"url":12,
+"doc":"The player's profile privacy."
+},
+{
+"ref":"aiobungie.crate.player.Player.crossave_override",
+"url":12,
+"doc":"Returns  1 if the user has a cross save override in effect and 0 if not.  versionadded 0.2.5"
+},
+{
+"ref":"aiobungie.crate.player.Player.last_seen_name",
+"url":3,
+"doc":"The member's last seen display name. You may use this field if  DestinyUser.name is  Undefined ."
 },
 {
 "ref":"aiobungie.crate.player.Player.link",
@@ -4270,16 +4223,6 @@ INDEX=[
 "ref":"aiobungie.crate.profile.Profile.warlock_id",
 "url":5,
 "doc":"The warlock id of the profile player."
-},
-{
-"ref":"aiobungie.crate.profile.Profile.as_dict",
-"url":5,
-"doc":"Returns a dict object of the profile."
-},
-{
-"ref":"aiobungie.crate.profile.Profile.human_timedelta",
-"url":5,
-"doc":"Returns last_played attr but in human delta date."
 },
 {
 "ref":"aiobungie.crate.profile.Profile.character_ids",
@@ -4413,11 +4356,6 @@ INDEX=[
 "doc":"Concrete representtion of a Bungie user. This includes both Bungie net and Destiny memberships information. Method generated by attrs for class User."
 },
 {
-"ref":"aiobungie.crate.user.User.as_dict",
-"url":3,
-"doc":"a dict object of the user."
-},
-{
 "ref":"aiobungie.crate.user.User.bungie",
 "url":3,
 "doc":"The user's bungie net membership.  versionadded 0.2.5"
@@ -4443,6 +4381,11 @@ INDEX=[
 "doc":"The user like's name."
 },
 {
+"ref":"aiobungie.crate.user.UserLike.last_seen_name",
+"url":3,
+"doc":"The user like's last seen name."
+},
+{
 "ref":"aiobungie.crate.user.UserLike.is_public",
 "url":3,
 "doc":"True if the user profile is public or no."
@@ -4456,11 +4399,6 @@ INDEX=[
 "ref":"aiobungie.crate.user.UserLike.icon",
 "url":3,
 "doc":"The user like's icon."
-},
-{
-"ref":"aiobungie.crate.user.UserLike.as_dict",
-"url":3,
-"doc":"An instance of the UserLike as a dict."
 },
 {
 "ref":"aiobungie.crate.user.UserLike.code",
@@ -4521,11 +4459,6 @@ INDEX=[
 "ref":"aiobungie.crate.user.BungieUser",
 "url":3,
 "doc":"Represents a Bungie user. Method generated by attrs for class BungieUser."
-},
-{
-"ref":"aiobungie.crate.user.BungieUser.human_timedelta",
-"url":3,
-"doc":"A human readable date version of the user's creation date."
 },
 {
 "ref":"aiobungie.crate.user.BungieUser.about",
@@ -4628,6 +4561,41 @@ INDEX=[
 "doc":"The user's last updated om UTC date."
 },
 {
+"ref":"aiobungie.crate.user.PartialBungieUser",
+"url":3,
+"doc":"Represents partial bungie user. This is usually used for bungie user info for destiny member objects. Like Clan members, owners, moderators for an example. Method generated by attrs for class PartialBungieUser."
+},
+{
+"ref":"aiobungie.crate.user.PartialBungieUser.crossave_override",
+"url":3,
+"doc":"The user's crossave override membership."
+},
+{
+"ref":"aiobungie.crate.user.PartialBungieUser.icon",
+"url":3,
+"doc":"The user's icon."
+},
+{
+"ref":"aiobungie.crate.user.PartialBungieUser.id",
+"url":3,
+"doc":"The user's id."
+},
+{
+"ref":"aiobungie.crate.user.PartialBungieUser.is_public",
+"url":3,
+"doc":"The user's privacy."
+},
+{
+"ref":"aiobungie.crate.user.PartialBungieUser.name",
+"url":3,
+"doc":"The user's name. Field may be undefined if not found."
+},
+{
+"ref":"aiobungie.crate.user.PartialBungieUser.type",
+"url":3,
+"doc":"The user's membership type."
+},
+{
 "ref":"aiobungie.crate.user.DestinyUser",
 "url":3,
 "doc":"Represents a Bungie user's Destiny memberships.  versionadded 0.2.5 Method generated by attrs for class DestinyUser."
@@ -4638,19 +4606,19 @@ INDEX=[
 "doc":"The member's unique name. This field may be  Undefined if not found."
 },
 {
-"ref":"aiobungie.crate.user.DestinyUser.as_dict",
-"url":3,
-"doc":"An instance of the UserLike as a dict."
-},
-{
 "ref":"aiobungie.crate.user.DestinyUser.code",
 "url":3,
 "doc":"The member's name code. This field may be  None if not found."
 },
 {
+"ref":"aiobungie.crate.user.DestinyUser.crossave_override",
+"url":3,
+"doc":"The member's corssave override membership type."
+},
+{
 "ref":"aiobungie.crate.user.DestinyUser.icon",
 "url":3,
-"doc":"The profile's icon if it was present."
+"doc":"The member's icon if it was present."
 },
 {
 "ref":"aiobungie.crate.user.DestinyUser.id",
@@ -4735,7 +4703,7 @@ INDEX=[
 {
 "ref":"aiobungie.error.HTTPException",
 "url":14,
-"doc":"Exception for handling  aiobungie.http.HTTPClient requests errors. Method generated by attrs for class HTTPException."
+"doc":"Exception for handling  aiobungie.rest.RESTClient requests errors. Method generated by attrs for class HTTPException."
 },
 {
 "ref":"aiobungie.error.HTTPException.long_message",
@@ -4834,23 +4802,6 @@ INDEX=[
 "func":1
 },
 {
-"ref":"aiobungie.ext.Manifest.get_raid_image",
-"url":15,
-"doc":"",
-"func":1
-},
-{
-"ref":"aiobungie.ext.Manifest.fetch",
-"url":15,
-"doc":"Fetch something from the manifest database. This returns a  typing.Dict[typing.Any, typing.Any] Parameters      definition:  builtins.str The definition you want to fetch from. id:  builtins.int The id of the entity. item:  typing.Optional[builsint.str] An item to get from the dict. Returns    -  typing.Optional[typing.Dict[typing.Any, typing.Any  ",
-"func":1
-},
-{
-"ref":"aiobungie.ext.Manifest.db",
-"url":15,
-"doc":"Return an attribute of instance, which is of type owner."
-},
-{
 "ref":"aiobungie.ext.Manifest.version",
 "url":15,
 "doc":"Return an attribute of instance, which is of type owner."
@@ -4872,275 +4823,308 @@ INDEX=[
 "func":1
 },
 {
-"ref":"aiobungie.ext.meta.Manifest.get_raid_image",
-"url":16,
-"doc":"",
-"func":1
-},
-{
-"ref":"aiobungie.ext.meta.Manifest.fetch",
-"url":16,
-"doc":"Fetch something from the manifest database. This returns a  typing.Dict[typing.Any, typing.Any] Parameters      definition:  builtins.str The definition you want to fetch from. id:  builtins.int The id of the entity. item:  typing.Optional[builsint.str] An item to get from the dict. Returns    -  typing.Optional[typing.Dict[typing.Any, typing.Any  ",
-"func":1
-},
-{
-"ref":"aiobungie.ext.meta.Manifest.db",
-"url":16,
-"doc":"Return an attribute of instance, which is of type owner."
-},
-{
 "ref":"aiobungie.ext.meta.Manifest.version",
 "url":16,
 "doc":"Return an attribute of instance, which is of type owner."
 },
 {
-"ref":"aiobungie.http",
+"ref":"aiobungie.interfaces",
 "url":17,
-"doc":"An HTTPClient for sending requests to the Bungie API and Where all the magic happenes."
+"doc":"Aiobungie Interfaces provides abstracted objects for implementations."
 },
 {
-"ref":"aiobungie.http.HTTPClient",
+"ref":"aiobungie.interfaces.RESTInterface",
 "url":17,
-"doc":"An HTTP Client for sending http requests to the Bungie API"
+"doc":"An interface for a rest only client implementation."
 },
 {
-"ref":"aiobungie.http.HTTPClient.fetch",
+"ref":"aiobungie.interfaces.RESTInterface.static_search",
 "url":17,
-"doc":"",
+"doc":"Raw http search given a valid bungie endpoint. Parameters      path:  builtins.str The bungie endpoint or path. A path must look something like this \"Destiny2/3/Profile/46111239123/ .\" kwargs:  typing.Any Any other key words you'd like to pass through. Returns    -  typing.Any Any object.",
 "func":1
 },
 {
-"ref":"aiobungie.http.HTTPClient.fetch_user",
+"ref":"aiobungie.interfaces.RESTInterface.fetch_manifest",
 "url":17,
-"doc":"",
+"doc":"Access The bungie Manifest. Returns    -  builtins.bytes The bytes to read and write the manifest database.",
 "func":1
 },
 {
-"ref":"aiobungie.http.HTTPClient.fetch_user_themes",
+"ref":"aiobungie.interfaces.RESTInterface.fetch_manifest_path",
 "url":17,
-"doc":"",
+"doc":"Return a string of the bungie manifest database url. Returns    -  builtins.str A downloadable url for the bungie manifest database.",
 "func":1
 },
 {
-"ref":"aiobungie.http.HTTPClient.fetch_membership_from_id",
+"ref":"aiobungie.interfaces.RESTInterface.fetch_user",
 "url":17,
-"doc":"",
+"doc":"Fetch a Bungie user by their id. Parameters      id:  builtins.int The user id. Returns    -  ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON object of users objects. Raises     aiobungie.error.UserNotFound The user was not found.",
 "func":1
 },
 {
-"ref":"aiobungie.http.HTTPClient.fetch_manifest",
+"ref":"aiobungie.interfaces.RESTInterface.search_users",
 "url":17,
-"doc":"",
+"doc":"Search for users by their global name and return all users who share this name. Parameters      name :  str The user name. Returns    -  ResponseSig[aiobungie.internal.helpers.JsonArray] A JSON array of the found users. Raises     aiobungie.NotFound The user(s) was not found.",
 "func":1
 },
 {
-"ref":"aiobungie.http.HTTPClient.static_search",
+"ref":"aiobungie.interfaces.RESTInterface.fetch_user_themes",
 "url":17,
-"doc":"",
+"doc":"Fetch all available user themes. Returns    -  ResponseSig[aiobungie.internal.helpers.JsonArray] A JSON array of user themes.",
 "func":1
 },
 {
-"ref":"aiobungie.http.HTTPClient.fetch_player",
+"ref":"aiobungie.interfaces.RESTInterface.fetch_hard_linked",
 "url":17,
-"doc":"",
+"doc":"Gets any hard linked membership given a credential. Only works for credentials that are public just  aiobungie.CredentialType.STEAMID right now. Cross Save aware. Parameters      credential:  builtins.int A valid SteamID64 type:  aiobungie.CredentialType The crededntial type. This must not be changed Since its only credential that works \"currently\" Returns    -  ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON object of the found user hard linked types.",
 "func":1
 },
 {
-"ref":"aiobungie.http.HTTPClient.fetch_clan_from_id",
+"ref":"aiobungie.interfaces.RESTInterface.fetch_membership_from_id",
 "url":17,
-"doc":"",
+"doc":"Fetch Bungie user's memberships from their id. Parameters      id :  builtins.int The user's id. type :  aiobungie.MembershipType The user's membership type. Returns    -  ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON object of the found user. Raises    aiobungie.UserNotFound The requested user was not found.",
 "func":1
 },
 {
-"ref":"aiobungie.http.HTTPClient.fetch_clan",
+"ref":"aiobungie.interfaces.RESTInterface.fetch_profile",
 "url":17,
-"doc":"",
+"doc":"Fetche a bungie profile. Parameters      memberid:  builtins.int The member's id. type:  aiobungie.MembershipType A valid membership type. Returns      ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON object of the found profile. Raises     aiobungie.MembershipTypeError The provided membership type was invalid.",
 "func":1
 },
 {
-"ref":"aiobungie.http.HTTPClient.fetch_app",
+"ref":"aiobungie.interfaces.RESTInterface.fetch_player",
 "url":17,
-"doc":"",
+"doc":"Fetch a Destiny 2 Player. Parameters      - name:  builtins.str The Player's Name.  note You must also pass the player's unique code. A full name parameter should look like this  Fate\u6012 4275 type:  aiobungie.internal.enums.MembershipType The player's membership type, e,g. XBOX, STEAM, PSN Returns      ResponseSig[aiobungie.internal.helpers.JsonArray] A JSON array of the found players. Raises     aiobungie.PlayerNotFound The player was not found.  aiobungie.MembershipTypeError The provided membership type was invalid.",
 "func":1
 },
 {
-"ref":"aiobungie.http.HTTPClient.fetch_character",
+"ref":"aiobungie.interfaces.RESTInterface.fetch_character",
 "url":17,
-"doc":"",
+"doc":"Fetch a Destiny 2 player's characters. Parameters      memberid:  builtins.int A valid bungie member id. type:  aiobungie.internal.enums.MembershipType The member's membership type. Returns    -  ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON object of the requested character. Raises     aiobungie.error.CharacterError raised if the Character was not found.  aiobungie.MembershipTypeError The provided membership type was invalid.",
 "func":1
 },
 {
-"ref":"aiobungie.http.HTTPClient.fetch_activity",
+"ref":"aiobungie.interfaces.RESTInterface.fetch_activity",
 "url":17,
-"doc":"",
+"doc":"Fetch a Destiny 2 activity for the specified user id and character. Parameters      member_id:  builtins.int The user id that starts with  4611 . character_id:  builtins.int The id of the character to retrieve. mode:  aiobungie.internal.enums.GameMode This parameter filters the game mode, Nightfall, Strike, Iron Banner, etc. membership_type:  aiobungie.internal.enums.MembershipType The Member ship type, if nothing was passed than it will return all. page: typing.Optional[builtins.int] The page number limit: typing.Optional[builtins.int] Limit the returned result. Returns    -  ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON object of the player's activities. Raises     aiobungie.error.ActivityNotFound The activity was not found.  aiobungie.MembershipTypeError The provided membership type was invalid.",
 "func":1
 },
 {
-"ref":"aiobungie.http.HTTPClient.fetch_post_activity",
+"ref":"aiobungie.interfaces.RESTInterface.fetch_post_activity",
 "url":17,
-"doc":"",
+"doc":"Fetch a post activity details.  warning This http request is not implemented yet and it will raise  NotImplementedError Parameters      instance:  builtins.int The activity instance id. Returns    -  ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON object of the post activity.",
 "func":1
 },
 {
-"ref":"aiobungie.http.HTTPClient.fetch_vendor_sales",
+"ref":"aiobungie.interfaces.RESTInterface.fetch_clan_from_id",
 "url":17,
-"doc":"",
+"doc":"Fetch a Bungie Clan by its id. Parameters      - id:  builtins.int The clan id. Returns      ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON object of the clan. Raises     aiobungie.ClanNotFound The clan was not found.",
 "func":1
 },
 {
-"ref":"aiobungie.http.HTTPClient.fetch_profile",
+"ref":"aiobungie.interfaces.RESTInterface.fetch_clan",
 "url":17,
-"doc":"",
+"doc":"Fetch a Clan by its name. This method will return the first clan found with given name name. Parameters      name:  builtins.str The clan name type  aiobungie.GroupType The group type, Default is one. Returns    -  ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON object of the clan. Raises     aiobungie.ClanNotFound The clan was not found.",
 "func":1
 },
 {
-"ref":"aiobungie.http.HTTPClient.fetch_entity",
+"ref":"aiobungie.interfaces.RESTInterface.fetch_clan_members",
 "url":17,
-"doc":"",
+"doc":"Fetch all Bungie Clan members. Parameters      clan_id :  builsins.int The clans id type :  aiobungie.MembershipType An optional clan member's membership type. Default is set to  aiobungie.MembershipType.NONE Which returns the first matched clan member by their name. name :  builtins.str This parameter is only provided here to keep the signature with the main client implementation, Which only works with the non-rest clients. It returns a specific clan member by their name. Returns    -  ResponseSig[aiobungie.internal.helpers.JsonArray] A JSON array of clan members. Raises     aiobungie.ClanNotFound The clan was not found.",
 "func":1
 },
 {
-"ref":"aiobungie.http.HTTPClient.fetch_inventory_item",
+"ref":"aiobungie.interfaces.RESTInterface.fetch_inventory_item",
 "url":17,
-"doc":"",
+"doc":"Fetch a static inventory item entity given a its hash. Parameters      type:  builtins.str Entity's type definition. hash:  builtins.int Entity's hash. Returns    -  ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON array object of the inventory item.",
 "func":1
 },
 {
-"ref":"aiobungie.http.HTTPClient.fetch_clan_members",
+"ref":"aiobungie.interfaces.RESTInterface.fetch_app",
 "url":17,
-"doc":"",
+"doc":"Fetch a Bungie Application. Parameters      - appid:  builtins.int The application id. Returns      ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON object of the application.",
 "func":1
 },
 {
-"ref":"aiobungie.http.HTTPClient.fetch_hard_linked",
-"url":17,
-"doc":"",
+"ref":"aiobungie.interfaces.rest",
+"url":18,
+"doc":"An interface for the rest client."
+},
+{
+"ref":"aiobungie.interfaces.rest.RESTInterface",
+"url":18,
+"doc":"An interface for a rest only client implementation."
+},
+{
+"ref":"aiobungie.interfaces.rest.RESTInterface.static_search",
+"url":18,
+"doc":"Raw http search given a valid bungie endpoint. Parameters      path:  builtins.str The bungie endpoint or path. A path must look something like this \"Destiny2/3/Profile/46111239123/ .\" kwargs:  typing.Any Any other key words you'd like to pass through. Returns    -  typing.Any Any object.",
+"func":1
+},
+{
+"ref":"aiobungie.interfaces.rest.RESTInterface.fetch_manifest",
+"url":18,
+"doc":"Access The bungie Manifest. Returns    -  builtins.bytes The bytes to read and write the manifest database.",
+"func":1
+},
+{
+"ref":"aiobungie.interfaces.rest.RESTInterface.fetch_manifest_path",
+"url":18,
+"doc":"Return a string of the bungie manifest database url. Returns    -  builtins.str A downloadable url for the bungie manifest database.",
+"func":1
+},
+{
+"ref":"aiobungie.interfaces.rest.RESTInterface.fetch_user",
+"url":18,
+"doc":"Fetch a Bungie user by their id. Parameters      id:  builtins.int The user id. Returns    -  ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON object of users objects. Raises     aiobungie.error.UserNotFound The user was not found.",
+"func":1
+},
+{
+"ref":"aiobungie.interfaces.rest.RESTInterface.search_users",
+"url":18,
+"doc":"Search for users by their global name and return all users who share this name. Parameters      name :  str The user name. Returns    -  ResponseSig[aiobungie.internal.helpers.JsonArray] A JSON array of the found users. Raises     aiobungie.NotFound The user(s) was not found.",
+"func":1
+},
+{
+"ref":"aiobungie.interfaces.rest.RESTInterface.fetch_user_themes",
+"url":18,
+"doc":"Fetch all available user themes. Returns    -  ResponseSig[aiobungie.internal.helpers.JsonArray] A JSON array of user themes.",
+"func":1
+},
+{
+"ref":"aiobungie.interfaces.rest.RESTInterface.fetch_hard_linked",
+"url":18,
+"doc":"Gets any hard linked membership given a credential. Only works for credentials that are public just  aiobungie.CredentialType.STEAMID right now. Cross Save aware. Parameters      credential:  builtins.int A valid SteamID64 type:  aiobungie.CredentialType The crededntial type. This must not be changed Since its only credential that works \"currently\" Returns    -  ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON object of the found user hard linked types.",
+"func":1
+},
+{
+"ref":"aiobungie.interfaces.rest.RESTInterface.fetch_membership_from_id",
+"url":18,
+"doc":"Fetch Bungie user's memberships from their id. Parameters      id :  builtins.int The user's id. type :  aiobungie.MembershipType The user's membership type. Returns    -  ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON object of the found user. Raises    aiobungie.UserNotFound The requested user was not found.",
+"func":1
+},
+{
+"ref":"aiobungie.interfaces.rest.RESTInterface.fetch_profile",
+"url":18,
+"doc":"Fetche a bungie profile. Parameters      memberid:  builtins.int The member's id. type:  aiobungie.MembershipType A valid membership type. Returns      ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON object of the found profile. Raises     aiobungie.MembershipTypeError The provided membership type was invalid.",
+"func":1
+},
+{
+"ref":"aiobungie.interfaces.rest.RESTInterface.fetch_player",
+"url":18,
+"doc":"Fetch a Destiny 2 Player. Parameters      - name:  builtins.str The Player's Name.  note You must also pass the player's unique code. A full name parameter should look like this  Fate\u6012 4275 type:  aiobungie.internal.enums.MembershipType The player's membership type, e,g. XBOX, STEAM, PSN Returns      ResponseSig[aiobungie.internal.helpers.JsonArray] A JSON array of the found players. Raises     aiobungie.PlayerNotFound The player was not found.  aiobungie.MembershipTypeError The provided membership type was invalid.",
+"func":1
+},
+{
+"ref":"aiobungie.interfaces.rest.RESTInterface.fetch_character",
+"url":18,
+"doc":"Fetch a Destiny 2 player's characters. Parameters      memberid:  builtins.int A valid bungie member id. type:  aiobungie.internal.enums.MembershipType The member's membership type. Returns    -  ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON object of the requested character. Raises     aiobungie.error.CharacterError raised if the Character was not found.  aiobungie.MembershipTypeError The provided membership type was invalid.",
+"func":1
+},
+{
+"ref":"aiobungie.interfaces.rest.RESTInterface.fetch_activity",
+"url":18,
+"doc":"Fetch a Destiny 2 activity for the specified user id and character. Parameters      member_id:  builtins.int The user id that starts with  4611 . character_id:  builtins.int The id of the character to retrieve. mode:  aiobungie.internal.enums.GameMode This parameter filters the game mode, Nightfall, Strike, Iron Banner, etc. membership_type:  aiobungie.internal.enums.MembershipType The Member ship type, if nothing was passed than it will return all. page: typing.Optional[builtins.int] The page number limit: typing.Optional[builtins.int] Limit the returned result. Returns    -  ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON object of the player's activities. Raises     aiobungie.error.ActivityNotFound The activity was not found.  aiobungie.MembershipTypeError The provided membership type was invalid.",
+"func":1
+},
+{
+"ref":"aiobungie.interfaces.rest.RESTInterface.fetch_post_activity",
+"url":18,
+"doc":"Fetch a post activity details.  warning This http request is not implemented yet and it will raise  NotImplementedError Parameters      instance:  builtins.int The activity instance id. Returns    -  ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON object of the post activity.",
+"func":1
+},
+{
+"ref":"aiobungie.interfaces.rest.RESTInterface.fetch_clan_from_id",
+"url":18,
+"doc":"Fetch a Bungie Clan by its id. Parameters      - id:  builtins.int The clan id. Returns      ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON object of the clan. Raises     aiobungie.ClanNotFound The clan was not found.",
+"func":1
+},
+{
+"ref":"aiobungie.interfaces.rest.RESTInterface.fetch_clan",
+"url":18,
+"doc":"Fetch a Clan by its name. This method will return the first clan found with given name name. Parameters      name:  builtins.str The clan name type  aiobungie.GroupType The group type, Default is one. Returns    -  ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON object of the clan. Raises     aiobungie.ClanNotFound The clan was not found.",
+"func":1
+},
+{
+"ref":"aiobungie.interfaces.rest.RESTInterface.fetch_clan_members",
+"url":18,
+"doc":"Fetch all Bungie Clan members. Parameters      clan_id :  builsins.int The clans id type :  aiobungie.MembershipType An optional clan member's membership type. Default is set to  aiobungie.MembershipType.NONE Which returns the first matched clan member by their name. name :  builtins.str This parameter is only provided here to keep the signature with the main client implementation, Which only works with the non-rest clients. It returns a specific clan member by their name. Returns    -  ResponseSig[aiobungie.internal.helpers.JsonArray] A JSON array of clan members. Raises     aiobungie.ClanNotFound The clan was not found.",
+"func":1
+},
+{
+"ref":"aiobungie.interfaces.rest.RESTInterface.fetch_inventory_item",
+"url":18,
+"doc":"Fetch a static inventory item entity given a its hash. Parameters      type:  builtins.str Entity's type definition. hash:  builtins.int Entity's hash. Returns    -  ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON array object of the inventory item.",
+"func":1
+},
+{
+"ref":"aiobungie.interfaces.rest.RESTInterface.fetch_app",
+"url":18,
+"doc":"Fetch a Bungie Application. Parameters      - appid:  builtins.int The application id. Returns      ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON object of the application.",
 "func":1
 },
 {
 "ref":"aiobungie.internal",
-"url":18,
+"url":19,
 "doc":"Package contains internal and helpers for aiobungie."
 },
 {
 "ref":"aiobungie.internal.Image",
-"url":18,
+"url":19,
 "doc":""
 },
 {
 "ref":"aiobungie.internal.Image.url",
-"url":18,
+"url":19,
 "doc":""
 },
 {
 "ref":"aiobungie.internal.Image.is_jpg",
-"url":18,
+"url":19,
 "doc":"Checks if the given path for the image is a JPEG type."
 },
 {
 "ref":"aiobungie.internal.Image.partial",
-"url":18,
+"url":19,
 "doc":"A partial image that just returns undefined.",
 "func":1
 },
 {
 "ref":"aiobungie.internal.deprecated",
-"url":18,
+"url":19,
 "doc":"functions with this decorator will not work or is not implemented yet.",
 "func":1
 },
 {
 "ref":"aiobungie.internal.assets",
-"url":19,
+"url":20,
 "doc":"aiobungie assets module for API Image hash and path linking."
 },
 {
 "ref":"aiobungie.internal.assets.Image",
-"url":19,
+"url":20,
 "doc":""
 },
 {
 "ref":"aiobungie.internal.assets.Image.url",
-"url":19,
+"url":20,
 "doc":""
 },
 {
 "ref":"aiobungie.internal.assets.Image.is_jpg",
-"url":19,
+"url":20,
 "doc":"Checks if the given path for the image is a JPEG type."
 },
 {
 "ref":"aiobungie.internal.assets.Image.partial",
-"url":19,
+"url":20,
 "doc":"A partial image that just returns undefined.",
 "func":1
 },
 {
 "ref":"aiobungie.internal.assets.MaybeImage",
-"url":19,
+"url":20,
 "doc":"A type hint for images that may or may not exists in the api. Images returned from the api as None will be replaced with  Image.partial ."
-},
-{
-"ref":"aiobungie.internal.db",
-"url":20,
-"doc":"A small sqlite3 database for the bungie manifest."
-},
-{
-"ref":"aiobungie.internal.db.Database",
-"url":20,
-"doc":""
-},
-{
-"ref":"aiobungie.internal.db.Database.commit",
-"url":20,
-"doc":"",
-"func":1
-},
-{
-"ref":"aiobungie.internal.db.Database.fetch",
-"url":20,
-"doc":"",
-"func":1
-},
-{
-"ref":"aiobungie.internal.db.Database.fetchrow",
-"url":20,
-"doc":"",
-"func":1
-},
-{
-"ref":"aiobungie.internal.db.Database.create_table",
-"url":20,
-"doc":"Creates a table with one column, this is only used for the versions.",
-"func":1
-},
-{
-"ref":"aiobungie.internal.db.Database.insert_version",
-"url":20,
-"doc":"Insertes the manifest version.",
-"func":1
-},
-{
-"ref":"aiobungie.internal.db.Database.execute",
-"url":20,
-"doc":"",
-"func":1
-},
-{
-"ref":"aiobungie.internal.db.Database.get_version",
-"url":20,
-"doc":"",
-"func":1
-},
-{
-"ref":"aiobungie.internal.db.Database.version",
-"url":20,
-"doc":""
-},
-{
-"ref":"aiobungie.internal.db.Database.path",
-"url":20,
-"doc":"Return an attribute of instance, which is of type owner."
 },
 {
 "ref":"aiobungie.internal.enums",
@@ -6265,7 +6249,7 @@ INDEX=[
 {
 "ref":"aiobungie.internal.helpers",
 "url":22,
-"doc":"A helper module for useful decorators, functions and types."
+"doc":"A module for helper functions and types."
 },
 {
 "ref":"aiobungie.internal.helpers.deprecated",
@@ -6274,19 +6258,29 @@ INDEX=[
 "func":1
 },
 {
-"ref":"aiobungie.internal.helpers.JsonDict",
+"ref":"aiobungie.internal.helpers.JsonObject",
 "url":22,
 "doc":"A json like dict of string key and any value. i.e., {\"Key\": 1, \"Key2\": \"Value\"}"
 },
 {
-"ref":"aiobungie.internal.helpers.JsonList",
+"ref":"aiobungie.internal.helpers.JsonArray",
 "url":22,
-"doc":"A json like list of dicts of string key and any value i.e., [{\"Key\": 1}, {\"Key2\": \"Value\"}]"
+"doc":"A json like list of any data type. i.e., [{\"Key\": 1}, {\"Key2\": \"Value\"}]"
 },
 {
 "ref":"aiobungie.internal.helpers.Undefined",
 "url":22,
-"doc":"A helper that checks if stuff are unknown / empty string and Undefine them if they're."
+"doc":"An undefined type for attribs that may be undefined and not None."
+},
+{
+"ref":"aiobungie.internal.helpers.UndefinedOr",
+"url":22,
+"doc":"A union version of the Undefined type which can be undefined or any other type."
+},
+{
+"ref":"aiobungie.internal.helpers.UndefinedType",
+"url":22,
+"doc":"An  UNDEFINED type."
 },
 {
 "ref":"aiobungie.internal.helpers.Unknown",
@@ -6302,7 +6296,7 @@ INDEX=[
 {
 "ref":"aiobungie.internal.helpers.NoneOr",
 "url":22,
-"doc":"A Union type that's similar to to Optional[T]"
+"doc":"A Union type that's similar to to  Optional[T] "
 },
 {
 "ref":"aiobungie.internal.helpers.get_or_make_loop",
@@ -6316,108 +6310,120 @@ INDEX=[
 "doc":"Deserialization for all bungie incoming json payloads."
 },
 {
-"ref":"aiobungie.internal.serialize.Deserialize",
+"ref":"aiobungie.internal.serialize.Factory",
 "url":23,
-"doc":"The base Deserialization class for all aiobungie crate."
+"doc":"The base Deserialization factory class for all aiobungie objects."
 },
 {
-"ref":"aiobungie.internal.serialize.Deserialize.deserialize_bungie_user",
-"url":23,
-"doc":"",
-"func":1
-},
-{
-"ref":"aiobungie.internal.serialize.Deserialize.deserialize_members",
+"ref":"aiobungie.internal.serialize.Factory.deserialize_bungie_user",
 "url":23,
 "doc":"",
 "func":1
 },
 {
-"ref":"aiobungie.internal.serialize.Deserialize.deserialize_user",
+"ref":"aiobungie.internal.serialize.Factory.deserialize_partial_bungie_user",
 "url":23,
 "doc":"",
 "func":1
 },
 {
-"ref":"aiobungie.internal.serialize.Deserialize.set_themese_attrs",
+"ref":"aiobungie.internal.serialize.Factory.deserialize_destiny_user",
 "url":23,
 "doc":"",
 "func":1
 },
 {
-"ref":"aiobungie.internal.serialize.Deserialize.deserialize_user_themes",
+"ref":"aiobungie.internal.serialize.Factory.deserialize_destiny_members",
 "url":23,
 "doc":"",
 "func":1
 },
 {
-"ref":"aiobungie.internal.serialize.Deserialize.deserialize_player",
+"ref":"aiobungie.internal.serialize.Factory.deserialize_user",
 "url":23,
 "doc":"",
 "func":1
 },
 {
-"ref":"aiobungie.internal.serialize.Deserialize.deseialize_clan_owner",
+"ref":"aiobungie.internal.serialize.Factory.deseialize_found_users",
 "url":23,
 "doc":"",
 "func":1
 },
 {
-"ref":"aiobungie.internal.serialize.Deserialize.deseialize_clan",
+"ref":"aiobungie.internal.serialize.Factory.set_themese_attrs",
 "url":23,
 "doc":"",
 "func":1
 },
 {
-"ref":"aiobungie.internal.serialize.Deserialize.deserialize_clan_member",
+"ref":"aiobungie.internal.serialize.Factory.deserialize_user_themes",
 "url":23,
 "doc":"",
 "func":1
 },
 {
-"ref":"aiobungie.internal.serialize.Deserialize.set_clan_members_attrs",
+"ref":"aiobungie.internal.serialize.Factory.deserialize_player",
 "url":23,
 "doc":"",
 "func":1
 },
 {
-"ref":"aiobungie.internal.serialize.Deserialize.deserialize_clan_members",
+"ref":"aiobungie.internal.serialize.Factory.deseialize_clan_owner",
 "url":23,
 "doc":"",
 "func":1
 },
 {
-"ref":"aiobungie.internal.serialize.Deserialize.deserialize_app_owner",
+"ref":"aiobungie.internal.serialize.Factory.deseialize_clan",
 "url":23,
 "doc":"",
 "func":1
 },
 {
-"ref":"aiobungie.internal.serialize.Deserialize.deserialize_app",
+"ref":"aiobungie.internal.serialize.Factory.deserialize_clan_member",
 "url":23,
 "doc":"",
 "func":1
 },
 {
-"ref":"aiobungie.internal.serialize.Deserialize.deserialize_character",
+"ref":"aiobungie.internal.serialize.Factory.deserialize_clan_members",
 "url":23,
 "doc":"",
 "func":1
 },
 {
-"ref":"aiobungie.internal.serialize.Deserialize.deserialize_profile",
+"ref":"aiobungie.internal.serialize.Factory.deserialize_app_owner",
 "url":23,
 "doc":"",
 "func":1
 },
 {
-"ref":"aiobungie.internal.serialize.Deserialize.deserialize_inventory_entity",
+"ref":"aiobungie.internal.serialize.Factory.deserialize_app",
 "url":23,
 "doc":"",
 "func":1
 },
 {
-"ref":"aiobungie.internal.serialize.Deserialize.deserialize_activity",
+"ref":"aiobungie.internal.serialize.Factory.deserialize_character",
+"url":23,
+"doc":"",
+"func":1
+},
+{
+"ref":"aiobungie.internal.serialize.Factory.deserialize_profile",
+"url":23,
+"doc":"",
+"func":1
+},
+{
+"ref":"aiobungie.internal.serialize.Factory.deserialize_inventory_entity",
+"url":23,
+"doc":"",
+"func":1
+},
+{
+"ref":"aiobungie.internal.serialize.Factory.deserialize_activity",
 "url":23,
 "doc":"",
 "func":1
@@ -6452,12 +6458,6 @@ INDEX=[
 "func":1
 },
 {
-"ref":"aiobungie.internal.time.human_timedelta",
-"url":24,
-"doc":"Rapptz :>)",
-"func":1
-},
-{
 "ref":"aiobungie.internal.traits",
 "url":25,
 "doc":"Module for all client interfaces."
@@ -6465,7 +6465,7 @@ INDEX=[
 {
 "ref":"aiobungie.internal.traits.RESTful",
 "url":25,
-"doc":"A Resuful and netrunner client protocol."
+"doc":"A RESTful, serializble and netrunner client protocol."
 },
 {
 "ref":"aiobungie.internal.traits.RESTful.run",
@@ -6474,14 +6474,24 @@ INDEX=[
 "func":1
 },
 {
+"ref":"aiobungie.internal.traits.RESTful.rest",
+"url":25,
+"doc":"The rest client we make the http request to the API with."
+},
+{
 "ref":"aiobungie.internal.traits.RESTful.request",
 "url":25,
 "doc":"Returns a client network state for making external requests."
 },
 {
+"ref":"aiobungie.internal.traits.RESTful.serialize",
+"url":25,
+"doc":"A property that returns a deserializer object for the client."
+},
+{
 "ref":"aiobungie.internal.traits.Netrunner",
 "url":25,
-"doc":"A netrunner client represents The rest client. This is only used for making external requests."
+"doc":"A protocol represents The main client That's only used for making external requests."
 },
 {
 "ref":"aiobungie.internal.traits.Netrunner.request",
@@ -6489,28 +6499,168 @@ INDEX=[
 "doc":"Returns a client network state for making external requests."
 },
 {
-"ref":"aiobungie.url",
+"ref":"aiobungie.internal.traits.Serializable",
+"url":25,
+"doc":"A protocol that uses  aiobungie.internal.serialize.Factory for deseializing objects."
+},
+{
+"ref":"aiobungie.internal.traits.Serializable.serialize",
+"url":25,
+"doc":"A property that returns a deserializer object for the client."
+},
+{
+"ref":"aiobungie.rest",
 "url":26,
+"doc":"A basic REST only client to interact with Bungie's REST API."
+},
+{
+"ref":"aiobungie.rest.RESTClient",
+"url":26,
+"doc":"A REST only client implementation for interacting with Bungie's REST API. Attributes      token :  builtins.str A valid application token from Bungie's developer portal."
+},
+{
+"ref":"aiobungie.rest.RESTClient.fetch_user",
+"url":26,
+"doc":"Fetch a Bungie user by their id. Parameters      id:  builtins.int The user id. Returns    -  ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON object of users objects. Raises     aiobungie.error.UserNotFound The user was not found.",
+"func":1
+},
+{
+"ref":"aiobungie.rest.RESTClient.fetch_user_themes",
+"url":26,
+"doc":"Fetch all available user themes. Returns    -  ResponseSig[aiobungie.internal.helpers.JsonArray] A JSON array of user themes.",
+"func":1
+},
+{
+"ref":"aiobungie.rest.RESTClient.fetch_membership_from_id",
+"url":26,
+"doc":"Fetch Bungie user's memberships from their id. Parameters      id :  builtins.int The user's id. type :  aiobungie.MembershipType The user's membership type. Returns    -  ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON object of the found user. Raises    aiobungie.UserNotFound The requested user was not found.",
+"func":1
+},
+{
+"ref":"aiobungie.rest.RESTClient.static_search",
+"url":26,
+"doc":"Raw http search given a valid bungie endpoint. Parameters      path:  builtins.str The bungie endpoint or path. A path must look something like this \"Destiny2/3/Profile/46111239123/ .\" kwargs:  typing.Any Any other key words you'd like to pass through. Returns    -  typing.Any Any object.",
+"func":1
+},
+{
+"ref":"aiobungie.rest.RESTClient.fetch_player",
+"url":26,
+"doc":"Fetch a Destiny 2 Player. Parameters      - name:  builtins.str The Player's Name.  note You must also pass the player's unique code. A full name parameter should look like this  Fate\u6012 4275 type:  aiobungie.internal.enums.MembershipType The player's membership type, e,g. XBOX, STEAM, PSN Returns      ResponseSig[aiobungie.internal.helpers.JsonArray] A JSON array of the found players. Raises     aiobungie.PlayerNotFound The player was not found.  aiobungie.MembershipTypeError The provided membership type was invalid.",
+"func":1
+},
+{
+"ref":"aiobungie.rest.RESTClient.search_users",
+"url":26,
+"doc":"Search for users by their global name and return all users who share this name. Parameters      name :  str The user name. Returns    -  ResponseSig[aiobungie.internal.helpers.JsonArray] A JSON array of the found users. Raises     aiobungie.NotFound The user(s) was not found.",
+"func":1
+},
+{
+"ref":"aiobungie.rest.RESTClient.fetch_clan_from_id",
+"url":26,
+"doc":"Fetch a Bungie Clan by its id. Parameters      - id:  builtins.int The clan id. Returns      ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON object of the clan. Raises     aiobungie.ClanNotFound The clan was not found.",
+"func":1
+},
+{
+"ref":"aiobungie.rest.RESTClient.fetch_clan",
+"url":26,
+"doc":"Fetch a Clan by its name. This method will return the first clan found with given name name. Parameters      name:  builtins.str The clan name type  aiobungie.GroupType The group type, Default is one. Returns    -  ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON object of the clan. Raises     aiobungie.ClanNotFound The clan was not found.",
+"func":1
+},
+{
+"ref":"aiobungie.rest.RESTClient.fetch_app",
+"url":26,
+"doc":"Fetch a Bungie Application. Parameters      - appid:  builtins.int The application id. Returns      ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON object of the application.",
+"func":1
+},
+{
+"ref":"aiobungie.rest.RESTClient.fetch_character",
+"url":26,
+"doc":"Fetch a Destiny 2 player's characters. Parameters      memberid:  builtins.int A valid bungie member id. type:  aiobungie.internal.enums.MembershipType The member's membership type. Returns    -  ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON object of the requested character. Raises     aiobungie.error.CharacterError raised if the Character was not found.  aiobungie.MembershipTypeError The provided membership type was invalid.",
+"func":1
+},
+{
+"ref":"aiobungie.rest.RESTClient.fetch_activity",
+"url":26,
+"doc":"Fetch a Destiny 2 activity for the specified user id and character. Parameters      member_id:  builtins.int The user id that starts with  4611 . character_id:  builtins.int The id of the character to retrieve. mode:  aiobungie.internal.enums.GameMode This parameter filters the game mode, Nightfall, Strike, Iron Banner, etc. membership_type:  aiobungie.internal.enums.MembershipType The Member ship type, if nothing was passed than it will return all. page: typing.Optional[builtins.int] The page number limit: typing.Optional[builtins.int] Limit the returned result. Returns    -  ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON object of the player's activities. Raises     aiobungie.error.ActivityNotFound The activity was not found.  aiobungie.MembershipTypeError The provided membership type was invalid.",
+"func":1
+},
+{
+"ref":"aiobungie.rest.RESTClient.fetch_post_activity",
+"url":26,
+"doc":"Fetch a post activity details.  warning This http request is not implemented yet and it will raise  NotImplementedError Parameters      instance:  builtins.int The activity instance id. Returns    -  ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON object of the post activity.",
+"func":1
+},
+{
+"ref":"aiobungie.rest.RESTClient.fetch_vendor_sales",
+"url":26,
+"doc":"",
+"func":1
+},
+{
+"ref":"aiobungie.rest.RESTClient.fetch_profile",
+"url":26,
+"doc":"Fetche a bungie profile. Parameters      memberid:  builtins.int The member's id. type:  aiobungie.MembershipType A valid membership type. Returns      ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON object of the found profile. Raises     aiobungie.MembershipTypeError The provided membership type was invalid.",
+"func":1
+},
+{
+"ref":"aiobungie.rest.RESTClient.fetch_entity",
+"url":26,
+"doc":"",
+"func":1
+},
+{
+"ref":"aiobungie.rest.RESTClient.fetch_inventory_item",
+"url":26,
+"doc":"Fetch a static inventory item entity given a its hash. Parameters      type:  builtins.str Entity's type definition. hash:  builtins.int Entity's hash. Returns    -  ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON array object of the inventory item.",
+"func":1
+},
+{
+"ref":"aiobungie.rest.RESTClient.fetch_clan_members",
+"url":26,
+"doc":"Fetch all Bungie Clan members. Parameters      clan_id :  builsins.int The clans id type :  aiobungie.MembershipType An optional clan member's membership type. Default is set to  aiobungie.MembershipType.NONE Which returns the first matched clan member by their name. name :  builtins.str This parameter is only provided here to keep the signature with the main client implementation, Which only works with the non-rest clients. It returns a specific clan member by their name. Returns    -  ResponseSig[aiobungie.internal.helpers.JsonArray] A JSON array of clan members. Raises     aiobungie.ClanNotFound The clan was not found.",
+"func":1
+},
+{
+"ref":"aiobungie.rest.RESTClient.fetch_hard_linked",
+"url":26,
+"doc":"Gets any hard linked membership given a credential. Only works for credentials that are public just  aiobungie.CredentialType.STEAMID right now. Cross Save aware. Parameters      credential:  builtins.int A valid SteamID64 type:  aiobungie.CredentialType The crededntial type. This must not be changed Since its only credential that works \"currently\" Returns    -  ResponseSig[aiobungie.internal.helpers.JsonObject] A JSON object of the found user hard linked types.",
+"func":1
+},
+{
+"ref":"aiobungie.rest.RESTClient.fetch_manifest_path",
+"url":26,
+"doc":"Return a string of the bungie manifest database url. Returns    -  builtins.str A downloadable url for the bungie manifest database.",
+"func":1
+},
+{
+"ref":"aiobungie.rest.RESTClient.fetch_manifest",
+"url":26,
+"doc":"Access The bungie Manifest. Returns    -  builtins.bytes The bytes to read and write the manifest database.",
+"func":1
+},
+{
+"ref":"aiobungie.url",
+"url":27,
 "doc":"Bungie API endpoint urls."
 },
 {
 "ref":"aiobungie.url.BASE",
-"url":26,
+"url":27,
 "doc":"Base bungie url"
 },
 {
 "ref":"aiobungie.url.REST_EP",
-"url":26,
+"url":27,
 "doc":"REST API endpoint"
 },
 {
 "ref":"aiobungie.url.OAUTH_EP",
-"url":26,
+"url":27,
 "doc":"OAuth endpoint"
 },
 {
 "ref":"aiobungie.url.TOKEN_EP",
-"url":26,
+"url":27,
 "doc":"OAuth token endpoint"
 }
 ]

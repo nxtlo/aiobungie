@@ -519,7 +519,6 @@ __all__ = (&#34;CharacterComponent&#34;, &#34;Character&#34;)
 
 import abc
 import datetime
-import logging
 import typing
 
 import attr
@@ -527,9 +526,6 @@ import attr
 from aiobungie import url
 from aiobungie.internal import Image
 from aiobungie.internal import enums
-from aiobungie.internal import time
-
-log: typing.Final[logging.Logger] = logging.getLogger(__name__)
 
 
 class CharacterComponent(abc.ABC):
@@ -675,11 +671,6 @@ class CharacterComponent(abc.ABC):
 
         raise NotImplementedError
 
-    @property
-    def human_timedelta(self) -&gt; str:
-        &#34;&#34;&#34;The player&#39;s last played time in a human readable date.&#34;&#34;&#34;
-        return time.human_timedelta(time.clean_date(str(self.last_played)))
-
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
 class Character(CharacterComponent):
@@ -734,11 +725,6 @@ class Character(CharacterComponent):
     def url(self) -&gt; str:
         &#34;&#34;&#34;A url for the character at bungie.net.&#34;&#34;&#34;
         return f&#34;{url.BASE}/en/Gear/{int(self.member_type)}/{self.member_id}/{self.id}&#34;
-
-    @property
-    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        &#34;&#34;&#34;Returns a dict crate of the character.&#34;&#34;&#34;
-        return attr.asdict(self)
 
     def __int__(self) -&gt; int:
         return int(self.id)</code></pre>
@@ -820,11 +806,6 @@ class Character(CharacterComponent):
         &#34;&#34;&#34;A url for the character at bungie.net.&#34;&#34;&#34;
         return f&#34;{url.BASE}/en/Gear/{int(self.member_type)}/{self.member_id}/{self.id}&#34;
 
-    @property
-    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        &#34;&#34;&#34;Returns a dict crate of the character.&#34;&#34;&#34;
-        return attr.asdict(self)
-
     def __int__(self) -&gt; int:
         return int(self.id)</code></pre>
                         </details>
@@ -835,21 +816,6 @@ class Character(CharacterComponent):
                         </ul>
                         <h3>Instance variables</h3>
                         <dl>
-                            <dt id="aiobungie.crate.character.Character.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Returns a dict crate of the character.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-    &#34;&#34;&#34;Returns a dict crate of the character.&#34;&#34;&#34;
-    return attr.asdict(self)</code></pre>
-                                </details>
-                            </dd>
                             <dt id="aiobungie.crate.character.Character.class_type"><code class="name">var <span class="ident">class_type</span> : <a title="aiobungie.internal.enums.Class" href="./internal/enums.html#aiobungie.internal.enums.Class">Class</a></code></dt>
                             <dd>
                                 <div class="desc">
@@ -878,16 +844,6 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                             <dd>
                                 <div class="desc">
                                     <p>Character's gender</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.character.Character.human_timedelta"><code class="name">var <span class="ident">human_timedelta</span> : str</code></dt>
-                            <dd>
-                                <p class="inheritance">
-                                    <em>Inherited from:</em>
-                                    <code><a title="aiobungie.crate.character.CharacterComponent" href="#aiobungie.crate.character.CharacterComponent">CharacterComponent</a></code>.<code><a title="aiobungie.crate.character.CharacterComponent.human_timedelta" href="#aiobungie.crate.character.CharacterComponent.human_timedelta">human_timedelta</a></code>
-                                </p>
-                                <div class="desc inherited">
-                                    <p>The player's last played time in a human readable date.</p>
                                 </div>
                             </dd>
                             <dt id="aiobungie.crate.character.Character.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
@@ -1146,12 +1102,7 @@ def url(self) -&gt; str:
         # characterId: self,
         # membershipType: int(self.member_type)
 
-        raise NotImplementedError
-
-    @property
-    def human_timedelta(self) -&gt; str:
-        &#34;&#34;&#34;The player&#39;s last played time in a human readable date.&#34;&#34;&#34;
-        return time.human_timedelta(time.clean_date(str(self.last_played)))</code></pre>
+        raise NotImplementedError</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
@@ -1236,21 +1187,6 @@ def emblem_icon(self) -&gt; Image:
 @abc.abstractmethod
 def gender(self) -&gt; enums.Gender:
     &#34;&#34;&#34;The character&#39;s gender.&#34;&#34;&#34;</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.crate.character.CharacterComponent.human_timedelta"><code class="name">var <span class="ident">human_timedelta</span> : str</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The player's last played time in a human readable date.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def human_timedelta(self) -&gt; str:
-    &#34;&#34;&#34;The player&#39;s last played time in a human readable date.&#34;&#34;&#34;
-    return time.human_timedelta(time.clean_date(str(self.last_played)))</code></pre>
                                 </details>
                             </dd>
                             <dt id="aiobungie.crate.character.CharacterComponent.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
@@ -1589,7 +1525,6 @@ def url(self) -&gt; str:
                         <li>
                             <h4><code><a title="aiobungie.crate.character.Character" href="#aiobungie.crate.character.Character">Character</a></code></h4>
                             <ul class="two-column">
-                                <li><code><a title="aiobungie.crate.character.Character.as_dict" href="#aiobungie.crate.character.Character.as_dict">as_dict</a></code></li>
                                 <li><code><a title="aiobungie.crate.character.Character.class_type" href="#aiobungie.crate.character.Character.class_type">class_type</a></code></li>
                                 <li><code><a title="aiobungie.crate.character.Character.emblem" href="#aiobungie.crate.character.Character.emblem">emblem</a></code></li>
                                 <li><code><a title="aiobungie.crate.character.Character.emblem_hash" href="#aiobungie.crate.character.Character.emblem_hash">emblem_hash</a></code></li>
@@ -1597,7 +1532,6 @@ def url(self) -&gt; str:
                                 <li><code><a title="aiobungie.crate.character.Character.equip" href="#aiobungie.crate.character.Character.equip">equip</a></code></li>
                                 <li><code><a title="aiobungie.crate.character.Character.equip_items" href="#aiobungie.crate.character.Character.equip_items">equip_items</a></code></li>
                                 <li><code><a title="aiobungie.crate.character.Character.gender" href="#aiobungie.crate.character.Character.gender">gender</a></code></li>
-                                <li><code><a title="aiobungie.crate.character.Character.human_timedelta" href="#aiobungie.crate.character.Character.human_timedelta">human_timedelta</a></code></li>
                                 <li><code><a title="aiobungie.crate.character.Character.id" href="#aiobungie.crate.character.Character.id">id</a></code></li>
                                 <li><code><a title="aiobungie.crate.character.Character.last_played" href="#aiobungie.crate.character.Character.last_played">last_played</a></code></li>
                                 <li><code><a title="aiobungie.crate.character.Character.level" href="#aiobungie.crate.character.Character.level">level</a></code></li>
@@ -1621,7 +1555,6 @@ def url(self) -&gt; str:
                                 <li><code><a title="aiobungie.crate.character.CharacterComponent.equip" href="#aiobungie.crate.character.CharacterComponent.equip">equip</a></code></li>
                                 <li><code><a title="aiobungie.crate.character.CharacterComponent.equip_items" href="#aiobungie.crate.character.CharacterComponent.equip_items">equip_items</a></code></li>
                                 <li><code><a title="aiobungie.crate.character.CharacterComponent.gender" href="#aiobungie.crate.character.CharacterComponent.gender">gender</a></code></li>
-                                <li><code><a title="aiobungie.crate.character.CharacterComponent.human_timedelta" href="#aiobungie.crate.character.CharacterComponent.human_timedelta">human_timedelta</a></code></li>
                                 <li><code><a title="aiobungie.crate.character.CharacterComponent.id" href="#aiobungie.crate.character.CharacterComponent.id">id</a></code></li>
                                 <li><code><a title="aiobungie.crate.character.CharacterComponent.last_played" href="#aiobungie.crate.character.CharacterComponent.last_played">last_played</a></code></li>
                                 <li><code><a title="aiobungie.crate.character.CharacterComponent.light" href="#aiobungie.crate.character.CharacterComponent.light">light</a></code></li>

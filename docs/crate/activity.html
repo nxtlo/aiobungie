@@ -649,13 +649,6 @@ class Activity:
         &#34;&#34;&#34;
         return await self.net.request.fetch_post_activity(self.instance_id)
 
-    @property
-    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        &#34;&#34;&#34;Returns a dict crate of the Activity,
-        This function is useful if you&#39;re binding to other REST apis.
-        &#34;&#34;&#34;
-        return attr.asdict(self)
-
     def __int__(self) -&gt; int:
         return self.instance_id</code></pre>
                 </details>
@@ -749,35 +742,11 @@ class Activity:
         &#34;&#34;&#34;
         return await self.net.request.fetch_post_activity(self.instance_id)
 
-    @property
-    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        &#34;&#34;&#34;Returns a dict crate of the Activity,
-        This function is useful if you&#39;re binding to other REST apis.
-        &#34;&#34;&#34;
-        return attr.asdict(self)
-
     def __int__(self) -&gt; int:
         return self.instance_id</code></pre>
                         </details>
                         <h3>Instance variables</h3>
                         <dl>
-                            <dt id="aiobungie.crate.activity.Activity.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Returns a dict crate of the Activity, This function is useful if you're binding to other REST apis.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-    &#34;&#34;&#34;Returns a dict crate of the Activity,
-    This function is useful if you&#39;re binding to other REST apis.
-    &#34;&#34;&#34;
-    return attr.asdict(self)</code></pre>
-                                </details>
-                            </dd>
                             <dt id="aiobungie.crate.activity.Activity.assists"><code class="name">var <span class="ident">assists</span> : int</code></dt>
                             <dd>
                                 <div class="desc">
@@ -1148,7 +1117,6 @@ def is_fresh(self) -&gt; bool:
                         <li>
                             <h4><code><a title="aiobungie.crate.activity.Activity" href="#aiobungie.crate.activity.Activity">Activity</a></code></h4>
                             <ul class="two-column">
-                                <li><code><a title="aiobungie.crate.activity.Activity.as_dict" href="#aiobungie.crate.activity.Activity.as_dict">as_dict</a></code></li>
                                 <li><code><a title="aiobungie.crate.activity.Activity.assists" href="#aiobungie.crate.activity.Activity.assists">assists</a></code></li>
                                 <li><code><a title="aiobungie.crate.activity.Activity.completion_reason" href="#aiobungie.crate.activity.Activity.completion_reason">completion_reason</a></code></li>
                                 <li><code><a title="aiobungie.crate.activity.Activity.deaths" href="#aiobungie.crate.activity.Activity.deaths">deaths</a></code></li>

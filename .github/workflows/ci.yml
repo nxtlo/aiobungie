@@ -109,7 +109,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: docs
-          path: ./docs/aiobungie
+          path: ./docs
           if-no-files-found: error
   # This is still broken.
   deploy:

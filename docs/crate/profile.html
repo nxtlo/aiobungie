@@ -524,7 +524,6 @@ import attr
 
 from aiobungie.crate.character import Character
 from aiobungie.internal import enums
-from aiobungie.internal import time
 from aiobungie.internal import traits
 
 log: typing.Final[logging.Logger] = logging.getLogger(__name__)
@@ -715,17 +714,7 @@ class Profile(ProfileComponent):
     @property
     def warlock_id(self) -&gt; int:
         &#34;&#34;&#34;The warlock id of the profile player.&#34;&#34;&#34;
-        return int(self.character_ids[2])
-
-    @property
-    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        &#34;&#34;&#34;Returns a dict object of the profile.&#34;&#34;&#34;
-        return attr.asdict(self)
-
-    @property
-    def human_timedelta(self) -&gt; str:
-        &#34;&#34;&#34;Returns last_played attr but in human delta date.&#34;&#34;&#34;
-        return time.human_timedelta(self.last_played)</code></pre>
+        return int(self.character_ids[2])</code></pre>
                 </details>
             </section>
             <section>
@@ -834,17 +823,7 @@ class Profile(ProfileComponent):
     @property
     def warlock_id(self) -&gt; int:
         &#34;&#34;&#34;The warlock id of the profile player.&#34;&#34;&#34;
-        return int(self.character_ids[2])
-
-    @property
-    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        &#34;&#34;&#34;Returns a dict object of the profile.&#34;&#34;&#34;
-        return attr.asdict(self)
-
-    @property
-    def human_timedelta(self) -&gt; str:
-        &#34;&#34;&#34;Returns last_played attr but in human delta date.&#34;&#34;&#34;
-        return time.human_timedelta(self.last_played)</code></pre>
+        return int(self.character_ids[2])</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
@@ -853,21 +832,6 @@ class Profile(ProfileComponent):
                         </ul>
                         <h3>Instance variables</h3>
                         <dl>
-                            <dt id="aiobungie.crate.profile.Profile.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Returns a dict object of the profile.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-    &#34;&#34;&#34;Returns a dict object of the profile.&#34;&#34;&#34;
-    return attr.asdict(self)</code></pre>
-                                </details>
-                            </dd>
                             <dt id="aiobungie.crate.profile.Profile.character_ids"><code class="name">var <span class="ident">character_ids</span> : List[int]</code></dt>
                             <dd>
                                 <p class="inheritance">
@@ -877,21 +841,6 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                 <div class="desc inherited">
                                     <p>A list of the profile's character ids.</p>
                                 </div>
-                            </dd>
-                            <dt id="aiobungie.crate.profile.Profile.human_timedelta"><code class="name">var <span class="ident">human_timedelta</span> : str</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Returns last_played attr but in human delta date.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def human_timedelta(self) -&gt; str:
-    &#34;&#34;&#34;Returns last_played attr but in human delta date.&#34;&#34;&#34;
-    return time.human_timedelta(self.last_played)</code></pre>
-                                </details>
                             </dd>
                             <dt id="aiobungie.crate.profile.Profile.hunter_id"><code class="name">var <span class="ident">hunter_id</span> : int</code></dt>
                             <dd>
@@ -1452,9 +1401,7 @@ def type(self) -&gt; enums.MembershipType:
                         <li>
                             <h4><code><a title="aiobungie.crate.profile.Profile" href="#aiobungie.crate.profile.Profile">Profile</a></code></h4>
                             <ul class="two-column">
-                                <li><code><a title="aiobungie.crate.profile.Profile.as_dict" href="#aiobungie.crate.profile.Profile.as_dict">as_dict</a></code></li>
                                 <li><code><a title="aiobungie.crate.profile.Profile.character_ids" href="#aiobungie.crate.profile.Profile.character_ids">character_ids</a></code></li>
-                                <li><code><a title="aiobungie.crate.profile.Profile.human_timedelta" href="#aiobungie.crate.profile.Profile.human_timedelta">human_timedelta</a></code></li>
                                 <li><code><a title="aiobungie.crate.profile.Profile.hunter" href="#aiobungie.crate.profile.Profile.hunter">hunter</a></code></li>
                                 <li><code><a title="aiobungie.crate.profile.Profile.hunter_id" href="#aiobungie.crate.profile.Profile.hunter_id">hunter_id</a></code></li>
                                 <li><code><a title="aiobungie.crate.profile.Profile.id" href="#aiobungie.crate.profile.Profile.id">id</a></code></li>

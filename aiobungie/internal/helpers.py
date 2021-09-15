@@ -49,8 +49,8 @@ JsonObject = typing.Dict[str, typing.Any]
 i.e., {"Key": 1, "Key2": "Value"}
 """
 
-JsonArray = typing.List[typing.Dict[str, typing.Any]]
-"""A json like list of dicts of string key and any value
+JsonArray = typing.List[typing.Any]
+"""A json like list of any data type.
 
 i.e., [{"Key": 1}, {"Key2": "Value"}]
 """

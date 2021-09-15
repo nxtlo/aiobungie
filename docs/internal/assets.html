@@ -543,7 +543,7 @@ class Image:
     @staticmethod
     def partial() -&gt; str:
         &#34;&#34;&#34;A partial image that just returns undefined.&#34;&#34;&#34;
-        return helpers.Undefined
+        return f&#34;Image &lt;{helpers.Undefined}&gt;&#34;
 
 
 MaybeImage = typing.Union[Image, str, None]
@@ -601,7 +601,7 @@ Images returned from the api as None will be replaced with `Image.partial`.
     @staticmethod
     def partial() -&gt; str:
         &#34;&#34;&#34;A partial image that just returns undefined.&#34;&#34;&#34;
-        return helpers.Undefined</code></pre>
+        return f&#34;Image &lt;{helpers.Undefined}&gt;&#34;</code></pre>
                         </details>
                         <h3>Static methods</h3>
                         <dl>
@@ -619,7 +619,7 @@ Images returned from the api as None will be replaced with `Image.partial`.
                                     <pre><code class="python">@staticmethod
 def partial() -&gt; str:
     &#34;&#34;&#34;A partial image that just returns undefined.&#34;&#34;&#34;
-    return helpers.Undefined</code></pre>
+    return f&#34;Image &lt;{helpers.Undefined}&gt;&#34;</code></pre>
                                 </details>
                             </dd>
                         </dl>

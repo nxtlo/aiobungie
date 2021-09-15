@@ -527,6 +527,7 @@ import attr
 
 from aiobungie.internal import assets
 from aiobungie.internal import enums
+from aiobungie.internal import helpers
 from aiobungie.internal import traits
 
 
@@ -546,8 +547,8 @@ class Entity(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def name(self) -&gt; str:
-        &#34;&#34;&#34;Entity&#39;s name&#34;&#34;&#34;
+    def name(self) -&gt; helpers.UndefinedOr[str]:
+        &#34;&#34;&#34;Entity&#39;s name. This can be `UNDEFINED` if not found.&#34;&#34;&#34;
 
     @property
     @abc.abstractmethod
@@ -561,7 +562,7 @@ class Entity(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def description(self) -&gt; str:
+    def description(self) -&gt; helpers.UndefinedOr[str]:
         &#34;&#34;&#34;Entity&#39;s description&#34;&#34;&#34;
 
     @property
@@ -573,11 +574,6 @@ class Entity(abc.ABC):
     @abc.abstractmethod
     def hash(self) -&gt; int:
         &#34;&#34;&#34;Entity&#39;s hash.&#34;&#34;&#34;
-
-    @property
-    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        &#34;&#34;&#34;Returns an instance of the entity as a dict&#34;&#34;&#34;
-        return attr.asdict(self)
 
     def __str__(self) -&gt; str:
         return str(self.name)
@@ -602,10 +598,10 @@ class InventoryEntity(Entity):
     index: int = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;Entity&#39;s index.&#34;&#34;&#34;
 
-    name: str = attr.field(repr=True, hash=False, eq=False)
-    &#34;&#34;&#34;Entity&#39;s name&#34;&#34;&#34;
+    name: helpers.UndefinedOr[str] = attr.field(repr=True, hash=False, eq=False)
+    &#34;&#34;&#34;Entity&#39;s name. This can be `UNDEFINED` if not found.&#34;&#34;&#34;
 
-    description: str = attr.field(repr=True)
+    description: helpers.UndefinedOr[str] = attr.field(repr=True)
     &#34;&#34;&#34;Entity&#39;s description.&#34;&#34;&#34;
 
     icon: assets.MaybeImage = attr.field(repr=False, hash=False, eq=False)
@@ -614,10 +610,10 @@ class InventoryEntity(Entity):
     has_icon: bool = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;A boolean that returns True if the entity has an icon.&#34;&#34;&#34;
 
-    type: typing.Union[enums.Item, str] = attr.field(repr=True, hash=False)
+    type: helpers.UndefinedOr[enums.Item] = attr.field(repr=True, hash=False)
     &#34;&#34;&#34;Entity&#39;s type. Can be undefined if nothing was found.&#34;&#34;&#34;
 
-    type_name: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    type_name: helpers.UndefinedOr[str] = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;Entity&#39;s type name. i.e., `Grenade Launcher`&#34;&#34;&#34;
 
     water_mark: typing.Optional[assets.Image] = attr.field(
@@ -628,7 +624,7 @@ class InventoryEntity(Entity):
     tier: typing.Optional[enums.ItemTier] = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;Entity&#39;s &#34;tier.&#34;&#34;&#34;
 
-    tier_name: typing.Optional[str] = attr.field(repr=False, eq=False)
+    tier_name: helpers.UndefinedOr[str] = attr.field(repr=False, eq=False)
     &#34;&#34;&#34;A string version of the item tier.&#34;&#34;&#34;
 
     bucket_type: typing.Optional[int] = attr.field(repr=True, hash=False, eq=False)
@@ -646,7 +642,7 @@ class InventoryEntity(Entity):
     )
     &#34;&#34;&#34;Entity&#39;s ammo type if it was a wepon, otherwise it will return None&#34;&#34;&#34;
 
-    lore_hash: typing.Union[int, str] = attr.field(repr=False, hash=False, eq=False)
+    lore_hash: typing.Optional[int] = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;The entity&#39;s lore hash. Can be undefined if no lore hash found.&#34;&#34;&#34;
 
     item_class: typing.Optional[enums.Class] = attr.field(
@@ -654,25 +650,27 @@ class InventoryEntity(Entity):
     )
     &#34;&#34;&#34;The entity&#39;s class type.&#34;&#34;&#34;
 
-    sub_type: typing.Union[enums.Item, str] = attr.field(
+    sub_type: helpers.UndefinedOr[enums.Item] = attr.field(
         repr=False, hash=False, eq=False
     )
     &#34;&#34;&#34;The subtype of the entity. A type is a weapon or armor.
     A subtype is a handcannonn or leg armor for an example.
     &#34;&#34;&#34;
 
-    is_equippable: typing.Optional[bool] = attr.field(repr=False, hash=False, eq=False)
+    is_equippable: helpers.UndefinedOr[bool] = attr.field(
+        repr=False, hash=False, eq=False
+    )
     &#34;&#34;&#34;True if the entity can be equipped or False.&#34;&#34;&#34;
 
     summary_hash: typing.Optional[int] = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;Entity&#39;s summary hash.&#34;&#34;&#34;
 
-    damage: typing.Union[enums.DamageType, str] = attr.field(
+    damage: helpers.UndefinedOr[enums.DamageType] = attr.field(
         repr=False, hash=False, eq=False
     )
     &#34;&#34;&#34;Entity&#39;s damage type. Only works for weapons.&#34;&#34;&#34;
 
-    about: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    about: helpers.UndefinedOr[str] = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;Entity&#39;s about.&#34;&#34;&#34;
 
     banner: typing.Optional[assets.Image] = attr.field(repr=False, eq=False, hash=False)
@@ -716,8 +714,8 @@ class InventoryEntity(Entity):
 
     @property
     @abc.abstractmethod
-    def name(self) -&gt; str:
-        &#34;&#34;&#34;Entity&#39;s name&#34;&#34;&#34;
+    def name(self) -&gt; helpers.UndefinedOr[str]:
+        &#34;&#34;&#34;Entity&#39;s name. This can be `UNDEFINED` if not found.&#34;&#34;&#34;
 
     @property
     @abc.abstractmethod
@@ -731,7 +729,7 @@ class InventoryEntity(Entity):
 
     @property
     @abc.abstractmethod
-    def description(self) -&gt; str:
+    def description(self) -&gt; helpers.UndefinedOr[str]:
         &#34;&#34;&#34;Entity&#39;s description&#34;&#34;&#34;
 
     @property
@@ -743,11 +741,6 @@ class InventoryEntity(Entity):
     @abc.abstractmethod
     def hash(self) -&gt; int:
         &#34;&#34;&#34;Entity&#39;s hash.&#34;&#34;&#34;
-
-    @property
-    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        &#34;&#34;&#34;Returns an instance of the entity as a dict&#34;&#34;&#34;
-        return attr.asdict(self)
 
     def __str__(self) -&gt; str:
         return str(self.name)
@@ -765,22 +758,7 @@ class InventoryEntity(Entity):
                         </ul>
                         <h3>Instance variables</h3>
                         <dl>
-                            <dt id="aiobungie.crate.entity.Entity.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Returns an instance of the entity as a dict</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-    &#34;&#34;&#34;Returns an instance of the entity as a dict&#34;&#34;&#34;
-    return attr.asdict(self)</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.crate.entity.Entity.description"><code class="name">var <span class="ident">description</span> : str</code></dt>
+                            <dt id="aiobungie.crate.entity.Entity.description"><code class="name">var <span class="ident">description</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>Entity's description</p>
@@ -791,7 +769,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                     </summary>
                                     <pre><code class="python">@property
 @abc.abstractmethod
-def description(self) -&gt; str:
+def description(self) -&gt; helpers.UndefinedOr[str]:
     &#34;&#34;&#34;Entity&#39;s description&#34;&#34;&#34;</code></pre>
                                 </details>
                             </dd>
@@ -855,10 +833,10 @@ def index(self) -&gt; int:
     &#34;&#34;&#34;The entity&#39;s index.&#34;&#34;&#34;</code></pre>
                                 </details>
                             </dd>
-                            <dt id="aiobungie.crate.entity.Entity.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
+                            <dt id="aiobungie.crate.entity.Entity.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>Entity's name</p>
+                                    <p>Entity's name. This can be <code>UNDEFINED</code> if not found.</p>
                                 </div>
                                 <details class="source">
                                     <summary>
@@ -866,8 +844,8 @@ def index(self) -&gt; int:
                                     </summary>
                                     <pre><code class="python">@property
 @abc.abstractmethod
-def name(self) -&gt; str:
-    &#34;&#34;&#34;Entity&#39;s name&#34;&#34;&#34;</code></pre>
+def name(self) -&gt; helpers.UndefinedOr[str]:
+    &#34;&#34;&#34;Entity&#39;s name. This can be `UNDEFINED` if not found.&#34;&#34;&#34;</code></pre>
                                 </details>
                             </dd>
                             <dt id="aiobungie.crate.entity.Entity.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.traits.Netrunner" href="./internal/traits.html#aiobungie.internal.traits.Netrunner">Netrunner</a></code></dt>
@@ -889,7 +867,7 @@ def net(self) -&gt; traits.Netrunner:
                     </dd>
                     <dt id="aiobungie.crate.entity.InventoryEntity"><code class="flex name class">
 <span>class <span class="ident">InventoryEntity</span></span>
-<span>(</span><span>*, net: traits.Netrunner, hash: int, index: int, name: str, description: str, icon: assets.MaybeImage, has_icon: bool, type: typing.Union[enums.Item, str], type_name: typing.Optional[str], water_mark: typing.Optional[assets.Image], tier: typing.Optional[enums.ItemTier], tier_name: typing.Optional[str], bucket_type: typing.Optional[int], stats: typing.Optional[typing.Dict[str, typing.Any]], ammo_type: typing.Optional[enums.AmmoType], lore_hash: typing.Union[int, str], item_class: typing.Optional[enums.Class], sub_type: typing.Union[enums.Item, str], is_equippable: typing.Optional[bool], summary_hash: typing.Optional[int], damage: typing.Union[enums.DamageType, str], about: typing.Optional[str], banner: typing.Optional[assets.Image])</span>
+<span>(</span><span>*, net: traits.Netrunner, hash: int, index: int, name: helpers.UndefinedOr[str], description: helpers.UndefinedOr[str], icon: assets.MaybeImage, has_icon: bool, type: helpers.UndefinedOr[enums.Item], type_name: helpers.UndefinedOr[str], water_mark: typing.Optional[assets.Image], tier: typing.Optional[enums.ItemTier], tier_name: helpers.UndefinedOr[str], bucket_type: typing.Optional[int], stats: typing.Optional[typing.Dict[str, typing.Any]], ammo_type: typing.Optional[enums.AmmoType], lore_hash: typing.Optional[int], item_class: typing.Optional[enums.Class], sub_type: helpers.UndefinedOr[enums.Item], is_equippable: helpers.UndefinedOr[bool], summary_hash: typing.Optional[int], damage: helpers.UndefinedOr[enums.DamageType], about: helpers.UndefinedOr[str], banner: typing.Optional[assets.Image])</span>
 </code></dt>
                     <dd>
                         <div class="desc">
@@ -917,10 +895,10 @@ class InventoryEntity(Entity):
     index: int = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;Entity&#39;s index.&#34;&#34;&#34;
 
-    name: str = attr.field(repr=True, hash=False, eq=False)
-    &#34;&#34;&#34;Entity&#39;s name&#34;&#34;&#34;
+    name: helpers.UndefinedOr[str] = attr.field(repr=True, hash=False, eq=False)
+    &#34;&#34;&#34;Entity&#39;s name. This can be `UNDEFINED` if not found.&#34;&#34;&#34;
 
-    description: str = attr.field(repr=True)
+    description: helpers.UndefinedOr[str] = attr.field(repr=True)
     &#34;&#34;&#34;Entity&#39;s description.&#34;&#34;&#34;
 
     icon: assets.MaybeImage = attr.field(repr=False, hash=False, eq=False)
@@ -929,10 +907,10 @@ class InventoryEntity(Entity):
     has_icon: bool = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;A boolean that returns True if the entity has an icon.&#34;&#34;&#34;
 
-    type: typing.Union[enums.Item, str] = attr.field(repr=True, hash=False)
+    type: helpers.UndefinedOr[enums.Item] = attr.field(repr=True, hash=False)
     &#34;&#34;&#34;Entity&#39;s type. Can be undefined if nothing was found.&#34;&#34;&#34;
 
-    type_name: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    type_name: helpers.UndefinedOr[str] = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;Entity&#39;s type name. i.e., `Grenade Launcher`&#34;&#34;&#34;
 
     water_mark: typing.Optional[assets.Image] = attr.field(
@@ -943,7 +921,7 @@ class InventoryEntity(Entity):
     tier: typing.Optional[enums.ItemTier] = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;Entity&#39;s &#34;tier.&#34;&#34;&#34;
 
-    tier_name: typing.Optional[str] = attr.field(repr=False, eq=False)
+    tier_name: helpers.UndefinedOr[str] = attr.field(repr=False, eq=False)
     &#34;&#34;&#34;A string version of the item tier.&#34;&#34;&#34;
 
     bucket_type: typing.Optional[int] = attr.field(repr=True, hash=False, eq=False)
@@ -961,7 +939,7 @@ class InventoryEntity(Entity):
     )
     &#34;&#34;&#34;Entity&#39;s ammo type if it was a wepon, otherwise it will return None&#34;&#34;&#34;
 
-    lore_hash: typing.Union[int, str] = attr.field(repr=False, hash=False, eq=False)
+    lore_hash: typing.Optional[int] = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;The entity&#39;s lore hash. Can be undefined if no lore hash found.&#34;&#34;&#34;
 
     item_class: typing.Optional[enums.Class] = attr.field(
@@ -969,25 +947,27 @@ class InventoryEntity(Entity):
     )
     &#34;&#34;&#34;The entity&#39;s class type.&#34;&#34;&#34;
 
-    sub_type: typing.Union[enums.Item, str] = attr.field(
+    sub_type: helpers.UndefinedOr[enums.Item] = attr.field(
         repr=False, hash=False, eq=False
     )
     &#34;&#34;&#34;The subtype of the entity. A type is a weapon or armor.
     A subtype is a handcannonn or leg armor for an example.
     &#34;&#34;&#34;
 
-    is_equippable: typing.Optional[bool] = attr.field(repr=False, hash=False, eq=False)
+    is_equippable: helpers.UndefinedOr[bool] = attr.field(
+        repr=False, hash=False, eq=False
+    )
     &#34;&#34;&#34;True if the entity can be equipped or False.&#34;&#34;&#34;
 
     summary_hash: typing.Optional[int] = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;Entity&#39;s summary hash.&#34;&#34;&#34;
 
-    damage: typing.Union[enums.DamageType, str] = attr.field(
+    damage: helpers.UndefinedOr[enums.DamageType] = attr.field(
         repr=False, hash=False, eq=False
     )
     &#34;&#34;&#34;Entity&#39;s damage type. Only works for weapons.&#34;&#34;&#34;
 
-    about: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    about: helpers.UndefinedOr[str] = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;Entity&#39;s about.&#34;&#34;&#34;
 
     banner: typing.Optional[assets.Image] = attr.field(repr=False, eq=False, hash=False)
@@ -1004,7 +984,7 @@ class InventoryEntity(Entity):
                         </ul>
                         <h3>Instance variables</h3>
                         <dl>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.about"><code class="name">var <span class="ident">about</span> : Optional[str]</code></dt>
+                            <dt id="aiobungie.crate.entity.InventoryEntity.about"><code class="name">var <span class="ident">about</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>Entity's about.</p>
@@ -1014,16 +994,6 @@ class InventoryEntity(Entity):
                             <dd>
                                 <div class="desc">
                                     <p>Entity's ammo type if it was a wepon, otherwise it will return None</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
-                            <dd>
-                                <p class="inheritance">
-                                    <em>Inherited from:</em>
-                                    <code><a title="aiobungie.crate.entity.Entity" href="#aiobungie.crate.entity.Entity">Entity</a></code>.<code><a title="aiobungie.crate.entity.Entity.as_dict" href="#aiobungie.crate.entity.Entity.as_dict">as_dict</a></code>
-                                </p>
-                                <div class="desc inherited">
-                                    <p>Returns an instance of the entity as a dict</p>
                                 </div>
                             </dd>
                             <dt id="aiobungie.crate.entity.InventoryEntity.banner"><code class="name">var <span class="ident">banner</span> : Optional[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>]</code></dt>
@@ -1038,13 +1008,13 @@ class InventoryEntity(Entity):
                                     <p>The entity's bucket type, None if unknown</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.damage"><code class="name">var <span class="ident">damage</span> : Union[<a title="aiobungie.internal.enums.DamageType" href="./internal/enums.html#aiobungie.internal.enums.DamageType">DamageType</a>, str]</code></dt>
+                            <dt id="aiobungie.crate.entity.InventoryEntity.damage"><code class="name">var <span class="ident">damage</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, <a title="aiobungie.internal.enums.DamageType" href="./internal/enums.html#aiobungie.internal.enums.DamageType">DamageType</a>]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>Entity's damage type. Only works for weapons.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.description"><code class="name">var <span class="ident">description</span> : str</code></dt>
+                            <dt id="aiobungie.crate.entity.InventoryEntity.description"><code class="name">var <span class="ident">description</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>Entity's description.</p>
@@ -1082,7 +1052,7 @@ class InventoryEntity(Entity):
                                     <p>Entity's index.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.is_equippable"><code class="name">var <span class="ident">is_equippable</span> : Optional[bool]</code></dt>
+                            <dt id="aiobungie.crate.entity.InventoryEntity.is_equippable"><code class="name">var <span class="ident">is_equippable</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, bool]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>True if the entity can be equipped or False.</p>
@@ -1094,20 +1064,20 @@ class InventoryEntity(Entity):
                                     <p>The entity's class type.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.lore_hash"><code class="name">var <span class="ident">lore_hash</span> : Union[int, str]</code></dt>
+                            <dt id="aiobungie.crate.entity.InventoryEntity.lore_hash"><code class="name">var <span class="ident">lore_hash</span> : Optional[None]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>The entity's lore hash. Can be undefined if no lore hash found.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
+                            <dt id="aiobungie.crate.entity.InventoryEntity.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
                             <dd>
                                 <p class="inheritance">
                                     <em>Inherited from:</em>
                                     <code><a title="aiobungie.crate.entity.Entity" href="#aiobungie.crate.entity.Entity">Entity</a></code>.<code><a title="aiobungie.crate.entity.Entity.name" href="#aiobungie.crate.entity.Entity.name">name</a></code>
                                 </p>
                                 <div class="desc inherited">
-                                    <p>Entity's name</p>
+                                    <p>Entity's name. This can be <code>UNDEFINED</code> if not found.</p>
                                 </div>
                             </dd>
                             <dt id="aiobungie.crate.entity.InventoryEntity.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.traits.Netrunner" href="./internal/traits.html#aiobungie.internal.traits.Netrunner">Netrunner</a></code></dt>
@@ -1126,7 +1096,7 @@ class InventoryEntity(Entity):
                                     <p>Entity's stats. this currently returns a dict object of the stats.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.sub_type"><code class="name">var <span class="ident">sub_type</span> : Union[<a title="aiobungie.internal.enums.Item" href="./internal/enums.html#aiobungie.internal.enums.Item">Item</a>, str]</code></dt>
+                            <dt id="aiobungie.crate.entity.InventoryEntity.sub_type"><code class="name">var <span class="ident">sub_type</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, <a title="aiobungie.internal.enums.Item" href="./internal/enums.html#aiobungie.internal.enums.Item">Item</a>]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>The subtype of the entity. A type is a weapon or armor. A subtype is a handcannonn or leg armor for an example.</p>
@@ -1144,19 +1114,19 @@ class InventoryEntity(Entity):
                                     <p>Entity's "tier.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.tier_name"><code class="name">var <span class="ident">tier_name</span> : Optional[str]</code></dt>
+                            <dt id="aiobungie.crate.entity.InventoryEntity.tier_name"><code class="name">var <span class="ident">tier_name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>A string version of the item tier.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.type"><code class="name">var <span class="ident">type</span> : Union[<a title="aiobungie.internal.enums.Item" href="./internal/enums.html#aiobungie.internal.enums.Item">Item</a>, str]</code></dt>
+                            <dt id="aiobungie.crate.entity.InventoryEntity.type"><code class="name">var <span class="ident">type</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, <a title="aiobungie.internal.enums.Item" href="./internal/enums.html#aiobungie.internal.enums.Item">Item</a>]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>Entity's type. Can be undefined if nothing was found.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.type_name"><code class="name">var <span class="ident">type_name</span> : Optional[str]</code></dt>
+                            <dt id="aiobungie.crate.entity.InventoryEntity.type_name"><code class="name">var <span class="ident">type_name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>Entity's type name. i.e., <code>Grenade Launcher</code></p>
@@ -1244,7 +1214,6 @@ class InventoryEntity(Entity):
                         <li>
                             <h4><code><a title="aiobungie.crate.entity.Entity" href="#aiobungie.crate.entity.Entity">Entity</a></code></h4>
                             <ul class="two-column">
-                                <li><code><a title="aiobungie.crate.entity.Entity.as_dict" href="#aiobungie.crate.entity.Entity.as_dict">as_dict</a></code></li>
                                 <li><code><a title="aiobungie.crate.entity.Entity.description" href="#aiobungie.crate.entity.Entity.description">description</a></code></li>
                                 <li><code><a title="aiobungie.crate.entity.Entity.has_icon" href="#aiobungie.crate.entity.Entity.has_icon">has_icon</a></code></li>
                                 <li><code><a title="aiobungie.crate.entity.Entity.hash" href="#aiobungie.crate.entity.Entity.hash">hash</a></code></li>
@@ -1259,7 +1228,6 @@ class InventoryEntity(Entity):
                             <ul class="two-column">
                                 <li><code><a title="aiobungie.crate.entity.InventoryEntity.about" href="#aiobungie.crate.entity.InventoryEntity.about">about</a></code></li>
                                 <li><code><a title="aiobungie.crate.entity.InventoryEntity.ammo_type" href="#aiobungie.crate.entity.InventoryEntity.ammo_type">ammo_type</a></code></li>
-                                <li><code><a title="aiobungie.crate.entity.InventoryEntity.as_dict" href="#aiobungie.crate.entity.InventoryEntity.as_dict">as_dict</a></code></li>
                                 <li><code><a title="aiobungie.crate.entity.InventoryEntity.banner" href="#aiobungie.crate.entity.InventoryEntity.banner">banner</a></code></li>
                                 <li><code><a title="aiobungie.crate.entity.InventoryEntity.bucket_type" href="#aiobungie.crate.entity.InventoryEntity.bucket_type">bucket_type</a></code></li>
                                 <li><code><a title="aiobungie.crate.entity.InventoryEntity.damage" href="#aiobungie.crate.entity.InventoryEntity.damage">damage</a></code></li>

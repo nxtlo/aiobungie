@@ -534,12 +534,6 @@ from .helpers import deprecated</code></pre>
                             <p>aiobungie assets module for API Image hash and path linking.</p>
                         </div>
                     </dd>
-                    <dt><code class="name"><a title="aiobungie.internal.db" href="db.html">aiobungie.internal.db</a></code></dt>
-                    <dd>
-                        <div class="desc">
-                            <p>A small sqlite3 database for the bungie manifest.</p>
-                        </div>
-                    </dd>
                     <dt><code class="name"><a title="aiobungie.internal.enums" href="enums.html">aiobungie.internal.enums</a></code></dt>
                     <dd>
                         <div class="desc">
@@ -549,7 +543,7 @@ from .helpers import deprecated</code></pre>
                     <dt><code class="name"><a title="aiobungie.internal.helpers" href="helpers.html">aiobungie.internal.helpers</a></code></dt>
                     <dd>
                         <div class="desc">
-                            <p>A helper module for useful decorators, functions and types.</p>
+                            <p>A module for helper functions and types.</p>
                         </div>
                     </dd>
                     <dt><code class="name"><a title="aiobungie.internal.serialize" href="serialize.html">aiobungie.internal.serialize</a></code></dt>
@@ -640,7 +634,7 @@ from .helpers import deprecated</code></pre>
     @staticmethod
     def partial() -&gt; str:
         &#34;&#34;&#34;A partial image that just returns undefined.&#34;&#34;&#34;
-        return helpers.Undefined</code></pre>
+        return f&#34;Image &lt;{helpers.Undefined}&gt;&#34;</code></pre>
                         </details>
                         <h3>Static methods</h3>
                         <dl>
@@ -658,7 +652,7 @@ from .helpers import deprecated</code></pre>
                                     <pre><code class="python">@staticmethod
 def partial() -&gt; str:
     &#34;&#34;&#34;A partial image that just returns undefined.&#34;&#34;&#34;
-    return helpers.Undefined</code></pre>
+    return f&#34;Image &lt;{helpers.Undefined}&gt;&#34;</code></pre>
                                 </details>
                             </dd>
                         </dl>
@@ -767,7 +761,6 @@ def url(self) -&gt; str:
                     <h3><a href="#header-submodules">Sub-modules</a></h3>
                     <ul>
                         <li><code><a title="aiobungie.internal.assets" href="assets.html">aiobungie.internal.assets</a></code></li>
-                        <li><code><a title="aiobungie.internal.db" href="db.html">aiobungie.internal.db</a></code></li>
                         <li><code><a title="aiobungie.internal.enums" href="enums.html">aiobungie.internal.enums</a></code></li>
                         <li><code><a title="aiobungie.internal.helpers" href="helpers.html">aiobungie.internal.helpers</a></code></li>
                         <li><code><a title="aiobungie.internal.serialize" href="serialize.html">aiobungie.internal.serialize</a></code></li>

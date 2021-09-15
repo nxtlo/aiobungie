@@ -538,8 +538,8 @@ class StadiaMember(user.UserLike):
     id: int = attr.field(repr=True, hash=True, eq=True)
     &#34;&#34;&#34;The member&#39;s id.&#34;&#34;&#34;
 
-    name: str = attr.field(repr=True, eq=False)
-    &#34;&#34;&#34;The member&#39;s name.&#34;&#34;&#34;
+    name: helpers.UndefinedOr[str] = attr.field(repr=True, eq=False)
+    &#34;&#34;&#34;The member&#39;s name. This can be `UNDEFINED` if not found.&#34;&#34;&#34;
 
     last_seen_name: str = attr.field(repr=True)
     &#34;&#34;&#34;The member&#39;s last seen display name. You may use this field if `StadiaMember.name` is `Undefined`.&#34;&#34;&#34;
@@ -560,13 +560,9 @@ class StadiaMember(user.UserLike):
     &#34;&#34;&#34;The member&#39;s profile privacy status.&#34;&#34;&#34;
 
     @property
-    def unique_name(self) -&gt; helpers.NoneOr[str]:
-        &#34;&#34;&#34;The member&#39;s unique name. This field may be `None` or `Undefined` if not found.&#34;&#34;&#34;
-        return f&#34;{self.name}#{self.code}&#34;
-
-    @property
-    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        return attr.asdict(self)
+    def unique_name(self) -&gt; str:
+        &#34;&#34;&#34;Member&#39;s unique name.&#34;&#34;&#34;
+        return self.unique_name
 
 
 @attr.define(hash=True, kw_only=True, weakref_slot=False)
@@ -580,6 +576,7 @@ class XboxMember(user.UserLike):
     &#34;&#34;&#34;The member&#39;s id.&#34;&#34;&#34;
 
     name: str = attr.field(repr=True, eq=False)
+    &#34;&#34;&#34;The member&#39;s name. This can be `UNDEFINED` if not found.&#34;&#34;&#34;
     &#34;&#34;&#34;The member&#39;s name.&#34;&#34;&#34;
 
     last_seen_name: str = attr.field(repr=True)
@@ -601,13 +598,9 @@ class XboxMember(user.UserLike):
     &#34;&#34;&#34;The member&#39;s profile privacy status.&#34;&#34;&#34;
 
     @property
-    def unique_name(self) -&gt; helpers.NoneOr[str]:
-        &#34;&#34;&#34;The member&#39;s unique name. This field may be `None` or `Undefined` if not found.&#34;&#34;&#34;
-        return f&#34;{self.name}#{self.code}&#34;
-
-    @property
-    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        return attr.asdict(self)
+    def unique_name(self) -&gt; str:
+        &#34;&#34;&#34;Member&#39;s unique name.&#34;&#34;&#34;
+        return self.unique_name
 
 
 @attr.define(hash=True, kw_only=True, weakref_slot=False)
@@ -621,7 +614,7 @@ class PSNMember(user.UserLike):
     &#34;&#34;&#34;The member&#39;s id.&#34;&#34;&#34;
 
     name: str = attr.field(repr=True, eq=False)
-    &#34;&#34;&#34;The member&#39;s name.&#34;&#34;&#34;
+    &#34;&#34;&#34;The member&#39;s name. This can be `UNDEFINED` if not found.&#34;&#34;&#34;
 
     last_seen_name: str = attr.field(repr=True)
     &#34;&#34;&#34;The member&#39;s last seen display name. You may use this field if `PSNMember.name` is `Undefined`.&#34;&#34;&#34;
@@ -642,13 +635,9 @@ class PSNMember(user.UserLike):
     &#34;&#34;&#34;The member&#39;s profile privacy status.&#34;&#34;&#34;
 
     @property
-    def unique_name(self) -&gt; helpers.NoneOr[str]:
-        &#34;&#34;&#34;The member&#39;s unique name. This field may be `None` or `Undefined` if not found.&#34;&#34;&#34;
-        return f&#34;{self.name}#{self.code}&#34;
-
-    @property
-    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        return attr.asdict(self)
+    def unique_name(self) -&gt; str:
+        &#34;&#34;&#34;Member&#39;s unique name.&#34;&#34;&#34;
+        return self.unique_name
 
 
 @attr.define(hash=True, kw_only=True, weakref_slot=False)
@@ -662,7 +651,7 @@ class SteamMember(user.UserLike):
     &#34;&#34;&#34;The member&#39;s id.&#34;&#34;&#34;
 
     name: str = attr.field(repr=True, eq=False)
-    &#34;&#34;&#34;The member&#39;s name.&#34;&#34;&#34;
+    &#34;&#34;&#34;The member&#39;s name. This can be `UNDEFINED` if not found.&#34;&#34;&#34;
 
     last_seen_name: str = attr.field(repr=True)
     &#34;&#34;&#34;The member&#39;s last seen display name. You may use this field if `SteamMember.name` is `Undefined`.&#34;&#34;&#34;
@@ -683,13 +672,9 @@ class SteamMember(user.UserLike):
     &#34;&#34;&#34;The member&#39;s profile privacy status.&#34;&#34;&#34;
 
     @property
-    def unique_name(self) -&gt; helpers.NoneOr[str]:
-        &#34;&#34;&#34;The member&#39;s unique name. This field may be `None` or `Undefined` if not found.&#34;&#34;&#34;
-        return f&#34;{self.name}#{self.code}&#34;
-
-    @property
-    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        return attr.asdict(self)</code></pre>
+    def unique_name(self) -&gt; str:
+        &#34;&#34;&#34;Member&#39;s unique name.&#34;&#34;&#34;
+        return self.unique_name</code></pre>
                 </details>
             </section>
             <section>
@@ -728,7 +713,7 @@ class PSNMember(user.UserLike):
     &#34;&#34;&#34;The member&#39;s id.&#34;&#34;&#34;
 
     name: str = attr.field(repr=True, eq=False)
-    &#34;&#34;&#34;The member&#39;s name.&#34;&#34;&#34;
+    &#34;&#34;&#34;The member&#39;s name. This can be `UNDEFINED` if not found.&#34;&#34;&#34;
 
     last_seen_name: str = attr.field(repr=True)
     &#34;&#34;&#34;The member&#39;s last seen display name. You may use this field if `PSNMember.name` is `Undefined`.&#34;&#34;&#34;
@@ -749,13 +734,9 @@ class PSNMember(user.UserLike):
     &#34;&#34;&#34;The member&#39;s profile privacy status.&#34;&#34;&#34;
 
     @property
-    def unique_name(self) -&gt; helpers.NoneOr[str]:
-        &#34;&#34;&#34;The member&#39;s unique name. This field may be `None` or `Undefined` if not found.&#34;&#34;&#34;
-        return f&#34;{self.name}#{self.code}&#34;
-
-    @property
-    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        return attr.asdict(self)</code></pre>
+    def unique_name(self) -&gt; str:
+        &#34;&#34;&#34;Member&#39;s unique name.&#34;&#34;&#34;
+        return self.unique_name</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
@@ -764,24 +745,6 @@ class PSNMember(user.UserLike):
                         </ul>
                         <h3>Instance variables</h3>
                         <dl>
-                            <dt id="aiobungie.crate.members.PSNMember.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
-                            <dd>
-                                <p class="inheritance">
-                                    <em>Inherited from:</em>
-                                    <code><a title="aiobungie.crate.user.UserLike" href="user.html#aiobungie.crate.user.UserLike">UserLike</a></code>.<code><a title="aiobungie.crate.user.UserLike.as_dict" href="user.html#aiobungie.crate.user.UserLike.as_dict">as_dict</a></code>
-                                </p>
-                                <div class="desc inherited">
-                                    <p>An instance of the UserLike as a dict.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-    return attr.asdict(self)</code></pre>
-                                </details>
-                            </dd>
                             <dt id="aiobungie.crate.members.PSNMember.code"><code class="name">var <span class="ident">code</span> : Optional[None]</code></dt>
                             <dd>
                                 <div class="desc">
@@ -825,7 +788,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                             <dt id="aiobungie.crate.members.PSNMember.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>The member's name.</p>
+                                    <p>The member's name. This can be <code>UNDEFINED</code> if not found.</p>
                                 </div>
                             </dd>
                             <dt id="aiobungie.crate.members.PSNMember.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
@@ -840,26 +803,26 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                     <p>A sequence of the member's membership types.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.members.PSNMember.unique_name"><code class="name">var <span class="ident">unique_name</span> : Optional[str]</code></dt>
+                            <dt id="aiobungie.crate.members.PSNMember.unique_name"><code class="name">var <span class="ident">unique_name</span> : str</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>The member's unique name. This field may be <code>None</code> or <code>Undefined</code> if not found.</p>
+                                    <p>Member's unique name.</p>
                                 </div>
                                 <details class="source">
                                     <summary>
                                         <span>Expand source code</span>
                                     </summary>
                                     <pre><code class="python">@property
-def unique_name(self) -&gt; helpers.NoneOr[str]:
-    &#34;&#34;&#34;The member&#39;s unique name. This field may be `None` or `Undefined` if not found.&#34;&#34;&#34;
-    return f&#34;{self.name}#{self.code}&#34;</code></pre>
+def unique_name(self) -&gt; str:
+    &#34;&#34;&#34;Member&#39;s unique name.&#34;&#34;&#34;
+    return self.unique_name</code></pre>
                                 </details>
                             </dd>
                         </dl>
                     </dd>
                     <dt id="aiobungie.crate.members.StadiaMember"><code class="flex name class">
 <span>class <span class="ident">StadiaMember</span></span>
-<span>(</span><span>*, id: int, name: str, last_seen_name: str, type: enums.MembershipType, types: typing.Sequence[enums.MembershipType], icon: assets.MaybeImage, code: helpers.NoneOr[int], is_public: bool)</span>
+<span>(</span><span>*, id: int, name: helpers.UndefinedOr[str], last_seen_name: str, type: enums.MembershipType, types: typing.Sequence[enums.MembershipType], icon: assets.MaybeImage, code: helpers.NoneOr[int], is_public: bool)</span>
 </code></dt>
                     <dd>
                         <div class="desc">
@@ -883,8 +846,8 @@ class StadiaMember(user.UserLike):
     id: int = attr.field(repr=True, hash=True, eq=True)
     &#34;&#34;&#34;The member&#39;s id.&#34;&#34;&#34;
 
-    name: str = attr.field(repr=True, eq=False)
-    &#34;&#34;&#34;The member&#39;s name.&#34;&#34;&#34;
+    name: helpers.UndefinedOr[str] = attr.field(repr=True, eq=False)
+    &#34;&#34;&#34;The member&#39;s name. This can be `UNDEFINED` if not found.&#34;&#34;&#34;
 
     last_seen_name: str = attr.field(repr=True)
     &#34;&#34;&#34;The member&#39;s last seen display name. You may use this field if `StadiaMember.name` is `Undefined`.&#34;&#34;&#34;
@@ -905,13 +868,9 @@ class StadiaMember(user.UserLike):
     &#34;&#34;&#34;The member&#39;s profile privacy status.&#34;&#34;&#34;
 
     @property
-    def unique_name(self) -&gt; helpers.NoneOr[str]:
-        &#34;&#34;&#34;The member&#39;s unique name. This field may be `None` or `Undefined` if not found.&#34;&#34;&#34;
-        return f&#34;{self.name}#{self.code}&#34;
-
-    @property
-    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        return attr.asdict(self)</code></pre>
+    def unique_name(self) -&gt; str:
+        &#34;&#34;&#34;Member&#39;s unique name.&#34;&#34;&#34;
+        return self.unique_name</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
@@ -920,24 +879,6 @@ class StadiaMember(user.UserLike):
                         </ul>
                         <h3>Instance variables</h3>
                         <dl>
-                            <dt id="aiobungie.crate.members.StadiaMember.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
-                            <dd>
-                                <p class="inheritance">
-                                    <em>Inherited from:</em>
-                                    <code><a title="aiobungie.crate.user.UserLike" href="user.html#aiobungie.crate.user.UserLike">UserLike</a></code>.<code><a title="aiobungie.crate.user.UserLike.as_dict" href="user.html#aiobungie.crate.user.UserLike.as_dict">as_dict</a></code>
-                                </p>
-                                <div class="desc inherited">
-                                    <p>An instance of the UserLike as a dict.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-    return attr.asdict(self)</code></pre>
-                                </details>
-                            </dd>
                             <dt id="aiobungie.crate.members.StadiaMember.code"><code class="name">var <span class="ident">code</span> : Optional[None]</code></dt>
                             <dd>
                                 <div class="desc">
@@ -978,10 +919,10 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                     <p>The user like's profile link.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.members.StadiaMember.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
+                            <dt id="aiobungie.crate.members.StadiaMember.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>The member's name.</p>
+                                    <p>The member's name. This can be <code>UNDEFINED</code> if not found.</p>
                                 </div>
                             </dd>
                             <dt id="aiobungie.crate.members.StadiaMember.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
@@ -996,19 +937,19 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                     <p>A sequence of the member's membership types.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.members.StadiaMember.unique_name"><code class="name">var <span class="ident">unique_name</span> : Optional[str]</code></dt>
+                            <dt id="aiobungie.crate.members.StadiaMember.unique_name"><code class="name">var <span class="ident">unique_name</span> : str</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>The member's unique name. This field may be <code>None</code> or <code>Undefined</code> if not found.</p>
+                                    <p>Member's unique name.</p>
                                 </div>
                                 <details class="source">
                                     <summary>
                                         <span>Expand source code</span>
                                     </summary>
                                     <pre><code class="python">@property
-def unique_name(self) -&gt; helpers.NoneOr[str]:
-    &#34;&#34;&#34;The member&#39;s unique name. This field may be `None` or `Undefined` if not found.&#34;&#34;&#34;
-    return f&#34;{self.name}#{self.code}&#34;</code></pre>
+def unique_name(self) -&gt; str:
+    &#34;&#34;&#34;Member&#39;s unique name.&#34;&#34;&#34;
+    return self.unique_name</code></pre>
                                 </details>
                             </dd>
                         </dl>
@@ -1040,7 +981,7 @@ class SteamMember(user.UserLike):
     &#34;&#34;&#34;The member&#39;s id.&#34;&#34;&#34;
 
     name: str = attr.field(repr=True, eq=False)
-    &#34;&#34;&#34;The member&#39;s name.&#34;&#34;&#34;
+    &#34;&#34;&#34;The member&#39;s name. This can be `UNDEFINED` if not found.&#34;&#34;&#34;
 
     last_seen_name: str = attr.field(repr=True)
     &#34;&#34;&#34;The member&#39;s last seen display name. You may use this field if `SteamMember.name` is `Undefined`.&#34;&#34;&#34;
@@ -1061,13 +1002,9 @@ class SteamMember(user.UserLike):
     &#34;&#34;&#34;The member&#39;s profile privacy status.&#34;&#34;&#34;
 
     @property
-    def unique_name(self) -&gt; helpers.NoneOr[str]:
-        &#34;&#34;&#34;The member&#39;s unique name. This field may be `None` or `Undefined` if not found.&#34;&#34;&#34;
-        return f&#34;{self.name}#{self.code}&#34;
-
-    @property
-    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        return attr.asdict(self)</code></pre>
+    def unique_name(self) -&gt; str:
+        &#34;&#34;&#34;Member&#39;s unique name.&#34;&#34;&#34;
+        return self.unique_name</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
@@ -1076,24 +1013,6 @@ class SteamMember(user.UserLike):
                         </ul>
                         <h3>Instance variables</h3>
                         <dl>
-                            <dt id="aiobungie.crate.members.SteamMember.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
-                            <dd>
-                                <p class="inheritance">
-                                    <em>Inherited from:</em>
-                                    <code><a title="aiobungie.crate.user.UserLike" href="user.html#aiobungie.crate.user.UserLike">UserLike</a></code>.<code><a title="aiobungie.crate.user.UserLike.as_dict" href="user.html#aiobungie.crate.user.UserLike.as_dict">as_dict</a></code>
-                                </p>
-                                <div class="desc inherited">
-                                    <p>An instance of the UserLike as a dict.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-    return attr.asdict(self)</code></pre>
-                                </details>
-                            </dd>
                             <dt id="aiobungie.crate.members.SteamMember.code"><code class="name">var <span class="ident">code</span> : Optional[None]</code></dt>
                             <dd>
                                 <div class="desc">
@@ -1137,7 +1056,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                             <dt id="aiobungie.crate.members.SteamMember.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>The member's name.</p>
+                                    <p>The member's name. This can be <code>UNDEFINED</code> if not found.</p>
                                 </div>
                             </dd>
                             <dt id="aiobungie.crate.members.SteamMember.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
@@ -1152,19 +1071,19 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                     <p>A sequence of the member's membership types.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.members.SteamMember.unique_name"><code class="name">var <span class="ident">unique_name</span> : Optional[str]</code></dt>
+                            <dt id="aiobungie.crate.members.SteamMember.unique_name"><code class="name">var <span class="ident">unique_name</span> : str</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>The member's unique name. This field may be <code>None</code> or <code>Undefined</code> if not found.</p>
+                                    <p>Member's unique name.</p>
                                 </div>
                                 <details class="source">
                                     <summary>
                                         <span>Expand source code</span>
                                     </summary>
                                     <pre><code class="python">@property
-def unique_name(self) -&gt; helpers.NoneOr[str]:
-    &#34;&#34;&#34;The member&#39;s unique name. This field may be `None` or `Undefined` if not found.&#34;&#34;&#34;
-    return f&#34;{self.name}#{self.code}&#34;</code></pre>
+def unique_name(self) -&gt; str:
+    &#34;&#34;&#34;Member&#39;s unique name.&#34;&#34;&#34;
+    return self.unique_name</code></pre>
                                 </details>
                             </dd>
                         </dl>
@@ -1196,6 +1115,7 @@ class XboxMember(user.UserLike):
     &#34;&#34;&#34;The member&#39;s id.&#34;&#34;&#34;
 
     name: str = attr.field(repr=True, eq=False)
+    &#34;&#34;&#34;The member&#39;s name. This can be `UNDEFINED` if not found.&#34;&#34;&#34;
     &#34;&#34;&#34;The member&#39;s name.&#34;&#34;&#34;
 
     last_seen_name: str = attr.field(repr=True)
@@ -1217,13 +1137,9 @@ class XboxMember(user.UserLike):
     &#34;&#34;&#34;The member&#39;s profile privacy status.&#34;&#34;&#34;
 
     @property
-    def unique_name(self) -&gt; helpers.NoneOr[str]:
-        &#34;&#34;&#34;The member&#39;s unique name. This field may be `None` or `Undefined` if not found.&#34;&#34;&#34;
-        return f&#34;{self.name}#{self.code}&#34;
-
-    @property
-    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        return attr.asdict(self)</code></pre>
+    def unique_name(self) -&gt; str:
+        &#34;&#34;&#34;Member&#39;s unique name.&#34;&#34;&#34;
+        return self.unique_name</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
@@ -1232,24 +1148,6 @@ class XboxMember(user.UserLike):
                         </ul>
                         <h3>Instance variables</h3>
                         <dl>
-                            <dt id="aiobungie.crate.members.XboxMember.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
-                            <dd>
-                                <p class="inheritance">
-                                    <em>Inherited from:</em>
-                                    <code><a title="aiobungie.crate.user.UserLike" href="user.html#aiobungie.crate.user.UserLike">UserLike</a></code>.<code><a title="aiobungie.crate.user.UserLike.as_dict" href="user.html#aiobungie.crate.user.UserLike.as_dict">as_dict</a></code>
-                                </p>
-                                <div class="desc inherited">
-                                    <p>An instance of the UserLike as a dict.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-    return attr.asdict(self)</code></pre>
-                                </details>
-                            </dd>
                             <dt id="aiobungie.crate.members.XboxMember.code"><code class="name">var <span class="ident">code</span> : Optional[None]</code></dt>
                             <dd>
                                 <div class="desc">
@@ -1293,7 +1191,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                             <dt id="aiobungie.crate.members.XboxMember.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>The member's name.</p>
+                                    <p>The member's name. This can be <code>UNDEFINED</code> if not found.</p>
                                 </div>
                             </dd>
                             <dt id="aiobungie.crate.members.XboxMember.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
@@ -1308,19 +1206,19 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                     <p>A sequence of the member's membership types.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.members.XboxMember.unique_name"><code class="name">var <span class="ident">unique_name</span> : Optional[str]</code></dt>
+                            <dt id="aiobungie.crate.members.XboxMember.unique_name"><code class="name">var <span class="ident">unique_name</span> : str</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>The member's unique name. This field may be <code>None</code> or <code>Undefined</code> if not found.</p>
+                                    <p>Member's unique name.</p>
                                 </div>
                                 <details class="source">
                                     <summary>
                                         <span>Expand source code</span>
                                     </summary>
                                     <pre><code class="python">@property
-def unique_name(self) -&gt; helpers.NoneOr[str]:
-    &#34;&#34;&#34;The member&#39;s unique name. This field may be `None` or `Undefined` if not found.&#34;&#34;&#34;
-    return f&#34;{self.name}#{self.code}&#34;</code></pre>
+def unique_name(self) -&gt; str:
+    &#34;&#34;&#34;Member&#39;s unique name.&#34;&#34;&#34;
+    return self.unique_name</code></pre>
                                 </details>
                             </dd>
                         </dl>
@@ -1399,7 +1297,6 @@ def unique_name(self) -&gt; helpers.NoneOr[str]:
                         <li>
                             <h4><code><a title="aiobungie.crate.members.PSNMember" href="#aiobungie.crate.members.PSNMember">PSNMember</a></code></h4>
                             <ul class="two-column">
-                                <li><code><a title="aiobungie.crate.members.PSNMember.as_dict" href="#aiobungie.crate.members.PSNMember.as_dict">as_dict</a></code></li>
                                 <li><code><a title="aiobungie.crate.members.PSNMember.code" href="#aiobungie.crate.members.PSNMember.code">code</a></code></li>
                                 <li><code><a title="aiobungie.crate.members.PSNMember.icon" href="#aiobungie.crate.members.PSNMember.icon">icon</a></code></li>
                                 <li><code><a title="aiobungie.crate.members.PSNMember.id" href="#aiobungie.crate.members.PSNMember.id">id</a></code></li>
@@ -1415,7 +1312,6 @@ def unique_name(self) -&gt; helpers.NoneOr[str]:
                         <li>
                             <h4><code><a title="aiobungie.crate.members.StadiaMember" href="#aiobungie.crate.members.StadiaMember">StadiaMember</a></code></h4>
                             <ul class="two-column">
-                                <li><code><a title="aiobungie.crate.members.StadiaMember.as_dict" href="#aiobungie.crate.members.StadiaMember.as_dict">as_dict</a></code></li>
                                 <li><code><a title="aiobungie.crate.members.StadiaMember.code" href="#aiobungie.crate.members.StadiaMember.code">code</a></code></li>
                                 <li><code><a title="aiobungie.crate.members.StadiaMember.icon" href="#aiobungie.crate.members.StadiaMember.icon">icon</a></code></li>
                                 <li><code><a title="aiobungie.crate.members.StadiaMember.id" href="#aiobungie.crate.members.StadiaMember.id">id</a></code></li>
@@ -1431,7 +1327,6 @@ def unique_name(self) -&gt; helpers.NoneOr[str]:
                         <li>
                             <h4><code><a title="aiobungie.crate.members.SteamMember" href="#aiobungie.crate.members.SteamMember">SteamMember</a></code></h4>
                             <ul class="two-column">
-                                <li><code><a title="aiobungie.crate.members.SteamMember.as_dict" href="#aiobungie.crate.members.SteamMember.as_dict">as_dict</a></code></li>
                                 <li><code><a title="aiobungie.crate.members.SteamMember.code" href="#aiobungie.crate.members.SteamMember.code">code</a></code></li>
                                 <li><code><a title="aiobungie.crate.members.SteamMember.icon" href="#aiobungie.crate.members.SteamMember.icon">icon</a></code></li>
                                 <li><code><a title="aiobungie.crate.members.SteamMember.id" href="#aiobungie.crate.members.SteamMember.id">id</a></code></li>
@@ -1447,7 +1342,6 @@ def unique_name(self) -&gt; helpers.NoneOr[str]:
                         <li>
                             <h4><code><a title="aiobungie.crate.members.XboxMember" href="#aiobungie.crate.members.XboxMember">XboxMember</a></code></h4>
                             <ul class="two-column">
-                                <li><code><a title="aiobungie.crate.members.XboxMember.as_dict" href="#aiobungie.crate.members.XboxMember.as_dict">as_dict</a></code></li>
                                 <li><code><a title="aiobungie.crate.members.XboxMember.code" href="#aiobungie.crate.members.XboxMember.code">code</a></code></li>
                                 <li><code><a title="aiobungie.crate.members.XboxMember.icon" href="#aiobungie.crate.members.XboxMember.icon">icon</a></code></li>
                                 <li><code><a title="aiobungie.crate.members.XboxMember.id" href="#aiobungie.crate.members.XboxMember.id">id</a></code></li>

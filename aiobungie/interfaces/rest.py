@@ -386,8 +386,8 @@ class RESTInterface(abc.ABC):
         type: enums.MembershipType = enums.MembershipType.NONE,
         name: typing.Optional[str] = None,
         /,
-    ) -> ResponseSig[helpers.JsonObject]:
-        """Fetch all Bungie Clan members. if no members found in the clan.
+    ) -> ResponseSig[helpers.JsonArray]:
+        """Fetch all Bungie Clan members.
 
         Parameters
         ----------
@@ -404,8 +404,8 @@ class RESTInterface(abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.internal.helpers.JsonObject]`
-            A JSON object of clan members object.
+        `ResponseSig[aiobungie.internal.helpers.JsonArray]`
+            A JSON array of clan members.
 
         Raises
         ------

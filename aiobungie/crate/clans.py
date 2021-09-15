@@ -35,7 +35,7 @@ import attr
 
 from aiobungie import url
 from aiobungie.crate.user import UserLike
-from aiobungie.internal import Image
+from aiobungie.internal import assets
 from aiobungie.internal import helpers
 from aiobungie.internal import traits
 from aiobungie.internal.enums import ClanMemberType
@@ -90,10 +90,10 @@ class ClanMember(UserLike):
     type: MembershipType = attr.field(repr=True)
     """Clan member's membership type."""
 
-    types: list[MembershipType] = attr.field(repr=False)
-    """A list of the available clan member membership types."""
+    types: typing.Sequence[MembershipType] = attr.field(repr=False)
+    """A sequence of the available clan member membership types."""
 
-    icon: Image = attr.field(repr=False)
+    icon: assets.MaybeImage = attr.field(repr=False)
     """Clan member's icon"""
 
     is_public: bool = attr.field(repr=False)
@@ -166,15 +166,13 @@ class ClanOwner(UserLike):
     last_seen_name: str = attr.field(repr=True)
     """The clan member's last seen display name"""
 
-    is_public: bool = attr.field(hash=False, repr=True, eq=False)
+    is_public: bool = attr.field(repr=True, eq=False)
     """Returns if the user profile is public or no."""
 
-    type: MembershipType = attr.field(hash=False, repr=True, eq=True)
+    type: MembershipType = attr.field(repr=True, eq=True)
     """Returns the membership type of the user."""
 
-    types: typing.Optional[typing.List[int]] = attr.field(
-        hash=True, repr=False, eq=False
-    )
+    types: typing.Sequence[MembershipType] = attr.field(repr=False, eq=False)
     """Returns a list of the member ship's membership types."""
 
     last_online: datetime = attr.field(repr=False)
@@ -183,7 +181,7 @@ class ClanOwner(UserLike):
     clan_id: int = attr.field(repr=True)
     """Owner's current clan id."""
 
-    icon: Image = attr.field(repr=False)
+    icon: assets.MaybeImage = attr.field(repr=False)
     """Owner's profile icom"""
 
     joined_at: datetime = attr.field(repr=True)
@@ -260,10 +258,10 @@ class Clan:
     is_public: bool = attr.field(repr=False, eq=False)
     """Clan's privacy status."""
 
-    banner: Image = attr.field(repr=False)
+    banner: assets.MaybeImage = attr.field(repr=False)
     """Clan's banner"""
 
-    avatar: Image = attr.field(repr=False)
+    avatar: assets.MaybeImage = attr.field(repr=False)
     """Clan's avatar"""
 
     about: str = attr.field(repr=False, eq=False)

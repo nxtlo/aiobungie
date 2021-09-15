@@ -31,6 +31,7 @@ __all__: tuple[str, ...] = (
     "HardLinkedMembership",
     "UserThemes",
     "BungieUser",
+    "PartialBungieUser",
     "DestinyUser",
 )
 
@@ -108,6 +109,32 @@ class UserLike(abc.ABC):
 
     def __int__(self) -> int:
         return self.id
+
+
+# This is meant for Bungie destiny users which's different from a normal bungie user.
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
+class PartialBungieUser:
+    """Represents partial bungie user. This is usually used for bungie user info
+    for destiny member objects. Like Clan members, owners, moderators for an example.
+    """
+
+    name: helpers.UndefinedOr[str] = attr.field(repr=True)
+    """The user's name. Field may be undefined if not found."""
+
+    id: int = attr.field(repr=True, hash=True)
+    """The user's id."""
+
+    type: enums.MembershipType = attr.field(repr=True)
+    """The user's membership type."""
+
+    crossave_override: enums.MembershipType = attr.field(repr=False)
+    """The user's crossave override membership."""
+
+    is_public: bool = attr.field(repr=False)
+    """The user's privacy."""
+
+    icon: assets.MaybeImage = attr.field(repr=False)
+    """The user's icon."""
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
@@ -204,7 +231,7 @@ class BungieUser:
         return self.id
 
 
-@attr.define(hash=False, kw_only=False, weakref_slot=False)
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class DestinyUser(UserLike):
     """Represents a Bungie user's Destiny memberships.
 
@@ -227,13 +254,16 @@ class DestinyUser(UserLike):
     """A sequence of the member's membership types."""
 
     icon: assets.MaybeImage = attr.field(repr=False)
-    """The profile's icon if it was present."""
+    """The member's icon if it was present."""
 
     code: helpers.NoneOr[int] = attr.field(repr=True, eq=True, hash=False, default=0)
     """The member's name code. This field may be `None` if not found."""
 
     is_public: bool = attr.field(repr=False, default=False)
     """The member's profile privacy status."""
+
+    crossave_override: typing.Union[enums.MembershipType, int] = attr.field(repr=False)
+    """The member's corssave override membership type."""
 
     @property
     def unique_name(self) -> str:

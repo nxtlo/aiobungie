@@ -21,20 +21,18 @@
 # SOFTWARE.
 
 import nox
-
+import os
 
 @nox.session(reuse_venv=True)
 def pdoc(session: nox.Session) -> None:
     session.install("-r", "requirements.txt", "-r", "dev-requirements.txt", "pdoc3")
     session.run(
-        "python",
-        "-m",
         "pdoc",
         "--html",
-        "--output-dir",
-        "./docs",
         "--template-dir",
-        "templates",
-        "--force",
+        "./templates",
         "./aiobungie",
+        "--force"
     )
+    if os.path.exists("./html"):
+        os.system("bash nix/move.sh")

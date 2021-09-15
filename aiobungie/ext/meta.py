@@ -55,7 +55,6 @@ class Manifest:
         try:
             log.debug("Downloading manifest...")
             req = await self._rest.fetch_manifest()
-            print(req)
 
             if not os.path.exists("./.cache"):
                 os.mkdir("./.cache")

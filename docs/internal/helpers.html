@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
     <meta name="generator" content="pdoc 0.10.0" />
     <title>aiobungie.internal.helpers API documentation</title>
-    <meta name="description" content="A helper module for useful decorators, functions and types." />
+    <meta name="description" content="A module for helper functions and types." />
     <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
     <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
     <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/atom-one-dark.min.css" crossorigin>
@@ -482,7 +482,7 @@
                 <h1 class="title">Module <code>aiobungie.internal.helpers</code></h1>
             </header>
             <section id="section-intro">
-                <p>A helper module for useful decorators, functions and types.</p>
+                <p>A module for helper functions and types.</p>
                 <details class="source">
                     <summary>
                         <span>Expand source code</span>
@@ -509,16 +509,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-&#34;&#34;&#34;A helper module for useful decorators, functions and types.&#34;&#34;&#34;
+&#34;&#34;&#34;A module for helper functions and types.&#34;&#34;&#34;
 
 
 from __future__ import annotations
 
 __all__ = (
     &#34;deprecated&#34;,
-    &#34;JsonDict&#34;,
-    &#34;JsonList&#34;,
+    &#34;JsonObject&#34;,
+    &#34;JsonArray&#34;,
     &#34;Undefined&#34;,
+    &#34;UndefinedOr&#34;,
+    &#34;UndefinedType&#34;,
     &#34;Unknown&#34;,
     &#34;just&#34;,
     &#34;NoneOr&#34;,
@@ -530,29 +532,25 @@ import inspect
 import typing
 import warnings
 
-JsonDict = typing.Dict[str, typing.Any]
+JsonObject = typing.Dict[str, typing.Any]
 &#34;&#34;&#34;A json like dict of string key and any value.
 
 i.e., {&#34;Key&#34;: 1, &#34;Key2&#34;: &#34;Value&#34;}
 &#34;&#34;&#34;
 
-JsonList = typing.List[typing.Dict[str, typing.Any]]
-&#34;&#34;&#34;A json like list of dicts of string key and any value
+JsonArray = typing.List[typing.Any]
+&#34;&#34;&#34;A json like list of any data type.
 
 i.e., [{&#34;Key&#34;: 1}, {&#34;Key2&#34;: &#34;Value&#34;}]
 &#34;&#34;&#34;
 
-Undefined: str = &#34;Undefined&#34;
-&#34;&#34;&#34;A helper that checks if stuff are unknown / empty string and Undefine them if they&#39;re.&#34;&#34;&#34;
-
-Unknown: str = &#34;&#34;
+Unknown: typing.Final[str] = &#34;&#34;
 &#34;&#34;&#34;Stuff that are empty strings.&#34;&#34;&#34;
 
 T = typing.TypeVar(&#34;T&#34;, covariant=True)
-&#34;&#34;&#34;A type var that&#39;s associated with NoneOr[T]&#34;&#34;&#34;
 
 NoneOr = typing.Union[None, T]
-&#34;&#34;&#34;A Union type that&#39;s similar to to Optional[T]&#34;&#34;&#34;
+&#34;&#34;&#34;A Union type that&#39;s similar to to `Optional[T]`&#34;&#34;&#34;
 
 
 def just(lst: list[dict[str, typing.Any]], lookup: str) -&gt; list[typing.Any]:
@@ -599,7 +597,37 @@ def get_or_make_loop() -&gt; asyncio.AbstractEventLoop:
 
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-    return loop</code></pre>
+    return loop
+
+
+class UndefinedType:
+    &#34;&#34;&#34;An `UNDEFINED` type.&#34;&#34;&#34;
+
+    __instance: typing.ClassVar[UndefinedType]
+
+    def __bool__(self) -&gt; typing.Literal[False]:
+        return False
+
+    def __repr__(self) -&gt; str:
+        return &#34;UNDEFINED&#34;
+
+    def __str__(self) -&gt; str:
+        return &#34;UNDEFINED&#34;
+
+    def __new__(cls) -&gt; UndefinedType:
+        try:
+            return cls.__instance
+        except AttributeError:
+            o = super().__new__(cls)
+            cls.__instance = o
+            return cls.__instance
+
+
+Undefined: typing.Final[UndefinedType] = UndefinedType()
+&#34;&#34;&#34;An undefined type for attribs that may be undefined and not None.&#34;&#34;&#34;
+
+UndefinedOr = typing.Union[UndefinedType, T]
+&#34;&#34;&#34;A union version of the Undefined type which can be undefined or any other type.&#34;&#34;&#34;</code></pre>
                 </details>
             </section>
             <section>
@@ -607,33 +635,39 @@ def get_or_make_loop() -&gt; asyncio.AbstractEventLoop:
             <section>
                 <h2 class="section-title" id="header-variables">Global variables</h2>
                 <dl>
-                    <dt id="aiobungie.internal.helpers.JsonDict"><code class="name">var <span class="ident">JsonDict</span></code></dt>
+                    <dt id="aiobungie.internal.helpers.JsonArray"><code class="name">var <span class="ident">JsonArray</span></code></dt>
+                    <dd>
+                        <div class="desc">
+                            <p>A json like list of any data type.</p>
+                            <p>i.e., [{"Key": 1}, {"Key2": "Value"}]</p>
+                        </div>
+                    </dd>
+                    <dt id="aiobungie.internal.helpers.JsonObject"><code class="name">var <span class="ident">JsonObject</span></code></dt>
                     <dd>
                         <div class="desc">
                             <p>A json like dict of string key and any value.</p>
                             <p>i.e., {"Key": 1, "Key2": "Value"}</p>
                         </div>
                     </dd>
-                    <dt id="aiobungie.internal.helpers.JsonList"><code class="name">var <span class="ident">JsonList</span></code></dt>
-                    <dd>
-                        <div class="desc">
-                            <p>A json like list of dicts of string key and any value</p>
-                            <p>i.e., [{"Key": 1}, {"Key2": "Value"}]</p>
-                        </div>
-                    </dd>
                     <dt id="aiobungie.internal.helpers.NoneOr"><code class="name">var <span class="ident">NoneOr</span></code></dt>
                     <dd>
                         <div class="desc">
-                            <p>A Union type that's similar to to Optional[T]</p>
+                            <p>A Union type that's similar to to <code>Optional[T]</code></p>
                         </div>
                     </dd>
-                    <dt id="aiobungie.internal.helpers.Undefined"><code class="name">var <span class="ident">Undefined</span> : str</code></dt>
+                    <dt id="aiobungie.internal.helpers.Undefined"><code class="name">var <span class="ident">Undefined</span></code></dt>
                     <dd>
                         <div class="desc">
-                            <p>A helper that checks if stuff are unknown / empty string and Undefine them if they're.</p>
+                            <p>An undefined type for attribs that may be undefined and not None.</p>
                         </div>
                     </dd>
-                    <dt id="aiobungie.internal.helpers.Unknown"><code class="name">var <span class="ident">Unknown</span> : str</code></dt>
+                    <dt id="aiobungie.internal.helpers.UndefinedOr"><code class="name">var <span class="ident">UndefinedOr</span></code></dt>
+                    <dd>
+                        <div class="desc">
+                            <p>A union version of the Undefined type which can be undefined or any other type.</p>
+                        </div>
+                    </dd>
+                    <dt id="aiobungie.internal.helpers.Unknown"><code class="name">var <span class="ident">Unknown</span></code></dt>
                     <dd>
                         <div class="desc">
                             <p>Stuff that are empty strings.</p>
@@ -732,6 +766,43 @@ def get_or_make_loop() -&gt; asyncio.AbstractEventLoop:
                 </dl>
             </section>
             <section>
+                <h2 class="section-title" id="header-classes">Classes</h2>
+                <dl>
+                    <dt id="aiobungie.internal.helpers.UndefinedType"><code class="flex name class">
+<span>class <span class="ident">UndefinedType</span></span>
+</code></dt>
+                    <dd>
+                        <div class="desc">
+                            <p>An <code>UNDEFINED</code> type.</p>
+                        </div>
+                        <details class="source">
+                            <summary>
+                                <span>Expand source code</span>
+                            </summary>
+                            <pre><code class="python">class UndefinedType:
+    &#34;&#34;&#34;An `UNDEFINED` type.&#34;&#34;&#34;
+
+    __instance: typing.ClassVar[UndefinedType]
+
+    def __bool__(self) -&gt; typing.Literal[False]:
+        return False
+
+    def __repr__(self) -&gt; str:
+        return &#34;UNDEFINED&#34;
+
+    def __str__(self) -&gt; str:
+        return &#34;UNDEFINED&#34;
+
+    def __new__(cls) -&gt; UndefinedType:
+        try:
+            return cls.__instance
+        except AttributeError:
+            o = super().__new__(cls)
+            cls.__instance = o
+            return cls.__instance</code></pre>
+                        </details>
+                    </dd>
+                </dl>
             </section>
         </article>
         <nav id="sidebar">
@@ -801,11 +872,12 @@ def get_or_make_loop() -&gt; asyncio.AbstractEventLoop:
                 </li>
                 <li>
                     <h3><a href="#header-variables">Global variables</a></h3>
-                    <ul class="">
-                        <li><code><a title="aiobungie.internal.helpers.JsonDict" href="#aiobungie.internal.helpers.JsonDict">JsonDict</a></code></li>
-                        <li><code><a title="aiobungie.internal.helpers.JsonList" href="#aiobungie.internal.helpers.JsonList">JsonList</a></code></li>
+                    <ul class="two-column">
+                        <li><code><a title="aiobungie.internal.helpers.JsonArray" href="#aiobungie.internal.helpers.JsonArray">JsonArray</a></code></li>
+                        <li><code><a title="aiobungie.internal.helpers.JsonObject" href="#aiobungie.internal.helpers.JsonObject">JsonObject</a></code></li>
                         <li><code><a title="aiobungie.internal.helpers.NoneOr" href="#aiobungie.internal.helpers.NoneOr">NoneOr</a></code></li>
                         <li><code><a title="aiobungie.internal.helpers.Undefined" href="#aiobungie.internal.helpers.Undefined">Undefined</a></code></li>
+                        <li><code><a title="aiobungie.internal.helpers.UndefinedOr" href="#aiobungie.internal.helpers.UndefinedOr">UndefinedOr</a></code></li>
                         <li><code><a title="aiobungie.internal.helpers.Unknown" href="#aiobungie.internal.helpers.Unknown">Unknown</a></code></li>
                     </ul>
                 </li>
@@ -815,6 +887,14 @@ def get_or_make_loop() -&gt; asyncio.AbstractEventLoop:
                         <li><code><a title="aiobungie.internal.helpers.deprecated" href="#aiobungie.internal.helpers.deprecated">deprecated</a></code></li>
                         <li><code><a title="aiobungie.internal.helpers.get_or_make_loop" href="#aiobungie.internal.helpers.get_or_make_loop">get_or_make_loop</a></code></li>
                         <li><code><a title="aiobungie.internal.helpers.just" href="#aiobungie.internal.helpers.just">just</a></code></li>
+                    </ul>
+                </li>
+                <li>
+                    <h3><a href="#header-classes">Classes</a></h3>
+                    <ul>
+                        <li>
+                            <h4><code><a title="aiobungie.internal.helpers.UndefinedType" href="#aiobungie.internal.helpers.UndefinedType">UndefinedType</a></code></h4>
+                        </li>
                     </ul>
                 </li>
             </ul>

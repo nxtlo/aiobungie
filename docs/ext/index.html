@@ -538,7 +538,7 @@ from .meta import Manifest</code></pre>
                 <dl>
                     <dt id="aiobungie.ext.Manifest"><code class="flex name class">
 <span>class <span class="ident">Manifest</span></span>
-<span>(</span><span>token: str, path: t.Dict[str, t.Any])</span>
+<span>(</span><span>token: str, /)</span>
 </code></dt>
                     <dd>
                         <div class="desc"></div>
@@ -547,37 +547,22 @@ from .meta import Manifest</code></pre>
                                 <span>Expand source code</span>
                             </summary>
                             <pre><code class="python">class Manifest:
-    __slots__: t.Sequence[str] = (&#34;db&#34;, &#34;_http&#34;, &#34;_path&#34;, &#34;version&#34;)
+    __slots__: t.Sequence[str] = (&#34;_rest&#34;, &#34;version&#34;)
 
-    def __init__(self, token: str, path: t.Dict[str, t.Any]) -&gt; None:
-        self._path = path
-        self.version: str = path[&#34;version&#34;]
-        self._http = HTTPClient(token)
-
-    def __dbinit__(self) -&gt; None:
-        self.db = Database(&#34;./.cache/destiny.sqlite3&#34;)
+    def __init__(self, token: str, /) -&gt; None:
+        self._rest = RESTClient(token)
 
     async def download(self, *, force: bool = False) -&gt; None:
         if os.path.isfile(&#34;./.cache/destiny.sqlite3&#34;):
             if not force:
-                if self.db.version != self.version:  # type: ignore[has-type]
-                    log.warning(&#34;A newer Manifest version is available.&#34;)
-                    force = True
-                    await self.download(force=force)
                 return
-            elif force:
-                os.remove(&#34;./.cache/destiny.sqlite3&#34;)
+            os.remove(&#34;./.cache/destiny.sqlite3&#34;)
 
         if os.path.isfile(&#34;./.cache/file.zip&#34;):
             os.remove(&#34;./.cache/file.zip&#34;)
         try:
             log.debug(&#34;Downloading manifest...&#34;)
-            req = await self._http.fetch(
-                method=&#34;GET&#34;,
-                route=self._path[&#34;mobileWorldContentPaths&#34;][&#34;en&#34;],
-                base=True,
-                type=&#34;read&#34;,
-            )
+            req = await self._rest.fetch_manifest()
 
             if not os.path.exists(&#34;./.cache&#34;):
                 os.mkdir(&#34;./.cache&#34;)
@@ -589,55 +574,12 @@ from .meta import Manifest</code></pre>
                     zipped.extractall()
                 os.rename(name[0], &#34;./.cache/destiny.sqlite3&#34;)
 
-                # The only reason we&#39;re doing the db stuff here
-                # Because we don&#39;t want to declare `self.db` in the `__init__()`
-                self.__dbinit__()
-                self.db.create_table(&#34;versions&#34;, &#34;version&#34;, &#34;TEXT&#34;)
-                self.db.insert_version(self.version)
-
                 log.info(&#34;Database finished downloading.&#34;)
         except Exception:
-            raise
-
-    def get_raid_image(self, raid: Raid) -&gt; Image:
-        image = self.db.fetch(
-            &#34;SELECT json FROM DestinyActivityDefinition WHERE id = ?&#34;,
-            (int(raid),),
-            &#34;pgcrImage&#34;,
-        )
-        return Image(path=str(image))
-
-    def fetch(
-        self, definition: str, id: int, item: t.Optional[str] = None
-    ) -&gt; t.Optional[t.Dict[t.Any, t.Any]]:
-        &#34;&#34;&#34;Fetch something from the manifest database.
-        This returns a `typing.Dict[typing.Any, typing.Any]`
-
-        Parameters
-        ----------
-        definition: `builtins.str`
-            The definition you want to fetch from.
-        id: `builtins.int`
-            The id of the entity.
-        item: `typing.Optional[builsint.str]`
-            An item to get from the dict.
-
-        Returns
-        -------
-        `typing.Optional[typing.Dict[typing.Any, typing.Any]]`
-        &#34;&#34;&#34;
-        return self.db.fetch(
-            &#34;SELECT json FROM {} WHERE id = ?&#34;.format(definition), (id,), item
-        )</code></pre>
+            raise</code></pre>
                         </details>
                         <h3>Instance variables</h3>
                         <dl>
-                            <dt id="aiobungie.ext.Manifest.db"><code class="name">var <span class="ident">db</span></code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Return an attribute of instance, which is of type owner.</p>
-                                </div>
-                            </dd>
                             <dt id="aiobungie.ext.Manifest.version"><code class="name">var <span class="ident">version</span></code></dt>
                             <dd>
                                 <div class="desc">
@@ -659,24 +601,14 @@ from .meta import Manifest</code></pre>
                                     <pre><code class="python">async def download(self, *, force: bool = False) -&gt; None:
     if os.path.isfile(&#34;./.cache/destiny.sqlite3&#34;):
         if not force:
-            if self.db.version != self.version:  # type: ignore[has-type]
-                log.warning(&#34;A newer Manifest version is available.&#34;)
-                force = True
-                await self.download(force=force)
             return
-        elif force:
-            os.remove(&#34;./.cache/destiny.sqlite3&#34;)
+        os.remove(&#34;./.cache/destiny.sqlite3&#34;)
 
     if os.path.isfile(&#34;./.cache/file.zip&#34;):
         os.remove(&#34;./.cache/file.zip&#34;)
     try:
         log.debug(&#34;Downloading manifest...&#34;)
-        req = await self._http.fetch(
-            method=&#34;GET&#34;,
-            route=self._path[&#34;mobileWorldContentPaths&#34;][&#34;en&#34;],
-            base=True,
-            type=&#34;read&#34;,
-        )
+        req = await self._rest.fetch_manifest()
 
         if not os.path.exists(&#34;./.cache&#34;):
             os.mkdir(&#34;./.cache&#34;)
@@ -688,79 +620,9 @@ from .meta import Manifest</code></pre>
                 zipped.extractall()
             os.rename(name[0], &#34;./.cache/destiny.sqlite3&#34;)
 
-            # The only reason we&#39;re doing the db stuff here
-            # Because we don&#39;t want to declare `self.db` in the `__init__()`
-            self.__dbinit__()
-            self.db.create_table(&#34;versions&#34;, &#34;version&#34;, &#34;TEXT&#34;)
-            self.db.insert_version(self.version)
-
             log.info(&#34;Database finished downloading.&#34;)
     except Exception:
         raise</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.ext.Manifest.fetch"><code class="name flex">
-<span>def <span class="ident">fetch</span></span>(<span>self, definition: str, id: int, item: t.Optional[str] = None) ‑> Optional[Dict[Any, Any]]</span>
-</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Fetch something from the manifest database. This returns a <code>typing.Dict[typing.Any, typing.Any]</code></p>
-                                    <h2 id="parameters">Parameters</h2>
-                                    <dl>
-                                        <dt><strong><code>definition</code></strong> :&ensp;<code>builtins.str</code></dt>
-                                        <dd>The definition you want to fetch from.</dd>
-                                        <dt><strong><code>id</code></strong> :&ensp;<code>builtins.int</code></dt>
-                                        <dd>The id of the entity.</dd>
-                                        <dt><strong><code>item</code></strong> :&ensp;<code>typing.Optional[builsint.str]</code></dt>
-                                        <dd>An item to get from the dict.</dd>
-                                    </dl>
-                                    <h2 id="returns">Returns</h2>
-                                    <p><code>typing.Optional[typing.Dict[typing.Any, typing.Any]]</code></p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">def fetch(
-    self, definition: str, id: int, item: t.Optional[str] = None
-) -&gt; t.Optional[t.Dict[t.Any, t.Any]]:
-    &#34;&#34;&#34;Fetch something from the manifest database.
-    This returns a `typing.Dict[typing.Any, typing.Any]`
-
-    Parameters
-    ----------
-    definition: `builtins.str`
-        The definition you want to fetch from.
-    id: `builtins.int`
-        The id of the entity.
-    item: `typing.Optional[builsint.str]`
-        An item to get from the dict.
-
-    Returns
-    -------
-    `typing.Optional[typing.Dict[typing.Any, typing.Any]]`
-    &#34;&#34;&#34;
-    return self.db.fetch(
-        &#34;SELECT json FROM {} WHERE id = ?&#34;.format(definition), (id,), item
-    )</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.ext.Manifest.get_raid_image"><code class="name flex">
-<span>def <span class="ident">get_raid_image</span></span>(<span>self, raid: Raid) ‑> <a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a></span>
-</code></dt>
-                            <dd>
-                                <div class="desc"></div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">def get_raid_image(self, raid: Raid) -&gt; Image:
-    image = self.db.fetch(
-        &#34;SELECT json FROM DestinyActivityDefinition WHERE id = ?&#34;,
-        (int(raid),),
-        &#34;pgcrImage&#34;,
-    )
-    return Image(path=str(image))</code></pre>
                                 </details>
                             </dd>
                         </dl>
@@ -845,10 +707,7 @@ from .meta import Manifest</code></pre>
                         <li>
                             <h4><code><a title="aiobungie.ext.Manifest" href="#aiobungie.ext.Manifest">Manifest</a></code></h4>
                             <ul class="">
-                                <li><code><a title="aiobungie.ext.Manifest.db" href="#aiobungie.ext.Manifest.db">db</a></code></li>
                                 <li><code><a title="aiobungie.ext.Manifest.download" href="#aiobungie.ext.Manifest.download">download</a></code></li>
-                                <li><code><a title="aiobungie.ext.Manifest.fetch" href="#aiobungie.ext.Manifest.fetch">fetch</a></code></li>
-                                <li><code><a title="aiobungie.ext.Manifest.get_raid_image" href="#aiobungie.ext.Manifest.get_raid_image">get_raid_image</a></code></li>
                                 <li><code><a title="aiobungie.ext.Manifest.version" href="#aiobungie.ext.Manifest.version">version</a></code></li>
                             </ul>
                         </li>

@@ -720,35 +720,11 @@ class Activity:
         &#34;&#34;&#34;
         return await self.net.request.fetch_post_activity(self.instance_id)
 
-    @property
-    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        &#34;&#34;&#34;Returns a dict crate of the Activity,
-        This function is useful if you&#39;re binding to other REST apis.
-        &#34;&#34;&#34;
-        return attr.asdict(self)
-
     def __int__(self) -&gt; int:
         return self.instance_id</code></pre>
                         </details>
                         <h3>Instance variables</h3>
                         <dl>
-                            <dt id="aiobungie.crate.Activity.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Returns a dict crate of the Activity, This function is useful if you're binding to other REST apis.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-    &#34;&#34;&#34;Returns a dict crate of the Activity,
-    This function is useful if you&#39;re binding to other REST apis.
-    &#34;&#34;&#34;
-    return attr.asdict(self)</code></pre>
-                                </details>
-                            </dd>
                             <dt id="aiobungie.crate.Activity.assists"><code class="name">var <span class="ident">assists</span> : int</code></dt>
                             <dd>
                                 <div class="desc">
@@ -887,7 +863,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                     </dd>
                     <dt id="aiobungie.crate.Application"><code class="flex name class">
 <span>class <span class="ident">Application</span></span>
-<span>(</span><span>*, id: int, name: str, redirect_url: typing.Optional[str], created_at: datetime, published_at: datetime, link: str, status: int, scope: str, owner: <a title="aiobungie.crate.ApplicationOwner" href="#aiobungie.crate.ApplicationOwner">ApplicationOwner</a>)</span>
+<span>(</span><span>*, id: int, name: str, redirect_url: typing.Optional[str], created_at: datetime, published_at: datetime, link: str, status: int, scope: helpers.UndefinedOr[str], owner: <a title="aiobungie.crate.ApplicationOwner" href="#aiobungie.crate.ApplicationOwner">ApplicationOwner</a>)</span>
 </code></dt>
                     <dd>
                         <div class="desc">
@@ -923,23 +899,11 @@ class Application:
     status: int = attr.field(repr=False)
     &#34;&#34;&#34;App&#39;s status&#34;&#34;&#34;
 
-    scope: str = attr.field(repr=False)
+    scope: helpers.UndefinedOr[str] = attr.field(repr=False)
     &#34;&#34;&#34;App&#39;s scope&#34;&#34;&#34;
 
     owner: ApplicationOwner = attr.field(repr=True)
     &#34;&#34;&#34;App&#39;s owner&#34;&#34;&#34;
-
-    @property
-    def human_timedelta(self) -&gt; str:
-        &#34;&#34;&#34;Returns a human readable date of the app&#39;s creation date.&#34;&#34;&#34;
-        return time.human_timedelta(self.created_at)
-
-    @property
-    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        &#34;&#34;&#34;Returns a dict crate of the application,
-        This function is useful if you&#39;re binding to other REST apis.
-        &#34;&#34;&#34;
-        return attr.asdict(self)
 
     def __str__(self) -&gt; str:
         return self.name
@@ -949,43 +913,11 @@ class Application:
                         </details>
                         <h3>Instance variables</h3>
                         <dl>
-                            <dt id="aiobungie.crate.Application.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Returns a dict crate of the application, This function is useful if you're binding to other REST apis.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-    &#34;&#34;&#34;Returns a dict crate of the application,
-    This function is useful if you&#39;re binding to other REST apis.
-    &#34;&#34;&#34;
-    return attr.asdict(self)</code></pre>
-                                </details>
-                            </dd>
                             <dt id="aiobungie.crate.Application.created_at"><code class="name">var <span class="ident">created_at</span> : datetime.datetime</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>App creation date in UTC timezone</p>
                                 </div>
-                            </dd>
-                            <dt id="aiobungie.crate.Application.human_timedelta"><code class="name">var <span class="ident">human_timedelta</span> : str</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Returns a human readable date of the app's creation date.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def human_timedelta(self) -&gt; str:
-    &#34;&#34;&#34;Returns a human readable date of the app&#39;s creation date.&#34;&#34;&#34;
-    return time.human_timedelta(self.created_at)</code></pre>
-                                </details>
                             </dd>
                             <dt id="aiobungie.crate.Application.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
                             <dd>
@@ -1023,7 +955,7 @@ def human_timedelta(self) -&gt; str:
                                     <p>App redirect url</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.Application.scope"><code class="name">var <span class="ident">scope</span> : str</code></dt>
+                            <dt id="aiobungie.crate.Application.scope"><code class="name">var <span class="ident">scope</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>App's scope</p>
@@ -1039,7 +971,7 @@ def human_timedelta(self) -&gt; str:
                     </dd>
                     <dt id="aiobungie.crate.ApplicationOwner"><code class="flex name class">
 <span>class <span class="ident">ApplicationOwner</span></span>
-<span>(</span><span>*, name: str, type: enums.MembershipType, id: int, icon: Image, is_public: bool, code: NoneOr[int])</span>
+<span>(</span><span>*, name: helpers.UndefinedOr[str], type: enums.MembershipType, id: int, icon: assets.MaybeImage, is_public: bool, code: helpers.NoneOr[int])</span>
 </code></dt>
                     <dd>
                         <div class="desc">
@@ -1054,8 +986,8 @@ def human_timedelta(self) -&gt; str:
 class ApplicationOwner(UserLike):
     &#34;&#34;&#34;Represents a Bungie Application owner.&#34;&#34;&#34;
 
-    name: str = attr.field(repr=True, hash=False, eq=False)
-    &#34;&#34;&#34;The application owner name.&#34;&#34;&#34;
+    name: helpers.UndefinedOr[str] = attr.field(repr=True, hash=False, eq=False)
+    &#34;&#34;&#34;The application owner name. This can be `UNDEFINED` if not found.&#34;&#34;&#34;
 
     type: enums.MembershipType = attr.field(repr=True, hash=False, eq=True)
     &#34;&#34;&#34;The membership of the application owner.&#34;&#34;&#34;
@@ -1063,13 +995,13 @@ class ApplicationOwner(UserLike):
     id: int = attr.field(repr=True, hash=True, eq=True)
     &#34;&#34;&#34;The application owner&#39;s id.&#34;&#34;&#34;
 
-    icon: Image = attr.field(repr=False)
+    icon: assets.MaybeImage = attr.field(repr=False)
     &#34;&#34;&#34;The application owner&#39;s icon.&#34;&#34;&#34;
 
     is_public: bool = attr.field(repr=True)
     &#34;&#34;&#34;The application owner&#39;s profile privacy.&#34;&#34;&#34;
 
-    code: NoneOr[int] = attr.field(repr=True)
+    code: helpers.NoneOr[int] = attr.field(repr=True)
     &#34;&#34;&#34;The user like&#39;s unique display name code.
     This can be None if the user hasn&#39;t logged in after season of the lost update.
 
@@ -1077,38 +1009,19 @@ class ApplicationOwner(UserLike):
     &#34;&#34;&#34;
 
     @property
-    def unique_name(self) -&gt; NoneOr[str]:
-        &#34;&#34;&#34;The user like&#39;s display name. This includes the full name with the user name code.
-
-        .. versionadded:: 0.2.5
-        &#34;&#34;&#34;
-        return f&#34;{self.name}#{self.code}&#34;
+    def unique_name(self) -&gt; str:
+        &#34;&#34;&#34;The application owner&#39;s unique name.&#34;&#34;&#34;
+        return self.unique_name
 
     @property
-    def net(self) -&gt; traits.Netrunner:
-        &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
-        return self.net
+    def last_seen_name(self) -&gt; str:
+        # This is always undefined since an application
+        # dev doesn&#39;t have this field.
+        return str(helpers.Undefined)
 
     @property
     def link(self) -&gt; str:
-        return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;
-
-    @property
-    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        &#34;&#34;&#34;Returns a dict object of the application owner.&#34;&#34;&#34;
-        return dict(
-            id=self.id,
-            name=self.name,
-            is_public=self.is_public,
-            icon=str(self.icon),
-            type=self.type,
-        )
-
-    def __int__(self) -&gt; int:
-        return self.id
-
-    def __str__(self) -&gt; str:
-        return self.name</code></pre>
+        return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
@@ -1117,27 +1030,6 @@ class ApplicationOwner(UserLike):
                         </ul>
                         <h3>Instance variables</h3>
                         <dl>
-                            <dt id="aiobungie.crate.ApplicationOwner.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Returns a dict object of the application owner.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-    &#34;&#34;&#34;Returns a dict object of the application owner.&#34;&#34;&#34;
-    return dict(
-        id=self.id,
-        name=self.name,
-        is_public=self.is_public,
-        icon=str(self.icon),
-        type=self.type,
-    )</code></pre>
-                                </details>
-                            </dd>
                             <dt id="aiobungie.crate.ApplicationOwner.code"><code class="name">var <span class="ident">code</span> : Optional[None]</code></dt>
                             <dd>
                                 <p class="inheritance">
@@ -1148,7 +1040,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                     <p>The user like's unique display name code. This can be None if the user hasn't logged in after season of the lost update …</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.ApplicationOwner.icon"><code class="name">var <span class="ident">icon</span> : <a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a></code></dt>
+                            <dt id="aiobungie.crate.ApplicationOwner.icon"><code class="name">var <span class="ident">icon</span> : Union[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>The application owner's icon.</p>
@@ -1165,6 +1057,26 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                 <div class="desc">
                                     <p>The application owner's profile privacy.</p>
                                 </div>
+                            </dd>
+                            <dt id="aiobungie.crate.ApplicationOwner.last_seen_name"><code class="name">var <span class="ident">last_seen_name</span> : str</code></dt>
+                            <dd>
+                                <p class="inheritance">
+                                    <em>Inherited from:</em>
+                                    <code><a title="aiobungie.crate.user.UserLike" href="user.html#aiobungie.crate.user.UserLike">UserLike</a></code>.<code><a title="aiobungie.crate.user.UserLike.last_seen_name" href="user.html#aiobungie.crate.user.UserLike.last_seen_name">last_seen_name</a></code>
+                                </p>
+                                <div class="desc inherited">
+                                    <p>The user like's last seen name.</p>
+                                </div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">@property
+def last_seen_name(self) -&gt; str:
+    # This is always undefined since an application
+    # dev doesn&#39;t have this field.
+    return str(helpers.Undefined)</code></pre>
+                                </details>
                             </dd>
                             <dt id="aiobungie.crate.ApplicationOwner.link"><code class="name">var <span class="ident">link</span> : str</code></dt>
                             <dd>
@@ -1184,26 +1096,11 @@ def link(self) -&gt; str:
     return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;</code></pre>
                                 </details>
                             </dd>
-                            <dt id="aiobungie.crate.ApplicationOwner.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
+                            <dt id="aiobungie.crate.ApplicationOwner.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>The application owner name.</p>
+                                    <p>The application owner name. This can be <code>UNDEFINED</code> if not found.</p>
                                 </div>
-                            </dd>
-                            <dt id="aiobungie.crate.ApplicationOwner.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.traits.Netrunner" href="./internal/traits.html#aiobungie.internal.traits.Netrunner">Netrunner</a></code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>A network state used for making external requests.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def net(self) -&gt; traits.Netrunner:
-    &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
-    return self.net</code></pre>
-                                </details>
                             </dd>
                             <dt id="aiobungie.crate.ApplicationOwner.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
                             <dd>
@@ -1211,33 +1108,26 @@ def net(self) -&gt; traits.Netrunner:
                                     <p>The membership of the application owner.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.ApplicationOwner.unique_name"><code class="name">var <span class="ident">unique_name</span> : Optional[str]</code></dt>
+                            <dt id="aiobungie.crate.ApplicationOwner.unique_name"><code class="name">var <span class="ident">unique_name</span> : str</code></dt>
                             <dd>
-                                <p class="inheritance">
-                                    <em>Inherited from:</em>
-                                    <code><a title="aiobungie.crate.user.UserLike" href="user.html#aiobungie.crate.user.UserLike">UserLike</a></code>.<code><a title="aiobungie.crate.user.UserLike.unique_name" href="user.html#aiobungie.crate.user.UserLike.unique_name">unique_name</a></code>
-                                </p>
-                                <div class="desc inherited">
-                                    <p>The user like's display name. This includes the full name with the user name code …</p>
+                                <div class="desc">
+                                    <p>The application owner's unique name.</p>
                                 </div>
                                 <details class="source">
                                     <summary>
                                         <span>Expand source code</span>
                                     </summary>
                                     <pre><code class="python">@property
-def unique_name(self) -&gt; NoneOr[str]:
-    &#34;&#34;&#34;The user like&#39;s display name. This includes the full name with the user name code.
-
-    .. versionadded:: 0.2.5
-    &#34;&#34;&#34;
-    return f&#34;{self.name}#{self.code}&#34;</code></pre>
+def unique_name(self) -&gt; str:
+    &#34;&#34;&#34;The application owner&#39;s unique name.&#34;&#34;&#34;
+    return self.unique_name</code></pre>
                                 </details>
                             </dd>
                         </dl>
                     </dd>
                     <dt id="aiobungie.crate.BungieUser"><code class="flex name class">
 <span>class <span class="ident">BungieUser</span></span>
-<span>(</span><span>*, id: int, created_at: datetime, name: str, unique_name: helpers.NoneOr[str], theme_id: int, show_activity: bool, theme_name: str, display_title: str, is_deleted: bool, about: typing.Optional[str], updated_at: datetime, psn_name: typing.Optional[str], steam_name: typing.Optional[str], twitch_name: typing.Optional[str], blizzard_name: typing.Optional[str], stadia_name: typing.Optional[str], status: typing.Optional[str], locale: typing.Optional[str], picture: assets.MaybeImage, code: helpers.NoneOr[int])</span>
+<span>(</span><span>*, id: int, created_at: datetime, name: helpers.UndefinedOr[str], unique_name: str, theme_id: int, show_activity: bool, theme_name: str, display_title: str, is_deleted: bool, about: typing.Optional[str], updated_at: datetime, psn_name: typing.Optional[str], steam_name: typing.Optional[str], twitch_name: typing.Optional[str], blizzard_name: typing.Optional[str], stadia_name: typing.Optional[str], status: typing.Optional[str], locale: typing.Optional[str], picture: assets.MaybeImage, code: helpers.NoneOr[int])</span>
 </code></dt>
                     <dd>
                         <div class="desc">
@@ -1248,7 +1138,7 @@ def unique_name(self) -&gt; NoneOr[str]:
                             <summary>
                                 <span>Expand source code</span>
                             </summary>
-                            <pre><code class="python">@attr.define(hash=True, kw_only=True, weakref_slot=False)
+                            <pre><code class="python">@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class BungieUser:
     &#34;&#34;&#34;Represents a Bungie user.&#34;&#34;&#34;
 
@@ -1258,10 +1148,10 @@ class BungieUser:
     created_at: datetime = attr.field(hash=True, repr=True, eq=False)
     &#34;&#34;&#34;The user&#39;s creation date in UTC timezone.&#34;&#34;&#34;
 
-    name: str = attr.field(hash=False, eq=False, repr=True)
+    name: helpers.UndefinedOr[str] = attr.field(hash=False, eq=False, repr=True)
     &#34;&#34;&#34;The user&#39;s name.&#34;&#34;&#34;
 
-    unique_name: helpers.NoneOr[str] = attr.field(repr=False)
+    unique_name: str = attr.field(repr=False)
     &#34;&#34;&#34;The user&#39;s unique name which includes their unique code.
     This field could be None if no unique name found.
 
@@ -1336,15 +1226,10 @@ class BungieUser:
     &#34;&#34;&#34;
 
     def __str__(self) -&gt; str:
-        return self.name
+        return str(self.name)
 
     def __int__(self) -&gt; int:
-        return self.id
-
-    @property
-    def human_timedelta(self) -&gt; str:
-        &#34;&#34;&#34;A human readable date version of the user&#39;s creation date.&#34;&#34;&#34;
-        return time.human_timedelta(self.created_at)</code></pre>
+        return self.id</code></pre>
                         </details>
                         <h3>Instance variables</h3>
                         <dl>
@@ -1384,21 +1269,6 @@ class BungieUser:
                                     </div>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.BungieUser.human_timedelta"><code class="name">var <span class="ident">human_timedelta</span> : str</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>A human readable date version of the user's creation date.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def human_timedelta(self) -&gt; str:
-    &#34;&#34;&#34;A human readable date version of the user&#39;s creation date.&#34;&#34;&#34;
-    return time.human_timedelta(self.created_at)</code></pre>
-                                </details>
-                            </dd>
                             <dt id="aiobungie.crate.BungieUser.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
                             <dd>
                                 <div class="desc">
@@ -1417,7 +1287,7 @@ def human_timedelta(self) -&gt; str:
                                     <p>The user's locale.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.BungieUser.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
+                            <dt id="aiobungie.crate.BungieUser.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>The user's name.</p>
@@ -1489,7 +1359,7 @@ def human_timedelta(self) -&gt; str:
                                     <p>The user's twitch name if it exists.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.BungieUser.unique_name"><code class="name">var <span class="ident">unique_name</span> : Optional[str]</code></dt>
+                            <dt id="aiobungie.crate.BungieUser.unique_name"><code class="name">var <span class="ident">unique_name</span> : str</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>The user's unique name which includes their unique code. This field could be None if no unique name found.</p>
@@ -1573,11 +1443,6 @@ class Character(CharacterComponent):
         &#34;&#34;&#34;A url for the character at bungie.net.&#34;&#34;&#34;
         return f&#34;{url.BASE}/en/Gear/{int(self.member_type)}/{self.member_id}/{self.id}&#34;
 
-    @property
-    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        &#34;&#34;&#34;Returns a dict crate of the character.&#34;&#34;&#34;
-        return attr.asdict(self)
-
     def __int__(self) -&gt; int:
         return int(self.id)</code></pre>
                         </details>
@@ -1588,21 +1453,6 @@ class Character(CharacterComponent):
                         </ul>
                         <h3>Instance variables</h3>
                         <dl>
-                            <dt id="aiobungie.crate.Character.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Returns a dict crate of the character.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-    &#34;&#34;&#34;Returns a dict crate of the character.&#34;&#34;&#34;
-    return attr.asdict(self)</code></pre>
-                                </details>
-                            </dd>
                             <dt id="aiobungie.crate.Character.class_type"><code class="name">var <span class="ident">class_type</span> : <a title="aiobungie.internal.enums.Class" href="./internal/enums.html#aiobungie.internal.enums.Class">Class</a></code></dt>
                             <dd>
                                 <div class="desc">
@@ -1631,16 +1481,6 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                             <dd>
                                 <div class="desc">
                                     <p>Character's gender</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.Character.human_timedelta"><code class="name">var <span class="ident">human_timedelta</span> : str</code></dt>
-                            <dd>
-                                <p class="inheritance">
-                                    <em>Inherited from:</em>
-                                    <code><a title="aiobungie.crate.character.CharacterComponent" href="character.html#aiobungie.crate.character.CharacterComponent">CharacterComponent</a></code>.<code><a title="aiobungie.crate.character.CharacterComponent.human_timedelta" href="character.html#aiobungie.crate.character.CharacterComponent.human_timedelta">human_timedelta</a></code>
-                                </p>
-                                <div class="desc inherited">
-                                    <p>The player's last played time in a human readable date.</p>
                                 </div>
                             </dd>
                             <dt id="aiobungie.crate.Character.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
@@ -1749,7 +1589,7 @@ def url(self) -&gt; str:
                     </dd>
                     <dt id="aiobungie.crate.Clan"><code class="flex name class">
 <span>class <span class="ident">Clan</span></span>
-<span>(</span><span>*, net: traits.Netrunner, id: int, type: GroupType, name: str, created_at: datetime, member_count: int, description: str, is_public: bool, banner: Image, avatar: Image, about: str, tags: typing.List[str], owner: <a title="aiobungie.crate.ClanOwner" href="#aiobungie.crate.ClanOwner">ClanOwner</a>, features: <a title="aiobungie.crate.ClanFeatures" href="#aiobungie.crate.ClanFeatures">ClanFeatures</a>)</span>
+<span>(</span><span>*, net: traits.Netrunner, id: int, type: GroupType, name: str, created_at: datetime, member_count: int, motto: str, is_public: bool, banner: assets.MaybeImage, avatar: assets.MaybeImage, about: str, tags: typing.List[str], owner: <a title="aiobungie.crate.ClanOwner" href="#aiobungie.crate.ClanOwner">ClanOwner</a>, features: <a title="aiobungie.crate.ClanFeatures" href="#aiobungie.crate.ClanFeatures">ClanFeatures</a>)</span>
 </code></dt>
                     <dd>
                         <div class="desc">
@@ -1760,7 +1600,7 @@ def url(self) -&gt; str:
                             <summary>
                                 <span>Expand source code</span>
                             </summary>
-                            <pre><code class="python">@attr.define(hash=True, kw_only=True, weakref_slot=False)
+                            <pre><code class="python">@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class Clan:
     &#34;&#34;&#34;Represents a Bungie clan.&#34;&#34;&#34;
 
@@ -1782,16 +1622,16 @@ class Clan:
     member_count: int = attr.field(repr=True)
     &#34;&#34;&#34;Clan&#39;s member count.&#34;&#34;&#34;
 
-    description: str = attr.field(repr=False, eq=False)
-    &#34;&#34;&#34;Clan&#39;s description&#34;&#34;&#34;
+    motto: str = attr.field(repr=False, eq=False)
+    &#34;&#34;&#34;Clan&#39;s motto.&#34;&#34;&#34;
 
     is_public: bool = attr.field(repr=False, eq=False)
     &#34;&#34;&#34;Clan&#39;s privacy status.&#34;&#34;&#34;
 
-    banner: Image = attr.field(repr=False)
+    banner: assets.MaybeImage = attr.field(repr=False)
     &#34;&#34;&#34;Clan&#39;s banner&#34;&#34;&#34;
 
-    avatar: Image = attr.field(repr=False)
+    avatar: assets.MaybeImage = attr.field(repr=False)
     &#34;&#34;&#34;Clan&#39;s avatar&#34;&#34;&#34;
 
     about: str = attr.field(repr=False, eq=False)
@@ -1899,18 +1739,8 @@ class Clan:
         raise NotImplementedError
 
     @property
-    def human_timedelta(self) -&gt; str:
-        &#34;&#34;&#34;Returns a human readable date of the clan&#39;s creation date.&#34;&#34;&#34;
-        return time.human_timedelta(self.created_at)
-
-    @property
     def url(self) -&gt; str:
         return f&#34;{url.BASE}/en/ClanV2/Index?groupId={self.id}&#34;
-
-    @property
-    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        &#34;&#34;&#34;Returns an instance of the clan as a dict&#34;&#34;&#34;
-        return attr.asdict(self)
 
     def __int__(self) -&gt; int:
         return self.id
@@ -1926,28 +1756,13 @@ class Clan:
                                     <p>Clan's about title.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.Clan.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Returns an instance of the clan as a dict</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-    &#34;&#34;&#34;Returns an instance of the clan as a dict&#34;&#34;&#34;
-    return attr.asdict(self)</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.crate.Clan.avatar"><code class="name">var <span class="ident">avatar</span> : <a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a></code></dt>
+                            <dt id="aiobungie.crate.Clan.avatar"><code class="name">var <span class="ident">avatar</span> : Union[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>Clan's avatar</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.Clan.banner"><code class="name">var <span class="ident">banner</span> : <a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a></code></dt>
+                            <dt id="aiobungie.crate.Clan.banner"><code class="name">var <span class="ident">banner</span> : Union[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>Clan's banner</p>
@@ -1959,32 +1774,11 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                     <p>Clan's creation date time in UTC.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.Clan.description"><code class="name">var <span class="ident">description</span> : str</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Clan's description</p>
-                                </div>
-                            </dd>
                             <dt id="aiobungie.crate.Clan.features"><code class="name">var <span class="ident">features</span> : <a title="aiobungie.crate.clans.ClanFeatures" href="clans.html#aiobungie.crate.clans.ClanFeatures">ClanFeatures</a></code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>The clan features.</p>
                                 </div>
-                            </dd>
-                            <dt id="aiobungie.crate.Clan.human_timedelta"><code class="name">var <span class="ident">human_timedelta</span> : str</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Returns a human readable date of the clan's creation date.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def human_timedelta(self) -&gt; str:
-    &#34;&#34;&#34;Returns a human readable date of the clan&#39;s creation date.&#34;&#34;&#34;
-    return time.human_timedelta(self.created_at)</code></pre>
-                                </details>
                             </dd>
                             <dt id="aiobungie.crate.Clan.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
                             <dd>
@@ -2002,6 +1796,12 @@ def human_timedelta(self) -&gt; str:
                             <dd>
                                 <div class="desc">
                                     <p>Clan's member count.</p>
+                                </div>
+                            </dd>
+                            <dt id="aiobungie.crate.Clan.motto"><code class="name">var <span class="ident">motto</span> : str</code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>Clan's motto.</p>
                                 </div>
                             </dd>
                             <dt id="aiobungie.crate.Clan.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
@@ -2323,7 +2123,7 @@ class ClanFeatures:
                     </dd>
                     <dt id="aiobungie.crate.ClanMember"><code class="flex name class">
 <span>class <span class="ident">ClanMember</span></span>
-<span>(</span><span>*, id: int, name: str, type: MembershipType, types: list[MembershipType], icon: Image, is_public: bool, group_id: int, is_online: bool, last_online: datetime, joined_at: datetime, code: helpers.NoneOr[int])</span>
+<span>(</span><span>*, net: traits.Netrunner, id: int, name: helpers.UndefinedOr[str], last_seen_name: str, type: MembershipType, types: typing.Sequence[MembershipType], icon: assets.MaybeImage, is_public: bool, group_id: int, is_online: bool, last_online: datetime, joined_at: datetime, code: helpers.NoneOr[int])</span>
 </code></dt>
                     <dd>
                         <div class="desc">
@@ -2334,23 +2134,29 @@ class ClanFeatures:
                             <summary>
                                 <span>Expand source code</span>
                             </summary>
-                            <pre><code class="python">@attr.define(hash=True, kw_only=True, weakref_slot=False)
+                            <pre><code class="python">@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class ClanMember(UserLike):
     &#34;&#34;&#34;Represents a Destiny 2 clan member.&#34;&#34;&#34;
+
+    net: traits.Netrunner = attr.field(repr=False)
+    &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
 
     id: int = attr.field(repr=True, hash=True)
     &#34;&#34;&#34;Clan member&#39;s id&#34;&#34;&#34;
 
-    name: str = attr.field(repr=True)
-    &#34;&#34;&#34;Clan member&#39;s name&#34;&#34;&#34;
+    name: helpers.UndefinedOr[str] = attr.field(repr=True)
+    &#34;&#34;&#34;Clan member&#39;s name. This can be `UNDEFINED` if not found.&#34;&#34;&#34;
+
+    last_seen_name: str = attr.field(repr=True)
+    &#34;&#34;&#34;The clan member&#39;s last seen display name&#34;&#34;&#34;
 
     type: MembershipType = attr.field(repr=True)
     &#34;&#34;&#34;Clan member&#39;s membership type.&#34;&#34;&#34;
 
-    types: list[MembershipType] = attr.field(repr=False)
-    &#34;&#34;&#34;A list of the available clan member membership types.&#34;&#34;&#34;
+    types: typing.Sequence[MembershipType] = attr.field(repr=False)
+    &#34;&#34;&#34;A sequence of the available clan member membership types.&#34;&#34;&#34;
 
-    icon: Image = attr.field(repr=False)
+    icon: assets.MaybeImage = attr.field(repr=False)
     &#34;&#34;&#34;Clan member&#39;s icon&#34;&#34;&#34;
 
     is_public: bool = attr.field(repr=False)
@@ -2376,27 +2182,17 @@ class ClanMember(UserLike):
     &#34;&#34;&#34;
 
     @property
-    def unique_name(self) -&gt; helpers.NoneOr[str]:
+    def unique_name(self) -&gt; str:
         &#34;&#34;&#34;The user&#39;s unique name which includes their unique code.
-        This field could be None if no unique name found.
 
         .. versionadded:: 0.2.5
         &#34;&#34;&#34;
         return f&#34;{self.name}#{self.code}&#34;
 
     @property
-    def net(self) -&gt; traits.Netrunner:
-        &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
-        return self.net
-
-    @property
     def link(self) -&gt; str:
         &#34;&#34;&#34;Clan member&#39;s profile link.&#34;&#34;&#34;
         return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;
-
-    @property
-    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        return attr.asdict(self)
 
     # These are not implemented yet
     # Since they requires OAuth2.
@@ -2426,24 +2222,6 @@ class ClanMember(UserLike):
                         </ul>
                         <h3>Instance variables</h3>
                         <dl>
-                            <dt id="aiobungie.crate.ClanMember.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
-                            <dd>
-                                <p class="inheritance">
-                                    <em>Inherited from:</em>
-                                    <code><a title="aiobungie.crate.user.UserLike" href="user.html#aiobungie.crate.user.UserLike">UserLike</a></code>.<code><a title="aiobungie.crate.user.UserLike.as_dict" href="user.html#aiobungie.crate.user.UserLike.as_dict">as_dict</a></code>
-                                </p>
-                                <div class="desc inherited">
-                                    <p>An instance of the UserLike as a dict.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-    return attr.asdict(self)</code></pre>
-                                </details>
-                            </dd>
                             <dt id="aiobungie.crate.ClanMember.code"><code class="name">var <span class="ident">code</span> : Optional[None]</code></dt>
                             <dd>
                                 <div class="desc">
@@ -2459,7 +2237,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                     <p>The member's group id.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.ClanMember.icon"><code class="name">var <span class="ident">icon</span> : <a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a></code></dt>
+                            <dt id="aiobungie.crate.ClanMember.icon"><code class="name">var <span class="ident">icon</span> : Union[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>Clan member's icon</p>
@@ -2495,6 +2273,12 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                     <p>The date of the clan member's last online in UTC time zone.</p>
                                 </div>
                             </dd>
+                            <dt id="aiobungie.crate.ClanMember.last_seen_name"><code class="name">var <span class="ident">last_seen_name</span> : str</code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>The clan member's last seen display name</p>
+                                </div>
+                            </dd>
                             <dt id="aiobungie.crate.ClanMember.link"><code class="name">var <span class="ident">link</span> : str</code></dt>
                             <dd>
                                 <div class="desc">
@@ -2510,10 +2294,10 @@ def link(self) -&gt; str:
     return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;</code></pre>
                                 </details>
                             </dd>
-                            <dt id="aiobungie.crate.ClanMember.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
+                            <dt id="aiobungie.crate.ClanMember.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>Clan member's name</p>
+                                    <p>Clan member's name. This can be <code>UNDEFINED</code> if not found.</p>
                                 </div>
                             </dd>
                             <dt id="aiobungie.crate.ClanMember.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.traits.Netrunner" href="./internal/traits.html#aiobungie.internal.traits.Netrunner">Netrunner</a></code></dt>
@@ -2521,15 +2305,6 @@ def link(self) -&gt; str:
                                 <div class="desc">
                                     <p>A network state used for making external requests.</p>
                                 </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def net(self) -&gt; traits.Netrunner:
-    &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
-    return self.net</code></pre>
-                                </details>
                             </dd>
                             <dt id="aiobungie.crate.ClanMember.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
                             <dd>
@@ -2537,16 +2312,16 @@ def net(self) -&gt; traits.Netrunner:
                                     <p>Clan member's membership type.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.ClanMember.types"><code class="name">var <span class="ident">types</span> : list</code></dt>
+                            <dt id="aiobungie.crate.ClanMember.types"><code class="name">var <span class="ident">types</span> : Sequence[<a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a>]</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>A list of the available clan member membership types.</p>
+                                    <p>A sequence of the available clan member membership types.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.ClanMember.unique_name"><code class="name">var <span class="ident">unique_name</span> : Optional[str]</code></dt>
+                            <dt id="aiobungie.crate.ClanMember.unique_name"><code class="name">var <span class="ident">unique_name</span> : str</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>The user's unique name which includes their unique code. This field could be None if no unique name found.</p>
+                                    <p>The user's unique name which includes their unique code.</p>
                                     <div class="admonition versionadded">
                                         <p class="admonition-title">Added in version:&ensp;0.2.5</p>
                                     </div>
@@ -2556,9 +2331,8 @@ def net(self) -&gt; traits.Netrunner:
                                         <span>Expand source code</span>
                                     </summary>
                                     <pre><code class="python">@property
-def unique_name(self) -&gt; helpers.NoneOr[str]:
+def unique_name(self) -&gt; str:
     &#34;&#34;&#34;The user&#39;s unique name which includes their unique code.
-    This field could be None if no unique name found.
 
     .. versionadded:: 0.2.5
     &#34;&#34;&#34;
@@ -2626,7 +2400,7 @@ def unique_name(self) -&gt; helpers.NoneOr[str]:
                     </dd>
                     <dt id="aiobungie.crate.ClanOwner"><code class="flex name class">
 <span>class <span class="ident">ClanOwner</span></span>
-<span>(</span><span>*, id: int, name: str, is_public: bool, type: MembershipType, types: typing.Optional[typing.List[int]], last_online: datetime, clan_id: int, icon: Image, joined_at: datetime, code: helpers.NoneOr[int])</span>
+<span>(</span><span>*, id: int, name: helpers.UndefinedOr[str], last_seen_name: str, is_public: bool, type: MembershipType, types: typing.Sequence[MembershipType], last_online: datetime, clan_id: int, icon: assets.MaybeImage, joined_at: datetime, code: helpers.NoneOr[int])</span>
 </code></dt>
                     <dd>
                         <div class="desc">
@@ -2637,25 +2411,26 @@ def unique_name(self) -&gt; helpers.NoneOr[str]:
                             <summary>
                                 <span>Expand source code</span>
                             </summary>
-                            <pre><code class="python">@attr.define(hash=True, kw_only=True, weakref_slot=False)
+                            <pre><code class="python">@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class ClanOwner(UserLike):
     &#34;&#34;&#34;Represents a Bungie clan owner.&#34;&#34;&#34;
 
     id: int = attr.field(hash=True, repr=True)
     &#34;&#34;&#34;The user id.&#34;&#34;&#34;
 
-    name: str = attr.field(repr=True)
+    name: helpers.UndefinedOr[str] = attr.field(repr=True)
     &#34;&#34;&#34;The user name.&#34;&#34;&#34;
 
-    is_public: bool = attr.field(hash=False, repr=True, eq=False)
+    last_seen_name: str = attr.field(repr=True)
+    &#34;&#34;&#34;The clan member&#39;s last seen display name&#34;&#34;&#34;
+
+    is_public: bool = attr.field(repr=True, eq=False)
     &#34;&#34;&#34;Returns if the user profile is public or no.&#34;&#34;&#34;
 
-    type: MembershipType = attr.field(hash=False, repr=True, eq=True)
+    type: MembershipType = attr.field(repr=True, eq=True)
     &#34;&#34;&#34;Returns the membership type of the user.&#34;&#34;&#34;
 
-    types: typing.Optional[typing.List[int]] = attr.field(
-        hash=True, repr=False, eq=False
-    )
+    types: typing.Sequence[MembershipType] = attr.field(repr=False, eq=False)
     &#34;&#34;&#34;Returns a list of the member ship&#39;s membership types.&#34;&#34;&#34;
 
     last_online: datetime = attr.field(repr=False)
@@ -2664,7 +2439,7 @@ class ClanOwner(UserLike):
     clan_id: int = attr.field(repr=True)
     &#34;&#34;&#34;Owner&#39;s current clan id.&#34;&#34;&#34;
 
-    icon: Image = attr.field(repr=False)
+    icon: assets.MaybeImage = attr.field(repr=False)
     &#34;&#34;&#34;Owner&#39;s profile icom&#34;&#34;&#34;
 
     joined_at: datetime = attr.field(repr=True)
@@ -2678,17 +2453,7 @@ class ClanOwner(UserLike):
     &#34;&#34;&#34;
 
     @property
-    def net(self) -&gt; traits.Netrunner:
-        &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
-        return self.net
-
-    @property
-    def human_timedelta(self) -&gt; str:
-        &#34;&#34;&#34;Returns a human readable date of the clan owner&#39;s last login.&#34;&#34;&#34;
-        return time.human_timedelta(self.last_online)
-
-    @property
-    def unique_name(self) -&gt; helpers.NoneOr[str]:
+    def unique_name(self) -&gt; str:
         &#34;&#34;&#34;The user&#39;s unique name which includes their unique code.
         This field could be None if no unique name found.
 
@@ -2699,14 +2464,7 @@ class ClanOwner(UserLike):
     @property
     def link(self) -&gt; str:
         &#34;&#34;&#34;Returns the user&#39;s profile link.&#34;&#34;&#34;
-        return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;
-
-    @property
-    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        &#34;&#34;&#34;Returns a dict object of the clan owner,
-        This function is useful if you&#39;re binding to other REST apis.
-        &#34;&#34;&#34;
-        return attr.asdict(self)</code></pre>
+        return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
@@ -2715,23 +2473,6 @@ class ClanOwner(UserLike):
                         </ul>
                         <h3>Instance variables</h3>
                         <dl>
-                            <dt id="aiobungie.crate.ClanOwner.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Returns a dict object of the clan owner, This function is useful if you're binding to other REST apis.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-    &#34;&#34;&#34;Returns a dict object of the clan owner,
-    This function is useful if you&#39;re binding to other REST apis.
-    &#34;&#34;&#34;
-    return attr.asdict(self)</code></pre>
-                                </details>
-                            </dd>
                             <dt id="aiobungie.crate.ClanOwner.clan_id"><code class="name">var <span class="ident">clan_id</span> : int</code></dt>
                             <dd>
                                 <div class="desc">
@@ -2747,22 +2488,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                     </div>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.ClanOwner.human_timedelta"><code class="name">var <span class="ident">human_timedelta</span> : str</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Returns a human readable date of the clan owner's last login.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def human_timedelta(self) -&gt; str:
-    &#34;&#34;&#34;Returns a human readable date of the clan owner&#39;s last login.&#34;&#34;&#34;
-    return time.human_timedelta(self.last_online)</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.crate.ClanOwner.icon"><code class="name">var <span class="ident">icon</span> : <a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a></code></dt>
+                            <dt id="aiobungie.crate.ClanOwner.icon"><code class="name">var <span class="ident">icon</span> : Union[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>Owner's profile icom</p>
@@ -2792,6 +2518,12 @@ def human_timedelta(self) -&gt; str:
                                     <p>An aware <code>datetime.datetime</code> object of the user's last online date UTC.</p>
                                 </div>
                             </dd>
+                            <dt id="aiobungie.crate.ClanOwner.last_seen_name"><code class="name">var <span class="ident">last_seen_name</span> : str</code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>The clan member's last seen display name</p>
+                                </div>
+                            </dd>
                             <dt id="aiobungie.crate.ClanOwner.link"><code class="name">var <span class="ident">link</span> : str</code></dt>
                             <dd>
                                 <div class="desc">
@@ -2807,26 +2539,11 @@ def link(self) -&gt; str:
     return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;</code></pre>
                                 </details>
                             </dd>
-                            <dt id="aiobungie.crate.ClanOwner.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
+                            <dt id="aiobungie.crate.ClanOwner.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>The user name.</p>
                                 </div>
-                            </dd>
-                            <dt id="aiobungie.crate.ClanOwner.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.traits.Netrunner" href="./internal/traits.html#aiobungie.internal.traits.Netrunner">Netrunner</a></code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>A network state used for making external requests.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def net(self) -&gt; traits.Netrunner:
-    &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
-    return self.net</code></pre>
-                                </details>
                             </dd>
                             <dt id="aiobungie.crate.ClanOwner.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
                             <dd>
@@ -2834,13 +2551,13 @@ def net(self) -&gt; traits.Netrunner:
                                     <p>Returns the membership type of the user.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.ClanOwner.types"><code class="name">var <span class="ident">types</span> : Optional[List[int]]</code></dt>
+                            <dt id="aiobungie.crate.ClanOwner.types"><code class="name">var <span class="ident">types</span> : Sequence[<a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a>]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>Returns a list of the member ship's membership types.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.ClanOwner.unique_name"><code class="name">var <span class="ident">unique_name</span> : Optional[str]</code></dt>
+                            <dt id="aiobungie.crate.ClanOwner.unique_name"><code class="name">var <span class="ident">unique_name</span> : str</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>The user's unique name which includes their unique code. This field could be None if no unique name found.</p>
@@ -2853,7 +2570,7 @@ def net(self) -&gt; traits.Netrunner:
                                         <span>Expand source code</span>
                                     </summary>
                                     <pre><code class="python">@property
-def unique_name(self) -&gt; helpers.NoneOr[str]:
+def unique_name(self) -&gt; str:
     &#34;&#34;&#34;The user&#39;s unique name which includes their unique code.
     This field could be None if no unique name found.
 
@@ -2866,7 +2583,7 @@ def unique_name(self) -&gt; helpers.NoneOr[str]:
                     </dd>
                     <dt id="aiobungie.crate.DestinyUser"><code class="flex name class">
 <span>class <span class="ident">DestinyUser</span></span>
-<span>(</span><span>*, id: int, name: str, last_seen_name: str, type: enums.MembershipType, types: typing.Sequence[enums.MembershipType], icon: assets.MaybeImage, code: helpers.NoneOr[int], is_public: bool)</span>
+<span>(</span><span>*, id: int, name: helpers.UndefinedOr[str], last_seen_name: str, type: enums.MembershipType, types: typing.Sequence[enums.MembershipType], icon: assets.MaybeImage, code: helpers.NoneOr[int] = 0, is_public: bool = False, crossave_override: typing.Union[enums.MembershipType, int])</span>
 </code></dt>
                     <dd>
                         <div class="desc">
@@ -2890,7 +2607,7 @@ class DestinyUser(UserLike):
     id: int = attr.field(repr=True, hash=True, eq=True)
     &#34;&#34;&#34;The member&#39;s id.&#34;&#34;&#34;
 
-    name: str = attr.field(repr=True, eq=False)
+    name: helpers.UndefinedOr[str] = attr.field(repr=True, eq=False)
     &#34;&#34;&#34;The member&#39;s name.&#34;&#34;&#34;
 
     last_seen_name: str = attr.field(repr=True)
@@ -2903,58 +2620,49 @@ class DestinyUser(UserLike):
     &#34;&#34;&#34;A sequence of the member&#39;s membership types.&#34;&#34;&#34;
 
     icon: assets.MaybeImage = attr.field(repr=False)
-    &#34;&#34;&#34;The profile&#39;s icon if it was present.&#34;&#34;&#34;
+    &#34;&#34;&#34;The member&#39;s icon if it was present.&#34;&#34;&#34;
 
-    code: helpers.NoneOr[int] = attr.field(repr=True, eq=True, hash=False)
+    code: helpers.NoneOr[int] = attr.field(repr=True, eq=True, hash=False, default=0)
     &#34;&#34;&#34;The member&#39;s name code. This field may be `None` if not found.&#34;&#34;&#34;
 
-    is_public: bool = attr.field(repr=False)
+    is_public: bool = attr.field(repr=False, default=False)
     &#34;&#34;&#34;The member&#39;s profile privacy status.&#34;&#34;&#34;
 
-    @property
-    def unique_name(self) -&gt; helpers.NoneOr[str]:
-        &#34;&#34;&#34;The member&#39;s unique name. This field may be `Undefined` if not found.&#34;&#34;&#34;
-        return f&#34;{self.name}#{self.code}&#34;
+    crossave_override: typing.Union[enums.MembershipType, int] = attr.field(repr=False)
+    &#34;&#34;&#34;The member&#39;s corssave override membership type.&#34;&#34;&#34;
 
     @property
-    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        return attr.asdict(self)</code></pre>
+    def unique_name(self) -&gt; str:
+        &#34;&#34;&#34;The member&#39;s unique name. This field may be `Undefined` if not found.&#34;&#34;&#34;
+        return f&#34;{self.name}#{self.code}&#34;</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
                             <li><a title="aiobungie.crate.user.UserLike" href="user.html#aiobungie.crate.user.UserLike">UserLike</a></li>
                             <li>abc.ABC</li>
                         </ul>
+                        <h3>Subclasses</h3>
+                        <ul class="hlist">
+                            <li><a title="aiobungie.crate.player.Player" href="player.html#aiobungie.crate.player.Player">Player</a></li>
+                        </ul>
                         <h3>Instance variables</h3>
                         <dl>
-                            <dt id="aiobungie.crate.DestinyUser.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
-                            <dd>
-                                <p class="inheritance">
-                                    <em>Inherited from:</em>
-                                    <code><a title="aiobungie.crate.user.UserLike" href="user.html#aiobungie.crate.user.UserLike">UserLike</a></code>.<code><a title="aiobungie.crate.user.UserLike.as_dict" href="user.html#aiobungie.crate.user.UserLike.as_dict">as_dict</a></code>
-                                </p>
-                                <div class="desc inherited">
-                                    <p>An instance of the UserLike as a dict.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-    return attr.asdict(self)</code></pre>
-                                </details>
-                            </dd>
                             <dt id="aiobungie.crate.DestinyUser.code"><code class="name">var <span class="ident">code</span> : Optional[None]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>The member's name code. This field may be <code>None</code> if not found.</p>
                                 </div>
                             </dd>
+                            <dt id="aiobungie.crate.DestinyUser.crossave_override"><code class="name">var <span class="ident">crossave_override</span> : Union[<a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a>, int]</code></dt>
+                            <dd>
+                                <div class="desc">
+                                    <p>The member's corssave override membership type.</p>
+                                </div>
+                            </dd>
                             <dt id="aiobungie.crate.DestinyUser.icon"><code class="name">var <span class="ident">icon</span> : Union[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>The profile's icon if it was present.</p>
+                                    <p>The member's icon if it was present.</p>
                                 </div>
                             </dd>
                             <dt id="aiobungie.crate.DestinyUser.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
@@ -2985,7 +2693,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                     <p>The user like's profile link.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.DestinyUser.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
+                            <dt id="aiobungie.crate.DestinyUser.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>The member's name.</p>
@@ -3003,7 +2711,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                     <p>A sequence of the member's membership types.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.DestinyUser.unique_name"><code class="name">var <span class="ident">unique_name</span> : Optional[str]</code></dt>
+                            <dt id="aiobungie.crate.DestinyUser.unique_name"><code class="name">var <span class="ident">unique_name</span> : str</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>The member's unique name. This field may be <code>Undefined</code> if not found.</p>
@@ -3013,7 +2721,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                         <span>Expand source code</span>
                                     </summary>
                                     <pre><code class="python">@property
-def unique_name(self) -&gt; helpers.NoneOr[str]:
+def unique_name(self) -&gt; str:
     &#34;&#34;&#34;The member&#39;s unique name. This field may be `Undefined` if not found.&#34;&#34;&#34;
     return f&#34;{self.name}#{self.code}&#34;</code></pre>
                                 </details>
@@ -3048,8 +2756,8 @@ def unique_name(self) -&gt; helpers.NoneOr[str]:
 
     @property
     @abc.abstractmethod
-    def name(self) -&gt; str:
-        &#34;&#34;&#34;Entity&#39;s name&#34;&#34;&#34;
+    def name(self) -&gt; helpers.UndefinedOr[str]:
+        &#34;&#34;&#34;Entity&#39;s name. This can be `UNDEFINED` if not found.&#34;&#34;&#34;
 
     @property
     @abc.abstractmethod
@@ -3063,7 +2771,7 @@ def unique_name(self) -&gt; helpers.NoneOr[str]:
 
     @property
     @abc.abstractmethod
-    def description(self) -&gt; str:
+    def description(self) -&gt; helpers.UndefinedOr[str]:
         &#34;&#34;&#34;Entity&#39;s description&#34;&#34;&#34;
 
     @property
@@ -3075,11 +2783,6 @@ def unique_name(self) -&gt; helpers.NoneOr[str]:
     @abc.abstractmethod
     def hash(self) -&gt; int:
         &#34;&#34;&#34;Entity&#39;s hash.&#34;&#34;&#34;
-
-    @property
-    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        &#34;&#34;&#34;Returns an instance of the entity as a dict&#34;&#34;&#34;
-        return attr.asdict(self)
 
     def __str__(self) -&gt; str:
         return str(self.name)
@@ -3097,22 +2800,7 @@ def unique_name(self) -&gt; helpers.NoneOr[str]:
                         </ul>
                         <h3>Instance variables</h3>
                         <dl>
-                            <dt id="aiobungie.crate.Entity.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Returns an instance of the entity as a dict</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-    &#34;&#34;&#34;Returns an instance of the entity as a dict&#34;&#34;&#34;
-    return attr.asdict(self)</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.crate.Entity.description"><code class="name">var <span class="ident">description</span> : str</code></dt>
+                            <dt id="aiobungie.crate.Entity.description"><code class="name">var <span class="ident">description</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>Entity's description</p>
@@ -3123,7 +2811,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                     </summary>
                                     <pre><code class="python">@property
 @abc.abstractmethod
-def description(self) -&gt; str:
+def description(self) -&gt; helpers.UndefinedOr[str]:
     &#34;&#34;&#34;Entity&#39;s description&#34;&#34;&#34;</code></pre>
                                 </details>
                             </dd>
@@ -3187,10 +2875,10 @@ def index(self) -&gt; int:
     &#34;&#34;&#34;The entity&#39;s index.&#34;&#34;&#34;</code></pre>
                                 </details>
                             </dd>
-                            <dt id="aiobungie.crate.Entity.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
+                            <dt id="aiobungie.crate.Entity.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>Entity's name</p>
+                                    <p>Entity's name. This can be <code>UNDEFINED</code> if not found.</p>
                                 </div>
                                 <details class="source">
                                     <summary>
@@ -3198,8 +2886,8 @@ def index(self) -&gt; int:
                                     </summary>
                                     <pre><code class="python">@property
 @abc.abstractmethod
-def name(self) -&gt; str:
-    &#34;&#34;&#34;Entity&#39;s name&#34;&#34;&#34;</code></pre>
+def name(self) -&gt; helpers.UndefinedOr[str]:
+    &#34;&#34;&#34;Entity&#39;s name. This can be `UNDEFINED` if not found.&#34;&#34;&#34;</code></pre>
                                 </details>
                             </dd>
                             <dt id="aiobungie.crate.Entity.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.traits.Netrunner" href="./internal/traits.html#aiobungie.internal.traits.Netrunner">Netrunner</a></code></dt>
@@ -3221,7 +2909,7 @@ def net(self) -&gt; traits.Netrunner:
                     </dd>
                     <dt id="aiobungie.crate.Friend"><code class="flex name class">
 <span>class <span class="ident">Friend</span></span>
-<span>(</span><span>net: traits.Netrunner, id: int, type: enums.MembershipType, name: str, unique_name: helpers.NoneOr[str], code: helpers.NoneOr[int], online_status: enums.Presence, online_title: int, relationship: enums.Relationship, user: helpers.NoneOr[user_.User])</span>
+<span>(</span><span>net: traits.Netrunner, id: int, type: enums.MembershipType, name: helpers.UndefinedOr[str], code: helpers.NoneOr[int], online_status: enums.Presence, online_title: int, relationship: enums.Relationship, user: helpers.NoneOr[user_.User])</span>
 </code></dt>
                     <dd>
                         <div class="desc">
@@ -3251,11 +2939,8 @@ class Friend(user_.UserLike):
     type: enums.MembershipType = attr.field(repr=True)
     &#34;&#34;&#34;The friend&#39;s last seen membership type.&#34;&#34;&#34;
 
-    name: str = attr.field(repr=True)
-    &#34;&#34;&#34;The friend&#39;s last seen global display name. This field could be None if the player hasn&#39;t logged in yet.&#34;&#34;&#34;
-
-    unique_name: helpers.NoneOr[str] = attr.field(repr=True)
-    &#34;&#34;&#34;The friend&#39;s global unique display name. This field could be None if the player hasn&#39;t logged in yet.&#34;&#34;&#34;
+    name: helpers.UndefinedOr[str] = attr.field(repr=True)
+    &#34;&#34;&#34;The friend&#39;s last seen global display name. This field could be Undefined if the player hasn&#39;t logged in yet.&#34;&#34;&#34;
 
     code: helpers.NoneOr[int] = attr.field(repr=True)
     &#34;&#34;&#34;The friend&#39;s last seen global code. This field could be None if the player hasn&#39;t logged in yet.&#34;&#34;&#34;
@@ -3271,6 +2956,11 @@ class Friend(user_.UserLike):
 
     user: helpers.NoneOr[user_.User] = attr.field(repr=True)
     &#34;&#34;&#34;The friend&#39;s bungie user account. This field is optional and can be None in some states.&#34;&#34;&#34;
+
+    @property
+    def unique_name(self) -&gt; str:
+        &#34;&#34;&#34;The friend&#39;s global unique display name. This field could be None if the player hasn&#39;t logged in yet.&#34;&#34;&#34;
+        return self.unique_name
 
     # POST methods will not be implemented currently.
 
@@ -3416,16 +3106,6 @@ class Friend(user_.UserLike):
                         </ul>
                         <h3>Instance variables</h3>
                         <dl>
-                            <dt id="aiobungie.crate.Friend.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
-                            <dd>
-                                <p class="inheritance">
-                                    <em>Inherited from:</em>
-                                    <code><a title="aiobungie.crate.user.UserLike" href="user.html#aiobungie.crate.user.UserLike">UserLike</a></code>.<code><a title="aiobungie.crate.user.UserLike.as_dict" href="user.html#aiobungie.crate.user.UserLike.as_dict">as_dict</a></code>
-                                </p>
-                                <div class="desc inherited">
-                                    <p>An instance of the UserLike as a dict.</p>
-                                </div>
-                            </dd>
                             <dt id="aiobungie.crate.Friend.code"><code class="name">var <span class="ident">code</span> : Optional[None]</code></dt>
                             <dd>
                                 <div class="desc">
@@ -3458,6 +3138,16 @@ class Friend(user_.UserLike):
                                     <p>True if the user profile is public or no.</p>
                                 </div>
                             </dd>
+                            <dt id="aiobungie.crate.Friend.last_seen_name"><code class="name">var <span class="ident">last_seen_name</span> : str</code></dt>
+                            <dd>
+                                <p class="inheritance">
+                                    <em>Inherited from:</em>
+                                    <code><a title="aiobungie.crate.user.UserLike" href="user.html#aiobungie.crate.user.UserLike">UserLike</a></code>.<code><a title="aiobungie.crate.user.UserLike.last_seen_name" href="user.html#aiobungie.crate.user.UserLike.last_seen_name">last_seen_name</a></code>
+                                </p>
+                                <div class="desc inherited">
+                                    <p>The user like's last seen name.</p>
+                                </div>
+                            </dd>
                             <dt id="aiobungie.crate.Friend.link"><code class="name">var <span class="ident">link</span> : str</code></dt>
                             <dd>
                                 <p class="inheritance">
@@ -3468,10 +3158,10 @@ class Friend(user_.UserLike):
                                     <p>The user like's profile link.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.Friend.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
+                            <dt id="aiobungie.crate.Friend.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>The friend's last seen global display name. This field could be None if the player hasn't logged in yet.</p>
+                                    <p>The friend's last seen global display name. This field could be Undefined if the player hasn't logged in yet.</p>
                                 </div>
                             </dd>
                             <dt id="aiobungie.crate.Friend.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.traits.Netrunner" href="./internal/traits.html#aiobungie.internal.traits.Netrunner">Netrunner</a></code></dt>
@@ -3504,11 +3194,20 @@ class Friend(user_.UserLike):
                                     <p>The friend's last seen membership type.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.Friend.unique_name"><code class="name">var <span class="ident">unique_name</span> : Optional[str]</code></dt>
+                            <dt id="aiobungie.crate.Friend.unique_name"><code class="name">var <span class="ident">unique_name</span> : str</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>The friend's global unique display name. This field could be None if the player hasn't logged in yet.</p>
                                 </div>
+                                <details class="source">
+                                    <summary>
+                                        <span>Expand source code</span>
+                                    </summary>
+                                    <pre><code class="python">@property
+def unique_name(self) -&gt; str:
+    &#34;&#34;&#34;The friend&#39;s global unique display name. This field could be None if the player hasn&#39;t logged in yet.&#34;&#34;&#34;
+    return self.unique_name</code></pre>
+                                </details>
                             </dd>
                             <dt id="aiobungie.crate.Friend.user"><code class="name">var <span class="ident">user</span> : Optional[None]</code></dt>
                             <dd>
@@ -3830,7 +3529,7 @@ class Friend(user_.UserLike):
                             <summary>
                                 <span>Expand source code</span>
                             </summary>
-                            <pre><code class="python">@attr.define(hash=True, kw_only=True, weakref_slot=False)
+                            <pre><code class="python">@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class HardLinkedMembership:
     &#34;&#34;&#34;Represents hard linked Bungie user membership.
 
@@ -3876,7 +3575,7 @@ class HardLinkedMembership:
                     </dd>
                     <dt id="aiobungie.crate.InventoryEntity"><code class="flex name class">
 <span>class <span class="ident">InventoryEntity</span></span>
-<span>(</span><span>*, net: traits.Netrunner, hash: int, index: int, name: str, description: str, icon: assets.MaybeImage, has_icon: bool, type: typing.Union[enums.Item, str], type_name: typing.Optional[str], water_mark: typing.Optional[assets.Image], tier: typing.Optional[enums.ItemTier], tier_name: typing.Optional[str], bucket_type: typing.Optional[int], stats: typing.Optional[typing.Dict[str, typing.Any]], ammo_type: typing.Optional[enums.AmmoType], lore_hash: typing.Union[int, str], item_class: typing.Optional[enums.Class], sub_type: typing.Union[enums.Item, str], is_equippable: typing.Optional[bool], summary_hash: typing.Optional[int], damage: typing.Union[enums.DamageType, str], about: typing.Optional[str], banner: typing.Optional[assets.Image])</span>
+<span>(</span><span>*, net: traits.Netrunner, hash: int, index: int, name: helpers.UndefinedOr[str], description: helpers.UndefinedOr[str], icon: assets.MaybeImage, has_icon: bool, type: helpers.UndefinedOr[enums.Item], type_name: helpers.UndefinedOr[str], water_mark: typing.Optional[assets.Image], tier: typing.Optional[enums.ItemTier], tier_name: helpers.UndefinedOr[str], bucket_type: typing.Optional[int], stats: typing.Optional[typing.Dict[str, typing.Any]], ammo_type: typing.Optional[enums.AmmoType], lore_hash: typing.Optional[int], item_class: typing.Optional[enums.Class], sub_type: helpers.UndefinedOr[enums.Item], is_equippable: helpers.UndefinedOr[bool], summary_hash: typing.Optional[int], damage: helpers.UndefinedOr[enums.DamageType], about: helpers.UndefinedOr[str], banner: typing.Optional[assets.Image])</span>
 </code></dt>
                     <dd>
                         <div class="desc">
@@ -3904,10 +3603,10 @@ class InventoryEntity(Entity):
     index: int = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;Entity&#39;s index.&#34;&#34;&#34;
 
-    name: str = attr.field(repr=True, hash=False, eq=False)
-    &#34;&#34;&#34;Entity&#39;s name&#34;&#34;&#34;
+    name: helpers.UndefinedOr[str] = attr.field(repr=True, hash=False, eq=False)
+    &#34;&#34;&#34;Entity&#39;s name. This can be `UNDEFINED` if not found.&#34;&#34;&#34;
 
-    description: str = attr.field(repr=True)
+    description: helpers.UndefinedOr[str] = attr.field(repr=True)
     &#34;&#34;&#34;Entity&#39;s description.&#34;&#34;&#34;
 
     icon: assets.MaybeImage = attr.field(repr=False, hash=False, eq=False)
@@ -3916,10 +3615,10 @@ class InventoryEntity(Entity):
     has_icon: bool = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;A boolean that returns True if the entity has an icon.&#34;&#34;&#34;
 
-    type: typing.Union[enums.Item, str] = attr.field(repr=True, hash=False)
+    type: helpers.UndefinedOr[enums.Item] = attr.field(repr=True, hash=False)
     &#34;&#34;&#34;Entity&#39;s type. Can be undefined if nothing was found.&#34;&#34;&#34;
 
-    type_name: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    type_name: helpers.UndefinedOr[str] = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;Entity&#39;s type name. i.e., `Grenade Launcher`&#34;&#34;&#34;
 
     water_mark: typing.Optional[assets.Image] = attr.field(
@@ -3930,7 +3629,7 @@ class InventoryEntity(Entity):
     tier: typing.Optional[enums.ItemTier] = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;Entity&#39;s &#34;tier.&#34;&#34;&#34;
 
-    tier_name: typing.Optional[str] = attr.field(repr=False, eq=False)
+    tier_name: helpers.UndefinedOr[str] = attr.field(repr=False, eq=False)
     &#34;&#34;&#34;A string version of the item tier.&#34;&#34;&#34;
 
     bucket_type: typing.Optional[int] = attr.field(repr=True, hash=False, eq=False)
@@ -3948,7 +3647,7 @@ class InventoryEntity(Entity):
     )
     &#34;&#34;&#34;Entity&#39;s ammo type if it was a wepon, otherwise it will return None&#34;&#34;&#34;
 
-    lore_hash: typing.Union[int, str] = attr.field(repr=False, hash=False, eq=False)
+    lore_hash: typing.Optional[int] = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;The entity&#39;s lore hash. Can be undefined if no lore hash found.&#34;&#34;&#34;
 
     item_class: typing.Optional[enums.Class] = attr.field(
@@ -3956,25 +3655,27 @@ class InventoryEntity(Entity):
     )
     &#34;&#34;&#34;The entity&#39;s class type.&#34;&#34;&#34;
 
-    sub_type: typing.Union[enums.Item, str] = attr.field(
+    sub_type: helpers.UndefinedOr[enums.Item] = attr.field(
         repr=False, hash=False, eq=False
     )
     &#34;&#34;&#34;The subtype of the entity. A type is a weapon or armor.
     A subtype is a handcannonn or leg armor for an example.
     &#34;&#34;&#34;
 
-    is_equippable: typing.Optional[bool] = attr.field(repr=False, hash=False, eq=False)
+    is_equippable: helpers.UndefinedOr[bool] = attr.field(
+        repr=False, hash=False, eq=False
+    )
     &#34;&#34;&#34;True if the entity can be equipped or False.&#34;&#34;&#34;
 
     summary_hash: typing.Optional[int] = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;Entity&#39;s summary hash.&#34;&#34;&#34;
 
-    damage: typing.Union[enums.DamageType, str] = attr.field(
+    damage: helpers.UndefinedOr[enums.DamageType] = attr.field(
         repr=False, hash=False, eq=False
     )
     &#34;&#34;&#34;Entity&#39;s damage type. Only works for weapons.&#34;&#34;&#34;
 
-    about: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    about: helpers.UndefinedOr[str] = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;Entity&#39;s about.&#34;&#34;&#34;
 
     banner: typing.Optional[assets.Image] = attr.field(repr=False, eq=False, hash=False)
@@ -3991,7 +3692,7 @@ class InventoryEntity(Entity):
                         </ul>
                         <h3>Instance variables</h3>
                         <dl>
-                            <dt id="aiobungie.crate.InventoryEntity.about"><code class="name">var <span class="ident">about</span> : Optional[str]</code></dt>
+                            <dt id="aiobungie.crate.InventoryEntity.about"><code class="name">var <span class="ident">about</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>Entity's about.</p>
@@ -4001,16 +3702,6 @@ class InventoryEntity(Entity):
                             <dd>
                                 <div class="desc">
                                     <p>Entity's ammo type if it was a wepon, otherwise it will return None</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.InventoryEntity.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
-                            <dd>
-                                <p class="inheritance">
-                                    <em>Inherited from:</em>
-                                    <code><a title="aiobungie.crate.entity.Entity" href="entity.html#aiobungie.crate.entity.Entity">Entity</a></code>.<code><a title="aiobungie.crate.entity.Entity.as_dict" href="entity.html#aiobungie.crate.entity.Entity.as_dict">as_dict</a></code>
-                                </p>
-                                <div class="desc inherited">
-                                    <p>Returns an instance of the entity as a dict</p>
                                 </div>
                             </dd>
                             <dt id="aiobungie.crate.InventoryEntity.banner"><code class="name">var <span class="ident">banner</span> : Optional[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>]</code></dt>
@@ -4025,13 +3716,13 @@ class InventoryEntity(Entity):
                                     <p>The entity's bucket type, None if unknown</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.InventoryEntity.damage"><code class="name">var <span class="ident">damage</span> : Union[<a title="aiobungie.internal.enums.DamageType" href="./internal/enums.html#aiobungie.internal.enums.DamageType">DamageType</a>, str]</code></dt>
+                            <dt id="aiobungie.crate.InventoryEntity.damage"><code class="name">var <span class="ident">damage</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, <a title="aiobungie.internal.enums.DamageType" href="./internal/enums.html#aiobungie.internal.enums.DamageType">DamageType</a>]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>Entity's damage type. Only works for weapons.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.InventoryEntity.description"><code class="name">var <span class="ident">description</span> : str</code></dt>
+                            <dt id="aiobungie.crate.InventoryEntity.description"><code class="name">var <span class="ident">description</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>Entity's description.</p>
@@ -4069,7 +3760,7 @@ class InventoryEntity(Entity):
                                     <p>Entity's index.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.InventoryEntity.is_equippable"><code class="name">var <span class="ident">is_equippable</span> : Optional[bool]</code></dt>
+                            <dt id="aiobungie.crate.InventoryEntity.is_equippable"><code class="name">var <span class="ident">is_equippable</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, bool]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>True if the entity can be equipped or False.</p>
@@ -4081,20 +3772,20 @@ class InventoryEntity(Entity):
                                     <p>The entity's class type.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.InventoryEntity.lore_hash"><code class="name">var <span class="ident">lore_hash</span> : Union[int, str]</code></dt>
+                            <dt id="aiobungie.crate.InventoryEntity.lore_hash"><code class="name">var <span class="ident">lore_hash</span> : Optional[None]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>The entity's lore hash. Can be undefined if no lore hash found.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.InventoryEntity.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
+                            <dt id="aiobungie.crate.InventoryEntity.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
                             <dd>
                                 <p class="inheritance">
                                     <em>Inherited from:</em>
                                     <code><a title="aiobungie.crate.entity.Entity" href="entity.html#aiobungie.crate.entity.Entity">Entity</a></code>.<code><a title="aiobungie.crate.entity.Entity.name" href="entity.html#aiobungie.crate.entity.Entity.name">name</a></code>
                                 </p>
                                 <div class="desc inherited">
-                                    <p>Entity's name</p>
+                                    <p>Entity's name. This can be <code>UNDEFINED</code> if not found.</p>
                                 </div>
                             </dd>
                             <dt id="aiobungie.crate.InventoryEntity.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.traits.Netrunner" href="./internal/traits.html#aiobungie.internal.traits.Netrunner">Netrunner</a></code></dt>
@@ -4113,7 +3804,7 @@ class InventoryEntity(Entity):
                                     <p>Entity's stats. this currently returns a dict object of the stats.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.InventoryEntity.sub_type"><code class="name">var <span class="ident">sub_type</span> : Union[<a title="aiobungie.internal.enums.Item" href="./internal/enums.html#aiobungie.internal.enums.Item">Item</a>, str]</code></dt>
+                            <dt id="aiobungie.crate.InventoryEntity.sub_type"><code class="name">var <span class="ident">sub_type</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, <a title="aiobungie.internal.enums.Item" href="./internal/enums.html#aiobungie.internal.enums.Item">Item</a>]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>The subtype of the entity. A type is a weapon or armor. A subtype is a handcannonn or leg armor for an example.</p>
@@ -4131,19 +3822,19 @@ class InventoryEntity(Entity):
                                     <p>Entity's "tier.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.InventoryEntity.tier_name"><code class="name">var <span class="ident">tier_name</span> : Optional[str]</code></dt>
+                            <dt id="aiobungie.crate.InventoryEntity.tier_name"><code class="name">var <span class="ident">tier_name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>A string version of the item tier.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.InventoryEntity.type"><code class="name">var <span class="ident">type</span> : Union[<a title="aiobungie.internal.enums.Item" href="./internal/enums.html#aiobungie.internal.enums.Item">Item</a>, str]</code></dt>
+                            <dt id="aiobungie.crate.InventoryEntity.type"><code class="name">var <span class="ident">type</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, <a title="aiobungie.internal.enums.Item" href="./internal/enums.html#aiobungie.internal.enums.Item">Item</a>]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>Entity's type. Can be undefined if nothing was found.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.InventoryEntity.type_name"><code class="name">var <span class="ident">type_name</span> : Optional[str]</code></dt>
+                            <dt id="aiobungie.crate.InventoryEntity.type_name"><code class="name">var <span class="ident">type_name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>Entity's type name. i.e., <code>Grenade Launcher</code></p>
@@ -4159,7 +3850,7 @@ class InventoryEntity(Entity):
                     </dd>
                     <dt id="aiobungie.crate.Player"><code class="flex name class">
 <span>class <span class="ident">Player</span></span>
-<span>(</span><span>*, icon: Image, id: int, name: str, is_public: bool, type: MembershipType, code: helpers.NoneOr[int], crossave_override: int, types: list[MembershipType])</span>
+<span>(</span><span>*, last_seen_name: str, icon: Image, id: int, name: str, is_public: bool, type: MembershipType, code: helpers.NoneOr[int], crossave_override: int, types: list[MembershipType])</span>
 </code></dt>
                     <dd>
                         <div class="desc">
@@ -4171,7 +3862,7 @@ class InventoryEntity(Entity):
                                 <span>Expand source code</span>
                             </summary>
                             <pre><code class="python">@attr.define(hash=False, kw_only=True, weakref_slot=False)
-class Player(UserLike):
+class Player(user.DestinyUser):
     &#34;&#34;&#34;Represents a Bungie Destiny 2 Player.&#34;&#34;&#34;
 
     icon: Image = attr.field(repr=False, hash=False, eq=False)
@@ -4190,8 +3881,7 @@ class Player(UserLike):
     &#34;&#34;&#34;The profile&#39;s membership type.&#34;&#34;&#34;
 
     code: helpers.NoneOr[int] = attr.field(repr=True)
-    &#34;&#34;&#34;The clan member&#39;s bungie display name code
-    This is new and was added in Season of the lost update
+    &#34;&#34;&#34;The clan member&#39;s bungie display name code. This can be `None` if not found.
 
     .. versionadded:: 0.2.5
     &#34;&#34;&#34;
@@ -4209,52 +3899,25 @@ class Player(UserLike):
     &#34;&#34;&#34;
 
     @property
-    def unique_name(self) -&gt; helpers.NoneOr[str]:
-        &#34;&#34;&#34;The user&#39;s unique display name code.
-        This can be None if the user hasn&#39;t logged in after season of the lost update.
+    def unique_name(self) -&gt; str:
+        &#34;&#34;&#34;The user&#39;s unique name.
 
         .. versionadded:: 0.2.5
         &#34;&#34;&#34;
-        return f&#34;{self.name}#{self.code}&#34;
-
-    @property
-    def net(self) -&gt; traits.Netrunner:
-        &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
-        return self.net
-
-    @property
-    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        &#34;&#34;&#34;Returns a dict object of the player.&#34;&#34;&#34;
-
-        return attr.asdict(self)</code></pre>
+        return f&#34;{self.name}#{self.code}&#34;</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
+                            <li><a title="aiobungie.crate.user.DestinyUser" href="user.html#aiobungie.crate.user.DestinyUser">DestinyUser</a></li>
                             <li><a title="aiobungie.crate.user.UserLike" href="user.html#aiobungie.crate.user.UserLike">UserLike</a></li>
                             <li>abc.ABC</li>
                         </ul>
                         <h3>Instance variables</h3>
                         <dl>
-                            <dt id="aiobungie.crate.Player.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Returns a dict object of the player.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-    &#34;&#34;&#34;Returns a dict object of the player.&#34;&#34;&#34;
-
-    return attr.asdict(self)</code></pre>
-                                </details>
-                            </dd>
                             <dt id="aiobungie.crate.Player.code"><code class="name">var <span class="ident">code</span> : Optional[None]</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>The clan member's bungie display name code This is new and was added in Season of the lost update</p>
+                                    <p>The clan member's bungie display name code. This can be <code>None</code> if not found.</p>
                                     <div class="admonition versionadded">
                                         <p class="admonition-title">Added in version:&ensp;0.2.5</p>
                                     </div>
@@ -4287,11 +3950,21 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                     <p>The player's profile privacy.</p>
                                 </div>
                             </dd>
+                            <dt id="aiobungie.crate.Player.last_seen_name"><code class="name">var <span class="ident">last_seen_name</span> : str</code></dt>
+                            <dd>
+                                <p class="inheritance">
+                                    <em>Inherited from:</em>
+                                    <code><a title="aiobungie.crate.user.DestinyUser" href="user.html#aiobungie.crate.user.DestinyUser">DestinyUser</a></code>.<code><a title="aiobungie.crate.user.DestinyUser.last_seen_name" href="user.html#aiobungie.crate.user.DestinyUser.last_seen_name">last_seen_name</a></code>
+                                </p>
+                                <div class="desc inherited">
+                                    <p>The member's last seen display name. You may use this field if <code><a title="aiobungie.crate.DestinyUser.name" href="#aiobungie.crate.DestinyUser.name">DestinyUser.name</a></code> is <code>Undefined</code>.</p>
+                                </div>
+                            </dd>
                             <dt id="aiobungie.crate.Player.link"><code class="name">var <span class="ident">link</span> : str</code></dt>
                             <dd>
                                 <p class="inheritance">
                                     <em>Inherited from:</em>
-                                    <code><a title="aiobungie.crate.user.UserLike" href="user.html#aiobungie.crate.user.UserLike">UserLike</a></code>.<code><a title="aiobungie.crate.user.UserLike.link" href="user.html#aiobungie.crate.user.UserLike.link">link</a></code>
+                                    <code><a title="aiobungie.crate.user.DestinyUser" href="user.html#aiobungie.crate.user.DestinyUser">DestinyUser</a></code>.<code><a title="aiobungie.crate.user.DestinyUser.link" href="user.html#aiobungie.crate.user.DestinyUser.link">link</a></code>
                                 </p>
                                 <div class="desc inherited">
                                     <p>The user like's profile link.</p>
@@ -4302,21 +3975,6 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                 <div class="desc">
                                     <p>The player's name</p>
                                 </div>
-                            </dd>
-                            <dt id="aiobungie.crate.Player.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.traits.Netrunner" href="./internal/traits.html#aiobungie.internal.traits.Netrunner">Netrunner</a></code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>A network state used for making external requests.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def net(self) -&gt; traits.Netrunner:
-    &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
-    return self.net</code></pre>
-                                </details>
                             </dd>
                             <dt id="aiobungie.crate.Player.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
                             <dd>
@@ -4333,10 +3991,10 @@ def net(self) -&gt; traits.Netrunner:
                                     </div>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.Player.unique_name"><code class="name">var <span class="ident">unique_name</span> : Optional[str]</code></dt>
+                            <dt id="aiobungie.crate.Player.unique_name"><code class="name">var <span class="ident">unique_name</span> : str</code></dt>
                             <dd>
                                 <div class="desc">
-                                    <p>The user's unique display name code. This can be None if the user hasn't logged in after season of the lost update.</p>
+                                    <p>The user's unique name.</p>
                                     <div class="admonition versionadded">
                                         <p class="admonition-title">Added in version:&ensp;0.2.5</p>
                                     </div>
@@ -4346,9 +4004,8 @@ def net(self) -&gt; traits.Netrunner:
                                         <span>Expand source code</span>
                                     </summary>
                                     <pre><code class="python">@property
-def unique_name(self) -&gt; helpers.NoneOr[str]:
-    &#34;&#34;&#34;The user&#39;s unique display name code.
-    This can be None if the user hasn&#39;t logged in after season of the lost update.
+def unique_name(self) -&gt; str:
+    &#34;&#34;&#34;The user&#39;s unique name.
 
     .. versionadded:: 0.2.5
     &#34;&#34;&#34;
@@ -4614,17 +4271,7 @@ class Profile(ProfileComponent):
     @property
     def warlock_id(self) -&gt; int:
         &#34;&#34;&#34;The warlock id of the profile player.&#34;&#34;&#34;
-        return int(self.character_ids[2])
-
-    @property
-    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        &#34;&#34;&#34;Returns a dict object of the profile.&#34;&#34;&#34;
-        return attr.asdict(self)
-
-    @property
-    def human_timedelta(self) -&gt; str:
-        &#34;&#34;&#34;Returns last_played attr but in human delta date.&#34;&#34;&#34;
-        return time.human_timedelta(self.last_played)</code></pre>
+        return int(self.character_ids[2])</code></pre>
                         </details>
                         <h3>Ancestors</h3>
                         <ul class="hlist">
@@ -4633,21 +4280,6 @@ class Profile(ProfileComponent):
                         </ul>
                         <h3>Instance variables</h3>
                         <dl>
-                            <dt id="aiobungie.crate.Profile.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Returns a dict object of the profile.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-    &#34;&#34;&#34;Returns a dict object of the profile.&#34;&#34;&#34;
-    return attr.asdict(self)</code></pre>
-                                </details>
-                            </dd>
                             <dt id="aiobungie.crate.Profile.character_ids"><code class="name">var <span class="ident">character_ids</span> : List[int]</code></dt>
                             <dd>
                                 <p class="inheritance">
@@ -4657,21 +4289,6 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                 <div class="desc inherited">
                                     <p>A list of the profile's character ids.</p>
                                 </div>
-                            </dd>
-                            <dt id="aiobungie.crate.Profile.human_timedelta"><code class="name">var <span class="ident">human_timedelta</span> : str</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Returns last_played attr but in human delta date.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def human_timedelta(self) -&gt; str:
-    &#34;&#34;&#34;Returns last_played attr but in human delta date.&#34;&#34;&#34;
-    return time.human_timedelta(self.last_played)</code></pre>
-                                </details>
                             </dd>
                             <dt id="aiobungie.crate.Profile.hunter_id"><code class="name">var <span class="ident">hunter_id</span> : int</code></dt>
                             <dd>
@@ -4811,7 +4428,7 @@ def warlock_id(self) -&gt; int:
                     </dd>
                     <dt id="aiobungie.crate.User"><code class="flex name class">
 <span>class <span class="ident">User</span></span>
-<span>(</span><span>*, bungie: <a title="aiobungie.crate.BungieUser" href="#aiobungie.crate.BungieUser">BungieUser</a>, destiny: typing.Sequence[<a title="aiobungie.crate.DestinyUser" href="#aiobungie.crate.DestinyUser">DestinyUser</a> | None])</span>
+<span>(</span><span>*, bungie: <a title="aiobungie.crate.BungieUser" href="#aiobungie.crate.BungieUser">BungieUser</a>, destiny: typing.Sequence[<a title="aiobungie.crate.DestinyUser" href="#aiobungie.crate.DestinyUser">DestinyUser</a>])</span>
 </code></dt>
                     <dd>
                         <div class="desc">
@@ -4823,7 +4440,7 @@ def warlock_id(self) -&gt; int:
                             <summary>
                                 <span>Expand source code</span>
                             </summary>
-                            <pre><code class="python">@attr.define(hash=True, kw_only=True, weakref_slot=False)
+                            <pre><code class="python">@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class User:
     &#34;&#34;&#34;Concrete representtion of a Bungie user.
 
@@ -4836,35 +4453,15 @@ class User:
     .. versionadded:: 0.2.5
     &#34;&#34;&#34;
 
-    destiny: typing.Sequence[DestinyUser | None] = attr.field(repr=True)
+    destiny: typing.Sequence[DestinyUser] = attr.field(repr=True)
     &#34;&#34;&#34;A sequence of the user&#39;s Destiny memberships.
 
     .. versionadded:: 0.2.5
-    &#34;&#34;&#34;
-
-    @property
-    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        &#34;&#34;&#34;a dict object of the user.&#34;&#34;&#34;
-        return attr.asdict(self)</code></pre>
+    &#34;&#34;&#34;</code></pre>
                         </details>
                         <h3>Instance variables</h3>
                         <dl>
-                            <dt id="aiobungie.crate.User.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>a dict object of the user.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-    &#34;&#34;&#34;a dict object of the user.&#34;&#34;&#34;
-    return attr.asdict(self)</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.crate.User.bungie"><code class="name">var <span class="ident">bungie</span></code></dt>
+                            <dt id="aiobungie.crate.User.bungie"><code class="name">var <span class="ident">bungie</span> : <a title="aiobungie.crate.user.BungieUser" href="user.html#aiobungie.crate.user.BungieUser">BungieUser</a></code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>The user's bungie net membership.</p>
@@ -4873,7 +4470,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                                     </div>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.User.destiny"><code class="name">var <span class="ident">destiny</span></code></dt>
+                            <dt id="aiobungie.crate.User.destiny"><code class="name">var <span class="ident">destiny</span> : Sequence[<a title="aiobungie.crate.user.DestinyUser" href="user.html#aiobungie.crate.user.DestinyUser">DestinyUser</a>]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>A sequence of the user's Destiny memberships.</p>
@@ -4886,7 +4483,7 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                     </dd>
                     <dt id="aiobungie.crate.UserThemes"><code class="flex name class">
 <span>class <span class="ident">UserThemes</span></span>
-<span>(</span><span>*, id: int, name: helpers.NoneOr[str], description: helpers.NoneOr[str])</span>
+<span>(</span><span>*, id: int, name: helpers.UndefinedOr[str], description: helpers.UndefinedOr[str])</span>
 </code></dt>
                     <dd>
                         <div class="desc">
@@ -4897,17 +4494,17 @@ def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
                             <summary>
                                 <span>Expand source code</span>
                             </summary>
-                            <pre><code class="python">@attr.define(hash=True, kw_only=True, weakref_slot=False)
+                            <pre><code class="python">@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class UserThemes:
     &#34;&#34;&#34;Represents a Bungie User theme.&#34;&#34;&#34;
 
-    id: int = attr.field(repr=True)
+    id: int = attr.field(repr=True, hash=True)
     &#34;&#34;&#34;The theme id.&#34;&#34;&#34;
 
-    name: helpers.NoneOr[str] = attr.field(repr=True)
+    name: helpers.UndefinedOr[str] = attr.field(repr=True)
     &#34;&#34;&#34;An optional theme name. if not found this field will be `None`&#34;&#34;&#34;
 
-    description: helpers.NoneOr[str] = attr.field(repr=True)
+    description: helpers.UndefinedOr[str] = attr.field(repr=True)
     &#34;&#34;&#34;An optional theme description. This field could be `None` if no description found.&#34;&#34;&#34;
 
     def __int__(self) -&gt; int:
@@ -4915,7 +4512,7 @@ class UserThemes:
                         </details>
                         <h3>Instance variables</h3>
                         <dl>
-                            <dt id="aiobungie.crate.UserThemes.description"><code class="name">var <span class="ident">description</span> : Optional[str]</code></dt>
+                            <dt id="aiobungie.crate.UserThemes.description"><code class="name">var <span class="ident">description</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>An optional theme description. This field could be <code>None</code> if no description found.</p>
@@ -4927,7 +4524,7 @@ class UserThemes:
                                     <p>The theme id.</p>
                                 </div>
                             </dd>
-                            <dt id="aiobungie.crate.UserThemes.name"><code class="name">var <span class="ident">name</span> : Optional[str]</code></dt>
+                            <dt id="aiobungie.crate.UserThemes.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
                             <dd>
                                 <div class="desc">
                                     <p>An optional theme name. if not found this field will be <code>None</code></p>
@@ -5025,7 +4622,6 @@ class UserThemes:
                         <li>
                             <h4><code><a title="aiobungie.crate.Activity" href="#aiobungie.crate.Activity">Activity</a></code></h4>
                             <ul class="two-column">
-                                <li><code><a title="aiobungie.crate.Activity.as_dict" href="#aiobungie.crate.Activity.as_dict">as_dict</a></code></li>
                                 <li><code><a title="aiobungie.crate.Activity.assists" href="#aiobungie.crate.Activity.assists">assists</a></code></li>
                                 <li><code><a title="aiobungie.crate.Activity.completion_reason" href="#aiobungie.crate.Activity.completion_reason">completion_reason</a></code></li>
                                 <li><code><a title="aiobungie.crate.Activity.deaths" href="#aiobungie.crate.Activity.deaths">deaths</a></code></li>
@@ -5050,9 +4646,7 @@ class UserThemes:
                         <li>
                             <h4><code><a title="aiobungie.crate.Application" href="#aiobungie.crate.Application">Application</a></code></h4>
                             <ul class="two-column">
-                                <li><code><a title="aiobungie.crate.Application.as_dict" href="#aiobungie.crate.Application.as_dict">as_dict</a></code></li>
                                 <li><code><a title="aiobungie.crate.Application.created_at" href="#aiobungie.crate.Application.created_at">created_at</a></code></li>
-                                <li><code><a title="aiobungie.crate.Application.human_timedelta" href="#aiobungie.crate.Application.human_timedelta">human_timedelta</a></code></li>
                                 <li><code><a title="aiobungie.crate.Application.id" href="#aiobungie.crate.Application.id">id</a></code></li>
                                 <li><code><a title="aiobungie.crate.Application.link" href="#aiobungie.crate.Application.link">link</a></code></li>
                                 <li><code><a title="aiobungie.crate.Application.name" href="#aiobungie.crate.Application.name">name</a></code></li>
@@ -5066,14 +4660,13 @@ class UserThemes:
                         <li>
                             <h4><code><a title="aiobungie.crate.ApplicationOwner" href="#aiobungie.crate.ApplicationOwner">ApplicationOwner</a></code></h4>
                             <ul class="two-column">
-                                <li><code><a title="aiobungie.crate.ApplicationOwner.as_dict" href="#aiobungie.crate.ApplicationOwner.as_dict">as_dict</a></code></li>
                                 <li><code><a title="aiobungie.crate.ApplicationOwner.code" href="#aiobungie.crate.ApplicationOwner.code">code</a></code></li>
                                 <li><code><a title="aiobungie.crate.ApplicationOwner.icon" href="#aiobungie.crate.ApplicationOwner.icon">icon</a></code></li>
                                 <li><code><a title="aiobungie.crate.ApplicationOwner.id" href="#aiobungie.crate.ApplicationOwner.id">id</a></code></li>
                                 <li><code><a title="aiobungie.crate.ApplicationOwner.is_public" href="#aiobungie.crate.ApplicationOwner.is_public">is_public</a></code></li>
+                                <li><code><a title="aiobungie.crate.ApplicationOwner.last_seen_name" href="#aiobungie.crate.ApplicationOwner.last_seen_name">last_seen_name</a></code></li>
                                 <li><code><a title="aiobungie.crate.ApplicationOwner.link" href="#aiobungie.crate.ApplicationOwner.link">link</a></code></li>
                                 <li><code><a title="aiobungie.crate.ApplicationOwner.name" href="#aiobungie.crate.ApplicationOwner.name">name</a></code></li>
-                                <li><code><a title="aiobungie.crate.ApplicationOwner.net" href="#aiobungie.crate.ApplicationOwner.net">net</a></code></li>
                                 <li><code><a title="aiobungie.crate.ApplicationOwner.type" href="#aiobungie.crate.ApplicationOwner.type">type</a></code></li>
                                 <li><code><a title="aiobungie.crate.ApplicationOwner.unique_name" href="#aiobungie.crate.ApplicationOwner.unique_name">unique_name</a></code></li>
                             </ul>
@@ -5086,7 +4679,6 @@ class UserThemes:
                                 <li><code><a title="aiobungie.crate.BungieUser.code" href="#aiobungie.crate.BungieUser.code">code</a></code></li>
                                 <li><code><a title="aiobungie.crate.BungieUser.created_at" href="#aiobungie.crate.BungieUser.created_at">created_at</a></code></li>
                                 <li><code><a title="aiobungie.crate.BungieUser.display_title" href="#aiobungie.crate.BungieUser.display_title">display_title</a></code></li>
-                                <li><code><a title="aiobungie.crate.BungieUser.human_timedelta" href="#aiobungie.crate.BungieUser.human_timedelta">human_timedelta</a></code></li>
                                 <li><code><a title="aiobungie.crate.BungieUser.id" href="#aiobungie.crate.BungieUser.id">id</a></code></li>
                                 <li><code><a title="aiobungie.crate.BungieUser.is_deleted" href="#aiobungie.crate.BungieUser.is_deleted">is_deleted</a></code></li>
                                 <li><code><a title="aiobungie.crate.BungieUser.locale" href="#aiobungie.crate.BungieUser.locale">locale</a></code></li>
@@ -5107,7 +4699,6 @@ class UserThemes:
                         <li>
                             <h4><code><a title="aiobungie.crate.Character" href="#aiobungie.crate.Character">Character</a></code></h4>
                             <ul class="two-column">
-                                <li><code><a title="aiobungie.crate.Character.as_dict" href="#aiobungie.crate.Character.as_dict">as_dict</a></code></li>
                                 <li><code><a title="aiobungie.crate.Character.class_type" href="#aiobungie.crate.Character.class_type">class_type</a></code></li>
                                 <li><code><a title="aiobungie.crate.Character.emblem" href="#aiobungie.crate.Character.emblem">emblem</a></code></li>
                                 <li><code><a title="aiobungie.crate.Character.emblem_hash" href="#aiobungie.crate.Character.emblem_hash">emblem_hash</a></code></li>
@@ -5115,7 +4706,6 @@ class UserThemes:
                                 <li><code><a title="aiobungie.crate.Character.equip" href="character.html#aiobungie.crate.Character.equip">equip</a></code></li>
                                 <li><code><a title="aiobungie.crate.Character.equip_items" href="character.html#aiobungie.crate.Character.equip_items">equip_items</a></code></li>
                                 <li><code><a title="aiobungie.crate.Character.gender" href="#aiobungie.crate.Character.gender">gender</a></code></li>
-                                <li><code><a title="aiobungie.crate.Character.human_timedelta" href="character.html#aiobungie.crate.Character.human_timedelta">human_timedelta</a></code></li>
                                 <li><code><a title="aiobungie.crate.Character.id" href="#aiobungie.crate.Character.id">id</a></code></li>
                                 <li><code><a title="aiobungie.crate.Character.last_played" href="#aiobungie.crate.Character.last_played">last_played</a></code></li>
                                 <li><code><a title="aiobungie.crate.Character.level" href="#aiobungie.crate.Character.level">level</a></code></li>
@@ -5133,21 +4723,19 @@ class UserThemes:
                             <h4><code><a title="aiobungie.crate.Clan" href="#aiobungie.crate.Clan">Clan</a></code></h4>
                             <ul class="">
                                 <li><code><a title="aiobungie.crate.Clan.about" href="#aiobungie.crate.Clan.about">about</a></code></li>
-                                <li><code><a title="aiobungie.crate.Clan.as_dict" href="#aiobungie.crate.Clan.as_dict">as_dict</a></code></li>
                                 <li><code><a title="aiobungie.crate.Clan.avatar" href="#aiobungie.crate.Clan.avatar">avatar</a></code></li>
                                 <li><code><a title="aiobungie.crate.Clan.banner" href="#aiobungie.crate.Clan.banner">banner</a></code></li>
                                 <li><code><a title="aiobungie.crate.Clan.created_at" href="#aiobungie.crate.Clan.created_at">created_at</a></code></li>
-                                <li><code><a title="aiobungie.crate.Clan.description" href="#aiobungie.crate.Clan.description">description</a></code></li>
                                 <li><code><a title="aiobungie.crate.Clan.features" href="#aiobungie.crate.Clan.features">features</a></code></li>
                                 <li><code><a title="aiobungie.crate.Clan.fetch_banned_members" href="#aiobungie.crate.Clan.fetch_banned_members">fetch_banned_members</a></code></li>
                                 <li><code><a title="aiobungie.crate.Clan.fetch_invited_members" href="#aiobungie.crate.Clan.fetch_invited_members">fetch_invited_members</a></code></li>
                                 <li><code><a title="aiobungie.crate.Clan.fetch_member" href="#aiobungie.crate.Clan.fetch_member">fetch_member</a></code></li>
                                 <li><code><a title="aiobungie.crate.Clan.fetch_members" href="#aiobungie.crate.Clan.fetch_members">fetch_members</a></code></li>
                                 <li><code><a title="aiobungie.crate.Clan.fetch_pending_members" href="#aiobungie.crate.Clan.fetch_pending_members">fetch_pending_members</a></code></li>
-                                <li><code><a title="aiobungie.crate.Clan.human_timedelta" href="#aiobungie.crate.Clan.human_timedelta">human_timedelta</a></code></li>
                                 <li><code><a title="aiobungie.crate.Clan.id" href="#aiobungie.crate.Clan.id">id</a></code></li>
                                 <li><code><a title="aiobungie.crate.Clan.is_public" href="#aiobungie.crate.Clan.is_public">is_public</a></code></li>
                                 <li><code><a title="aiobungie.crate.Clan.member_count" href="#aiobungie.crate.Clan.member_count">member_count</a></code></li>
+                                <li><code><a title="aiobungie.crate.Clan.motto" href="#aiobungie.crate.Clan.motto">motto</a></code></li>
                                 <li><code><a title="aiobungie.crate.Clan.name" href="#aiobungie.crate.Clan.name">name</a></code></li>
                                 <li><code><a title="aiobungie.crate.Clan.net" href="#aiobungie.crate.Clan.net">net</a></code></li>
                                 <li><code><a title="aiobungie.crate.Clan.owner" href="#aiobungie.crate.Clan.owner">owner</a></code></li>
@@ -5172,7 +4760,6 @@ class UserThemes:
                         <li>
                             <h4><code><a title="aiobungie.crate.ClanMember" href="#aiobungie.crate.ClanMember">ClanMember</a></code></h4>
                             <ul class="two-column">
-                                <li><code><a title="aiobungie.crate.ClanMember.as_dict" href="#aiobungie.crate.ClanMember.as_dict">as_dict</a></code></li>
                                 <li><code><a title="aiobungie.crate.ClanMember.ban" href="#aiobungie.crate.ClanMember.ban">ban</a></code></li>
                                 <li><code><a title="aiobungie.crate.ClanMember.code" href="#aiobungie.crate.ClanMember.code">code</a></code></li>
                                 <li><code><a title="aiobungie.crate.ClanMember.group_id" href="#aiobungie.crate.ClanMember.group_id">group_id</a></code></li>
@@ -5183,6 +4770,7 @@ class UserThemes:
                                 <li><code><a title="aiobungie.crate.ClanMember.joined_at" href="#aiobungie.crate.ClanMember.joined_at">joined_at</a></code></li>
                                 <li><code><a title="aiobungie.crate.ClanMember.kick" href="#aiobungie.crate.ClanMember.kick">kick</a></code></li>
                                 <li><code><a title="aiobungie.crate.ClanMember.last_online" href="#aiobungie.crate.ClanMember.last_online">last_online</a></code></li>
+                                <li><code><a title="aiobungie.crate.ClanMember.last_seen_name" href="#aiobungie.crate.ClanMember.last_seen_name">last_seen_name</a></code></li>
                                 <li><code><a title="aiobungie.crate.ClanMember.link" href="#aiobungie.crate.ClanMember.link">link</a></code></li>
                                 <li><code><a title="aiobungie.crate.ClanMember.name" href="#aiobungie.crate.ClanMember.name">name</a></code></li>
                                 <li><code><a title="aiobungie.crate.ClanMember.net" href="#aiobungie.crate.ClanMember.net">net</a></code></li>
@@ -5195,18 +4783,16 @@ class UserThemes:
                         <li>
                             <h4><code><a title="aiobungie.crate.ClanOwner" href="#aiobungie.crate.ClanOwner">ClanOwner</a></code></h4>
                             <ul class="two-column">
-                                <li><code><a title="aiobungie.crate.ClanOwner.as_dict" href="#aiobungie.crate.ClanOwner.as_dict">as_dict</a></code></li>
                                 <li><code><a title="aiobungie.crate.ClanOwner.clan_id" href="#aiobungie.crate.ClanOwner.clan_id">clan_id</a></code></li>
                                 <li><code><a title="aiobungie.crate.ClanOwner.code" href="#aiobungie.crate.ClanOwner.code">code</a></code></li>
-                                <li><code><a title="aiobungie.crate.ClanOwner.human_timedelta" href="#aiobungie.crate.ClanOwner.human_timedelta">human_timedelta</a></code></li>
                                 <li><code><a title="aiobungie.crate.ClanOwner.icon" href="#aiobungie.crate.ClanOwner.icon">icon</a></code></li>
                                 <li><code><a title="aiobungie.crate.ClanOwner.id" href="#aiobungie.crate.ClanOwner.id">id</a></code></li>
                                 <li><code><a title="aiobungie.crate.ClanOwner.is_public" href="#aiobungie.crate.ClanOwner.is_public">is_public</a></code></li>
                                 <li><code><a title="aiobungie.crate.ClanOwner.joined_at" href="#aiobungie.crate.ClanOwner.joined_at">joined_at</a></code></li>
                                 <li><code><a title="aiobungie.crate.ClanOwner.last_online" href="#aiobungie.crate.ClanOwner.last_online">last_online</a></code></li>
+                                <li><code><a title="aiobungie.crate.ClanOwner.last_seen_name" href="#aiobungie.crate.ClanOwner.last_seen_name">last_seen_name</a></code></li>
                                 <li><code><a title="aiobungie.crate.ClanOwner.link" href="#aiobungie.crate.ClanOwner.link">link</a></code></li>
                                 <li><code><a title="aiobungie.crate.ClanOwner.name" href="#aiobungie.crate.ClanOwner.name">name</a></code></li>
-                                <li><code><a title="aiobungie.crate.ClanOwner.net" href="#aiobungie.crate.ClanOwner.net">net</a></code></li>
                                 <li><code><a title="aiobungie.crate.ClanOwner.type" href="#aiobungie.crate.ClanOwner.type">type</a></code></li>
                                 <li><code><a title="aiobungie.crate.ClanOwner.types" href="#aiobungie.crate.ClanOwner.types">types</a></code></li>
                                 <li><code><a title="aiobungie.crate.ClanOwner.unique_name" href="#aiobungie.crate.ClanOwner.unique_name">unique_name</a></code></li>
@@ -5215,8 +4801,8 @@ class UserThemes:
                         <li>
                             <h4><code><a title="aiobungie.crate.DestinyUser" href="#aiobungie.crate.DestinyUser">DestinyUser</a></code></h4>
                             <ul class="two-column">
-                                <li><code><a title="aiobungie.crate.DestinyUser.as_dict" href="#aiobungie.crate.DestinyUser.as_dict">as_dict</a></code></li>
                                 <li><code><a title="aiobungie.crate.DestinyUser.code" href="#aiobungie.crate.DestinyUser.code">code</a></code></li>
+                                <li><code><a title="aiobungie.crate.DestinyUser.crossave_override" href="#aiobungie.crate.DestinyUser.crossave_override">crossave_override</a></code></li>
                                 <li><code><a title="aiobungie.crate.DestinyUser.icon" href="#aiobungie.crate.DestinyUser.icon">icon</a></code></li>
                                 <li><code><a title="aiobungie.crate.DestinyUser.id" href="#aiobungie.crate.DestinyUser.id">id</a></code></li>
                                 <li><code><a title="aiobungie.crate.DestinyUser.is_public" href="#aiobungie.crate.DestinyUser.is_public">is_public</a></code></li>
@@ -5231,7 +4817,6 @@ class UserThemes:
                         <li>
                             <h4><code><a title="aiobungie.crate.Entity" href="#aiobungie.crate.Entity">Entity</a></code></h4>
                             <ul class="two-column">
-                                <li><code><a title="aiobungie.crate.Entity.as_dict" href="#aiobungie.crate.Entity.as_dict">as_dict</a></code></li>
                                 <li><code><a title="aiobungie.crate.Entity.description" href="#aiobungie.crate.Entity.description">description</a></code></li>
                                 <li><code><a title="aiobungie.crate.Entity.has_icon" href="#aiobungie.crate.Entity.has_icon">has_icon</a></code></li>
                                 <li><code><a title="aiobungie.crate.Entity.hash" href="#aiobungie.crate.Entity.hash">hash</a></code></li>
@@ -5246,7 +4831,6 @@ class UserThemes:
                             <ul class="">
                                 <li><code><a title="aiobungie.crate.Friend.accept" href="#aiobungie.crate.Friend.accept">accept</a></code></li>
                                 <li><code><a title="aiobungie.crate.Friend.add" href="#aiobungie.crate.Friend.add">add</a></code></li>
-                                <li><code><a title="aiobungie.crate.Friend.as_dict" href="user.html#aiobungie.crate.Friend.as_dict">as_dict</a></code></li>
                                 <li><code><a title="aiobungie.crate.Friend.code" href="#aiobungie.crate.Friend.code">code</a></code></li>
                                 <li><code><a title="aiobungie.crate.Friend.decline" href="#aiobungie.crate.Friend.decline">decline</a></code></li>
                                 <li><code><a title="aiobungie.crate.Friend.fetch_platform_friends" href="#aiobungie.crate.Friend.fetch_platform_friends">fetch_platform_friends</a></code></li>
@@ -5254,6 +4838,7 @@ class UserThemes:
                                 <li><code><a title="aiobungie.crate.Friend.id" href="#aiobungie.crate.Friend.id">id</a></code></li>
                                 <li><code><a title="aiobungie.crate.Friend.is_pending" href="#aiobungie.crate.Friend.is_pending">is_pending</a></code></li>
                                 <li><code><a title="aiobungie.crate.Friend.is_public" href="user.html#aiobungie.crate.Friend.is_public">is_public</a></code></li>
+                                <li><code><a title="aiobungie.crate.Friend.last_seen_name" href="user.html#aiobungie.crate.Friend.last_seen_name">last_seen_name</a></code></li>
                                 <li><code><a title="aiobungie.crate.Friend.link" href="user.html#aiobungie.crate.Friend.link">link</a></code></li>
                                 <li><code><a title="aiobungie.crate.Friend.name" href="#aiobungie.crate.Friend.name">name</a></code></li>
                                 <li><code><a title="aiobungie.crate.Friend.net" href="#aiobungie.crate.Friend.net">net</a></code></li>
@@ -5281,7 +4866,6 @@ class UserThemes:
                             <ul class="two-column">
                                 <li><code><a title="aiobungie.crate.InventoryEntity.about" href="#aiobungie.crate.InventoryEntity.about">about</a></code></li>
                                 <li><code><a title="aiobungie.crate.InventoryEntity.ammo_type" href="#aiobungie.crate.InventoryEntity.ammo_type">ammo_type</a></code></li>
-                                <li><code><a title="aiobungie.crate.InventoryEntity.as_dict" href="entity.html#aiobungie.crate.InventoryEntity.as_dict">as_dict</a></code></li>
                                 <li><code><a title="aiobungie.crate.InventoryEntity.banner" href="#aiobungie.crate.InventoryEntity.banner">banner</a></code></li>
                                 <li><code><a title="aiobungie.crate.InventoryEntity.bucket_type" href="#aiobungie.crate.InventoryEntity.bucket_type">bucket_type</a></code></li>
                                 <li><code><a title="aiobungie.crate.InventoryEntity.damage" href="#aiobungie.crate.InventoryEntity.damage">damage</a></code></li>
@@ -5308,15 +4892,14 @@ class UserThemes:
                         <li>
                             <h4><code><a title="aiobungie.crate.Player" href="#aiobungie.crate.Player">Player</a></code></h4>
                             <ul class="two-column">
-                                <li><code><a title="aiobungie.crate.Player.as_dict" href="#aiobungie.crate.Player.as_dict">as_dict</a></code></li>
                                 <li><code><a title="aiobungie.crate.Player.code" href="#aiobungie.crate.Player.code">code</a></code></li>
                                 <li><code><a title="aiobungie.crate.Player.crossave_override" href="#aiobungie.crate.Player.crossave_override">crossave_override</a></code></li>
                                 <li><code><a title="aiobungie.crate.Player.icon" href="#aiobungie.crate.Player.icon">icon</a></code></li>
                                 <li><code><a title="aiobungie.crate.Player.id" href="#aiobungie.crate.Player.id">id</a></code></li>
                                 <li><code><a title="aiobungie.crate.Player.is_public" href="#aiobungie.crate.Player.is_public">is_public</a></code></li>
+                                <li><code><a title="aiobungie.crate.Player.last_seen_name" href="user.html#aiobungie.crate.Player.last_seen_name">last_seen_name</a></code></li>
                                 <li><code><a title="aiobungie.crate.Player.link" href="user.html#aiobungie.crate.Player.link">link</a></code></li>
                                 <li><code><a title="aiobungie.crate.Player.name" href="#aiobungie.crate.Player.name">name</a></code></li>
-                                <li><code><a title="aiobungie.crate.Player.net" href="#aiobungie.crate.Player.net">net</a></code></li>
                                 <li><code><a title="aiobungie.crate.Player.type" href="#aiobungie.crate.Player.type">type</a></code></li>
                                 <li><code><a title="aiobungie.crate.Player.types" href="#aiobungie.crate.Player.types">types</a></code></li>
                                 <li><code><a title="aiobungie.crate.Player.unique_name" href="#aiobungie.crate.Player.unique_name">unique_name</a></code></li>
@@ -5339,9 +4922,7 @@ class UserThemes:
                         <li>
                             <h4><code><a title="aiobungie.crate.Profile" href="#aiobungie.crate.Profile">Profile</a></code></h4>
                             <ul class="two-column">
-                                <li><code><a title="aiobungie.crate.Profile.as_dict" href="#aiobungie.crate.Profile.as_dict">as_dict</a></code></li>
                                 <li><code><a title="aiobungie.crate.Profile.character_ids" href="#aiobungie.crate.Profile.character_ids">character_ids</a></code></li>
-                                <li><code><a title="aiobungie.crate.Profile.human_timedelta" href="#aiobungie.crate.Profile.human_timedelta">human_timedelta</a></code></li>
                                 <li><code><a title="aiobungie.crate.Profile.hunter" href="profile.html#aiobungie.crate.Profile.hunter">hunter</a></code></li>
                                 <li><code><a title="aiobungie.crate.Profile.hunter_id" href="#aiobungie.crate.Profile.hunter_id">hunter_id</a></code></li>
                                 <li><code><a title="aiobungie.crate.Profile.id" href="#aiobungie.crate.Profile.id">id</a></code></li>
@@ -5360,7 +4941,6 @@ class UserThemes:
                         <li>
                             <h4><code><a title="aiobungie.crate.User" href="#aiobungie.crate.User">User</a></code></h4>
                             <ul class="">
-                                <li><code><a title="aiobungie.crate.User.as_dict" href="#aiobungie.crate.User.as_dict">as_dict</a></code></li>
                                 <li><code><a title="aiobungie.crate.User.bungie" href="#aiobungie.crate.User.bungie">bungie</a></code></li>
                                 <li><code><a title="aiobungie.crate.User.destiny" href="#aiobungie.crate.User.destiny">destiny</a></code></li>
                             </ul>

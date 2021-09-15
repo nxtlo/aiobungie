@@ -124,9 +124,7 @@ class RESTClient(interfaces.RESTInterface):
 
     __slots__: typing.Sequence[str] = ("_token", "_kwargs")
 
-    def __init__(
-        self, token: str, /, **kwargs: typing.Any
-    ) -> None:
+    def __init__(self, token: str, /, **kwargs: typing.Any) -> None:
         self._kwargs = kwargs
         self._token: str = token
 
@@ -209,43 +207,53 @@ class RESTClient(interfaces.RESTInterface):
         raise await handle_errors(response, msg, long)
 
     def fetch_user(self, id: int) -> ResponseSig[helpers.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._fetch("GET", f"User/GetBungieNetUserById/{id}/")
 
     def fetch_user_themes(self) -> ResponseSig[helpers.JsonArray]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._fetch("GET", "User/GetAvailableThemes/")
 
     def fetch_membership_from_id(
         self, id: int, type: enums.MembershipType = enums.MembershipType.NONE, /
     ) -> ResponseSig[helpers.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._fetch("GET", f"User/GetMembershipsById/{id}/{type}")
 
     def static_search(self, path: str, **kwargs: typing.Any) -> ResponseSig[typing.Any]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._fetch("GET", path, **kwargs)
 
     def fetch_player(
         self, name: str, type: enums.MembershipType = enums.MembershipType.ALL, /
     ) -> ResponseSig[helpers.JsonArray]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._fetch(
             "GET", f"Destiny2/SearchDestinyPlayer/{int(type)}/{quote(name)}/"
         )
 
     def search_users(self, name: str, /) -> ResponseSig[helpers.JsonArray]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._fetch("GET", f"User/Search/Prefix/{name}/0")
 
     def fetch_clan_from_id(self, id: int) -> ResponseSig[helpers.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._fetch("GET", f"GroupV2/{id}")
 
     def fetch_clan(
         self, name: str, type: enums.GroupType = enums.GroupType.CLAN
     ) -> ResponseSig[helpers.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._fetch("GET", f"GroupV2/Name/{name}/{int(type)}")
 
     def fetch_app(self, appid: int, /) -> ResponseSig[helpers.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._fetch("GET", f"App/Application/{appid}")
 
     def fetch_character(
         self, memberid: int, type: enums.MembershipType, /
     ) -> ResponseSig[helpers.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._fetch(
             "GET",
             f"Destiny2/{int(type)}/Profile/{memberid}/?components={int(enums.Component.CHARACTERS)}",
@@ -261,6 +269,7 @@ class RESTClient(interfaces.RESTInterface):
         page: typing.Optional[int] = 0,
         limit: typing.Optional[int] = 1,
     ) -> ResponseSig[typing.Any]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._fetch(
             "GET",
             f"Destiny2/{int(membership_type)}/Account/"
@@ -269,10 +278,12 @@ class RESTClient(interfaces.RESTInterface):
         )
 
     def fetch_post_activity(self, instance: int, /) -> ResponseSig[helpers.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         # return self._fetch("GET", f"Destiny2/Stats/PostGameCarnageReport/{instance}")
         raise NotImplementedError
 
     def fetch_vendor_sales(self) -> ResponseSig[typing.Any]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._fetch(
             "GET", f"Destiny2/Vendors/?components={int(enums.Component.VENDOR_SALES)}"
         )
@@ -280,15 +291,18 @@ class RESTClient(interfaces.RESTInterface):
     def fetch_profile(
         self, memberid: int, type: enums.MembershipType, /
     ) -> ResponseSig[helpers.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._fetch(
             "GET",
             f"Destiny2/{int(type)}/Profile/{int(memberid)}/?components={int(enums.Component.PROFILE)}",
         )
 
     def fetch_entity(self, type: str, hash: int) -> ResponseSig[helpers.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._fetch("GET", route=f"Destiny2/Manifest/{type}/{hash}")
 
     def fetch_inventory_item(self, hash: int) -> ResponseSig[helpers.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self.fetch_entity("DestinyInventoryItemDefinition", hash)
 
     def fetch_clan_members(
@@ -297,7 +311,8 @@ class RESTClient(interfaces.RESTInterface):
         type: enums.MembershipType = enums.MembershipType.NONE,
         name: typing.Optional[str] = None,
         /,
-    ) -> ResponseSig[helpers.JsonObject]:
+    ) -> ResponseSig[helpers.JsonArray]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._fetch(
             "GET",
             f"/GroupV2/{id}/Members/?memberType={int(type)}&nameSearch={name if name else ''}&currentpage=1",
@@ -309,17 +324,19 @@ class RESTClient(interfaces.RESTInterface):
         type: enums.CredentialType = enums.CredentialType.STADIAID,
         /,
     ) -> ResponseSig[helpers.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._fetch(
             "GET",
             f"User/GetMembershipFromHardLinkedCredential/{int(type)}/{credential}/",
         )
 
     async def fetch_manifest_path(self) -> str:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         request = await self._fetch("GET", "Destiny2/Manifest")
         return request["mobileWorldContentPaths"]["en"]
 
     async def fetch_manifest(self) -> bytes:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         content = await self.fetch_manifest_path()
         resp = await self._fetch("GET", content, type="read", base=True)
-        print(resp)
         return resp

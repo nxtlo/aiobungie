@@ -1,493 +1,33 @@
 <!doctype html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-    <meta name="generator" content="pdoc 0.10.0" />
-    <title>aiobungie.crate.user API documentation</title>
-    <meta name="description" content="Basic implementation for a Bungie a user." />
-    <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
-    <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
-    <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/atom-one-dark.min.css" crossorigin>
-    <style>
-         :root {
-            --highlight-color: #fe9
-        }
-        
-        .flex {
-            display: flex !important
-        }
-        
-        body {
-            line-height: 1.5em
-        }
-        
-        #content {
-            padding: 20px
-        }
-        
-        #sidebar {
-            padding: 30px;
-            overflow: hidden
-        }
-        
-        #sidebar>*:last-child {
-            margin-bottom: 2cm
-        }
-        
-        #lunr-search {
-            width: 100%;
-            font-size: 1em;
-            padding: 6px 9px 5px 9px;
-            border: 1px solid silver
-        }
-        
-        .http-server-breadcrumbs {
-            font-size: 130%;
-            margin: 0 0 15px 0
-        }
-        
-        #footer {
-            font-size: .75em;
-            padding: 5px 30px;
-            border-top: 1px solid #ddd;
-            text-align: right
-        }
-        
-        #footer p {
-            margin: 0 0 0 1em;
-            display: inline-block
-        }
-        
-        #footer p:last-child {
-            margin-right: 30px
-        }
-        
-        h1,
-        h2,
-        h3,
-        h4,
-        h5 {
-            font-weight: 300
-        }
-        
-        h1 {
-            font-size: 2.5em;
-            line-height: 1.1em
-        }
-        
-        h2 {
-            font-size: 1.75em;
-            margin: 1em 0 .50em 0
-        }
-        
-        h3 {
-            font-size: 1.4em;
-            margin: 25px 0 10px 0
-        }
-        
-        h4 {
-            margin: 0;
-            font-size: 105%
-        }
-        
-        h1:target,
-        h2:target,
-        h3:target,
-        h4:target,
-        h5:target,
-        h6:target {
-            background: var(--highlight-color);
-            padding: .2em 0
-        }
-        
-        a {
-            color: #058;
-            text-decoration: none;
-            transition: color .3s ease-in-out
-        }
-        
-        a:hover {
-            color: #e82
-        }
-        
-        .title code {
-            font-weight: bold
-        }
-        
-        h2[id^="header-"] {
-            margin-top: 2em
-        }
-        
-        .ident {
-            color: #900
-        }
-        
-        pre code {
-            background: #f8f8f8;
-            font-size: .8em;
-            line-height: 1.4em
-        }
-        
-        code {
-            background: #f2f2f1;
-            padding: 1px 4px;
-            overflow-wrap: break-word
-        }
-        
-        h1 code {
-            background: transparent
-        }
-        
-        pre {
-            background: #f8f8f8;
-            border: 0;
-            border-top: 1px solid #ccc;
-            border-bottom: 1px solid #ccc;
-            margin: 1em 0;
-            padding: 1ex
-        }
-        
-        #http-server-module-list {
-            display: flex;
-            flex-flow: column
-        }
-        
-        #http-server-module-list div {
-            display: flex
-        }
-        
-        #http-server-module-list dt {
-            min-width: 10%
-        }
-        
-        #http-server-module-list p {
-            margin-top: 0
-        }
-        
-        .toc ul,
-        #index {
-            list-style-type: none;
-            margin: 0;
-            padding: 0
-        }
-        
-        #index code {
-            background: transparent
-        }
-        
-        #index h3 {
-            border-bottom: 1px solid #ddd
-        }
-        
-        #index ul {
-            padding: 0
-        }
-        
-        #index h4 {
-            margin-top: .6em;
-            font-weight: bold
-        }
-        
-        @media (min-width:200ex) {
-            #index .two-column {
-                column-count: 2
-            }
-        }
-        
-        @media (min-width:300ex) {
-            #index .two-column {
-                column-count: 3
-            }
-        }
-        
-        dl {
-            margin-bottom: 2em
-        }
-        
-        dl dl:last-child {
-            margin-bottom: 4em
-        }
-        
-        dd {
-            margin: 0 0 1em 3em
-        }
-        
-        #header-classes+dl>dd {
-            margin-bottom: 3em
-        }
-        
-        dd dd {
-            margin-left: 2em
-        }
-        
-        dd p {
-            margin: 10px 0
-        }
-        
-        .name {
-            background: #eee;
-            font-weight: bold;
-            font-size: .85em;
-            padding: 5px 10px;
-            display: inline-block;
-            min-width: 40%
-        }
-        
-        .name:hover {
-            background: #e0e0e0
-        }
-        
-        dt:target .name {
-            background: var(--highlight-color)
-        }
-        
-        .name>span:first-child {
-            white-space: nowrap
-        }
-        
-        .name.class>span:nth-child(2) {
-            margin-left: .4em
-        }
-        
-        .inherited {
-            color: #999;
-            border-left: 5px solid #eee;
-            padding-left: 1em
-        }
-        
-        .inheritance em {
-            font-style: normal;
-            font-weight: bold
-        }
-        
-        .desc h2 {
-            font-weight: 400;
-            font-size: 1.25em
-        }
-        
-        .desc h3 {
-            font-size: 1em
-        }
-        
-        .desc dt code {
-            background: inherit
-        }
-        
-        .source summary,
-        .git-link-div {
-            color: #666;
-            text-align: right;
-            font-weight: 400;
-            font-size: .8em;
-            text-transform: uppercase
-        }
-        
-        .source summary>* {
-            white-space: nowrap;
-            cursor: pointer
-        }
-        
-        .git-link {
-            color: inherit;
-            margin-left: 1em
-        }
-        
-        .source pre {
-            max-height: 500px;
-            overflow: auto;
-            margin: 0
-        }
-        
-        .source pre code {
-            font-size: 12px;
-            overflow: visible
-        }
-        
-        .hlist {
-            list-style: none
-        }
-        
-        .hlist li {
-            display: inline
-        }
-        
-        .hlist li:after {
-            content: ',\2002'
-        }
-        
-        .hlist li:last-child:after {
-            content: none
-        }
-        
-        .hlist .hlist {
-            display: inline;
-            padding-left: 1em
-        }
-        
-        img {
-            max-width: 100%
-        }
-        
-        td {
-            padding: 0 .5em
-        }
-        
-        .admonition {
-            padding: .1em .5em;
-            margin-bottom: 1em
-        }
-        
-        .admonition-title {
-            font-weight: bold
-        }
-        
-        .admonition.note,
-        .admonition.info,
-        .admonition.important {
-            background: #aef
-        }
-        
-        .admonition.todo,
-        .admonition.versionadded,
-        .admonition.tip,
-        .admonition.hint {
-            background: #dfd
-        }
-        
-        .admonition.warning,
-        .admonition.versionchanged,
-        .admonition.deprecated {
-            background: #fd4
-        }
-        
-        .admonition.error,
-        .admonition.danger,
-        .admonition.caution {
-            background: lightpink
-        }
-    </style>
-    <style media="screen and (min-width: 700px)">
-        @media screen and (min-width:700px) {
-            #sidebar {
-                width: 30%;
-                height: 100vh;
-                overflow: auto;
-                position: sticky;
-                top: 0
-            }
-            #content {
-                width: 70%;
-                max-width: 100ch;
-                padding: 3em 4em;
-                border-left: 1px solid #ddd
-            }
-            pre code {
-                font-size: 1em
-            }
-            .item .name {
-                font-size: 1em
-            }
-            main {
-                display: flex;
-                flex-direction: row-reverse;
-                justify-content: flex-end
-            }
-            .toc ul ul,
-            #index ul {
-                padding-left: 1.5em
-            }
-            .toc>ul>li {
-                margin-top: .5em
-            }
-        }
-    </style>
-    <style media="print">
-        @media print {
-            #sidebar h1 {
-                page-break-before: always
-            }
-            .source {
-                display: none
-            }
-        }
-        
-        @media print {
-            * {
-                background: transparent !important;
-                color: #000 !important;
-                box-shadow: none !important;
-                text-shadow: none !important
-            }
-            a[href]:after {
-                content: " (" attr(href) ")";
-                font-size: 90%
-            }
-            a[href][title]:after {
-                content: none
-            }
-            abbr[title]:after {
-                content: " (" attr(title) ")"
-            }
-            .ir a:after,
-            a[href^="javascript:"]:after,
-            a[href^="#"]:after {
-                content: ""
-            }
-            pre,
-            blockquote {
-                border: 1px solid #999;
-                page-break-inside: avoid
-            }
-            thead {
-                display: table-header-group
-            }
-            tr,
-            img {
-                page-break-inside: avoid
-            }
-            img {
-                max-width: 100% !important
-            }
-            @page {
-                margin: 0.5cm
-            }
-            p,
-            h2,
-            h3 {
-                orphans: 3;
-                widows: 3
-            }
-            h1,
-            h2,
-            h3,
-            h4,
-            h5,
-            h6 {
-                page-break-after: avoid
-            }
-        }
-    </style>
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
-    <script>
-        window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())
-    </script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>aiobungie.crate.user API documentation</title>
+<meta name="description" content="Basic implementation for a Bungie a user." />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/atom-one-dark.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}#lunr-search{width:100%;font-size:1em;padding:6px 9px 5px 9px;border:1px solid silver}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
 </head>
-
 <body>
-    <main>
-        <article id="content">
-            <header>
-                <h1 class="title">Module <code>aiobungie.crate.user</code></h1>
-            </header>
-            <section id="section-intro">
-                <p>Basic implementation for a Bungie a user.</p>
-                <details class="source">
-                    <summary>
-                        <span>Expand source code</span>
-                    </summary>
-                    <pre><code class="python"># MIT License
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>aiobungie.crate.user</code></h1>
+</header>
+<section id="section-intro">
+<p>Basic implementation for a Bungie a user.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python"># MIT License
 #
 # Copyright (c) 2020 - Present nxtlo
 #
@@ -818,31 +358,29 @@ class User:
 
     .. versionadded:: 0.2.5
     &#34;&#34;&#34;</code></pre>
-                </details>
-            </section>
-            <section>
-            </section>
-            <section>
-            </section>
-            <section>
-            </section>
-            <section>
-                <h2 class="section-title" id="header-classes">Classes</h2>
-                <dl>
-                    <dt id="aiobungie.crate.user.BungieUser"><code class="flex name class">
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="aiobungie.crate.user.BungieUser"><code class="flex name class">
 <span>class <span class="ident">BungieUser</span></span>
 <span>(</span><span>*, id: int, created_at: datetime, name: helpers.UndefinedOr[str], unique_name: str, theme_id: int, show_activity: bool, theme_name: str, display_title: str, is_deleted: bool, about: typing.Optional[str], updated_at: datetime, psn_name: typing.Optional[str], steam_name: typing.Optional[str], twitch_name: typing.Optional[str], blizzard_name: typing.Optional[str], stadia_name: typing.Optional[str], status: typing.Optional[str], locale: typing.Optional[str], picture: assets.MaybeImage, code: helpers.NoneOr[int])</span>
 </code></dt>
-                    <dd>
-                        <div class="desc">
-                            <p>Represents a Bungie user.</p>
-                            <p>Method generated by attrs for class BungieUser.</p>
-                        </div>
-                        <details class="source">
-                            <summary>
-                                <span>Expand source code</span>
-                            </summary>
-                            <pre><code class="python">@attr.define(hash=False, kw_only=True, weakref_slot=False)
+<dd>
+<div class="desc"><p>Represents a Bungie user.</p>
+<p>Method generated by attrs for class BungieUser.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class BungieUser:
     &#34;&#34;&#34;Represents a Bungie user.&#34;&#34;&#34;
 
@@ -934,169 +472,129 @@ class BungieUser:
 
     def __int__(self) -&gt; int:
         return self.id</code></pre>
-                        </details>
-                        <h3>Instance variables</h3>
-                        <dl>
-                            <dt id="aiobungie.crate.user.BungieUser.about"><code class="name">var <span class="ident">about</span> : Optional[str]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user's about, Default is None if nothing is Found.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.user.BungieUser.blizzard_name"><code class="name">var <span class="ident">blizzard_name</span> : Optional[str]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user's blizzard name if it exists.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.user.BungieUser.code"><code class="name">var <span class="ident">code</span> : Optional[None]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user's unique display name code. This can be None if the user hasn't logged in after season of the lost update.</p>
-                                    <div class="admonition versionadded">
-                                        <p class="admonition-title">Added in version:&ensp;0.2.5</p>
-                                    </div>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.user.BungieUser.created_at"><code class="name">var <span class="ident">created_at</span> : datetime.datetime</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user's creation date in UTC timezone.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.user.BungieUser.display_title"><code class="name">var <span class="ident">display_title</span> : str</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>User's display title.</p>
-                                    <div class="admonition versionadded">
-                                        <p class="admonition-title">Added in version:&ensp;0.2.5</p>
-                                    </div>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.user.BungieUser.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user's id</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.user.BungieUser.is_deleted"><code class="name">var <span class="ident">is_deleted</span> : bool</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>True if the user is deleted</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.user.BungieUser.locale"><code class="name">var <span class="ident">locale</span> : Optional[str]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user's locale.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.user.BungieUser.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user's name.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.user.BungieUser.picture"><code class="name">var <span class="ident">picture</span> : Union[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user's profile picture.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.user.BungieUser.psn_name"><code class="name">var <span class="ident">psn_name</span> : Optional[str]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user's psn id if it exists.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.user.BungieUser.show_activity"><code class="name">var <span class="ident">show_activity</span> : bool</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p><code>True</code> if the user is showing their activity status and <code>False</code> if not.</p>
-                                    <div class="admonition versionadded">
-                                        <p class="admonition-title">Added in version:&ensp;0.2.5</p>
-                                    </div>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.user.BungieUser.stadia_name"><code class="name">var <span class="ident">stadia_name</span> : Optional[str]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user's stadia name if it exists</p>
-                                    <div class="admonition versionadded">
-                                        <p class="admonition-title">Added in version:&ensp;0.2.5</p>
-                                    </div>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.user.BungieUser.status"><code class="name">var <span class="ident">status</span> : Optional[str]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user's bungie status text</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.user.BungieUser.steam_name"><code class="name">var <span class="ident">steam_name</span> : Optional[str]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user's steam name if it exists</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.user.BungieUser.theme_id"><code class="name">var <span class="ident">theme_id</span> : int</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>User profile's theme id.</p>
-                                    <div class="admonition versionadded">
-                                        <p class="admonition-title">Added in version:&ensp;0.2.5</p>
-                                    </div>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.user.BungieUser.theme_name"><code class="name">var <span class="ident">theme_name</span> : str</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>User's profile theme name.</p>
-                                    <div class="admonition versionadded">
-                                        <p class="admonition-title">Added in version:&ensp;0.2.5</p>
-                                    </div>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.user.BungieUser.twitch_name"><code class="name">var <span class="ident">twitch_name</span> : Optional[str]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user's twitch name if it exists.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.user.BungieUser.unique_name"><code class="name">var <span class="ident">unique_name</span> : str</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user's unique name which includes their unique code. This field could be None if no unique name found.</p>
-                                    <div class="admonition versionadded">
-                                        <p class="admonition-title">Added in version:&ensp;0.2.5</p>
-                                    </div>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.user.BungieUser.updated_at"><code class="name">var <span class="ident">updated_at</span> : datetime.datetime</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user's last updated om UTC date.</p>
-                                </div>
-                            </dd>
-                        </dl>
-                    </dd>
-                    <dt id="aiobungie.crate.user.DestinyUser"><code class="flex name class">
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="aiobungie.crate.user.BungieUser.about"><code class="name">var <span class="ident">about</span> : Optional[str]</code></dt>
+<dd>
+<div class="desc"><p>The user's about, Default is None if nothing is Found.</p></div>
+</dd>
+<dt id="aiobungie.crate.user.BungieUser.blizzard_name"><code class="name">var <span class="ident">blizzard_name</span> : Optional[str]</code></dt>
+<dd>
+<div class="desc"><p>The user's blizzard name if it exists.</p></div>
+</dd>
+<dt id="aiobungie.crate.user.BungieUser.code"><code class="name">var <span class="ident">code</span> : Optional[None]</code></dt>
+<dd>
+<div class="desc"><p>The user's unique display name code.
+This can be None if the user hasn't logged in after season of the lost update.</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.2.5</p>
+</div></div>
+</dd>
+<dt id="aiobungie.crate.user.BungieUser.created_at"><code class="name">var <span class="ident">created_at</span> : datetime.datetime</code></dt>
+<dd>
+<div class="desc"><p>The user's creation date in UTC timezone.</p></div>
+</dd>
+<dt id="aiobungie.crate.user.BungieUser.display_title"><code class="name">var <span class="ident">display_title</span> : str</code></dt>
+<dd>
+<div class="desc"><p>User's display title.</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.2.5</p>
+</div></div>
+</dd>
+<dt id="aiobungie.crate.user.BungieUser.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
+<dd>
+<div class="desc"><p>The user's id</p></div>
+</dd>
+<dt id="aiobungie.crate.user.BungieUser.is_deleted"><code class="name">var <span class="ident">is_deleted</span> : bool</code></dt>
+<dd>
+<div class="desc"><p>True if the user is deleted</p></div>
+</dd>
+<dt id="aiobungie.crate.user.BungieUser.locale"><code class="name">var <span class="ident">locale</span> : Optional[str]</code></dt>
+<dd>
+<div class="desc"><p>The user's locale.</p></div>
+</dd>
+<dt id="aiobungie.crate.user.BungieUser.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
+<dd>
+<div class="desc"><p>The user's name.</p></div>
+</dd>
+<dt id="aiobungie.crate.user.BungieUser.picture"><code class="name">var <span class="ident">picture</span> : Union[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
+<dd>
+<div class="desc"><p>The user's profile picture.</p></div>
+</dd>
+<dt id="aiobungie.crate.user.BungieUser.psn_name"><code class="name">var <span class="ident">psn_name</span> : Optional[str]</code></dt>
+<dd>
+<div class="desc"><p>The user's psn id if it exists.</p></div>
+</dd>
+<dt id="aiobungie.crate.user.BungieUser.show_activity"><code class="name">var <span class="ident">show_activity</span> : bool</code></dt>
+<dd>
+<div class="desc"><p><code>True</code> if the user is showing their activity status and <code>False</code> if not.</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.2.5</p>
+</div></div>
+</dd>
+<dt id="aiobungie.crate.user.BungieUser.stadia_name"><code class="name">var <span class="ident">stadia_name</span> : Optional[str]</code></dt>
+<dd>
+<div class="desc"><p>The user's stadia name if it exists</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.2.5</p>
+</div></div>
+</dd>
+<dt id="aiobungie.crate.user.BungieUser.status"><code class="name">var <span class="ident">status</span> : Optional[str]</code></dt>
+<dd>
+<div class="desc"><p>The user's bungie status text</p></div>
+</dd>
+<dt id="aiobungie.crate.user.BungieUser.steam_name"><code class="name">var <span class="ident">steam_name</span> : Optional[str]</code></dt>
+<dd>
+<div class="desc"><p>The user's steam name if it exists</p></div>
+</dd>
+<dt id="aiobungie.crate.user.BungieUser.theme_id"><code class="name">var <span class="ident">theme_id</span> : int</code></dt>
+<dd>
+<div class="desc"><p>User profile's theme id.</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.2.5</p>
+</div></div>
+</dd>
+<dt id="aiobungie.crate.user.BungieUser.theme_name"><code class="name">var <span class="ident">theme_name</span> : str</code></dt>
+<dd>
+<div class="desc"><p>User's profile theme name.</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.2.5</p>
+</div></div>
+</dd>
+<dt id="aiobungie.crate.user.BungieUser.twitch_name"><code class="name">var <span class="ident">twitch_name</span> : Optional[str]</code></dt>
+<dd>
+<div class="desc"><p>The user's twitch name if it exists.</p></div>
+</dd>
+<dt id="aiobungie.crate.user.BungieUser.unique_name"><code class="name">var <span class="ident">unique_name</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The user's unique name which includes their unique code.
+This field could be None if no unique name found.</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.2.5</p>
+</div></div>
+</dd>
+<dt id="aiobungie.crate.user.BungieUser.updated_at"><code class="name">var <span class="ident">updated_at</span> : datetime.datetime</code></dt>
+<dd>
+<div class="desc"><p>The user's last updated om UTC date.</p></div>
+</dd>
+</dl>
+</dd>
+<dt id="aiobungie.crate.user.DestinyUser"><code class="flex name class">
 <span>class <span class="ident">DestinyUser</span></span>
 <span>(</span><span>*, id: int, name: helpers.UndefinedOr[str], last_seen_name: str, type: enums.MembershipType, types: typing.Sequence[enums.MembershipType], icon: assets.MaybeImage, code: helpers.NoneOr[int] = 0, is_public: bool = False, crossave_override: typing.Union[enums.MembershipType, int])</span>
 </code></dt>
-                    <dd>
-                        <div class="desc">
-                            <p>Represents a Bungie user's Destiny memberships.</p>
-                            <div class="admonition versionadded">
-                                <p class="admonition-title">Added in version:&ensp;0.2.5</p>
-                            </div>
-                            <p>Method generated by attrs for class DestinyUser.</p>
-                        </div>
-                        <details class="source">
-                            <summary>
-                                <span>Expand source code</span>
-                            </summary>
-                            <pre><code class="python">@attr.define(hash=False, kw_only=True, weakref_slot=False)
+<dd>
+<div class="desc"><p>Represents a Bungie user's Destiny memberships.</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.2.5</p>
+</div>
+<p>Method generated by attrs for class DestinyUser.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class DestinyUser(UserLike):
     &#34;&#34;&#34;Represents a Bungie user&#39;s Destiny memberships.
 
@@ -1134,114 +632,91 @@ class DestinyUser(UserLike):
     def unique_name(self) -&gt; str:
         &#34;&#34;&#34;The member&#39;s unique name. This field may be `Undefined` if not found.&#34;&#34;&#34;
         return f&#34;{self.name}#{self.code}&#34;</code></pre>
-                        </details>
-                        <h3>Ancestors</h3>
-                        <ul class="hlist">
-                            <li><a title="aiobungie.crate.user.UserLike" href="#aiobungie.crate.user.UserLike">UserLike</a></li>
-                            <li>abc.ABC</li>
-                        </ul>
-                        <h3>Subclasses</h3>
-                        <ul class="hlist">
-                            <li><a title="aiobungie.crate.player.Player" href="player.html#aiobungie.crate.player.Player">Player</a></li>
-                        </ul>
-                        <h3>Instance variables</h3>
-                        <dl>
-                            <dt id="aiobungie.crate.user.DestinyUser.code"><code class="name">var <span class="ident">code</span> : Optional[None]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The member's name code. This field may be <code>None</code> if not found.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.user.DestinyUser.crossave_override"><code class="name">var <span class="ident">crossave_override</span> : Union[<a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a>, int]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The member's corssave override membership type.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.user.DestinyUser.icon"><code class="name">var <span class="ident">icon</span> : Union[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The member's icon if it was present.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.user.DestinyUser.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The member's id.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.user.DestinyUser.is_public"><code class="name">var <span class="ident">is_public</span> : bool</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The member's profile privacy status.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.user.DestinyUser.last_seen_name"><code class="name">var <span class="ident">last_seen_name</span> : str</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The member's last seen display name. You may use this field if <code><a title="aiobungie.crate.user.DestinyUser.name" href="#aiobungie.crate.user.DestinyUser.name">DestinyUser.name</a></code> is <code>Undefined</code>.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.user.DestinyUser.link"><code class="name">var <span class="ident">link</span> : str</code></dt>
-                            <dd>
-                                <p class="inheritance">
-                                    <em>Inherited from:</em>
-                                    <code><a title="aiobungie.crate.user.UserLike" href="#aiobungie.crate.user.UserLike">UserLike</a></code>.<code><a title="aiobungie.crate.user.UserLike.link" href="#aiobungie.crate.user.UserLike.link">link</a></code>
-                                </p>
-                                <div class="desc inherited">
-                                    <p>The user like's profile link.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.user.DestinyUser.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The member's name.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.user.DestinyUser.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The member's membership type.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.user.DestinyUser.types"><code class="name">var <span class="ident">types</span> : Sequence[<a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a>]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>A sequence of the member's membership types.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.user.DestinyUser.unique_name"><code class="name">var <span class="ident">unique_name</span> : str</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The member's unique name. This field may be <code>Undefined</code> if not found.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="aiobungie.crate.user.UserLike" href="#aiobungie.crate.user.UserLike">UserLike</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="aiobungie.crate.player.Player" href="player.html#aiobungie.crate.player.Player">Player</a></li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="aiobungie.crate.user.DestinyUser.code"><code class="name">var <span class="ident">code</span> : Optional[None]</code></dt>
+<dd>
+<div class="desc"><p>The member's name code. This field may be <code>None</code> if not found.</p></div>
+</dd>
+<dt id="aiobungie.crate.user.DestinyUser.crossave_override"><code class="name">var <span class="ident">crossave_override</span> : Union[<a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a>, int]</code></dt>
+<dd>
+<div class="desc"><p>The member's corssave override membership type.</p></div>
+</dd>
+<dt id="aiobungie.crate.user.DestinyUser.icon"><code class="name">var <span class="ident">icon</span> : Union[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
+<dd>
+<div class="desc"><p>The member's icon if it was present.</p></div>
+</dd>
+<dt id="aiobungie.crate.user.DestinyUser.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
+<dd>
+<div class="desc"><p>The member's id.</p></div>
+</dd>
+<dt id="aiobungie.crate.user.DestinyUser.is_public"><code class="name">var <span class="ident">is_public</span> : bool</code></dt>
+<dd>
+<div class="desc"><p>The member's profile privacy status.</p></div>
+</dd>
+<dt id="aiobungie.crate.user.DestinyUser.last_seen_name"><code class="name">var <span class="ident">last_seen_name</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The member's last seen display name. You may use this field if <code><a title="aiobungie.crate.user.DestinyUser.name" href="#aiobungie.crate.user.DestinyUser.name">DestinyUser.name</a></code> is <code>Undefined</code>.</p></div>
+</dd>
+<dt id="aiobungie.crate.user.DestinyUser.link"><code class="name">var <span class="ident">link</span> : str</code></dt>
+<dd>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="aiobungie.crate.user.UserLike" href="#aiobungie.crate.user.UserLike">UserLike</a></code>.<code><a title="aiobungie.crate.user.UserLike.link" href="#aiobungie.crate.user.UserLike.link">link</a></code>
+</p>
+<div class="desc inherited"><p>The user like's profile link.</p></div>
+</dd>
+<dt id="aiobungie.crate.user.DestinyUser.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
+<dd>
+<div class="desc"><p>The member's name.</p></div>
+</dd>
+<dt id="aiobungie.crate.user.DestinyUser.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
+<dd>
+<div class="desc"><p>The member's membership type.</p></div>
+</dd>
+<dt id="aiobungie.crate.user.DestinyUser.types"><code class="name">var <span class="ident">types</span> : Sequence[<a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a>]</code></dt>
+<dd>
+<div class="desc"><p>A sequence of the member's membership types.</p></div>
+</dd>
+<dt id="aiobungie.crate.user.DestinyUser.unique_name"><code class="name">var <span class="ident">unique_name</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The member's unique name. This field may be <code>Undefined</code> if not found.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
 def unique_name(self) -&gt; str:
     &#34;&#34;&#34;The member&#39;s unique name. This field may be `Undefined` if not found.&#34;&#34;&#34;
     return f&#34;{self.name}#{self.code}&#34;</code></pre>
-                                </details>
-                            </dd>
-                        </dl>
-                    </dd>
-                    <dt id="aiobungie.crate.user.HardLinkedMembership"><code class="flex name class">
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="aiobungie.crate.user.HardLinkedMembership"><code class="flex name class">
 <span>class <span class="ident">HardLinkedMembership</span></span>
 <span>(</span><span>*, type: enums.MembershipType, id: int, cross_save_type: enums.MembershipType = NONE)</span>
 </code></dt>
-                    <dd>
-                        <div class="desc">
-                            <p>Represents hard linked Bungie user membership.</p>
-                            <p>This currently only supports SteamID which's a public credenitial. Also Cross-Save Aware.</p>
-                            <p>Method generated by attrs for class HardLinkedMembership.</p>
-                        </div>
-                        <details class="source">
-                            <summary>
-                                <span>Expand source code</span>
-                            </summary>
-                            <pre><code class="python">@attr.define(hash=False, kw_only=True, weakref_slot=False)
+<dd>
+<div class="desc"><p>Represents hard linked Bungie user membership.</p>
+<p>This currently only supports SteamID which's a public credenitial.
+Also Cross-Save Aware.</p>
+<p>Method generated by attrs for class HardLinkedMembership.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class HardLinkedMembership:
     &#34;&#34;&#34;Represents hard linked Bungie user membership.
 
@@ -1262,43 +737,36 @@ class HardLinkedMembership:
 
     def __int__(self) -&gt; int:
         return self.id</code></pre>
-                        </details>
-                        <h3>Instance variables</h3>
-                        <dl>
-                            <dt id="aiobungie.crate.user.HardLinkedMembership.cross_save_type"><code class="name">var <span class="ident">cross_save_type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The hard link user's crpss save membership type. Default is set to None-0</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.user.HardLinkedMembership.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The hard link user id</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.user.HardLinkedMembership.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The hard link user membership type.</p>
-                                </div>
-                            </dd>
-                        </dl>
-                    </dd>
-                    <dt id="aiobungie.crate.user.PartialBungieUser"><code class="flex name class">
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="aiobungie.crate.user.HardLinkedMembership.cross_save_type"><code class="name">var <span class="ident">cross_save_type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
+<dd>
+<div class="desc"><p>The hard link user's crpss save membership type. Default is set to None-0</p></div>
+</dd>
+<dt id="aiobungie.crate.user.HardLinkedMembership.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
+<dd>
+<div class="desc"><p>The hard link user id</p></div>
+</dd>
+<dt id="aiobungie.crate.user.HardLinkedMembership.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
+<dd>
+<div class="desc"><p>The hard link user membership type.</p></div>
+</dd>
+</dl>
+</dd>
+<dt id="aiobungie.crate.user.PartialBungieUser"><code class="flex name class">
 <span>class <span class="ident">PartialBungieUser</span></span>
 <span>(</span><span>*, name: helpers.UndefinedOr[str], id: int, type: enums.MembershipType, crossave_override: enums.MembershipType, is_public: bool, icon: assets.MaybeImage)</span>
 </code></dt>
-                    <dd>
-                        <div class="desc">
-                            <p>Represents partial bungie user. This is usually used for bungie user info for destiny member objects. Like Clan members, owners, moderators for an example.</p>
-                            <p>Method generated by attrs for class PartialBungieUser.</p>
-                        </div>
-                        <details class="source">
-                            <summary>
-                                <span>Expand source code</span>
-                            </summary>
-                            <pre><code class="python">@attr.define(hash=False, kw_only=True, weakref_slot=False)
+<dd>
+<div class="desc"><p>Represents partial bungie user. This is usually used for bungie user info
+for destiny member objects. Like Clan members, owners, moderators for an example.</p>
+<p>Method generated by attrs for class PartialBungieUser.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class PartialBungieUser:
     &#34;&#34;&#34;Represents partial bungie user. This is usually used for bungie user info
     for destiny member objects. Like Clan members, owners, moderators for an example.
@@ -1321,62 +789,48 @@ class PartialBungieUser:
 
     icon: assets.MaybeImage = attr.field(repr=False)
     &#34;&#34;&#34;The user&#39;s icon.&#34;&#34;&#34;</code></pre>
-                        </details>
-                        <h3>Instance variables</h3>
-                        <dl>
-                            <dt id="aiobungie.crate.user.PartialBungieUser.crossave_override"><code class="name">var <span class="ident">crossave_override</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user's crossave override membership.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.user.PartialBungieUser.icon"><code class="name">var <span class="ident">icon</span> : Union[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user's icon.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.user.PartialBungieUser.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user's id.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.user.PartialBungieUser.is_public"><code class="name">var <span class="ident">is_public</span> : bool</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user's privacy.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.user.PartialBungieUser.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user's name. Field may be undefined if not found.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.user.PartialBungieUser.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user's membership type.</p>
-                                </div>
-                            </dd>
-                        </dl>
-                    </dd>
-                    <dt id="aiobungie.crate.user.User"><code class="flex name class">
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="aiobungie.crate.user.PartialBungieUser.crossave_override"><code class="name">var <span class="ident">crossave_override</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
+<dd>
+<div class="desc"><p>The user's crossave override membership.</p></div>
+</dd>
+<dt id="aiobungie.crate.user.PartialBungieUser.icon"><code class="name">var <span class="ident">icon</span> : Union[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
+<dd>
+<div class="desc"><p>The user's icon.</p></div>
+</dd>
+<dt id="aiobungie.crate.user.PartialBungieUser.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
+<dd>
+<div class="desc"><p>The user's id.</p></div>
+</dd>
+<dt id="aiobungie.crate.user.PartialBungieUser.is_public"><code class="name">var <span class="ident">is_public</span> : bool</code></dt>
+<dd>
+<div class="desc"><p>The user's privacy.</p></div>
+</dd>
+<dt id="aiobungie.crate.user.PartialBungieUser.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
+<dd>
+<div class="desc"><p>The user's name. Field may be undefined if not found.</p></div>
+</dd>
+<dt id="aiobungie.crate.user.PartialBungieUser.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
+<dd>
+<div class="desc"><p>The user's membership type.</p></div>
+</dd>
+</dl>
+</dd>
+<dt id="aiobungie.crate.user.User"><code class="flex name class">
 <span>class <span class="ident">User</span></span>
 <span>(</span><span>*, bungie: <a title="aiobungie.crate.user.BungieUser" href="#aiobungie.crate.user.BungieUser">BungieUser</a>, destiny: typing.Sequence[<a title="aiobungie.crate.user.DestinyUser" href="#aiobungie.crate.user.DestinyUser">DestinyUser</a>])</span>
 </code></dt>
-                    <dd>
-                        <div class="desc">
-                            <p>Concrete representtion of a Bungie user.</p>
-                            <p>This includes both Bungie net and Destiny memberships information.</p>
-                            <p>Method generated by attrs for class User.</p>
-                        </div>
-                        <details class="source">
-                            <summary>
-                                <span>Expand source code</span>
-                            </summary>
-                            <pre><code class="python">@attr.define(hash=False, kw_only=True, weakref_slot=False)
+<dd>
+<div class="desc"><p>Concrete representtion of a Bungie user.</p>
+<p>This includes both Bungie net and Destiny memberships information.</p>
+<p>Method generated by attrs for class User.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class User:
     &#34;&#34;&#34;Concrete representtion of a Bungie user.
 
@@ -1394,41 +848,35 @@ class User:
 
     .. versionadded:: 0.2.5
     &#34;&#34;&#34;</code></pre>
-                        </details>
-                        <h3>Instance variables</h3>
-                        <dl>
-                            <dt id="aiobungie.crate.user.User.bungie"><code class="name">var <span class="ident">bungie</span> : <a title="aiobungie.crate.user.BungieUser" href="#aiobungie.crate.user.BungieUser">BungieUser</a></code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user's bungie net membership.</p>
-                                    <div class="admonition versionadded">
-                                        <p class="admonition-title">Added in version:&ensp;0.2.5</p>
-                                    </div>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.user.User.destiny"><code class="name">var <span class="ident">destiny</span> : Sequence[<a title="aiobungie.crate.user.DestinyUser" href="#aiobungie.crate.user.DestinyUser">DestinyUser</a>]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>A sequence of the user's Destiny memberships.</p>
-                                    <div class="admonition versionadded">
-                                        <p class="admonition-title">Added in version:&ensp;0.2.5</p>
-                                    </div>
-                                </div>
-                            </dd>
-                        </dl>
-                    </dd>
-                    <dt id="aiobungie.crate.user.UserLike"><code class="flex name class">
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="aiobungie.crate.user.User.bungie"><code class="name">var <span class="ident">bungie</span> : <a title="aiobungie.crate.user.BungieUser" href="#aiobungie.crate.user.BungieUser">BungieUser</a></code></dt>
+<dd>
+<div class="desc"><p>The user's bungie net membership.</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.2.5</p>
+</div></div>
+</dd>
+<dt id="aiobungie.crate.user.User.destiny"><code class="name">var <span class="ident">destiny</span> : Sequence[<a title="aiobungie.crate.user.DestinyUser" href="#aiobungie.crate.user.DestinyUser">DestinyUser</a>]</code></dt>
+<dd>
+<div class="desc"><p>A sequence of the user's Destiny memberships.</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.2.5</p>
+</div></div>
+</dd>
+</dl>
+</dd>
+<dt id="aiobungie.crate.user.UserLike"><code class="flex name class">
 <span>class <span class="ident">UserLike</span></span>
 </code></dt>
-                    <dd>
-                        <div class="desc">
-                            <p>An ABC that's used for all userlike objects.</p>
-                        </div>
-                        <details class="source">
-                            <summary>
-                                <span>Expand source code</span>
-                            </summary>
-                            <pre><code class="python">class UserLike(abc.ABC):
+<dd>
+<div class="desc"><p>An ABC that's used for all userlike objects.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class UserLike(abc.ABC):
     &#34;&#34;&#34;An ABC that&#39;s used for all userlike objects.&#34;&#34;&#34;
 
     __slots__: typing.Sequence[str] = ()
@@ -1491,39 +939,38 @@ class User:
 
     def __int__(self) -&gt; int:
         return self.id</code></pre>
-                        </details>
-                        <h3>Ancestors</h3>
-                        <ul class="hlist">
-                            <li>abc.ABC</li>
-                        </ul>
-                        <h3>Subclasses</h3>
-                        <ul class="hlist">
-                            <li><a title="aiobungie.crate.application.ApplicationOwner" href="application.html#aiobungie.crate.application.ApplicationOwner">ApplicationOwner</a></li>
-                            <li>aiobungie.crate.clans.ClanAdmin</li>
-                            <li><a title="aiobungie.crate.clans.ClanMember" href="clans.html#aiobungie.crate.clans.ClanMember">ClanMember</a></li>
-                            <li><a title="aiobungie.crate.clans.ClanOwner" href="clans.html#aiobungie.crate.clans.ClanOwner">ClanOwner</a></li>
-                            <li><a title="aiobungie.crate.friends.Friend" href="friends.html#aiobungie.crate.friends.Friend">Friend</a></li>
-                            <li><a title="aiobungie.crate.members.PSNMember" href="members.html#aiobungie.crate.members.PSNMember">PSNMember</a></li>
-                            <li><a title="aiobungie.crate.members.StadiaMember" href="members.html#aiobungie.crate.members.StadiaMember">StadiaMember</a></li>
-                            <li><a title="aiobungie.crate.members.SteamMember" href="members.html#aiobungie.crate.members.SteamMember">SteamMember</a></li>
-                            <li><a title="aiobungie.crate.members.XboxMember" href="members.html#aiobungie.crate.members.XboxMember">XboxMember</a></li>
-                            <li><a title="aiobungie.crate.user.DestinyUser" href="#aiobungie.crate.user.DestinyUser">DestinyUser</a></li>
-                        </ul>
-                        <h3>Instance variables</h3>
-                        <dl>
-                            <dt id="aiobungie.crate.user.UserLike.code"><code class="name">var <span class="ident">code</span> : Optional[None]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user like's unique display name code. This can be None if the user hasn't logged in after season of the lost update.</p>
-                                    <div class="admonition versionadded">
-                                        <p class="admonition-title">Added in version:&ensp;0.2.5</p>
-                                    </div>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>abc.ABC</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="aiobungie.crate.application.ApplicationOwner" href="application.html#aiobungie.crate.application.ApplicationOwner">ApplicationOwner</a></li>
+<li>aiobungie.crate.clans.ClanAdmin</li>
+<li><a title="aiobungie.crate.clans.ClanMember" href="clans.html#aiobungie.crate.clans.ClanMember">ClanMember</a></li>
+<li><a title="aiobungie.crate.clans.ClanOwner" href="clans.html#aiobungie.crate.clans.ClanOwner">ClanOwner</a></li>
+<li><a title="aiobungie.crate.friends.Friend" href="friends.html#aiobungie.crate.friends.Friend">Friend</a></li>
+<li><a title="aiobungie.crate.members.PSNMember" href="members.html#aiobungie.crate.members.PSNMember">PSNMember</a></li>
+<li><a title="aiobungie.crate.members.StadiaMember" href="members.html#aiobungie.crate.members.StadiaMember">StadiaMember</a></li>
+<li><a title="aiobungie.crate.members.SteamMember" href="members.html#aiobungie.crate.members.SteamMember">SteamMember</a></li>
+<li><a title="aiobungie.crate.members.XboxMember" href="members.html#aiobungie.crate.members.XboxMember">XboxMember</a></li>
+<li><a title="aiobungie.crate.user.DestinyUser" href="#aiobungie.crate.user.DestinyUser">DestinyUser</a></li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="aiobungie.crate.user.UserLike.code"><code class="name">var <span class="ident">code</span> : Optional[None]</code></dt>
+<dd>
+<div class="desc"><p>The user like's unique display name code.
+This can be None if the user hasn't logged in after season of the lost update.</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.2.5</p>
+</div></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
 @abc.abstractmethod
 def code(self) -&gt; helpers.NoneOr[int]:
     &#34;&#34;&#34;The user like&#39;s unique display name code.
@@ -1531,126 +978,110 @@ def code(self) -&gt; helpers.NoneOr[int]:
 
     .. versionadded:: 0.2.5
     &#34;&#34;&#34;</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.crate.user.UserLike.icon"><code class="name">var <span class="ident">icon</span> : Union[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user like's icon.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
+</details>
+</dd>
+<dt id="aiobungie.crate.user.UserLike.icon"><code class="name">var <span class="ident">icon</span> : Union[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
+<dd>
+<div class="desc"><p>The user like's icon.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
 @abc.abstractmethod
 def icon(self) -&gt; assets.MaybeImage:
     &#34;&#34;&#34;The user like&#39;s icon.&#34;&#34;&#34;
     return assets.Image.partial()</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.crate.user.UserLike.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user like's id.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
+</details>
+</dd>
+<dt id="aiobungie.crate.user.UserLike.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
+<dd>
+<div class="desc"><p>The user like's id.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
 @abc.abstractmethod
 def id(self) -&gt; int:
     &#34;&#34;&#34;The user like&#39;s id.&#34;&#34;&#34;</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.crate.user.UserLike.is_public"><code class="name">var <span class="ident">is_public</span> : bool</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>True if the user profile is public or no.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
+</details>
+</dd>
+<dt id="aiobungie.crate.user.UserLike.is_public"><code class="name">var <span class="ident">is_public</span> : bool</code></dt>
+<dd>
+<div class="desc"><p>True if the user profile is public or no.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
 @abc.abstractmethod
 def is_public(self) -&gt; bool:
     &#34;&#34;&#34;True if the user profile is public or no.&#34;&#34;&#34;</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.crate.user.UserLike.last_seen_name"><code class="name">var <span class="ident">last_seen_name</span> : str</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user like's last seen name.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
+</details>
+</dd>
+<dt id="aiobungie.crate.user.UserLike.last_seen_name"><code class="name">var <span class="ident">last_seen_name</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The user like's last seen name.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
 @abc.abstractmethod
 def last_seen_name(self) -&gt; str:
     &#34;&#34;&#34;The user like&#39;s last seen name.&#34;&#34;&#34;</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.crate.user.UserLike.link"><code class="name">var <span class="ident">link</span> : str</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user like's profile link.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
+</details>
+</dd>
+<dt id="aiobungie.crate.user.UserLike.link"><code class="name">var <span class="ident">link</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The user like's profile link.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
 def link(self) -&gt; str:
     &#34;&#34;&#34;The user like&#39;s profile link.&#34;&#34;&#34;</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.crate.user.UserLike.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user like's name.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
+</details>
+</dd>
+<dt id="aiobungie.crate.user.UserLike.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
+<dd>
+<div class="desc"><p>The user like's name.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
 @abc.abstractmethod
 def name(self) -&gt; helpers.UndefinedOr[str]:
     &#34;&#34;&#34;The user like&#39;s name.&#34;&#34;&#34;</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.crate.user.UserLike.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user type of the user.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
+</details>
+</dd>
+<dt id="aiobungie.crate.user.UserLike.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
+<dd>
+<div class="desc"><p>The user type of the user.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
 @abc.abstractmethod
 def type(self) -&gt; enums.MembershipType:
     &#34;&#34;&#34;The user type of the user.&#34;&#34;&#34;</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.crate.user.UserLike.unique_name"><code class="name">var <span class="ident">unique_name</span> : str</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user like's display name. This includes the full name with the user name code.</p>
-                                    <div class="admonition versionadded">
-                                        <p class="admonition-title">Added in version:&ensp;0.2.5</p>
-                                    </div>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
+</details>
+</dd>
+<dt id="aiobungie.crate.user.UserLike.unique_name"><code class="name">var <span class="ident">unique_name</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The user like's display name. This includes the full name with the user name code.</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.2.5</p>
+</div></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
 @abc.abstractmethod
 def unique_name(self) -&gt; str:
     &#34;&#34;&#34;The user like&#39;s display name. This includes the full name with the user name code.
@@ -1658,24 +1089,22 @@ def unique_name(self) -&gt; str:
     .. versionadded:: 0.2.5
     &#34;&#34;&#34;
     return f&#34;{self.name}#{self.code}&#34;</code></pre>
-                                </details>
-                            </dd>
-                        </dl>
-                    </dd>
-                    <dt id="aiobungie.crate.user.UserThemes"><code class="flex name class">
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="aiobungie.crate.user.UserThemes"><code class="flex name class">
 <span>class <span class="ident">UserThemes</span></span>
 <span>(</span><span>*, id: int, name: helpers.UndefinedOr[str], description: helpers.UndefinedOr[str])</span>
 </code></dt>
-                    <dd>
-                        <div class="desc">
-                            <p>Represents a Bungie User theme.</p>
-                            <p>Method generated by attrs for class UserThemes.</p>
-                        </div>
-                        <details class="source">
-                            <summary>
-                                <span>Expand source code</span>
-                            </summary>
-                            <pre><code class="python">@attr.define(hash=False, kw_only=True, weakref_slot=False)
+<dd>
+<div class="desc"><p>Represents a Bungie User theme.</p>
+<p>Method generated by attrs for class UserThemes.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class UserThemes:
     &#34;&#34;&#34;Represents a Bungie User theme.&#34;&#34;&#34;
 
@@ -1690,197 +1119,181 @@ class UserThemes:
 
     def __int__(self) -&gt; int:
         return self.id</code></pre>
-                        </details>
-                        <h3>Instance variables</h3>
-                        <dl>
-                            <dt id="aiobungie.crate.user.UserThemes.description"><code class="name">var <span class="ident">description</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>An optional theme description. This field could be <code>None</code> if no description found.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.user.UserThemes.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The theme id.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.user.UserThemes.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>An optional theme name. if not found this field will be <code>None</code></p>
-                                </div>
-                            </dd>
-                        </dl>
-                    </dd>
-                </dl>
-            </section>
-        </article>
-        <nav id="sidebar">
-            <form>
-                <input id="lunr-search" name="q" placeholder="🔎 Search ..." aria-label="Search" disabled minlength="2">
-            </form>
-            <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.3/tingle.min.css" integrity="sha512-j1u8eUJ4f23xPPxwOrLUPQaCD2dwzNqqmDDcWS4deWsMv2ohLqmXXuP3hU7g8TyzbMSakP/mMqoNBYWj8AEIFg==" crossorigin>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.3/tingle.min.js" integrity="sha512-plGUER9JkeEWPPqQBE4sdLqBoQug5Ap+BCGMc7bJ8BXkm+VVj6QzkpBz5Yv2yPkkq+cqg9IpkBaGCas6uDbW8g==" crossorigin></script>
-            <style>
-                .modal-dialog iframe {
-                    width: 100vw;
-                    height: calc(100vh - 80px);
-                }
-                
-                @media screen and (min-width: 700px) {
-                    .modal-dialog iframe {
-                        width: 70vw;
-                        height: 80vh;
-                    }
-                }
-                
-                .modal-dialog .tingle-modal-box {
-                    width: auto;
-                }
-                
-                .modal-dialog .tingle-modal-box__content {
-                    padding: 0;
-                }
-            </style>
-            <script>
-                const input = document.getElementById('lunr-search');
-                input.disabled = false;
-                input.form.addEventListener('submit', (ev) => {
-                    ev.preventDefault();
-                    const url = new URL(window.location);
-                    url.searchParams.set('q', input.value);
-                    history.replaceState({}, null, url.toString());
-                    search(input.value);
-                });
-                const query = new URL(window.location).searchParams.get('q');
-                if (query)
-                    search(query);
-
-                function search(query) {
-                    const url = '././doc-search.html#' + encodeURIComponent(query);
-                    new tingle.modal({
-                        cssClass: ['modal-dialog'],
-                        onClose: () => {
-                            const url = new URL(window.location);
-                            url.searchParams.delete('q');
-                            history.replaceState({}, null, url.toString());
-                            setTimeout(() => input.focus(), 100);
-                        }
-                    }).setContent('<iframe src="' + url + '"></iframe>').open();
-                }
-            </script>
-            <h1>Index</h1>
-            <div class="toc">
-                <ul></ul>
-            </div>
-            <ul id="index">
-                <li>
-                    <h3>Super-module</h3>
-                    <ul>
-                        <li><code><a title="aiobungie.crate" href="index.html">aiobungie.crate</a></code></li>
-                    </ul>
-                </li>
-                <li>
-                    <h3><a href="#header-classes">Classes</a></h3>
-                    <ul>
-                        <li>
-                            <h4><code><a title="aiobungie.crate.user.BungieUser" href="#aiobungie.crate.user.BungieUser">BungieUser</a></code></h4>
-                            <ul class="two-column">
-                                <li><code><a title="aiobungie.crate.user.BungieUser.about" href="#aiobungie.crate.user.BungieUser.about">about</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.BungieUser.blizzard_name" href="#aiobungie.crate.user.BungieUser.blizzard_name">blizzard_name</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.BungieUser.code" href="#aiobungie.crate.user.BungieUser.code">code</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.BungieUser.created_at" href="#aiobungie.crate.user.BungieUser.created_at">created_at</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.BungieUser.display_title" href="#aiobungie.crate.user.BungieUser.display_title">display_title</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.BungieUser.id" href="#aiobungie.crate.user.BungieUser.id">id</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.BungieUser.is_deleted" href="#aiobungie.crate.user.BungieUser.is_deleted">is_deleted</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.BungieUser.locale" href="#aiobungie.crate.user.BungieUser.locale">locale</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.BungieUser.name" href="#aiobungie.crate.user.BungieUser.name">name</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.BungieUser.picture" href="#aiobungie.crate.user.BungieUser.picture">picture</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.BungieUser.psn_name" href="#aiobungie.crate.user.BungieUser.psn_name">psn_name</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.BungieUser.show_activity" href="#aiobungie.crate.user.BungieUser.show_activity">show_activity</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.BungieUser.stadia_name" href="#aiobungie.crate.user.BungieUser.stadia_name">stadia_name</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.BungieUser.status" href="#aiobungie.crate.user.BungieUser.status">status</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.BungieUser.steam_name" href="#aiobungie.crate.user.BungieUser.steam_name">steam_name</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.BungieUser.theme_id" href="#aiobungie.crate.user.BungieUser.theme_id">theme_id</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.BungieUser.theme_name" href="#aiobungie.crate.user.BungieUser.theme_name">theme_name</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.BungieUser.twitch_name" href="#aiobungie.crate.user.BungieUser.twitch_name">twitch_name</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.BungieUser.unique_name" href="#aiobungie.crate.user.BungieUser.unique_name">unique_name</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.BungieUser.updated_at" href="#aiobungie.crate.user.BungieUser.updated_at">updated_at</a></code></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <h4><code><a title="aiobungie.crate.user.DestinyUser" href="#aiobungie.crate.user.DestinyUser">DestinyUser</a></code></h4>
-                            <ul class="two-column">
-                                <li><code><a title="aiobungie.crate.user.DestinyUser.code" href="#aiobungie.crate.user.DestinyUser.code">code</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.DestinyUser.crossave_override" href="#aiobungie.crate.user.DestinyUser.crossave_override">crossave_override</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.DestinyUser.icon" href="#aiobungie.crate.user.DestinyUser.icon">icon</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.DestinyUser.id" href="#aiobungie.crate.user.DestinyUser.id">id</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.DestinyUser.is_public" href="#aiobungie.crate.user.DestinyUser.is_public">is_public</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.DestinyUser.last_seen_name" href="#aiobungie.crate.user.DestinyUser.last_seen_name">last_seen_name</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.DestinyUser.link" href="#aiobungie.crate.user.DestinyUser.link">link</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.DestinyUser.name" href="#aiobungie.crate.user.DestinyUser.name">name</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.DestinyUser.type" href="#aiobungie.crate.user.DestinyUser.type">type</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.DestinyUser.types" href="#aiobungie.crate.user.DestinyUser.types">types</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.DestinyUser.unique_name" href="#aiobungie.crate.user.DestinyUser.unique_name">unique_name</a></code></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <h4><code><a title="aiobungie.crate.user.HardLinkedMembership" href="#aiobungie.crate.user.HardLinkedMembership">HardLinkedMembership</a></code></h4>
-                            <ul class="">
-                                <li><code><a title="aiobungie.crate.user.HardLinkedMembership.cross_save_type" href="#aiobungie.crate.user.HardLinkedMembership.cross_save_type">cross_save_type</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.HardLinkedMembership.id" href="#aiobungie.crate.user.HardLinkedMembership.id">id</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.HardLinkedMembership.type" href="#aiobungie.crate.user.HardLinkedMembership.type">type</a></code></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <h4><code><a title="aiobungie.crate.user.PartialBungieUser" href="#aiobungie.crate.user.PartialBungieUser">PartialBungieUser</a></code></h4>
-                            <ul class="two-column">
-                                <li><code><a title="aiobungie.crate.user.PartialBungieUser.crossave_override" href="#aiobungie.crate.user.PartialBungieUser.crossave_override">crossave_override</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.PartialBungieUser.icon" href="#aiobungie.crate.user.PartialBungieUser.icon">icon</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.PartialBungieUser.id" href="#aiobungie.crate.user.PartialBungieUser.id">id</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.PartialBungieUser.is_public" href="#aiobungie.crate.user.PartialBungieUser.is_public">is_public</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.PartialBungieUser.name" href="#aiobungie.crate.user.PartialBungieUser.name">name</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.PartialBungieUser.type" href="#aiobungie.crate.user.PartialBungieUser.type">type</a></code></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <h4><code><a title="aiobungie.crate.user.User" href="#aiobungie.crate.user.User">User</a></code></h4>
-                            <ul class="">
-                                <li><code><a title="aiobungie.crate.user.User.bungie" href="#aiobungie.crate.user.User.bungie">bungie</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.User.destiny" href="#aiobungie.crate.user.User.destiny">destiny</a></code></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <h4><code><a title="aiobungie.crate.user.UserLike" href="#aiobungie.crate.user.UserLike">UserLike</a></code></h4>
-                            <ul class="two-column">
-                                <li><code><a title="aiobungie.crate.user.UserLike.code" href="#aiobungie.crate.user.UserLike.code">code</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.UserLike.icon" href="#aiobungie.crate.user.UserLike.icon">icon</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.UserLike.id" href="#aiobungie.crate.user.UserLike.id">id</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.UserLike.is_public" href="#aiobungie.crate.user.UserLike.is_public">is_public</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.UserLike.last_seen_name" href="#aiobungie.crate.user.UserLike.last_seen_name">last_seen_name</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.UserLike.link" href="#aiobungie.crate.user.UserLike.link">link</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.UserLike.name" href="#aiobungie.crate.user.UserLike.name">name</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.UserLike.type" href="#aiobungie.crate.user.UserLike.type">type</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.UserLike.unique_name" href="#aiobungie.crate.user.UserLike.unique_name">unique_name</a></code></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <h4><code><a title="aiobungie.crate.user.UserThemes" href="#aiobungie.crate.user.UserThemes">UserThemes</a></code></h4>
-                            <ul class="">
-                                <li><code><a title="aiobungie.crate.user.UserThemes.description" href="#aiobungie.crate.user.UserThemes.description">description</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.UserThemes.id" href="#aiobungie.crate.user.UserThemes.id">id</a></code></li>
-                                <li><code><a title="aiobungie.crate.user.UserThemes.name" href="#aiobungie.crate.user.UserThemes.name">name</a></code></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </nav>
-    </main>
-    <footer id="footer">
-        <p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
-    </footer>
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="aiobungie.crate.user.UserThemes.description"><code class="name">var <span class="ident">description</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
+<dd>
+<div class="desc"><p>An optional theme description. This field could be <code>None</code> if no description found.</p></div>
+</dd>
+<dt id="aiobungie.crate.user.UserThemes.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
+<dd>
+<div class="desc"><p>The theme id.</p></div>
+</dd>
+<dt id="aiobungie.crate.user.UserThemes.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
+<dd>
+<div class="desc"><p>An optional theme name. if not found this field will be <code>None</code></p></div>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<form>
+<input id="lunr-search" name="q" placeholder="🔎 Search ..." aria-label="Search"
+disabled minlength="2">
+</form>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.3/tingle.min.css" integrity="sha512-j1u8eUJ4f23xPPxwOrLUPQaCD2dwzNqqmDDcWS4deWsMv2ohLqmXXuP3hU7g8TyzbMSakP/mMqoNBYWj8AEIFg==" crossorigin>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.3/tingle.min.js" integrity="sha512-plGUER9JkeEWPPqQBE4sdLqBoQug5Ap+BCGMc7bJ8BXkm+VVj6QzkpBz5Yv2yPkkq+cqg9IpkBaGCas6uDbW8g==" crossorigin></script>
+<style>
+.modal-dialog iframe {
+width: 100vw;
+height: calc(100vh - 80px);
+}
+@media screen and (min-width: 700px) {
+.modal-dialog iframe {
+width: 70vw;
+height: 80vh;
+}
+}
+.modal-dialog .tingle-modal-box {width: auto;}
+.modal-dialog .tingle-modal-box__content {padding: 0;}
+</style>
+<script>
+const input = document.getElementById('lunr-search');
+input.disabled = false;
+input.form.addEventListener('submit', (ev) => {
+ev.preventDefault();
+const url = new URL(window.location);
+url.searchParams.set('q', input.value);
+history.replaceState({}, null, url.toString());
+search(input.value);
+});
+const query = new URL(window.location).searchParams.get('q');
+if (query)
+search(query);
+function search(query) {
+const url = '././doc-search.html#' + encodeURIComponent(query);
+new tingle.modal({
+cssClass: ['modal-dialog'],
+onClose: () => {
+const url = new URL(window.location);
+url.searchParams.delete('q');
+history.replaceState({}, null, url.toString());
+setTimeout(() => input.focus(), 100);
+}
+}).setContent('<iframe src="' + url + '"></iframe>').open();
+}
+</script>
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="aiobungie.crate" href="index.html">aiobungie.crate</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="aiobungie.crate.user.BungieUser" href="#aiobungie.crate.user.BungieUser">BungieUser</a></code></h4>
+<ul class="two-column">
+<li><code><a title="aiobungie.crate.user.BungieUser.about" href="#aiobungie.crate.user.BungieUser.about">about</a></code></li>
+<li><code><a title="aiobungie.crate.user.BungieUser.blizzard_name" href="#aiobungie.crate.user.BungieUser.blizzard_name">blizzard_name</a></code></li>
+<li><code><a title="aiobungie.crate.user.BungieUser.code" href="#aiobungie.crate.user.BungieUser.code">code</a></code></li>
+<li><code><a title="aiobungie.crate.user.BungieUser.created_at" href="#aiobungie.crate.user.BungieUser.created_at">created_at</a></code></li>
+<li><code><a title="aiobungie.crate.user.BungieUser.display_title" href="#aiobungie.crate.user.BungieUser.display_title">display_title</a></code></li>
+<li><code><a title="aiobungie.crate.user.BungieUser.id" href="#aiobungie.crate.user.BungieUser.id">id</a></code></li>
+<li><code><a title="aiobungie.crate.user.BungieUser.is_deleted" href="#aiobungie.crate.user.BungieUser.is_deleted">is_deleted</a></code></li>
+<li><code><a title="aiobungie.crate.user.BungieUser.locale" href="#aiobungie.crate.user.BungieUser.locale">locale</a></code></li>
+<li><code><a title="aiobungie.crate.user.BungieUser.name" href="#aiobungie.crate.user.BungieUser.name">name</a></code></li>
+<li><code><a title="aiobungie.crate.user.BungieUser.picture" href="#aiobungie.crate.user.BungieUser.picture">picture</a></code></li>
+<li><code><a title="aiobungie.crate.user.BungieUser.psn_name" href="#aiobungie.crate.user.BungieUser.psn_name">psn_name</a></code></li>
+<li><code><a title="aiobungie.crate.user.BungieUser.show_activity" href="#aiobungie.crate.user.BungieUser.show_activity">show_activity</a></code></li>
+<li><code><a title="aiobungie.crate.user.BungieUser.stadia_name" href="#aiobungie.crate.user.BungieUser.stadia_name">stadia_name</a></code></li>
+<li><code><a title="aiobungie.crate.user.BungieUser.status" href="#aiobungie.crate.user.BungieUser.status">status</a></code></li>
+<li><code><a title="aiobungie.crate.user.BungieUser.steam_name" href="#aiobungie.crate.user.BungieUser.steam_name">steam_name</a></code></li>
+<li><code><a title="aiobungie.crate.user.BungieUser.theme_id" href="#aiobungie.crate.user.BungieUser.theme_id">theme_id</a></code></li>
+<li><code><a title="aiobungie.crate.user.BungieUser.theme_name" href="#aiobungie.crate.user.BungieUser.theme_name">theme_name</a></code></li>
+<li><code><a title="aiobungie.crate.user.BungieUser.twitch_name" href="#aiobungie.crate.user.BungieUser.twitch_name">twitch_name</a></code></li>
+<li><code><a title="aiobungie.crate.user.BungieUser.unique_name" href="#aiobungie.crate.user.BungieUser.unique_name">unique_name</a></code></li>
+<li><code><a title="aiobungie.crate.user.BungieUser.updated_at" href="#aiobungie.crate.user.BungieUser.updated_at">updated_at</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="aiobungie.crate.user.DestinyUser" href="#aiobungie.crate.user.DestinyUser">DestinyUser</a></code></h4>
+<ul class="two-column">
+<li><code><a title="aiobungie.crate.user.DestinyUser.code" href="#aiobungie.crate.user.DestinyUser.code">code</a></code></li>
+<li><code><a title="aiobungie.crate.user.DestinyUser.crossave_override" href="#aiobungie.crate.user.DestinyUser.crossave_override">crossave_override</a></code></li>
+<li><code><a title="aiobungie.crate.user.DestinyUser.icon" href="#aiobungie.crate.user.DestinyUser.icon">icon</a></code></li>
+<li><code><a title="aiobungie.crate.user.DestinyUser.id" href="#aiobungie.crate.user.DestinyUser.id">id</a></code></li>
+<li><code><a title="aiobungie.crate.user.DestinyUser.is_public" href="#aiobungie.crate.user.DestinyUser.is_public">is_public</a></code></li>
+<li><code><a title="aiobungie.crate.user.DestinyUser.last_seen_name" href="#aiobungie.crate.user.DestinyUser.last_seen_name">last_seen_name</a></code></li>
+<li><code><a title="aiobungie.crate.user.DestinyUser.link" href="#aiobungie.crate.user.DestinyUser.link">link</a></code></li>
+<li><code><a title="aiobungie.crate.user.DestinyUser.name" href="#aiobungie.crate.user.DestinyUser.name">name</a></code></li>
+<li><code><a title="aiobungie.crate.user.DestinyUser.type" href="#aiobungie.crate.user.DestinyUser.type">type</a></code></li>
+<li><code><a title="aiobungie.crate.user.DestinyUser.types" href="#aiobungie.crate.user.DestinyUser.types">types</a></code></li>
+<li><code><a title="aiobungie.crate.user.DestinyUser.unique_name" href="#aiobungie.crate.user.DestinyUser.unique_name">unique_name</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="aiobungie.crate.user.HardLinkedMembership" href="#aiobungie.crate.user.HardLinkedMembership">HardLinkedMembership</a></code></h4>
+<ul class="">
+<li><code><a title="aiobungie.crate.user.HardLinkedMembership.cross_save_type" href="#aiobungie.crate.user.HardLinkedMembership.cross_save_type">cross_save_type</a></code></li>
+<li><code><a title="aiobungie.crate.user.HardLinkedMembership.id" href="#aiobungie.crate.user.HardLinkedMembership.id">id</a></code></li>
+<li><code><a title="aiobungie.crate.user.HardLinkedMembership.type" href="#aiobungie.crate.user.HardLinkedMembership.type">type</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="aiobungie.crate.user.PartialBungieUser" href="#aiobungie.crate.user.PartialBungieUser">PartialBungieUser</a></code></h4>
+<ul class="two-column">
+<li><code><a title="aiobungie.crate.user.PartialBungieUser.crossave_override" href="#aiobungie.crate.user.PartialBungieUser.crossave_override">crossave_override</a></code></li>
+<li><code><a title="aiobungie.crate.user.PartialBungieUser.icon" href="#aiobungie.crate.user.PartialBungieUser.icon">icon</a></code></li>
+<li><code><a title="aiobungie.crate.user.PartialBungieUser.id" href="#aiobungie.crate.user.PartialBungieUser.id">id</a></code></li>
+<li><code><a title="aiobungie.crate.user.PartialBungieUser.is_public" href="#aiobungie.crate.user.PartialBungieUser.is_public">is_public</a></code></li>
+<li><code><a title="aiobungie.crate.user.PartialBungieUser.name" href="#aiobungie.crate.user.PartialBungieUser.name">name</a></code></li>
+<li><code><a title="aiobungie.crate.user.PartialBungieUser.type" href="#aiobungie.crate.user.PartialBungieUser.type">type</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="aiobungie.crate.user.User" href="#aiobungie.crate.user.User">User</a></code></h4>
+<ul class="">
+<li><code><a title="aiobungie.crate.user.User.bungie" href="#aiobungie.crate.user.User.bungie">bungie</a></code></li>
+<li><code><a title="aiobungie.crate.user.User.destiny" href="#aiobungie.crate.user.User.destiny">destiny</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="aiobungie.crate.user.UserLike" href="#aiobungie.crate.user.UserLike">UserLike</a></code></h4>
+<ul class="two-column">
+<li><code><a title="aiobungie.crate.user.UserLike.code" href="#aiobungie.crate.user.UserLike.code">code</a></code></li>
+<li><code><a title="aiobungie.crate.user.UserLike.icon" href="#aiobungie.crate.user.UserLike.icon">icon</a></code></li>
+<li><code><a title="aiobungie.crate.user.UserLike.id" href="#aiobungie.crate.user.UserLike.id">id</a></code></li>
+<li><code><a title="aiobungie.crate.user.UserLike.is_public" href="#aiobungie.crate.user.UserLike.is_public">is_public</a></code></li>
+<li><code><a title="aiobungie.crate.user.UserLike.last_seen_name" href="#aiobungie.crate.user.UserLike.last_seen_name">last_seen_name</a></code></li>
+<li><code><a title="aiobungie.crate.user.UserLike.link" href="#aiobungie.crate.user.UserLike.link">link</a></code></li>
+<li><code><a title="aiobungie.crate.user.UserLike.name" href="#aiobungie.crate.user.UserLike.name">name</a></code></li>
+<li><code><a title="aiobungie.crate.user.UserLike.type" href="#aiobungie.crate.user.UserLike.type">type</a></code></li>
+<li><code><a title="aiobungie.crate.user.UserLike.unique_name" href="#aiobungie.crate.user.UserLike.unique_name">unique_name</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="aiobungie.crate.user.UserThemes" href="#aiobungie.crate.user.UserThemes">UserThemes</a></code></h4>
+<ul class="">
+<li><code><a title="aiobungie.crate.user.UserThemes.description" href="#aiobungie.crate.user.UserThemes.description">description</a></code></li>
+<li><code><a title="aiobungie.crate.user.UserThemes.id" href="#aiobungie.crate.user.UserThemes.id">id</a></code></li>
+<li><code><a title="aiobungie.crate.user.UserThemes.name" href="#aiobungie.crate.user.UserThemes.name">name</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
 </body>
-
 </html>

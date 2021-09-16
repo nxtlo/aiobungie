@@ -24,7 +24,7 @@
 
 from __future__ import annotations
 
-__all__ = ("RESTful", "Netrunner", "Serializable")
+__all__ = ("ClientBase", "Netrunner", "Serializable")
 
 import typing
 
@@ -56,8 +56,8 @@ class Serializable(typing.Protocol):
 
 
 @typing.runtime_checkable
-class RESTful(Netrunner, Serializable, typing.Protocol):
-    """A RESTful, serializble and netrunner client protocol."""
+class ClientBase(Netrunner, Serializable, typing.Protocol):
+    """A Client based, serializble and netrunner client protocol."""
 
     __slots__: typing.Sequence[str] = ()
 

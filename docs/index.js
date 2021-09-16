@@ -6463,28 +6463,28 @@ INDEX=[
 "doc":"Module for all client interfaces."
 },
 {
-"ref":"aiobungie.internal.traits.RESTful",
+"ref":"aiobungie.internal.traits.ClientBase",
 "url":25,
-"doc":"A RESTful, serializble and netrunner client protocol."
+"doc":"A Client based, serializble and netrunner client protocol."
 },
 {
-"ref":"aiobungie.internal.traits.RESTful.run",
+"ref":"aiobungie.internal.traits.ClientBase.run",
 "url":25,
 "doc":"Runs a Coro function until its complete. This is equivalent to asyncio.get_event_loop().run_until_complete( .) Parameters      future:  typing.Coroutine[typing.Any, typing.Any, typing.Any] Your coro function. Example    -   async def main() -> None: player = await client.fetch_player(\"Fate\") print(player.name) client.run(main(  ",
 "func":1
 },
 {
-"ref":"aiobungie.internal.traits.RESTful.rest",
+"ref":"aiobungie.internal.traits.ClientBase.rest",
 "url":25,
 "doc":"The rest client we make the http request to the API with."
 },
 {
-"ref":"aiobungie.internal.traits.RESTful.request",
+"ref":"aiobungie.internal.traits.ClientBase.request",
 "url":25,
 "doc":"Returns a client network state for making external requests."
 },
 {
-"ref":"aiobungie.internal.traits.RESTful.serialize",
+"ref":"aiobungie.internal.traits.ClientBase.serialize",
 "url":25,
 "doc":"A property that returns a deserializer object for the client."
 },

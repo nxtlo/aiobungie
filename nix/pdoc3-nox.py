@@ -25,14 +25,15 @@ import os
 
 @nox.session(reuse_venv=True)
 def pdoc(session: nox.Session) -> None:
+    if os.path.isdir("./docs"):
+        try:
+            os.system("rm -rf ./docs")
+        except Exception:
+            # We don't have to worry about this anymore
+            pass
     session.install("-r", "requirements.txt", "-r", "dev-requirements.txt", "pdoc3")
     session.run(
-        "pdoc",
-        "--html",
-        "--template-dir",
-        "./templates",
-        "./aiobungie",
-        "--force"
+        "pdoc", "--html", "--template-dir", "./templates", "./aiobungie", "--force"
     )
-    if os.path.exists("./html"):
+    if os.path.isdir("./html"):
         os.system("bash nix/move.sh")

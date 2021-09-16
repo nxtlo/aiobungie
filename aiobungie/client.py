@@ -45,7 +45,7 @@ from .internal.enums import GroupType
 from .internal.enums import MembershipType
 
 
-class Client(traits.RESTful):
+class Client(traits.ClientBase):
     """Basic implementation for a client that interacts with Bungie's API.
 
     Attributes

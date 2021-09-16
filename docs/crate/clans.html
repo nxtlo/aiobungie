@@ -1,493 +1,33 @@
 <!doctype html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-    <meta name="generator" content="pdoc 0.10.0" />
-    <title>aiobungie.crate.clans API documentation</title>
-    <meta name="description" content="Basic implementation for a Bungie a clan." />
-    <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
-    <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
-    <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/atom-one-dark.min.css" crossorigin>
-    <style>
-         :root {
-            --highlight-color: #fe9
-        }
-        
-        .flex {
-            display: flex !important
-        }
-        
-        body {
-            line-height: 1.5em
-        }
-        
-        #content {
-            padding: 20px
-        }
-        
-        #sidebar {
-            padding: 30px;
-            overflow: hidden
-        }
-        
-        #sidebar>*:last-child {
-            margin-bottom: 2cm
-        }
-        
-        #lunr-search {
-            width: 100%;
-            font-size: 1em;
-            padding: 6px 9px 5px 9px;
-            border: 1px solid silver
-        }
-        
-        .http-server-breadcrumbs {
-            font-size: 130%;
-            margin: 0 0 15px 0
-        }
-        
-        #footer {
-            font-size: .75em;
-            padding: 5px 30px;
-            border-top: 1px solid #ddd;
-            text-align: right
-        }
-        
-        #footer p {
-            margin: 0 0 0 1em;
-            display: inline-block
-        }
-        
-        #footer p:last-child {
-            margin-right: 30px
-        }
-        
-        h1,
-        h2,
-        h3,
-        h4,
-        h5 {
-            font-weight: 300
-        }
-        
-        h1 {
-            font-size: 2.5em;
-            line-height: 1.1em
-        }
-        
-        h2 {
-            font-size: 1.75em;
-            margin: 1em 0 .50em 0
-        }
-        
-        h3 {
-            font-size: 1.4em;
-            margin: 25px 0 10px 0
-        }
-        
-        h4 {
-            margin: 0;
-            font-size: 105%
-        }
-        
-        h1:target,
-        h2:target,
-        h3:target,
-        h4:target,
-        h5:target,
-        h6:target {
-            background: var(--highlight-color);
-            padding: .2em 0
-        }
-        
-        a {
-            color: #058;
-            text-decoration: none;
-            transition: color .3s ease-in-out
-        }
-        
-        a:hover {
-            color: #e82
-        }
-        
-        .title code {
-            font-weight: bold
-        }
-        
-        h2[id^="header-"] {
-            margin-top: 2em
-        }
-        
-        .ident {
-            color: #900
-        }
-        
-        pre code {
-            background: #f8f8f8;
-            font-size: .8em;
-            line-height: 1.4em
-        }
-        
-        code {
-            background: #f2f2f1;
-            padding: 1px 4px;
-            overflow-wrap: break-word
-        }
-        
-        h1 code {
-            background: transparent
-        }
-        
-        pre {
-            background: #f8f8f8;
-            border: 0;
-            border-top: 1px solid #ccc;
-            border-bottom: 1px solid #ccc;
-            margin: 1em 0;
-            padding: 1ex
-        }
-        
-        #http-server-module-list {
-            display: flex;
-            flex-flow: column
-        }
-        
-        #http-server-module-list div {
-            display: flex
-        }
-        
-        #http-server-module-list dt {
-            min-width: 10%
-        }
-        
-        #http-server-module-list p {
-            margin-top: 0
-        }
-        
-        .toc ul,
-        #index {
-            list-style-type: none;
-            margin: 0;
-            padding: 0
-        }
-        
-        #index code {
-            background: transparent
-        }
-        
-        #index h3 {
-            border-bottom: 1px solid #ddd
-        }
-        
-        #index ul {
-            padding: 0
-        }
-        
-        #index h4 {
-            margin-top: .6em;
-            font-weight: bold
-        }
-        
-        @media (min-width:200ex) {
-            #index .two-column {
-                column-count: 2
-            }
-        }
-        
-        @media (min-width:300ex) {
-            #index .two-column {
-                column-count: 3
-            }
-        }
-        
-        dl {
-            margin-bottom: 2em
-        }
-        
-        dl dl:last-child {
-            margin-bottom: 4em
-        }
-        
-        dd {
-            margin: 0 0 1em 3em
-        }
-        
-        #header-classes+dl>dd {
-            margin-bottom: 3em
-        }
-        
-        dd dd {
-            margin-left: 2em
-        }
-        
-        dd p {
-            margin: 10px 0
-        }
-        
-        .name {
-            background: #eee;
-            font-weight: bold;
-            font-size: .85em;
-            padding: 5px 10px;
-            display: inline-block;
-            min-width: 40%
-        }
-        
-        .name:hover {
-            background: #e0e0e0
-        }
-        
-        dt:target .name {
-            background: var(--highlight-color)
-        }
-        
-        .name>span:first-child {
-            white-space: nowrap
-        }
-        
-        .name.class>span:nth-child(2) {
-            margin-left: .4em
-        }
-        
-        .inherited {
-            color: #999;
-            border-left: 5px solid #eee;
-            padding-left: 1em
-        }
-        
-        .inheritance em {
-            font-style: normal;
-            font-weight: bold
-        }
-        
-        .desc h2 {
-            font-weight: 400;
-            font-size: 1.25em
-        }
-        
-        .desc h3 {
-            font-size: 1em
-        }
-        
-        .desc dt code {
-            background: inherit
-        }
-        
-        .source summary,
-        .git-link-div {
-            color: #666;
-            text-align: right;
-            font-weight: 400;
-            font-size: .8em;
-            text-transform: uppercase
-        }
-        
-        .source summary>* {
-            white-space: nowrap;
-            cursor: pointer
-        }
-        
-        .git-link {
-            color: inherit;
-            margin-left: 1em
-        }
-        
-        .source pre {
-            max-height: 500px;
-            overflow: auto;
-            margin: 0
-        }
-        
-        .source pre code {
-            font-size: 12px;
-            overflow: visible
-        }
-        
-        .hlist {
-            list-style: none
-        }
-        
-        .hlist li {
-            display: inline
-        }
-        
-        .hlist li:after {
-            content: ',\2002'
-        }
-        
-        .hlist li:last-child:after {
-            content: none
-        }
-        
-        .hlist .hlist {
-            display: inline;
-            padding-left: 1em
-        }
-        
-        img {
-            max-width: 100%
-        }
-        
-        td {
-            padding: 0 .5em
-        }
-        
-        .admonition {
-            padding: .1em .5em;
-            margin-bottom: 1em
-        }
-        
-        .admonition-title {
-            font-weight: bold
-        }
-        
-        .admonition.note,
-        .admonition.info,
-        .admonition.important {
-            background: #aef
-        }
-        
-        .admonition.todo,
-        .admonition.versionadded,
-        .admonition.tip,
-        .admonition.hint {
-            background: #dfd
-        }
-        
-        .admonition.warning,
-        .admonition.versionchanged,
-        .admonition.deprecated {
-            background: #fd4
-        }
-        
-        .admonition.error,
-        .admonition.danger,
-        .admonition.caution {
-            background: lightpink
-        }
-    </style>
-    <style media="screen and (min-width: 700px)">
-        @media screen and (min-width:700px) {
-            #sidebar {
-                width: 30%;
-                height: 100vh;
-                overflow: auto;
-                position: sticky;
-                top: 0
-            }
-            #content {
-                width: 70%;
-                max-width: 100ch;
-                padding: 3em 4em;
-                border-left: 1px solid #ddd
-            }
-            pre code {
-                font-size: 1em
-            }
-            .item .name {
-                font-size: 1em
-            }
-            main {
-                display: flex;
-                flex-direction: row-reverse;
-                justify-content: flex-end
-            }
-            .toc ul ul,
-            #index ul {
-                padding-left: 1.5em
-            }
-            .toc>ul>li {
-                margin-top: .5em
-            }
-        }
-    </style>
-    <style media="print">
-        @media print {
-            #sidebar h1 {
-                page-break-before: always
-            }
-            .source {
-                display: none
-            }
-        }
-        
-        @media print {
-            * {
-                background: transparent !important;
-                color: #000 !important;
-                box-shadow: none !important;
-                text-shadow: none !important
-            }
-            a[href]:after {
-                content: " (" attr(href) ")";
-                font-size: 90%
-            }
-            a[href][title]:after {
-                content: none
-            }
-            abbr[title]:after {
-                content: " (" attr(title) ")"
-            }
-            .ir a:after,
-            a[href^="javascript:"]:after,
-            a[href^="#"]:after {
-                content: ""
-            }
-            pre,
-            blockquote {
-                border: 1px solid #999;
-                page-break-inside: avoid
-            }
-            thead {
-                display: table-header-group
-            }
-            tr,
-            img {
-                page-break-inside: avoid
-            }
-            img {
-                max-width: 100% !important
-            }
-            @page {
-                margin: 0.5cm
-            }
-            p,
-            h2,
-            h3 {
-                orphans: 3;
-                widows: 3
-            }
-            h1,
-            h2,
-            h3,
-            h4,
-            h5,
-            h6 {
-                page-break-after: avoid
-            }
-        }
-    </style>
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
-    <script>
-        window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())
-    </script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>aiobungie.crate.clans API documentation</title>
+<meta name="description" content="Basic implementation for a Bungie a clan." />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/atom-one-dark.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}#lunr-search{width:100%;font-size:1em;padding:6px 9px 5px 9px;border:1px solid silver}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
 </head>
-
 <body>
-    <main>
-        <article id="content">
-            <header>
-                <h1 class="title">Module <code>aiobungie.crate.clans</code></h1>
-            </header>
-            <section id="section-intro">
-                <p>Basic implementation for a Bungie a clan.</p>
-                <details class="source">
-                    <summary>
-                        <span>Expand source code</span>
-                    </summary>
-                    <pre><code class="python"># MIT License
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>aiobungie.crate.clans</code></h1>
+</header>
+<section id="section-intro">
+<p>Basic implementation for a Bungie a clan.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python"># MIT License
 #
 # Copyright (c) 2020 - Present nxtlo
 #
@@ -866,31 +406,29 @@ class Clan:
 
     def __str__(self) -&gt; str:
         return self.name</code></pre>
-                </details>
-            </section>
-            <section>
-            </section>
-            <section>
-            </section>
-            <section>
-            </section>
-            <section>
-                <h2 class="section-title" id="header-classes">Classes</h2>
-                <dl>
-                    <dt id="aiobungie.crate.clans.Clan"><code class="flex name class">
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="aiobungie.crate.clans.Clan"><code class="flex name class">
 <span>class <span class="ident">Clan</span></span>
 <span>(</span><span>*, net: traits.Netrunner, id: int, type: GroupType, name: str, created_at: datetime, member_count: int, motto: str, is_public: bool, banner: assets.MaybeImage, avatar: assets.MaybeImage, about: str, tags: typing.List[str], owner: <a title="aiobungie.crate.clans.ClanOwner" href="#aiobungie.crate.clans.ClanOwner">ClanOwner</a>, features: <a title="aiobungie.crate.clans.ClanFeatures" href="#aiobungie.crate.clans.ClanFeatures">ClanFeatures</a>)</span>
 </code></dt>
-                    <dd>
-                        <div class="desc">
-                            <p>Represents a Bungie clan.</p>
-                            <p>Method generated by attrs for class Clan.</p>
-                        </div>
-                        <details class="source">
-                            <summary>
-                                <span>Expand source code</span>
-                            </summary>
-                            <pre><code class="python">@attr.define(hash=False, kw_only=True, weakref_slot=False)
+<dd>
+<div class="desc"><p>Represents a Bungie clan.</p>
+<p>Method generated by attrs for class Clan.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class Clan:
     &#34;&#34;&#34;Represents a Bungie clan.&#34;&#34;&#34;
 
@@ -1037,122 +575,93 @@ class Clan:
 
     def __str__(self) -&gt; str:
         return self.name</code></pre>
-                        </details>
-                        <h3>Instance variables</h3>
-                        <dl>
-                            <dt id="aiobungie.crate.clans.Clan.about"><code class="name">var <span class="ident">about</span> : str</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Clan's about title.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.Clan.avatar"><code class="name">var <span class="ident">avatar</span> : Union[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Clan's avatar</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.Clan.banner"><code class="name">var <span class="ident">banner</span> : Union[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Clan's banner</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.Clan.created_at"><code class="name">var <span class="ident">created_at</span> : datetime.datetime</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Clan's creation date time in UTC.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.Clan.features"><code class="name">var <span class="ident">features</span> : <a title="aiobungie.crate.clans.ClanFeatures" href="#aiobungie.crate.clans.ClanFeatures">ClanFeatures</a></code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The clan features.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.Clan.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The clan id</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.Clan.is_public"><code class="name">var <span class="ident">is_public</span> : bool</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Clan's privacy status.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.Clan.member_count"><code class="name">var <span class="ident">member_count</span> : int</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Clan's member count.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.Clan.motto"><code class="name">var <span class="ident">motto</span> : str</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Clan's motto.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.Clan.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The clan's name</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.Clan.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.traits.Netrunner" href="./internal/traits.html#aiobungie.internal.traits.Netrunner">Netrunner</a></code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>A network state used for making external requests.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.Clan.owner"><code class="name">var <span class="ident">owner</span> : <a title="aiobungie.crate.clans.ClanOwner" href="#aiobungie.crate.clans.ClanOwner">ClanOwner</a></code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The clan owner.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.Clan.tags"><code class="name">var <span class="ident">tags</span> : List[str]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>A list of the clan's tags.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.Clan.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.GroupType" href="./internal/enums.html#aiobungie.internal.enums.GroupType">GroupType</a></code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The clan type.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.Clan.url"><code class="name">var <span class="ident">url</span> : str</code></dt>
-                            <dd>
-                                <div class="desc"></div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="aiobungie.crate.clans.Clan.about"><code class="name">var <span class="ident">about</span> : str</code></dt>
+<dd>
+<div class="desc"><p>Clan's about title.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.Clan.avatar"><code class="name">var <span class="ident">avatar</span> : Union[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
+<dd>
+<div class="desc"><p>Clan's avatar</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.Clan.banner"><code class="name">var <span class="ident">banner</span> : Union[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
+<dd>
+<div class="desc"><p>Clan's banner</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.Clan.created_at"><code class="name">var <span class="ident">created_at</span> : datetime.datetime</code></dt>
+<dd>
+<div class="desc"><p>Clan's creation date time in UTC.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.Clan.features"><code class="name">var <span class="ident">features</span> : <a title="aiobungie.crate.clans.ClanFeatures" href="#aiobungie.crate.clans.ClanFeatures">ClanFeatures</a></code></dt>
+<dd>
+<div class="desc"><p>The clan features.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.Clan.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
+<dd>
+<div class="desc"><p>The clan id</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.Clan.is_public"><code class="name">var <span class="ident">is_public</span> : bool</code></dt>
+<dd>
+<div class="desc"><p>Clan's privacy status.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.Clan.member_count"><code class="name">var <span class="ident">member_count</span> : int</code></dt>
+<dd>
+<div class="desc"><p>Clan's member count.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.Clan.motto"><code class="name">var <span class="ident">motto</span> : str</code></dt>
+<dd>
+<div class="desc"><p>Clan's motto.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.Clan.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The clan's name</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.Clan.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.traits.Netrunner" href="./internal/traits.html#aiobungie.internal.traits.Netrunner">Netrunner</a></code></dt>
+<dd>
+<div class="desc"><p>A network state used for making external requests.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.Clan.owner"><code class="name">var <span class="ident">owner</span> : <a title="aiobungie.crate.clans.ClanOwner" href="#aiobungie.crate.clans.ClanOwner">ClanOwner</a></code></dt>
+<dd>
+<div class="desc"><p>The clan owner.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.Clan.tags"><code class="name">var <span class="ident">tags</span> : List[str]</code></dt>
+<dd>
+<div class="desc"><p>A list of the clan's tags.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.Clan.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.GroupType" href="./internal/enums.html#aiobungie.internal.enums.GroupType">GroupType</a></code></dt>
+<dd>
+<div class="desc"><p>The clan type.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.Clan.url"><code class="name">var <span class="ident">url</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
 def url(self) -&gt; str:
     return f&#34;{url.BASE}/en/ClanV2/Index?groupId={self.id}&#34;</code></pre>
-                                </details>
-                            </dd>
-                        </dl>
-                        <h3>Methods</h3>
-                        <dl>
-                            <dt id="aiobungie.crate.clans.Clan.fetch_banned_members"><code class="name flex">
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="aiobungie.crate.clans.Clan.fetch_banned_members"><code class="name flex">
 <span>async def <span class="ident">fetch_banned_members</span></span>(<span>self) ‑> Sequence[<a title="aiobungie.crate.clans.ClanMember" href="#aiobungie.crate.clans.ClanMember">ClanMember</a>]</span>
 </code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Fetch members who has been banned from the clan.</p>
-                                    <h2 id="returns">Returns</h2>
-                                    <p><code>typing.Sequence[<a title="aiobungie.crate.clans.ClanMember" href="#aiobungie.crate.clans.ClanMember">ClanMember</a>]</code> A sequence of clan members or are banned.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">async def fetch_banned_members(self) -&gt; typing.Sequence[ClanMember]:
+<dd>
+<div class="desc"><p>Fetch members who has been banned from the clan.</p>
+<h2 id="returns">Returns</h2>
+<p><code>typing.Sequence[<a title="aiobungie.crate.clans.ClanMember" href="#aiobungie.crate.clans.ClanMember">ClanMember</a>]</code>
+A sequence of clan members or are banned.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_banned_members(self) -&gt; typing.Sequence[ClanMember]:
     &#34;&#34;&#34;Fetch members who has been banned from the clan.
 
     Returns
@@ -1161,22 +670,21 @@ def url(self) -&gt; str:
         A sequence of clan members or are banned.
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.Clan.fetch_invited_members"><code class="name flex">
+</details>
+</dd>
+<dt id="aiobungie.crate.clans.Clan.fetch_invited_members"><code class="name flex">
 <span>async def <span class="ident">fetch_invited_members</span></span>(<span>self) ‑> Sequence[<a title="aiobungie.crate.clans.ClanMember" href="#aiobungie.crate.clans.ClanMember">ClanMember</a>]</span>
 </code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Fetch members who has been invited.</p>
-                                    <h2 id="returns">Returns</h2>
-                                    <p><code>typing.Sequence[<a title="aiobungie.crate.clans.ClanMember" href="#aiobungie.crate.clans.ClanMember">ClanMember</a>]</code> A sequence of members who have been invited.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">async def fetch_invited_members(self) -&gt; typing.Sequence[ClanMember]:
+<dd>
+<div class="desc"><p>Fetch members who has been invited.</p>
+<h2 id="returns">Returns</h2>
+<p><code>typing.Sequence[<a title="aiobungie.crate.clans.ClanMember" href="#aiobungie.crate.clans.ClanMember">ClanMember</a>]</code>
+A sequence of members who have been invited.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_invited_members(self) -&gt; typing.Sequence[ClanMember]:
     &#34;&#34;&#34;Fetch members who has been invited.
 
     Returns
@@ -1185,33 +693,37 @@ def url(self) -&gt; str:
         A sequence of members who have been invited.
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.Clan.fetch_member"><code class="name flex">
+</details>
+</dd>
+<dt id="aiobungie.crate.clans.Clan.fetch_member"><code class="name flex">
 <span>async def <span class="ident">fetch_member</span></span>(<span>self, name: str, type: MembershipType = NONE, /) ‑> <a title="aiobungie.crate.clans.ClanMember" href="#aiobungie.crate.clans.ClanMember">ClanMember</a></span>
 </code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Fetch a specific clan member by their name and membership type.</p>
-                                    <p>if the memberhship type is None we will try to return the first member matches the name. its also better to leave this parameter on None since usually only one player has this name.</p>
-                                    <h2 id="parameters">Parameters</h2>
-                                    <dl>
-                                        <dt><strong><code>name</code></strong> :&ensp;<code>builtins.str</code></dt>
-                                        <dd>The clan member name.</dd>
-                                        <dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.MembershipType" href="./index.html#aiobungie.MembershipType">MembershipType</a></code></dt>
-                                        <dd>The member's membership type. Default is 0 which returns any member matches the name.</dd>
-                                    </dl>
-                                    <h2 id="returns">Returns</h2>
-                                    <p><code><a title="aiobungie.crate.clans.ClanMember" href="#aiobungie.crate.clans.ClanMember">ClanMember</a></code></p>
-                                    <h2 id="raises">Raises</h2>
-                                    <p><code><a title="aiobungie.ClanNotFound" href="./index.html#aiobungie.ClanNotFound">ClanNotFound</a></code> The clan was not found.</p>
-                                    <p><code><a title="aiobungie.NotFound" href="./index.html#aiobungie.NotFound">NotFound</a></code> The member was not found</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">async def fetch_member(
+<dd>
+<div class="desc"><p>Fetch a specific clan member by their name and membership type.</p>
+<p>if the memberhship type is None we will
+try to return the first member matches the name.
+its also better to leave this parameter on None
+since usually only one player has this name.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>name</code></strong> :&ensp;<code>builtins.str</code></dt>
+<dd>The clan member name.</dd>
+<dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.MembershipType" href="./index.html#aiobungie.MembershipType">MembershipType</a></code></dt>
+<dd>The member's membership type. Default is 0
+which returns any member matches the name.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p><code><a title="aiobungie.crate.clans.ClanMember" href="#aiobungie.crate.clans.ClanMember">ClanMember</a></code></p>
+<h2 id="raises">Raises</h2>
+<p><code><a title="aiobungie.ClanNotFound" href="./index.html#aiobungie.ClanNotFound">ClanNotFound</a></code>
+The clan was not found.</p>
+<p><code><a title="aiobungie.NotFound" href="./index.html#aiobungie.NotFound">NotFound</a></code>
+The member was not found</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_member(
     self, name: str, type: MembershipType = MembershipType.NONE, /
 ) -&gt; ClanMember:
     &#34;&#34;&#34;Fetch a specific clan member by their name and membership type.
@@ -1242,30 +754,32 @@ def url(self) -&gt; str:
         The member was not found
     &#34;&#34;&#34;
     return await self.net.request.fetch_clan_member(self.id, name, type)</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.Clan.fetch_members"><code class="name flex">
+</details>
+</dd>
+<dt id="aiobungie.crate.clans.Clan.fetch_members"><code class="name flex">
 <span>async def <span class="ident">fetch_members</span></span>(<span>self, type: MembershipType = NONE, /) ‑> Sequence[<a title="aiobungie.crate.clans.ClanMember" href="#aiobungie.crate.clans.ClanMember">ClanMember</a>]</span>
 </code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Fetch the members of the clan.</p>
-                                    <p>if the memberhship type is None it will All membership types.</p>
-                                    <h2 id="parameters">Parameters</h2>
-                                    <dl>
-                                        <dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.MembershipType" href="./index.html#aiobungie.MembershipType">MembershipType</a></code></dt>
-                                        <dd>Filters the membership types to return. Default is <code><a title="aiobungie.MembershipType.NONE" href="./index.html#aiobungie.MembershipType.NONE">MembershipType.NONE</a></code> which returns all membership types.</dd>
-                                    </dl>
-                                    <h2 id="returns">Returns</h2>
-                                    <p><code>typing.Sequence[<a title="aiobungie.crate.clans.ClanMember" href="#aiobungie.crate.clans.ClanMember">ClanMember</a>]</code> A sequence of the clan members found in this clan.</p>
-                                    <h2 id="raises">Raises</h2>
-                                    <p><code><a title="aiobungie.ClanNotFound" href="./index.html#aiobungie.ClanNotFound">ClanNotFound</a></code> The clan was not found.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">async def fetch_members(
+<dd>
+<div class="desc"><p>Fetch the members of the clan.</p>
+<p>if the memberhship type is None it will
+All membership types.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.MembershipType" href="./index.html#aiobungie.MembershipType">MembershipType</a></code></dt>
+<dd>Filters the membership types to return.
+Default is <code><a title="aiobungie.MembershipType.NONE" href="./index.html#aiobungie.MembershipType.NONE">MembershipType.NONE</a></code> which returns all membership types.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p><code>typing.Sequence[<a title="aiobungie.crate.clans.ClanMember" href="#aiobungie.crate.clans.ClanMember">ClanMember</a>]</code>
+A sequence of the clan members found in this clan.</p>
+<h2 id="raises">Raises</h2>
+<p><code><a title="aiobungie.ClanNotFound" href="./index.html#aiobungie.ClanNotFound">ClanNotFound</a></code>
+The clan was not found.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_members(
     self, type: MembershipType = MembershipType.NONE, /
 ) -&gt; typing.Sequence[ClanMember]:
     &#34;&#34;&#34;Fetch the members of the clan.
@@ -1290,22 +804,22 @@ def url(self) -&gt; str:
         The clan was not found.
     &#34;&#34;&#34;
     return await self.net.request.fetch_clan_members(self.id, type)</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.Clan.fetch_pending_members"><code class="name flex">
+</details>
+</dd>
+<dt id="aiobungie.crate.clans.Clan.fetch_pending_members"><code class="name flex">
 <span>async def <span class="ident">fetch_pending_members</span></span>(<span>self) ‑> Sequence[<a title="aiobungie.crate.clans.ClanMember" href="#aiobungie.crate.clans.ClanMember">ClanMember</a>]</span>
 </code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Fetch members who are waiting to get accepted.</p>
-                                    <h2 id="returns">Returns</h2>
-                                    <p><code>typing.Sequence[<a title="aiobungie.crate.clans.ClanMember" href="#aiobungie.crate.clans.ClanMember">ClanMember</a>]</code> A sequence of clan members who are awaiting to get accepted to the clan.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">async def fetch_pending_members(self) -&gt; typing.Sequence[ClanMember]:
+<dd>
+<div class="desc"><p>Fetch members who are waiting to get accepted.</p>
+<h2 id="returns">Returns</h2>
+<p><code>typing.Sequence[<a title="aiobungie.crate.clans.ClanMember" href="#aiobungie.crate.clans.ClanMember">ClanMember</a>]</code>
+A sequence of clan members who are awaiting
+to get accepted to the clan.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_pending_members(self) -&gt; typing.Sequence[ClanMember]:
     &#34;&#34;&#34;Fetch members who are waiting to get accepted.
 
     Returns
@@ -1315,24 +829,22 @@ def url(self) -&gt; str:
         to get accepted to the clan.
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
-                                </details>
-                            </dd>
-                        </dl>
-                    </dd>
-                    <dt id="aiobungie.crate.clans.ClanFeatures"><code class="flex name class">
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="aiobungie.crate.clans.ClanFeatures"><code class="flex name class">
 <span>class <span class="ident">ClanFeatures</span></span>
 <span>(</span><span>*, max_members: int, max_membership_types: int, capabilities: int, membership_types: typing.List[MembershipType], invite_permissions: bool, update_banner_permissions: bool, update_culture_permissions: bool, join_level: int)</span>
 </code></dt>
-                    <dd>
-                        <div class="desc">
-                            <p>Represents Bungie clan features.</p>
-                            <p>Method generated by attrs for class ClanFeatures.</p>
-                        </div>
-                        <details class="source">
-                            <summary>
-                                <span>Expand source code</span>
-                            </summary>
-                            <pre><code class="python">@attr.define(kw_only=True, hash=False, weakref_slot=False)
+<dd>
+<div class="desc"><p>Represents Bungie clan features.</p>
+<p>Method generated by attrs for class ClanFeatures.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@attr.define(kw_only=True, hash=False, weakref_slot=False)
 class ClanFeatures:
     &#34;&#34;&#34;Represents Bungie clan features.&#34;&#34;&#34;
 
@@ -1358,73 +870,55 @@ class ClanFeatures:
 
     join_level: int = attr.field(repr=True)
     &#34;&#34;&#34;The clan&#39;s join level.&#34;&#34;&#34;</code></pre>
-                        </details>
-                        <h3>Instance variables</h3>
-                        <dl>
-                            <dt id="aiobungie.crate.clans.ClanFeatures.capabilities"><code class="name">var <span class="ident">capabilities</span> : int</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>An int that represents the clan's capabilities.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.ClanFeatures.invite_permissions"><code class="name">var <span class="ident">invite_permissions</span> : bool</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>True if the clan has permissions to invite.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.ClanFeatures.join_level"><code class="name">var <span class="ident">join_level</span> : int</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The clan's join level.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.ClanFeatures.max_members"><code class="name">var <span class="ident">max_members</span> : int</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The maximum members the clan can have</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.ClanFeatures.max_membership_types"><code class="name">var <span class="ident">max_membership_types</span> : int</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The maximum membership types the clan can have</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.ClanFeatures.membership_types"><code class="name">var <span class="ident">membership_types</span> : List[<a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a>]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The clan's membership types.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.ClanFeatures.update_banner_permissions"><code class="name">var <span class="ident">update_banner_permissions</span> : bool</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>True if the clan has permissions to updates its banner.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.ClanFeatures.update_culture_permissions"><code class="name">var <span class="ident">update_culture_permissions</span> : bool</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Return an attribute of instance, which is of type owner.</p>
-                                </div>
-                            </dd>
-                        </dl>
-                    </dd>
-                    <dt id="aiobungie.crate.clans.ClanMember"><code class="flex name class">
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="aiobungie.crate.clans.ClanFeatures.capabilities"><code class="name">var <span class="ident">capabilities</span> : int</code></dt>
+<dd>
+<div class="desc"><p>An int that represents the clan's capabilities.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanFeatures.invite_permissions"><code class="name">var <span class="ident">invite_permissions</span> : bool</code></dt>
+<dd>
+<div class="desc"><p>True if the clan has permissions to invite.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanFeatures.join_level"><code class="name">var <span class="ident">join_level</span> : int</code></dt>
+<dd>
+<div class="desc"><p>The clan's join level.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanFeatures.max_members"><code class="name">var <span class="ident">max_members</span> : int</code></dt>
+<dd>
+<div class="desc"><p>The maximum members the clan can have</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanFeatures.max_membership_types"><code class="name">var <span class="ident">max_membership_types</span> : int</code></dt>
+<dd>
+<div class="desc"><p>The maximum membership types the clan can have</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanFeatures.membership_types"><code class="name">var <span class="ident">membership_types</span> : List[<a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a>]</code></dt>
+<dd>
+<div class="desc"><p>The clan's membership types.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanFeatures.update_banner_permissions"><code class="name">var <span class="ident">update_banner_permissions</span> : bool</code></dt>
+<dd>
+<div class="desc"><p>True if the clan has permissions to updates its banner.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanFeatures.update_culture_permissions"><code class="name">var <span class="ident">update_culture_permissions</span> : bool</code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+</dl>
+</dd>
+<dt id="aiobungie.crate.clans.ClanMember"><code class="flex name class">
 <span>class <span class="ident">ClanMember</span></span>
 <span>(</span><span>*, net: traits.Netrunner, id: int, name: helpers.UndefinedOr[str], last_seen_name: str, type: MembershipType, types: typing.Sequence[MembershipType], icon: assets.MaybeImage, is_public: bool, group_id: int, is_online: bool, last_online: datetime, joined_at: datetime, code: helpers.NoneOr[int])</span>
 </code></dt>
-                    <dd>
-                        <div class="desc">
-                            <p>Represents a Destiny 2 clan member.</p>
-                            <p>Method generated by attrs for class ClanMember.</p>
-                        </div>
-                        <details class="source">
-                            <summary>
-                                <span>Expand source code</span>
-                            </summary>
-                            <pre><code class="python">@attr.define(hash=False, kw_only=True, weakref_slot=False)
+<dd>
+<div class="desc"><p>Represents a Destiny 2 clan member.</p>
+<p>Method generated by attrs for class ClanMember.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class ClanMember(UserLike):
     &#34;&#34;&#34;Represents a Destiny 2 clan member.&#34;&#34;&#34;
 
@@ -1504,204 +998,170 @@ class ClanMember(UserLike):
         The requires OAuth2: AdminsGroup scope.
         &#34;&#34;&#34;
         raise NotImplementedError</code></pre>
-                        </details>
-                        <h3>Ancestors</h3>
-                        <ul class="hlist">
-                            <li><a title="aiobungie.crate.user.UserLike" href="user.html#aiobungie.crate.user.UserLike">UserLike</a></li>
-                            <li>abc.ABC</li>
-                        </ul>
-                        <h3>Instance variables</h3>
-                        <dl>
-                            <dt id="aiobungie.crate.clans.ClanMember.code"><code class="name">var <span class="ident">code</span> : Optional[None]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The clan member's bungie display name code This is new and was added in Season of the lost update</p>
-                                    <div class="admonition versionadded">
-                                        <p class="admonition-title">Added in version:&ensp;0.2.5</p>
-                                    </div>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.ClanMember.group_id"><code class="name">var <span class="ident">group_id</span> : int</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The member's group id.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.ClanMember.icon"><code class="name">var <span class="ident">icon</span> : Union[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Clan member's icon</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.ClanMember.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Clan member's id</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.ClanMember.is_online"><code class="name">var <span class="ident">is_online</span> : bool</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>True if the clan member is online or not.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.ClanMember.is_public"><code class="name">var <span class="ident">is_public</span> : bool</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p><code>builtins.True</code> if the clan member is public.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.ClanMember.joined_at"><code class="name">var <span class="ident">joined_at</span> : datetime.datetime</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The clan member's join date in UTC time zone.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.ClanMember.last_online"><code class="name">var <span class="ident">last_online</span> : datetime.datetime</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The date of the clan member's last online in UTC time zone.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.ClanMember.last_seen_name"><code class="name">var <span class="ident">last_seen_name</span> : str</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The clan member's last seen display name</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.ClanMember.link"><code class="name">var <span class="ident">link</span> : str</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Clan member's profile link.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="aiobungie.crate.user.UserLike" href="user.html#aiobungie.crate.user.UserLike">UserLike</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="aiobungie.crate.clans.ClanMember.code"><code class="name">var <span class="ident">code</span> : Optional[None]</code></dt>
+<dd>
+<div class="desc"><p>The clan member's bungie display name code
+This is new and was added in Season of the lost update</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.2.5</p>
+</div></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanMember.group_id"><code class="name">var <span class="ident">group_id</span> : int</code></dt>
+<dd>
+<div class="desc"><p>The member's group id.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanMember.icon"><code class="name">var <span class="ident">icon</span> : Union[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
+<dd>
+<div class="desc"><p>Clan member's icon</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanMember.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
+<dd>
+<div class="desc"><p>Clan member's id</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanMember.is_online"><code class="name">var <span class="ident">is_online</span> : bool</code></dt>
+<dd>
+<div class="desc"><p>True if the clan member is online or not.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanMember.is_public"><code class="name">var <span class="ident">is_public</span> : bool</code></dt>
+<dd>
+<div class="desc"><p><code>builtins.True</code> if the clan member is public.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanMember.joined_at"><code class="name">var <span class="ident">joined_at</span> : datetime.datetime</code></dt>
+<dd>
+<div class="desc"><p>The clan member's join date in UTC time zone.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanMember.last_online"><code class="name">var <span class="ident">last_online</span> : datetime.datetime</code></dt>
+<dd>
+<div class="desc"><p>The date of the clan member's last online in UTC time zone.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanMember.last_seen_name"><code class="name">var <span class="ident">last_seen_name</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The clan member's last seen display name</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanMember.link"><code class="name">var <span class="ident">link</span> : str</code></dt>
+<dd>
+<div class="desc"><p>Clan member's profile link.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
 def link(self) -&gt; str:
     &#34;&#34;&#34;Clan member&#39;s profile link.&#34;&#34;&#34;
     return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.ClanMember.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Clan member's name. This can be <code>UNDEFINED</code> if not found.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.ClanMember.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.traits.Netrunner" href="./internal/traits.html#aiobungie.internal.traits.Netrunner">Netrunner</a></code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>A network state used for making external requests.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.ClanMember.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Clan member's membership type.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.ClanMember.types"><code class="name">var <span class="ident">types</span> : Sequence[<a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a>]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>A sequence of the available clan member membership types.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.ClanMember.unique_name"><code class="name">var <span class="ident">unique_name</span> : str</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user's unique name which includes their unique code.</p>
-                                    <div class="admonition versionadded">
-                                        <p class="admonition-title">Added in version:&ensp;0.2.5</p>
-                                    </div>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
+</details>
+</dd>
+<dt id="aiobungie.crate.clans.ClanMember.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
+<dd>
+<div class="desc"><p>Clan member's name. This can be <code>UNDEFINED</code> if not found.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanMember.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.traits.Netrunner" href="./internal/traits.html#aiobungie.internal.traits.Netrunner">Netrunner</a></code></dt>
+<dd>
+<div class="desc"><p>A network state used for making external requests.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanMember.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
+<dd>
+<div class="desc"><p>Clan member's membership type.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanMember.types"><code class="name">var <span class="ident">types</span> : Sequence[<a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a>]</code></dt>
+<dd>
+<div class="desc"><p>A sequence of the available clan member membership types.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanMember.unique_name"><code class="name">var <span class="ident">unique_name</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The user's unique name which includes their unique code.</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.2.5</p>
+</div></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
 def unique_name(self) -&gt; str:
     &#34;&#34;&#34;The user&#39;s unique name which includes their unique code.
 
     .. versionadded:: 0.2.5
     &#34;&#34;&#34;
     return f&#34;{self.name}#{self.code}&#34;</code></pre>
-                                </details>
-                            </dd>
-                        </dl>
-                        <h3>Methods</h3>
-                        <dl>
-                            <dt id="aiobungie.crate.clans.ClanMember.ban"><code class="name flex">
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="aiobungie.crate.clans.ClanMember.ban"><code class="name flex">
 <span>async def <span class="ident">ban</span></span>(<span>self) ‑> None</span>
 </code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Bans a clan member from the clan. This requires OAuth2: AdminGroups scope.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">async def ban(self) -&gt; None:
+<dd>
+<div class="desc"><p>Bans a clan member from the clan.
+This requires OAuth2: AdminGroups scope.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def ban(self) -&gt; None:
     &#34;&#34;&#34;Bans a clan member from the clan.
     This requires OAuth2: AdminGroups scope.
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.ClanMember.kick"><code class="name flex">
+</details>
+</dd>
+<dt id="aiobungie.crate.clans.ClanMember.kick"><code class="name flex">
 <span>async def <span class="ident">kick</span></span>(<span>self) ‑> None</span>
 </code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Kicks a clan member from the clan. The requires OAuth2: AdminsGroup scope.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">async def kick(self) -&gt; None:
+<dd>
+<div class="desc"><p>Kicks a clan member from the clan.
+The requires OAuth2: AdminsGroup scope.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def kick(self) -&gt; None:
     &#34;&#34;&#34;Kicks a clan member from the clan.
     The requires OAuth2: AdminsGroup scope.
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.ClanMember.unban"><code class="name flex">
+</details>
+</dd>
+<dt id="aiobungie.crate.clans.ClanMember.unban"><code class="name flex">
 <span>async def <span class="ident">unban</span></span>(<span>self) ‑> None</span>
 </code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Unbans a clan member clan. This requires OAuth2: AdminGroups scope.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">async def unban(self) -&gt; None:
+<dd>
+<div class="desc"><p>Unbans a clan member clan.
+This requires OAuth2: AdminGroups scope.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def unban(self) -&gt; None:
     &#34;&#34;&#34;Unbans a clan member clan.
     This requires OAuth2: AdminGroups scope.
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
-                                </details>
-                            </dd>
-                        </dl>
-                    </dd>
-                    <dt id="aiobungie.crate.clans.ClanOwner"><code class="flex name class">
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="aiobungie.crate.clans.ClanOwner"><code class="flex name class">
 <span>class <span class="ident">ClanOwner</span></span>
 <span>(</span><span>*, id: int, name: helpers.UndefinedOr[str], last_seen_name: str, is_public: bool, type: MembershipType, types: typing.Sequence[MembershipType], last_online: datetime, clan_id: int, icon: assets.MaybeImage, joined_at: datetime, code: helpers.NoneOr[int])</span>
 </code></dt>
-                    <dd>
-                        <div class="desc">
-                            <p>Represents a Bungie clan owner.</p>
-                            <p>Method generated by attrs for class ClanOwner.</p>
-                        </div>
-                        <details class="source">
-                            <summary>
-                                <span>Expand source code</span>
-                            </summary>
-                            <pre><code class="python">@attr.define(hash=False, kw_only=True, weakref_slot=False)
+<dd>
+<div class="desc"><p>Represents a Bungie clan owner.</p>
+<p>Method generated by attrs for class ClanOwner.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class ClanOwner(UserLike):
     &#34;&#34;&#34;Represents a Bungie clan owner.&#34;&#34;&#34;
 
@@ -1755,111 +1215,87 @@ class ClanOwner(UserLike):
     def link(self) -&gt; str:
         &#34;&#34;&#34;Returns the user&#39;s profile link.&#34;&#34;&#34;
         return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;</code></pre>
-                        </details>
-                        <h3>Ancestors</h3>
-                        <ul class="hlist">
-                            <li><a title="aiobungie.crate.user.UserLike" href="user.html#aiobungie.crate.user.UserLike">UserLike</a></li>
-                            <li>abc.ABC</li>
-                        </ul>
-                        <h3>Instance variables</h3>
-                        <dl>
-                            <dt id="aiobungie.crate.clans.ClanOwner.clan_id"><code class="name">var <span class="ident">clan_id</span> : int</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Owner's current clan id.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.ClanOwner.code"><code class="name">var <span class="ident">code</span> : Optional[None]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user's unique display name code. This can be None if the user hasn't logged in after season of the lost update.</p>
-                                    <div class="admonition versionadded">
-                                        <p class="admonition-title">Added in version:&ensp;0.2.5</p>
-                                    </div>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.ClanOwner.icon"><code class="name">var <span class="ident">icon</span> : Union[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Owner's profile icom</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.ClanOwner.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user id.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.ClanOwner.is_public"><code class="name">var <span class="ident">is_public</span> : bool</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Returns if the user profile is public or no.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.ClanOwner.joined_at"><code class="name">var <span class="ident">joined_at</span> : datetime.datetime</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Owner's bungie join date.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.ClanOwner.last_online"><code class="name">var <span class="ident">last_online</span> : datetime.datetime</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>An aware <code>datetime.datetime</code> object of the user's last online date UTC.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.ClanOwner.last_seen_name"><code class="name">var <span class="ident">last_seen_name</span> : str</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The clan member's last seen display name</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.ClanOwner.link"><code class="name">var <span class="ident">link</span> : str</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Returns the user's profile link.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="aiobungie.crate.user.UserLike" href="user.html#aiobungie.crate.user.UserLike">UserLike</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="aiobungie.crate.clans.ClanOwner.clan_id"><code class="name">var <span class="ident">clan_id</span> : int</code></dt>
+<dd>
+<div class="desc"><p>Owner's current clan id.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanOwner.code"><code class="name">var <span class="ident">code</span> : Optional[None]</code></dt>
+<dd>
+<div class="desc"><p>The user's unique display name code.
+This can be None if the user hasn't logged in after season of the lost update.</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.2.5</p>
+</div></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanOwner.icon"><code class="name">var <span class="ident">icon</span> : Union[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
+<dd>
+<div class="desc"><p>Owner's profile icom</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanOwner.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
+<dd>
+<div class="desc"><p>The user id.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanOwner.is_public"><code class="name">var <span class="ident">is_public</span> : bool</code></dt>
+<dd>
+<div class="desc"><p>Returns if the user profile is public or no.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanOwner.joined_at"><code class="name">var <span class="ident">joined_at</span> : datetime.datetime</code></dt>
+<dd>
+<div class="desc"><p>Owner's bungie join date.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanOwner.last_online"><code class="name">var <span class="ident">last_online</span> : datetime.datetime</code></dt>
+<dd>
+<div class="desc"><p>An aware <code>datetime.datetime</code> object of the user's last online date UTC.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanOwner.last_seen_name"><code class="name">var <span class="ident">last_seen_name</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The clan member's last seen display name</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanOwner.link"><code class="name">var <span class="ident">link</span> : str</code></dt>
+<dd>
+<div class="desc"><p>Returns the user's profile link.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
 def link(self) -&gt; str:
     &#34;&#34;&#34;Returns the user&#39;s profile link.&#34;&#34;&#34;
     return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.ClanOwner.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user name.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.ClanOwner.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Returns the membership type of the user.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.ClanOwner.types"><code class="name">var <span class="ident">types</span> : Sequence[<a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a>]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Returns a list of the member ship's membership types.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.clans.ClanOwner.unique_name"><code class="name">var <span class="ident">unique_name</span> : str</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The user's unique name which includes their unique code. This field could be None if no unique name found.</p>
-                                    <div class="admonition versionadded">
-                                        <p class="admonition-title">Added in version:&ensp;0.2.5</p>
-                                    </div>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
+</details>
+</dd>
+<dt id="aiobungie.crate.clans.ClanOwner.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
+<dd>
+<div class="desc"><p>The user name.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanOwner.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
+<dd>
+<div class="desc"><p>Returns the membership type of the user.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanOwner.types"><code class="name">var <span class="ident">types</span> : Sequence[<a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a>]</code></dt>
+<dd>
+<div class="desc"><p>Returns a list of the member ship's membership types.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanOwner.unique_name"><code class="name">var <span class="ident">unique_name</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The user's unique name which includes their unique code.
+This field could be None if no unique name found.</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.2.5</p>
+</div></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
 def unique_name(self) -&gt; str:
     &#34;&#34;&#34;The user&#39;s unique name which includes their unique code.
     This field could be None if no unique name found.
@@ -1867,168 +1303,158 @@ def unique_name(self) -&gt; str:
     .. versionadded:: 0.2.5
     &#34;&#34;&#34;
     return f&#34;{self.name}#{self.code}&#34;</code></pre>
-                                </details>
-                            </dd>
-                        </dl>
-                    </dd>
-                </dl>
-            </section>
-        </article>
-        <nav id="sidebar">
-            <form>
-                <input id="lunr-search" name="q" placeholder="🔎 Search ..." aria-label="Search" disabled minlength="2">
-            </form>
-            <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.3/tingle.min.css" integrity="sha512-j1u8eUJ4f23xPPxwOrLUPQaCD2dwzNqqmDDcWS4deWsMv2ohLqmXXuP3hU7g8TyzbMSakP/mMqoNBYWj8AEIFg==" crossorigin>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.3/tingle.min.js" integrity="sha512-plGUER9JkeEWPPqQBE4sdLqBoQug5Ap+BCGMc7bJ8BXkm+VVj6QzkpBz5Yv2yPkkq+cqg9IpkBaGCas6uDbW8g==" crossorigin></script>
-            <style>
-                .modal-dialog iframe {
-                    width: 100vw;
-                    height: calc(100vh - 80px);
-                }
-                
-                @media screen and (min-width: 700px) {
-                    .modal-dialog iframe {
-                        width: 70vw;
-                        height: 80vh;
-                    }
-                }
-                
-                .modal-dialog .tingle-modal-box {
-                    width: auto;
-                }
-                
-                .modal-dialog .tingle-modal-box__content {
-                    padding: 0;
-                }
-            </style>
-            <script>
-                const input = document.getElementById('lunr-search');
-                input.disabled = false;
-                input.form.addEventListener('submit', (ev) => {
-                    ev.preventDefault();
-                    const url = new URL(window.location);
-                    url.searchParams.set('q', input.value);
-                    history.replaceState({}, null, url.toString());
-                    search(input.value);
-                });
-                const query = new URL(window.location).searchParams.get('q');
-                if (query)
-                    search(query);
-
-                function search(query) {
-                    const url = '././doc-search.html#' + encodeURIComponent(query);
-                    new tingle.modal({
-                        cssClass: ['modal-dialog'],
-                        onClose: () => {
-                            const url = new URL(window.location);
-                            url.searchParams.delete('q');
-                            history.replaceState({}, null, url.toString());
-                            setTimeout(() => input.focus(), 100);
-                        }
-                    }).setContent('<iframe src="' + url + '"></iframe>').open();
-                }
-            </script>
-            <h1>Index</h1>
-            <div class="toc">
-                <ul></ul>
-            </div>
-            <ul id="index">
-                <li>
-                    <h3>Super-module</h3>
-                    <ul>
-                        <li><code><a title="aiobungie.crate" href="index.html">aiobungie.crate</a></code></li>
-                    </ul>
-                </li>
-                <li>
-                    <h3><a href="#header-classes">Classes</a></h3>
-                    <ul>
-                        <li>
-                            <h4><code><a title="aiobungie.crate.clans.Clan" href="#aiobungie.crate.clans.Clan">Clan</a></code></h4>
-                            <ul class="">
-                                <li><code><a title="aiobungie.crate.clans.Clan.about" href="#aiobungie.crate.clans.Clan.about">about</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.Clan.avatar" href="#aiobungie.crate.clans.Clan.avatar">avatar</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.Clan.banner" href="#aiobungie.crate.clans.Clan.banner">banner</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.Clan.created_at" href="#aiobungie.crate.clans.Clan.created_at">created_at</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.Clan.features" href="#aiobungie.crate.clans.Clan.features">features</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.Clan.fetch_banned_members" href="#aiobungie.crate.clans.Clan.fetch_banned_members">fetch_banned_members</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.Clan.fetch_invited_members" href="#aiobungie.crate.clans.Clan.fetch_invited_members">fetch_invited_members</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.Clan.fetch_member" href="#aiobungie.crate.clans.Clan.fetch_member">fetch_member</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.Clan.fetch_members" href="#aiobungie.crate.clans.Clan.fetch_members">fetch_members</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.Clan.fetch_pending_members" href="#aiobungie.crate.clans.Clan.fetch_pending_members">fetch_pending_members</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.Clan.id" href="#aiobungie.crate.clans.Clan.id">id</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.Clan.is_public" href="#aiobungie.crate.clans.Clan.is_public">is_public</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.Clan.member_count" href="#aiobungie.crate.clans.Clan.member_count">member_count</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.Clan.motto" href="#aiobungie.crate.clans.Clan.motto">motto</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.Clan.name" href="#aiobungie.crate.clans.Clan.name">name</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.Clan.net" href="#aiobungie.crate.clans.Clan.net">net</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.Clan.owner" href="#aiobungie.crate.clans.Clan.owner">owner</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.Clan.tags" href="#aiobungie.crate.clans.Clan.tags">tags</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.Clan.type" href="#aiobungie.crate.clans.Clan.type">type</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.Clan.url" href="#aiobungie.crate.clans.Clan.url">url</a></code></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <h4><code><a title="aiobungie.crate.clans.ClanFeatures" href="#aiobungie.crate.clans.ClanFeatures">ClanFeatures</a></code></h4>
-                            <ul class="">
-                                <li><code><a title="aiobungie.crate.clans.ClanFeatures.capabilities" href="#aiobungie.crate.clans.ClanFeatures.capabilities">capabilities</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.ClanFeatures.invite_permissions" href="#aiobungie.crate.clans.ClanFeatures.invite_permissions">invite_permissions</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.ClanFeatures.join_level" href="#aiobungie.crate.clans.ClanFeatures.join_level">join_level</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.ClanFeatures.max_members" href="#aiobungie.crate.clans.ClanFeatures.max_members">max_members</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.ClanFeatures.max_membership_types" href="#aiobungie.crate.clans.ClanFeatures.max_membership_types">max_membership_types</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.ClanFeatures.membership_types" href="#aiobungie.crate.clans.ClanFeatures.membership_types">membership_types</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.ClanFeatures.update_banner_permissions" href="#aiobungie.crate.clans.ClanFeatures.update_banner_permissions">update_banner_permissions</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.ClanFeatures.update_culture_permissions" href="#aiobungie.crate.clans.ClanFeatures.update_culture_permissions">update_culture_permissions</a></code></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <h4><code><a title="aiobungie.crate.clans.ClanMember" href="#aiobungie.crate.clans.ClanMember">ClanMember</a></code></h4>
-                            <ul class="two-column">
-                                <li><code><a title="aiobungie.crate.clans.ClanMember.ban" href="#aiobungie.crate.clans.ClanMember.ban">ban</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.ClanMember.code" href="#aiobungie.crate.clans.ClanMember.code">code</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.ClanMember.group_id" href="#aiobungie.crate.clans.ClanMember.group_id">group_id</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.ClanMember.icon" href="#aiobungie.crate.clans.ClanMember.icon">icon</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.ClanMember.id" href="#aiobungie.crate.clans.ClanMember.id">id</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.ClanMember.is_online" href="#aiobungie.crate.clans.ClanMember.is_online">is_online</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.ClanMember.is_public" href="#aiobungie.crate.clans.ClanMember.is_public">is_public</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.ClanMember.joined_at" href="#aiobungie.crate.clans.ClanMember.joined_at">joined_at</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.ClanMember.kick" href="#aiobungie.crate.clans.ClanMember.kick">kick</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.ClanMember.last_online" href="#aiobungie.crate.clans.ClanMember.last_online">last_online</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.ClanMember.last_seen_name" href="#aiobungie.crate.clans.ClanMember.last_seen_name">last_seen_name</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.ClanMember.link" href="#aiobungie.crate.clans.ClanMember.link">link</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.ClanMember.name" href="#aiobungie.crate.clans.ClanMember.name">name</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.ClanMember.net" href="#aiobungie.crate.clans.ClanMember.net">net</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.ClanMember.type" href="#aiobungie.crate.clans.ClanMember.type">type</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.ClanMember.types" href="#aiobungie.crate.clans.ClanMember.types">types</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.ClanMember.unban" href="#aiobungie.crate.clans.ClanMember.unban">unban</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.ClanMember.unique_name" href="#aiobungie.crate.clans.ClanMember.unique_name">unique_name</a></code></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <h4><code><a title="aiobungie.crate.clans.ClanOwner" href="#aiobungie.crate.clans.ClanOwner">ClanOwner</a></code></h4>
-                            <ul class="two-column">
-                                <li><code><a title="aiobungie.crate.clans.ClanOwner.clan_id" href="#aiobungie.crate.clans.ClanOwner.clan_id">clan_id</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.ClanOwner.code" href="#aiobungie.crate.clans.ClanOwner.code">code</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.ClanOwner.icon" href="#aiobungie.crate.clans.ClanOwner.icon">icon</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.ClanOwner.id" href="#aiobungie.crate.clans.ClanOwner.id">id</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.ClanOwner.is_public" href="#aiobungie.crate.clans.ClanOwner.is_public">is_public</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.ClanOwner.joined_at" href="#aiobungie.crate.clans.ClanOwner.joined_at">joined_at</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.ClanOwner.last_online" href="#aiobungie.crate.clans.ClanOwner.last_online">last_online</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.ClanOwner.last_seen_name" href="#aiobungie.crate.clans.ClanOwner.last_seen_name">last_seen_name</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.ClanOwner.link" href="#aiobungie.crate.clans.ClanOwner.link">link</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.ClanOwner.name" href="#aiobungie.crate.clans.ClanOwner.name">name</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.ClanOwner.type" href="#aiobungie.crate.clans.ClanOwner.type">type</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.ClanOwner.types" href="#aiobungie.crate.clans.ClanOwner.types">types</a></code></li>
-                                <li><code><a title="aiobungie.crate.clans.ClanOwner.unique_name" href="#aiobungie.crate.clans.ClanOwner.unique_name">unique_name</a></code></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </nav>
-    </main>
-    <footer id="footer">
-        <p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
-    </footer>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<form>
+<input id="lunr-search" name="q" placeholder="🔎 Search ..." aria-label="Search"
+disabled minlength="2">
+</form>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.3/tingle.min.css" integrity="sha512-j1u8eUJ4f23xPPxwOrLUPQaCD2dwzNqqmDDcWS4deWsMv2ohLqmXXuP3hU7g8TyzbMSakP/mMqoNBYWj8AEIFg==" crossorigin>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.3/tingle.min.js" integrity="sha512-plGUER9JkeEWPPqQBE4sdLqBoQug5Ap+BCGMc7bJ8BXkm+VVj6QzkpBz5Yv2yPkkq+cqg9IpkBaGCas6uDbW8g==" crossorigin></script>
+<style>
+.modal-dialog iframe {
+width: 100vw;
+height: calc(100vh - 80px);
+}
+@media screen and (min-width: 700px) {
+.modal-dialog iframe {
+width: 70vw;
+height: 80vh;
+}
+}
+.modal-dialog .tingle-modal-box {width: auto;}
+.modal-dialog .tingle-modal-box__content {padding: 0;}
+</style>
+<script>
+const input = document.getElementById('lunr-search');
+input.disabled = false;
+input.form.addEventListener('submit', (ev) => {
+ev.preventDefault();
+const url = new URL(window.location);
+url.searchParams.set('q', input.value);
+history.replaceState({}, null, url.toString());
+search(input.value);
+});
+const query = new URL(window.location).searchParams.get('q');
+if (query)
+search(query);
+function search(query) {
+const url = '././doc-search.html#' + encodeURIComponent(query);
+new tingle.modal({
+cssClass: ['modal-dialog'],
+onClose: () => {
+const url = new URL(window.location);
+url.searchParams.delete('q');
+history.replaceState({}, null, url.toString());
+setTimeout(() => input.focus(), 100);
+}
+}).setContent('<iframe src="' + url + '"></iframe>').open();
+}
+</script>
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="aiobungie.crate" href="index.html">aiobungie.crate</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="aiobungie.crate.clans.Clan" href="#aiobungie.crate.clans.Clan">Clan</a></code></h4>
+<ul class="">
+<li><code><a title="aiobungie.crate.clans.Clan.about" href="#aiobungie.crate.clans.Clan.about">about</a></code></li>
+<li><code><a title="aiobungie.crate.clans.Clan.avatar" href="#aiobungie.crate.clans.Clan.avatar">avatar</a></code></li>
+<li><code><a title="aiobungie.crate.clans.Clan.banner" href="#aiobungie.crate.clans.Clan.banner">banner</a></code></li>
+<li><code><a title="aiobungie.crate.clans.Clan.created_at" href="#aiobungie.crate.clans.Clan.created_at">created_at</a></code></li>
+<li><code><a title="aiobungie.crate.clans.Clan.features" href="#aiobungie.crate.clans.Clan.features">features</a></code></li>
+<li><code><a title="aiobungie.crate.clans.Clan.fetch_banned_members" href="#aiobungie.crate.clans.Clan.fetch_banned_members">fetch_banned_members</a></code></li>
+<li><code><a title="aiobungie.crate.clans.Clan.fetch_invited_members" href="#aiobungie.crate.clans.Clan.fetch_invited_members">fetch_invited_members</a></code></li>
+<li><code><a title="aiobungie.crate.clans.Clan.fetch_member" href="#aiobungie.crate.clans.Clan.fetch_member">fetch_member</a></code></li>
+<li><code><a title="aiobungie.crate.clans.Clan.fetch_members" href="#aiobungie.crate.clans.Clan.fetch_members">fetch_members</a></code></li>
+<li><code><a title="aiobungie.crate.clans.Clan.fetch_pending_members" href="#aiobungie.crate.clans.Clan.fetch_pending_members">fetch_pending_members</a></code></li>
+<li><code><a title="aiobungie.crate.clans.Clan.id" href="#aiobungie.crate.clans.Clan.id">id</a></code></li>
+<li><code><a title="aiobungie.crate.clans.Clan.is_public" href="#aiobungie.crate.clans.Clan.is_public">is_public</a></code></li>
+<li><code><a title="aiobungie.crate.clans.Clan.member_count" href="#aiobungie.crate.clans.Clan.member_count">member_count</a></code></li>
+<li><code><a title="aiobungie.crate.clans.Clan.motto" href="#aiobungie.crate.clans.Clan.motto">motto</a></code></li>
+<li><code><a title="aiobungie.crate.clans.Clan.name" href="#aiobungie.crate.clans.Clan.name">name</a></code></li>
+<li><code><a title="aiobungie.crate.clans.Clan.net" href="#aiobungie.crate.clans.Clan.net">net</a></code></li>
+<li><code><a title="aiobungie.crate.clans.Clan.owner" href="#aiobungie.crate.clans.Clan.owner">owner</a></code></li>
+<li><code><a title="aiobungie.crate.clans.Clan.tags" href="#aiobungie.crate.clans.Clan.tags">tags</a></code></li>
+<li><code><a title="aiobungie.crate.clans.Clan.type" href="#aiobungie.crate.clans.Clan.type">type</a></code></li>
+<li><code><a title="aiobungie.crate.clans.Clan.url" href="#aiobungie.crate.clans.Clan.url">url</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="aiobungie.crate.clans.ClanFeatures" href="#aiobungie.crate.clans.ClanFeatures">ClanFeatures</a></code></h4>
+<ul class="">
+<li><code><a title="aiobungie.crate.clans.ClanFeatures.capabilities" href="#aiobungie.crate.clans.ClanFeatures.capabilities">capabilities</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanFeatures.invite_permissions" href="#aiobungie.crate.clans.ClanFeatures.invite_permissions">invite_permissions</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanFeatures.join_level" href="#aiobungie.crate.clans.ClanFeatures.join_level">join_level</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanFeatures.max_members" href="#aiobungie.crate.clans.ClanFeatures.max_members">max_members</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanFeatures.max_membership_types" href="#aiobungie.crate.clans.ClanFeatures.max_membership_types">max_membership_types</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanFeatures.membership_types" href="#aiobungie.crate.clans.ClanFeatures.membership_types">membership_types</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanFeatures.update_banner_permissions" href="#aiobungie.crate.clans.ClanFeatures.update_banner_permissions">update_banner_permissions</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanFeatures.update_culture_permissions" href="#aiobungie.crate.clans.ClanFeatures.update_culture_permissions">update_culture_permissions</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="aiobungie.crate.clans.ClanMember" href="#aiobungie.crate.clans.ClanMember">ClanMember</a></code></h4>
+<ul class="two-column">
+<li><code><a title="aiobungie.crate.clans.ClanMember.ban" href="#aiobungie.crate.clans.ClanMember.ban">ban</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanMember.code" href="#aiobungie.crate.clans.ClanMember.code">code</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanMember.group_id" href="#aiobungie.crate.clans.ClanMember.group_id">group_id</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanMember.icon" href="#aiobungie.crate.clans.ClanMember.icon">icon</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanMember.id" href="#aiobungie.crate.clans.ClanMember.id">id</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanMember.is_online" href="#aiobungie.crate.clans.ClanMember.is_online">is_online</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanMember.is_public" href="#aiobungie.crate.clans.ClanMember.is_public">is_public</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanMember.joined_at" href="#aiobungie.crate.clans.ClanMember.joined_at">joined_at</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanMember.kick" href="#aiobungie.crate.clans.ClanMember.kick">kick</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanMember.last_online" href="#aiobungie.crate.clans.ClanMember.last_online">last_online</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanMember.last_seen_name" href="#aiobungie.crate.clans.ClanMember.last_seen_name">last_seen_name</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanMember.link" href="#aiobungie.crate.clans.ClanMember.link">link</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanMember.name" href="#aiobungie.crate.clans.ClanMember.name">name</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanMember.net" href="#aiobungie.crate.clans.ClanMember.net">net</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanMember.type" href="#aiobungie.crate.clans.ClanMember.type">type</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanMember.types" href="#aiobungie.crate.clans.ClanMember.types">types</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanMember.unban" href="#aiobungie.crate.clans.ClanMember.unban">unban</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanMember.unique_name" href="#aiobungie.crate.clans.ClanMember.unique_name">unique_name</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="aiobungie.crate.clans.ClanOwner" href="#aiobungie.crate.clans.ClanOwner">ClanOwner</a></code></h4>
+<ul class="two-column">
+<li><code><a title="aiobungie.crate.clans.ClanOwner.clan_id" href="#aiobungie.crate.clans.ClanOwner.clan_id">clan_id</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanOwner.code" href="#aiobungie.crate.clans.ClanOwner.code">code</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanOwner.icon" href="#aiobungie.crate.clans.ClanOwner.icon">icon</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanOwner.id" href="#aiobungie.crate.clans.ClanOwner.id">id</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanOwner.is_public" href="#aiobungie.crate.clans.ClanOwner.is_public">is_public</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanOwner.joined_at" href="#aiobungie.crate.clans.ClanOwner.joined_at">joined_at</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanOwner.last_online" href="#aiobungie.crate.clans.ClanOwner.last_online">last_online</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanOwner.last_seen_name" href="#aiobungie.crate.clans.ClanOwner.last_seen_name">last_seen_name</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanOwner.link" href="#aiobungie.crate.clans.ClanOwner.link">link</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanOwner.name" href="#aiobungie.crate.clans.ClanOwner.name">name</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanOwner.type" href="#aiobungie.crate.clans.ClanOwner.type">type</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanOwner.types" href="#aiobungie.crate.clans.ClanOwner.types">types</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanOwner.unique_name" href="#aiobungie.crate.clans.ClanOwner.unique_name">unique_name</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
 </body>
-
 </html>

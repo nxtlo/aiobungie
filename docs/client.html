@@ -1,493 +1,33 @@
 <!doctype html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-    <meta name="generator" content="pdoc 0.10.0" />
-    <title>aiobungie.client API documentation</title>
-    <meta name="description" content="The base aiobungie Client that your should inherit from / use." />
-    <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
-    <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
-    <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/atom-one-dark.min.css" crossorigin>
-    <style>
-         :root {
-            --highlight-color: #fe9
-        }
-        
-        .flex {
-            display: flex !important
-        }
-        
-        body {
-            line-height: 1.5em
-        }
-        
-        #content {
-            padding: 20px
-        }
-        
-        #sidebar {
-            padding: 30px;
-            overflow: hidden
-        }
-        
-        #sidebar>*:last-child {
-            margin-bottom: 2cm
-        }
-        
-        #lunr-search {
-            width: 100%;
-            font-size: 1em;
-            padding: 6px 9px 5px 9px;
-            border: 1px solid silver
-        }
-        
-        .http-server-breadcrumbs {
-            font-size: 130%;
-            margin: 0 0 15px 0
-        }
-        
-        #footer {
-            font-size: .75em;
-            padding: 5px 30px;
-            border-top: 1px solid #ddd;
-            text-align: right
-        }
-        
-        #footer p {
-            margin: 0 0 0 1em;
-            display: inline-block
-        }
-        
-        #footer p:last-child {
-            margin-right: 30px
-        }
-        
-        h1,
-        h2,
-        h3,
-        h4,
-        h5 {
-            font-weight: 300
-        }
-        
-        h1 {
-            font-size: 2.5em;
-            line-height: 1.1em
-        }
-        
-        h2 {
-            font-size: 1.75em;
-            margin: 1em 0 .50em 0
-        }
-        
-        h3 {
-            font-size: 1.4em;
-            margin: 25px 0 10px 0
-        }
-        
-        h4 {
-            margin: 0;
-            font-size: 105%
-        }
-        
-        h1:target,
-        h2:target,
-        h3:target,
-        h4:target,
-        h5:target,
-        h6:target {
-            background: var(--highlight-color);
-            padding: .2em 0
-        }
-        
-        a {
-            color: #058;
-            text-decoration: none;
-            transition: color .3s ease-in-out
-        }
-        
-        a:hover {
-            color: #e82
-        }
-        
-        .title code {
-            font-weight: bold
-        }
-        
-        h2[id^="header-"] {
-            margin-top: 2em
-        }
-        
-        .ident {
-            color: #900
-        }
-        
-        pre code {
-            background: #f8f8f8;
-            font-size: .8em;
-            line-height: 1.4em
-        }
-        
-        code {
-            background: #f2f2f1;
-            padding: 1px 4px;
-            overflow-wrap: break-word
-        }
-        
-        h1 code {
-            background: transparent
-        }
-        
-        pre {
-            background: #f8f8f8;
-            border: 0;
-            border-top: 1px solid #ccc;
-            border-bottom: 1px solid #ccc;
-            margin: 1em 0;
-            padding: 1ex
-        }
-        
-        #http-server-module-list {
-            display: flex;
-            flex-flow: column
-        }
-        
-        #http-server-module-list div {
-            display: flex
-        }
-        
-        #http-server-module-list dt {
-            min-width: 10%
-        }
-        
-        #http-server-module-list p {
-            margin-top: 0
-        }
-        
-        .toc ul,
-        #index {
-            list-style-type: none;
-            margin: 0;
-            padding: 0
-        }
-        
-        #index code {
-            background: transparent
-        }
-        
-        #index h3 {
-            border-bottom: 1px solid #ddd
-        }
-        
-        #index ul {
-            padding: 0
-        }
-        
-        #index h4 {
-            margin-top: .6em;
-            font-weight: bold
-        }
-        
-        @media (min-width:200ex) {
-            #index .two-column {
-                column-count: 2
-            }
-        }
-        
-        @media (min-width:300ex) {
-            #index .two-column {
-                column-count: 3
-            }
-        }
-        
-        dl {
-            margin-bottom: 2em
-        }
-        
-        dl dl:last-child {
-            margin-bottom: 4em
-        }
-        
-        dd {
-            margin: 0 0 1em 3em
-        }
-        
-        #header-classes+dl>dd {
-            margin-bottom: 3em
-        }
-        
-        dd dd {
-            margin-left: 2em
-        }
-        
-        dd p {
-            margin: 10px 0
-        }
-        
-        .name {
-            background: #eee;
-            font-weight: bold;
-            font-size: .85em;
-            padding: 5px 10px;
-            display: inline-block;
-            min-width: 40%
-        }
-        
-        .name:hover {
-            background: #e0e0e0
-        }
-        
-        dt:target .name {
-            background: var(--highlight-color)
-        }
-        
-        .name>span:first-child {
-            white-space: nowrap
-        }
-        
-        .name.class>span:nth-child(2) {
-            margin-left: .4em
-        }
-        
-        .inherited {
-            color: #999;
-            border-left: 5px solid #eee;
-            padding-left: 1em
-        }
-        
-        .inheritance em {
-            font-style: normal;
-            font-weight: bold
-        }
-        
-        .desc h2 {
-            font-weight: 400;
-            font-size: 1.25em
-        }
-        
-        .desc h3 {
-            font-size: 1em
-        }
-        
-        .desc dt code {
-            background: inherit
-        }
-        
-        .source summary,
-        .git-link-div {
-            color: #666;
-            text-align: right;
-            font-weight: 400;
-            font-size: .8em;
-            text-transform: uppercase
-        }
-        
-        .source summary>* {
-            white-space: nowrap;
-            cursor: pointer
-        }
-        
-        .git-link {
-            color: inherit;
-            margin-left: 1em
-        }
-        
-        .source pre {
-            max-height: 500px;
-            overflow: auto;
-            margin: 0
-        }
-        
-        .source pre code {
-            font-size: 12px;
-            overflow: visible
-        }
-        
-        .hlist {
-            list-style: none
-        }
-        
-        .hlist li {
-            display: inline
-        }
-        
-        .hlist li:after {
-            content: ',\2002'
-        }
-        
-        .hlist li:last-child:after {
-            content: none
-        }
-        
-        .hlist .hlist {
-            display: inline;
-            padding-left: 1em
-        }
-        
-        img {
-            max-width: 100%
-        }
-        
-        td {
-            padding: 0 .5em
-        }
-        
-        .admonition {
-            padding: .1em .5em;
-            margin-bottom: 1em
-        }
-        
-        .admonition-title {
-            font-weight: bold
-        }
-        
-        .admonition.note,
-        .admonition.info,
-        .admonition.important {
-            background: #aef
-        }
-        
-        .admonition.todo,
-        .admonition.versionadded,
-        .admonition.tip,
-        .admonition.hint {
-            background: #dfd
-        }
-        
-        .admonition.warning,
-        .admonition.versionchanged,
-        .admonition.deprecated {
-            background: #fd4
-        }
-        
-        .admonition.error,
-        .admonition.danger,
-        .admonition.caution {
-            background: lightpink
-        }
-    </style>
-    <style media="screen and (min-width: 700px)">
-        @media screen and (min-width:700px) {
-            #sidebar {
-                width: 30%;
-                height: 100vh;
-                overflow: auto;
-                position: sticky;
-                top: 0
-            }
-            #content {
-                width: 70%;
-                max-width: 100ch;
-                padding: 3em 4em;
-                border-left: 1px solid #ddd
-            }
-            pre code {
-                font-size: 1em
-            }
-            .item .name {
-                font-size: 1em
-            }
-            main {
-                display: flex;
-                flex-direction: row-reverse;
-                justify-content: flex-end
-            }
-            .toc ul ul,
-            #index ul {
-                padding-left: 1.5em
-            }
-            .toc>ul>li {
-                margin-top: .5em
-            }
-        }
-    </style>
-    <style media="print">
-        @media print {
-            #sidebar h1 {
-                page-break-before: always
-            }
-            .source {
-                display: none
-            }
-        }
-        
-        @media print {
-            * {
-                background: transparent !important;
-                color: #000 !important;
-                box-shadow: none !important;
-                text-shadow: none !important
-            }
-            a[href]:after {
-                content: " (" attr(href) ")";
-                font-size: 90%
-            }
-            a[href][title]:after {
-                content: none
-            }
-            abbr[title]:after {
-                content: " (" attr(title) ")"
-            }
-            .ir a:after,
-            a[href^="javascript:"]:after,
-            a[href^="#"]:after {
-                content: ""
-            }
-            pre,
-            blockquote {
-                border: 1px solid #999;
-                page-break-inside: avoid
-            }
-            thead {
-                display: table-header-group
-            }
-            tr,
-            img {
-                page-break-inside: avoid
-            }
-            img {
-                max-width: 100% !important
-            }
-            @page {
-                margin: 0.5cm
-            }
-            p,
-            h2,
-            h3 {
-                orphans: 3;
-                widows: 3
-            }
-            h1,
-            h2,
-            h3,
-            h4,
-            h5,
-            h6 {
-                page-break-after: avoid
-            }
-        }
-    </style>
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
-    <script>
-        window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())
-    </script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>aiobungie.client API documentation</title>
+<meta name="description" content="The base aiobungie Client that your should inherit from / use." />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/atom-one-dark.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}#lunr-search{width:100%;font-size:1em;padding:6px 9px 5px 9px;border:1px solid silver}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
 </head>
-
 <body>
-    <main>
-        <article id="content">
-            <header>
-                <h1 class="title">Module <code>aiobungie.client</code></h1>
-            </header>
-            <section id="section-intro">
-                <p>The base aiobungie Client that your should inherit from / use.</p>
-                <details class="source">
-                    <summary>
-                        <span>Expand source code</span>
-                    </summary>
-                    <pre><code class="python"># MIT License
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>aiobungie.client</code></h1>
+</header>
+<section id="section-intro">
+<p>The base aiobungie Client that your should inherit from / use.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python"># MIT License
 #
 # Copyright (c) 2020 - Present nxtlo
 #
@@ -534,7 +74,7 @@ from .internal.enums import GroupType
 from .internal.enums import MembershipType
 
 
-class Client(traits.RESTful):
+class Client(traits.ClientBase):
     &#34;&#34;&#34;Basic implementation for a client that interacts with Bungie&#39;s API.
 
     Attributes
@@ -1075,35 +615,33 @@ class Client(traits.RESTful):
         resp = await self.rest.fetch_app(appid)
         assert isinstance(resp, dict)
         return self.serialize.deserialize_app(resp)</code></pre>
-                </details>
-            </section>
-            <section>
-            </section>
-            <section>
-            </section>
-            <section>
-            </section>
-            <section>
-                <h2 class="section-title" id="header-classes">Classes</h2>
-                <dl>
-                    <dt id="aiobungie.client.Client"><code class="flex name class">
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="aiobungie.client.Client"><code class="flex name class">
 <span>class <span class="ident">Client</span></span>
 <span>(</span><span>token: str, /, **kwargs: typing.Any)</span>
 </code></dt>
-                    <dd>
-                        <div class="desc">
-                            <p>Basic implementation for a client that interacts with Bungie's API.</p>
-                            <h2 id="attributes">Attributes</h2>
-                            <dl>
-                                <dt><strong><code>token</code></strong> :&ensp;<code>builtins.str</code></dt>
-                                <dd>Your Bungie's API key or Token from the developer's portal.</dd>
-                            </dl>
-                        </div>
-                        <details class="source">
-                            <summary>
-                                <span>Expand source code</span>
-                            </summary>
-                            <pre><code class="python">class Client(traits.RESTful):
+<dd>
+<div class="desc"><p>Basic implementation for a client that interacts with Bungie's API.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>token</code></strong> :&ensp;<code>builtins.str</code></dt>
+<dd>Your Bungie's API key or Token from the developer's portal.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Client(traits.ClientBase):
     &#34;&#34;&#34;Basic implementation for a client that interacts with Bungie&#39;s API.
 
     Attributes
@@ -1644,106 +1182,101 @@ class Client(traits.RESTful):
         resp = await self.rest.fetch_app(appid)
         assert isinstance(resp, dict)
         return self.serialize.deserialize_app(resp)</code></pre>
-                        </details>
-                        <h3>Ancestors</h3>
-                        <ul class="hlist">
-                            <li><a title="aiobungie.internal.traits.RESTful" href="internal/traits.html#aiobungie.internal.traits.RESTful">RESTful</a></li>
-                            <li><a title="aiobungie.internal.traits.Netrunner" href="internal/traits.html#aiobungie.internal.traits.Netrunner">Netrunner</a></li>
-                            <li><a title="aiobungie.internal.traits.Serializable" href="internal/traits.html#aiobungie.internal.traits.Serializable">Serializable</a></li>
-                            <li>typing.Protocol</li>
-                            <li>typing.Generic</li>
-                        </ul>
-                        <h3>Instance variables</h3>
-                        <dl>
-                            <dt id="aiobungie.client.Client.request"><code class="name">var <span class="ident">request</span> : <a title="aiobungie.client.Client" href="#aiobungie.client.Client">Client</a></code></dt>
-                            <dd>
-                                <p class="inheritance">
-                                    <em>Inherited from:</em>
-                                    <code><a title="aiobungie.internal.traits.RESTful" href="internal/traits.html#aiobungie.internal.traits.RESTful">RESTful</a></code>.<code><a title="aiobungie.internal.traits.RESTful.request" href="internal/traits.html#aiobungie.internal.traits.RESTful.request">request</a></code>
-                                </p>
-                                <div class="desc inherited">
-                                    <p>Returns a client network state for making external requests.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="aiobungie.internal.traits.ClientBase" href="internal/traits.html#aiobungie.internal.traits.ClientBase">ClientBase</a></li>
+<li><a title="aiobungie.internal.traits.Netrunner" href="internal/traits.html#aiobungie.internal.traits.Netrunner">Netrunner</a></li>
+<li><a title="aiobungie.internal.traits.Serializable" href="internal/traits.html#aiobungie.internal.traits.Serializable">Serializable</a></li>
+<li>typing.Protocol</li>
+<li>typing.Generic</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="aiobungie.client.Client.request"><code class="name">var <span class="ident">request</span> : <a title="aiobungie.client.Client" href="#aiobungie.client.Client">Client</a></code></dt>
+<dd>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="aiobungie.internal.traits.ClientBase" href="internal/traits.html#aiobungie.internal.traits.ClientBase">ClientBase</a></code>.<code><a title="aiobungie.internal.traits.ClientBase.request" href="internal/traits.html#aiobungie.internal.traits.ClientBase.request">request</a></code>
+</p>
+<div class="desc inherited"><p>Returns a client network state for making external requests.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
 def request(self) -&gt; Client:
     return self</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.client.Client.rest"><code class="name">var <span class="ident">rest</span> : <a title="aiobungie.rest.RESTClient" href="rest.html#aiobungie.rest.RESTClient">RESTClient</a></code></dt>
-                            <dd>
-                                <p class="inheritance">
-                                    <em>Inherited from:</em>
-                                    <code><a title="aiobungie.internal.traits.RESTful" href="internal/traits.html#aiobungie.internal.traits.RESTful">RESTful</a></code>.<code><a title="aiobungie.internal.traits.RESTful.rest" href="internal/traits.html#aiobungie.internal.traits.RESTful.rest">rest</a></code>
-                                </p>
-                                <div class="desc inherited">
-                                    <p>The rest client we make the http request to the API with.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
+</details>
+</dd>
+<dt id="aiobungie.client.Client.rest"><code class="name">var <span class="ident">rest</span> : <a title="aiobungie.rest.RESTClient" href="rest.html#aiobungie.rest.RESTClient">RESTClient</a></code></dt>
+<dd>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="aiobungie.internal.traits.ClientBase" href="internal/traits.html#aiobungie.internal.traits.ClientBase">ClientBase</a></code>.<code><a title="aiobungie.internal.traits.ClientBase.rest" href="internal/traits.html#aiobungie.internal.traits.ClientBase.rest">rest</a></code>
+</p>
+<div class="desc inherited"><p>The rest client we make the http request to the API with.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
 def rest(self) -&gt; rest_.RESTClient:
     return self._rest</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.client.Client.serialize"><code class="name">var <span class="ident">serialize</span> : <a title="aiobungie.internal.serialize.Factory" href="internal/serialize.html#aiobungie.internal.serialize.Factory">Factory</a></code></dt>
-                            <dd>
-                                <p class="inheritance">
-                                    <em>Inherited from:</em>
-                                    <code><a title="aiobungie.internal.traits.RESTful" href="internal/traits.html#aiobungie.internal.traits.RESTful">RESTful</a></code>.<code><a title="aiobungie.internal.traits.RESTful.serialize" href="internal/traits.html#aiobungie.internal.traits.RESTful.serialize">serialize</a></code>
-                                </p>
-                                <div class="desc inherited">
-                                    <p>A property that returns a deserializer object for the client.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
+</details>
+</dd>
+<dt id="aiobungie.client.Client.serialize"><code class="name">var <span class="ident">serialize</span> : <a title="aiobungie.internal.serialize.Factory" href="internal/serialize.html#aiobungie.internal.serialize.Factory">Factory</a></code></dt>
+<dd>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="aiobungie.internal.traits.ClientBase" href="internal/traits.html#aiobungie.internal.traits.ClientBase">ClientBase</a></code>.<code><a title="aiobungie.internal.traits.ClientBase.serialize" href="internal/traits.html#aiobungie.internal.traits.ClientBase.serialize">serialize</a></code>
+</p>
+<div class="desc inherited"><p>A property that returns a deserializer object for the client.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
 def serialize(self) -&gt; serialize_.Factory:
     return self._serialize</code></pre>
-                                </details>
-                            </dd>
-                        </dl>
-                        <h3>Methods</h3>
-                        <dl>
-                            <dt id="aiobungie.client.Client.fetch_activity"><code class="name flex">
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="aiobungie.client.Client.fetch_activity"><code class="name flex">
 <span>async def <span class="ident">fetch_activity</span></span>(<span>self, member_id: int, character_id: int, mode: GameMode, membership_type: MembershipType, *, page: typing.Optional[int] = 1, limit: typing.Optional[int] = 1) ‑> <a title="aiobungie.crate.activity.Activity" href="crate/activity.html#aiobungie.crate.activity.Activity">Activity</a></span>
 </code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Fetch a Destiny 2 activity for the specified user id and character.</p>
-                                    <h2 id="parameters">Parameters</h2>
-                                    <dl>
-                                        <dt><strong><code>member_id</code></strong> :&ensp;<code>builtins.int</code></dt>
-                                        <dd>The user id that starts with <code>4611</code>.</dd>
-                                        <dt><strong><code>character_id</code></strong> :&ensp;<code>builtins.int</code></dt>
-                                        <dd>The id of the character to retrieve.</dd>
-                                        <dt><strong><code>mode</code></strong> :&ensp;<code><a title="aiobungie.internal.enums.GameMode" href="internal/enums.html#aiobungie.internal.enums.GameMode">GameMode</a></code></dt>
-                                        <dd>This parameter filters the game mode, Nightfall, Strike, Iron Banner, etc.</dd>
-                                        <dt><strong><code>membership_type</code></strong> :&ensp;<code><a title="aiobungie.internal.enums.MembershipType" href="internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
-                                        <dd>The Member ship type, if nothing was passed than it will return all.</dd>
-                                        <dt><strong><code>page</code></strong> :&ensp;<code>typing.Optional[builtins.int]</code></dt>
-                                        <dd>The page number</dd>
-                                        <dt><strong><code>limit</code></strong> :&ensp;<code>typing.Optional[builtins.int]</code></dt>
-                                        <dd>Limit the returned result.</dd>
-                                    </dl>
-                                    <h2 id="returns">Returns</h2>
-                                    <p><code><a title="aiobungie.crate.Activity" href="crate/index.html#aiobungie.crate.Activity">Activity</a></code> A Bungie activity.</p>
-                                    <h2 id="raises">Raises</h2>
-                                    <p><code><a title="aiobungie.error.ActivityNotFound" href="error.html#aiobungie.error.ActivityNotFound">ActivityNotFound</a></code> The activity was not found.</p>
-                                    <p><code><a title="aiobungie.MembershipTypeError" href="index.html#aiobungie.MembershipTypeError">MembershipTypeError</a></code> The provided membership type was invalid.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">async def fetch_activity(
+<dd>
+<div class="desc"><p>Fetch a Destiny 2 activity for the specified user id and character.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>member_id</code></strong> :&ensp;<code>builtins.int</code></dt>
+<dd>The user id that starts with <code>4611</code>.</dd>
+<dt><strong><code>character_id</code></strong> :&ensp;<code>builtins.int</code></dt>
+<dd>The id of the character to retrieve.</dd>
+<dt><strong><code>mode</code></strong> :&ensp;<code><a title="aiobungie.internal.enums.GameMode" href="internal/enums.html#aiobungie.internal.enums.GameMode">GameMode</a></code></dt>
+<dd>This parameter filters the game mode, Nightfall, Strike, Iron Banner, etc.</dd>
+<dt><strong><code>membership_type</code></strong> :&ensp;<code><a title="aiobungie.internal.enums.MembershipType" href="internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
+<dd>The Member ship type, if nothing was passed than it will return all.</dd>
+<dt><strong><code>page</code></strong> :&ensp;<code>typing.Optional[builtins.int]</code></dt>
+<dd>The page number</dd>
+<dt><strong><code>limit</code></strong> :&ensp;<code>typing.Optional[builtins.int]</code></dt>
+<dd>Limit the returned result.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p><code><a title="aiobungie.crate.Activity" href="crate/index.html#aiobungie.crate.Activity">Activity</a></code>
+A Bungie activity.</p>
+<h2 id="raises">Raises</h2>
+<p><code><a title="aiobungie.error.ActivityNotFound" href="error.html#aiobungie.error.ActivityNotFound">ActivityNotFound</a></code>
+The activity was not found.</p>
+<p><code><a title="aiobungie.MembershipTypeError" href="index.html#aiobungie.MembershipTypeError">MembershipTypeError</a></code>
+The provided membership type was invalid.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_activity(
     self,
     member_id: int,
     character_id: int,
@@ -1793,27 +1326,26 @@ def serialize(self) -&gt; serialize_.Factory:
     )
     assert isinstance(resp, dict)
     return self.serialize.deserialize_activity(resp)</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.client.Client.fetch_app"><code class="name flex">
+</details>
+</dd>
+<dt id="aiobungie.client.Client.fetch_app"><code class="name flex">
 <span>async def <span class="ident">fetch_app</span></span>(<span>self, appid: int, /) ‑> <a title="aiobungie.crate.application.Application" href="crate/application.html#aiobungie.crate.application.Application">Application</a></span>
 </code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Fetch a Bungie Application.</p>
-                                    <h2 id="parameters">Parameters</h2>
-                                    <dl>
-                                        <dt><strong><code>appid</code></strong> :&ensp;<code>builtins.int</code></dt>
-                                        <dd>The application id.</dd>
-                                    </dl>
-                                    <h2 id="returns">Returns</h2>
-                                    <p><code><a title="aiobungie.crate.Application" href="crate/index.html#aiobungie.crate.Application">Application</a></code> A Bungie application.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">async def fetch_app(self, appid: int, /) -&gt; crate.Application:
+<dd>
+<div class="desc"><p>Fetch a Bungie Application.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>appid</code></strong> :&ensp;<code>builtins.int</code></dt>
+<dd>The application id.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p><code><a title="aiobungie.crate.Application" href="crate/index.html#aiobungie.crate.Application">Application</a></code>
+A Bungie application.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_app(self, appid: int, /) -&gt; crate.Application:
     &#34;&#34;&#34;Fetch a Bungie Application.
 
     Parameters
@@ -1829,34 +1361,35 @@ def serialize(self) -&gt; serialize_.Factory:
     resp = await self.rest.fetch_app(appid)
     assert isinstance(resp, dict)
     return self.serialize.deserialize_app(resp)</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.client.Client.fetch_character"><code class="name flex">
+</details>
+</dd>
+<dt id="aiobungie.client.Client.fetch_character"><code class="name flex">
 <span>async def <span class="ident">fetch_character</span></span>(<span>self, memberid: int, type: MembershipType, character: Class) ‑> <a title="aiobungie.crate.character.Character" href="crate/character.html#aiobungie.crate.character.Character">Character</a></span>
 </code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Fetch a Destiny 2 character.</p>
-                                    <h2 id="parameters">Parameters</h2>
-                                    <dl>
-                                        <dt><strong><code>memberid</code></strong> :&ensp;<code>builtins.int</code></dt>
-                                        <dd>A valid bungie member id.</dd>
-                                        <dt><strong><code>character</code></strong> :&ensp;<code><a title="aiobungie.internal.enums.Class" href="internal/enums.html#aiobungie.internal.enums.Class">Class</a></code></dt>
-                                        <dd>The Destiny character to retrieve.</dd>
-                                        <dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.internal.enums.MembershipType" href="internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
-                                        <dd>The member's membership type.</dd>
-                                    </dl>
-                                    <h2 id="returns">Returns</h2>
-                                    <p><code><a title="aiobungie.crate.Character" href="crate/index.html#aiobungie.crate.Character">Character</a></code> A Bungie character crate.</p>
-                                    <h2 id="raises">Raises</h2>
-                                    <p><code><a title="aiobungie.error.CharacterError" href="error.html#aiobungie.error.CharacterError">CharacterError</a></code> raised if the Character was not found.</p>
-                                    <p><code><a title="aiobungie.MembershipTypeError" href="index.html#aiobungie.MembershipTypeError">MembershipTypeError</a></code> The provided membership type was invalid.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">async def fetch_character(
+<dd>
+<div class="desc"><p>Fetch a Destiny 2 character.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>memberid</code></strong> :&ensp;<code>builtins.int</code></dt>
+<dd>A valid bungie member id.</dd>
+<dt><strong><code>character</code></strong> :&ensp;<code><a title="aiobungie.internal.enums.Class" href="internal/enums.html#aiobungie.internal.enums.Class">Class</a></code></dt>
+<dd>The Destiny character to retrieve.</dd>
+<dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.internal.enums.MembershipType" href="internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
+<dd>The member's membership type.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p><code><a title="aiobungie.crate.Character" href="crate/index.html#aiobungie.crate.Character">Character</a></code>
+A Bungie character crate.</p>
+<h2 id="raises">Raises</h2>
+<p><code><a title="aiobungie.error.CharacterError" href="error.html#aiobungie.error.CharacterError">CharacterError</a></code>
+raised if the Character was not found.</p>
+<p><code><a title="aiobungie.MembershipTypeError" href="index.html#aiobungie.MembershipTypeError">MembershipTypeError</a></code>
+The provided membership type was invalid.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_character(
     self, memberid: int, type: MembershipType, character: Class
 ) -&gt; crate.Character:
     &#34;&#34;&#34;Fetch a Destiny 2 character.
@@ -1887,30 +1420,32 @@ def serialize(self) -&gt; serialize_.Factory:
     assert isinstance(resp, dict)
     char_module = self.serialize.deserialize_character(resp, chartype=character)
     return char_module</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.client.Client.fetch_clan"><code class="name flex">
+</details>
+</dd>
+<dt id="aiobungie.client.Client.fetch_clan"><code class="name flex">
 <span>async def <span class="ident">fetch_clan</span></span>(<span>self, name: str, /, type: GroupType = CLAN) ‑> <a title="aiobungie.crate.clans.Clan" href="crate/clans.html#aiobungie.crate.clans.Clan">Clan</a></span>
 </code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Fetch a Clan by its name. This method will return the first clan found with given name name.</p>
-                                    <h2 id="parameters">Parameters</h2>
-                                    <dl>
-                                        <dt><strong><code>name</code></strong> :&ensp;<code>builtins.str</code></dt>
-                                        <dd>The clan name</dd>
-                                    </dl>
-                                    <p>type <code><a title="aiobungie.GroupType" href="index.html#aiobungie.GroupType">GroupType</a></code> The group type, Default is one.</p>
-                                    <h2 id="returns">Returns</h2>
-                                    <p><code><a title="aiobungie.crate.Clan" href="crate/index.html#aiobungie.crate.Clan">Clan</a></code> A Bungie clan.</p>
-                                    <h2 id="raises">Raises</h2>
-                                    <p><code><a title="aiobungie.ClanNotFound" href="index.html#aiobungie.ClanNotFound">ClanNotFound</a></code> The clan was not found.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">async def fetch_clan(
+<dd>
+<div class="desc"><p>Fetch a Clan by its name.
+This method will return the first clan found with given name name.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>name</code></strong> :&ensp;<code>builtins.str</code></dt>
+<dd>The clan name</dd>
+</dl>
+<p>type <code><a title="aiobungie.GroupType" href="index.html#aiobungie.GroupType">GroupType</a></code>
+The group type, Default is one.</p>
+<h2 id="returns">Returns</h2>
+<p><code><a title="aiobungie.crate.Clan" href="crate/index.html#aiobungie.crate.Clan">Clan</a></code>
+A Bungie clan.</p>
+<h2 id="raises">Raises</h2>
+<p><code><a title="aiobungie.ClanNotFound" href="index.html#aiobungie.ClanNotFound">ClanNotFound</a></code>
+The clan was not found.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_clan(
     self, name: str, /, type: GroupType = GroupType.CLAN
 ) -&gt; crate.Clan:
     &#34;&#34;&#34;Fetch a Clan by its name.
@@ -1936,29 +1471,29 @@ def serialize(self) -&gt; serialize_.Factory:
     resp = await self.rest.fetch_clan(name, type)
     assert isinstance(resp, dict)
     return self.serialize.deseialize_clan(resp)</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.client.Client.fetch_clan_from_id"><code class="name flex">
+</details>
+</dd>
+<dt id="aiobungie.client.Client.fetch_clan_from_id"><code class="name flex">
 <span>async def <span class="ident">fetch_clan_from_id</span></span>(<span>self, id: int, /) ‑> <a title="aiobungie.crate.clans.Clan" href="crate/clans.html#aiobungie.crate.clans.Clan">Clan</a></span>
 </code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Fetch a Bungie Clan by its id.</p>
-                                    <h2 id="parameters">Parameters</h2>
-                                    <dl>
-                                        <dt><strong><code>id</code></strong> :&ensp;<code>builtins.int</code></dt>
-                                        <dd>The clan id.</dd>
-                                    </dl>
-                                    <h2 id="returns">Returns</h2>
-                                    <p><code><a title="aiobungie.crate.Clan" href="crate/index.html#aiobungie.crate.Clan">Clan</a></code> An Bungie clan.</p>
-                                    <h2 id="raises">Raises</h2>
-                                    <p><code><a title="aiobungie.ClanNotFound" href="index.html#aiobungie.ClanNotFound">ClanNotFound</a></code> The clan was not found.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">async def fetch_clan_from_id(self, id: int, /) -&gt; crate.Clan:
+<dd>
+<div class="desc"><p>Fetch a Bungie Clan by its id.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>id</code></strong> :&ensp;<code>builtins.int</code></dt>
+<dd>The clan id.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p><code><a title="aiobungie.crate.Clan" href="crate/index.html#aiobungie.crate.Clan">Clan</a></code>
+An Bungie clan.</p>
+<h2 id="raises">Raises</h2>
+<p><code><a title="aiobungie.ClanNotFound" href="index.html#aiobungie.ClanNotFound">ClanNotFound</a></code>
+The clan was not found.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_clan_from_id(self, id: int, /) -&gt; crate.Clan:
     &#34;&#34;&#34;Fetch a Bungie Clan by its id.
 
     Parameters
@@ -1979,40 +1514,43 @@ def serialize(self) -&gt; serialize_.Factory:
     resp = await self.rest.fetch_clan_from_id(id)
     assert isinstance(resp, dict)
     return self.serialize.deseialize_clan(resp)</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.client.Client.fetch_clan_member"><code class="name flex">
+</details>
+</dd>
+<dt id="aiobungie.client.Client.fetch_clan_member"><code class="name flex">
 <span>async def <span class="ident">fetch_clan_member</span></span>(<span>self, clan_id: int, name: typing.Optional[str] = None, type: MembershipType = NONE, /) ‑> <a title="aiobungie.crate.clans.ClanMember" href="crate/clans.html#aiobungie.crate.clans.ClanMember">ClanMember</a></span>
 </code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Fetch a Bungie Clan member.</p>
-                                    <div class="admonition note">
-                                        <p class="admonition-title">Note</p>
-                                        <p>This method also can be also accessed via
-                                            <code><a title="aiobungie.crate.Clan.fetch_member" href="crate/index.html#aiobungie.crate.Clan.fetch_member">Clan.fetch_member()</a></code> to fetch a member for the fetched clan.</p>
-                                    </div>
-                                    <h2 id="parameters">Parameters</h2>
-                                    <dl>
-                                        <dt><strong><code>clan_id</code></strong> :&ensp;<code>builsins.int</code></dt>
-                                        <dd>The clans id</dd>
-                                        <dt><strong><code>name</code></strong> :&ensp;<code>builtins.str</code></dt>
-                                        <dd>The clan member's name</dd>
-                                        <dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.MembershipType" href="index.html#aiobungie.MembershipType">MembershipType</a></code></dt>
-                                        <dd>An optional clan member's membership type. Default is set to <code><a title="aiobungie.MembershipType.NONE" href="index.html#aiobungie.MembershipType.NONE">MembershipType.NONE</a></code> Which returns the first
-                                            matched clan member by their name.</dd>
-                                    </dl>
-                                    <h2 id="returns">Returns</h2>
-                                    <p><code><a title="aiobungie.crate.ClanMember" href="crate/index.html#aiobungie.crate.ClanMember">ClanMember</a></code> A Bungie Clan member.</p>
-                                    <h2 id="raises">Raises</h2>
-                                    <p><code><a title="aiobungie.ClanNotFound" href="index.html#aiobungie.ClanNotFound">ClanNotFound</a></code> The clan was not found.</p>
-                                    <p><code><a title="aiobungie.NotFound" href="index.html#aiobungie.NotFound">NotFound</a></code> The member was not found.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">async def fetch_clan_member(
+<dd>
+<div class="desc"><p>Fetch a Bungie Clan member.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method also can be also accessed via
+<code><a title="aiobungie.crate.Clan.fetch_member" href="crate/index.html#aiobungie.crate.Clan.fetch_member">Clan.fetch_member()</a></code>
+to fetch a member for the fetched clan.</p>
+</div>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>clan_id</code></strong> :&ensp;<code>builsins.int</code></dt>
+<dd>The clans id</dd>
+<dt><strong><code>name</code></strong> :&ensp;<code>builtins.str</code></dt>
+<dd>The clan member's name</dd>
+<dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.MembershipType" href="index.html#aiobungie.MembershipType">MembershipType</a></code></dt>
+<dd>An optional clan member's membership type.
+Default is set to <code><a title="aiobungie.MembershipType.NONE" href="index.html#aiobungie.MembershipType.NONE">MembershipType.NONE</a></code>
+Which returns the first matched clan member by their name.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p><code><a title="aiobungie.crate.ClanMember" href="crate/index.html#aiobungie.crate.ClanMember">ClanMember</a></code>
+A Bungie Clan member.</p>
+<h2 id="raises">Raises</h2>
+<p><code><a title="aiobungie.ClanNotFound" href="index.html#aiobungie.ClanNotFound">ClanNotFound</a></code>
+The clan was not found.</p>
+<p><code><a title="aiobungie.NotFound" href="index.html#aiobungie.NotFound">NotFound</a></code>
+The member was not found.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_clan_member(
     self,
     clan_id: int,
     name: typing.Optional[str] = None,
@@ -2054,37 +1592,40 @@ def serialize(self) -&gt; serialize_.Factory:
     resp = await self.rest.fetch_clan_members(clan_id, type, name)
     assert isinstance(resp, dict)
     return self.serialize.deserialize_clan_member(resp)</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.client.Client.fetch_clan_members"><code class="name flex">
+</details>
+</dd>
+<dt id="aiobungie.client.Client.fetch_clan_members"><code class="name flex">
 <span>async def <span class="ident">fetch_clan_members</span></span>(<span>self, clan_id: int, type: MembershipType = NONE, /) ‑> Sequence[<a title="aiobungie.crate.clans.ClanMember" href="crate/clans.html#aiobungie.crate.clans.ClanMember">ClanMember</a>]</span>
 </code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Fetch a Bungie Clan member. if no members found in the clan you will get an empty sequence.</p>
-                                    <div class="admonition note">
-                                        <p class="admonition-title">Note</p>
-                                        <p>This method also can be also accessed via
-                                            <code><a title="aiobungie.crate.Clan.fetch_members" href="crate/index.html#aiobungie.crate.Clan.fetch_members">Clan.fetch_members()</a></code> to fetch a member for the fetched clan.</p>
-                                    </div>
-                                    <h2 id="parameters">Parameters</h2>
-                                    <dl>
-                                        <dt><strong><code>clan_id</code></strong> :&ensp;<code>builsins.int</code></dt>
-                                        <dd>The clans id</dd>
-                                        <dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.MembershipType" href="index.html#aiobungie.MembershipType">MembershipType</a></code></dt>
-                                        <dd>An optional clan member's membership type. Default is set to <code><a title="aiobungie.MembershipType.NONE" href="index.html#aiobungie.MembershipType.NONE">MembershipType.NONE</a></code> Which returns the first
-                                            matched clan member by their name.</dd>
-                                    </dl>
-                                    <h2 id="returns">Returns</h2>
-                                    <p><code>typing.Sequence[<a title="aiobungie.crate.ClanMember" href="crate/index.html#aiobungie.crate.ClanMember">ClanMember</a>]</code> A sequence of bungie clan members.</p>
-                                    <h2 id="raises">Raises</h2>
-                                    <p><code><a title="aiobungie.ClanNotFound" href="index.html#aiobungie.ClanNotFound">ClanNotFound</a></code> The clan was not found.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">async def fetch_clan_members(
+<dd>
+<div class="desc"><p>Fetch a Bungie Clan member. if no members found in the clan
+you will get an empty sequence.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method also can be also accessed via
+<code><a title="aiobungie.crate.Clan.fetch_members" href="crate/index.html#aiobungie.crate.Clan.fetch_members">Clan.fetch_members()</a></code>
+to fetch a member for the fetched clan.</p>
+</div>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>clan_id</code></strong> :&ensp;<code>builsins.int</code></dt>
+<dd>The clans id</dd>
+<dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.MembershipType" href="index.html#aiobungie.MembershipType">MembershipType</a></code></dt>
+<dd>An optional clan member's membership type.
+Default is set to <code><a title="aiobungie.MembershipType.NONE" href="index.html#aiobungie.MembershipType.NONE">MembershipType.NONE</a></code>
+Which returns the first matched clan member by their name.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p><code>typing.Sequence[<a title="aiobungie.crate.ClanMember" href="crate/index.html#aiobungie.crate.ClanMember">ClanMember</a>]</code>
+A sequence of bungie clan members.</p>
+<h2 id="raises">Raises</h2>
+<p><code><a title="aiobungie.ClanNotFound" href="index.html#aiobungie.ClanNotFound">ClanNotFound</a></code>
+The clan was not found.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_clan_members(
     self, clan_id: int, type: MembershipType = MembershipType.NONE, /
 ) -&gt; typing.Sequence[crate.clans.ClanMember]:
     &#34;&#34;&#34;Fetch a Bungie Clan member. if no members found in the clan
@@ -2117,29 +1658,31 @@ def serialize(self) -&gt; serialize_.Factory:
     resp = await self.rest.fetch_clan_members(clan_id, type)
     assert isinstance(resp, dict)
     return self.serialize.deserialize_clan_members(resp)</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.client.Client.fetch_hard_types"><code class="name flex">
+</details>
+</dd>
+<dt id="aiobungie.client.Client.fetch_hard_types"><code class="name flex">
 <span>async def <span class="ident">fetch_hard_types</span></span>(<span>self, credential: int, type: CredentialType = STEAMID, /) ‑> <a title="aiobungie.crate.user.HardLinkedMembership" href="crate/user.html#aiobungie.crate.user.HardLinkedMembership">HardLinkedMembership</a></span>
 </code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Gets any hard linked membership given a credential. Only works for credentials that are public just <code><a title="aiobungie.CredentialType.STEAMID" href="index.html#aiobungie.CredentialType.STEAMID">CredentialType.STEAMID</a></code>                                        right now. Cross Save aware.</p>
-                                    <h2 id="parameters">Parameters</h2>
-                                    <dl>
-                                        <dt><strong><code>credential</code></strong> :&ensp;<code>builtins.int</code></dt>
-                                        <dd>A valid SteamID64</dd>
-                                        <dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.CredentialType" href="index.html#aiobungie.CredentialType">CredentialType</a></code></dt>
-                                        <dd>The crededntial type. This must not be changed Since its only credential that works "currently"</dd>
-                                    </dl>
-                                    <h2 id="returns">Returns</h2>
-                                    <p><code><a title="aiobungie.crate.user.HardLinkedMembership" href="crate/user.html#aiobungie.crate.user.HardLinkedMembership">HardLinkedMembership</a></code> Information about the hard linked data.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">async def fetch_hard_types(
+<dd>
+<div class="desc"><p>Gets any hard linked membership given a credential.
+Only works for credentials that are public just <code><a title="aiobungie.CredentialType.STEAMID" href="index.html#aiobungie.CredentialType.STEAMID">CredentialType.STEAMID</a></code> right now.
+Cross Save aware.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>credential</code></strong> :&ensp;<code>builtins.int</code></dt>
+<dd>A valid SteamID64</dd>
+<dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.CredentialType" href="index.html#aiobungie.CredentialType">CredentialType</a></code></dt>
+<dd>The crededntial type. This must not be changed
+Since its only credential that works "currently"</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p><code><a title="aiobungie.crate.user.HardLinkedMembership" href="crate/user.html#aiobungie.crate.user.HardLinkedMembership">HardLinkedMembership</a></code>
+Information about the hard linked data.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_hard_types(
     self, credential: int, type: CredentialType = CredentialType.STEAMID, /
 ) -&gt; crate.user.HardLinkedMembership:
     &#34;&#34;&#34;Gets any hard linked membership given a credential.
@@ -2170,29 +1713,28 @@ def serialize(self) -&gt; serialize_.Factory:
         type=MembershipType(payload[&#34;membershipType&#34;]),
         cross_save_type=MembershipType(payload[&#34;CrossSaveOverriddenType&#34;]),
     )</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.client.Client.fetch_inventory_item"><code class="name flex">
+</details>
+</dd>
+<dt id="aiobungie.client.Client.fetch_inventory_item"><code class="name flex">
 <span>async def <span class="ident">fetch_inventory_item</span></span>(<span>self, hash: int, /) ‑> <a title="aiobungie.crate.entity.InventoryEntity" href="crate/entity.html#aiobungie.crate.entity.InventoryEntity">InventoryEntity</a></span>
 </code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Fetch a static inventory item entity given a its hash.</p>
-                                    <h2 id="parameters">Parameters</h2>
-                                    <dl>
-                                        <dt><strong><code>type</code></strong> :&ensp;<code>builtins.str</code></dt>
-                                        <dd>Entity's type definition.</dd>
-                                        <dt><strong><code>hash</code></strong> :&ensp;<code>builtins.int</code></dt>
-                                        <dd>Entity's hash.</dd>
-                                    </dl>
-                                    <h2 id="returns">Returns</h2>
-                                    <p><code><a title="aiobungie.crate.InventoryEntity" href="crate/index.html#aiobungie.crate.InventoryEntity">InventoryEntity</a></code> A bungie inventory item.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">async def fetch_inventory_item(self, hash: int, /) -&gt; crate.entity.InventoryEntity:
+<dd>
+<div class="desc"><p>Fetch a static inventory item entity given a its hash.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>type</code></strong> :&ensp;<code>builtins.str</code></dt>
+<dd>Entity's type definition.</dd>
+<dt><strong><code>hash</code></strong> :&ensp;<code>builtins.int</code></dt>
+<dd>Entity's hash.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p><code><a title="aiobungie.crate.InventoryEntity" href="crate/index.html#aiobungie.crate.InventoryEntity">InventoryEntity</a></code>
+A bungie inventory item.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_inventory_item(self, hash: int, /) -&gt; crate.entity.InventoryEntity:
     &#34;&#34;&#34;Fetch a static inventory item entity given a its hash.
 
     Parameters
@@ -2210,22 +1752,21 @@ def serialize(self) -&gt; serialize_.Factory:
     resp = await self.rest.fetch_inventory_item(hash)
     assert isinstance(resp, dict)
     return self.serialize.deserialize_inventory_entity(resp)</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.client.Client.fetch_manifest"><code class="name flex">
+</details>
+</dd>
+<dt id="aiobungie.client.Client.fetch_manifest"><code class="name flex">
 <span>async def <span class="ident">fetch_manifest</span></span>(<span>self) ‑> <a title="aiobungie.ext.meta.Manifest" href="ext/meta.html#aiobungie.ext.meta.Manifest">Manifest</a></span>
 </code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Access The bungie Manifest.</p>
-                                    <h2 id="returns">Returns</h2>
-                                    <p><code><a title="aiobungie.ext.Manifest" href="ext/index.html#aiobungie.ext.Manifest">Manifest</a></code> A Manifest crate.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">async def fetch_manifest(self) -&gt; Manifest:
+<dd>
+<div class="desc"><p>Access The bungie Manifest.</p>
+<h2 id="returns">Returns</h2>
+<p><code><a title="aiobungie.ext.Manifest" href="ext/index.html#aiobungie.ext.Manifest">Manifest</a></code>
+A Manifest crate.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_manifest(self) -&gt; Manifest:
     &#34;&#34;&#34;Access The bungie Manifest.
 
     Returns
@@ -2234,39 +1775,40 @@ def serialize(self) -&gt; serialize_.Factory:
         A Manifest crate.
     &#34;&#34;&#34;
     return Manifest(self._token)</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.client.Client.fetch_membership_from_id"><code class="name flex">
+</details>
+</dd>
+<dt id="aiobungie.client.Client.fetch_membership_from_id"><code class="name flex">
 <span>async def <span class="ident">fetch_membership_from_id</span></span>(<span>self, id: int, type: MembershipType = NONE, /) ‑> <a title="aiobungie.crate.user.User" href="crate/user.html#aiobungie.crate.user.User">User</a></span>
 </code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Fetch Bungie user's memberships from their id.</p>
-                                    <h2 id="notes">Notes</h2>
-                                    <ul>
-                                        <li>This returns both BungieNet membership and a sequence of the player's DestinyMemberships Which includes Stadia, Xbox, Steam and PSN memberships if the player has them, see <code><a title="aiobungie.crate.user.DestinyUser" href="crate/user.html#aiobungie.crate.user.DestinyUser">DestinyUser</a></code>                                            for indetailed.</li>
-                                        <li>If you only want the bungie user. Consider using <code><a title="aiobungie.client.Client.fetch_user" href="#aiobungie.client.Client.fetch_user">Client.fetch_user()</a></code> method.</li>
-                                    </ul>
-                                    <h2 id="parameters">Parameters</h2>
-                                    <dl>
-                                        <dt><strong><code>id</code></strong> :&ensp;<code>builtins.int</code></dt>
-                                        <dd>The user's id.</dd>
-                                        <dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.MembershipType" href="index.html#aiobungie.MembershipType">MembershipType</a></code></dt>
-                                        <dd>The user's membership type.</dd>
-                                    </dl>
-                                    <h2 id="returns">Returns</h2>
-                                    <p><code><a title="aiobungie.crate.User" href="crate/index.html#aiobungie.crate.User">User</a></code> A Bungie user with their membership types.</p>
-                                    <h2 id="raises">Raises</h2>
-                                    <dl>
-                                        <dt><code><a title="aiobungie.UserNotFound" href="index.html#aiobungie.UserNotFound">UserNotFound</a></code></dt>
-                                        <dd>The requested user was not found.</dd>
-                                    </dl>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">async def fetch_membership_from_id(
+<dd>
+<div class="desc"><p>Fetch Bungie user's memberships from their id.</p>
+<h2 id="notes">Notes</h2>
+<ul>
+<li>This returns both BungieNet membership and a sequence of the player's DestinyMemberships
+Which includes Stadia, Xbox, Steam and PSN memberships if the player has them,
+see <code><a title="aiobungie.crate.user.DestinyUser" href="crate/user.html#aiobungie.crate.user.DestinyUser">DestinyUser</a></code> for indetailed.</li>
+<li>If you only want the bungie user. Consider using <code><a title="aiobungie.client.Client.fetch_user" href="#aiobungie.client.Client.fetch_user">Client.fetch_user()</a></code> method.</li>
+</ul>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>id</code></strong> :&ensp;<code>builtins.int</code></dt>
+<dd>The user's id.</dd>
+<dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.MembershipType" href="index.html#aiobungie.MembershipType">MembershipType</a></code></dt>
+<dd>The user's membership type.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p><code><a title="aiobungie.crate.User" href="crate/index.html#aiobungie.crate.User">User</a></code>
+A Bungie user with their membership types.</p>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code><a title="aiobungie.UserNotFound" href="index.html#aiobungie.UserNotFound">UserNotFound</a></code></dt>
+<dd>The requested user was not found.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_membership_from_id(
     self, id: int, type: MembershipType = MembershipType.NONE, /
 ) -&gt; crate.User:
     &#34;&#34;&#34;Fetch Bungie user&#39;s memberships from their id.
@@ -2298,39 +1840,41 @@ def serialize(self) -&gt; serialize_.Factory:
     payload = await self.rest.fetch_membership_from_id(id, type)
     assert isinstance(payload, dict)
     return self.serialize.deserialize_user(payload)</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.client.Client.fetch_player"><code class="name flex">
+</details>
+</dd>
+<dt id="aiobungie.client.Client.fetch_player"><code class="name flex">
 <span>async def <span class="ident">fetch_player</span></span>(<span>self, name: str, type: MembershipType = ALL, /) ‑> Sequence[<a title="aiobungie.crate.user.DestinyUser" href="crate/user.html#aiobungie.crate.user.DestinyUser">DestinyUser</a>]</span>
 </code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Fetch a Destiny 2 Player.</p>
-                                    <h2 id="parameters">Parameters</h2>
-                                    <dl>
-                                        <dt><strong><code>name</code></strong> :&ensp;<code>builtins.str</code></dt>
-                                        <dd>The Player's Name.</dd>
-                                    </dl>
-                                    <div class="admonition note">
-                                        <p class="admonition-title">Note</p>
-                                        <p>You must also pass the player's unique code. A full name parameter should look like this
-                                            <code>Fate怒#4275</code></p>
-                                    </div>
-                                    <dl>
-                                        <dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.internal.enums.MembershipType" href="internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
-                                        <dd>The player's membership type, e,g. XBOX, STEAM, PSN</dd>
-                                    </dl>
-                                    <h2 id="returns">Returns</h2>
-                                    <p><code>typing.Sequence[<a title="aiobungie.crate.Player" href="crate/index.html#aiobungie.crate.Player">Player</a>]</code> A sequence of the found Destiny 2 Player memberships.</p>
-                                    <h2 id="raises">Raises</h2>
-                                    <p><code><a title="aiobungie.PlayerNotFound" href="index.html#aiobungie.PlayerNotFound">PlayerNotFound</a></code> The player was not found.</p>
-                                    <p><code><a title="aiobungie.MembershipTypeError" href="index.html#aiobungie.MembershipTypeError">MembershipTypeError</a></code> The provided membership type was invalid.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">async def fetch_player(
+<dd>
+<div class="desc"><p>Fetch a Destiny 2 Player.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>name</code></strong> :&ensp;<code>builtins.str</code></dt>
+<dd>The Player's Name.</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You must also pass the player's unique code.
+A full name parameter should look like this
+<code>Fate怒#4275</code></p>
+</div>
+<dl>
+<dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.internal.enums.MembershipType" href="internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
+<dd>The player's membership type, e,g. XBOX, STEAM, PSN</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p><code>typing.Sequence[<a title="aiobungie.crate.Player" href="crate/index.html#aiobungie.crate.Player">Player</a>]</code>
+A sequence of the found Destiny 2 Player memberships.</p>
+<h2 id="raises">Raises</h2>
+<p><code><a title="aiobungie.PlayerNotFound" href="index.html#aiobungie.PlayerNotFound">PlayerNotFound</a></code>
+The player was not found.</p>
+<p><code><a title="aiobungie.MembershipTypeError" href="index.html#aiobungie.MembershipTypeError">MembershipTypeError</a></code>
+The provided membership type was invalid.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_player(
     self, name: str, type: MembershipType = MembershipType.ALL, /
 ) -&gt; typing.Sequence[crate.user.DestinyUser]:
     &#34;&#34;&#34;Fetch a Destiny 2 Player.
@@ -2364,31 +1908,31 @@ def serialize(self) -&gt; serialize_.Factory:
     resp = await self.rest.fetch_player(name, type)
     assert isinstance(resp, list)
     return self.serialize.deserialize_player(resp)</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.client.Client.fetch_post_activity"><code class="name flex">
+</details>
+</dd>
+<dt id="aiobungie.client.Client.fetch_post_activity"><code class="name flex">
 <span>async def <span class="ident">fetch_post_activity</span></span>(<span>self, instance: int, /) ‑> <a title="aiobungie.crate.activity.PostActivity" href="crate/activity.html#aiobungie.crate.activity.PostActivity">PostActivity</a></span>
 </code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Fetch a post activity details.</p>
-                                    <div class="admonition warning">
-                                        <p class="admonition-title">Warning</p>
-                                        <p>This http request is not implemented yet and it will raise <code>NotImplementedError</code></p>
-                                    </div>
-                                    <h2 id="parameters">Parameters</h2>
-                                    <dl>
-                                        <dt><strong><code>instance</code></strong> :&ensp;<code>builtins.int</code></dt>
-                                        <dd>The activity instance id.</dd>
-                                    </dl>
-                                    <h2 id="returns">Returns</h2>
-                                    <p><code><a title="aiobungie.crate.activity.PostActivity" href="crate/activity.html#aiobungie.crate.activity.PostActivity">PostActivity</a></code> Information about the requested post activity.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">async def fetch_post_activity(
+<dd>
+<div class="desc"><p>Fetch a post activity details.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This http request is not implemented yet
+and it will raise <code>NotImplementedError</code></p>
+</div>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>instance</code></strong> :&ensp;<code>builtins.int</code></dt>
+<dd>The activity instance id.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p><code><a title="aiobungie.crate.activity.PostActivity" href="crate/activity.html#aiobungie.crate.activity.PostActivity">PostActivity</a></code>
+Information about the requested post activity.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_post_activity(
     self, instance: int, /
 ) -&gt; crate.activity.PostActivity:
     &#34;&#34;&#34;Fetch a post activity details.
@@ -2410,32 +1954,32 @@ def serialize(self) -&gt; serialize_.Factory:
     # resp = await self.rest.fetch_post_activity(instance)
     # assert isinstance(resp, list)
     raise NotImplementedError</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.client.Client.fetch_profile"><code class="name flex">
+</details>
+</dd>
+<dt id="aiobungie.client.Client.fetch_profile"><code class="name flex">
 <span>async def <span class="ident">fetch_profile</span></span>(<span>self, memberid: int, type: MembershipType, /) ‑> <a title="aiobungie.crate.profile.Profile" href="crate/profile.html#aiobungie.crate.profile.Profile">Profile</a></span>
 </code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Fetche a bungie profile.</p>
-                                    <p>See <code><a title="aiobungie.crate.Profile" href="crate/index.html#aiobungie.crate.Profile">Profile</a></code> to access other components.</p>
-                                    <h2 id="parameters">Parameters</h2>
-                                    <dl>
-                                        <dt><strong><code>memberid</code></strong> :&ensp;<code>builtins.int</code></dt>
-                                        <dd>The member's id.</dd>
-                                        <dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.MembershipType" href="index.html#aiobungie.MembershipType">MembershipType</a></code></dt>
-                                        <dd>A valid membership type.</dd>
-                                    </dl>
-                                    <h2 id="returns">Returns</h2>
-                                    <p><code><a title="aiobungie.crate.Profile" href="crate/index.html#aiobungie.crate.Profile">Profile</a></code> A Destiny 2 player profile.</p>
-                                    <h2 id="raises">Raises</h2>
-                                    <p><code><a title="aiobungie.MembershipTypeError" href="index.html#aiobungie.MembershipTypeError">MembershipTypeError</a></code> The provided membership type was invalid.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">async def fetch_profile(
+<dd>
+<div class="desc"><p>Fetche a bungie profile.</p>
+<p>See <code><a title="aiobungie.crate.Profile" href="crate/index.html#aiobungie.crate.Profile">Profile</a></code> to access other components.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>memberid</code></strong> :&ensp;<code>builtins.int</code></dt>
+<dd>The member's id.</dd>
+<dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.MembershipType" href="index.html#aiobungie.MembershipType">MembershipType</a></code></dt>
+<dd>A valid membership type.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p><code><a title="aiobungie.crate.Profile" href="crate/index.html#aiobungie.crate.Profile">Profile</a></code>
+A Destiny 2 player profile.</p>
+<h2 id="raises">Raises</h2>
+<p><code><a title="aiobungie.MembershipTypeError" href="index.html#aiobungie.MembershipTypeError">MembershipTypeError</a></code>
+The provided membership type was invalid.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_profile(
     self,
     memberid: int,
     type: MembershipType,
@@ -2466,33 +2010,34 @@ def serialize(self) -&gt; serialize_.Factory:
     data = await self.rest.fetch_profile(memberid, type)
     assert isinstance(data, dict)
     return self.serialize.deserialize_profile(data)</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.client.Client.fetch_user"><code class="name flex">
+</details>
+</dd>
+<dt id="aiobungie.client.Client.fetch_user"><code class="name flex">
 <span>async def <span class="ident">fetch_user</span></span>(<span>self, id: int) ‑> <a title="aiobungie.crate.user.BungieUser" href="crate/user.html#aiobungie.crate.user.BungieUser">BungieUser</a></span>
 </code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Fetch a Bungie user by their id.</p>
-                                    <div class="admonition note">
-                                        <p class="admonition-title">Note</p>
-                                        <p>This returns a Bungie user membership only. Take a look at <code><a title="aiobungie.client.Client.fetch_membership_from_id" href="#aiobungie.client.Client.fetch_membership_from_id">Client.fetch_membership_from_id()</a></code>                                            for other memberships.</p>
-                                    </div>
-                                    <h2 id="parameters">Parameters</h2>
-                                    <dl>
-                                        <dt><strong><code>id</code></strong> :&ensp;<code>builtins.int</code></dt>
-                                        <dd>The user id.</dd>
-                                    </dl>
-                                    <h2 id="returns">Returns</h2>
-                                    <p><code><a title="aiobungie.crate.user.BungieUser" href="crate/user.html#aiobungie.crate.user.BungieUser">BungieUser</a></code> A Bungie user.</p>
-                                    <h2 id="raises">Raises</h2>
-                                    <p><code><a title="aiobungie.error.UserNotFound" href="error.html#aiobungie.error.UserNotFound">UserNotFound</a></code> The user was not found.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">async def fetch_user(self, id: int) -&gt; crate.user.BungieUser:
+<dd>
+<div class="desc"><p>Fetch a Bungie user by their id.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This returns a Bungie user membership only. Take a look at <code><a title="aiobungie.client.Client.fetch_membership_from_id" href="#aiobungie.client.Client.fetch_membership_from_id">Client.fetch_membership_from_id()</a></code>
+for other memberships.</p>
+</div>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>id</code></strong> :&ensp;<code>builtins.int</code></dt>
+<dd>The user id.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p><code><a title="aiobungie.crate.user.BungieUser" href="crate/user.html#aiobungie.crate.user.BungieUser">BungieUser</a></code>
+A Bungie user.</p>
+<h2 id="raises">Raises</h2>
+<p><code><a title="aiobungie.error.UserNotFound" href="error.html#aiobungie.error.UserNotFound">UserNotFound</a></code>
+The user was not found.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_user(self, id: int) -&gt; crate.user.BungieUser:
     &#34;&#34;&#34;Fetch a Bungie user by their id.
 
     .. note::
@@ -2517,22 +2062,21 @@ def serialize(self) -&gt; serialize_.Factory:
     payload = await self.rest.fetch_user(id)
     assert isinstance(payload, dict)
     return self.serialize.deserialize_bungie_user(payload)</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.client.Client.fetch_user_themes"><code class="name flex">
+</details>
+</dd>
+<dt id="aiobungie.client.Client.fetch_user_themes"><code class="name flex">
 <span>async def <span class="ident">fetch_user_themes</span></span>(<span>self) ‑> Sequence[<a title="aiobungie.crate.user.UserThemes" href="crate/user.html#aiobungie.crate.user.UserThemes">UserThemes</a>]</span>
 </code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Fetch all available user themes.</p>
-                                    <h2 id="returns">Returns</h2>
-                                    <p><code>typing.Sequence[<a title="aiobungie.crate.user.UserThemes" href="crate/user.html#aiobungie.crate.user.UserThemes">UserThemes</a>]</code> A sequence of user themes.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">async def fetch_user_themes(self) -&gt; typing.Sequence[crate.user.UserThemes]:
+<dd>
+<div class="desc"><p>Fetch all available user themes.</p>
+<h2 id="returns">Returns</h2>
+<p><code>typing.Sequence[<a title="aiobungie.crate.user.UserThemes" href="crate/user.html#aiobungie.crate.user.UserThemes">UserThemes</a>]</code>
+A sequence of user themes.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_user_themes(self) -&gt; typing.Sequence[crate.user.UserThemes]:
     &#34;&#34;&#34;Fetch all available user themes.
 
     Returns
@@ -2542,42 +2086,42 @@ def serialize(self) -&gt; serialize_.Factory:
     &#34;&#34;&#34;
     data = await self.rest.fetch_user_themes()
     return self.serialize.deserialize_user_themes(data)</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.client.Client.fetch_vendor_sales"><code class="name flex">
+</details>
+</dd>
+<dt id="aiobungie.client.Client.fetch_vendor_sales"><code class="name flex">
 <span>def <span class="ident">fetch_vendor_sales</span></span>(<span>*args, **kwargs)</span>
 </code></dt>
-                            <dd>
-                                <div class="desc"></div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">return lambda *args, **kwargs: func(*args, **kwargs)</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.client.Client.from_path"><code class="name flex">
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">return lambda *args, **kwargs: func(*args, **kwargs)</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.client.Client.from_path"><code class="name flex">
 <span>async def <span class="ident">from_path</span></span>(<span>self, path: str, **kwargs: typing.Any) ‑> Any</span>
 </code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Raw http search given a valid bungie endpoint.</p>
-                                    <h2 id="parameters">Parameters</h2>
-                                    <dl>
-                                        <dt><strong><code>path</code></strong> :&ensp;<code>builtins.str</code></dt>
-                                        <dd>The bungie endpoint or path. A path must look something like this "Destiny2/3/Profile/46111239123/&hellip;"
-                                        </dd>
-                                        <dt><strong><code>kwargs</code></strong> :&ensp;<code>typing.Any</code></dt>
-                                        <dd>Any other key words you'd like to pass through.</dd>
-                                    </dl>
-                                    <h2 id="returns">Returns</h2>
-                                    <p><code>typing.Any</code> Any object.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">async def from_path(self, path: str, **kwargs: typing.Any) -&gt; typing.Any:
+<dd>
+<div class="desc"><p>Raw http search given a valid bungie endpoint.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>path</code></strong> :&ensp;<code>builtins.str</code></dt>
+<dd>The bungie endpoint or path.
+A path must look something like this
+"Destiny2/3/Profile/46111239123/&hellip;"</dd>
+<dt><strong><code>kwargs</code></strong> :&ensp;<code>typing.Any</code></dt>
+<dd>Any other key words you'd like to pass through.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p><code>typing.Any</code>
+Any object.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def from_path(self, path: str, **kwargs: typing.Any) -&gt; typing.Any:
     &#34;&#34;&#34;Raw http search given a valid bungie endpoint.
 
     Parameters
@@ -2595,24 +2139,23 @@ def serialize(self) -&gt; serialize_.Factory:
         Any object.
     &#34;&#34;&#34;
     return await self.rest.static_search(path, **kwargs)</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.client.Client.run"><code class="name flex">
+</details>
+</dd>
+<dt id="aiobungie.client.Client.run"><code class="name flex">
 <span>def <span class="ident">run</span></span>(<span>self, future: typing.Coroutine[typing.Any, None, None], debug: bool = False) ‑> None</span>
 </code></dt>
-                            <dd>
-                                <p class="inheritance">
-                                    <em>Inherited from:</em>
-                                    <code><a title="aiobungie.internal.traits.RESTful" href="internal/traits.html#aiobungie.internal.traits.RESTful">RESTful</a></code>.<code><a title="aiobungie.internal.traits.RESTful.run" href="internal/traits.html#aiobungie.internal.traits.RESTful.run">run</a></code>
-                                </p>
-                                <div class="desc inherited">
-                                    <p>Runs a Coro function until its complete. This is equivalent to asyncio.get_event_loop().run_until_complete(&hellip;) …</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">def run(
+<dd>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="aiobungie.internal.traits.ClientBase" href="internal/traits.html#aiobungie.internal.traits.ClientBase">ClientBase</a></code>.<code><a title="aiobungie.internal.traits.ClientBase.run" href="internal/traits.html#aiobungie.internal.traits.ClientBase.run">run</a></code>
+</p>
+<div class="desc inherited"><p>Runs a Coro function until its complete.
+This is equivalent to asyncio.get_event_loop().run_until_complete(&hellip;) …</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def run(
     self, future: typing.Coroutine[typing.Any, None, None], debug: bool = False
 ) -&gt; None:
     try:
@@ -2622,132 +2165,122 @@ def serialize(self) -&gt; serialize_.Factory:
             self._loop.run_until_complete(future)
     except Exception as exc:
         raise RuntimeError(f&#34;Failed to run {future.__name__}&#34;, exc)</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.client.Client.search_users"><code class="name flex">
+</details>
+</dd>
+<dt id="aiobungie.client.Client.search_users"><code class="name flex">
 <span>async def <span class="ident">search_users</span></span>(<span>self, name: str, /) ‑> Sequence[<a title="aiobungie.crate.user.DestinyUser" href="crate/user.html#aiobungie.crate.user.DestinyUser">DestinyUser</a>]</span>
 </code></dt>
-                            <dd>
-                                <div class="desc"></div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">async def search_users(self, name: str, /) -&gt; typing.Sequence[crate.DestinyUser]:
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def search_users(self, name: str, /) -&gt; typing.Sequence[crate.DestinyUser]:
     payload = await self.rest.search_users(name)
     assert isinstance(payload, dict)
     return self.serialize.deseialize_found_users(payload)</code></pre>
-                                </details>
-                            </dd>
-                        </dl>
-                    </dd>
-                </dl>
-            </section>
-        </article>
-        <nav id="sidebar">
-            <form>
-                <input id="lunr-search" name="q" placeholder="🔎 Search ..." aria-label="Search" disabled minlength="2">
-            </form>
-            <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.3/tingle.min.css" integrity="sha512-j1u8eUJ4f23xPPxwOrLUPQaCD2dwzNqqmDDcWS4deWsMv2ohLqmXXuP3hU7g8TyzbMSakP/mMqoNBYWj8AEIFg==" crossorigin>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.3/tingle.min.js" integrity="sha512-plGUER9JkeEWPPqQBE4sdLqBoQug5Ap+BCGMc7bJ8BXkm+VVj6QzkpBz5Yv2yPkkq+cqg9IpkBaGCas6uDbW8g==" crossorigin></script>
-            <style>
-                .modal-dialog iframe {
-                    width: 100vw;
-                    height: calc(100vh - 80px);
-                }
-                
-                @media screen and (min-width: 700px) {
-                    .modal-dialog iframe {
-                        width: 70vw;
-                        height: 80vh;
-                    }
-                }
-                
-                .modal-dialog .tingle-modal-box {
-                    width: auto;
-                }
-                
-                .modal-dialog .tingle-modal-box__content {
-                    padding: 0;
-                }
-            </style>
-            <script>
-                const input = document.getElementById('lunr-search');
-                input.disabled = false;
-                input.form.addEventListener('submit', (ev) => {
-                    ev.preventDefault();
-                    const url = new URL(window.location);
-                    url.searchParams.set('q', input.value);
-                    history.replaceState({}, null, url.toString());
-                    search(input.value);
-                });
-                const query = new URL(window.location).searchParams.get('q');
-                if (query)
-                    search(query);
-
-                function search(query) {
-                    const url = './doc-search.html#' + encodeURIComponent(query);
-                    new tingle.modal({
-                        cssClass: ['modal-dialog'],
-                        onClose: () => {
-                            const url = new URL(window.location);
-                            url.searchParams.delete('q');
-                            history.replaceState({}, null, url.toString());
-                            setTimeout(() => input.focus(), 100);
-                        }
-                    }).setContent('<iframe src="' + url + '"></iframe>').open();
-                }
-            </script>
-            <h1>Index</h1>
-            <div class="toc">
-                <ul></ul>
-            </div>
-            <ul id="index">
-                <li>
-                    <h3>Super-module</h3>
-                    <ul>
-                        <li><code><a title="aiobungie" href="index.html">aiobungie</a></code></li>
-                    </ul>
-                </li>
-                <li>
-                    <h3><a href="#header-classes">Classes</a></h3>
-                    <ul>
-                        <li>
-                            <h4><code><a title="aiobungie.client.Client" href="#aiobungie.client.Client">Client</a></code></h4>
-                            <ul class="">
-                                <li><code><a title="aiobungie.client.Client.fetch_activity" href="#aiobungie.client.Client.fetch_activity">fetch_activity</a></code></li>
-                                <li><code><a title="aiobungie.client.Client.fetch_app" href="#aiobungie.client.Client.fetch_app">fetch_app</a></code></li>
-                                <li><code><a title="aiobungie.client.Client.fetch_character" href="#aiobungie.client.Client.fetch_character">fetch_character</a></code></li>
-                                <li><code><a title="aiobungie.client.Client.fetch_clan" href="#aiobungie.client.Client.fetch_clan">fetch_clan</a></code></li>
-                                <li><code><a title="aiobungie.client.Client.fetch_clan_from_id" href="#aiobungie.client.Client.fetch_clan_from_id">fetch_clan_from_id</a></code></li>
-                                <li><code><a title="aiobungie.client.Client.fetch_clan_member" href="#aiobungie.client.Client.fetch_clan_member">fetch_clan_member</a></code></li>
-                                <li><code><a title="aiobungie.client.Client.fetch_clan_members" href="#aiobungie.client.Client.fetch_clan_members">fetch_clan_members</a></code></li>
-                                <li><code><a title="aiobungie.client.Client.fetch_hard_types" href="#aiobungie.client.Client.fetch_hard_types">fetch_hard_types</a></code></li>
-                                <li><code><a title="aiobungie.client.Client.fetch_inventory_item" href="#aiobungie.client.Client.fetch_inventory_item">fetch_inventory_item</a></code></li>
-                                <li><code><a title="aiobungie.client.Client.fetch_manifest" href="#aiobungie.client.Client.fetch_manifest">fetch_manifest</a></code></li>
-                                <li><code><a title="aiobungie.client.Client.fetch_membership_from_id" href="#aiobungie.client.Client.fetch_membership_from_id">fetch_membership_from_id</a></code></li>
-                                <li><code><a title="aiobungie.client.Client.fetch_player" href="#aiobungie.client.Client.fetch_player">fetch_player</a></code></li>
-                                <li><code><a title="aiobungie.client.Client.fetch_post_activity" href="#aiobungie.client.Client.fetch_post_activity">fetch_post_activity</a></code></li>
-                                <li><code><a title="aiobungie.client.Client.fetch_profile" href="#aiobungie.client.Client.fetch_profile">fetch_profile</a></code></li>
-                                <li><code><a title="aiobungie.client.Client.fetch_user" href="#aiobungie.client.Client.fetch_user">fetch_user</a></code></li>
-                                <li><code><a title="aiobungie.client.Client.fetch_user_themes" href="#aiobungie.client.Client.fetch_user_themes">fetch_user_themes</a></code></li>
-                                <li><code><a title="aiobungie.client.Client.fetch_vendor_sales" href="#aiobungie.client.Client.fetch_vendor_sales">fetch_vendor_sales</a></code></li>
-                                <li><code><a title="aiobungie.client.Client.from_path" href="#aiobungie.client.Client.from_path">from_path</a></code></li>
-                                <li><code><a title="aiobungie.client.Client.request" href="#aiobungie.client.Client.request">request</a></code></li>
-                                <li><code><a title="aiobungie.client.Client.rest" href="#aiobungie.client.Client.rest">rest</a></code></li>
-                                <li><code><a title="aiobungie.client.Client.run" href="#aiobungie.client.Client.run">run</a></code></li>
-                                <li><code><a title="aiobungie.client.Client.search_users" href="#aiobungie.client.Client.search_users">search_users</a></code></li>
-                                <li><code><a title="aiobungie.client.Client.serialize" href="#aiobungie.client.Client.serialize">serialize</a></code></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </nav>
-    </main>
-    <footer id="footer">
-        <p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
-    </footer>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<form>
+<input id="lunr-search" name="q" placeholder="🔎 Search ..." aria-label="Search"
+disabled minlength="2">
+</form>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.3/tingle.min.css" integrity="sha512-j1u8eUJ4f23xPPxwOrLUPQaCD2dwzNqqmDDcWS4deWsMv2ohLqmXXuP3hU7g8TyzbMSakP/mMqoNBYWj8AEIFg==" crossorigin>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.3/tingle.min.js" integrity="sha512-plGUER9JkeEWPPqQBE4sdLqBoQug5Ap+BCGMc7bJ8BXkm+VVj6QzkpBz5Yv2yPkkq+cqg9IpkBaGCas6uDbW8g==" crossorigin></script>
+<style>
+.modal-dialog iframe {
+width: 100vw;
+height: calc(100vh - 80px);
+}
+@media screen and (min-width: 700px) {
+.modal-dialog iframe {
+width: 70vw;
+height: 80vh;
+}
+}
+.modal-dialog .tingle-modal-box {width: auto;}
+.modal-dialog .tingle-modal-box__content {padding: 0;}
+</style>
+<script>
+const input = document.getElementById('lunr-search');
+input.disabled = false;
+input.form.addEventListener('submit', (ev) => {
+ev.preventDefault();
+const url = new URL(window.location);
+url.searchParams.set('q', input.value);
+history.replaceState({}, null, url.toString());
+search(input.value);
+});
+const query = new URL(window.location).searchParams.get('q');
+if (query)
+search(query);
+function search(query) {
+const url = './doc-search.html#' + encodeURIComponent(query);
+new tingle.modal({
+cssClass: ['modal-dialog'],
+onClose: () => {
+const url = new URL(window.location);
+url.searchParams.delete('q');
+history.replaceState({}, null, url.toString());
+setTimeout(() => input.focus(), 100);
+}
+}).setContent('<iframe src="' + url + '"></iframe>').open();
+}
+</script>
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="aiobungie" href="index.html">aiobungie</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="aiobungie.client.Client" href="#aiobungie.client.Client">Client</a></code></h4>
+<ul class="">
+<li><code><a title="aiobungie.client.Client.fetch_activity" href="#aiobungie.client.Client.fetch_activity">fetch_activity</a></code></li>
+<li><code><a title="aiobungie.client.Client.fetch_app" href="#aiobungie.client.Client.fetch_app">fetch_app</a></code></li>
+<li><code><a title="aiobungie.client.Client.fetch_character" href="#aiobungie.client.Client.fetch_character">fetch_character</a></code></li>
+<li><code><a title="aiobungie.client.Client.fetch_clan" href="#aiobungie.client.Client.fetch_clan">fetch_clan</a></code></li>
+<li><code><a title="aiobungie.client.Client.fetch_clan_from_id" href="#aiobungie.client.Client.fetch_clan_from_id">fetch_clan_from_id</a></code></li>
+<li><code><a title="aiobungie.client.Client.fetch_clan_member" href="#aiobungie.client.Client.fetch_clan_member">fetch_clan_member</a></code></li>
+<li><code><a title="aiobungie.client.Client.fetch_clan_members" href="#aiobungie.client.Client.fetch_clan_members">fetch_clan_members</a></code></li>
+<li><code><a title="aiobungie.client.Client.fetch_hard_types" href="#aiobungie.client.Client.fetch_hard_types">fetch_hard_types</a></code></li>
+<li><code><a title="aiobungie.client.Client.fetch_inventory_item" href="#aiobungie.client.Client.fetch_inventory_item">fetch_inventory_item</a></code></li>
+<li><code><a title="aiobungie.client.Client.fetch_manifest" href="#aiobungie.client.Client.fetch_manifest">fetch_manifest</a></code></li>
+<li><code><a title="aiobungie.client.Client.fetch_membership_from_id" href="#aiobungie.client.Client.fetch_membership_from_id">fetch_membership_from_id</a></code></li>
+<li><code><a title="aiobungie.client.Client.fetch_player" href="#aiobungie.client.Client.fetch_player">fetch_player</a></code></li>
+<li><code><a title="aiobungie.client.Client.fetch_post_activity" href="#aiobungie.client.Client.fetch_post_activity">fetch_post_activity</a></code></li>
+<li><code><a title="aiobungie.client.Client.fetch_profile" href="#aiobungie.client.Client.fetch_profile">fetch_profile</a></code></li>
+<li><code><a title="aiobungie.client.Client.fetch_user" href="#aiobungie.client.Client.fetch_user">fetch_user</a></code></li>
+<li><code><a title="aiobungie.client.Client.fetch_user_themes" href="#aiobungie.client.Client.fetch_user_themes">fetch_user_themes</a></code></li>
+<li><code><a title="aiobungie.client.Client.fetch_vendor_sales" href="#aiobungie.client.Client.fetch_vendor_sales">fetch_vendor_sales</a></code></li>
+<li><code><a title="aiobungie.client.Client.from_path" href="#aiobungie.client.Client.from_path">from_path</a></code></li>
+<li><code><a title="aiobungie.client.Client.request" href="#aiobungie.client.Client.request">request</a></code></li>
+<li><code><a title="aiobungie.client.Client.rest" href="#aiobungie.client.Client.rest">rest</a></code></li>
+<li><code><a title="aiobungie.client.Client.run" href="#aiobungie.client.Client.run">run</a></code></li>
+<li><code><a title="aiobungie.client.Client.search_users" href="#aiobungie.client.Client.search_users">search_users</a></code></li>
+<li><code><a title="aiobungie.client.Client.serialize" href="#aiobungie.client.Client.serialize">serialize</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
 </body>
-
 </html>

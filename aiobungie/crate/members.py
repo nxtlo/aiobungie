@@ -88,7 +88,6 @@ class XboxMember(user.UserLike):
 
     name: str = attr.field(repr=True, eq=False)
     """The member's name. This can be `UNDEFINED` if not found."""
-    """The member's name."""
 
     last_seen_name: str = attr.field(repr=True)
     """The member's last seen display name. You may use this field if `XboxMember.name` is `Undefined`."""

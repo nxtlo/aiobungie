@@ -92,7 +92,7 @@ async def main() -> None:
 ```
 
 ## REST-Only client
-If for some reason you only want to interact with the API directly without any `OOP`,
+For low-level and only to interact with the API directly without any high-level concepts,
 you can use the `RESTClient`.
 
 ### Simple Example

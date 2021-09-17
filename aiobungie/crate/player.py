@@ -30,14 +30,13 @@ __all__ = ("Player",)
 
 import attr
 
-from aiobungie.crate import user
 from aiobungie.internal import Image
 from aiobungie.internal import helpers
 from aiobungie.internal.enums import MembershipType
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
-class Player(user.DestinyUser):
+class Player:
     """Represents a Bungie Destiny 2 Player."""
 
     icon: Image = attr.field(repr=False, hash=False, eq=False)
@@ -48,6 +47,9 @@ class Player(user.DestinyUser):
 
     name: str = attr.field(repr=True, eq=False, hash=False)
     """The player's name"""
+
+    last_seen_name: helpers.UndefinedOr[str] = attr.field(repr=True)
+    """Player's last name."""
 
     is_public: bool = attr.field(repr=True, eq=True, hash=False)
     """The player's profile privacy."""

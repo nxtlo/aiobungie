@@ -28,11 +28,15 @@ import aiobungie
 from aiobungie import crate
 from aiobungie import internal
 
+@pytest.fixture()
+def mock_client():
+    return mock.Mock(spec_set=aiobungie.Client)
 
 class TestAppOwner:
     @staticmethod
     def init_owner():
         return crate.ApplicationOwner(
+            net=mock_client,
             name="rose",
             type=aiobungie.MembershipType.XBOX,
             id=411098,

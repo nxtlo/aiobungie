@@ -246,7 +246,9 @@ class RESTClient(interfaces.RESTInterface):
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._fetch("GET", f"GroupV2/Name/{name}/{int(type)}")
 
-    def fetch_clan_conversations(self, clan_id: int, /) -> ResponseSig[helpers.JsonArray]:
+    def fetch_clan_conversations(
+        self, clan_id: int, /
+    ) -> ResponseSig[helpers.JsonArray]:
         return self._fetch("GET", f"GroupV2/{clan_id}/OptionalConversations/")
 
     def fetch_app(self, appid: int, /) -> ResponseSig[helpers.JsonObject]:

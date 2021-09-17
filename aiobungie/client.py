@@ -469,7 +469,9 @@ class Client(traits.ClientBase):
         assert isinstance(resp, dict)
         return self.serialize.deseialize_clan(resp)
 
-    async def fetch_clan_conversations(self, clan_id: int, /) -> typing.Sequence[crate.clans.ClanConversation]:
+    async def fetch_clan_conversations(
+        self, clan_id: int, /
+    ) -> typing.Sequence[crate.clans.ClanConversation]:
         resp = await self.rest.fetch_clan_conversations(clan_id)
         assert isinstance(resp, list)
         return self.serialize.deserialize_clan_convos(resp)

@@ -41,11 +41,11 @@ from datetime import datetime
 
 import attr
 
+from aiobungie.crate import profile
 from aiobungie.internal import assets
 from aiobungie.internal import enums
 from aiobungie.internal import helpers
 from aiobungie.internal import traits
-from aiobungie.crate import profile
 
 
 class UserLike(abc.ABC):

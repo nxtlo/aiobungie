@@ -42,9 +42,6 @@ class TestPlayer:
             last_seen_name="RoberGamer321"
         )
 
-    def test_str_op(self, model):
-        assert str(model) == "RoberGamer321"
-
     def test_player_type(self, model):
         assert (
             isinstance(model.type, aiobungie.MembershipType)

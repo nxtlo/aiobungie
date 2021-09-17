@@ -92,6 +92,7 @@ class ClanConversation:
     security: int = attr.field(repr=False)
     """Conversation's security level."""
 
+
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
 class ClanMember(UserLike):
     """Represents a Destiny 2 clan member."""

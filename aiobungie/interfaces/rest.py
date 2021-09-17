@@ -380,7 +380,9 @@ class RESTInterface(abc.ABC):
         """
 
     @abc.abstractmethod
-    def fetch_clan_conversations(self, clan_id: int, /) -> ResponseSig[helpers.JsonArray]:
+    def fetch_clan_conversations(
+        self, clan_id: int, /
+    ) -> ResponseSig[helpers.JsonArray]:
         """Fetch a clan's conversations.
 
         Parameters

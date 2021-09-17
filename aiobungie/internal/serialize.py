@@ -359,7 +359,9 @@ class Factory:
             bungie=bungie_user,
         )
 
-    def deserialize_clan_convos(self, payload: JsonArray) -> typing.Sequence[clans.ClanConversation]:
+    def deserialize_clan_convos(
+        self, payload: JsonArray
+    ) -> typing.Sequence[clans.ClanConversation]:
         map = {}
         vec = []
         if payload is not None:
@@ -367,15 +369,15 @@ class Factory:
                 for k, v in convo.items():
                     map[k] = v
 
-                if(name := map["chatName"]) == Unknown:
+                if (name := map["chatName"]) == Unknown:
                     name = Undefined
 
                 convo_obj = clans.ClanConversation(
-                    group_id=int(map['groupId']),
-                    id=int(map['conversationId']),
-                    chat_enabled=map['chatEnabled'],
+                    group_id=int(map["groupId"]),
+                    id=int(map["conversationId"]),
+                    chat_enabled=map["chatEnabled"],
                     name=name,
-                    security=map['chatSecurity'],
+                    security=map["chatSecurity"],
                 )
                 vec.append(convo_obj)
         return vec

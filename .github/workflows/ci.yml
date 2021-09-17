@@ -17,7 +17,7 @@ jobs:
       matrix:
         os: [ubuntu-20.04, macos-10.15, windows-2019]
         python-version: [3.9, 3.8, 3.10-dev]
-    
+
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -31,10 +31,10 @@ jobs:
       run: |
         pip install .
         pip uninstall -y aiobungie
-        
+
         pip install .[dev]
         pip uninstall -y aiobungie
-        
+
     - name: Pytest tests
       run: |
         pip install nox

@@ -44,6 +44,8 @@ import attr
 from aiobungie.internal import assets
 from aiobungie.internal import enums
 from aiobungie.internal import helpers
+from aiobungie.internal import traits
+from aiobungie.crate import profile
 
 
 class UserLike(abc.ABC):
@@ -116,7 +118,16 @@ class UserLike(abc.ABC):
 class PartialBungieUser:
     """Represents partial bungie user. This is usually used for bungie user info
     for destiny member objects. Like Clan members, owners, moderators for an example.
+
+    .. note::
+        You can fetch the actual bungie user of this partial user
+        by using `PartialBungieUser.fetch_self()` method.
+
+    .. versionadded:: 0.2.5
     """
+
+    net: traits.Netrunner = attr.field(repr=False)
+    """A network state used for making external requests."""
 
     name: helpers.UndefinedOr[str] = attr.field(repr=True)
     """The user's name. Field may be undefined if not found."""
@@ -135,6 +146,23 @@ class PartialBungieUser:
 
     icon: assets.MaybeImage = attr.field(repr=False)
     """The user's icon."""
+
+    async def fetch_self(self) -> BungieUser:
+        """Fetch the Bungie user of this partial user.
+
+        Returns
+        -------
+        `aiobungie.crate.BungieUser`
+            A Bungie net user.
+
+        Raises
+        ------
+        `aiobungie.UserNotFound`
+            The user was not found.
+
+        .. versionadded:: 0.2.5
+        """
+        return await self.net.request.fetch_user(self.id)
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
@@ -238,6 +266,9 @@ class DestinyUser(UserLike):
     .. versionadded:: 0.2.5
     """
 
+    net: traits.Netrunner = attr.field(repr=False)
+    """A network state used for making external requests."""
+
     id: int = attr.field(repr=True, hash=True, eq=True)
     """The member's id."""
 
@@ -264,6 +295,16 @@ class DestinyUser(UserLike):
 
     crossave_override: typing.Union[enums.MembershipType, int] = attr.field(repr=False)
     """The member's corssave override membership type."""
+
+    async def fetch_self_profile(self) -> profile.Profile:
+        """Fetch the player's profile.
+
+        Returns
+        -------
+        `aiobungie.crate.Profile`
+            The profile of this membership.
+        """
+        return await self.net.request.fetch_profile(self.id, self.type)
 
     @property
     def unique_name(self) -> str:

@@ -98,7 +98,7 @@ class ClanNotFound(NotFound):
 
 @typing.final
 class UserNotFound(NotFound):
-    """Raised when a `aiobungie.crate.User` not found."""
+    """Raised when a user was not found."""
 
 
 @typing.final

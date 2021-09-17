@@ -33,15 +33,19 @@ from datetime import datetime
 import attr
 
 from aiobungie import url
-from aiobungie.crate.user import UserLike
+from aiobungie.crate import user
 from aiobungie.internal import assets
 from aiobungie.internal import enums
 from aiobungie.internal import helpers
+from aiobungie.internal import traits
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
-class ApplicationOwner(UserLike):
+class ApplicationOwner(user.UserLike):
     """Represents a Bungie Application owner."""
+
+    net: traits.Netrunner = attr.field(repr=False)
+    """A network state used for making external requests."""
 
     name: helpers.UndefinedOr[str] = attr.field(repr=True, hash=False, eq=False)
     """The application owner name. This can be `UNDEFINED` if not found."""
@@ -64,6 +68,23 @@ class ApplicationOwner(UserLike):
 
     .. versionadded:: 0.2.5
     """
+
+    async def fetch_self(self) -> user.BungieUser:
+        """Fetch the bungie user for this application owner.
+
+        Returns
+        -------
+        `aiobungie.crate.BungieUser`
+            A Bungie net user.
+
+        Raises
+        ------
+        `aiobungie.UserNotFound`
+            The user was not found.
+
+        .. versionadded:: 0.2.5
+        """
+        return await self.net.request.fetch_user(self.id)
 
     @property
     def unique_name(self) -> str:

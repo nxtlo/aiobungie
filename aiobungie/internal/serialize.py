@@ -87,15 +87,15 @@ class Factory:
         )
 
     # Deserializer for a `bungieNetUserInfo`
-    @staticmethod
     def deserialize_partial_bungie_user(
-        payload: JsonObject, *, noeq: bool = False
+        self, payload: JsonObject, *, noeq: bool = False
     ) -> user.PartialBungieUser:
         if noeq is True:
             bungie_info = payload
         else:
             bungie_info = payload["bungieNetUserInfo"]
         return user.PartialBungieUser(
+            net=self._net,
             name=bungie_info.get("displayName", Undefined),
             id=int(bungie_info["membershipId"]),
             crossave_override=enums.MembershipType(bungie_info["crossSaveOverride"]),
@@ -105,9 +105,8 @@ class Factory:
         )
 
     # Deserializer for a `destinyUserInfo`
-    @staticmethod
     def deserialize_destiny_user(
-        payload: JsonObject, *, noeq: bool = False
+        self, payload: JsonObject, *, noeq: bool = False
     ) -> user.DestinyUser:
         if noeq is True:
             user_info = payload
@@ -124,6 +123,7 @@ class Factory:
             name = raw_name
 
         return user.DestinyUser(
+            net=self._net,
             id=int(user_info["membershipId"]),
             name=name,
             code=user_info.get("bungieGlobalDisplayNameCode", None),
@@ -265,6 +265,7 @@ class Factory:
         last_online = time.from_timestamp(int(data["lastOnlineStatusChange"]))
         clan_id = data["groupId"]
         destiny_user = self.deserialize_destiny_user(data)
+        bungie_user = self.deserialize_partial_bungie_user(data)
 
         return clans.ClanOwner(
             last_seen_name=destiny_user.last_seen_name,
@@ -278,6 +279,7 @@ class Factory:
             is_public=destiny_user.is_public,
             type=destiny_user.type,
             code=destiny_user.code,
+            bungie=bungie_user,
         )
 
     def deseialize_clan(self, data: JsonObject) -> clans.Clan:
@@ -338,6 +340,7 @@ class Factory:
             is_online: bool = attrs["isOnline"]
             group_id: int = attrs["groupId"]
             joined_at: datetime.datetime = time.clean_date(str(attrs["joinDate"]))
+            bungie_user = self.deserialize_partial_bungie_user(payload, noeq=True)
 
         return clans.ClanMember(
             net=self._net,
@@ -353,7 +356,29 @@ class Factory:
             code=destiny_member.code,
             types=destiny_member.types,
             last_seen_name=destiny_member.last_seen_name,
+            bungie=bungie_user,
         )
+
+    def deserialize_clan_convos(self, payload: JsonArray) -> typing.Sequence[clans.ClanConversation]:
+        map = {}
+        vec = []
+        if payload is not None:
+            for convo in payload:
+                for k, v in convo.items():
+                    map[k] = v
+
+                if(name := map["chatName"]) == Unknown:
+                    name = Undefined
+
+                convo_obj = clans.ClanConversation(
+                    group_id=int(map['groupId']),
+                    id=int(map['conversationId']),
+                    chat_enabled=map['chatEnabled'],
+                    name=name,
+                    security=map['chatSecurity'],
+                )
+                vec.append(convo_obj)
+        return vec
 
     def deserialize_clan_members(
         self, data: JsonObject, /
@@ -361,22 +386,28 @@ class Factory:
         members_vec: list[clans.ClanMember] = []
         if (payload := data["results"]) is not None:
 
+            # raw_is_on: list[bool] = just(payload, "isOnline")
+            # raw_last_sts: list[int] = just(payload, "lastOnlineStatusChange")
+            # raw_join_date: list[str] = just(payload, "joinDate")
+            # metadata = map(
+            #     lambda *args: args, raw_is_on, raw_last_sts, raw_join_date
+            # )
+            # for is_online, last_online, join_date in metadata:
+            #     last_online_fmt: datetime.datetime = time.from_timestamp(
+            #         int(last_online)
+            #     )
+            #     join_date_fmt: datetime.datetime = time.clean_date(join_date)
+
+            group_id: list[int] = just(payload, "groupId")
             for memberships in payload:
-                wrap = lambda m: m["destinyUserInfo"]  # noqa: E731 Lambdas
-                member = self.deserialize_destiny_user(wrap(memberships), noeq=True)
-
-                raw_is_on: list[bool] = just(payload, "isOnline")
-                raw_last_sts: list[int] = just(payload, "lastOnlineStatusChange")
-                raw_join_date: list[str] = just(payload, "joinDate")
-                group_id: list[int] = just(payload, "groupId")
-
-            for is_online, last_online, join_date in zip(
-                raw_is_on, raw_last_sts, raw_join_date
-            ):
-                last_online_fmt: datetime.datetime = time.from_timestamp(
-                    int(last_online)
+                wrap_destiny = lambda m: m["destinyUserInfo"]  # noqa: E731 Lambdas
+                wrap_bungie = lambda m: m["bungieNetUserInfo"]  # noqa: E731 Lambdas
+                member = self.deserialize_destiny_user(
+                    wrap_destiny(memberships), noeq=True
                 )
-                join_date_fmt: datetime.datetime = time.clean_date(join_date)
+                bungie_user = self.deserialize_partial_bungie_user(
+                    wrap_bungie(memberships), noeq=True
+                )
 
                 member_obj = clans.ClanMember(
                     net=self._net,
@@ -388,16 +419,15 @@ class Factory:
                     code=member.code,
                     types=member.types,
                     last_seen_name=member.last_seen_name,
-                    is_online=is_online,
-                    last_online=last_online_fmt,
-                    joined_at=join_date_fmt,
                     group_id=group_id[0],
+                    bungie=bungie_user,
                 )
                 members_vec.append(member_obj)
         return members_vec
 
     def deserialize_app_owner(self, payload: JsonObject) -> app.ApplicationOwner:
         return app.ApplicationOwner(
+            net=self._net,
             name=payload.get("bungieGlobalDisplayName", Undefined),
             id=int(payload["membershipId"]),
             type=enums.MembershipType(payload["membershipType"]),

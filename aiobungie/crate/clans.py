@@ -25,7 +25,9 @@
 
 from __future__ import annotations
 
-__all__ = ("Clan", "ClanOwner", "ClanMember", "ClanFeatures")
+from aiobungie.crate import user
+
+__all__ = ("Clan", "ClanOwner", "ClanMember", "ClanFeatures", "ClanConversation")
 
 
 import typing
@@ -72,6 +74,25 @@ class ClanFeatures:
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
+class ClanConversation:
+    """Represents a clan conversation."""
+
+    group_id: int = attr.field(repr=True)
+    """The clan or group's id."""
+
+    id: int = attr.field(repr=True)
+    """The conversation's id"""
+
+    chat_enabled: bool = attr.field(repr=False)
+    """`True` if the Conversation's chat is enabled."""
+
+    name: helpers.UndefinedOr[str] = attr.field(repr=True)
+    """Conversation chat's name."""
+
+    security: int = attr.field(repr=False)
+    """Conversation's security level."""
+
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class ClanMember(UserLike):
     """Represents a Destiny 2 clan member."""
 
@@ -102,13 +123,13 @@ class ClanMember(UserLike):
     group_id: int = attr.field(repr=True)
     """The member's group id."""
 
-    is_online: bool = attr.field(repr=False)
+    is_online: bool = attr.field(repr=False, default=None)
     """True if the clan member is online or not."""
 
-    last_online: datetime = attr.field(repr=False)
+    last_online: datetime = attr.field(repr=False, default=None)
     """The date of the clan member's last online in UTC time zone."""
 
-    joined_at: datetime = attr.field(repr=False)
+    joined_at: datetime = attr.field(repr=False, default=None)
     """The clan member's join date in UTC time zone."""
 
     code: helpers.NoneOr[int] = attr.field(repr=True)
@@ -116,6 +137,14 @@ class ClanMember(UserLike):
     This is new and was added in Season of the lost update
 
     .. versionadded:: 0.2.5
+    """
+
+    bungie: user.PartialBungieUser = attr.field(repr=True)
+    """The clan member's bungie partial net user.
+
+    .. note:: This only returns a partial bungie net user.
+    You can fetch the fully implemented user using
+    `aiobungie.crate.PartialBungieUser.fetch_self() method.
     """
 
     @property
@@ -190,6 +219,12 @@ class ClanOwner(UserLike):
     code: helpers.NoneOr[int] = attr.field(repr=True)
     """The user's unique display name code.
     This can be None if the user hasn't logged in after season of the lost update.
+
+    .. versionadded:: 0.2.5
+    """
+
+    bungie: user.PartialBungieUser = attr.field(repr=True)
+    """The clan owner's bungie user.
 
     .. versionadded:: 0.2.5
     """

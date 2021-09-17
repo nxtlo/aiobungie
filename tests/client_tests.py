@@ -46,7 +46,9 @@ def view(func: typing.Callable[[], typing.Any]) -> typing.Callable[..., typing.A
     import logging
     log = logging.getLogger(__name__)
     logging.basicConfig(level=logging.DEBUG)
-    log.debug(f"Func {func.__name__} Returns {func.__annotations__['return']} Passed.")
+    log.debug(
+        f"Func {func.__name__} Returns {func.__annotations__.get('return', 'Undefined')} Passed."
+    )
     return lambda *args, **kwargs: func(*args, **kwargs)
 
 @view
@@ -82,6 +84,7 @@ async def test_clan() -> crate.Clan:
     members = await c.fetch_members()
     member = await c.fetch_member("Hizxr")
     print(members, member)
+    print(c.owner)
     return c
 
 
@@ -94,10 +97,11 @@ async def test_fetch_clan_member() -> crate.ClanMember:
 @view
 async def test_fetch_clan_members() -> typing.Sequence[crate.ClanMember]:
     ms = await client.fetch_clan_members(4389205)
-    for x in ms:
-        print(x.joined_at, x.last_online, x.group_id, x.is_online)
+    for member in ms:
+        if member.bungie.name == "Cosmic":
+            fetched_user = await member.bungie.fetch_self()
+            print(repr(fetched_user))
     return ms
-
 
 @view
 async def test_fetch_inventory_item() -> crate.InventoryEntity:
@@ -109,6 +113,8 @@ async def test_fetch_inventory_item() -> crate.InventoryEntity:
 @view
 async def test_fetch_app() -> crate.Application:
     a = await client.fetch_app(33226)
+    fetched_user = await a.owner.fetch_self()
+    print(fetched_user)
     return a
 
 
@@ -125,6 +131,9 @@ async def test_profile() -> crate.Profile:
 @view
 async def test_player() -> typing.Sequence[typing.Optional[crate.DestinyUser]]:
     p = await client.fetch_player("Datto#6446")
+    profile = await p[0].fetch_self_profile()
+    print(repr(profile))
+    print(repr(await profile.titan()))
     return p
 
 
@@ -141,23 +150,26 @@ async def test_membership_types_from_id() -> crate.User:
     return u
 
 @view
-async def test_rest() -> list:
+async def test_rest() -> typing.Any:
     # my_player = await rest_client.fetch_player("Fate怒#4275")
     req = await rest_client.fetch_clan_members(4389205)
     clan_members = req['results']  # type: ignore
-    vec = []
-    for i in clan_members:
-        x = {}
-        for k, v in i['destinyUserInfo'].items():
-            x[k] = v
-        vec.append(x)
-    return vec
+    for member in clan_members:
+        if isinstance(member, dict):
+            print(*member.items())
+            for k, v in member['destinyUserInfo'].items():
+                print(k, v)
+        return set(member)
+    return member
 
 @view
 async def test_search_users() -> typing.Any:
     x = await client.search_users("Fate怒")
     return x
 
+@view
+async def test_clan_conves():
+    return await client.fetch_clan_conversations(881267)
 
 async def main() -> None:
     coros = [
@@ -168,13 +180,14 @@ async def main() -> None:
         test_clan(),
         test_clan_from_id(),
         test_fetch_clan_member(),
-        test_fetch_clan_members(),
         test_fetch_inventory_item(),
         test_profile(),
         test_char(),
         test_membership_types_from_id(),
         test_rest(),
-        test_search_users()
+        test_search_users(),
+        test_fetch_app(),
+        test_clan_conves()
     ]
     print(await asyncio.gather(*coros))
 

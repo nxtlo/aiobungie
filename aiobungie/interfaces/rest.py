@@ -380,6 +380,21 @@ class RESTInterface(abc.ABC):
         """
 
     @abc.abstractmethod
+    def fetch_clan_conversations(self, clan_id: int, /) -> ResponseSig[helpers.JsonArray]:
+        """Fetch a clan's conversations.
+
+        Parameters
+        ----------
+        clan_id : `builtins.int`
+            The clan's id.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.internal.helpers.JsonArray]`
+            A JSON array of the conversations.
+        """
+
+    @abc.abstractmethod
     def fetch_clan_members(
         self,
         clan_id: int,

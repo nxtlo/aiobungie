@@ -28,7 +28,7 @@ import subprocess as sp
 def pdoc(session: nox.Session) -> None:
     while os.path.exists("./docs"):
         try:
-            sp.run("rm -rf ./docs", shell=False, stderr=sp.PIPE, stdout=sp.PIPE)
+            sp.run(["rm", "-rf", "./docs"], shell=False, stderr=sp.PIPE, stdout=sp.PIPE)
         except Exception:
             # We don't have to worry about this anymore
             break
@@ -37,4 +37,4 @@ def pdoc(session: nox.Session) -> None:
         "pdoc", "--html", "--template-dir", "./templates", "./aiobungie", "--force"
     )
     if os.path.isdir("./html"):
-        sp.run("sh ./nix/move.sh", shell=False, stderr=sp.PIPE, stdout=sp.PIPE)
+        sp.run(["sh", "./nix/move.sh"], shell=False, stderr=sp.PIPE, stdout=sp.PIPE)

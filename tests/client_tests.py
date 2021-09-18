@@ -160,7 +160,7 @@ async def test_rest() -> typing.Any:
             for k, v in member['destinyUserInfo'].items():
                 print(k, v)
         return set(member)
-    return member
+    return [c for c in clan_members]
 
 @view
 async def test_search_users() -> typing.Any:

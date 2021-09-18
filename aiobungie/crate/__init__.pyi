@@ -8,7 +8,8 @@ from .clans import (
     Clan as Clan,
     ClanFeatures as ClanFeatures,
     ClanMember as ClanMember,
-    ClanOwner as ClanOwner,
+    ClanAdmin as ClanAdmin,
+    GroupMember as GroupMember,
 )
 from .entity import Entity as Entity, InventoryEntity as InventoryEntity
 from .friends import Friend as Friend
@@ -20,6 +21,7 @@ from .user import (
     HardLinkedMembership as HardLinkedMembership,
     User as User,
     UserThemes as UserThemes,
+    PartialBungieUser as PartialBungieUser,
 )
 from typing import Any
 

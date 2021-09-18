@@ -131,7 +131,9 @@ class TestClanOwner:
 
     @fixture()
     def obj(self):
-        return crate.ClanOwner(
+        return crate.ClanMember(
+            net=mock_client,
+            group_id=123,
             id=2938,
             name="DiggaD",
             type=aiobungie.MembershipType.STEAM,
@@ -140,7 +142,6 @@ class TestClanOwner:
             joined_at=datetime.datetime(2021, 9, 6),
             last_online=datetime.datetime(2021, 5, 1),
             types=self.types,
-            clan_id=998271,
             code=5432,
             last_seen_name="Some name",
             bungie=mock_bungie_user
@@ -167,7 +168,7 @@ class TestClanOwner:
 class TestClan:
     @fixture()
     def obj(self, mock_client):
-        mock_owner = mock.Mock(spec_set=crate.ClanOwner)
+        mock_owner = mock.Mock(spec_set=crate.ClanMember)
         mock_features = mock.Mock(spec_set=crate.clans.ClanFeatures)
         return crate.Clan(
             net=mock_client,

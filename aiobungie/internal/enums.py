@@ -459,6 +459,7 @@ class Relationship(IntEnum):
 
 @typing.final
 class ClanMemberType(IntEnum):
+    """An enum for bungie clan member types."""
 
     NONE = 0
     BEGINNER = 1

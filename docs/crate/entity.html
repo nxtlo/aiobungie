@@ -298,7 +298,7 @@ it holds core information that all bungie entities has.</p></div>
 </ul>
 <h3>Instance variables</h3>
 <dl>
-<dt id="aiobungie.crate.entity.Entity.description"><code class="name">var <span class="ident">description</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
+<dt id="aiobungie.crate.entity.Entity.description"><code class="name">var <span class="ident">description</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="../internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
 <dd>
 <div class="desc"><p>Entity's description</p></div>
 <details class="source">
@@ -337,7 +337,7 @@ def hash(self) -&gt; int:
     &#34;&#34;&#34;Entity&#39;s hash.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
-<dt id="aiobungie.crate.entity.Entity.icon"><code class="name">var <span class="ident">icon</span> : Union[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
+<dt id="aiobungie.crate.entity.Entity.icon"><code class="name">var <span class="ident">icon</span> : Union[<a title="aiobungie.internal.assets.Image" href="../internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
 <dd>
 <div class="desc"><p>An optional entity's icon if its filled.</p></div>
 <details class="source">
@@ -363,7 +363,7 @@ def index(self) -&gt; int:
     &#34;&#34;&#34;The entity&#39;s index.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
-<dt id="aiobungie.crate.entity.Entity.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
+<dt id="aiobungie.crate.entity.Entity.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="../internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
 <dd>
 <div class="desc"><p>Entity's name. This can be <code>UNDEFINED</code> if not found.</p></div>
 <details class="source">
@@ -376,7 +376,7 @@ def name(self) -&gt; helpers.UndefinedOr[str]:
     &#34;&#34;&#34;Entity&#39;s name. This can be `UNDEFINED` if not found.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
-<dt id="aiobungie.crate.entity.Entity.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.traits.Netrunner" href="./internal/traits.html#aiobungie.internal.traits.Netrunner">Netrunner</a></code></dt>
+<dt id="aiobungie.crate.entity.Entity.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.traits.Netrunner" href="../internal/traits.html#aiobungie.internal.traits.Netrunner">Netrunner</a></code></dt>
 <dd>
 <div class="desc"><p>A network state used for making external requests.</p></div>
 <details class="source">
@@ -508,15 +508,15 @@ class InventoryEntity(Entity):
 </ul>
 <h3>Instance variables</h3>
 <dl>
-<dt id="aiobungie.crate.entity.InventoryEntity.about"><code class="name">var <span class="ident">about</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
+<dt id="aiobungie.crate.entity.InventoryEntity.about"><code class="name">var <span class="ident">about</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="../internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
 <dd>
 <div class="desc"><p>Entity's about.</p></div>
 </dd>
-<dt id="aiobungie.crate.entity.InventoryEntity.ammo_type"><code class="name">var <span class="ident">ammo_type</span> : Optional[<a title="aiobungie.internal.enums.AmmoType" href="./internal/enums.html#aiobungie.internal.enums.AmmoType">AmmoType</a>]</code></dt>
+<dt id="aiobungie.crate.entity.InventoryEntity.ammo_type"><code class="name">var <span class="ident">ammo_type</span> : Optional[<a title="aiobungie.internal.enums.AmmoType" href="../internal/enums.html#aiobungie.internal.enums.AmmoType">AmmoType</a>]</code></dt>
 <dd>
 <div class="desc"><p>Entity's ammo type if it was a wepon, otherwise it will return None</p></div>
 </dd>
-<dt id="aiobungie.crate.entity.InventoryEntity.banner"><code class="name">var <span class="ident">banner</span> : Optional[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>]</code></dt>
+<dt id="aiobungie.crate.entity.InventoryEntity.banner"><code class="name">var <span class="ident">banner</span> : Optional[<a title="aiobungie.internal.assets.Image" href="../internal/assets.html#aiobungie.internal.assets.Image">Image</a>]</code></dt>
 <dd>
 <div class="desc"><p>Entity's banner.</p></div>
 </dd>
@@ -524,11 +524,11 @@ class InventoryEntity(Entity):
 <dd>
 <div class="desc"><p>The entity's bucket type, None if unknown</p></div>
 </dd>
-<dt id="aiobungie.crate.entity.InventoryEntity.damage"><code class="name">var <span class="ident">damage</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, <a title="aiobungie.internal.enums.DamageType" href="./internal/enums.html#aiobungie.internal.enums.DamageType">DamageType</a>]</code></dt>
+<dt id="aiobungie.crate.entity.InventoryEntity.damage"><code class="name">var <span class="ident">damage</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="../internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, <a title="aiobungie.internal.enums.DamageType" href="../internal/enums.html#aiobungie.internal.enums.DamageType">DamageType</a>]</code></dt>
 <dd>
 <div class="desc"><p>Entity's damage type. Only works for weapons.</p></div>
 </dd>
-<dt id="aiobungie.crate.entity.InventoryEntity.description"><code class="name">var <span class="ident">description</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
+<dt id="aiobungie.crate.entity.InventoryEntity.description"><code class="name">var <span class="ident">description</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="../internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
 <dd>
 <div class="desc"><p>Entity's description.</p></div>
 </dd>
@@ -548,7 +548,7 @@ class InventoryEntity(Entity):
 </p>
 <div class="desc inherited"><p>Entity's hash.</p></div>
 </dd>
-<dt id="aiobungie.crate.entity.InventoryEntity.icon"><code class="name">var <span class="ident">icon</span> : Union[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
+<dt id="aiobungie.crate.entity.InventoryEntity.icon"><code class="name">var <span class="ident">icon</span> : Union[<a title="aiobungie.internal.assets.Image" href="../internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
 <dd>
 <div class="desc"><p>Entity's icon</p></div>
 </dd>
@@ -556,11 +556,11 @@ class InventoryEntity(Entity):
 <dd>
 <div class="desc"><p>Entity's index.</p></div>
 </dd>
-<dt id="aiobungie.crate.entity.InventoryEntity.is_equippable"><code class="name">var <span class="ident">is_equippable</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, bool]</code></dt>
+<dt id="aiobungie.crate.entity.InventoryEntity.is_equippable"><code class="name">var <span class="ident">is_equippable</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="../internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, bool]</code></dt>
 <dd>
 <div class="desc"><p>True if the entity can be equipped or False.</p></div>
 </dd>
-<dt id="aiobungie.crate.entity.InventoryEntity.item_class"><code class="name">var <span class="ident">item_class</span> : Optional[<a title="aiobungie.internal.enums.Class" href="./internal/enums.html#aiobungie.internal.enums.Class">Class</a>]</code></dt>
+<dt id="aiobungie.crate.entity.InventoryEntity.item_class"><code class="name">var <span class="ident">item_class</span> : Optional[<a title="aiobungie.internal.enums.Class" href="../internal/enums.html#aiobungie.internal.enums.Class">Class</a>]</code></dt>
 <dd>
 <div class="desc"><p>The entity's class type.</p></div>
 </dd>
@@ -568,7 +568,7 @@ class InventoryEntity(Entity):
 <dd>
 <div class="desc"><p>The entity's lore hash. Can be undefined if no lore hash found.</p></div>
 </dd>
-<dt id="aiobungie.crate.entity.InventoryEntity.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
+<dt id="aiobungie.crate.entity.InventoryEntity.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="../internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
 <dd>
 <p class="inheritance">
 <em>Inherited from:</em>
@@ -576,7 +576,7 @@ class InventoryEntity(Entity):
 </p>
 <div class="desc inherited"><p>Entity's name. This can be <code>UNDEFINED</code> if not found.</p></div>
 </dd>
-<dt id="aiobungie.crate.entity.InventoryEntity.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.traits.Netrunner" href="./internal/traits.html#aiobungie.internal.traits.Netrunner">Netrunner</a></code></dt>
+<dt id="aiobungie.crate.entity.InventoryEntity.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.traits.Netrunner" href="../internal/traits.html#aiobungie.internal.traits.Netrunner">Netrunner</a></code></dt>
 <dd>
 <p class="inheritance">
 <em>Inherited from:</em>
@@ -589,7 +589,7 @@ class InventoryEntity(Entity):
 <div class="desc"><p>Entity's stats. this currently returns a dict object
 of the stats.</p></div>
 </dd>
-<dt id="aiobungie.crate.entity.InventoryEntity.sub_type"><code class="name">var <span class="ident">sub_type</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, <a title="aiobungie.internal.enums.Item" href="./internal/enums.html#aiobungie.internal.enums.Item">Item</a>]</code></dt>
+<dt id="aiobungie.crate.entity.InventoryEntity.sub_type"><code class="name">var <span class="ident">sub_type</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="../internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, <a title="aiobungie.internal.enums.Item" href="../internal/enums.html#aiobungie.internal.enums.Item">Item</a>]</code></dt>
 <dd>
 <div class="desc"><p>The subtype of the entity. A type is a weapon or armor.
 A subtype is a handcannonn or leg armor for an example.</p></div>
@@ -598,23 +598,23 @@ A subtype is a handcannonn or leg armor for an example.</p></div>
 <dd>
 <div class="desc"><p>Entity's summary hash.</p></div>
 </dd>
-<dt id="aiobungie.crate.entity.InventoryEntity.tier"><code class="name">var <span class="ident">tier</span> : Optional[<a title="aiobungie.internal.enums.ItemTier" href="./internal/enums.html#aiobungie.internal.enums.ItemTier">ItemTier</a>]</code></dt>
+<dt id="aiobungie.crate.entity.InventoryEntity.tier"><code class="name">var <span class="ident">tier</span> : Optional[<a title="aiobungie.internal.enums.ItemTier" href="../internal/enums.html#aiobungie.internal.enums.ItemTier">ItemTier</a>]</code></dt>
 <dd>
 <div class="desc"><p>Entity's "tier.</p></div>
 </dd>
-<dt id="aiobungie.crate.entity.InventoryEntity.tier_name"><code class="name">var <span class="ident">tier_name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
+<dt id="aiobungie.crate.entity.InventoryEntity.tier_name"><code class="name">var <span class="ident">tier_name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="../internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
 <dd>
 <div class="desc"><p>A string version of the item tier.</p></div>
 </dd>
-<dt id="aiobungie.crate.entity.InventoryEntity.type"><code class="name">var <span class="ident">type</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, <a title="aiobungie.internal.enums.Item" href="./internal/enums.html#aiobungie.internal.enums.Item">Item</a>]</code></dt>
+<dt id="aiobungie.crate.entity.InventoryEntity.type"><code class="name">var <span class="ident">type</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="../internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, <a title="aiobungie.internal.enums.Item" href="../internal/enums.html#aiobungie.internal.enums.Item">Item</a>]</code></dt>
 <dd>
 <div class="desc"><p>Entity's type. Can be undefined if nothing was found.</p></div>
 </dd>
-<dt id="aiobungie.crate.entity.InventoryEntity.type_name"><code class="name">var <span class="ident">type_name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
+<dt id="aiobungie.crate.entity.InventoryEntity.type_name"><code class="name">var <span class="ident">type_name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="../internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
 <dd>
 <div class="desc"><p>Entity's type name. i.e., <code>Grenade Launcher</code></p></div>
 </dd>
-<dt id="aiobungie.crate.entity.InventoryEntity.water_mark"><code class="name">var <span class="ident">water_mark</span> : Optional[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>]</code></dt>
+<dt id="aiobungie.crate.entity.InventoryEntity.water_mark"><code class="name">var <span class="ident">water_mark</span> : Optional[<a title="aiobungie.internal.assets.Image" href="../internal/assets.html#aiobungie.internal.assets.Image">Image</a>]</code></dt>
 <dd>
 <div class="desc"><p>Entity's water mark.</p></div>
 </dd>
@@ -658,7 +658,7 @@ const query = new URL(window.location).searchParams.get('q');
 if (query)
 search(query);
 function search(query) {
-const url = '././doc-search.html#' + encodeURIComponent(query);
+const url = '../../doc-search.html#' + encodeURIComponent(query);
 new tingle.modal({
 cssClass: ['modal-dialog'],
 onClose: () => {

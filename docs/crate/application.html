@@ -62,15 +62,19 @@ from datetime import datetime
 import attr
 
 from aiobungie import url
-from aiobungie.crate.user import UserLike
+from aiobungie.crate import user
 from aiobungie.internal import assets
 from aiobungie.internal import enums
 from aiobungie.internal import helpers
+from aiobungie.internal import traits
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
-class ApplicationOwner(UserLike):
+class ApplicationOwner(user.UserLike):
     &#34;&#34;&#34;Represents a Bungie Application owner.&#34;&#34;&#34;
+
+    net: traits.Netrunner = attr.field(repr=False)
+    &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
 
     name: helpers.UndefinedOr[str] = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;The application owner name. This can be `UNDEFINED` if not found.&#34;&#34;&#34;
@@ -93,6 +97,23 @@ class ApplicationOwner(UserLike):
 
     .. versionadded:: 0.2.5
     &#34;&#34;&#34;
+
+    async def fetch_self(self) -&gt; user.BungieUser:
+        &#34;&#34;&#34;Fetch the bungie user for this application owner.
+
+        Returns
+        -------
+        `aiobungie.crate.BungieUser`
+            A Bungie net user.
+
+        Raises
+        ------
+        `aiobungie.UserNotFound`
+            The user was not found.
+
+        .. versionadded:: 0.2.5
+        &#34;&#34;&#34;
+        return await self.net.request.fetch_user(self.id)
 
     @property
     def unique_name(self) -&gt; str:
@@ -235,7 +256,7 @@ class Application:
 <dd>
 <div class="desc"><p>App redirect url</p></div>
 </dd>
-<dt id="aiobungie.crate.application.Application.scope"><code class="name">var <span class="ident">scope</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
+<dt id="aiobungie.crate.application.Application.scope"><code class="name">var <span class="ident">scope</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="../internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
 <dd>
 <div class="desc"><p>App's scope</p></div>
 </dd>
@@ -247,7 +268,7 @@ class Application:
 </dd>
 <dt id="aiobungie.crate.application.ApplicationOwner"><code class="flex name class">
 <span>class <span class="ident">ApplicationOwner</span></span>
-<span>(</span><span>*, name: helpers.UndefinedOr[str], type: enums.MembershipType, id: int, icon: assets.MaybeImage, is_public: bool, code: helpers.NoneOr[int])</span>
+<span>(</span><span>*, net: traits.Netrunner, name: helpers.UndefinedOr[str], type: enums.MembershipType, id: int, icon: assets.MaybeImage, is_public: bool, code: helpers.NoneOr[int])</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Represents a Bungie Application owner.</p>
@@ -257,8 +278,11 @@ class Application:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@attr.define(hash=False, kw_only=True, weakref_slot=False)
-class ApplicationOwner(UserLike):
+class ApplicationOwner(user.UserLike):
     &#34;&#34;&#34;Represents a Bungie Application owner.&#34;&#34;&#34;
+
+    net: traits.Netrunner = attr.field(repr=False)
+    &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
 
     name: helpers.UndefinedOr[str] = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;The application owner name. This can be `UNDEFINED` if not found.&#34;&#34;&#34;
@@ -281,6 +305,23 @@ class ApplicationOwner(UserLike):
 
     .. versionadded:: 0.2.5
     &#34;&#34;&#34;
+
+    async def fetch_self(self) -&gt; user.BungieUser:
+        &#34;&#34;&#34;Fetch the bungie user for this application owner.
+
+        Returns
+        -------
+        `aiobungie.crate.BungieUser`
+            A Bungie net user.
+
+        Raises
+        ------
+        `aiobungie.UserNotFound`
+            The user was not found.
+
+        .. versionadded:: 0.2.5
+        &#34;&#34;&#34;
+        return await self.net.request.fetch_user(self.id)
 
     @property
     def unique_name(self) -&gt; str:
@@ -313,7 +354,7 @@ class ApplicationOwner(UserLike):
 <div class="desc inherited"><p>The user like's unique display name code.
 This can be None if the user hasn't logged in after season of the lost update …</p></div>
 </dd>
-<dt id="aiobungie.crate.application.ApplicationOwner.icon"><code class="name">var <span class="ident">icon</span> : Union[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
+<dt id="aiobungie.crate.application.ApplicationOwner.icon"><code class="name">var <span class="ident">icon</span> : Union[<a title="aiobungie.internal.assets.Image" href="../internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
 <dd>
 <div class="desc"><p>The application owner's icon.</p></div>
 </dd>
@@ -359,11 +400,15 @@ def link(self) -&gt; str:
     return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;</code></pre>
 </details>
 </dd>
-<dt id="aiobungie.crate.application.ApplicationOwner.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
+<dt id="aiobungie.crate.application.ApplicationOwner.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="../internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
 <dd>
 <div class="desc"><p>The application owner name. This can be <code>UNDEFINED</code> if not found.</p></div>
 </dd>
-<dt id="aiobungie.crate.application.ApplicationOwner.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
+<dt id="aiobungie.crate.application.ApplicationOwner.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.traits.Netrunner" href="../internal/traits.html#aiobungie.internal.traits.Netrunner">Netrunner</a></code></dt>
+<dd>
+<div class="desc"><p>A network state used for making external requests.</p></div>
+</dd>
+<dt id="aiobungie.crate.application.ApplicationOwner.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="../internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
 <dd>
 <div class="desc"><p>The membership of the application owner.</p></div>
 </dd>
@@ -378,6 +423,45 @@ def link(self) -&gt; str:
 def unique_name(self) -&gt; str:
     &#34;&#34;&#34;The application owner&#39;s unique name.&#34;&#34;&#34;
     return self.unique_name</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="aiobungie.crate.application.ApplicationOwner.fetch_self"><code class="name flex">
+<span>async def <span class="ident">fetch_self</span></span>(<span>self) ‑> <a title="aiobungie.crate.user.BungieUser" href="user.html#aiobungie.crate.user.BungieUser">BungieUser</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Fetch the bungie user for this application owner.</p>
+<h2 id="returns">Returns</h2>
+<p><code><a title="aiobungie.crate.BungieUser" href="index.html#aiobungie.crate.BungieUser">BungieUser</a></code>
+A Bungie net user.</p>
+<h2 id="raises">Raises</h2>
+<p><code><a title="aiobungie.UserNotFound" href="../index.html#aiobungie.UserNotFound">UserNotFound</a></code>
+The user was not found.</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.2.5</p>
+</div></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_self(self) -&gt; user.BungieUser:
+    &#34;&#34;&#34;Fetch the bungie user for this application owner.
+
+    Returns
+    -------
+    `aiobungie.crate.BungieUser`
+        A Bungie net user.
+
+    Raises
+    ------
+    `aiobungie.UserNotFound`
+        The user was not found.
+
+    .. versionadded:: 0.2.5
+    &#34;&#34;&#34;
+    return await self.net.request.fetch_user(self.id)</code></pre>
 </details>
 </dd>
 </dl>
@@ -420,7 +504,7 @@ const query = new URL(window.location).searchParams.get('q');
 if (query)
 search(query);
 function search(query) {
-const url = '././doc-search.html#' + encodeURIComponent(query);
+const url = '../../doc-search.html#' + encodeURIComponent(query);
 new tingle.modal({
 cssClass: ['modal-dialog'],
 onClose: () => {
@@ -462,12 +546,14 @@ setTimeout(() => input.focus(), 100);
 <h4><code><a title="aiobungie.crate.application.ApplicationOwner" href="#aiobungie.crate.application.ApplicationOwner">ApplicationOwner</a></code></h4>
 <ul class="two-column">
 <li><code><a title="aiobungie.crate.application.ApplicationOwner.code" href="#aiobungie.crate.application.ApplicationOwner.code">code</a></code></li>
+<li><code><a title="aiobungie.crate.application.ApplicationOwner.fetch_self" href="#aiobungie.crate.application.ApplicationOwner.fetch_self">fetch_self</a></code></li>
 <li><code><a title="aiobungie.crate.application.ApplicationOwner.icon" href="#aiobungie.crate.application.ApplicationOwner.icon">icon</a></code></li>
 <li><code><a title="aiobungie.crate.application.ApplicationOwner.id" href="#aiobungie.crate.application.ApplicationOwner.id">id</a></code></li>
 <li><code><a title="aiobungie.crate.application.ApplicationOwner.is_public" href="#aiobungie.crate.application.ApplicationOwner.is_public">is_public</a></code></li>
 <li><code><a title="aiobungie.crate.application.ApplicationOwner.last_seen_name" href="#aiobungie.crate.application.ApplicationOwner.last_seen_name">last_seen_name</a></code></li>
 <li><code><a title="aiobungie.crate.application.ApplicationOwner.link" href="#aiobungie.crate.application.ApplicationOwner.link">link</a></code></li>
 <li><code><a title="aiobungie.crate.application.ApplicationOwner.name" href="#aiobungie.crate.application.ApplicationOwner.name">name</a></code></li>
+<li><code><a title="aiobungie.crate.application.ApplicationOwner.net" href="#aiobungie.crate.application.ApplicationOwner.net">net</a></code></li>
 <li><code><a title="aiobungie.crate.application.ApplicationOwner.type" href="#aiobungie.crate.application.ApplicationOwner.type">type</a></code></li>
 <li><code><a title="aiobungie.crate.application.ApplicationOwner.unique_name" href="#aiobungie.crate.application.ApplicationOwner.unique_name">unique_name</a></code></li>
 </ul>

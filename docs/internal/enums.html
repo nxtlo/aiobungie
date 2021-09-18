@@ -488,7 +488,7 @@ class Relationship(IntEnum):
 
 @typing.final
 class ClanMemberType(IntEnum):
-
+    &#34;&#34;&#34;An enum for bungie clan member types.&#34;&#34;&#34;
     NONE = 0
     BEGINNER = 1
     MEMBER = 2
@@ -557,14 +557,14 @@ class AmmoType(IntEnum):
 <span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>An enumeration.</p></div>
+<div class="desc"><p>An enum for bungie clan member types.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@typing.final
 class ClanMemberType(IntEnum):
-
+    &#34;&#34;&#34;An enum for bungie clan member types.&#34;&#34;&#34;
     NONE = 0
     BEGINNER = 1
     MEMBER = 2
@@ -2197,7 +2197,7 @@ const query = new URL(window.location).searchParams.get('q');
 if (query)
 search(query);
 function search(query) {
-const url = '././doc-search.html#' + encodeURIComponent(query);
+const url = '../../doc-search.html#' + encodeURIComponent(query);
 new tingle.modal({
 cssClass: ['modal-dialog'],
 onClose: () => {

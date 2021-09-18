@@ -60,6 +60,7 @@ __all__ = (
     "Place",
     "CredentialType",
     "GroupType",
+    "ClanMemberType",
 )
 
 from .client import Client

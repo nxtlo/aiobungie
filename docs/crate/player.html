@@ -59,14 +59,13 @@ __all__ = (&#34;Player&#34;,)
 
 import attr
 
-from aiobungie.crate import user
 from aiobungie.internal import Image
 from aiobungie.internal import helpers
 from aiobungie.internal.enums import MembershipType
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
-class Player(user.DestinyUser):
+class Player:
     &#34;&#34;&#34;Represents a Bungie Destiny 2 Player.&#34;&#34;&#34;
 
     icon: Image = attr.field(repr=False, hash=False, eq=False)
@@ -77,6 +76,9 @@ class Player(user.DestinyUser):
 
     name: str = attr.field(repr=True, eq=False, hash=False)
     &#34;&#34;&#34;The player&#39;s name&#34;&#34;&#34;
+
+    last_seen_name: helpers.UndefinedOr[str] = attr.field(repr=True)
+    &#34;&#34;&#34;Player&#39;s last name.&#34;&#34;&#34;
 
     is_public: bool = attr.field(repr=True, eq=True, hash=False)
     &#34;&#34;&#34;The player&#39;s profile privacy.&#34;&#34;&#34;
@@ -91,7 +93,7 @@ class Player(user.DestinyUser):
     &#34;&#34;&#34;
 
     crossave_override: int = attr.field(repr=False)
-    &#34;&#34;&#34;Returns `1` if the user has a cross save override in effect and 0 if not.
+    &#34;&#34;&#34;Returns `1` if the player has a cross save override in effect and 0 if not.
 
     .. versionadded:: 0.2.5
     &#34;&#34;&#34;
@@ -104,7 +106,7 @@ class Player(user.DestinyUser):
 
     @property
     def unique_name(self) -&gt; str:
-        &#34;&#34;&#34;The user&#39;s unique name.
+        &#34;&#34;&#34;The player&#39;s unique name.
 
         .. versionadded:: 0.2.5
         &#34;&#34;&#34;
@@ -122,7 +124,7 @@ class Player(user.DestinyUser):
 <dl>
 <dt id="aiobungie.crate.player.Player"><code class="flex name class">
 <span>class <span class="ident">Player</span></span>
-<span>(</span><span>*, last_seen_name: str, icon: Image, id: int, name: str, is_public: bool, type: MembershipType, code: helpers.NoneOr[int], crossave_override: int, types: list[MembershipType])</span>
+<span>(</span><span>*, icon: Image, id: int, name: str, last_seen_name: helpers.UndefinedOr[str], is_public: bool, type: MembershipType, code: helpers.NoneOr[int], crossave_override: int, types: list[MembershipType])</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Represents a Bungie Destiny 2 Player.</p>
@@ -132,7 +134,7 @@ class Player(user.DestinyUser):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@attr.define(hash=False, kw_only=True, weakref_slot=False)
-class Player(user.DestinyUser):
+class Player:
     &#34;&#34;&#34;Represents a Bungie Destiny 2 Player.&#34;&#34;&#34;
 
     icon: Image = attr.field(repr=False, hash=False, eq=False)
@@ -143,6 +145,9 @@ class Player(user.DestinyUser):
 
     name: str = attr.field(repr=True, eq=False, hash=False)
     &#34;&#34;&#34;The player&#39;s name&#34;&#34;&#34;
+
+    last_seen_name: helpers.UndefinedOr[str] = attr.field(repr=True)
+    &#34;&#34;&#34;Player&#39;s last name.&#34;&#34;&#34;
 
     is_public: bool = attr.field(repr=True, eq=True, hash=False)
     &#34;&#34;&#34;The player&#39;s profile privacy.&#34;&#34;&#34;
@@ -157,7 +162,7 @@ class Player(user.DestinyUser):
     &#34;&#34;&#34;
 
     crossave_override: int = attr.field(repr=False)
-    &#34;&#34;&#34;Returns `1` if the user has a cross save override in effect and 0 if not.
+    &#34;&#34;&#34;Returns `1` if the player has a cross save override in effect and 0 if not.
 
     .. versionadded:: 0.2.5
     &#34;&#34;&#34;
@@ -170,18 +175,12 @@ class Player(user.DestinyUser):
 
     @property
     def unique_name(self) -&gt; str:
-        &#34;&#34;&#34;The user&#39;s unique name.
+        &#34;&#34;&#34;The player&#39;s unique name.
 
         .. versionadded:: 0.2.5
         &#34;&#34;&#34;
         return f&#34;{self.name}#{self.code}&#34;</code></pre>
 </details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li><a title="aiobungie.crate.user.DestinyUser" href="user.html#aiobungie.crate.user.DestinyUser">DestinyUser</a></li>
-<li><a title="aiobungie.crate.user.UserLike" href="user.html#aiobungie.crate.user.UserLike">UserLike</a></li>
-<li>abc.ABC</li>
-</ul>
 <h3>Instance variables</h3>
 <dl>
 <dt id="aiobungie.crate.player.Player.code"><code class="name">var <span class="ident">code</span> : Optional[None]</code></dt>
@@ -193,12 +192,12 @@ class Player(user.DestinyUser):
 </dd>
 <dt id="aiobungie.crate.player.Player.crossave_override"><code class="name">var <span class="ident">crossave_override</span> : int</code></dt>
 <dd>
-<div class="desc"><p>Returns <code>1</code> if the user has a cross save override in effect and 0 if not.</p>
+<div class="desc"><p>Returns <code>1</code> if the player has a cross save override in effect and 0 if not.</p>
 <div class="admonition versionadded">
 <p class="admonition-title">Added in version:&ensp;0.2.5</p>
 </div></div>
 </dd>
-<dt id="aiobungie.crate.player.Player.icon"><code class="name">var <span class="ident">icon</span> : <a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a></code></dt>
+<dt id="aiobungie.crate.player.Player.icon"><code class="name">var <span class="ident">icon</span> : <a title="aiobungie.internal.assets.Image" href="../internal/assets.html#aiobungie.internal.assets.Image">Image</a></code></dt>
 <dd>
 <div class="desc"><p>The player's icon.</p></div>
 </dd>
@@ -210,27 +209,15 @@ class Player(user.DestinyUser):
 <dd>
 <div class="desc"><p>The player's profile privacy.</p></div>
 </dd>
-<dt id="aiobungie.crate.player.Player.last_seen_name"><code class="name">var <span class="ident">last_seen_name</span> : str</code></dt>
+<dt id="aiobungie.crate.player.Player.last_seen_name"><code class="name">var <span class="ident">last_seen_name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="../internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
 <dd>
-<p class="inheritance">
-<em>Inherited from:</em>
-<code><a title="aiobungie.crate.user.DestinyUser" href="user.html#aiobungie.crate.user.DestinyUser">DestinyUser</a></code>.<code><a title="aiobungie.crate.user.DestinyUser.last_seen_name" href="user.html#aiobungie.crate.user.DestinyUser.last_seen_name">last_seen_name</a></code>
-</p>
-<div class="desc inherited"><p>The member's last seen display name. You may use this field if <code>DestinyUser.name</code> is <code>Undefined</code>.</p></div>
-</dd>
-<dt id="aiobungie.crate.player.Player.link"><code class="name">var <span class="ident">link</span> : str</code></dt>
-<dd>
-<p class="inheritance">
-<em>Inherited from:</em>
-<code><a title="aiobungie.crate.user.DestinyUser" href="user.html#aiobungie.crate.user.DestinyUser">DestinyUser</a></code>.<code><a title="aiobungie.crate.user.DestinyUser.link" href="user.html#aiobungie.crate.user.DestinyUser.link">link</a></code>
-</p>
-<div class="desc inherited"><p>The user like's profile link.</p></div>
+<div class="desc"><p>Player's last name.</p></div>
 </dd>
 <dt id="aiobungie.crate.player.Player.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
 <dd>
 <div class="desc"><p>The player's name</p></div>
 </dd>
-<dt id="aiobungie.crate.player.Player.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
+<dt id="aiobungie.crate.player.Player.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="../internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
 <dd>
 <div class="desc"><p>The profile's membership type.</p></div>
 </dd>
@@ -243,7 +230,7 @@ class Player(user.DestinyUser):
 </dd>
 <dt id="aiobungie.crate.player.Player.unique_name"><code class="name">var <span class="ident">unique_name</span> : str</code></dt>
 <dd>
-<div class="desc"><p>The user's unique name.</p>
+<div class="desc"><p>The player's unique name.</p>
 <div class="admonition versionadded">
 <p class="admonition-title">Added in version:&ensp;0.2.5</p>
 </div></div>
@@ -253,7 +240,7 @@ class Player(user.DestinyUser):
 </summary>
 <pre><code class="python">@property
 def unique_name(self) -&gt; str:
-    &#34;&#34;&#34;The user&#39;s unique name.
+    &#34;&#34;&#34;The player&#39;s unique name.
 
     .. versionadded:: 0.2.5
     &#34;&#34;&#34;
@@ -300,7 +287,7 @@ const query = new URL(window.location).searchParams.get('q');
 if (query)
 search(query);
 function search(query) {
-const url = '././doc-search.html#' + encodeURIComponent(query);
+const url = '../../doc-search.html#' + encodeURIComponent(query);
 new tingle.modal({
 cssClass: ['modal-dialog'],
 onClose: () => {
@@ -332,8 +319,7 @@ setTimeout(() => input.focus(), 100);
 <li><code><a title="aiobungie.crate.player.Player.icon" href="#aiobungie.crate.player.Player.icon">icon</a></code></li>
 <li><code><a title="aiobungie.crate.player.Player.id" href="#aiobungie.crate.player.Player.id">id</a></code></li>
 <li><code><a title="aiobungie.crate.player.Player.is_public" href="#aiobungie.crate.player.Player.is_public">is_public</a></code></li>
-<li><code><a title="aiobungie.crate.player.Player.last_seen_name" href="user.html#aiobungie.crate.player.Player.last_seen_name">last_seen_name</a></code></li>
-<li><code><a title="aiobungie.crate.player.Player.link" href="user.html#aiobungie.crate.player.Player.link">link</a></code></li>
+<li><code><a title="aiobungie.crate.player.Player.last_seen_name" href="#aiobungie.crate.player.Player.last_seen_name">last_seen_name</a></code></li>
 <li><code><a title="aiobungie.crate.player.Player.name" href="#aiobungie.crate.player.Player.name">name</a></code></li>
 <li><code><a title="aiobungie.crate.player.Player.type" href="#aiobungie.crate.player.Player.type">type</a></code></li>
 <li><code><a title="aiobungie.crate.player.Player.types" href="#aiobungie.crate.player.Player.types">types</a></code></li>

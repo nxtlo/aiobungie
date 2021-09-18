@@ -72,9 +72,10 @@ async def test_hard_types() -> crate.user.HardLinkedMembership:
 @view
 async def test_clan_from_id() -> crate.Clan:
     c = await client.fetch_clan_from_id(4389205)
-    members = await c.fetch_members()
-    member = await c.fetch_member("Fate")
-    print(members, member)
+    # members = await c.fetch_members()
+    # member = await c.fetch_member("Fate")
+    # print(members, member)
+    print(c.owner)
     return c
 
 
@@ -171,8 +172,31 @@ async def test_search_users() -> typing.Any:
 async def test_clan_conves():
     return await client.fetch_clan_conversations(881267)
 
+@view
+async def test_clan_admins():
+    return await client.fetch_clan_admins(4389205)
+
+@view
+async def test_groups_for_member():
+    obj = await client.fetch_groups_for_member(MID, aiobungie.MembershipType.STEAM)
+    if obj is None:
+        return None
+    up_to_date_clan_obj = await obj.fetch_self_clan()
+    print(repr(up_to_date_clan_obj))
+    return obj
+
+@view
+async def test_potential_groups_for_member():
+    obj = await client.fetch_potential_groups_for_member(MID, aiobungie.MembershipType.STEAM)
+    if obj is None:
+        return None
+    up_to_date_clan_obj = await obj.fetch_self_clan()
+    print(repr(up_to_date_clan_obj))
+    return obj
+
 async def main() -> None:
     coros = [
+        test_clan_admins(),
         test_player(),
         test_users(),
         test_user_themese(),
@@ -187,7 +211,9 @@ async def main() -> None:
         test_rest(),
         test_search_users(),
         test_fetch_app(),
-        test_clan_conves()
+        test_clan_conves(),
+        test_groups_for_member(),
+        test_potential_groups_for_member()
     ]
     print(await asyncio.gather(*coros))
 

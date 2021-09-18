@@ -125,7 +125,6 @@ class Friend(user_.UserLike):
             The friend was not found in your pending requests.
 
         &#34;&#34;&#34;
-        raise NotImplementedError
 
     async def decline(self, id: int, /) -&gt; None:
         &#34;&#34;&#34;Decline a friend request.
@@ -145,7 +144,6 @@ class Friend(user_.UserLike):
         `aiobungie.NotFound`
             The friend was not found in your pending requests.
         &#34;&#34;&#34;
-        raise NotImplementedError
 
     async def add(self, id: int, /) -&gt; None:
         &#34;&#34;&#34;Adds a bungie member to your friend list.
@@ -165,7 +163,6 @@ class Friend(user_.UserLike):
         `aiobungie.NotFound`
             The player was not found.
         &#34;&#34;&#34;
-        raise NotImplementedError
 
     async def remove(self, id: int, /) -&gt; None:
         &#34;&#34;&#34;Removed an existing friend from your friend list.
@@ -185,7 +182,6 @@ class Friend(user_.UserLike):
         `aiobungie.NotFound`
             The friend was not found in your friend list.
         &#34;&#34;&#34;
-        raise NotImplementedError
 
     async def pending(self) -&gt; typing.Sequence[Friend]:
         &#34;&#34;&#34;Returns the pending friend requests.
@@ -200,7 +196,6 @@ class Friend(user_.UserLike):
         `typing.Sequence[Friend]`
             A sequence of pending friend requests.
         &#34;&#34;&#34;
-        raise NotImplementedError
 
     async def remove_request(self, id: int, /) -&gt; None:
         &#34;&#34;&#34;Removed an existing friend request.
@@ -218,7 +213,6 @@ class Friend(user_.UserLike):
         `builtins.NoneType`
             None
         &#34;&#34;&#34;
-        raise NotImplementedError
 
     async def fetch_platform_friends(self, platform: enums.MembershipType, /) -&gt; None:
         &#34;&#34;&#34;Gets the platform friend of the requested type.
@@ -233,7 +227,6 @@ class Friend(user_.UserLike):
         `aiobungie.NotFound`
             The requested friend was not found.
         &#34;&#34;&#34;
-        raise NotImplementedError
 
     async def is_pending(self, id: int) -&gt; bool:
         for friend in await self.pending():
@@ -325,7 +318,6 @@ class Friend(user_.UserLike):
             The friend was not found in your pending requests.
 
         &#34;&#34;&#34;
-        raise NotImplementedError
 
     async def decline(self, id: int, /) -&gt; None:
         &#34;&#34;&#34;Decline a friend request.
@@ -345,7 +337,6 @@ class Friend(user_.UserLike):
         `aiobungie.NotFound`
             The friend was not found in your pending requests.
         &#34;&#34;&#34;
-        raise NotImplementedError
 
     async def add(self, id: int, /) -&gt; None:
         &#34;&#34;&#34;Adds a bungie member to your friend list.
@@ -365,7 +356,6 @@ class Friend(user_.UserLike):
         `aiobungie.NotFound`
             The player was not found.
         &#34;&#34;&#34;
-        raise NotImplementedError
 
     async def remove(self, id: int, /) -&gt; None:
         &#34;&#34;&#34;Removed an existing friend from your friend list.
@@ -385,7 +375,6 @@ class Friend(user_.UserLike):
         `aiobungie.NotFound`
             The friend was not found in your friend list.
         &#34;&#34;&#34;
-        raise NotImplementedError
 
     async def pending(self) -&gt; typing.Sequence[Friend]:
         &#34;&#34;&#34;Returns the pending friend requests.
@@ -400,7 +389,6 @@ class Friend(user_.UserLike):
         `typing.Sequence[Friend]`
             A sequence of pending friend requests.
         &#34;&#34;&#34;
-        raise NotImplementedError
 
     async def remove_request(self, id: int, /) -&gt; None:
         &#34;&#34;&#34;Removed an existing friend request.
@@ -418,7 +406,6 @@ class Friend(user_.UserLike):
         `builtins.NoneType`
             None
         &#34;&#34;&#34;
-        raise NotImplementedError
 
     async def fetch_platform_friends(self, platform: enums.MembershipType, /) -&gt; None:
         &#34;&#34;&#34;Gets the platform friend of the requested type.
@@ -433,7 +420,6 @@ class Friend(user_.UserLike):
         `aiobungie.NotFound`
             The requested friend was not found.
         &#34;&#34;&#34;
-        raise NotImplementedError
 
     async def is_pending(self, id: int) -&gt; bool:
         for friend in await self.pending():
@@ -452,7 +438,7 @@ class Friend(user_.UserLike):
 <dd>
 <div class="desc"><p>The friend's last seen global code. This field could be None if the player hasn't logged in yet.</p></div>
 </dd>
-<dt id="aiobungie.crate.friends.Friend.icon"><code class="name">var <span class="ident">icon</span> : Union[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
+<dt id="aiobungie.crate.friends.Friend.icon"><code class="name">var <span class="ident">icon</span> : Union[<a title="aiobungie.internal.assets.Image" href="../internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
 <dd>
 <p class="inheritance">
 <em>Inherited from:</em>
@@ -488,15 +474,15 @@ class Friend(user_.UserLike):
 </p>
 <div class="desc inherited"><p>The user like's profile link.</p></div>
 </dd>
-<dt id="aiobungie.crate.friends.Friend.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
+<dt id="aiobungie.crate.friends.Friend.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="../internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
 <dd>
 <div class="desc"><p>The friend's last seen global display name. This field could be Undefined if the player hasn't logged in yet.</p></div>
 </dd>
-<dt id="aiobungie.crate.friends.Friend.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.traits.Netrunner" href="./internal/traits.html#aiobungie.internal.traits.Netrunner">Netrunner</a></code></dt>
+<dt id="aiobungie.crate.friends.Friend.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.traits.Netrunner" href="../internal/traits.html#aiobungie.internal.traits.Netrunner">Netrunner</a></code></dt>
 <dd>
 <div class="desc"><p>A network state we use to make external requests.</p></div>
 </dd>
-<dt id="aiobungie.crate.friends.Friend.online_status"><code class="name">var <span class="ident">online_status</span> : <a title="aiobungie.internal.enums.Presence" href="./internal/enums.html#aiobungie.internal.enums.Presence">Presence</a></code></dt>
+<dt id="aiobungie.crate.friends.Friend.online_status"><code class="name">var <span class="ident">online_status</span> : <a title="aiobungie.internal.enums.Presence" href="../internal/enums.html#aiobungie.internal.enums.Presence">Presence</a></code></dt>
 <dd>
 <div class="desc"><p>The friend's online status.</p></div>
 </dd>
@@ -504,11 +490,11 @@ class Friend(user_.UserLike):
 <dd>
 <div class="desc"><p>The friend's online title.</p></div>
 </dd>
-<dt id="aiobungie.crate.friends.Friend.relationship"><code class="name">var <span class="ident">relationship</span> : <a title="aiobungie.internal.enums.Relationship" href="./internal/enums.html#aiobungie.internal.enums.Relationship">Relationship</a></code></dt>
+<dt id="aiobungie.crate.friends.Friend.relationship"><code class="name">var <span class="ident">relationship</span> : <a title="aiobungie.internal.enums.Relationship" href="../internal/enums.html#aiobungie.internal.enums.Relationship">Relationship</a></code></dt>
 <dd>
 <div class="desc"><p>The friend's relationship type.</p></div>
 </dd>
-<dt id="aiobungie.crate.friends.Friend.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
+<dt id="aiobungie.crate.friends.Friend.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="../internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
 <dd>
 <div class="desc"><p>The friend's last seen membership type.</p></div>
 </dd>
@@ -546,7 +532,7 @@ def unique_name(self) -&gt; str:
 <p><code>builtins.NoneType</code>
 None</p>
 <h2 id="raises">Raises</h2>
-<p><code><a title="aiobungie.NotFound" href="./index.html#aiobungie.NotFound">NotFound</a></code>
+<p><code><a title="aiobungie.NotFound" href="../index.html#aiobungie.NotFound">NotFound</a></code>
 The friend was not found in your pending requests.</p></div>
 <details class="source">
 <summary>
@@ -570,8 +556,7 @@ The friend was not found in your pending requests.</p></div>
     `aiobungie.NotFound`
         The friend was not found in your pending requests.
 
-    &#34;&#34;&#34;
-    raise NotImplementedError</code></pre>
+    &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="aiobungie.crate.friends.Friend.add"><code class="name flex">
@@ -588,7 +573,7 @@ The friend was not found in your pending requests.</p></div>
 <p><code>builtins.NoneType</code>
 None</p>
 <h2 id="raises">Raises</h2>
-<p><code><a title="aiobungie.NotFound" href="./index.html#aiobungie.NotFound">NotFound</a></code>
+<p><code><a title="aiobungie.NotFound" href="../index.html#aiobungie.NotFound">NotFound</a></code>
 The player was not found.</p></div>
 <details class="source">
 <summary>
@@ -611,8 +596,7 @@ The player was not found.</p></div>
     ------
     `aiobungie.NotFound`
         The player was not found.
-    &#34;&#34;&#34;
-    raise NotImplementedError</code></pre>
+    &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="aiobungie.crate.friends.Friend.decline"><code class="name flex">
@@ -629,7 +613,7 @@ The player was not found.</p></div>
 <p><code>builtins.NoneType</code>
 None</p>
 <h2 id="raises">Raises</h2>
-<p><code><a title="aiobungie.NotFound" href="./index.html#aiobungie.NotFound">NotFound</a></code>
+<p><code><a title="aiobungie.NotFound" href="../index.html#aiobungie.NotFound">NotFound</a></code>
 The friend was not found in your pending requests.</p></div>
 <details class="source">
 <summary>
@@ -652,8 +636,7 @@ The friend was not found in your pending requests.</p></div>
     ------
     `aiobungie.NotFound`
         The friend was not found in your pending requests.
-    &#34;&#34;&#34;
-    raise NotImplementedError</code></pre>
+    &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="aiobungie.crate.friends.Friend.fetch_platform_friends"><code class="name flex">
@@ -663,11 +646,11 @@ The friend was not found in your pending requests.</p></div>
 <div class="desc"><p>Gets the platform friend of the requested type.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
-<dt><strong><code>platform</code></strong> :&ensp;<code><a title="aiobungie.MembershipType" href="./index.html#aiobungie.MembershipType">MembershipType</a></code></dt>
+<dt><strong><code>platform</code></strong> :&ensp;<code><a title="aiobungie.MembershipType" href="../index.html#aiobungie.MembershipType">MembershipType</a></code></dt>
 <dd>The friend memebrship type.</dd>
 </dl>
 <h2 id="raises">Raises</h2>
-<p><code><a title="aiobungie.NotFound" href="./index.html#aiobungie.NotFound">NotFound</a></code>
+<p><code><a title="aiobungie.NotFound" href="../index.html#aiobungie.NotFound">NotFound</a></code>
 The requested friend was not found.</p></div>
 <details class="source">
 <summary>
@@ -685,8 +668,7 @@ The requested friend was not found.</p></div>
     ------
     `aiobungie.NotFound`
         The requested friend was not found.
-    &#34;&#34;&#34;
-    raise NotImplementedError</code></pre>
+    &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="aiobungie.crate.friends.Friend.is_pending"><code class="name flex">
@@ -734,8 +716,7 @@ A sequence of pending friend requests.</p></div>
     -------
     `typing.Sequence[Friend]`
         A sequence of pending friend requests.
-    &#34;&#34;&#34;
-    raise NotImplementedError</code></pre>
+    &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="aiobungie.crate.friends.Friend.remove"><code class="name flex">
@@ -752,7 +733,7 @@ A sequence of pending friend requests.</p></div>
 <p><code>builtins.NoneType</code>
 None</p>
 <h2 id="raises">Raises</h2>
-<p><code><a title="aiobungie.NotFound" href="./index.html#aiobungie.NotFound">NotFound</a></code>
+<p><code><a title="aiobungie.NotFound" href="../index.html#aiobungie.NotFound">NotFound</a></code>
 The friend was not found in your friend list.</p></div>
 <details class="source">
 <summary>
@@ -775,8 +756,7 @@ The friend was not found in your friend list.</p></div>
     ------
     `aiobungie.NotFound`
         The friend was not found in your friend list.
-    &#34;&#34;&#34;
-    raise NotImplementedError</code></pre>
+    &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="aiobungie.crate.friends.Friend.remove_request"><code class="name flex">
@@ -815,8 +795,7 @@ None</p></div>
     -------
     `builtins.NoneType`
         None
-    &#34;&#34;&#34;
-    raise NotImplementedError</code></pre>
+    &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 </dl>
@@ -859,7 +838,7 @@ const query = new URL(window.location).searchParams.get('q');
 if (query)
 search(query);
 function search(query) {
-const url = '././doc-search.html#' + encodeURIComponent(query);
+const url = '../../doc-search.html#' + encodeURIComponent(query);
 new tingle.modal({
 cssClass: ['modal-dialog'],
 onClose: () => {

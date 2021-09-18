@@ -201,7 +201,7 @@ const query = new URL(window.location).searchParams.get('q');
 if (query)
 search(query);
 function search(query) {
-const url = '././doc-search.html#' + encodeURIComponent(query);
+const url = '../../doc-search.html#' + encodeURIComponent(query);
 new tingle.modal({
 cssClass: ['modal-dialog'],
 onClose: () => {
@@ -220,7 +220,7 @@ setTimeout(() => input.focus(), 100);
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="aiobungie" href="./index.html">aiobungie</a></code></li>
+<li><code><a title="aiobungie" href="../index.html">aiobungie</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-submodules">Sub-modules</a></h3>

@@ -54,8 +54,16 @@
 
 from __future__ import annotations
 
-__all__ = (&#34;Clan&#34;, &#34;ClanOwner&#34;, &#34;ClanMember&#34;, &#34;ClanFeatures&#34;)
+from aiobungie.crate import user
 
+__all__ = (
+    &#34;Clan&#34;,
+    &#34;ClanMember&#34;,
+    &#34;ClanAdmin&#34;,
+    &#34;ClanFeatures&#34;,
+    &#34;ClanConversation&#34;,
+    &#34;GroupMember&#34;,
+)
 
 import typing
 from datetime import datetime
@@ -101,8 +109,28 @@ class ClanFeatures:
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
+class ClanConversation:
+    &#34;&#34;&#34;Represents a clan conversation.&#34;&#34;&#34;
+
+    group_id: int = attr.field(repr=True)
+    &#34;&#34;&#34;The clan or group&#39;s id.&#34;&#34;&#34;
+
+    id: int = attr.field(repr=True, hash=True)
+    &#34;&#34;&#34;The conversation&#39;s id&#34;&#34;&#34;
+
+    chat_enabled: bool = attr.field(repr=True)
+    &#34;&#34;&#34;`True` if the Conversation&#39;s chat is enabled.&#34;&#34;&#34;
+
+    name: helpers.UndefinedOr[str] = attr.field(repr=True)
+    &#34;&#34;&#34;Conversation chat&#39;s name.&#34;&#34;&#34;
+
+    security: int = attr.field(repr=False)
+    &#34;&#34;&#34;Conversation&#39;s security level.&#34;&#34;&#34;
+
+
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class ClanMember(UserLike):
-    &#34;&#34;&#34;Represents a Destiny 2 clan member.&#34;&#34;&#34;
+    &#34;&#34;&#34;Represents a Bungie clan member.&#34;&#34;&#34;
 
     net: traits.Netrunner = attr.field(repr=False)
     &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
@@ -131,13 +159,13 @@ class ClanMember(UserLike):
     group_id: int = attr.field(repr=True)
     &#34;&#34;&#34;The member&#39;s group id.&#34;&#34;&#34;
 
-    is_online: bool = attr.field(repr=False)
+    is_online: bool = attr.field(repr=False, default=None)
     &#34;&#34;&#34;True if the clan member is online or not.&#34;&#34;&#34;
 
-    last_online: datetime = attr.field(repr=False)
+    last_online: datetime = attr.field(repr=False, default=None)
     &#34;&#34;&#34;The date of the clan member&#39;s last online in UTC time zone.&#34;&#34;&#34;
 
-    joined_at: datetime = attr.field(repr=False)
+    joined_at: datetime = attr.field(repr=False, default=None)
     &#34;&#34;&#34;The clan member&#39;s join date in UTC time zone.&#34;&#34;&#34;
 
     code: helpers.NoneOr[int] = attr.field(repr=True)
@@ -147,9 +175,16 @@ class ClanMember(UserLike):
     .. versionadded:: 0.2.5
     &#34;&#34;&#34;
 
+    bungie: user.PartialBungieUser = attr.field(repr=True)
+    &#34;&#34;&#34;The clan member&#39;s bungie partial net user.
+
+    .. note:: This only returns a partial bungie net user.
+    You can fetch the fully implemented user using `aiobungie.crate.PartialBungieUser.fetch_self()` method.
+    &#34;&#34;&#34;
+
     @property
     def unique_name(self) -&gt; str:
-        &#34;&#34;&#34;The user&#39;s unique name which includes their unique code.
+        &#34;&#34;&#34;The clan member&#39;s unique name which includes their unique code.
 
         .. versionadded:: 0.2.5
         &#34;&#34;&#34;
@@ -166,76 +201,70 @@ class ClanMember(UserLike):
     async def ban(self) -&gt; None:
         &#34;&#34;&#34;Bans a clan member from the clan.
         This requires OAuth2: AdminGroups scope.
+
+        .. warning::
+            This method is still not implemented.
         &#34;&#34;&#34;
         raise NotImplementedError
 
     async def unban(self) -&gt; None:
         &#34;&#34;&#34;Unbans a clan member clan.
         This requires OAuth2: AdminGroups scope.
+
+        .. warning::
+            This method is still not implemented.
         &#34;&#34;&#34;
         raise NotImplementedError
 
     async def kick(self) -&gt; None:
         &#34;&#34;&#34;Kicks a clan member from the clan.
         The requires OAuth2: AdminsGroup scope.
+
+        .. warning::
+            This method is still not implemented.
         &#34;&#34;&#34;
         raise NotImplementedError
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
-class ClanOwner(UserLike):
-    &#34;&#34;&#34;Represents a Bungie clan owner.&#34;&#34;&#34;
+class GroupMember:
+    &#34;&#34;&#34;Represents information about joined groups/clans for a member.&#34;&#34;&#34;
 
-    id: int = attr.field(hash=True, repr=True)
-    &#34;&#34;&#34;The user id.&#34;&#34;&#34;
+    net: traits.Netrunner = attr.field(repr=False)
 
-    name: helpers.UndefinedOr[str] = attr.field(repr=True)
-    &#34;&#34;&#34;The user name.&#34;&#34;&#34;
+    inactive_memberships: helpers.NoneOr[dict[int, bool]] = attr.field(repr=False)
+    &#34;&#34;&#34;The member&#39;s inactive memberships if provided. This will be `None` if not provided.&#34;&#34;&#34;
 
-    last_seen_name: str = attr.field(repr=True)
-    &#34;&#34;&#34;The clan member&#39;s last seen display name&#34;&#34;&#34;
+    member_type: ClanMemberType = attr.field(repr=True)
+    &#34;&#34;&#34;The member&#39;s member type.&#34;&#34;&#34;
 
-    is_public: bool = attr.field(repr=True, eq=False)
-    &#34;&#34;&#34;Returns if the user profile is public or no.&#34;&#34;&#34;
-
-    type: MembershipType = attr.field(repr=True, eq=True)
-    &#34;&#34;&#34;Returns the membership type of the user.&#34;&#34;&#34;
-
-    types: typing.Sequence[MembershipType] = attr.field(repr=False, eq=False)
-    &#34;&#34;&#34;Returns a list of the member ship&#39;s membership types.&#34;&#34;&#34;
+    is_online: bool = attr.field(repr=False)
+    &#34;&#34;&#34;Whether the member is online or not.&#34;&#34;&#34;
 
     last_online: datetime = attr.field(repr=False)
-    &#34;&#34;&#34;An aware `datetime.datetime` object of the user&#39;s last online date UTC.&#34;&#34;&#34;
+    &#34;&#34;&#34;An awre UTC datetime of the member&#39;s last online status.&#34;&#34;&#34;
 
-    clan_id: int = attr.field(repr=True)
-    &#34;&#34;&#34;Owner&#39;s current clan id.&#34;&#34;&#34;
+    group_id: int = attr.field(repr=True)
+    &#34;&#34;&#34;The group id of this member.&#34;&#34;&#34;
 
-    icon: assets.MaybeImage = attr.field(repr=False)
-    &#34;&#34;&#34;Owner&#39;s profile icom&#34;&#34;&#34;
+    join_date: datetime = attr.field(repr=False)
+    &#34;&#34;&#34;An awre UTC datetime of the member&#39;s join date.&#34;&#34;&#34;
 
-    joined_at: datetime = attr.field(repr=True)
-    &#34;&#34;&#34;Owner&#39;s bungie join date.&#34;&#34;&#34;
+    member: user.DestinyUser = attr.field(repr=True)
+    &#34;&#34;&#34;The member&#39;s destiny object that represents the group member.&#34;&#34;&#34;
 
-    code: helpers.NoneOr[int] = attr.field(repr=True)
-    &#34;&#34;&#34;The user&#39;s unique display name code.
-    This can be None if the user hasn&#39;t logged in after season of the lost update.
+    group: Clan = attr.field(repr=True)
+    &#34;&#34;&#34;The member&#39;s group/clan object that represents the group member.&#34;&#34;&#34;
 
-    .. versionadded:: 0.2.5
-    &#34;&#34;&#34;
+    async def fetch_self_clan(self) -&gt; Clan:
+        &#34;&#34;&#34;Fetch an up-todate clan/group object of the current group.
 
-    @property
-    def unique_name(self) -&gt; str:
-        &#34;&#34;&#34;The user&#39;s unique name which includes their unique code.
-        This field could be None if no unique name found.
-
-        .. versionadded:: 0.2.5
+        Returns
+        -------
+        `Clan`
+            The clan object.
         &#34;&#34;&#34;
-        return f&#34;{self.name}#{self.code}&#34;
-
-    @property
-    def link(self) -&gt; str:
-        &#34;&#34;&#34;Returns the user&#39;s profile link.&#34;&#34;&#34;
-        return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;
+        return await self.net.request.fetch_clan_from_id(self.group_id)
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
@@ -249,14 +278,82 @@ class ClanAdmin(UserLike):
     .. versionadded:: 0.2.5
     &#34;&#34;&#34;
 
-    is_online: bool = attr.field(repr=False)
-    &#34;&#34;&#34;True if the clan admin is online and False if not.&#34;&#34;&#34;
+    net: traits.Netrunner = attr.field(repr=False)
+    &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
+
+    total_admins: int = attr.field(repr=True)
+    &#34;&#34;&#34;The total count of the clan admins.&#34;&#34;&#34;
+
+    id: int = attr.field(repr=True, hash=True)
+    &#34;&#34;&#34;Clan admin&#39;s id&#34;&#34;&#34;
+
+    name: helpers.UndefinedOr[str] = attr.field(repr=True)
+    &#34;&#34;&#34;Clan admin&#39;s name. This can be `UNDEFINED` if not found.&#34;&#34;&#34;
+
+    last_seen_name: str = attr.field(repr=False)
+    &#34;&#34;&#34;The clan admin&#39;s last seen display name&#34;&#34;&#34;
+
+    type: MembershipType = attr.field(repr=True)
+    &#34;&#34;&#34;Clan admin&#39;s membership type.&#34;&#34;&#34;
+
+    types: typing.Sequence[MembershipType] = attr.field(repr=False)
+    &#34;&#34;&#34;A sequence of the available clan admin membership types.&#34;&#34;&#34;
+
+    icon: assets.MaybeImage = attr.field(repr=False)
+    &#34;&#34;&#34;Clan admin&#39;s icon&#34;&#34;&#34;
+
+    is_public: bool = attr.field(repr=False)
+    &#34;&#34;&#34;`builtins.True` if the clan admin is public.&#34;&#34;&#34;
 
     group_id: int = attr.field(repr=True)
-    &#34;&#34;&#34;The clan admin&#39;s group id which&#39;s the clan id he represents.&#34;&#34;&#34;
+    &#34;&#34;&#34;The admin&#39;s group or clan id.&#34;&#34;&#34;
 
-    join_date: datetime = attr.field(repr=False)
-    &#34;&#34;&#34;The clan admin&#39;s clan join date.&#34;&#34;&#34;
+    is_online: bool = attr.field(repr=False, default=None)
+    &#34;&#34;&#34;True if the clan admin is online or not.&#34;&#34;&#34;
+
+    last_online: datetime = attr.field(repr=False, default=None)
+    &#34;&#34;&#34;The date of the clan admin&#39;s last online in UTC time zone.&#34;&#34;&#34;
+
+    joined_at: datetime = attr.field(repr=False, default=None)
+    &#34;&#34;&#34;The clan admin&#39;s join date in UTC time zone.&#34;&#34;&#34;
+
+    code: helpers.NoneOr[int] = attr.field(repr=True)
+    &#34;&#34;&#34;The clan admin&#39;s bungie display name code
+    This is new and was added in Season of the lost update
+
+    .. versionadded:: 0.2.5
+    &#34;&#34;&#34;
+
+    bungie: user.PartialBungieUser = attr.field(repr=True)
+    &#34;&#34;&#34;The clan admin&#39;s bungie partial net user.
+
+    .. note:: This only returns a partial bungie net user.
+    You can fetch the fully implemented user using
+    `aiobungie.crate.PartialBungieUser.fetch_self()` method.
+    &#34;&#34;&#34;
+
+    async def fetch_clan(self) -&gt; Clan:
+        &#34;&#34;&#34;Fetch the clan that represents the clan admins.
+
+        Returns
+        -------
+        `Clan`
+            The clan admins clan.
+        &#34;&#34;&#34;
+        return await self.net.request.fetch_clan_from_id(self.group_id)
+
+    @property
+    def unique_name(self) -&gt; str:
+        &#34;&#34;&#34;The admin&#39;s unique name which includes their unique code.
+
+        .. versionadded:: 0.2.5
+        &#34;&#34;&#34;
+        return f&#34;{self.name}#{self.code}&#34;
+
+    @property
+    def link(self) -&gt; str:
+        &#34;&#34;&#34;Clan member&#39;s profile link.&#34;&#34;&#34;
+        return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
@@ -299,8 +396,8 @@ class Clan:
     tags: typing.List[str] = attr.field(repr=False)
     &#34;&#34;&#34;A list of the clan&#39;s tags.&#34;&#34;&#34;
 
-    owner: ClanOwner = attr.field(repr=True)
-    &#34;&#34;&#34;The clan owner.&#34;&#34;&#34;
+    owner: helpers.UndefinedOr[ClanMember] = attr.field(repr=True)
+    &#34;&#34;&#34;The clan owner. This field could be `Undefined` if not found.&#34;&#34;&#34;
 
     features: ClanFeatures = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;The clan features.&#34;&#34;&#34;
@@ -369,6 +466,9 @@ class Clan:
     async def fetch_banned_members(self) -&gt; typing.Sequence[ClanMember]:
         &#34;&#34;&#34;Fetch members who has been banned from the clan.
 
+        .. warning::
+            This method is still not implemented.
+
         Returns
         --------
         `typing.Sequence[aiobungie.crate.clans.ClanMember]`
@@ -378,6 +478,9 @@ class Clan:
 
     async def fetch_pending_members(self) -&gt; typing.Sequence[ClanMember]:
         &#34;&#34;&#34;Fetch members who are waiting to get accepted.
+
+        .. warning::
+            This method is still not implemented.
 
         Returns
         --------
@@ -389,6 +492,9 @@ class Clan:
 
     async def fetch_invited_members(self) -&gt; typing.Sequence[ClanMember]:
         &#34;&#34;&#34;Fetch members who has been invited.
+
+        .. warning::
+            This method is still not implemented.
 
         Returns
         --------
@@ -419,7 +525,7 @@ class Clan:
 <dl>
 <dt id="aiobungie.crate.clans.Clan"><code class="flex name class">
 <span>class <span class="ident">Clan</span></span>
-<span>(</span><span>*, net: traits.Netrunner, id: int, type: GroupType, name: str, created_at: datetime, member_count: int, motto: str, is_public: bool, banner: assets.MaybeImage, avatar: assets.MaybeImage, about: str, tags: typing.List[str], owner: <a title="aiobungie.crate.clans.ClanOwner" href="#aiobungie.crate.clans.ClanOwner">ClanOwner</a>, features: <a title="aiobungie.crate.clans.ClanFeatures" href="#aiobungie.crate.clans.ClanFeatures">ClanFeatures</a>)</span>
+<span>(</span><span>*, net: traits.Netrunner, id: int, type: GroupType, name: str, created_at: datetime, member_count: int, motto: str, is_public: bool, banner: assets.MaybeImage, avatar: assets.MaybeImage, about: str, tags: typing.List[str], owner: helpers.UndefinedOr[<a title="aiobungie.crate.clans.ClanMember" href="#aiobungie.crate.clans.ClanMember">ClanMember</a>], features: <a title="aiobungie.crate.clans.ClanFeatures" href="#aiobungie.crate.clans.ClanFeatures">ClanFeatures</a>)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Represents a Bungie clan.</p>
@@ -468,8 +574,8 @@ class Clan:
     tags: typing.List[str] = attr.field(repr=False)
     &#34;&#34;&#34;A list of the clan&#39;s tags.&#34;&#34;&#34;
 
-    owner: ClanOwner = attr.field(repr=True)
-    &#34;&#34;&#34;The clan owner.&#34;&#34;&#34;
+    owner: helpers.UndefinedOr[ClanMember] = attr.field(repr=True)
+    &#34;&#34;&#34;The clan owner. This field could be `Undefined` if not found.&#34;&#34;&#34;
 
     features: ClanFeatures = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;The clan features.&#34;&#34;&#34;
@@ -538,6 +644,9 @@ class Clan:
     async def fetch_banned_members(self) -&gt; typing.Sequence[ClanMember]:
         &#34;&#34;&#34;Fetch members who has been banned from the clan.
 
+        .. warning::
+            This method is still not implemented.
+
         Returns
         --------
         `typing.Sequence[aiobungie.crate.clans.ClanMember]`
@@ -547,6 +656,9 @@ class Clan:
 
     async def fetch_pending_members(self) -&gt; typing.Sequence[ClanMember]:
         &#34;&#34;&#34;Fetch members who are waiting to get accepted.
+
+        .. warning::
+            This method is still not implemented.
 
         Returns
         --------
@@ -558,6 +670,9 @@ class Clan:
 
     async def fetch_invited_members(self) -&gt; typing.Sequence[ClanMember]:
         &#34;&#34;&#34;Fetch members who has been invited.
+
+        .. warning::
+            This method is still not implemented.
 
         Returns
         --------
@@ -582,11 +697,11 @@ class Clan:
 <dd>
 <div class="desc"><p>Clan's about title.</p></div>
 </dd>
-<dt id="aiobungie.crate.clans.Clan.avatar"><code class="name">var <span class="ident">avatar</span> : Union[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
+<dt id="aiobungie.crate.clans.Clan.avatar"><code class="name">var <span class="ident">avatar</span> : Union[<a title="aiobungie.internal.assets.Image" href="../internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
 <dd>
 <div class="desc"><p>Clan's avatar</p></div>
 </dd>
-<dt id="aiobungie.crate.clans.Clan.banner"><code class="name">var <span class="ident">banner</span> : Union[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
+<dt id="aiobungie.crate.clans.Clan.banner"><code class="name">var <span class="ident">banner</span> : Union[<a title="aiobungie.internal.assets.Image" href="../internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
 <dd>
 <div class="desc"><p>Clan's banner</p></div>
 </dd>
@@ -618,19 +733,19 @@ class Clan:
 <dd>
 <div class="desc"><p>The clan's name</p></div>
 </dd>
-<dt id="aiobungie.crate.clans.Clan.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.traits.Netrunner" href="./internal/traits.html#aiobungie.internal.traits.Netrunner">Netrunner</a></code></dt>
+<dt id="aiobungie.crate.clans.Clan.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.traits.Netrunner" href="../internal/traits.html#aiobungie.internal.traits.Netrunner">Netrunner</a></code></dt>
 <dd>
 <div class="desc"><p>A network state used for making external requests.</p></div>
 </dd>
-<dt id="aiobungie.crate.clans.Clan.owner"><code class="name">var <span class="ident">owner</span> : <a title="aiobungie.crate.clans.ClanOwner" href="#aiobungie.crate.clans.ClanOwner">ClanOwner</a></code></dt>
+<dt id="aiobungie.crate.clans.Clan.owner"><code class="name">var <span class="ident">owner</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="../internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, <a title="aiobungie.crate.clans.ClanMember" href="#aiobungie.crate.clans.ClanMember">ClanMember</a>]</code></dt>
 <dd>
-<div class="desc"><p>The clan owner.</p></div>
+<div class="desc"><p>The clan owner. This field could be <code>Undefined</code> if not found.</p></div>
 </dd>
 <dt id="aiobungie.crate.clans.Clan.tags"><code class="name">var <span class="ident">tags</span> : List[str]</code></dt>
 <dd>
 <div class="desc"><p>A list of the clan's tags.</p></div>
 </dd>
-<dt id="aiobungie.crate.clans.Clan.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.GroupType" href="./internal/enums.html#aiobungie.internal.enums.GroupType">GroupType</a></code></dt>
+<dt id="aiobungie.crate.clans.Clan.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.GroupType" href="../internal/enums.html#aiobungie.internal.enums.GroupType">GroupType</a></code></dt>
 <dd>
 <div class="desc"><p>The clan type.</p></div>
 </dd>
@@ -654,6 +769,10 @@ def url(self) -&gt; str:
 </code></dt>
 <dd>
 <div class="desc"><p>Fetch members who has been banned from the clan.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This method is still not implemented.</p>
+</div>
 <h2 id="returns">Returns</h2>
 <p><code>typing.Sequence[<a title="aiobungie.crate.clans.ClanMember" href="#aiobungie.crate.clans.ClanMember">ClanMember</a>]</code>
 A sequence of clan members or are banned.</p></div>
@@ -663,6 +782,9 @@ A sequence of clan members or are banned.</p></div>
 </summary>
 <pre><code class="python">async def fetch_banned_members(self) -&gt; typing.Sequence[ClanMember]:
     &#34;&#34;&#34;Fetch members who has been banned from the clan.
+
+    .. warning::
+        This method is still not implemented.
 
     Returns
     --------
@@ -677,6 +799,10 @@ A sequence of clan members or are banned.</p></div>
 </code></dt>
 <dd>
 <div class="desc"><p>Fetch members who has been invited.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This method is still not implemented.</p>
+</div>
 <h2 id="returns">Returns</h2>
 <p><code>typing.Sequence[<a title="aiobungie.crate.clans.ClanMember" href="#aiobungie.crate.clans.ClanMember">ClanMember</a>]</code>
 A sequence of members who have been invited.</p></div>
@@ -686,6 +812,9 @@ A sequence of members who have been invited.</p></div>
 </summary>
 <pre><code class="python">async def fetch_invited_members(self) -&gt; typing.Sequence[ClanMember]:
     &#34;&#34;&#34;Fetch members who has been invited.
+
+    .. warning::
+        This method is still not implemented.
 
     Returns
     --------
@@ -708,16 +837,16 @@ since usually only one player has this name.</p>
 <dl>
 <dt><strong><code>name</code></strong> :&ensp;<code>builtins.str</code></dt>
 <dd>The clan member name.</dd>
-<dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.MembershipType" href="./index.html#aiobungie.MembershipType">MembershipType</a></code></dt>
+<dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.MembershipType" href="../index.html#aiobungie.MembershipType">MembershipType</a></code></dt>
 <dd>The member's membership type. Default is 0
 which returns any member matches the name.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <p><code><a title="aiobungie.crate.clans.ClanMember" href="#aiobungie.crate.clans.ClanMember">ClanMember</a></code></p>
 <h2 id="raises">Raises</h2>
-<p><code><a title="aiobungie.ClanNotFound" href="./index.html#aiobungie.ClanNotFound">ClanNotFound</a></code>
+<p><code><a title="aiobungie.ClanNotFound" href="../index.html#aiobungie.ClanNotFound">ClanNotFound</a></code>
 The clan was not found.</p>
-<p><code><a title="aiobungie.NotFound" href="./index.html#aiobungie.NotFound">NotFound</a></code>
+<p><code><a title="aiobungie.NotFound" href="../index.html#aiobungie.NotFound">NotFound</a></code>
 The member was not found</p></div>
 <details class="source">
 <summary>
@@ -765,15 +894,15 @@ The member was not found</p></div>
 All membership types.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
-<dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.MembershipType" href="./index.html#aiobungie.MembershipType">MembershipType</a></code></dt>
+<dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.MembershipType" href="../index.html#aiobungie.MembershipType">MembershipType</a></code></dt>
 <dd>Filters the membership types to return.
-Default is <code><a title="aiobungie.MembershipType.NONE" href="./index.html#aiobungie.MembershipType.NONE">MembershipType.NONE</a></code> which returns all membership types.</dd>
+Default is <code><a title="aiobungie.MembershipType.NONE" href="../index.html#aiobungie.MembershipType.NONE">MembershipType.NONE</a></code> which returns all membership types.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <p><code>typing.Sequence[<a title="aiobungie.crate.clans.ClanMember" href="#aiobungie.crate.clans.ClanMember">ClanMember</a>]</code>
 A sequence of the clan members found in this clan.</p>
 <h2 id="raises">Raises</h2>
-<p><code><a title="aiobungie.ClanNotFound" href="./index.html#aiobungie.ClanNotFound">ClanNotFound</a></code>
+<p><code><a title="aiobungie.ClanNotFound" href="../index.html#aiobungie.ClanNotFound">ClanNotFound</a></code>
 The clan was not found.</p></div>
 <details class="source">
 <summary>
@@ -811,6 +940,10 @@ The clan was not found.</p></div>
 </code></dt>
 <dd>
 <div class="desc"><p>Fetch members who are waiting to get accepted.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This method is still not implemented.</p>
+</div>
 <h2 id="returns">Returns</h2>
 <p><code>typing.Sequence[<a title="aiobungie.crate.clans.ClanMember" href="#aiobungie.crate.clans.ClanMember">ClanMember</a>]</code>
 A sequence of clan members who are awaiting
@@ -822,6 +955,9 @@ to get accepted to the clan.</p></div>
 <pre><code class="python">async def fetch_pending_members(self) -&gt; typing.Sequence[ClanMember]:
     &#34;&#34;&#34;Fetch members who are waiting to get accepted.
 
+    .. warning::
+        This method is still not implemented.
+
     Returns
     --------
     `typing.Sequence[aiobungie.crate.clans.ClanMember]`
@@ -830,6 +966,303 @@ to get accepted to the clan.</p></div>
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
+</dd>
+</dl>
+</dd>
+<dt id="aiobungie.crate.clans.ClanAdmin"><code class="flex name class">
+<span>class <span class="ident">ClanAdmin</span></span>
+<span>(</span><span>*, member_type: ClanMemberType, net: traits.Netrunner, total_admins: int, id: int, name: helpers.UndefinedOr[str], last_seen_name: str, type: MembershipType, types: typing.Sequence[MembershipType], icon: assets.MaybeImage, is_public: bool, group_id: int, is_online: bool = None, last_online: datetime = None, joined_at: datetime = None, code: helpers.NoneOr[int], bungie: user.PartialBungieUser)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents a clan admin.</p>
+<p>Method generated by attrs for class ClanAdmin.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@attr.define(hash=False, kw_only=True, weakref_slot=False)
+class ClanAdmin(UserLike):
+    &#34;&#34;&#34;Represents a clan admin.&#34;&#34;&#34;
+
+    member_type: ClanMemberType = attr.field(repr=True)
+    &#34;&#34;&#34;The clan admin&#39;s member type.
+    This can be Admin or owner or any other type.
+
+    .. versionadded:: 0.2.5
+    &#34;&#34;&#34;
+
+    net: traits.Netrunner = attr.field(repr=False)
+    &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
+
+    total_admins: int = attr.field(repr=True)
+    &#34;&#34;&#34;The total count of the clan admins.&#34;&#34;&#34;
+
+    id: int = attr.field(repr=True, hash=True)
+    &#34;&#34;&#34;Clan admin&#39;s id&#34;&#34;&#34;
+
+    name: helpers.UndefinedOr[str] = attr.field(repr=True)
+    &#34;&#34;&#34;Clan admin&#39;s name. This can be `UNDEFINED` if not found.&#34;&#34;&#34;
+
+    last_seen_name: str = attr.field(repr=False)
+    &#34;&#34;&#34;The clan admin&#39;s last seen display name&#34;&#34;&#34;
+
+    type: MembershipType = attr.field(repr=True)
+    &#34;&#34;&#34;Clan admin&#39;s membership type.&#34;&#34;&#34;
+
+    types: typing.Sequence[MembershipType] = attr.field(repr=False)
+    &#34;&#34;&#34;A sequence of the available clan admin membership types.&#34;&#34;&#34;
+
+    icon: assets.MaybeImage = attr.field(repr=False)
+    &#34;&#34;&#34;Clan admin&#39;s icon&#34;&#34;&#34;
+
+    is_public: bool = attr.field(repr=False)
+    &#34;&#34;&#34;`builtins.True` if the clan admin is public.&#34;&#34;&#34;
+
+    group_id: int = attr.field(repr=True)
+    &#34;&#34;&#34;The admin&#39;s group or clan id.&#34;&#34;&#34;
+
+    is_online: bool = attr.field(repr=False, default=None)
+    &#34;&#34;&#34;True if the clan admin is online or not.&#34;&#34;&#34;
+
+    last_online: datetime = attr.field(repr=False, default=None)
+    &#34;&#34;&#34;The date of the clan admin&#39;s last online in UTC time zone.&#34;&#34;&#34;
+
+    joined_at: datetime = attr.field(repr=False, default=None)
+    &#34;&#34;&#34;The clan admin&#39;s join date in UTC time zone.&#34;&#34;&#34;
+
+    code: helpers.NoneOr[int] = attr.field(repr=True)
+    &#34;&#34;&#34;The clan admin&#39;s bungie display name code
+    This is new and was added in Season of the lost update
+
+    .. versionadded:: 0.2.5
+    &#34;&#34;&#34;
+
+    bungie: user.PartialBungieUser = attr.field(repr=True)
+    &#34;&#34;&#34;The clan admin&#39;s bungie partial net user.
+
+    .. note:: This only returns a partial bungie net user.
+    You can fetch the fully implemented user using
+    `aiobungie.crate.PartialBungieUser.fetch_self()` method.
+    &#34;&#34;&#34;
+
+    async def fetch_clan(self) -&gt; Clan:
+        &#34;&#34;&#34;Fetch the clan that represents the clan admins.
+
+        Returns
+        -------
+        `Clan`
+            The clan admins clan.
+        &#34;&#34;&#34;
+        return await self.net.request.fetch_clan_from_id(self.group_id)
+
+    @property
+    def unique_name(self) -&gt; str:
+        &#34;&#34;&#34;The admin&#39;s unique name which includes their unique code.
+
+        .. versionadded:: 0.2.5
+        &#34;&#34;&#34;
+        return f&#34;{self.name}#{self.code}&#34;
+
+    @property
+    def link(self) -&gt; str:
+        &#34;&#34;&#34;Clan member&#39;s profile link.&#34;&#34;&#34;
+        return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="aiobungie.crate.user.UserLike" href="user.html#aiobungie.crate.user.UserLike">UserLike</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="aiobungie.crate.clans.ClanAdmin.bungie"><code class="name">var <span class="ident">bungie</span> : <a title="aiobungie.crate.user.PartialBungieUser" href="user.html#aiobungie.crate.user.PartialBungieUser">PartialBungieUser</a></code></dt>
+<dd>
+<div class="desc"><p>The clan admin's bungie partial net user.</p>
+<div class="admonition note">
+<p class="admonition-title">Note:&ensp;This only returns a partial bungie net user.</p>
+</div>
+<p>You can fetch the fully implemented user using
+<code><a title="aiobungie.crate.PartialBungieUser.fetch_self" href="index.html#aiobungie.crate.PartialBungieUser.fetch_self">PartialBungieUser.fetch_self()</a></code> method.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanAdmin.code"><code class="name">var <span class="ident">code</span> : Optional[None]</code></dt>
+<dd>
+<div class="desc"><p>The clan admin's bungie display name code
+This is new and was added in Season of the lost update</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.2.5</p>
+</div></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanAdmin.group_id"><code class="name">var <span class="ident">group_id</span> : int</code></dt>
+<dd>
+<div class="desc"><p>The admin's group or clan id.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanAdmin.icon"><code class="name">var <span class="ident">icon</span> : Union[<a title="aiobungie.internal.assets.Image" href="../internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
+<dd>
+<div class="desc"><p>Clan admin's icon</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanAdmin.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
+<dd>
+<div class="desc"><p>Clan admin's id</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanAdmin.is_online"><code class="name">var <span class="ident">is_online</span> : bool</code></dt>
+<dd>
+<div class="desc"><p>True if the clan admin is online or not.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanAdmin.is_public"><code class="name">var <span class="ident">is_public</span> : bool</code></dt>
+<dd>
+<div class="desc"><p><code>builtins.True</code> if the clan admin is public.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanAdmin.joined_at"><code class="name">var <span class="ident">joined_at</span> : datetime.datetime</code></dt>
+<dd>
+<div class="desc"><p>The clan admin's join date in UTC time zone.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanAdmin.last_online"><code class="name">var <span class="ident">last_online</span> : datetime.datetime</code></dt>
+<dd>
+<div class="desc"><p>The date of the clan admin's last online in UTC time zone.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanAdmin.last_seen_name"><code class="name">var <span class="ident">last_seen_name</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The clan admin's last seen display name</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanAdmin.link"><code class="name">var <span class="ident">link</span> : str</code></dt>
+<dd>
+<div class="desc"><p>Clan member's profile link.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def link(self) -&gt; str:
+    &#34;&#34;&#34;Clan member&#39;s profile link.&#34;&#34;&#34;
+    return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.crate.clans.ClanAdmin.member_type"><code class="name">var <span class="ident">member_type</span> : <a title="aiobungie.internal.enums.ClanMemberType" href="../internal/enums.html#aiobungie.internal.enums.ClanMemberType">ClanMemberType</a></code></dt>
+<dd>
+<div class="desc"><p>The clan admin's member type.
+This can be Admin or owner or any other type.</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.2.5</p>
+</div></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanAdmin.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="../internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
+<dd>
+<div class="desc"><p>Clan admin's name. This can be <code>UNDEFINED</code> if not found.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanAdmin.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.traits.Netrunner" href="../internal/traits.html#aiobungie.internal.traits.Netrunner">Netrunner</a></code></dt>
+<dd>
+<div class="desc"><p>A network state used for making external requests.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanAdmin.total_admins"><code class="name">var <span class="ident">total_admins</span> : int</code></dt>
+<dd>
+<div class="desc"><p>The total count of the clan admins.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanAdmin.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="../internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
+<dd>
+<div class="desc"><p>Clan admin's membership type.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanAdmin.types"><code class="name">var <span class="ident">types</span> : Sequence[<a title="aiobungie.internal.enums.MembershipType" href="../internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a>]</code></dt>
+<dd>
+<div class="desc"><p>A sequence of the available clan admin membership types.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanAdmin.unique_name"><code class="name">var <span class="ident">unique_name</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The admin's unique name which includes their unique code.</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.2.5</p>
+</div></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def unique_name(self) -&gt; str:
+    &#34;&#34;&#34;The admin&#39;s unique name which includes their unique code.
+
+    .. versionadded:: 0.2.5
+    &#34;&#34;&#34;
+    return f&#34;{self.name}#{self.code}&#34;</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="aiobungie.crate.clans.ClanAdmin.fetch_clan"><code class="name flex">
+<span>async def <span class="ident">fetch_clan</span></span>(<span>self) ‑> <a title="aiobungie.crate.clans.Clan" href="#aiobungie.crate.clans.Clan">Clan</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Fetch the clan that represents the clan admins.</p>
+<h2 id="returns">Returns</h2>
+<p><code><a title="aiobungie.crate.clans.Clan" href="#aiobungie.crate.clans.Clan">Clan</a></code>
+The clan admins clan.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_clan(self) -&gt; Clan:
+    &#34;&#34;&#34;Fetch the clan that represents the clan admins.
+
+    Returns
+    -------
+    `Clan`
+        The clan admins clan.
+    &#34;&#34;&#34;
+    return await self.net.request.fetch_clan_from_id(self.group_id)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="aiobungie.crate.clans.ClanConversation"><code class="flex name class">
+<span>class <span class="ident">ClanConversation</span></span>
+<span>(</span><span>*, group_id: int, id: int, chat_enabled: bool, name: helpers.UndefinedOr[str], security: int)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents a clan conversation.</p>
+<p>Method generated by attrs for class ClanConversation.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@attr.define(hash=False, kw_only=True, weakref_slot=False)
+class ClanConversation:
+    &#34;&#34;&#34;Represents a clan conversation.&#34;&#34;&#34;
+
+    group_id: int = attr.field(repr=True)
+    &#34;&#34;&#34;The clan or group&#39;s id.&#34;&#34;&#34;
+
+    id: int = attr.field(repr=True, hash=True)
+    &#34;&#34;&#34;The conversation&#39;s id&#34;&#34;&#34;
+
+    chat_enabled: bool = attr.field(repr=True)
+    &#34;&#34;&#34;`True` if the Conversation&#39;s chat is enabled.&#34;&#34;&#34;
+
+    name: helpers.UndefinedOr[str] = attr.field(repr=True)
+    &#34;&#34;&#34;Conversation chat&#39;s name.&#34;&#34;&#34;
+
+    security: int = attr.field(repr=False)
+    &#34;&#34;&#34;Conversation&#39;s security level.&#34;&#34;&#34;</code></pre>
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="aiobungie.crate.clans.ClanConversation.chat_enabled"><code class="name">var <span class="ident">chat_enabled</span> : bool</code></dt>
+<dd>
+<div class="desc"><p><code>True</code> if the Conversation's chat is enabled.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanConversation.group_id"><code class="name">var <span class="ident">group_id</span> : int</code></dt>
+<dd>
+<div class="desc"><p>The clan or group's id.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanConversation.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
+<dd>
+<div class="desc"><p>The conversation's id</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanConversation.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="../internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
+<dd>
+<div class="desc"><p>Conversation chat's name.</p></div>
+</dd>
+<dt id="aiobungie.crate.clans.ClanConversation.security"><code class="name">var <span class="ident">security</span> : int</code></dt>
+<dd>
+<div class="desc"><p>Conversation's security level.</p></div>
 </dd>
 </dl>
 </dd>
@@ -893,7 +1326,7 @@ class ClanFeatures:
 <dd>
 <div class="desc"><p>The maximum membership types the clan can have</p></div>
 </dd>
-<dt id="aiobungie.crate.clans.ClanFeatures.membership_types"><code class="name">var <span class="ident">membership_types</span> : List[<a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a>]</code></dt>
+<dt id="aiobungie.crate.clans.ClanFeatures.membership_types"><code class="name">var <span class="ident">membership_types</span> : List[<a title="aiobungie.internal.enums.MembershipType" href="../internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a>]</code></dt>
 <dd>
 <div class="desc"><p>The clan's membership types.</p></div>
 </dd>
@@ -909,10 +1342,10 @@ class ClanFeatures:
 </dd>
 <dt id="aiobungie.crate.clans.ClanMember"><code class="flex name class">
 <span>class <span class="ident">ClanMember</span></span>
-<span>(</span><span>*, net: traits.Netrunner, id: int, name: helpers.UndefinedOr[str], last_seen_name: str, type: MembershipType, types: typing.Sequence[MembershipType], icon: assets.MaybeImage, is_public: bool, group_id: int, is_online: bool, last_online: datetime, joined_at: datetime, code: helpers.NoneOr[int])</span>
+<span>(</span><span>*, net: traits.Netrunner, id: int, name: helpers.UndefinedOr[str], last_seen_name: str, type: MembershipType, types: typing.Sequence[MembershipType], icon: assets.MaybeImage, is_public: bool, group_id: int, is_online: bool = None, last_online: datetime = None, joined_at: datetime = None, code: helpers.NoneOr[int], bungie: user.PartialBungieUser)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Represents a Destiny 2 clan member.</p>
+<div class="desc"><p>Represents a Bungie clan member.</p>
 <p>Method generated by attrs for class ClanMember.</p></div>
 <details class="source">
 <summary>
@@ -920,7 +1353,7 @@ class ClanFeatures:
 </summary>
 <pre><code class="python">@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class ClanMember(UserLike):
-    &#34;&#34;&#34;Represents a Destiny 2 clan member.&#34;&#34;&#34;
+    &#34;&#34;&#34;Represents a Bungie clan member.&#34;&#34;&#34;
 
     net: traits.Netrunner = attr.field(repr=False)
     &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
@@ -949,13 +1382,13 @@ class ClanMember(UserLike):
     group_id: int = attr.field(repr=True)
     &#34;&#34;&#34;The member&#39;s group id.&#34;&#34;&#34;
 
-    is_online: bool = attr.field(repr=False)
+    is_online: bool = attr.field(repr=False, default=None)
     &#34;&#34;&#34;True if the clan member is online or not.&#34;&#34;&#34;
 
-    last_online: datetime = attr.field(repr=False)
+    last_online: datetime = attr.field(repr=False, default=None)
     &#34;&#34;&#34;The date of the clan member&#39;s last online in UTC time zone.&#34;&#34;&#34;
 
-    joined_at: datetime = attr.field(repr=False)
+    joined_at: datetime = attr.field(repr=False, default=None)
     &#34;&#34;&#34;The clan member&#39;s join date in UTC time zone.&#34;&#34;&#34;
 
     code: helpers.NoneOr[int] = attr.field(repr=True)
@@ -965,9 +1398,16 @@ class ClanMember(UserLike):
     .. versionadded:: 0.2.5
     &#34;&#34;&#34;
 
+    bungie: user.PartialBungieUser = attr.field(repr=True)
+    &#34;&#34;&#34;The clan member&#39;s bungie partial net user.
+
+    .. note:: This only returns a partial bungie net user.
+    You can fetch the fully implemented user using `aiobungie.crate.PartialBungieUser.fetch_self()` method.
+    &#34;&#34;&#34;
+
     @property
     def unique_name(self) -&gt; str:
-        &#34;&#34;&#34;The user&#39;s unique name which includes their unique code.
+        &#34;&#34;&#34;The clan member&#39;s unique name which includes their unique code.
 
         .. versionadded:: 0.2.5
         &#34;&#34;&#34;
@@ -984,18 +1424,27 @@ class ClanMember(UserLike):
     async def ban(self) -&gt; None:
         &#34;&#34;&#34;Bans a clan member from the clan.
         This requires OAuth2: AdminGroups scope.
+
+        .. warning::
+            This method is still not implemented.
         &#34;&#34;&#34;
         raise NotImplementedError
 
     async def unban(self) -&gt; None:
         &#34;&#34;&#34;Unbans a clan member clan.
         This requires OAuth2: AdminGroups scope.
+
+        .. warning::
+            This method is still not implemented.
         &#34;&#34;&#34;
         raise NotImplementedError
 
     async def kick(self) -&gt; None:
         &#34;&#34;&#34;Kicks a clan member from the clan.
         The requires OAuth2: AdminsGroup scope.
+
+        .. warning::
+            This method is still not implemented.
         &#34;&#34;&#34;
         raise NotImplementedError</code></pre>
 </details>
@@ -1006,6 +1455,14 @@ class ClanMember(UserLike):
 </ul>
 <h3>Instance variables</h3>
 <dl>
+<dt id="aiobungie.crate.clans.ClanMember.bungie"><code class="name">var <span class="ident">bungie</span> : <a title="aiobungie.crate.user.PartialBungieUser" href="user.html#aiobungie.crate.user.PartialBungieUser">PartialBungieUser</a></code></dt>
+<dd>
+<div class="desc"><p>The clan member's bungie partial net user.</p>
+<div class="admonition note">
+<p class="admonition-title">Note:&ensp;This only returns a partial bungie net user.</p>
+</div>
+<p>You can fetch the fully implemented user using <code><a title="aiobungie.crate.PartialBungieUser.fetch_self" href="index.html#aiobungie.crate.PartialBungieUser.fetch_self">PartialBungieUser.fetch_self()</a></code> method.</p></div>
+</dd>
 <dt id="aiobungie.crate.clans.ClanMember.code"><code class="name">var <span class="ident">code</span> : Optional[None]</code></dt>
 <dd>
 <div class="desc"><p>The clan member's bungie display name code
@@ -1018,7 +1475,7 @@ This is new and was added in Season of the lost update</p>
 <dd>
 <div class="desc"><p>The member's group id.</p></div>
 </dd>
-<dt id="aiobungie.crate.clans.ClanMember.icon"><code class="name">var <span class="ident">icon</span> : Union[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
+<dt id="aiobungie.crate.clans.ClanMember.icon"><code class="name">var <span class="ident">icon</span> : Union[<a title="aiobungie.internal.assets.Image" href="../internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
 <dd>
 <div class="desc"><p>Clan member's icon</p></div>
 </dd>
@@ -1059,25 +1516,25 @@ def link(self) -&gt; str:
     return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;</code></pre>
 </details>
 </dd>
-<dt id="aiobungie.crate.clans.ClanMember.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
+<dt id="aiobungie.crate.clans.ClanMember.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="../internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
 <dd>
 <div class="desc"><p>Clan member's name. This can be <code>UNDEFINED</code> if not found.</p></div>
 </dd>
-<dt id="aiobungie.crate.clans.ClanMember.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.traits.Netrunner" href="./internal/traits.html#aiobungie.internal.traits.Netrunner">Netrunner</a></code></dt>
+<dt id="aiobungie.crate.clans.ClanMember.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.traits.Netrunner" href="../internal/traits.html#aiobungie.internal.traits.Netrunner">Netrunner</a></code></dt>
 <dd>
 <div class="desc"><p>A network state used for making external requests.</p></div>
 </dd>
-<dt id="aiobungie.crate.clans.ClanMember.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
+<dt id="aiobungie.crate.clans.ClanMember.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="../internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
 <dd>
 <div class="desc"><p>Clan member's membership type.</p></div>
 </dd>
-<dt id="aiobungie.crate.clans.ClanMember.types"><code class="name">var <span class="ident">types</span> : Sequence[<a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a>]</code></dt>
+<dt id="aiobungie.crate.clans.ClanMember.types"><code class="name">var <span class="ident">types</span> : Sequence[<a title="aiobungie.internal.enums.MembershipType" href="../internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a>]</code></dt>
 <dd>
 <div class="desc"><p>A sequence of the available clan member membership types.</p></div>
 </dd>
 <dt id="aiobungie.crate.clans.ClanMember.unique_name"><code class="name">var <span class="ident">unique_name</span> : str</code></dt>
 <dd>
-<div class="desc"><p>The user's unique name which includes their unique code.</p>
+<div class="desc"><p>The clan member's unique name which includes their unique code.</p>
 <div class="admonition versionadded">
 <p class="admonition-title">Added in version:&ensp;0.2.5</p>
 </div></div>
@@ -1087,7 +1544,7 @@ def link(self) -&gt; str:
 </summary>
 <pre><code class="python">@property
 def unique_name(self) -&gt; str:
-    &#34;&#34;&#34;The user&#39;s unique name which includes their unique code.
+    &#34;&#34;&#34;The clan member&#39;s unique name which includes their unique code.
 
     .. versionadded:: 0.2.5
     &#34;&#34;&#34;
@@ -1102,7 +1559,11 @@ def unique_name(self) -&gt; str:
 </code></dt>
 <dd>
 <div class="desc"><p>Bans a clan member from the clan.
-This requires OAuth2: AdminGroups scope.</p></div>
+This requires OAuth2: AdminGroups scope.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This method is still not implemented.</p>
+</div></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1110,6 +1571,9 @@ This requires OAuth2: AdminGroups scope.</p></div>
 <pre><code class="python">async def ban(self) -&gt; None:
     &#34;&#34;&#34;Bans a clan member from the clan.
     This requires OAuth2: AdminGroups scope.
+
+    .. warning::
+        This method is still not implemented.
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -1119,7 +1583,11 @@ This requires OAuth2: AdminGroups scope.</p></div>
 </code></dt>
 <dd>
 <div class="desc"><p>Kicks a clan member from the clan.
-The requires OAuth2: AdminsGroup scope.</p></div>
+The requires OAuth2: AdminsGroup scope.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This method is still not implemented.</p>
+</div></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1127,6 +1595,9 @@ The requires OAuth2: AdminsGroup scope.</p></div>
 <pre><code class="python">async def kick(self) -&gt; None:
     &#34;&#34;&#34;Kicks a clan member from the clan.
     The requires OAuth2: AdminsGroup scope.
+
+    .. warning::
+        This method is still not implemented.
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
@@ -1136,7 +1607,11 @@ The requires OAuth2: AdminsGroup scope.</p></div>
 </code></dt>
 <dd>
 <div class="desc"><p>Unbans a clan member clan.
-This requires OAuth2: AdminGroups scope.</p></div>
+This requires OAuth2: AdminGroups scope.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This method is still not implemented.</p>
+</div></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1144,165 +1619,128 @@ This requires OAuth2: AdminGroups scope.</p></div>
 <pre><code class="python">async def unban(self) -&gt; None:
     &#34;&#34;&#34;Unbans a clan member clan.
     This requires OAuth2: AdminGroups scope.
+
+    .. warning::
+        This method is still not implemented.
     &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
 </dd>
 </dl>
 </dd>
-<dt id="aiobungie.crate.clans.ClanOwner"><code class="flex name class">
-<span>class <span class="ident">ClanOwner</span></span>
-<span>(</span><span>*, id: int, name: helpers.UndefinedOr[str], last_seen_name: str, is_public: bool, type: MembershipType, types: typing.Sequence[MembershipType], last_online: datetime, clan_id: int, icon: assets.MaybeImage, joined_at: datetime, code: helpers.NoneOr[int])</span>
+<dt id="aiobungie.crate.clans.GroupMember"><code class="flex name class">
+<span>class <span class="ident">GroupMember</span></span>
+<span>(</span><span>*, net: traits.Netrunner, inactive_memberships: helpers.NoneOr[dict[int, bool]], member_type: ClanMemberType, is_online: bool, last_online: datetime, group_id: int, join_date: datetime, member: user.DestinyUser, group: <a title="aiobungie.crate.clans.Clan" href="#aiobungie.crate.clans.Clan">Clan</a>)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Represents a Bungie clan owner.</p>
-<p>Method generated by attrs for class ClanOwner.</p></div>
+<div class="desc"><p>Represents information about joined groups/clans for a member.</p>
+<p>Method generated by attrs for class GroupMember.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@attr.define(hash=False, kw_only=True, weakref_slot=False)
-class ClanOwner(UserLike):
-    &#34;&#34;&#34;Represents a Bungie clan owner.&#34;&#34;&#34;
+class GroupMember:
+    &#34;&#34;&#34;Represents information about joined groups/clans for a member.&#34;&#34;&#34;
 
-    id: int = attr.field(hash=True, repr=True)
-    &#34;&#34;&#34;The user id.&#34;&#34;&#34;
+    net: traits.Netrunner = attr.field(repr=False)
 
-    name: helpers.UndefinedOr[str] = attr.field(repr=True)
-    &#34;&#34;&#34;The user name.&#34;&#34;&#34;
+    inactive_memberships: helpers.NoneOr[dict[int, bool]] = attr.field(repr=False)
+    &#34;&#34;&#34;The member&#39;s inactive memberships if provided. This will be `None` if not provided.&#34;&#34;&#34;
 
-    last_seen_name: str = attr.field(repr=True)
-    &#34;&#34;&#34;The clan member&#39;s last seen display name&#34;&#34;&#34;
+    member_type: ClanMemberType = attr.field(repr=True)
+    &#34;&#34;&#34;The member&#39;s member type.&#34;&#34;&#34;
 
-    is_public: bool = attr.field(repr=True, eq=False)
-    &#34;&#34;&#34;Returns if the user profile is public or no.&#34;&#34;&#34;
-
-    type: MembershipType = attr.field(repr=True, eq=True)
-    &#34;&#34;&#34;Returns the membership type of the user.&#34;&#34;&#34;
-
-    types: typing.Sequence[MembershipType] = attr.field(repr=False, eq=False)
-    &#34;&#34;&#34;Returns a list of the member ship&#39;s membership types.&#34;&#34;&#34;
+    is_online: bool = attr.field(repr=False)
+    &#34;&#34;&#34;Whether the member is online or not.&#34;&#34;&#34;
 
     last_online: datetime = attr.field(repr=False)
-    &#34;&#34;&#34;An aware `datetime.datetime` object of the user&#39;s last online date UTC.&#34;&#34;&#34;
+    &#34;&#34;&#34;An awre UTC datetime of the member&#39;s last online status.&#34;&#34;&#34;
 
-    clan_id: int = attr.field(repr=True)
-    &#34;&#34;&#34;Owner&#39;s current clan id.&#34;&#34;&#34;
+    group_id: int = attr.field(repr=True)
+    &#34;&#34;&#34;The group id of this member.&#34;&#34;&#34;
 
-    icon: assets.MaybeImage = attr.field(repr=False)
-    &#34;&#34;&#34;Owner&#39;s profile icom&#34;&#34;&#34;
+    join_date: datetime = attr.field(repr=False)
+    &#34;&#34;&#34;An awre UTC datetime of the member&#39;s join date.&#34;&#34;&#34;
 
-    joined_at: datetime = attr.field(repr=True)
-    &#34;&#34;&#34;Owner&#39;s bungie join date.&#34;&#34;&#34;
+    member: user.DestinyUser = attr.field(repr=True)
+    &#34;&#34;&#34;The member&#39;s destiny object that represents the group member.&#34;&#34;&#34;
 
-    code: helpers.NoneOr[int] = attr.field(repr=True)
-    &#34;&#34;&#34;The user&#39;s unique display name code.
-    This can be None if the user hasn&#39;t logged in after season of the lost update.
+    group: Clan = attr.field(repr=True)
+    &#34;&#34;&#34;The member&#39;s group/clan object that represents the group member.&#34;&#34;&#34;
 
-    .. versionadded:: 0.2.5
-    &#34;&#34;&#34;
+    async def fetch_self_clan(self) -&gt; Clan:
+        &#34;&#34;&#34;Fetch an up-todate clan/group object of the current group.
 
-    @property
-    def unique_name(self) -&gt; str:
-        &#34;&#34;&#34;The user&#39;s unique name which includes their unique code.
-        This field could be None if no unique name found.
-
-        .. versionadded:: 0.2.5
+        Returns
+        -------
+        `Clan`
+            The clan object.
         &#34;&#34;&#34;
-        return f&#34;{self.name}#{self.code}&#34;
-
-    @property
-    def link(self) -&gt; str:
-        &#34;&#34;&#34;Returns the user&#39;s profile link.&#34;&#34;&#34;
-        return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;</code></pre>
+        return await self.net.request.fetch_clan_from_id(self.group_id)</code></pre>
 </details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li><a title="aiobungie.crate.user.UserLike" href="user.html#aiobungie.crate.user.UserLike">UserLike</a></li>
-<li>abc.ABC</li>
-</ul>
 <h3>Instance variables</h3>
 <dl>
-<dt id="aiobungie.crate.clans.ClanOwner.clan_id"><code class="name">var <span class="ident">clan_id</span> : int</code></dt>
+<dt id="aiobungie.crate.clans.GroupMember.group"><code class="name">var <span class="ident">group</span> : <a title="aiobungie.crate.clans.Clan" href="#aiobungie.crate.clans.Clan">Clan</a></code></dt>
 <dd>
-<div class="desc"><p>Owner's current clan id.</p></div>
+<div class="desc"><p>The member's group/clan object that represents the group member.</p></div>
 </dd>
-<dt id="aiobungie.crate.clans.ClanOwner.code"><code class="name">var <span class="ident">code</span> : Optional[None]</code></dt>
+<dt id="aiobungie.crate.clans.GroupMember.group_id"><code class="name">var <span class="ident">group_id</span> : int</code></dt>
 <dd>
-<div class="desc"><p>The user's unique display name code.
-This can be None if the user hasn't logged in after season of the lost update.</p>
-<div class="admonition versionadded">
-<p class="admonition-title">Added in version:&ensp;0.2.5</p>
-</div></div>
+<div class="desc"><p>The group id of this member.</p></div>
 </dd>
-<dt id="aiobungie.crate.clans.ClanOwner.icon"><code class="name">var <span class="ident">icon</span> : Union[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
+<dt id="aiobungie.crate.clans.GroupMember.inactive_memberships"><code class="name">var <span class="ident">inactive_memberships</span> : Optional[None]</code></dt>
 <dd>
-<div class="desc"><p>Owner's profile icom</p></div>
+<div class="desc"><p>The member's inactive memberships if provided. This will be <code>None</code> if not provided.</p></div>
 </dd>
-<dt id="aiobungie.crate.clans.ClanOwner.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
+<dt id="aiobungie.crate.clans.GroupMember.is_online"><code class="name">var <span class="ident">is_online</span> : bool</code></dt>
 <dd>
-<div class="desc"><p>The user id.</p></div>
+<div class="desc"><p>Whether the member is online or not.</p></div>
 </dd>
-<dt id="aiobungie.crate.clans.ClanOwner.is_public"><code class="name">var <span class="ident">is_public</span> : bool</code></dt>
+<dt id="aiobungie.crate.clans.GroupMember.join_date"><code class="name">var <span class="ident">join_date</span> : datetime.datetime</code></dt>
 <dd>
-<div class="desc"><p>Returns if the user profile is public or no.</p></div>
+<div class="desc"><p>An awre UTC datetime of the member's join date.</p></div>
 </dd>
-<dt id="aiobungie.crate.clans.ClanOwner.joined_at"><code class="name">var <span class="ident">joined_at</span> : datetime.datetime</code></dt>
+<dt id="aiobungie.crate.clans.GroupMember.last_online"><code class="name">var <span class="ident">last_online</span> : datetime.datetime</code></dt>
 <dd>
-<div class="desc"><p>Owner's bungie join date.</p></div>
+<div class="desc"><p>An awre UTC datetime of the member's last online status.</p></div>
 </dd>
-<dt id="aiobungie.crate.clans.ClanOwner.last_online"><code class="name">var <span class="ident">last_online</span> : datetime.datetime</code></dt>
+<dt id="aiobungie.crate.clans.GroupMember.member"><code class="name">var <span class="ident">member</span> : <a title="aiobungie.crate.user.DestinyUser" href="user.html#aiobungie.crate.user.DestinyUser">DestinyUser</a></code></dt>
 <dd>
-<div class="desc"><p>An aware <code>datetime.datetime</code> object of the user's last online date UTC.</p></div>
+<div class="desc"><p>The member's destiny object that represents the group member.</p></div>
 </dd>
-<dt id="aiobungie.crate.clans.ClanOwner.last_seen_name"><code class="name">var <span class="ident">last_seen_name</span> : str</code></dt>
+<dt id="aiobungie.crate.clans.GroupMember.member_type"><code class="name">var <span class="ident">member_type</span> : <a title="aiobungie.internal.enums.ClanMemberType" href="../internal/enums.html#aiobungie.internal.enums.ClanMemberType">ClanMemberType</a></code></dt>
 <dd>
-<div class="desc"><p>The clan member's last seen display name</p></div>
+<div class="desc"><p>The member's member type.</p></div>
 </dd>
-<dt id="aiobungie.crate.clans.ClanOwner.link"><code class="name">var <span class="ident">link</span> : str</code></dt>
+<dt id="aiobungie.crate.clans.GroupMember.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.traits.Netrunner" href="../internal/traits.html#aiobungie.internal.traits.Netrunner">Netrunner</a></code></dt>
 <dd>
-<div class="desc"><p>Returns the user's profile link.</p></div>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="aiobungie.crate.clans.GroupMember.fetch_self_clan"><code class="name flex">
+<span>async def <span class="ident">fetch_self_clan</span></span>(<span>self) ‑> <a title="aiobungie.crate.clans.Clan" href="#aiobungie.crate.clans.Clan">Clan</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Fetch an up-todate clan/group object of the current group.</p>
+<h2 id="returns">Returns</h2>
+<p><code><a title="aiobungie.crate.clans.Clan" href="#aiobungie.crate.clans.Clan">Clan</a></code>
+The clan object.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@property
-def link(self) -&gt; str:
-    &#34;&#34;&#34;Returns the user&#39;s profile link.&#34;&#34;&#34;
-    return f&#34;{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}&#34;</code></pre>
-</details>
-</dd>
-<dt id="aiobungie.crate.clans.ClanOwner.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
-<dd>
-<div class="desc"><p>The user name.</p></div>
-</dd>
-<dt id="aiobungie.crate.clans.ClanOwner.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
-<dd>
-<div class="desc"><p>Returns the membership type of the user.</p></div>
-</dd>
-<dt id="aiobungie.crate.clans.ClanOwner.types"><code class="name">var <span class="ident">types</span> : Sequence[<a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a>]</code></dt>
-<dd>
-<div class="desc"><p>Returns a list of the member ship's membership types.</p></div>
-</dd>
-<dt id="aiobungie.crate.clans.ClanOwner.unique_name"><code class="name">var <span class="ident">unique_name</span> : str</code></dt>
-<dd>
-<div class="desc"><p>The user's unique name which includes their unique code.
-This field could be None if no unique name found.</p>
-<div class="admonition versionadded">
-<p class="admonition-title">Added in version:&ensp;0.2.5</p>
-</div></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def unique_name(self) -&gt; str:
-    &#34;&#34;&#34;The user&#39;s unique name which includes their unique code.
-    This field could be None if no unique name found.
+<pre><code class="python">async def fetch_self_clan(self) -&gt; Clan:
+    &#34;&#34;&#34;Fetch an up-todate clan/group object of the current group.
 
-    .. versionadded:: 0.2.5
+    Returns
+    -------
+    `Clan`
+        The clan object.
     &#34;&#34;&#34;
-    return f&#34;{self.name}#{self.code}&#34;</code></pre>
+    return await self.net.request.fetch_clan_from_id(self.group_id)</code></pre>
 </details>
 </dd>
 </dl>
@@ -1345,7 +1783,7 @@ const query = new URL(window.location).searchParams.get('q');
 if (query)
 search(query);
 function search(query) {
-const url = '././doc-search.html#' + encodeURIComponent(query);
+const url = '../../doc-search.html#' + encodeURIComponent(query);
 new tingle.modal({
 cssClass: ['modal-dialog'],
 onClose: () => {
@@ -1395,6 +1833,40 @@ setTimeout(() => input.focus(), 100);
 </ul>
 </li>
 <li>
+<h4><code><a title="aiobungie.crate.clans.ClanAdmin" href="#aiobungie.crate.clans.ClanAdmin">ClanAdmin</a></code></h4>
+<ul class="two-column">
+<li><code><a title="aiobungie.crate.clans.ClanAdmin.bungie" href="#aiobungie.crate.clans.ClanAdmin.bungie">bungie</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanAdmin.code" href="#aiobungie.crate.clans.ClanAdmin.code">code</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanAdmin.fetch_clan" href="#aiobungie.crate.clans.ClanAdmin.fetch_clan">fetch_clan</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanAdmin.group_id" href="#aiobungie.crate.clans.ClanAdmin.group_id">group_id</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanAdmin.icon" href="#aiobungie.crate.clans.ClanAdmin.icon">icon</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanAdmin.id" href="#aiobungie.crate.clans.ClanAdmin.id">id</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanAdmin.is_online" href="#aiobungie.crate.clans.ClanAdmin.is_online">is_online</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanAdmin.is_public" href="#aiobungie.crate.clans.ClanAdmin.is_public">is_public</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanAdmin.joined_at" href="#aiobungie.crate.clans.ClanAdmin.joined_at">joined_at</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanAdmin.last_online" href="#aiobungie.crate.clans.ClanAdmin.last_online">last_online</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanAdmin.last_seen_name" href="#aiobungie.crate.clans.ClanAdmin.last_seen_name">last_seen_name</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanAdmin.link" href="#aiobungie.crate.clans.ClanAdmin.link">link</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanAdmin.member_type" href="#aiobungie.crate.clans.ClanAdmin.member_type">member_type</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanAdmin.name" href="#aiobungie.crate.clans.ClanAdmin.name">name</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanAdmin.net" href="#aiobungie.crate.clans.ClanAdmin.net">net</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanAdmin.total_admins" href="#aiobungie.crate.clans.ClanAdmin.total_admins">total_admins</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanAdmin.type" href="#aiobungie.crate.clans.ClanAdmin.type">type</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanAdmin.types" href="#aiobungie.crate.clans.ClanAdmin.types">types</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanAdmin.unique_name" href="#aiobungie.crate.clans.ClanAdmin.unique_name">unique_name</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="aiobungie.crate.clans.ClanConversation" href="#aiobungie.crate.clans.ClanConversation">ClanConversation</a></code></h4>
+<ul class="">
+<li><code><a title="aiobungie.crate.clans.ClanConversation.chat_enabled" href="#aiobungie.crate.clans.ClanConversation.chat_enabled">chat_enabled</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanConversation.group_id" href="#aiobungie.crate.clans.ClanConversation.group_id">group_id</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanConversation.id" href="#aiobungie.crate.clans.ClanConversation.id">id</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanConversation.name" href="#aiobungie.crate.clans.ClanConversation.name">name</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanConversation.security" href="#aiobungie.crate.clans.ClanConversation.security">security</a></code></li>
+</ul>
+</li>
+<li>
 <h4><code><a title="aiobungie.crate.clans.ClanFeatures" href="#aiobungie.crate.clans.ClanFeatures">ClanFeatures</a></code></h4>
 <ul class="">
 <li><code><a title="aiobungie.crate.clans.ClanFeatures.capabilities" href="#aiobungie.crate.clans.ClanFeatures.capabilities">capabilities</a></code></li>
@@ -1411,6 +1883,7 @@ setTimeout(() => input.focus(), 100);
 <h4><code><a title="aiobungie.crate.clans.ClanMember" href="#aiobungie.crate.clans.ClanMember">ClanMember</a></code></h4>
 <ul class="two-column">
 <li><code><a title="aiobungie.crate.clans.ClanMember.ban" href="#aiobungie.crate.clans.ClanMember.ban">ban</a></code></li>
+<li><code><a title="aiobungie.crate.clans.ClanMember.bungie" href="#aiobungie.crate.clans.ClanMember.bungie">bungie</a></code></li>
 <li><code><a title="aiobungie.crate.clans.ClanMember.code" href="#aiobungie.crate.clans.ClanMember.code">code</a></code></li>
 <li><code><a title="aiobungie.crate.clans.ClanMember.group_id" href="#aiobungie.crate.clans.ClanMember.group_id">group_id</a></code></li>
 <li><code><a title="aiobungie.crate.clans.ClanMember.icon" href="#aiobungie.crate.clans.ClanMember.icon">icon</a></code></li>
@@ -1431,21 +1904,18 @@ setTimeout(() => input.focus(), 100);
 </ul>
 </li>
 <li>
-<h4><code><a title="aiobungie.crate.clans.ClanOwner" href="#aiobungie.crate.clans.ClanOwner">ClanOwner</a></code></h4>
-<ul class="two-column">
-<li><code><a title="aiobungie.crate.clans.ClanOwner.clan_id" href="#aiobungie.crate.clans.ClanOwner.clan_id">clan_id</a></code></li>
-<li><code><a title="aiobungie.crate.clans.ClanOwner.code" href="#aiobungie.crate.clans.ClanOwner.code">code</a></code></li>
-<li><code><a title="aiobungie.crate.clans.ClanOwner.icon" href="#aiobungie.crate.clans.ClanOwner.icon">icon</a></code></li>
-<li><code><a title="aiobungie.crate.clans.ClanOwner.id" href="#aiobungie.crate.clans.ClanOwner.id">id</a></code></li>
-<li><code><a title="aiobungie.crate.clans.ClanOwner.is_public" href="#aiobungie.crate.clans.ClanOwner.is_public">is_public</a></code></li>
-<li><code><a title="aiobungie.crate.clans.ClanOwner.joined_at" href="#aiobungie.crate.clans.ClanOwner.joined_at">joined_at</a></code></li>
-<li><code><a title="aiobungie.crate.clans.ClanOwner.last_online" href="#aiobungie.crate.clans.ClanOwner.last_online">last_online</a></code></li>
-<li><code><a title="aiobungie.crate.clans.ClanOwner.last_seen_name" href="#aiobungie.crate.clans.ClanOwner.last_seen_name">last_seen_name</a></code></li>
-<li><code><a title="aiobungie.crate.clans.ClanOwner.link" href="#aiobungie.crate.clans.ClanOwner.link">link</a></code></li>
-<li><code><a title="aiobungie.crate.clans.ClanOwner.name" href="#aiobungie.crate.clans.ClanOwner.name">name</a></code></li>
-<li><code><a title="aiobungie.crate.clans.ClanOwner.type" href="#aiobungie.crate.clans.ClanOwner.type">type</a></code></li>
-<li><code><a title="aiobungie.crate.clans.ClanOwner.types" href="#aiobungie.crate.clans.ClanOwner.types">types</a></code></li>
-<li><code><a title="aiobungie.crate.clans.ClanOwner.unique_name" href="#aiobungie.crate.clans.ClanOwner.unique_name">unique_name</a></code></li>
+<h4><code><a title="aiobungie.crate.clans.GroupMember" href="#aiobungie.crate.clans.GroupMember">GroupMember</a></code></h4>
+<ul class="">
+<li><code><a title="aiobungie.crate.clans.GroupMember.fetch_self_clan" href="#aiobungie.crate.clans.GroupMember.fetch_self_clan">fetch_self_clan</a></code></li>
+<li><code><a title="aiobungie.crate.clans.GroupMember.group" href="#aiobungie.crate.clans.GroupMember.group">group</a></code></li>
+<li><code><a title="aiobungie.crate.clans.GroupMember.group_id" href="#aiobungie.crate.clans.GroupMember.group_id">group_id</a></code></li>
+<li><code><a title="aiobungie.crate.clans.GroupMember.inactive_memberships" href="#aiobungie.crate.clans.GroupMember.inactive_memberships">inactive_memberships</a></code></li>
+<li><code><a title="aiobungie.crate.clans.GroupMember.is_online" href="#aiobungie.crate.clans.GroupMember.is_online">is_online</a></code></li>
+<li><code><a title="aiobungie.crate.clans.GroupMember.join_date" href="#aiobungie.crate.clans.GroupMember.join_date">join_date</a></code></li>
+<li><code><a title="aiobungie.crate.clans.GroupMember.last_online" href="#aiobungie.crate.clans.GroupMember.last_online">last_online</a></code></li>
+<li><code><a title="aiobungie.crate.clans.GroupMember.member" href="#aiobungie.crate.clans.GroupMember.member">member</a></code></li>
+<li><code><a title="aiobungie.crate.clans.GroupMember.member_type" href="#aiobungie.crate.clans.GroupMember.member_type">member_type</a></code></li>
+<li><code><a title="aiobungie.crate.clans.GroupMember.net" href="#aiobungie.crate.clans.GroupMember.net">net</a></code></li>
 </ul>
 </li>
 </ul>

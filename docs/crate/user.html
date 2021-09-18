@@ -70,9 +70,11 @@ from datetime import datetime
 
 import attr
 
+from aiobungie.crate import profile
 from aiobungie.internal import assets
 from aiobungie.internal import enums
 from aiobungie.internal import helpers
+from aiobungie.internal import traits
 
 
 class UserLike(abc.ABC):
@@ -143,9 +145,20 @@ class UserLike(abc.ABC):
 # This is meant for Bungie destiny users which&#39;s different from a normal bungie user.
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
 class PartialBungieUser:
-    &#34;&#34;&#34;Represents partial bungie user. This is usually used for bungie user info
-    for destiny member objects. Like Clan members, owners, moderators for an example.
+    &#34;&#34;&#34;Represents partial bungie user.
+
+    This is usually used for bungie users that are missing attributes not present in `BungieUser`,
+    i.e., Clan members, Owners, Moderators and any other object the has a `bungie` attribute.
+
+    .. note::
+        You can fetch the actual bungie user of this partial user
+        by using `PartialBungieUser.fetch_self()` method.
+
+    .. versionadded:: 0.2.5
     &#34;&#34;&#34;
+
+    net: traits.Netrunner = attr.field(repr=False)
+    &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
 
     name: helpers.UndefinedOr[str] = attr.field(repr=True)
     &#34;&#34;&#34;The user&#39;s name. Field may be undefined if not found.&#34;&#34;&#34;
@@ -164,6 +177,23 @@ class PartialBungieUser:
 
     icon: assets.MaybeImage = attr.field(repr=False)
     &#34;&#34;&#34;The user&#39;s icon.&#34;&#34;&#34;
+
+    async def fetch_self(self) -&gt; BungieUser:
+        &#34;&#34;&#34;Fetch the Bungie user of this partial user.
+
+        Returns
+        -------
+        `aiobungie.crate.BungieUser`
+            A Bungie net user.
+
+        Raises
+        ------
+        `aiobungie.UserNotFound`
+            The user was not found.
+
+        .. versionadded:: 0.2.5
+        &#34;&#34;&#34;
+        return await self.net.request.fetch_user(self.id)
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
@@ -267,6 +297,9 @@ class DestinyUser(UserLike):
     .. versionadded:: 0.2.5
     &#34;&#34;&#34;
 
+    net: traits.Netrunner = attr.field(repr=False)
+    &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
+
     id: int = attr.field(repr=True, hash=True, eq=True)
     &#34;&#34;&#34;The member&#39;s id.&#34;&#34;&#34;
 
@@ -293,6 +326,16 @@ class DestinyUser(UserLike):
 
     crossave_override: typing.Union[enums.MembershipType, int] = attr.field(repr=False)
     &#34;&#34;&#34;The member&#39;s corssave override membership type.&#34;&#34;&#34;
+
+    async def fetch_self_profile(self) -&gt; profile.Profile:
+        &#34;&#34;&#34;Fetch the player&#39;s profile.
+
+        Returns
+        -------
+        `aiobungie.crate.Profile`
+            The profile of this membership.
+        &#34;&#34;&#34;
+        return await self.net.request.fetch_profile(self.id, self.type)
 
     @property
     def unique_name(self) -&gt; str:
@@ -514,11 +557,11 @@ This can be None if the user hasn't logged in after season of the lost update.</
 <dd>
 <div class="desc"><p>The user's locale.</p></div>
 </dd>
-<dt id="aiobungie.crate.user.BungieUser.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
+<dt id="aiobungie.crate.user.BungieUser.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="../internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
 <dd>
 <div class="desc"><p>The user's name.</p></div>
 </dd>
-<dt id="aiobungie.crate.user.BungieUser.picture"><code class="name">var <span class="ident">picture</span> : Union[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
+<dt id="aiobungie.crate.user.BungieUser.picture"><code class="name">var <span class="ident">picture</span> : Union[<a title="aiobungie.internal.assets.Image" href="../internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
 <dd>
 <div class="desc"><p>The user's profile picture.</p></div>
 </dd>
@@ -582,7 +625,7 @@ This field could be None if no unique name found.</p>
 </dd>
 <dt id="aiobungie.crate.user.DestinyUser"><code class="flex name class">
 <span>class <span class="ident">DestinyUser</span></span>
-<span>(</span><span>*, id: int, name: helpers.UndefinedOr[str], last_seen_name: str, type: enums.MembershipType, types: typing.Sequence[enums.MembershipType], icon: assets.MaybeImage, code: helpers.NoneOr[int] = 0, is_public: bool = False, crossave_override: typing.Union[enums.MembershipType, int])</span>
+<span>(</span><span>*, net: traits.Netrunner, id: int, name: helpers.UndefinedOr[str], last_seen_name: str, type: enums.MembershipType, types: typing.Sequence[enums.MembershipType], icon: assets.MaybeImage, code: helpers.NoneOr[int] = 0, is_public: bool = False, crossave_override: typing.Union[enums.MembershipType, int])</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Represents a Bungie user's Destiny memberships.</p>
@@ -600,6 +643,9 @@ class DestinyUser(UserLike):
 
     .. versionadded:: 0.2.5
     &#34;&#34;&#34;
+
+    net: traits.Netrunner = attr.field(repr=False)
+    &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
 
     id: int = attr.field(repr=True, hash=True, eq=True)
     &#34;&#34;&#34;The member&#39;s id.&#34;&#34;&#34;
@@ -628,6 +674,16 @@ class DestinyUser(UserLike):
     crossave_override: typing.Union[enums.MembershipType, int] = attr.field(repr=False)
     &#34;&#34;&#34;The member&#39;s corssave override membership type.&#34;&#34;&#34;
 
+    async def fetch_self_profile(self) -&gt; profile.Profile:
+        &#34;&#34;&#34;Fetch the player&#39;s profile.
+
+        Returns
+        -------
+        `aiobungie.crate.Profile`
+            The profile of this membership.
+        &#34;&#34;&#34;
+        return await self.net.request.fetch_profile(self.id, self.type)
+
     @property
     def unique_name(self) -&gt; str:
         &#34;&#34;&#34;The member&#39;s unique name. This field may be `Undefined` if not found.&#34;&#34;&#34;
@@ -638,21 +694,17 @@ class DestinyUser(UserLike):
 <li><a title="aiobungie.crate.user.UserLike" href="#aiobungie.crate.user.UserLike">UserLike</a></li>
 <li>abc.ABC</li>
 </ul>
-<h3>Subclasses</h3>
-<ul class="hlist">
-<li><a title="aiobungie.crate.player.Player" href="player.html#aiobungie.crate.player.Player">Player</a></li>
-</ul>
 <h3>Instance variables</h3>
 <dl>
 <dt id="aiobungie.crate.user.DestinyUser.code"><code class="name">var <span class="ident">code</span> : Optional[None]</code></dt>
 <dd>
 <div class="desc"><p>The member's name code. This field may be <code>None</code> if not found.</p></div>
 </dd>
-<dt id="aiobungie.crate.user.DestinyUser.crossave_override"><code class="name">var <span class="ident">crossave_override</span> : Union[<a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a>, int]</code></dt>
+<dt id="aiobungie.crate.user.DestinyUser.crossave_override"><code class="name">var <span class="ident">crossave_override</span> : Union[<a title="aiobungie.internal.enums.MembershipType" href="../internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a>, int]</code></dt>
 <dd>
 <div class="desc"><p>The member's corssave override membership type.</p></div>
 </dd>
-<dt id="aiobungie.crate.user.DestinyUser.icon"><code class="name">var <span class="ident">icon</span> : Union[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
+<dt id="aiobungie.crate.user.DestinyUser.icon"><code class="name">var <span class="ident">icon</span> : Union[<a title="aiobungie.internal.assets.Image" href="../internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
 <dd>
 <div class="desc"><p>The member's icon if it was present.</p></div>
 </dd>
@@ -676,15 +728,19 @@ class DestinyUser(UserLike):
 </p>
 <div class="desc inherited"><p>The user like's profile link.</p></div>
 </dd>
-<dt id="aiobungie.crate.user.DestinyUser.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
+<dt id="aiobungie.crate.user.DestinyUser.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="../internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
 <dd>
 <div class="desc"><p>The member's name.</p></div>
 </dd>
-<dt id="aiobungie.crate.user.DestinyUser.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
+<dt id="aiobungie.crate.user.DestinyUser.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.traits.Netrunner" href="../internal/traits.html#aiobungie.internal.traits.Netrunner">Netrunner</a></code></dt>
+<dd>
+<div class="desc"><p>A network state used for making external requests.</p></div>
+</dd>
+<dt id="aiobungie.crate.user.DestinyUser.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="../internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
 <dd>
 <div class="desc"><p>The member's membership type.</p></div>
 </dd>
-<dt id="aiobungie.crate.user.DestinyUser.types"><code class="name">var <span class="ident">types</span> : Sequence[<a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a>]</code></dt>
+<dt id="aiobungie.crate.user.DestinyUser.types"><code class="name">var <span class="ident">types</span> : Sequence[<a title="aiobungie.internal.enums.MembershipType" href="../internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a>]</code></dt>
 <dd>
 <div class="desc"><p>A sequence of the member's membership types.</p></div>
 </dd>
@@ -699,6 +755,32 @@ class DestinyUser(UserLike):
 def unique_name(self) -&gt; str:
     &#34;&#34;&#34;The member&#39;s unique name. This field may be `Undefined` if not found.&#34;&#34;&#34;
     return f&#34;{self.name}#{self.code}&#34;</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="aiobungie.crate.user.DestinyUser.fetch_self_profile"><code class="name flex">
+<span>async def <span class="ident">fetch_self_profile</span></span>(<span>self) ‑> <a title="aiobungie.crate.profile.Profile" href="profile.html#aiobungie.crate.profile.Profile">Profile</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Fetch the player's profile.</p>
+<h2 id="returns">Returns</h2>
+<p><code><a title="aiobungie.crate.Profile" href="index.html#aiobungie.crate.Profile">Profile</a></code>
+The profile of this membership.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_self_profile(self) -&gt; profile.Profile:
+    &#34;&#34;&#34;Fetch the player&#39;s profile.
+
+    Returns
+    -------
+    `aiobungie.crate.Profile`
+        The profile of this membership.
+    &#34;&#34;&#34;
+    return await self.net.request.fetch_profile(self.id, self.type)</code></pre>
 </details>
 </dd>
 </dl>
@@ -740,7 +822,7 @@ class HardLinkedMembership:
 </details>
 <h3>Instance variables</h3>
 <dl>
-<dt id="aiobungie.crate.user.HardLinkedMembership.cross_save_type"><code class="name">var <span class="ident">cross_save_type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
+<dt id="aiobungie.crate.user.HardLinkedMembership.cross_save_type"><code class="name">var <span class="ident">cross_save_type</span> : <a title="aiobungie.internal.enums.MembershipType" href="../internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
 <dd>
 <div class="desc"><p>The hard link user's crpss save membership type. Default is set to None-0</p></div>
 </dd>
@@ -748,7 +830,7 @@ class HardLinkedMembership:
 <dd>
 <div class="desc"><p>The hard link user id</p></div>
 </dd>
-<dt id="aiobungie.crate.user.HardLinkedMembership.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
+<dt id="aiobungie.crate.user.HardLinkedMembership.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="../internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
 <dd>
 <div class="desc"><p>The hard link user membership type.</p></div>
 </dd>
@@ -756,11 +838,20 @@ class HardLinkedMembership:
 </dd>
 <dt id="aiobungie.crate.user.PartialBungieUser"><code class="flex name class">
 <span>class <span class="ident">PartialBungieUser</span></span>
-<span>(</span><span>*, name: helpers.UndefinedOr[str], id: int, type: enums.MembershipType, crossave_override: enums.MembershipType, is_public: bool, icon: assets.MaybeImage)</span>
+<span>(</span><span>*, net: traits.Netrunner, name: helpers.UndefinedOr[str], id: int, type: enums.MembershipType, crossave_override: enums.MembershipType, is_public: bool, icon: assets.MaybeImage)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Represents partial bungie user. This is usually used for bungie user info
-for destiny member objects. Like Clan members, owners, moderators for an example.</p>
+<div class="desc"><p>Represents partial bungie user.</p>
+<p>This is usually used for bungie users that are missing attributes not present in <code><a title="aiobungie.crate.user.BungieUser" href="#aiobungie.crate.user.BungieUser">BungieUser</a></code>,
+i.e., Clan members, Owners, Moderators and any other object the has a <code>bungie</code> attribute.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can fetch the actual bungie user of this partial user
+by using <code><a title="aiobungie.crate.user.PartialBungieUser.fetch_self" href="#aiobungie.crate.user.PartialBungieUser.fetch_self">PartialBungieUser.fetch_self()</a></code> method.</p>
+</div>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.2.5</p>
+</div>
 <p>Method generated by attrs for class PartialBungieUser.</p></div>
 <details class="source">
 <summary>
@@ -768,9 +859,20 @@ for destiny member objects. Like Clan members, owners, moderators for an example
 </summary>
 <pre><code class="python">@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class PartialBungieUser:
-    &#34;&#34;&#34;Represents partial bungie user. This is usually used for bungie user info
-    for destiny member objects. Like Clan members, owners, moderators for an example.
+    &#34;&#34;&#34;Represents partial bungie user.
+
+    This is usually used for bungie users that are missing attributes not present in `BungieUser`,
+    i.e., Clan members, Owners, Moderators and any other object the has a `bungie` attribute.
+
+    .. note::
+        You can fetch the actual bungie user of this partial user
+        by using `PartialBungieUser.fetch_self()` method.
+
+    .. versionadded:: 0.2.5
     &#34;&#34;&#34;
+
+    net: traits.Netrunner = attr.field(repr=False)
+    &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
 
     name: helpers.UndefinedOr[str] = attr.field(repr=True)
     &#34;&#34;&#34;The user&#39;s name. Field may be undefined if not found.&#34;&#34;&#34;
@@ -788,15 +890,32 @@ class PartialBungieUser:
     &#34;&#34;&#34;The user&#39;s privacy.&#34;&#34;&#34;
 
     icon: assets.MaybeImage = attr.field(repr=False)
-    &#34;&#34;&#34;The user&#39;s icon.&#34;&#34;&#34;</code></pre>
+    &#34;&#34;&#34;The user&#39;s icon.&#34;&#34;&#34;
+
+    async def fetch_self(self) -&gt; BungieUser:
+        &#34;&#34;&#34;Fetch the Bungie user of this partial user.
+
+        Returns
+        -------
+        `aiobungie.crate.BungieUser`
+            A Bungie net user.
+
+        Raises
+        ------
+        `aiobungie.UserNotFound`
+            The user was not found.
+
+        .. versionadded:: 0.2.5
+        &#34;&#34;&#34;
+        return await self.net.request.fetch_user(self.id)</code></pre>
 </details>
 <h3>Instance variables</h3>
 <dl>
-<dt id="aiobungie.crate.user.PartialBungieUser.crossave_override"><code class="name">var <span class="ident">crossave_override</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
+<dt id="aiobungie.crate.user.PartialBungieUser.crossave_override"><code class="name">var <span class="ident">crossave_override</span> : <a title="aiobungie.internal.enums.MembershipType" href="../internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
 <dd>
 <div class="desc"><p>The user's crossave override membership.</p></div>
 </dd>
-<dt id="aiobungie.crate.user.PartialBungieUser.icon"><code class="name">var <span class="ident">icon</span> : Union[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
+<dt id="aiobungie.crate.user.PartialBungieUser.icon"><code class="name">var <span class="ident">icon</span> : Union[<a title="aiobungie.internal.assets.Image" href="../internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
 <dd>
 <div class="desc"><p>The user's icon.</p></div>
 </dd>
@@ -808,13 +927,56 @@ class PartialBungieUser:
 <dd>
 <div class="desc"><p>The user's privacy.</p></div>
 </dd>
-<dt id="aiobungie.crate.user.PartialBungieUser.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
+<dt id="aiobungie.crate.user.PartialBungieUser.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="../internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
 <dd>
 <div class="desc"><p>The user's name. Field may be undefined if not found.</p></div>
 </dd>
-<dt id="aiobungie.crate.user.PartialBungieUser.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
+<dt id="aiobungie.crate.user.PartialBungieUser.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.traits.Netrunner" href="../internal/traits.html#aiobungie.internal.traits.Netrunner">Netrunner</a></code></dt>
+<dd>
+<div class="desc"><p>A network state used for making external requests.</p></div>
+</dd>
+<dt id="aiobungie.crate.user.PartialBungieUser.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="../internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
 <dd>
 <div class="desc"><p>The user's membership type.</p></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="aiobungie.crate.user.PartialBungieUser.fetch_self"><code class="name flex">
+<span>async def <span class="ident">fetch_self</span></span>(<span>self) ‑> <a title="aiobungie.crate.user.BungieUser" href="#aiobungie.crate.user.BungieUser">BungieUser</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Fetch the Bungie user of this partial user.</p>
+<h2 id="returns">Returns</h2>
+<p><code><a title="aiobungie.crate.BungieUser" href="index.html#aiobungie.crate.BungieUser">BungieUser</a></code>
+A Bungie net user.</p>
+<h2 id="raises">Raises</h2>
+<p><code><a title="aiobungie.UserNotFound" href="../index.html#aiobungie.UserNotFound">UserNotFound</a></code>
+The user was not found.</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.2.5</p>
+</div></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_self(self) -&gt; BungieUser:
+    &#34;&#34;&#34;Fetch the Bungie user of this partial user.
+
+    Returns
+    -------
+    `aiobungie.crate.BungieUser`
+        A Bungie net user.
+
+    Raises
+    ------
+    `aiobungie.UserNotFound`
+        The user was not found.
+
+    .. versionadded:: 0.2.5
+    &#34;&#34;&#34;
+    return await self.net.request.fetch_user(self.id)</code></pre>
+</details>
 </dd>
 </dl>
 </dd>
@@ -947,14 +1109,9 @@ class User:
 <h3>Subclasses</h3>
 <ul class="hlist">
 <li><a title="aiobungie.crate.application.ApplicationOwner" href="application.html#aiobungie.crate.application.ApplicationOwner">ApplicationOwner</a></li>
-<li>aiobungie.crate.clans.ClanAdmin</li>
+<li><a title="aiobungie.crate.clans.ClanAdmin" href="clans.html#aiobungie.crate.clans.ClanAdmin">ClanAdmin</a></li>
 <li><a title="aiobungie.crate.clans.ClanMember" href="clans.html#aiobungie.crate.clans.ClanMember">ClanMember</a></li>
-<li><a title="aiobungie.crate.clans.ClanOwner" href="clans.html#aiobungie.crate.clans.ClanOwner">ClanOwner</a></li>
 <li><a title="aiobungie.crate.friends.Friend" href="friends.html#aiobungie.crate.friends.Friend">Friend</a></li>
-<li><a title="aiobungie.crate.members.PSNMember" href="members.html#aiobungie.crate.members.PSNMember">PSNMember</a></li>
-<li><a title="aiobungie.crate.members.StadiaMember" href="members.html#aiobungie.crate.members.StadiaMember">StadiaMember</a></li>
-<li><a title="aiobungie.crate.members.SteamMember" href="members.html#aiobungie.crate.members.SteamMember">SteamMember</a></li>
-<li><a title="aiobungie.crate.members.XboxMember" href="members.html#aiobungie.crate.members.XboxMember">XboxMember</a></li>
 <li><a title="aiobungie.crate.user.DestinyUser" href="#aiobungie.crate.user.DestinyUser">DestinyUser</a></li>
 </ul>
 <h3>Instance variables</h3>
@@ -980,7 +1137,7 @@ def code(self) -&gt; helpers.NoneOr[int]:
     &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
-<dt id="aiobungie.crate.user.UserLike.icon"><code class="name">var <span class="ident">icon</span> : Union[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
+<dt id="aiobungie.crate.user.UserLike.icon"><code class="name">var <span class="ident">icon</span> : Union[<a title="aiobungie.internal.assets.Image" href="../internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
 <dd>
 <div class="desc"><p>The user like's icon.</p></div>
 <details class="source">
@@ -1045,7 +1202,7 @@ def link(self) -&gt; str:
     &#34;&#34;&#34;The user like&#39;s profile link.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
-<dt id="aiobungie.crate.user.UserLike.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
+<dt id="aiobungie.crate.user.UserLike.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="../internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
 <dd>
 <div class="desc"><p>The user like's name.</p></div>
 <details class="source">
@@ -1058,7 +1215,7 @@ def name(self) -&gt; helpers.UndefinedOr[str]:
     &#34;&#34;&#34;The user like&#39;s name.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
-<dt id="aiobungie.crate.user.UserLike.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
+<dt id="aiobungie.crate.user.UserLike.type"><code class="name">var <span class="ident">type</span> : <a title="aiobungie.internal.enums.MembershipType" href="../internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
 <dd>
 <div class="desc"><p>The user type of the user.</p></div>
 <details class="source">
@@ -1122,7 +1279,7 @@ class UserThemes:
 </details>
 <h3>Instance variables</h3>
 <dl>
-<dt id="aiobungie.crate.user.UserThemes.description"><code class="name">var <span class="ident">description</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
+<dt id="aiobungie.crate.user.UserThemes.description"><code class="name">var <span class="ident">description</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="../internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
 <dd>
 <div class="desc"><p>An optional theme description. This field could be <code>None</code> if no description found.</p></div>
 </dd>
@@ -1130,7 +1287,7 @@ class UserThemes:
 <dd>
 <div class="desc"><p>The theme id.</p></div>
 </dd>
-<dt id="aiobungie.crate.user.UserThemes.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="./internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
+<dt id="aiobungie.crate.user.UserThemes.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="../internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
 <dd>
 <div class="desc"><p>An optional theme name. if not found this field will be <code>None</code></p></div>
 </dd>
@@ -1174,7 +1331,7 @@ const query = new URL(window.location).searchParams.get('q');
 if (query)
 search(query);
 function search(query) {
-const url = '././doc-search.html#' + encodeURIComponent(query);
+const url = '../../doc-search.html#' + encodeURIComponent(query);
 new tingle.modal({
 cssClass: ['modal-dialog'],
 onClose: () => {
@@ -1228,12 +1385,14 @@ setTimeout(() => input.focus(), 100);
 <ul class="two-column">
 <li><code><a title="aiobungie.crate.user.DestinyUser.code" href="#aiobungie.crate.user.DestinyUser.code">code</a></code></li>
 <li><code><a title="aiobungie.crate.user.DestinyUser.crossave_override" href="#aiobungie.crate.user.DestinyUser.crossave_override">crossave_override</a></code></li>
+<li><code><a title="aiobungie.crate.user.DestinyUser.fetch_self_profile" href="#aiobungie.crate.user.DestinyUser.fetch_self_profile">fetch_self_profile</a></code></li>
 <li><code><a title="aiobungie.crate.user.DestinyUser.icon" href="#aiobungie.crate.user.DestinyUser.icon">icon</a></code></li>
 <li><code><a title="aiobungie.crate.user.DestinyUser.id" href="#aiobungie.crate.user.DestinyUser.id">id</a></code></li>
 <li><code><a title="aiobungie.crate.user.DestinyUser.is_public" href="#aiobungie.crate.user.DestinyUser.is_public">is_public</a></code></li>
 <li><code><a title="aiobungie.crate.user.DestinyUser.last_seen_name" href="#aiobungie.crate.user.DestinyUser.last_seen_name">last_seen_name</a></code></li>
 <li><code><a title="aiobungie.crate.user.DestinyUser.link" href="#aiobungie.crate.user.DestinyUser.link">link</a></code></li>
 <li><code><a title="aiobungie.crate.user.DestinyUser.name" href="#aiobungie.crate.user.DestinyUser.name">name</a></code></li>
+<li><code><a title="aiobungie.crate.user.DestinyUser.net" href="#aiobungie.crate.user.DestinyUser.net">net</a></code></li>
 <li><code><a title="aiobungie.crate.user.DestinyUser.type" href="#aiobungie.crate.user.DestinyUser.type">type</a></code></li>
 <li><code><a title="aiobungie.crate.user.DestinyUser.types" href="#aiobungie.crate.user.DestinyUser.types">types</a></code></li>
 <li><code><a title="aiobungie.crate.user.DestinyUser.unique_name" href="#aiobungie.crate.user.DestinyUser.unique_name">unique_name</a></code></li>
@@ -1251,10 +1410,12 @@ setTimeout(() => input.focus(), 100);
 <h4><code><a title="aiobungie.crate.user.PartialBungieUser" href="#aiobungie.crate.user.PartialBungieUser">PartialBungieUser</a></code></h4>
 <ul class="two-column">
 <li><code><a title="aiobungie.crate.user.PartialBungieUser.crossave_override" href="#aiobungie.crate.user.PartialBungieUser.crossave_override">crossave_override</a></code></li>
+<li><code><a title="aiobungie.crate.user.PartialBungieUser.fetch_self" href="#aiobungie.crate.user.PartialBungieUser.fetch_self">fetch_self</a></code></li>
 <li><code><a title="aiobungie.crate.user.PartialBungieUser.icon" href="#aiobungie.crate.user.PartialBungieUser.icon">icon</a></code></li>
 <li><code><a title="aiobungie.crate.user.PartialBungieUser.id" href="#aiobungie.crate.user.PartialBungieUser.id">id</a></code></li>
 <li><code><a title="aiobungie.crate.user.PartialBungieUser.is_public" href="#aiobungie.crate.user.PartialBungieUser.is_public">is_public</a></code></li>
 <li><code><a title="aiobungie.crate.user.PartialBungieUser.name" href="#aiobungie.crate.user.PartialBungieUser.name">name</a></code></li>
+<li><code><a title="aiobungie.crate.user.PartialBungieUser.net" href="#aiobungie.crate.user.PartialBungieUser.net">net</a></code></li>
 <li><code><a title="aiobungie.crate.user.PartialBungieUser.type" href="#aiobungie.crate.user.PartialBungieUser.type">type</a></code></li>
 </ul>
 </li>

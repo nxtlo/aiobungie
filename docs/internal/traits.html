@@ -59,7 +59,7 @@ import typing
 
 from aiobungie import client
 from aiobungie import rest as rest_client
-from aiobungie.internal import serialize as serialize_
+from aiobungie.internal import factory
 
 
 @typing.runtime_checkable
@@ -80,8 +80,8 @@ class Serializable(typing.Protocol):
     __slots__: typing.Sequence[str] = ()
 
     @property
-    def serialize(self) -&gt; serialize_.Factory:
-        &#34;&#34;&#34;A property that returns a deserializer object for the client.&#34;&#34;&#34;
+    def serialize(self) -&gt; factory.Factory:
+        &#34;&#34;&#34;A property that returns the entity factory for the client.&#34;&#34;&#34;
 
 
 @typing.runtime_checkable
@@ -177,11 +177,11 @@ class ClientBase(Netrunner, Serializable, typing.Protocol):
 </ul>
 <h3>Subclasses</h3>
 <ul class="hlist">
-<li><a title="aiobungie.client.Client" href="./client.html#aiobungie.client.Client">Client</a></li>
+<li><a title="aiobungie.client.Client" href="../client.html#aiobungie.client.Client">Client</a></li>
 </ul>
 <h3>Instance variables</h3>
 <dl>
-<dt id="aiobungie.internal.traits.ClientBase.request"><code class="name">var <span class="ident">request</span> : <a title="aiobungie.client.Client" href="./client.html#aiobungie.client.Client">Client</a></code></dt>
+<dt id="aiobungie.internal.traits.ClientBase.request"><code class="name">var <span class="ident">request</span> : <a title="aiobungie.client.Client" href="../client.html#aiobungie.client.Client">Client</a></code></dt>
 <dd>
 <p class="inheritance">
 <em>Inherited from:</em>
@@ -189,7 +189,7 @@ class ClientBase(Netrunner, Serializable, typing.Protocol):
 </p>
 <div class="desc inherited"><p>Returns a client network state for making external requests.</p></div>
 </dd>
-<dt id="aiobungie.internal.traits.ClientBase.rest"><code class="name">var <span class="ident">rest</span> : <a title="aiobungie.rest.RESTClient" href="./rest.html#aiobungie.rest.RESTClient">RESTClient</a></code></dt>
+<dt id="aiobungie.internal.traits.ClientBase.rest"><code class="name">var <span class="ident">rest</span> : <a title="aiobungie.rest.RESTClient" href="../rest.html#aiobungie.rest.RESTClient">RESTClient</a></code></dt>
 <dd>
 <div class="desc"><p>The rest client we make the http request to the API with.</p></div>
 <details class="source">
@@ -201,13 +201,13 @@ def rest(self) -&gt; rest_client.RESTClient:
     &#34;&#34;&#34;The rest client we make the http request to the API with.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
-<dt id="aiobungie.internal.traits.ClientBase.serialize"><code class="name">var <span class="ident">serialize</span> : <a title="aiobungie.internal.serialize.Factory" href="serialize.html#aiobungie.internal.serialize.Factory">Factory</a></code></dt>
+<dt id="aiobungie.internal.traits.ClientBase.serialize"><code class="name">var <span class="ident">serialize</span> : <a title="aiobungie.internal.factory.Factory" href="factory.html#aiobungie.internal.factory.Factory">Factory</a></code></dt>
 <dd>
 <p class="inheritance">
 <em>Inherited from:</em>
 <code><a title="aiobungie.internal.traits.Serializable" href="#aiobungie.internal.traits.Serializable">Serializable</a></code>.<code><a title="aiobungie.internal.traits.Serializable.serialize" href="#aiobungie.internal.traits.Serializable.serialize">serialize</a></code>
 </p>
-<div class="desc inherited"><p>A property that returns a deserializer object for the client.</p></div>
+<div class="desc inherited"><p>A property that returns the entity factory for the client.</p></div>
 </dd>
 </dl>
 <h3>Methods</h3>
@@ -290,7 +290,7 @@ class Netrunner(typing.Protocol):
 </ul>
 <h3>Instance variables</h3>
 <dl>
-<dt id="aiobungie.internal.traits.Netrunner.request"><code class="name">var <span class="ident">request</span> : <a title="aiobungie.client.Client" href="./client.html#aiobungie.client.Client">Client</a></code></dt>
+<dt id="aiobungie.internal.traits.Netrunner.request"><code class="name">var <span class="ident">request</span> : <a title="aiobungie.client.Client" href="../client.html#aiobungie.client.Client">Client</a></code></dt>
 <dd>
 <div class="desc"><p>Returns a client network state for making external requests.</p></div>
 <details class="source">
@@ -309,7 +309,7 @@ def request(self) -&gt; client.Client:
 <span>(</span><span>*args, **kwargs)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>A protocol that uses <code><a title="aiobungie.internal.serialize.Factory" href="serialize.html#aiobungie.internal.serialize.Factory">Factory</a></code> for deseializing objects.</p></div>
+<div class="desc"><p>A protocol that uses <code>aiobungie.internal.serialize.Factory</code> for deseializing objects.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -321,8 +321,8 @@ class Serializable(typing.Protocol):
     __slots__: typing.Sequence[str] = ()
 
     @property
-    def serialize(self) -&gt; serialize_.Factory:
-        &#34;&#34;&#34;A property that returns a deserializer object for the client.&#34;&#34;&#34;</code></pre>
+    def serialize(self) -&gt; factory.Factory:
+        &#34;&#34;&#34;A property that returns the entity factory for the client.&#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -335,16 +335,16 @@ class Serializable(typing.Protocol):
 </ul>
 <h3>Instance variables</h3>
 <dl>
-<dt id="aiobungie.internal.traits.Serializable.serialize"><code class="name">var <span class="ident">serialize</span> : <a title="aiobungie.internal.serialize.Factory" href="serialize.html#aiobungie.internal.serialize.Factory">Factory</a></code></dt>
+<dt id="aiobungie.internal.traits.Serializable.serialize"><code class="name">var <span class="ident">serialize</span> : <a title="aiobungie.internal.factory.Factory" href="factory.html#aiobungie.internal.factory.Factory">Factory</a></code></dt>
 <dd>
-<div class="desc"><p>A property that returns a deserializer object for the client.</p></div>
+<div class="desc"><p>A property that returns the entity factory for the client.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def serialize(self) -&gt; serialize_.Factory:
-    &#34;&#34;&#34;A property that returns a deserializer object for the client.&#34;&#34;&#34;</code></pre>
+def serialize(self) -&gt; factory.Factory:
+    &#34;&#34;&#34;A property that returns the entity factory for the client.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 </dl>
@@ -387,7 +387,7 @@ const query = new URL(window.location).searchParams.get('q');
 if (query)
 search(query);
 function search(query) {
-const url = '././doc-search.html#' + encodeURIComponent(query);
+const url = '../../doc-search.html#' + encodeURIComponent(query);
 new tingle.modal({
 cssClass: ['modal-dialog'],
 onClose: () => {

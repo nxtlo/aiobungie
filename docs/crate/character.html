@@ -158,6 +158,9 @@ class CharacterComponent(abc.ABC):
         Also You must have a valid Destiny account, and either be
         in a social space, in orbit or offline.
 
+        .. warning::
+            This method is sill not implemented.
+
         Parameters
         ----------
         item: `builtins.int`
@@ -187,6 +190,9 @@ class CharacterComponent(abc.ABC):
         This requires the OAuth2: MoveEquipDestinyItems scope.
         Also You must have a valid Destiny account, and either be
         in a social space, in orbit or offline.
+
+        .. warning::
+            This method is sill not implemented.
 
         Parameters
         ----------
@@ -354,11 +360,11 @@ class Character(CharacterComponent):
 </ul>
 <h3>Instance variables</h3>
 <dl>
-<dt id="aiobungie.crate.character.Character.class_type"><code class="name">var <span class="ident">class_type</span> : <a title="aiobungie.internal.enums.Class" href="./internal/enums.html#aiobungie.internal.enums.Class">Class</a></code></dt>
+<dt id="aiobungie.crate.character.Character.class_type"><code class="name">var <span class="ident">class_type</span> : <a title="aiobungie.internal.enums.Class" href="../internal/enums.html#aiobungie.internal.enums.Class">Class</a></code></dt>
 <dd>
 <div class="desc"><p>Character's class.</p></div>
 </dd>
-<dt id="aiobungie.crate.character.Character.emblem"><code class="name">var <span class="ident">emblem</span> : <a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a></code></dt>
+<dt id="aiobungie.crate.character.Character.emblem"><code class="name">var <span class="ident">emblem</span> : <a title="aiobungie.internal.assets.Image" href="../internal/assets.html#aiobungie.internal.assets.Image">Image</a></code></dt>
 <dd>
 <div class="desc"><p>Character's emblem</p></div>
 </dd>
@@ -366,11 +372,11 @@ class Character(CharacterComponent):
 <dd>
 <div class="desc"><p>Character's emblem hash.</p></div>
 </dd>
-<dt id="aiobungie.crate.character.Character.emblem_icon"><code class="name">var <span class="ident">emblem_icon</span> : <a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a></code></dt>
+<dt id="aiobungie.crate.character.Character.emblem_icon"><code class="name">var <span class="ident">emblem_icon</span> : <a title="aiobungie.internal.assets.Image" href="../internal/assets.html#aiobungie.internal.assets.Image">Image</a></code></dt>
 <dd>
 <div class="desc"><p>Character's emblem icon</p></div>
 </dd>
-<dt id="aiobungie.crate.character.Character.gender"><code class="name">var <span class="ident">gender</span> : <a title="aiobungie.internal.enums.Gender" href="./internal/enums.html#aiobungie.internal.enums.Gender">Gender</a></code></dt>
+<dt id="aiobungie.crate.character.Character.gender"><code class="name">var <span class="ident">gender</span> : <a title="aiobungie.internal.enums.Gender" href="../internal/enums.html#aiobungie.internal.enums.Gender">Gender</a></code></dt>
 <dd>
 <div class="desc"><p>Character's gender</p></div>
 </dd>
@@ -394,11 +400,11 @@ class Character(CharacterComponent):
 <dd>
 <div class="desc"><p>The character's member id.</p></div>
 </dd>
-<dt id="aiobungie.crate.character.Character.member_type"><code class="name">var <span class="ident">member_type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
+<dt id="aiobungie.crate.character.Character.member_type"><code class="name">var <span class="ident">member_type</span> : <a title="aiobungie.internal.enums.MembershipType" href="../internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
 <dd>
 <div class="desc"><p>The character's memberhip type.</p></div>
 </dd>
-<dt id="aiobungie.crate.character.Character.race"><code class="name">var <span class="ident">race</span> : <a title="aiobungie.internal.enums.Race" href="./internal/enums.html#aiobungie.internal.enums.Race">Race</a></code></dt>
+<dt id="aiobungie.crate.character.Character.race"><code class="name">var <span class="ident">race</span> : <a title="aiobungie.internal.enums.Race" href="../internal/enums.html#aiobungie.internal.enums.Race">Race</a></code></dt>
 <dd>
 <div class="desc"><p>Character's race</p></div>
 </dd>
@@ -551,6 +557,9 @@ def url(self) -&gt; str:
         Also You must have a valid Destiny account, and either be
         in a social space, in orbit or offline.
 
+        .. warning::
+            This method is sill not implemented.
+
         Parameters
         ----------
         item: `builtins.int`
@@ -580,6 +589,9 @@ def url(self) -&gt; str:
         This requires the OAuth2: MoveEquipDestinyItems scope.
         Also You must have a valid Destiny account, and either be
         in a social space, in orbit or offline.
+
+        .. warning::
+            This method is sill not implemented.
 
         Parameters
         ----------
@@ -614,7 +626,7 @@ def url(self) -&gt; str:
 </ul>
 <h3>Instance variables</h3>
 <dl>
-<dt id="aiobungie.crate.character.CharacterComponent.class_type"><code class="name">var <span class="ident">class_type</span> : <a title="aiobungie.internal.enums.Class" href="./internal/enums.html#aiobungie.internal.enums.Class">Class</a></code></dt>
+<dt id="aiobungie.crate.character.CharacterComponent.class_type"><code class="name">var <span class="ident">class_type</span> : <a title="aiobungie.internal.enums.Class" href="../internal/enums.html#aiobungie.internal.enums.Class">Class</a></code></dt>
 <dd>
 <div class="desc"><p>The character's class.</p></div>
 <details class="source">
@@ -627,7 +639,7 @@ def class_type(self) -&gt; enums.Class:
     &#34;&#34;&#34;The character&#39;s class.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
-<dt id="aiobungie.crate.character.CharacterComponent.emblem"><code class="name">var <span class="ident">emblem</span> : <a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a></code></dt>
+<dt id="aiobungie.crate.character.CharacterComponent.emblem"><code class="name">var <span class="ident">emblem</span> : <a title="aiobungie.internal.assets.Image" href="../internal/assets.html#aiobungie.internal.assets.Image">Image</a></code></dt>
 <dd>
 <div class="desc"><p>The character's current equipped emblem.</p></div>
 <details class="source">
@@ -653,7 +665,7 @@ def emblem_hash(self) -&gt; int:
     &#34;&#34;&#34;The character&#39;s current equipped emblem hash.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
-<dt id="aiobungie.crate.character.CharacterComponent.emblem_icon"><code class="name">var <span class="ident">emblem_icon</span> : <a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a></code></dt>
+<dt id="aiobungie.crate.character.CharacterComponent.emblem_icon"><code class="name">var <span class="ident">emblem_icon</span> : <a title="aiobungie.internal.assets.Image" href="../internal/assets.html#aiobungie.internal.assets.Image">Image</a></code></dt>
 <dd>
 <div class="desc"><p>The character's current equipped emblem icon.</p></div>
 <details class="source">
@@ -666,7 +678,7 @@ def emblem_icon(self) -&gt; Image:
     &#34;&#34;&#34;The character&#39;s current equipped emblem icon.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
-<dt id="aiobungie.crate.character.CharacterComponent.gender"><code class="name">var <span class="ident">gender</span> : <a title="aiobungie.internal.enums.Gender" href="./internal/enums.html#aiobungie.internal.enums.Gender">Gender</a></code></dt>
+<dt id="aiobungie.crate.character.CharacterComponent.gender"><code class="name">var <span class="ident">gender</span> : <a title="aiobungie.internal.enums.Gender" href="../internal/enums.html#aiobungie.internal.enums.Gender">Gender</a></code></dt>
 <dd>
 <div class="desc"><p>The character's gender.</p></div>
 <details class="source">
@@ -731,7 +743,7 @@ def member_id(self) -&gt; int:
     &#34;&#34;&#34;The profile&#39;s member id.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
-<dt id="aiobungie.crate.character.CharacterComponent.member_type"><code class="name">var <span class="ident">member_type</span> : <a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
+<dt id="aiobungie.crate.character.CharacterComponent.member_type"><code class="name">var <span class="ident">member_type</span> : <a title="aiobungie.internal.enums.MembershipType" href="../internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
 <dd>
 <div class="desc"><p>The character's membership type.</p></div>
 <details class="source">
@@ -744,7 +756,7 @@ def member_type(self) -&gt; enums.MembershipType:
     &#34;&#34;&#34;The character&#39;s membership type.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
-<dt id="aiobungie.crate.character.CharacterComponent.race"><code class="name">var <span class="ident">race</span> : <a title="aiobungie.internal.enums.Race" href="./internal/enums.html#aiobungie.internal.enums.Race">Race</a></code></dt>
+<dt id="aiobungie.crate.character.CharacterComponent.race"><code class="name">var <span class="ident">race</span> : <a title="aiobungie.internal.enums.Race" href="../internal/enums.html#aiobungie.internal.enums.Race">Race</a></code></dt>
 <dd>
 <div class="desc"><p>The character's race.</p></div>
 <details class="source">
@@ -824,6 +836,10 @@ def url(self) -&gt; str:
 <p>This requires the OAuth2: MoveEquipDestinyItems scope.
 Also You must have a valid Destiny account, and either be
 in a social space, in orbit or offline.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This method is sill not implemented.</p>
+</div>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>item</code></strong> :&ensp;<code>builtins.int</code></dt>
@@ -844,6 +860,9 @@ This endpoint is currently not implemented.</p></div>
     This requires the OAuth2: MoveEquipDestinyItems scope.
     Also You must have a valid Destiny account, and either be
     in a social space, in orbit or offline.
+
+    .. warning::
+        This method is sill not implemented.
 
     Parameters
     ----------
@@ -877,6 +896,10 @@ This endpoint is currently not implemented.</p></div>
 <p>This requires the OAuth2: MoveEquipDestinyItems scope.
 Also You must have a valid Destiny account, and either be
 in a social space, in orbit or offline.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This method is sill not implemented.</p>
+</div>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>items</code></strong> :&ensp;<code>typing.List[builtins.int]</code></dt>
@@ -897,6 +920,9 @@ This endpoint is currently not implemented.</p></div>
     This requires the OAuth2: MoveEquipDestinyItems scope.
     Also You must have a valid Destiny account, and either be
     in a social space, in orbit or offline.
+
+    .. warning::
+        This method is sill not implemented.
 
     Parameters
     ----------
@@ -962,7 +988,7 @@ const query = new URL(window.location).searchParams.get('q');
 if (query)
 search(query);
 function search(query) {
-const url = '././doc-search.html#' + encodeURIComponent(query);
+const url = '../../doc-search.html#' + encodeURIComponent(query);
 new tingle.modal({
 cssClass: ['modal-dialog'],
 onClose: () => {

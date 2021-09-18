@@ -261,7 +261,7 @@ class RESTClient(interfaces.RESTInterface):
             &#34;GET&#34;, f&#34;Destiny2/SearchDestinyPlayer/{int(type)}/{quote(name)}/&#34;
         )
 
-    def search_users(self, name: str, /) -&gt; ResponseSig[helpers.JsonArray]:
+    def search_users(self, name: str, /) -&gt; ResponseSig[helpers.JsonObject]:
         # &lt;&lt;inherited docstring from aiobungie.interfaces.rest.RESTInterface&gt;&gt;.
         return self._fetch(&#34;GET&#34;, f&#34;User/Search/Prefix/{name}/0&#34;)
 
@@ -274,6 +274,16 @@ class RESTClient(interfaces.RESTInterface):
     ) -&gt; ResponseSig[helpers.JsonObject]:
         # &lt;&lt;inherited docstring from aiobungie.interfaces.rest.RESTInterface&gt;&gt;.
         return self._fetch(&#34;GET&#34;, f&#34;GroupV2/Name/{name}/{int(type)}&#34;)
+
+    def fetch_clan_admins(self, clan_id: int, /) -&gt; ResponseSig[helpers.JsonObject]:
+        # &lt;&lt;inherited docstring from aiobungie.interfaces.rest.RESTInterface&gt;&gt;.
+        return self._fetch(&#34;GET&#34;, f&#34;GroupV2/{clan_id}/AdminsAndFounder/&#34;)
+
+    def fetch_clan_conversations(
+        self, clan_id: int, /
+    ) -&gt; ResponseSig[helpers.JsonArray]:
+        # &lt;&lt;inherited docstring from aiobungie.interfaces.rest.RESTInterface&gt;&gt;.
+        return self._fetch(&#34;GET&#34;, f&#34;GroupV2/{clan_id}/OptionalConversations/&#34;)
 
     def fetch_app(self, appid: int, /) -&gt; ResponseSig[helpers.JsonObject]:
         # &lt;&lt;inherited docstring from aiobungie.interfaces.rest.RESTInterface&gt;&gt;.
@@ -334,13 +344,41 @@ class RESTClient(interfaces.RESTInterface):
         # &lt;&lt;inherited docstring from aiobungie.interfaces.rest.RESTInterface&gt;&gt;.
         return self.fetch_entity(&#34;DestinyInventoryItemDefinition&#34;, hash)
 
+    def fetch_groups_for_member(
+        self,
+        member_id: int,
+        member_type: enums.MembershipType,
+        /,
+        *,
+        filter: int = 0,
+        group_type: enums.GroupType = enums.GroupType.CLAN,
+    ) -&gt; ResponseSig[helpers.JsonObject]:
+        return self._fetch(
+            &#34;GET&#34;,
+            f&#34;GroupV2/User/{int(member_type)}/{member_id}/{filter}/{int(group_type)}/&#34;,
+        )
+
+    def fetch_potential_groups_for_member(
+        self,
+        member_id: int,
+        member_type: enums.MembershipType,
+        /,
+        *,
+        filter: int = 0,
+        group_type: enums.GroupType = enums.GroupType.CLAN,
+    ) -&gt; ResponseSig[helpers.JsonObject]:
+        return self._fetch(
+            &#34;GET&#34;,
+            f&#34;GroupV2/User/Potential/{int(member_type)}/{member_id}/{filter}/{int(group_type)}/&#34;,
+        )
+
     def fetch_clan_members(
         self,
         id: int,
         type: enums.MembershipType = enums.MembershipType.NONE,
         name: typing.Optional[str] = None,
         /,
-    ) -&gt; ResponseSig[helpers.JsonArray]:
+    ) -&gt; ResponseSig[helpers.JsonObject]:
         # &lt;&lt;inherited docstring from aiobungie.interfaces.rest.RESTInterface&gt;&gt;.
         return self._fetch(
             &#34;GET&#34;,
@@ -514,7 +552,7 @@ class RESTClient(interfaces.RESTInterface):
             &#34;GET&#34;, f&#34;Destiny2/SearchDestinyPlayer/{int(type)}/{quote(name)}/&#34;
         )
 
-    def search_users(self, name: str, /) -&gt; ResponseSig[helpers.JsonArray]:
+    def search_users(self, name: str, /) -&gt; ResponseSig[helpers.JsonObject]:
         # &lt;&lt;inherited docstring from aiobungie.interfaces.rest.RESTInterface&gt;&gt;.
         return self._fetch(&#34;GET&#34;, f&#34;User/Search/Prefix/{name}/0&#34;)
 
@@ -527,6 +565,16 @@ class RESTClient(interfaces.RESTInterface):
     ) -&gt; ResponseSig[helpers.JsonObject]:
         # &lt;&lt;inherited docstring from aiobungie.interfaces.rest.RESTInterface&gt;&gt;.
         return self._fetch(&#34;GET&#34;, f&#34;GroupV2/Name/{name}/{int(type)}&#34;)
+
+    def fetch_clan_admins(self, clan_id: int, /) -&gt; ResponseSig[helpers.JsonObject]:
+        # &lt;&lt;inherited docstring from aiobungie.interfaces.rest.RESTInterface&gt;&gt;.
+        return self._fetch(&#34;GET&#34;, f&#34;GroupV2/{clan_id}/AdminsAndFounder/&#34;)
+
+    def fetch_clan_conversations(
+        self, clan_id: int, /
+    ) -&gt; ResponseSig[helpers.JsonArray]:
+        # &lt;&lt;inherited docstring from aiobungie.interfaces.rest.RESTInterface&gt;&gt;.
+        return self._fetch(&#34;GET&#34;, f&#34;GroupV2/{clan_id}/OptionalConversations/&#34;)
 
     def fetch_app(self, appid: int, /) -&gt; ResponseSig[helpers.JsonObject]:
         # &lt;&lt;inherited docstring from aiobungie.interfaces.rest.RESTInterface&gt;&gt;.
@@ -587,13 +635,41 @@ class RESTClient(interfaces.RESTInterface):
         # &lt;&lt;inherited docstring from aiobungie.interfaces.rest.RESTInterface&gt;&gt;.
         return self.fetch_entity(&#34;DestinyInventoryItemDefinition&#34;, hash)
 
+    def fetch_groups_for_member(
+        self,
+        member_id: int,
+        member_type: enums.MembershipType,
+        /,
+        *,
+        filter: int = 0,
+        group_type: enums.GroupType = enums.GroupType.CLAN,
+    ) -&gt; ResponseSig[helpers.JsonObject]:
+        return self._fetch(
+            &#34;GET&#34;,
+            f&#34;GroupV2/User/{int(member_type)}/{member_id}/{filter}/{int(group_type)}/&#34;,
+        )
+
+    def fetch_potential_groups_for_member(
+        self,
+        member_id: int,
+        member_type: enums.MembershipType,
+        /,
+        *,
+        filter: int = 0,
+        group_type: enums.GroupType = enums.GroupType.CLAN,
+    ) -&gt; ResponseSig[helpers.JsonObject]:
+        return self._fetch(
+            &#34;GET&#34;,
+            f&#34;GroupV2/User/Potential/{int(member_type)}/{member_id}/{filter}/{int(group_type)}/&#34;,
+        )
+
     def fetch_clan_members(
         self,
         id: int,
         type: enums.MembershipType = enums.MembershipType.NONE,
         name: typing.Optional[str] = None,
         /,
-    ) -&gt; ResponseSig[helpers.JsonArray]:
+    ) -&gt; ResponseSig[helpers.JsonObject]:
         # &lt;&lt;inherited docstring from aiobungie.interfaces.rest.RESTInterface&gt;&gt;.
         return self._fetch(
             &#34;GET&#34;,
@@ -724,6 +800,44 @@ This method will return the first clan found with given name name …</p></div>
     return self._fetch(&#34;GET&#34;, f&#34;GroupV2/Name/{name}/{int(type)}&#34;)</code></pre>
 </details>
 </dd>
+<dt id="aiobungie.rest.RESTClient.fetch_clan_admins"><code class="name flex">
+<span>def <span class="ident">fetch_clan_admins</span></span>(<span>self, clan_id: int, /) ‑> Coroutine[Any, Any, Dict[str, Any]]</span>
+</code></dt>
+<dd>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="aiobungie.interfaces.rest.RESTInterface" href="interfaces/rest.html#aiobungie.interfaces.rest.RESTInterface">RESTInterface</a></code>.<code><a title="aiobungie.interfaces.rest.RESTInterface.fetch_clan_admins" href="interfaces/rest.html#aiobungie.interfaces.rest.RESTInterface.fetch_clan_admins">fetch_clan_admins</a></code>
+</p>
+<div class="desc inherited"><p>Fetch the admins and founder members of the clan …</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def fetch_clan_admins(self, clan_id: int, /) -&gt; ResponseSig[helpers.JsonObject]:
+    # &lt;&lt;inherited docstring from aiobungie.interfaces.rest.RESTInterface&gt;&gt;.
+    return self._fetch(&#34;GET&#34;, f&#34;GroupV2/{clan_id}/AdminsAndFounder/&#34;)</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.rest.RESTClient.fetch_clan_conversations"><code class="name flex">
+<span>def <span class="ident">fetch_clan_conversations</span></span>(<span>self, clan_id: int, /) ‑> Coroutine[Any, Any, List[Any]]</span>
+</code></dt>
+<dd>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="aiobungie.interfaces.rest.RESTInterface" href="interfaces/rest.html#aiobungie.interfaces.rest.RESTInterface">RESTInterface</a></code>.<code><a title="aiobungie.interfaces.rest.RESTInterface.fetch_clan_conversations" href="interfaces/rest.html#aiobungie.interfaces.rest.RESTInterface.fetch_clan_conversations">fetch_clan_conversations</a></code>
+</p>
+<div class="desc inherited"><p>Fetch a clan's conversations …</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def fetch_clan_conversations(
+    self, clan_id: int, /
+) -&gt; ResponseSig[helpers.JsonArray]:
+    # &lt;&lt;inherited docstring from aiobungie.interfaces.rest.RESTInterface&gt;&gt;.
+    return self._fetch(&#34;GET&#34;, f&#34;GroupV2/{clan_id}/OptionalConversations/&#34;)</code></pre>
+</details>
+</dd>
 <dt id="aiobungie.rest.RESTClient.fetch_clan_from_id"><code class="name flex">
 <span>def <span class="ident">fetch_clan_from_id</span></span>(<span>self, id: int) ‑> Coroutine[Any, Any, Dict[str, Any]]</span>
 </code></dt>
@@ -743,7 +857,7 @@ This method will return the first clan found with given name name …</p></div>
 </details>
 </dd>
 <dt id="aiobungie.rest.RESTClient.fetch_clan_members"><code class="name flex">
-<span>def <span class="ident">fetch_clan_members</span></span>(<span>self, id: int, type: enums.MembershipType = NONE, name: typing.Optional[str] = None, /) ‑> Coroutine[Any, Any, List[Any]]</span>
+<span>def <span class="ident">fetch_clan_members</span></span>(<span>self, id: int, type: enums.MembershipType = NONE, name: typing.Optional[str] = None, /) ‑> Coroutine[Any, Any, Dict[str, Any]]</span>
 </code></dt>
 <dd>
 <p class="inheritance">
@@ -761,7 +875,7 @@ This method will return the first clan found with given name name …</p></div>
     type: enums.MembershipType = enums.MembershipType.NONE,
     name: typing.Optional[str] = None,
     /,
-) -&gt; ResponseSig[helpers.JsonArray]:
+) -&gt; ResponseSig[helpers.JsonObject]:
     # &lt;&lt;inherited docstring from aiobungie.interfaces.rest.RESTInterface&gt;&gt;.
     return self._fetch(
         &#34;GET&#34;,
@@ -781,6 +895,34 @@ This method will return the first clan found with given name name …</p></div>
 <pre><code class="python">def fetch_entity(self, type: str, hash: int) -&gt; ResponseSig[helpers.JsonObject]:
     # &lt;&lt;inherited docstring from aiobungie.interfaces.rest.RESTInterface&gt;&gt;.
     return self._fetch(&#34;GET&#34;, route=f&#34;Destiny2/Manifest/{type}/{hash}&#34;)</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.rest.RESTClient.fetch_groups_for_member"><code class="name flex">
+<span>def <span class="ident">fetch_groups_for_member</span></span>(<span>self, member_id: int, member_type: enums.MembershipType, /, *, filter: int = 0, group_type: enums.GroupType = CLAN) ‑> Coroutine[Any, Any, Dict[str, Any]]</span>
+</code></dt>
+<dd>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="aiobungie.interfaces.rest.RESTInterface" href="interfaces/rest.html#aiobungie.interfaces.rest.RESTInterface">RESTInterface</a></code>.<code><a title="aiobungie.interfaces.rest.RESTInterface.fetch_groups_for_member" href="interfaces/rest.html#aiobungie.interfaces.rest.RESTInterface.fetch_groups_for_member">fetch_groups_for_member</a></code>
+</p>
+<div class="desc inherited"><p>Fetch the information about the groups for a member …</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def fetch_groups_for_member(
+    self,
+    member_id: int,
+    member_type: enums.MembershipType,
+    /,
+    *,
+    filter: int = 0,
+    group_type: enums.GroupType = enums.GroupType.CLAN,
+) -&gt; ResponseSig[helpers.JsonObject]:
+    return self._fetch(
+        &#34;GET&#34;,
+        f&#34;GroupV2/User/{int(member_type)}/{member_id}/{filter}/{int(group_type)}/&#34;,
+    )</code></pre>
 </details>
 </dd>
 <dt id="aiobungie.rest.RESTClient.fetch_hard_linked"><code class="name flex">
@@ -929,6 +1071,34 @@ Only works for credentials that are public just <code><a title="aiobungie.Creden
     raise NotImplementedError</code></pre>
 </details>
 </dd>
+<dt id="aiobungie.rest.RESTClient.fetch_potential_groups_for_member"><code class="name flex">
+<span>def <span class="ident">fetch_potential_groups_for_member</span></span>(<span>self, member_id: int, member_type: enums.MembershipType, /, *, filter: int = 0, group_type: enums.GroupType = CLAN) ‑> Coroutine[Any, Any, Dict[str, Any]]</span>
+</code></dt>
+<dd>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="aiobungie.interfaces.rest.RESTInterface" href="interfaces/rest.html#aiobungie.interfaces.rest.RESTInterface">RESTInterface</a></code>.<code><a title="aiobungie.interfaces.rest.RESTInterface.fetch_potential_groups_for_member" href="interfaces/rest.html#aiobungie.interfaces.rest.RESTInterface.fetch_potential_groups_for_member">fetch_potential_groups_for_member</a></code>
+</p>
+<div class="desc inherited"><p>Get information about the groups that a given member has applied to or been invited to …</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def fetch_potential_groups_for_member(
+    self,
+    member_id: int,
+    member_type: enums.MembershipType,
+    /,
+    *,
+    filter: int = 0,
+    group_type: enums.GroupType = enums.GroupType.CLAN,
+) -&gt; ResponseSig[helpers.JsonObject]:
+    return self._fetch(
+        &#34;GET&#34;,
+        f&#34;GroupV2/User/Potential/{int(member_type)}/{member_id}/{filter}/{int(group_type)}/&#34;,
+    )</code></pre>
+</details>
+</dd>
 <dt id="aiobungie.rest.RESTClient.fetch_profile"><code class="name flex">
 <span>def <span class="ident">fetch_profile</span></span>(<span>self, memberid: int, type: enums.MembershipType, /) ‑> Coroutine[Any, Any, Dict[str, Any]]</span>
 </code></dt>
@@ -1005,7 +1175,7 @@ Only works for credentials that are public just <code><a title="aiobungie.Creden
 </details>
 </dd>
 <dt id="aiobungie.rest.RESTClient.search_users"><code class="name flex">
-<span>def <span class="ident">search_users</span></span>(<span>self, name: str, /) ‑> Coroutine[Any, Any, List[Any]]</span>
+<span>def <span class="ident">search_users</span></span>(<span>self, name: str, /) ‑> Coroutine[Any, Any, Dict[str, Any]]</span>
 </code></dt>
 <dd>
 <p class="inheritance">
@@ -1017,7 +1187,7 @@ Only works for credentials that are public just <code><a title="aiobungie.Creden
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def search_users(self, name: str, /) -&gt; ResponseSig[helpers.JsonArray]:
+<pre><code class="python">def search_users(self, name: str, /) -&gt; ResponseSig[helpers.JsonObject]:
     # &lt;&lt;inherited docstring from aiobungie.interfaces.rest.RESTInterface&gt;&gt;.
     return self._fetch(&#34;GET&#34;, f&#34;User/Search/Prefix/{name}/0&#34;)</code></pre>
 </details>
@@ -1080,7 +1250,7 @@ const query = new URL(window.location).searchParams.get('q');
 if (query)
 search(query);
 function search(query) {
-const url = './doc-search.html#' + encodeURIComponent(query);
+const url = '../doc-search.html#' + encodeURIComponent(query);
 new tingle.modal({
 cssClass: ['modal-dialog'],
 onClose: () => {
@@ -1111,9 +1281,12 @@ setTimeout(() => input.focus(), 100);
 <li><code><a title="aiobungie.rest.RESTClient.fetch_app" href="#aiobungie.rest.RESTClient.fetch_app">fetch_app</a></code></li>
 <li><code><a title="aiobungie.rest.RESTClient.fetch_character" href="#aiobungie.rest.RESTClient.fetch_character">fetch_character</a></code></li>
 <li><code><a title="aiobungie.rest.RESTClient.fetch_clan" href="#aiobungie.rest.RESTClient.fetch_clan">fetch_clan</a></code></li>
+<li><code><a title="aiobungie.rest.RESTClient.fetch_clan_admins" href="#aiobungie.rest.RESTClient.fetch_clan_admins">fetch_clan_admins</a></code></li>
+<li><code><a title="aiobungie.rest.RESTClient.fetch_clan_conversations" href="#aiobungie.rest.RESTClient.fetch_clan_conversations">fetch_clan_conversations</a></code></li>
 <li><code><a title="aiobungie.rest.RESTClient.fetch_clan_from_id" href="#aiobungie.rest.RESTClient.fetch_clan_from_id">fetch_clan_from_id</a></code></li>
 <li><code><a title="aiobungie.rest.RESTClient.fetch_clan_members" href="#aiobungie.rest.RESTClient.fetch_clan_members">fetch_clan_members</a></code></li>
 <li><code><a title="aiobungie.rest.RESTClient.fetch_entity" href="#aiobungie.rest.RESTClient.fetch_entity">fetch_entity</a></code></li>
+<li><code><a title="aiobungie.rest.RESTClient.fetch_groups_for_member" href="#aiobungie.rest.RESTClient.fetch_groups_for_member">fetch_groups_for_member</a></code></li>
 <li><code><a title="aiobungie.rest.RESTClient.fetch_hard_linked" href="#aiobungie.rest.RESTClient.fetch_hard_linked">fetch_hard_linked</a></code></li>
 <li><code><a title="aiobungie.rest.RESTClient.fetch_inventory_item" href="#aiobungie.rest.RESTClient.fetch_inventory_item">fetch_inventory_item</a></code></li>
 <li><code><a title="aiobungie.rest.RESTClient.fetch_manifest" href="#aiobungie.rest.RESTClient.fetch_manifest">fetch_manifest</a></code></li>
@@ -1121,6 +1294,7 @@ setTimeout(() => input.focus(), 100);
 <li><code><a title="aiobungie.rest.RESTClient.fetch_membership_from_id" href="#aiobungie.rest.RESTClient.fetch_membership_from_id">fetch_membership_from_id</a></code></li>
 <li><code><a title="aiobungie.rest.RESTClient.fetch_player" href="#aiobungie.rest.RESTClient.fetch_player">fetch_player</a></code></li>
 <li><code><a title="aiobungie.rest.RESTClient.fetch_post_activity" href="#aiobungie.rest.RESTClient.fetch_post_activity">fetch_post_activity</a></code></li>
+<li><code><a title="aiobungie.rest.RESTClient.fetch_potential_groups_for_member" href="#aiobungie.rest.RESTClient.fetch_potential_groups_for_member">fetch_potential_groups_for_member</a></code></li>
 <li><code><a title="aiobungie.rest.RESTClient.fetch_profile" href="#aiobungie.rest.RESTClient.fetch_profile">fetch_profile</a></code></li>
 <li><code><a title="aiobungie.rest.RESTClient.fetch_user" href="#aiobungie.rest.RESTClient.fetch_user">fetch_user</a></code></li>
 <li><code><a title="aiobungie.rest.RESTClient.fetch_user_themes" href="#aiobungie.rest.RESTClient.fetch_user_themes">fetch_user_themes</a></code></li>

@@ -32,8 +32,8 @@ import typing
 
 from aiobungie.ext import Manifest
 from aiobungie.internal import deprecated
+from aiobungie.internal import factory
 from aiobungie.internal import helpers
-from aiobungie.internal import serialize as serialize_
 from aiobungie.internal import traits
 
 from . import crate
@@ -64,11 +64,11 @@ class Client(traits.ClientBase):
             raise ValueError("Missing the API key!")
 
         self._rest = rest_.RESTClient(token)
-        self._serialize = serialize_.Factory(self)
+        self._serialize = factory.Factory(self)
         self._token = token  # We need the token For Manifest.
 
     @property
-    def serialize(self) -> serialize_.Factory:
+    def serialize(self) -> factory.Factory:
         return self._serialize
 
     @property
@@ -440,7 +440,7 @@ class Client(traits.ClientBase):
         """
         resp = await self.rest.fetch_clan_from_id(id)
         assert isinstance(resp, dict)
-        return self.serialize.deseialize_clan(resp)
+        return self.serialize.deserialize_clan(resp)
 
     async def fetch_clan(
         self, name: str, /, type: GroupType = GroupType.CLAN
@@ -467,7 +467,7 @@ class Client(traits.ClientBase):
         """
         resp = await self.rest.fetch_clan(name, type)
         assert isinstance(resp, dict)
-        return self.serialize.deseialize_clan(resp)
+        return self.serialize.deserialize_clan(resp)
 
     async def fetch_clan_conversations(
         self, clan_id: int, /
@@ -475,6 +475,80 @@ class Client(traits.ClientBase):
         resp = await self.rest.fetch_clan_conversations(clan_id)
         assert isinstance(resp, list)
         return self.serialize.deserialize_clan_convos(resp)
+
+    async def fetch_clan_admins(
+        self, clan_id: int, /
+    ) -> typing.Sequence[crate.clans.ClanAdmin]:
+        """Fetch the clan founder and admins.
+
+        Parameters
+        ----------
+        clan_id : `builtins.int`
+            The clan id.
+
+        Returns
+        -------
+        `typing.Sequence[aiobungie.crate.ClanAdmin]`
+            A sequence of the found clan admins and founder.
+
+        Raises
+        ------
+        `aiobungie.ClanNotFound`
+            The requested clan was not found.
+        """
+        resp = await self.rest.fetch_clan_admins(clan_id)
+        assert isinstance(resp, dict)
+        return self.serialize.deserialize_clan_admins(resp)
+
+    async def fetch_groups_for_member(
+        self,
+        member_id: int,
+        member_type: MembershipType,
+        /,
+        *,
+        filter: int = 0,
+        group_type: GroupType = GroupType.CLAN,
+    ) -> typing.Optional[crate.clans.GroupMember]:
+        """Fetch information about the groups that a given member has joined.
+
+        Parameters
+        ----------
+        member_id : `builtins.int`
+            The member's id
+        member_type : `aiobungie.MembershipType`
+            The member's membership type.
+
+        Other Parameters
+        ----------------
+        filter : `builsins.int`
+            Filter apply to list of joined groups. This Default to `0`
+        group_type : `aiobungie.GroupType`
+            The group's type.
+            This is always set to `aiobungie.GroupType.CLAN` and should not be changed.
+
+        Returns
+        -------
+        `typing.Optional[aiobungie.crate.clans.GroupMember]`
+            The member if found and `None` if not.
+        """
+        resp = await self.rest.fetch_groups_for_member(
+            member_id, member_type, filter=filter, group_type=group_type
+        )
+        return self.serialize.deserialize_group_member(resp)
+
+    async def fetch_potential_groups_for_member(
+        self,
+        member_id: int,
+        member_type: MembershipType,
+        /,
+        *,
+        filter: int = 0,
+        group_type: GroupType = GroupType.CLAN,
+    ) -> typing.Optional[crate.clans.GroupMember]:
+        resp = await self.rest.fetch_potential_groups_for_member(
+            member_id, member_type, filter=filter, group_type=group_type
+        )
+        return self.serialize.deserialize_group_member(resp)
 
     async def fetch_clan_member(
         self,

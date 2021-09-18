@@ -64,7 +64,7 @@ class Player:
     """
 
     crossave_override: int = attr.field(repr=False)
-    """Returns `1` if the user has a cross save override in effect and 0 if not.
+    """Returns `1` if the player has a cross save override in effect and 0 if not.
 
     .. versionadded:: 0.2.5
     """
@@ -77,7 +77,7 @@ class Player:
 
     @property
     def unique_name(self) -> str:
-        """The user's unique name.
+        """The player's unique name.
 
         .. versionadded:: 0.2.5
         """

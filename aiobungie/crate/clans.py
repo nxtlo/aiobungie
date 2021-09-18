@@ -27,8 +27,14 @@ from __future__ import annotations
 
 from aiobungie.crate import user
 
-__all__ = ("Clan", "ClanOwner", "ClanMember", "ClanFeatures", "ClanConversation")
-
+__all__ = (
+    "Clan",
+    "ClanMember",
+    "ClanAdmin",
+    "ClanFeatures",
+    "ClanConversation",
+    "GroupMember",
+)
 
 import typing
 from datetime import datetime
@@ -80,10 +86,10 @@ class ClanConversation:
     group_id: int = attr.field(repr=True)
     """The clan or group's id."""
 
-    id: int = attr.field(repr=True)
+    id: int = attr.field(repr=True, hash=True)
     """The conversation's id"""
 
-    chat_enabled: bool = attr.field(repr=False)
+    chat_enabled: bool = attr.field(repr=True)
     """`True` if the Conversation's chat is enabled."""
 
     name: helpers.UndefinedOr[str] = attr.field(repr=True)
@@ -95,7 +101,7 @@ class ClanConversation:
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
 class ClanMember(UserLike):
-    """Represents a Destiny 2 clan member."""
+    """Represents a Bungie clan member."""
 
     net: traits.Netrunner = attr.field(repr=False)
     """A network state used for making external requests."""
@@ -144,13 +150,12 @@ class ClanMember(UserLike):
     """The clan member's bungie partial net user.
 
     .. note:: This only returns a partial bungie net user.
-    You can fetch the fully implemented user using
-    `aiobungie.crate.PartialBungieUser.fetch_self() method.
+    You can fetch the fully implemented user using `aiobungie.crate.PartialBungieUser.fetch_self()` method.
     """
 
     @property
     def unique_name(self) -> str:
-        """The user's unique name which includes their unique code.
+        """The clan member's unique name which includes their unique code.
 
         .. versionadded:: 0.2.5
         """
@@ -193,65 +198,44 @@ class ClanMember(UserLike):
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
-class ClanOwner(UserLike):
-    """Represents a Bungie clan owner."""
+class GroupMember:
+    """Represents information about joined groups/clans for a member."""
 
-    id: int = attr.field(hash=True, repr=True)
-    """The user id."""
+    net: traits.Netrunner = attr.field(repr=False)
 
-    name: helpers.UndefinedOr[str] = attr.field(repr=True)
-    """The user name."""
+    inactive_memberships: helpers.NoneOr[dict[int, bool]] = attr.field(repr=False)
+    """The member's inactive memberships if provided. This will be `None` if not provided."""
 
-    last_seen_name: str = attr.field(repr=True)
-    """The clan member's last seen display name"""
+    member_type: ClanMemberType = attr.field(repr=True)
+    """The member's member type."""
 
-    is_public: bool = attr.field(repr=True, eq=False)
-    """Returns if the user profile is public or no."""
-
-    type: MembershipType = attr.field(repr=True, eq=True)
-    """Returns the membership type of the user."""
-
-    types: typing.Sequence[MembershipType] = attr.field(repr=False, eq=False)
-    """Returns a list of the member ship's membership types."""
+    is_online: bool = attr.field(repr=False)
+    """Whether the member is online or not."""
 
     last_online: datetime = attr.field(repr=False)
-    """An aware `datetime.datetime` object of the user's last online date UTC."""
+    """An awre UTC datetime of the member's last online status."""
 
-    clan_id: int = attr.field(repr=True)
-    """Owner's current clan id."""
+    group_id: int = attr.field(repr=True)
+    """The group id of this member."""
 
-    icon: assets.MaybeImage = attr.field(repr=False)
-    """Owner's profile icom"""
+    join_date: datetime = attr.field(repr=False)
+    """An awre UTC datetime of the member's join date."""
 
-    joined_at: datetime = attr.field(repr=True)
-    """Owner's bungie join date."""
+    member: user.DestinyUser = attr.field(repr=True)
+    """The member's destiny object that represents the group member."""
 
-    code: helpers.NoneOr[int] = attr.field(repr=True)
-    """The user's unique display name code.
-    This can be None if the user hasn't logged in after season of the lost update.
+    group: Clan = attr.field(repr=True)
+    """The member's group/clan object that represents the group member."""
 
-    .. versionadded:: 0.2.5
-    """
+    async def fetch_self_clan(self) -> Clan:
+        """Fetch an up-todate clan/group object of the current group.
 
-    bungie: user.PartialBungieUser = attr.field(repr=True)
-    """The clan owner's bungie user.
-
-    .. versionadded:: 0.2.5
-    """
-
-    @property
-    def unique_name(self) -> str:
-        """The user's unique name which includes their unique code.
-        This field could be None if no unique name found.
-
-        .. versionadded:: 0.2.5
+        Returns
+        -------
+        `Clan`
+            The clan object.
         """
-        return f"{self.name}#{self.code}"
-
-    @property
-    def link(self) -> str:
-        """Returns the user's profile link."""
-        return f"{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}"
+        return await self.net.request.fetch_clan_from_id(self.group_id)
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
@@ -265,14 +249,82 @@ class ClanAdmin(UserLike):
     .. versionadded:: 0.2.5
     """
 
-    is_online: bool = attr.field(repr=False)
-    """True if the clan admin is online and False if not."""
+    net: traits.Netrunner = attr.field(repr=False)
+    """A network state used for making external requests."""
+
+    total_admins: int = attr.field(repr=True)
+    """The total count of the clan admins."""
+
+    id: int = attr.field(repr=True, hash=True)
+    """Clan admin's id"""
+
+    name: helpers.UndefinedOr[str] = attr.field(repr=True)
+    """Clan admin's name. This can be `UNDEFINED` if not found."""
+
+    last_seen_name: str = attr.field(repr=False)
+    """The clan admin's last seen display name"""
+
+    type: MembershipType = attr.field(repr=True)
+    """Clan admin's membership type."""
+
+    types: typing.Sequence[MembershipType] = attr.field(repr=False)
+    """A sequence of the available clan admin membership types."""
+
+    icon: assets.MaybeImage = attr.field(repr=False)
+    """Clan admin's icon"""
+
+    is_public: bool = attr.field(repr=False)
+    """`builtins.True` if the clan admin is public."""
 
     group_id: int = attr.field(repr=True)
-    """The clan admin's group id which's the clan id he represents."""
+    """The admin's group or clan id."""
 
-    join_date: datetime = attr.field(repr=False)
-    """The clan admin's clan join date."""
+    is_online: bool = attr.field(repr=False, default=None)
+    """True if the clan admin is online or not."""
+
+    last_online: datetime = attr.field(repr=False, default=None)
+    """The date of the clan admin's last online in UTC time zone."""
+
+    joined_at: datetime = attr.field(repr=False, default=None)
+    """The clan admin's join date in UTC time zone."""
+
+    code: helpers.NoneOr[int] = attr.field(repr=True)
+    """The clan admin's bungie display name code
+    This is new and was added in Season of the lost update
+
+    .. versionadded:: 0.2.5
+    """
+
+    bungie: user.PartialBungieUser = attr.field(repr=True)
+    """The clan admin's bungie partial net user.
+
+    .. note:: This only returns a partial bungie net user.
+    You can fetch the fully implemented user using
+    `aiobungie.crate.PartialBungieUser.fetch_self()` method.
+    """
+
+    async def fetch_clan(self) -> Clan:
+        """Fetch the clan that represents the clan admins.
+
+        Returns
+        -------
+        `Clan`
+            The clan admins clan.
+        """
+        return await self.net.request.fetch_clan_from_id(self.group_id)
+
+    @property
+    def unique_name(self) -> str:
+        """The admin's unique name which includes their unique code.
+
+        .. versionadded:: 0.2.5
+        """
+        return f"{self.name}#{self.code}"
+
+    @property
+    def link(self) -> str:
+        """Clan member's profile link."""
+        return f"{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}"
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
@@ -315,8 +367,8 @@ class Clan:
     tags: typing.List[str] = attr.field(repr=False)
     """A list of the clan's tags."""
 
-    owner: ClanOwner = attr.field(repr=True)
-    """The clan owner."""
+    owner: helpers.UndefinedOr[ClanMember] = attr.field(repr=True)
+    """The clan owner. This field could be `Undefined` if not found."""
 
     features: ClanFeatures = attr.field(repr=False, hash=False, eq=False)
     """The clan features."""

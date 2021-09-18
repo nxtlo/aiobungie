@@ -232,7 +232,7 @@ class RESTClient(interfaces.RESTInterface):
             "GET", f"Destiny2/SearchDestinyPlayer/{int(type)}/{quote(name)}/"
         )
 
-    def search_users(self, name: str, /) -> ResponseSig[helpers.JsonArray]:
+    def search_users(self, name: str, /) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._fetch("GET", f"User/Search/Prefix/{name}/0")
 
@@ -246,9 +246,14 @@ class RESTClient(interfaces.RESTInterface):
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._fetch("GET", f"GroupV2/Name/{name}/{int(type)}")
 
+    def fetch_clan_admins(self, clan_id: int, /) -> ResponseSig[helpers.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        return self._fetch("GET", f"GroupV2/{clan_id}/AdminsAndFounder/")
+
     def fetch_clan_conversations(
         self, clan_id: int, /
     ) -> ResponseSig[helpers.JsonArray]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._fetch("GET", f"GroupV2/{clan_id}/OptionalConversations/")
 
     def fetch_app(self, appid: int, /) -> ResponseSig[helpers.JsonObject]:
@@ -310,13 +315,41 @@ class RESTClient(interfaces.RESTInterface):
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self.fetch_entity("DestinyInventoryItemDefinition", hash)
 
+    def fetch_groups_for_member(
+        self,
+        member_id: int,
+        member_type: enums.MembershipType,
+        /,
+        *,
+        filter: int = 0,
+        group_type: enums.GroupType = enums.GroupType.CLAN,
+    ) -> ResponseSig[helpers.JsonObject]:
+        return self._fetch(
+            "GET",
+            f"GroupV2/User/{int(member_type)}/{member_id}/{filter}/{int(group_type)}/",
+        )
+
+    def fetch_potential_groups_for_member(
+        self,
+        member_id: int,
+        member_type: enums.MembershipType,
+        /,
+        *,
+        filter: int = 0,
+        group_type: enums.GroupType = enums.GroupType.CLAN,
+    ) -> ResponseSig[helpers.JsonObject]:
+        return self._fetch(
+            "GET",
+            f"GroupV2/User/Potential/{int(member_type)}/{member_id}/{filter}/{int(group_type)}/",
+        )
+
     def fetch_clan_members(
         self,
         id: int,
         type: enums.MembershipType = enums.MembershipType.NONE,
         name: typing.Optional[str] = None,
         /,
-    ) -> ResponseSig[helpers.JsonArray]:
+    ) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._fetch(
             "GET",

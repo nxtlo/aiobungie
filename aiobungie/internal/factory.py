@@ -260,20 +260,21 @@ class Factory:
 
         return self.deserialize_destiny_members(payload, bound=True)
 
-    def deseialize_clan_owner(self, data: JsonObject) -> clans.ClanOwner:
+    def deseialize_clan_owner(self, data: JsonObject) -> clans.ClanMember:
         joined_at = data["joinDate"]
         last_online = time.from_timestamp(int(data["lastOnlineStatusChange"]))
         clan_id = data["groupId"]
         destiny_user = self.deserialize_destiny_user(data)
         bungie_user = self.deserialize_partial_bungie_user(data)
 
-        return clans.ClanOwner(
+        return clans.ClanMember(
+            net=self._net,
             last_seen_name=destiny_user.last_seen_name,
             id=destiny_user.id,
             name=destiny_user.name,
             icon=destiny_user.icon,
             last_online=last_online,
-            clan_id=int(clan_id),
+            group_id=int(clan_id),
             joined_at=time.clean_date(joined_at),
             types=destiny_user.types,
             is_public=destiny_user.is_public,
@@ -282,19 +283,27 @@ class Factory:
             bungie=bungie_user,
         )
 
-    def deseialize_clan(self, data: JsonObject) -> clans.Clan:
-        id = data["detail"]["groupId"]
-        name = data["detail"]["name"]
-        created_at = data["detail"]["creationDate"]
-        member_count = data["detail"]["memberCount"]
-        about = data["detail"]["about"]
-        motto = data["detail"]["motto"]
-        is_public = data["detail"]["isPublic"]
-        banner = Image(str(data["detail"]["bannerPath"]))
-        avatar = Image(str(data["detail"]["avatarPath"]))
-        tags = data["detail"]["tags"]
-        features = data["detail"]["features"]
-        type = data["detail"]["groupType"]
+    def deserialize_clan(
+        self, payload: JsonObject, *, bound: bool = False
+    ) -> clans.Clan:
+        # To bind this function between this and group for member.
+        if bound is True:
+            data = payload
+        else:
+            data = payload["detail"]
+
+        id = data["groupId"]
+        name = data["name"]
+        created_at = data["creationDate"]
+        member_count = data["memberCount"]
+        about = data["about"]
+        motto = data["motto"]
+        is_public = data["isPublic"]
+        banner = Image(str(data["bannerPath"]))
+        avatar = Image(str(data["avatarPath"]))
+        tags = data["tags"]
+        features = data["features"]
+        type = data["groupType"]
 
         features_obj = clans.ClanFeatures(
             max_members=features["maximumMembers"],
@@ -306,6 +315,11 @@ class Factory:
             update_culture_permissions=features["updateCulturePermissionOverride"],
             join_level=features["joinLevel"],
         )
+
+        founder: UndefinedOr[clans.ClanMember] = Undefined
+        if (raw_founder := payload.get("founder")) is not None:
+            if bound is False:
+                founder = self.deseialize_clan_owner(raw_founder)
 
         return clans.Clan(
             net=self._net,
@@ -321,8 +335,74 @@ class Factory:
             avatar=avatar,
             tags=tags,
             features=features_obj,
-            owner=self.deseialize_clan_owner(data["founder"]),
+            owner=founder,
         )
+
+    def deserialize_group_member(
+        self, payload: JsonObject
+    ) -> NoneOr[clans.GroupMember]:
+        inactive_memberships = payload.get("areAllMembershipsInactive", None)
+        if (raw_results := payload.get("results")) is not None:
+            try:
+                results = raw_results[0]
+            except IndexError:
+                return None
+            member_results = results["member"]
+            last_online: datetime.datetime = time.from_timestamp(
+                int(member_results["lastOnlineStatusChange"])
+            )
+            join_date_fmt: datetime.datetime = time.clean_date(
+                member_results["joinDate"]
+            )
+            member_type: enums.ClanMemberType = enums.ClanMemberType(
+                member_results["memberType"]
+            )
+            is_online: bool = member_results["isOnline"]
+            group_id: int = member_results["groupId"]
+            destiny_member = self.deserialize_destiny_user(member_results)
+            member_obj = clans.GroupMember(
+                net=self._net,
+                join_date=join_date_fmt,
+                group_id=int(group_id),
+                member_type=member_type,
+                is_online=is_online,
+                last_online=last_online,
+                inactive_memberships=inactive_memberships,
+                member=destiny_member,
+                group=self.deserialize_clan(results["group"], bound=True),
+            )
+            return member_obj
+        return None
+
+    def deserialize_clan_admins(
+        self, payload: JsonObject
+    ) -> typing.Sequence[clans.ClanAdmin]:
+        builder = []
+        member_types = just(payload["results"], "memberType")
+        for member_type in zip(member_types):
+            m_type = enums.ClanMemberType(*member_type)
+
+        # Since this requires more attributes
+        # We have to do it in two ways.
+        obj = self.deserialize_clan_members(payload)
+        for member in obj:
+            clan_admin = clans.ClanAdmin(
+                net=self._net,
+                member_type=m_type,
+                types=member.types,
+                id=member.id,
+                name=member.name,
+                last_seen_name=member.last_seen_name,
+                is_public=member.is_public,
+                icon=member.icon,
+                code=member.code,
+                total_admins=payload["totalResults"],
+                type=member.type,
+                group_id=member.group_id,
+                bungie=member.bungie,
+            )
+            builder.append(clan_admin)
+        return builder
 
     def deserialize_clan_member(self, data: JsonObject, /) -> clans.ClanMember:
 

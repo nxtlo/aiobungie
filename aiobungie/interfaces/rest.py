@@ -106,7 +106,7 @@ class RESTInterface(abc.ABC):
         """
 
     @abc.abstractmethod
-    def search_users(self, name: str, /) -> ResponseSig[helpers.JsonArray]:
+    def search_users(self, name: str, /) -> ResponseSig[helpers.JsonObject]:
         """Search for users by their global name and return all users who share this name.
 
         Parameters
@@ -116,8 +116,8 @@ class RESTInterface(abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.internal.helpers.JsonArray]`
-            A JSON array of the found users.
+        `ResponseSig[aiobungie.internal.helpers.JsonObject]`
+            A JSON object of an array of the found users.
 
         Raises
         ------
@@ -397,13 +397,99 @@ class RESTInterface(abc.ABC):
         """
 
     @abc.abstractmethod
+    def fetch_clan_admins(self, clan_id: int, /) -> ResponseSig[helpers.JsonObject]:
+        """Fetch the admins and founder members of the clan.
+
+        Parameters
+        ----------
+        clan_id : `builtins.int`
+            The clan id.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.internal.helpers.JsonObject]`
+            A JSON object of the clan admins and founder members.
+
+        Raises
+        ------
+        `aiobungie.ClanNotFound`
+            The clan was not found.
+        """
+
+    @abc.abstractmethod
+    def fetch_groups_for_member(
+        self,
+        member_id: int,
+        member_type: enums.MembershipType,
+        /,
+        *,
+        filter: int = 0,
+        group_type: enums.GroupType = enums.GroupType.CLAN,
+    ) -> ResponseSig[helpers.JsonObject]:
+        """Fetch the information about the groups for a member.
+
+        Parameters
+        ----------
+        member_id : `builtins.int`
+            The member's id
+        member_type : `aiobungie.MembershipType`
+            The member's membership type.
+
+        Other Parameters
+        ----------------
+        filter : `builsins.int`
+            Filter apply to list of joined groups. This Default to `0`
+        group_type : `aiobungie.GroupType`
+            The group's type.
+            This is always set to `aiobungie.GroupType.CLAN` and should not be changed.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.internal.helpers.JsonObject]`
+            A JSON object of an array of the member's membership data and groups data.
+        """
+
+    @abc.abstractmethod
+    def fetch_potential_groups_for_member(
+        self,
+        member_id: int,
+        member_type: enums.MembershipType,
+        /,
+        *,
+        filter: int = 0,
+        group_type: enums.GroupType = enums.GroupType.CLAN,
+    ) -> ResponseSig[helpers.JsonObject]:
+        """Get information about the groups that a given member has applied to or been invited to.
+
+        Parameters
+        ----------
+        member_id : `builtins.int`
+            The member's id
+        member_type : `aiobungie.MembershipType`
+            The member's membership type.
+
+        Other Parameters
+        ----------------
+        filter : `builsins.int`
+            Filter apply to list of joined groups. This Default to `0`
+        group_type : `aiobungie.GroupType`
+            The group's type.
+            This is always set to `aiobungie.GroupType.CLAN` and should not be changed.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.internal.helpers.JsonObject]`
+            A JSON object of an array of the member's membership data and groups data.
+        """
+
+    @abc.abstractmethod
     def fetch_clan_members(
         self,
         clan_id: int,
         type: enums.MembershipType = enums.MembershipType.NONE,
         name: typing.Optional[str] = None,
         /,
-    ) -> ResponseSig[helpers.JsonArray]:
+    ) -> ResponseSig[helpers.JsonObject]:
         """Fetch all Bungie Clan members.
 
         Parameters
@@ -421,8 +507,8 @@ class RESTInterface(abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.internal.helpers.JsonArray]`
-            A JSON array of clan members.
+        `ResponseSig[aiobungie.internal.helpers.JsonObject]`
+            A JSON object of an array of clan members.
 
         Raises
         ------

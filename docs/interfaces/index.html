@@ -148,7 +148,7 @@ from .rest import RESTInterface</code></pre>
         &#34;&#34;&#34;
 
     @abc.abstractmethod
-    def search_users(self, name: str, /) -&gt; ResponseSig[helpers.JsonArray]:
+    def search_users(self, name: str, /) -&gt; ResponseSig[helpers.JsonObject]:
         &#34;&#34;&#34;Search for users by their global name and return all users who share this name.
 
         Parameters
@@ -158,8 +158,8 @@ from .rest import RESTInterface</code></pre>
 
         Returns
         -------
-        `ResponseSig[aiobungie.internal.helpers.JsonArray]`
-            A JSON array of the found users.
+        `ResponseSig[aiobungie.internal.helpers.JsonObject]`
+            A JSON object of an array of the found users.
 
         Raises
         ------
@@ -422,13 +422,116 @@ from .rest import RESTInterface</code></pre>
         &#34;&#34;&#34;
 
     @abc.abstractmethod
+    def fetch_clan_conversations(
+        self, clan_id: int, /
+    ) -&gt; ResponseSig[helpers.JsonArray]:
+        &#34;&#34;&#34;Fetch a clan&#39;s conversations.
+
+        Parameters
+        ----------
+        clan_id : `builtins.int`
+            The clan&#39;s id.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.internal.helpers.JsonArray]`
+            A JSON array of the conversations.
+        &#34;&#34;&#34;
+
+    @abc.abstractmethod
+    def fetch_clan_admins(self, clan_id: int, /) -&gt; ResponseSig[helpers.JsonObject]:
+        &#34;&#34;&#34;Fetch the admins and founder members of the clan.
+
+        Parameters
+        ----------
+        clan_id : `builtins.int`
+            The clan id.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.internal.helpers.JsonObject]`
+            A JSON object of the clan admins and founder members.
+
+        Raises
+        ------
+        `aiobungie.ClanNotFound`
+            The clan was not found.
+        &#34;&#34;&#34;
+
+    @abc.abstractmethod
+    def fetch_groups_for_member(
+        self,
+        member_id: int,
+        member_type: enums.MembershipType,
+        /,
+        *,
+        filter: int = 0,
+        group_type: enums.GroupType = enums.GroupType.CLAN,
+    ) -&gt; ResponseSig[helpers.JsonObject]:
+        &#34;&#34;&#34;Fetch the information about the groups for a member.
+
+        Parameters
+        ----------
+        member_id : `builtins.int`
+            The member&#39;s id
+        member_type : `aiobungie.MembershipType`
+            The member&#39;s membership type.
+
+        Other Parameters
+        ----------------
+        filter : `builsins.int`
+            Filter apply to list of joined groups. This Default to `0`
+        group_type : `aiobungie.GroupType`
+            The group&#39;s type.
+            This is always set to `aiobungie.GroupType.CLAN` and should not be changed.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.internal.helpers.JsonObject]`
+            A JSON object of an array of the member&#39;s membership data and groups data.
+        &#34;&#34;&#34;
+
+    @abc.abstractmethod
+    def fetch_potential_groups_for_member(
+        self,
+        member_id: int,
+        member_type: enums.MembershipType,
+        /,
+        *,
+        filter: int = 0,
+        group_type: enums.GroupType = enums.GroupType.CLAN,
+    ) -&gt; ResponseSig[helpers.JsonObject]:
+        &#34;&#34;&#34;Get information about the groups that a given member has applied to or been invited to.
+
+        Parameters
+        ----------
+        member_id : `builtins.int`
+            The member&#39;s id
+        member_type : `aiobungie.MembershipType`
+            The member&#39;s membership type.
+
+        Other Parameters
+        ----------------
+        filter : `builsins.int`
+            Filter apply to list of joined groups. This Default to `0`
+        group_type : `aiobungie.GroupType`
+            The group&#39;s type.
+            This is always set to `aiobungie.GroupType.CLAN` and should not be changed.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.internal.helpers.JsonObject]`
+            A JSON object of an array of the member&#39;s membership data and groups data.
+        &#34;&#34;&#34;
+
+    @abc.abstractmethod
     def fetch_clan_members(
         self,
         clan_id: int,
         type: enums.MembershipType = enums.MembershipType.NONE,
         name: typing.Optional[str] = None,
         /,
-    ) -&gt; ResponseSig[helpers.JsonArray]:
+    ) -&gt; ResponseSig[helpers.JsonObject]:
         &#34;&#34;&#34;Fetch all Bungie Clan members.
 
         Parameters
@@ -446,8 +549,8 @@ from .rest import RESTInterface</code></pre>
 
         Returns
         -------
-        `ResponseSig[aiobungie.internal.helpers.JsonArray]`
-            A JSON array of clan members.
+        `ResponseSig[aiobungie.internal.helpers.JsonObject]`
+            A JSON object of an array of clan members.
 
         Raises
         ------
@@ -493,7 +596,7 @@ from .rest import RESTInterface</code></pre>
 </ul>
 <h3>Subclasses</h3>
 <ul class="hlist">
-<li><a title="aiobungie.rest.RESTClient" href="./rest.html#aiobungie.rest.RESTClient">RESTClient</a></li>
+<li><a title="aiobungie.rest.RESTClient" href="../rest.html#aiobungie.rest.RESTClient">RESTClient</a></li>
 </ul>
 <h3>Methods</h3>
 <dl>
@@ -508,9 +611,9 @@ from .rest import RESTInterface</code></pre>
 <dd>The user id that starts with <code>4611</code>.</dd>
 <dt><strong><code>character_id</code></strong> :&ensp;<code>builtins.int</code></dt>
 <dd>The id of the character to retrieve.</dd>
-<dt><strong><code>mode</code></strong> :&ensp;<code><a title="aiobungie.internal.enums.GameMode" href="./internal/enums.html#aiobungie.internal.enums.GameMode">GameMode</a></code></dt>
+<dt><strong><code>mode</code></strong> :&ensp;<code><a title="aiobungie.internal.enums.GameMode" href="../internal/enums.html#aiobungie.internal.enums.GameMode">GameMode</a></code></dt>
 <dd>This parameter filters the game mode, Nightfall, Strike, Iron Banner, etc.</dd>
-<dt><strong><code>membership_type</code></strong> :&ensp;<code><a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
+<dt><strong><code>membership_type</code></strong> :&ensp;<code><a title="aiobungie.internal.enums.MembershipType" href="../internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
 <dd>The Member ship type, if nothing was passed than it will return all.</dd>
 <dt><strong><code>page</code></strong> :&ensp;<code>typing.Optional[builtins.int]</code></dt>
 <dd>The page number</dd>
@@ -518,12 +621,12 @@ from .rest import RESTInterface</code></pre>
 <dd>Limit the returned result.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p><code>ResponseSig[<a title="aiobungie.internal.helpers.JsonObject" href="./internal/helpers.html#aiobungie.internal.helpers.JsonObject">JsonObject</a>]</code>
+<p><code>ResponseSig[<a title="aiobungie.internal.helpers.JsonObject" href="../internal/helpers.html#aiobungie.internal.helpers.JsonObject">JsonObject</a>]</code>
 A JSON object of the player's activities.</p>
 <h2 id="raises">Raises</h2>
-<p><code><a title="aiobungie.error.ActivityNotFound" href="./error.html#aiobungie.error.ActivityNotFound">ActivityNotFound</a></code>
+<p><code><a title="aiobungie.error.ActivityNotFound" href="../error.html#aiobungie.error.ActivityNotFound">ActivityNotFound</a></code>
 The activity was not found.</p>
-<p><code><a title="aiobungie.MembershipTypeError" href="./index.html#aiobungie.MembershipTypeError">MembershipTypeError</a></code>
+<p><code><a title="aiobungie.MembershipTypeError" href="../index.html#aiobungie.MembershipTypeError">MembershipTypeError</a></code>
 The provided membership type was invalid.</p></div>
 <details class="source">
 <summary>
@@ -583,7 +686,7 @@ def fetch_activity(
 <dd>The application id.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p><code>ResponseSig[<a title="aiobungie.internal.helpers.JsonObject" href="./internal/helpers.html#aiobungie.internal.helpers.JsonObject">JsonObject</a>]</code>
+<p><code>ResponseSig[<a title="aiobungie.internal.helpers.JsonObject" href="../internal/helpers.html#aiobungie.internal.helpers.JsonObject">JsonObject</a>]</code>
 A JSON object of the application.</p></div>
 <details class="source">
 <summary>
@@ -614,16 +717,16 @@ def fetch_app(self, appid: int, /) -&gt; ResponseSig[helpers.JsonObject]:
 <dl>
 <dt><strong><code>memberid</code></strong> :&ensp;<code>builtins.int</code></dt>
 <dd>A valid bungie member id.</dd>
-<dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
+<dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.internal.enums.MembershipType" href="../internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
 <dd>The member's membership type.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p><code>ResponseSig[<a title="aiobungie.internal.helpers.JsonObject" href="./internal/helpers.html#aiobungie.internal.helpers.JsonObject">JsonObject</a>]</code>
+<p><code>ResponseSig[<a title="aiobungie.internal.helpers.JsonObject" href="../internal/helpers.html#aiobungie.internal.helpers.JsonObject">JsonObject</a>]</code>
 A JSON object of the requested character.</p>
 <h2 id="raises">Raises</h2>
-<p><code><a title="aiobungie.error.CharacterError" href="./error.html#aiobungie.error.CharacterError">CharacterError</a></code>
+<p><code><a title="aiobungie.error.CharacterError" href="../error.html#aiobungie.error.CharacterError">CharacterError</a></code>
 raised if the Character was not found.</p>
-<p><code><a title="aiobungie.MembershipTypeError" href="./index.html#aiobungie.MembershipTypeError">MembershipTypeError</a></code>
+<p><code><a title="aiobungie.MembershipTypeError" href="../index.html#aiobungie.MembershipTypeError">MembershipTypeError</a></code>
 The provided membership type was invalid.</p></div>
 <details class="source">
 <summary>
@@ -668,13 +771,13 @@ This method will return the first clan found with given name name.</p>
 <dt><strong><code>name</code></strong> :&ensp;<code>builtins.str</code></dt>
 <dd>The clan name</dd>
 </dl>
-<p>type <code><a title="aiobungie.GroupType" href="./index.html#aiobungie.GroupType">GroupType</a></code>
+<p>type <code><a title="aiobungie.GroupType" href="../index.html#aiobungie.GroupType">GroupType</a></code>
 The group type, Default is one.</p>
 <h2 id="returns">Returns</h2>
-<p><code>ResponseSig[<a title="aiobungie.internal.helpers.JsonObject" href="./internal/helpers.html#aiobungie.internal.helpers.JsonObject">JsonObject</a>]</code>
+<p><code>ResponseSig[<a title="aiobungie.internal.helpers.JsonObject" href="../internal/helpers.html#aiobungie.internal.helpers.JsonObject">JsonObject</a>]</code>
 A JSON object of the clan.</p>
 <h2 id="raises">Raises</h2>
-<p><code><a title="aiobungie.ClanNotFound" href="./index.html#aiobungie.ClanNotFound">ClanNotFound</a></code>
+<p><code><a title="aiobungie.ClanNotFound" href="../index.html#aiobungie.ClanNotFound">ClanNotFound</a></code>
 The clan was not found.</p></div>
 <details class="source">
 <summary>
@@ -706,6 +809,82 @@ def fetch_clan(
     &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
+<dt id="aiobungie.interfaces.RESTInterface.fetch_clan_admins"><code class="name flex">
+<span>def <span class="ident">fetch_clan_admins</span></span>(<span>self, clan_id: int, /) ‑> Coroutine[Any, Any, Dict[str, Any]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Fetch the admins and founder members of the clan.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>clan_id</code></strong> :&ensp;<code>builtins.int</code></dt>
+<dd>The clan id.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p><code>ResponseSig[<a title="aiobungie.internal.helpers.JsonObject" href="../internal/helpers.html#aiobungie.internal.helpers.JsonObject">JsonObject</a>]</code>
+A JSON object of the clan admins and founder members.</p>
+<h2 id="raises">Raises</h2>
+<p><code><a title="aiobungie.ClanNotFound" href="../index.html#aiobungie.ClanNotFound">ClanNotFound</a></code>
+The clan was not found.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abc.abstractmethod
+def fetch_clan_admins(self, clan_id: int, /) -&gt; ResponseSig[helpers.JsonObject]:
+    &#34;&#34;&#34;Fetch the admins and founder members of the clan.
+
+    Parameters
+    ----------
+    clan_id : `builtins.int`
+        The clan id.
+
+    Returns
+    -------
+    `ResponseSig[aiobungie.internal.helpers.JsonObject]`
+        A JSON object of the clan admins and founder members.
+
+    Raises
+    ------
+    `aiobungie.ClanNotFound`
+        The clan was not found.
+    &#34;&#34;&#34;</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.interfaces.RESTInterface.fetch_clan_conversations"><code class="name flex">
+<span>def <span class="ident">fetch_clan_conversations</span></span>(<span>self, clan_id: int, /) ‑> Coroutine[Any, Any, List[Any]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Fetch a clan's conversations.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>clan_id</code></strong> :&ensp;<code>builtins.int</code></dt>
+<dd>The clan's id.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p><code>ResponseSig[<a title="aiobungie.internal.helpers.JsonArray" href="../internal/helpers.html#aiobungie.internal.helpers.JsonArray">JsonArray</a>]</code>
+A JSON array of the conversations.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abc.abstractmethod
+def fetch_clan_conversations(
+    self, clan_id: int, /
+) -&gt; ResponseSig[helpers.JsonArray]:
+    &#34;&#34;&#34;Fetch a clan&#39;s conversations.
+
+    Parameters
+    ----------
+    clan_id : `builtins.int`
+        The clan&#39;s id.
+
+    Returns
+    -------
+    `ResponseSig[aiobungie.internal.helpers.JsonArray]`
+        A JSON array of the conversations.
+    &#34;&#34;&#34;</code></pre>
+</details>
+</dd>
 <dt id="aiobungie.interfaces.RESTInterface.fetch_clan_from_id"><code class="name flex">
 <span>def <span class="ident">fetch_clan_from_id</span></span>(<span>self, id: int, /) ‑> Coroutine[Any, Any, Dict[str, Any]]</span>
 </code></dt>
@@ -717,10 +896,10 @@ def fetch_clan(
 <dd>The clan id.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p><code>ResponseSig[<a title="aiobungie.internal.helpers.JsonObject" href="./internal/helpers.html#aiobungie.internal.helpers.JsonObject">JsonObject</a>]</code>
+<p><code>ResponseSig[<a title="aiobungie.internal.helpers.JsonObject" href="../internal/helpers.html#aiobungie.internal.helpers.JsonObject">JsonObject</a>]</code>
 A JSON object of the clan.</p>
 <h2 id="raises">Raises</h2>
-<p><code><a title="aiobungie.ClanNotFound" href="./index.html#aiobungie.ClanNotFound">ClanNotFound</a></code>
+<p><code><a title="aiobungie.ClanNotFound" href="../index.html#aiobungie.ClanNotFound">ClanNotFound</a></code>
 The clan was not found.</p></div>
 <details class="source">
 <summary>
@@ -748,7 +927,7 @@ def fetch_clan_from_id(self, id: int, /) -&gt; ResponseSig[helpers.JsonObject]:
 </details>
 </dd>
 <dt id="aiobungie.interfaces.RESTInterface.fetch_clan_members"><code class="name flex">
-<span>def <span class="ident">fetch_clan_members</span></span>(<span>self, clan_id: int, type: enums.MembershipType = NONE, name: typing.Optional[str] = None, /) ‑> Coroutine[Any, Any, List[Any]]</span>
+<span>def <span class="ident">fetch_clan_members</span></span>(<span>self, clan_id: int, type: enums.MembershipType = NONE, name: typing.Optional[str] = None, /) ‑> Coroutine[Any, Any, Dict[str, Any]]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Fetch all Bungie Clan members.</p>
@@ -756,9 +935,9 @@ def fetch_clan_from_id(self, id: int, /) -&gt; ResponseSig[helpers.JsonObject]:
 <dl>
 <dt><strong><code>clan_id</code></strong> :&ensp;<code>builsins.int</code></dt>
 <dd>The clans id</dd>
-<dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.MembershipType" href="./index.html#aiobungie.MembershipType">MembershipType</a></code></dt>
+<dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.MembershipType" href="../index.html#aiobungie.MembershipType">MembershipType</a></code></dt>
 <dd>An optional clan member's membership type.
-Default is set to <code><a title="aiobungie.MembershipType.NONE" href="./index.html#aiobungie.MembershipType.NONE">MembershipType.NONE</a></code>
+Default is set to <code><a title="aiobungie.MembershipType.NONE" href="../index.html#aiobungie.MembershipType.NONE">MembershipType.NONE</a></code>
 Which returns the first matched clan member by their name.</dd>
 <dt><strong><code>name</code></strong> :&ensp;<code>builtins.str</code></dt>
 <dd>This parameter is only provided here to keep the signature with
@@ -766,10 +945,10 @@ the main client implementation, Which only works with the non-rest clients.
 It returns a specific clan member by their name.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p><code>ResponseSig[<a title="aiobungie.internal.helpers.JsonArray" href="./internal/helpers.html#aiobungie.internal.helpers.JsonArray">JsonArray</a>]</code>
-A JSON array of clan members.</p>
+<p><code>ResponseSig[<a title="aiobungie.internal.helpers.JsonObject" href="../internal/helpers.html#aiobungie.internal.helpers.JsonObject">JsonObject</a>]</code>
+A JSON object of an array of clan members.</p>
 <h2 id="raises">Raises</h2>
-<p><code><a title="aiobungie.ClanNotFound" href="./index.html#aiobungie.ClanNotFound">ClanNotFound</a></code>
+<p><code><a title="aiobungie.ClanNotFound" href="../index.html#aiobungie.ClanNotFound">ClanNotFound</a></code>
 The clan was not found.</p></div>
 <details class="source">
 <summary>
@@ -782,7 +961,7 @@ def fetch_clan_members(
     type: enums.MembershipType = enums.MembershipType.NONE,
     name: typing.Optional[str] = None,
     /,
-) -&gt; ResponseSig[helpers.JsonArray]:
+) -&gt; ResponseSig[helpers.JsonObject]:
     &#34;&#34;&#34;Fetch all Bungie Clan members.
 
     Parameters
@@ -800,8 +979,8 @@ def fetch_clan_members(
 
     Returns
     -------
-    `ResponseSig[aiobungie.internal.helpers.JsonArray]`
-        A JSON array of clan members.
+    `ResponseSig[aiobungie.internal.helpers.JsonObject]`
+        A JSON object of an array of clan members.
 
     Raises
     ------
@@ -810,23 +989,84 @@ def fetch_clan_members(
     &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
+<dt id="aiobungie.interfaces.RESTInterface.fetch_groups_for_member"><code class="name flex">
+<span>def <span class="ident">fetch_groups_for_member</span></span>(<span>self, member_id: int, member_type: enums.MembershipType, /, *, filter: int = 0, group_type: enums.GroupType = CLAN) ‑> Coroutine[Any, Any, Dict[str, Any]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Fetch the information about the groups for a member.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>member_id</code></strong> :&ensp;<code>builtins.int</code></dt>
+<dd>The member's id</dd>
+<dt><strong><code>member_type</code></strong> :&ensp;<code><a title="aiobungie.MembershipType" href="../index.html#aiobungie.MembershipType">MembershipType</a></code></dt>
+<dd>The member's membership type.</dd>
+</dl>
+<h2 id="other-parameters">Other Parameters</h2>
+<dl>
+<dt><strong><code>filter</code></strong> :&ensp;<code>builsins.int</code></dt>
+<dd>Filter apply to list of joined groups. This Default to <code>0</code></dd>
+<dt><strong><code>group_type</code></strong> :&ensp;<code><a title="aiobungie.GroupType" href="../index.html#aiobungie.GroupType">GroupType</a></code></dt>
+<dd>The group's type.
+This is always set to <code><a title="aiobungie.GroupType.CLAN" href="../index.html#aiobungie.GroupType.CLAN">GroupType.CLAN</a></code> and should not be changed.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p><code>ResponseSig[<a title="aiobungie.internal.helpers.JsonObject" href="../internal/helpers.html#aiobungie.internal.helpers.JsonObject">JsonObject</a>]</code>
+A JSON object of an array of the member's membership data and groups data.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abc.abstractmethod
+def fetch_groups_for_member(
+    self,
+    member_id: int,
+    member_type: enums.MembershipType,
+    /,
+    *,
+    filter: int = 0,
+    group_type: enums.GroupType = enums.GroupType.CLAN,
+) -&gt; ResponseSig[helpers.JsonObject]:
+    &#34;&#34;&#34;Fetch the information about the groups for a member.
+
+    Parameters
+    ----------
+    member_id : `builtins.int`
+        The member&#39;s id
+    member_type : `aiobungie.MembershipType`
+        The member&#39;s membership type.
+
+    Other Parameters
+    ----------------
+    filter : `builsins.int`
+        Filter apply to list of joined groups. This Default to `0`
+    group_type : `aiobungie.GroupType`
+        The group&#39;s type.
+        This is always set to `aiobungie.GroupType.CLAN` and should not be changed.
+
+    Returns
+    -------
+    `ResponseSig[aiobungie.internal.helpers.JsonObject]`
+        A JSON object of an array of the member&#39;s membership data and groups data.
+    &#34;&#34;&#34;</code></pre>
+</details>
+</dd>
 <dt id="aiobungie.interfaces.RESTInterface.fetch_hard_linked"><code class="name flex">
 <span>def <span class="ident">fetch_hard_linked</span></span>(<span>self, credential: int, type: enums.CredentialType = STEAMID, /) ‑> Coroutine[Any, Any, Dict[str, Any]]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Gets any hard linked membership given a credential.
-Only works for credentials that are public just <code><a title="aiobungie.CredentialType.STEAMID" href="./index.html#aiobungie.CredentialType.STEAMID">CredentialType.STEAMID</a></code> right now.
+Only works for credentials that are public just <code><a title="aiobungie.CredentialType.STEAMID" href="../index.html#aiobungie.CredentialType.STEAMID">CredentialType.STEAMID</a></code> right now.
 Cross Save aware.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>credential</code></strong> :&ensp;<code>builtins.int</code></dt>
 <dd>A valid SteamID64</dd>
-<dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.CredentialType" href="./index.html#aiobungie.CredentialType">CredentialType</a></code></dt>
+<dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.CredentialType" href="../index.html#aiobungie.CredentialType">CredentialType</a></code></dt>
 <dd>The crededntial type. This must not be changed
 Since its only credential that works "currently"</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p><code>ResponseSig[<a title="aiobungie.internal.helpers.JsonObject" href="./internal/helpers.html#aiobungie.internal.helpers.JsonObject">JsonObject</a>]</code>
+<p><code>ResponseSig[<a title="aiobungie.internal.helpers.JsonObject" href="../internal/helpers.html#aiobungie.internal.helpers.JsonObject">JsonObject</a>]</code>
 A JSON object of the found user hard linked types.</p></div>
 <details class="source">
 <summary>
@@ -871,7 +1111,7 @@ def fetch_hard_linked(
 <dd>Entity's hash.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p><code>ResponseSig[<a title="aiobungie.internal.helpers.JsonObject" href="./internal/helpers.html#aiobungie.internal.helpers.JsonObject">JsonObject</a>]</code>
+<p><code>ResponseSig[<a title="aiobungie.internal.helpers.JsonObject" href="../internal/helpers.html#aiobungie.internal.helpers.JsonObject">JsonObject</a>]</code>
 A JSON array object of the inventory item.</p></div>
 <details class="source">
 <summary>
@@ -950,15 +1190,15 @@ async def fetch_manifest_path(self) -&gt; str:
 <dl>
 <dt><strong><code>id</code></strong> :&ensp;<code>builtins.int</code></dt>
 <dd>The user's id.</dd>
-<dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.MembershipType" href="./index.html#aiobungie.MembershipType">MembershipType</a></code></dt>
+<dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.MembershipType" href="../index.html#aiobungie.MembershipType">MembershipType</a></code></dt>
 <dd>The user's membership type.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p><code>ResponseSig[<a title="aiobungie.internal.helpers.JsonObject" href="./internal/helpers.html#aiobungie.internal.helpers.JsonObject">JsonObject</a>]</code>
+<p><code>ResponseSig[<a title="aiobungie.internal.helpers.JsonObject" href="../internal/helpers.html#aiobungie.internal.helpers.JsonObject">JsonObject</a>]</code>
 A JSON object of the found user.</p>
 <h2 id="raises">Raises</h2>
 <dl>
-<dt><code><a title="aiobungie.UserNotFound" href="./index.html#aiobungie.UserNotFound">UserNotFound</a></code></dt>
+<dt><code><a title="aiobungie.UserNotFound" href="../index.html#aiobungie.UserNotFound">UserNotFound</a></code></dt>
 <dd>The requested user was not found.</dd>
 </dl></div>
 <details class="source">
@@ -1007,16 +1247,16 @@ A full name parameter should look like this
 <code>Fate怒#4275</code></p>
 </div>
 <dl>
-<dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.internal.enums.MembershipType" href="./internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
+<dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.internal.enums.MembershipType" href="../internal/enums.html#aiobungie.internal.enums.MembershipType">MembershipType</a></code></dt>
 <dd>The player's membership type, e,g. XBOX, STEAM, PSN</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p><code>ResponseSig[<a title="aiobungie.internal.helpers.JsonArray" href="./internal/helpers.html#aiobungie.internal.helpers.JsonArray">JsonArray</a>]</code>
+<p><code>ResponseSig[<a title="aiobungie.internal.helpers.JsonArray" href="../internal/helpers.html#aiobungie.internal.helpers.JsonArray">JsonArray</a>]</code>
 A JSON array of the found players.</p>
 <h2 id="raises">Raises</h2>
-<p><code><a title="aiobungie.PlayerNotFound" href="./index.html#aiobungie.PlayerNotFound">PlayerNotFound</a></code>
+<p><code><a title="aiobungie.PlayerNotFound" href="../index.html#aiobungie.PlayerNotFound">PlayerNotFound</a></code>
 The player was not found.</p>
-<p><code><a title="aiobungie.MembershipTypeError" href="./index.html#aiobungie.MembershipTypeError">MembershipTypeError</a></code>
+<p><code><a title="aiobungie.MembershipTypeError" href="../index.html#aiobungie.MembershipTypeError">MembershipTypeError</a></code>
 The provided membership type was invalid.</p></div>
 <details class="source">
 <summary>
@@ -1072,7 +1312,7 @@ and it will raise <code>NotImplementedError</code></p>
 <dd>The activity instance id.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p><code>ResponseSig[<a title="aiobungie.internal.helpers.JsonObject" href="./internal/helpers.html#aiobungie.internal.helpers.JsonObject">JsonObject</a>]</code>
+<p><code>ResponseSig[<a title="aiobungie.internal.helpers.JsonObject" href="../internal/helpers.html#aiobungie.internal.helpers.JsonObject">JsonObject</a>]</code>
 A JSON object of the post activity.</p></div>
 <details class="source">
 <summary>
@@ -1098,6 +1338,67 @@ def fetch_post_activity(self, instance: int, /) -&gt; ResponseSig[helpers.JsonOb
     &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
+<dt id="aiobungie.interfaces.RESTInterface.fetch_potential_groups_for_member"><code class="name flex">
+<span>def <span class="ident">fetch_potential_groups_for_member</span></span>(<span>self, member_id: int, member_type: enums.MembershipType, /, *, filter: int = 0, group_type: enums.GroupType = CLAN) ‑> Coroutine[Any, Any, Dict[str, Any]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get information about the groups that a given member has applied to or been invited to.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>member_id</code></strong> :&ensp;<code>builtins.int</code></dt>
+<dd>The member's id</dd>
+<dt><strong><code>member_type</code></strong> :&ensp;<code><a title="aiobungie.MembershipType" href="../index.html#aiobungie.MembershipType">MembershipType</a></code></dt>
+<dd>The member's membership type.</dd>
+</dl>
+<h2 id="other-parameters">Other Parameters</h2>
+<dl>
+<dt><strong><code>filter</code></strong> :&ensp;<code>builsins.int</code></dt>
+<dd>Filter apply to list of joined groups. This Default to <code>0</code></dd>
+<dt><strong><code>group_type</code></strong> :&ensp;<code><a title="aiobungie.GroupType" href="../index.html#aiobungie.GroupType">GroupType</a></code></dt>
+<dd>The group's type.
+This is always set to <code><a title="aiobungie.GroupType.CLAN" href="../index.html#aiobungie.GroupType.CLAN">GroupType.CLAN</a></code> and should not be changed.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p><code>ResponseSig[<a title="aiobungie.internal.helpers.JsonObject" href="../internal/helpers.html#aiobungie.internal.helpers.JsonObject">JsonObject</a>]</code>
+A JSON object of an array of the member's membership data and groups data.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abc.abstractmethod
+def fetch_potential_groups_for_member(
+    self,
+    member_id: int,
+    member_type: enums.MembershipType,
+    /,
+    *,
+    filter: int = 0,
+    group_type: enums.GroupType = enums.GroupType.CLAN,
+) -&gt; ResponseSig[helpers.JsonObject]:
+    &#34;&#34;&#34;Get information about the groups that a given member has applied to or been invited to.
+
+    Parameters
+    ----------
+    member_id : `builtins.int`
+        The member&#39;s id
+    member_type : `aiobungie.MembershipType`
+        The member&#39;s membership type.
+
+    Other Parameters
+    ----------------
+    filter : `builsins.int`
+        Filter apply to list of joined groups. This Default to `0`
+    group_type : `aiobungie.GroupType`
+        The group&#39;s type.
+        This is always set to `aiobungie.GroupType.CLAN` and should not be changed.
+
+    Returns
+    -------
+    `ResponseSig[aiobungie.internal.helpers.JsonObject]`
+        A JSON object of an array of the member&#39;s membership data and groups data.
+    &#34;&#34;&#34;</code></pre>
+</details>
+</dd>
 <dt id="aiobungie.interfaces.RESTInterface.fetch_profile"><code class="name flex">
 <span>def <span class="ident">fetch_profile</span></span>(<span>self, memberid: int, type: enums.MembershipType, /) ‑> Coroutine[Any, Any, Dict[str, Any]]</span>
 </code></dt>
@@ -1107,14 +1408,14 @@ def fetch_post_activity(self, instance: int, /) -&gt; ResponseSig[helpers.JsonOb
 <dl>
 <dt><strong><code>memberid</code></strong> :&ensp;<code>builtins.int</code></dt>
 <dd>The member's id.</dd>
-<dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.MembershipType" href="./index.html#aiobungie.MembershipType">MembershipType</a></code></dt>
+<dt><strong><code>type</code></strong> :&ensp;<code><a title="aiobungie.MembershipType" href="../index.html#aiobungie.MembershipType">MembershipType</a></code></dt>
 <dd>A valid membership type.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p><code>ResponseSig[<a title="aiobungie.internal.helpers.JsonObject" href="./internal/helpers.html#aiobungie.internal.helpers.JsonObject">JsonObject</a>]</code>
+<p><code>ResponseSig[<a title="aiobungie.internal.helpers.JsonObject" href="../internal/helpers.html#aiobungie.internal.helpers.JsonObject">JsonObject</a>]</code>
 A JSON object of the found profile.</p>
 <h2 id="raises">Raises</h2>
-<p><code><a title="aiobungie.MembershipTypeError" href="./index.html#aiobungie.MembershipTypeError">MembershipTypeError</a></code>
+<p><code><a title="aiobungie.MembershipTypeError" href="../index.html#aiobungie.MembershipTypeError">MembershipTypeError</a></code>
 The provided membership type was invalid.</p></div>
 <details class="source">
 <summary>
@@ -1160,10 +1461,10 @@ def fetch_profile(
 <dd>The user id.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p><code>ResponseSig[<a title="aiobungie.internal.helpers.JsonObject" href="./internal/helpers.html#aiobungie.internal.helpers.JsonObject">JsonObject</a>]</code>
+<p><code>ResponseSig[<a title="aiobungie.internal.helpers.JsonObject" href="../internal/helpers.html#aiobungie.internal.helpers.JsonObject">JsonObject</a>]</code>
 A JSON object of users objects.</p>
 <h2 id="raises">Raises</h2>
-<p><code><a title="aiobungie.error.UserNotFound" href="./error.html#aiobungie.error.UserNotFound">UserNotFound</a></code>
+<p><code><a title="aiobungie.error.UserNotFound" href="../error.html#aiobungie.error.UserNotFound">UserNotFound</a></code>
 The user was not found.</p></div>
 <details class="source">
 <summary>
@@ -1196,7 +1497,7 @@ def fetch_user(self, id: int) -&gt; ResponseSig[helpers.JsonObject]:
 <dd>
 <div class="desc"><p>Fetch all available user themes.</p>
 <h2 id="returns">Returns</h2>
-<p><code>ResponseSig[<a title="aiobungie.internal.helpers.JsonArray" href="./internal/helpers.html#aiobungie.internal.helpers.JsonArray">JsonArray</a>]</code>
+<p><code>ResponseSig[<a title="aiobungie.internal.helpers.JsonArray" href="../internal/helpers.html#aiobungie.internal.helpers.JsonArray">JsonArray</a>]</code>
 A JSON array of user themes.</p></div>
 <details class="source">
 <summary>
@@ -1214,7 +1515,7 @@ def fetch_user_themes(self) -&gt; ResponseSig[helpers.JsonArray]:
 </details>
 </dd>
 <dt id="aiobungie.interfaces.RESTInterface.search_users"><code class="name flex">
-<span>def <span class="ident">search_users</span></span>(<span>self, name: str, /) ‑> Coroutine[Any, Any, List[Any]]</span>
+<span>def <span class="ident">search_users</span></span>(<span>self, name: str, /) ‑> Coroutine[Any, Any, Dict[str, Any]]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Search for users by their global name and return all users who share this name.</p>
@@ -1224,17 +1525,17 @@ def fetch_user_themes(self) -&gt; ResponseSig[helpers.JsonArray]:
 <dd>The user name.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p><code>ResponseSig[<a title="aiobungie.internal.helpers.JsonArray" href="./internal/helpers.html#aiobungie.internal.helpers.JsonArray">JsonArray</a>]</code>
-A JSON array of the found users.</p>
+<p><code>ResponseSig[<a title="aiobungie.internal.helpers.JsonObject" href="../internal/helpers.html#aiobungie.internal.helpers.JsonObject">JsonObject</a>]</code>
+A JSON object of an array of the found users.</p>
 <h2 id="raises">Raises</h2>
-<p><code><a title="aiobungie.NotFound" href="./index.html#aiobungie.NotFound">NotFound</a></code>
+<p><code><a title="aiobungie.NotFound" href="../index.html#aiobungie.NotFound">NotFound</a></code>
 The user(s) was not found.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abc.abstractmethod
-def search_users(self, name: str, /) -&gt; ResponseSig[helpers.JsonArray]:
+def search_users(self, name: str, /) -&gt; ResponseSig[helpers.JsonObject]:
     &#34;&#34;&#34;Search for users by their global name and return all users who share this name.
 
     Parameters
@@ -1244,8 +1545,8 @@ def search_users(self, name: str, /) -&gt; ResponseSig[helpers.JsonArray]:
 
     Returns
     -------
-    `ResponseSig[aiobungie.internal.helpers.JsonArray]`
-        A JSON array of the found users.
+    `ResponseSig[aiobungie.internal.helpers.JsonObject]`
+        A JSON object of an array of the found users.
 
     Raises
     ------
@@ -1336,7 +1637,7 @@ const query = new URL(window.location).searchParams.get('q');
 if (query)
 search(query);
 function search(query) {
-const url = '././doc-search.html#' + encodeURIComponent(query);
+const url = '../../doc-search.html#' + encodeURIComponent(query);
 new tingle.modal({
 cssClass: ['modal-dialog'],
 onClose: () => {
@@ -1355,7 +1656,7 @@ setTimeout(() => input.focus(), 100);
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="aiobungie" href="./index.html">aiobungie</a></code></li>
+<li><code><a title="aiobungie" href="../index.html">aiobungie</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-submodules">Sub-modules</a></h3>
@@ -1372,8 +1673,11 @@ setTimeout(() => input.focus(), 100);
 <li><code><a title="aiobungie.interfaces.RESTInterface.fetch_app" href="#aiobungie.interfaces.RESTInterface.fetch_app">fetch_app</a></code></li>
 <li><code><a title="aiobungie.interfaces.RESTInterface.fetch_character" href="#aiobungie.interfaces.RESTInterface.fetch_character">fetch_character</a></code></li>
 <li><code><a title="aiobungie.interfaces.RESTInterface.fetch_clan" href="#aiobungie.interfaces.RESTInterface.fetch_clan">fetch_clan</a></code></li>
+<li><code><a title="aiobungie.interfaces.RESTInterface.fetch_clan_admins" href="#aiobungie.interfaces.RESTInterface.fetch_clan_admins">fetch_clan_admins</a></code></li>
+<li><code><a title="aiobungie.interfaces.RESTInterface.fetch_clan_conversations" href="#aiobungie.interfaces.RESTInterface.fetch_clan_conversations">fetch_clan_conversations</a></code></li>
 <li><code><a title="aiobungie.interfaces.RESTInterface.fetch_clan_from_id" href="#aiobungie.interfaces.RESTInterface.fetch_clan_from_id">fetch_clan_from_id</a></code></li>
 <li><code><a title="aiobungie.interfaces.RESTInterface.fetch_clan_members" href="#aiobungie.interfaces.RESTInterface.fetch_clan_members">fetch_clan_members</a></code></li>
+<li><code><a title="aiobungie.interfaces.RESTInterface.fetch_groups_for_member" href="#aiobungie.interfaces.RESTInterface.fetch_groups_for_member">fetch_groups_for_member</a></code></li>
 <li><code><a title="aiobungie.interfaces.RESTInterface.fetch_hard_linked" href="#aiobungie.interfaces.RESTInterface.fetch_hard_linked">fetch_hard_linked</a></code></li>
 <li><code><a title="aiobungie.interfaces.RESTInterface.fetch_inventory_item" href="#aiobungie.interfaces.RESTInterface.fetch_inventory_item">fetch_inventory_item</a></code></li>
 <li><code><a title="aiobungie.interfaces.RESTInterface.fetch_manifest" href="#aiobungie.interfaces.RESTInterface.fetch_manifest">fetch_manifest</a></code></li>
@@ -1381,6 +1685,7 @@ setTimeout(() => input.focus(), 100);
 <li><code><a title="aiobungie.interfaces.RESTInterface.fetch_membership_from_id" href="#aiobungie.interfaces.RESTInterface.fetch_membership_from_id">fetch_membership_from_id</a></code></li>
 <li><code><a title="aiobungie.interfaces.RESTInterface.fetch_player" href="#aiobungie.interfaces.RESTInterface.fetch_player">fetch_player</a></code></li>
 <li><code><a title="aiobungie.interfaces.RESTInterface.fetch_post_activity" href="#aiobungie.interfaces.RESTInterface.fetch_post_activity">fetch_post_activity</a></code></li>
+<li><code><a title="aiobungie.interfaces.RESTInterface.fetch_potential_groups_for_member" href="#aiobungie.interfaces.RESTInterface.fetch_potential_groups_for_member">fetch_potential_groups_for_member</a></code></li>
 <li><code><a title="aiobungie.interfaces.RESTInterface.fetch_profile" href="#aiobungie.interfaces.RESTInterface.fetch_profile">fetch_profile</a></code></li>
 <li><code><a title="aiobungie.interfaces.RESTInterface.fetch_user" href="#aiobungie.interfaces.RESTInterface.fetch_user">fetch_user</a></code></li>
 <li><code><a title="aiobungie.interfaces.RESTInterface.fetch_user_themes" href="#aiobungie.interfaces.RESTInterface.fetch_user_themes">fetch_user_themes</a></code></li>

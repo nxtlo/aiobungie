@@ -30,7 +30,7 @@ import typing
 
 from aiobungie import client
 from aiobungie import rest as rest_client
-from aiobungie.internal import serialize as serialize_
+from aiobungie.internal import factory
 
 
 @typing.runtime_checkable
@@ -51,8 +51,8 @@ class Serializable(typing.Protocol):
     __slots__: typing.Sequence[str] = ()
 
     @property
-    def serialize(self) -> serialize_.Factory:
-        """A property that returns a deserializer object for the client."""
+    def serialize(self) -> factory.Factory:
+        """A property that returns the entity factory for the client."""
 
 
 @typing.runtime_checkable

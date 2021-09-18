@@ -116,8 +116,10 @@ class UserLike(abc.ABC):
 # This is meant for Bungie destiny users which's different from a normal bungie user.
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
 class PartialBungieUser:
-    """Represents partial bungie user. This is usually used for bungie user info
-    for destiny member objects. Like Clan members, owners, moderators for an example.
+    """Represents partial bungie user.
+
+    This is usually used for bungie users that are missing attributes not present in `BungieUser`,
+    i.e., Clan members, Owners, Moderators and any other object the has a `bungie` attribute.
 
     .. note::
         You can fetch the actual bungie user of this partial user

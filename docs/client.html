@@ -62,7 +62,7 @@ import typing
 from aiobungie.ext import Manifest
 from aiobungie.internal import deprecated
 from aiobungie.internal import helpers
-from aiobungie.internal import serialize as serialize_
+from aiobungie.internal import factory
 from aiobungie.internal import traits
 
 from . import crate
@@ -83,7 +83,13 @@ class Client(traits.ClientBase):
         Your Bungie&#39;s API key or Token from the developer&#39;s portal.
     &#34;&#34;&#34;
 
-    __slots__ = (&#34;_rest&#34;, &#34;_serialize&#34;, &#34;_token&#34;, &#34;_loop&#34;, &#34;_kwargs&#34;)
+    __slots__ = (
+        &#34;_rest&#34;,
+        &#34;_serialize&#34;,
+        &#34;_token&#34;,
+        &#34;_loop&#34;,
+        &#34;_kwargs&#34;
+    )
 
     def __init__(self, token: str, /, **kwargs: typing.Any) -&gt; None:
         self._loop: asyncio.AbstractEventLoop = helpers.get_or_make_loop()
@@ -93,11 +99,11 @@ class Client(traits.ClientBase):
             raise ValueError(&#34;Missing the API key!&#34;)
 
         self._rest = rest_.RESTClient(token)
-        self._serialize = serialize_.Factory(self)
+        self._serialize = factory.Factory(self)
         self._token = token  # We need the token For Manifest.
 
     @property
-    def serialize(self) -&gt; serialize_.Factory:
+    def serialize(self) -&gt; factory.Factory:
         return self._serialize
 
     @property
@@ -469,7 +475,7 @@ class Client(traits.ClientBase):
         &#34;&#34;&#34;
         resp = await self.rest.fetch_clan_from_id(id)
         assert isinstance(resp, dict)
-        return self.serialize.deseialize_clan(resp)
+        return self.serialize.deserialize_clan(resp)
 
     async def fetch_clan(
         self, name: str, /, type: GroupType = GroupType.CLAN
@@ -496,7 +502,88 @@ class Client(traits.ClientBase):
         &#34;&#34;&#34;
         resp = await self.rest.fetch_clan(name, type)
         assert isinstance(resp, dict)
-        return self.serialize.deseialize_clan(resp)
+        return self.serialize.deserialize_clan(resp)
+
+    async def fetch_clan_conversations(
+        self, clan_id: int, /
+    ) -&gt; typing.Sequence[crate.clans.ClanConversation]:
+        resp = await self.rest.fetch_clan_conversations(clan_id)
+        assert isinstance(resp, list)
+        return self.serialize.deserialize_clan_convos(resp)
+
+    async def fetch_clan_admins(
+        self, clan_id: int, /
+    ) -&gt; typing.Sequence[crate.clans.ClanAdmin]:
+        &#34;&#34;&#34;Fetch the clan founder and admins.
+
+        Parameters
+        ----------
+        clan_id : `builtins.int`
+            The clan id.
+
+        Returns
+        -------
+        `typing.Sequence[aiobungie.crate.ClanAdmin]`
+            A sequence of the found clan admins and founder.
+
+        Raises
+        ------
+        `aiobungie.ClanNotFound`
+            The requested clan was not found.
+        &#34;&#34;&#34;
+        resp = await self.rest.fetch_clan_admins(clan_id)
+        assert isinstance(resp, dict)
+        return self.serialize.deserialize_clan_admins(resp)
+
+    async def fetch_groups_for_member(
+        self,
+        member_id: int,
+        member_type: MembershipType,
+        /,
+        *,
+        filter: int = 0,
+        group_type: GroupType = GroupType.CLAN,
+    ) -&gt; typing.Optional[crate.clans.GroupMember]:
+        &#34;&#34;&#34;Fetch information about the groups that a given member has joined.
+
+        Parameters
+        ----------
+        member_id : `builtins.int`
+            The member&#39;s id
+        member_type : `aiobungie.MembershipType`
+            The member&#39;s membership type.
+
+        Other Parameters
+        ----------------
+        filter : `builsins.int`
+            Filter apply to list of joined groups. This Default to `0`
+        group_type : `aiobungie.GroupType`
+            The group&#39;s type.
+            This is always set to `aiobungie.GroupType.CLAN` and should not be changed.
+
+        Returns
+        -------
+        `typing.Optional[aiobungie.crate.clans.GroupMember]`
+            The member if found and `None` if not.
+        &#34;&#34;&#34;
+        resp = await self.rest.fetch_groups_for_member(
+            member_id, member_type, filter=filter, group_type=group_type
+        )
+        return self.serialize.deserialize_group_member(resp)
+
+    async def fetch_potential_groups_for_member(
+        self,
+        member_id: int,
+        member_type: MembershipType,
+        /,
+        *,
+        filter: int = 0,
+        group_type: GroupType = GroupType.CLAN,
+    ) -&gt; typing.Optional[crate.clans.GroupMember]:
+        resp = await self.rest.fetch_potential_groups_for_member(
+            member_id, member_type, filter=filter, group_type=group_type
+        )
+        return self.serialize.deserialize_group_member(resp)
 
     async def fetch_clan_member(
         self,
@@ -650,7 +737,13 @@ class Client(traits.ClientBase):
         Your Bungie&#39;s API key or Token from the developer&#39;s portal.
     &#34;&#34;&#34;
 
-    __slots__ = (&#34;_rest&#34;, &#34;_serialize&#34;, &#34;_token&#34;, &#34;_loop&#34;, &#34;_kwargs&#34;)
+    __slots__ = (
+        &#34;_rest&#34;,
+        &#34;_serialize&#34;,
+        &#34;_token&#34;,
+        &#34;_loop&#34;,
+        &#34;_kwargs&#34;
+    )
 
     def __init__(self, token: str, /, **kwargs: typing.Any) -&gt; None:
         self._loop: asyncio.AbstractEventLoop = helpers.get_or_make_loop()
@@ -660,11 +753,11 @@ class Client(traits.ClientBase):
             raise ValueError(&#34;Missing the API key!&#34;)
 
         self._rest = rest_.RESTClient(token)
-        self._serialize = serialize_.Factory(self)
+        self._serialize = factory.Factory(self)
         self._token = token  # We need the token For Manifest.
 
     @property
-    def serialize(self) -&gt; serialize_.Factory:
+    def serialize(self) -&gt; factory.Factory:
         return self._serialize
 
     @property
@@ -1036,7 +1129,7 @@ class Client(traits.ClientBase):
         &#34;&#34;&#34;
         resp = await self.rest.fetch_clan_from_id(id)
         assert isinstance(resp, dict)
-        return self.serialize.deseialize_clan(resp)
+        return self.serialize.deserialize_clan(resp)
 
     async def fetch_clan(
         self, name: str, /, type: GroupType = GroupType.CLAN
@@ -1063,7 +1156,88 @@ class Client(traits.ClientBase):
         &#34;&#34;&#34;
         resp = await self.rest.fetch_clan(name, type)
         assert isinstance(resp, dict)
-        return self.serialize.deseialize_clan(resp)
+        return self.serialize.deserialize_clan(resp)
+
+    async def fetch_clan_conversations(
+        self, clan_id: int, /
+    ) -&gt; typing.Sequence[crate.clans.ClanConversation]:
+        resp = await self.rest.fetch_clan_conversations(clan_id)
+        assert isinstance(resp, list)
+        return self.serialize.deserialize_clan_convos(resp)
+
+    async def fetch_clan_admins(
+        self, clan_id: int, /
+    ) -&gt; typing.Sequence[crate.clans.ClanAdmin]:
+        &#34;&#34;&#34;Fetch the clan founder and admins.
+
+        Parameters
+        ----------
+        clan_id : `builtins.int`
+            The clan id.
+
+        Returns
+        -------
+        `typing.Sequence[aiobungie.crate.ClanAdmin]`
+            A sequence of the found clan admins and founder.
+
+        Raises
+        ------
+        `aiobungie.ClanNotFound`
+            The requested clan was not found.
+        &#34;&#34;&#34;
+        resp = await self.rest.fetch_clan_admins(clan_id)
+        assert isinstance(resp, dict)
+        return self.serialize.deserialize_clan_admins(resp)
+
+    async def fetch_groups_for_member(
+        self,
+        member_id: int,
+        member_type: MembershipType,
+        /,
+        *,
+        filter: int = 0,
+        group_type: GroupType = GroupType.CLAN,
+    ) -&gt; typing.Optional[crate.clans.GroupMember]:
+        &#34;&#34;&#34;Fetch information about the groups that a given member has joined.
+
+        Parameters
+        ----------
+        member_id : `builtins.int`
+            The member&#39;s id
+        member_type : `aiobungie.MembershipType`
+            The member&#39;s membership type.
+
+        Other Parameters
+        ----------------
+        filter : `builsins.int`
+            Filter apply to list of joined groups. This Default to `0`
+        group_type : `aiobungie.GroupType`
+            The group&#39;s type.
+            This is always set to `aiobungie.GroupType.CLAN` and should not be changed.
+
+        Returns
+        -------
+        `typing.Optional[aiobungie.crate.clans.GroupMember]`
+            The member if found and `None` if not.
+        &#34;&#34;&#34;
+        resp = await self.rest.fetch_groups_for_member(
+            member_id, member_type, filter=filter, group_type=group_type
+        )
+        return self.serialize.deserialize_group_member(resp)
+
+    async def fetch_potential_groups_for_member(
+        self,
+        member_id: int,
+        member_type: MembershipType,
+        /,
+        *,
+        filter: int = 0,
+        group_type: GroupType = GroupType.CLAN,
+    ) -&gt; typing.Optional[crate.clans.GroupMember]:
+        resp = await self.rest.fetch_potential_groups_for_member(
+            member_id, member_type, filter=filter, group_type=group_type
+        )
+        return self.serialize.deserialize_group_member(resp)
 
     async def fetch_clan_member(
         self,
@@ -1225,19 +1399,19 @@ def rest(self) -&gt; rest_.RESTClient:
     return self._rest</code></pre>
 </details>
 </dd>
-<dt id="aiobungie.client.Client.serialize"><code class="name">var <span class="ident">serialize</span> : <a title="aiobungie.internal.serialize.Factory" href="internal/serialize.html#aiobungie.internal.serialize.Factory">Factory</a></code></dt>
+<dt id="aiobungie.client.Client.serialize"><code class="name">var <span class="ident">serialize</span> : <a title="aiobungie.internal.factory.Factory" href="internal/factory.html#aiobungie.internal.factory.Factory">Factory</a></code></dt>
 <dd>
 <p class="inheritance">
 <em>Inherited from:</em>
 <code><a title="aiobungie.internal.traits.ClientBase" href="internal/traits.html#aiobungie.internal.traits.ClientBase">ClientBase</a></code>.<code><a title="aiobungie.internal.traits.ClientBase.serialize" href="internal/traits.html#aiobungie.internal.traits.ClientBase.serialize">serialize</a></code>
 </p>
-<div class="desc inherited"><p>A property that returns a deserializer object for the client.</p></div>
+<div class="desc inherited"><p>A property that returns the entity factory for the client.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def serialize(self) -&gt; serialize_.Factory:
+def serialize(self) -&gt; factory.Factory:
     return self._serialize</code></pre>
 </details>
 </dd>
@@ -1470,7 +1644,69 @@ The clan was not found.</p></div>
     &#34;&#34;&#34;
     resp = await self.rest.fetch_clan(name, type)
     assert isinstance(resp, dict)
-    return self.serialize.deseialize_clan(resp)</code></pre>
+    return self.serialize.deserialize_clan(resp)</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.client.Client.fetch_clan_admins"><code class="name flex">
+<span>async def <span class="ident">fetch_clan_admins</span></span>(<span>self, clan_id: int, /) ‑> Sequence[<a title="aiobungie.crate.clans.ClanAdmin" href="crate/clans.html#aiobungie.crate.clans.ClanAdmin">ClanAdmin</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Fetch the clan founder and admins.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>clan_id</code></strong> :&ensp;<code>builtins.int</code></dt>
+<dd>The clan id.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p><code>typing.Sequence[<a title="aiobungie.crate.ClanAdmin" href="crate/index.html#aiobungie.crate.ClanAdmin">ClanAdmin</a>]</code>
+A sequence of the found clan admins and founder.</p>
+<h2 id="raises">Raises</h2>
+<p><code><a title="aiobungie.ClanNotFound" href="index.html#aiobungie.ClanNotFound">ClanNotFound</a></code>
+The requested clan was not found.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_clan_admins(
+    self, clan_id: int, /
+) -&gt; typing.Sequence[crate.clans.ClanAdmin]:
+    &#34;&#34;&#34;Fetch the clan founder and admins.
+
+    Parameters
+    ----------
+    clan_id : `builtins.int`
+        The clan id.
+
+    Returns
+    -------
+    `typing.Sequence[aiobungie.crate.ClanAdmin]`
+        A sequence of the found clan admins and founder.
+
+    Raises
+    ------
+    `aiobungie.ClanNotFound`
+        The requested clan was not found.
+    &#34;&#34;&#34;
+    resp = await self.rest.fetch_clan_admins(clan_id)
+    assert isinstance(resp, dict)
+    return self.serialize.deserialize_clan_admins(resp)</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.client.Client.fetch_clan_conversations"><code class="name flex">
+<span>async def <span class="ident">fetch_clan_conversations</span></span>(<span>self, clan_id: int, /) ‑> Sequence[<a title="aiobungie.crate.clans.ClanConversation" href="crate/clans.html#aiobungie.crate.clans.ClanConversation">ClanConversation</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_clan_conversations(
+    self, clan_id: int, /
+) -&gt; typing.Sequence[crate.clans.ClanConversation]:
+    resp = await self.rest.fetch_clan_conversations(clan_id)
+    assert isinstance(resp, list)
+    return self.serialize.deserialize_clan_convos(resp)</code></pre>
 </details>
 </dd>
 <dt id="aiobungie.client.Client.fetch_clan_from_id"><code class="name flex">
@@ -1513,7 +1749,7 @@ The clan was not found.</p></div>
     &#34;&#34;&#34;
     resp = await self.rest.fetch_clan_from_id(id)
     assert isinstance(resp, dict)
-    return self.serialize.deseialize_clan(resp)</code></pre>
+    return self.serialize.deserialize_clan(resp)</code></pre>
 </details>
 </dd>
 <dt id="aiobungie.client.Client.fetch_clan_member"><code class="name flex">
@@ -1658,6 +1894,70 @@ The clan was not found.</p></div>
     resp = await self.rest.fetch_clan_members(clan_id, type)
     assert isinstance(resp, dict)
     return self.serialize.deserialize_clan_members(resp)</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.client.Client.fetch_groups_for_member"><code class="name flex">
+<span>async def <span class="ident">fetch_groups_for_member</span></span>(<span>self, member_id: int, member_type: MembershipType, /, *, filter: int = 0, group_type: GroupType = CLAN) ‑> Optional[<a title="aiobungie.crate.clans.GroupMember" href="crate/clans.html#aiobungie.crate.clans.GroupMember">GroupMember</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Fetch information about the groups that a given member has joined.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>member_id</code></strong> :&ensp;<code>builtins.int</code></dt>
+<dd>The member's id</dd>
+<dt><strong><code>member_type</code></strong> :&ensp;<code><a title="aiobungie.MembershipType" href="index.html#aiobungie.MembershipType">MembershipType</a></code></dt>
+<dd>The member's membership type.</dd>
+</dl>
+<h2 id="other-parameters">Other Parameters</h2>
+<dl>
+<dt><strong><code>filter</code></strong> :&ensp;<code>builsins.int</code></dt>
+<dd>Filter apply to list of joined groups. This Default to <code>0</code></dd>
+<dt><strong><code>group_type</code></strong> :&ensp;<code><a title="aiobungie.GroupType" href="index.html#aiobungie.GroupType">GroupType</a></code></dt>
+<dd>The group's type.
+This is always set to <code><a title="aiobungie.GroupType.CLAN" href="index.html#aiobungie.GroupType.CLAN">GroupType.CLAN</a></code> and should not be changed.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p><code>typing.Optional[<a title="aiobungie.crate.clans.GroupMember" href="crate/clans.html#aiobungie.crate.clans.GroupMember">GroupMember</a>]</code>
+The member if found and <code>None</code> if not.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_groups_for_member(
+    self,
+    member_id: int,
+    member_type: MembershipType,
+    /,
+    *,
+    filter: int = 0,
+    group_type: GroupType = GroupType.CLAN,
+) -&gt; typing.Optional[crate.clans.GroupMember]:
+    &#34;&#34;&#34;Fetch information about the groups that a given member has joined.
+
+    Parameters
+    ----------
+    member_id : `builtins.int`
+        The member&#39;s id
+    member_type : `aiobungie.MembershipType`
+        The member&#39;s membership type.
+
+    Other Parameters
+    ----------------
+    filter : `builsins.int`
+        Filter apply to list of joined groups. This Default to `0`
+    group_type : `aiobungie.GroupType`
+        The group&#39;s type.
+        This is always set to `aiobungie.GroupType.CLAN` and should not be changed.
+
+    Returns
+    -------
+    `typing.Optional[aiobungie.crate.clans.GroupMember]`
+        The member if found and `None` if not.
+    &#34;&#34;&#34;
+    resp = await self.rest.fetch_groups_for_member(
+        member_id, member_type, filter=filter, group_type=group_type
+    )
+    return self.serialize.deserialize_group_member(resp)</code></pre>
 </details>
 </dd>
 <dt id="aiobungie.client.Client.fetch_hard_types"><code class="name flex">
@@ -1956,6 +2256,30 @@ Information about the requested post activity.</p></div>
     raise NotImplementedError</code></pre>
 </details>
 </dd>
+<dt id="aiobungie.client.Client.fetch_potential_groups_for_member"><code class="name flex">
+<span>async def <span class="ident">fetch_potential_groups_for_member</span></span>(<span>self, member_id: int, member_type: MembershipType, /, *, filter: int = 0, group_type: GroupType = CLAN) ‑> Optional[<a title="aiobungie.crate.clans.GroupMember" href="crate/clans.html#aiobungie.crate.clans.GroupMember">GroupMember</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def fetch_potential_groups_for_member(
+    self,
+    member_id: int,
+    member_type: MembershipType,
+    /,
+    *,
+    filter: int = 0,
+    group_type: GroupType = GroupType.CLAN,
+) -&gt; typing.Optional[crate.clans.GroupMember]:
+    resp = await self.rest.fetch_potential_groups_for_member(
+        member_id, member_type, filter=filter, group_type=group_type
+    )
+    return self.serialize.deserialize_group_member(resp)</code></pre>
+</details>
+</dd>
 <dt id="aiobungie.client.Client.fetch_profile"><code class="name flex">
 <span>async def <span class="ident">fetch_profile</span></span>(<span>self, memberid: int, type: MembershipType, /) ‑> <a title="aiobungie.crate.profile.Profile" href="crate/profile.html#aiobungie.crate.profile.Profile">Profile</a></span>
 </code></dt>
@@ -2222,7 +2546,7 @@ const query = new URL(window.location).searchParams.get('q');
 if (query)
 search(query);
 function search(query) {
-const url = './doc-search.html#' + encodeURIComponent(query);
+const url = '../doc-search.html#' + encodeURIComponent(query);
 new tingle.modal({
 cssClass: ['modal-dialog'],
 onClose: () => {
@@ -2253,15 +2577,19 @@ setTimeout(() => input.focus(), 100);
 <li><code><a title="aiobungie.client.Client.fetch_app" href="#aiobungie.client.Client.fetch_app">fetch_app</a></code></li>
 <li><code><a title="aiobungie.client.Client.fetch_character" href="#aiobungie.client.Client.fetch_character">fetch_character</a></code></li>
 <li><code><a title="aiobungie.client.Client.fetch_clan" href="#aiobungie.client.Client.fetch_clan">fetch_clan</a></code></li>
+<li><code><a title="aiobungie.client.Client.fetch_clan_admins" href="#aiobungie.client.Client.fetch_clan_admins">fetch_clan_admins</a></code></li>
+<li><code><a title="aiobungie.client.Client.fetch_clan_conversations" href="#aiobungie.client.Client.fetch_clan_conversations">fetch_clan_conversations</a></code></li>
 <li><code><a title="aiobungie.client.Client.fetch_clan_from_id" href="#aiobungie.client.Client.fetch_clan_from_id">fetch_clan_from_id</a></code></li>
 <li><code><a title="aiobungie.client.Client.fetch_clan_member" href="#aiobungie.client.Client.fetch_clan_member">fetch_clan_member</a></code></li>
 <li><code><a title="aiobungie.client.Client.fetch_clan_members" href="#aiobungie.client.Client.fetch_clan_members">fetch_clan_members</a></code></li>
+<li><code><a title="aiobungie.client.Client.fetch_groups_for_member" href="#aiobungie.client.Client.fetch_groups_for_member">fetch_groups_for_member</a></code></li>
 <li><code><a title="aiobungie.client.Client.fetch_hard_types" href="#aiobungie.client.Client.fetch_hard_types">fetch_hard_types</a></code></li>
 <li><code><a title="aiobungie.client.Client.fetch_inventory_item" href="#aiobungie.client.Client.fetch_inventory_item">fetch_inventory_item</a></code></li>
 <li><code><a title="aiobungie.client.Client.fetch_manifest" href="#aiobungie.client.Client.fetch_manifest">fetch_manifest</a></code></li>
 <li><code><a title="aiobungie.client.Client.fetch_membership_from_id" href="#aiobungie.client.Client.fetch_membership_from_id">fetch_membership_from_id</a></code></li>
 <li><code><a title="aiobungie.client.Client.fetch_player" href="#aiobungie.client.Client.fetch_player">fetch_player</a></code></li>
 <li><code><a title="aiobungie.client.Client.fetch_post_activity" href="#aiobungie.client.Client.fetch_post_activity">fetch_post_activity</a></code></li>
+<li><code><a title="aiobungie.client.Client.fetch_potential_groups_for_member" href="#aiobungie.client.Client.fetch_potential_groups_for_member">fetch_potential_groups_for_member</a></code></li>
 <li><code><a title="aiobungie.client.Client.fetch_profile" href="#aiobungie.client.Client.fetch_profile">fetch_profile</a></code></li>
 <li><code><a title="aiobungie.client.Client.fetch_user" href="#aiobungie.client.Client.fetch_user">fetch_user</a></code></li>
 <li><code><a title="aiobungie.client.Client.fetch_user_themes" href="#aiobungie.client.Client.fetch_user_themes">fetch_user_themes</a></code></li>

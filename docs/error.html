@@ -127,7 +127,7 @@ class ClanNotFound(NotFound):
 
 @typing.final
 class UserNotFound(NotFound):
-    &#34;&#34;&#34;Raised when a `aiobungie.crate.User` not found.&#34;&#34;&#34;
+    &#34;&#34;&#34;Raised when a user was not found.&#34;&#34;&#34;
 
 
 @typing.final
@@ -555,14 +555,14 @@ class Unauthorized(HTTPException):
 <span>(</span><span>*args, **kwargs)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Raised when a <code><a title="aiobungie.crate.User" href="crate/index.html#aiobungie.crate.User">User</a></code> not found.</p></div>
+<div class="desc"><p>Raised when a user was not found.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@typing.final
 class UserNotFound(NotFound):
-    &#34;&#34;&#34;Raised when a `aiobungie.crate.User` not found.&#34;&#34;&#34;</code></pre>
+    &#34;&#34;&#34;Raised when a user was not found.&#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -610,7 +610,7 @@ const query = new URL(window.location).searchParams.get('q');
 if (query)
 search(query);
 function search(query) {
-const url = './doc-search.html#' + encodeURIComponent(query);
+const url = '../doc-search.html#' + encodeURIComponent(query);
 new tingle.modal({
 cssClass: ['modal-dialog'],
 onClose: () => {

@@ -22,18 +22,19 @@
 
 import nox
 import os
+import subprocess as sp
 
 @nox.session(reuse_venv=True)
 def pdoc(session: nox.Session) -> None:
-    if os.path.isdir("./docs"):
+    while os.path.exists("./docs"):
         try:
-            os.system("rm -rf ./docs")
+            sp.run("rm -rf ./docs", shell=False, stderr=sp.PIPE, stdout=sp.PIPE)
         except Exception:
             # We don't have to worry about this anymore
-            pass
+            break
     session.install("-r", "requirements.txt", "-r", "dev-requirements.txt", "pdoc3")
     session.run(
         "pdoc", "--html", "--template-dir", "./templates", "./aiobungie", "--force"
     )
     if os.path.isdir("./html"):
-        os.system("bash nix/move.sh")
+        sp.run("bash nix/move.sh", shell=False, stderr=sp.PIPE, stdout=sp.PIPE)

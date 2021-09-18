@@ -1,494 +1,35 @@
 <!doctype html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-    <meta name="generator" content="pdoc 0.9.2" />
-    <title>aiobungie.crate.entity API documentation</title>
-    <meta name="description" content="Bungie entity definitions implementation …" />
-    <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
-    <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
-    <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/atom-one-dark.min.css" crossorigin>
-    <style>
-         :root {
-            --highlight-color: #fe9
-        }
-        
-        .flex {
-            display: flex !important
-        }
-        
-        body {
-            line-height: 1.5em
-        }
-        
-        #content {
-            padding: 20px
-        }
-        
-        #sidebar {
-            padding: 30px;
-            overflow: hidden
-        }
-        
-        #sidebar>*:last-child {
-            margin-bottom: 2cm
-        }
-        
-        #lunr-search {
-            width: 100%;
-            font-size: 1em;
-            padding: 6px 9px 5px 9px;
-            border: 1px solid silver
-        }
-        
-        .http-server-breadcrumbs {
-            font-size: 130%;
-            margin: 0 0 15px 0
-        }
-        
-        #footer {
-            font-size: .75em;
-            padding: 5px 30px;
-            border-top: 1px solid #ddd;
-            text-align: right
-        }
-        
-        #footer p {
-            margin: 0 0 0 1em;
-            display: inline-block
-        }
-        
-        #footer p:last-child {
-            margin-right: 30px
-        }
-        
-        h1,
-        h2,
-        h3,
-        h4,
-        h5 {
-            font-weight: 300
-        }
-        
-        h1 {
-            font-size: 2.5em;
-            line-height: 1.1em
-        }
-        
-        h2 {
-            font-size: 1.75em;
-            margin: 1em 0 .50em 0
-        }
-        
-        h3 {
-            font-size: 1.4em;
-            margin: 25px 0 10px 0
-        }
-        
-        h4 {
-            margin: 0;
-            font-size: 105%
-        }
-        
-        h1:target,
-        h2:target,
-        h3:target,
-        h4:target,
-        h5:target,
-        h6:target {
-            background: var(--highlight-color);
-            padding: .2em 0
-        }
-        
-        a {
-            color: #058;
-            text-decoration: none;
-            transition: color .3s ease-in-out
-        }
-        
-        a:hover {
-            color: #e82
-        }
-        
-        .title code {
-            font-weight: bold
-        }
-        
-        h2[id^="header-"] {
-            margin-top: 2em
-        }
-        
-        .ident {
-            color: #900
-        }
-        
-        pre code {
-            background: #f8f8f8;
-            font-size: .8em;
-            line-height: 1.4em
-        }
-        
-        code {
-            background: #f2f2f1;
-            padding: 1px 4px;
-            overflow-wrap: break-word
-        }
-        
-        h1 code {
-            background: transparent
-        }
-        
-        pre {
-            background: #f8f8f8;
-            border: 0;
-            border-top: 1px solid #ccc;
-            border-bottom: 1px solid #ccc;
-            margin: 1em 0;
-            padding: 1ex
-        }
-        
-        #http-server-module-list {
-            display: flex;
-            flex-flow: column
-        }
-        
-        #http-server-module-list div {
-            display: flex
-        }
-        
-        #http-server-module-list dt {
-            min-width: 10%
-        }
-        
-        #http-server-module-list p {
-            margin-top: 0
-        }
-        
-        .toc ul,
-        #index {
-            list-style-type: none;
-            margin: 0;
-            padding: 0
-        }
-        
-        #index code {
-            background: transparent
-        }
-        
-        #index h3 {
-            border-bottom: 1px solid #ddd
-        }
-        
-        #index ul {
-            padding: 0
-        }
-        
-        #index h4 {
-            margin-top: .6em;
-            font-weight: bold
-        }
-        
-        @media (min-width:200ex) {
-            #index .two-column {
-                column-count: 2
-            }
-        }
-        
-        @media (min-width:300ex) {
-            #index .two-column {
-                column-count: 3
-            }
-        }
-        
-        dl {
-            margin-bottom: 2em
-        }
-        
-        dl dl:last-child {
-            margin-bottom: 4em
-        }
-        
-        dd {
-            margin: 0 0 1em 3em
-        }
-        
-        #header-classes+dl>dd {
-            margin-bottom: 3em
-        }
-        
-        dd dd {
-            margin-left: 2em
-        }
-        
-        dd p {
-            margin: 10px 0
-        }
-        
-        .name {
-            background: #eee;
-            font-weight: bold;
-            font-size: .85em;
-            padding: 5px 10px;
-            display: inline-block;
-            min-width: 40%
-        }
-        
-        .name:hover {
-            background: #e0e0e0
-        }
-        
-        dt:target .name {
-            background: var(--highlight-color)
-        }
-        
-        .name>span:first-child {
-            white-space: nowrap
-        }
-        
-        .name.class>span:nth-child(2) {
-            margin-left: .4em
-        }
-        
-        .inherited {
-            color: #999;
-            border-left: 5px solid #eee;
-            padding-left: 1em
-        }
-        
-        .inheritance em {
-            font-style: normal;
-            font-weight: bold
-        }
-        
-        .desc h2 {
-            font-weight: 400;
-            font-size: 1.25em
-        }
-        
-        .desc h3 {
-            font-size: 1em
-        }
-        
-        .desc dt code {
-            background: inherit
-        }
-        
-        .source summary,
-        .git-link-div {
-            color: #666;
-            text-align: right;
-            font-weight: 400;
-            font-size: .8em;
-            text-transform: uppercase
-        }
-        
-        .source summary>* {
-            white-space: nowrap;
-            cursor: pointer
-        }
-        
-        .git-link {
-            color: inherit;
-            margin-left: 1em
-        }
-        
-        .source pre {
-            max-height: 500px;
-            overflow: auto;
-            margin: 0
-        }
-        
-        .source pre code {
-            font-size: 12px;
-            overflow: visible
-        }
-        
-        .hlist {
-            list-style: none
-        }
-        
-        .hlist li {
-            display: inline
-        }
-        
-        .hlist li:after {
-            content: ',\2002'
-        }
-        
-        .hlist li:last-child:after {
-            content: none
-        }
-        
-        .hlist .hlist {
-            display: inline;
-            padding-left: 1em
-        }
-        
-        img {
-            max-width: 100%
-        }
-        
-        td {
-            padding: 0 .5em
-        }
-        
-        .admonition {
-            padding: .1em .5em;
-            margin-bottom: 1em
-        }
-        
-        .admonition-title {
-            font-weight: bold
-        }
-        
-        .admonition.note,
-        .admonition.info,
-        .admonition.important {
-            background: #aef
-        }
-        
-        .admonition.todo,
-        .admonition.versionadded,
-        .admonition.tip,
-        .admonition.hint {
-            background: #dfd
-        }
-        
-        .admonition.warning,
-        .admonition.versionchanged,
-        .admonition.deprecated {
-            background: #fd4
-        }
-        
-        .admonition.error,
-        .admonition.danger,
-        .admonition.caution {
-            background: lightpink
-        }
-    </style>
-    <style media="screen and (min-width: 700px)">
-        @media screen and (min-width:700px) {
-            #sidebar {
-                width: 30%;
-                height: 100vh;
-                overflow: auto;
-                position: sticky;
-                top: 0
-            }
-            #content {
-                width: 70%;
-                max-width: 100ch;
-                padding: 3em 4em;
-                border-left: 1px solid #ddd
-            }
-            pre code {
-                font-size: 1em
-            }
-            .item .name {
-                font-size: 1em
-            }
-            main {
-                display: flex;
-                flex-direction: row-reverse;
-                justify-content: flex-end
-            }
-            .toc ul ul,
-            #index ul {
-                padding-left: 1.5em
-            }
-            .toc>ul>li {
-                margin-top: .5em
-            }
-        }
-    </style>
-    <style media="print">
-        @media print {
-            #sidebar h1 {
-                page-break-before: always
-            }
-            .source {
-                display: none
-            }
-        }
-        
-        @media print {
-            * {
-                background: transparent !important;
-                color: #000 !important;
-                box-shadow: none !important;
-                text-shadow: none !important
-            }
-            a[href]:after {
-                content: " (" attr(href) ")";
-                font-size: 90%
-            }
-            a[href][title]:after {
-                content: none
-            }
-            abbr[title]:after {
-                content: " (" attr(title) ")"
-            }
-            .ir a:after,
-            a[href^="javascript:"]:after,
-            a[href^="#"]:after {
-                content: ""
-            }
-            pre,
-            blockquote {
-                border: 1px solid #999;
-                page-break-inside: avoid
-            }
-            thead {
-                display: table-header-group
-            }
-            tr,
-            img {
-                page-break-inside: avoid
-            }
-            img {
-                max-width: 100% !important
-            }
-            @page {
-                margin: 0.5cm
-            }
-            p,
-            h2,
-            h3 {
-                orphans: 3;
-                widows: 3
-            }
-            h1,
-            h2,
-            h3,
-            h4,
-            h5,
-            h6 {
-                page-break-after: avoid
-            }
-        }
-    </style>
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
-    <script>
-        window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())
-    </script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>aiobungie.crate.entity API documentation</title>
+<meta name="description" content="Bungie entity definitions implementation …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/atom-one-dark.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}#lunr-search{width:100%;font-size:1em;padding:6px 9px 5px 9px;border:1px solid silver}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
 </head>
-
 <body>
-    <main>
-        <article id="content">
-            <header>
-                <h1 class="title">Module <code>aiobungie.crate.entity</code></h1>
-            </header>
-            <section id="section-intro">
-                <p>Bungie entity definitions implementation.</p>
-                <p>This is still not fully implemented and you may experince bugs. This will include all Bungie Definitions.</p>
-                <details class="source">
-                    <summary>
-                        <span>Expand source code</span>
-                    </summary>
-                    <pre><code class="python"># MIT License
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>aiobungie.crate.entity</code></h1>
+</header>
+<section id="section-intro">
+<p>Bungie entity definitions implementation.</p>
+<p>This is still not fully implemented and you may experince bugs.
+This will include all Bungie Definitions.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python"># MIT License
 #
 # Copyright (c) 2020 - Present nxtlo
 #
@@ -527,10 +68,10 @@ import attr
 
 from aiobungie.internal import assets
 from aiobungie.internal import enums
-from aiobungie.internal import impl
+from aiobungie.internal import helpers
+from aiobungie.internal import traits
 
 
-@attr.s(kw_only=True, hash=True, weakref_slot=False, slots=True, init=True, eq=True)
 class Entity(abc.ABC):
     &#34;&#34;&#34;An interface of a Bungie Definition Entity.
 
@@ -538,19 +79,21 @@ class Entity(abc.ABC):
     it holds core information that all bungie entities has.
     &#34;&#34;&#34;
 
+    __slots__: typing.Sequence[str] = ()
+
     @property
     @abc.abstractmethod
-    def net(self) -&gt; impl.Netrunner:
+    def net(self) -&gt; traits.Netrunner:
         &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
 
     @property
     @abc.abstractmethod
-    def name(self) -&gt; str:
-        &#34;&#34;&#34;Entity&#39;s name&#34;&#34;&#34;
+    def name(self) -&gt; helpers.UndefinedOr[str]:
+        &#34;&#34;&#34;Entity&#39;s name. This can be `UNDEFINED` if not found.&#34;&#34;&#34;
 
     @property
     @abc.abstractmethod
-    def icon(self) -&gt; typing.Optional[assets.Image]:
+    def icon(self) -&gt; assets.MaybeImage:
         &#34;&#34;&#34;An optional entity&#39;s icon if its filled.&#34;&#34;&#34;
 
     @property
@@ -560,7 +103,7 @@ class Entity(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def description(self) -&gt; str:
+    def description(self) -&gt; helpers.UndefinedOr[str]:
         &#34;&#34;&#34;Entity&#39;s description&#34;&#34;&#34;
 
     @property
@@ -572,11 +115,6 @@ class Entity(abc.ABC):
     @abc.abstractmethod
     def hash(self) -&gt; int:
         &#34;&#34;&#34;Entity&#39;s hash.&#34;&#34;&#34;
-
-    @property
-    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        &#34;&#34;&#34;Returns an instance of the entity as a dict&#34;&#34;&#34;
-        return attr.asdict(self)
 
     def __str__(self) -&gt; str:
         return str(self.name)
@@ -585,14 +123,14 @@ class Entity(abc.ABC):
         return self.hash
 
 
-@attr.s(kw_only=True, hash=True, weakref_slot=False, slots=True, init=True, eq=True)
+@attr.define(kw_only=True, hash=False, weakref_slot=False)
 class InventoryEntity(Entity):
     &#34;&#34;&#34;Represents a bungie inventory item entity.
 
     This derives from `DestinyInventoryItemDefinition` definition.
     &#34;&#34;&#34;
 
-    net: impl.Netrunner = attr.field(repr=False, hash=False, eq=False)
+    net: traits.Netrunner = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
 
     hash: int = attr.field(repr=True, hash=True, eq=True)
@@ -601,22 +139,22 @@ class InventoryEntity(Entity):
     index: int = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;Entity&#39;s index.&#34;&#34;&#34;
 
-    name: str = attr.field(repr=True, hash=False, eq=False)
-    &#34;&#34;&#34;Entity&#39;s name&#34;&#34;&#34;
+    name: helpers.UndefinedOr[str] = attr.field(repr=True, hash=False, eq=False)
+    &#34;&#34;&#34;Entity&#39;s name. This can be `UNDEFINED` if not found.&#34;&#34;&#34;
 
-    description: str = attr.field(repr=True)
+    description: helpers.UndefinedOr[str] = attr.field(repr=True)
     &#34;&#34;&#34;Entity&#39;s description.&#34;&#34;&#34;
 
-    icon: typing.Optional[assets.Image] = attr.field(repr=False, hash=False, eq=False)
+    icon: assets.MaybeImage = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;Entity&#39;s icon&#34;&#34;&#34;
 
     has_icon: bool = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;A boolean that returns True if the entity has an icon.&#34;&#34;&#34;
 
-    type: typing.Optional[enums.Item] = attr.field(repr=True, hash=False)
-    &#34;&#34;&#34;Entity&#39;s type.&#34;&#34;&#34;
+    type: helpers.UndefinedOr[enums.Item] = attr.field(repr=True, hash=False)
+    &#34;&#34;&#34;Entity&#39;s type. Can be undefined if nothing was found.&#34;&#34;&#34;
 
-    type_name: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    type_name: helpers.UndefinedOr[str] = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;Entity&#39;s type name. i.e., `Grenade Launcher`&#34;&#34;&#34;
 
     water_mark: typing.Optional[assets.Image] = attr.field(
@@ -627,7 +165,7 @@ class InventoryEntity(Entity):
     tier: typing.Optional[enums.ItemTier] = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;Entity&#39;s &#34;tier.&#34;&#34;&#34;
 
-    tier_name: typing.Optional[str] = attr.field(repr=False, eq=False)
+    tier_name: helpers.UndefinedOr[str] = attr.field(repr=False, eq=False)
     &#34;&#34;&#34;A string version of the item tier.&#34;&#34;&#34;
 
     bucket_type: typing.Optional[int] = attr.field(repr=True, hash=False, eq=False)
@@ -646,79 +184,82 @@ class InventoryEntity(Entity):
     &#34;&#34;&#34;Entity&#39;s ammo type if it was a wepon, otherwise it will return None&#34;&#34;&#34;
 
     lore_hash: typing.Optional[int] = attr.field(repr=False, hash=False, eq=False)
-    &#34;&#34;&#34;The entity&#39;s lore hash&#34;&#34;&#34;
+    &#34;&#34;&#34;The entity&#39;s lore hash. Can be undefined if no lore hash found.&#34;&#34;&#34;
 
     item_class: typing.Optional[enums.Class] = attr.field(
         repr=False, hash=False, eq=False
     )
     &#34;&#34;&#34;The entity&#39;s class type.&#34;&#34;&#34;
 
-    sub_type: typing.Optional[enums.Item] = attr.field(repr=False, hash=False, eq=False)
+    sub_type: helpers.UndefinedOr[enums.Item] = attr.field(
+        repr=False, hash=False, eq=False
+    )
     &#34;&#34;&#34;The subtype of the entity. A type is a weapon or armor.
     A subtype is a handcannonn or leg armor for an example.
     &#34;&#34;&#34;
 
-    is_equippable: typing.Optional[bool] = attr.field(repr=False, hash=False, eq=False)
+    is_equippable: helpers.UndefinedOr[bool] = attr.field(
+        repr=False, hash=False, eq=False
+    )
     &#34;&#34;&#34;True if the entity can be equipped or False.&#34;&#34;&#34;
 
     summary_hash: typing.Optional[int] = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;Entity&#39;s summary hash.&#34;&#34;&#34;
 
-    damage: typing.Optional[enums.DamageType] = attr.field(
+    damage: helpers.UndefinedOr[enums.DamageType] = attr.field(
         repr=False, hash=False, eq=False
     )
     &#34;&#34;&#34;Entity&#39;s damage type. Only works for weapons.&#34;&#34;&#34;
 
-    about: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    about: helpers.UndefinedOr[str] = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;Entity&#39;s about.&#34;&#34;&#34;
 
     banner: typing.Optional[assets.Image] = attr.field(repr=False, eq=False, hash=False)
     &#34;&#34;&#34;Entity&#39;s banner.&#34;&#34;&#34;</code></pre>
-                </details>
-            </section>
-            <section>
-            </section>
-            <section>
-            </section>
-            <section>
-            </section>
-            <section>
-                <h2 class="section-title" id="header-classes">Classes</h2>
-                <dl>
-                    <dt id="aiobungie.crate.entity.Entity"><code class="flex name class">
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="aiobungie.crate.entity.Entity"><code class="flex name class">
 <span>class <span class="ident">Entity</span></span>
 </code></dt>
-                    <dd>
-                        <div class="desc">
-                            <p>An interface of a Bungie Definition Entity.</p>
-                            <p>This is the main entity which all other entities should inherit from. it holds core information that all bungie entities has.</p>
-                            <p>Method generated by attrs for class Entity.</p>
-                        </div>
-                        <details class="source">
-                            <summary>
-                                <span>Expand source code</span>
-                            </summary>
-                            <pre><code class="python">@attr.s(kw_only=True, hash=True, weakref_slot=False, slots=True, init=True, eq=True)
-class Entity(abc.ABC):
+<dd>
+<div class="desc"><p>An interface of a Bungie Definition Entity.</p>
+<p>This is the main entity which all other entities should inherit from.
+it holds core information that all bungie entities has.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Entity(abc.ABC):
     &#34;&#34;&#34;An interface of a Bungie Definition Entity.
 
     This is the main entity which all other entities should inherit from.
     it holds core information that all bungie entities has.
     &#34;&#34;&#34;
 
+    __slots__: typing.Sequence[str] = ()
+
     @property
     @abc.abstractmethod
-    def net(self) -&gt; impl.Netrunner:
+    def net(self) -&gt; traits.Netrunner:
         &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
 
     @property
     @abc.abstractmethod
-    def name(self) -&gt; str:
-        &#34;&#34;&#34;Entity&#39;s name&#34;&#34;&#34;
+    def name(self) -&gt; helpers.UndefinedOr[str]:
+        &#34;&#34;&#34;Entity&#39;s name. This can be `UNDEFINED` if not found.&#34;&#34;&#34;
 
     @property
     @abc.abstractmethod
-    def icon(self) -&gt; typing.Optional[assets.Image]:
+    def icon(self) -&gt; assets.MaybeImage:
         &#34;&#34;&#34;An optional entity&#39;s icon if its filled.&#34;&#34;&#34;
 
     @property
@@ -728,7 +269,7 @@ class Entity(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def description(self) -&gt; str:
+    def description(self) -&gt; helpers.UndefinedOr[str]:
         &#34;&#34;&#34;Entity&#39;s description&#34;&#34;&#34;
 
     @property
@@ -741,171 +282,135 @@ class Entity(abc.ABC):
     def hash(self) -&gt; int:
         &#34;&#34;&#34;Entity&#39;s hash.&#34;&#34;&#34;
 
-    @property
-    def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-        &#34;&#34;&#34;Returns an instance of the entity as a dict&#34;&#34;&#34;
-        return attr.asdict(self)
-
     def __str__(self) -&gt; str:
         return str(self.name)
 
     def __int__(self) -&gt; int:
         return self.hash</code></pre>
-                        </details>
-                        <h3>Ancestors</h3>
-                        <ul class="hlist">
-                            <li>abc.ABC</li>
-                        </ul>
-                        <h3>Subclasses</h3>
-                        <ul class="hlist">
-                            <li><a title="aiobungie.crate.entity.InventoryEntity" href="#aiobungie.crate.entity.InventoryEntity">InventoryEntity</a></li>
-                        </ul>
-                        <h3>Instance variables</h3>
-                        <dl>
-                            <dt id="aiobungie.crate.entity.Entity.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Returns an instance of the entity as a dict</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
-def as_dict(self) -&gt; typing.Dict[str, typing.Any]:
-    &#34;&#34;&#34;Returns an instance of the entity as a dict&#34;&#34;&#34;
-    return attr.asdict(self)</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.crate.entity.Entity.description"><code class="name">var <span class="ident">description</span> : str</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Entity's description</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>abc.ABC</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="aiobungie.crate.entity.InventoryEntity" href="#aiobungie.crate.entity.InventoryEntity">InventoryEntity</a></li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="aiobungie.crate.entity.Entity.description"><code class="name">var <span class="ident">description</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="../internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
+<dd>
+<div class="desc"><p>Entity's description</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
 @abc.abstractmethod
-def description(self) -&gt; str:
+def description(self) -&gt; helpers.UndefinedOr[str]:
     &#34;&#34;&#34;Entity&#39;s description&#34;&#34;&#34;</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.crate.entity.Entity.has_icon"><code class="name">var <span class="ident">has_icon</span> : bool</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>A boolean that returns True if the entity has an icon.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
+</details>
+</dd>
+<dt id="aiobungie.crate.entity.Entity.has_icon"><code class="name">var <span class="ident">has_icon</span> : bool</code></dt>
+<dd>
+<div class="desc"><p>A boolean that returns True if the entity has an icon.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
 @abc.abstractmethod
 def has_icon(self) -&gt; bool:
     &#34;&#34;&#34;A boolean that returns True if the entity has an icon.&#34;&#34;&#34;</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.crate.entity.Entity.hash"><code class="name">var <span class="ident">hash</span> : int</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Entity's hash.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
+</details>
+</dd>
+<dt id="aiobungie.crate.entity.Entity.hash"><code class="name">var <span class="ident">hash</span> : int</code></dt>
+<dd>
+<div class="desc"><p>Entity's hash.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
 @abc.abstractmethod
 def hash(self) -&gt; int:
     &#34;&#34;&#34;Entity&#39;s hash.&#34;&#34;&#34;</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.crate.entity.Entity.icon"><code class="name">var <span class="ident">icon</span> : Optional[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>An optional entity's icon if its filled.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
+</details>
+</dd>
+<dt id="aiobungie.crate.entity.Entity.icon"><code class="name">var <span class="ident">icon</span> : Union[<a title="aiobungie.internal.assets.Image" href="../internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
+<dd>
+<div class="desc"><p>An optional entity's icon if its filled.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
 @abc.abstractmethod
-def icon(self) -&gt; typing.Optional[assets.Image]:
+def icon(self) -&gt; assets.MaybeImage:
     &#34;&#34;&#34;An optional entity&#39;s icon if its filled.&#34;&#34;&#34;</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.crate.entity.Entity.index"><code class="name">var <span class="ident">index</span> : int</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The entity's index.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
+</details>
+</dd>
+<dt id="aiobungie.crate.entity.Entity.index"><code class="name">var <span class="ident">index</span> : int</code></dt>
+<dd>
+<div class="desc"><p>The entity's index.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
 @abc.abstractmethod
 def index(self) -&gt; int:
     &#34;&#34;&#34;The entity&#39;s index.&#34;&#34;&#34;</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.crate.entity.Entity.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Entity's name</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
+</details>
+</dd>
+<dt id="aiobungie.crate.entity.Entity.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="../internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
+<dd>
+<div class="desc"><p>Entity's name. This can be <code>UNDEFINED</code> if not found.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
 @abc.abstractmethod
-def name(self) -&gt; str:
-    &#34;&#34;&#34;Entity&#39;s name&#34;&#34;&#34;</code></pre>
-                                </details>
-                            </dd>
-                            <dt id="aiobungie.crate.entity.Entity.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.impl.Netrunner" href="./internal/impl.html#aiobungie.internal.impl.Netrunner">Netrunner</a></code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>A network state used for making external requests.</p>
-                                </div>
-                                <details class="source">
-                                    <summary>
-                                        <span>Expand source code</span>
-                                    </summary>
-                                    <pre><code class="python">@property
+def name(self) -&gt; helpers.UndefinedOr[str]:
+    &#34;&#34;&#34;Entity&#39;s name. This can be `UNDEFINED` if not found.&#34;&#34;&#34;</code></pre>
+</details>
+</dd>
+<dt id="aiobungie.crate.entity.Entity.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.traits.Netrunner" href="../internal/traits.html#aiobungie.internal.traits.Netrunner">Netrunner</a></code></dt>
+<dd>
+<div class="desc"><p>A network state used for making external requests.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
 @abc.abstractmethod
-def net(self) -&gt; impl.Netrunner:
+def net(self) -&gt; traits.Netrunner:
     &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;</code></pre>
-                                </details>
-                            </dd>
-                        </dl>
-                    </dd>
-                    <dt id="aiobungie.crate.entity.InventoryEntity"><code class="flex name class">
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="aiobungie.crate.entity.InventoryEntity"><code class="flex name class">
 <span>class <span class="ident">InventoryEntity</span></span>
-<span>(</span><span>*, net: impl.Netrunner, hash: int, index: int, name: str, description: str, icon: typing.Optional[assets.Image], has_icon: bool, type: typing.Optional[enums.Item], type_name: typing.Optional[str], water_mark: typing.Optional[assets.Image], tier: typing.Optional[enums.ItemTier], tier_name: typing.Optional[str], bucket_type: typing.Optional[int], stats: typing.Optional[typing.Dict[str, typing.Any]], ammo_type: typing.Optional[enums.AmmoType], lore_hash: typing.Optional[int], item_class: typing.Optional[enums.Class], sub_type: typing.Optional[enums.Item], is_equippable: typing.Optional[bool], summary_hash: typing.Optional[int], damage: typing.Optional[enums.DamageType], about: typing.Optional[str], banner: typing.Optional[assets.Image])</span>
+<span>(</span><span>*, net: traits.Netrunner, hash: int, index: int, name: helpers.UndefinedOr[str], description: helpers.UndefinedOr[str], icon: assets.MaybeImage, has_icon: bool, type: helpers.UndefinedOr[enums.Item], type_name: helpers.UndefinedOr[str], water_mark: typing.Optional[assets.Image], tier: typing.Optional[enums.ItemTier], tier_name: helpers.UndefinedOr[str], bucket_type: typing.Optional[int], stats: typing.Optional[typing.Dict[str, typing.Any]], ammo_type: typing.Optional[enums.AmmoType], lore_hash: typing.Optional[int], item_class: typing.Optional[enums.Class], sub_type: helpers.UndefinedOr[enums.Item], is_equippable: helpers.UndefinedOr[bool], summary_hash: typing.Optional[int], damage: helpers.UndefinedOr[enums.DamageType], about: helpers.UndefinedOr[str], banner: typing.Optional[assets.Image])</span>
 </code></dt>
-                    <dd>
-                        <div class="desc">
-                            <p>Represents a bungie inventory item entity.</p>
-                            <p>This derives from <code>DestinyInventoryItemDefinition</code> definition.</p>
-                            <p>Method generated by attrs for class InventoryEntity.</p>
-                        </div>
-                        <details class="source">
-                            <summary>
-                                <span>Expand source code</span>
-                            </summary>
-                            <pre><code class="python">@attr.s(kw_only=True, hash=True, weakref_slot=False, slots=True, init=True, eq=True)
+<dd>
+<div class="desc"><p>Represents a bungie inventory item entity.</p>
+<p>This derives from <code>DestinyInventoryItemDefinition</code> definition.</p>
+<p>Method generated by attrs for class InventoryEntity.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@attr.define(kw_only=True, hash=False, weakref_slot=False)
 class InventoryEntity(Entity):
     &#34;&#34;&#34;Represents a bungie inventory item entity.
 
     This derives from `DestinyInventoryItemDefinition` definition.
     &#34;&#34;&#34;
 
-    net: impl.Netrunner = attr.field(repr=False, hash=False, eq=False)
+    net: traits.Netrunner = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;A network state used for making external requests.&#34;&#34;&#34;
 
     hash: int = attr.field(repr=True, hash=True, eq=True)
@@ -914,22 +419,22 @@ class InventoryEntity(Entity):
     index: int = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;Entity&#39;s index.&#34;&#34;&#34;
 
-    name: str = attr.field(repr=True, hash=False, eq=False)
-    &#34;&#34;&#34;Entity&#39;s name&#34;&#34;&#34;
+    name: helpers.UndefinedOr[str] = attr.field(repr=True, hash=False, eq=False)
+    &#34;&#34;&#34;Entity&#39;s name. This can be `UNDEFINED` if not found.&#34;&#34;&#34;
 
-    description: str = attr.field(repr=True)
+    description: helpers.UndefinedOr[str] = attr.field(repr=True)
     &#34;&#34;&#34;Entity&#39;s description.&#34;&#34;&#34;
 
-    icon: typing.Optional[assets.Image] = attr.field(repr=False, hash=False, eq=False)
+    icon: assets.MaybeImage = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;Entity&#39;s icon&#34;&#34;&#34;
 
     has_icon: bool = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;A boolean that returns True if the entity has an icon.&#34;&#34;&#34;
 
-    type: typing.Optional[enums.Item] = attr.field(repr=True, hash=False)
-    &#34;&#34;&#34;Entity&#39;s type.&#34;&#34;&#34;
+    type: helpers.UndefinedOr[enums.Item] = attr.field(repr=True, hash=False)
+    &#34;&#34;&#34;Entity&#39;s type. Can be undefined if nothing was found.&#34;&#34;&#34;
 
-    type_name: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    type_name: helpers.UndefinedOr[str] = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;Entity&#39;s type name. i.e., `Grenade Launcher`&#34;&#34;&#34;
 
     water_mark: typing.Optional[assets.Image] = attr.field(
@@ -940,7 +445,7 @@ class InventoryEntity(Entity):
     tier: typing.Optional[enums.ItemTier] = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;Entity&#39;s &#34;tier.&#34;&#34;&#34;
 
-    tier_name: typing.Optional[str] = attr.field(repr=False, eq=False)
+    tier_name: helpers.UndefinedOr[str] = attr.field(repr=False, eq=False)
     &#34;&#34;&#34;A string version of the item tier.&#34;&#34;&#34;
 
     bucket_type: typing.Optional[int] = attr.field(repr=True, hash=False, eq=False)
@@ -959,333 +464,271 @@ class InventoryEntity(Entity):
     &#34;&#34;&#34;Entity&#39;s ammo type if it was a wepon, otherwise it will return None&#34;&#34;&#34;
 
     lore_hash: typing.Optional[int] = attr.field(repr=False, hash=False, eq=False)
-    &#34;&#34;&#34;The entity&#39;s lore hash&#34;&#34;&#34;
+    &#34;&#34;&#34;The entity&#39;s lore hash. Can be undefined if no lore hash found.&#34;&#34;&#34;
 
     item_class: typing.Optional[enums.Class] = attr.field(
         repr=False, hash=False, eq=False
     )
     &#34;&#34;&#34;The entity&#39;s class type.&#34;&#34;&#34;
 
-    sub_type: typing.Optional[enums.Item] = attr.field(repr=False, hash=False, eq=False)
+    sub_type: helpers.UndefinedOr[enums.Item] = attr.field(
+        repr=False, hash=False, eq=False
+    )
     &#34;&#34;&#34;The subtype of the entity. A type is a weapon or armor.
     A subtype is a handcannonn or leg armor for an example.
     &#34;&#34;&#34;
 
-    is_equippable: typing.Optional[bool] = attr.field(repr=False, hash=False, eq=False)
+    is_equippable: helpers.UndefinedOr[bool] = attr.field(
+        repr=False, hash=False, eq=False
+    )
     &#34;&#34;&#34;True if the entity can be equipped or False.&#34;&#34;&#34;
 
     summary_hash: typing.Optional[int] = attr.field(repr=False, hash=False, eq=False)
     &#34;&#34;&#34;Entity&#39;s summary hash.&#34;&#34;&#34;
 
-    damage: typing.Optional[enums.DamageType] = attr.field(
+    damage: helpers.UndefinedOr[enums.DamageType] = attr.field(
         repr=False, hash=False, eq=False
     )
     &#34;&#34;&#34;Entity&#39;s damage type. Only works for weapons.&#34;&#34;&#34;
 
-    about: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    about: helpers.UndefinedOr[str] = attr.field(repr=True, hash=False, eq=False)
     &#34;&#34;&#34;Entity&#39;s about.&#34;&#34;&#34;
 
     banner: typing.Optional[assets.Image] = attr.field(repr=False, eq=False, hash=False)
     &#34;&#34;&#34;Entity&#39;s banner.&#34;&#34;&#34;</code></pre>
-                        </details>
-                        <h3>Ancestors</h3>
-                        <ul class="hlist">
-                            <li><a title="aiobungie.crate.entity.Entity" href="#aiobungie.crate.entity.Entity">Entity</a></li>
-                            <li>abc.ABC</li>
-                        </ul>
-                        <h3>Subclasses</h3>
-                        <ul class="hlist">
-                            <li>aiobungie.crate.season.FetchableArtifact</li>
-                        </ul>
-                        <h3>Instance variables</h3>
-                        <dl>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.about"><code class="name">var <span class="ident">about</span> : Optional[str]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Entity's about.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.ammo_type"><code class="name">var <span class="ident">ammo_type</span> : Optional[<a title="aiobungie.internal.enums.AmmoType" href="./internal/enums.html#aiobungie.internal.enums.AmmoType">AmmoType</a>]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Entity's ammo type if it was a wepon, otherwise it will return None</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.as_dict"><code class="name">var <span class="ident">as_dict</span> : Dict[str, Any]</code></dt>
-                            <dd>
-                                <p class="inheritance">
-                                    <em>Inherited from:</em>
-                                    <code><a title="aiobungie.crate.entity.Entity" href="#aiobungie.crate.entity.Entity">Entity</a></code>.<code><a title="aiobungie.crate.entity.Entity.as_dict" href="#aiobungie.crate.entity.Entity.as_dict">as_dict</a></code>
-                                </p>
-                                <div class="desc inherited">
-                                    <p>Returns an instance of the entity as a dict</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.banner"><code class="name">var <span class="ident">banner</span> : Optional[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Entity's banner.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.bucket_type"><code class="name">var <span class="ident">bucket_type</span> : Optional[int]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The entity's bucket type, None if unknown</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.damage"><code class="name">var <span class="ident">damage</span> : Optional[<a title="aiobungie.internal.enums.DamageType" href="./internal/enums.html#aiobungie.internal.enums.DamageType">DamageType</a>]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Entity's damage type. Only works for weapons.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.description"><code class="name">var <span class="ident">description</span> : str</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Entity's description.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.has_icon"><code class="name">var <span class="ident">has_icon</span> : bool</code></dt>
-                            <dd>
-                                <p class="inheritance">
-                                    <em>Inherited from:</em>
-                                    <code><a title="aiobungie.crate.entity.Entity" href="#aiobungie.crate.entity.Entity">Entity</a></code>.<code><a title="aiobungie.crate.entity.Entity.has_icon" href="#aiobungie.crate.entity.Entity.has_icon">has_icon</a></code>
-                                </p>
-                                <div class="desc inherited">
-                                    <p>A boolean that returns True if the entity has an icon.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.hash"><code class="name">var <span class="ident">hash</span> : int</code></dt>
-                            <dd>
-                                <p class="inheritance">
-                                    <em>Inherited from:</em>
-                                    <code><a title="aiobungie.crate.entity.Entity" href="#aiobungie.crate.entity.Entity">Entity</a></code>.<code><a title="aiobungie.crate.entity.Entity.hash" href="#aiobungie.crate.entity.Entity.hash">hash</a></code>
-                                </p>
-                                <div class="desc inherited">
-                                    <p>Entity's hash.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.icon"><code class="name">var <span class="ident">icon</span> : Optional[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Entity's icon</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.index"><code class="name">var <span class="ident">index</span> : int</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Entity's index.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.is_equippable"><code class="name">var <span class="ident">is_equippable</span> : Optional[bool]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>True if the entity can be equipped or False.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.item_class"><code class="name">var <span class="ident">item_class</span> : Optional[<a title="aiobungie.internal.enums.Class" href="./internal/enums.html#aiobungie.internal.enums.Class">Class</a>]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The entity's class type.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.lore_hash"><code class="name">var <span class="ident">lore_hash</span> : Optional[int]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The entity's lore hash</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
-                            <dd>
-                                <p class="inheritance">
-                                    <em>Inherited from:</em>
-                                    <code><a title="aiobungie.crate.entity.Entity" href="#aiobungie.crate.entity.Entity">Entity</a></code>.<code><a title="aiobungie.crate.entity.Entity.name" href="#aiobungie.crate.entity.Entity.name">name</a></code>
-                                </p>
-                                <div class="desc inherited">
-                                    <p>Entity's name</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.impl.Netrunner" href="./internal/impl.html#aiobungie.internal.impl.Netrunner">Netrunner</a></code></dt>
-                            <dd>
-                                <p class="inheritance">
-                                    <em>Inherited from:</em>
-                                    <code><a title="aiobungie.crate.entity.Entity" href="#aiobungie.crate.entity.Entity">Entity</a></code>.<code><a title="aiobungie.crate.entity.Entity.net" href="#aiobungie.crate.entity.Entity.net">net</a></code>
-                                </p>
-                                <div class="desc inherited">
-                                    <p>A network state used for making external requests.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.stats"><code class="name">var <span class="ident">stats</span> : Optional[Dict[str, Any]]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Entity's stats. this currently returns a dict object of the stats.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.sub_type"><code class="name">var <span class="ident">sub_type</span> : Optional[<a title="aiobungie.internal.enums.Item" href="./internal/enums.html#aiobungie.internal.enums.Item">Item</a>]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>The subtype of the entity. A type is a weapon or armor. A subtype is a handcannonn or leg armor for an example.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.summary_hash"><code class="name">var <span class="ident">summary_hash</span> : Optional[int]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Entity's summary hash.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.tier"><code class="name">var <span class="ident">tier</span> : Optional[<a title="aiobungie.internal.enums.ItemTier" href="./internal/enums.html#aiobungie.internal.enums.ItemTier">ItemTier</a>]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Entity's "tier.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.tier_name"><code class="name">var <span class="ident">tier_name</span> : Optional[str]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>A string version of the item tier.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.type"><code class="name">var <span class="ident">type</span> : Optional[<a title="aiobungie.internal.enums.Item" href="./internal/enums.html#aiobungie.internal.enums.Item">Item</a>]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Entity's type.</p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.type_name"><code class="name">var <span class="ident">type_name</span> : Optional[str]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Entity's type name. i.e., <code>Grenade Launcher</code></p>
-                                </div>
-                            </dd>
-                            <dt id="aiobungie.crate.entity.InventoryEntity.water_mark"><code class="name">var <span class="ident">water_mark</span> : Optional[<a title="aiobungie.internal.assets.Image" href="./internal/assets.html#aiobungie.internal.assets.Image">Image</a>]</code></dt>
-                            <dd>
-                                <div class="desc">
-                                    <p>Entity's water mark.</p>
-                                </div>
-                            </dd>
-                        </dl>
-                    </dd>
-                </dl>
-            </section>
-        </article>
-        <nav id="sidebar">
-            <form>
-                <input id="lunr-search" name="q" placeholder="🔎 Search ..." aria-label="Search" disabled minlength="2">
-            </form>
-            <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.3/tingle.min.css" integrity="sha512-j1u8eUJ4f23xPPxwOrLUPQaCD2dwzNqqmDDcWS4deWsMv2ohLqmXXuP3hU7g8TyzbMSakP/mMqoNBYWj8AEIFg==" crossorigin>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.3/tingle.min.js" integrity="sha512-plGUER9JkeEWPPqQBE4sdLqBoQug5Ap+BCGMc7bJ8BXkm+VVj6QzkpBz5Yv2yPkkq+cqg9IpkBaGCas6uDbW8g==" crossorigin></script>
-            <style>
-                .modal-dialog iframe {
-                    width: 100vw;
-                    height: calc(100vh - 80px);
-                }
-                
-                @media screen and (min-width: 700px) {
-                    .modal-dialog iframe {
-                        width: 70vw;
-                        height: 80vh;
-                    }
-                }
-                
-                .modal-dialog .tingle-modal-box {
-                    width: auto;
-                }
-                
-                .modal-dialog .tingle-modal-box__content {
-                    padding: 0;
-                }
-            </style>
-            <script>
-                const input = document.getElementById('lunr-search');
-                input.disabled = false;
-                input.form.addEventListener('submit', (ev) => {
-                    ev.preventDefault();
-                    const url = new URL(window.location);
-                    url.searchParams.set('q', input.value);
-                    history.replaceState({}, null, url.toString());
-                    search(input.value);
-                });
-                const query = new URL(window.location).searchParams.get('q');
-                if (query)
-                    search(query);
-
-                function search(query) {
-                    const url = '././doc-search.html#' + encodeURIComponent(query);
-                    new tingle.modal({
-                        cssClass: ['modal-dialog'],
-                        onClose: () => {
-                            const url = new URL(window.location);
-                            url.searchParams.delete('q');
-                            history.replaceState({}, null, url.toString());
-                            setTimeout(() => input.focus(), 100);
-                        }
-                    }).setContent('<iframe src="' + url + '"></iframe>').open();
-                }
-            </script>
-            <h1>Index</h1>
-            <div class="toc">
-                <ul></ul>
-            </div>
-            <ul id="index">
-                <li>
-                    <h3>Super-module</h3>
-                    <ul>
-                        <li><code><a title="aiobungie.crate" href="index.html">aiobungie.crate</a></code></li>
-                    </ul>
-                </li>
-                <li>
-                    <h3><a href="#header-classes">Classes</a></h3>
-                    <ul>
-                        <li>
-                            <h4><code><a title="aiobungie.crate.entity.Entity" href="#aiobungie.crate.entity.Entity">Entity</a></code></h4>
-                            <ul class="two-column">
-                                <li><code><a title="aiobungie.crate.entity.Entity.as_dict" href="#aiobungie.crate.entity.Entity.as_dict">as_dict</a></code></li>
-                                <li><code><a title="aiobungie.crate.entity.Entity.description" href="#aiobungie.crate.entity.Entity.description">description</a></code></li>
-                                <li><code><a title="aiobungie.crate.entity.Entity.has_icon" href="#aiobungie.crate.entity.Entity.has_icon">has_icon</a></code></li>
-                                <li><code><a title="aiobungie.crate.entity.Entity.hash" href="#aiobungie.crate.entity.Entity.hash">hash</a></code></li>
-                                <li><code><a title="aiobungie.crate.entity.Entity.icon" href="#aiobungie.crate.entity.Entity.icon">icon</a></code></li>
-                                <li><code><a title="aiobungie.crate.entity.Entity.index" href="#aiobungie.crate.entity.Entity.index">index</a></code></li>
-                                <li><code><a title="aiobungie.crate.entity.Entity.name" href="#aiobungie.crate.entity.Entity.name">name</a></code></li>
-                                <li><code><a title="aiobungie.crate.entity.Entity.net" href="#aiobungie.crate.entity.Entity.net">net</a></code></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <h4><code><a title="aiobungie.crate.entity.InventoryEntity" href="#aiobungie.crate.entity.InventoryEntity">InventoryEntity</a></code></h4>
-                            <ul class="two-column">
-                                <li><code><a title="aiobungie.crate.entity.InventoryEntity.about" href="#aiobungie.crate.entity.InventoryEntity.about">about</a></code></li>
-                                <li><code><a title="aiobungie.crate.entity.InventoryEntity.ammo_type" href="#aiobungie.crate.entity.InventoryEntity.ammo_type">ammo_type</a></code></li>
-                                <li><code><a title="aiobungie.crate.entity.InventoryEntity.as_dict" href="#aiobungie.crate.entity.InventoryEntity.as_dict">as_dict</a></code></li>
-                                <li><code><a title="aiobungie.crate.entity.InventoryEntity.banner" href="#aiobungie.crate.entity.InventoryEntity.banner">banner</a></code></li>
-                                <li><code><a title="aiobungie.crate.entity.InventoryEntity.bucket_type" href="#aiobungie.crate.entity.InventoryEntity.bucket_type">bucket_type</a></code></li>
-                                <li><code><a title="aiobungie.crate.entity.InventoryEntity.damage" href="#aiobungie.crate.entity.InventoryEntity.damage">damage</a></code></li>
-                                <li><code><a title="aiobungie.crate.entity.InventoryEntity.description" href="#aiobungie.crate.entity.InventoryEntity.description">description</a></code></li>
-                                <li><code><a title="aiobungie.crate.entity.InventoryEntity.has_icon" href="#aiobungie.crate.entity.InventoryEntity.has_icon">has_icon</a></code></li>
-                                <li><code><a title="aiobungie.crate.entity.InventoryEntity.hash" href="#aiobungie.crate.entity.InventoryEntity.hash">hash</a></code></li>
-                                <li><code><a title="aiobungie.crate.entity.InventoryEntity.icon" href="#aiobungie.crate.entity.InventoryEntity.icon">icon</a></code></li>
-                                <li><code><a title="aiobungie.crate.entity.InventoryEntity.index" href="#aiobungie.crate.entity.InventoryEntity.index">index</a></code></li>
-                                <li><code><a title="aiobungie.crate.entity.InventoryEntity.is_equippable" href="#aiobungie.crate.entity.InventoryEntity.is_equippable">is_equippable</a></code></li>
-                                <li><code><a title="aiobungie.crate.entity.InventoryEntity.item_class" href="#aiobungie.crate.entity.InventoryEntity.item_class">item_class</a></code></li>
-                                <li><code><a title="aiobungie.crate.entity.InventoryEntity.lore_hash" href="#aiobungie.crate.entity.InventoryEntity.lore_hash">lore_hash</a></code></li>
-                                <li><code><a title="aiobungie.crate.entity.InventoryEntity.name" href="#aiobungie.crate.entity.InventoryEntity.name">name</a></code></li>
-                                <li><code><a title="aiobungie.crate.entity.InventoryEntity.net" href="#aiobungie.crate.entity.InventoryEntity.net">net</a></code></li>
-                                <li><code><a title="aiobungie.crate.entity.InventoryEntity.stats" href="#aiobungie.crate.entity.InventoryEntity.stats">stats</a></code></li>
-                                <li><code><a title="aiobungie.crate.entity.InventoryEntity.sub_type" href="#aiobungie.crate.entity.InventoryEntity.sub_type">sub_type</a></code></li>
-                                <li><code><a title="aiobungie.crate.entity.InventoryEntity.summary_hash" href="#aiobungie.crate.entity.InventoryEntity.summary_hash">summary_hash</a></code></li>
-                                <li><code><a title="aiobungie.crate.entity.InventoryEntity.tier" href="#aiobungie.crate.entity.InventoryEntity.tier">tier</a></code></li>
-                                <li><code><a title="aiobungie.crate.entity.InventoryEntity.tier_name" href="#aiobungie.crate.entity.InventoryEntity.tier_name">tier_name</a></code></li>
-                                <li><code><a title="aiobungie.crate.entity.InventoryEntity.type" href="#aiobungie.crate.entity.InventoryEntity.type">type</a></code></li>
-                                <li><code><a title="aiobungie.crate.entity.InventoryEntity.type_name" href="#aiobungie.crate.entity.InventoryEntity.type_name">type_name</a></code></li>
-                                <li><code><a title="aiobungie.crate.entity.InventoryEntity.water_mark" href="#aiobungie.crate.entity.InventoryEntity.water_mark">water_mark</a></code></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </nav>
-    </main>
-    <footer id="footer">
-        <p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.9.2</a>.</p>
-    </footer>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="aiobungie.crate.entity.Entity" href="#aiobungie.crate.entity.Entity">Entity</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li>aiobungie.crate.season.FetchableArtifact</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="aiobungie.crate.entity.InventoryEntity.about"><code class="name">var <span class="ident">about</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="../internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
+<dd>
+<div class="desc"><p>Entity's about.</p></div>
+</dd>
+<dt id="aiobungie.crate.entity.InventoryEntity.ammo_type"><code class="name">var <span class="ident">ammo_type</span> : Optional[<a title="aiobungie.internal.enums.AmmoType" href="../internal/enums.html#aiobungie.internal.enums.AmmoType">AmmoType</a>]</code></dt>
+<dd>
+<div class="desc"><p>Entity's ammo type if it was a wepon, otherwise it will return None</p></div>
+</dd>
+<dt id="aiobungie.crate.entity.InventoryEntity.banner"><code class="name">var <span class="ident">banner</span> : Optional[<a title="aiobungie.internal.assets.Image" href="../internal/assets.html#aiobungie.internal.assets.Image">Image</a>]</code></dt>
+<dd>
+<div class="desc"><p>Entity's banner.</p></div>
+</dd>
+<dt id="aiobungie.crate.entity.InventoryEntity.bucket_type"><code class="name">var <span class="ident">bucket_type</span> : Optional[None]</code></dt>
+<dd>
+<div class="desc"><p>The entity's bucket type, None if unknown</p></div>
+</dd>
+<dt id="aiobungie.crate.entity.InventoryEntity.damage"><code class="name">var <span class="ident">damage</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="../internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, <a title="aiobungie.internal.enums.DamageType" href="../internal/enums.html#aiobungie.internal.enums.DamageType">DamageType</a>]</code></dt>
+<dd>
+<div class="desc"><p>Entity's damage type. Only works for weapons.</p></div>
+</dd>
+<dt id="aiobungie.crate.entity.InventoryEntity.description"><code class="name">var <span class="ident">description</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="../internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
+<dd>
+<div class="desc"><p>Entity's description.</p></div>
+</dd>
+<dt id="aiobungie.crate.entity.InventoryEntity.has_icon"><code class="name">var <span class="ident">has_icon</span> : bool</code></dt>
+<dd>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="aiobungie.crate.entity.Entity" href="#aiobungie.crate.entity.Entity">Entity</a></code>.<code><a title="aiobungie.crate.entity.Entity.has_icon" href="#aiobungie.crate.entity.Entity.has_icon">has_icon</a></code>
+</p>
+<div class="desc inherited"><p>A boolean that returns True if the entity has an icon.</p></div>
+</dd>
+<dt id="aiobungie.crate.entity.InventoryEntity.hash"><code class="name">var <span class="ident">hash</span> : int</code></dt>
+<dd>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="aiobungie.crate.entity.Entity" href="#aiobungie.crate.entity.Entity">Entity</a></code>.<code><a title="aiobungie.crate.entity.Entity.hash" href="#aiobungie.crate.entity.Entity.hash">hash</a></code>
+</p>
+<div class="desc inherited"><p>Entity's hash.</p></div>
+</dd>
+<dt id="aiobungie.crate.entity.InventoryEntity.icon"><code class="name">var <span class="ident">icon</span> : Union[<a title="aiobungie.internal.assets.Image" href="../internal/assets.html#aiobungie.internal.assets.Image">Image</a>, str, ForwardRef(None)]</code></dt>
+<dd>
+<div class="desc"><p>Entity's icon</p></div>
+</dd>
+<dt id="aiobungie.crate.entity.InventoryEntity.index"><code class="name">var <span class="ident">index</span> : int</code></dt>
+<dd>
+<div class="desc"><p>Entity's index.</p></div>
+</dd>
+<dt id="aiobungie.crate.entity.InventoryEntity.is_equippable"><code class="name">var <span class="ident">is_equippable</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="../internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, bool]</code></dt>
+<dd>
+<div class="desc"><p>True if the entity can be equipped or False.</p></div>
+</dd>
+<dt id="aiobungie.crate.entity.InventoryEntity.item_class"><code class="name">var <span class="ident">item_class</span> : Optional[<a title="aiobungie.internal.enums.Class" href="../internal/enums.html#aiobungie.internal.enums.Class">Class</a>]</code></dt>
+<dd>
+<div class="desc"><p>The entity's class type.</p></div>
+</dd>
+<dt id="aiobungie.crate.entity.InventoryEntity.lore_hash"><code class="name">var <span class="ident">lore_hash</span> : Optional[None]</code></dt>
+<dd>
+<div class="desc"><p>The entity's lore hash. Can be undefined if no lore hash found.</p></div>
+</dd>
+<dt id="aiobungie.crate.entity.InventoryEntity.name"><code class="name">var <span class="ident">name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="../internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
+<dd>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="aiobungie.crate.entity.Entity" href="#aiobungie.crate.entity.Entity">Entity</a></code>.<code><a title="aiobungie.crate.entity.Entity.name" href="#aiobungie.crate.entity.Entity.name">name</a></code>
+</p>
+<div class="desc inherited"><p>Entity's name. This can be <code>UNDEFINED</code> if not found.</p></div>
+</dd>
+<dt id="aiobungie.crate.entity.InventoryEntity.net"><code class="name">var <span class="ident">net</span> : <a title="aiobungie.internal.traits.Netrunner" href="../internal/traits.html#aiobungie.internal.traits.Netrunner">Netrunner</a></code></dt>
+<dd>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="aiobungie.crate.entity.Entity" href="#aiobungie.crate.entity.Entity">Entity</a></code>.<code><a title="aiobungie.crate.entity.Entity.net" href="#aiobungie.crate.entity.Entity.net">net</a></code>
+</p>
+<div class="desc inherited"><p>A network state used for making external requests.</p></div>
+</dd>
+<dt id="aiobungie.crate.entity.InventoryEntity.stats"><code class="name">var <span class="ident">stats</span> : Optional[Dict[str, Any]]</code></dt>
+<dd>
+<div class="desc"><p>Entity's stats. this currently returns a dict object
+of the stats.</p></div>
+</dd>
+<dt id="aiobungie.crate.entity.InventoryEntity.sub_type"><code class="name">var <span class="ident">sub_type</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="../internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, <a title="aiobungie.internal.enums.Item" href="../internal/enums.html#aiobungie.internal.enums.Item">Item</a>]</code></dt>
+<dd>
+<div class="desc"><p>The subtype of the entity. A type is a weapon or armor.
+A subtype is a handcannonn or leg armor for an example.</p></div>
+</dd>
+<dt id="aiobungie.crate.entity.InventoryEntity.summary_hash"><code class="name">var <span class="ident">summary_hash</span> : Optional[None]</code></dt>
+<dd>
+<div class="desc"><p>Entity's summary hash.</p></div>
+</dd>
+<dt id="aiobungie.crate.entity.InventoryEntity.tier"><code class="name">var <span class="ident">tier</span> : Optional[<a title="aiobungie.internal.enums.ItemTier" href="../internal/enums.html#aiobungie.internal.enums.ItemTier">ItemTier</a>]</code></dt>
+<dd>
+<div class="desc"><p>Entity's "tier.</p></div>
+</dd>
+<dt id="aiobungie.crate.entity.InventoryEntity.tier_name"><code class="name">var <span class="ident">tier_name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="../internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
+<dd>
+<div class="desc"><p>A string version of the item tier.</p></div>
+</dd>
+<dt id="aiobungie.crate.entity.InventoryEntity.type"><code class="name">var <span class="ident">type</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="../internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, <a title="aiobungie.internal.enums.Item" href="../internal/enums.html#aiobungie.internal.enums.Item">Item</a>]</code></dt>
+<dd>
+<div class="desc"><p>Entity's type. Can be undefined if nothing was found.</p></div>
+</dd>
+<dt id="aiobungie.crate.entity.InventoryEntity.type_name"><code class="name">var <span class="ident">type_name</span> : Union[<a title="aiobungie.internal.helpers.UndefinedType" href="../internal/helpers.html#aiobungie.internal.helpers.UndefinedType">UndefinedType</a>, str]</code></dt>
+<dd>
+<div class="desc"><p>Entity's type name. i.e., <code>Grenade Launcher</code></p></div>
+</dd>
+<dt id="aiobungie.crate.entity.InventoryEntity.water_mark"><code class="name">var <span class="ident">water_mark</span> : Optional[<a title="aiobungie.internal.assets.Image" href="../internal/assets.html#aiobungie.internal.assets.Image">Image</a>]</code></dt>
+<dd>
+<div class="desc"><p>Entity's water mark.</p></div>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<form>
+<input id="lunr-search" name="q" placeholder="🔎 Search ..." aria-label="Search"
+disabled minlength="2">
+</form>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.3/tingle.min.css" integrity="sha512-j1u8eUJ4f23xPPxwOrLUPQaCD2dwzNqqmDDcWS4deWsMv2ohLqmXXuP3hU7g8TyzbMSakP/mMqoNBYWj8AEIFg==" crossorigin>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.15.3/tingle.min.js" integrity="sha512-plGUER9JkeEWPPqQBE4sdLqBoQug5Ap+BCGMc7bJ8BXkm+VVj6QzkpBz5Yv2yPkkq+cqg9IpkBaGCas6uDbW8g==" crossorigin></script>
+<style>
+.modal-dialog iframe {
+width: 100vw;
+height: calc(100vh - 80px);
+}
+@media screen and (min-width: 700px) {
+.modal-dialog iframe {
+width: 70vw;
+height: 80vh;
+}
+}
+.modal-dialog .tingle-modal-box {width: auto;}
+.modal-dialog .tingle-modal-box__content {padding: 0;}
+</style>
+<script>
+const input = document.getElementById('lunr-search');
+input.disabled = false;
+input.form.addEventListener('submit', (ev) => {
+ev.preventDefault();
+const url = new URL(window.location);
+url.searchParams.set('q', input.value);
+history.replaceState({}, null, url.toString());
+search(input.value);
+});
+const query = new URL(window.location).searchParams.get('q');
+if (query)
+search(query);
+function search(query) {
+const url = '../../doc-search.html#' + encodeURIComponent(query);
+new tingle.modal({
+cssClass: ['modal-dialog'],
+onClose: () => {
+const url = new URL(window.location);
+url.searchParams.delete('q');
+history.replaceState({}, null, url.toString());
+setTimeout(() => input.focus(), 100);
+}
+}).setContent('<iframe src="' + url + '"></iframe>').open();
+}
+</script>
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="aiobungie.crate" href="index.html">aiobungie.crate</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="aiobungie.crate.entity.Entity" href="#aiobungie.crate.entity.Entity">Entity</a></code></h4>
+<ul class="two-column">
+<li><code><a title="aiobungie.crate.entity.Entity.description" href="#aiobungie.crate.entity.Entity.description">description</a></code></li>
+<li><code><a title="aiobungie.crate.entity.Entity.has_icon" href="#aiobungie.crate.entity.Entity.has_icon">has_icon</a></code></li>
+<li><code><a title="aiobungie.crate.entity.Entity.hash" href="#aiobungie.crate.entity.Entity.hash">hash</a></code></li>
+<li><code><a title="aiobungie.crate.entity.Entity.icon" href="#aiobungie.crate.entity.Entity.icon">icon</a></code></li>
+<li><code><a title="aiobungie.crate.entity.Entity.index" href="#aiobungie.crate.entity.Entity.index">index</a></code></li>
+<li><code><a title="aiobungie.crate.entity.Entity.name" href="#aiobungie.crate.entity.Entity.name">name</a></code></li>
+<li><code><a title="aiobungie.crate.entity.Entity.net" href="#aiobungie.crate.entity.Entity.net">net</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="aiobungie.crate.entity.InventoryEntity" href="#aiobungie.crate.entity.InventoryEntity">InventoryEntity</a></code></h4>
+<ul class="two-column">
+<li><code><a title="aiobungie.crate.entity.InventoryEntity.about" href="#aiobungie.crate.entity.InventoryEntity.about">about</a></code></li>
+<li><code><a title="aiobungie.crate.entity.InventoryEntity.ammo_type" href="#aiobungie.crate.entity.InventoryEntity.ammo_type">ammo_type</a></code></li>
+<li><code><a title="aiobungie.crate.entity.InventoryEntity.banner" href="#aiobungie.crate.entity.InventoryEntity.banner">banner</a></code></li>
+<li><code><a title="aiobungie.crate.entity.InventoryEntity.bucket_type" href="#aiobungie.crate.entity.InventoryEntity.bucket_type">bucket_type</a></code></li>
+<li><code><a title="aiobungie.crate.entity.InventoryEntity.damage" href="#aiobungie.crate.entity.InventoryEntity.damage">damage</a></code></li>
+<li><code><a title="aiobungie.crate.entity.InventoryEntity.description" href="#aiobungie.crate.entity.InventoryEntity.description">description</a></code></li>
+<li><code><a title="aiobungie.crate.entity.InventoryEntity.has_icon" href="#aiobungie.crate.entity.InventoryEntity.has_icon">has_icon</a></code></li>
+<li><code><a title="aiobungie.crate.entity.InventoryEntity.hash" href="#aiobungie.crate.entity.InventoryEntity.hash">hash</a></code></li>
+<li><code><a title="aiobungie.crate.entity.InventoryEntity.icon" href="#aiobungie.crate.entity.InventoryEntity.icon">icon</a></code></li>
+<li><code><a title="aiobungie.crate.entity.InventoryEntity.index" href="#aiobungie.crate.entity.InventoryEntity.index">index</a></code></li>
+<li><code><a title="aiobungie.crate.entity.InventoryEntity.is_equippable" href="#aiobungie.crate.entity.InventoryEntity.is_equippable">is_equippable</a></code></li>
+<li><code><a title="aiobungie.crate.entity.InventoryEntity.item_class" href="#aiobungie.crate.entity.InventoryEntity.item_class">item_class</a></code></li>
+<li><code><a title="aiobungie.crate.entity.InventoryEntity.lore_hash" href="#aiobungie.crate.entity.InventoryEntity.lore_hash">lore_hash</a></code></li>
+<li><code><a title="aiobungie.crate.entity.InventoryEntity.name" href="#aiobungie.crate.entity.InventoryEntity.name">name</a></code></li>
+<li><code><a title="aiobungie.crate.entity.InventoryEntity.net" href="#aiobungie.crate.entity.InventoryEntity.net">net</a></code></li>
+<li><code><a title="aiobungie.crate.entity.InventoryEntity.stats" href="#aiobungie.crate.entity.InventoryEntity.stats">stats</a></code></li>
+<li><code><a title="aiobungie.crate.entity.InventoryEntity.sub_type" href="#aiobungie.crate.entity.InventoryEntity.sub_type">sub_type</a></code></li>
+<li><code><a title="aiobungie.crate.entity.InventoryEntity.summary_hash" href="#aiobungie.crate.entity.InventoryEntity.summary_hash">summary_hash</a></code></li>
+<li><code><a title="aiobungie.crate.entity.InventoryEntity.tier" href="#aiobungie.crate.entity.InventoryEntity.tier">tier</a></code></li>
+<li><code><a title="aiobungie.crate.entity.InventoryEntity.tier_name" href="#aiobungie.crate.entity.InventoryEntity.tier_name">tier_name</a></code></li>
+<li><code><a title="aiobungie.crate.entity.InventoryEntity.type" href="#aiobungie.crate.entity.InventoryEntity.type">type</a></code></li>
+<li><code><a title="aiobungie.crate.entity.InventoryEntity.type_name" href="#aiobungie.crate.entity.InventoryEntity.type_name">type_name</a></code></li>
+<li><code><a title="aiobungie.crate.entity.InventoryEntity.water_mark" href="#aiobungie.crate.entity.InventoryEntity.water_mark">water_mark</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
 </body>
-
 </html>

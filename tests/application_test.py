@@ -28,11 +28,15 @@ import aiobungie
 from aiobungie import crate
 from aiobungie import internal
 
+@pytest.fixture()
+def mock_client():
+    return mock.Mock(spec_set=aiobungie.Client)
 
 class TestAppOwner:
     @staticmethod
     def init_owner():
         return crate.ApplicationOwner(
+            net=mock_client,
             name="rose",
             type=aiobungie.MembershipType.XBOX,
             id=411098,
@@ -51,10 +55,6 @@ class TestAppOwner:
         assert isinstance(obj.id, int) and obj.id == 411098
         assert obj.is_public is True
         assert obj.icon is not None and isinstance(obj.icon, internal.Image)
-
-    def test_app_owner_as_dict(self, obj):
-        assert isinstance(obj.as_dict, dict)
-
 
 class TestApplication:
     @pytest.fixture()
@@ -84,6 +84,3 @@ class TestApplication:
         assert app.name == "aiobungie"
         assert app.redirect_url is None
         assert app.owner is not None and isinstance(app.owner, crate.ApplicationOwner)
-
-    def test_app_as_dict(self, obj):
-        assert isinstance(obj.as_dict, dict)

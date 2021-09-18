@@ -33,46 +33,28 @@ import os.path
 import typing as t
 import zipfile
 
-from aiobungie.http import HTTPClient
-from aiobungie.internal import Image
-from aiobungie.internal.db import Database
-from aiobungie.internal.enums import Raid
+from aiobungie.rest import RESTClient
 
 log: t.Final[logging.Logger] = logging.getLogger(__name__)
 
 
 class Manifest:
-    __slots__: t.Sequence[str] = ("db", "_http", "_path", "version")
+    __slots__: t.Sequence[str] = ("_rest", "version")
 
-    def __init__(self, token: str, path: t.Dict[str, t.Any]) -> None:
-        self._path = path
-        self.version: str = path["version"]
-        self._http = HTTPClient(token)
-
-    def __dbinit__(self) -> None:
-        self.db = Database("./.cache/destiny.sqlite3")
+    def __init__(self, token: str, /) -> None:
+        self._rest = RESTClient(token)
 
     async def download(self, *, force: bool = False) -> None:
         if os.path.isfile("./.cache/destiny.sqlite3"):
             if not force:
-                if self.db.version != self.version:  # type: ignore[has-type]
-                    log.warning("A newer Manifest version is available.")
-                    force = True
-                    await self.download(force=force)
                 return
-            elif force:
-                os.remove("./.cache/destiny.sqlite3")
+            os.remove("./.cache/destiny.sqlite3")
 
         if os.path.isfile("./.cache/file.zip"):
             os.remove("./.cache/file.zip")
         try:
             log.debug("Downloading manifest...")
-            req = await self._http.fetch(
-                method="GET",
-                route=self._path["mobileWorldContentPaths"]["en"],
-                base=True,
-                type="read",
-            )
+            req = await self._rest.fetch_manifest()
 
             if not os.path.exists("./.cache"):
                 os.mkdir("./.cache")
@@ -84,43 +66,6 @@ class Manifest:
                     zipped.extractall()
                 os.rename(name[0], "./.cache/destiny.sqlite3")
 
-                # The only reason we're doing the db stuff here
-                # Because we don't want to declare `self.db` in the `__init__()`
-                self.__dbinit__()
-                self.db.create_table("versions", "version", "TEXT")
-                self.db.insert_version(self.version)
-
                 log.info("Database finished downloading.")
         except Exception:
             raise
-
-    def get_raid_image(self, raid: Raid) -> Image:
-        image = self.db.fetch(
-            "SELECT json FROM DestinyActivityDefinition WHERE id = ?",
-            (int(raid),),
-            "pgcrImage",
-        )
-        return Image(path=str(image))
-
-    def fetch(
-        self, definition: str, id: int, item: t.Optional[str] = None
-    ) -> t.Optional[t.Dict[t.Any, t.Any]]:
-        """Fetch something from the manifest database.
-        This returns a `typing.Dict[typing.Any, typing.Any]`
-
-        Parameters
-        ----------
-        definition: `builtins.str`
-            The definition you want to fetch from.
-        id: `builtins.int`
-            The id of the entity.
-        item: `typing.Optional[builsint.str]`
-            An item to get from the dict.
-
-        Returns
-        -------
-        `typing.Optional[typing.Dict[typing.Any, typing.Any]]`
-        """
-        return self.db.fetch(
-            "SELECT json FROM {} WHERE id = ?".format(definition), (id,), item
-        )

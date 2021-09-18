@@ -51,7 +51,7 @@ class AiobungieError(Exception):
 
 @attr.define(auto_exc=True, repr=False, weakref_slot=False)
 class HTTPException(AiobungieError):
-    """Exception for handling `aiobungie.http.HTTPClient` requests errors."""
+    """Exception for handling `aiobungie.rest.RESTClient` requests errors."""
 
     message: str = attr.field()
     long_message: typing.Optional[str] = attr.field(default=None)
@@ -98,7 +98,7 @@ class ClanNotFound(NotFound):
 
 @typing.final
 class UserNotFound(NotFound):
-    """Raised when a `aiobungie.crate.User` not found."""
+    """Raised when a user was not found."""
 
 
 @typing.final

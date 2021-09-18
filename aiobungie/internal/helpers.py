@@ -20,48 +20,48 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""A helper module for useful decorators, functions and types."""
+"""A module for helper functions and types."""
 
 
 from __future__ import annotations
 
 __all__ = (
     "deprecated",
-    "JsonDict",
-    "JsonList",
+    "JsonObject",
+    "JsonArray",
     "Undefined",
+    "UndefinedOr",
+    "UndefinedType",
     "Unknown",
     "just",
     "NoneOr",
+    "get_or_make_loop",
 )
 
+import asyncio
 import inspect
 import typing
 import warnings
 
-JsonDict = typing.Dict[str, typing.Any]
+JsonObject = typing.Dict[str, typing.Any]
 """A json like dict of string key and any value.
 
 i.e., {"Key": 1, "Key2": "Value"}
 """
 
-JsonList = typing.List[typing.Dict[str, typing.Any]]
-"""A json like list of dicts of string key and any value
+JsonArray = typing.List[typing.Any]
+"""A json like list of any data type.
 
 i.e., [{"Key": 1}, {"Key2": "Value"}]
 """
 
-Undefined: str = "Undefined"
-"""A helper that checks if stuff are unknown / empty string and Undefine them if they're."""
-
-Unknown: str = ""
+Unknown: typing.Final[str] = ""
 """Stuff that are empty strings."""
 
 T = typing.TypeVar("T", covariant=True)
-"""A type var that's associated with NoneOr[T]"""
 
 NoneOr = typing.Union[None, T]
-"""A Union type that's similar to to Optional[T]"""
+"""A Union type that's similar to to `Optional[T]`"""
 
 
 def just(lst: list[dict[str, typing.Any]], lookup: str) -> list[typing.Any]:
@@ -81,7 +81,61 @@ def deprecated(func: typing.Callable[..., typing.Any]) -> typing.Callable[..., N
             stacklevel=2,
             category=DeprecationWarning,
         )
-        func.__doc__ += """!!! warning
+        func.__doc__ += """.. warning::
         This function is a DEPRECATED.
         """  # type: ignore # Pyright bug
     return lambda *args, **kwargs: func(*args, **kwargs)
+
+
+# Source [https://github.com/hikari-py/hikari/blob/master/hikari/internal/aio.py]
+def get_or_make_loop() -> asyncio.AbstractEventLoop:
+    """Get the current usable event loop or create a new one.
+    Returns
+    -------
+    asyncio.AbstractEventLoop
+    """
+    # get_event_loop will error under oddly specific cases such as if set_event_loop has been called before even
+    # if it was just called with None or if it's called on a thread which isn't the main Thread.
+    try:
+        loop = asyncio.get_event_loop_policy().get_event_loop()
+
+        # Closed loops cannot be re-used.
+        if not loop.is_closed():
+            return loop
+
+    except RuntimeError:
+        pass
+
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    return loop
+
+
+class UndefinedType:
+    """An `UNDEFINED` type."""
+
+    __instance: typing.ClassVar[UndefinedType]
+
+    def __bool__(self) -> typing.Literal[False]:
+        return False
+
+    def __repr__(self) -> str:
+        return "UNDEFINED"
+
+    def __str__(self) -> str:
+        return "UNDEFINED"
+
+    def __new__(cls) -> UndefinedType:
+        try:
+            return cls.__instance
+        except AttributeError:
+            o = super().__new__(cls)
+            cls.__instance = o
+            return cls.__instance
+
+
+Undefined: typing.Final[UndefinedType] = UndefinedType()
+"""An undefined type for attribs that may be undefined and not None."""
+
+UndefinedOr = typing.Union[UndefinedType, T]
+"""A union version of the Undefined type which can be undefined or any other type."""

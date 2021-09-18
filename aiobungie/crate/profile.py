@@ -24,7 +24,7 @@
 
 from __future__ import annotations
 
-__all__ = ("Profile", "ProfileComponentImpl")
+__all__ = ("Profile", "ProfileComponent")
 
 import abc
 import datetime
@@ -35,19 +35,17 @@ import attr
 
 from aiobungie.crate.character import Character
 from aiobungie.internal import enums
-from aiobungie.internal import time
 from aiobungie.internal import traits
 
 log: typing.Final[logging.Logger] = logging.getLogger(__name__)
 
 
-@attr.s(kw_only=True, hash=True, weakref_slot=False, slots=True, init=True, eq=True)
-class ProfileComponentImpl(abc.ABC):
-    """
-    A partial interface that will/include all bungie profile components.
-
+class ProfileComponent(abc.ABC):
+    """An interface that include all bungie profile components.
     Some fields may or may not be available here.
     """
+
+    __slots__: typing.Sequence[str] = ()
 
     @property
     @abc.abstractmethod
@@ -155,8 +153,8 @@ class ProfileComponentImpl(abc.ABC):
         )
 
 
-@attr.s(kw_only=True, hash=True, weakref_slot=False, slots=True, init=True, eq=True)
-class Profile(ProfileComponentImpl):
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
+class Profile(ProfileComponent):
     """Represents a Bungie member Profile.
 
     Bungie profiles requires components.
@@ -228,13 +226,3 @@ class Profile(ProfileComponentImpl):
     def warlock_id(self) -> int:
         """The warlock id of the profile player."""
         return int(self.character_ids[2])
-
-    @property
-    def as_dict(self) -> typing.Dict[str, typing.Any]:
-        """Returns a dict object of the profile."""
-        return attr.asdict(self)
-
-    @property
-    def human_timedelta(self) -> str:
-        """Returns last_played attr but in human delta date."""
-        return time.human_timedelta(self.last_played)

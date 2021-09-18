@@ -28,6 +28,8 @@ from __future__ import annotations
 __all__ = (
     # client.py
     "Client",
+    # rest.py
+    "RESTClient",
     # error.py
     "PlayerNotFound",
     "ActivityNotFound",
@@ -58,8 +60,10 @@ __all__ = (
     "Place",
     "CredentialType",
     "GroupType",
+    "ClanMemberType",
 )
 
 from .client import Client
 from .error import *
 from .internal.enums import *
+from .rest import RESTClient

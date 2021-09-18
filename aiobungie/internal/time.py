@@ -30,51 +30,17 @@ __all__: list[str] = [
     "from_timestamp",
     "clean_date",
     "to_timestamp",
-    "human_timedelta",
 ]
 
 import calendar
+import datetime
 import math
-from datetime import datetime
+import typing
 
 from dateutil.parser import parse
-from dateutil.relativedelta import relativedelta
 
-
-class plural:
-    """
-    Rapptz :>)
-    """
-
-    def __init__(self, value: int) -> None:
-        self.value = value
-
-    def __format__(self, format_spec: str) -> str:
-        v = self.value
-        singular, sep, plural = format_spec.partition("|")
-        plural = plural or f"{singular}s"
-
-        if abs(v) != 1:
-            return f"{v} {plural}"
-
-        return f"{v} {singular}"
-
-
-def human_join(seq: list, delim: str = ", ", final: str = "or") -> str:
-    """
-    Rapptz :>)
-    """
-    size = len(seq)
-    if size == 0:
-        return ""
-
-    if size == 1:
-        return seq[0]
-
-    if size == 2:
-        return f"{seq[0]} {final} {seq[1]}"
-
-    return delim.join(seq[:-1]) + f" {final} {seq[-1]}"
+DateSigT = typing.TypeVar("DateSigT", covariant=True)
+"""A type hint for the Date type signature."""
 
 
 def format_played(mins: int, *, suffix: bool = False) -> str:
@@ -87,14 +53,14 @@ def format_played(mins: int, *, suffix: bool = False) -> str:
     return f"{hrs} hours{' and' if suffix else ''} {seconds} seconds."
 
 
-def from_timestamp(timer: int) -> datetime:
+def from_timestamp(timer: int) -> datetime.datetime:
     """
     Converts timestamp to `datetime.datetime`
     """
-    return datetime.utcfromtimestamp(timer)
+    return datetime.datetime.utcfromtimestamp(timer)
 
 
-def clean_date(date: str) -> datetime:
+def clean_date(date: str) -> datetime.datetime:
     """Formats `datetime.datetime` to a readable date."""
     parsed = parse(date)
     ts = to_timestamp(parsed)  # had to do it in two ways.
@@ -102,7 +68,7 @@ def clean_date(date: str) -> datetime:
     return ft
 
 
-def to_timestamp(date: datetime) -> int:
+def to_timestamp(date: datetime.datetime) -> int:
     """
     Converts datetime.datetime.utctimetuple() to timestamp.
     """
@@ -112,68 +78,35 @@ def to_timestamp(date: datetime) -> int:
         raise e
 
 
-def human_timedelta(
-    dt: datetime, *, source=None, accuracy: int = 3, brief=False, suffix=True
-) -> str:
+class DateAware(typing.Generic[DateSigT]):
+    """A Generic date parser which converts ISO string datetime
+    to an aware datetime and from-to timestamp and datetime.
     """
-    Rapptz :>)
-    """
-    now = source or datetime.utcnow()
-    # Microsecond free zone
-    now = now.replace(microsecond=0)
-    dt = dt.replace(microsecond=0)
 
-    # This implementation uses relativedelta instead of the much more obvious
-    # divmod approach with seconds because the seconds approach is not entirely
-    # accurate once you go over 1 week in terms of accuracy since you have to
-    # hardcode a month as 30 or 31 days.
-    # A query like "11 months" can be interpreted as "!1 months and 6 days"
-    if dt > now:
-        delta = relativedelta(dt, now)
-        suffix = ""
-    else:
-        delta = relativedelta(now, dt)
-        suffix = " ago" if suffix else ""
+    __slots__: tuple[str, ...] = ("_entry",)
 
-    attrs = [
-        ("year", "y"),
-        ("month", "mo"),
-        ("day", "d"),
-        ("hour", "h"),
-        ("minute", "m"),
-        ("second", "s"),
-    ]
+    def __init__(self, entry: DateSigT) -> None:
+        self._entry = entry
 
-    output = []
-    for attr, brief_attr in attrs:
-        elem = getattr(delta, attr + "s")
-        if not elem:
-            continue
+    @property
+    def raw(self) -> DateSigT:
+        return self._entry
 
-        if attr == "day":
-            weeks = delta.weeks
-            if weeks:
-                elem -= weeks * 7
-                if not brief:
-                    output.append(format(plural(weeks), "week"))
-                else:
-                    output.append(f"{weeks}w")
+    def to_datetime(self) -> datetime.datetime:
+        if isinstance(self._entry, str):
+            if self._entry.endswith(("z", "Z")):
+                new = self._entry[:-1]  # type: ignore
+                return datetime.datetime.fromisoformat(new)
 
-        if elem <= 0:
-            continue
+        elif isinstance(self._entry, (float, int)):
+            return datetime.datetime.utcfromtimestamp(self._entry)
 
-        if brief:
-            output.append(f"{elem}{brief_attr}")
-        else:
-            output.append(format(plural(elem), attr))
+        raise TypeError(
+            f"Entry must be one of (float, str) not {type(self._entry).__name__}"
+        )
 
-    if accuracy is not None:
-        output = output[:accuracy]
+    def to_timestamp(self) -> float:
+        return datetime.datetime.timestamp(self.to_datetime())
 
-    if len(output) == 0:
-        return "now"
-    else:
-        if not brief:
-            return human_join(output, final="and") + suffix
-        else:
-            return " ".join(output) + suffix
+    def timestamp_to_datetime(self) -> datetime.datetime:
+        return datetime.datetime.utcfromtimestamp(self.to_timestamp())

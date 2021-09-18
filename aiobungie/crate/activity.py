@@ -40,7 +40,7 @@ from aiobungie.internal import enums
 from aiobungie.internal import traits
 
 
-@attr.s(hash=True, slots=True, weakref_slot=False, eq=True, kw_only=True)
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class PostActivity:
     """Represents a Destiny 2 post activity details."""
 
@@ -92,7 +92,7 @@ class PostActivity:
         return self.reference_id
 
 
-@attr.s(hash=True, repr=True, slots=True, weakref_slot=False, eq=True, kw_only=True)
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class Activity:
     """Represents a Bungie Activity."""
 
@@ -158,13 +158,6 @@ class Activity:
         `.PostActivity`
         """
         return await self.net.request.fetch_post_activity(self.instance_id)
-
-    @property
-    def as_dict(self) -> typing.Dict[str, typing.Any]:
-        """Returns a dict crate of the Activity,
-        This function is useful if you're binding to other REST apis.
-        """
-        return attr.asdict(self)
 
     def __int__(self) -> int:
         return self.instance_id

@@ -30,7 +30,6 @@ __all__ = ("CharacterComponent", "Character")
 
 import abc
 import datetime
-import logging
 import typing
 
 import attr
@@ -38,14 +37,12 @@ import attr
 from aiobungie import url
 from aiobungie.internal import Image
 from aiobungie.internal import enums
-from aiobungie.internal import time
-
-log: typing.Final[logging.Logger] = logging.getLogger(__name__)
 
 
-@attr.s(kw_only=True, hash=True, weakref_slot=False, slots=True, init=True, eq=True)
 class CharacterComponent(abc.ABC):
     """An interface for a Bungie character component."""
+
+    __slots__: typing.Sequence[str] = ()
 
     @property
     @abc.abstractmethod
@@ -132,6 +129,9 @@ class CharacterComponent(abc.ABC):
         Also You must have a valid Destiny account, and either be
         in a social space, in orbit or offline.
 
+        .. warning::
+            This method is sill not implemented.
+
         Parameters
         ----------
         item: `builtins.int`
@@ -162,6 +162,9 @@ class CharacterComponent(abc.ABC):
         Also You must have a valid Destiny account, and either be
         in a social space, in orbit or offline.
 
+        .. warning::
+            This method is sill not implemented.
+
         Parameters
         ----------
         items: `typing.List[builtins.int]`
@@ -185,13 +188,8 @@ class CharacterComponent(abc.ABC):
 
         raise NotImplementedError
 
-    @property
-    def human_timedelta(self) -> str:
-        """The player's last played time in a human readable date."""
-        return time.human_timedelta(time.clean_date(str(self.last_played)))
 
-
-@attr.s(kw_only=True, hash=True, weakref_slot=False, slots=True, init=True, eq=True)
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class Character(CharacterComponent):
     """An implementation for a Bungie character."""
 
@@ -244,11 +242,6 @@ class Character(CharacterComponent):
     def url(self) -> str:
         """A url for the character at bungie.net."""
         return f"{url.BASE}/en/Gear/{int(self.member_type)}/{self.member_id}/{self.id}"
-
-    @property
-    def as_dict(self) -> typing.Dict[str, typing.Any]:
-        """Returns a dict crate of the character."""
-        return attr.asdict(self)
 
     def __int__(self) -> int:
         return int(self.id)

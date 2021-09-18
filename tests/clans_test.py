@@ -70,11 +70,15 @@ class TestClanFeatures:
         )
         assert obj.capabilities == 3
 
+@fixture()
+def mock_bungie_user() -> crate.user.PartialBungieUser:
+    return mock.Mock(spec_set=crate.user.PartialBungieUser)
 
 class TestClanMember:
     @fixture()
     def obj(self):
         return crate.ClanMember(
+            net=mock_client,
             id=4432,
             name="thom",
             type=aiobungie.MembershipType.STEAM,
@@ -86,6 +90,8 @@ class TestClanMember:
             last_online=datetime.datetime(2021, 5, 1),
             code=5432,
             types=[aiobungie.MembershipType.STEAM, aiobungie.MembershipType.STADIA],
+            last_seen_name="YOYONAME",
+            bungie=mock_bungie_user
         )
 
     def test_clan_member_link(self, obj):
@@ -109,9 +115,6 @@ class TestClanMember:
         with pytest.raises(NotImplementedError):
             await obj.kick()
 
-    def test_clan_member_as_dict(self, obj):
-        assert isinstance(obj.as_dict, dict) and obj.as_dict["id"] == 4432
-
     def test_clan_member_meta(self, obj):
         assert (
             isinstance(obj.type, aiobungie.MembershipType)
@@ -121,14 +124,16 @@ class TestClanMember:
 
 class TestClanOwner:
     types = [
-        int(aiobungie.MembershipType.STADIA),
-        int(aiobungie.MembershipType.STEAM),
-        int(aiobungie.MembershipType.XBOX),
+        aiobungie.MembershipType.STADIA,
+        aiobungie.MembershipType.STEAM,
+        aiobungie.MembershipType.XBOX,
     ]
 
     @fixture()
     def obj(self):
-        return crate.ClanOwner(
+        return crate.ClanMember(
+            net=mock_client,
+            group_id=123,
             id=2938,
             name="DiggaD",
             type=aiobungie.MembershipType.STEAM,
@@ -137,36 +142,33 @@ class TestClanOwner:
             joined_at=datetime.datetime(2021, 9, 6),
             last_online=datetime.datetime(2021, 5, 1),
             types=self.types,
-            clan_id=998271,
             code=5432,
+            last_seen_name="Some name",
+            bungie=mock_bungie_user
         )
 
     def test_clan_owner_is_userlike(self, obj):
-        assert issubclass(obj.__class__, crate.UserLike)
+        assert issubclass(obj.__class__, crate.user.UserLike)
 
     def test_clan_owner_meta(self, obj):
         assert obj.id == 2938
         assert obj.type is aiobungie.MembershipType.STEAM
         assert all(types in obj.types for types in self.types)
-        assert isinstance(obj.as_dict, dict)
 
     def test_clan_owner_int_over(self, obj):
         assert int(obj) == obj.id
 
     def test_clan_owner_str_over(self, obj):
-        assert str(obj) == obj.name
+        assert str(obj) == obj.last_seen_name
 
     def test_clan_owner_link(self, obj):
         assert obj.id, int(obj.type) in obj.link
-
-    def test_clan_owner_human_deltatime(self, obj):
-        assert isinstance(obj.human_timedelta, str)
 
 
 class TestClan:
     @fixture()
     def obj(self, mock_client):
-        mock_owner = mock.Mock(spec_set=crate.ClanOwner)
+        mock_owner = mock.Mock(spec_set=crate.ClanMember)
         mock_features = mock.Mock(spec_set=crate.clans.ClanFeatures)
         return crate.Clan(
             net=mock_client,
@@ -175,7 +177,7 @@ class TestClan:
             name="Cool clan",
             created_at=datetime.datetime(2018, 9, 3, 11, 13, 12),
             member_count=2,
-            description=internal.helpers.Undefined,
+            motto=str(internal.helpers.Undefined),
             is_public=True,
             banner=internal.Image("xxx.jpg"),
             avatar=internal.Image("zzz.jpg"),

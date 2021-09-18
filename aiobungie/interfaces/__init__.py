@@ -20,28 +20,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Information about aiobungie"""
+"""Aiobungie Interfaces provides abstracted objects for implementations."""
 
-# This is only used to avoid circular imports errors.
+from __future__ import annotations
 
-__all__ = (
-    "__version__",
-    "__about__",
-    "__author__",
-    "__docs__",
-    "__license__",
-    "__url__",
-    "__email__",
-)
+__all__: tuple[str, ...] = ("RESTInterface",)
 
-import typing
-
-__version__: typing.Final[str] = "0.2.5b8"
-__about__: typing.Final[
-    str
-] = "A Pythonic `async`/`await` framework / wrapper for interacting with the Bungie API."
-__author__: typing.Final[str] = "nxtlo"
-__docs__: typing.Final[str] = "https://nxtlo.github.io/aiobungie/"
-__license__: typing.Final[str] = "MIT"
-__url__: typing.Final[str] = "https://github.com/nxtlo/aiobungie"
-__email__: typing.Final[str] = "dhmony-99@hotmail.com"
+from .rest import RESTInterface

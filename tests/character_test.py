@@ -217,7 +217,7 @@ class TestProfile:
         obj.net.request.fetch_character = mock.AsyncMock(return_value=init_titan_char())
         titan = await obj.titan()
         obj.net.request.fetch_character.assert_awaited_once()
-        assert isinstance(titan, (crate.Character, crate.CharacterComponent))
+        assert isinstance(titan, crate.Character)
         assert titan.id == 2110
         assert titan.gender is aiobungie.Gender.MALE
         assert titan.class_type is aiobungie.Class.TITAN
@@ -232,7 +232,7 @@ class TestProfile:
         )
         hunter = await obj.hunter()
         obj.net.request.fetch_character.assert_awaited_once()
-        assert isinstance(hunter, (crate.Character, crate.CharacterComponent))
+        assert isinstance(hunter, crate.Character)
         assert hunter.member_id == 4321
         assert hunter.id == 2111
         assert hunter.gender is aiobungie.Gender.FEMALE
@@ -247,7 +247,7 @@ class TestProfile:
         )
         warlock = await obj.warlock()
         obj.net.request.fetch_character.assert_awaited_once()
-        assert isinstance(warlock, (crate.Character, crate.CharacterComponent))
+        assert isinstance(warlock, crate.Character)
         assert warlock.id == 2112
         assert warlock.gender is aiobungie.Gender.FEMALE
         assert warlock.class_type is aiobungie.Class.WARLOCK

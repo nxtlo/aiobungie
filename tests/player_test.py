@@ -20,8 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from __future__ import unicode_literals
-
 import pytest
 
 import aiobungie
@@ -41,13 +39,8 @@ class TestPlayer:
             types=[aiobungie.MembershipType.STEAM],
             code=7462,
             crossave_override=1,
+            last_seen_name="RoberGamer321"
         )
-
-    def test_str_op(self, model):
-        assert str(model) == "RoberGamer321"
-
-    def test_player_asdict(self, model):
-        assert isinstance(model.as_dict, dict)
 
     def test_player_type(self, model):
         assert (

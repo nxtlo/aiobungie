@@ -20,28 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Information about aiobungie"""
+import nox
 
-# This is only used to avoid circular imports errors.
-
-__all__ = (
-    "__version__",
-    "__about__",
-    "__author__",
-    "__docs__",
-    "__license__",
-    "__url__",
-    "__email__",
-)
-
-import typing
-
-__version__: typing.Final[str] = "0.2.5b8"
-__about__: typing.Final[
-    str
-] = "A Pythonic `async`/`await` framework / wrapper for interacting with the Bungie API."
-__author__: typing.Final[str] = "nxtlo"
-__docs__: typing.Final[str] = "https://nxtlo.github.io/aiobungie/"
-__license__: typing.Final[str] = "MIT"
-__url__: typing.Final[str] = "https://github.com/nxtlo/aiobungie"
-__email__: typing.Final[str] = "dhmony-99@hotmail.com"
+@nox.session(reuse_venv=True)
+def lint(session: nox.Session) -> None:
+    session.install("flake8")
+    session.run("flake8", "--config", "./.flake8", "aiobungie")

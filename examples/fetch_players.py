@@ -41,18 +41,27 @@ async def fetch_me() -> None:
 
     # NOTE that the name has to be the new bungie name
     # With the code as well like this one.
-    fate: crate.Player = await client.fetch_player(
+    fate: Sequence[crate.DestinyUser] = await client.fetch_player(
         "Fate怒#4275"
-    )  # returns a Destiny 2 Player crate.
+    )  # returns a Destiny user which includes all available memberships for the player.
 
-    print(fate.name, fate.type, fate.id)
+    for member_ship in fate:
+        # You should always check if one of the memberships are not None
+        # So you don't get NoneType errors thrown.
+        if member_ship is not None:
+            print(member_ship.name, member_ship.unique_name, member_ship.type, ...)
 
-    fate_warlock: crate.Character = await client.fetch_character(  # returns a Destiny 2 player character crate.
-        fate.id,
-        fate.type,
-        character=aiobungie.Class.WARLOCK,  # The character we want to return is the warlock.
-    )  # you can pass the data from the player's request to fetch the character.
+            # Check if the membership in the sequence is our steam membership and its not None.
+            if member_ship.type is aiobungie.MembershipType.STEAM:
+                fate_steam = member_ship
 
+                fate_warlock: crate.Character = await client.fetch_character(  # returns a Destiny 2 player character.
+                    fate_steam.id,
+                    fate_steam.type,
+                    character=aiobungie.Class.WARLOCK,  # The character we want to return is the warlock.
+                )  # you can pass the data from the player's request to fetch the character.
+
+    # Show the warlock data.
     print(
         fate_warlock.light,
         fate_warlock.id,
@@ -61,22 +70,22 @@ async def fetch_me() -> None:
         fate_warlock.url,
     )
 
-    # Fetch a bungie user. its better to use the `from_id`
-    # to fetch the exact profile since bungie doesn't
-    # return all bungie users
-    # a bungie user id looks like this 20315338
-    user: crate.User = await client.fetch_user(20315338)  # Returns a Bungie user crate.
+    # Fetch a bungie user.
+    # A Bungie user id looks like this 20315338.
+    user: crate.BungieUser = await client.fetch_user(20315338)
     print(
         user.name,
         user.about,
         user.id,
-        user.human_timedelta,
-        user.steam_name,  # You can get the steam name if it exists.
+        # Those fields may be None if the user doesn't have
+        # The platforms.
+        user.steam_name,
+        user.stadia_name,
+        user.blizzard_name,
+        user.psn_name,
     )
 
-    clan: crate.Clan = await client.fetch_clan(
-        "Fast"
-    )  # returns a Destiny 1/2 clan crate.
+    clan: crate.Clan = await client.fetch_clan("Fast")  # returns a Destiny 1/2 clan.
     # You can use the from_id(1234) to fetch the clan givin an id.
 
     # Fetching the members is kinda expensive operation

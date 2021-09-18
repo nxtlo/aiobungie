@@ -52,11 +52,8 @@ class Friend(user_.UserLike):
     type: enums.MembershipType = attr.field(repr=True)
     """The friend's last seen membership type."""
 
-    name: str = attr.field(repr=True)
-    """The friend's last seen global display name. This field could be None if the player hasn't logged in yet."""
-
-    unique_name: helpers.NoneOr[str] = attr.field(repr=True)
-    """The friend's global unique display name. This field could be None if the player hasn't logged in yet."""
+    name: helpers.UndefinedOr[str] = attr.field(repr=True)
+    """The friend's last seen global display name. This field could be Undefined if the player hasn't logged in yet."""
 
     code: helpers.NoneOr[int] = attr.field(repr=True)
     """The friend's last seen global code. This field could be None if the player hasn't logged in yet."""
@@ -72,6 +69,11 @@ class Friend(user_.UserLike):
 
     user: helpers.NoneOr[user_.User] = attr.field(repr=True)
     """The friend's bungie user account. This field is optional and can be None in some states."""
+
+    @property
+    def unique_name(self) -> str:
+        """The friend's global unique display name. This field could be None if the player hasn't logged in yet."""
+        return self.unique_name
 
     # POST methods will not be implemented currently.
 
@@ -94,7 +96,6 @@ class Friend(user_.UserLike):
             The friend was not found in your pending requests.
 
         """
-        raise NotImplementedError
 
     async def decline(self, id: int, /) -> None:
         """Decline a friend request.
@@ -114,7 +115,6 @@ class Friend(user_.UserLike):
         `aiobungie.NotFound`
             The friend was not found in your pending requests.
         """
-        raise NotImplementedError
 
     async def add(self, id: int, /) -> None:
         """Adds a bungie member to your friend list.
@@ -134,7 +134,6 @@ class Friend(user_.UserLike):
         `aiobungie.NotFound`
             The player was not found.
         """
-        raise NotImplementedError
 
     async def remove(self, id: int, /) -> None:
         """Removed an existing friend from your friend list.
@@ -154,7 +153,6 @@ class Friend(user_.UserLike):
         `aiobungie.NotFound`
             The friend was not found in your friend list.
         """
-        raise NotImplementedError
 
     async def pending(self) -> typing.Sequence[Friend]:
         """Returns the pending friend requests.
@@ -169,12 +167,11 @@ class Friend(user_.UserLike):
         `typing.Sequence[Friend]`
             A sequence of pending friend requests.
         """
-        raise NotImplementedError
 
     async def remove_request(self, id: int, /) -> None:
         """Removed an existing friend request.
 
-        !!! note
+        .. note::
             The friend request must be on your friend request list.
 
         Parameters
@@ -187,7 +184,6 @@ class Friend(user_.UserLike):
         `builtins.NoneType`
             None
         """
-        raise NotImplementedError
 
     async def fetch_platform_friends(self, platform: enums.MembershipType, /) -> None:
         """Gets the platform friend of the requested type.
@@ -202,7 +198,6 @@ class Friend(user_.UserLike):
         `aiobungie.NotFound`
             The requested friend was not found.
         """
-        raise NotImplementedError
 
     async def is_pending(self, id: int) -> bool:
         for friend in await self.pending():

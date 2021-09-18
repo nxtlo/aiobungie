@@ -48,6 +48,7 @@ __all__ = (
     "CredentialType",
     "Presence",
     "Relationship",
+    "ClanMemberType",
 )
 
 import enum as __enum
@@ -454,3 +455,15 @@ class Relationship(IntEnum):
     FRIEND = 1
     INCOMING_REQUEST = 2
     OUTGOING_REQUEST = 3
+
+
+@typing.final
+class ClanMemberType(IntEnum):
+    """An enum for bungie clan member types."""
+
+    NONE = 0
+    BEGINNER = 1
+    MEMBER = 2
+    ADMIN = 3
+    ACTING_FOUNDER = 4
+    FOUNDER = 5

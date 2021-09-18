@@ -37,4 +37,4 @@ def pdoc(session: nox.Session) -> None:
         "pdoc", "--html", "--template-dir", "./templates", "./aiobungie", "--force"
     )
     if os.path.isdir("./html"):
-        sp.run("bash nix/move.sh", shell=False, stderr=sp.PIPE, stdout=sp.PIPE)
+        sp.run("sh ./nix/move.sh", shell=False, stderr=sp.PIPE, stdout=sp.PIPE)

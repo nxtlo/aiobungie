@@ -129,6 +129,9 @@ class CharacterComponent(abc.ABC):
         Also You must have a valid Destiny account, and either be
         in a social space, in orbit or offline.
 
+        .. warning::
+            This method is sill not implemented.
+
         Parameters
         ----------
         item: `builtins.int`
@@ -158,6 +161,9 @@ class CharacterComponent(abc.ABC):
         This requires the OAuth2: MoveEquipDestinyItems scope.
         Also You must have a valid Destiny account, and either be
         in a social space, in orbit or offline.
+
+        .. warning::
+            This method is sill not implemented.
 
         Parameters
         ----------

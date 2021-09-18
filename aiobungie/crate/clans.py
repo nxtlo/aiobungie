@@ -167,18 +167,27 @@ class ClanMember(UserLike):
     async def ban(self) -> None:
         """Bans a clan member from the clan.
         This requires OAuth2: AdminGroups scope.
+
+        .. warning::
+            This method is still not implemented.
         """
         raise NotImplementedError
 
     async def unban(self) -> None:
         """Unbans a clan member clan.
         This requires OAuth2: AdminGroups scope.
+
+        .. warning::
+            This method is still not implemented.
         """
         raise NotImplementedError
 
     async def kick(self) -> None:
         """Kicks a clan member from the clan.
         The requires OAuth2: AdminsGroup scope.
+
+        .. warning::
+            This method is still not implemented.
         """
         raise NotImplementedError
 
@@ -376,6 +385,9 @@ class Clan:
     async def fetch_banned_members(self) -> typing.Sequence[ClanMember]:
         """Fetch members who has been banned from the clan.
 
+        .. warning::
+            This method is still not implemented.
+
         Returns
         --------
         `typing.Sequence[aiobungie.crate.clans.ClanMember]`
@@ -385,6 +397,9 @@ class Clan:
 
     async def fetch_pending_members(self) -> typing.Sequence[ClanMember]:
         """Fetch members who are waiting to get accepted.
+
+        .. warning::
+            This method is still not implemented.
 
         Returns
         --------
@@ -396,6 +411,9 @@ class Clan:
 
     async def fetch_invited_members(self) -> typing.Sequence[ClanMember]:
         """Fetch members who has been invited.
+
+        .. warning::
+            This method is still not implemented.
 
         Returns
         --------

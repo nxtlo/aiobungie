@@ -29,6 +29,7 @@ def pdoc(session: nox.Session) -> None:
     while os.path.exists("./docs"):
         try:
             sp.run(["rm", "-rf", "./docs"], shell=False, stderr=sp.PIPE, stdout=sp.PIPE)
+            session.log("Docs path removed.")
         except Exception:
             # We don't have to worry about this anymore
             break
@@ -38,3 +39,4 @@ def pdoc(session: nox.Session) -> None:
     )
     if os.path.isdir("./html"):
         sp.run(["sh", "./nix/move.sh"], shell=False, stderr=sp.PIPE, stdout=sp.PIPE)
+        session.log("HTML path removed.")

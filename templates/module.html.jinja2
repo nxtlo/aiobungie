@@ -1,0 +1,69 @@
+{% extends "default/module.html.jinja2" %}
+<style>
+    {% block style_theme %}
+        :root {
+            --pdoc-background: #282a36;
+        }
+        .pdoc {
+            --text: #ff79c6;
+            --muted: #9d9d9d;
+            --link: #50fa7b;
+            --link-hover: #ff79c6;
+            --code: #232627;
+            --active: #555;
+            --accent: #232627;
+            --accent2: #ff79c6;
+            --nav-hover: rgba(0, 0, 0, 0.1);
+            --name: #50fa7b;
+            --def: #ff79c6;
+            --annotation: #bd93f9;
+        }
+        .pdoc .attr {
+            --text: #FFF;
+        }
+        .pdoc .modulename {
+            color: #FFF;
+        }
+        .pdoc .classattr {
+            color: #FFF;
+        }
+        p {
+            color: #FFF;
+        }
+
+        nav.pdoc .function::before {
+            content: "func ";
+            color: #9d9d9d;
+        }
+        nav.pdoc .function::after {
+            content: "()";
+            color: #9d9d9d;
+        }
+        nav.pdoc .class::before {
+            content: "class ";
+            color: #9d9d9d;
+        }
+        nav.pdoc .class::after {
+            content: "()";
+            color: #9d9d9d;
+        }
+        nav.pdoc a, nav.pdoc a::before {
+            font-style: italic;
+        }
+        nav.pdoc a {
+            display: none;
+        }
+        h6#attributes {
+            color: #FFF;
+        }
+        b, strong {
+            color: #FFF;
+        }
+        em {
+            color: orange;
+        }
+        *, ::after, ::before {
+            color: #FFF;
+        }
+    {% endblock %}
+</style>

@@ -25,45 +25,9 @@
 
 from __future__ import annotations
 
-__all__ = (
-    # client.py
-    "Client",
-    # rest.py
-    "RESTClient",
-    # error.py
-    "PlayerNotFound",
-    "ActivityNotFound",
-    "ClanNotFound",
-    "NotFound",
-    "HTTPException",
-    "UserNotFound",
-    "ResponseError",
-    "Unauthorized",
-    "Forbidden",
-    "MembershipTypeError",
-    # enums.py
-    "GameMode",
-    "MembershipType",
-    "Class",
-    "MilestoneType",
-    "Race",
-    "Vendor",
-    "Raid",
-    "Dungeon",
-    "Gender",
-    "Component",
-    "Planet",
-    "Stat",
-    "WeaponType",
-    "DamageType",
-    "Item",
-    "Place",
-    "CredentialType",
-    "GroupType",
-    "ClanMemberType",
-)
-
 from .client import Client
 from .error import *
 from .internal.enums import *
 from .rest import RESTClient
+
+__all__ = [mod for mod in dir() if not mod.startswith("_")]

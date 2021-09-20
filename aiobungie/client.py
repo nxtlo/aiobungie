@@ -275,16 +275,14 @@ class Client(traits.ClientBase):
     ) -> typing.Sequence[crate.user.DestinyUser]:
         """Fetch a Destiny 2 Player.
 
+        .. note::
+            You must also pass the player's unique code.
+            A full name parameter should look like this `Fate怒#4275`.
+
         Parameters
         -----------
         name: `builtins.str`
             The Player's Name.
-
-        .. note::
-            You must also pass the player's unique code.
-            A full name parameter should look like this
-            `Fate怒#4275`
-
         type: `aiobungie.internal.enums.MembershipType`
             The player's membership type, e,g. XBOX, STEAM, PSN
 

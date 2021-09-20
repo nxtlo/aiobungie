@@ -116,6 +116,18 @@ class PreLock:
 class RESTClient(interfaces.RESTInterface):
     """A REST only client implementation for interacting with Bungie's REST API.
 
+    Example
+    -------
+    ```py
+    rest_client = aiobungie.RESTClient("TOKEN")
+    async def main():
+        req = await rest_client.fetch_clan_members(4389205)
+        clan_members = req['results']
+        for member in clan_members:
+            for k, v in member['destinyUserInfo'].items():
+                print(k, v)
+    ```
+
     Attributes
     ----------
     token : `builtins.str`

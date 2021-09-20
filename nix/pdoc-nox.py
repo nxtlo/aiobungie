@@ -22,21 +22,17 @@
 
 import nox
 import os
-import subprocess as sp
 
 @nox.session(reuse_venv=True)
 def pdoc(session: nox.Session) -> None:
     while os.path.exists("./docs"):
         try:
-            sp.run(["rm", "-rf", "./docs"], shell=False, stderr=sp.PIPE, stdout=sp.PIPE)
+            os.rmdir("./docs")
             session.log("Docs path removed.")
         except Exception:
             # We don't have to worry about this anymore
             break
-    session.install("-r", "requirements.txt", "-r", "dev-requirements.txt", "pdoc3")
+    session.install("-r", "requirements.txt", "-r", "dev-requirements.txt", "pdoc")
     session.run(
-        "pdoc", "--html", "--template-dir", "./templates", "./aiobungie", "--force"
+        "pdoc", "./aiobungie", "-t", "./templates", "-d", "numpy", "-o", "./docs"
     )
-    if os.path.isdir("./html"):
-        sp.run(["sh", "./nix/move.sh"], shell=False, stderr=sp.PIPE, stdout=sp.PIPE)
-        session.log("HTML path removed.")

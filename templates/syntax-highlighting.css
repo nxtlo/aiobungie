@@ -1,0 +1,534 @@
+/* Dracula color scheme */
+
+pre {
+    line-height: 125%;
+}
+
+td.linenos pre {
+    color: #ff5555;
+    background-color: #282a36;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+span.linenos {
+    color: #ff5555;
+    background-color: #282a36;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+td.linenos pre.special {
+    color: #ff5555;
+    background-color: #ffffc0;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+span.linenos.special {
+    color: #ff5555;
+    background-color: #ffffc0;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.pdoc .hll {
+    background-color: #282a36
+}
+
+.pdoc {
+    background: #282a36;
+    color: #ff5555
+}
+
+
+/* Comment */
+
+.pdoc .c {
+    color: #6272a4
+}
+
+
+/* Error */
+
+.pdoc .err {
+    color: #ff5555;
+    background-color: #1e0010
+}
+
+
+/* Keyword */
+
+.pdoc .k {
+    color: #ff79c6
+}
+
+
+/* Literal */
+
+.pdoc .l {
+    color: #ae81ff
+}
+
+
+/* Name */
+
+.pdoc .n {
+    color: #f8f8f2
+}
+
+
+/* Operator */
+
+.pdoc .o {
+    color: #ff79c6
+}
+
+
+/* Punctuation */
+
+.pdoc .p {
+    color: #f8f8f2
+}
+
+
+/* Comment.Hashbang */
+
+.pdoc .ch {
+    color: #6272a4
+}
+
+
+/* Comment.Multiline */
+
+.pdoc .cm {
+    color: #6272a4
+}
+
+
+/* Comment.Preproc */
+
+.pdoc .cp {
+    color: #6272a4
+}
+
+
+/* Comment.PreprocFile */
+
+.pdoc .cpf {
+    color: #6272a4
+}
+
+
+/* Comment.Single */
+
+.pdoc .c1 {
+    color: #6272a4
+}
+
+
+/* Comment.Special */
+
+.pdoc .cs {
+    color: #6272a4
+}
+
+
+/* Generic.Deleted */
+
+.pdoc .gd {
+    color: #6272a4
+}
+
+
+/* Generic.Emph */
+
+.pdoc .ge {
+    font-style: italic
+}
+
+
+/* Generic.Inserted */
+
+.pdoc .gi {
+    color: #a6e22e
+}
+
+
+/* Generic.Output */
+
+.pdoc .go {
+    color: #ff79c6
+}
+
+
+/* Generic.Prompt */
+
+.pdoc .gp {
+    color: #f92672;
+    font-weight: bold
+}
+
+
+/* Generic.Strong */
+
+.pdoc .gs {
+    font-weight: bold
+}
+
+
+/* Generic.Subheading */
+
+.pdoc .gu {
+    color: #75715e
+}
+
+
+/* Keyword.Constant */
+
+.pdoc .kc {
+    color: #ff79c6
+}
+
+
+/* Keyword.Declaration */
+
+.pdoc .kd {
+    color: #bd93f9
+}
+
+
+/* Keyword.Namespace */
+
+.pdoc .kn {
+    color: #f92672,
+}
+
+
+/* Keyword.Pseudo */
+
+.pdoc .kp {
+    color: #bd93f9
+}
+
+
+/* Keyword.Reserved */
+
+.pdoc .kr {
+    color: #ff79c6
+}
+
+
+/* Keyword.Type */
+
+.pdoc .kt {
+    color: #ff79c6
+}
+
+
+/* Literal.Date */
+
+.pdoc .ld {
+    color: #e6db74
+}
+
+
+/* Literal.Number */
+
+.pdoc .m {
+    color: #ae81ff
+}
+
+
+/* Literal.String */
+
+.pdoc .s {
+    color: #e6db74
+}
+
+
+/* Name.Attribute */
+
+.pdoc .na {
+    color: #a6e22e
+}
+
+
+/* Name.Builtin */
+
+.pdoc .nb {
+    color: #8be9fd
+}
+
+
+/* Name.Class */
+
+.pdoc .nc {
+    color: #8be9fd
+}
+
+
+/* Name.Constant */
+
+.pdoc .no {
+    color: #ff79c6
+}
+
+
+/* Name.Decorator */
+
+.pdoc .nd {
+    color: #8be9fd
+}
+
+
+/* Name.Entity */
+
+.pdoc .ni {
+    color: #ff79c6
+}
+
+
+/* Name.Exception */
+
+.pdoc .ne {
+    color: #8be9fd
+}
+
+
+/* Name.Function */
+
+.pdoc .nf {
+    color: #50fa7b
+}
+
+
+/* Name.Label */
+
+.pdoc .nl {
+    color: #f8f8f2
+}
+
+
+/* Name.Namespace */
+
+.pdoc .nn {
+    color: #f8f8f2
+}
+
+
+/* Name.Other */
+
+.pdoc .nx {
+    color: #a6e22e
+}
+
+
+/* Name.Property */
+
+.pdoc .py {
+    color: #f8f8f2
+}
+
+
+/* Name.Tag */
+
+.pdoc .nt {
+    color: #f92672
+}
+
+
+/* Name.Variable */
+
+.pdoc .nv {
+    color: #f8f8f2
+}
+
+
+/* Operator.Word */
+
+.pdoc .ow {
+    color: #ff79c6
+}
+
+
+/* Text.Whitespace */
+
+.pdoc .w {
+    color: #f8f8f2
+}
+
+
+/* Literal.Number.Bin */
+
+.pdoc .mb {
+    color: #ae81ff
+}
+
+
+/* Literal.Number.Float */
+
+.pdoc .mf {
+    color: #ae81ff
+}
+
+
+/* Literal.Number.Hex */
+
+.pdoc .mh {
+    color: #ae81ff
+}
+
+
+/* Literal.Number.Integer */
+
+.pdoc .mi {
+    color: #ae81ff
+}
+
+
+/* Literal.Number.Oct */
+
+.pdoc .mo {
+    color: #ae81ff
+}
+
+
+/* Literal.String.Affix */
+
+.pdoc .sa {
+    color: #e6db74
+}
+
+
+/* Literal.String.Backtick */
+
+.pdoc .sb {
+    color: #e6db74
+}
+
+
+/* Literal.String.Char */
+
+.pdoc .sc {
+    color: #e6db74
+}
+
+
+/* Literal.String.Delimiter */
+
+.pdoc .dl {
+    color: #e6db74
+}
+
+
+/* Literal.String.Doc */
+
+.pdoc .sd {
+    color: #6272a4
+}
+
+
+/* Literal.String.Double */
+
+.pdoc .s2 {
+    color: #e6db74
+}
+
+
+/* Literal.String.Escape */
+
+.pdoc .se {
+    color: #ae81ff
+}
+
+
+/* Literal.String.Heredoc */
+
+.pdoc .sh {
+    color: #e6db74
+}
+
+
+/* Literal.String.Interpol */
+
+.pdoc .si {
+    color: #e6db74
+}
+
+
+/* Literal.String.Other */
+
+.pdoc .sx {
+    color: #e6db74
+}
+
+
+/* Literal.String.Regex */
+
+.pdoc .sr {
+    color: #e6db74
+}
+
+
+/* Literal.String.Single */
+
+.pdoc .s1 {
+    color: #e6db74
+}
+
+
+/* Literal.String.Symbol */
+
+.pdoc .ss {
+    color: #e6db74
+}
+
+
+/* Name.Builtin.Pseudo */
+
+.pdoc .bp {
+    color: #bd93f9
+}
+
+
+/* Name.Function.Magic */
+
+.pdoc .fm {
+    color: #bd93f9
+}
+
+
+/* Name.Variable.Class */
+
+.pdoc .vc {
+    color: #bd93f9
+}
+
+
+/* Name.Variable.Global */
+
+.pdoc .vg {
+    color: #f8f8f2
+}
+
+
+/* Name.Variable.Instance */
+
+.pdoc .vi {
+    color: #ffffff
+}
+
+
+/* Name.Variable.Magic */
+
+.pdoc .vm {
+    color: #bd93f9
+}
+
+
+/* Literal.Number.Integer.Long */
+
+.pdoc .il {
+    color: #ae81ff
+}

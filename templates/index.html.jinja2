@@ -1,0 +1,26 @@
+{% extends "default/index.html.jinja2" %}
+<style>
+    {% block style_theme %}
+        :root {
+            --pdoc-background: #212529;
+        }
+        .pdoc {
+            --text: #ff79c6;
+            --accent: #333;
+            --active: #9e7700;
+        }
+        nav.pdoc li::before {
+            margin: 0;
+            padding: .2rem 0 .2rem 0;
+            transition: all 100ms;
+            content: "module ";
+            color: #50fa7b;
+        }
+        nav.pdoc li::after {
+            margin: 0;
+            padding: .2rem 0 .2rem 0;
+            transition: all 100ms;
+            color: #50fa7b;
+        }
+    {% endblock %}
+</style>

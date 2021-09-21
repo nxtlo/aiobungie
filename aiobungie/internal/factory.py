@@ -127,7 +127,9 @@ class Factory:
             id=int(user_info["membershipId"]),
             name=name,
             code=user_info.get("bungieGlobalDisplayNameCode", None),
-            last_seen_name=user_info.get("LastSeenDisplayName", user_info["displayName"]),
+            last_seen_name=user_info.get(
+                "LastSeenDisplayName", user_info["displayName"]
+            ),
             type=enums.MembershipType(user_info["membershipType"]),
             is_public=user_info["isPublic"],
             crossave_override=enums.MembershipType(user_info["crossSaveOverride"]),

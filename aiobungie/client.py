@@ -156,6 +156,18 @@ class Client(traits.ClientBase):
         return self.serialize.deserialize_bungie_user(payload)
 
     async def search_users(self, name: str, /) -> typing.Sequence[crate.DestinyUser]:
+        """Search for players and return all players that matches the same name.
+
+        Parameters
+        ----------
+        name : `buildins.str`
+            The user name.
+
+        Returns
+        -------
+        `typing.Sequence[aiobungie.crate.DestinyUser]`
+            A sequence of destiny memberships.
+        """
         payload = await self.rest.search_users(name)
         assert isinstance(payload, dict)
         return self.serialize.deseialize_found_users(payload)
@@ -275,16 +287,14 @@ class Client(traits.ClientBase):
     ) -> typing.Sequence[crate.user.DestinyUser]:
         """Fetch a Destiny 2 Player.
 
+        .. note::
+            You must also pass the player's unique code.
+            A full name parameter should look like this `Fate怒#4275`.
+
         Parameters
         -----------
         name: `builtins.str`
             The Player's Name.
-
-        .. note::
-            You must also pass the player's unique code.
-            A full name parameter should look like this
-            `Fate怒#4275`
-
         type: `aiobungie.internal.enums.MembershipType`
             The player's membership type, e,g. XBOX, STEAM, PSN
 

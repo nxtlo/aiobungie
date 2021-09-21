@@ -156,6 +156,18 @@ class Client(traits.ClientBase):
         return self.serialize.deserialize_bungie_user(payload)
 
     async def search_users(self, name: str, /) -> typing.Sequence[crate.DestinyUser]:
+        """Search for players and return all players that matches the same name.
+
+        Parameters
+        ----------
+        name : `buildins.str`
+            The user name.
+
+        Returns
+        -------
+        `typing.Sequence[aiobungie.crate.DestinyUser]`
+            A sequence of destiny memberships.
+        """
         payload = await self.rest.search_users(name)
         assert isinstance(payload, dict)
         return self.serialize.deseialize_found_users(payload)

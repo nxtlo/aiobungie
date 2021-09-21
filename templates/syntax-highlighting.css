@@ -1,5 +1,11 @@
 /* Dracula color scheme */
 
+@import url(https://cdn.jsdelivr.net/gh/tonsky/FiraCode@4/distr/fira_code.css);
+
+/* This is for the docstring code,
+Chack under for the actual docs
+***/
+
 pre {
     line-height: 125%;
 }
@@ -37,6 +43,7 @@ span.linenos.special {
 }
 
 .pdoc {
+    --text: #ff79c6;
     background: #282a36;
     color: #ff5555
 }
@@ -529,6 +536,236 @@ span.linenos.special {
 
 /* Literal.Number.Integer.Long */
 
+
+/**** Actual Docs ***/
+
 .pdoc .il {
     color: #ae81ff
+}
+
+* {
+    font-family: 'FiraCode-Retina';
+}
+
+nav.pdoc a.pdoc-button.module-list-button {
+    display: none;
+}
+
+.pdoc .modulename a:hover {
+    color: #ff79c6;
+}
+
+.pdoc .classattr {
+    color: #FFF;
+}
+
+
+/* Docstrings */
+
+.pdoc p {
+    color: #FFF;
+    font-weight: 300;
+    text-indent: 23px;
+}
+
+.pdoc li.code {
+    color: #d63384;
+}
+
+
+/* Submodules and API Doc. */
+
+.pdoc h2 {
+    color: #FFF;
+    font-weight: 0;
+    margin: .3em 0;
+    padding: .2em 0;
+    content: "Module Content";
+}
+
+
+/* Module name */
+
+.pdoc .modulename {
+    color: #FFF;
+    font-weight: 0;
+    margin: .3em 0;
+    padding: .2em 0;
+}
+
+
+/* Adds "var varname" to class variables. */
+
+nav.pdoc a.variable::before {
+    content: "var ";
+    color: #9d9d9d;
+    font-style: italic;
+}
+
+
+/* Before the function name. This adds "func 'Funcname'". */
+
+nav.pdoc .function::before {
+    content: "func ";
+    color: #9d9d9d;
+    font-style: italic;
+}
+
+nav.pdoc .function::after {
+    content: "";
+    color: #9d9d9d;
+}
+
+
+/* Before the class name. This adds "class 'className'". */
+
+nav.pdoc .class::before {
+    content: "class ";
+    font-style: italic;
+}
+
+nav.pdoc .class::after {
+    content: "";
+}
+
+nav.pdoc a.class {
+    color: #8be9fd;
+}
+
+nav.pdoc a::before {
+    content: "module ";
+    font-style: italic;
+    color: #9d9d9d;
+}
+
+nav.pdoc a.function {
+    color: #4dec75;
+}
+
+.pdoc h5 {
+    color: white;
+    font-style: italic;
+}
+
+nav.pdoc a.variable {
+    color: white;
+}
+
+.pdoc h6#attributes {
+    color: #FFF;
+    font-size: 23px;
+}
+
+
+/* Notes
+           -----
+        */
+
+.pdoc h6#notes {
+    font-size: 23px;
+    color: orange;
+}
+
+
+/* Returns
+           -------
+        */
+
+.pdoc h6#returns {
+    font-size: 23px;
+    color: white;
+}
+
+
+/* Parameters
+           ----------
+        */
+
+.pdoc h6#parameters {
+    font-size: 23px;
+    color: white;
+}
+
+
+/* Raises
+           ------
+        */
+
+.pdoc h6#raises {
+    font-size: 23px;
+    color: #FF6666;
+}
+
+
+/* False, True */
+
+.pdoc .kc {
+    color: #bd93f9;
+}
+
+.pdoc li {
+    color: white;
+}
+
+
+/* Decorator module */
+
+.pdoc .nd {
+    color: #50fa7b;
+}
+
+.pdoc b,
+strong {
+    color: #FFF;
+}
+
+
+/* colors for .. warning:: and .. note:: */
+
+.pdoc em {
+    color: orange;
+}
+
+
+/* Decorator color */
+
+.pdoc div.decorator {
+    color: #50fa7b;
+}
+
+
+/* Class names colors */
+
+.pdoc span.name {
+    color: #8be9fd;
+}
+
+
+/* Inherited class name color */
+
+.pdoc span.base {
+    color: #8be9fd;
+}
+
+
+/* Before inherited members colors, i.e., "builtins.Exception" */
+
+.pdoc .inherited dt,
+.pdoc .inherited dt::before {
+    color: #8be9fd;
+}
+
+
+/* After inherited members colors, i.e., "Exception" */
+
+.pdoc .inherited dd,
+.pdoc .inherited dd {
+    color: #FFF;
+}
+
+
+/* Commas that separates parameters "," color */
+
+.pdoc .inherited dd:not(:last-child)::after {
+    color: #FFF;
 }

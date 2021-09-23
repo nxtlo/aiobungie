@@ -483,14 +483,21 @@ class Factory:
             #     join_date_fmt: datetime.datetime = time.clean_date(join_date)
 
             group_id: list[int] = just(payload, "groupId")
+
             for memberships in payload:
                 wrap_destiny = lambda m: m["destinyUserInfo"]  # noqa: E731 Lambdas
-                wrap_bungie = lambda m: m["bungieNetUserInfo"]  # noqa: E731 Lambdas
+                wrap_bungie = None
+
+                try:
+                    wrap_bungie = lambda m: m["bungieNetUserInfo"]  # noqa: E731 Lambdas
+                    bungie_user = self.deserialize_partial_bungie_user(
+                        wrap_bungie(memberships), noeq=True
+                    )
+                except KeyError:
+                    continue
+
                 member = self.deserialize_destiny_user(
                     wrap_destiny(memberships), noeq=True
-                )
-                bungie_user = self.deserialize_partial_bungie_user(
-                    wrap_bungie(memberships), noeq=True
                 )
 
                 member_obj = clans.ClanMember(

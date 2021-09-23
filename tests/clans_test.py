@@ -30,7 +30,7 @@ from pytest import fixture
 
 import aiobungie
 from aiobungie import crate
-from aiobungie import internal
+from aiobungie.internal import helpers, assets
 
 
 @fixture()
@@ -82,7 +82,7 @@ class TestClanMember:
             id=4432,
             name="thom",
             type=aiobungie.MembershipType.STEAM,
-            icon=internal.Image("someIconPath.jpg"),
+            icon=assets.Image("someIconPath.jpg"),
             is_public=True,
             group_id=998271,
             is_online=True,
@@ -137,7 +137,7 @@ class TestClanOwner:
             id=2938,
             name="DiggaD",
             type=aiobungie.MembershipType.STEAM,
-            icon=internal.Image("someIconPath.jpg"),
+            icon=assets.Image("someIconPath.jpg"),
             is_public=True,
             joined_at=datetime.datetime(2021, 9, 6),
             last_online=datetime.datetime(2021, 5, 1),
@@ -177,10 +177,10 @@ class TestClan:
             name="Cool clan",
             created_at=datetime.datetime(2018, 9, 3, 11, 13, 12),
             member_count=2,
-            motto=str(internal.helpers.Undefined),
+            motto=str(helpers.Undefined),
             is_public=True,
-            banner=internal.Image("xxx.jpg"),
-            avatar=internal.Image("zzz.jpg"),
+            banner=assets.Image("xxx.jpg"),
+            avatar=assets.Image("zzz.jpg"),
             about="A cool clan.",
             tags=["Raids", "Tag", "Another tag"],
             owner=mock_owner,

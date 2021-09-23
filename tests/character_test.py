@@ -29,7 +29,7 @@ import pytest
 
 import aiobungie
 from aiobungie import crate
-from aiobungie import internal
+from aiobungie.internal import assets
 from aiobungie import url
 
 
@@ -53,8 +53,8 @@ def init_titan_char():
         light=1310,
         gender=aiobungie.Gender.MALE,
         race=aiobungie.Race.EXO,
-        emblem=internal.Image("emblempath.jpg"),
-        emblem_icon=internal.Image("emblemiconpath.jpg"),
+        emblem=assets.Image("emblempath.jpg"),
+        emblem_icon=assets.Image("emblemiconpath.jpg"),
         emblem_hash=998877,
         last_played=datetime.datetime(2021, 9, 1),
         total_played_time="1100 hours and 9 seconds.",
@@ -82,8 +82,8 @@ def init_hunter_char():
         light=1260,
         gender=aiobungie.Gender.FEMALE,
         race=aiobungie.Race.HUMAN,
-        emblem=internal.Image("emblempath.jpg"),
-        emblem_icon=internal.Image("emblemiconpath.jpg"),
+        emblem=assets.Image("emblempath.jpg"),
+        emblem_icon=assets.Image("emblemiconpath.jpg"),
         emblem_hash=998877,
         last_played=datetime.datetime(2021, 8, 3),
         total_played_time="990 hours and 20 seconds.",
@@ -109,8 +109,8 @@ def init_warlock_char():
         light=1320,
         gender=aiobungie.Gender.FEMALE,
         race=aiobungie.Race.AWOKEN,
-        emblem=internal.Image("emblempath.jpg"),
-        emblem_icon=internal.Image("emblemiconpath.jpg"),
+        emblem=assets.Image("emblempath.jpg"),
+        emblem_icon=assets.Image("emblemiconpath.jpg"),
         emblem_hash=998877,
         last_played=datetime.datetime(2021, 4, 6),
         total_played_time="1151 hours and 13 seconds.",
@@ -137,7 +137,7 @@ class TestCharacter:
         assert isinstance(obj.stats, dict) and obj.stats[aiobungie.Stat.MOBILITY] >= 100
 
     def test_char_meta(self, obj):
-        assert isinstance(obj.emblem, internal.Image)
+        assert isinstance(obj.emblem, assets.Image)
         assert (
             isinstance(obj.gender, aiobungie.Gender)
             and obj.gender is aiobungie.Gender.FEMALE

@@ -26,7 +26,7 @@ import pytest
 
 import aiobungie
 from aiobungie import crate
-from aiobungie import internal
+from aiobungie.internal import helpers, assets
 
 
 class TestEntity:
@@ -44,7 +44,7 @@ class TestInventoryItemEntity:
             hash=182371221,
             index=1223,
             name="Midnight Coup",
-            description=internal.helpers.Undefined,
+            description=helpers.Undefined,
             icon=None,
             has_icon=False,
             type=aiobungie.Item.WEAPON,
@@ -62,11 +62,11 @@ class TestInventoryItemEntity:
             summary_hash=190230123,
             damage=aiobungie.DamageType.KINETIC,
             about="Best hand cannon in the game. :p",
-            banner=internal.Image("someImagePath.jpg"),
+            banner=assets.Image("someImagePath.jpg"),
         )
 
     def test_item_description_is_undefined(self, item) -> None:
-        assert item.description is internal.helpers.Undefined
+        assert item.description is helpers.Undefined
 
     def test_item_types(self, item):
         assert item.sub_type is aiobungie.Item.HANDCANNON

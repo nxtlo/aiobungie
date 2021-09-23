@@ -4,6 +4,7 @@ from .application import (
     ApplicationOwner as ApplicationOwner,
 )
 from .character import Character as Character
+from .character import CharacterComponent as CharacterComponent
 from .clans import (
     Clan as Clan,
     ClanFeatures as ClanFeatures,
@@ -15,6 +16,7 @@ from .entity import Entity as Entity, InventoryEntity as InventoryEntity
 from .friends import Friend as Friend
 from .player import Player as Player
 from .profile import Profile as Profile
+from .profile import ProfileComponent as ProfileComponent
 from .user import (
     BungieUser as BungieUser,
     DestinyUser as DestinyUser,

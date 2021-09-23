@@ -35,8 +35,8 @@ import typing
 import attr
 
 from aiobungie import url
-from aiobungie.internal import Image
 from aiobungie.internal import enums
+from aiobungie.internal.assets import Image
 
 
 class CharacterComponent(abc.ABC):

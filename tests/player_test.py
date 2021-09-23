@@ -24,7 +24,7 @@ import pytest
 
 import aiobungie
 from aiobungie import crate
-from aiobungie import internal
+from aiobungie.internal import assets
 
 
 class TestPlayer:
@@ -33,7 +33,7 @@ class TestPlayer:
         return crate.Player(
             name="RoberGamer321",
             id=40001,
-            icon=internal.Image("4a2dc9dca0b4.jpg"),
+            icon=assets.Image("4a2dc9dca0b4.jpg"),
             is_public=True,
             type=aiobungie.MembershipType.STADIA,
             types=[aiobungie.MembershipType.STEAM],

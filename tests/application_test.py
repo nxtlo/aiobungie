@@ -26,7 +26,7 @@ import pytest
 
 import aiobungie
 from aiobungie import crate
-from aiobungie import internal
+from aiobungie.internal import helpers, assets
 
 @pytest.fixture()
 def mock_client():
@@ -41,7 +41,7 @@ class TestAppOwner:
             type=aiobungie.MembershipType.XBOX,
             id=411098,
             is_public=True,
-            icon=internal.Image("dndlkwadjnh9.jpg"),
+            icon=assets.Image("dndlkwadjnh9.jpg"),
             code=2463,
         )
 
@@ -54,7 +54,7 @@ class TestAppOwner:
         assert obj.type is aiobungie.MembershipType.XBOX
         assert isinstance(obj.id, int) and obj.id == 411098
         assert obj.is_public is True
-        assert obj.icon is not None and isinstance(obj.icon, internal.Image)
+        assert obj.icon is not None and isinstance(obj.icon, assets.Image)
 
 class TestApplication:
     @pytest.fixture()
@@ -66,7 +66,7 @@ class TestApplication:
             created_at=datetime(2017, 4, 8),
             published_at=datetime.utcnow(),
             link="warmind.io",
-            scope=internal.helpers.Undefined,
+            scope=helpers.Undefined,
             status=1,
             owner=TestAppOwner.init_owner(),
         )

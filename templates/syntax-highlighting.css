@@ -544,7 +544,7 @@ span.linenos.special {
 }
 
 * {
-    font-family: 'FiraCode-Retina';
+    font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
 nav.pdoc a.pdoc-button.module-list-button {
@@ -655,10 +655,31 @@ nav.pdoc a.variable {
     font-size: 23px;
 }
 
+/*
+Example
+-------
+*/
 
-/* Notes
-           -----
-        */
+.pdoc h6#example {
+    color: #FFF;
+    font-size: 29px;
+}
+
+/*
+Examples
+-------
+*/
+
+.pdoc h6#examples {
+    color: #FFF;
+    font-size: 29px;
+}
+
+
+/* 
+Notes
+-----
+*/
 
 .pdoc h6#notes {
     font-size: 23px;
@@ -666,9 +687,10 @@ nav.pdoc a.variable {
 }
 
 
-/* Returns
-           -------
-        */
+/* 
+Returns
+-------
+*/
 
 .pdoc h6#returns {
     font-size: 23px;
@@ -676,9 +698,10 @@ nav.pdoc a.variable {
 }
 
 
-/* Parameters
-           ----------
-        */
+/* 
+Parameters
+----------
+*/
 
 .pdoc h6#parameters {
     font-size: 23px;
@@ -686,9 +709,10 @@ nav.pdoc a.variable {
 }
 
 
-/* Raises
-           ------
-        */
+/*
+Raises
+------
+*/
 
 .pdoc h6#raises {
     font-size: 23px;

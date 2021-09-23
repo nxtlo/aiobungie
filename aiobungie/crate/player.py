@@ -30,8 +30,8 @@ __all__ = ("Player",)
 
 import attr
 
-from aiobungie.internal import Image
 from aiobungie.internal import helpers
+from aiobungie.internal.assets import Image
 from aiobungie.internal.enums import MembershipType
 
 

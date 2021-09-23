@@ -47,6 +47,10 @@ class RESTInterface(abc.ABC):
     __slots__: typing.Sequence[str] = ()
 
     @abc.abstractmethod
+    async def close(self) -> None:
+        """Close the rest client."""
+
+    @abc.abstractmethod
     def static_search(self, path: str, **kwargs: typing.Any) -> ResponseSig[typing.Any]:
         """Raw http search given a valid bungie endpoint.
 

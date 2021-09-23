@@ -216,6 +216,7 @@ async def main() -> None:
         test_potential_groups_for_member()
     ]
     print(await asyncio.gather(*coros))
+    await rest_client.close()
 
 if __name__ == '__main__':
-    client.run(main())
+    raise SystemExit(client.run(main()))

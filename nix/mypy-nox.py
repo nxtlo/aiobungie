@@ -25,7 +25,6 @@ import nox
 FILES = [
     "aiobungie/__init__.py",
     "aiobungie/crate/__init__.py",
-    "aiobungie/internal/__init__.py",
 ]
 
 

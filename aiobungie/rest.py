@@ -35,6 +35,7 @@ import typing
 from urllib.parse import quote
 
 import aiohttp
+import attr
 
 from aiobungie import _info as info
 from aiobungie import error
@@ -113,6 +114,51 @@ class PreLock:
             await self._lock.acquire()
 
 
+@attr.define()
+class _Session:
+    client_session: aiohttp.ClientSession = attr.field()
+
+    @classmethod
+    def acquire_session(
+        cls,
+        *,
+        owner: bool = False,
+        raise_status: bool = False,
+        total_timeout: typing.Optional[float] = 30,
+        connect: typing.Optional[float] = None,
+        socket_read: typing.Optional[float] = None,
+        socket_connect: typing.Optional[float] = None,
+        **kwargs: typing.Any,
+    ) -> _Session:
+        session = aiohttp.ClientSession(
+            connector=aiohttp.TCPConnector(verify_ssl=False, **kwargs),
+            headers={
+                "User-Agent": f"AiobungieClient/{info.__version__}"
+                f" ({info.__url__}) Python/{sys.version_info}"
+                f"Aiohttp/{aiohttp.HttpVersion11}"
+            },
+            connector_owner=owner,
+            raise_for_status=raise_status,
+            timeout=aiohttp.ClientTimeout(
+                total=total_timeout,
+                sock_read=socket_read,
+                sock_connect=socket_connect,
+                connect=connect,
+            ),
+        )
+        return cls(client_session=session)
+
+    async def __aenter__(self) -> _Session:
+        return self
+
+    async def __aexit__(self, _, __, ___) -> None:
+        await self.close()
+
+    async def close(self) -> None:
+        await self.client_session.connector.close()  # type: ignore
+        await asyncio.sleep(0.025)
+
+
 class RESTClient(interfaces.RESTInterface):
     """A REST only client implementation for interacting with Bungie's REST API.
 
@@ -134,11 +180,27 @@ class RESTClient(interfaces.RESTInterface):
         A valid application token from Bungie's developer portal.
     """
 
-    __slots__: typing.Sequence[str] = ("_token", "_kwargs")
+    __slots__: typing.Sequence[str] = ("_token", "_session")
 
-    def __init__(self, token: str, /, **kwargs: typing.Any) -> None:
-        self._kwargs = kwargs
+    def __init__(self, token: str, /) -> None:
+        self._session: typing.Optional[_Session] = None
         self._token: str = token
+
+    def _acquire_session(self) -> _Session:
+        asyncio.get_running_loop()
+        if self._session is None:
+            self._session = _Session.acquire_session(
+                owner=False,
+                raise_status=False,
+                connect=None,
+                socket_read=None,
+                socket_connect=None,
+            )
+        return self._session
+
+    @typing.final
+    async def close(self) -> None:
+        await self._acquire_session().close()
 
     @typing.final
     async def _fetch(
@@ -150,61 +212,55 @@ class RESTClient(interfaces.RESTInterface):
         **kwargs: typing.Any,
     ) -> typing.Any:
 
-        user_agent: typing.Final[
-            str
-        ] = f"AiobungieClient/{info.__version__} ({info.__url__}) Python/{sys.version_info}"
-
         if isinstance(self._token, str) and self._token is not None:
             kwargs["headers"] = headers = {}
             headers["X-API-KEY"] = self._token
-            headers["User-Agent"] = user_agent
         else:
             raise ValueError("No API KEY was passed.")
 
         while True:
             async with PreLock():
                 try:
-                    async with aiohttp.ClientSession() as session:
-                        async with session.request(
-                            method=method,
-                            url=f"{url.REST_EP if base is False else url.BASE}/{route}",
-                            **kwargs,
-                        ) as response:
+                    async with self._acquire_session().client_session.request(
+                        method=method,
+                        url=f"{url.REST_EP if base is False else url.BASE}/{route}",
+                        **kwargs,
+                    ) as response:
 
-                            data = await response.json()
-                            msg: str = data["ErrorStatus"]
+                        data = await response.json(encoding="utf-8")
+                        msg: str = data["ErrorStatus"]
 
-                            # There's no point of making requests here.
-                            # A VERY LITTLE amount of endpoints does not
-                            # require the API to be up and running, Which are
-                            # The themes afaik. Not making any difference though so
-                            # Just to be careful we raise this here.
+                        # There's no point of making requests here.
+                        # A VERY LITTLE amount of endpoints does not
+                        # require the API to be up and running, Which are
+                        # The themes afaik. Not making any difference though so
+                        # Just to be careful we raise this here.
 
-                            if msg == "SystemDisabled":
-                                raise OSError("API IS DOWN!", data["Message"])
+                        if msg == "SystemDisabled":
+                            raise OSError("API IS DOWN!", data["Message"])
 
-                            if 300 > response.status >= 200:
-                                if type == "read":
-                                    # We want to read the bytes for the manifest response.
-                                    data = await response.read()
-                                    return data
+                        if 300 > response.status >= 200:
+                            if type == "read":
+                                # We want to read the bytes for the manifest response.
+                                data = await response.read()
+                                return data
 
-                                _LOG.debug(
-                                    "{} Request success from {} with status {}".format(
-                                        method,
-                                        f"{url.REST_EP}/{route}",
-                                        response.status,
-                                    )
+                            _LOG.debug(
+                                "{} Request success from {} with status {}".format(
+                                    method,
+                                    f"{url.REST_EP}/{route}",
+                                    response.status,
                                 )
-                                try:
-                                    return data["Response"]
+                            )
+                            try:
+                                return data["Response"]
 
-                                # In case we didn't find the Response key
-                                # its safer to just return the data.
-                                except KeyError:
-                                    return data
+                            # In case we didn't find the Response key
+                            # its safer to just return the data.
+                            except KeyError:
+                                return data
 
-                            await self._handle_err(response, msg, data["Message"])
+                        await self._handle_err(response, msg, data["Message"])
 
                 except aiohttp.ContentTypeError:
                     raise error.HTTPException(

@@ -31,7 +31,6 @@ import asyncio
 import typing
 
 from aiobungie.ext import Manifest
-from aiobungie.internal import deprecated
 from aiobungie.internal import factory
 from aiobungie.internal import helpers
 from aiobungie.internal import traits
@@ -89,6 +88,11 @@ class Client(traits.ClientBase):
                 self._loop.run_until_complete(future)
         except Exception as exc:
             raise RuntimeError(f"Failed to run {future.__name__}", exc)
+        except KeyboardInterrupt:
+            raise SystemExit(None)
+        finally:
+            # Session management.
+            self._loop.run_until_complete(self.rest.close())
 
     async def __aenter__(self):
         return self
@@ -346,11 +350,6 @@ class Client(traits.ClientBase):
         assert isinstance(resp, dict)
         char_module = self.serialize.deserialize_character(resp, chartype=character)
         return char_module
-
-    @deprecated
-    async def fetch_vendor_sales(self) -> typing.Any:
-        """Fetch vendor sales."""
-        return await self.rest.fetch_vendor_sales()
 
     # * Destiny 2 Activities.
 

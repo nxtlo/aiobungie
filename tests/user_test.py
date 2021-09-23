@@ -27,7 +27,7 @@ import pytest
 
 import aiobungie
 from aiobungie import crate
-from aiobungie import internal
+from aiobungie.internal import assets
 
 
 class TestHardLinkedUser:
@@ -87,7 +87,7 @@ class TestBungieUser:
             created_at=datetime.utcnow(),
             is_deleted=True,
             about=None,
-            picture=internal.Image("1029312dnoi12.jpg"),
+            picture=assets.Image("1029312dnoi12.jpg"),
             locale="eu",
             updated_at=datetime(2019, 4, 5),
             status=None,

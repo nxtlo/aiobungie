@@ -25,7 +25,6 @@
 A basic client based example.
 
 ```py
-
 import aiobungie
 from aiobungie import crate
 
@@ -44,8 +43,8 @@ async def main() -> None:
 
         try:
             character = await client.fetch_character(
-                user.id, user.type, aiobungie.MembershipType.HUNTER)
-        except aiobungie.CharacterError exc:
+                user.id, user.type, aiobungie.Class.HUNTER)
+        except aiobungie.CharacterError as exc:
             print(f'Couldn't get {user.name}'s hunter character. Due to: {exc}')
         else:
             print(character.light, character.id, character.emblem, character.class_type)
@@ -64,7 +63,6 @@ The difference between base client and the REST one are:
 Which lets you to implement your own logic, classes objects to get the desired results.
 
 ```py
-
 import aiobungie
 
 client = aiobungie.RESTClient(key='YOUR_API_KEY')
@@ -74,7 +72,7 @@ async def main() -> None:
     print(*player)
     for player in fetch_player:
         print(player['membershipId'], player['iconPath'])
-        for k, v in fetch_player:
+        for k, v in fetch_player.items():
             print(k, v)
 
 import asyncio

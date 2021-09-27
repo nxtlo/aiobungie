@@ -33,14 +33,13 @@ class HandleMyErrors:
     def __init__(self) -> None:
         self.type = aiobungie.MembershipType.STEAM
         self.id = 4611686018484639825
+        self.client = aiobungie.Client("YOUR_TOKEN_HERE")
 
     async def my_titan(self) -> Character:
         try:
-            async with aiobungie.Client("YOUR_TOKEN_HERE") as client:
-                titan: Character = await client.fetch_character(
-                    self.id, self.type, aiobungie.Class.TITAN
-                )
-
+            titan: Character = await self.client.fetch_character(
+                self.id, self.type, aiobungie.Class.TITAN
+            )
         except aiobungie.CharacterError:
             logging.warn(f"Couldn't find the titan for player id {self.id}")
 

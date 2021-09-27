@@ -33,7 +33,7 @@ from aiobungie import crate
 # more functionality.
 # See aiobungie.crate to view all the implemented objects.
 
-client = aiobungie.Client(key='YOUR_API_KEY')
+client = aiobungie.Client('YOUR_API_KEY')
 
 async def main() -> None:
     users = await client.search_users('Indica')
@@ -65,15 +65,17 @@ Which lets you to implement your own logic, classes objects to get the desired r
 ```py
 import aiobungie
 
-client = aiobungie.RESTClient(key='YOUR_API_KEY')
-
 async def main() -> None:
-    fetch_player = await client.fetch_player('Fate怒#4275') # First player in the array. Always returns one player.
-    print(*player)
-    for player in fetch_player:
-        print(player['membershipId'], player['iconPath'])
-        for k, v in fetch_player.items():
-            print(k, v)
+    # First player in the array. Always returns one player.
+
+    # Using `async with` context manager to close the session properly.
+    async with aiobungie.RESTClient("TOKEN") as rest:
+        fetch_player = await rest.fetch_player('Fate怒#4275')
+        print(*fetch_player)
+        for player in fetch_player:
+            print(player['membershipId'], player['iconPath'])
+            for k, v in player.items():
+                print(k, v)
 
 import asyncio
 asyncio.run(main())

@@ -165,13 +165,13 @@ class RESTClient(interfaces.RESTInterface):
     Example
     -------
     ```py
-    rest_client = aiobungie.RESTClient("TOKEN")
     async def main():
-        req = await rest_client.fetch_clan_members(4389205)
-        clan_members = req['results']
-        for member in clan_members:
-            for k, v in member['destinyUserInfo'].items():
-                print(k, v)
+        async with aiobungie.RESTClient("TOKEN") as rest_client:
+            req = await rest_client.fetch_clan_members(4389205)
+            clan_members = req['results']
+            for member in clan_members:
+                for k, v in member['destinyUserInfo'].items():
+                    print(k, v)
     ```
 
     Attributes
@@ -266,6 +266,14 @@ class RESTClient(interfaces.RESTInterface):
                     raise error.HTTPException(
                         f"Expected json content but got {response.content_type=}, {response.real_url=!r}"
                     ) from None
+
+    async def __aenter__(self) -> RESTClient:
+        return self
+
+    async def __aexit__(self, _, __, ___) -> None:
+        if self._session:
+            await self._session.close()
+        return None
 
     @staticmethod
     @typing.final

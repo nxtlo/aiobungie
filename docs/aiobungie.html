@@ -31,17 +31,17 @@
 
                     <h2>Submodules</h2>
                     <ul>
-                            <li><a href="aiobungie/client.html">client.py</a></li>
-                            <li><a href="aiobungie/rest.html">rest.py</a></li>
-                            <li><a href="aiobungie/error.html">error.py</a></li>
-                            <li><a href="aiobungie/url.html">url.py</a></li>
+                            <li><a href="aiobungie/client.html">aiobungie.client</a></li>
                             <li><a href="aiobungie/crate.html">aiobungie.crate</a></li>
+                            <li><a href="aiobungie/error.html">aiobungie.error</a></li>
                             <li><a href="aiobungie/ext.html">aiobungie.ext</a></li>
                             <li><a href="aiobungie/interfaces.html">aiobungie.interfaces</a></li>
                             <li><a href="aiobungie/internal.html">aiobungie.internal</a></li>
+                            <li><a href="aiobungie/rest.html">aiobungie.rest</a></li>
+                            <li><a href="aiobungie/url.html">aiobungie.url</a></li>
                     </ul>
 
-                    <h2>API Content</h2>
+                    <h2>API Documentation</h2>
                         <ul class="memberlist">
             <li>
                     <a class="class" href="#ActivityNotFound">ActivityNotFound</a>
@@ -1094,7 +1094,7 @@ aiobungie    </h1>
 <span class="c1"># more functionality.</span>
 <span class="c1"># See <a href="aiobungie/crate.html">aiobungie.crate</a> to view all the implemented objects.</span>
 
-<span class="n">client</span> <span class="o">=</span> <span class="n">aiobungie</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;YOUR_API_KEY&#39;</span><span class="p">)</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">aiobungie</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="s1">&#39;YOUR_API_KEY&#39;</span><span class="p">)</span>
 
 <span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">users</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">search_users</span><span class="p">(</span><span class="s1">&#39;Indica&#39;</span><span class="p">)</span>
@@ -1104,8 +1104,8 @@ aiobungie    </h1>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">character</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">fetch_character</span><span class="p">(</span>
-                <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">user</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">aiobungie</span><span class="o">.</span><span class="n">MembershipType</span><span class="o">.</span><span class="n">HUNTER</span><span class="p">)</span>
-        <span class="k">except</span> <span class="n">aiobungie</span><span class="o">.</span><span class="n">CharacterError</span> <span class="n">exc</span><span class="p">:</span>
+                <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">user</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">aiobungie</span><span class="o">.</span><span class="n">Class</span><span class="o">.</span><span class="n">HUNTER</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">aiobungie</span><span class="o">.</span><span class="n">CharacterError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Couldn&#39;</span><span class="n">t</span> <span class="n">get</span> <span class="p">{</span><span class="n">user</span><span class="o">.</span><span class="n">name</span><span class="p">}</span><span class="s1">&#39;s hunter character. Due to: </span><span class="si">{exc}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">character</span><span class="o">.</span><span class="n">light</span><span class="p">,</span> <span class="n">character</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">character</span><span class="o">.</span><span class="n">emblem</span><span class="p">,</span> <span class="n">character</span><span class="o">.</span><span class="n">class_type</span><span class="p">)</span>
@@ -1127,15 +1127,17 @@ aiobungie    </h1>
 
 <div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">aiobungie</span>
 
-<span class="n">client</span> <span class="o">=</span> <span class="n">aiobungie</span><span class="o">.</span><span class="n">RESTClient</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s1">&#39;YOUR_API_KEY&#39;</span><span class="p">)</span>
-
 <span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="n">fetch_player</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">fetch_player</span><span class="p">(</span><span class="s1">&#39;Fate怒#4275&#39;</span><span class="p">)</span> <span class="c1"># First player in the array. Always returns one player.</span>
-    <span class="nb">print</span><span class="p">(</span><span class="o">*</span><span class="n">player</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">player</span> <span class="ow">in</span> <span class="n">fetch_player</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">player</span><span class="p">[</span><span class="s1">&#39;membershipId&#39;</span><span class="p">],</span> <span class="n">player</span><span class="p">[</span><span class="s1">&#39;iconPath&#39;</span><span class="p">])</span>
-        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">fetch_player</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+    <span class="c1"># First player in the array. Always returns one player.</span>
+
+    <span class="c1"># Using `async with` context manager to close the session properly.</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">aiobungie</span><span class="o">.</span><span class="n">RESTClient</span><span class="p">(</span><span class="s2">&quot;TOKEN&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">rest</span><span class="p">:</span>
+        <span class="n">fetch_player</span> <span class="o">=</span> <span class="k">await</span> <span class="n">rest</span><span class="o">.</span><span class="n">fetch_player</span><span class="p">(</span><span class="s1">&#39;Fate怒#4275&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="o">*</span><span class="n">fetch_player</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">player</span> <span class="ow">in</span> <span class="n">fetch_player</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">player</span><span class="p">[</span><span class="s1">&#39;membershipId&#39;</span><span class="p">],</span> <span class="n">player</span><span class="p">[</span><span class="s1">&#39;iconPath&#39;</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">player</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
 
 <span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
@@ -1178,7 +1180,6 @@ Which gives you the freedom to deserialize it and implement you own logic in the
 <span class="sd">A basic client based example.</span>
 
 <span class="sd">```py</span>
-
 <span class="sd">import aiobungie</span>
 <span class="sd">from aiobungie import crate</span>
 
@@ -1187,7 +1188,7 @@ Which gives you the freedom to deserialize it and implement you own logic in the
 <span class="sd"># more functionality.</span>
 <span class="sd"># See aiobungie.crate to view all the implemented objects.</span>
 
-<span class="sd">client = aiobungie.Client(key=&#39;YOUR_API_KEY&#39;)</span>
+<span class="sd">client = aiobungie.Client(&#39;YOUR_API_KEY&#39;)</span>
 
 <span class="sd">async def main() -&gt; None:</span>
 <span class="sd">    users = await client.search_users(&#39;Indica&#39;)</span>
@@ -1197,8 +1198,8 @@ Which gives you the freedom to deserialize it and implement you own logic in the
 
 <span class="sd">        try:</span>
 <span class="sd">            character = await client.fetch_character(</span>
-<span class="sd">                user.id, user.type, aiobungie.MembershipType.HUNTER)</span>
-<span class="sd">        except aiobungie.CharacterError exc:</span>
+<span class="sd">                user.id, user.type, aiobungie.Class.HUNTER)</span>
+<span class="sd">        except aiobungie.CharacterError as exc:</span>
 <span class="sd">            print(f&#39;Couldn&#39;t get {user.name}&#39;s hunter character. Due to: {exc}&#39;)</span>
 <span class="sd">        else:</span>
 <span class="sd">            print(character.light, character.id, character.emblem, character.class_type)</span>
@@ -1217,18 +1218,19 @@ Which gives you the freedom to deserialize it and implement you own logic in the
 <span class="sd">Which lets you to implement your own logic, classes objects to get the desired results.</span>
 
 <span class="sd">```py</span>
-
 <span class="sd">import aiobungie</span>
 
-<span class="sd">client = aiobungie.RESTClient(key=&#39;YOUR_API_KEY&#39;)</span>
-
 <span class="sd">async def main() -&gt; None:</span>
-<span class="sd">    fetch_player = await client.fetch_player(&#39;Fate怒#4275&#39;) # First player in the array. Always returns one player.</span>
-<span class="sd">    print(*player)</span>
-<span class="sd">    for player in fetch_player:</span>
-<span class="sd">        print(player[&#39;membershipId&#39;], player[&#39;iconPath&#39;])</span>
-<span class="sd">        for k, v in fetch_player:</span>
-<span class="sd">            print(k, v)</span>
+<span class="sd">    # First player in the array. Always returns one player.</span>
+
+<span class="sd">    # Using `async with` context manager to close the session properly.</span>
+<span class="sd">    async with aiobungie.RESTClient(&quot;TOKEN&quot;) as rest:</span>
+<span class="sd">        fetch_player = await rest.fetch_player(&#39;Fate怒#4275&#39;)</span>
+<span class="sd">        print(*fetch_player)</span>
+<span class="sd">        for player in fetch_player:</span>
+<span class="sd">            print(player[&#39;membershipId&#39;], player[&#39;iconPath&#39;])</span>
+<span class="sd">            for k, v in player.items():</span>
+<span class="sd">                print(k, v)</span>
 
 <span class="sd">import asyncio</span>
 <span class="sd">asyncio.run(main())</span>
@@ -1749,12 +1751,6 @@ Which gives you the freedom to deserialize it and implement you own logic in the
         <span class="k">finally</span><span class="p">:</span>
             <span class="c1"># Session management.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">close</span><span class="p">())</span>
-
-    <span class="k">async</span> <span class="k">def</span> <span class="fm">__aenter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span>
-
-    <span class="k">async</span> <span class="k">def</span> <span class="fm">__aexit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">__</span><span class="p">,</span> <span class="n">___</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">None</span>
 
     <span class="c1"># * Unspecified methods. *#</span>
 
@@ -6377,13 +6373,13 @@ The requested membership type.</p>
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
 <span class="sd">    ```py</span>
-<span class="sd">    rest_client = aiobungie.RESTClient(&quot;TOKEN&quot;)</span>
 <span class="sd">    async def main():</span>
-<span class="sd">        req = await rest_client.fetch_clan_members(4389205)</span>
-<span class="sd">        clan_members = req[&#39;results&#39;]</span>
-<span class="sd">        for member in clan_members:</span>
-<span class="sd">            for k, v in member[&#39;destinyUserInfo&#39;].items():</span>
-<span class="sd">                print(k, v)</span>
+<span class="sd">        async with aiobungie.RESTClient(&quot;TOKEN&quot;) as rest_client:</span>
+<span class="sd">            req = await rest_client.fetch_clan_members(4389205)</span>
+<span class="sd">            clan_members = req[&#39;results&#39;]</span>
+<span class="sd">            for member in clan_members:</span>
+<span class="sd">                for k, v in member[&#39;destinyUserInfo&#39;].items():</span>
+<span class="sd">                    print(k, v)</span>
 <span class="sd">    ```</span>
 
 <span class="sd">    Attributes</span>
@@ -6478,6 +6474,19 @@ The requested membership type.</p>
                     <span class="k">raise</span> <span class="n">error</span><span class="o">.</span><span class="n">HTTPException</span><span class="p">(</span>
                         <span class="sa">f</span><span class="s2">&quot;Expected json content but got </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">content_type</span><span class="si">=}</span><span class="s2">, </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">real_url</span><span class="si">=!r}</span><span class="s2">&quot;</span>
                     <span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="fm">__aenter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RESTClient</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="fm">__aexit__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">exception_type</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">type</span><span class="p">[</span><span class="ne">BaseException</span><span class="p">]],</span>
+        <span class="n">exception</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="ne">BaseException</span><span class="p">],</span>
+        <span class="n">exception_traceback</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">types</span><span class="o">.</span><span class="n">TracebackType</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="p">:</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">None</span>
 
     <span class="nd">@staticmethod</span>
     <span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
@@ -6666,13 +6675,13 @@ The requested membership type.</p>
 
 <h6 id="example">Example</h6>
 
-<div class="codehilite"><pre><span></span><code><span class="n">rest_client</span> <span class="o">=</span> <span class="n">aiobungie</span><span class="o">.</span><span class="n">RESTClient</span><span class="p">(</span><span class="s2">&quot;TOKEN&quot;</span><span class="p">)</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="n">req</span> <span class="o">=</span> <span class="k">await</span> <span class="n">rest_client</span><span class="o">.</span><span class="n">fetch_clan_members</span><span class="p">(</span><span class="mi">4389205</span><span class="p">)</span>
-    <span class="n">clan_members</span> <span class="o">=</span> <span class="n">req</span><span class="p">[</span><span class="s1">&#39;results&#39;</span><span class="p">]</span>
-    <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">clan_members</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">member</span><span class="p">[</span><span class="s1">&#39;destinyUserInfo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+<div class="codehilite"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">aiobungie</span><span class="o">.</span><span class="n">RESTClient</span><span class="p">(</span><span class="s2">&quot;TOKEN&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">rest_client</span><span class="p">:</span>
+        <span class="n">req</span> <span class="o">=</span> <span class="k">await</span> <span class="n">rest_client</span><span class="o">.</span><span class="n">fetch_clan_members</span><span class="p">(</span><span class="mi">4389205</span><span class="p">)</span>
+        <span class="n">clan_members</span> <span class="o">=</span> <span class="n">req</span><span class="p">[</span><span class="s1">&#39;results&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">clan_members</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">member</span><span class="p">[</span><span class="s1">&#39;destinyUserInfo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
 </code></pre></div>
 
 <h6 id="attributes">Attributes</h6>
@@ -8742,12 +8751,6 @@ Since its only credential that works "currently"</li>
             <span class="c1"># Session management.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">close</span><span class="p">())</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="fm">__aenter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span>
-
-    <span class="k">async</span> <span class="k">def</span> <span class="fm">__aexit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">__</span><span class="p">,</span> <span class="n">___</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">None</span>
-
     <span class="c1"># * Unspecified methods. *#</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">from_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
@@ -9799,9 +9802,9 @@ for functional usage for the Bungie API objects.</p>
 
     <span class="k">async</span> <span class="k">def</span> <span class="fm">__aexit__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">_</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="ne">BaseException</span><span class="p">],</span>
-        <span class="n">__</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="ne">BaseException</span><span class="p">],</span>
-        <span class="n">___</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">types</span><span class="o">.</span><span class="n">TracebackType</span><span class="p">],</span>
+        <span class="n">exception_type</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">type</span><span class="p">[</span><span class="ne">BaseException</span><span class="p">]],</span>
+        <span class="n">exception</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="ne">BaseException</span><span class="p">],</span>
+        <span class="n">exception_traceback</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">types</span><span class="o">.</span><span class="n">TracebackType</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
 
@@ -9847,7 +9850,12 @@ for functional usage for the Bungie API objects.</p>
     <span class="k">async</span> <span class="k">def</span> <span class="fm">__aenter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_Session</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="fm">__aexit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">__</span><span class="p">,</span> <span class="n">___</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="fm">__aexit__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">exception_type</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">type</span><span class="p">[</span><span class="ne">BaseException</span><span class="p">]],</span>
+        <span class="n">exception</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="ne">BaseException</span><span class="p">],</span>
+        <span class="n">exception_traceback</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">types</span><span class="o">.</span><span class="n">TracebackType</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -9861,13 +9869,13 @@ for functional usage for the Bungie API objects.</p>
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
 <span class="sd">    ```py</span>
-<span class="sd">    rest_client = aiobungie.RESTClient(&quot;TOKEN&quot;)</span>
 <span class="sd">    async def main():</span>
-<span class="sd">        req = await rest_client.fetch_clan_members(4389205)</span>
-<span class="sd">        clan_members = req[&#39;results&#39;]</span>
-<span class="sd">        for member in clan_members:</span>
-<span class="sd">            for k, v in member[&#39;destinyUserInfo&#39;].items():</span>
-<span class="sd">                print(k, v)</span>
+<span class="sd">        async with aiobungie.RESTClient(&quot;TOKEN&quot;) as rest_client:</span>
+<span class="sd">            req = await rest_client.fetch_clan_members(4389205)</span>
+<span class="sd">            clan_members = req[&#39;results&#39;]</span>
+<span class="sd">            for member in clan_members:</span>
+<span class="sd">                for k, v in member[&#39;destinyUserInfo&#39;].items():</span>
+<span class="sd">                    print(k, v)</span>
 <span class="sd">    ```</span>
 
 <span class="sd">    Attributes</span>
@@ -9962,6 +9970,19 @@ for functional usage for the Bungie API objects.</p>
                     <span class="k">raise</span> <span class="n">error</span><span class="o">.</span><span class="n">HTTPException</span><span class="p">(</span>
                         <span class="sa">f</span><span class="s2">&quot;Expected json content but got </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">content_type</span><span class="si">=}</span><span class="s2">, </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">real_url</span><span class="si">=!r}</span><span class="s2">&quot;</span>
                     <span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="fm">__aenter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RESTClient</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="fm">__aexit__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">exception_type</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">type</span><span class="p">[</span><span class="ne">BaseException</span><span class="p">]],</span>
+        <span class="n">exception</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="ne">BaseException</span><span class="p">],</span>
+        <span class="n">exception_traceback</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">types</span><span class="o">.</span><span class="n">TracebackType</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="p">:</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">None</span>
 
     <span class="nd">@staticmethod</span>
     <span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>

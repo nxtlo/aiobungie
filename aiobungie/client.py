@@ -94,12 +94,6 @@ class Client(traits.ClientBase):
             # Session management.
             self._loop.run_until_complete(self.rest.close())
 
-    async def __aenter__(self):
-        return self
-
-    async def __aexit__(self, _, __, ___) -> None:
-        return None
-
     # * Unspecified methods. *#
 
     async def from_path(self, path: str, **kwargs: typing.Any) -> typing.Any:

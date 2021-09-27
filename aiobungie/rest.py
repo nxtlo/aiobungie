@@ -103,9 +103,9 @@ class PreLock:
 
     async def __aexit__(
         self,
-        _: typing.Optional[BaseException],
-        __: typing.Optional[BaseException],
-        ___: typing.Optional[types.TracebackType],
+        exception_type: typing.Optional[type[BaseException]],
+        exception: typing.Optional[BaseException],
+        exception_traceback: typing.Optional[types.TracebackType],
     ) -> None:
         self._lock.release()
 
@@ -151,7 +151,12 @@ class _Session:
     async def __aenter__(self) -> _Session:
         return self
 
-    async def __aexit__(self, _, __, ___) -> None:
+    async def __aexit__(
+        self,
+        exception_type: typing.Optional[type[BaseException]],
+        exception: typing.Optional[BaseException],
+        exception_traceback: typing.Optional[types.TracebackType],
+    ) -> None:
         await self.close()
 
     async def close(self) -> None:
@@ -165,13 +170,13 @@ class RESTClient(interfaces.RESTInterface):
     Example
     -------
     ```py
-    rest_client = aiobungie.RESTClient("TOKEN")
     async def main():
-        req = await rest_client.fetch_clan_members(4389205)
-        clan_members = req['results']
-        for member in clan_members:
-            for k, v in member['destinyUserInfo'].items():
-                print(k, v)
+        async with aiobungie.RESTClient("TOKEN") as rest_client:
+            req = await rest_client.fetch_clan_members(4389205)
+            clan_members = req['results']
+            for member in clan_members:
+                for k, v in member['destinyUserInfo'].items():
+                    print(k, v)
     ```
 
     Attributes
@@ -266,6 +271,19 @@ class RESTClient(interfaces.RESTInterface):
                     raise error.HTTPException(
                         f"Expected json content but got {response.content_type=}, {response.real_url=!r}"
                     ) from None
+
+    async def __aenter__(self) -> RESTClient:
+        return self
+
+    async def __aexit__(
+        self,
+        exception_type: typing.Optional[type[BaseException]],
+        exception: typing.Optional[BaseException],
+        exception_traceback: typing.Optional[types.TracebackType],
+    ) -> None:
+        if self._session:
+            await self._session.close()
+        return None
 
     @staticmethod
     @typing.final

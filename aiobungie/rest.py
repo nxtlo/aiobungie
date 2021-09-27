@@ -103,9 +103,9 @@ class PreLock:
 
     async def __aexit__(
         self,
-        _: typing.Optional[BaseException],
-        __: typing.Optional[BaseException],
-        ___: typing.Optional[types.TracebackType],
+        exception_type: typing.Optional[type[BaseException]],
+        exception: typing.Optional[BaseException],
+        exception_traceback: typing.Optional[types.TracebackType],
     ) -> None:
         self._lock.release()
 
@@ -151,7 +151,12 @@ class _Session:
     async def __aenter__(self) -> _Session:
         return self
 
-    async def __aexit__(self, _, __, ___) -> None:
+    async def __aexit__(
+        self,
+        exception_type: typing.Optional[type[BaseException]],
+        exception: typing.Optional[BaseException],
+        exception_traceback: typing.Optional[types.TracebackType],
+    ) -> None:
         await self.close()
 
     async def close(self) -> None:
@@ -270,7 +275,12 @@ class RESTClient(interfaces.RESTInterface):
     async def __aenter__(self) -> RESTClient:
         return self
 
-    async def __aexit__(self, _, __, ___) -> None:
+    async def __aexit__(
+        self,
+        exception_type: typing.Optional[type[BaseException]],
+        exception: typing.Optional[BaseException],
+        exception_traceback: typing.Optional[types.TracebackType],
+    ) -> None:
         if self._session:
             await self._session.close()
         return None

@@ -584,3 +584,35 @@ class RESTInterface(abc.ABC):
         `ResponseSig[aiobungie.internal.helpers.JsonObject]`
         A JSON object which contains an Array of profiles, an Array of profiles with errors and Bungie.Net membership
         """
+
+    @abc.abstractmethod
+    def fetch_item(
+        self, member_id: int, item_id: int, /
+    ) -> ResponseSig[helpers.JsonObject]:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def fetch_clan_weekly_rewards(
+        self, clan_id: int, /
+    ) -> ResponseSig[helpers.JsonObject]:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def fetch_public_milestone_content(
+        self, milestone_hash: int, /
+    ) -> ResponseSig[helpers.JsonObject]:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def fetch_public_milestones(self) -> ResponseSig[helpers.JsonObject]:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def fetch_weapon_history(
+        self, character_id: int, member_id: int, member_type: enums.MembershipType
+    ) -> ResponseSig[helpers.JsonObject]:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def fetch_clan_banners(self) -> ResponseSig[helpers.JsonObject]:
+        raise NotImplementedError

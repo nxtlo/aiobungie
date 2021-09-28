@@ -45,7 +45,7 @@ from aiobungie.internal import enums
 from aiobungie.internal import helpers
 
 ResponseSigT = typing.TypeVar("ResponseSigT")
-"""The type of the response signature."""
+"""The signature of the response."""
 
 ResponseSig = typing.Coroutine[typing.Any, typing.Any, ResponseSigT]
 """A type hint for a general coro method that returns a type
@@ -208,7 +208,7 @@ class RESTClient(interfaces.RESTInterface):
         await self._acquire_session().close()
 
     @typing.final
-    async def _fetch(
+    async def _request(
         self,
         method: str,
         route: str,
@@ -294,63 +294,63 @@ class RESTClient(interfaces.RESTInterface):
 
     def fetch_user(self, id: int) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._fetch("GET", f"User/GetBungieNetUserById/{id}/")
+        return self._request("GET", f"User/GetBungieNetUserById/{id}/")
 
     def fetch_user_themes(self) -> ResponseSig[helpers.JsonArray]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._fetch("GET", "User/GetAvailableThemes/")
+        return self._request("GET", "User/GetAvailableThemes/")
 
     def fetch_membership_from_id(
         self, id: int, type: enums.MembershipType = enums.MembershipType.NONE, /
     ) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._fetch("GET", f"User/GetMembershipsById/{id}/{type}")
+        return self._request("GET", f"User/GetMembershipsById/{id}/{type}")
 
     def static_search(self, path: str, **kwargs: typing.Any) -> ResponseSig[typing.Any]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._fetch("GET", path, **kwargs)
+        return self._request("GET", path, **kwargs)
 
     def fetch_player(
         self, name: str, type: enums.MembershipType = enums.MembershipType.ALL, /
     ) -> ResponseSig[helpers.JsonArray]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._fetch(
+        return self._request(
             "GET", f"Destiny2/SearchDestinyPlayer/{int(type)}/{quote(name)}/"
         )
 
     def search_users(self, name: str, /) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._fetch("GET", f"User/Search/Prefix/{name}/0")
+        return self._request("GET", f"User/Search/Prefix/{name}/0")
 
     def fetch_clan_from_id(self, id: int) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._fetch("GET", f"GroupV2/{id}")
+        return self._request("GET", f"GroupV2/{id}")
 
     def fetch_clan(
         self, name: str, type: enums.GroupType = enums.GroupType.CLAN
     ) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._fetch("GET", f"GroupV2/Name/{name}/{int(type)}")
+        return self._request("GET", f"GroupV2/Name/{name}/{int(type)}")
 
     def fetch_clan_admins(self, clan_id: int, /) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._fetch("GET", f"GroupV2/{clan_id}/AdminsAndFounder/")
+        return self._request("GET", f"GroupV2/{clan_id}/AdminsAndFounder/")
 
     def fetch_clan_conversations(
         self, clan_id: int, /
     ) -> ResponseSig[helpers.JsonArray]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._fetch("GET", f"GroupV2/{clan_id}/OptionalConversations/")
+        return self._request("GET", f"GroupV2/{clan_id}/OptionalConversations/")
 
     def fetch_app(self, appid: int, /) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._fetch("GET", f"App/Application/{appid}")
+        return self._request("GET", f"App/Application/{appid}")
 
     def fetch_character(
         self, memberid: int, type: enums.MembershipType, /
     ) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._fetch(
+        return self._request(
             "GET",
             f"Destiny2/{int(type)}/Profile/{memberid}/?components={int(enums.Component.CHARACTERS)}",
         )
@@ -366,7 +366,7 @@ class RESTClient(interfaces.RESTInterface):
         limit: typing.Optional[int] = 1,
     ) -> ResponseSig[typing.Any]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._fetch(
+        return self._request(
             "GET",
             f"Destiny2/{int(membership_type)}/Account/"
             f"{member_id}/Character/{character_id}/Stats/Activities"
@@ -375,12 +375,12 @@ class RESTClient(interfaces.RESTInterface):
 
     def fetch_post_activity(self, instance: int, /) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        # return self._fetch("GET", f"Destiny2/Stats/PostGameCarnageReport/{instance}")
+        # return self._request("GET", f"Destiny2/Stats/PostGameCarnageReport/{instance}")
         raise NotImplementedError
 
     def fetch_vendor_sales(self) -> ResponseSig[typing.Any]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._fetch(
+        return self._request(
             "GET", f"Destiny2/Vendors/?components={int(enums.Component.VENDOR_SALES)}"
         )
 
@@ -388,14 +388,14 @@ class RESTClient(interfaces.RESTInterface):
         self, memberid: int, type: enums.MembershipType, /
     ) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._fetch(
+        return self._request(
             "GET",
             f"Destiny2/{int(type)}/Profile/{int(memberid)}/?components={int(enums.Component.PROFILE)}",
         )
 
     def fetch_entity(self, type: str, hash: int) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._fetch("GET", route=f"Destiny2/Manifest/{type}/{hash}")
+        return self._request("GET", route=f"Destiny2/Manifest/{type}/{hash}")
 
     def fetch_inventory_item(self, hash: int) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
@@ -410,7 +410,7 @@ class RESTClient(interfaces.RESTInterface):
         filter: int = 0,
         group_type: enums.GroupType = enums.GroupType.CLAN,
     ) -> ResponseSig[helpers.JsonObject]:
-        return self._fetch(
+        return self._request(
             "GET",
             f"GroupV2/User/{int(member_type)}/{member_id}/{filter}/{int(group_type)}/",
         )
@@ -424,7 +424,7 @@ class RESTClient(interfaces.RESTInterface):
         filter: int = 0,
         group_type: enums.GroupType = enums.GroupType.CLAN,
     ) -> ResponseSig[helpers.JsonObject]:
-        return self._fetch(
+        return self._request(
             "GET",
             f"GroupV2/User/Potential/{int(member_type)}/{member_id}/{filter}/{int(group_type)}/",
         )
@@ -437,7 +437,7 @@ class RESTClient(interfaces.RESTInterface):
         /,
     ) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._fetch(
+        return self._request(
             "GET",
             f"/GroupV2/{id}/Members/?memberType={int(type)}&nameSearch={name if name else ''}&currentpage=1",
         )
@@ -449,27 +449,53 @@ class RESTClient(interfaces.RESTInterface):
         /,
     ) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._fetch(
+        return self._request(
             "GET",
             f"User/GetMembershipFromHardLinkedCredential/{int(type)}/{credential}/",
         )
 
     async def fetch_manifest_path(self) -> str:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        request = await self._fetch("GET", "Destiny2/Manifest")
+        request = await self._request("GET", "Destiny2/Manifest")
         return request["mobileWorldContentPaths"]["en"]
 
     async def fetch_manifest(self) -> bytes:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         content = await self.fetch_manifest_path()
-        resp = await self._fetch("GET", content, type="read", base=True)
+        resp = await self._request("GET", content, type="read", base=True)
         return resp
 
     def fetch_linked_profiles(
         self, member_id: int, member_type: enums.MembershipType, /, *, all: bool = False
     ) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._fetch(
+        return self._request(
             "GET",
             f"Destiny2/{int(member_type)}/Profile/{member_id}/LinkedProfiles/?getAllMemberships={all}",
         )
+
+    def fetch_item(
+        self, member_id: int, item_id: int, /
+    ) -> ResponseSig[helpers.JsonObject]:
+        raise NotImplementedError
+
+    def fetch_clan_weekly_rewards(
+        self, clan_id: int, /
+    ) -> ResponseSig[helpers.JsonObject]:
+        raise NotImplementedError
+
+    def fetch_public_milestone_content(
+        self, milestone_hash: int, /
+    ) -> ResponseSig[helpers.JsonObject]:
+        raise NotImplementedError
+
+    def fetch_public_milestones(self) -> ResponseSig[helpers.JsonObject]:
+        raise NotImplementedError
+
+    def fetch_weapon_history(
+        self, character_id: int, member_id: int, member_type: enums.MembershipType
+    ) -> ResponseSig[helpers.JsonObject]:
+        raise NotImplementedError
+
+    def fetch_clan_banners(self) -> ResponseSig[helpers.JsonObject]:
+        raise NotImplementedError

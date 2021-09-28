@@ -102,6 +102,9 @@
                         <li>
                                 <a class="function" href="#RESTInterface.fetch_app">fetch_app</a>
                         </li>
+                        <li>
+                                <a class="function" href="#RESTInterface.fetch_linked_profiles">fetch_linked_profiles</a>
+                        </li>
                 </ul>
 
             </li>
@@ -680,6 +683,39 @@
 <span class="sd">        --------</span>
 <span class="sd">        `ResponseSig[aiobungie.internal.helpers.JsonObject]`</span>
 <span class="sd">            A JSON object of the application.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_linked_profiles</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">member_type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="nb">all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonObject</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Returns a summary information about all profiles linked to the requested member.</span>
+
+<span class="sd">        The passed membership id/type maybe a Bungie.Net membership or a Destiny memberships.</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">            It will only return linked accounts whose linkages you are allowed to view.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        member_id : `builtins.int`</span>
+<span class="sd">            The ID of the membership. This must be a valid Bungie.Net or PSN or Xbox ID.</span>
+<span class="sd">        member_type : `aiobungie.MembershipType`</span>
+<span class="sd">            The type for the membership whose linked Destiny account you want to return.</span>
+
+<span class="sd">        Other Parameters</span>
+<span class="sd">        ----------------</span>
+<span class="sd">        all : `builtins.bool`</span>
+<span class="sd">            If provided and set to `True`, All memberships regardless</span>
+<span class="sd">            of whether thry&#39;re obscured by overrides will be returned,</span>
+
+<span class="sd">            If provided and set to `False`, Only available memberships will be returned.</span>
+<span class="sd">            The default for this is `False`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `ResponseSig[aiobungie.internal.helpers.JsonObject]`</span>
+<span class="sd">        A JSON object which contains an Array of profiles, an Array of profiles with errors and Bungie.Net membership</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
@@ -2093,6 +2129,97 @@ The application id.</li>
 
 <ul>
 <li><strong><code>ResponseSig[<a href="internal/helpers.html#JsonObject">aiobungie.internal.helpers.JsonObject</a>]</code></strong>: A JSON object of the application.</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="RESTInterface.fetch_linked_profiles" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTInterface.fetch_linked_profiles">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@abc.abstractmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">fetch_linked_profiles</span><span class="signature">(
+    self,
+    member_id: int,
+    member_type: <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>,
+    /,
+    *,
+    all: bool = False
+) -&gt; Coroutine[Any, Any, Dict[str, Any]]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_linked_profiles</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">member_type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="nb">all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonObject</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Returns a summary information about all profiles linked to the requested member.</span>
+
+<span class="sd">        The passed membership id/type maybe a Bungie.Net membership or a Destiny memberships.</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">            It will only return linked accounts whose linkages you are allowed to view.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        member_id : `builtins.int`</span>
+<span class="sd">            The ID of the membership. This must be a valid Bungie.Net or PSN or Xbox ID.</span>
+<span class="sd">        member_type : `aiobungie.MembershipType`</span>
+<span class="sd">            The type for the membership whose linked Destiny account you want to return.</span>
+
+<span class="sd">        Other Parameters</span>
+<span class="sd">        ----------------</span>
+<span class="sd">        all : `builtins.bool`</span>
+<span class="sd">            If provided and set to `True`, All memberships regardless</span>
+<span class="sd">            of whether thry&#39;re obscured by overrides will be returned,</span>
+
+<span class="sd">            If provided and set to `False`, Only available memberships will be returned.</span>
+<span class="sd">            The default for this is `False`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `ResponseSig[aiobungie.internal.helpers.JsonObject]`</span>
+<span class="sd">        A JSON object which contains an Array of profiles, an Array of profiles with errors and Bungie.Net membership</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Returns a summary information about all profiles linked to the requested member.</p>
+
+<p>The passed membership id/type maybe a Bungie.Net membership or a Destiny memberships.</p>
+
+<p><em>Note:</em>
+It will only return linked accounts whose linkages you are allowed to view.</p>
+
+<h6 id="parameters">Parameters</h6>
+
+<ul>
+<li><strong>member_id</strong> (<code>builtins.int</code>):
+The ID of the membership. This must be a valid Bungie.Net or PSN or Xbox ID.</li>
+<li><strong>member_type</strong> (<code><a href="../aiobungie.html#MembershipType">aiobungie.MembershipType</a></code>):
+The type for the membership whose linked Destiny account you want to return.</li>
+</ul>
+
+<h6 id="other-parameters">Other Parameters</h6>
+
+<ul>
+<li><p><strong>all</strong> (<code>builtins.bool</code>):
+If provided and set to <code>True</code>, All memberships regardless
+of whether thry're obscured by overrides will be returned,</p>
+
+<p>If provided and set to <code>False</code>, Only available memberships will be returned.
+The default for this is <code>False</code>.</p></li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<ul>
+<li><strong><code>ResponseSig[<a href="internal/helpers.html#JsonObject">aiobungie.internal.helpers.JsonObject</a>]</code></strong></li>
+<li><strong>A JSON object which contains an Array of profiles, an Array of profiles with errors and Bungie.Net membership</strong></li>
 </ul>
 </div>
 

@@ -24,7 +24,7 @@
 
 from __future__ import annotations
 
-__all__ = ("Profile", "ProfileComponent")
+__all__ = ("Profile", "ProfileComponent", "LinkedProfile")
 
 import abc
 import datetime
@@ -33,8 +33,10 @@ import typing
 
 import attr
 
+from aiobungie.crate import user
 from aiobungie.crate.character import Character
 from aiobungie.internal import enums
+from aiobungie.internal import helpers
 from aiobungie.internal import traits
 
 log: typing.Final[logging.Logger] = logging.getLogger(__name__)
@@ -151,6 +153,47 @@ class ProfileComponent(abc.ABC):
             title_hash=char.title_hash,
             stats=char.stats,
         )
+
+
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
+class LinkedProfile:
+    """Represents a membership linked profile information summary.
+
+    You can iterate asynchronously through the profiles.
+
+    Example
+    -------
+    ```py
+    profiles = await client.fetch_linked_profiles(..., ...)
+    try:
+        while True:
+            async for profile in profiles:
+                real_profile = await profile.fetch_self_profile()
+                print(repr(await real_profile.warlock()))
+    except StopIteration:
+        pass
+    ```
+    """
+
+    net: traits.Netrunner = attr.field(repr=False, eq=False, hash=False)
+    """A network state used for making external requests."""
+
+    profiles: typing.Sequence[user.DestinyUser] = attr.field(repr=True)
+    """A sequence of destiny memberships for this profile."""
+
+    bungie: user.PartialBungieUser = attr.field(repr=True)
+    """The profile's bungie membership."""
+
+    profiles_with_errors: typing.Optional[
+        typing.Sequence[user.DestinyUser]
+    ] = attr.field(repr=True, eq=False)
+    """A sequence of optional destiny memberships with errors.
+
+    These profiles exists because they have missing fields. Otherwise this will be an empty array.
+    """
+
+    def __aiter__(self) -> helpers.AsyncIterator[user.DestinyUser]:
+        return helpers.AsyncIterator(self.profiles)
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)

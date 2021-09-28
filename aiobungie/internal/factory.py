@@ -749,3 +749,28 @@ class Factory:
             completion_reason=data[11],
             player_count=int(data[15]),
         )
+
+    def deserialize_linked_profiles(self, payload: JsonObject) -> profile.LinkedProfile:
+        bungie_user = self.deserialize_partial_bungie_user(
+            payload["bnetMembership"], noeq=True
+        )
+        error_profiles_vec: typing.MutableSequence[user.DestinyUser] = []
+        profiles_vec: typing.MutableSequence[user.DestinyUser] = []
+
+        if (raw_profile := payload.get("profiles")) is not None:
+            for pfile in raw_profile:
+                profiles_vec.append(self.deserialize_destiny_user(pfile, noeq=True))
+
+        if (raw_profiles_with_errors := payload.get("profilesWithErrors")) is not None:
+            for raw_error_pfile in raw_profiles_with_errors:
+                if (error_pfile := raw_error_pfile.get("infoCard")) is not None:
+                    error_profiles_vec.append(
+                        self.deserialize_destiny_user(error_pfile, noeq=True)
+                    )
+
+        return profile.LinkedProfile(
+            net=self._net,
+            bungie=bungie_user,
+            profiles=profiles_vec,
+            profiles_with_errors=error_profiles_vec,
+        )

@@ -280,6 +280,40 @@ class Client(traits.ClientBase):
         assert isinstance(data, dict)
         return self.serialize.deserialize_profile(data)
 
+    async def fetch_linked_profiles(
+        self, member_id: int, member_type: MembershipType, /, *, all: bool = False
+    ) -> crate.profile.LinkedProfile:
+        """Returns a summary information about all profiles linked to the requested member.
+
+        The passed membership id/type maybe a Bungie.Net membership or a Destiny memberships.
+
+        .. note::
+            It will only return linked accounts whose linkages you are allowed to view.
+
+        Parameters
+        ----------
+        member_id : `builtins.int`
+            The ID of the membership. This must be a valid Bungie.Net or PSN or Xbox ID.
+        member_type : `aiobungie.MembershipType`
+            The type for the membership whose linked Destiny account you want to return.
+
+        Other Parameters
+        ----------------
+        all : `builtins.bool`
+            If provided and set to `True`, All memberships regardless
+            of whether thry're obscured by overrides will be returned,
+
+            If provided and set to `False`, Only available memberships will be returned.
+            The default for this is `False`.
+
+        Returns
+        -------
+        `aiobungie.crate.profile.LinkedProfile`
+            A linked profile object.
+        """
+        resp = await self.rest.fetch_linked_profiles(member_id, member_type, all=all)
+        return self.serialize.deserialize_linked_profiles(resp)
+
     async def fetch_player(
         self, name: str, type: MembershipType = MembershipType.ALL, /
     ) -> typing.Sequence[crate.user.DestinyUser]:

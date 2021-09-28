@@ -36,6 +36,7 @@ __all__ = (
     "just",
     "NoneOr",
     "get_or_make_loop",
+    "AsyncIterator",
 )
 
 import asyncio
@@ -109,6 +110,44 @@ def get_or_make_loop() -> asyncio.AbstractEventLoop:
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     return loop
+
+
+class Ok(StopIteration):
+    def __init__(self) -> None:
+        self.__call__()
+
+    def __call__(self) -> typing.NoReturn:
+        raise StopIteration("Reached the maximum iterables.") from None
+
+
+class AsyncIterator(typing.Generic[T]):
+    """A simple async iterator for iterating over sequences asynchronously.
+
+    Attributes
+    ----------
+    sequence: `typing.Iterable[T]`
+        A sequence of the generic iterables type.
+    """
+
+    __slots__: typing.Sequence[str] = ("_seq",)
+
+    def __init__(self, sequence: typing.Iterable[T]) -> None:
+        self._seq = iter(sequence)
+
+    def __iter__(self) -> AsyncIterator[T]:
+        return self
+
+    def __aiter__(self) -> AsyncIterator[T]:
+        return self
+
+    def __next__(self) -> T:
+        return next(self._seq)
+
+    async def __anext__(self) -> T:
+        try:
+            return next(self._seq)
+        except StopIteration:
+            raise Ok()
 
 
 class UndefinedType:

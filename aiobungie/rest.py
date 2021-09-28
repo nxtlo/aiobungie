@@ -306,9 +306,11 @@ class RESTClient(interfaces.RESTInterface):
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request("GET", f"User/GetMembershipsById/{id}/{type}")
 
-    def static_search(self, path: str, **kwargs: typing.Any) -> ResponseSig[typing.Any]:
+    def static_request(
+        self, method: str, path: str, **kwargs: typing.Any
+    ) -> ResponseSig[typing.Any]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request("GET", path, **kwargs)
+        return self._request(method, path, **kwargs)
 
     def fetch_player(
         self, name: str, type: enums.MembershipType = enums.MembershipType.ALL, /
@@ -498,4 +500,4 @@ class RESTClient(interfaces.RESTInterface):
         raise NotImplementedError
 
     def fetch_clan_banners(self) -> ResponseSig[helpers.JsonObject]:
-        raise NotImplementedError
+        return self._request("GET", "Destiny2/Clan/ClanBannerDictionary/")

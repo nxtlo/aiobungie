@@ -11,6 +11,7 @@ from .clans import (
     ClanMember as ClanMember,
     ClanAdmin as ClanAdmin,
     GroupMember as GroupMember,
+    ClanBanner as ClanBanner
 )
 from .entity import Entity as Entity, InventoryEntity as InventoryEntity
 from .friends import Friend as Friend

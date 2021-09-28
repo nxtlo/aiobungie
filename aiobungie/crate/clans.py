@@ -33,6 +33,7 @@ __all__ = (
     "ClanAdmin",
     "ClanFeatures",
     "ClanConversation",
+    "ClanBanner",
     "GroupMember",
 )
 
@@ -97,6 +98,20 @@ class ClanConversation:
 
     security: int = attr.field(repr=False)
     """Conversation's security level."""
+
+
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
+class ClanBanner:
+    """Representation of information of the clan banner."""
+
+    id: int = attr.field(repr=True)
+    """The banner's id."""
+
+    foreground: assets.MaybeImage = attr.field(repr=True)
+    """The banner's foreground. This field can be `UNDEFINED` if not found."""
+
+    background: assets.MaybeImage = attr.field(repr=True)
+    """The banner's background. This field can be `UNDEFINED` if not found."""
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)

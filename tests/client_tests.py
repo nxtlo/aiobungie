@@ -72,9 +72,9 @@ async def test_hard_types() -> crate.user.HardLinkedMembership:
 @view
 async def test_clan_from_id() -> crate.Clan:
     c = await client.fetch_clan_from_id(4389205)
-    # members = await c.fetch_members()
-    # member = await c.fetch_member("Fate")
-    # print(members, member)
+    members = await c.fetch_members()
+    member = await c.fetch_member("Fate")
+    print(members, member)
     print(c.owner)
     return c
 
@@ -152,7 +152,6 @@ async def test_membership_types_from_id() -> crate.User:
 
 @view
 async def test_rest() -> typing.Any:
-    # my_player = await rest_client.fetch_player("Fate怒#4275")
     req = await rest_client.fetch_clan_members(4389205)
     clan_members = req['results']  # type: ignore
     for member in clan_members:
@@ -206,8 +205,15 @@ async def test_linked_profiles():
     except StopIteration:
         pass
 
+@view
+async def test_clan_banners():
+    cb = await client.fetch_clan_banners()
+    for banner in cb:
+        print(repr(banner))
+
 async def main() -> None:
     coros = [
+        test_clan_banners(),
         test_linked_profiles(),
         test_clan_admins(),
         test_player(),

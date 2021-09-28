@@ -20,8 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""The base aiobungie Client that your should inherit from / use."""
-
+"""Basic implementation of a client that interacts with the API,
+Deserialize the REST payloads and returns `aiobungie.crate` implementations of these objects.
+"""
 
 from __future__ import annotations
 
@@ -53,11 +54,10 @@ class Client(traits.ClientBase):
         Your Bungie's API key or Token from the developer's portal.
     """
 
-    __slots__ = ("_rest", "_serialize", "_token", "_loop", "_kwargs")
+    __slots__ = ("_rest", "_serialize", "_token", "_loop")
 
-    def __init__(self, token: str, /, **kwargs: typing.Any) -> None:
+    def __init__(self, token: str, /) -> None:
         self._loop: asyncio.AbstractEventLoop = helpers.get_or_make_loop()
-        self._kwargs = kwargs
 
         if not token:
             raise ValueError("Missing the API key!")
@@ -95,25 +95,6 @@ class Client(traits.ClientBase):
             self._loop.run_until_complete(self.rest.close())
 
     # * Unspecified methods. *#
-
-    async def from_path(self, path: str, **kwargs: typing.Any) -> typing.Any:
-        """Raw http search given a valid bungie endpoint.
-
-        Parameters
-        ----------
-        path: `builtins.str`
-            The bungie endpoint or path.
-            A path must look something like this
-            "Destiny2/3/Profile/46111239123/..."
-        kwargs: `typing.Any`
-            Any other key words you'd like to pass through.
-
-        Returns
-        -------
-        `typing.Any`
-            Any object.
-        """
-        return await self.rest.static_search(path, **kwargs)
 
     async def fetch_manifest(self) -> Manifest:
         """Access The bungie Manifest.
@@ -179,6 +160,7 @@ class Client(traits.ClientBase):
             A sequence of user themes.
         """
         data = await self.rest.fetch_user_themes()
+        assert isinstance(data, list)
         return self.serialize.deserialize_user_themes(data)
 
     async def fetch_hard_types(
@@ -312,6 +294,7 @@ class Client(traits.ClientBase):
             A linked profile object.
         """
         resp = await self.rest.fetch_linked_profiles(member_id, member_type, all=all)
+        assert isinstance(resp, dict)
         return self.serialize.deserialize_linked_profiles(resp)
 
     async def fetch_player(
@@ -376,8 +359,7 @@ class Client(traits.ClientBase):
         """
         resp = await self.rest.fetch_character(memberid, type)
         assert isinstance(resp, dict)
-        char_module = self.serialize.deserialize_character(resp, chartype=character)
-        return char_module
+        return self.serialize.deserialize_character(resp, chartype=character)
 
     # * Destiny 2 Activities.
 
@@ -483,14 +465,14 @@ class Client(traits.ClientBase):
         self, name: str, /, type: GroupType = GroupType.CLAN
     ) -> crate.Clan:
         """Fetch a Clan by its name.
-        This method will return the first clan found with given name name.
+        This method will return the first clan found with given name.
 
         Parameters
         ----------
         name: `builtins.str`
             The clan name
         type `aiobungie.GroupType`
-            The group type, Default is one.
+            The group type, Default is aiobungie.GroupType.CLAN.
 
         Returns
         -------
@@ -571,6 +553,7 @@ class Client(traits.ClientBase):
         resp = await self.rest.fetch_groups_for_member(
             member_id, member_type, filter=filter, group_type=group_type
         )
+        assert isinstance(resp, dict)
         return self.serialize.deserialize_group_member(resp)
 
     async def fetch_potential_groups_for_member(
@@ -585,6 +568,7 @@ class Client(traits.ClientBase):
         resp = await self.rest.fetch_potential_groups_for_member(
             member_id, member_type, filter=filter, group_type=group_type
         )
+        assert isinstance(resp, dict)
         return self.serialize.deserialize_group_member(resp)
 
     async def fetch_clan_member(
@@ -663,6 +647,18 @@ class Client(traits.ClientBase):
         resp = await self.rest.fetch_clan_members(clan_id, type)
         assert isinstance(resp, dict)
         return self.serialize.deserialize_clan_members(resp)
+
+    async def fetch_clan_banners(self) -> typing.Sequence[crate.clans.ClanBanner]:
+        """Fetch the clan banners.
+
+        Returns
+        -------
+        `typing.Sequence[aiobungie.crate.ClanBanner]`
+            A sequence of the clan banners.
+        """
+        resp = await self.rest.fetch_clan_banners()
+        assert isinstance(resp, dict)
+        return self.serialize.deserialize_clan_banners(resp)
 
     # * Destiny 2 Definitions. Entities.
 

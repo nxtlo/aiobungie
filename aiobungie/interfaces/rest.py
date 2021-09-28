@@ -51,16 +51,20 @@ class RESTInterface(abc.ABC):
         """Close the rest client."""
 
     @abc.abstractmethod
-    def static_search(self, path: str, **kwargs: typing.Any) -> ResponseSig[typing.Any]:
-        """Raw http search given a valid bungie endpoint.
+    def static_request(
+        self, method: str, path: str, **kwargs: typing.Any
+    ) -> ResponseSig[typing.Any]:
+        """Raw http request given a valid bungie endpoint.
 
         Parameters
         ----------
+        method : `builtins.str`
+            The request method, This may be `GET`, `POST`, `PUT`, etc.
         path: `builtins.str`
             The bungie endpoint or path.
             A path must look something like this
-            "Destiny2/3/Profile/46111239123/..."
-        kwargs: `typing.Any`
+            `Destiny2/3/Profile/46111239123/...`
+        **kwargs: `typing.Any`
             Any other key words you'd like to pass through.
 
         Returns
@@ -615,4 +619,11 @@ class RESTInterface(abc.ABC):
 
     @abc.abstractmethod
     def fetch_clan_banners(self) -> ResponseSig[helpers.JsonObject]:
+        """Fetch the values of the clan banners.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.internal.helpers.JsonObject]`
+            A JSON object of the clan banners.
+        """
         raise NotImplementedError

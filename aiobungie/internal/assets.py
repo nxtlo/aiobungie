@@ -37,6 +37,9 @@ class Image:
     def __init__(self, path: typing.Optional[str] = None) -> None:
         self.path = path
 
+    def __repr__(self) -> str:
+        return self.__str__()
+
     def __str__(self) -> str:
         return url.BASE + self.path if self.path is not None else self.partial()
 

@@ -54,6 +54,7 @@ __all__ = (
     "ProfileComponent",
     "CharacterComponent",
     "LinkedProfile",
+    "ClanBanner"
 )
 
 from .activity import Activity
@@ -67,6 +68,7 @@ from .clans import ClanAdmin
 from .clans import ClanFeatures
 from .clans import ClanMember
 from .clans import GroupMember
+from .clans import ClanBanner
 from .entity import Entity
 from .entity import InventoryEntity
 from .friends import Friend

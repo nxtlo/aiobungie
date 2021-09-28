@@ -774,3 +774,17 @@ class Factory:
             profiles=profiles_vec,
             profiles_with_errors=error_profiles_vec,
         )
+
+    def deserialize_clan_banners(
+        self, payload: JsonObject
+    ) -> typing.Sequence[clans.ClanBanner]:
+        banners_seq: typing.MutableSequence[clans.ClanBanner] = []
+        if (banners := payload.get("clanBannerDecals")) is not None:
+            for k, v in banners.items():
+                banner_obj = clans.ClanBanner(
+                    id=int(k),
+                    foreground=Image(v.get("foregroundPath", Image.partial())),
+                    background=Image(v.get("backgroundPath", Image.partial())),
+                )
+                banners_seq.append(banner_obj)
+        return banners_seq

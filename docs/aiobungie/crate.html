@@ -1080,6 +1080,27 @@
                 </ul>
 
             </li>
+            <li>
+                    <a class="class" href="#LinkedProfile">LinkedProfile</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#LinkedProfile.__init__">LinkedProfile</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#LinkedProfile.net">net</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#LinkedProfile.profiles">profiles</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#LinkedProfile.bungie">bungie</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#LinkedProfile.profiles_with_errors">profiles_with_errors</a>
+                        </li>
+                </ul>
+
+            </li>
     </ul>
 
 
@@ -1159,6 +1180,7 @@ for functional usage for the Bungie API objects.</p>
     <span class="s2">&quot;PartialBungieUser&quot;</span><span class="p">,</span>
     <span class="s2">&quot;ProfileComponent&quot;</span><span class="p">,</span>
     <span class="s2">&quot;CharacterComponent&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;LinkedProfile&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">.activity</span> <span class="kn">import</span> <span class="n">Activity</span>
@@ -1176,6 +1198,7 @@ for functional usage for the Bungie API objects.</p>
 <span class="kn">from</span> <span class="nn">.entity</span> <span class="kn">import</span> <span class="n">InventoryEntity</span>
 <span class="kn">from</span> <span class="nn">.friends</span> <span class="kn">import</span> <span class="n">Friend</span>
 <span class="kn">from</span> <span class="nn">.player</span> <span class="kn">import</span> <span class="n">Player</span>
+<span class="kn">from</span> <span class="nn">.profile</span> <span class="kn">import</span> <span class="n">LinkedProfile</span>
 <span class="kn">from</span> <span class="nn">.profile</span> <span class="kn">import</span> <span class="n">Profile</span>
 <span class="kn">from</span> <span class="nn">.profile</span> <span class="kn">import</span> <span class="n">ProfileComponent</span>
 <span class="kn">from</span> <span class="nn">.user</span> <span class="kn">import</span> <span class="n">BungieUser</span>
@@ -8399,6 +8422,156 @@ A list of item ids you want to equip for this character.</li>
 <ul>
 <li><strong><code>NotImplementedError</code></strong>: This endpoint is currently not implemented.</li>
 </ul>
+</div>
+
+
+                            </div>
+                </section>
+                <section id="LinkedProfile">
+                                <div class="attr class">
+        <a class="headerlink" href="#LinkedProfile">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@attr.define(hash=False, kw_only=True, weakref_slot=False)</div>
+
+        <span class="def">class</span>
+        <span class="name">LinkedProfile</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="nd">@attr</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="nb">hash</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">weakref_slot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">LinkedProfile</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Represents a membership linked profile information summary.</span>
+
+<span class="sd">    You can iterate asynchronously through the profiles.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    ```py</span>
+<span class="sd">    profiles = await client.fetch_linked_profiles(..., ...)</span>
+<span class="sd">    try:</span>
+<span class="sd">        while True:</span>
+<span class="sd">            async for profile in profiles:</span>
+<span class="sd">                real_profile = await profile.fetch_self_profile()</span>
+<span class="sd">                print(repr(await real_profile.warlock()))</span>
+<span class="sd">    except StopIteration:</span>
+<span class="sd">        pass</span>
+<span class="sd">    ```</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">net</span><span class="p">:</span> <span class="n">traits</span><span class="o">.</span><span class="n">Netrunner</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">eq</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">hash</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;A network state used for making external requests.&quot;&quot;&quot;</span>
+
+    <span class="n">profiles</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">DestinyUser</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;A sequence of destiny memberships for this profile.&quot;&quot;&quot;</span>
+
+    <span class="n">bungie</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">PartialBungieUser</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;The profile&#39;s bungie membership.&quot;&quot;&quot;</span>
+
+    <span class="n">profiles_with_errors</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span>
+        <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">DestinyUser</span><span class="p">]</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">eq</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;A sequence of optional destiny memberships with errors.</span>
+
+<span class="sd">    These profiles exists because they have missing fields. Otherwise this will be an empty array.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__aiter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">helpers</span><span class="o">.</span><span class="n">AsyncIterator</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">DestinyUser</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">helpers</span><span class="o">.</span><span class="n">AsyncIterator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Represents a membership linked profile information summary.</p>
+
+<p>You can iterate asynchronously through the profiles.</p>
+
+<h6 id="example">Example</h6>
+
+<div class="codehilite"><pre><span></span><code><span class="n">profiles</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">fetch_linked_profiles</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">async</span> <span class="k">for</span> <span class="n">profile</span> <span class="ow">in</span> <span class="n">profiles</span><span class="p">:</span>
+            <span class="n">real_profile</span> <span class="o">=</span> <span class="k">await</span> <span class="n">profile</span><span class="o">.</span><span class="n">fetch_self_profile</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="k">await</span> <span class="n">real_profile</span><span class="o">.</span><span class="n">warlock</span><span class="p">()))</span>
+<span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+    <span class="k">pass</span>
+</code></pre></div>
+</div>
+
+
+                            <div id="LinkedProfile.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#LinkedProfile.__init__">#&nbsp;&nbsp</a>
+
+        
+            <span class="name">LinkedProfile</span><span class="signature">(
+    *,
+    net: <a href="internal/traits.html#Netrunner">aiobungie.internal.traits.Netrunner</a>,
+    profiles: Sequence[<a href="#user.DestinyUser">aiobungie.crate.user.DestinyUser</a>],
+    bungie: <a href="#user.PartialBungieUser">aiobungie.crate.user.PartialBungieUser</a>,
+    profiles_with_errors: Optional[Sequence[<a href="#user.DestinyUser">aiobungie.crate.user.DestinyUser</a>]]
+)</span>
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">net</span><span class="p">,</span> <span class="n">profiles</span><span class="p">,</span> <span class="n">bungie</span><span class="p">,</span> <span class="n">profiles_with_errors</span><span class="p">):</span>
+    <span class="n">_setattr</span> <span class="o">=</span> <span class="n">_cached_setattr</span><span class="o">.</span><span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span>
+    <span class="n">_setattr</span><span class="p">(</span><span class="s1">&#39;net&#39;</span><span class="p">,</span> <span class="n">net</span><span class="p">)</span>
+    <span class="n">_setattr</span><span class="p">(</span><span class="s1">&#39;profiles&#39;</span><span class="p">,</span> <span class="n">profiles</span><span class="p">)</span>
+    <span class="n">_setattr</span><span class="p">(</span><span class="s1">&#39;bungie&#39;</span><span class="p">,</span> <span class="n">bungie</span><span class="p">)</span>
+    <span class="n">_setattr</span><span class="p">(</span><span class="s1">&#39;profiles_with_errors&#39;</span><span class="p">,</span> <span class="n">profiles_with_errors</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Method generated by attrs for class LinkedProfile.</p>
+</div>
+
+
+                            </div>
+                            <div id="LinkedProfile.net" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#LinkedProfile.net">#&nbsp;&nbsp</a>
+
+        <span class="name">net</span><span class="annotation">: <a href="internal/traits.html#Netrunner">aiobungie.internal.traits.Netrunner</a></span><span class="default_value"> = &lt;member &#39;net&#39; of &#39;LinkedProfile&#39; objects&gt;</span>
+    </div>
+
+            <div class="docstring"><p>A network state used for making external requests.</p>
+</div>
+
+
+                            </div>
+                            <div id="LinkedProfile.profiles" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#LinkedProfile.profiles">#&nbsp;&nbsp</a>
+
+        <span class="name">profiles</span><span class="annotation">: Sequence[<a href="#user.DestinyUser">aiobungie.crate.user.DestinyUser</a>]</span><span class="default_value"> = &lt;member &#39;profiles&#39; of &#39;LinkedProfile&#39; objects&gt;</span>
+    </div>
+
+            <div class="docstring"><p>A sequence of destiny memberships for this profile.</p>
+</div>
+
+
+                            </div>
+                            <div id="LinkedProfile.bungie" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#LinkedProfile.bungie">#&nbsp;&nbsp</a>
+
+        <span class="name">bungie</span><span class="annotation">: <a href="#user.PartialBungieUser">aiobungie.crate.user.PartialBungieUser</a></span><span class="default_value"> = &lt;member &#39;bungie&#39; of &#39;LinkedProfile&#39; objects&gt;</span>
+    </div>
+
+            <div class="docstring"><p>The profile's bungie membership.</p>
+</div>
+
+
+                            </div>
+                            <div id="LinkedProfile.profiles_with_errors" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#LinkedProfile.profiles_with_errors">#&nbsp;&nbsp</a>
+
+        <span class="name">profiles_with_errors</span><span class="annotation">: Optional[Sequence[<a href="#user.DestinyUser">aiobungie.crate.user.DestinyUser</a>]]</span><span class="default_value"> = &lt;member &#39;profiles_with_errors&#39; of &#39;LinkedProfile&#39; objects&gt;</span>
+    </div>
+
+            <div class="docstring"><p>A sequence of optional destiny memberships with errors.</p>
+
+<p>These profiles exists because they have missing fields. Otherwise this will be an empty array.</p>
 </div>
 
 

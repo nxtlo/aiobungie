@@ -170,6 +170,9 @@
                                 <a class="function" href="#Client.fetch_profile">fetch_profile</a>
                         </li>
                         <li>
+                                <a class="function" href="#Client.fetch_linked_profiles">fetch_linked_profiles</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#Client.fetch_player">fetch_player</a>
                         </li>
                         <li>
@@ -858,6 +861,9 @@
                         </li>
                         <li>
                                 <a class="function" href="#RESTClient.fetch_manifest">fetch_manifest</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#RESTClient.fetch_linked_profiles">fetch_linked_profiles</a>
                         </li>
                 </ul>
 
@@ -1938,6 +1944,40 @@ Which gives you the freedom to deserialize it and implement you own logic in the
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">serialize</span><span class="o">.</span><span class="n">deserialize_profile</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_linked_profiles</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">member_type</span><span class="p">:</span> <span class="n">MembershipType</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="nb">all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">crate</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">LinkedProfile</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns a summary information about all profiles linked to the requested member.</span>
+
+<span class="sd">        The passed membership id/type maybe a Bungie.Net membership or a Destiny memberships.</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">            It will only return linked accounts whose linkages you are allowed to view.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        member_id : `builtins.int`</span>
+<span class="sd">            The ID of the membership. This must be a valid Bungie.Net or PSN or Xbox ID.</span>
+<span class="sd">        member_type : `aiobungie.MembershipType`</span>
+<span class="sd">            The type for the membership whose linked Destiny account you want to return.</span>
+
+<span class="sd">        Other Parameters</span>
+<span class="sd">        ----------------</span>
+<span class="sd">        all : `builtins.bool`</span>
+<span class="sd">            If provided and set to `True`, All memberships regardless</span>
+<span class="sd">            of whether thry&#39;re obscured by overrides will be returned,</span>
+
+<span class="sd">            If provided and set to `False`, Only available memberships will be returned.</span>
+<span class="sd">            The default for this is `False`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `aiobungie.crate.profile.LinkedProfile`</span>
+<span class="sd">            A linked profile object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">fetch_linked_profiles</span><span class="p">(</span><span class="n">member_id</span><span class="p">,</span> <span class="n">member_type</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="nb">all</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">serialize</span><span class="o">.</span><span class="n">deserialize_linked_profiles</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
+
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_player</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">MembershipType</span> <span class="o">=</span> <span class="n">MembershipType</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span> <span class="o">/</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">crate</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">DestinyUser</span><span class="p">]:</span>
@@ -2927,6 +2967,96 @@ A valid membership type.</li>
 
 <ul>
 <li><strong><code><a href="#MembershipTypeError">aiobungie.MembershipTypeError</a></code></strong>: The provided membership type was invalid.</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="Client.fetch_linked_profiles" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Client.fetch_linked_profiles">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">async def</span>
+            <span class="name">fetch_linked_profiles</span><span class="signature">(
+    self,
+    member_id: int,
+    member_type: <a href="aiobungie/internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>,
+    /,
+    *,
+    all: bool = False
+) -&gt; <a href="aiobungie/crate.html#profile.LinkedProfile">aiobungie.crate.profile.LinkedProfile</a></span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_linked_profiles</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">member_type</span><span class="p">:</span> <span class="n">MembershipType</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="nb">all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">crate</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">LinkedProfile</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns a summary information about all profiles linked to the requested member.</span>
+
+<span class="sd">        The passed membership id/type maybe a Bungie.Net membership or a Destiny memberships.</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">            It will only return linked accounts whose linkages you are allowed to view.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        member_id : `builtins.int`</span>
+<span class="sd">            The ID of the membership. This must be a valid Bungie.Net or PSN or Xbox ID.</span>
+<span class="sd">        member_type : `aiobungie.MembershipType`</span>
+<span class="sd">            The type for the membership whose linked Destiny account you want to return.</span>
+
+<span class="sd">        Other Parameters</span>
+<span class="sd">        ----------------</span>
+<span class="sd">        all : `builtins.bool`</span>
+<span class="sd">            If provided and set to `True`, All memberships regardless</span>
+<span class="sd">            of whether thry&#39;re obscured by overrides will be returned,</span>
+
+<span class="sd">            If provided and set to `False`, Only available memberships will be returned.</span>
+<span class="sd">            The default for this is `False`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `aiobungie.crate.profile.LinkedProfile`</span>
+<span class="sd">            A linked profile object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">fetch_linked_profiles</span><span class="p">(</span><span class="n">member_id</span><span class="p">,</span> <span class="n">member_type</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="nb">all</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">serialize</span><span class="o">.</span><span class="n">deserialize_linked_profiles</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Returns a summary information about all profiles linked to the requested member.</p>
+
+<p>The passed membership id/type maybe a Bungie.Net membership or a Destiny memberships.</p>
+
+<p><em>Note:</em>
+It will only return linked accounts whose linkages you are allowed to view.</p>
+
+<h6 id="parameters">Parameters</h6>
+
+<ul>
+<li><strong>member_id</strong> (<code>builtins.int</code>):
+The ID of the membership. This must be a valid Bungie.Net or PSN or Xbox ID.</li>
+<li><strong>member_type</strong> (<code><a href="#MembershipType">aiobungie.MembershipType</a></code>):
+The type for the membership whose linked Destiny account you want to return.</li>
+</ul>
+
+<h6 id="other-parameters">Other Parameters</h6>
+
+<ul>
+<li><p><strong>all</strong> (<code>builtins.bool</code>):
+If provided and set to <code>True</code>, All memberships regardless
+of whether thry're obscured by overrides will be returned,</p>
+
+<p>If provided and set to <code>False</code>, Only available memberships will be returned.
+The default for this is <code>False</code>.</p></li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<ul>
+<li><strong><code><a href="aiobungie/crate.html#profile.LinkedProfile">aiobungie.crate.profile.LinkedProfile</a></code></strong>: A linked profile object.</li>
 </ul>
 </div>
 
@@ -6667,6 +6797,15 @@ The requested membership type.</p>
         <span class="n">content</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch_manifest_path</span><span class="p">()</span>
         <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;read&quot;</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">resp</span>
+
+    <span class="k">def</span> <span class="nf">fetch_linked_profiles</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">member_type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="nb">all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonObject</span><span class="p">]:</span>
+        <span class="c1"># &lt;&lt;inherited docstring from aiobungie.interfaces.rest.RESTInterface&gt;&gt;.</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch</span><span class="p">(</span>
+            <span class="s2">&quot;GET&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;Destiny2/</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">member_type</span><span class="p">)</span><span class="si">}</span><span class="s2">/Profile/</span><span class="si">{</span><span class="n">member_id</span><span class="si">}</span><span class="s2">/LinkedProfiles/?getAllMemberships=</span><span class="si">{</span><span class="nb">all</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
 </pre></div>
 
         </details>
@@ -7796,6 +7935,72 @@ Since its only credential that works "currently"</li>
 
 <ul>
 <li><strong><code>builtins.bytes</code></strong>: The bytes to read and write the manifest database.</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="RESTClient.fetch_linked_profiles" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTClient.fetch_linked_profiles">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">fetch_linked_profiles</span><span class="signature">(
+    self,
+    member_id: int,
+    member_type: <a href="aiobungie/internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>,
+    /,
+    *,
+    all: bool = False
+) -&gt; Coroutine[Any, Any, Dict[str, Any]]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">fetch_linked_profiles</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">member_type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="nb">all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonObject</span><span class="p">]:</span>
+        <span class="c1"># &lt;&lt;inherited docstring from aiobungie.interfaces.rest.RESTInterface&gt;&gt;.</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch</span><span class="p">(</span>
+            <span class="s2">&quot;GET&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;Destiny2/</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">member_type</span><span class="p">)</span><span class="si">}</span><span class="s2">/Profile/</span><span class="si">{</span><span class="n">member_id</span><span class="si">}</span><span class="s2">/LinkedProfiles/?getAllMemberships=</span><span class="si">{</span><span class="nb">all</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Returns a summary information about all profiles linked to the requested member.</p>
+
+<p>The passed membership id/type maybe a Bungie.Net membership or a Destiny memberships.</p>
+
+<p><em>Note:</em>
+It will only return linked accounts whose linkages you are allowed to view.</p>
+
+<h6 id="parameters">Parameters</h6>
+
+<ul>
+<li><strong>member_id</strong> (<code>builtins.int</code>):
+The ID of the membership. This must be a valid Bungie.Net or PSN or Xbox ID.</li>
+<li><strong>member_type</strong> (<code><a href="#MembershipType">aiobungie.MembershipType</a></code>):
+The type for the membership whose linked Destiny account you want to return.</li>
+</ul>
+
+<h6 id="other-parameters">Other Parameters</h6>
+
+<ul>
+<li><p><strong>all</strong> (<code>builtins.bool</code>):
+If provided and set to <code>True</code>, All memberships regardless
+of whether thry're obscured by overrides will be returned,</p>
+
+<p>If provided and set to <code>False</code>, Only available memberships will be returned.
+The default for this is <code>False</code>.</p></li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<ul>
+<li><strong><code>ResponseSig[<a href="aiobungie/internal/helpers.html#JsonObject">aiobungie.internal.helpers.JsonObject</a>]</code></strong></li>
+<li><strong>A JSON object which contains an Array of profiles, an Array of profiles with errors and Bungie.Net membership</strong></li>
 </ul>
 </div>
 
@@ -8937,6 +9142,40 @@ Since its only credential that works "currently"</li>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">serialize</span><span class="o">.</span><span class="n">deserialize_profile</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_linked_profiles</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">member_type</span><span class="p">:</span> <span class="n">MembershipType</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="nb">all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">crate</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">LinkedProfile</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns a summary information about all profiles linked to the requested member.</span>
+
+<span class="sd">        The passed membership id/type maybe a Bungie.Net membership or a Destiny memberships.</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">            It will only return linked accounts whose linkages you are allowed to view.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        member_id : `builtins.int`</span>
+<span class="sd">            The ID of the membership. This must be a valid Bungie.Net or PSN or Xbox ID.</span>
+<span class="sd">        member_type : `aiobungie.MembershipType`</span>
+<span class="sd">            The type for the membership whose linked Destiny account you want to return.</span>
+
+<span class="sd">        Other Parameters</span>
+<span class="sd">        ----------------</span>
+<span class="sd">        all : `builtins.bool`</span>
+<span class="sd">            If provided and set to `True`, All memberships regardless</span>
+<span class="sd">            of whether thry&#39;re obscured by overrides will be returned,</span>
+
+<span class="sd">            If provided and set to `False`, Only available memberships will be returned.</span>
+<span class="sd">            The default for this is `False`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `aiobungie.crate.profile.LinkedProfile`</span>
+<span class="sd">            A linked profile object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">fetch_linked_profiles</span><span class="p">(</span><span class="n">member_id</span><span class="p">,</span> <span class="n">member_type</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="nb">all</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">serialize</span><span class="o">.</span><span class="n">deserialize_linked_profiles</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
+
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_player</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">MembershipType</span> <span class="o">=</span> <span class="n">MembershipType</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span> <span class="o">/</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">crate</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">DestinyUser</span><span class="p">]:</span>
@@ -9397,6 +9636,7 @@ Since its only credential that works "currently"</li>
     <span class="s2">&quot;PartialBungieUser&quot;</span><span class="p">,</span>
     <span class="s2">&quot;ProfileComponent&quot;</span><span class="p">,</span>
     <span class="s2">&quot;CharacterComponent&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;LinkedProfile&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">.activity</span> <span class="kn">import</span> <span class="n">Activity</span>
@@ -9414,6 +9654,7 @@ Since its only credential that works "currently"</li>
 <span class="kn">from</span> <span class="nn">.entity</span> <span class="kn">import</span> <span class="n">InventoryEntity</span>
 <span class="kn">from</span> <span class="nn">.friends</span> <span class="kn">import</span> <span class="n">Friend</span>
 <span class="kn">from</span> <span class="nn">.player</span> <span class="kn">import</span> <span class="n">Player</span>
+<span class="kn">from</span> <span class="nn">.profile</span> <span class="kn">import</span> <span class="n">LinkedProfile</span>
 <span class="kn">from</span> <span class="nn">.profile</span> <span class="kn">import</span> <span class="n">Profile</span>
 <span class="kn">from</span> <span class="nn">.profile</span> <span class="kn">import</span> <span class="n">ProfileComponent</span>
 <span class="kn">from</span> <span class="nn">.user</span> <span class="kn">import</span> <span class="n">BungieUser</span>
@@ -10163,6 +10404,15 @@ for functional usage for the Bungie API objects.</p>
         <span class="n">content</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch_manifest_path</span><span class="p">()</span>
         <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;read&quot;</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">resp</span>
+
+    <span class="k">def</span> <span class="nf">fetch_linked_profiles</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">member_type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="nb">all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonObject</span><span class="p">]:</span>
+        <span class="c1"># &lt;&lt;inherited docstring from aiobungie.interfaces.rest.RESTInterface&gt;&gt;.</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch</span><span class="p">(</span>
+            <span class="s2">&quot;GET&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;Destiny2/</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">member_type</span><span class="p">)</span><span class="si">}</span><span class="s2">/Profile/</span><span class="si">{</span><span class="n">member_id</span><span class="si">}</span><span class="s2">/LinkedProfiles/?getAllMemberships=</span><span class="si">{</span><span class="nb">all</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
 </pre></div>
 
         </details>

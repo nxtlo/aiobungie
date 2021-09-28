@@ -194,8 +194,21 @@ async def test_potential_groups_for_member():
     print(repr(up_to_date_clan_obj))
     return obj
 
+@view
+async def test_linked_profiles():
+    obj = await client.fetch_linked_profiles(4611686018468008855, aiobungie.MembershipType.ALL, all=True)
+    print(repr(obj.profiles_with_errors), repr(obj.bungie))
+    try:
+        async for profile in obj:
+            print(repr(profile))
+            transform_profile = await profile.fetch_self_profile()
+            print(repr(transform_profile))
+    except StopIteration:
+        pass
+
 async def main() -> None:
     coros = [
+        test_linked_profiles(),
         test_clan_admins(),
         test_player(),
         test_users(),

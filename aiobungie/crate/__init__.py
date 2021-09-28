@@ -53,6 +53,7 @@ __all__ = (
     "PartialBungieUser",
     "ProfileComponent",
     "CharacterComponent",
+    "LinkedProfile",
 )
 
 from .activity import Activity
@@ -70,6 +71,7 @@ from .entity import Entity
 from .entity import InventoryEntity
 from .friends import Friend
 from .player import Player
+from .profile import LinkedProfile
 from .profile import Profile
 from .profile import ProfileComponent
 from .user import BungieUser

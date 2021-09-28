@@ -464,3 +464,12 @@ class RESTClient(interfaces.RESTInterface):
         content = await self.fetch_manifest_path()
         resp = await self._fetch("GET", content, type="read", base=True)
         return resp
+
+    def fetch_linked_profiles(
+        self, member_id: int, member_type: enums.MembershipType, /, *, all: bool = False
+    ) -> ResponseSig[helpers.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        return self._fetch(
+            "GET",
+            f"Destiny2/{int(member_type)}/Profile/{member_id}/LinkedProfiles/?getAllMemberships={all}",
+        )

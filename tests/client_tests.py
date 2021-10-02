@@ -152,7 +152,7 @@ async def test_membership_types_from_id() -> crate.User:
 
 @view
 async def test_rest() -> typing.Any:
-    req = await rest_client.fetch_public_milestones()
+    req = await rest_client.fetch_clan_members(4389205)
     clan_members = req['results']  # type: ignore
     for member in clan_members:
         if isinstance(member, dict):

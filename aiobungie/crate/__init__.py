@@ -55,6 +55,8 @@ __all__ = (
     "CharacterComponent",
     "LinkedProfile",
     "ClanBanner",
+    "Milestone",
+    "MilestoneItems",
 )
 
 from .activity import Activity
@@ -72,6 +74,8 @@ from .clans import GroupMember
 from .entity import Entity
 from .entity import InventoryEntity
 from .friends import Friend
+from .milestones import Milestone
+from .milestones import MilestoneItems
 from .player import Player
 from .profile import LinkedProfile
 from .profile import Profile

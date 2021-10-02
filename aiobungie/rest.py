@@ -44,7 +44,11 @@ from aiobungie import url
 from aiobungie.internal import enums
 from aiobungie.internal import helpers
 
-ResponseSigT = typing.TypeVar("ResponseSigT")
+ResponseSigT = typing.TypeVar(
+    "ResponseSigT",
+    covariant=True,
+    bound=typing.Union[helpers.JsonArray, helpers.JsonObject],
+)
 """The signature of the response."""
 
 ResponseSig = typing.Coroutine[typing.Any, typing.Any, ResponseSigT]
@@ -476,6 +480,17 @@ class RESTClient(interfaces.RESTInterface):
             f"Destiny2/{int(member_type)}/Profile/{member_id}/LinkedProfiles/?getAllMemberships={all}",
         )
 
+    def fetch_clan_banners(self) -> ResponseSig[helpers.JsonObject]:
+        return self._request("GET", "Destiny2/Clan/ClanBannerDictionary/")
+
+    def fetch_public_milestones(self) -> ResponseSig[helpers.JsonObject]:
+        return self._request("GET", "Destiny2/Milestones/")
+
+    def fetch_public_milestone_content(
+        self, milestone_hash: int, /
+    ) -> ResponseSig[helpers.JsonObject]:
+        return self._request("GET", f"Destiny2/Milestones/{milestone_hash}/Content/")
+
     def fetch_item(
         self, member_id: int, item_id: int, /
     ) -> ResponseSig[helpers.JsonObject]:
@@ -486,18 +501,7 @@ class RESTClient(interfaces.RESTInterface):
     ) -> ResponseSig[helpers.JsonObject]:
         raise NotImplementedError
 
-    def fetch_public_milestone_content(
-        self, milestone_hash: int, /
-    ) -> ResponseSig[helpers.JsonObject]:
-        raise NotImplementedError
-
-    def fetch_public_milestones(self) -> ResponseSig[helpers.JsonObject]:
-        raise NotImplementedError
-
     def fetch_weapon_history(
         self, character_id: int, member_id: int, member_type: enums.MembershipType
     ) -> ResponseSig[helpers.JsonObject]:
         raise NotImplementedError
-
-    def fetch_clan_banners(self) -> ResponseSig[helpers.JsonObject]:
-        return self._request("GET", "Destiny2/Clan/ClanBannerDictionary/")

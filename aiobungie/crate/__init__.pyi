@@ -28,5 +28,7 @@ from .user import (
     PartialBungieUser as PartialBungieUser,
 )
 from typing import Any
+from .milestones import Milestone as Milestone
+from .milestones import MilestoneItems as MilestoneItems
 
 __all__: Any

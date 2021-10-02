@@ -32,7 +32,11 @@ import typing
 from aiobungie.internal import enums
 from aiobungie.internal import helpers
 
-ResponseSigT = typing.TypeVar("ResponseSigT")
+ResponseSigT = typing.TypeVar(
+    "ResponseSigT",
+    covariant=True,
+    bound=typing.Union[helpers.JsonArray, helpers.JsonObject],
+)
 """The type of the response signature."""
 
 ResponseSig = typing.Coroutine[typing.Any, typing.Any, ResponseSigT]
@@ -590,6 +594,43 @@ class RESTInterface(abc.ABC):
         """
 
     @abc.abstractmethod
+    def fetch_clan_banners(self) -> ResponseSig[helpers.JsonObject]:
+        """Fetch the values of the clan banners.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.internal.helpers.JsonObject]`
+            A JSON object of the clan banners.
+        """
+
+    @abc.abstractmethod
+    def fetch_public_milestones(self) -> ResponseSig[helpers.JsonObject]:
+        """Fetch the available milestones.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.internal.helpers.JsonObject]`
+            A JSON object of information about the milestones.
+        """
+
+    @abc.abstractmethod
+    def fetch_public_milestone_content(
+        self, milestone_hash: int, /
+    ) -> ResponseSig[helpers.JsonObject]:
+        """Fetch the milestone content given its hash.
+
+        Parameters
+        ----------
+        milestone_hash : `builtins.int`
+            The milestone hash.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.internal.helpers.JsonObject]`
+            A JSON object of information related to the fetched milestone.
+        """
+
+    @abc.abstractmethod
     def fetch_item(
         self, member_id: int, item_id: int, /
     ) -> ResponseSig[helpers.JsonObject]:
@@ -602,28 +643,7 @@ class RESTInterface(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def fetch_public_milestone_content(
-        self, milestone_hash: int, /
-    ) -> ResponseSig[helpers.JsonObject]:
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    def fetch_public_milestones(self) -> ResponseSig[helpers.JsonObject]:
-        raise NotImplementedError
-
-    @abc.abstractmethod
     def fetch_weapon_history(
         self, character_id: int, member_id: int, member_type: enums.MembershipType
     ) -> ResponseSig[helpers.JsonObject]:
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    def fetch_clan_banners(self) -> ResponseSig[helpers.JsonObject]:
-        """Fetch the values of the clan banners.
-
-        Returns
-        -------
-        `ResponseSig[aiobungie.internal.helpers.JsonObject]`
-            A JSON object of the clan banners.
-        """
         raise NotImplementedError

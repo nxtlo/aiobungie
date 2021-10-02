@@ -19,7 +19,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Deserialization for all bungie incoming json payloads."""
+"""Marshaller factory for incoming json payloads."""
 
 from __future__ import annotations
 
@@ -35,6 +35,7 @@ from aiobungie.crate import application as app
 from aiobungie.crate import character
 from aiobungie.crate import clans
 from aiobungie.crate import entity
+from aiobungie.crate import milestones
 from aiobungie.crate import profile
 from aiobungie.crate import user
 from aiobungie.internal import enums
@@ -788,3 +789,37 @@ class Factory:
                 )
                 banners_seq.append(banner_obj)
         return banners_seq
+
+    def deserialize_public_milestone_content(
+        self, payload: JsonObject
+    ) -> milestones.Milestone:
+        items_categoris: NoneOr[milestones.MilestoneItems] = None
+        if (raw_categories := payload.get("itemCategories")) is not None:
+            for item in raw_categories:
+                title = Undefined
+                if (raw_title := item.get("title")) is not None:
+                    if raw_title != Unknown:
+                        title = raw_title
+                if (raw_hashes := item.get("itemHashes")) is not None:
+                    hashes: typing.Sequence[int] = raw_hashes
+
+                items_categoris = milestones.MilestoneItems(title=title, hashes=hashes)
+
+        about = Undefined
+        if (raw_about := payload["about"]) != Unknown:
+            about = raw_about
+
+        status = Undefined
+        if (raw_status := payload["status"]) != Unknown:
+            status = raw_status
+
+        tips: typing.MutableSequence[UndefinedOr[str]] = []
+        if (raw_tips := payload.get("tips")) is not None:
+            for raw_tip in raw_tips:
+                if raw_tip == Unknown:
+                    raw_tip = Undefined
+                tips.append(raw_tip)
+
+        return milestones.Milestone(
+            about=about, status=status, tips=tips, items=items_categoris
+        )

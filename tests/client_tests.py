@@ -211,6 +211,11 @@ async def test_clan_banners():
     for banner in cb:
         print(repr(banner))
 
+@view
+async def test_public_milestones_content():
+    cb = await client.fetch_public_milestone_content(4253138191)
+    print(repr(cb))
+
 async def main() -> None:
     coros = [
         test_clan_banners(),
@@ -232,7 +237,8 @@ async def main() -> None:
         test_fetch_app(),
         test_clan_conves(),
         test_groups_for_member(),
-        test_potential_groups_for_member()
+        test_potential_groups_for_member(),
+        test_public_milestones_content()
     ]
     print(await asyncio.gather(*coros))
     await rest_client.close()

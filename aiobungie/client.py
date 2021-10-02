@@ -700,3 +700,22 @@ class Client(traits.ClientBase):
         resp = await self.rest.fetch_app(appid)
         assert isinstance(resp, dict)
         return self.serialize.deserialize_app(resp)
+
+    async def fetch_public_milestone_content(
+        self, milestone_hash: int, /
+    ) -> crate.milestones.Milestone:
+        """Fetch the milestone content given its hash.
+
+        Parameters
+        ----------
+        milestone_hash : `builtins.int`
+            The milestone hash.
+
+        Returns
+        -------
+        `aiobungie.crate.milestones.Milestone`
+            A milestone object.
+        """
+        resp = await self.rest.fetch_public_milestone_content(milestone_hash)
+        assert isinstance(resp, dict)
+        return self.serialize.deserialize_public_milestone_content(resp)

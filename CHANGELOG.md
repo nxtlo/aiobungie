@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.5b9...HEAD)
 
+### Added
+- New module `milestones.py` with `Milestone`, `MilestoneItems` objects which implements _(not fully)_ Bungie's Milestones.
+- Bound the REST `ResponseSigT` to `JsonObject` and `JsonArray`
 
 ## [0.2.5b9](https://github.com/nxtlo/aiobungie/compare/0.2.5b8...HEAD) 2021-10-1
 

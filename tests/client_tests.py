@@ -241,6 +241,7 @@ async def main() -> None:
         test_public_milestones_content()
     ]
     print(await asyncio.gather(*coros))
+    await rest_client.close()
 
 if __name__ == '__main__':
     raise SystemExit(client.run(main()))

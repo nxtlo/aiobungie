@@ -38,7 +38,7 @@ attrs = "21.2.0"
 [tool.poetry.dev-dependencies]
 black = "21.8b0"
 mypy = "0.910"
-nox = "2021.6.12"
+nox = "2021.10.1"
 pdoc = "8.0.0"
 isort = "5.9.3"
 pytest = "6.2.5"

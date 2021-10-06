@@ -234,16 +234,15 @@ class RESTInterface(abc.ABC):
     ) -> ResponseSig[helpers.JsonArray]:
         """Fetch a Destiny 2 Player.
 
-        Parameters
-        -----------
-        name: `builtins.str`
-            The Player's Name.
-
         .. note::
             You must also pass the player's unique code.
             A full name parameter should look like this
             `Fate怒#4275`
 
+        Parameters
+        -----------
+        name: `builtins.str`
+            The Player's Name.
         type: `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`
             The player's membership type, e,g. XBOX, STEAM, PSN
 

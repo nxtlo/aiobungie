@@ -30,19 +30,16 @@ import abc
 import typing
 
 from aiobungie.internal import enums
-from aiobungie.internal import helpers
 
-ResponseSigT = typing.TypeVar(
-    "ResponseSigT",
-    covariant=True,
-    bound=typing.Union[helpers.JsonArray, helpers.JsonObject],
-)
-"""The type of the response signature."""
+if typing.TYPE_CHECKING:
+    from aiobungie.internal import helpers
 
-ResponseSig = typing.Coroutine[typing.Any, typing.Any, ResponseSigT]
-"""A type hint for a general coro method that returns a type
-that's mostly going to be on of `aiobungie.internal.helpers.JsonObject` or `aiobungie.internal.helpers.JsonArray`
-"""
+    ResponseSigT = typing.TypeVar(
+        "ResponseSigT",
+        covariant=True,
+        bound=typing.Union[helpers.JsonArray, helpers.JsonObject],
+    )
+    ResponseSig = typing.Coroutine[typing.Any, typing.Any, ResponseSigT]
 
 
 class RESTInterface(abc.ABC):
@@ -152,7 +149,7 @@ class RESTInterface(abc.ABC):
     def fetch_hard_linked(
         self,
         credential: int,
-        type: enums.CredentialType = enums.CredentialType.STEAMID,
+        type: helpers.IntAnd[enums.CredentialType] = enums.CredentialType.STEAMID,
         /,
     ) -> ResponseSig[helpers.JsonObject]:
         """Gets any hard linked membership given a credential.
@@ -163,7 +160,7 @@ class RESTInterface(abc.ABC):
         ----------
         credential: `builtins.int`
             A valid SteamID64
-        type: `aiobungie.CredentialType`
+        type: `aiobungie.internal.helpers.IntAnd[aiobungie.CredentialType]`
             The crededntial type. This must not be changed
             Since its only credential that works "currently"
 
@@ -175,7 +172,10 @@ class RESTInterface(abc.ABC):
 
     @abc.abstractmethod
     def fetch_membership_from_id(
-        self, id: int, type: enums.MembershipType = enums.MembershipType.NONE, /
+        self,
+        id: int,
+        type: helpers.IntAnd[enums.MembershipType] = enums.MembershipType.NONE,
+        /,
     ) -> ResponseSig[helpers.JsonObject]:
         """Fetch Bungie user's memberships from their id.
 
@@ -183,7 +183,7 @@ class RESTInterface(abc.ABC):
         ----------
         id : `builtins.int`
             The user's id.
-        type : `aiobungie.MembershipType`
+        type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`
             The user's membership type.
 
         Returns
@@ -201,7 +201,7 @@ class RESTInterface(abc.ABC):
     def fetch_profile(
         self,
         memberid: int,
-        type: enums.MembershipType,
+        type: helpers.IntAnd[enums.MembershipType],
         /,
     ) -> ResponseSig[helpers.JsonObject]:
         """
@@ -211,7 +211,7 @@ class RESTInterface(abc.ABC):
         ----------
         memberid: `builtins.int`
             The member's id.
-        type: `aiobungie.MembershipType`
+        type: `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`
             A valid membership type.
 
         Returns
@@ -227,7 +227,10 @@ class RESTInterface(abc.ABC):
 
     @abc.abstractmethod
     def fetch_player(
-        self, name: str, type: enums.MembershipType = enums.MembershipType.ALL, /
+        self,
+        name: str,
+        type: helpers.IntAnd[enums.MembershipType] = enums.MembershipType.ALL,
+        /,
     ) -> ResponseSig[helpers.JsonArray]:
         """Fetch a Destiny 2 Player.
 
@@ -241,7 +244,7 @@ class RESTInterface(abc.ABC):
             A full name parameter should look like this
             `Fate怒#4275`
 
-        type: `aiobungie.internal.enums.MembershipType`
+        type: `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`
             The player's membership type, e,g. XBOX, STEAM, PSN
 
         Returns
@@ -260,7 +263,7 @@ class RESTInterface(abc.ABC):
 
     @abc.abstractmethod
     def fetch_character(
-        self, memberid: int, type: enums.MembershipType, /
+        self, memberid: int, type: helpers.IntAnd[enums.MembershipType], /
     ) -> ResponseSig[helpers.JsonObject]:
         """Fetch a Destiny 2 player's characters.
 
@@ -268,7 +271,7 @@ class RESTInterface(abc.ABC):
         ----------
         memberid: `builtins.int`
             A valid bungie member id.
-        type: `aiobungie.internal.enums.MembershipType`
+        type: `aiobungie.internal.helpers.IntAnd[aiobungie.internal.enums.MembershipType]`
             The member's membership type.
 
         Returns
@@ -290,11 +293,13 @@ class RESTInterface(abc.ABC):
         self,
         member_id: int,
         character_id: int,
-        mode: enums.GameMode,
-        membership_type: enums.MembershipType,
+        mode: helpers.IntAnd[enums.GameMode],
+        membership_type: helpers.IntAnd[
+            enums.MembershipType
+        ] = enums.MembershipType.ALL,
         *,
-        page: typing.Optional[int] = 1,
-        limit: typing.Optional[int] = 1,
+        page: int = 1,
+        limit: int = 1,
     ) -> ResponseSig[helpers.JsonObject]:
         """Fetch a Destiny 2 activity for the specified user id and character.
 
@@ -304,14 +309,17 @@ class RESTInterface(abc.ABC):
             The user id that starts with `4611`.
         character_id: `builtins.int`
             The id of the character to retrieve.
-        mode: `aiobungie.internal.enums.GameMode`
+        mode: `aiobungie.internal.helpers.IntAnd[aiobungie.GameMode]`
             This parameter filters the game mode, Nightfall, Strike, Iron Banner, etc.
-        membership_type: `aiobungie.internal.enums.MembershipType`
+        membership_type: `aiobungie.internal.helpers.IntAnd[aiobungie.internal.enums.MembershipType]`
             The Member ship type, if nothing was passed than it will return all.
-        page: typing.Optional[builtins.int]
-            The page number
-        limit: typing.Optional[builtins.int]
-            Limit the returned result.
+
+        Other Parameters
+        ----------------
+        page: `builtins.int`
+            The page number. Default to `1`
+        limit: `builtins.int`
+            Limit the returned result. Default to `1`
 
         Returns
         -------
@@ -368,7 +376,7 @@ class RESTInterface(abc.ABC):
 
     @abc.abstractmethod
     def fetch_clan(
-        self, name: str, /, type: enums.GroupType = enums.GroupType.CLAN
+        self, name: str, /, type: helpers.IntAnd[enums.GroupType] = enums.GroupType.CLAN
     ) -> ResponseSig[helpers.JsonObject]:
         """Fetch a Clan by its name.
         This method will return the first clan found with given name name.
@@ -377,7 +385,7 @@ class RESTInterface(abc.ABC):
         ----------
         name: `builtins.str`
             The clan name
-        type `aiobungie.GroupType`
+        type `aiobungie.internal.helpers.IntAnd[aiobungie.GroupType]`
             The group type, Default is one.
 
         Returns
@@ -432,11 +440,11 @@ class RESTInterface(abc.ABC):
     def fetch_groups_for_member(
         self,
         member_id: int,
-        member_type: enums.MembershipType,
+        member_type: helpers.IntAnd[enums.MembershipType],
         /,
         *,
         filter: int = 0,
-        group_type: enums.GroupType = enums.GroupType.CLAN,
+        group_type: helpers.IntAnd[enums.GroupType] = enums.GroupType.CLAN,
     ) -> ResponseSig[helpers.JsonObject]:
         """Fetch the information about the groups for a member.
 
@@ -444,14 +452,14 @@ class RESTInterface(abc.ABC):
         ----------
         member_id : `builtins.int`
             The member's id
-        member_type : `aiobungie.MembershipType`
+        member_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`
             The member's membership type.
 
         Other Parameters
         ----------------
         filter : `builsins.int`
             Filter apply to list of joined groups. This Default to `0`
-        group_type : `aiobungie.GroupType`
+        group_type : `aiobungie.internal.helpers.IntAnd[aiobungie.GroupType]`
             The group's type.
             This is always set to `aiobungie.GroupType.CLAN` and should not be changed.
 
@@ -465,7 +473,7 @@ class RESTInterface(abc.ABC):
     def fetch_potential_groups_for_member(
         self,
         member_id: int,
-        member_type: enums.MembershipType,
+        member_type: helpers.IntAnd[enums.MembershipType],
         /,
         *,
         filter: int = 0,
@@ -477,14 +485,14 @@ class RESTInterface(abc.ABC):
         ----------
         member_id : `builtins.int`
             The member's id
-        member_type : `aiobungie.MembershipType`
+        member_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`
             The member's membership type.
 
         Other Parameters
         ----------------
         filter : `builsins.int`
             Filter apply to list of joined groups. This Default to `0`
-        group_type : `aiobungie.GroupType`
+        group_type : `aiobungie.internal.helpers.IntAnd[aiobungie.GroupType]`
             The group's type.
             This is always set to `aiobungie.GroupType.CLAN` and should not be changed.
 
@@ -498,7 +506,7 @@ class RESTInterface(abc.ABC):
     def fetch_clan_members(
         self,
         clan_id: int,
-        type: enums.MembershipType = enums.MembershipType.NONE,
+        type: helpers.IntAnd[enums.MembershipType] = enums.MembershipType.NONE,
         name: typing.Optional[str] = None,
         /,
     ) -> ResponseSig[helpers.JsonObject]:
@@ -508,7 +516,7 @@ class RESTInterface(abc.ABC):
         ----------
         clan_id : `builsins.int`
             The clans id
-        type : `aiobungie.MembershipType`
+        type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`
             An optional clan member's membership type.
             Default is set to `aiobungie.MembershipType.NONE`
             Which returns the first matched clan member by their name.
@@ -562,7 +570,12 @@ class RESTInterface(abc.ABC):
 
     @abc.abstractmethod
     def fetch_linked_profiles(
-        self, member_id: int, member_type: enums.MembershipType, /, *, all: bool = False
+        self,
+        member_id: int,
+        member_type: helpers.IntAnd[enums.MembershipType],
+        /,
+        *,
+        all: bool = False,
     ) -> ResponseSig[helpers.JsonObject]:
         """Returns a summary information about all profiles linked to the requested member.
 
@@ -575,7 +588,7 @@ class RESTInterface(abc.ABC):
         ----------
         member_id : `builtins.int`
             The ID of the membership. This must be a valid Bungie.Net or PSN or Xbox ID.
-        member_type : `aiobungie.MembershipType`
+        member_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`
             The type for the membership whose linked Destiny account you want to return.
 
         Other Parameters
@@ -644,6 +657,9 @@ class RESTInterface(abc.ABC):
 
     @abc.abstractmethod
     def fetch_weapon_history(
-        self, character_id: int, member_id: int, member_type: enums.MembershipType
+        self,
+        character_id: int,
+        member_id: int,
+        member_type: helpers.IntAnd[enums.MembershipType],
     ) -> ResponseSig[helpers.JsonObject]:
         raise NotImplementedError

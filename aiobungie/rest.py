@@ -30,7 +30,6 @@ import asyncio
 import http
 import logging
 import sys
-import types
 import typing
 from urllib.parse import quote
 
@@ -41,8 +40,12 @@ from aiobungie import _info as info
 from aiobungie import error
 from aiobungie import interfaces
 from aiobungie import url
+from aiobungie.internal import _backoff as backoff
 from aiobungie.internal import enums
 from aiobungie.internal import helpers
+
+if typing.TYPE_CHECKING:
+    import types
 
 ResponseSigT = typing.TypeVar(
     "ResponseSigT",
@@ -57,12 +60,19 @@ that's mostly going to be on of `aiobungie.internal.helpers.JsonObject`
 or `aiobungie.internal.helpers.JsonArray`
 """
 
+_APP_JSON: typing.Final[str] = "application/json"
 _LOG: typing.Final[logging.Logger] = logging.getLogger("aiobungie.rest")
 
 
 async def handle_errors(
-    response: aiohttp.ClientResponse, msg: str, long: str
+    response: aiohttp.ClientResponse, msg: typing.Optional[str] = None
 ) -> error.AiobungieError:
+
+    if response.content_type != _APP_JSON:
+        return error.HTTPException(
+            f"Expected json content but got {response.content_type}, {str(response.real_url)}"
+        )
+
     from_json = await response.json()
     data = [str(response.real_url), from_json, msg]
 
@@ -74,26 +84,25 @@ async def handle_errors(
         return error.Unauthorized(*data)
 
     status = http.HTTPStatus(response.status)
-    why = [msg, long]
 
     if 400 <= status < 500:
         return error.ResponseError(*data, status)
     elif 500 <= status < 600:
         # High order errors.
         if msg == "ClanNotFound":
-            return error.ClanNotFound(*why)
+            return error.ClanNotFound(*data)
         elif msg == "NotFound":
-            return error.NotFound(*why)
+            return error.NotFound(*data)
         elif msg == "DestinyInvalidMembershipType":
-            return error.MembershipTypeError(*why)
-        elif msg == "GroupNotFound":
-            return error.ClanNotFound(*why)
+            return error.MembershipTypeError(*data)
+        elif msg == "Group Not Found":
+            return error.ClanNotFound(*data)
         elif msg == "UserCannotFindRequestedUser":
-            return error.UserNotFound(*why)
+            return error.UserNotFound(*data)
         else:
-            return error.AiobungieError(*why)
+            return error.AiobungieError(*data)
     else:
-        return error.HTTPException(*why)
+        return error.HTTPException(*data)
 
 
 class PreLock:
@@ -187,13 +196,16 @@ class RESTClient(interfaces.RESTInterface):
     ----------
     token : `builtins.str`
         A valid application token from Bungie's developer portal.
+    max_retries : `builtins.int`
+        The max retries number to retry if the request hit a `5xx` status code.
     """
 
-    __slots__: typing.Sequence[str] = ("_token", "_session")
+    __slots__: typing.Sequence[str] = ("_token", "_session", "_max_retries")
 
-    def __init__(self, token: str, /) -> None:
+    def __init__(self, token: str, /, *, max_retries: int = 4) -> None:
         self._session: typing.Optional[_Session] = None
         self._token: str = token
+        self._max_retries = max_retries
 
     def _acquire_session(self) -> _Session:
         asyncio.get_running_loop()
@@ -221,6 +233,7 @@ class RESTClient(interfaces.RESTInterface):
         **kwargs: typing.Any,
     ) -> typing.Any:
 
+        retries: int = 0
         if isinstance(self._token, str) and self._token is not None:
             kwargs["headers"] = headers = {}
             headers["X-API-KEY"] = self._token
@@ -228,26 +241,20 @@ class RESTClient(interfaces.RESTInterface):
             raise ValueError("No API KEY was passed.")
 
         while True:
-            async with PreLock():
-                try:
+            try:
+                async with PreLock():
                     async with self._acquire_session().client_session.request(
                         method=method,
                         url=f"{url.REST_EP if base is False else url.BASE}/{route}",
                         **kwargs,
                     ) as response:
 
+                        await self._handle_ratelimit(response)
+
+                        if response.status == http.HTTPStatus.NO_CONTENT:
+                            return None
+
                         data = await response.json(encoding="utf-8")
-                        msg: str = data["ErrorStatus"]
-
-                        # There's no point of making requests here.
-                        # A VERY LITTLE amount of endpoints does not
-                        # require the API to be up and running, Which are
-                        # The themes afaik. Not making any difference though so
-                        # Just to be careful we raise this here.
-
-                        if msg == "SystemDisabled":
-                            raise OSError("API IS DOWN!", data["Message"])
-
                         if 300 > response.status >= 200:
                             if type == "read":
                                 # We want to read the bytes for the manifest response.
@@ -261,20 +268,39 @@ class RESTClient(interfaces.RESTInterface):
                                     response.status,
                                 )
                             )
-                            try:
-                                return data["Response"]
 
-                            # In case we didn't find the Response key
-                            # its safer to just return the data.
-                            except KeyError:
-                                return data
+                            if response.content_type == _APP_JSON:
+                                try:
+                                    return data["Response"]
 
-                        await self._handle_err(response, msg, data["Message"])
+                                # In case we didn't find the Response key
+                                # its safer to just return the data.
+                                except KeyError:
+                                    _LOG.warning(
+                                        "Couldn't return the response key, Data: %s",
+                                        data,
+                                    )
+                                    return data
 
-                except aiohttp.ContentTypeError:
-                    raise error.HTTPException(
-                        f"Expected json content but got {response.content_type=}, {response.real_url=!r}"
-                    ) from None
+                        if (
+                            response.status in {500, 502, 503, 504}
+                            and retries < self._max_retries  # noqa: W503
+                        ):
+                            backoff_ = backoff.ExponentialBackOff(maximum=6)
+                            sleep_time = next(backoff_)
+                            _LOG.warning(
+                                f"Received: {response.status}, Message: {data['Message']}, sleeping for {sleep_time}, "
+                                f"Remaining retries: {self._max_retries - retries}"
+                            )
+
+                            retries += 1
+                            await asyncio.sleep(retries)
+                            continue
+
+                        await self._handle_err(response, data["ErrorStatus"])
+
+            except RuntimeError:
+                continue
 
     async def __aenter__(self) -> RESTClient:
         return self
@@ -289,12 +315,35 @@ class RESTClient(interfaces.RESTInterface):
             await self._session.close()
         return None
 
+    # We don't want this to be super complicated.
+    @typing.final
+    @staticmethod
+    async def _handle_ratelimit(response: aiohttp.ClientResponse) -> None:
+        if response.status == http.HTTPStatus.TOO_MANY_REQUESTS:
+            if response.content_type != _APP_JSON:
+                _LOG.error(
+                    f"we're being ratelmited on non JSON request, {response.content_type}. Returning."
+                )
+                return None
+
+            json = await response.json()
+            retry_after = float(json["retry-after"])
+            _LOG.critical("We're being ratelimited. Sleeping for %f:,", retry_after)
+            await asyncio.sleep(retry_after)
+
+            raise error.RateLimitedError(
+                retry_after=retry_after,
+                headers=response.headers,
+                url=str(response.real_url),
+            )
+        return None
+
     @staticmethod
     @typing.final
     async def _handle_err(
-        response: aiohttp.ClientResponse, msg: str, long: str
+        response: aiohttp.ClientResponse, msg: typing.Optional[str] = None
     ) -> typing.NoReturn:
-        raise await handle_errors(response, msg, long)
+        raise await handle_errors(response, msg)
 
     def fetch_user(self, id: int) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
@@ -305,7 +354,10 @@ class RESTClient(interfaces.RESTInterface):
         return self._request("GET", "User/GetAvailableThemes/")
 
     def fetch_membership_from_id(
-        self, id: int, type: enums.MembershipType = enums.MembershipType.NONE, /
+        self,
+        id: int,
+        type: helpers.IntAnd[enums.MembershipType] = enums.MembershipType.NONE,
+        /,
     ) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request("GET", f"User/GetMembershipsById/{id}/{type}")
@@ -317,7 +369,10 @@ class RESTClient(interfaces.RESTInterface):
         return self._request(method, path, **kwargs)
 
     def fetch_player(
-        self, name: str, type: enums.MembershipType = enums.MembershipType.ALL, /
+        self,
+        name: str,
+        type: helpers.IntAnd[enums.MembershipType] = enums.MembershipType.ALL,
+        /,
     ) -> ResponseSig[helpers.JsonArray]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
@@ -333,7 +388,7 @@ class RESTClient(interfaces.RESTInterface):
         return self._request("GET", f"GroupV2/{id}")
 
     def fetch_clan(
-        self, name: str, type: enums.GroupType = enums.GroupType.CLAN
+        self, name: str, type: helpers.IntAnd[enums.GroupType] = enums.GroupType.CLAN
     ) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request("GET", f"GroupV2/Name/{name}/{int(type)}")
@@ -353,7 +408,7 @@ class RESTClient(interfaces.RESTInterface):
         return self._request("GET", f"App/Application/{appid}")
 
     def fetch_character(
-        self, memberid: int, type: enums.MembershipType, /
+        self, memberid: int, type: helpers.IntAnd[enums.MembershipType], /
     ) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
@@ -365,11 +420,11 @@ class RESTClient(interfaces.RESTInterface):
         self,
         member_id: int,
         character_id: int,
-        mode: enums.GameMode,
-        membership_type: enums.MembershipType,
+        mode: helpers.IntAnd[enums.GameMode],
+        membership_type: helpers.IntAnd[enums.MembershipType] = enums.MembershipType.ALL,
         *,
-        page: typing.Optional[int] = 0,
-        limit: typing.Optional[int] = 1,
+        page: int = 0,
+        limit: int = 1,
     ) -> ResponseSig[typing.Any]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
@@ -391,7 +446,7 @@ class RESTClient(interfaces.RESTInterface):
         )
 
     def fetch_profile(
-        self, memberid: int, type: enums.MembershipType, /
+        self, memberid: int, type: helpers.IntAnd[enums.MembershipType], /
     ) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
@@ -410,11 +465,11 @@ class RESTClient(interfaces.RESTInterface):
     def fetch_groups_for_member(
         self,
         member_id: int,
-        member_type: enums.MembershipType,
+        member_type: helpers.IntAnd[enums.MembershipType],
         /,
         *,
         filter: int = 0,
-        group_type: enums.GroupType = enums.GroupType.CLAN,
+        group_type: helpers.IntAnd[enums.GroupType] = enums.GroupType.CLAN,
     ) -> ResponseSig[helpers.JsonObject]:
         return self._request(
             "GET",
@@ -424,11 +479,11 @@ class RESTClient(interfaces.RESTInterface):
     def fetch_potential_groups_for_member(
         self,
         member_id: int,
-        member_type: enums.MembershipType,
+        member_type: helpers.IntAnd[enums.MembershipType],
         /,
         *,
         filter: int = 0,
-        group_type: enums.GroupType = enums.GroupType.CLAN,
+        group_type: helpers.IntAnd[enums.GroupType] = enums.GroupType.CLAN,
     ) -> ResponseSig[helpers.JsonObject]:
         return self._request(
             "GET",
@@ -438,7 +493,7 @@ class RESTClient(interfaces.RESTInterface):
     def fetch_clan_members(
         self,
         id: int,
-        type: enums.MembershipType = enums.MembershipType.NONE,
+        type: helpers.IntAnd[enums.MembershipType] = enums.MembershipType.NONE,
         name: typing.Optional[str] = None,
         /,
     ) -> ResponseSig[helpers.JsonObject]:
@@ -451,7 +506,7 @@ class RESTClient(interfaces.RESTInterface):
     def fetch_hard_linked(
         self,
         credential: int,
-        type: enums.CredentialType = enums.CredentialType.STADIAID,
+        type: helpers.IntAnd[enums.CredentialType] = enums.CredentialType.STADIAID,
         /,
     ) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
@@ -472,7 +527,12 @@ class RESTClient(interfaces.RESTInterface):
         return resp
 
     def fetch_linked_profiles(
-        self, member_id: int, member_type: enums.MembershipType, /, *, all: bool = False
+        self,
+        member_id: int,
+        member_type: helpers.IntAnd[enums.MembershipType],
+        /,
+        *,
+        all: bool = False,
     ) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
@@ -502,6 +562,9 @@ class RESTClient(interfaces.RESTInterface):
         raise NotImplementedError
 
     def fetch_weapon_history(
-        self, character_id: int, member_id: int, member_type: enums.MembershipType
+        self,
+        character_id: int,
+        member_id: int,
+        member_type: helpers.IntAnd[enums.MembershipType],
     ) -> ResponseSig[helpers.JsonObject]:
         raise NotImplementedError

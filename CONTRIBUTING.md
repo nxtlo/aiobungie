@@ -4,14 +4,14 @@ First thing, thanks for taking the time to contribute. I appreciate that.
 # Branches
 Branches should look something like this.
 
-* `patch/a-small-branch-info`
+* `task/a-small-branch-info`
     * This should be for any type of PR thats not mentioned under.
 
 * `meta/small-branch-info`
     * This should be for typos, markdown issues. typing issues. etc.
 
 * `feature/a-small-feature-info`
-    * This should be for feature implementation and requires more patches only.
+    * This should be for feature implementation and requires more tasks and reviews only.
 
 * `bug/a-small-branch-info`
     * This should be for bug fixes only.

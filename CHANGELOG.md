@@ -8,7 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - New module `milestones.py` with `Milestone`, `MilestoneItems` objects which implements _(not fully)_ Bungie's Milestones.
-- Bound the REST `ResponseSigT` to `JsonObject` and `JsonArray`
+- Added Stable Python 3.10 to the CI tests from 3.10-dev.
+- A new type hint `IntAnd[EnumSig]` to pass a param as an enum or just an int. Example `aiobungie.Class.WARLOCK` or simply just `2`.
+- Let all methods that used to only takes an enum also supports an int.
+- Added [_backoff.py](https://github.com/hikari-py/hikari/blob/b6c85c932a1dc2117d2caa669bb7e52f6995273d/hikari/impl/rate_limits.py#L411) for/and Handling ratelimiting and retry after REST errors.
+- A new parameter `max_retries` to `RESTClient` and `Client` which lets you choose the max REST requests retries for failuare requests.
+- New exception `RateLimitedError` which's raised when being ratelimited.
+
+### Changed
+- PRs that used to look like this `patch/...` now should look like this `task/...` instead.
+- Bound the rest response signature `ResponseSigT` to `JsonObject` and `JsonArray`
+
+### Fixed
+- Errors now are correctly raised.
 
 ## [0.2.5b9](https://github.com/nxtlo/aiobungie/compare/0.2.5b8...HEAD) 2021-10-1
 

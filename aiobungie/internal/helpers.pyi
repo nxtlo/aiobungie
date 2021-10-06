@@ -15,6 +15,8 @@ from typing import Literal as __Literal
 from typing import TypeVar as __TypeVar
 from typing import Union as __Union
 
+from aiobungie.internal import enums as __enums
+
 T = __TypeVar("T", covariant=True)
 
 JsonObject = __Dict[str, __Any]
@@ -22,6 +24,11 @@ JsonArray = __List[__Any]
 NoneOr = __Union[T, None]
 
 Unknown: __Final[str]
+
+EnumSig = __TypeVar(
+    "EnumSig", covariant=True, bound=__Union[__enums.Enum, __enums.IntEnum]
+)
+IntAnd = __Union[int, EnumSig]
 
 def just(lst: list[dict[str, __Any]], lookup: str) -> list[__Any]: ...
 def deprecated(func: __Callable[..., __Any]) -> __Callable[..., None]: ...

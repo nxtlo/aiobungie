@@ -52,17 +52,19 @@ class Client(traits.ClientBase):
     -----------
     token: `builtins.str`
         Your Bungie's API key or Token from the developer's portal.
+    max_retries : `builtins.int`
+        The max retries number to retry if the request hit a `5xx` status code.
     """
 
     __slots__ = ("_rest", "_serialize", "_token", "_loop")
 
-    def __init__(self, token: str, /) -> None:
+    def __init__(self, token: str, /, max_retries: int = 4) -> None:
         self._loop: asyncio.AbstractEventLoop = helpers.get_or_make_loop()
 
-        if not token:
+        if token is None:
             raise ValueError("Missing the API key!")
 
-        self._rest = rest_.RESTClient(token)
+        self._rest = rest_.RESTClient(token, max_retries=max_retries)
         self._serialize = factory.Factory(self)
         self._token = token  # We need the token For Manifest.
 
@@ -164,7 +166,10 @@ class Client(traits.ClientBase):
         return self.serialize.deserialize_user_themes(data)
 
     async def fetch_hard_types(
-        self, credential: int, type: CredentialType = CredentialType.STEAMID, /
+        self,
+        credential: int,
+        type: helpers.IntAnd[CredentialType] = CredentialType.STEAMID,
+        /,
     ) -> crate.user.HardLinkedMembership:
         """Gets any hard linked membership given a credential.
         Only works for credentials that are public just `aiobungie.CredentialType.STEAMID` right now.
@@ -196,7 +201,7 @@ class Client(traits.ClientBase):
         )
 
     async def fetch_membership_from_id(
-        self, id: int, type: MembershipType = MembershipType.NONE, /
+        self, id: int, type: helpers.IntAnd[MembershipType] = MembershipType.NONE, /
     ) -> crate.User:
         """Fetch Bungie user's memberships from their id.
 
@@ -233,7 +238,7 @@ class Client(traits.ClientBase):
     async def fetch_profile(
         self,
         memberid: int,
-        type: MembershipType,
+        type: helpers.IntAnd[MembershipType],
         /,
     ) -> crate.Profile:
         """
@@ -263,7 +268,12 @@ class Client(traits.ClientBase):
         return self.serialize.deserialize_profile(data)
 
     async def fetch_linked_profiles(
-        self, member_id: int, member_type: MembershipType, /, *, all: bool = False
+        self,
+        member_id: int,
+        member_type: helpers.IntAnd[MembershipType],
+        /,
+        *,
+        all: bool = False,
     ) -> crate.profile.LinkedProfile:
         """Returns a summary information about all profiles linked to the requested member.
 
@@ -298,7 +308,7 @@ class Client(traits.ClientBase):
         return self.serialize.deserialize_linked_profiles(resp)
 
     async def fetch_player(
-        self, name: str, type: MembershipType = MembershipType.ALL, /
+        self, name: str, type: helpers.IntAnd[MembershipType] = MembershipType.ALL, /
     ) -> typing.Sequence[crate.user.DestinyUser]:
         """Fetch a Destiny 2 Player.
 
@@ -331,7 +341,7 @@ class Client(traits.ClientBase):
         return self.serialize.deserialize_player(resp)
 
     async def fetch_character(
-        self, memberid: int, type: MembershipType, character: Class
+        self, memberid: int, type: helpers.IntAnd[MembershipType], character: Class
     ) -> crate.Character:
         """Fetch a Destiny 2 character.
 
@@ -367,11 +377,11 @@ class Client(traits.ClientBase):
         self,
         member_id: int,
         character_id: int,
-        mode: GameMode,
-        membership_type: MembershipType,
+        mode: helpers.IntAnd[GameMode],
+        membership_type: helpers.IntAnd[MembershipType],
         *,
-        page: typing.Optional[int] = 1,
-        limit: typing.Optional[int] = 1,
+        page: int = 1,
+        limit: int = 1,
     ) -> crate.activity.Activity:
         """Fetch a Destiny 2 activity for the specified user id and character.
 
@@ -385,10 +395,10 @@ class Client(traits.ClientBase):
             This parameter filters the game mode, Nightfall, Strike, Iron Banner, etc.
         membership_type: `aiobungie.internal.enums.MembershipType`
             The Member ship type, if nothing was passed than it will return all.
-        page: typing.Optional[builtins.int]
-            The page number
-        limit: typing.Optional[builtins.int]
-            Limit the returned result.
+        page: builtins.int
+            The page number. Default is `1`
+        limit: builtins.int
+            Limit the returned result. Default is `1`
 
         Returns
         -------
@@ -462,7 +472,7 @@ class Client(traits.ClientBase):
         return self.serialize.deserialize_clan(resp)
 
     async def fetch_clan(
-        self, name: str, /, type: GroupType = GroupType.CLAN
+        self, name: str, /, type: helpers.IntAnd[GroupType] = GroupType.CLAN
     ) -> crate.Clan:
         """Fetch a Clan by its name.
         This method will return the first clan found with given name.
@@ -522,7 +532,7 @@ class Client(traits.ClientBase):
     async def fetch_groups_for_member(
         self,
         member_id: int,
-        member_type: MembershipType,
+        member_type: helpers.IntAnd[MembershipType],
         /,
         *,
         filter: int = 0,
@@ -559,11 +569,11 @@ class Client(traits.ClientBase):
     async def fetch_potential_groups_for_member(
         self,
         member_id: int,
-        member_type: MembershipType,
+        member_type: helpers.IntAnd[MembershipType],
         /,
         *,
         filter: int = 0,
-        group_type: GroupType = GroupType.CLAN,
+        group_type: helpers.IntAnd[GroupType] = GroupType.CLAN,
     ) -> typing.Optional[crate.clans.GroupMember]:
         resp = await self.rest.fetch_potential_groups_for_member(
             member_id, member_type, filter=filter, group_type=group_type
@@ -575,7 +585,7 @@ class Client(traits.ClientBase):
         self,
         clan_id: int,
         name: typing.Optional[str] = None,
-        type: MembershipType = MembershipType.NONE,
+        type: helpers.IntAnd[MembershipType] = MembershipType.NONE,
         /,
     ) -> crate.clans.ClanMember:
         """Fetch a Bungie Clan member.
@@ -615,7 +625,10 @@ class Client(traits.ClientBase):
         return self.serialize.deserialize_clan_member(resp)
 
     async def fetch_clan_members(
-        self, clan_id: int, type: MembershipType = MembershipType.NONE, /
+        self,
+        clan_id: int,
+        type: helpers.IntAnd[MembershipType] = MembershipType.NONE,
+        /,
     ) -> typing.Sequence[crate.clans.ClanMember]:
         """Fetch a Bungie Clan member. if no members found in the clan
         you will get an empty sequence.

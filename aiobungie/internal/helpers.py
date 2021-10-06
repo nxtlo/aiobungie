@@ -37,12 +37,15 @@ __all__ = (
     "NoneOr",
     "get_or_make_loop",
     "AsyncIterator",
+    "IntAnd",
 )
 
 import asyncio
 import inspect
 import typing
 import warnings
+
+from aiobungie.internal import enums
 
 JsonObject = typing.Dict[str, typing.Any]
 """A json like dict of string key and any value.
@@ -63,6 +66,14 @@ T = typing.TypeVar("T", covariant=True)
 
 NoneOr = typing.Union[None, T]
 """A Union type that's similar to to `Optional[T]`"""
+
+EnumSig = typing.TypeVar(
+    "EnumSig", covariant=True, bound=typing.Union[enums.Enum, enums.IntEnum]
+)
+"""A type hint bound to `aiobungie.internal.enums.Enum` and `aiobungie.internal.enums.IntEnum`"""
+
+IntAnd = typing.Union[int, EnumSig]
+"""A type hint for parameters that may receives an enum or an int."""
 
 
 def just(lst: list[dict[str, typing.Any]], lookup: str) -> list[typing.Any]:

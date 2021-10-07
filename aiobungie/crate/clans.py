@@ -382,8 +382,8 @@ class Clan:
     tags: typing.List[str] = attr.field(repr=False)
     """A list of the clan's tags."""
 
-    owner: helpers.UndefinedOr[ClanMember] = attr.field(repr=True)
-    """The clan owner. This field could be `Undefined` if not found."""
+    owner: helpers.NoneOr[ClanMember] = attr.field(repr=True)
+    """The clan owner. This field could be `None` if not found."""
 
     features: ClanFeatures = attr.field(repr=False, hash=False, eq=False)
     """The clan features."""

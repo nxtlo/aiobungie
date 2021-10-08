@@ -188,6 +188,12 @@ class TestClan:
         )
 
     @pytest.mark.asyncio()
+    def test_clan_owner_is_None(self, obj: crate.Clan):
+        assert obj.owner is not None and isinstance(obj.owner, crate.ClanMember)
+        obj.owner = None
+        assert obj.owner is None
+
+    @pytest.mark.asyncio()
     async def test_fetch_clan_member(self, obj):
         mock_member = mock.Mock(spec_set=crate.ClanMember)
         obj.net.request.fetch_clan_member = mock.AsyncMock(return_value=mock_member)

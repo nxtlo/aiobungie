@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # MIT License
 #
 # Copyright (c) 2020 - Present nxtlo
@@ -19,5 +21,3 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
-"""Aiobungie unit tests."""

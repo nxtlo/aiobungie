@@ -319,7 +319,7 @@ class Factory:
             join_level=features["joinLevel"],
         )
 
-        founder: UndefinedOr[clans.ClanMember] = Undefined
+        founder: NoneOr[clans.ClanMember] = None
         if (raw_founder := payload.get("founder")) is not None:
             if bound is False:
                 founder = self.deseialize_clan_owner(raw_founder)

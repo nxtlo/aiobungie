@@ -20,8 +20,8 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+"""Base client tests."""
 
-"""This file is for real api tests."""
 from __future__ import annotations
 
 import asyncio
@@ -39,7 +39,6 @@ import aiobungie
 from aiobungie import crate
 
 client = aiobungie.Client(token)
-rest_client = aiobungie.RESTClient(token)
 MID = 4611686018484639825
 
 def view(func: typing.Callable[[], typing.Any]) -> typing.Callable[..., typing.Any]:
@@ -151,18 +150,6 @@ async def test_membership_types_from_id() -> crate.User:
     return u
 
 @view
-async def test_rest() -> typing.Any:
-    req = await rest_client.fetch_clan_members(4389205)
-    clan_members = req['results']  # type: ignore
-    for member in clan_members:
-        if isinstance(member, dict):
-            print(*member.items())
-            for k, v in member['destinyUserInfo'].items():
-                print(k, v)
-        return set(member)
-    return [c for c in clan_members]
-
-@view
 async def test_search_users() -> typing.Any:
     x = await client.search_users("Fate怒")
     return x
@@ -232,7 +219,6 @@ async def main() -> None:
         test_profile(),
         test_char(),
         test_membership_types_from_id(),
-        test_rest(),
         test_search_users(),
         test_fetch_app(),
         test_clan_conves(),
@@ -242,7 +228,6 @@ async def main() -> None:
     ]
     print(await asyncio.gather(*coros))
     await client.rest.close()
-    await rest_client.close()
 
 if __name__ == '__main__':
     raise SystemExit(client.run(main()))

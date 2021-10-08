@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - PRs that used to look like this `patch/...` now should look like this `task/...` instead.
 - Bound the rest response signature `ResponseSigT` to `JsonObject` and `JsonArray`
+- `Clan.owner` now returns `None` if the owner was not found instead of `UNDEFINED`.
+- Separate mock tests from real tests.
 
 ### Fixed
 - Errors now are correctly raised.

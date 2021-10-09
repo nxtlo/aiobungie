@@ -27,7 +27,6 @@ from __future__ import annotations
 import asyncio
 import os
 import typing
-import dotenv; dotenv.load_dotenv()
 
 import aiobungie
 

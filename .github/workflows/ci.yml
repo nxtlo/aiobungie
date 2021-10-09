@@ -40,6 +40,26 @@ jobs:
         pip install nox
         nox -s pytest
 
+  client_test:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2.3.4
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Client Tests
+        env:
+          CLIENT_TOKEN: ${{ secrets.CLIENT_TOKEN }}
+        run: |
+          pip install nox
+          pip install .
+          nox -s client_test
+
   format:
     runs-on: ubuntu-20.04
 

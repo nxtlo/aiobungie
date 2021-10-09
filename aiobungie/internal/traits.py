@@ -28,9 +28,11 @@ __all__ = ("ClientBase", "Netrunner", "Serializable")
 
 import typing
 
-from aiobungie import client
-from aiobungie import rest as rest_client
 from aiobungie.internal import factory
+
+if typing.TYPE_CHECKING:
+    from aiobungie import client as base_client
+    from aiobungie import rest as rest_client
 
 
 @typing.runtime_checkable
@@ -40,7 +42,7 @@ class Netrunner(typing.Protocol):
     __slots__: typing.Sequence[str] = ()
 
     @property
-    def request(self) -> client.Client:
+    def request(self) -> base_client.Client:
         """Returns a client network state for making external requests."""
 
 

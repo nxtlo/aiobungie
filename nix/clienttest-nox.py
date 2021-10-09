@@ -21,9 +21,17 @@
 # SOFTWARE.
 
 import nox
-
+import pathlib
+import shutil
+import os
 
 @nox.session(reuse_venv=True)
-def pytest(session: nox.Session) -> None:
-    session.install("-r", "requirements.txt", "-r", "dev-requirements.txt")
-    session.run("python", "-m", "pytest", "tests", "-c", "pytest.init", "--showlocals", "--ignore=tests/_raw")
+def client_test(session: nox.Session) -> None:
+    session.install('.')
+    path = pathlib.Path(".") / 'tests' / '_raw'
+    if path.exists():
+        for file in path.iterdir():
+            if file.is_file() and file.name == 'test_client.py':
+                shutil.copy(file, '.')
+                session.run("python", 'test_client.py')
+                os.remove("./test_client.py")

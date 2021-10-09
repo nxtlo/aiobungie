@@ -35,4 +35,3 @@ def client_test(session: nox.Session) -> None:
                 shutil.copy(file, '.')
                 session.run("python", 'test_client.py')
                 os.remove("./test_client.py")
-    session.error(f"test_client.py file not found in {path!r}")

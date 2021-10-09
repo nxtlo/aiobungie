@@ -31,18 +31,13 @@ __all__: list[str] = ["Client"]
 import asyncio
 import typing
 
+from aiobungie import crate
+from aiobungie import rest as rest_
 from aiobungie.ext import Manifest
+from aiobungie.internal import enums
 from aiobungie.internal import factory
 from aiobungie.internal import helpers
 from aiobungie.internal import traits
-
-from . import crate
-from . import rest as rest_
-from .internal.enums import Class
-from .internal.enums import CredentialType
-from .internal.enums import GameMode
-from .internal.enums import GroupType
-from .internal.enums import MembershipType
 
 
 class Client(traits.ClientBase):
@@ -168,7 +163,7 @@ class Client(traits.ClientBase):
     async def fetch_hard_types(
         self,
         credential: int,
-        type: helpers.IntAnd[CredentialType] = CredentialType.STEAMID,
+        type: helpers.IntAnd[enums.CredentialType] = enums.CredentialType.STEAMID,
         /,
     ) -> crate.user.HardLinkedMembership:
         """Gets any hard linked membership given a credential.
@@ -196,12 +191,15 @@ class Client(traits.ClientBase):
 
         return crate.user.HardLinkedMembership(
             id=int(payload["membershipId"]),
-            type=MembershipType(payload["membershipType"]),
-            cross_save_type=MembershipType(payload["CrossSaveOverriddenType"]),
+            type=enums.MembershipType(payload["membershipType"]),
+            cross_save_type=enums.MembershipType(payload["CrossSaveOverriddenType"]),
         )
 
     async def fetch_membership_from_id(
-        self, id: int, type: helpers.IntAnd[MembershipType] = MembershipType.NONE, /
+        self,
+        id: int,
+        type: helpers.IntAnd[enums.MembershipType] = enums.MembershipType.NONE,
+        /,
     ) -> crate.User:
         """Fetch Bungie user's memberships from their id.
 
@@ -238,7 +236,7 @@ class Client(traits.ClientBase):
     async def fetch_profile(
         self,
         memberid: int,
-        type: helpers.IntAnd[MembershipType],
+        type: helpers.IntAnd[enums.MembershipType],
         /,
     ) -> crate.Profile:
         """
@@ -270,7 +268,7 @@ class Client(traits.ClientBase):
     async def fetch_linked_profiles(
         self,
         member_id: int,
-        member_type: helpers.IntAnd[MembershipType],
+        member_type: helpers.IntAnd[enums.MembershipType],
         /,
         *,
         all: bool = False,
@@ -308,7 +306,10 @@ class Client(traits.ClientBase):
         return self.serialize.deserialize_linked_profiles(resp)
 
     async def fetch_player(
-        self, name: str, type: helpers.IntAnd[MembershipType] = MembershipType.ALL, /
+        self,
+        name: str,
+        type: helpers.IntAnd[enums.MembershipType] = enums.MembershipType.ALL,
+        /,
     ) -> typing.Sequence[crate.user.DestinyUser]:
         """Fetch a Destiny 2 Player.
 
@@ -341,7 +342,10 @@ class Client(traits.ClientBase):
         return self.serialize.deserialize_player(resp)
 
     async def fetch_character(
-        self, memberid: int, type: helpers.IntAnd[MembershipType], character: Class
+        self,
+        memberid: int,
+        type: helpers.IntAnd[enums.MembershipType],
+        character: enums.Class,
     ) -> crate.Character:
         """Fetch a Destiny 2 character.
 
@@ -377,8 +381,8 @@ class Client(traits.ClientBase):
         self,
         member_id: int,
         character_id: int,
-        mode: helpers.IntAnd[GameMode],
-        membership_type: helpers.IntAnd[MembershipType],
+        mode: helpers.IntAnd[enums.GameMode],
+        membership_type: helpers.IntAnd[enums.MembershipType],
         *,
         page: int = 1,
         limit: int = 1,
@@ -472,7 +476,7 @@ class Client(traits.ClientBase):
         return self.serialize.deserialize_clan(resp)
 
     async def fetch_clan(
-        self, name: str, /, type: helpers.IntAnd[GroupType] = GroupType.CLAN
+        self, name: str, /, type: helpers.IntAnd[enums.GroupType] = enums.GroupType.CLAN
     ) -> crate.Clan:
         """Fetch a Clan by its name.
         This method will return the first clan found with given name.
@@ -532,11 +536,11 @@ class Client(traits.ClientBase):
     async def fetch_groups_for_member(
         self,
         member_id: int,
-        member_type: helpers.IntAnd[MembershipType],
+        member_type: helpers.IntAnd[enums.MembershipType],
         /,
         *,
         filter: int = 0,
-        group_type: GroupType = GroupType.CLAN,
+        group_type: enums.GroupType = enums.GroupType.CLAN,
     ) -> typing.Optional[crate.clans.GroupMember]:
         """Fetch information about the groups that a given member has joined.
 
@@ -569,11 +573,11 @@ class Client(traits.ClientBase):
     async def fetch_potential_groups_for_member(
         self,
         member_id: int,
-        member_type: helpers.IntAnd[MembershipType],
+        member_type: helpers.IntAnd[enums.MembershipType],
         /,
         *,
         filter: int = 0,
-        group_type: helpers.IntAnd[GroupType] = GroupType.CLAN,
+        group_type: helpers.IntAnd[enums.GroupType] = enums.GroupType.CLAN,
     ) -> typing.Optional[crate.clans.GroupMember]:
         resp = await self.rest.fetch_potential_groups_for_member(
             member_id, member_type, filter=filter, group_type=group_type
@@ -585,7 +589,7 @@ class Client(traits.ClientBase):
         self,
         clan_id: int,
         name: typing.Optional[str] = None,
-        type: helpers.IntAnd[MembershipType] = MembershipType.NONE,
+        type: helpers.IntAnd[enums.MembershipType] = enums.MembershipType.NONE,
         /,
     ) -> crate.clans.ClanMember:
         """Fetch a Bungie Clan member.
@@ -627,7 +631,7 @@ class Client(traits.ClientBase):
     async def fetch_clan_members(
         self,
         clan_id: int,
-        type: helpers.IntAnd[MembershipType] = MembershipType.NONE,
+        type: helpers.IntAnd[enums.MembershipType] = enums.MembershipType.NONE,
         /,
     ) -> typing.Sequence[crate.clans.ClanMember]:
         """Fetch a Bungie Clan member. if no members found in the clan

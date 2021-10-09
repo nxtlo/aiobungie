@@ -28,17 +28,9 @@ import asyncio
 import os
 import typing
 
-try:
-    from dotenv import load_dotenv
-    load_dotenv()
-    token = os.environ['TOKEN']
-except (ImportError, KeyError):
-    token = ""  # <-- TOKEN GOES HERE
-
 import aiobungie
-from aiobungie import crate
 
-client = aiobungie.Client(token)
+client = aiobungie.Client(os.environ['CLIENT_TOKEN'])
 MID = 4611686018484639825
 
 def view(func: typing.Callable[[], typing.Any]) -> typing.Callable[..., typing.Any]:
@@ -51,25 +43,25 @@ def view(func: typing.Callable[[], typing.Any]) -> typing.Callable[..., typing.A
     return lambda *args, **kwargs: func(*args, **kwargs)
 
 @view
-async def test_users() -> crate.user.BungieUser:
+async def test_users() -> aiobungie.crate.user.BungieUser:
     u = await client.fetch_user(20315338)
     return u
 
 
 @view
-async def test_user_themese() -> typing.Sequence[crate.user.UserThemes]:
+async def test_user_themese() -> typing.Sequence[aiobungie.crate.user.UserThemes]:
     ut = await client.fetch_user_themes()
     return ut
 
 
 @view
-async def test_hard_types() -> crate.user.HardLinkedMembership:
+async def test_hard_types() -> aiobungie.crate.user.HardLinkedMembership:
     uht = await client.fetch_hard_types(76561198141430157)
     return uht
 
 
 @view
-async def test_clan_from_id() -> crate.Clan:
+async def test_clan_from_id() -> aiobungie.crate.Clan:
     c = await client.fetch_clan_from_id(4389205)
     members = await c.fetch_members()
     member = await c.fetch_member("Fate")
@@ -79,7 +71,7 @@ async def test_clan_from_id() -> crate.Clan:
 
 
 @view
-async def test_clan() -> crate.Clan:
+async def test_clan() -> aiobungie.crate.Clan:
     c = await client.fetch_clan("Nuanceㅤ ")
     members = await c.fetch_members()
     member = await c.fetch_member("Hizxr")
@@ -89,13 +81,13 @@ async def test_clan() -> crate.Clan:
 
 
 @view
-async def test_fetch_clan_member() -> crate.ClanMember:
+async def test_fetch_clan_member() -> aiobungie.crate.ClanMember:
     m = await client.fetch_clan_member(4389205, "Fate")
     return m
 
 
 @view
-async def test_fetch_clan_members() -> typing.Sequence[crate.ClanMember]:
+async def test_fetch_clan_members() -> typing.Sequence[aiobungie.crate.ClanMember]:
     ms = await client.fetch_clan_members(4389205)
     for member in ms:
         if member.bungie.name == "Cosmic":
@@ -104,14 +96,14 @@ async def test_fetch_clan_members() -> typing.Sequence[crate.ClanMember]:
     return ms
 
 @view
-async def test_fetch_inventory_item() -> crate.InventoryEntity:
+async def test_fetch_inventory_item() -> aiobungie.crate.InventoryEntity:
     i = await client.fetch_inventory_item(1397707366)
     print(i.about, i.damage, i.description, i.icon)
     return i
 
 
 @view
-async def test_fetch_app() -> crate.Application:
+async def test_fetch_app() -> aiobungie.crate.Application:
     a = await client.fetch_app(33226)
     fetched_user = await a.owner.fetch_self()
     print(fetched_user)
@@ -119,7 +111,7 @@ async def test_fetch_app() -> crate.Application:
 
 
 @view
-async def test_profile() -> crate.Profile:
+async def test_profile() -> aiobungie.crate.Profile:
     pf = await client.fetch_profile(MID, aiobungie.MembershipType.STEAM)
     warlock = await pf.warlock()
     titan = await pf.titan()
@@ -129,7 +121,7 @@ async def test_profile() -> crate.Profile:
 
 
 @view
-async def test_player() -> typing.Sequence[typing.Optional[crate.DestinyUser]]:
+async def test_player() -> typing.Sequence[typing.Optional[aiobungie.crate.DestinyUser]]:
     p = await client.fetch_player("Datto#6446")
     profile = await p[0].fetch_self_profile()
     print(repr(profile))
@@ -138,14 +130,14 @@ async def test_player() -> typing.Sequence[typing.Optional[crate.DestinyUser]]:
 
 
 @view
-async def test_char() -> crate.Character:
+async def test_char() -> aiobungie.crate.Character:
     c = await client.fetch_character(
         MID, aiobungie.MembershipType.STEAM, aiobungie.Class.WARLOCK
     )
     return c
 
 @view
-async def test_membership_types_from_id() -> crate.User:
+async def test_membership_types_from_id() -> aiobungie.crate.User:
     u = await client.fetch_membership_from_id(MID)
     return u
 

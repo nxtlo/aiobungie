@@ -26,7 +26,6 @@ A basic client based example.
 
 ```py
 import aiobungie
-from aiobungie import crate
 
 # crates in aiobungie are implementations
 # of Bungie's objects to provide
@@ -42,7 +41,7 @@ async def main() -> None:
             print('Found the user', user.name, user.id, user.type)
 
         try:
-            character = await client.fetch_character(
+            character: aiobungie.crate.Character = await client.fetch_character(
                 user.id, user.type, aiobungie.Class.HUNTER)
         except aiobungie.CharacterError as exc:
             print(f'Couldn't get {user.name}'s hunter character. Due to: {exc}')
@@ -71,10 +70,10 @@ async def main() -> None:
     # Using `async with` context manager to close the session properly.
     async with aiobungie.RESTClient("TOKEN") as rest:
         fetch_player = await rest.fetch_player('Fate怒#4275')
-        print(*fetch_player)
-        for player in fetch_player:
-            print(player['membershipId'], player['iconPath'])
-            for k, v in player.items():
+        print(*fetch_player)  # A JSON array of dict object
+        for player in fetch_player:  # Iterate through the array.
+            print(player['membershipId'], player['iconPath']) # Print the player id and icon path.
+            for k, v in player.items(): # Key, Value
                 print(k, v)
 
 import asyncio
@@ -83,6 +82,7 @@ asyncio.run(main())
 
 Should you use the base client or the REST client?
 This returns to you. For an example if you're building a website.
+
 You can use python as a REST API in the backend with the RESTClient since all returned object are JSON objects.
 Which gives you the freedom to deserialize it and implement you own logic in the front-end.
 
@@ -92,9 +92,19 @@ Or of you're building a Discord bot for an example or something simple. The base
 
 from __future__ import annotations
 
-from .client import Client
-from .error import *
-from .internal.enums import *
-from .rest import RESTClient
+from aiobungie import crate
+from aiobungie import interfaces
+from aiobungie.client import Client
+from aiobungie.error import *
+from aiobungie.internal.enums import *
+from aiobungie.rest import RESTClient
 
-__all__ = [mod for mod in dir() if not mod.startswith("_")]
+from ._info import __about__
+from ._info import __author__
+from ._info import __docs__
+from ._info import __email__
+from ._info import __license__
+from ._info import __url__
+from ._info import __version__
+
+__all__ = [mod for mod in dir() if not mod.startswith("_")]  # type: ignore

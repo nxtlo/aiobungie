@@ -421,7 +421,9 @@ class RESTClient(interfaces.RESTInterface):
         member_id: int,
         character_id: int,
         mode: helpers.IntAnd[enums.GameMode],
-        membership_type: helpers.IntAnd[enums.MembershipType] = enums.MembershipType.ALL,
+        membership_type: helpers.IntAnd[
+            enums.MembershipType
+        ] = enums.MembershipType.ALL,
         *,
         page: int = 0,
         limit: int = 1,

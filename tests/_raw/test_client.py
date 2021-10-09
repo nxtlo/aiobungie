@@ -27,6 +27,7 @@ from __future__ import annotations
 import asyncio
 import os
 import typing
+import dotenv; dotenv.load_dotenv()
 
 import aiobungie
 
@@ -181,7 +182,7 @@ async def test_linked_profiles():
             print(repr(profile))
             transform_profile = await profile.fetch_self_profile()
             print(repr(transform_profile))
-    except StopIteration:
+    except RuntimeError:
         pass
 
 @view

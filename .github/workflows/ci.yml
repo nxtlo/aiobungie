@@ -56,6 +56,7 @@ jobs:
         env:
           CLIENT_TOKEN: ${{ secrets.CLIENT_TOKEN }}
         run: |
+          pip install nox
           pip install .
           nox -s client_test
 

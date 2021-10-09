@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bound the rest response signature `ResponseSigT` to `JsonObject` and `JsonArray`
 - `Clan.owner` now returns `None` if the owner was not found instead of `UNDEFINED`.
 - Separate mock tests from real tests.
+- Export `aiobungie/interfaces` and `aiobungie/crates` to `aiobungie/__init__.py`
+- Added real client tests to ci workflow.
 
 ### Fixed
 - Errors now are correctly raised.

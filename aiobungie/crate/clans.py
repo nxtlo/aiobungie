@@ -25,8 +25,6 @@
 
 from __future__ import annotations
 
-from aiobungie.crate import user
-
 __all__ = (
     "Clan",
     "ClanMember",
@@ -38,18 +36,19 @@ __all__ = (
 )
 
 import typing
-from datetime import datetime
 
 import attr
 
 from aiobungie import url
-from aiobungie.crate.user import UserLike
-from aiobungie.internal import assets
-from aiobungie.internal import helpers
-from aiobungie.internal import traits
-from aiobungie.internal.enums import ClanMemberType
-from aiobungie.internal.enums import GroupType
-from aiobungie.internal.enums import MembershipType
+from aiobungie.crate import user
+from aiobungie.internal import enums
+
+if typing.TYPE_CHECKING:
+    from datetime import datetime
+
+    from aiobungie.internal import assets
+    from aiobungie.internal import helpers
+    from aiobungie.internal import traits
 
 
 @attr.define(kw_only=True, hash=False, weakref_slot=False)
@@ -65,7 +64,7 @@ class ClanFeatures:
     capabilities: int = attr.field(repr=False)
     """An int that represents the clan's capabilities."""
 
-    membership_types: typing.List[MembershipType] = attr.field(repr=True)
+    membership_types: typing.List[enums.MembershipType] = attr.field(repr=True)
     """The clan's membership types."""
 
     invite_permissions: bool = attr.field(repr=False)
@@ -115,7 +114,7 @@ class ClanBanner:
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
-class ClanMember(UserLike):
+class ClanMember(user.UserLike):
     """Represents a Bungie clan member."""
 
     net: traits.Netrunner = attr.field(repr=False)
@@ -130,10 +129,10 @@ class ClanMember(UserLike):
     last_seen_name: str = attr.field(repr=True)
     """The clan member's last seen display name"""
 
-    type: MembershipType = attr.field(repr=True)
+    type: enums.MembershipType = attr.field(repr=True)
     """Clan member's membership type."""
 
-    types: typing.Sequence[MembershipType] = attr.field(repr=False)
+    types: typing.Sequence[enums.MembershipType] = attr.field(repr=False)
     """A sequence of the available clan member membership types."""
 
     icon: assets.MaybeImage = attr.field(repr=False)
@@ -221,7 +220,7 @@ class GroupMember:
     inactive_memberships: helpers.NoneOr[dict[int, bool]] = attr.field(repr=False)
     """The member's inactive memberships if provided. This will be `None` if not provided."""
 
-    member_type: ClanMemberType = attr.field(repr=True)
+    member_type: enums.ClanMemberType = attr.field(repr=True)
     """The member's member type."""
 
     is_online: bool = attr.field(repr=False)
@@ -254,10 +253,10 @@ class GroupMember:
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
-class ClanAdmin(UserLike):
+class ClanAdmin(user.UserLike):
     """Represents a clan admin."""
 
-    member_type: ClanMemberType = attr.field(repr=True)
+    member_type: enums.ClanMemberType = attr.field(repr=True)
     """The clan admin's member type.
     This can be Admin or owner or any other type.
 
@@ -279,10 +278,10 @@ class ClanAdmin(UserLike):
     last_seen_name: str = attr.field(repr=False)
     """The clan admin's last seen display name"""
 
-    type: MembershipType = attr.field(repr=True)
+    type: enums.MembershipType = attr.field(repr=True)
     """Clan admin's membership type."""
 
-    types: typing.Sequence[MembershipType] = attr.field(repr=False)
+    types: typing.Sequence[enums.MembershipType] = attr.field(repr=False)
     """A sequence of the available clan admin membership types."""
 
     icon: assets.MaybeImage = attr.field(repr=False)
@@ -352,7 +351,7 @@ class Clan:
     id: int = attr.field(hash=True, repr=True, eq=True)
     """The clan id"""
 
-    type: GroupType = attr.field(repr=True)
+    type: enums.GroupType = attr.field(repr=True)
     """The clan type."""
 
     name: str = attr.field(repr=True)
@@ -389,7 +388,7 @@ class Clan:
     """The clan features."""
 
     async def fetch_member(
-        self, name: str, type: MembershipType = MembershipType.NONE, /
+        self, name: str, type: enums.MembershipType = enums.MembershipType.NONE, /
     ) -> ClanMember:
         """Fetch a specific clan member by their name and membership type.
 
@@ -421,7 +420,7 @@ class Clan:
         return await self.net.request.fetch_clan_member(self.id, name, type)
 
     async def fetch_members(
-        self, type: MembershipType = MembershipType.NONE, /
+        self, type: enums.MembershipType = enums.MembershipType.NONE, /
     ) -> typing.Sequence[ClanMember]:
         """Fetch the members of the clan.
 

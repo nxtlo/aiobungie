@@ -37,15 +37,18 @@ __all__: tuple[str, ...] = (
 
 import abc
 import typing
-from datetime import datetime
 
 import attr
 
-from aiobungie.crate import profile
 from aiobungie.internal import assets
 from aiobungie.internal import enums
-from aiobungie.internal import helpers
-from aiobungie.internal import traits
+
+if typing.TYPE_CHECKING:
+    from datetime import datetime
+
+    from aiobungie.crate import profile
+    from aiobungie.internal import helpers
+    from aiobungie.internal import traits
 
 
 class UserLike(abc.ABC):

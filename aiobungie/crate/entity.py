@@ -35,10 +35,11 @@ import typing
 
 import attr
 
-from aiobungie.internal import assets
-from aiobungie.internal import enums
-from aiobungie.internal import helpers
-from aiobungie.internal import traits
+if typing.TYPE_CHECKING:
+    from aiobungie.internal import assets
+    from aiobungie.internal import enums
+    from aiobungie.internal import helpers
+    from aiobungie.internal import traits
 
 
 class Entity(abc.ABC):

@@ -31,9 +31,11 @@ import typing
 import attr
 
 from aiobungie.crate import user as user_
-from aiobungie.internal import enums
-from aiobungie.internal import helpers
-from aiobungie.internal import traits
+
+if typing.TYPE_CHECKING:
+    from aiobungie.internal import enums
+    from aiobungie.internal import helpers
+    from aiobungie.internal import traits
 
 
 @attr.define(slots=True, init=True, weakref_slot=False, hash=True, repr=True)

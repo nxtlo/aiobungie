@@ -52,6 +52,9 @@
                                 <a class="function" href="#Client.fetch_manifest">fetch_manifest</a>
                         </li>
                         <li>
+                                <a class="function" href="#Client.fetch_own_bungie_user">fetch_own_bungie_user</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#Client.fetch_user">fetch_user</a>
                         </li>
                         <li>
@@ -77,6 +80,12 @@
                         </li>
                         <li>
                                 <a class="function" href="#Client.fetch_character">fetch_character</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Client.equip_item">equip_item</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Client.equip_items">equip_items</a>
                         </li>
                         <li>
                                 <a class="function" href="#Client.fetch_activity">fetch_activity</a>
@@ -116,6 +125,9 @@
                         </li>
                         <li>
                                 <a class="function" href="#Client.fetch_app">fetch_app</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Client.fetch_public_milestone_content">fetch_public_milestone_content</a>
                         </li>
                 </ul>
 
@@ -175,18 +187,13 @@ Deserialize the REST payloads and returns <code><a href="crate.html">aiobungie.c
 <span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">typing</span>
 
+<span class="kn">from</span> <span class="nn">aiobungie</span> <span class="kn">import</span> <span class="n">crate</span>
+<span class="kn">from</span> <span class="nn">aiobungie</span> <span class="kn">import</span> <span class="n">rest</span> <span class="k">as</span> <span class="n">rest_</span>
 <span class="kn">from</span> <span class="nn">aiobungie.ext</span> <span class="kn">import</span> <span class="n">Manifest</span>
+<span class="kn">from</span> <span class="nn">aiobungie.internal</span> <span class="kn">import</span> <span class="n">enums</span>
 <span class="kn">from</span> <span class="nn">aiobungie.internal</span> <span class="kn">import</span> <span class="n">factory</span>
 <span class="kn">from</span> <span class="nn">aiobungie.internal</span> <span class="kn">import</span> <span class="n">helpers</span>
 <span class="kn">from</span> <span class="nn">aiobungie.internal</span> <span class="kn">import</span> <span class="n">traits</span>
-
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">crate</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">rest</span> <span class="k">as</span> <span class="n">rest_</span>
-<span class="kn">from</span> <span class="nn">.internal.enums</span> <span class="kn">import</span> <span class="n">Class</span>
-<span class="kn">from</span> <span class="nn">.internal.enums</span> <span class="kn">import</span> <span class="n">CredentialType</span>
-<span class="kn">from</span> <span class="nn">.internal.enums</span> <span class="kn">import</span> <span class="n">GameMode</span>
-<span class="kn">from</span> <span class="nn">.internal.enums</span> <span class="kn">import</span> <span class="n">GroupType</span>
-<span class="kn">from</span> <span class="nn">.internal.enums</span> <span class="kn">import</span> <span class="n">MembershipType</span>
 
 
 <span class="k">class</span> <span class="nc">Client</span><span class="p">(</span><span class="n">traits</span><span class="o">.</span><span class="n">ClientBase</span><span class="p">):</span>
@@ -196,17 +203,19 @@ Deserialize the REST payloads and returns <code><a href="crate.html">aiobungie.c
 <span class="sd">    -----------</span>
 <span class="sd">    token: `builtins.str`</span>
 <span class="sd">        Your Bungie&#39;s API key or Token from the developer&#39;s portal.</span>
+<span class="sd">    max_retries : `builtins.int`</span>
+<span class="sd">        The max retries number to retry if the request hit a `5xx` status code.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_rest&quot;</span><span class="p">,</span> <span class="s2">&quot;_serialize&quot;</span><span class="p">,</span> <span class="s2">&quot;_token&quot;</span><span class="p">,</span> <span class="s2">&quot;_loop&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="n">max_retries</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_loop</span><span class="p">:</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">AbstractEventLoop</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">get_or_make_loop</span><span class="p">()</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">token</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">token</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Missing the API key!&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_rest</span> <span class="o">=</span> <span class="n">rest_</span><span class="o">.</span><span class="n">RESTClient</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rest</span> <span class="o">=</span> <span class="n">rest_</span><span class="o">.</span><span class="n">RESTClient</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">max_retries</span><span class="o">=</span><span class="n">max_retries</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_serialize</span> <span class="o">=</span> <span class="n">factory</span><span class="o">.</span><span class="n">Factory</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_token</span> <span class="o">=</span> <span class="n">token</span>  <span class="c1"># We need the token For Manifest.</span>
 
@@ -251,6 +260,26 @@ Deserialize the REST payloads and returns <code><a href="crate.html">aiobungie.c
         <span class="k">return</span> <span class="n">Manifest</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_token</span><span class="p">)</span>
 
     <span class="c1"># * User methods.</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_own_bungie_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">crate</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Fetch and return a user object of the bungie net user associated with account.</span>
+
+<span class="sd">        .. warning::</span>
+<span class="sd">            This method requires OAuth2 scope and a Bearer access token.</span>
+<span class="sd">            This token should be stored somewhere safe and just passed as a parameter. e.g., A database.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        access_token : `builtins.str`</span>
+<span class="sd">            A valid Bearer access token for the authorization.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `aiobungie.crate.user.User`</span>
+<span class="sd">            A user object includes the Destiny memberships and Bungie.net user.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">fetch_own_bungie_user</span><span class="p">(</span><span class="n">access_token</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">serialize</span><span class="o">.</span><span class="n">deserialize_user</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">crate</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">BungieUser</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a Bungie user by their id.</span>
@@ -308,7 +337,10 @@ Deserialize the REST payloads and returns <code><a href="crate.html">aiobungie.c
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">serialize</span><span class="o">.</span><span class="n">deserialize_user_themes</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_hard_types</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">credential</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">CredentialType</span> <span class="o">=</span> <span class="n">CredentialType</span><span class="o">.</span><span class="n">STEAMID</span><span class="p">,</span> <span class="o">/</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">credential</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">CredentialType</span><span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">CredentialType</span><span class="o">.</span><span class="n">STEAMID</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">crate</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">HardLinkedMembership</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Gets any hard linked membership given a credential.</span>
 <span class="sd">        Only works for credentials that are public just `aiobungie.CredentialType.STEAMID` right now.</span>
@@ -335,12 +367,15 @@ Deserialize the REST payloads and returns <code><a href="crate.html">aiobungie.c
 
         <span class="k">return</span> <span class="n">crate</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">HardLinkedMembership</span><span class="p">(</span>
             <span class="nb">id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;membershipId&quot;</span><span class="p">]),</span>
-            <span class="nb">type</span><span class="o">=</span><span class="n">MembershipType</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;membershipType&quot;</span><span class="p">]),</span>
-            <span class="n">cross_save_type</span><span class="o">=</span><span class="n">MembershipType</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;CrossSaveOverriddenType&quot;</span><span class="p">]),</span>
+            <span class="nb">type</span><span class="o">=</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;membershipType&quot;</span><span class="p">]),</span>
+            <span class="n">cross_save_type</span><span class="o">=</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;CrossSaveOverriddenType&quot;</span><span class="p">]),</span>
         <span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_membership_from_id</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">MembershipType</span> <span class="o">=</span> <span class="n">MembershipType</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span> <span class="o">/</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">crate</span><span class="o">.</span><span class="n">User</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Fetch Bungie user&#39;s memberships from their id.</span>
 
@@ -377,7 +412,7 @@ Deserialize the REST payloads and returns <code><a href="crate.html">aiobungie.c
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_profile</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">memberid</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="nb">type</span><span class="p">:</span> <span class="n">MembershipType</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">crate</span><span class="o">.</span><span class="n">Profile</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -407,7 +442,12 @@ Deserialize the REST payloads and returns <code><a href="crate.html">aiobungie.c
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">serialize</span><span class="o">.</span><span class="n">deserialize_profile</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_linked_profiles</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">member_type</span><span class="p">:</span> <span class="n">MembershipType</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="nb">all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">member_type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="nb">all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">crate</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">LinkedProfile</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Returns a summary information about all profiles linked to the requested member.</span>
 
@@ -442,7 +482,10 @@ Deserialize the REST payloads and returns <code><a href="crate.html">aiobungie.c
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">serialize</span><span class="o">.</span><span class="n">deserialize_linked_profiles</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_player</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">MembershipType</span> <span class="o">=</span> <span class="n">MembershipType</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span> <span class="o">/</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">crate</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">DestinyUser</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a Destiny 2 Player.</span>
 
@@ -475,7 +518,10 @@ Deserialize the REST payloads and returns <code><a href="crate.html">aiobungie.c
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">serialize</span><span class="o">.</span><span class="n">deserialize_player</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_character</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">memberid</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">MembershipType</span><span class="p">,</span> <span class="n">character</span><span class="p">:</span> <span class="n">Class</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">memberid</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
+        <span class="n">character</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">Class</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">crate</span><span class="o">.</span><span class="n">Character</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a Destiny 2 character.</span>
 
@@ -505,17 +551,99 @@ Deserialize the REST payloads and returns <code><a href="crate.html">aiobungie.c
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">serialize</span><span class="o">.</span><span class="n">deserialize_character</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="n">chartype</span><span class="o">=</span><span class="n">character</span><span class="p">)</span>
 
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">equip_item</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">item_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">membership_type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Equip an item to a character.</span>
+
+<span class="sd">        This requires the OAuth2: MoveEquipDestinyItems scope.</span>
+<span class="sd">        Also You must have a valid Destiny account, and either be</span>
+<span class="sd">        in a social space, in orbit or offline.</span>
+
+<span class="sd">        Positional arguments</span>
+<span class="sd">        ------------------</span>
+<span class="sd">        access_token : `builtins.str`</span>
+<span class="sd">            The bearer access token associated with the bungie account.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        item_id : `builtins.int`</span>
+<span class="sd">            The item id.</span>
+<span class="sd">        character_id : `builtins.int`</span>
+<span class="sd">            The character&#39;s id to equip the item to.</span>
+<span class="sd">        membership_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`</span>
+<span class="sd">            The membership type assocaiated with this player.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `None`</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">equip_item</span><span class="p">(</span>
+            <span class="n">access_token</span><span class="p">,</span>
+            <span class="n">item_id</span><span class="o">=</span><span class="n">item_id</span><span class="p">,</span>
+            <span class="n">character_id</span><span class="o">=</span><span class="n">character_id</span><span class="p">,</span>
+            <span class="n">membership_type</span><span class="o">=</span><span class="n">membership_type</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">equip_items</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">item_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+        <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">membership_type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Equip multiple items to a character.</span>
+
+<span class="sd">        This requires the OAuth2: MoveEquipDestinyItems scope.</span>
+<span class="sd">        Also You must have a valid Destiny account, and either be</span>
+<span class="sd">        in a social space, in orbit or offline.</span>
+
+<span class="sd">        Positional arguments</span>
+<span class="sd">        ------------------</span>
+<span class="sd">        access_token : `builtins.str`</span>
+<span class="sd">            The bearer access token associated with the bungie account.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        item_ids : `list[builtins.int]`</span>
+<span class="sd">            A list of item ids.</span>
+<span class="sd">        character_id : `builtins.int`</span>
+<span class="sd">            The character&#39;s id to equip the item to.</span>
+<span class="sd">        membership_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`</span>
+<span class="sd">            The membership type assocaiated with this player.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `None`</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">equip_items</span><span class="p">(</span>
+            <span class="n">access_token</span><span class="p">,</span>
+            <span class="n">item_ids</span><span class="o">=</span><span class="n">item_ids</span><span class="p">,</span>
+            <span class="n">character_id</span><span class="o">=</span><span class="n">character_id</span><span class="p">,</span>
+            <span class="n">membership_type</span><span class="o">=</span><span class="n">membership_type</span><span class="p">,</span>
+        <span class="p">)</span>
+
     <span class="c1"># * Destiny 2 Activities.</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_activity</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">mode</span><span class="p">:</span> <span class="n">GameMode</span><span class="p">,</span>
-        <span class="n">membership_type</span><span class="p">:</span> <span class="n">MembershipType</span><span class="p">,</span>
+        <span class="n">mode</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">GameMode</span><span class="p">],</span>
+        <span class="n">membership_type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">page</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="n">limit</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">crate</span><span class="o">.</span><span class="n">activity</span><span class="o">.</span><span class="n">Activity</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a Destiny 2 activity for the specified user id and character.</span>
 
@@ -529,10 +657,10 @@ Deserialize the REST payloads and returns <code><a href="crate.html">aiobungie.c
 <span class="sd">            This parameter filters the game mode, Nightfall, Strike, Iron Banner, etc.</span>
 <span class="sd">        membership_type: `aiobungie.internal.enums.MembershipType`</span>
 <span class="sd">            The Member ship type, if nothing was passed than it will return all.</span>
-<span class="sd">        page: typing.Optional[builtins.int]</span>
-<span class="sd">            The page number</span>
-<span class="sd">        limit: typing.Optional[builtins.int]</span>
-<span class="sd">            Limit the returned result.</span>
+<span class="sd">        page: builtins.int</span>
+<span class="sd">            The page number. Default is `1`</span>
+<span class="sd">        limit: builtins.int</span>
+<span class="sd">            Limit the returned result. Default is `1`</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -606,7 +734,7 @@ Deserialize the REST payloads and returns <code><a href="crate.html">aiobungie.c
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">serialize</span><span class="o">.</span><span class="n">deserialize_clan</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_clan</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">GroupType</span> <span class="o">=</span> <span class="n">GroupType</span><span class="o">.</span><span class="n">CLAN</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">GroupType</span><span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">GroupType</span><span class="o">.</span><span class="n">CLAN</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">crate</span><span class="o">.</span><span class="n">Clan</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a Clan by its name.</span>
 <span class="sd">        This method will return the first clan found with given name.</span>
@@ -666,11 +794,11 @@ Deserialize the REST payloads and returns <code><a href="crate.html">aiobungie.c
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_groups_for_member</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">member_type</span><span class="p">:</span> <span class="n">MembershipType</span><span class="p">,</span>
+        <span class="n">member_type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="nb">filter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="n">group_type</span><span class="p">:</span> <span class="n">GroupType</span> <span class="o">=</span> <span class="n">GroupType</span><span class="o">.</span><span class="n">CLAN</span><span class="p">,</span>
+        <span class="n">group_type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">GroupType</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">GroupType</span><span class="o">.</span><span class="n">CLAN</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">crate</span><span class="o">.</span><span class="n">clans</span><span class="o">.</span><span class="n">GroupMember</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch information about the groups that a given member has joined.</span>
 
@@ -703,11 +831,11 @@ Deserialize the REST payloads and returns <code><a href="crate.html">aiobungie.c
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_potential_groups_for_member</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">member_type</span><span class="p">:</span> <span class="n">MembershipType</span><span class="p">,</span>
+        <span class="n">member_type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="nb">filter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="n">group_type</span><span class="p">:</span> <span class="n">GroupType</span> <span class="o">=</span> <span class="n">GroupType</span><span class="o">.</span><span class="n">CLAN</span><span class="p">,</span>
+        <span class="n">group_type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">GroupType</span><span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">GroupType</span><span class="o">.</span><span class="n">CLAN</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">crate</span><span class="o">.</span><span class="n">clans</span><span class="o">.</span><span class="n">GroupMember</span><span class="p">]:</span>
         <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">fetch_potential_groups_for_member</span><span class="p">(</span>
             <span class="n">member_id</span><span class="p">,</span> <span class="n">member_type</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="nb">filter</span><span class="p">,</span> <span class="n">group_type</span><span class="o">=</span><span class="n">group_type</span>
@@ -719,7 +847,7 @@ Deserialize the REST payloads and returns <code><a href="crate.html">aiobungie.c
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">clan_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="nb">type</span><span class="p">:</span> <span class="n">MembershipType</span> <span class="o">=</span> <span class="n">MembershipType</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">crate</span><span class="o">.</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanMember</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a Bungie Clan member.</span>
@@ -759,7 +887,10 @@ Deserialize the REST payloads and returns <code><a href="crate.html">aiobungie.c
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">serialize</span><span class="o">.</span><span class="n">deserialize_clan_member</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_clan_members</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">clan_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">MembershipType</span> <span class="o">=</span> <span class="n">MembershipType</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span> <span class="o">/</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">clan_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">crate</span><span class="o">.</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanMember</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a Bungie Clan member. if no members found in the clan</span>
 <span class="sd">        you will get an empty sequence.</span>
@@ -844,6 +975,25 @@ Deserialize the REST payloads and returns <code><a href="crate.html">aiobungie.c
         <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">fetch_app</span><span class="p">(</span><span class="n">appid</span><span class="p">)</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">serialize</span><span class="o">.</span><span class="n">deserialize_app</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_public_milestone_content</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">milestone_hash</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">crate</span><span class="o">.</span><span class="n">milestones</span><span class="o">.</span><span class="n">Milestone</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Fetch the milestone content given its hash.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        milestone_hash : `builtins.int`</span>
+<span class="sd">            The milestone hash.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `aiobungie.crate.milestones.Milestone`</span>
+<span class="sd">            A milestone object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">fetch_public_milestone_content</span><span class="p">(</span><span class="n">milestone_hash</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">serialize</span><span class="o">.</span><span class="n">deserialize_public_milestone_content</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -867,17 +1017,19 @@ Deserialize the REST payloads and returns <code><a href="crate.html">aiobungie.c
 <span class="sd">    -----------</span>
 <span class="sd">    token: `builtins.str`</span>
 <span class="sd">        Your Bungie&#39;s API key or Token from the developer&#39;s portal.</span>
+<span class="sd">    max_retries : `builtins.int`</span>
+<span class="sd">        The max retries number to retry if the request hit a `5xx` status code.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_rest&quot;</span><span class="p">,</span> <span class="s2">&quot;_serialize&quot;</span><span class="p">,</span> <span class="s2">&quot;_token&quot;</span><span class="p">,</span> <span class="s2">&quot;_loop&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="n">max_retries</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_loop</span><span class="p">:</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">AbstractEventLoop</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">get_or_make_loop</span><span class="p">()</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">token</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">token</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Missing the API key!&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_rest</span> <span class="o">=</span> <span class="n">rest_</span><span class="o">.</span><span class="n">RESTClient</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rest</span> <span class="o">=</span> <span class="n">rest_</span><span class="o">.</span><span class="n">RESTClient</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">max_retries</span><span class="o">=</span><span class="n">max_retries</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_serialize</span> <span class="o">=</span> <span class="n">factory</span><span class="o">.</span><span class="n">Factory</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_token</span> <span class="o">=</span> <span class="n">token</span>  <span class="c1"># We need the token For Manifest.</span>
 
@@ -922,6 +1074,26 @@ Deserialize the REST payloads and returns <code><a href="crate.html">aiobungie.c
         <span class="k">return</span> <span class="n">Manifest</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_token</span><span class="p">)</span>
 
     <span class="c1"># * User methods.</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_own_bungie_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">crate</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Fetch and return a user object of the bungie net user associated with account.</span>
+
+<span class="sd">        .. warning::</span>
+<span class="sd">            This method requires OAuth2 scope and a Bearer access token.</span>
+<span class="sd">            This token should be stored somewhere safe and just passed as a parameter. e.g., A database.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        access_token : `builtins.str`</span>
+<span class="sd">            A valid Bearer access token for the authorization.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `aiobungie.crate.user.User`</span>
+<span class="sd">            A user object includes the Destiny memberships and Bungie.net user.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">fetch_own_bungie_user</span><span class="p">(</span><span class="n">access_token</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">serialize</span><span class="o">.</span><span class="n">deserialize_user</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">crate</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">BungieUser</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a Bungie user by their id.</span>
@@ -979,7 +1151,10 @@ Deserialize the REST payloads and returns <code><a href="crate.html">aiobungie.c
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">serialize</span><span class="o">.</span><span class="n">deserialize_user_themes</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_hard_types</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">credential</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">CredentialType</span> <span class="o">=</span> <span class="n">CredentialType</span><span class="o">.</span><span class="n">STEAMID</span><span class="p">,</span> <span class="o">/</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">credential</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">CredentialType</span><span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">CredentialType</span><span class="o">.</span><span class="n">STEAMID</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">crate</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">HardLinkedMembership</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Gets any hard linked membership given a credential.</span>
 <span class="sd">        Only works for credentials that are public just `aiobungie.CredentialType.STEAMID` right now.</span>
@@ -1006,12 +1181,15 @@ Deserialize the REST payloads and returns <code><a href="crate.html">aiobungie.c
 
         <span class="k">return</span> <span class="n">crate</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">HardLinkedMembership</span><span class="p">(</span>
             <span class="nb">id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;membershipId&quot;</span><span class="p">]),</span>
-            <span class="nb">type</span><span class="o">=</span><span class="n">MembershipType</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;membershipType&quot;</span><span class="p">]),</span>
-            <span class="n">cross_save_type</span><span class="o">=</span><span class="n">MembershipType</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;CrossSaveOverriddenType&quot;</span><span class="p">]),</span>
+            <span class="nb">type</span><span class="o">=</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;membershipType&quot;</span><span class="p">]),</span>
+            <span class="n">cross_save_type</span><span class="o">=</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;CrossSaveOverriddenType&quot;</span><span class="p">]),</span>
         <span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_membership_from_id</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">MembershipType</span> <span class="o">=</span> <span class="n">MembershipType</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span> <span class="o">/</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">crate</span><span class="o">.</span><span class="n">User</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Fetch Bungie user&#39;s memberships from their id.</span>
 
@@ -1048,7 +1226,7 @@ Deserialize the REST payloads and returns <code><a href="crate.html">aiobungie.c
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_profile</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">memberid</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="nb">type</span><span class="p">:</span> <span class="n">MembershipType</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">crate</span><span class="o">.</span><span class="n">Profile</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1078,7 +1256,12 @@ Deserialize the REST payloads and returns <code><a href="crate.html">aiobungie.c
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">serialize</span><span class="o">.</span><span class="n">deserialize_profile</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_linked_profiles</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">member_type</span><span class="p">:</span> <span class="n">MembershipType</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="nb">all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">member_type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="nb">all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">crate</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">LinkedProfile</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Returns a summary information about all profiles linked to the requested member.</span>
 
@@ -1113,7 +1296,10 @@ Deserialize the REST payloads and returns <code><a href="crate.html">aiobungie.c
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">serialize</span><span class="o">.</span><span class="n">deserialize_linked_profiles</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_player</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">MembershipType</span> <span class="o">=</span> <span class="n">MembershipType</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span> <span class="o">/</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">crate</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">DestinyUser</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a Destiny 2 Player.</span>
 
@@ -1146,7 +1332,10 @@ Deserialize the REST payloads and returns <code><a href="crate.html">aiobungie.c
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">serialize</span><span class="o">.</span><span class="n">deserialize_player</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_character</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">memberid</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">MembershipType</span><span class="p">,</span> <span class="n">character</span><span class="p">:</span> <span class="n">Class</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">memberid</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
+        <span class="n">character</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">Class</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">crate</span><span class="o">.</span><span class="n">Character</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a Destiny 2 character.</span>
 
@@ -1176,17 +1365,99 @@ Deserialize the REST payloads and returns <code><a href="crate.html">aiobungie.c
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">serialize</span><span class="o">.</span><span class="n">deserialize_character</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="n">chartype</span><span class="o">=</span><span class="n">character</span><span class="p">)</span>
 
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">equip_item</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">item_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">membership_type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Equip an item to a character.</span>
+
+<span class="sd">        This requires the OAuth2: MoveEquipDestinyItems scope.</span>
+<span class="sd">        Also You must have a valid Destiny account, and either be</span>
+<span class="sd">        in a social space, in orbit or offline.</span>
+
+<span class="sd">        Positional arguments</span>
+<span class="sd">        ------------------</span>
+<span class="sd">        access_token : `builtins.str`</span>
+<span class="sd">            The bearer access token associated with the bungie account.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        item_id : `builtins.int`</span>
+<span class="sd">            The item id.</span>
+<span class="sd">        character_id : `builtins.int`</span>
+<span class="sd">            The character&#39;s id to equip the item to.</span>
+<span class="sd">        membership_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`</span>
+<span class="sd">            The membership type assocaiated with this player.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `None`</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">equip_item</span><span class="p">(</span>
+            <span class="n">access_token</span><span class="p">,</span>
+            <span class="n">item_id</span><span class="o">=</span><span class="n">item_id</span><span class="p">,</span>
+            <span class="n">character_id</span><span class="o">=</span><span class="n">character_id</span><span class="p">,</span>
+            <span class="n">membership_type</span><span class="o">=</span><span class="n">membership_type</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">equip_items</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">item_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+        <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">membership_type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Equip multiple items to a character.</span>
+
+<span class="sd">        This requires the OAuth2: MoveEquipDestinyItems scope.</span>
+<span class="sd">        Also You must have a valid Destiny account, and either be</span>
+<span class="sd">        in a social space, in orbit or offline.</span>
+
+<span class="sd">        Positional arguments</span>
+<span class="sd">        ------------------</span>
+<span class="sd">        access_token : `builtins.str`</span>
+<span class="sd">            The bearer access token associated with the bungie account.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        item_ids : `list[builtins.int]`</span>
+<span class="sd">            A list of item ids.</span>
+<span class="sd">        character_id : `builtins.int`</span>
+<span class="sd">            The character&#39;s id to equip the item to.</span>
+<span class="sd">        membership_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`</span>
+<span class="sd">            The membership type assocaiated with this player.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `None`</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">equip_items</span><span class="p">(</span>
+            <span class="n">access_token</span><span class="p">,</span>
+            <span class="n">item_ids</span><span class="o">=</span><span class="n">item_ids</span><span class="p">,</span>
+            <span class="n">character_id</span><span class="o">=</span><span class="n">character_id</span><span class="p">,</span>
+            <span class="n">membership_type</span><span class="o">=</span><span class="n">membership_type</span><span class="p">,</span>
+        <span class="p">)</span>
+
     <span class="c1"># * Destiny 2 Activities.</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_activity</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">mode</span><span class="p">:</span> <span class="n">GameMode</span><span class="p">,</span>
-        <span class="n">membership_type</span><span class="p">:</span> <span class="n">MembershipType</span><span class="p">,</span>
+        <span class="n">mode</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">GameMode</span><span class="p">],</span>
+        <span class="n">membership_type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">page</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="n">limit</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">crate</span><span class="o">.</span><span class="n">activity</span><span class="o">.</span><span class="n">Activity</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a Destiny 2 activity for the specified user id and character.</span>
 
@@ -1200,10 +1471,10 @@ Deserialize the REST payloads and returns <code><a href="crate.html">aiobungie.c
 <span class="sd">            This parameter filters the game mode, Nightfall, Strike, Iron Banner, etc.</span>
 <span class="sd">        membership_type: `aiobungie.internal.enums.MembershipType`</span>
 <span class="sd">            The Member ship type, if nothing was passed than it will return all.</span>
-<span class="sd">        page: typing.Optional[builtins.int]</span>
-<span class="sd">            The page number</span>
-<span class="sd">        limit: typing.Optional[builtins.int]</span>
-<span class="sd">            Limit the returned result.</span>
+<span class="sd">        page: builtins.int</span>
+<span class="sd">            The page number. Default is `1`</span>
+<span class="sd">        limit: builtins.int</span>
+<span class="sd">            Limit the returned result. Default is `1`</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1277,7 +1548,7 @@ Deserialize the REST payloads and returns <code><a href="crate.html">aiobungie.c
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">serialize</span><span class="o">.</span><span class="n">deserialize_clan</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_clan</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">GroupType</span> <span class="o">=</span> <span class="n">GroupType</span><span class="o">.</span><span class="n">CLAN</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">GroupType</span><span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">GroupType</span><span class="o">.</span><span class="n">CLAN</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">crate</span><span class="o">.</span><span class="n">Clan</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a Clan by its name.</span>
 <span class="sd">        This method will return the first clan found with given name.</span>
@@ -1337,11 +1608,11 @@ Deserialize the REST payloads and returns <code><a href="crate.html">aiobungie.c
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_groups_for_member</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">member_type</span><span class="p">:</span> <span class="n">MembershipType</span><span class="p">,</span>
+        <span class="n">member_type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="nb">filter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="n">group_type</span><span class="p">:</span> <span class="n">GroupType</span> <span class="o">=</span> <span class="n">GroupType</span><span class="o">.</span><span class="n">CLAN</span><span class="p">,</span>
+        <span class="n">group_type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">GroupType</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">GroupType</span><span class="o">.</span><span class="n">CLAN</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">crate</span><span class="o">.</span><span class="n">clans</span><span class="o">.</span><span class="n">GroupMember</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch information about the groups that a given member has joined.</span>
 
@@ -1374,11 +1645,11 @@ Deserialize the REST payloads and returns <code><a href="crate.html">aiobungie.c
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_potential_groups_for_member</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">member_type</span><span class="p">:</span> <span class="n">MembershipType</span><span class="p">,</span>
+        <span class="n">member_type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="nb">filter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="n">group_type</span><span class="p">:</span> <span class="n">GroupType</span> <span class="o">=</span> <span class="n">GroupType</span><span class="o">.</span><span class="n">CLAN</span><span class="p">,</span>
+        <span class="n">group_type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">GroupType</span><span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">GroupType</span><span class="o">.</span><span class="n">CLAN</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">crate</span><span class="o">.</span><span class="n">clans</span><span class="o">.</span><span class="n">GroupMember</span><span class="p">]:</span>
         <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">fetch_potential_groups_for_member</span><span class="p">(</span>
             <span class="n">member_id</span><span class="p">,</span> <span class="n">member_type</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="nb">filter</span><span class="p">,</span> <span class="n">group_type</span><span class="o">=</span><span class="n">group_type</span>
@@ -1390,7 +1661,7 @@ Deserialize the REST payloads and returns <code><a href="crate.html">aiobungie.c
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">clan_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="nb">type</span><span class="p">:</span> <span class="n">MembershipType</span> <span class="o">=</span> <span class="n">MembershipType</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">crate</span><span class="o">.</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanMember</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a Bungie Clan member.</span>
@@ -1430,7 +1701,10 @@ Deserialize the REST payloads and returns <code><a href="crate.html">aiobungie.c
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">serialize</span><span class="o">.</span><span class="n">deserialize_clan_member</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_clan_members</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">clan_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">MembershipType</span> <span class="o">=</span> <span class="n">MembershipType</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span> <span class="o">/</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">clan_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">crate</span><span class="o">.</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanMember</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a Bungie Clan member. if no members found in the clan</span>
 <span class="sd">        you will get an empty sequence.</span>
@@ -1515,6 +1789,25 @@ Deserialize the REST payloads and returns <code><a href="crate.html">aiobungie.c
         <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">fetch_app</span><span class="p">(</span><span class="n">appid</span><span class="p">)</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">serialize</span><span class="o">.</span><span class="n">deserialize_app</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_public_milestone_content</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">milestone_hash</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">crate</span><span class="o">.</span><span class="n">milestones</span><span class="o">.</span><span class="n">Milestone</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Fetch the milestone content given its hash.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        milestone_hash : `builtins.int`</span>
+<span class="sd">            The milestone hash.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `aiobungie.crate.milestones.Milestone`</span>
+<span class="sd">            A milestone object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">fetch_public_milestone_content</span><span class="p">(</span><span class="n">milestone_hash</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">serialize</span><span class="o">.</span><span class="n">deserialize_public_milestone_content</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -1526,6 +1819,8 @@ Deserialize the REST payloads and returns <code><a href="crate.html">aiobungie.c
 <ul>
 <li><strong>token</strong> (<code>builtins.str</code>):
 Your Bungie's API key or Token from the developer's portal.</li>
+<li><strong>max_retries</strong> (<code>builtins.int</code>):
+The max retries number to retry if the request hit a <code>5xx</code> status code.</li>
 </ul>
 </div>
 
@@ -1534,18 +1829,18 @@ Your Bungie's API key or Token from the developer's portal.</li>
                                         <div class="attr function"><a class="headerlink" href="#Client.__init__">#&nbsp;&nbsp</a>
 
         
-            <span class="name">Client</span><span class="signature">(token: str, /)</span>
+            <span class="name">Client</span><span class="signature">(token: str, /, max_retries: int = 4)</span>
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="n">max_retries</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_loop</span><span class="p">:</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">AbstractEventLoop</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">get_or_make_loop</span><span class="p">()</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">token</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">token</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Missing the API key!&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_rest</span> <span class="o">=</span> <span class="n">rest_</span><span class="o">.</span><span class="n">RESTClient</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rest</span> <span class="o">=</span> <span class="n">rest_</span><span class="o">.</span><span class="n">RESTClient</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">max_retries</span><span class="o">=</span><span class="n">max_retries</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_serialize</span> <span class="o">=</span> <span class="n">factory</span><span class="o">.</span><span class="n">Factory</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_token</span> <span class="o">=</span> <span class="n">token</span>  <span class="c1"># We need the token For Manifest.</span>
 </pre></div>
@@ -1672,6 +1967,61 @@ Your coro function.</li>
 
 <ul>
 <li><strong><code><a href="ext.html#Manifest">aiobungie.ext.Manifest</a></code></strong>: A Manifest crate.</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="Client.fetch_own_bungie_user" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Client.fetch_own_bungie_user">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">async def</span>
+            <span class="name">fetch_own_bungie_user</span><span class="signature">(self, *, access_token: str) -&gt; <a href="crate.html#user.User">aiobungie.crate.user.User</a></span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_own_bungie_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">crate</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Fetch and return a user object of the bungie net user associated with account.</span>
+
+<span class="sd">        .. warning::</span>
+<span class="sd">            This method requires OAuth2 scope and a Bearer access token.</span>
+<span class="sd">            This token should be stored somewhere safe and just passed as a parameter. e.g., A database.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        access_token : `builtins.str`</span>
+<span class="sd">            A valid Bearer access token for the authorization.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `aiobungie.crate.user.User`</span>
+<span class="sd">            A user object includes the Destiny memberships and Bungie.net user.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">fetch_own_bungie_user</span><span class="p">(</span><span class="n">access_token</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">serialize</span><span class="o">.</span><span class="n">deserialize_user</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Fetch and return a user object of the bungie net user associated with account.</p>
+
+<p><em>Warning:</em>
+This method requires OAuth2 scope and a Bearer access token.
+This token should be stored somewhere safe and just passed as a parameter. e.g., A database.</p>
+
+<h6 id="parameters">Parameters</h6>
+
+<ul>
+<li><strong>access_token</strong> (<code>builtins.str</code>):
+A valid Bearer access token for the authorization.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<ul>
+<li><strong><code><a href="crate.html#user.User">aiobungie.crate.user.User</a></code></strong>: A user object includes the Destiny memberships and Bungie.net user.</li>
 </ul>
 </div>
 
@@ -1836,7 +2186,7 @@ The user name.</li>
             <span class="name">fetch_hard_types</span><span class="signature">(
     self,
     credential: int,
-    type: <a href="internal/enums.html#CredentialType">aiobungie.internal.enums.CredentialType</a> = &lt;CredentialType.STEAMID: 12&gt;,
+    type: Union[int, <a href="internal/enums.html#CredentialType">aiobungie.internal.enums.CredentialType</a>] = &lt;CredentialType.STEAMID: 12&gt;,
     /
 ) -&gt; <a href="crate.html#user.HardLinkedMembership">aiobungie.crate.user.HardLinkedMembership</a></span>:
     </div>
@@ -1844,7 +2194,10 @@ The user name.</li>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_hard_types</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">credential</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">CredentialType</span> <span class="o">=</span> <span class="n">CredentialType</span><span class="o">.</span><span class="n">STEAMID</span><span class="p">,</span> <span class="o">/</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">credential</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">CredentialType</span><span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">CredentialType</span><span class="o">.</span><span class="n">STEAMID</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">crate</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">HardLinkedMembership</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Gets any hard linked membership given a credential.</span>
 <span class="sd">        Only works for credentials that are public just `aiobungie.CredentialType.STEAMID` right now.</span>
@@ -1871,8 +2224,8 @@ The user name.</li>
 
         <span class="k">return</span> <span class="n">crate</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">HardLinkedMembership</span><span class="p">(</span>
             <span class="nb">id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;membershipId&quot;</span><span class="p">]),</span>
-            <span class="nb">type</span><span class="o">=</span><span class="n">MembershipType</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;membershipType&quot;</span><span class="p">]),</span>
-            <span class="n">cross_save_type</span><span class="o">=</span><span class="n">MembershipType</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;CrossSaveOverriddenType&quot;</span><span class="p">]),</span>
+            <span class="nb">type</span><span class="o">=</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;membershipType&quot;</span><span class="p">]),</span>
+            <span class="n">cross_save_type</span><span class="o">=</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;CrossSaveOverriddenType&quot;</span><span class="p">]),</span>
         <span class="p">)</span>
 </pre></div>
 
@@ -1909,7 +2262,7 @@ Since its only credential that works "currently"</li>
             <span class="name">fetch_membership_from_id</span><span class="signature">(
     self,
     id: int,
-    type: <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a> = &lt;MembershipType.NONE: 0&gt;,
+    type: Union[int, <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>] = &lt;MembershipType.NONE: 0&gt;,
     /
 ) -&gt; <a href="crate.html#user.User">aiobungie.crate.user.User</a></span>:
     </div>
@@ -1917,7 +2270,10 @@ Since its only credential that works "currently"</li>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_membership_from_id</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">MembershipType</span> <span class="o">=</span> <span class="n">MembershipType</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span> <span class="o">/</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">crate</span><span class="o">.</span><span class="n">User</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Fetch Bungie user&#39;s memberships from their id.</span>
 
@@ -1995,7 +2351,7 @@ The user's membership type.</li>
             <span class="name">fetch_profile</span><span class="signature">(
     self,
     memberid: int,
-    type: <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>,
+    type: Union[int, <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>],
     /
 ) -&gt; <a href="crate.html#profile.Profile">aiobungie.crate.profile.Profile</a></span>:
     </div>
@@ -2005,7 +2361,7 @@ The user's membership type.</li>
             <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_profile</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">memberid</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="nb">type</span><span class="p">:</span> <span class="n">MembershipType</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">crate</span><span class="o">.</span><span class="n">Profile</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -2073,7 +2429,7 @@ A valid membership type.</li>
             <span class="name">fetch_linked_profiles</span><span class="signature">(
     self,
     member_id: int,
-    member_type: <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>,
+    member_type: Union[int, <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>],
     /,
     *,
     all: bool = False
@@ -2083,7 +2439,12 @@ A valid membership type.</li>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_linked_profiles</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">member_type</span><span class="p">:</span> <span class="n">MembershipType</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="nb">all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">member_type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="nb">all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">crate</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">LinkedProfile</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Returns a summary information about all profiles linked to the requested member.</span>
 
@@ -2164,7 +2525,7 @@ The default for this is <code>False</code>.</p></li>
             <span class="name">fetch_player</span><span class="signature">(
     self,
     name: str,
-    type: <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a> = &lt;MembershipType.ALL: -1&gt;,
+    type: Union[int, <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>] = &lt;MembershipType.ALL: -1&gt;,
     /
 ) -&gt; Sequence[<a href="crate.html#user.DestinyUser">aiobungie.crate.user.DestinyUser</a>]</span>:
     </div>
@@ -2172,7 +2533,10 @@ The default for this is <code>False</code>.</p></li>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_player</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">MembershipType</span> <span class="o">=</span> <span class="n">MembershipType</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span> <span class="o">/</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">crate</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">DestinyUser</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a Destiny 2 Player.</span>
 
@@ -2246,7 +2610,7 @@ The player's membership type, e,g. XBOX, STEAM, PSN</li>
             <span class="name">fetch_character</span><span class="signature">(
     self,
     memberid: int,
-    type: <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>,
+    type: Union[int, <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>],
     character: <a href="internal/enums.html#Class">aiobungie.internal.enums.Class</a>
 ) -&gt; <a href="crate.html#character.Character">aiobungie.crate.character.Character</a></span>:
     </div>
@@ -2254,7 +2618,10 @@ The player's membership type, e,g. XBOX, STEAM, PSN</li>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_character</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">memberid</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">MembershipType</span><span class="p">,</span> <span class="n">character</span><span class="p">:</span> <span class="n">Class</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">memberid</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
+        <span class="n">character</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">Class</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">crate</span><span class="o">.</span><span class="n">Character</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a Destiny 2 character.</span>
 
@@ -2316,6 +2683,192 @@ The member's membership type.</li>
 
 
                             </div>
+                            <div id="Client.equip_item" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Client.equip_item">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">async def</span>
+            <span class="name">equip_item</span><span class="signature">(
+    self,
+    access_token: str,
+    /,
+    *,
+    item_id: int,
+    character_id: int,
+    membership_type: Union[int, <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>]
+) -&gt; None</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">equip_item</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">item_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">membership_type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Equip an item to a character.</span>
+
+<span class="sd">        This requires the OAuth2: MoveEquipDestinyItems scope.</span>
+<span class="sd">        Also You must have a valid Destiny account, and either be</span>
+<span class="sd">        in a social space, in orbit or offline.</span>
+
+<span class="sd">        Positional arguments</span>
+<span class="sd">        ------------------</span>
+<span class="sd">        access_token : `builtins.str`</span>
+<span class="sd">            The bearer access token associated with the bungie account.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        item_id : `builtins.int`</span>
+<span class="sd">            The item id.</span>
+<span class="sd">        character_id : `builtins.int`</span>
+<span class="sd">            The character&#39;s id to equip the item to.</span>
+<span class="sd">        membership_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`</span>
+<span class="sd">            The membership type assocaiated with this player.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `None`</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">equip_item</span><span class="p">(</span>
+            <span class="n">access_token</span><span class="p">,</span>
+            <span class="n">item_id</span><span class="o">=</span><span class="n">item_id</span><span class="p">,</span>
+            <span class="n">character_id</span><span class="o">=</span><span class="n">character_id</span><span class="p">,</span>
+            <span class="n">membership_type</span><span class="o">=</span><span class="n">membership_type</span><span class="p">,</span>
+        <span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Equip an item to a character.</p>
+
+<p>This requires the OAuth2: MoveEquipDestinyItems scope.
+Also You must have a valid Destiny account, and either be
+in a social space, in orbit or offline.</p>
+
+<h6 id="positional-arguments">Positional arguments</h6>
+
+<p>access_token : <code>builtins.str</code>
+    The bearer access token associated with the bungie account.</p>
+
+<h6 id="parameters">Parameters</h6>
+
+<ul>
+<li><strong>item_id</strong> (<code>builtins.int</code>):
+The item id.</li>
+<li><strong>character_id</strong> (<code>builtins.int</code>):
+The character's id to equip the item to.</li>
+<li><strong>membership_type</strong> (<code><a href="internal/helpers.html#IntAnd">aiobungie.internal.helpers.IntAnd</a>[<a href="../aiobungie.html#MembershipType">aiobungie.MembershipType</a>]</code>):
+The membership type assocaiated with this player.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<ul>
+<li><strong><code>None</code></strong>: None</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="Client.equip_items" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Client.equip_items">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">async def</span>
+            <span class="name">equip_items</span><span class="signature">(
+    self,
+    access_token: str,
+    /,
+    *,
+    item_ids: list,
+    character_id: int,
+    membership_type: Union[int, <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>]
+) -&gt; None</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">equip_items</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">item_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+        <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">membership_type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Equip multiple items to a character.</span>
+
+<span class="sd">        This requires the OAuth2: MoveEquipDestinyItems scope.</span>
+<span class="sd">        Also You must have a valid Destiny account, and either be</span>
+<span class="sd">        in a social space, in orbit or offline.</span>
+
+<span class="sd">        Positional arguments</span>
+<span class="sd">        ------------------</span>
+<span class="sd">        access_token : `builtins.str`</span>
+<span class="sd">            The bearer access token associated with the bungie account.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        item_ids : `list[builtins.int]`</span>
+<span class="sd">            A list of item ids.</span>
+<span class="sd">        character_id : `builtins.int`</span>
+<span class="sd">            The character&#39;s id to equip the item to.</span>
+<span class="sd">        membership_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`</span>
+<span class="sd">            The membership type assocaiated with this player.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `None`</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">equip_items</span><span class="p">(</span>
+            <span class="n">access_token</span><span class="p">,</span>
+            <span class="n">item_ids</span><span class="o">=</span><span class="n">item_ids</span><span class="p">,</span>
+            <span class="n">character_id</span><span class="o">=</span><span class="n">character_id</span><span class="p">,</span>
+            <span class="n">membership_type</span><span class="o">=</span><span class="n">membership_type</span><span class="p">,</span>
+        <span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Equip multiple items to a character.</p>
+
+<p>This requires the OAuth2: MoveEquipDestinyItems scope.
+Also You must have a valid Destiny account, and either be
+in a social space, in orbit or offline.</p>
+
+<h6 id="positional-arguments">Positional arguments</h6>
+
+<p>access_token : <code>builtins.str</code>
+    The bearer access token associated with the bungie account.</p>
+
+<h6 id="parameters">Parameters</h6>
+
+<ul>
+<li><strong>item_ids</strong> (<code>list[builtins.int]</code>):
+A list of item ids.</li>
+<li><strong>character_id</strong> (<code>builtins.int</code>):
+The character's id to equip the item to.</li>
+<li><strong>membership_type</strong> (<code><a href="internal/helpers.html#IntAnd">aiobungie.internal.helpers.IntAnd</a>[<a href="../aiobungie.html#MembershipType">aiobungie.MembershipType</a>]</code>):
+The membership type assocaiated with this player.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<ul>
+<li><strong><code>None</code></strong>: None</li>
+</ul>
+</div>
+
+
+                            </div>
                             <div id="Client.fetch_activity" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#Client.fetch_activity">#&nbsp;&nbsp</a>
 
@@ -2325,11 +2878,11 @@ The member's membership type.</li>
     self,
     member_id: int,
     character_id: int,
-    mode: <a href="internal/enums.html#GameMode">aiobungie.internal.enums.GameMode</a>,
-    membership_type: <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>,
+    mode: Union[int, <a href="internal/enums.html#GameMode">aiobungie.internal.enums.GameMode</a>],
+    membership_type: Union[int, <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>],
     *,
-    page: Optional[int] = 1,
-    limit: Optional[int] = 1
+    page: int = 1,
+    limit: int = 1
 ) -&gt; <a href="crate.html#activity.Activity">aiobungie.crate.activity.Activity</a></span>:
     </div>
 
@@ -2339,11 +2892,11 @@ The member's membership type.</li>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">mode</span><span class="p">:</span> <span class="n">GameMode</span><span class="p">,</span>
-        <span class="n">membership_type</span><span class="p">:</span> <span class="n">MembershipType</span><span class="p">,</span>
+        <span class="n">mode</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">GameMode</span><span class="p">],</span>
+        <span class="n">membership_type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">page</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="n">limit</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">crate</span><span class="o">.</span><span class="n">activity</span><span class="o">.</span><span class="n">Activity</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a Destiny 2 activity for the specified user id and character.</span>
 
@@ -2357,10 +2910,10 @@ The member's membership type.</li>
 <span class="sd">            This parameter filters the game mode, Nightfall, Strike, Iron Banner, etc.</span>
 <span class="sd">        membership_type: `aiobungie.internal.enums.MembershipType`</span>
 <span class="sd">            The Member ship type, if nothing was passed than it will return all.</span>
-<span class="sd">        page: typing.Optional[builtins.int]</span>
-<span class="sd">            The page number</span>
-<span class="sd">        limit: typing.Optional[builtins.int]</span>
-<span class="sd">            Limit the returned result.</span>
+<span class="sd">        page: builtins.int</span>
+<span class="sd">            The page number. Default is `1`</span>
+<span class="sd">        limit: builtins.int</span>
+<span class="sd">            Limit the returned result. Default is `1`</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -2402,10 +2955,10 @@ The id of the character to retrieve.</li>
 This parameter filters the game mode, Nightfall, Strike, Iron Banner, etc.</li>
 <li><strong>membership_type</strong> (<code><a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a></code>):
 The Member ship type, if nothing was passed than it will return all.</li>
-<li><strong>page</strong> (typing.Optional[builtins.int]):
-The page number</li>
-<li><strong>limit</strong> (typing.Optional[builtins.int]):
-Limit the returned result.</li>
+<li><strong>page</strong> (builtins.int):
+The page number. Default is <code>1</code></li>
+<li><strong>limit</strong> (builtins.int):
+Limit the returned result. Default is <code>1</code></li>
 </ul>
 
 <h6 id="returns">Returns</h6>
@@ -2550,14 +3103,14 @@ The clan id.</li>
     self,
     name: str,
     /,
-    type: <a href="internal/enums.html#GroupType">aiobungie.internal.enums.GroupType</a> = &lt;GroupType.CLAN: 1&gt;
+    type: Union[int, <a href="internal/enums.html#GroupType">aiobungie.internal.enums.GroupType</a>] = &lt;GroupType.CLAN: 1&gt;
 ) -&gt; <a href="crate.html#clans.Clan">aiobungie.crate.clans.Clan</a></span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_clan</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">GroupType</span> <span class="o">=</span> <span class="n">GroupType</span><span class="o">.</span><span class="n">CLAN</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">GroupType</span><span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">GroupType</span><span class="o">.</span><span class="n">CLAN</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">crate</span><span class="o">.</span><span class="n">Clan</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a Clan by its name.</span>
 <span class="sd">        This method will return the first clan found with given name.</span>
@@ -2708,7 +3261,7 @@ The clan id.</li>
             <span class="name">fetch_groups_for_member</span><span class="signature">(
     self,
     member_id: int,
-    member_type: <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>,
+    member_type: Union[int, <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>],
     /,
     *,
     filter: int = 0,
@@ -2721,11 +3274,11 @@ The clan id.</li>
             <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_groups_for_member</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">member_type</span><span class="p">:</span> <span class="n">MembershipType</span><span class="p">,</span>
+        <span class="n">member_type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="nb">filter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="n">group_type</span><span class="p">:</span> <span class="n">GroupType</span> <span class="o">=</span> <span class="n">GroupType</span><span class="o">.</span><span class="n">CLAN</span><span class="p">,</span>
+        <span class="n">group_type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">GroupType</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">GroupType</span><span class="o">.</span><span class="n">CLAN</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">crate</span><span class="o">.</span><span class="n">clans</span><span class="o">.</span><span class="n">GroupMember</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch information about the groups that a given member has joined.</span>
 
@@ -2796,11 +3349,11 @@ This is always set to <code><a href="../aiobungie.html#GroupType.CLAN">aiobungie
             <span class="name">fetch_potential_groups_for_member</span><span class="signature">(
     self,
     member_id: int,
-    member_type: <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>,
+    member_type: Union[int, <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>],
     /,
     *,
     filter: int = 0,
-    group_type: <a href="internal/enums.html#GroupType">aiobungie.internal.enums.GroupType</a> = &lt;GroupType.CLAN: 1&gt;
+    group_type: Union[int, <a href="internal/enums.html#GroupType">aiobungie.internal.enums.GroupType</a>] = &lt;GroupType.CLAN: 1&gt;
 ) -&gt; Optional[<a href="crate.html#clans.GroupMember">aiobungie.crate.clans.GroupMember</a>]</span>:
     </div>
 
@@ -2809,11 +3362,11 @@ This is always set to <code><a href="../aiobungie.html#GroupType.CLAN">aiobungie
             <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_potential_groups_for_member</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">member_type</span><span class="p">:</span> <span class="n">MembershipType</span><span class="p">,</span>
+        <span class="n">member_type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="nb">filter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="n">group_type</span><span class="p">:</span> <span class="n">GroupType</span> <span class="o">=</span> <span class="n">GroupType</span><span class="o">.</span><span class="n">CLAN</span><span class="p">,</span>
+        <span class="n">group_type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">GroupType</span><span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">GroupType</span><span class="o">.</span><span class="n">CLAN</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">crate</span><span class="o">.</span><span class="n">clans</span><span class="o">.</span><span class="n">GroupMember</span><span class="p">]:</span>
         <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">fetch_potential_groups_for_member</span><span class="p">(</span>
             <span class="n">member_id</span><span class="p">,</span> <span class="n">member_type</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="nb">filter</span><span class="p">,</span> <span class="n">group_type</span><span class="o">=</span><span class="n">group_type</span>
@@ -2836,7 +3389,7 @@ This is always set to <code><a href="../aiobungie.html#GroupType.CLAN">aiobungie
     self,
     clan_id: int,
     name: Optional[str] = None,
-    type: <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a> = &lt;MembershipType.NONE: 0&gt;,
+    type: Union[int, <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>] = &lt;MembershipType.NONE: 0&gt;,
     /
 ) -&gt; <a href="crate.html#clans.ClanMember">aiobungie.crate.clans.ClanMember</a></span>:
     </div>
@@ -2847,7 +3400,7 @@ This is always set to <code><a href="../aiobungie.html#GroupType.CLAN">aiobungie
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">clan_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="nb">type</span><span class="p">:</span> <span class="n">MembershipType</span> <span class="o">=</span> <span class="n">MembershipType</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">crate</span><span class="o">.</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanMember</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a Bungie Clan member.</span>
@@ -2933,7 +3486,7 @@ Which returns the first matched clan member by their name.</li>
             <span class="name">fetch_clan_members</span><span class="signature">(
     self,
     clan_id: int,
-    type: <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a> = &lt;MembershipType.NONE: 0&gt;,
+    type: Union[int, <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>] = &lt;MembershipType.NONE: 0&gt;,
     /
 ) -&gt; Sequence[<a href="crate.html#clans.ClanMember">aiobungie.crate.clans.ClanMember</a>]</span>:
     </div>
@@ -2941,7 +3494,10 @@ Which returns the first matched clan member by their name.</li>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_clan_members</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">clan_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">MembershipType</span> <span class="o">=</span> <span class="n">MembershipType</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span> <span class="o">/</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">clan_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">crate</span><span class="o">.</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanMember</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a Bungie Clan member. if no members found in the clan</span>
 <span class="sd">        you will get an empty sequence.</span>
@@ -3142,6 +3698,56 @@ The application id.</li>
 
 <ul>
 <li><strong><code><a href="crate.html#Application">aiobungie.crate.Application</a></code></strong>: A Bungie application.</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="Client.fetch_public_milestone_content" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Client.fetch_public_milestone_content">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">async def</span>
+            <span class="name">fetch_public_milestone_content</span><span class="signature">(self, milestone_hash: int, /) -&gt; <a href="crate.html#milestones.Milestone">aiobungie.crate.milestones.Milestone</a></span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_public_milestone_content</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">milestone_hash</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">crate</span><span class="o">.</span><span class="n">milestones</span><span class="o">.</span><span class="n">Milestone</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Fetch the milestone content given its hash.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        milestone_hash : `builtins.int`</span>
+<span class="sd">            The milestone hash.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `aiobungie.crate.milestones.Milestone`</span>
+<span class="sd">            A milestone object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">fetch_public_milestone_content</span><span class="p">(</span><span class="n">milestone_hash</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">serialize</span><span class="o">.</span><span class="n">deserialize_public_milestone_content</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Fetch the milestone content given its hash.</p>
+
+<h6 id="parameters">Parameters</h6>
+
+<ul>
+<li><strong>milestone_hash</strong> (<code>builtins.int</code>):
+The milestone hash.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<ul>
+<li><strong><code><a href="crate.html#milestones.Milestone">aiobungie.crate.milestones.Milestone</a></code></strong>: A milestone object.</li>
 </ul>
 </div>
 

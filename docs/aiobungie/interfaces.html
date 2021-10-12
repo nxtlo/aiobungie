@@ -106,22 +106,31 @@
                                 <a class="function" href="#RESTInterface.fetch_linked_profiles">fetch_linked_profiles</a>
                         </li>
                         <li>
+                                <a class="function" href="#RESTInterface.fetch_clan_banners">fetch_clan_banners</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#RESTInterface.fetch_public_milestones">fetch_public_milestones</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#RESTInterface.fetch_public_milestone_content">fetch_public_milestone_content</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#RESTInterface.fetch_own_bungie_user">fetch_own_bungie_user</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#RESTInterface.equip_item">equip_item</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#RESTInterface.equip_items">equip_items</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#RESTInterface.fetch_item">fetch_item</a>
                         </li>
                         <li>
                                 <a class="function" href="#RESTInterface.fetch_clan_weekly_rewards">fetch_clan_weekly_rewards</a>
                         </li>
                         <li>
-                                <a class="function" href="#RESTInterface.fetch_public_milestone_content">fetch_public_milestone_content</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#RESTInterface.fetch_public_milestones">fetch_public_milestones</a>
-                        </li>
-                        <li>
                                 <a class="function" href="#RESTInterface.fetch_weapon_history">fetch_weapon_history</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#RESTInterface.fetch_clan_banners">fetch_clan_banners</a>
                         </li>
                 </ul>
 
@@ -299,7 +308,7 @@
     <span class="k">def</span> <span class="nf">fetch_hard_linked</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">credential</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="nb">type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">CredentialType</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">CredentialType</span><span class="o">.</span><span class="n">STEAMID</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">CredentialType</span><span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">CredentialType</span><span class="o">.</span><span class="n">STEAMID</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonObject</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Gets any hard linked membership given a credential.</span>
@@ -310,7 +319,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        credential: `builtins.int`</span>
 <span class="sd">            A valid SteamID64</span>
-<span class="sd">        type: `aiobungie.CredentialType`</span>
+<span class="sd">        type: `aiobungie.internal.helpers.IntAnd[aiobungie.CredentialType]`</span>
 <span class="sd">            The crededntial type. This must not be changed</span>
 <span class="sd">            Since its only credential that works &quot;currently&quot;</span>
 
@@ -322,7 +331,10 @@
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">fetch_membership_from_id</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span> <span class="o">/</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonObject</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch Bungie user&#39;s memberships from their id.</span>
 
@@ -330,7 +342,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        id : `builtins.int`</span>
 <span class="sd">            The user&#39;s id.</span>
-<span class="sd">        type : `aiobungie.MembershipType`</span>
+<span class="sd">        type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`</span>
 <span class="sd">            The user&#39;s membership type.</span>
 
 <span class="sd">        Returns</span>
@@ -348,7 +360,7 @@
     <span class="k">def</span> <span class="nf">fetch_profile</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">memberid</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="nb">type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonObject</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -358,7 +370,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        memberid: `builtins.int`</span>
 <span class="sd">            The member&#39;s id.</span>
-<span class="sd">        type: `aiobungie.MembershipType`</span>
+<span class="sd">        type: `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`</span>
 <span class="sd">            A valid membership type.</span>
 
 <span class="sd">        Returns</span>
@@ -374,21 +386,23 @@
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">fetch_player</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span> <span class="o">/</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonArray</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a Destiny 2 Player.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        -----------</span>
-<span class="sd">        name: `builtins.str`</span>
-<span class="sd">            The Player&#39;s Name.</span>
 
 <span class="sd">        .. note::</span>
 <span class="sd">            You must also pass the player&#39;s unique code.</span>
 <span class="sd">            A full name parameter should look like this</span>
 <span class="sd">            `Fate怒#4275`</span>
 
-<span class="sd">        type: `aiobungie.internal.enums.MembershipType`</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        name: `builtins.str`</span>
+<span class="sd">            The Player&#39;s Name.</span>
+<span class="sd">        type: `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`</span>
 <span class="sd">            The player&#39;s membership type, e,g. XBOX, STEAM, PSN</span>
 
 <span class="sd">        Returns</span>
@@ -407,7 +421,7 @@
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">fetch_character</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">memberid</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">,</span> <span class="o">/</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">memberid</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span> <span class="o">/</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonObject</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a Destiny 2 player&#39;s characters.</span>
 
@@ -415,7 +429,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        memberid: `builtins.int`</span>
 <span class="sd">            A valid bungie member id.</span>
-<span class="sd">        type: `aiobungie.internal.enums.MembershipType`</span>
+<span class="sd">        type: `aiobungie.internal.helpers.IntAnd[aiobungie.internal.enums.MembershipType]`</span>
 <span class="sd">            The member&#39;s membership type.</span>
 
 <span class="sd">        Returns</span>
@@ -437,11 +451,13 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">mode</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">GameMode</span><span class="p">,</span>
-        <span class="n">membership_type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">,</span>
+        <span class="n">mode</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">GameMode</span><span class="p">],</span>
+        <span class="n">membership_type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span>
+            <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">page</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="n">limit</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonObject</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a Destiny 2 activity for the specified user id and character.</span>
 
@@ -451,14 +467,17 @@
 <span class="sd">            The user id that starts with `4611`.</span>
 <span class="sd">        character_id: `builtins.int`</span>
 <span class="sd">            The id of the character to retrieve.</span>
-<span class="sd">        mode: `aiobungie.internal.enums.GameMode`</span>
+<span class="sd">        mode: `aiobungie.internal.helpers.IntAnd[aiobungie.GameMode]`</span>
 <span class="sd">            This parameter filters the game mode, Nightfall, Strike, Iron Banner, etc.</span>
-<span class="sd">        membership_type: `aiobungie.internal.enums.MembershipType`</span>
+<span class="sd">        membership_type: `aiobungie.internal.helpers.IntAnd[aiobungie.internal.enums.MembershipType]`</span>
 <span class="sd">            The Member ship type, if nothing was passed than it will return all.</span>
-<span class="sd">        page: typing.Optional[builtins.int]</span>
-<span class="sd">            The page number</span>
-<span class="sd">        limit: typing.Optional[builtins.int]</span>
-<span class="sd">            Limit the returned result.</span>
+
+<span class="sd">        Other Parameters</span>
+<span class="sd">        ----------------</span>
+<span class="sd">        page: `builtins.int`</span>
+<span class="sd">            The page number. Default to `1`</span>
+<span class="sd">        limit: `builtins.int`</span>
+<span class="sd">            Limit the returned result. Default to `1`</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -515,7 +534,7 @@
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">fetch_clan</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">GroupType</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">GroupType</span><span class="o">.</span><span class="n">CLAN</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">GroupType</span><span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">GroupType</span><span class="o">.</span><span class="n">CLAN</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonObject</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a Clan by its name.</span>
 <span class="sd">        This method will return the first clan found with given name name.</span>
@@ -524,7 +543,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        name: `builtins.str`</span>
 <span class="sd">            The clan name</span>
-<span class="sd">        type `aiobungie.GroupType`</span>
+<span class="sd">        type `aiobungie.internal.helpers.IntAnd[aiobungie.GroupType]`</span>
 <span class="sd">            The group type, Default is one.</span>
 
 <span class="sd">        Returns</span>
@@ -579,11 +598,11 @@
     <span class="k">def</span> <span class="nf">fetch_groups_for_member</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">member_type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">,</span>
+        <span class="n">member_type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="nb">filter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="n">group_type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">GroupType</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">GroupType</span><span class="o">.</span><span class="n">CLAN</span><span class="p">,</span>
+        <span class="n">group_type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">GroupType</span><span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">GroupType</span><span class="o">.</span><span class="n">CLAN</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonObject</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch the information about the groups for a member.</span>
 
@@ -591,14 +610,14 @@
 <span class="sd">        ----------</span>
 <span class="sd">        member_id : `builtins.int`</span>
 <span class="sd">            The member&#39;s id</span>
-<span class="sd">        member_type : `aiobungie.MembershipType`</span>
+<span class="sd">        member_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`</span>
 <span class="sd">            The member&#39;s membership type.</span>
 
 <span class="sd">        Other Parameters</span>
 <span class="sd">        ----------------</span>
 <span class="sd">        filter : `builsins.int`</span>
 <span class="sd">            Filter apply to list of joined groups. This Default to `0`</span>
-<span class="sd">        group_type : `aiobungie.GroupType`</span>
+<span class="sd">        group_type : `aiobungie.internal.helpers.IntAnd[aiobungie.GroupType]`</span>
 <span class="sd">            The group&#39;s type.</span>
 <span class="sd">            This is always set to `aiobungie.GroupType.CLAN` and should not be changed.</span>
 
@@ -612,7 +631,7 @@
     <span class="k">def</span> <span class="nf">fetch_potential_groups_for_member</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">member_type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">,</span>
+        <span class="n">member_type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="nb">filter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
@@ -624,14 +643,14 @@
 <span class="sd">        ----------</span>
 <span class="sd">        member_id : `builtins.int`</span>
 <span class="sd">            The member&#39;s id</span>
-<span class="sd">        member_type : `aiobungie.MembershipType`</span>
+<span class="sd">        member_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`</span>
 <span class="sd">            The member&#39;s membership type.</span>
 
 <span class="sd">        Other Parameters</span>
 <span class="sd">        ----------------</span>
 <span class="sd">        filter : `builsins.int`</span>
 <span class="sd">            Filter apply to list of joined groups. This Default to `0`</span>
-<span class="sd">        group_type : `aiobungie.GroupType`</span>
+<span class="sd">        group_type : `aiobungie.internal.helpers.IntAnd[aiobungie.GroupType]`</span>
 <span class="sd">            The group&#39;s type.</span>
 <span class="sd">            This is always set to `aiobungie.GroupType.CLAN` and should not be changed.</span>
 
@@ -645,7 +664,7 @@
     <span class="k">def</span> <span class="nf">fetch_clan_members</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">clan_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="nb">type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonObject</span><span class="p">]:</span>
@@ -655,7 +674,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        clan_id : `builsins.int`</span>
 <span class="sd">            The clans id</span>
-<span class="sd">        type : `aiobungie.MembershipType`</span>
+<span class="sd">        type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`</span>
 <span class="sd">            An optional clan member&#39;s membership type.</span>
 <span class="sd">            Default is set to `aiobungie.MembershipType.NONE`</span>
 <span class="sd">            Which returns the first matched clan member by their name.</span>
@@ -709,7 +728,12 @@
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">fetch_linked_profiles</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">member_type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="nb">all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">member_type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="nb">all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonObject</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Returns a summary information about all profiles linked to the requested member.</span>
 
@@ -722,7 +746,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        member_id : `builtins.int`</span>
 <span class="sd">            The ID of the membership. This must be a valid Bungie.Net or PSN or Xbox ID.</span>
-<span class="sd">        member_type : `aiobungie.MembershipType`</span>
+<span class="sd">        member_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`</span>
 <span class="sd">            The type for the membership whose linked Destiny account you want to return.</span>
 
 <span class="sd">        Other Parameters</span>
@@ -741,6 +765,137 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_clan_banners</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonObject</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Fetch the values of the clan banners.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `ResponseSig[aiobungie.internal.helpers.JsonObject]`</span>
+<span class="sd">            A JSON object of the clan banners.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_public_milestones</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonObject</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Fetch the available milestones.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `ResponseSig[aiobungie.internal.helpers.JsonObject]`</span>
+<span class="sd">            A JSON object of information about the milestones.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_public_milestone_content</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">milestone_hash</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonObject</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Fetch the milestone content given its hash.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        milestone_hash : `builtins.int`</span>
+<span class="sd">            The milestone hash.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `ResponseSig[aiobungie.internal.helpers.JsonObject]`</span>
+<span class="sd">            A JSON object of information related to the fetched milestone.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_own_bungie_user</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonObject</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Fetch a bungie user&#39;s accounts with the signed in user.</span>
+<span class="sd">        This GET method  requires a Bearer access token for the authorization.</span>
+
+<span class="sd">        .. warning::</span>
+<span class="sd">            This requires OAuth2 scope enabled and the valid Bearer `access_token`.</span>
+<span class="sd">            This token should be stored somewhere safe and just passed as a parameter. e.g., A database.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        access_token : `builtins.str`</span>
+<span class="sd">            The access token associated with the bungie account.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `ResponseSig[aiobungie.internal.helpers.JsonObject]`</span>
+<span class="sd">            A JSON object of the bungie net user and destiny memberships of this account.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">equip_item</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">item_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">membership_type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="kc">None</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Equip an item to a character.</span>
+
+<span class="sd">        This requires the OAuth2: MoveEquipDestinyItems scope.</span>
+<span class="sd">        Also You must have a valid Destiny account, and either be</span>
+<span class="sd">        in a social space, in orbit or offline.</span>
+
+<span class="sd">        Positional arguments</span>
+<span class="sd">        ------------------</span>
+<span class="sd">        access_token : `builtins.str`</span>
+<span class="sd">            The access token associated with the bungie account.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        item_id : `builtins.int`</span>
+<span class="sd">            The item id.</span>
+<span class="sd">        character_id : `builtins.int`</span>
+<span class="sd">            The character&#39;s id to equip the item to.</span>
+<span class="sd">        membership_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`</span>
+<span class="sd">            The membership type assocaiated with this player.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `None`</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">equip_items</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">item_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+        <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">membership_type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="kc">None</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Equip multiple items to a character.</span>
+
+<span class="sd">        This requires the OAuth2: MoveEquipDestinyItems scope.</span>
+<span class="sd">        Also You must have a valid Destiny account, and either be</span>
+<span class="sd">        in a social space, in orbit or offline.</span>
+
+<span class="sd">        Positional arguments</span>
+<span class="sd">        ------------------</span>
+<span class="sd">        access_token : `builtins.str`</span>
+<span class="sd">            The access token associated with the bungie account.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        item_ids : `list[builtins.int]`</span>
+<span class="sd">            A list of item ids.</span>
+<span class="sd">        character_id : `builtins.int`</span>
+<span class="sd">            The character&#39;s id to equip the item to.</span>
+<span class="sd">        membership_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`</span>
+<span class="sd">            The membership type assocaiated with this player.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `None`</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">fetch_item</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">item_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonObject</span><span class="p">]:</span>
@@ -753,30 +908,12 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">fetch_public_milestone_content</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">milestone_hash</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonObject</span><span class="p">]:</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-
-    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">fetch_public_milestones</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonObject</span><span class="p">]:</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-
-    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">fetch_weapon_history</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">member_type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">member_type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonObject</span><span class="p">]:</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-
-    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">fetch_clan_banners</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonObject</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Fetch the values of the clan banners.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        `ResponseSig[aiobungie.internal.helpers.JsonObject]`</span>
-<span class="sd">            A JSON object of the clan banners.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 </pre></div>
 
@@ -1106,7 +1243,7 @@ The user name.</li>
             <span class="name">fetch_hard_linked</span><span class="signature">(
     self,
     credential: int,
-    type: <a href="internal/enums.html#CredentialType">aiobungie.internal.enums.CredentialType</a> = &lt;CredentialType.STEAMID: 12&gt;,
+    type: Union[int, <a href="internal/enums.html#CredentialType">aiobungie.internal.enums.CredentialType</a>] = &lt;CredentialType.STEAMID: 12&gt;,
     /
 ) -&gt; Coroutine[Any, Any, Dict[str, Any]]</span>:
     </div>
@@ -1117,7 +1254,7 @@ The user name.</li>
     <span class="k">def</span> <span class="nf">fetch_hard_linked</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">credential</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="nb">type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">CredentialType</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">CredentialType</span><span class="o">.</span><span class="n">STEAMID</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">CredentialType</span><span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">CredentialType</span><span class="o">.</span><span class="n">STEAMID</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonObject</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Gets any hard linked membership given a credential.</span>
@@ -1128,7 +1265,7 @@ The user name.</li>
 <span class="sd">        ----------</span>
 <span class="sd">        credential: `builtins.int`</span>
 <span class="sd">            A valid SteamID64</span>
-<span class="sd">        type: `aiobungie.CredentialType`</span>
+<span class="sd">        type: `aiobungie.internal.helpers.IntAnd[aiobungie.CredentialType]`</span>
 <span class="sd">            The crededntial type. This must not be changed</span>
 <span class="sd">            Since its only credential that works &quot;currently&quot;</span>
 
@@ -1150,7 +1287,7 @@ Cross Save aware.</p>
 <ul>
 <li><strong>credential</strong> (<code>builtins.int</code>):
 A valid SteamID64</li>
-<li><strong>type</strong> (<code><a href="../aiobungie.html#CredentialType">aiobungie.CredentialType</a></code>):
+<li><strong>type</strong> (<code><a href="internal/helpers.html#IntAnd">aiobungie.internal.helpers.IntAnd</a>[<a href="../aiobungie.html#CredentialType">aiobungie.CredentialType</a>]</code>):
 The crededntial type. This must not be changed
 Since its only credential that works "currently"</li>
 </ul>
@@ -1173,7 +1310,7 @@ Since its only credential that works "currently"</li>
             <span class="name">fetch_membership_from_id</span><span class="signature">(
     self,
     id: int,
-    type: <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a> = &lt;MembershipType.NONE: 0&gt;,
+    type: Union[int, <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>] = &lt;MembershipType.NONE: 0&gt;,
     /
 ) -&gt; Coroutine[Any, Any, Dict[str, Any]]</span>:
     </div>
@@ -1182,7 +1319,10 @@ Since its only credential that works "currently"</li>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">fetch_membership_from_id</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span> <span class="o">/</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonObject</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch Bungie user&#39;s memberships from their id.</span>
 
@@ -1190,7 +1330,7 @@ Since its only credential that works "currently"</li>
 <span class="sd">        ----------</span>
 <span class="sd">        id : `builtins.int`</span>
 <span class="sd">            The user&#39;s id.</span>
-<span class="sd">        type : `aiobungie.MembershipType`</span>
+<span class="sd">        type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`</span>
 <span class="sd">            The user&#39;s membership type.</span>
 
 <span class="sd">        Returns</span>
@@ -1214,7 +1354,7 @@ Since its only credential that works "currently"</li>
 <ul>
 <li><strong>id</strong> (<code>builtins.int</code>):
 The user's id.</li>
-<li><strong>type</strong> (<code><a href="../aiobungie.html#MembershipType">aiobungie.MembershipType</a></code>):
+<li><strong>type</strong> (<code><a href="internal/helpers.html#IntAnd">aiobungie.internal.helpers.IntAnd</a>[<a href="../aiobungie.html#MembershipType">aiobungie.MembershipType</a>]</code>):
 The user's membership type.</li>
 </ul>
 
@@ -1242,7 +1382,7 @@ The user's membership type.</li>
             <span class="name">fetch_profile</span><span class="signature">(
     self,
     memberid: int,
-    type: <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>,
+    type: Union[int, <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>],
     /
 ) -&gt; Coroutine[Any, Any, Dict[str, Any]]</span>:
     </div>
@@ -1253,7 +1393,7 @@ The user's membership type.</li>
     <span class="k">def</span> <span class="nf">fetch_profile</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">memberid</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="nb">type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonObject</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1263,7 +1403,7 @@ The user's membership type.</li>
 <span class="sd">        ----------</span>
 <span class="sd">        memberid: `builtins.int`</span>
 <span class="sd">            The member&#39;s id.</span>
-<span class="sd">        type: `aiobungie.MembershipType`</span>
+<span class="sd">        type: `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`</span>
 <span class="sd">            A valid membership type.</span>
 
 <span class="sd">        Returns</span>
@@ -1287,7 +1427,7 @@ The user's membership type.</li>
 <ul>
 <li><strong>memberid</strong> (<code>builtins.int</code>):
 The member's id.</li>
-<li><strong>type</strong> (<code><a href="../aiobungie.html#MembershipType">aiobungie.MembershipType</a></code>):
+<li><strong>type</strong> (<code><a href="internal/helpers.html#IntAnd">aiobungie.internal.helpers.IntAnd</a>[<a href="../aiobungie.html#MembershipType">aiobungie.MembershipType</a>]</code>):
 A valid membership type.</li>
 </ul>
 
@@ -1315,7 +1455,7 @@ A valid membership type.</li>
             <span class="name">fetch_player</span><span class="signature">(
     self,
     name: str,
-    type: <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a> = &lt;MembershipType.ALL: -1&gt;,
+    type: Union[int, <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>] = &lt;MembershipType.ALL: -1&gt;,
     /
 ) -&gt; Coroutine[Any, Any, List[Any]]</span>:
     </div>
@@ -1324,21 +1464,23 @@ A valid membership type.</li>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">fetch_player</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span> <span class="o">/</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonArray</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a Destiny 2 Player.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        -----------</span>
-<span class="sd">        name: `builtins.str`</span>
-<span class="sd">            The Player&#39;s Name.</span>
 
 <span class="sd">        .. note::</span>
 <span class="sd">            You must also pass the player&#39;s unique code.</span>
 <span class="sd">            A full name parameter should look like this</span>
 <span class="sd">            `Fate怒#4275`</span>
 
-<span class="sd">        type: `aiobungie.internal.enums.MembershipType`</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        name: `builtins.str`</span>
+<span class="sd">            The Player&#39;s Name.</span>
+<span class="sd">        type: `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`</span>
 <span class="sd">            The player&#39;s membership type, e,g. XBOX, STEAM, PSN</span>
 
 <span class="sd">        Returns</span>
@@ -1360,16 +1502,17 @@ A valid membership type.</li>
 
             <div class="docstring"><p>Fetch a Destiny 2 Player.</p>
 
+<p><em>Note:</em>
+You must also pass the player's unique code.
+A full name parameter should look like this
+<code>Fate怒#4275</code></p>
+
 <h6 id="parameters">Parameters</h6>
 
 <ul>
 <li><strong>name</strong> (<code>builtins.str</code>):
 The Player's Name.</li>
-<li><p><strong><em>Note</strong> (</em>):</p></li>
-<li><p><strong>You must also pass the player's unique code.</strong></p></li>
-<li><strong>A full name parameter should look like this</strong></li>
-<li><strong><code>Fate怒#4275</code></strong></li>
-<li><strong>type</strong> (<code><a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a></code>):
+<li><strong>type</strong> (<code><a href="internal/helpers.html#IntAnd">aiobungie.internal.helpers.IntAnd</a>[<a href="../aiobungie.html#MembershipType">aiobungie.MembershipType</a>]</code>):
 The player's membership type, e,g. XBOX, STEAM, PSN</li>
 </ul>
 
@@ -1398,7 +1541,7 @@ The player's membership type, e,g. XBOX, STEAM, PSN</li>
             <span class="name">fetch_character</span><span class="signature">(
     self,
     memberid: int,
-    type: <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>,
+    type: Union[int, <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>],
     /
 ) -&gt; Coroutine[Any, Any, Dict[str, Any]]</span>:
     </div>
@@ -1407,7 +1550,7 @@ The player's membership type, e,g. XBOX, STEAM, PSN</li>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">fetch_character</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">memberid</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">,</span> <span class="o">/</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">memberid</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span> <span class="o">/</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonObject</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a Destiny 2 player&#39;s characters.</span>
 
@@ -1415,7 +1558,7 @@ The player's membership type, e,g. XBOX, STEAM, PSN</li>
 <span class="sd">        ----------</span>
 <span class="sd">        memberid: `builtins.int`</span>
 <span class="sd">            A valid bungie member id.</span>
-<span class="sd">        type: `aiobungie.internal.enums.MembershipType`</span>
+<span class="sd">        type: `aiobungie.internal.helpers.IntAnd[aiobungie.internal.enums.MembershipType]`</span>
 <span class="sd">            The member&#39;s membership type.</span>
 
 <span class="sd">        Returns</span>
@@ -1442,7 +1585,7 @@ The player's membership type, e,g. XBOX, STEAM, PSN</li>
 <ul>
 <li><strong>memberid</strong> (<code>builtins.int</code>):
 A valid bungie member id.</li>
-<li><strong>type</strong> (<code><a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a></code>):
+<li><strong>type</strong> (<code><a href="internal/helpers.html#IntAnd">aiobungie.internal.helpers.IntAnd</a>[<a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>]</code>):
 The member's membership type.</li>
 </ul>
 
@@ -1472,11 +1615,11 @@ The member's membership type.</li>
     self,
     member_id: int,
     character_id: int,
-    mode: <a href="internal/enums.html#GameMode">aiobungie.internal.enums.GameMode</a>,
-    membership_type: <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>,
+    mode: Union[int, <a href="internal/enums.html#GameMode">aiobungie.internal.enums.GameMode</a>],
+    membership_type: Union[int, <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>] = &lt;MembershipType.ALL: -1&gt;,
     *,
-    page: Optional[int] = 1,
-    limit: Optional[int] = 1
+    page: int = 1,
+    limit: int = 1
 ) -&gt; Coroutine[Any, Any, Dict[str, Any]]</span>:
     </div>
 
@@ -1487,11 +1630,13 @@ The member's membership type.</li>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">mode</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">GameMode</span><span class="p">,</span>
-        <span class="n">membership_type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">,</span>
+        <span class="n">mode</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">GameMode</span><span class="p">],</span>
+        <span class="n">membership_type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span>
+            <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">page</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="n">limit</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonObject</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a Destiny 2 activity for the specified user id and character.</span>
 
@@ -1501,14 +1646,17 @@ The member's membership type.</li>
 <span class="sd">            The user id that starts with `4611`.</span>
 <span class="sd">        character_id: `builtins.int`</span>
 <span class="sd">            The id of the character to retrieve.</span>
-<span class="sd">        mode: `aiobungie.internal.enums.GameMode`</span>
+<span class="sd">        mode: `aiobungie.internal.helpers.IntAnd[aiobungie.GameMode]`</span>
 <span class="sd">            This parameter filters the game mode, Nightfall, Strike, Iron Banner, etc.</span>
-<span class="sd">        membership_type: `aiobungie.internal.enums.MembershipType`</span>
+<span class="sd">        membership_type: `aiobungie.internal.helpers.IntAnd[aiobungie.internal.enums.MembershipType]`</span>
 <span class="sd">            The Member ship type, if nothing was passed than it will return all.</span>
-<span class="sd">        page: typing.Optional[builtins.int]</span>
-<span class="sd">            The page number</span>
-<span class="sd">        limit: typing.Optional[builtins.int]</span>
-<span class="sd">            Limit the returned result.</span>
+
+<span class="sd">        Other Parameters</span>
+<span class="sd">        ----------------</span>
+<span class="sd">        page: `builtins.int`</span>
+<span class="sd">            The page number. Default to `1`</span>
+<span class="sd">        limit: `builtins.int`</span>
+<span class="sd">            Limit the returned result. Default to `1`</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1536,14 +1684,19 @@ The member's membership type.</li>
 The user id that starts with <code>4611</code>.</li>
 <li><strong>character_id</strong> (<code>builtins.int</code>):
 The id of the character to retrieve.</li>
-<li><strong>mode</strong> (<code><a href="internal/enums.html#GameMode">aiobungie.internal.enums.GameMode</a></code>):
+<li><strong>mode</strong> (<code><a href="internal/helpers.html#IntAnd">aiobungie.internal.helpers.IntAnd</a>[<a href="../aiobungie.html#GameMode">aiobungie.GameMode</a>]</code>):
 This parameter filters the game mode, Nightfall, Strike, Iron Banner, etc.</li>
-<li><strong>membership_type</strong> (<code><a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a></code>):
+<li><strong>membership_type</strong> (<code><a href="internal/helpers.html#IntAnd">aiobungie.internal.helpers.IntAnd</a>[<a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>]</code>):
 The Member ship type, if nothing was passed than it will return all.</li>
-<li><strong>page</strong> (typing.Optional[builtins.int]):
-The page number</li>
-<li><strong>limit</strong> (typing.Optional[builtins.int]):
-Limit the returned result.</li>
+</ul>
+
+<h6 id="other-parameters">Other Parameters</h6>
+
+<ul>
+<li><strong>page</strong> (<code>builtins.int</code>):
+The page number. Default to <code>1</code></li>
+<li><strong>limit</strong> (<code>builtins.int</code>):
+Limit the returned result. Default to <code>1</code></li>
 </ul>
 
 <h6 id="returns">Returns</h6>
@@ -1685,7 +1838,7 @@ The clan id.</li>
     self,
     name: str,
     /,
-    type: <a href="internal/enums.html#GroupType">aiobungie.internal.enums.GroupType</a> = &lt;GroupType.CLAN: 1&gt;
+    type: Union[int, <a href="internal/enums.html#GroupType">aiobungie.internal.enums.GroupType</a>] = &lt;GroupType.CLAN: 1&gt;
 ) -&gt; Coroutine[Any, Any, Dict[str, Any]]</span>:
     </div>
 
@@ -1693,7 +1846,7 @@ The clan id.</li>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">fetch_clan</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">GroupType</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">GroupType</span><span class="o">.</span><span class="n">CLAN</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">GroupType</span><span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">GroupType</span><span class="o">.</span><span class="n">CLAN</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonObject</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a Clan by its name.</span>
 <span class="sd">        This method will return the first clan found with given name name.</span>
@@ -1702,7 +1855,7 @@ The clan id.</li>
 <span class="sd">        ----------</span>
 <span class="sd">        name: `builtins.str`</span>
 <span class="sd">            The clan name</span>
-<span class="sd">        type `aiobungie.GroupType`</span>
+<span class="sd">        type `aiobungie.internal.helpers.IntAnd[aiobungie.GroupType]`</span>
 <span class="sd">            The group type, Default is one.</span>
 
 <span class="sd">        Returns</span>
@@ -1727,7 +1880,7 @@ This method will return the first clan found with given name name.</p>
 <ul>
 <li><strong>name</strong> (<code>builtins.str</code>):
 The clan name</li>
-<li><strong>type <code><a href="../aiobungie.html#GroupType">aiobungie.GroupType</a></code></strong>: The group type, Default is one.</li>
+<li><strong>type <code><a href="internal/helpers.html#IntAnd">aiobungie.internal.helpers.IntAnd</a>[<a href="../aiobungie.html#GroupType">aiobungie.GroupType</a>]</code></strong>: The group type, Default is one.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
@@ -1861,11 +2014,11 @@ The clan id.</li>
             <span class="name">fetch_groups_for_member</span><span class="signature">(
     self,
     member_id: int,
-    member_type: <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>,
+    member_type: Union[int, <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>],
     /,
     *,
     filter: int = 0,
-    group_type: <a href="internal/enums.html#GroupType">aiobungie.internal.enums.GroupType</a> = &lt;GroupType.CLAN: 1&gt;
+    group_type: Union[int, <a href="internal/enums.html#GroupType">aiobungie.internal.enums.GroupType</a>] = &lt;GroupType.CLAN: 1&gt;
 ) -&gt; Coroutine[Any, Any, Dict[str, Any]]</span>:
     </div>
 
@@ -1875,11 +2028,11 @@ The clan id.</li>
     <span class="k">def</span> <span class="nf">fetch_groups_for_member</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">member_type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">,</span>
+        <span class="n">member_type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="nb">filter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="n">group_type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">GroupType</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">GroupType</span><span class="o">.</span><span class="n">CLAN</span><span class="p">,</span>
+        <span class="n">group_type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">GroupType</span><span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">GroupType</span><span class="o">.</span><span class="n">CLAN</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonObject</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch the information about the groups for a member.</span>
 
@@ -1887,14 +2040,14 @@ The clan id.</li>
 <span class="sd">        ----------</span>
 <span class="sd">        member_id : `builtins.int`</span>
 <span class="sd">            The member&#39;s id</span>
-<span class="sd">        member_type : `aiobungie.MembershipType`</span>
+<span class="sd">        member_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`</span>
 <span class="sd">            The member&#39;s membership type.</span>
 
 <span class="sd">        Other Parameters</span>
 <span class="sd">        ----------------</span>
 <span class="sd">        filter : `builsins.int`</span>
 <span class="sd">            Filter apply to list of joined groups. This Default to `0`</span>
-<span class="sd">        group_type : `aiobungie.GroupType`</span>
+<span class="sd">        group_type : `aiobungie.internal.helpers.IntAnd[aiobungie.GroupType]`</span>
 <span class="sd">            The group&#39;s type.</span>
 <span class="sd">            This is always set to `aiobungie.GroupType.CLAN` and should not be changed.</span>
 
@@ -1914,7 +2067,7 @@ The clan id.</li>
 <ul>
 <li><strong>member_id</strong> (<code>builtins.int</code>):
 The member's id</li>
-<li><strong>member_type</strong> (<code><a href="../aiobungie.html#MembershipType">aiobungie.MembershipType</a></code>):
+<li><strong>member_type</strong> (<code><a href="internal/helpers.html#IntAnd">aiobungie.internal.helpers.IntAnd</a>[<a href="../aiobungie.html#MembershipType">aiobungie.MembershipType</a>]</code>):
 The member's membership type.</li>
 </ul>
 
@@ -1923,7 +2076,7 @@ The member's membership type.</li>
 <ul>
 <li><strong>filter</strong> (<code>builsins.int</code>):
 Filter apply to list of joined groups. This Default to <code>0</code></li>
-<li><strong>group_type</strong> (<code><a href="../aiobungie.html#GroupType">aiobungie.GroupType</a></code>):
+<li><strong>group_type</strong> (<code><a href="internal/helpers.html#IntAnd">aiobungie.internal.helpers.IntAnd</a>[<a href="../aiobungie.html#GroupType">aiobungie.GroupType</a>]</code>):
 The group's type.
 This is always set to <code><a href="../aiobungie.html#GroupType.CLAN">aiobungie.GroupType.CLAN</a></code> and should not be changed.</li>
 </ul>
@@ -1946,7 +2099,7 @@ This is always set to <code><a href="../aiobungie.html#GroupType.CLAN">aiobungie
             <span class="name">fetch_potential_groups_for_member</span><span class="signature">(
     self,
     member_id: int,
-    member_type: <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>,
+    member_type: Union[int, <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>],
     /,
     *,
     filter: int = 0,
@@ -1960,7 +2113,7 @@ This is always set to <code><a href="../aiobungie.html#GroupType.CLAN">aiobungie
     <span class="k">def</span> <span class="nf">fetch_potential_groups_for_member</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">member_type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">,</span>
+        <span class="n">member_type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="nb">filter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
@@ -1972,14 +2125,14 @@ This is always set to <code><a href="../aiobungie.html#GroupType.CLAN">aiobungie
 <span class="sd">        ----------</span>
 <span class="sd">        member_id : `builtins.int`</span>
 <span class="sd">            The member&#39;s id</span>
-<span class="sd">        member_type : `aiobungie.MembershipType`</span>
+<span class="sd">        member_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`</span>
 <span class="sd">            The member&#39;s membership type.</span>
 
 <span class="sd">        Other Parameters</span>
 <span class="sd">        ----------------</span>
 <span class="sd">        filter : `builsins.int`</span>
 <span class="sd">            Filter apply to list of joined groups. This Default to `0`</span>
-<span class="sd">        group_type : `aiobungie.GroupType`</span>
+<span class="sd">        group_type : `aiobungie.internal.helpers.IntAnd[aiobungie.GroupType]`</span>
 <span class="sd">            The group&#39;s type.</span>
 <span class="sd">            This is always set to `aiobungie.GroupType.CLAN` and should not be changed.</span>
 
@@ -1999,7 +2152,7 @@ This is always set to <code><a href="../aiobungie.html#GroupType.CLAN">aiobungie
 <ul>
 <li><strong>member_id</strong> (<code>builtins.int</code>):
 The member's id</li>
-<li><strong>member_type</strong> (<code><a href="../aiobungie.html#MembershipType">aiobungie.MembershipType</a></code>):
+<li><strong>member_type</strong> (<code><a href="internal/helpers.html#IntAnd">aiobungie.internal.helpers.IntAnd</a>[<a href="../aiobungie.html#MembershipType">aiobungie.MembershipType</a>]</code>):
 The member's membership type.</li>
 </ul>
 
@@ -2008,7 +2161,7 @@ The member's membership type.</li>
 <ul>
 <li><strong>filter</strong> (<code>builsins.int</code>):
 Filter apply to list of joined groups. This Default to <code>0</code></li>
-<li><strong>group_type</strong> (<code><a href="../aiobungie.html#GroupType">aiobungie.GroupType</a></code>):
+<li><strong>group_type</strong> (<code><a href="internal/helpers.html#IntAnd">aiobungie.internal.helpers.IntAnd</a>[<a href="../aiobungie.html#GroupType">aiobungie.GroupType</a>]</code>):
 The group's type.
 This is always set to <code><a href="../aiobungie.html#GroupType.CLAN">aiobungie.GroupType.CLAN</a></code> and should not be changed.</li>
 </ul>
@@ -2031,7 +2184,7 @@ This is always set to <code><a href="../aiobungie.html#GroupType.CLAN">aiobungie
             <span class="name">fetch_clan_members</span><span class="signature">(
     self,
     clan_id: int,
-    type: <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a> = &lt;MembershipType.NONE: 0&gt;,
+    type: Union[int, <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>] = &lt;MembershipType.NONE: 0&gt;,
     name: Optional[str] = None,
     /
 ) -&gt; Coroutine[Any, Any, Dict[str, Any]]</span>:
@@ -2043,7 +2196,7 @@ This is always set to <code><a href="../aiobungie.html#GroupType.CLAN">aiobungie
     <span class="k">def</span> <span class="nf">fetch_clan_members</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">clan_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="nb">type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonObject</span><span class="p">]:</span>
@@ -2053,7 +2206,7 @@ This is always set to <code><a href="../aiobungie.html#GroupType.CLAN">aiobungie
 <span class="sd">        ----------</span>
 <span class="sd">        clan_id : `builsins.int`</span>
 <span class="sd">            The clans id</span>
-<span class="sd">        type : `aiobungie.MembershipType`</span>
+<span class="sd">        type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`</span>
 <span class="sd">            An optional clan member&#39;s membership type.</span>
 <span class="sd">            Default is set to `aiobungie.MembershipType.NONE`</span>
 <span class="sd">            Which returns the first matched clan member by their name.</span>
@@ -2083,7 +2236,7 @@ This is always set to <code><a href="../aiobungie.html#GroupType.CLAN">aiobungie
 <ul>
 <li><strong>clan_id</strong> (<code>builsins.int</code>):
 The clans id</li>
-<li><strong>type</strong> (<code><a href="../aiobungie.html#MembershipType">aiobungie.MembershipType</a></code>):
+<li><strong>type</strong> (<code><a href="internal/helpers.html#IntAnd">aiobungie.internal.helpers.IntAnd</a>[<a href="../aiobungie.html#MembershipType">aiobungie.MembershipType</a>]</code>):
 An optional clan member's membership type.
 Default is set to <code><a href="../aiobungie.html#MembershipType.NONE">aiobungie.MembershipType.NONE</a></code>
 Which returns the first matched clan member by their name.</li>
@@ -2215,7 +2368,7 @@ The application id.</li>
             <span class="name">fetch_linked_profiles</span><span class="signature">(
     self,
     member_id: int,
-    member_type: <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>,
+    member_type: Union[int, <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>],
     /,
     *,
     all: bool = False
@@ -2226,7 +2379,12 @@ The application id.</li>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">fetch_linked_profiles</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">member_type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="nb">all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">member_type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="nb">all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonObject</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Returns a summary information about all profiles linked to the requested member.</span>
 
@@ -2239,7 +2397,7 @@ The application id.</li>
 <span class="sd">        ----------</span>
 <span class="sd">        member_id : `builtins.int`</span>
 <span class="sd">            The ID of the membership. This must be a valid Bungie.Net or PSN or Xbox ID.</span>
-<span class="sd">        member_type : `aiobungie.MembershipType`</span>
+<span class="sd">        member_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`</span>
 <span class="sd">            The type for the membership whose linked Destiny account you want to return.</span>
 
 <span class="sd">        Other Parameters</span>
@@ -2272,7 +2430,7 @@ It will only return linked accounts whose linkages you are allowed to view.</p>
 <ul>
 <li><strong>member_id</strong> (<code>builtins.int</code>):
 The ID of the membership. This must be a valid Bungie.Net or PSN or Xbox ID.</li>
-<li><strong>member_type</strong> (<code><a href="../aiobungie.html#MembershipType">aiobungie.MembershipType</a></code>):
+<li><strong>member_type</strong> (<code><a href="internal/helpers.html#IntAnd">aiobungie.internal.helpers.IntAnd</a>[<a href="../aiobungie.html#MembershipType">aiobungie.MembershipType</a>]</code>):
 The type for the membership whose linked Destiny account you want to return.</li>
 </ul>
 
@@ -2292,6 +2450,362 @@ The default for this is <code>False</code>.</p></li>
 <ul>
 <li><strong><code>ResponseSig[<a href="internal/helpers.html#JsonObject">aiobungie.internal.helpers.JsonObject</a>]</code></strong></li>
 <li><strong>A JSON object which contains an Array of profiles, an Array of profiles with errors and Bungie.Net membership</strong></li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="RESTInterface.fetch_clan_banners" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTInterface.fetch_clan_banners">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@abc.abstractmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">fetch_clan_banners</span><span class="signature">(self) -&gt; Coroutine[Any, Any, Dict[str, Any]]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_clan_banners</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonObject</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Fetch the values of the clan banners.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `ResponseSig[aiobungie.internal.helpers.JsonObject]`</span>
+<span class="sd">            A JSON object of the clan banners.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Fetch the values of the clan banners.</p>
+
+<h6 id="returns">Returns</h6>
+
+<ul>
+<li><strong><code>ResponseSig[<a href="internal/helpers.html#JsonObject">aiobungie.internal.helpers.JsonObject</a>]</code></strong>: A JSON object of the clan banners.</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="RESTInterface.fetch_public_milestones" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTInterface.fetch_public_milestones">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@abc.abstractmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">fetch_public_milestones</span><span class="signature">(self) -&gt; Coroutine[Any, Any, Dict[str, Any]]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_public_milestones</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonObject</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Fetch the available milestones.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `ResponseSig[aiobungie.internal.helpers.JsonObject]`</span>
+<span class="sd">            A JSON object of information about the milestones.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Fetch the available milestones.</p>
+
+<h6 id="returns">Returns</h6>
+
+<ul>
+<li><strong><code>ResponseSig[<a href="internal/helpers.html#JsonObject">aiobungie.internal.helpers.JsonObject</a>]</code></strong>: A JSON object of information about the milestones.</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="RESTInterface.fetch_public_milestone_content" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTInterface.fetch_public_milestone_content">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@abc.abstractmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">fetch_public_milestone_content</span><span class="signature">(self, milestone_hash: int, /) -&gt; Coroutine[Any, Any, Dict[str, Any]]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_public_milestone_content</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">milestone_hash</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonObject</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Fetch the milestone content given its hash.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        milestone_hash : `builtins.int`</span>
+<span class="sd">            The milestone hash.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `ResponseSig[aiobungie.internal.helpers.JsonObject]`</span>
+<span class="sd">            A JSON object of information related to the fetched milestone.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Fetch the milestone content given its hash.</p>
+
+<h6 id="parameters">Parameters</h6>
+
+<ul>
+<li><strong>milestone_hash</strong> (<code>builtins.int</code>):
+The milestone hash.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<ul>
+<li><strong><code>ResponseSig[<a href="internal/helpers.html#JsonObject">aiobungie.internal.helpers.JsonObject</a>]</code></strong>: A JSON object of information related to the fetched milestone.</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="RESTInterface.fetch_own_bungie_user" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTInterface.fetch_own_bungie_user">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@abc.abstractmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">fetch_own_bungie_user</span><span class="signature">(self, access_token: str, /) -&gt; Coroutine[Any, Any, Dict[str, Any]]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_own_bungie_user</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonObject</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Fetch a bungie user&#39;s accounts with the signed in user.</span>
+<span class="sd">        This GET method  requires a Bearer access token for the authorization.</span>
+
+<span class="sd">        .. warning::</span>
+<span class="sd">            This requires OAuth2 scope enabled and the valid Bearer `access_token`.</span>
+<span class="sd">            This token should be stored somewhere safe and just passed as a parameter. e.g., A database.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        access_token : `builtins.str`</span>
+<span class="sd">            The access token associated with the bungie account.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `ResponseSig[aiobungie.internal.helpers.JsonObject]`</span>
+<span class="sd">            A JSON object of the bungie net user and destiny memberships of this account.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Fetch a bungie user's accounts with the signed in user.
+This GET method  requires a Bearer access token for the authorization.</p>
+
+<p><em>Warning:</em>
+This requires OAuth2 scope enabled and the valid Bearer <code>access_token</code>.
+This token should be stored somewhere safe and just passed as a parameter. e.g., A database.</p>
+
+<h6 id="parameters">Parameters</h6>
+
+<ul>
+<li><strong>access_token</strong> (<code>builtins.str</code>):
+The access token associated with the bungie account.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<ul>
+<li><strong><code>ResponseSig[<a href="internal/helpers.html#JsonObject">aiobungie.internal.helpers.JsonObject</a>]</code></strong>: A JSON object of the bungie net user and destiny memberships of this account.</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="RESTInterface.equip_item" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTInterface.equip_item">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@abc.abstractmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">equip_item</span><span class="signature">(
+    self,
+    access_token: str,
+    /,
+    *,
+    item_id: int,
+    character_id: int,
+    membership_type: Union[int, <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>]
+) -&gt; Coroutine[Any, Any, NoneType]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">equip_item</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">item_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">membership_type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="kc">None</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Equip an item to a character.</span>
+
+<span class="sd">        This requires the OAuth2: MoveEquipDestinyItems scope.</span>
+<span class="sd">        Also You must have a valid Destiny account, and either be</span>
+<span class="sd">        in a social space, in orbit or offline.</span>
+
+<span class="sd">        Positional arguments</span>
+<span class="sd">        ------------------</span>
+<span class="sd">        access_token : `builtins.str`</span>
+<span class="sd">            The access token associated with the bungie account.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        item_id : `builtins.int`</span>
+<span class="sd">            The item id.</span>
+<span class="sd">        character_id : `builtins.int`</span>
+<span class="sd">            The character&#39;s id to equip the item to.</span>
+<span class="sd">        membership_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`</span>
+<span class="sd">            The membership type assocaiated with this player.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `None`</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Equip an item to a character.</p>
+
+<p>This requires the OAuth2: MoveEquipDestinyItems scope.
+Also You must have a valid Destiny account, and either be
+in a social space, in orbit or offline.</p>
+
+<h6 id="positional-arguments">Positional arguments</h6>
+
+<p>access_token : <code>builtins.str</code>
+    The access token associated with the bungie account.</p>
+
+<h6 id="parameters">Parameters</h6>
+
+<ul>
+<li><strong>item_id</strong> (<code>builtins.int</code>):
+The item id.</li>
+<li><strong>character_id</strong> (<code>builtins.int</code>):
+The character's id to equip the item to.</li>
+<li><strong>membership_type</strong> (<code><a href="internal/helpers.html#IntAnd">aiobungie.internal.helpers.IntAnd</a>[<a href="../aiobungie.html#MembershipType">aiobungie.MembershipType</a>]</code>):
+The membership type assocaiated with this player.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<ul>
+<li><strong><code>None</code></strong>: None</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="RESTInterface.equip_items" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTInterface.equip_items">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@abc.abstractmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">equip_items</span><span class="signature">(
+    self,
+    access_token: str,
+    /,
+    *,
+    item_ids: list,
+    character_id: int,
+    membership_type: Union[int, <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>]
+) -&gt; Coroutine[Any, Any, NoneType]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">equip_items</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">item_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+        <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">membership_type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="kc">None</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Equip multiple items to a character.</span>
+
+<span class="sd">        This requires the OAuth2: MoveEquipDestinyItems scope.</span>
+<span class="sd">        Also You must have a valid Destiny account, and either be</span>
+<span class="sd">        in a social space, in orbit or offline.</span>
+
+<span class="sd">        Positional arguments</span>
+<span class="sd">        ------------------</span>
+<span class="sd">        access_token : `builtins.str`</span>
+<span class="sd">            The access token associated with the bungie account.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        item_ids : `list[builtins.int]`</span>
+<span class="sd">            A list of item ids.</span>
+<span class="sd">        character_id : `builtins.int`</span>
+<span class="sd">            The character&#39;s id to equip the item to.</span>
+<span class="sd">        membership_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`</span>
+<span class="sd">            The membership type assocaiated with this player.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `None`</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Equip multiple items to a character.</p>
+
+<p>This requires the OAuth2: MoveEquipDestinyItems scope.
+Also You must have a valid Destiny account, and either be
+in a social space, in orbit or offline.</p>
+
+<h6 id="positional-arguments">Positional arguments</h6>
+
+<p>access_token : <code>builtins.str</code>
+    The access token associated with the bungie account.</p>
+
+<h6 id="parameters">Parameters</h6>
+
+<ul>
+<li><strong>item_ids</strong> (<code>list[builtins.int]</code>):
+A list of item ids.</li>
+<li><strong>character_id</strong> (<code>builtins.int</code>):
+The character's id to equip the item to.</li>
+<li><strong>membership_type</strong> (<code><a href="internal/helpers.html#IntAnd">aiobungie.internal.helpers.IntAnd</a>[<a href="../aiobungie.html#MembershipType">aiobungie.MembershipType</a>]</code>):
+The membership type assocaiated with this player.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<ul>
+<li><strong><code>None</code></strong>: None</li>
 </ul>
 </div>
 
@@ -2348,50 +2862,6 @@ The default for this is <code>False</code>.</p></li>
     
 
                             </div>
-                            <div id="RESTInterface.fetch_public_milestone_content" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#RESTInterface.fetch_public_milestone_content">#&nbsp;&nbsp</a>
-
-                <div class="decorator">@abc.abstractmethod</div>
-
-            <span class="def">def</span>
-            <span class="name">fetch_public_milestone_content</span><span class="signature">(self, milestone_hash: int, /) -&gt; Coroutine[Any, Any, Dict[str, Any]]</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">fetch_public_milestone_content</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">milestone_hash</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonObject</span><span class="p">]:</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-</pre></div>
-
-        </details>
-
-    
-
-                            </div>
-                            <div id="RESTInterface.fetch_public_milestones" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#RESTInterface.fetch_public_milestones">#&nbsp;&nbsp</a>
-
-                <div class="decorator">@abc.abstractmethod</div>
-
-            <span class="def">def</span>
-            <span class="name">fetch_public_milestones</span><span class="signature">(self) -&gt; Coroutine[Any, Any, Dict[str, Any]]</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">fetch_public_milestones</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonObject</span><span class="p">]:</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-</pre></div>
-
-        </details>
-
-    
-
-                            </div>
                             <div id="RESTInterface.fetch_weapon_history" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#RESTInterface.fetch_weapon_history">#&nbsp;&nbsp</a>
 
@@ -2402,7 +2872,7 @@ The default for this is <code>False</code>.</p></li>
     self,
     character_id: int,
     member_id: int,
-    member_type: <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>
+    member_type: Union[int, <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>]
 ) -&gt; Coroutine[Any, Any, Dict[str, Any]]</span>:
     </div>
 
@@ -2410,7 +2880,10 @@ The default for this is <code>False</code>.</p></li>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">fetch_weapon_history</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">member_type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">member_type</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonObject</span><span class="p">]:</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 </pre></div>
@@ -2418,42 +2891,6 @@ The default for this is <code>False</code>.</p></li>
         </details>
 
     
-
-                            </div>
-                            <div id="RESTInterface.fetch_clan_banners" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#RESTInterface.fetch_clan_banners">#&nbsp;&nbsp</a>
-
-                <div class="decorator">@abc.abstractmethod</div>
-
-            <span class="def">def</span>
-            <span class="name">fetch_clan_banners</span><span class="signature">(self) -&gt; Coroutine[Any, Any, Dict[str, Any]]</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">fetch_clan_banners</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">JsonObject</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Fetch the values of the clan banners.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        `ResponseSig[aiobungie.internal.helpers.JsonObject]`</span>
-<span class="sd">            A JSON object of the clan banners.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Fetch the values of the clan banners.</p>
-
-<h6 id="returns">Returns</h6>
-
-<ul>
-<li><strong><code>ResponseSig[<a href="internal/helpers.html#JsonObject">aiobungie.internal.helpers.JsonObject</a>]</code></strong>: A JSON object of the clan banners.</li>
-</ul>
-</div>
-
 
                             </div>
                 </section>

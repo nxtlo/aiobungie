@@ -33,11 +33,13 @@ import typing
 
 import attr
 
+from aiobungie.crate import character
 from aiobungie.crate import user
-from aiobungie.crate.character import Character
 from aiobungie.internal import enums
 from aiobungie.internal import helpers
-from aiobungie.internal import traits
+
+if typing.TYPE_CHECKING:
+    from aiobungie.internal import traits
 
 log: typing.Final[logging.Logger] = logging.getLogger(__name__)
 
@@ -84,13 +86,14 @@ class ProfileComponent(abc.ABC):
     def id(self) -> int:
         """The profile's id."""
 
-    async def titan(self) -> Character:
+    async def titan(self) -> character.Character:
         """Returns the titan character of the profile owner."""
         # We're ignoring the types for the character since
-        char: Character = await self.net.request.fetch_character(
+        char = await self.net.request.fetch_character(
             int(self.id), self.type, enums.Class.TITAN
         )
-        return Character(
+        return character.Character(
+            net=self.net,
             id=char.id,
             class_type=char.class_type,
             emblem=char.emblem,
@@ -108,12 +111,13 @@ class ProfileComponent(abc.ABC):
             stats=char.stats,
         )
 
-    async def hunter(self) -> Character:
+    async def hunter(self) -> character.Character:
         """Returns the hunter character of the profile owner."""
-        char: Character = await self.net.request.fetch_character(
+        char = await self.net.request.fetch_character(
             self.id, self.type, enums.Class.HUNTER
         )
-        return Character(
+        return character.Character(
+            net=self.net,
             id=char.id,
             class_type=char.class_type,
             emblem=char.emblem,
@@ -131,12 +135,13 @@ class ProfileComponent(abc.ABC):
             stats=char.stats,
         )
 
-    async def warlock(self) -> Character:
+    async def warlock(self) -> character.Character:
         """Returns the Warlock character of the profile owner."""
-        char: Character = await self.net.request.fetch_character(
+        char = await self.net.request.fetch_character(
             self.id, self.type, enums.Class.WARLOCK
         )
-        return Character(
+        return character.Character(
+            net=self.net,
             id=char.id,
             class_type=char.class_type,
             emblem=char.emblem,

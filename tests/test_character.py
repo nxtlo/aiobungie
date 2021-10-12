@@ -47,6 +47,7 @@ class TestCharacterComponent:
 
 def init_titan_char():
     return crate.Character(
+        net=mock_client,
         id=2110,
         member_id=4321,
         member_type=aiobungie.MembershipType.STEAM,
@@ -76,6 +77,7 @@ def init_titan_char():
 
 def init_hunter_char():
     return crate.Character(
+        net=mock_client,
         id=2111,
         member_id=4321,
         member_type=aiobungie.MembershipType.STEAM,
@@ -103,6 +105,7 @@ def init_hunter_char():
 
 def init_warlock_char():
     return crate.Character(
+        net=mock_client,
         id=2112,
         member_id=4321,
         member_type=aiobungie.MembershipType.STEAM,
@@ -187,23 +190,11 @@ class TestProfile:
 
     @pytest.mark.asyncio()
     async def test_equip_item(self, obj):
-        with pytest.raises(NotImplementedError):
-            obj.net.request.fetch_character = mock.AsyncMock(
-                return_value=init_titan_char()
-            )
-            titan = await obj.titan()
-            obj.net.request.fetch_character.assert_awaited_once()
-            await titan.equip(123)
+        ...
 
     @pytest.mark.asyncio()
     async def test_equip_items(self, obj):
-        with pytest.raises(NotImplementedError):
-            obj.net.request.fetch_character = mock.AsyncMock(
-                return_value=init_titan_char()
-            )
-            titan = await obj.titan()
-            obj.net.request.fetch_character.assert_awaited_once()
-            await titan.equip_items([123, 456, 778])
+        ...
 
     def test_profile_meta(self, obj):
         assert obj.id == 4321

@@ -14,6 +14,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added [_backoff.py](https://github.com/hikari-py/hikari/blob/b6c85c932a1dc2117d2caa669bb7e52f6995273d/hikari/impl/rate_limits.py#L411) for/and Handling ratelimiting and retry after REST errors.
 - A new parameter `max_retries` to `RESTClient` and `Client` which lets you choose the max REST requests retries for failuare requests.
 - New exception `RateLimitedError` which's raised when being ratelimited.
+- Impelement `equip_item`, `equip_items` for `RESTClient` and `character.Character`, `fetch_own_bungie_user` methods which also requires a `Bearer` for the auth.
+- Import modules under the `typing.TYPE_CHECKING` for non-runtime modules.
+
+### Removed
+- `player.py` / `.Player` module / object has been removed in-replacement of `user.DestinyUser`.
 
 ### Changed
 - PRs that used to look like this `patch/...` now should look like this `task/...` instead.

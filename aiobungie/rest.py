@@ -42,23 +42,24 @@ from aiobungie import interfaces
 from aiobungie import url
 from aiobungie.internal import _backoff as backoff
 from aiobungie.internal import enums
-from aiobungie.internal import helpers
 
 if typing.TYPE_CHECKING:
     import types
 
-ResponseSigT = typing.TypeVar(
-    "ResponseSigT",
-    covariant=True,
-    bound=typing.Union[helpers.JsonArray, helpers.JsonObject],
-)
-"""The signature of the response."""
+    from aiobungie.internal import helpers
 
-ResponseSig = typing.Coroutine[typing.Any, typing.Any, ResponseSigT]
-"""A type hint for a general coro method that returns a type
-that's mostly going to be on of `aiobungie.internal.helpers.JsonObject`
-or `aiobungie.internal.helpers.JsonArray`
-"""
+    ResponseSigT = typing.TypeVar(
+        "ResponseSigT",
+        covariant=True,
+        bound=typing.Union[helpers.JsonArray, helpers.JsonObject, None],
+    )
+    """The signature of the response."""
+
+    ResponseSig = typing.Coroutine[typing.Any, typing.Any, ResponseSigT]
+    """A type hint for a general coro method that returns a type
+    that's mostly going to be on of `aiobungie.internal.helpers.JsonObject`
+    or `aiobungie.internal.helpers.JsonArray`
+    """
 
 _APP_JSON: typing.Final[str] = "application/json"
 _LOG: typing.Final[logging.Logger] = logging.getLogger("aiobungie.rest")
@@ -543,15 +544,73 @@ class RESTClient(interfaces.RESTInterface):
         )
 
     def fetch_clan_banners(self) -> ResponseSig[helpers.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request("GET", "Destiny2/Clan/ClanBannerDictionary/")
 
     def fetch_public_milestones(self) -> ResponseSig[helpers.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request("GET", "Destiny2/Milestones/")
 
     def fetch_public_milestone_content(
         self, milestone_hash: int, /
     ) -> ResponseSig[helpers.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request("GET", f"Destiny2/Milestones/{milestone_hash}/Content/")
+
+    def fetch_own_bungie_user(
+        self, access_token: str, /
+    ) -> ResponseSig[helpers.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        return self._request(
+            "GET",
+            f"User/GetMembershipsForCurrentUser/",  # noqa: F541 f-string placeholders bug?
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+
+    def equip_item(
+        self,
+        access_token: str,
+        /,
+        *,
+        item_id: int,
+        character_id: int,
+        membership_type: helpers.IntAnd[enums.MembershipType],
+    ) -> ResponseSig[None]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        payload = {
+            "itemId": item_id,
+            "characterId": character_id,
+            "membershipType": int(membership_type),
+        }
+
+        return self._request(
+            "POST",
+            "Destiny2/Actions/Items/EquipItem/",
+            json=payload,
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+
+    def equip_items(
+        self,
+        access_token: str,
+        /,
+        *,
+        item_ids: list[int],
+        character_id: int,
+        membership_type: helpers.IntAnd[enums.MembershipType],
+    ) -> ResponseSig[None]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        payload = {
+            "itemIds": item_ids,
+            "characterId": character_id,
+            "membershipType": int(membership_type),
+        }
+        return self._request(
+            "POST",
+            "Destiny2/Actions/Items/EquipItems/",
+            json=payload,
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
 
     def fetch_item(
         self, member_id: int, item_id: int, /

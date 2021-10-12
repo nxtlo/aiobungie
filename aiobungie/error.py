@@ -44,7 +44,9 @@ __all__: list[str] = [
 import typing
 
 import attr
-import multidict
+
+if typing.TYPE_CHECKING:
+    import multidict
 
 
 class AiobungieError(Exception):

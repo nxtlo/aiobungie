@@ -105,6 +105,26 @@ class Client(traits.ClientBase):
 
     # * User methods.
 
+    async def fetch_own_bungie_user(self, *, access_token: str) -> crate.user.User:
+        """Fetch and return a user object of the bungie net user associated with account.
+
+        .. warning::
+            This method requires OAuth2 scope and a Bearer access token.
+            This token should be stored somewhere safe and just passed as a parameter. e.g., A database.
+
+        Parameters
+        ----------
+        access_token : `builtins.str`
+            A valid Bearer access token for the authorization.
+
+        Returns
+        -------
+        `aiobungie.crate.user.User`
+            A user object includes the Destiny memberships and Bungie.net user.
+        """
+        resp = await self.rest.fetch_own_bungie_user(access_token)
+        return self.serialize.deserialize_user(resp)
+
     async def fetch_user(self, id: int) -> crate.user.BungieUser:
         """Fetch a Bungie user by their id.
 
@@ -374,6 +394,88 @@ class Client(traits.ClientBase):
         resp = await self.rest.fetch_character(memberid, type)
         assert isinstance(resp, dict)
         return self.serialize.deserialize_character(resp, chartype=character)
+
+    async def equip_item(
+        self,
+        access_token: str,
+        /,
+        *,
+        item_id: int,
+        character_id: int,
+        membership_type: helpers.IntAnd[enums.MembershipType],
+    ) -> None:
+        """Equip an item to a character.
+
+        This requires the OAuth2: MoveEquipDestinyItems scope.
+        Also You must have a valid Destiny account, and either be
+        in a social space, in orbit or offline.
+
+        Positional arguments
+        ------------------
+        access_token : `builtins.str`
+            The bearer access token associated with the bungie account.
+
+        Parameters
+        ----------
+        item_id : `builtins.int`
+            The item id.
+        character_id : `builtins.int`
+            The character's id to equip the item to.
+        membership_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`
+            The membership type assocaiated with this player.
+
+        Returns
+        -------
+        `None`
+            None
+        """
+        return await self.rest.equip_item(
+            access_token,
+            item_id=item_id,
+            character_id=character_id,
+            membership_type=membership_type,
+        )
+
+    async def equip_items(
+        self,
+        access_token: str,
+        /,
+        *,
+        item_ids: list[int],
+        character_id: int,
+        membership_type: helpers.IntAnd[enums.MembershipType],
+    ) -> None:
+        """Equip multiple items to a character.
+
+        This requires the OAuth2: MoveEquipDestinyItems scope.
+        Also You must have a valid Destiny account, and either be
+        in a social space, in orbit or offline.
+
+        Positional arguments
+        ------------------
+        access_token : `builtins.str`
+            The bearer access token associated with the bungie account.
+
+        Parameters
+        ----------
+        item_ids : `list[builtins.int]`
+            A list of item ids.
+        character_id : `builtins.int`
+            The character's id to equip the item to.
+        membership_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`
+            The membership type assocaiated with this player.
+
+        Returns
+        -------
+        `None`
+            None
+        """
+        return await self.rest.equip_items(
+            access_token,
+            item_ids=item_ids,
+            character_id=character_id,
+            membership_type=membership_type,
+        )
 
     # * Destiny 2 Activities.
 

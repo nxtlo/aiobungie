@@ -28,16 +28,19 @@ from __future__ import annotations
 __all__ = ("Application", "ApplicationOwner")
 
 import typing
-from datetime import datetime
 
 import attr
 
 from aiobungie import url
 from aiobungie.crate import user
-from aiobungie.internal import assets
 from aiobungie.internal import enums
 from aiobungie.internal import helpers
-from aiobungie.internal import traits
+
+if typing.TYPE_CHECKING:
+    from datetime import datetime
+
+    from aiobungie.internal import assets
+    from aiobungie.internal import traits
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)

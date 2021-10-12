@@ -15,7 +15,6 @@ from .clans import (
 )
 from .entity import Entity as Entity, InventoryEntity as InventoryEntity
 from .friends import Friend as Friend
-from .player import Player as Player
 from .profile import Profile as Profile
 from .profile import ProfileComponent as ProfileComponent
 from .profile import LinkedProfile as LinkedProfile

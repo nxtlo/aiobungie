@@ -33,7 +33,6 @@ __all__ = (
     "Application",
     "PostActivity",
     "Clan",
-    "Player",
     "Character",
     "Activity",
     "User",
@@ -76,7 +75,6 @@ from .entity import InventoryEntity
 from .friends import Friend
 from .milestones import Milestone
 from .milestones import MilestoneItems
-from .player import Player
 from .profile import LinkedProfile
 from .profile import Profile
 from .profile import ProfileComponent

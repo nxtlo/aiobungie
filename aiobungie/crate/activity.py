@@ -35,7 +35,6 @@ from datetime import datetime
 
 import attr
 
-from aiobungie.crate import player
 from aiobungie.internal import enums
 from aiobungie.internal import traits
 
@@ -65,23 +64,23 @@ class PostActivity:
 
     players: typing.Sequence[typing.Dict[str, typing.Any]] = attr.field(repr=False)
 
-    def get_players(self) -> typing.Sequence[player.Player]:
-        """Returns a sequence of the players that were in this activity.
+    # def get_players(self) -> typing.Sequence[player.Player]:
+    #     """Returns a sequence of the players that were in this activity.
 
-        Returns
-        -------
-        `typing.Sequence[aiobungie.crate.Player]`
-            the players that were in this activity.
-        """
+    #     Returns
+    #     -------
+    #     `typing.Sequence[aiobungie.crate.Player]`
+    #         the players that were in this activity.
+    #     """
 
-        players_entries: typing.List[player.Player] = [
-            isplayer["player"]["destinyUserInfo"] for isplayer in self.players
-        ]
+    #     players_entries: typing.List[player.Player] = [
+    #         isplayer["player"]["destinyUserInfo"] for isplayer in self.players
+    #     ]
 
-        for raw_player in players_entries:
-            players_entries.append(raw_player)
+    #     for raw_player in players_entries:
+    #         players_entries.append(raw_player)
 
-        return players_entries
+    #     return players_entries
 
     @property
     def is_fresh(self) -> bool:

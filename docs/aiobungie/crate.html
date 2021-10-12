@@ -94,9 +94,6 @@
                                 <a class="variable" href="#PostActivity.players">players</a>
                         </li>
                         <li>
-                                <a class="function" href="#PostActivity.get_players">get_players</a>
-                        </li>
-                        <li>
                                 <a class="variable" href="#PostActivity.is_fresh">is_fresh</a>
                         </li>
                 </ul>
@@ -172,49 +169,13 @@
 
             </li>
             <li>
-                    <a class="class" href="#Player">Player</a>
-                            <ul class="memberlist">
-                        <li>
-                                <a class="function" href="#Player.__init__">Player</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Player.icon">icon</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Player.id">id</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Player.name">name</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Player.last_seen_name">last_seen_name</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Player.is_public">is_public</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Player.type">type</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Player.code">code</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Player.crossave_override">crossave_override</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Player.types">types</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Player.unique_name">unique_name</a>
-                        </li>
-                </ul>
-
-            </li>
-            <li>
                     <a class="class" href="#Character">Character</a>
                             <ul class="memberlist">
                         <li>
                                 <a class="function" href="#Character.__init__">Character</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Character.net">net</a>
                         </li>
                         <li>
                                 <a class="variable" href="#Character.id">id</a>
@@ -1027,6 +988,9 @@
                     <a class="class" href="#CharacterComponent">CharacterComponent</a>
                             <ul class="memberlist">
                         <li>
+                                <a class="variable" href="#CharacterComponent.net">net</a>
+                        </li>
+                        <li>
                                 <a class="variable" href="#CharacterComponent.member_type">member_type</a>
                         </li>
                         <li>
@@ -1119,6 +1083,42 @@
                 </ul>
 
             </li>
+            <li>
+                    <a class="class" href="#Milestone">Milestone</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#Milestone.__init__">Milestone</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Milestone.about">about</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Milestone.status">status</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Milestone.tips">tips</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Milestone.items">items</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#MilestoneItems">MilestoneItems</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#MilestoneItems.__init__">MilestoneItems</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MilestoneItems.title">title</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MilestoneItems.hashes">hashes</a>
+                        </li>
+                </ul>
+
+            </li>
     </ul>
 
 
@@ -1178,7 +1178,6 @@ for functional usage for the Bungie API objects.</p>
     <span class="s2">&quot;Application&quot;</span><span class="p">,</span>
     <span class="s2">&quot;PostActivity&quot;</span><span class="p">,</span>
     <span class="s2">&quot;Clan&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Player&quot;</span><span class="p">,</span>
     <span class="s2">&quot;Character&quot;</span><span class="p">,</span>
     <span class="s2">&quot;Activity&quot;</span><span class="p">,</span>
     <span class="s2">&quot;User&quot;</span><span class="p">,</span>
@@ -1200,6 +1199,8 @@ for functional usage for the Bungie API objects.</p>
     <span class="s2">&quot;CharacterComponent&quot;</span><span class="p">,</span>
     <span class="s2">&quot;LinkedProfile&quot;</span><span class="p">,</span>
     <span class="s2">&quot;ClanBanner&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Milestone&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;MilestoneItems&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">.activity</span> <span class="kn">import</span> <span class="n">Activity</span>
@@ -1217,7 +1218,8 @@ for functional usage for the Bungie API objects.</p>
 <span class="kn">from</span> <span class="nn">.entity</span> <span class="kn">import</span> <span class="n">Entity</span>
 <span class="kn">from</span> <span class="nn">.entity</span> <span class="kn">import</span> <span class="n">InventoryEntity</span>
 <span class="kn">from</span> <span class="nn">.friends</span> <span class="kn">import</span> <span class="n">Friend</span>
-<span class="kn">from</span> <span class="nn">.player</span> <span class="kn">import</span> <span class="n">Player</span>
+<span class="kn">from</span> <span class="nn">.milestones</span> <span class="kn">import</span> <span class="n">Milestone</span>
+<span class="kn">from</span> <span class="nn">.milestones</span> <span class="kn">import</span> <span class="n">MilestoneItems</span>
 <span class="kn">from</span> <span class="nn">.profile</span> <span class="kn">import</span> <span class="n">LinkedProfile</span>
 <span class="kn">from</span> <span class="nn">.profile</span> <span class="kn">import</span> <span class="n">Profile</span>
 <span class="kn">from</span> <span class="nn">.profile</span> <span class="kn">import</span> <span class="n">ProfileComponent</span>
@@ -1465,23 +1467,23 @@ for functional usage for the Bungie API objects.</p>
 
     <span class="n">players</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">get_players</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">player</span><span class="o">.</span><span class="n">Player</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Returns a sequence of the players that were in this activity.</span>
+    <span class="c1"># def get_players(self) -&gt; typing.Sequence[player.Player]:</span>
+    <span class="c1">#     &quot;&quot;&quot;Returns a sequence of the players that were in this activity.</span>
 
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        `typing.Sequence[aiobungie.crate.Player]`</span>
-<span class="sd">            the players that were in this activity.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="c1">#     Returns</span>
+    <span class="c1">#     -------</span>
+    <span class="c1">#     `typing.Sequence[aiobungie.crate.Player]`</span>
+    <span class="c1">#         the players that were in this activity.</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
 
-        <span class="n">players_entries</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">player</span><span class="o">.</span><span class="n">Player</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">isplayer</span><span class="p">[</span><span class="s2">&quot;player&quot;</span><span class="p">][</span><span class="s2">&quot;destinyUserInfo&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">isplayer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">players</span>
-        <span class="p">]</span>
+    <span class="c1">#     players_entries: typing.List[player.Player] = [</span>
+    <span class="c1">#         isplayer[&quot;player&quot;][&quot;destinyUserInfo&quot;] for isplayer in self.players</span>
+    <span class="c1">#     ]</span>
 
-        <span class="k">for</span> <span class="n">raw_player</span> <span class="ow">in</span> <span class="n">players_entries</span><span class="p">:</span>
-            <span class="n">players_entries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">raw_player</span><span class="p">)</span>
+    <span class="c1">#     for raw_player in players_entries:</span>
+    <span class="c1">#         players_entries.append(raw_player)</span>
 
-        <span class="k">return</span> <span class="n">players_entries</span>
+    <span class="c1">#     return players_entries</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_fresh</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -1610,48 +1612,6 @@ For an example if it was 0 that means it's a fresh run</p>
     
 
                             </div>
-                            <div id="PostActivity.get_players" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#PostActivity.get_players">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">get_players</span><span class="signature">(self) -&gt; Sequence[<a href="#player.Player">aiobungie.crate.player.Player</a>]</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_players</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">player</span><span class="o">.</span><span class="n">Player</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Returns a sequence of the players that were in this activity.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        `typing.Sequence[aiobungie.crate.Player]`</span>
-<span class="sd">            the players that were in this activity.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">players_entries</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">player</span><span class="o">.</span><span class="n">Player</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">isplayer</span><span class="p">[</span><span class="s2">&quot;player&quot;</span><span class="p">][</span><span class="s2">&quot;destinyUserInfo&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">isplayer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">players</span>
-        <span class="p">]</span>
-
-        <span class="k">for</span> <span class="n">raw_player</span> <span class="ow">in</span> <span class="n">players_entries</span><span class="p">:</span>
-            <span class="n">players_entries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">raw_player</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">players_entries</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Returns a sequence of the players that were in this activity.</p>
-
-<h6 id="returns">Returns</h6>
-
-<ul>
-<li><strong><code>typing.Sequence[<a href="#Player">aiobungie.crate.Player</a>]</code></strong>: the players that were in this activity.</li>
-</ul>
-</div>
-
-
-                            </div>
                             <div id="PostActivity.is_fresh" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#PostActivity.is_fresh">#&nbsp;&nbsp</a>
 
@@ -1686,7 +1646,7 @@ For an example if it was 0 that means it's a fresh run</p>
     <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">hash</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">eq</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;The clan id&quot;&quot;&quot;</span>
 
-    <span class="nb">type</span><span class="p">:</span> <span class="n">GroupType</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">GroupType</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;The clan type.&quot;&quot;&quot;</span>
 
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -1716,14 +1676,14 @@ For an example if it was 0 that means it's a fresh run</p>
     <span class="n">tags</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;A list of the clan&#39;s tags.&quot;&quot;&quot;</span>
 
-    <span class="n">owner</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="n">ClanMember</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="sd">&quot;&quot;&quot;The clan owner. This field could be `Undefined` if not found.&quot;&quot;&quot;</span>
+    <span class="n">owner</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">NoneOr</span><span class="p">[</span><span class="n">ClanMember</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;The clan owner. This field could be `None` if not found.&quot;&quot;&quot;</span>
 
     <span class="n">features</span><span class="p">:</span> <span class="n">ClanFeatures</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">hash</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">eq</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;The clan features.&quot;&quot;&quot;</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_member</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">MembershipType</span> <span class="o">=</span> <span class="n">MembershipType</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span> <span class="o">/</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span> <span class="o">/</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ClanMember</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a specific clan member by their name and membership type.</span>
 
@@ -1755,7 +1715,7 @@ For an example if it was 0 that means it's a fresh run</p>
         <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">fetch_clan_member</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_members</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">MembershipType</span> <span class="o">=</span> <span class="n">MembershipType</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span> <span class="o">/</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span> <span class="o">/</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">ClanMember</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch the members of the clan.</span>
 
@@ -1858,7 +1818,7 @@ For an example if it was 0 that means it's a fresh run</p>
     avatar: Union[<a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>, str, NoneType],
     about: str,
     tags: List[str],
-    owner: Union[<a href="internal/helpers.html#UndefinedType">aiobungie.internal.helpers.UndefinedType</a>, <a href="#clans.ClanMember">aiobungie.crate.clans.ClanMember</a>],
+    owner: Optional[<a href="#clans.ClanMember">aiobungie.crate.clans.ClanMember</a>],
     features: <a href="#clans.ClanFeatures">aiobungie.crate.clans.ClanFeatures</a>
 )</span>
     </div>
@@ -2025,10 +1985,10 @@ For an example if it was 0 that means it's a fresh run</p>
                             <div id="Clan.owner" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#Clan.owner">#&nbsp;&nbsp</a>
 
-        <span class="name">owner</span><span class="annotation">: Union[<a href="internal/helpers.html#UndefinedType">aiobungie.internal.helpers.UndefinedType</a>, <a href="#clans.ClanMember">aiobungie.crate.clans.ClanMember</a>]</span><span class="default_value"> = &lt;member &#39;owner&#39; of &#39;Clan&#39; objects&gt;</span>
+        <span class="name">owner</span><span class="annotation">: Optional[<a href="#clans.ClanMember">aiobungie.crate.clans.ClanMember</a>]</span><span class="default_value"> = &lt;member &#39;owner&#39; of &#39;Clan&#39; objects&gt;</span>
     </div>
 
-            <div class="docstring"><p>The clan owner. This field could be <code>Undefined</code> if not found.</p>
+            <div class="docstring"><p>The clan owner. This field could be <code>None</code> if not found.</p>
 </div>
 
 
@@ -2060,7 +2020,7 @@ For an example if it was 0 that means it's a fresh run</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_member</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">MembershipType</span> <span class="o">=</span> <span class="n">MembershipType</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span> <span class="o">/</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span> <span class="o">/</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ClanMember</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a specific clan member by their name and membership type.</span>
 
@@ -2142,7 +2102,7 @@ which returns any member matches the name.</li>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_members</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">MembershipType</span> <span class="o">=</span> <span class="n">MembershipType</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span> <span class="o">/</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span> <span class="o">/</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">ClanMember</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch the members of the clan.</span>
 
@@ -2330,232 +2290,6 @@ This method is still not implemented.</p>
 
                             </div>
                 </section>
-                <section id="Player">
-                                <div class="attr class">
-        <a class="headerlink" href="#Player">#&nbsp;&nbsp</a>
-
-                <div class="decorator">@attr.define(hash=False, kw_only=True, weakref_slot=False)</div>
-
-        <span class="def">class</span>
-        <span class="name">Player</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="nd">@attr</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="nb">hash</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">weakref_slot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">Player</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Represents a Bungie Destiny 2 Player.&quot;&quot;&quot;</span>
-
-    <span class="n">icon</span><span class="p">:</span> <span class="n">Image</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">hash</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">eq</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="sd">&quot;&quot;&quot;The player&#39;s icon.&quot;&quot;&quot;</span>
-
-    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">hash</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="sd">&quot;&quot;&quot;The player&#39;s id.&quot;&quot;&quot;</span>
-
-    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">eq</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">hash</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="sd">&quot;&quot;&quot;The player&#39;s name&quot;&quot;&quot;</span>
-
-    <span class="n">last_seen_name</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="sd">&quot;&quot;&quot;Player&#39;s last name.&quot;&quot;&quot;</span>
-
-    <span class="n">is_public</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">eq</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">hash</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="sd">&quot;&quot;&quot;The player&#39;s profile privacy.&quot;&quot;&quot;</span>
-
-    <span class="nb">type</span><span class="p">:</span> <span class="n">MembershipType</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">eq</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">hash</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="sd">&quot;&quot;&quot;The profile&#39;s membership type.&quot;&quot;&quot;</span>
-
-    <span class="n">code</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">NoneOr</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="sd">&quot;&quot;&quot;The clan member&#39;s bungie display name code. This can be `None` if not found.</span>
-
-<span class="sd">    .. versionadded:: 0.2.5</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">crossave_override</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="sd">&quot;&quot;&quot;Returns `1` if the player has a cross save override in effect and 0 if not.</span>
-
-<span class="sd">    .. versionadded:: 0.2.5</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">types</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">MembershipType</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="sd">&quot;&quot;&quot;A list of the player&#39;s membership types.</span>
-
-<span class="sd">    .. versionadded:: 0.2.5</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">unique_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;The player&#39;s unique name.</span>
-
-<span class="sd">        .. versionadded:: 0.2.5</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">#</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">code</span><span class="si">}</span><span class="s2">&quot;</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Represents a Bungie Destiny 2 Player.</p>
-</div>
-
-
-                            <div id="Player.__init__" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#Player.__init__">#&nbsp;&nbsp</a>
-
-        
-            <span class="name">Player</span><span class="signature">(
-    *,
-    icon: <a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>,
-    id: int,
-    name: str,
-    last_seen_name: Union[<a href="internal/helpers.html#UndefinedType">aiobungie.internal.helpers.UndefinedType</a>, str],
-    is_public: bool,
-    type: <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>,
-    code: Optional[int],
-    crossave_override: int,
-    types: list
-)</span>
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">icon</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">last_seen_name</span><span class="p">,</span> <span class="n">is_public</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">crossave_override</span><span class="p">,</span> <span class="n">types</span><span class="p">):</span>
-    <span class="n">_setattr</span> <span class="o">=</span> <span class="n">_cached_setattr</span><span class="o">.</span><span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span>
-    <span class="n">_setattr</span><span class="p">(</span><span class="s1">&#39;icon&#39;</span><span class="p">,</span> <span class="n">icon</span><span class="p">)</span>
-    <span class="n">_setattr</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
-    <span class="n">_setattr</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
-    <span class="n">_setattr</span><span class="p">(</span><span class="s1">&#39;last_seen_name&#39;</span><span class="p">,</span> <span class="n">last_seen_name</span><span class="p">)</span>
-    <span class="n">_setattr</span><span class="p">(</span><span class="s1">&#39;is_public&#39;</span><span class="p">,</span> <span class="n">is_public</span><span class="p">)</span>
-    <span class="n">_setattr</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span>
-    <span class="n">_setattr</span><span class="p">(</span><span class="s1">&#39;code&#39;</span><span class="p">,</span> <span class="n">code</span><span class="p">)</span>
-    <span class="n">_setattr</span><span class="p">(</span><span class="s1">&#39;crossave_override&#39;</span><span class="p">,</span> <span class="n">crossave_override</span><span class="p">)</span>
-    <span class="n">_setattr</span><span class="p">(</span><span class="s1">&#39;types&#39;</span><span class="p">,</span> <span class="n">types</span><span class="p">)</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Method generated by attrs for class Player.</p>
-</div>
-
-
-                            </div>
-                            <div id="Player.icon" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#Player.icon">#&nbsp;&nbsp</a>
-
-        <span class="name">icon</span><span class="annotation">: <a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a></span><span class="default_value"> = &lt;member &#39;icon&#39; of &#39;Player&#39; objects&gt;</span>
-    </div>
-
-            <div class="docstring"><p>The player's icon.</p>
-</div>
-
-
-                            </div>
-                            <div id="Player.id" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#Player.id">#&nbsp;&nbsp</a>
-
-        <span class="name">id</span><span class="annotation">: int</span><span class="default_value"> = &lt;member &#39;id&#39; of &#39;Player&#39; objects&gt;</span>
-    </div>
-
-            <div class="docstring"><p>The player's id.</p>
-</div>
-
-
-                            </div>
-                            <div id="Player.name" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#Player.name">#&nbsp;&nbsp</a>
-
-        <span class="name">name</span><span class="annotation">: str</span><span class="default_value"> = &lt;member &#39;name&#39; of &#39;Player&#39; objects&gt;</span>
-    </div>
-
-            <div class="docstring"><p>The player's name</p>
-</div>
-
-
-                            </div>
-                            <div id="Player.last_seen_name" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#Player.last_seen_name">#&nbsp;&nbsp</a>
-
-        <span class="name">last_seen_name</span><span class="annotation">: Union[<a href="internal/helpers.html#UndefinedType">aiobungie.internal.helpers.UndefinedType</a>, str]</span><span class="default_value"> = &lt;member &#39;last_seen_name&#39; of &#39;Player&#39; objects&gt;</span>
-    </div>
-
-            <div class="docstring"><p>Player's last name.</p>
-</div>
-
-
-                            </div>
-                            <div id="Player.is_public" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#Player.is_public">#&nbsp;&nbsp</a>
-
-        <span class="name">is_public</span><span class="annotation">: bool</span><span class="default_value"> = &lt;member &#39;is_public&#39; of &#39;Player&#39; objects&gt;</span>
-    </div>
-
-            <div class="docstring"><p>The player's profile privacy.</p>
-</div>
-
-
-                            </div>
-                            <div id="Player.type" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#Player.type">#&nbsp;&nbsp</a>
-
-        <span class="name">type</span><span class="annotation">: <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a></span><span class="default_value"> = &lt;member &#39;type&#39; of &#39;Player&#39; objects&gt;</span>
-    </div>
-
-            <div class="docstring"><p>The profile's membership type.</p>
-</div>
-
-
-                            </div>
-                            <div id="Player.code" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#Player.code">#&nbsp;&nbsp</a>
-
-        <span class="name">code</span><span class="annotation">: Optional[int]</span><span class="default_value"> = &lt;member &#39;code&#39; of &#39;Player&#39; objects&gt;</span>
-    </div>
-
-            <div class="docstring"><p>The clan member's bungie display name code. This can be <code>None</code> if not found.</p>
-
-<p><em>New in version 0.2.5.</em></p>
-</div>
-
-
-                            </div>
-                            <div id="Player.crossave_override" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#Player.crossave_override">#&nbsp;&nbsp</a>
-
-        <span class="name">crossave_override</span><span class="annotation">: int</span><span class="default_value"> = &lt;member &#39;crossave_override&#39; of &#39;Player&#39; objects&gt;</span>
-    </div>
-
-            <div class="docstring"><p>Returns <code>1</code> if the player has a cross save override in effect and 0 if not.</p>
-
-<p><em>New in version 0.2.5.</em></p>
-</div>
-
-
-                            </div>
-                            <div id="Player.types" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#Player.types">#&nbsp;&nbsp</a>
-
-        <span class="name">types</span><span class="annotation">: list[<a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>]</span><span class="default_value"> = &lt;member &#39;types&#39; of &#39;Player&#39; objects&gt;</span>
-    </div>
-
-            <div class="docstring"><p>A list of the player's membership types.</p>
-
-<p><em>New in version 0.2.5.</em></p>
-</div>
-
-
-                            </div>
-                            <div id="Player.unique_name" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#Player.unique_name">#&nbsp;&nbsp</a>
-
-        <span class="name">unique_name</span><span class="annotation">: str</span>
-    </div>
-
-            <div class="docstring"><p>The player's unique name.</p>
-
-<p><em>New in version 0.2.5.</em></p>
-</div>
-
-
-                            </div>
-                </section>
                 <section id="Character">
                                 <div class="attr class">
         <a class="headerlink" href="#Character">#&nbsp;&nbsp</a>
@@ -2571,6 +2305,9 @@ This method is still not implemented.</p>
             <div class="codehilite"><pre><span></span><span class="nd">@attr</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="nb">hash</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">weakref_slot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Character</span><span class="p">(</span><span class="n">CharacterComponent</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An implementation for a Bungie character.&quot;&quot;&quot;</span>
+
+    <span class="n">net</span><span class="p">:</span> <span class="n">traits</span><span class="o">.</span><span class="n">Netrunner</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">eq</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;A network state used for making external requests.&quot;&quot;&quot;</span>
 
     <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">hash</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;Character&#39;s id&quot;&quot;&quot;</span>
@@ -2638,6 +2375,7 @@ This method is still not implemented.</p>
         
             <span class="name">Character</span><span class="signature">(
     *,
+    net: <a href="internal/traits.html#Netrunner">aiobungie.internal.traits.Netrunner</a>,
     id: int,
     member_id: int,
     member_type: <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>,
@@ -2658,8 +2396,9 @@ This method is still not implemented.</p>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">member_id</span><span class="p">,</span> <span class="n">member_type</span><span class="p">,</span> <span class="n">light</span><span class="p">,</span> <span class="n">gender</span><span class="p">,</span> <span class="n">race</span><span class="p">,</span> <span class="n">emblem</span><span class="p">,</span> <span class="n">emblem_icon</span><span class="p">,</span> <span class="n">emblem_hash</span><span class="p">,</span> <span class="n">last_played</span><span class="p">,</span> <span class="n">total_played_time</span><span class="p">,</span> <span class="n">class_type</span><span class="p">,</span> <span class="n">title_hash</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">stats</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">net</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">member_id</span><span class="p">,</span> <span class="n">member_type</span><span class="p">,</span> <span class="n">light</span><span class="p">,</span> <span class="n">gender</span><span class="p">,</span> <span class="n">race</span><span class="p">,</span> <span class="n">emblem</span><span class="p">,</span> <span class="n">emblem_icon</span><span class="p">,</span> <span class="n">emblem_hash</span><span class="p">,</span> <span class="n">last_played</span><span class="p">,</span> <span class="n">total_played_time</span><span class="p">,</span> <span class="n">class_type</span><span class="p">,</span> <span class="n">title_hash</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">stats</span><span class="p">):</span>
     <span class="n">_setattr</span> <span class="o">=</span> <span class="n">_cached_setattr</span><span class="o">.</span><span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span>
+    <span class="n">_setattr</span><span class="p">(</span><span class="s1">&#39;net&#39;</span><span class="p">,</span> <span class="n">net</span><span class="p">)</span>
     <span class="n">_setattr</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
     <span class="n">_setattr</span><span class="p">(</span><span class="s1">&#39;member_id&#39;</span><span class="p">,</span> <span class="n">member_id</span><span class="p">)</span>
     <span class="n">_setattr</span><span class="p">(</span><span class="s1">&#39;member_type&#39;</span><span class="p">,</span> <span class="n">member_type</span><span class="p">)</span>
@@ -2680,6 +2419,17 @@ This method is still not implemented.</p>
         </details>
 
             <div class="docstring"><p>Method generated by attrs for class Character.</p>
+</div>
+
+
+                            </div>
+                            <div id="Character.net" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#Character.net">#&nbsp;&nbsp</a>
+
+        <span class="name">net</span><span class="annotation">: <a href="internal/traits.html#Netrunner">aiobungie.internal.traits.Netrunner</a></span><span class="default_value"> = &lt;member &#39;net&#39; of &#39;Character&#39; objects&gt;</span>
+    </div>
+
+            <div class="docstring"><p>A network state used for making external requests.</p>
 </div>
 
 
@@ -3356,7 +3106,7 @@ This method is still not implemented.</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="nd">@attr</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="nb">hash</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">weakref_slot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">ClanMember</span><span class="p">(</span><span class="n">UserLike</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">ClanMember</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">UserLike</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Represents a Bungie clan member.&quot;&quot;&quot;</span>
 
     <span class="n">net</span><span class="p">:</span> <span class="n">traits</span><span class="o">.</span><span class="n">Netrunner</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -3371,10 +3121,10 @@ This method is still not implemented.</p>
     <span class="n">last_seen_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;The clan member&#39;s last seen display name&quot;&quot;&quot;</span>
 
-    <span class="nb">type</span><span class="p">:</span> <span class="n">MembershipType</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;Clan member&#39;s membership type.&quot;&quot;&quot;</span>
 
-    <span class="n">types</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">MembershipType</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">types</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;A sequence of the available clan member membership types.&quot;&quot;&quot;</span>
 
     <span class="n">icon</span><span class="p">:</span> <span class="n">assets</span><span class="o">.</span><span class="n">MaybeImage</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -6600,7 +6350,7 @@ This can be None if the user hasn't logged in after season of the lost update.</
     <span class="n">capabilities</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;An int that represents the clan&#39;s capabilities.&quot;&quot;&quot;</span>
 
-    <span class="n">membership_types</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">MembershipType</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">membership_types</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;The clan&#39;s membership types.&quot;&quot;&quot;</span>
 
     <span class="n">invite_permissions</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -6759,10 +6509,10 @@ This can be None if the user hasn't logged in after season of the lost update.</
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="nd">@attr</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="nb">hash</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">weakref_slot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">ClanAdmin</span><span class="p">(</span><span class="n">UserLike</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">ClanAdmin</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">UserLike</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Represents a clan admin.&quot;&quot;&quot;</span>
 
-    <span class="n">member_type</span><span class="p">:</span> <span class="n">ClanMemberType</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">member_type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">ClanMemberType</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;The clan admin&#39;s member type.</span>
 <span class="sd">    This can be Admin or owner or any other type.</span>
 
@@ -6784,10 +6534,10 @@ This can be None if the user hasn't logged in after season of the lost update.</
     <span class="n">last_seen_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;The clan admin&#39;s last seen display name&quot;&quot;&quot;</span>
 
-    <span class="nb">type</span><span class="p">:</span> <span class="n">MembershipType</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;Clan admin&#39;s membership type.&quot;&quot;&quot;</span>
 
-    <span class="n">types</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">MembershipType</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">types</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;A sequence of the available clan admin membership types.&quot;&quot;&quot;</span>
 
     <span class="n">icon</span><span class="p">:</span> <span class="n">assets</span><span class="o">.</span><span class="n">MaybeImage</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -7174,7 +6924,7 @@ This is new and was added in Season of the lost update</p>
     <span class="n">inactive_memberships</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">NoneOr</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;The member&#39;s inactive memberships if provided. This will be `None` if not provided.&quot;&quot;&quot;</span>
 
-    <span class="n">member_type</span><span class="p">:</span> <span class="n">ClanMemberType</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">member_type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">ClanMemberType</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;The member&#39;s member type.&quot;&quot;&quot;</span>
 
     <span class="n">is_online</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -7679,13 +7429,14 @@ by using <code><a href="#PartialBungieUser.fetch_self">PartialBungieUser.fetch_s
     <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;The profile&#39;s id.&quot;&quot;&quot;</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">titan</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Character</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">titan</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">character</span><span class="o">.</span><span class="n">Character</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Returns the titan character of the profile owner.&quot;&quot;&quot;</span>
         <span class="c1"># We&#39;re ignoring the types for the character since</span>
-        <span class="n">char</span><span class="p">:</span> <span class="n">Character</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">fetch_character</span><span class="p">(</span>
+        <span class="n">char</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">fetch_character</span><span class="p">(</span>
             <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">enums</span><span class="o">.</span><span class="n">Class</span><span class="o">.</span><span class="n">TITAN</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="n">Character</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">character</span><span class="o">.</span><span class="n">Character</span><span class="p">(</span>
+            <span class="n">net</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="p">,</span>
             <span class="nb">id</span><span class="o">=</span><span class="n">char</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
             <span class="n">class_type</span><span class="o">=</span><span class="n">char</span><span class="o">.</span><span class="n">class_type</span><span class="p">,</span>
             <span class="n">emblem</span><span class="o">=</span><span class="n">char</span><span class="o">.</span><span class="n">emblem</span><span class="p">,</span>
@@ -7703,12 +7454,13 @@ by using <code><a href="#PartialBungieUser.fetch_self">PartialBungieUser.fetch_s
             <span class="n">stats</span><span class="o">=</span><span class="n">char</span><span class="o">.</span><span class="n">stats</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">hunter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Character</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">hunter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">character</span><span class="o">.</span><span class="n">Character</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Returns the hunter character of the profile owner.&quot;&quot;&quot;</span>
-        <span class="n">char</span><span class="p">:</span> <span class="n">Character</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">fetch_character</span><span class="p">(</span>
+        <span class="n">char</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">fetch_character</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">enums</span><span class="o">.</span><span class="n">Class</span><span class="o">.</span><span class="n">HUNTER</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="n">Character</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">character</span><span class="o">.</span><span class="n">Character</span><span class="p">(</span>
+            <span class="n">net</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="p">,</span>
             <span class="nb">id</span><span class="o">=</span><span class="n">char</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
             <span class="n">class_type</span><span class="o">=</span><span class="n">char</span><span class="o">.</span><span class="n">class_type</span><span class="p">,</span>
             <span class="n">emblem</span><span class="o">=</span><span class="n">char</span><span class="o">.</span><span class="n">emblem</span><span class="p">,</span>
@@ -7726,12 +7478,13 @@ by using <code><a href="#PartialBungieUser.fetch_self">PartialBungieUser.fetch_s
             <span class="n">stats</span><span class="o">=</span><span class="n">char</span><span class="o">.</span><span class="n">stats</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">warlock</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Character</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">warlock</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">character</span><span class="o">.</span><span class="n">Character</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Returns the Warlock character of the profile owner.&quot;&quot;&quot;</span>
-        <span class="n">char</span><span class="p">:</span> <span class="n">Character</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">fetch_character</span><span class="p">(</span>
+        <span class="n">char</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">fetch_character</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">enums</span><span class="o">.</span><span class="n">Class</span><span class="o">.</span><span class="n">WARLOCK</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="n">Character</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">character</span><span class="o">.</span><span class="n">Character</span><span class="p">(</span>
+            <span class="n">net</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="p">,</span>
             <span class="nb">id</span><span class="o">=</span><span class="n">char</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
             <span class="n">class_type</span><span class="o">=</span><span class="n">char</span><span class="o">.</span><span class="n">class_type</span><span class="p">,</span>
             <span class="n">emblem</span><span class="o">=</span><span class="n">char</span><span class="o">.</span><span class="n">emblem</span><span class="p">,</span>
@@ -7844,13 +7597,14 @@ Some fields may or may not be available here.</p>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">titan</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Character</span><span class="p">:</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">titan</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">character</span><span class="o">.</span><span class="n">Character</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Returns the titan character of the profile owner.&quot;&quot;&quot;</span>
         <span class="c1"># We&#39;re ignoring the types for the character since</span>
-        <span class="n">char</span><span class="p">:</span> <span class="n">Character</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">fetch_character</span><span class="p">(</span>
+        <span class="n">char</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">fetch_character</span><span class="p">(</span>
             <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">enums</span><span class="o">.</span><span class="n">Class</span><span class="o">.</span><span class="n">TITAN</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="n">Character</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">character</span><span class="o">.</span><span class="n">Character</span><span class="p">(</span>
+            <span class="n">net</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="p">,</span>
             <span class="nb">id</span><span class="o">=</span><span class="n">char</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
             <span class="n">class_type</span><span class="o">=</span><span class="n">char</span><span class="o">.</span><span class="n">class_type</span><span class="p">,</span>
             <span class="n">emblem</span><span class="o">=</span><span class="n">char</span><span class="o">.</span><span class="n">emblem</span><span class="p">,</span>
@@ -7886,12 +7640,13 @@ Some fields may or may not be available here.</p>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">hunter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Character</span><span class="p">:</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">hunter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">character</span><span class="o">.</span><span class="n">Character</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Returns the hunter character of the profile owner.&quot;&quot;&quot;</span>
-        <span class="n">char</span><span class="p">:</span> <span class="n">Character</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">fetch_character</span><span class="p">(</span>
+        <span class="n">char</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">fetch_character</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">enums</span><span class="o">.</span><span class="n">Class</span><span class="o">.</span><span class="n">HUNTER</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="n">Character</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">character</span><span class="o">.</span><span class="n">Character</span><span class="p">(</span>
+            <span class="n">net</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="p">,</span>
             <span class="nb">id</span><span class="o">=</span><span class="n">char</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
             <span class="n">class_type</span><span class="o">=</span><span class="n">char</span><span class="o">.</span><span class="n">class_type</span><span class="p">,</span>
             <span class="n">emblem</span><span class="o">=</span><span class="n">char</span><span class="o">.</span><span class="n">emblem</span><span class="p">,</span>
@@ -7927,12 +7682,13 @@ Some fields may or may not be available here.</p>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">warlock</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Character</span><span class="p">:</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">warlock</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">character</span><span class="o">.</span><span class="n">Character</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Returns the Warlock character of the profile owner.&quot;&quot;&quot;</span>
-        <span class="n">char</span><span class="p">:</span> <span class="n">Character</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">fetch_character</span><span class="p">(</span>
+        <span class="n">char</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">fetch_character</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">enums</span><span class="o">.</span><span class="n">Class</span><span class="o">.</span><span class="n">WARLOCK</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="n">Character</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">character</span><span class="o">.</span><span class="n">Character</span><span class="p">(</span>
+            <span class="n">net</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="p">,</span>
             <span class="nb">id</span><span class="o">=</span><span class="n">char</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
             <span class="n">class_type</span><span class="o">=</span><span class="n">char</span><span class="o">.</span><span class="n">class_type</span><span class="p">,</span>
             <span class="n">emblem</span><span class="o">=</span><span class="n">char</span><span class="o">.</span><span class="n">emblem</span><span class="p">,</span>
@@ -7974,6 +7730,11 @@ Some fields may or may not be available here.</p>
     <span class="sd">&quot;&quot;&quot;An interface for a Bungie character component.&quot;&quot;&quot;</span>
 
     <span class="vm">__slots__</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">net</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">traits</span><span class="o">.</span><span class="n">Netrunner</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;A network state used for making external requests.&quot;&quot;&quot;</span>
 
     <span class="nd">@property</span>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -8049,75 +7810,58 @@ Some fields may or may not be available here.</p>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">title_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        The character&#39;s title hash.</span>
-<span class="sd">        This is Optional and can be None if no title was found.</span>
+<span class="sd">        The character&#39;s title hash. This is Optional and can be None if no title was found.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">equip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">equip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">item_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Equip an item to this character.</span>
 
 <span class="sd">        This requires the OAuth2: MoveEquipDestinyItems scope.</span>
 <span class="sd">        Also You must have a valid Destiny account, and either be</span>
 <span class="sd">        in a social space, in orbit or offline.</span>
 
-<span class="sd">        .. warning::</span>
-<span class="sd">            This method is sill not implemented.</span>
-
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        item: `builtins.int`</span>
-<span class="sd">            The item id you want to equip for this character.</span>
+<span class="sd">        access_token : `builtins.str`</span>
+<span class="sd">            The bearer access token associated with the bungie account.</span>
+<span class="sd">        item_id : `builtins.int`</span>
+<span class="sd">            The item id.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `builtins.None`.</span>
-
-<span class="sd">        Raises</span>
-<span class="sd">        ------</span>
-<span class="sd">        `NotImplementedError`</span>
-<span class="sd">            This endpoint is currently not implemented.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">equip_item</span><span class="p">(</span>
+            <span class="n">access_token</span><span class="p">,</span>
+            <span class="n">item_id</span><span class="o">=</span><span class="n">item_id</span><span class="p">,</span>
+            <span class="n">character_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+            <span class="n">membership_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">member_type</span><span class="p">,</span>
+        <span class="p">)</span>
 
-        <span class="c1"># Required params:</span>
-        <span class="c1"># POST request.</span>
-        <span class="c1"># itemId: item,</span>
-        <span class="c1"># characterId: self,</span>
-        <span class="c1"># membershipType: int(self.member_type)</span>
-
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">equip_items</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">items</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">equip_items</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">item_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Equip multiple items to this character.</span>
 
 <span class="sd">        This requires the OAuth2: MoveEquipDestinyItems scope.</span>
 <span class="sd">        Also You must have a valid Destiny account, and either be</span>
 <span class="sd">        in a social space, in orbit or offline.</span>
 
-<span class="sd">        .. warning::</span>
-<span class="sd">            This method is sill not implemented.</span>
-
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        items: `typing.List[builtins.int]`</span>
+<span class="sd">        access_token : `builtins.str`</span>
+<span class="sd">            The bearer access token associated with the bungie account.</span>
+<span class="sd">        item_ids: `list[builtins.int]`</span>
 <span class="sd">            A list of item ids you want to equip for this character.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `builtins.None`.</span>
-
-<span class="sd">        Raises</span>
-<span class="sd">        ------</span>
-<span class="sd">        `NotImplementedError`</span>
-<span class="sd">            This endpoint is currently not implemented.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="c1"># Required params:</span>
-        <span class="c1"># POST request.</span>
-        <span class="c1"># items: List[items],</span>
-        <span class="c1"># characterId: self,</span>
-        <span class="c1"># membershipType: int(self.member_type)</span>
-
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">equip_items</span><span class="p">(</span>
+            <span class="n">access_token</span><span class="p">,</span>
+            <span class="n">item_ids</span><span class="o">=</span><span class="n">item_ids</span><span class="p">,</span>
+            <span class="n">character_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+            <span class="n">membership_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">member_type</span><span class="p">,</span>
+        <span class="p">)</span>
 </pre></div>
 
         </details>
@@ -8126,6 +7870,17 @@ Some fields may or may not be available here.</p>
 </div>
 
 
+                            <div id="CharacterComponent.net" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#CharacterComponent.net">#&nbsp;&nbsp</a>
+
+        <span class="name">net</span><span class="annotation">: <a href="internal/traits.html#Netrunner">aiobungie.internal.traits.Netrunner</a></span>
+    </div>
+
+            <div class="docstring"><p>A network state used for making external requests.</p>
+</div>
+
+
+                            </div>
                             <div id="CharacterComponent.member_type" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#CharacterComponent.member_type">#&nbsp;&nbsp</a>
 
@@ -8286,8 +8041,7 @@ Some fields may or may not be available here.</p>
         <span class="name">title_hash</span><span class="annotation">: Optional[int]</span>
     </div>
 
-            <div class="docstring"><p>The character's title hash.
-This is Optional and can be None if no title was found.</p>
+            <div class="docstring"><p>The character's title hash. This is Optional and can be None if no title was found.</p>
 </div>
 
 
@@ -8297,43 +8051,35 @@ This is Optional and can be None if no title was found.</p>
 
         
             <span class="def">async def</span>
-            <span class="name">equip</span><span class="signature">(self, item: int, /) -&gt; None</span>:
+            <span class="name">equip</span><span class="signature">(self, access_token: str, item_id: int, /) -&gt; None</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">equip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">equip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">item_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Equip an item to this character.</span>
 
 <span class="sd">        This requires the OAuth2: MoveEquipDestinyItems scope.</span>
 <span class="sd">        Also You must have a valid Destiny account, and either be</span>
 <span class="sd">        in a social space, in orbit or offline.</span>
 
-<span class="sd">        .. warning::</span>
-<span class="sd">            This method is sill not implemented.</span>
-
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        item: `builtins.int`</span>
-<span class="sd">            The item id you want to equip for this character.</span>
+<span class="sd">        access_token : `builtins.str`</span>
+<span class="sd">            The bearer access token associated with the bungie account.</span>
+<span class="sd">        item_id : `builtins.int`</span>
+<span class="sd">            The item id.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `builtins.None`.</span>
-
-<span class="sd">        Raises</span>
-<span class="sd">        ------</span>
-<span class="sd">        `NotImplementedError`</span>
-<span class="sd">            This endpoint is currently not implemented.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="c1"># Required params:</span>
-        <span class="c1"># POST request.</span>
-        <span class="c1"># itemId: item,</span>
-        <span class="c1"># characterId: self,</span>
-        <span class="c1"># membershipType: int(self.member_type)</span>
-
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">equip_item</span><span class="p">(</span>
+            <span class="n">access_token</span><span class="p">,</span>
+            <span class="n">item_id</span><span class="o">=</span><span class="n">item_id</span><span class="p">,</span>
+            <span class="n">character_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+            <span class="n">membership_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">member_type</span><span class="p">,</span>
+        <span class="p">)</span>
 </pre></div>
 
         </details>
@@ -8344,26 +8090,19 @@ This is Optional and can be None if no title was found.</p>
 Also You must have a valid Destiny account, and either be
 in a social space, in orbit or offline.</p>
 
-<p><em>Warning:</em>
-This method is sill not implemented.</p>
-
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>item</strong> (<code>builtins.int</code>):
-The item id you want to equip for this character.</li>
+<li><strong>access_token</strong> (<code>builtins.str</code>):
+The bearer access token associated with the bungie account.</li>
+<li><strong>item_id</strong> (<code>builtins.int</code>):
+The item id.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
 
 <ul>
 <li><strong><code>builtins.None</code>.</strong></li>
-</ul>
-
-<h6 id="raises">Raises</h6>
-
-<ul>
-<li><strong><code>NotImplementedError</code></strong>: This endpoint is currently not implemented.</li>
 </ul>
 </div>
 
@@ -8374,43 +8113,35 @@ The item id you want to equip for this character.</li>
 
         
             <span class="def">async def</span>
-            <span class="name">equip_items</span><span class="signature">(self, items: List[int], /) -&gt; None</span>:
+            <span class="name">equip_items</span><span class="signature">(self, access_token: str, item_ids: list, /) -&gt; None</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">equip_items</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">items</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">equip_items</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">item_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Equip multiple items to this character.</span>
 
 <span class="sd">        This requires the OAuth2: MoveEquipDestinyItems scope.</span>
 <span class="sd">        Also You must have a valid Destiny account, and either be</span>
 <span class="sd">        in a social space, in orbit or offline.</span>
 
-<span class="sd">        .. warning::</span>
-<span class="sd">            This method is sill not implemented.</span>
-
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        items: `typing.List[builtins.int]`</span>
+<span class="sd">        access_token : `builtins.str`</span>
+<span class="sd">            The bearer access token associated with the bungie account.</span>
+<span class="sd">        item_ids: `list[builtins.int]`</span>
 <span class="sd">            A list of item ids you want to equip for this character.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `builtins.None`.</span>
-
-<span class="sd">        Raises</span>
-<span class="sd">        ------</span>
-<span class="sd">        `NotImplementedError`</span>
-<span class="sd">            This endpoint is currently not implemented.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="c1"># Required params:</span>
-        <span class="c1"># POST request.</span>
-        <span class="c1"># items: List[items],</span>
-        <span class="c1"># characterId: self,</span>
-        <span class="c1"># membershipType: int(self.member_type)</span>
-
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">equip_items</span><span class="p">(</span>
+            <span class="n">access_token</span><span class="p">,</span>
+            <span class="n">item_ids</span><span class="o">=</span><span class="n">item_ids</span><span class="p">,</span>
+            <span class="n">character_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+            <span class="n">membership_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">member_type</span><span class="p">,</span>
+        <span class="p">)</span>
 </pre></div>
 
         </details>
@@ -8421,13 +8152,12 @@ The item id you want to equip for this character.</li>
 Also You must have a valid Destiny account, and either be
 in a social space, in orbit or offline.</p>
 
-<p><em>Warning:</em>
-This method is sill not implemented.</p>
-
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>items</strong> (<code>typing.List[builtins.int]</code>):
+<li><strong>access_token</strong> (<code>builtins.str</code>):
+The bearer access token associated with the bungie account.</li>
+<li><strong>item_ids</strong> (<code>list[builtins.int]</code>):
 A list of item ids you want to equip for this character.</li>
 </ul>
 
@@ -8435,12 +8165,6 @@ A list of item ids you want to equip for this character.</li>
 
 <ul>
 <li><strong><code>builtins.None</code>.</strong></li>
-</ul>
-
-<h6 id="raises">Raises</h6>
-
-<ul>
-<li><strong><code>NotImplementedError</code></strong>: This endpoint is currently not implemented.</li>
 </ul>
 </div>
 
@@ -8686,6 +8410,194 @@ A list of item ids you want to equip for this character.</li>
     </div>
 
             <div class="docstring"><p>The banner's background. This field can be <code>UNDEFINED</code> if not found.</p>
+</div>
+
+
+                            </div>
+                </section>
+                <section id="Milestone">
+                                <div class="attr class">
+        <a class="headerlink" href="#Milestone">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@attr.define(hash=False, weakref_slot=False, kw_only=True, eq=False)</div>
+
+        <span class="def">class</span>
+        <span class="name">Milestone</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="nd">@attr</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="nb">hash</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">weakref_slot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">eq</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">Milestone</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Represents general information about a Destiny milestone.&quot;&quot;&quot;</span>
+
+    <span class="n">about</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;About this milestone.&quot;&quot;&quot;</span>
+
+    <span class="n">status</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">eq</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;The milestone&#39;s status. This field may be `UNDEFINED` if not specified.&quot;&quot;&quot;</span>
+
+    <span class="n">tips</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">helpers</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;A sequence of the milestone&#39;s tips. fields in the sequence may be `UNDEFINED` if not specified.&quot;&quot;&quot;</span>
+
+    <span class="n">items</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">NoneOr</span><span class="p">[</span><span class="n">MilestoneItems</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;An optional items for this miletones. This may return `None` if nothing was found.&quot;&quot;&quot;</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Represents general information about a Destiny milestone.</p>
+</div>
+
+
+                            <div id="Milestone.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Milestone.__init__">#&nbsp;&nbsp</a>
+
+        
+            <span class="name">Milestone</span><span class="signature">(
+    *,
+    about: Union[<a href="internal/helpers.html#UndefinedType">aiobungie.internal.helpers.UndefinedType</a>, str],
+    status: Union[<a href="internal/helpers.html#UndefinedType">aiobungie.internal.helpers.UndefinedType</a>, str],
+    tips: Sequence[Union[<a href="internal/helpers.html#UndefinedType">aiobungie.internal.helpers.UndefinedType</a>, str]],
+    items: Optional[<a href="#milestones.MilestoneItems">aiobungie.crate.milestones.MilestoneItems</a>]
+)</span>
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">about</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">tips</span><span class="p">,</span> <span class="n">items</span><span class="p">):</span>
+    <span class="n">_setattr</span> <span class="o">=</span> <span class="n">_cached_setattr</span><span class="o">.</span><span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span>
+    <span class="n">_setattr</span><span class="p">(</span><span class="s1">&#39;about&#39;</span><span class="p">,</span> <span class="n">about</span><span class="p">)</span>
+    <span class="n">_setattr</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span>
+    <span class="n">_setattr</span><span class="p">(</span><span class="s1">&#39;tips&#39;</span><span class="p">,</span> <span class="n">tips</span><span class="p">)</span>
+    <span class="n">_setattr</span><span class="p">(</span><span class="s1">&#39;items&#39;</span><span class="p">,</span> <span class="n">items</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Method generated by attrs for class Milestone.</p>
+</div>
+
+
+                            </div>
+                            <div id="Milestone.about" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#Milestone.about">#&nbsp;&nbsp</a>
+
+        <span class="name">about</span><span class="annotation">: Union[<a href="internal/helpers.html#UndefinedType">aiobungie.internal.helpers.UndefinedType</a>, str]</span><span class="default_value"> = &lt;member &#39;about&#39; of &#39;Milestone&#39; objects&gt;</span>
+    </div>
+
+            <div class="docstring"><p>About this milestone.</p>
+</div>
+
+
+                            </div>
+                            <div id="Milestone.status" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#Milestone.status">#&nbsp;&nbsp</a>
+
+        <span class="name">status</span><span class="annotation">: Union[<a href="internal/helpers.html#UndefinedType">aiobungie.internal.helpers.UndefinedType</a>, str]</span><span class="default_value"> = &lt;member &#39;status&#39; of &#39;Milestone&#39; objects&gt;</span>
+    </div>
+
+            <div class="docstring"><p>The milestone's status. This field may be <code>UNDEFINED</code> if not specified.</p>
+</div>
+
+
+                            </div>
+                            <div id="Milestone.tips" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#Milestone.tips">#&nbsp;&nbsp</a>
+
+        <span class="name">tips</span><span class="annotation">: Sequence[Union[<a href="internal/helpers.html#UndefinedType">aiobungie.internal.helpers.UndefinedType</a>, str]]</span><span class="default_value"> = &lt;member &#39;tips&#39; of &#39;Milestone&#39; objects&gt;</span>
+    </div>
+
+            <div class="docstring"><p>A sequence of the milestone's tips. fields in the sequence may be <code>UNDEFINED</code> if not specified.</p>
+</div>
+
+
+                            </div>
+                            <div id="Milestone.items" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#Milestone.items">#&nbsp;&nbsp</a>
+
+        <span class="name">items</span><span class="annotation">: Optional[<a href="#milestones.MilestoneItems">aiobungie.crate.milestones.MilestoneItems</a>]</span><span class="default_value"> = &lt;member &#39;items&#39; of &#39;Milestone&#39; objects&gt;</span>
+    </div>
+
+            <div class="docstring"><p>An optional items for this miletones. This may return <code>None</code> if nothing was found.</p>
+</div>
+
+
+                            </div>
+                </section>
+                <section id="MilestoneItems">
+                                <div class="attr class">
+        <a class="headerlink" href="#MilestoneItems">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@attr.define(hash=False, weakref_slot=False, kw_only=True)</div>
+
+        <span class="def">class</span>
+        <span class="name">MilestoneItems</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="nd">@attr</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="nb">hash</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">weakref_slot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">MilestoneItems</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Represents items the may be found inside a milestone.&quot;&quot;&quot;</span>
+
+    <span class="n">title</span><span class="p">:</span> <span class="n">helpers</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;The item title. This may be `UNDEFINED` if not specified.&quot;&quot;&quot;</span>
+
+    <span class="n">hashes</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;The items hashes&quot;&quot;&quot;</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Represents items the may be found inside a milestone.</p>
+</div>
+
+
+                            <div id="MilestoneItems.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#MilestoneItems.__init__">#&nbsp;&nbsp</a>
+
+        
+            <span class="name">MilestoneItems</span><span class="signature">(
+    *,
+    title: Union[<a href="internal/helpers.html#UndefinedType">aiobungie.internal.helpers.UndefinedType</a>, str],
+    hashes: Sequence[int]
+)</span>
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">hashes</span><span class="p">):</span>
+    <span class="n">_setattr</span> <span class="o">=</span> <span class="n">_cached_setattr</span><span class="o">.</span><span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span>
+    <span class="n">_setattr</span><span class="p">(</span><span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="n">title</span><span class="p">)</span>
+    <span class="n">_setattr</span><span class="p">(</span><span class="s1">&#39;hashes&#39;</span><span class="p">,</span> <span class="n">hashes</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Method generated by attrs for class MilestoneItems.</p>
+</div>
+
+
+                            </div>
+                            <div id="MilestoneItems.title" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#MilestoneItems.title">#&nbsp;&nbsp</a>
+
+        <span class="name">title</span><span class="annotation">: Union[<a href="internal/helpers.html#UndefinedType">aiobungie.internal.helpers.UndefinedType</a>, str]</span><span class="default_value"> = &lt;member &#39;title&#39; of &#39;MilestoneItems&#39; objects&gt;</span>
+    </div>
+
+            <div class="docstring"><p>The item title. This may be <code>UNDEFINED</code> if not specified.</p>
+</div>
+
+
+                            </div>
+                            <div id="MilestoneItems.hashes" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#MilestoneItems.hashes">#&nbsp;&nbsp</a>
+
+        <span class="name">hashes</span><span class="annotation">: Sequence[int]</span><span class="default_value"> = &lt;member &#39;hashes&#39; of &#39;MilestoneItems&#39; objects&gt;</span>
+    </div>
+
+            <div class="docstring"><p>The items hashes</p>
 </div>
 
 

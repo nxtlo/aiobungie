@@ -37,7 +37,7 @@ if typing.TYPE_CHECKING:
     ResponseSigT = typing.TypeVar(
         "ResponseSigT",
         covariant=True,
-        bound=typing.Union[helpers.JsonArray, helpers.JsonObject],
+        bound=typing.Union[helpers.JsonArray, helpers.JsonObject, None],
     )
     ResponseSig = typing.Coroutine[typing.Any, typing.Any, ResponseSigT]
 
@@ -640,6 +640,100 @@ class RESTInterface(abc.ABC):
         -------
         `ResponseSig[aiobungie.internal.helpers.JsonObject]`
             A JSON object of information related to the fetched milestone.
+        """
+
+    @abc.abstractmethod
+    def fetch_own_bungie_user(
+        self, access_token: str, /
+    ) -> ResponseSig[helpers.JsonObject]:
+        """Fetch a bungie user's accounts with the signed in user.
+        This GET method  requires a Bearer access token for the authorization.
+
+        .. warning::
+            This requires OAuth2 scope enabled and the valid Bearer `access_token`.
+            This token should be stored somewhere safe and just passed as a parameter. e.g., A database.
+
+        Parameters
+        ----------
+        access_token : `builtins.str`
+            The access token associated with the bungie account.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.internal.helpers.JsonObject]`
+            A JSON object of the bungie net user and destiny memberships of this account.
+        """
+
+    @abc.abstractmethod
+    def equip_item(
+        self,
+        access_token: str,
+        /,
+        *,
+        item_id: int,
+        character_id: int,
+        membership_type: helpers.IntAnd[enums.MembershipType],
+    ) -> ResponseSig[None]:
+        """Equip an item to a character.
+
+        This requires the OAuth2: MoveEquipDestinyItems scope.
+        Also You must have a valid Destiny account, and either be
+        in a social space, in orbit or offline.
+
+        Positional arguments
+        ------------------
+        access_token : `builtins.str`
+            The access token associated with the bungie account.
+
+        Parameters
+        ----------
+        item_id : `builtins.int`
+            The item id.
+        character_id : `builtins.int`
+            The character's id to equip the item to.
+        membership_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`
+            The membership type assocaiated with this player.
+
+        Returns
+        -------
+        `None`
+            None
+        """
+
+    @abc.abstractmethod
+    def equip_items(
+        self,
+        access_token: str,
+        /,
+        *,
+        item_ids: list[int],
+        character_id: int,
+        membership_type: helpers.IntAnd[enums.MembershipType],
+    ) -> ResponseSig[None]:
+        """Equip multiple items to a character.
+
+        This requires the OAuth2: MoveEquipDestinyItems scope.
+        Also You must have a valid Destiny account, and either be
+        in a social space, in orbit or offline.
+
+        Positional arguments
+        ------------------
+        access_token : `builtins.str`
+            The access token associated with the bungie account.
+
+        Parameters
+        ----------
+        item_ids : `list[builtins.int]`
+            A list of item ids.
+        character_id : `builtins.int`
+            The character's id to equip the item to.
+        membership_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`
+            The membership type assocaiated with this player.
+
+        Returns
+        -------
+        `None`
+            None
         """
 
     @abc.abstractmethod

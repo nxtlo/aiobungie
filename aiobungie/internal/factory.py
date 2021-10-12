@@ -566,6 +566,7 @@ class Factory:
         total_time = time.format_played(int(payload["minutesPlayedTotal"]), suffix=True)
 
         return character.Character(
+            net=self._net,
             id=int(payload["characterId"]),
             gender=enums.Gender(payload["genderType"]),
             race=enums.Race(payload["raceType"]),

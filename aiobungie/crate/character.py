@@ -29,20 +29,29 @@ from __future__ import annotations
 __all__ = ("CharacterComponent", "Character")
 
 import abc
-import datetime
 import typing
 
 import attr
 
 from aiobungie import url
-from aiobungie.internal import enums
-from aiobungie.internal.assets import Image
+
+if typing.TYPE_CHECKING:
+    import datetime
+
+    from aiobungie.internal import enums
+    from aiobungie.internal import traits
+    from aiobungie.internal.assets import Image
 
 
 class CharacterComponent(abc.ABC):
     """An interface for a Bungie character component."""
 
     __slots__: typing.Sequence[str] = ()
+
+    @property
+    @abc.abstractmethod
+    def net(self) -> traits.Netrunner:
+        """A network state used for making external requests."""
 
     @property
     @abc.abstractmethod
@@ -118,80 +127,66 @@ class CharacterComponent(abc.ABC):
     @abc.abstractmethod
     def title_hash(self) -> typing.Optional[int]:
         """
-        The character's title hash.
-        This is Optional and can be None if no title was found.
+        The character's title hash. This is Optional and can be None if no title was found.
         """
 
-    async def equip(self, item: int, /) -> None:
+    async def equip(self, access_token: str, item_id: int, /) -> None:
         """Equip an item to this character.
 
         This requires the OAuth2: MoveEquipDestinyItems scope.
         Also You must have a valid Destiny account, and either be
         in a social space, in orbit or offline.
 
-        .. warning::
-            This method is sill not implemented.
-
         Parameters
         ----------
-        item: `builtins.int`
-            The item id you want to equip for this character.
+        access_token : `builtins.str`
+            The bearer access token associated with the bungie account.
+        item_id : `builtins.int`
+            The item id.
 
         Returns
         -------
         `builtins.None`.
-
-        Raises
-        ------
-        `NotImplementedError`
-            This endpoint is currently not implemented.
         """
+        return await self.net.request.equip_item(
+            access_token,
+            item_id=item_id,
+            character_id=self.id,
+            membership_type=self.member_type,
+        )
 
-        # Required params:
-        # POST request.
-        # itemId: item,
-        # characterId: self,
-        # membershipType: int(self.member_type)
-
-        raise NotImplementedError
-
-    async def equip_items(self, items: typing.List[int], /) -> None:
+    async def equip_items(self, access_token: str, item_ids: list[int], /) -> None:
         """Equip multiple items to this character.
 
         This requires the OAuth2: MoveEquipDestinyItems scope.
         Also You must have a valid Destiny account, and either be
         in a social space, in orbit or offline.
 
-        .. warning::
-            This method is sill not implemented.
-
         Parameters
         ----------
-        items: `typing.List[builtins.int]`
+        access_token : `builtins.str`
+            The bearer access token associated with the bungie account.
+        item_ids: `list[builtins.int]`
             A list of item ids you want to equip for this character.
 
         Returns
         -------
         `builtins.None`.
-
-        Raises
-        ------
-        `NotImplementedError`
-            This endpoint is currently not implemented.
         """
-
-        # Required params:
-        # POST request.
-        # items: List[items],
-        # characterId: self,
-        # membershipType: int(self.member_type)
-
-        raise NotImplementedError
+        return await self.net.request.equip_items(
+            access_token,
+            item_ids=item_ids,
+            character_id=self.id,
+            membership_type=self.member_type,
+        )
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
 class Character(CharacterComponent):
     """An implementation for a Bungie character."""
+
+    net: traits.Netrunner = attr.field(repr=False, eq=False)
+    """A network state used for making external requests."""
 
     id: int = attr.field(hash=True, repr=True)
     """Character's id"""

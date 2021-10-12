@@ -8,6 +8,10 @@ venv
 .env
 .venv/
 venv/
+pyvenv.cfg
+Scripts/
+Lib/
+
 # For python 3.10 testings.
 .venv_10/
 

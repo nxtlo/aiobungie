@@ -437,11 +437,6 @@ class RESTClient(interfaces.RESTInterface):
             f"/?mode={int(mode)}&count={limit}&page={page}",
         )
 
-    def fetch_post_activity(self, instance: int, /) -> ResponseSig[helpers.JsonObject]:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        # return self._request("GET", f"Destiny2/Stats/PostGameCarnageReport/{instance}")
-        raise NotImplementedError
-
     def fetch_vendor_sales(self) -> ResponseSig[typing.Any]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
@@ -563,7 +558,7 @@ class RESTClient(interfaces.RESTInterface):
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
             "GET",
-            f"User/GetMembershipsForCurrentUser/",  # noqa: F541 f-string placeholders bug?
+            "User/GetMembershipsForCurrentUser/",
             headers={"Authorization": f"Bearer {access_token}"},
         )
 
@@ -612,6 +607,56 @@ class RESTClient(interfaces.RESTInterface):
             headers={"Authorization": f"Bearer {access_token}"},
         )
 
+    def ban_clan_member(
+        self,
+        access_token: str,
+        /,
+        group_id: int,
+        membership_id: int,
+        membership_type: helpers.IntAnd[enums.MembershipType],
+        *,
+        length: int = 0,
+        comment: typing.Optional[str] = None,
+    ) -> ResponseSig[None]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        payload = {"comment": comment, "length": length}
+        return self._request(
+            "POST",
+            f"GroupV2/{group_id}/Members/{int(membership_type)}/{membership_id}/Ban/",
+            json=payload,
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+
+    def unban_clan_member(
+        self,
+        access_token: str,
+        /,
+        *,
+        group_id: int,
+        membership_id: int,
+        membership_type: helpers.IntAnd[enums.MembershipType],
+    ) -> ResponseSig[None]:
+        return self._request(
+            "POST",
+            f"GroupV2/{group_id}/Members/{int(membership_type)}/{membership_id}/Unban/",
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+
+    def kick_clan_member(
+        self,
+        access_token: str,
+        /,
+        *,
+        group_id: int,
+        membership_id: int,
+        membership_type: helpers.IntAnd[enums.MembershipType],
+    ) -> ResponseSig[helpers.JsonObject]:
+        return self._request(
+            "POST",
+            f"GroupV2/{group_id}/Members/{int(membership_type)}/{membership_id}/Kick/",
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+
     def fetch_item(
         self, member_id: int, item_id: int, /
     ) -> ResponseSig[helpers.JsonObject]:
@@ -628,4 +673,9 @@ class RESTClient(interfaces.RESTInterface):
         member_id: int,
         member_type: helpers.IntAnd[enums.MembershipType],
     ) -> ResponseSig[helpers.JsonObject]:
+        raise NotImplementedError
+
+    def fetch_post_activity(self, instance: int, /) -> ResponseSig[helpers.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        # return self._request("GET", f"Destiny2/Stats/PostGameCarnageReport/{instance}")
         raise NotImplementedError

@@ -24,6 +24,8 @@
 
 from __future__ import annotations
 
+from aiobungie.internal.helpers import JsonObject
+
 __all__: list[str] = ["RESTInterface"]
 
 import abc
@@ -649,14 +651,14 @@ class RESTInterface(abc.ABC):
         """Fetch a bungie user's accounts with the signed in user.
         This GET method  requires a Bearer access token for the authorization.
 
-        .. warning::
+        .. note::
             This requires OAuth2 scope enabled and the valid Bearer `access_token`.
             This token should be stored somewhere safe and just passed as a parameter. e.g., A database.
 
         Parameters
         ----------
         access_token : `builtins.str`
-            The access token associated with the bungie account.
+            The bearer access token associated with the bungie account.
 
         Returns
         -------
@@ -676,14 +678,15 @@ class RESTInterface(abc.ABC):
     ) -> ResponseSig[None]:
         """Equip an item to a character.
 
-        This requires the OAuth2: MoveEquipDestinyItems scope.
-        Also You must have a valid Destiny account, and either be
-        in a social space, in orbit or offline.
+        .. note::
+            This requires the OAuth2: MoveEquipDestinyItems scope.
+            Also You must have a valid Destiny account, and either be
+            in a social space, in orbit or offline.
 
         Positional arguments
-        ------------------
+        --------------------
         access_token : `builtins.str`
-            The access token associated with the bungie account.
+            The bearer access token associated with the bungie account.
 
         Parameters
         ----------
@@ -696,7 +699,7 @@ class RESTInterface(abc.ABC):
 
         Returns
         -------
-        `None`
+        `ResponseSig[None]`
             None
         """
 
@@ -712,14 +715,15 @@ class RESTInterface(abc.ABC):
     ) -> ResponseSig[None]:
         """Equip multiple items to a character.
 
-        This requires the OAuth2: MoveEquipDestinyItems scope.
-        Also You must have a valid Destiny account, and either be
-        in a social space, in orbit or offline.
+        .. note::
+            This requires the OAuth2: MoveEquipDestinyItems scope.
+            Also You must have a valid Destiny account, and either be
+            in a social space, in orbit or offline.
 
         Positional arguments
-        ------------------
+        --------------------
         access_token : `builtins.str`
-            The access token associated with the bungie account.
+            The bearer access token associated with the bungie account.
 
         Parameters
         ----------
@@ -732,8 +736,122 @@ class RESTInterface(abc.ABC):
 
         Returns
         -------
-        `None`
+        `ResponseSig[None]`
             None
+        """
+
+    @abc.abstractmethod
+    def ban_clan_member(
+        self,
+        access_token: str,
+        /,
+        group_id: int,
+        membership_id: int,
+        membership_type: helpers.IntAnd[enums.MembershipType],
+        *,
+        length: int = 0,
+        comment: typing.Optional[str] = None,
+    ) -> ResponseSig[None]:
+        """Bans a member from the clan.
+
+        .. note::
+            This request requires OAuth2: oauth2: `AdminGroups` scope.
+
+        Positional arguments
+        --------------------
+        access_token : `builtins.str`
+            The bearer access token associated with the bungie account.
+
+        Parameters
+        ----------
+        group_id: `int`
+            The group id.
+        membership_id : `int`
+            The member id to ban.
+        membership_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`
+            The member's membership type.
+
+        Other Parameters
+        ----------------
+        length: `int`
+            An optional ban length.
+        comment: `typing.Optional[str]`
+            An optional comment to this ban.
+
+        Returns
+        -------
+        `ResponseSig[None]`
+            None
+        """
+
+    @abc.abstractmethod
+    def unban_clan_member(
+        self,
+        access_token: str,
+        /,
+        *,
+        group_id: int,
+        membership_id: int,
+        membership_type: helpers.IntAnd[enums.MembershipType],
+    ) -> ResponseSig[None]:
+        """Unbans a member from the clan.
+
+        .. note::
+            This request requires OAuth2: oauth2: `AdminGroups` scope.
+
+        Positional arguments
+        --------------------
+        access_token : `builtins.str`
+            The bearer access token associated with the bungie account.
+
+        Parameters
+        ----------
+        group_id: `int`
+            The group id.
+        membership_id : `int`
+            The member id to unban.
+        membership_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`
+            The member's membership type.
+
+        Returns
+        -------
+        `ResponseSig[None]`
+            None
+        """
+
+    @abc.abstractmethod
+    def kick_clan_member(
+        self,
+        access_token: str,
+        /,
+        *,
+        group_id: int,
+        membership_id: int,
+        membership_type: helpers.IntAnd[enums.MembershipType],
+    ) -> ResponseSig[JsonObject]:
+        """Kick a member from the clan.
+
+        .. note::
+            This request requires OAuth2: oauth2: `AdminGroups` scope.
+
+        Positional arguments
+        --------------------
+        access_token : `builtins.str`
+            The bearer access token associated with the bungie account.
+
+        Parameters
+        ----------
+        group_id: `int`
+            The group id.
+        membership_id : `int`
+            The member id to kick.
+        membership_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`
+            The member's membership type.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.internal.helpers.JsonObject]`
+            A JSON object of the group that the member has been kicked from.
         """
 
     @abc.abstractmethod

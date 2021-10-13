@@ -30,6 +30,9 @@ import typing
 
 import aiobungie
 
+# NOTE: If you're on unix based system make sure to run this
+# in your terminal. export CLIENT_TOKEN='TOKEN'
+
 client = aiobungie.Client(os.environ['CLIENT_TOKEN'])
 MID = 4611686018484639825
 

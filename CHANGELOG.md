@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New exception `RateLimitedError` which's raised when being ratelimited.
 - Impelement `equip_item`, `equip_items` for `RESTClient` and `character.Character`, `fetch_own_bungie_user` methods which also requires a `Bearer` for the auth.
 - Import modules under the `typing.TYPE_CHECKING` for non-runtime modules.
+- Implement `ban_clan_member`, `unban_clan_member` and `kick_clan_member` methods.
 
 ### Removed
 - `player.py` / `.Player` module / object has been removed in-replacement of `user.DestinyUser`.
@@ -27,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Separate mock tests from real tests.
 - Export `aiobungie/interfaces` and `aiobungie/crates` to `aiobungie/__init__.py`
 - Added real client tests to ci workflow.
+- Minor changes to nox pipelines.
 
 ### Fixed
 - Errors now are correctly raised.

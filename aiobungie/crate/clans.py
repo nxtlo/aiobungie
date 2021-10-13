@@ -183,32 +183,90 @@ class ClanMember(user.UserLike):
     # These are not implemented yet
     # Since they requires OAuth2.
 
-    async def ban(self) -> None:
-        """Bans a clan member from the clan.
-        This requires OAuth2: AdminGroups scope.
+    async def ban(
+        self,
+        access_token: str,
+        /,
+        *,
+        comment: typing.Optional[str] = None,
+        length: int = 0,
+    ) -> None:
+        """Ban this member from the clan.
 
-        .. warning::
-            This method is still not implemented.
+        .. note::
+            This request requires OAuth2: oauth2: `AdminGroups` scope.
+
+        Parameters
+        ----------
+        access_token : `builtins.str`
+            The bearer access token associated with the bungie account.
+
+        Other Parameters
+        ----------------
+        length: `int`
+            An optional ban length. Default is 0
+        comment: `typing.Optional[str]`
+            An optional comment to this ban. Default is `None`
+
+        Returns
+        -------
+        `None`
+            None
         """
-        raise NotImplementedError
+        return await self.net.request.ban_clan_member(
+            access_token,
+            self.group_id,
+            self.id,
+            self.type,
+            comment=comment,
+            length=length,
+        )
 
-    async def unban(self) -> None:
-        """Unbans a clan member clan.
-        This requires OAuth2: AdminGroups scope.
+    async def unban(self, access_token: str, /) -> None:
+        """Unbans this member from the clan.
 
-        .. warning::
-            This method is still not implemented.
+        .. note::
+            This request requires OAuth2: oauth2: `AdminGroups` scope.
+
+        Positional arguments
+        --------------------
+        access_token : `builtins.str`
+            The bearer access token associated with the bungie account.
+
+        Returns
+        -------
+        `None`
+            None
         """
-        raise NotImplementedError
+        return await self.net.request.unban_clan_member(
+            access_token,
+            group_id=self.group_id,
+            membership_id=self.id,
+            membership_type=self.type,
+        )
 
-    async def kick(self) -> None:
-        """Kicks a clan member from the clan.
-        The requires OAuth2: AdminsGroup scope.
+    async def kick(self, access_token: str, /) -> Clan:
+        """Kick this member from the clan.
 
-        .. warning::
-            This method is still not implemented.
+        .. note::
+            This request requires OAuth2: oauth2: `AdminGroups` scope.
+
+        Parameters
+        ----------
+        access_token : `builtins.str`
+            The bearer access token associated with the bungie account.
+
+        Returns
+        -------
+        `aiobungie.crate.clan.Clan`
+            The clan that represents the kicked member.
         """
-        raise NotImplementedError
+        return await self.net.request.kick_clan_member(
+            access_token,
+            group_id=self.group_id,
+            membership_id=self.id,
+            membership_type=self.type,
+        )
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)

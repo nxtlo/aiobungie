@@ -98,22 +98,18 @@ class TestClanMember:
         # Need the enum type value here.
         assert obj.id, int(obj.type) in obj.link
 
-    # Methods under always raises NotImplementedError
-    # Since they requires OAuth2. I will probably implement them later.
+    # TODO: Impl this.
     @pytest.mark.asyncio()
     async def test_clan_member_ban(self, obj):
-        with pytest.raises(NotImplementedError):
-            await obj.ban()
+        ...
 
     @pytest.mark.asyncio()
     async def test_clan_member_unban(self, obj):
-        with pytest.raises(NotImplementedError):
-            await obj.unban()
+        ...
 
     @pytest.mark.asyncio()
     async def test_clan_member_kick(self, obj):
-        with pytest.raises(NotImplementedError):
-            await obj.kick()
+        ...
 
     def test_clan_member_meta(self, obj):
         assert (

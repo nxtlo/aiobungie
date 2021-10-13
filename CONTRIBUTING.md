@@ -29,6 +29,9 @@ nox is a helper to run all the tests for you. We have 6 tests
     * for testing and mocking aiobungie itself.
 * codespell
     * File text spell checks.
+* client_test and rest_test
+    * Which are real tests for the base client and the rest client. 
+    For this you'll need to export your token in an env variable like this `export CLIENT_TOKEN='TOKEN'` for unix based systems.
 
 You can list all available session by typing `nox -l`
 
@@ -40,6 +43,7 @@ Clone the repo and
 install the normal and dev packages by running `pip install -r requirements.txt -r dev-requirements.txt`
 
 __NOTE__: You should use a virtual enviroment here.
+run `python -m venv .venv` to create the virtual env
 
 Make your changes.
 

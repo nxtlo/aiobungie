@@ -123,6 +123,7 @@ class Client(traits.ClientBase):
             A user object includes the Destiny memberships and Bungie.net user.
         """
         resp = await self.rest.fetch_own_bungie_user(access_token)
+        assert isinstance(resp, dict)
         return self.serialize.deserialize_user(resp)
 
     async def fetch_user(self, id: int) -> crate.user.BungieUser:
@@ -778,6 +779,139 @@ class Client(traits.ClientBase):
         resp = await self.rest.fetch_clan_banners()
         assert isinstance(resp, dict)
         return self.serialize.deserialize_clan_banners(resp)
+
+    async def ban_clan_member(
+        self,
+        access_token: str,
+        /,
+        group_id: int,
+        membership_id: int,
+        membership_type: helpers.IntAnd[enums.MembershipType],
+        *,
+        length: int = 0,
+        comment: typing.Optional[str] = None,
+    ) -> None:
+        """Bans a member from the clan.
+
+        .. note::
+            This request requires OAuth2: oauth2: `AdminGroups` scope.
+
+        Positional arguments
+        --------------------
+        access_token : `builtins.str`
+            The bearer access token associated with the bungie account.
+
+        Parameters
+        ----------
+        group_id: `int`
+            The group id.
+        membership_id : `int`
+            The member id to ban.
+        membership_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`
+            The member's membership type.
+
+        Other Parameters
+        ----------------
+        length: `int`
+            An optional ban length. Default is 0
+        comment: `typing.Optional[str]`
+            An optional comment to this ban. Default is `None`
+
+        Returns
+        -------
+        `None`
+            None
+        """
+        return await self.rest.ban_clan_member(
+            access_token,
+            group_id,
+            membership_id,
+            membership_type,
+            length=length,
+            comment=comment,
+        )
+
+    async def unban_clan_member(
+        self,
+        access_token: str,
+        /,
+        *,
+        group_id: int,
+        membership_id: int,
+        membership_type: helpers.IntAnd[enums.MembershipType],
+    ) -> None:
+        """Unbans a member from the clan.
+
+        .. note::
+            This request requires OAuth2: oauth2: `AdminGroups` scope.
+
+        Positional arguments
+        --------------------
+        access_token : `builtins.str`
+            The bearer access token associated with the bungie account.
+
+        Parameters
+        ----------
+        group_id: `int`
+            The group id.
+        membership_id : `int`
+            The member id to unban.
+        membership_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`
+            The member's membership type.
+
+        Returns
+        -------
+        `None`
+            None
+        """
+        return await self.rest.unban_clan_member(
+            access_token,
+            group_id=group_id,
+            membership_id=membership_id,
+            membership_type=membership_type,
+        )
+
+    async def kick_clan_member(
+        self,
+        access_token: str,
+        /,
+        *,
+        group_id: int,
+        membership_id: int,
+        membership_type: helpers.IntAnd[enums.MembershipType],
+    ) -> crate.Clan:
+        """Kick a member from the clan.
+
+        .. note::
+            This request requires OAuth2: oauth2: `AdminGroups` scope.
+
+        Positional arguments
+        --------------------
+        access_token : `builtins.str`
+            The bearer access token associated with the bungie account.
+
+        Parameters
+        ----------
+        group_id: `int`
+            The group id.
+        membership_id : `int`
+            The member id to kick.
+        membership_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`
+            The member's membership type.
+
+        Returns
+        -------
+        `aiobungie.crate.clan.Clan`
+            The clan that represents the kicked member.
+        """
+        resp = await self.rest.kick_clan_member(
+            access_token,
+            group_id=group_id,
+            membership_id=membership_id,
+            membership_type=membership_type,
+        )
+        assert isinstance(resp, dict)
+        return self.serialize.deserialize_clan(resp, bound=True)
 
     # * Destiny 2 Definitions. Entities.
 

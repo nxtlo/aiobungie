@@ -51,7 +51,7 @@ from aiobungie import crate
 # of Bungie's objects to provide
 # more functionality.
 
-client = aiobungie.Client(key='YOUR_API_KEY')
+client = aiobungie.Client('YOUR_API_KEY')
 
 async def main() -> None:
 
@@ -86,6 +86,9 @@ async def main() -> None:
     # the fetch_character() way using the profile attrs.
     character: crate.Character = await client.fetch_character(profile.id, profile.type, profile.warlock_id)
     print(character.light, character.id, character.gender, character.race, ...)
+
+# You can either run it via the client or just `asyncio.run(main())`
+client.run(main())
 ```
 
 ## REST-Only client

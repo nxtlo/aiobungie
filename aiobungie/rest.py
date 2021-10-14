@@ -42,11 +42,10 @@ from aiobungie import interfaces
 from aiobungie import url
 from aiobungie.internal import _backoff as backoff
 from aiobungie.internal import enums
+from aiobungie.internal import helpers
 
 if typing.TYPE_CHECKING:
     import types
-
-    from aiobungie.internal import helpers
 
     ResponseSigT = typing.TypeVar(
         "ResponseSigT",

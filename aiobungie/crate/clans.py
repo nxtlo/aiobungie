@@ -42,12 +42,12 @@ import attr
 from aiobungie import url
 from aiobungie.crate import user
 from aiobungie.internal import enums
+from aiobungie.internal import helpers
 
 if typing.TYPE_CHECKING:
     from datetime import datetime
 
     from aiobungie.internal import assets
-    from aiobungie.internal import helpers
     from aiobungie.internal import traits
 
 
@@ -188,7 +188,7 @@ class ClanMember(user.UserLike):
         access_token: str,
         /,
         *,
-        comment: typing.Optional[str] = None,
+        comment: helpers.UndefinedOr[str] = helpers.Undefined,
         length: int = 0,
     ) -> None:
         """Ban this member from the clan.
@@ -205,8 +205,8 @@ class ClanMember(user.UserLike):
         ----------------
         length: `int`
             An optional ban length. Default is 0
-        comment: `typing.Optional[str]`
-            An optional comment to this ban. Default is `None`
+        comment: `aiobungie.internal.helpers.UndefinedOr[str]`
+            An optional comment to this ban. Default is `UNDEFINED`
 
         Returns
         -------

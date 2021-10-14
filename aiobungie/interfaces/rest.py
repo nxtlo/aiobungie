@@ -32,9 +32,9 @@ import abc
 import typing
 
 from aiobungie.internal import enums
+from aiobungie.internal import helpers
 
 if typing.TYPE_CHECKING:
-    from aiobungie.internal import helpers
 
     ResponseSigT = typing.TypeVar(
         "ResponseSigT",

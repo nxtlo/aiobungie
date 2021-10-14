@@ -294,7 +294,7 @@ class RESTClient(interfaces.RESTInterface):
                             )
 
                             retries += 1
-                            await asyncio.sleep(retries)
+                            await asyncio.sleep(sleep_time)
                             continue
 
                         await self._handle_err(response, data["ErrorStatus"])

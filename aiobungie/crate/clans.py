@@ -445,7 +445,7 @@ class Clan:
     features: ClanFeatures = attr.field(repr=False, hash=False, eq=False)
     """The clan features."""
 
-    async def edit_clan_options(
+    async def edit_options(
         self,
         access_token: str,
         /,
@@ -514,7 +514,7 @@ class Clan:
             join_level=join_level,
         )
 
-    async def edit_clan(
+    async def edit(
         self,
         access_token: str,
         /,

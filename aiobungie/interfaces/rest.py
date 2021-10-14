@@ -750,7 +750,7 @@ class RESTInterface(abc.ABC):
         membership_type: helpers.IntAnd[enums.MembershipType],
         *,
         length: int = 0,
-        comment: typing.Optional[str] = None,
+        comment: helpers.UndefinedOr[str] = helpers.Undefined,
     ) -> ResponseSig[None]:
         """Bans a member from the clan.
 
@@ -775,8 +775,8 @@ class RESTInterface(abc.ABC):
         ----------------
         length: `int`
             An optional ban length.
-        comment: `typing.Optional[str]`
-            An optional comment to this ban.
+        comment: `aiobungie.internal.helpers.UndefinedOr[str]`
+            An optional comment to this ban. Default is `UNDEFINED`
 
         Returns
         -------

@@ -616,10 +616,10 @@ class RESTClient(interfaces.RESTInterface):
         membership_type: helpers.IntAnd[enums.MembershipType],
         *,
         length: int = 0,
-        comment: typing.Optional[str] = None,
+        comment: helpers.UndefinedOr[str] = helpers.Undefined,
     ) -> ResponseSig[None]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        payload = {"comment": comment, "length": length}
+        payload = {"comment": str(comment), "length": length}
         return self._request(
             "POST",
             f"GroupV2/{group_id}/Members/{int(membership_type)}/{membership_id}/Ban/",

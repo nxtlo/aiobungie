@@ -24,8 +24,6 @@
 
 from __future__ import annotations
 
-from aiobungie.internal.helpers import JsonObject
-
 __all__: list[str] = ["RESTInterface"]
 
 import abc
@@ -671,7 +669,6 @@ class RESTInterface(abc.ABC):
         self,
         access_token: str,
         /,
-        *,
         item_id: int,
         character_id: int,
         membership_type: helpers.IntAnd[enums.MembershipType],
@@ -683,13 +680,10 @@ class RESTInterface(abc.ABC):
             Also You must have a valid Destiny account, and either be
             in a social space, in orbit or offline.
 
-        Positional arguments
-        --------------------
-        access_token : `builtins.str`
-            The bearer access token associated with the bungie account.
-
         Parameters
         ----------
+        access_token : `builtins.str`
+            The bearer access token associated with the bungie account.
         item_id : `builtins.int`
             The item id.
         character_id : `builtins.int`
@@ -708,7 +702,6 @@ class RESTInterface(abc.ABC):
         self,
         access_token: str,
         /,
-        *,
         item_ids: list[int],
         character_id: int,
         membership_type: helpers.IntAnd[enums.MembershipType],
@@ -720,13 +713,10 @@ class RESTInterface(abc.ABC):
             Also You must have a valid Destiny account, and either be
             in a social space, in orbit or offline.
 
-        Positional arguments
-        --------------------
-        access_token : `builtins.str`
-            The bearer access token associated with the bungie account.
-
         Parameters
         ----------
+        access_token : `builtins.str`
+            The bearer access token associated with the bungie account.
         item_ids : `list[builtins.int]`
             A list of item ids.
         character_id : `builtins.int`
@@ -757,13 +747,10 @@ class RESTInterface(abc.ABC):
         .. note::
             This request requires OAuth2: oauth2: `AdminGroups` scope.
 
-        Positional arguments
-        --------------------
-        access_token : `builtins.str`
-            The bearer access token associated with the bungie account.
-
         Parameters
         ----------
+        access_token : `builtins.str`
+            The bearer access token associated with the bungie account.
         group_id: `int`
             The group id.
         membership_id : `int`
@@ -789,7 +776,6 @@ class RESTInterface(abc.ABC):
         self,
         access_token: str,
         /,
-        *,
         group_id: int,
         membership_id: int,
         membership_type: helpers.IntAnd[enums.MembershipType],
@@ -799,13 +785,10 @@ class RESTInterface(abc.ABC):
         .. note::
             This request requires OAuth2: oauth2: `AdminGroups` scope.
 
-        Positional arguments
-        --------------------
-        access_token : `builtins.str`
-            The bearer access token associated with the bungie account.
-
         Parameters
         ----------
+        access_token : `builtins.str`
+            The bearer access token associated with the bungie account.
         group_id: `int`
             The group id.
         membership_id : `int`
@@ -824,23 +807,19 @@ class RESTInterface(abc.ABC):
         self,
         access_token: str,
         /,
-        *,
         group_id: int,
         membership_id: int,
         membership_type: helpers.IntAnd[enums.MembershipType],
-    ) -> ResponseSig[JsonObject]:
+    ) -> ResponseSig[helpers.JsonObject]:
         """Kick a member from the clan.
 
         .. note::
             This request requires OAuth2: oauth2: `AdminGroups` scope.
 
-        Positional arguments
-        --------------------
-        access_token : `builtins.str`
-            The bearer access token associated with the bungie account.
-
         Parameters
         ----------
+        access_token : `builtins.str`
+            The bearer access token associated with the bungie account.
         group_id: `int`
             The group id.
         membership_id : `int`
@@ -852,6 +831,155 @@ class RESTInterface(abc.ABC):
         -------
         `ResponseSig[aiobungie.internal.helpers.JsonObject]`
             A JSON object of the group that the member has been kicked from.
+        """
+
+    @abc.abstractmethod
+    def edit_clan_options(
+        self,
+        access_token: str,
+        /,
+        group_id: int,
+        *,
+        invite_permissions_override: helpers.NoneOr[bool] = None,
+        update_culture_permissionOverride: helpers.NoneOr[bool] = None,
+        host_guided_game_permission_override: helpers.NoneOr[
+            typing.Literal[0, 1, 2]
+        ] = None,
+        update_banner_permission_override: helpers.NoneOr[bool] = None,
+        join_level: helpers.NoneOr[helpers.IntAnd[enums.ClanMemberType]] = None,
+    ) -> ResponseSig[None]:
+        """Edit the clan options.
+
+        Notes
+        -----
+        * This request requires OAuth2: oauth2: `AdminGroups` scope.
+        * All arguments will default to `None` if not provided. This does not include `access_token` and `group_id`
+
+        Parameters
+        ----------
+        access_token : `builtins.str`
+            The bearer access token associated with the bungie account.
+        group_id: `int`
+            The group id.
+
+        Other Parameters
+        ----------------
+        invite_permissions_override : `aiobungie.internal.helpers.NoneOr[bool]`
+            Minimum Member Level allowed to invite new members to group
+            Always Allowed: Founder, Acting Founder
+            True means admins have this power, false means they don't
+            Default is False for clans, True for groups.
+        update_culture_permissionOverride : `aiobungie.internal.helpers.NoneOr[bool]`
+            Minimum Member Level allowed to update group culture
+            Always Allowed: Founder, Acting Founder
+            True means admins have this power, false means they don't
+            Default is False for clans, True for groups.
+        host_guided_game_permission_override : `aiobungie.internal.helpers.NoneOr[typing.Literal[0, 1, 2]]`
+            Minimum Member Level allowed to host guided games
+            Always Allowed: Founder, Acting Founder, Admin
+            Allowed Overrides: `0` -> None, `1` -> Beginner `2` -> Member.
+            Default is Member for clans, None for groups, although this means nothing for groups.
+        update_banner_permission_override : `aiobungie.internal.helpers.NoneOr[bool]`
+            Minimum Member Level allowed to update banner
+            Always Allowed: Founder, Acting Founder
+            True means admins have this power, false means they don't
+            Default is False for clans, True for groups.
+        join_level : `aiobungie.ClanMemberType`
+            Level to join a member at when accepting an invite, application, or joining an open clan.
+            Default is `aiobungie.ClanMemberType.BEGINNER`
+
+        Returns
+        -------
+        `ResponseSig[None]`
+            None
+        """
+
+    @abc.abstractmethod
+    def edit_clan(
+        self,
+        access_token: str,
+        /,
+        group_id: int,
+        *,
+        name: helpers.NoneOr[str] = None,
+        about: helpers.NoneOr[str] = None,
+        motto: helpers.NoneOr[str] = None,
+        theme: helpers.NoneOr[str] = None,
+        tags: helpers.NoneOr[typing.Sequence[str]] = None,
+        is_public: helpers.NoneOr[bool] = None,
+        locale: helpers.NoneOr[str] = None,
+        avatar_image_index: helpers.NoneOr[int] = None,
+        membership_option: helpers.NoneOr[
+            helpers.IntAnd[enums.MembershipOption]
+        ] = None,
+        allow_chat: helpers.NoneOr[bool] = None,
+        chat_security: helpers.NoneOr[typing.Literal[0, 1]] = None,
+        call_sign: helpers.NoneOr[str] = None,
+        homepage: helpers.NoneOr[typing.Literal[0, 1, 2]] = None,
+        enable_invite_messaging_for_admins: helpers.NoneOr[bool] = None,
+        default_publicity: helpers.NoneOr[typing.Literal[0, 1, 2]] = None,
+        is_public_topic_admin: helpers.NoneOr[bool] = None,
+    ) -> ResponseSig[None]:
+        """Edit a clan.
+
+        Notes
+        -----
+        * This request requires OAuth2: oauth2: `AdminGroups` scope.
+        * All arguments will default to `None` if not provided. This does not include `access_token` and `group_id`
+
+        Parameters
+        ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+        group_id: `int`
+            The group id to edit.
+
+        Other Parameters
+        ----------------
+        name : `aiobungie.internal.helpers.NoneOr[str]`
+            The name to edit the clan with.
+        about : `aiobungie.internal.helpers.NoneOr[str]`
+            The about section to edit the clan with.
+        motto : `aiobungie.internal.helpers.NoneOr[str]`
+            The motto section to edit the clan with.
+        theme : `aiobungie.internal.helpers.NoneOr[str]`
+            The theme name to edit the clan with.
+        tags : `aiobungie.internal.helpers.NoneOr[typing.Sequence[str]]`
+            A sequence of strings to replace the clan tags with.
+        is_public : `aiobungie.internal.helpers.NoneOr[bool]`
+            If provided and set to `True`, The clan will set to private.
+            If provided and set to `False`, The clan will set to public whether it was or not.
+        locale : `aiobungie.internal.helpers.NoneOr[str]`
+            The locale section to edit the clan with.
+        avatar_image_index : `aiobungie.internal.helpers.NoneOr[int]`
+            The clan avatar image index to edit the clan with.
+        membership_option : `aiobungie.internal.helpers.NoneOr[aiobungie.internal.helpers.IntAnd[aiobungie.MembershipOption]]` # noqa: E501 # Line too long
+            The clan membership option to edit it with.
+        allow_chat : `aiobungie.internal.helpers.NoneOr[bool]`
+            If provided and set to `True`, The clan members will be allowed to chat.
+            If provided and set to `False`, The clan members will not be allowed to chat.
+        chat_security : `aiobungie.internal.helpers.NoneOr[typing.Literal[0, 1]]`
+            If provided and set to `0`, The clan chat security will be edited to `Group` only.
+            If provided and set to `1`, The clan chat security will be edited to `Admin` only.
+        call_sign : `aiobungie.internal.helpers.NoneOr[str]`
+            The clan call sign to edit it with.
+        homepage : `aiobungie.internal.helpers.NoneOr[typing.Literal[0, 1, 2]]`
+            If provided and set to `0`, The clan chat homepage will be edited to `Wall`.
+            If provided and set to `1`, The clan chat homepage will be edited to `Forum`.
+            If provided and set to `0`, The clan chat homepage will be edited to `AllianceForum`.
+        enable_invite_messaging_for_admins : `aiobungie.internal.helpers.NoneOr[bool]`
+            ???
+        default_publicity : `aiobungie.internal.helpers.NoneOr[typing.Literal[0, 1, 2]]`
+            If provided and set to `0`, The clan chat publicity will be edited to `Public`.
+            If provided and set to `1`, The clan chat publicity will be edited to `Alliance`.
+            If provided and set to `2`, The clan chat publicity will be edited to `Private`.
+        is_public_topic_admin : `aiobungie.internal.helpers.NoneOr[bool]`
+            ???
+
+        Returns
+        -------
+        `ResponseSig[None]`
+            None
         """
 
     @abc.abstractmethod

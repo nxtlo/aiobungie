@@ -25,7 +25,7 @@
 
 from __future__ import annotations
 
-__all__ = (
+__all__: tuple[str, ...] = (
     "GameMode",
     "MembershipType",
     "Class",
@@ -49,6 +49,7 @@ __all__ = (
     "Presence",
     "Relationship",
     "ClanMemberType",
+    "MembershipOption",
 )
 
 import enum as __enum
@@ -467,3 +468,12 @@ class ClanMemberType(IntEnum):
     ADMIN = 3
     ACTING_FOUNDER = 4
     FOUNDER = 5
+
+
+@typing.final
+class MembershipOption(IntEnum):
+    """A enum for GroupV2 membership options."""
+
+    REVIEWD = 0
+    OPEN = 1
+    CLOSED = 2

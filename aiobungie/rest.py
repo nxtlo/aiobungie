@@ -565,7 +565,6 @@ class RESTClient(interfaces.RESTInterface):
         self,
         access_token: str,
         /,
-        *,
         item_id: int,
         character_id: int,
         membership_type: helpers.IntAnd[enums.MembershipType],
@@ -588,7 +587,6 @@ class RESTClient(interfaces.RESTInterface):
         self,
         access_token: str,
         /,
-        *,
         item_ids: list[int],
         character_id: int,
         membership_type: helpers.IntAnd[enums.MembershipType],
@@ -630,11 +628,11 @@ class RESTClient(interfaces.RESTInterface):
         self,
         access_token: str,
         /,
-        *,
         group_id: int,
         membership_id: int,
         membership_type: helpers.IntAnd[enums.MembershipType],
     ) -> ResponseSig[None]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
             "POST",
             f"GroupV2/{group_id}/Members/{int(membership_type)}/{membership_id}/Unban/",
@@ -645,25 +643,110 @@ class RESTClient(interfaces.RESTInterface):
         self,
         access_token: str,
         /,
-        *,
         group_id: int,
         membership_id: int,
         membership_type: helpers.IntAnd[enums.MembershipType],
     ) -> ResponseSig[helpers.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
             "POST",
             f"GroupV2/{group_id}/Members/{int(membership_type)}/{membership_id}/Kick/",
             headers={"Authorization": f"Bearer {access_token}"},
         )
 
+    def edit_clan(
+        self,
+        access_token: str,
+        /,
+        group_id: int,
+        *,
+        name: helpers.NoneOr[str] = None,
+        about: helpers.NoneOr[str] = None,
+        motto: helpers.NoneOr[str] = None,
+        theme: helpers.NoneOr[str] = None,
+        tags: helpers.NoneOr[typing.Sequence[str]] = None,
+        is_public: helpers.NoneOr[bool] = None,
+        locale: helpers.NoneOr[str] = None,
+        avatar_image_index: helpers.NoneOr[int] = None,
+        membership_option: helpers.NoneOr[
+            helpers.IntAnd[enums.MembershipOption]
+        ] = None,
+        allow_chat: helpers.NoneOr[bool] = None,
+        chat_security: helpers.NoneOr[typing.Literal[0, 1]] = None,
+        call_sign: helpers.NoneOr[str] = None,
+        homepage: helpers.NoneOr[typing.Literal[0, 1, 2]] = None,
+        enable_invite_messaging_for_admins: helpers.NoneOr[bool] = None,
+        default_publicity: helpers.NoneOr[typing.Literal[0, 1, 2]] = None,
+        is_public_topic_admin: helpers.NoneOr[bool] = None,
+    ) -> ResponseSig[None]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        payload = {
+            "name": name,
+            "about": about,
+            "motto": motto,
+            "theme": theme,
+            "tags": tags,
+            "isPublic": is_public,
+            "avatarImageIndex": avatar_image_index,
+            "isPublicTopicAdminOnly": is_public_topic_admin,
+            "allowChat": allow_chat,
+            "chatSecurity": chat_security,
+            "callsign": call_sign,
+            "homepage": homepage,
+            "enableInvitationMessagingForAdmins": enable_invite_messaging_for_admins,
+            "defaultPublicity": default_publicity,
+            "locale": locale,
+        }
+        if membership_option is not None:
+            payload["membershipOption"] = int(membership_option)
+
+        return self._request(
+            "POST",
+            f"GroupV2/{group_id}/Edit",
+            json=payload,
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+
+    def edit_clan_options(
+        self,
+        access_token: str,
+        /,
+        group_id: int,
+        *,
+        invite_permissions_override: helpers.NoneOr[bool] = None,
+        update_culture_permissionOverride: helpers.NoneOr[bool] = None,
+        host_guided_game_permission_override: helpers.NoneOr[
+            typing.Literal[0, 1, 2]
+        ] = None,
+        update_banner_permission_override: helpers.NoneOr[bool] = None,
+        join_level: helpers.NoneOr[helpers.IntAnd[enums.ClanMemberType]] = None,
+    ) -> ResponseSig[None]:
+
+        payload = {
+            "InvitePermissionOverride": invite_permissions_override,
+            "UpdateCulturePermissionOverride": update_culture_permissionOverride,
+            "HostGuidedGamePermissionOverride": host_guided_game_permission_override,
+            "UpdateBannerPermissionOverride": update_banner_permission_override,
+            "JoinLevel": int(join_level) if join_level else None,
+        }
+
+        return self._request(
+            "POST",
+            f"GroupV2/{group_id}/EditFounderOptions",
+            json=payload,
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+
     def fetch_item(
         self, member_id: int, item_id: int, /
     ) -> ResponseSig[helpers.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         raise NotImplementedError
 
     def fetch_clan_weekly_rewards(
         self, clan_id: int, /
     ) -> ResponseSig[helpers.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         raise NotImplementedError
 
     def fetch_weapon_history(
@@ -672,6 +755,7 @@ class RESTClient(interfaces.RESTInterface):
         member_id: int,
         member_type: helpers.IntAnd[enums.MembershipType],
     ) -> ResponseSig[helpers.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         raise NotImplementedError
 
     def fetch_post_activity(self, instance: int, /) -> ResponseSig[helpers.JsonObject]:

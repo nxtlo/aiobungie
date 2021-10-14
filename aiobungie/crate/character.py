@@ -148,7 +148,7 @@ class CharacterComponent(abc.ABC):
         -------
         `builtins.None`.
         """
-        return await self.net.request.equip_item(
+        return await self.net.request.rest.equip_item(
             access_token,
             item_id=item_id,
             character_id=self.id,
@@ -173,7 +173,7 @@ class CharacterComponent(abc.ABC):
         -------
         `builtins.None`.
         """
-        return await self.net.request.equip_items(
+        return await self.net.request.rest.equip_items(
             access_token,
             item_ids=item_ids,
             character_id=self.id,

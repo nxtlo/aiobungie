@@ -396,88 +396,6 @@ class Client(traits.ClientBase):
         assert isinstance(resp, dict)
         return self.serialize.deserialize_character(resp, chartype=character)
 
-    async def equip_item(
-        self,
-        access_token: str,
-        /,
-        *,
-        item_id: int,
-        character_id: int,
-        membership_type: helpers.IntAnd[enums.MembershipType],
-    ) -> None:
-        """Equip an item to a character.
-
-        This requires the OAuth2: MoveEquipDestinyItems scope.
-        Also You must have a valid Destiny account, and either be
-        in a social space, in orbit or offline.
-
-        Positional arguments
-        ------------------
-        access_token : `builtins.str`
-            The bearer access token associated with the bungie account.
-
-        Parameters
-        ----------
-        item_id : `builtins.int`
-            The item id.
-        character_id : `builtins.int`
-            The character's id to equip the item to.
-        membership_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`
-            The membership type assocaiated with this player.
-
-        Returns
-        -------
-        `None`
-            None
-        """
-        return await self.rest.equip_item(
-            access_token,
-            item_id=item_id,
-            character_id=character_id,
-            membership_type=membership_type,
-        )
-
-    async def equip_items(
-        self,
-        access_token: str,
-        /,
-        *,
-        item_ids: list[int],
-        character_id: int,
-        membership_type: helpers.IntAnd[enums.MembershipType],
-    ) -> None:
-        """Equip multiple items to a character.
-
-        This requires the OAuth2: MoveEquipDestinyItems scope.
-        Also You must have a valid Destiny account, and either be
-        in a social space, in orbit or offline.
-
-        Positional arguments
-        ------------------
-        access_token : `builtins.str`
-            The bearer access token associated with the bungie account.
-
-        Parameters
-        ----------
-        item_ids : `list[builtins.int]`
-            A list of item ids.
-        character_id : `builtins.int`
-            The character's id to equip the item to.
-        membership_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`
-            The membership type assocaiated with this player.
-
-        Returns
-        -------
-        `None`
-            None
-        """
-        return await self.rest.equip_items(
-            access_token,
-            item_ids=item_ids,
-            character_id=character_id,
-            membership_type=membership_type,
-        )
-
     # * Destiny 2 Activities.
 
     async def fetch_activity(
@@ -780,102 +698,11 @@ class Client(traits.ClientBase):
         assert isinstance(resp, dict)
         return self.serialize.deserialize_clan_banners(resp)
 
-    async def ban_clan_member(
-        self,
-        access_token: str,
-        /,
-        group_id: int,
-        membership_id: int,
-        membership_type: helpers.IntAnd[enums.MembershipType],
-        *,
-        length: int = 0,
-        comment: helpers.UndefinedOr[str] = helpers.Undefined,
-    ) -> None:
-        """Bans a member from the clan.
-
-        .. note::
-            This request requires OAuth2: oauth2: `AdminGroups` scope.
-
-        Positional arguments
-        --------------------
-        access_token : `builtins.str`
-            The bearer access token associated with the bungie account.
-
-        Parameters
-        ----------
-        group_id: `int`
-            The group id.
-        membership_id : `int`
-            The member id to ban.
-        membership_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`
-            The member's membership type.
-
-        Other Parameters
-        ----------------
-        length: `int`
-            An optional ban length. Default is 0
-        comment: `aiobungie.internal.helpers.UndefinedOr[str]`
-            An optional comment to this ban. Default is `UNDEFINED`
-
-        Returns
-        -------
-        `None`
-            None
-        """
-        return await self.rest.ban_clan_member(
-            access_token,
-            group_id,
-            membership_id,
-            membership_type,
-            length=length,
-            comment=comment,
-        )
-
-    async def unban_clan_member(
-        self,
-        access_token: str,
-        /,
-        *,
-        group_id: int,
-        membership_id: int,
-        membership_type: helpers.IntAnd[enums.MembershipType],
-    ) -> None:
-        """Unbans a member from the clan.
-
-        .. note::
-            This request requires OAuth2: oauth2: `AdminGroups` scope.
-
-        Positional arguments
-        --------------------
-        access_token : `builtins.str`
-            The bearer access token associated with the bungie account.
-
-        Parameters
-        ----------
-        group_id: `int`
-            The group id.
-        membership_id : `int`
-            The member id to unban.
-        membership_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`
-            The member's membership type.
-
-        Returns
-        -------
-        `None`
-            None
-        """
-        return await self.rest.unban_clan_member(
-            access_token,
-            group_id=group_id,
-            membership_id=membership_id,
-            membership_type=membership_type,
-        )
-
+    # This method is required to be here since it deserialize the clan.
     async def kick_clan_member(
         self,
         access_token: str,
         /,
-        *,
         group_id: int,
         membership_id: int,
         membership_type: helpers.IntAnd[enums.MembershipType],
@@ -885,13 +712,10 @@ class Client(traits.ClientBase):
         .. note::
             This request requires OAuth2: oauth2: `AdminGroups` scope.
 
-        Positional arguments
-        --------------------
-        access_token : `builtins.str`
-            The bearer access token associated with the bungie account.
-
         Parameters
         ----------
+        access_token : `builtins.str`
+            The bearer access token associated with the bungie account.
         group_id: `int`
             The group id.
         membership_id : `int`
@@ -920,8 +744,6 @@ class Client(traits.ClientBase):
 
         Parameters
         ----------
-        type: `builtins.str`
-            Entity's type definition.
         hash: `builtins.int`
             Entity's hash.
 

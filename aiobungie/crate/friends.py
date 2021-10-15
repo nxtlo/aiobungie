@@ -40,10 +40,7 @@ if typing.TYPE_CHECKING:
 
 @attr.define(slots=True, init=True, weakref_slot=False, hash=True, repr=True)
 class Friend(user_.UserLike):
-    """Represents a bungie friend in your account..
-
-    .. versionadded:: 0.2.5
-    """
+    """Represents a bungie friend in your account."""
 
     net: traits.Netrunner = attr.field(repr=False)
     """A network state we use to make external requests."""

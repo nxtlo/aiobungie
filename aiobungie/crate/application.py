@@ -68,8 +68,6 @@ class ApplicationOwner(user.UserLike):
     code: helpers.NoneOr[int] = attr.field(repr=True)
     """The user like's unique display name code.
     This can be None if the user hasn't logged in after season of the lost update.
-
-    .. versionadded:: 0.2.5
     """
 
     async def fetch_self(self) -> user.BungieUser:
@@ -84,8 +82,6 @@ class ApplicationOwner(user.UserLike):
         ------
         `aiobungie.UserNotFound`
             The user was not found.
-
-        .. versionadded:: 0.2.5
         """
         return await self.net.request.fetch_user(self.id)
 

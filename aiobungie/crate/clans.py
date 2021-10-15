@@ -156,8 +156,6 @@ class ClanMember(user.UserLike):
     code: helpers.NoneOr[int] = attr.field(repr=True)
     """The clan member's bungie display name code
     This is new and was added in Season of the lost update
-
-    .. versionadded:: 0.2.5
     """
 
     bungie: user.PartialBungieUser = attr.field(repr=True)
@@ -169,10 +167,7 @@ class ClanMember(user.UserLike):
 
     @property
     def unique_name(self) -> str:
-        """The clan member's unique name which includes their unique code.
-
-        .. versionadded:: 0.2.5
-        """
+        """The clan member's unique name which includes their unique code."""
         return f"{self.name}#{self.code}"
 
     @property
@@ -317,8 +312,6 @@ class ClanAdmin(user.UserLike):
     member_type: enums.ClanMemberType = attr.field(repr=True)
     """The clan admin's member type.
     This can be Admin or owner or any other type.
-
-    .. versionadded:: 0.2.5
     """
 
     net: traits.Netrunner = attr.field(repr=False)
@@ -363,8 +356,6 @@ class ClanAdmin(user.UserLike):
     code: helpers.NoneOr[int] = attr.field(repr=True)
     """The clan admin's bungie display name code
     This is new and was added in Season of the lost update
-
-    .. versionadded:: 0.2.5
     """
 
     bungie: user.PartialBungieUser = attr.field(repr=True)
@@ -387,10 +378,7 @@ class ClanAdmin(user.UserLike):
 
     @property
     def unique_name(self) -> str:
-        """The admin's unique name which includes their unique code.
-
-        .. versionadded:: 0.2.5
-        """
+        """The admin's unique name which includes their unique code."""
         return f"{self.name}#{self.code}"
 
     @property

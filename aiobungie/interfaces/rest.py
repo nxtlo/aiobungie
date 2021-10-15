@@ -690,11 +690,6 @@ class RESTInterface(abc.ABC):
             The character's id to equip the item to.
         membership_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`
             The membership type assocaiated with this player.
-
-        Returns
-        -------
-        `ResponseSig[None]`
-            None
         """
 
     @abc.abstractmethod
@@ -723,11 +718,6 @@ class RESTInterface(abc.ABC):
             The character's id to equip the item to.
         membership_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`
             The membership type assocaiated with this player.
-
-        Returns
-        -------
-        `ResponseSig[None]`
-            None
         """
 
     @abc.abstractmethod
@@ -764,11 +754,6 @@ class RESTInterface(abc.ABC):
             An optional ban length.
         comment: `aiobungie.internal.helpers.UndefinedOr[str]`
             An optional comment to this ban. Default is `UNDEFINED`
-
-        Returns
-        -------
-        `ResponseSig[None]`
-            None
         """
 
     @abc.abstractmethod
@@ -795,11 +780,6 @@ class RESTInterface(abc.ABC):
             The member id to unban.
         membership_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`
             The member's membership type.
-
-        Returns
-        -------
-        `ResponseSig[None]`
-            None
         """
 
     @abc.abstractmethod
@@ -887,11 +867,6 @@ class RESTInterface(abc.ABC):
         join_level : `aiobungie.ClanMemberType`
             Level to join a member at when accepting an invite, application, or joining an open clan.
             Default is `aiobungie.ClanMemberType.BEGINNER`
-
-        Returns
-        -------
-        `ResponseSig[None]`
-            None
         """
 
     @abc.abstractmethod
@@ -975,11 +950,6 @@ class RESTInterface(abc.ABC):
             If provided and set to `2`, The clan chat publicity will be edited to `Private`.
         is_public_topic_admin : `aiobungie.internal.helpers.NoneOr[bool]`
             ???
-
-        Returns
-        -------
-        `ResponseSig[None]`
-            None
         """
 
     @abc.abstractmethod

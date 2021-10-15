@@ -498,11 +498,6 @@ class Clan:
         join_level : `aiobungie.ClanMemberType`
             Level to join a member at when accepting an invite, application, or joining an open clan.
             Default is `aiobungie.ClanMemberType.BEGINNER`
-
-        Returns
-        -------
-        `None`
-            None
         """
         return await self.net.request.rest.edit_clan_options(
             access_token,
@@ -591,11 +586,6 @@ class Clan:
             If provided and set to `2`, The clan chat publicity will be edited to `Private`.
         is_public_topic_admin : `aiobungie.internal.helpers.NoneOr[bool]`
             ???
-
-        Returns
-        -------
-        `None`
-            None
         """
         return await self.net.request.rest.edit_clan(
             access_token,

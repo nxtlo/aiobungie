@@ -31,7 +31,6 @@ import http
 import logging
 import sys
 import typing
-from urllib.parse import quote
 
 import aiohttp
 import attr
@@ -43,6 +42,7 @@ from aiobungie import url
 from aiobungie.internal import _backoff as backoff
 from aiobungie.internal import enums
 from aiobungie.internal import helpers
+from urllib import parse
 
 if typing.TYPE_CHECKING:
     import types
@@ -376,7 +376,7 @@ class RESTClient(interfaces.RESTInterface):
     ) -> ResponseSig[helpers.JsonArray]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
-            "GET", f"Destiny2/SearchDestinyPlayer/{int(type)}/{quote(name)}/"
+            "GET", f"Destiny2/SearchDestinyPlayer/{int(type)}/{parse.quote(name)}/"
         )
 
     def search_users(self, name: str, /) -> ResponseSig[helpers.JsonObject]:

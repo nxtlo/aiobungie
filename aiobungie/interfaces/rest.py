@@ -953,6 +953,127 @@ class RESTInterface(abc.ABC):
         """
 
     @abc.abstractmethod
+    def fetch_friends(self, access_token: str, /) -> ResponseSig[helpers.JsonObject]:
+        """Fetch bungie friend list.
+
+        .. note::
+            This requests OAuth2: ReadUserData scope.
+
+        Parameters
+        -----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.internal.helpers.JsonObject]`
+            A JSON object of an array of the bungie friends's data.
+        """
+
+    @abc.abstractmethod
+    def fetch_friend_requests(
+        self, access_token: str, /
+    ) -> ResponseSig[helpers.JsonObject]:
+        """Fetch pending bungie friend requests queue.
+
+        .. note::
+            This requests OAuth2: ReadUserData scope.
+
+        Parameters
+        -----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.internal.helpers.JsonObject]`
+            A JSON object of incoming requests and outgoing requests.
+        """
+
+    @abc.abstractmethod
+    def accept_friend_request(
+        self, access_token: str, /, member_id: int
+    ) -> ResponseSig[None]:
+        """Accepts a friend relationship with the target user. The user must be on your incoming friend request list.
+
+        ..note ::
+            This request requires OAuth2: BnetWrite scope.
+
+        Parameters
+        -----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+        member_id : `int`
+            The member's id to accept.
+        """
+
+    @abc.abstractmethod
+    def send_friend_request(
+        self, access_token: str, /, member_id: int
+    ) -> ResponseSig[None]:
+        """Requests a friend relationship with the target user.
+
+        ..note ::
+            This request requires OAuth2: BnetWrite scope.
+
+        Parameters
+        -----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+        member_id: `int`
+            The member's id to send the request to.
+        """
+
+    @abc.abstractmethod
+    def decline_friend_request(
+        self, access_token: str, /, member_id: int
+    ) -> ResponseSig[None]:
+        """Decline a friend request with the target user. The user must be in your incoming friend request list.
+
+        ..note ::
+            This request requires OAuth2: BnetWrite scope.
+
+        Parameters
+        -----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+        member_id : `int`
+            The member's id to decline.
+        """
+
+    @abc.abstractmethod
+    def remove_friend(self, access_token: str, /, member_id: int) -> ResponseSig[None]:
+        """Removes a friend from your friend list. The user must be in your friend list.
+
+        ..note ::
+            This request requires OAuth2: BnetWrite scope.
+
+        Parameters
+        -----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+        member_id : `int`
+            The member's id to remove.
+        """
+
+    @abc.abstractmethod
+    def remove_friend_request(
+        self, access_token: str, /, member_id: int
+    ) -> ResponseSig[None]:
+        """Removes a friend from your friend list requests. The user must be in your outgoing request list.
+
+        ..note ::
+            This request requires OAuth2: BnetWrite scope.
+
+        Parameters
+        -----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+        member_id: `int`
+            The member's id to remove from the requested friend list.
+        """
+
+    @abc.abstractmethod
     def fetch_item(
         self, member_id: int, item_id: int, /
     ) -> ResponseSig[helpers.JsonObject]:

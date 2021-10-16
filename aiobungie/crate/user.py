@@ -40,13 +40,13 @@ import typing
 
 import attr
 
+from aiobungie.crate import profile
 from aiobungie.internal import assets
 from aiobungie.internal import enums
 
 if typing.TYPE_CHECKING:
     from datetime import datetime
 
-    from aiobungie.crate import profile
     from aiobungie.internal import helpers
     from aiobungie.internal import traits
 
@@ -158,7 +158,9 @@ class PartialBungieUser:
         `aiobungie.UserNotFound`
             The user was not found.
         """
-        return await self.net.request.fetch_user(self.id)
+        user = await self.net.request.fetch_user(self.id)
+        assert isinstance(user, BungieUser)
+        return user
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
@@ -278,7 +280,9 @@ class DestinyUser(UserLike):
         `aiobungie.crate.Profile`
             The profile of this membership.
         """
-        return await self.net.request.fetch_profile(self.id, self.type)
+        profile_ = await self.net.request.fetch_profile(self.id, self.type)
+        assert isinstance(profile_, profile.Profile)
+        return profile_
 
     @property
     def unique_name(self) -> str:

@@ -92,72 +92,24 @@ class ProfileComponent(abc.ABC):
         char = await self.net.request.fetch_character(
             int(self.id), self.type, enums.Class.TITAN
         )
-        return character.Character(
-            net=self.net,
-            id=char.id,
-            class_type=char.class_type,
-            emblem=char.emblem,
-            emblem_hash=char.emblem_hash,
-            emblem_icon=char.emblem_icon,
-            light=char.light,
-            last_played=char.last_played,
-            level=char.level,
-            member_id=char.member_id,
-            member_type=char.member_type,
-            gender=char.gender,
-            race=char.race,
-            total_played_time=char.total_played_time,
-            title_hash=char.title_hash,
-            stats=char.stats,
-        )
+        assert isinstance(char, character.Character)
+        return char
 
     async def hunter(self) -> character.Character:
         """Returns the hunter character of the profile owner."""
         char = await self.net.request.fetch_character(
             self.id, self.type, enums.Class.HUNTER
         )
-        return character.Character(
-            net=self.net,
-            id=char.id,
-            class_type=char.class_type,
-            emblem=char.emblem,
-            emblem_hash=char.emblem_hash,
-            emblem_icon=char.emblem_icon,
-            light=char.light,
-            last_played=char.last_played,
-            level=char.level,
-            member_id=char.member_id,
-            member_type=char.member_type,
-            gender=char.gender,
-            race=char.race,
-            total_played_time=char.total_played_time,
-            title_hash=char.title_hash,
-            stats=char.stats,
-        )
+        assert isinstance(char, character.Character)
+        return char
 
     async def warlock(self) -> character.Character:
         """Returns the Warlock character of the profile owner."""
         char = await self.net.request.fetch_character(
             self.id, self.type, enums.Class.WARLOCK
         )
-        return character.Character(
-            net=self.net,
-            id=char.id,
-            class_type=char.class_type,
-            emblem=char.emblem,
-            emblem_hash=char.emblem_hash,
-            emblem_icon=char.emblem_icon,
-            light=char.light,
-            last_played=char.last_played,
-            level=char.level,
-            member_id=char.member_id,
-            member_type=char.member_type,
-            gender=char.gender,
-            race=char.race,
-            total_played_time=char.total_played_time,
-            title_hash=char.title_hash,
-            stats=char.stats,
-        )
+        assert isinstance(char, character.Character)
+        return char
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)

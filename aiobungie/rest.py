@@ -31,6 +31,7 @@ import http
 import logging
 import sys
 import typing
+from urllib import parse
 
 import aiohttp
 import attr
@@ -42,7 +43,6 @@ from aiobungie import url
 from aiobungie.internal import _backoff as backoff
 from aiobungie.internal import enums
 from aiobungie.internal import helpers
-from urllib import parse
 
 if typing.TYPE_CHECKING:
     import types
@@ -87,8 +87,15 @@ async def handle_errors(
 
     if 400 <= status < 500:
         return error.ResponseError(*data, status)
+
+    # For some WEIRD reason bungie doesn't follow the http
+    # error codes protocol and almost return 5xx on any failed request
+    # except very few. The only way currently to handle this is by their
+    # custom error codes.
     elif 500 <= status < 600:
-        # High order errors.
+        if msg in ("ApiKeyMissingFromRequest", "WebAuthRequired"):
+            # No API key or method requires OAuth2 most likely.
+            return error.Unauthorized(*data)
         if msg == "ClanNotFound":
             return error.ClanNotFound(*data)
         elif msg == "NotFound":
@@ -100,7 +107,7 @@ async def handle_errors(
         elif msg == "UserCannotFindRequestedUser":
             return error.UserNotFound(*data)
         else:
-            return error.AiobungieError(*data)
+            return error.InternalServerError(*data)
     else:
         return error.HTTPException(*data)
 
@@ -734,6 +741,71 @@ class RESTClient(interfaces.RESTInterface):
             "POST",
             f"GroupV2/{group_id}/EditFounderOptions",
             json=payload,
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+
+    def fetch_friends(self, access_token: str, /) -> ResponseSig[helpers.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        return self._request(
+            "POST",
+            "Social/Friends",
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+
+    def fetch_friend_requests(
+        self, access_token: str, /
+    ) -> ResponseSig[helpers.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        return self._request(
+            "POST",
+            "Social/Friends/Requests",
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+
+    def accept_friend_request(
+        self, access_token: str, /, member_id: int
+    ) -> ResponseSig[None]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        return self._request(
+            "POST",
+            f"Social/Friends/Requests/Accept/{member_id}",
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+
+    def send_friend_request(
+        self, access_token: str, /, member_id: int
+    ) -> ResponseSig[None]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        return self._request(
+            "POST",
+            f"Social/Friends/Add/{member_id}",
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+
+    def decline_friend_request(
+        self, access_token: str, /, member_id: int
+    ) -> ResponseSig[None]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        return self._request(
+            "POST",
+            f"Social/Friends/Requests/Decline/{member_id}",
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+
+    def remove_friend(self, access_token: str, /, member_id: int) -> ResponseSig[None]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        return self._request(
+            "POST",
+            f"Social/Friends/Remove/{member_id}",
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+
+    def remove_friend_request(
+        self, access_token: str, /, member_id: int
+    ) -> ResponseSig[None]:
+        return self._request(
+            "POST",
+            f"Social/Friends/Requests/Remove/{member_id}",
             headers={"Authorization": f"Bearer {access_token}"},
         )
 

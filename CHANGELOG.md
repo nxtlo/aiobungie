@@ -21,7 +21,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `edit_clan`, `edit_clan_options` which edits a clan and can be accessed via `RESTClient`.
     - `equip_item`, `equip_items` in `RESTClient` and `character.Character`
     - `fetch_own_bungie_user` methods which can be accessed via `RESTClient`.
+    - Implemeted `friends.Friend` methods flow + `friends.FriendRequestView` object.
 - `enums.MembershipOption` enum for group member options.
+- `errors.InternalServerError` exception.
 
 ### Removed
 - `player.py` / `.Player` module / object has been removed in-replacement of `user.DestinyUser`.
@@ -34,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Export `aiobungie/interfaces` and `aiobungie/crates` to `aiobungie/__init__.py`
 - Added real client tests to ci workflow.
 - Minor changes to nox pipelines.
+- Instead of raising `error.AiobungieError` on `5xx` errors. `errors.InternalServerError` is not raised.
 
 ### Fixed
 - Errors now are correctly raised.

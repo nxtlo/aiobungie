@@ -13,6 +13,7 @@ from .clans import GroupMember as GroupMember
 from .entity import Entity as Entity
 from .entity import InventoryEntity as InventoryEntity
 from .friends import Friend as Friend
+from .friends import FriendRequestView as FriendRequestView
 from .milestones import Milestone as Milestone
 from .milestones import MilestoneItems as MilestoneItems
 from .profile import LinkedProfile as LinkedProfile

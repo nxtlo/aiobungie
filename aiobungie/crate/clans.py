@@ -302,7 +302,9 @@ class GroupMember:
         `Clan`
             The clan object.
         """
-        return await self.net.request.fetch_clan_from_id(self.group_id)
+        clan = await self.net.request.fetch_clan_from_id(self.group_id)
+        assert isinstance(clan, Clan)
+        return clan
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
@@ -374,7 +376,9 @@ class ClanAdmin(user.UserLike):
         `Clan`
             The clan admins clan.
         """
-        return await self.net.request.fetch_clan_from_id(self.group_id)
+        clan = await self.net.request.fetch_clan_from_id(self.group_id)
+        assert isinstance(clan, Clan)
+        return clan
 
     @property
     def unique_name(self) -> str:
@@ -626,7 +630,9 @@ class Clan:
         `aiobungie.NotFound`
             The member was not found
         """
-        return await self.net.request.fetch_clan_member(self.id, name, type)
+        member = await self.net.request.fetch_clan_member(self.id, name, type)
+        assert isinstance(member, ClanMember)
+        return member
 
     async def fetch_members(
         self, type: enums.MembershipType = enums.MembershipType.NONE, /

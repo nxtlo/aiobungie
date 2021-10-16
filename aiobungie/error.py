@@ -39,6 +39,7 @@ __all__: list[str] = [
     "Unauthorized",
     "ResponseError",
     "RateLimitedError",
+    "InternalServerError",
 ]
 
 import typing
@@ -68,6 +69,11 @@ class RateLimitedError(HTTPException):
     headers: multidict.CIMultiDictProxy[str] = attr.field(default=None)
     retry_after: float = attr.field(default=0.0)
     url: str = attr.field(default="")
+
+
+@attr.define(auto_exc=True, repr=False, weakref_slot=False, kw_only=True)
+class InternalServerError(AiobungieError):
+    """Raised for other 5xx errors."""
 
 
 class NotFound(AiobungieError):

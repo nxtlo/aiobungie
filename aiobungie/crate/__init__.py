@@ -56,6 +56,7 @@ __all__ = (
     "ClanBanner",
     "Milestone",
     "MilestoneItems",
+    "FriendRequestView",
 )
 
 from .activity import Activity
@@ -73,6 +74,7 @@ from .clans import GroupMember
 from .entity import Entity
 from .entity import InventoryEntity
 from .friends import Friend
+from .friends import FriendRequestView
 from .milestones import Milestone
 from .milestones import MilestoneItems
 from .profile import LinkedProfile

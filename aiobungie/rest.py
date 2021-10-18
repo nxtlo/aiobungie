@@ -107,7 +107,9 @@ async def handle_errors(
         elif msg == "UserCannotFindRequestedUser":
             return error.UserNotFound(*data)
         else:
-            return error.InternalServerError(*data)
+            return error.InternalServerError(
+                message=str(msg), long_message=from_json.get("Message", "")
+            )
     else:
         return error.HTTPException(*data)
 
@@ -228,6 +230,7 @@ class RESTClient(interfaces.RESTInterface):
 
     @typing.final
     async def close(self) -> None:
+        _LOG.info("Closing REST client.")
         await self._acquire_session().close()
 
     @typing.final
@@ -367,7 +370,7 @@ class RESTClient(interfaces.RESTInterface):
         /,
     ) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request("GET", f"User/GetMembershipsById/{id}/{type}")
+        return self._request("GET", f"User/GetMembershipsById/{id}/{int(type)}")
 
     def static_request(
         self, method: str, path: str, **kwargs: typing.Any

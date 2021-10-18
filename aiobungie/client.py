@@ -26,6 +26,8 @@ Deserialize the REST payloads and returns `aiobungie.crate` implementations of t
 
 from __future__ import annotations
 
+import logging
+
 __all__: list[str] = ["Client"]
 
 import asyncio
@@ -40,6 +42,7 @@ from aiobungie.internal import helpers
 from aiobungie.internal import traits
 
 if typing.TYPE_CHECKING:
+    from aiobungie import interfaces
     from aiobungie.crate import activity
     from aiobungie.crate import application
     from aiobungie.crate import character
@@ -48,6 +51,8 @@ if typing.TYPE_CHECKING:
     from aiobungie.crate import friends
     from aiobungie.crate import milestones
     from aiobungie.crate import profile
+
+_LOG: typing.Final[logging.Logger] = logging.getLogger("aiobungie.client")
 
 
 class Client(traits.ClientBase):
@@ -78,7 +83,7 @@ class Client(traits.ClientBase):
         return self._serialize
 
     @property
-    def rest(self) -> rest_.RESTClient:
+    def rest(self) -> interfaces.RESTInterface:
         return self._rest
 
     @property
@@ -96,10 +101,12 @@ class Client(traits.ClientBase):
         except Exception as exc:
             raise RuntimeError(f"Failed to run {future.__name__}", exc)
         except KeyboardInterrupt:
+            _LOG.warn("Unexpected Keyboard interrupt. Exiting.")
             raise SystemExit(None)
         finally:
             # Session management.
             self._loop.run_until_complete(self.rest.close())
+            _LOG.info("Client closed normally.")
 
     # * Unspecified methods. *#
 

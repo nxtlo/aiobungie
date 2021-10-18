@@ -4,23 +4,20 @@ dist/
 build/
 
 # Enviroments
-venv
+*venv*/
 .env
-.venv/
-venv/
+*.venv*/
+*venv*/
 # For python 3.10 testings.
-.venv_10/
+.venv_10*/
 
 # VS code configs.
 .vscode/
 
 # pipelines and workflow.
-.nox
+.nox/
 
 # aiobungie stuff.
-*.zip
-*.sqlite3
-*.sqlite*.db
 dropped/
 
 # Cache

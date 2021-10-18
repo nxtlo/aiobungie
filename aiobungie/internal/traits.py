@@ -24,20 +24,22 @@
 
 from __future__ import annotations
 
-__all__ = ("ClientBase", "Netrunner", "Serializable")
+__all__ = ("ClientBase", "Netrunner", "Serializable", "RESTful")
 
 import typing
 
-from aiobungie.internal import factory
-
 if typing.TYPE_CHECKING:
     from aiobungie import client as base_client
-    from aiobungie import rest as rest_client
+    from aiobungie import interfaces
+    from aiobungie.internal import factory
 
 
 @typing.runtime_checkable
 class Netrunner(typing.Protocol):
-    """A protocol represents The main client That's only used for making external requests."""
+    """A protocol represents The base client.
+
+    That's only used for making external requests.
+    """
 
     __slots__: typing.Sequence[str] = ()
 
@@ -48,18 +50,50 @@ class Netrunner(typing.Protocol):
 
 @typing.runtime_checkable
 class Serializable(typing.Protocol):
-    """A protocol that uses `aiobungie.internal.serialize.Factory` for deseializing objects."""
+    """A protocol that represents serialized factory objects."""
 
     __slots__: typing.Sequence[str] = ()
 
     @property
     def serialize(self) -> factory.Factory:
-        """A property that returns the entity factory for the client."""
+        """Returns the entity factory for the client."""
+
+
+@typing.runtime_checkable
+class RESTful(typing.Protocol):
+    """A protocol for a REST only object."""
+
+    __slots__: typing.Sequence[str] = ()
+
+    async def close(self) -> None:
+        """Close the rest client."""
+
+    async def static_request(
+        self, method: str, path: str, **kwargs: typing.Any
+    ) -> typing.Any:
+        """Raw http request given a valid bungie endpoint.
+
+        Parameters
+        ----------
+        method : `builtins.str`
+            The request method, This may be `GET`, `POST`, `PUT`, etc.
+        path: `builtins.str`
+            The bungie endpoint or path.
+            A path must look something like this
+            `Destiny2/3/Profile/46111239123/...`
+        **kwargs: `typing.Any`
+            Any other key words you'd like to pass through.
+
+        Returns
+        -------
+        `typing.Any`
+            Any object.
+        """
 
 
 @typing.runtime_checkable
 class ClientBase(Netrunner, Serializable, typing.Protocol):
-    """A Client based, serializble and netrunner client protocol."""
+    """A Client based, serializble and netrunner protocol."""
 
     __slots__: typing.Sequence[str] = ()
 
@@ -86,5 +120,5 @@ class ClientBase(Netrunner, Serializable, typing.Protocol):
         """
 
     @property
-    def rest(self) -> rest_client.RESTClient:
-        """The rest client we make the http request to the API with."""
+    def rest(self) -> interfaces.RESTInterface:
+        """Returns the REST client for the base client."""

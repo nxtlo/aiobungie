@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Implemeted `friends.Friend` methods flow + `friends.FriendRequestView` object.
 - `enums.MembershipOption` enum for group member options.
 - `errors.InternalServerError` exception.
+- `traits.RESTful` REST client protocol for the `RESTClient`.
 
 ### Removed
 - `player.py` / `.Player` module / object has been removed in-replacement of `user.DestinyUser`.
@@ -40,6 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Errors now are correctly raised.
+- `fetch_membership_from_id` wasn't converting `type` enum parameter to `int`.
 
 ## [0.2.5b9](https://github.com/nxtlo/aiobungie/compare/0.2.5b8...HEAD) 2021-10-1
 

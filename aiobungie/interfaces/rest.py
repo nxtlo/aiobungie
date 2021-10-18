@@ -31,6 +31,7 @@ import typing
 
 from aiobungie.internal import enums
 from aiobungie.internal import helpers
+from aiobungie.internal import traits
 
 if typing.TYPE_CHECKING:
 
@@ -42,37 +43,10 @@ if typing.TYPE_CHECKING:
     ResponseSig = typing.Coroutine[typing.Any, typing.Any, ResponseSigT]
 
 
-class RESTInterface(abc.ABC):
+class RESTInterface(traits.RESTful, abc.ABC):
     """An interface for a rest only client implementation."""
 
     __slots__: typing.Sequence[str] = ()
-
-    @abc.abstractmethod
-    async def close(self) -> None:
-        """Close the rest client."""
-
-    @abc.abstractmethod
-    def static_request(
-        self, method: str, path: str, **kwargs: typing.Any
-    ) -> ResponseSig[typing.Any]:
-        """Raw http request given a valid bungie endpoint.
-
-        Parameters
-        ----------
-        method : `builtins.str`
-            The request method, This may be `GET`, `POST`, `PUT`, etc.
-        path: `builtins.str`
-            The bungie endpoint or path.
-            A path must look something like this
-            `Destiny2/3/Profile/46111239123/...`
-        **kwargs: `typing.Any`
-            Any other key words you'd like to pass through.
-
-        Returns
-        -------
-        `typing.Any`
-            Any object.
-        """
 
     @abc.abstractmethod
     async def fetch_manifest(self) -> bytes:
@@ -476,7 +450,7 @@ class RESTInterface(abc.ABC):
         /,
         *,
         filter: int = 0,
-        group_type: enums.GroupType = enums.GroupType.CLAN,
+        group_type: helpers.IntAnd[enums.GroupType] = enums.GroupType.CLAN,
     ) -> ResponseSig[helpers.JsonObject]:
         """Get information about the groups that a given member has applied to or been invited to.
 

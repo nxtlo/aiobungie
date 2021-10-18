@@ -194,12 +194,8 @@ class Friend:
     #         The requested friend was not found.
     #     """
 
-    # TODO: impl this.
     async def is_pending(self, access_token: str, /, id: int) -> bool:
-        """Check if a member is in the pending requests by their id.
-
-        .. note::
-            This method is still not implemented.
+        """Check if a member is in the pending incoming requests by their id.
 
         Parameters
         ----------
@@ -213,4 +209,8 @@ class Friend:
         `bool`
             A boolean `True` if the passed id is in the pending friend list. `False` if not.
         """
-        raise NotImplementedError
+        pending_requests = await self.pending(access_token)
+        for friend_request in pending_requests.incoming:
+            if id == friend_request.id:
+                return True
+        return False

@@ -206,7 +206,7 @@ class TestProfile:
     @pytest.mark.asyncio()
     async def test_player_profile_titan(self, obj):
         obj.net.request.fetch_character = mock.AsyncMock(return_value=init_titan_char())
-        titan = await obj.titan()
+        titan = await obj.fetch_titan()
         obj.net.request.fetch_character.assert_awaited_once()
         assert isinstance(titan, crate.Character)
         assert titan.id == 2110
@@ -221,7 +221,7 @@ class TestProfile:
         obj.net.request.fetch_character = mock.AsyncMock(
             return_value=init_hunter_char()
         )
-        hunter = await obj.hunter()
+        hunter = await obj.fetch_hunter()
         obj.net.request.fetch_character.assert_awaited_once()
         assert isinstance(hunter, crate.Character)
         assert hunter.member_id == 4321
@@ -236,7 +236,7 @@ class TestProfile:
         obj.net.request.fetch_character = mock.AsyncMock(
             return_value=init_warlock_char()
         )
-        warlock = await obj.warlock()
+        warlock = await obj.fetch_warlock()
         obj.net.request.fetch_character.assert_awaited_once()
         assert isinstance(warlock, crate.Character)
         assert warlock.id == 2112

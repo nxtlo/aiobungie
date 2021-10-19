@@ -44,7 +44,7 @@ if typing.TYPE_CHECKING:
 
 
 class RESTInterface(traits.RESTful, abc.ABC):
-    """An interface for a rest only client implementation."""
+    """An API interface for the rest only client implementation."""
 
     __slots__: typing.Sequence[str] = ()
 

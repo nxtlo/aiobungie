@@ -86,7 +86,7 @@ class ProfileComponent(abc.ABC):
     def id(self) -> int:
         """The profile's id."""
 
-    async def titan(self) -> character.Character:
+    async def fetch_titan(self) -> character.Character:
         """Returns the titan character of the profile owner."""
         # We're ignoring the types for the character since
         char = await self.net.request.fetch_character(
@@ -95,7 +95,7 @@ class ProfileComponent(abc.ABC):
         assert isinstance(char, character.Character)
         return char
 
-    async def hunter(self) -> character.Character:
+    async def fetch_hunter(self) -> character.Character:
         """Returns the hunter character of the profile owner."""
         char = await self.net.request.fetch_character(
             self.id, self.type, enums.Class.HUNTER
@@ -103,7 +103,7 @@ class ProfileComponent(abc.ABC):
         assert isinstance(char, character.Character)
         return char
 
-    async def warlock(self) -> character.Character:
+    async def fetch_warlock(self) -> character.Character:
         """Returns the Warlock character of the profile owner."""
         char = await self.net.request.fetch_character(
             self.id, self.type, enums.Class.WARLOCK
@@ -176,7 +176,7 @@ class Profile(ProfileComponent):
     profile = await client.fetch_profile("Fate")
 
     # access the character component and get my warlock.
-    warlock = await profile.warlock()
+    warlock = await profile.fetch_warlock()
 
     assert warlock.light == 1320
     ```

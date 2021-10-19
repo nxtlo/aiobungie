@@ -67,11 +67,11 @@ async def main() -> None:
     members = await clan.fetch_members(aiobungie.MembershipType.STEAM)
     for member in members:
         if member.name == "Fate怒" or member.id == 4611686018484639825:
-            print(...)
+            print("Found Fate.")
         else:
             print(member.name, member.id, member.type)
 
-    # fetch my profile.
+    # fetch profiles.
     profile: crate.Profile = await client.fetch_profile(member.id, member.type)
     print(profile.name, profile.id, profile.type, ...)
 
@@ -80,7 +80,7 @@ async def main() -> None:
     # using `fetch_character()` method.
 
     # The profile way.
-    warlock: crate.Character = await profile.warlock()
+    warlock: crate.Character = await profile.fetch_warlock()
     print(warlock.light, warlock.id, warlock.gender, warlock.race, ...)
 
     # the fetch_character() way using the profile attrs.
@@ -100,13 +100,23 @@ you can use the `RESTClient`.
 import aiobungie
 import asyncio
 
-rest_client = aiobungie.RESTClient("TOKEN")
+async def main(bearer: str) -> None:
+    # Max retries is the maximum retries to backoff when you hit 5xx error codes.
+    # It defaults to 4 retries.
+    async with aiobungie.RESTClient("TOKEN", max_retries=5) as rest:
+        fetch_player = await rest.fetch_player('Fate怒#4275')
+        print(*fetch_player) # A JSON array of dict object
+        for player in fetch_player: # Iterate through the array.
+            print(player['membershipId'], player['iconPath']) # The player id and icon path.
+            for k, v in player.items():
+                print(k, v)
 
-async def main() -> None:
-    my_player = await rest_client.fetch_player("Name#1234")
-    print(*my_player)
+            # You can also send your own requests.
+            await rest.static_request("POST", "Need/OAuth2", headers={"Auth": f"Bearer {bearer}"})
+            # Defined methods.
+            await rest.send_friend_request(bearer, member_id=1234)
 
-asyncio.run(main())
+asyncio.run(main("1234"))
 ```
 
 ### Requirements

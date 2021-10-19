@@ -38,6 +38,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added real client tests to ci workflow.
 - Minor changes to nox pipelines.
 - Instead of raising `error.AiobungieError` on `5xx` errors. `errors.InternalServerError` is not raised.
+- `Profile.warlock`, `Profile.titan` and `Profile.hunter` method names changed to `Profile.fetch_hunter()`
+`Profile.fetch_...`.
 
 ### Fixed
 - Errors now are correctly raised.

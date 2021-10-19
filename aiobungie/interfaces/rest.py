@@ -1048,6 +1048,134 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
+    def approve_all_pending_group_users(
+        self,
+        access_token: str,
+        /,
+        group_id: int,
+        message: helpers.UndefinedOr[str] = helpers.Undefined,
+    ) -> ResponseSig[None]:
+        """Apporve all pending users for the given group id.
+
+        ..note::
+            This request requires OAuth2: AdminGroups scope.
+
+        Parameters
+        ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+        group_id: `int`
+            The given group id.
+
+        Other Parameters
+        ----------------
+        message: `aiobungie.internal.helpers.UndefinedOr[str]`
+            An optional message to send with the request. Default is `UNDEFINED`.
+        """
+
+    @abc.abstractmethod
+    def deny_all_pending_group_users(
+        self,
+        access_token: str,
+        /,
+        group_id: int,
+        *,
+        message: helpers.UndefinedOr[str] = helpers.Undefined,
+    ) -> ResponseSig[None]:
+        """Deny all pending users for the given group id.
+
+        ..note::
+            This request requires OAuth2: AdminGroups scope.
+
+        Parameters
+        ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+        group_id: `int`
+            The given group id.
+
+        Other Parameters
+        ----------------
+        message: `aiobungie.internal.helpers.UndefinedOr[str]`
+            An optional message to send with the request. Default is `UNDEFINED`.
+        """
+
+    @abc.abstractmethod
+    def add_optional_conversation(
+        self,
+        access_token: str,
+        /,
+        group_id: int,
+        *,
+        name: helpers.UndefinedOr[str] = helpers.Undefined,
+        security: typing.Literal[0, 1] = 0,
+    ) -> ResponseSig[None]:
+        """Add a new chat channel to a group.
+
+        ..note::
+            This request requires OAuth2: AdminGroups scope.
+
+        Parameters
+        ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+        group_id: `int`
+            The given group id.
+
+        Other parameters
+        ----------------
+        name: `aiobungie.internal.helpers.UndefinedOr[str]`
+            The chat name. Default to `UNDEFINED`
+        security: `typing.Literal[0, 1]`
+            The security level of the chat.
+
+            If provided and set to 0, It will be to `Group` only.
+            If provided and set to 1, It will be `Admins` only.
+            Default is `0`
+        """
+
+    @abc.abstractmethod
+    def edit_optional_conversation(
+        self,
+        access_token: str,
+        /,
+        group_id: int,
+        conversation_id: int,
+        *,
+        name: helpers.UndefinedOr[str] = helpers.Undefined,
+        security: typing.Literal[0, 1] = 0,
+        enable_chat: bool = False,
+    ) -> ResponseSig[None]:
+        """Edit the settings of this chat channel.
+
+        ..note::
+            This request requires OAuth2: AdminGroups scope.
+
+        Parameters
+        ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+        group_id : `int`
+            The given group id.
+        conversation_id : `int`
+            The conversation/chat id.
+
+        Other parameters
+        ----------------
+        name: `aiobungie.internal.helpers.UndefinedOr[str]`
+            The new chat name. Default to `UNDEFINED`
+        security: `typing.Literal[0, 1]`
+            The new security level of the chat.
+
+            If provided and set to 0, It will be to `Group` only.
+            If provided and set to 1, It will be `Admins` only.
+            Default is `0`
+        enable_chat : `bool`
+            Whether to enable chatting or not.
+            If set to `True` then chatting will be enabled. Otherwise it will be disabled.
+        """
+
+    @abc.abstractmethod
     def fetch_item(
         self, member_id: int, item_id: int, /
     ) -> ResponseSig[helpers.JsonObject]:

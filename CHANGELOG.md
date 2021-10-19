@@ -21,6 +21,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `edit_clan`, `edit_clan_options` which edits a clan and can be accessed via `RESTClient`.
     - `equip_item`, `equip_items` in `RESTClient` and `character.Character`
     - `fetch_own_bungie_user` methods which can be accessed via `RESTClient`.
+    - `deny_pending_members`, `approve_pending_members`, `add_optional_conversation` methods to `clans.Clan`.
+    - `ClanConversation.edit` method to edit the convo settings.
     - Implemeted `friends.Friend` methods flow + `friends.FriendRequestView` object.
 - `enums.MembershipOption` enum for group member options.
 - `errors.InternalServerError` exception.

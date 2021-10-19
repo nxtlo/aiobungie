@@ -541,6 +541,17 @@ class Client(traits.ClientBase):
     async def fetch_clan_conversations(
         self, clan_id: int, /
     ) -> typing.Sequence[clans.ClanConversation]:
+        """Fetch the conversations/chat channels of the given clan id.
+
+        Parameters
+        ----------
+        clan_id : `int`
+            The clan id.
+
+        Returns
+        `typing.Sequence[aiobungie.crate.ClanConversation]`
+            A sequence of the clan chat channels.
+        """
         resp = await self.rest.fetch_clan_conversations(clan_id)
         assert isinstance(resp, list)
         return self.serialize.deserialize_clan_convos(resp)
@@ -615,6 +626,28 @@ class Client(traits.ClientBase):
         filter: int = 0,
         group_type: helpers.IntAnd[enums.GroupType] = enums.GroupType.CLAN,
     ) -> typing.Optional[clans.GroupMember]:
+        """Fetch the potentional groups for a clan member.
+
+        Parameters
+        ----------
+        member_id : `builtins.int`
+            The member's id
+        member_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`
+            The member's membership type.
+
+        Other Parameters
+        ----------------
+        filter : `builsins.int`
+            Filter apply to list of joined groups. This Default to `0`
+        group_type : `aiobungie.internal.helpers.IntAnd[aiobungie.GroupType]`
+            The group's type.
+            This is always set to `aiobungie.GroupType.CLAN` and should not be changed.
+
+        Returns
+        -------
+        `typing.Optional[aiobungie.crate.GroupMember]`
+            An optional information about the group member.
+        """
         resp = await self.rest.fetch_potential_groups_for_member(
             member_id, member_type, filter=filter, group_type=group_type
         )

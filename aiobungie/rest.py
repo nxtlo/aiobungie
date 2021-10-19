@@ -806,9 +806,82 @@ class RESTClient(interfaces.RESTInterface):
     def remove_friend_request(
         self, access_token: str, /, member_id: int
     ) -> ResponseSig[None]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>
         return self._request(
             "POST",
             f"Social/Friends/Requests/Remove/{member_id}",
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+
+    def approve_all_pending_group_users(
+        self,
+        access_token: str,
+        /,
+        group_id: int,
+        message: helpers.UndefinedOr[str] = helpers.Undefined,
+    ) -> ResponseSig[None]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>
+        return self._request(
+            "POST",
+            f"GroupV2/{group_id}/Members/ApproveAll",
+            headers={"Authorization": f"Bearer {access_token}"},
+            json={"message": str(message)},
+        )
+
+    def deny_all_pending_group_users(
+        self,
+        access_token: str,
+        /,
+        group_id: int,
+        message: helpers.UndefinedOr[str] = helpers.Undefined,
+    ) -> ResponseSig[None]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>
+        return self._request(
+            "POST",
+            f"GroupV2/{group_id}/Members/DenyAll",
+            headers={"Authorization": f"Bearer {access_token}"},
+            json={"message": str(message)},
+        )
+
+    def add_optional_conversation(
+        self,
+        access_token: str,
+        /,
+        group_id: int,
+        *,
+        name: helpers.UndefinedOr[str] = helpers.Undefined,
+        security: typing.Literal[0, 1] = 0,
+    ) -> ResponseSig[None]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>
+        payload = {"chatName": str(name), "chatSecurity": security}
+        return self._request(
+            "POST",
+            f"GroupV2/{group_id}/OptionalConversations/Add",
+            json=payload,
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+
+    def edit_optional_conversation(
+        self,
+        access_token: str,
+        /,
+        group_id: int,
+        conversation_id: int,
+        *,
+        name: helpers.UndefinedOr[str] = helpers.Undefined,
+        security: typing.Literal[0, 1] = 0,
+        enable_chat: bool = False,
+    ) -> ResponseSig[None]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>
+        payload = {
+            "chatEnabled": enable_chat,
+            "chatName": str(name),
+            "chatSecurity": security,
+        }
+        return self._request(
+            "POST",
+            f"GroupV2/{group_id}/OptionalConversations/Edit/{conversation_id}",
+            json=payload,
             headers={"Authorization": f"Bearer {access_token}"},
         )
 

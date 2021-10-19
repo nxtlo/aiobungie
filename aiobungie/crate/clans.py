@@ -83,6 +83,9 @@ class ClanFeatures:
 class ClanConversation:
     """Represents a clan conversation."""
 
+    net: traits.Netrunner = attr.field(repr=False)
+    """A network state used for making external requests."""
+
     group_id: int = attr.field(repr=True)
     """The clan or group's id."""
 
@@ -98,6 +101,54 @@ class ClanConversation:
     security: int = attr.field(repr=False)
     """Conversation's security level."""
 
+    async def edit(
+        self,
+        access_token: str,
+        /,
+        *,
+        name: helpers.UndefinedOr[str] = helpers.Undefined,
+        security: typing.Literal[0, 1] = 0,
+        enable_chat: bool = False,
+    ) -> None:
+        """Edit the settings of this chat/conversation channel.
+
+        ..note::
+            This request requires OAuth2: AdminGroups scope.
+
+        Parameters
+        ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+
+        Other parameters
+        ----------------
+        name: `aiobungie.internal.helpers.UndefinedOr[str]`
+            The new chat name. Default to `UNDEFINED`
+        security: `typing.Literal[0, 1]`
+            The new security level of the chat.
+
+            If provided and set to 0, It will be to `Group` only.
+            If provided and set to 1, It will be `Admins` only.
+            Default is `0`
+        enable_chat : `bool`
+            Whether to enable chatting or not.
+            If set to `True` then chatting will be enabled. Otherwise it will be disabled.
+        """
+        return await self.net.request.rest.edit_optional_conversation(
+            access_token,
+            self.group_id,
+            self.id,
+            name=name,
+            security=security,
+            enable_chat=enable_chat,
+        )
+
+    def __int__(self) -> int:
+        return self.id
+
+    def __str__(self) -> str:
+        return str(self.name)
+
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
 class ClanBanner:
@@ -111,6 +162,9 @@ class ClanBanner:
 
     background: assets.MaybeImage = attr.field(repr=True)
     """The banner's background. This field can be `UNDEFINED` if not found."""
+
+    def __int__(self) -> int:
+        return self.id
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
@@ -269,6 +323,7 @@ class GroupMember:
     """Represents information about joined groups/clans for a member."""
 
     net: traits.Netrunner = attr.field(repr=False)
+    """A network state used for making external requests."""
 
     inactive_memberships: helpers.NoneOr[dict[int, bool]] = attr.field(repr=False)
     """The member's inactive memberships if provided. This will be `None` if not provided."""
@@ -305,6 +360,9 @@ class GroupMember:
         clan = await self.net.request.fetch_clan_from_id(self.group_id)
         assert isinstance(clan, Clan)
         return clan
+
+    def __int__(self) -> int:
+        return self.group_id
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
@@ -441,7 +499,6 @@ class Clan:
         self,
         access_token: str,
         /,
-        group_id: int,
         *,
         invite_permissions_override: helpers.NoneOr[bool] = None,
         update_culture_permissionOverride: helpers.NoneOr[bool] = None,
@@ -462,8 +519,6 @@ class Clan:
         ----------
         access_token : `builtins.str`
             The bearer access token associated with the bungie account.
-        group_id: `int`
-            The group id.
 
         Other Parameters
         ----------------
@@ -493,7 +548,7 @@ class Clan:
         """
         return await self.net.request.rest.edit_clan_options(
             access_token,
-            group_id=group_id,
+            group_id=self.id,
             invite_permissions_override=invite_permissions_override,
             update_culture_permissionOverride=update_culture_permissionOverride,
             host_guided_game_permission_override=host_guided_game_permission_override,
@@ -600,6 +655,48 @@ class Clan:
             is_public_topic_admin=is_public_topic_admin,
         )
 
+    async def fetch_conversations(self) -> typing.Sequence[ClanConversation]:
+        """Fetch the conversations/chat channels of this clan.
+
+        Returns
+        `typing.Sequence[aiobungie.crate.ClanConversation]`
+            A sequence of the clan chat channels.
+        """
+        return await self.net.request.fetch_clan_conversations(self.id)
+
+    async def add_optional_conversation(
+        self,
+        access_token: str,
+        /,
+        *,
+        name: helpers.UndefinedOr[str] = helpers.Undefined,
+        security: typing.Literal[0, 1] = 0,
+    ) -> None:
+        """Add a new chat channel to a group.
+
+        ..note::
+            This request requires OAuth2: AdminGroups scope.
+
+        Parameters
+        ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+
+        Other parameters
+        ----------------
+        name: `aiobungie.internal.helpers.UndefinedOr[str]`
+            The chat name. Default to `UNDEFINED`
+        security: `typing.Literal[0, 1]`
+            The security level of the chat.
+
+            If provided and set to 0, It will be to `Group` only.
+            If provided and set to 1, It will be `Admins` only.
+            Default is `0`
+        """
+        return await self.net.request.rest.add_optional_conversation(
+            access_token, self.id, name=name, security=security
+        )
+
     async def fetch_member(
         self, name: str, type: enums.MembershipType = enums.MembershipType.NONE, /
     ) -> ClanMember:
@@ -659,6 +756,58 @@ class Clan:
             The clan was not found.
         """
         return await self.net.request.fetch_clan_members(self.id, type)
+
+    async def approve_pending_members(
+        self,
+        access_token: str,
+        /,
+        *,
+        message: helpers.UndefinedOr[str] = helpers.Undefined,
+    ) -> None:
+        """Approve all pending users for this clan.
+
+        ..note::
+            This request requires OAuth2: AdminGroups scope.
+
+        Parameters
+        ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+
+        Other Parameters
+        ----------------
+        message: `aiobungie.internal.helpers.Undefinedor[str]`
+            A message to send with the request. Defaults to `UNDEFINED`
+        """
+        return await self.net.request.rest.approve_all_pending_group_users(
+            access_token, self.id, message=message
+        )
+
+    async def deny_pending_members(
+        self,
+        access_token: str,
+        /,
+        *,
+        message: helpers.UndefinedOr[str] = helpers.Undefined,
+    ) -> None:
+        """Deny all pending users for this clan.
+
+        ..note::
+            This request requires OAuth2: AdminGroups scope.
+
+        Parameters
+        ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+
+        Other Parameters
+        ----------------
+        message: `aiobungie.internal.helpers.Undefinedor[str]`
+            A message to send with the request. Defaults to `UNDEFINED`
+        """
+        return await self.net.request.rest.deny_all_pending_group_users(
+            access_token, self.id, message=message
+        )
 
     # These ones is not implemented since it
     # requires OAUth2

@@ -460,6 +460,7 @@ class Factory:
                     name = Undefined
 
                 convo_obj = clans.ClanConversation(
+                    net=self._net,
                     group_id=int(map["groupId"]),
                     id=int(map["conversationId"]),
                     chat_enabled=map["chatEnabled"],

@@ -25,7 +25,7 @@
 
 from __future__ import annotations
 
-__all__ = (
+__all__: tuple[str, ...] = (
     "deprecated",
     "JsonObject",
     "JsonArray",
@@ -47,20 +47,20 @@ import warnings
 
 from aiobungie.internal import enums
 
-JsonObject = typing.Dict[str, typing.Any]
+JsonObject = dict[str, typing.Any]
 """A json like dict of string key and any value.
 
 i.e., {"Key": 1, "Key2": "Value"}
 """
 
-JsonArray = typing.List[typing.Any]
+JsonArray = list[typing.Any]
 """A json like list of any data type.
 
 i.e., [{"Key": 1}, {"Key2": "Value"}]
 """
 
-Unknown: typing.Final[str] = ""
-"""Stuff that are empty strings."""
+Unknown: typing.Final[typing.Literal[""]] = ""
+"""Some Bungie strings comes Empty so we undefine them if so."""
 
 T = typing.TypeVar("T", covariant=True)
 

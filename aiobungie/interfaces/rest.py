@@ -970,7 +970,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
     ) -> ResponseSig[None]:
         """Accepts a friend relationship with the target user. The user must be on your incoming friend request list.
 
-        ..note ::
+        ..note::
             This request requires OAuth2: BnetWrite scope.
 
         Parameters
@@ -987,7 +987,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
     ) -> ResponseSig[None]:
         """Requests a friend relationship with the target user.
 
-        ..note ::
+        ..note::
             This request requires OAuth2: BnetWrite scope.
 
         Parameters
@@ -1004,7 +1004,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
     ) -> ResponseSig[None]:
         """Decline a friend request with the target user. The user must be in your incoming friend request list.
 
-        ..note ::
+        ..note::
             This request requires OAuth2: BnetWrite scope.
 
         Parameters
@@ -1019,7 +1019,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
     def remove_friend(self, access_token: str, /, member_id: int) -> ResponseSig[None]:
         """Removes a friend from your friend list. The user must be in your friend list.
 
-        ..note ::
+        ..note::
             This request requires OAuth2: BnetWrite scope.
 
         Parameters
@@ -1036,7 +1036,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
     ) -> ResponseSig[None]:
         """Removes a friend from your friend list requests. The user must be in your outgoing request list.
 
-        ..note ::
+        ..note :
             This request requires OAuth2: BnetWrite scope.
 
         Parameters

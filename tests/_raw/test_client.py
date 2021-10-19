@@ -110,9 +110,9 @@ async def test_fetch_app() -> aiobungie.crate.Application:
 
 async def test_profile() -> aiobungie.crate.Profile:
     pf = await client.fetch_profile(MID, aiobungie.MembershipType.STEAM)
-    warlock = await pf.warlock()
-    titan = await pf.titan()
-    hunter = await pf.hunter()
+    warlock = await pf.fetch_warlock()
+    titan = await pf.fetch_titan()
+    hunter = await pf.fetch_hunter()
     print(warlock, titan, hunter)
     return pf
 
@@ -123,7 +123,7 @@ async def test_player() -> typing.Sequence[
     p = await client.fetch_player("Datto#6446")
     profile = await p[0].fetch_self_profile()
     print(repr(profile))
-    print(repr(await profile.titan()))
+    print(repr(await profile.fetch_titan()))
     return p
 
 

@@ -47,13 +47,13 @@ import warnings
 
 from aiobungie.internal import enums
 
-JsonObject = dict[str, typing.Any]
+JsonObject = typing.Dict[str, typing.Any]
 """A json like dict of string key and any value.
 
 i.e., {"Key": 1, "Key2": "Value"}
 """
 
-JsonArray = list[typing.Any]
+JsonArray = typing.List[typing.Any]
 """A json like list of any data type.
 
 i.e., [{"Key": 1}, {"Key2": "Value"}]

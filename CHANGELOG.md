@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.5b10...HEAD)
 
 
-## [0.2.5b10](https://github.com/nxtlo/aiobungie/compare/0.2.5b9...HEAD) 2021-10-20
+## [0.2.5b10](https://github.com/nxtlo/aiobungie/compare/0.2.5b9...0.2.5b10) 2021-10-20
 
 ### Added
 - New module `milestones.py` with `Milestone`, `MilestoneItems` objects which implements _(not fully)_ Bungie's Milestones.
@@ -51,7 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Errors now are correctly raised.
 - `fetch_membership_from_id` wasn't converting `type` enum parameter to `int`.
 
-## [0.2.5b9](https://github.com/nxtlo/aiobungie/compare/0.2.5b8...HEAD) 2021-10-1
+## [0.2.5b9](https://github.com/nxtlo/aiobungie/compare/0.2.5b7...0.2.5b8) 2021-10-1
 
 ### Added
 - Two simple examples for both `RESTClient` and `Client` in `aiobungie/__init__.py` as an introduction examples.

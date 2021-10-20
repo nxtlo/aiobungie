@@ -69,6 +69,21 @@
                 </ul>
 
             </li>
+            <li>
+                    <a class="class" href="#RESTful">RESTful</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#RESTful.__init__">RESTful</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#RESTful.close">close</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#RESTful.static_request">static_request</a>
+                        </li>
+                </ul>
+
+            </li>
     </ul>
 
 
@@ -116,20 +131,22 @@
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;ClientBase&quot;</span><span class="p">,</span> <span class="s2">&quot;Netrunner&quot;</span><span class="p">,</span> <span class="s2">&quot;Serializable&quot;</span><span class="p">)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;ClientBase&quot;</span><span class="p">,</span> <span class="s2">&quot;Netrunner&quot;</span><span class="p">,</span> <span class="s2">&quot;Serializable&quot;</span><span class="p">,</span> <span class="s2">&quot;RESTful&quot;</span><span class="p">)</span>
 
 <span class="kn">import</span> <span class="nn">typing</span>
 
-<span class="kn">from</span> <span class="nn">aiobungie.internal</span> <span class="kn">import</span> <span class="n">factory</span>
-
 <span class="k">if</span> <span class="n">typing</span><span class="o">.</span><span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">aiobungie</span> <span class="kn">import</span> <span class="n">client</span> <span class="k">as</span> <span class="n">base_client</span>
-    <span class="kn">from</span> <span class="nn">aiobungie</span> <span class="kn">import</span> <span class="n">rest</span> <span class="k">as</span> <span class="n">rest_client</span>
+    <span class="kn">from</span> <span class="nn">aiobungie</span> <span class="kn">import</span> <span class="n">interfaces</span>
+    <span class="kn">from</span> <span class="nn">aiobungie.internal</span> <span class="kn">import</span> <span class="n">factory</span>
 
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">runtime_checkable</span>
 <span class="k">class</span> <span class="nc">Netrunner</span><span class="p">(</span><span class="n">typing</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A protocol represents The main client That&#39;s only used for making external requests.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;A protocol represents The base client.</span>
+
+<span class="sd">    That&#39;s only used for making external requests.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="vm">__slots__</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
 
@@ -140,18 +157,50 @@
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">runtime_checkable</span>
 <span class="k">class</span> <span class="nc">Serializable</span><span class="p">(</span><span class="n">typing</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A protocol that uses `aiobungie.internal.serialize.Factory` for deseializing objects.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;A protocol that represents serialized factory objects.&quot;&quot;&quot;</span>
 
     <span class="vm">__slots__</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">factory</span><span class="o">.</span><span class="n">Factory</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;A property that returns the entity factory for the client.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Returns the entity factory for the client.&quot;&quot;&quot;</span>
+
+
+<span class="nd">@typing</span><span class="o">.</span><span class="n">runtime_checkable</span>
+<span class="k">class</span> <span class="nc">RESTful</span><span class="p">(</span><span class="n">typing</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A protocol for a REST only object.&quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Close the rest client.&quot;&quot;&quot;</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">static_request</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Raw http request given a valid bungie endpoint.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        method : `builtins.str`</span>
+<span class="sd">            The request method, This may be `GET`, `POST`, `PUT`, etc.</span>
+<span class="sd">        path: `builtins.str`</span>
+<span class="sd">            The bungie endpoint or path.</span>
+<span class="sd">            A path must look something like this</span>
+<span class="sd">            `Destiny2/3/Profile/46111239123/...`</span>
+<span class="sd">        **kwargs: `typing.Any`</span>
+<span class="sd">            Any other key words you&#39;d like to pass through.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `typing.Any`</span>
+<span class="sd">            Any object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">runtime_checkable</span>
 <span class="k">class</span> <span class="nc">ClientBase</span><span class="p">(</span><span class="n">Netrunner</span><span class="p">,</span> <span class="n">Serializable</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A Client based, serializble and netrunner client protocol.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;A Client based, serializble and netrunner protocol.&quot;&quot;&quot;</span>
 
     <span class="vm">__slots__</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
 
@@ -178,8 +227,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">rest</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">rest_client</span><span class="o">.</span><span class="n">RESTClient</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;The rest client we make the http request to the API with.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">rest</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">interfaces</span><span class="o">.</span><span class="n">RESTInterface</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns the REST client for the base client.&quot;&quot;&quot;</span>
 </pre></div>
 
         </details>
@@ -199,7 +248,7 @@
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">runtime_checkable</span>
 <span class="k">class</span> <span class="nc">ClientBase</span><span class="p">(</span><span class="n">Netrunner</span><span class="p">,</span> <span class="n">Serializable</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A Client based, serializble and netrunner client protocol.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;A Client based, serializble and netrunner protocol.&quot;&quot;&quot;</span>
 
     <span class="vm">__slots__</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
 
@@ -226,13 +275,13 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">rest</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">rest_client</span><span class="o">.</span><span class="n">RESTClient</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;The rest client we make the http request to the API with.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">rest</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">interfaces</span><span class="o">.</span><span class="n">RESTInterface</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns the REST client for the base client.&quot;&quot;&quot;</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>A Client based, serializble and netrunner client protocol.</p>
+            <div class="docstring"><p>A Client based, serializble and netrunner protocol.</p>
 </div>
 
 
@@ -318,10 +367,10 @@ Your coro function.</li>
                             <div id="ClientBase.rest" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ClientBase.rest">#&nbsp;&nbsp</a>
 
-        <span class="name">rest</span><span class="annotation">: <a href="../rest.html#RESTClient">aiobungie.rest.RESTClient</a></span>
+        <span class="name">rest</span><span class="annotation">: <a href="../interfaces.html#rest.RESTInterface">aiobungie.interfaces.rest.RESTInterface</a></span>
     </div>
 
-            <div class="docstring"><p>The rest client we make the http request to the API with.</p>
+            <div class="docstring"><p>Returns the REST client for the base client.</p>
 </div>
 
 
@@ -354,7 +403,10 @@ Your coro function.</li>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">runtime_checkable</span>
 <span class="k">class</span> <span class="nc">Netrunner</span><span class="p">(</span><span class="n">typing</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A protocol represents The main client That&#39;s only used for making external requests.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;A protocol represents The base client.</span>
+
+<span class="sd">    That&#39;s only used for making external requests.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="vm">__slots__</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
 
@@ -365,7 +417,9 @@ Your coro function.</li>
 
         </details>
 
-            <div class="docstring"><p>A protocol represents The main client That's only used for making external requests.</p>
+            <div class="docstring"><p>A protocol represents The base client.</p>
+
+<p>That's only used for making external requests.</p>
 </div>
 
 
@@ -413,18 +467,18 @@ Your coro function.</li>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">runtime_checkable</span>
 <span class="k">class</span> <span class="nc">Serializable</span><span class="p">(</span><span class="n">typing</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A protocol that uses `aiobungie.internal.serialize.Factory` for deseializing objects.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;A protocol that represents serialized factory objects.&quot;&quot;&quot;</span>
 
     <span class="vm">__slots__</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">factory</span><span class="o">.</span><span class="n">Factory</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;A property that returns the entity factory for the client.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Returns the entity factory for the client.&quot;&quot;&quot;</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>A protocol that uses <code><a href="../internal.html#serialize.Factory">aiobungie.internal.serialize.Factory</a></code> for deseializing objects.</p>
+            <div class="docstring"><p>A protocol that represents serialized factory objects.</p>
 </div>
 
 
@@ -452,7 +506,156 @@ Your coro function.</li>
         <span class="name">serialize</span><span class="annotation">: <a href="factory.html#Factory">aiobungie.internal.factory.Factory</a></span>
     </div>
 
-            <div class="docstring"><p>A property that returns the entity factory for the client.</p>
+            <div class="docstring"><p>Returns the entity factory for the client.</p>
+</div>
+
+
+                            </div>
+                </section>
+                <section id="RESTful">
+                                <div class="attr class">
+        <a class="headerlink" href="#RESTful">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@typing.runtime_checkable</div>
+
+        <span class="def">class</span>
+        <span class="name">RESTful</span><wbr>(<span class="base">typing.Protocol</span>):
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">runtime_checkable</span>
+<span class="k">class</span> <span class="nc">RESTful</span><span class="p">(</span><span class="n">typing</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A protocol for a REST only object.&quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Close the rest client.&quot;&quot;&quot;</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">static_request</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Raw http request given a valid bungie endpoint.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        method : `builtins.str`</span>
+<span class="sd">            The request method, This may be `GET`, `POST`, `PUT`, etc.</span>
+<span class="sd">        path: `builtins.str`</span>
+<span class="sd">            The bungie endpoint or path.</span>
+<span class="sd">            A path must look something like this</span>
+<span class="sd">            `Destiny2/3/Profile/46111239123/...`</span>
+<span class="sd">        **kwargs: `typing.Any`</span>
+<span class="sd">            Any other key words you&#39;d like to pass through.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `typing.Any`</span>
+<span class="sd">            Any object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>A protocol for a REST only object.</p>
+</div>
+
+
+                            <div id="RESTful.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTful.__init__">#&nbsp;&nbsp</a>
+
+        
+            <span class="name">RESTful</span><span class="signature">(*args, **kwargs)</span>
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">_no_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Protocols cannot be instantiated&#39;</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="RESTful.close" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTful.close">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">async def</span>
+            <span class="name">close</span><span class="signature">(self) -&gt; None</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Close the rest client.&quot;&quot;&quot;</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Close the rest client.</p>
+</div>
+
+
+                            </div>
+                            <div id="RESTful.static_request" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTful.static_request">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">async def</span>
+            <span class="name">static_request</span><span class="signature">(self, method: str, path: str, **kwargs: Any) -&gt; Any</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">static_request</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Raw http request given a valid bungie endpoint.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        method : `builtins.str`</span>
+<span class="sd">            The request method, This may be `GET`, `POST`, `PUT`, etc.</span>
+<span class="sd">        path: `builtins.str`</span>
+<span class="sd">            The bungie endpoint or path.</span>
+<span class="sd">            A path must look something like this</span>
+<span class="sd">            `Destiny2/3/Profile/46111239123/...`</span>
+<span class="sd">        **kwargs: `typing.Any`</span>
+<span class="sd">            Any other key words you&#39;d like to pass through.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `typing.Any`</span>
+<span class="sd">            Any object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Raw http request given a valid bungie endpoint.</p>
+
+<h6 id="parameters">Parameters</h6>
+
+<ul>
+<li><strong>method</strong> (<code>builtins.str</code>):
+The request method, This may be <code>GET</code>, <code>POST</code>, <code>PUT</code>, etc.</li>
+<li><strong>path</strong> (<code>builtins.str</code>):
+The bungie endpoint or path.
+A path must look something like this
+<code>Destiny2/3/Profile/46111239123/...</code></li>
+<li><strong>**kwargs</strong> (<code>typing.Any</code>):
+Any other key words you'd like to pass through.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<ul>
+<li><strong><code>typing.Any</code></strong>: Any object.</li>
+</ul>
 </div>
 
 

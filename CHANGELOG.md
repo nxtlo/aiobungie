@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `deny_pending_members`, `approve_pending_members`, `add_optional_conversation` methods to `clans.Clan`.
     - `ClanConversation.edit` method to edit the convo settings.
     - Implemeted `friends.Friend` methods flow + `friends.FriendRequestView` object.
+    - `transfer_item`, `pull_item` methods.
 - `enums.MembershipOption` enum for group member options.
 - `errors.InternalServerError` exception.
 - `traits.RESTful` REST client protocol for the `RESTClient`.

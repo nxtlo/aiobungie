@@ -561,6 +561,8 @@ class RESTClient(interfaces.RESTInterface):
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request("GET", f"Destiny2/Milestones/{milestone_hash}/Content/")
 
+    # * OAuth2 methods.
+
     def fetch_own_bungie_user(
         self, access_token: str, /
     ) -> ResponseSig[helpers.JsonObject]:
@@ -884,6 +886,64 @@ class RESTClient(interfaces.RESTInterface):
             json=payload,
             headers={"Authorization": f"Bearer {access_token}"},
         )
+
+    def transfer_item(
+        self,
+        access_token: str,
+        /,
+        item_id: int,
+        item_hash: int,
+        character_id: int,
+        member_type: helpers.IntAnd[enums.MembershipType],
+        *,
+        stack_size: int = 1,
+        vault: bool = False,
+    ) -> ResponseSig[None]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>
+        payload = {
+            "characterId": character_id,
+            "membershipType": int(member_type),
+            "itemId": item_id,
+            "itemReferenceHash": item_hash,
+            "stackSize": stack_size,
+            "transferToVault": vault,
+        }
+        return self._request(
+            "POST",
+            "Destiny2/Actions/Items/PullFromPostmaster",
+            json=payload,
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+
+    def pull_item(
+        self,
+        access_token: str,
+        /,
+        item_id: int,
+        item_hash: int,
+        character_id: int,
+        member_type: helpers.IntAnd[enums.MembershipType],
+        *,
+        stack_size: int = 1,
+        vault: bool = False,
+    ) -> ResponseSig[None]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>
+        payload = {
+            "characterId": character_id,
+            "membershipType": int(member_type),
+            "itemId": item_id,
+            "itemReferenceHash": item_hash,
+            "stackSize": stack_size,
+            "transferToVault": vault,
+        }
+        return self._request(
+            "POST",
+            "Destiny2/Actions/Items/TransferItem",
+            json=payload,
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+
+    # * Not implemented yet.
 
     def fetch_item(
         self, member_id: int, item_id: int, /

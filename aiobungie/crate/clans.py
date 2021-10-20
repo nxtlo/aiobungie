@@ -134,7 +134,7 @@ class ClanConversation:
             Whether to enable chatting or not.
             If set to `True` then chatting will be enabled. Otherwise it will be disabled.
         """
-        return await self.net.request.rest.edit_optional_conversation(
+        await self.net.request.rest.edit_optional_conversation(
             access_token,
             self.group_id,
             self.id,
@@ -256,13 +256,8 @@ class ClanMember(user.UserLike):
             An optional ban length. Default is 0
         comment: `aiobungie.internal.helpers.UndefinedOr[str]`
             An optional comment to this ban. Default is `UNDEFINED`
-
-        Returns
-        -------
-        `None`
-            None
         """
-        return await self.net.request.rest.ban_clan_member(
+        await self.net.request.rest.ban_clan_member(
             access_token,
             self.group_id,
             self.id,
@@ -281,13 +276,8 @@ class ClanMember(user.UserLike):
         ----------
         access_token : `builtins.str`
             The bearer access token associated with the bungie account.
-
-        Returns
-        -------
-        `None`
-            None
         """
-        return await self.net.request.rest.unban_clan_member(
+        await self.net.request.rest.unban_clan_member(
             access_token,
             group_id=self.group_id,
             membership_id=self.id,
@@ -546,7 +536,7 @@ class Clan:
             Level to join a member at when accepting an invite, application, or joining an open clan.
             Default is `aiobungie.ClanMemberType.BEGINNER`
         """
-        return await self.net.request.rest.edit_clan_options(
+        await self.net.request.rest.edit_clan_options(
             access_token,
             group_id=self.id,
             invite_permissions_override=invite_permissions_override,
@@ -634,7 +624,7 @@ class Clan:
         is_public_topic_admin : `aiobungie.internal.helpers.NoneOr[bool]`
             ???
         """
-        return await self.net.request.rest.edit_clan(
+        await self.net.request.rest.edit_clan(
             access_token,
             group_id=self.id,
             name=name,
@@ -674,7 +664,7 @@ class Clan:
     ) -> None:
         """Add a new chat channel to a group.
 
-        ..note::
+        .. note::
             This request requires OAuth2: AdminGroups scope.
 
         Parameters
@@ -693,7 +683,7 @@ class Clan:
             If provided and set to 1, It will be `Admins` only.
             Default is `0`
         """
-        return await self.net.request.rest.add_optional_conversation(
+        await self.net.request.rest.add_optional_conversation(
             access_token, self.id, name=name, security=security
         )
 
@@ -766,7 +756,7 @@ class Clan:
     ) -> None:
         """Approve all pending users for this clan.
 
-        ..note::
+        .. note::
             This request requires OAuth2: AdminGroups scope.
 
         Parameters
@@ -779,7 +769,7 @@ class Clan:
         message: `aiobungie.internal.helpers.Undefinedor[str]`
             A message to send with the request. Defaults to `UNDEFINED`
         """
-        return await self.net.request.rest.approve_all_pending_group_users(
+        await self.net.request.rest.approve_all_pending_group_users(
             access_token, self.id, message=message
         )
 
@@ -792,7 +782,7 @@ class Clan:
     ) -> None:
         """Deny all pending users for this clan.
 
-        ..note::
+        .. note::
             This request requires OAuth2: AdminGroups scope.
 
         Parameters
@@ -805,7 +795,7 @@ class Clan:
         message: `aiobungie.internal.helpers.Undefinedor[str]`
             A message to send with the request. Defaults to `UNDEFINED`
         """
-        return await self.net.request.rest.deny_all_pending_group_users(
+        await self.net.request.rest.deny_all_pending_group_users(
             access_token, self.id, message=message
         )
 

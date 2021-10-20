@@ -970,7 +970,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
     ) -> ResponseSig[None]:
         """Accepts a friend relationship with the target user. The user must be on your incoming friend request list.
 
-        ..note::
+        .. note::
             This request requires OAuth2: BnetWrite scope.
 
         Parameters
@@ -987,7 +987,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
     ) -> ResponseSig[None]:
         """Requests a friend relationship with the target user.
 
-        ..note::
+        .. note::
             This request requires OAuth2: BnetWrite scope.
 
         Parameters
@@ -1004,7 +1004,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
     ) -> ResponseSig[None]:
         """Decline a friend request with the target user. The user must be in your incoming friend request list.
 
-        ..note::
+        .. note::
             This request requires OAuth2: BnetWrite scope.
 
         Parameters
@@ -1019,7 +1019,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
     def remove_friend(self, access_token: str, /, member_id: int) -> ResponseSig[None]:
         """Removes a friend from your friend list. The user must be in your friend list.
 
-        ..note::
+        .. note::
             This request requires OAuth2: BnetWrite scope.
 
         Parameters
@@ -1036,7 +1036,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
     ) -> ResponseSig[None]:
         """Removes a friend from your friend list requests. The user must be in your outgoing request list.
 
-        ..note :
+        .. note :
             This request requires OAuth2: BnetWrite scope.
 
         Parameters
@@ -1057,7 +1057,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
     ) -> ResponseSig[None]:
         """Apporve all pending users for the given group id.
 
-        ..note::
+        .. note::
             This request requires OAuth2: AdminGroups scope.
 
         Parameters
@@ -1084,7 +1084,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
     ) -> ResponseSig[None]:
         """Deny all pending users for the given group id.
 
-        ..note::
+        .. note::
             This request requires OAuth2: AdminGroups scope.
 
         Parameters
@@ -1112,7 +1112,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
     ) -> ResponseSig[None]:
         """Add a new chat channel to a group.
 
-        ..note::
+        .. note::
             This request requires OAuth2: AdminGroups scope.
 
         Parameters
@@ -1148,7 +1148,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
     ) -> ResponseSig[None]:
         """Edit the settings of this chat channel.
 
-        ..note::
+        .. note::
             This request requires OAuth2: AdminGroups scope.
 
         Parameters
@@ -1173,6 +1173,84 @@ class RESTInterface(traits.RESTful, abc.ABC):
         enable_chat : `bool`
             Whether to enable chatting or not.
             If set to `True` then chatting will be enabled. Otherwise it will be disabled.
+        """
+
+    @abc.abstractmethod
+    def transfer_item(
+        self,
+        access_token: str,
+        /,
+        item_id: int,
+        item_hash: int,
+        character_id: int,
+        member_type: helpers.IntAnd[enums.MembershipType],
+        *,
+        stack_size: int = 1,
+        vault: bool = False,
+    ) -> ResponseSig[None]:
+        """Transfer an item from / to your vault.
+
+        Notes
+        -----
+        * This method requires OAuth2: MoveEquipDestinyItems scope.
+        * This method requires both item id and hash.
+
+        Parameters
+        ----------
+        item_id : `int`
+            The item id you to transfer.
+        item_hash : `int`
+            The item hash.
+        character_id : `int`
+            The character id to transfer the item from/to.
+        member_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`
+            The user membership type.
+
+        Other Parameters
+        ----------------
+        stack_size : `int`
+            The item stack size.
+        valut : `bool`
+            Whether to trasnfer this item to your valut or not. Defaults to `False`.
+        """
+
+    @abc.abstractmethod
+    def pull_item(
+        self,
+        access_token: str,
+        /,
+        item_id: int,
+        item_hash: int,
+        character_id: int,
+        member_type: helpers.IntAnd[enums.MembershipType],
+        *,
+        stack_size: int = 1,
+        vault: bool = False,
+    ) -> ResponseSig[None]:
+        """pull an item from the postmaster.
+
+        Notes
+        -----
+        * This method requires OAuth2: MoveEquipDestinyItems scope.
+        * This method requires both item id and hash.
+
+        Parameters
+        ----------
+        item_id : `int`
+            The item id to pull.
+        item_hash : `int`
+            The item hash.
+        character_id : `int`
+            The character id to pull the item to.
+        member_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`
+            The user membership type.
+
+        Other Parameters
+        ----------------
+        stack_size : `int`
+            The item stack size.
+        valut : `bool`
+            Whether to pill this item to your valut or not. Defaults to `False`.
         """
 
     @abc.abstractmethod

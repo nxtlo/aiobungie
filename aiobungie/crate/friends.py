@@ -97,7 +97,7 @@ class Friend:
         `aiobungie.NotFound`
             The friend was not found in your pending requests.
         """
-        return await self.net.request.rest.accept_friend_request(access_token, self.id)
+        await self.net.request.rest.accept_friend_request(access_token, self.id)
 
     async def decline(self, access_token: str, /) -> None:
         """Decline a friend request.
@@ -112,7 +112,7 @@ class Friend:
         `aiobungie.NotFound`
             The friend was not found in your pending requests.
         """
-        return await self.net.request.rest.decline_friend_request(access_token, self.id)
+        await self.net.request.rest.decline_friend_request(access_token, self.id)
 
     async def add(self, access_token: str, /) -> None:
         """Adds a bungie member to your friend list.
@@ -127,7 +127,7 @@ class Friend:
         `aiobungie.NotFound`
             The player was not found.
         """
-        return await self.net.request.rest.send_friend_request(access_token, self.id)
+        await self.net.request.rest.send_friend_request(access_token, self.id)
 
     async def remove(self, access_token: str, /) -> None:
         """Removed an existing friend from your friend list.
@@ -142,7 +142,7 @@ class Friend:
         `aiobungie.NotFound`
             The friend was not found in your friend list.
         """
-        return await self.net.request.rest.remove_friend(access_token, self.id)
+        await self.net.request.rest.remove_friend(access_token, self.id)
 
     async def pending(self, access_token: str, /) -> FriendRequestView:
         """Returns the pending friend requests.
@@ -175,7 +175,7 @@ class Friend:
         `builtins.NoneType`
             None
         """
-        return await self.net.request.rest.remove_friend_request(access_token, self.id)
+        await self.net.request.rest.remove_friend_request(access_token, self.id)
 
     # N/A ?
     # async def fetch_platform_friends(self, access_token: str, /, platform: enums.MembershipType) -> None:

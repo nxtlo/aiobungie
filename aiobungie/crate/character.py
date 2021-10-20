@@ -75,7 +75,7 @@ class CharacterComponent(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def stats(self) -> dict[int, int]:
+    def stats(self) -> typing.Mapping[int, int]:
         """The character's stats."""
 
     @property
@@ -130,56 +130,6 @@ class CharacterComponent(abc.ABC):
         The character's title hash. This is Optional and can be None if no title was found.
         """
 
-    async def equip(self, access_token: str, item_id: int, /) -> None:
-        """Equip an item to this character.
-
-        This requires the OAuth2: MoveEquipDestinyItems scope.
-        Also You must have a valid Destiny account, and either be
-        in a social space, in orbit or offline.
-
-        Parameters
-        ----------
-        access_token : `builtins.str`
-            The bearer access token associated with the bungie account.
-        item_id : `builtins.int`
-            The item id.
-
-        Returns
-        -------
-        `builtins.None`.
-        """
-        return await self.net.request.rest.equip_item(
-            access_token,
-            item_id=item_id,
-            character_id=self.id,
-            membership_type=self.member_type,
-        )
-
-    async def equip_items(self, access_token: str, item_ids: list[int], /) -> None:
-        """Equip multiple items to this character.
-
-        This requires the OAuth2: MoveEquipDestinyItems scope.
-        Also You must have a valid Destiny account, and either be
-        in a social space, in orbit or offline.
-
-        Parameters
-        ----------
-        access_token : `builtins.str`
-            The bearer access token associated with the bungie account.
-        item_ids: `list[builtins.int]`
-            A list of item ids you want to equip for this character.
-
-        Returns
-        -------
-        `builtins.None`.
-        """
-        return await self.net.request.rest.equip_items(
-            access_token,
-            item_ids=item_ids,
-            character_id=self.id,
-            membership_type=self.member_type,
-        )
-
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
 class Character(CharacterComponent):
@@ -230,8 +180,124 @@ class Character(CharacterComponent):
     level: int = attr.field(repr=False, hash=False)
     """Character's base level."""
 
-    stats: dict[int, int] = attr.field(repr=False, hash=False)
+    stats: typing.Mapping[int, int] = attr.field(repr=False, hash=False)
     """Character stats."""
+
+    async def transfer_item(
+        self,
+        access_token: str,
+        /,
+        item_id: int,
+        item_hash: int,
+        *,
+        stack_size: int = 1,
+    ) -> None:
+        """Transfer an item from / to your vault.
+
+        Notes
+        -----
+        * This method requires OAuth2: MoveEquipDestinyItems scope.
+        * This method requires both item id and hash.
+
+        Parameters
+        ----------
+        item_id : `int`
+            The item id you to transfer.
+        item_hash : `int`
+            The item hash.
+
+        Other Parameters
+        ----------------
+        stack_size : `int`
+            The item stack size.
+        """
+        await self.net.request.rest.transfer_item(
+            access_token,
+            item_id=item_id,
+            character_id=self.id,
+            item_hash=item_hash,
+            member_type=self.member_type,
+            stack_size=stack_size,
+        )
+
+    async def pull_item(
+        self,
+        access_token: str,
+        /,
+        item_id: int,
+        item_hash: int,
+        *,
+        stack_size: int = 1,
+    ) -> None:
+        """Pull an item from the postmaster to this character.
+
+        Notes
+        -----
+        * This method requires OAuth2: MoveEquipDestinyItems scope.
+        * This method requires both item id and hash.
+
+        Parameters
+        ----------
+        item_id : `int`
+            The item id to pull.
+        item_hash : `int`
+            The item hash.
+
+        Other Parameters
+        ----------------
+        stack_size : `int`
+            The item stack size.
+        """
+        await self.net.request.rest.pull_item(
+            access_token,
+            item_id=item_id,
+            character_id=self.id,
+            item_hash=item_hash,
+            member_type=self.member_type,
+            stack_size=stack_size,
+        )
+
+    async def equip_item(self, access_token: str, item_id: int, /) -> None:
+        """Equip an item to this character.
+
+        This requires the OAuth2: MoveEquipDestinyItems scope.
+        Also You must have a valid Destiny account, and either be
+        in a social space, in orbit or offline.
+
+        Parameters
+        ----------
+        access_token : `builtins.str`
+            The bearer access token associated with the bungie account.
+        item_id : `builtins.int`
+            The item id.
+        """
+        await self.net.request.rest.equip_item(
+            access_token,
+            item_id=item_id,
+            character_id=self.id,
+            membership_type=self.member_type,
+        )
+
+    async def equip_items(self, access_token: str, item_ids: list[int], /) -> None:
+        """Equip multiple items to this character.
+
+        This requires the OAuth2: MoveEquipDestinyItems scope.
+        Also You must have a valid Destiny account, and either be
+        in a social space, in orbit or offline.
+
+        Parameters
+        ----------
+        access_token : `builtins.str`
+            The bearer access token associated with the bungie account.
+        item_ids: `list[builtins.int]`
+            A list of item ids you want to equip for this character.
+        """
+        await self.net.request.rest.equip_items(
+            access_token,
+            item_ids=item_ids,
+            character_id=self.id,
+            membership_type=self.member_type,
+        )
 
     @property
     def url(self) -> str:

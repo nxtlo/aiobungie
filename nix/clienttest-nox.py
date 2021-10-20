@@ -27,6 +27,9 @@ import os
 
 @nox.session(reuse_venv=True)
 def client_test(session: nox.Session) -> None:
+    if session.env.get("CLIENT_TOKEN") is None:
+        session.error("CLIENT_TOKEN not found in env variables.")
+
     session.install('.')
     path = pathlib.Path(".") / 'tests' / '_raw'
     if path.exists():

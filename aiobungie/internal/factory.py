@@ -25,7 +25,6 @@ from __future__ import annotations
 
 __all__ = ("Factory",)
 
-import datetime
 import logging
 import typing
 
@@ -35,20 +34,25 @@ from aiobungie.crate import application as app
 from aiobungie.crate import character
 from aiobungie.crate import clans
 from aiobungie.crate import entity
+from aiobungie.crate import friends
 from aiobungie.crate import milestones
 from aiobungie.crate import profile
 from aiobungie.crate import user
 from aiobungie.internal import enums
 from aiobungie.internal import time
-from aiobungie.internal import traits
 from aiobungie.internal.assets import Image
-from aiobungie.internal.helpers import JsonArray
-from aiobungie.internal.helpers import JsonObject
 from aiobungie.internal.helpers import NoneOr
 from aiobungie.internal.helpers import Undefined
-from aiobungie.internal.helpers import UndefinedOr
 from aiobungie.internal.helpers import Unknown
 from aiobungie.internal.helpers import just
+
+if typing.TYPE_CHECKING:
+    import datetime
+
+    from aiobungie.internal import traits
+    from aiobungie.internal.helpers import JsonArray
+    from aiobungie.internal.helpers import JsonObject
+    from aiobungie.internal.helpers import UndefinedOr
 
 _LOG: typing.Final[logging.Logger] = logging.getLogger(__name__)
 
@@ -456,6 +460,7 @@ class Factory:
                     name = Undefined
 
                 convo_obj = clans.ClanConversation(
+                    net=self._net,
                     group_id=int(map["groupId"]),
                     id=int(map["conversationId"]),
                     chat_enabled=map["chatEnabled"],
@@ -566,6 +571,7 @@ class Factory:
         total_time = time.format_played(int(payload["minutesPlayedTotal"]), suffix=True)
 
         return character.Character(
+            net=self._net,
             id=int(payload["characterId"]),
             gender=enums.Gender(payload["genderType"]),
             race=enums.Race(payload["raceType"]),
@@ -823,3 +829,49 @@ class Factory:
         return milestones.Milestone(
             about=about, status=status, tips=tips, items=items_categoris
         )
+
+    def deserialize_friend(self, payload: JsonObject, /) -> friends.Friend:
+        name = Undefined
+        if (raw_name := payload["bungieGlobalDisplayName"]) != Unknown:
+            name = raw_name
+
+        bungie_user: NoneOr[user.User] = None
+        if raw_bungie_user := payload.get("bungieNetUser"):
+            bungie_user = self.deserialize_user(raw_bungie_user)
+
+        return friends.Friend(
+            net=self._net,
+            id=int(payload["lastSeenAsMembershipId"]),
+            name=name,
+            code=payload.get("bungieGlobalDisplayNameCode"),
+            relationship=enums.Relationship(payload["relationship"]),
+            user=bungie_user,
+            online_status=enums.Presence(payload["onlineStatus"]),
+            online_title=payload["onlineTitle"],
+            type=enums.MembershipType(payload["lastSeenAsBungieMembershipType"]),
+        )
+
+    def deserialize_friends(
+        self, payload: JsonObject
+    ) -> typing.Sequence[friends.Friend]:
+        mut_seq: typing.MutableSequence[friends.Friend] = []
+        if raw_friends := payload.get("friends"):
+            for friend in raw_friends:
+                mut_seq.append(self.deserialize_friend(friend))
+        return mut_seq
+
+    def deserialize_friend_requests(
+        self, payload: JsonObject
+    ) -> friends.FriendRequestView:
+        incoming: typing.MutableSequence[friends.Friend] = []
+        outgoing: typing.MutableSequence[friends.Friend] = []
+
+        if raw_incoming_requests := payload.get("incmoingRequests"):
+            for incoming_request in raw_incoming_requests:
+                incoming.append(self.deserialize_friend(incoming_request))
+
+        if raw_outgoing_requests := payload.get("outgoingRequests"):
+            for incoming_request in raw_outgoing_requests:
+                outgoing.append(self.deserialize_friend(incoming_request))
+
+        return friends.FriendRequestView(incoming=incoming, outgoing=outgoing)

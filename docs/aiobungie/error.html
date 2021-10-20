@@ -117,6 +117,39 @@
                 </ul>
 
             </li>
+            <li>
+                    <a class="class" href="#RateLimitedError">RateLimitedError</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#RateLimitedError.__init__">RateLimitedError</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#RateLimitedError.headers">headers</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#RateLimitedError.retry_after">retry_after</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#RateLimitedError.url">url</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#InternalServerError">InternalServerError</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#InternalServerError.__init__">InternalServerError</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#InternalServerError.message">message</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#InternalServerError.long_message">long_message</a>
+                        </li>
+                </ul>
+
+            </li>
     </ul>
 
 
@@ -178,11 +211,16 @@
     <span class="s2">&quot;Forbidden&quot;</span><span class="p">,</span>
     <span class="s2">&quot;Unauthorized&quot;</span><span class="p">,</span>
     <span class="s2">&quot;ResponseError&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;RateLimitedError&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;InternalServerError&quot;</span><span class="p">,</span>
 <span class="p">]</span>
 
 <span class="kn">import</span> <span class="nn">typing</span>
 
 <span class="kn">import</span> <span class="nn">attr</span>
+
+<span class="k">if</span> <span class="n">typing</span><span class="o">.</span><span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">multidict</span>
 
 
 <span class="k">class</span> <span class="nc">AiobungieError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
@@ -193,8 +231,25 @@
 <span class="k">class</span> <span class="nc">HTTPException</span><span class="p">(</span><span class="n">AiobungieError</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Exception for handling `aiobungie.rest.RESTClient` requests errors.&quot;&quot;&quot;</span>
 
-    <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">()</span>
-    <span class="n">long_message</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">long_message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+
+<span class="nd">@attr</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">auto_exc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">weakref_slot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">RateLimitedError</span><span class="p">(</span><span class="n">HTTPException</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raiased when being hit with ratelimits.&quot;&quot;&quot;</span>
+
+    <span class="n">headers</span><span class="p">:</span> <span class="n">multidict</span><span class="o">.</span><span class="n">CIMultiDictProxy</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">retry_after</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+
+<span class="nd">@attr</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">auto_exc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">weakref_slot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">InternalServerError</span><span class="p">(</span><span class="n">HTTPException</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raised for other 5xx errors.&quot;&quot;&quot;</span>
+
+    <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">long_message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">NotFound</span><span class="p">(</span><span class="n">AiobungieError</span><span class="p">):</span>
@@ -499,8 +554,8 @@
 <span class="k">class</span> <span class="nc">HTTPException</span><span class="p">(</span><span class="n">AiobungieError</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Exception for handling `aiobungie.rest.RESTClient` requests errors.&quot;&quot;&quot;</span>
 
-    <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">()</span>
-    <span class="n">long_message</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">long_message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -513,12 +568,12 @@
                                         <div class="attr function"><a class="headerlink" href="#HTTPException.__init__">#&nbsp;&nbsp</a>
 
         
-            <span class="name">HTTPException</span><span class="signature">(message: str, long_message: Optional[str] = None)</span>
+            <span class="name">HTTPException</span><span class="signature">(message: str = &#39;&#39;, long_message: str = &#39;&#39;)</span>
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">long_message</span><span class="o">=</span><span class="n">attr_dict</span><span class="p">[</span><span class="s1">&#39;long_message&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">default</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">attr_dict</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">default</span><span class="p">,</span> <span class="n">long_message</span><span class="o">=</span><span class="n">attr_dict</span><span class="p">[</span><span class="s1">&#39;long_message&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">default</span><span class="p">):</span>
     <span class="n">_setattr</span> <span class="o">=</span> <span class="n">_cached_setattr</span><span class="o">.</span><span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span>
     <span class="n">_setattr</span><span class="p">(</span><span class="s1">&#39;message&#39;</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
     <span class="n">_setattr</span><span class="p">(</span><span class="s1">&#39;long_message&#39;</span><span class="p">,</span> <span class="n">long_message</span><span class="p">)</span>
@@ -544,7 +599,7 @@
                             <div id="HTTPException.long_message" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#HTTPException.long_message">#&nbsp;&nbsp</a>
 
-        <span class="name">long_message</span><span class="annotation">: Optional[str]</span>
+        <span class="name">long_message</span><span class="annotation">: str</span>
     </div>
 
     
@@ -797,6 +852,187 @@ The requested membership type.</p>
             <div><dt>builtins.BaseException</dt>
                                 <dd id="ResponseError.with_traceback" class="function">with_traceback</dd>
                 <dd id="ResponseError.args" class="variable">args</dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="RateLimitedError">
+                                <div class="attr class">
+        <a class="headerlink" href="#RateLimitedError">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@attr.define(auto_exc=True, repr=False, weakref_slot=False, kw_only=True)</div>
+
+        <span class="def">class</span>
+        <span class="name">RateLimitedError</span><wbr>(<span class="base"><a href="#HTTPException">HTTPException</a></span>):
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="nd">@attr</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">auto_exc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">weakref_slot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">RateLimitedError</span><span class="p">(</span><span class="n">HTTPException</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raiased when being hit with ratelimits.&quot;&quot;&quot;</span>
+
+    <span class="n">headers</span><span class="p">:</span> <span class="n">multidict</span><span class="o">.</span><span class="n">CIMultiDictProxy</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">retry_after</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Raiased when being hit with ratelimits.</p>
+</div>
+
+
+                            <div id="RateLimitedError.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RateLimitedError.__init__">#&nbsp;&nbsp</a>
+
+        
+            <span class="name">RateLimitedError</span><span class="signature">(
+    *,
+    message: str = &#39;&#39;,
+    long_message: str = &#39;&#39;,
+    headers: multidict._multidict.CIMultiDictProxy = None,
+    retry_after: float = 0.0,
+    url: str = &#39;&#39;
+)</span>
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">attr_dict</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">default</span><span class="p">,</span> <span class="n">long_message</span><span class="o">=</span><span class="n">attr_dict</span><span class="p">[</span><span class="s1">&#39;long_message&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">default</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">attr_dict</span><span class="p">[</span><span class="s1">&#39;headers&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">default</span><span class="p">,</span> <span class="n">retry_after</span><span class="o">=</span><span class="n">attr_dict</span><span class="p">[</span><span class="s1">&#39;retry_after&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">default</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="n">attr_dict</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">default</span><span class="p">):</span>
+    <span class="n">_setattr</span> <span class="o">=</span> <span class="n">_cached_setattr</span><span class="o">.</span><span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span>
+    <span class="n">_setattr</span><span class="p">(</span><span class="s1">&#39;message&#39;</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+    <span class="n">_setattr</span><span class="p">(</span><span class="s1">&#39;long_message&#39;</span><span class="p">,</span> <span class="n">long_message</span><span class="p">)</span>
+    <span class="n">_setattr</span><span class="p">(</span><span class="s1">&#39;headers&#39;</span><span class="p">,</span> <span class="n">headers</span><span class="p">)</span>
+    <span class="n">_setattr</span><span class="p">(</span><span class="s1">&#39;retry_after&#39;</span><span class="p">,</span> <span class="n">retry_after</span><span class="p">)</span>
+    <span class="n">_setattr</span><span class="p">(</span><span class="s1">&#39;url&#39;</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
+    <span class="ne">BaseException</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">long_message</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">retry_after</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Method generated by attrs for class RateLimitedError.</p>
+</div>
+
+
+                            </div>
+                            <div id="RateLimitedError.headers" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#RateLimitedError.headers">#&nbsp;&nbsp</a>
+
+        <span class="name">headers</span><span class="annotation">: multidict._multidict.CIMultiDictProxy[str]</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="RateLimitedError.retry_after" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#RateLimitedError.retry_after">#&nbsp;&nbsp</a>
+
+        <span class="name">retry_after</span><span class="annotation">: float</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="RateLimitedError.url" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#RateLimitedError.url">#&nbsp;&nbsp</a>
+
+        <span class="name">url</span><span class="annotation">: str</span>
+    </div>
+
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="#HTTPException">HTTPException</a></dt>
+                                <dd id="RateLimitedError.message" class="variable"><a href="#HTTPException.message">message</a></dd>
+                <dd id="RateLimitedError.long_message" class="variable"><a href="#HTTPException.long_message">long_message</a></dd>
+
+            </div>
+            <div><dt>builtins.BaseException</dt>
+                                <dd id="RateLimitedError.with_traceback" class="function">with_traceback</dd>
+                <dd id="RateLimitedError.args" class="variable">args</dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="InternalServerError">
+                                <div class="attr class">
+        <a class="headerlink" href="#InternalServerError">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@attr.define(auto_exc=True, repr=False, weakref_slot=False)</div>
+
+        <span class="def">class</span>
+        <span class="name">InternalServerError</span><wbr>(<span class="base"><a href="#HTTPException">HTTPException</a></span>):
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="nd">@attr</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">auto_exc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">weakref_slot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">InternalServerError</span><span class="p">(</span><span class="n">HTTPException</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raised for other 5xx errors.&quot;&quot;&quot;</span>
+
+    <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">long_message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Raised for other 5xx errors.</p>
+</div>
+
+
+                            <div id="InternalServerError.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#InternalServerError.__init__">#&nbsp;&nbsp</a>
+
+        
+            <span class="name">InternalServerError</span><span class="signature">(message: str = &#39;&#39;, long_message: str = &#39;&#39;)</span>
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">attr_dict</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">default</span><span class="p">,</span> <span class="n">long_message</span><span class="o">=</span><span class="n">attr_dict</span><span class="p">[</span><span class="s1">&#39;long_message&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">default</span><span class="p">):</span>
+    <span class="n">_setattr</span> <span class="o">=</span> <span class="n">_cached_setattr</span><span class="o">.</span><span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span>
+    <span class="n">_setattr</span><span class="p">(</span><span class="s1">&#39;message&#39;</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+    <span class="n">_setattr</span><span class="p">(</span><span class="s1">&#39;long_message&#39;</span><span class="p">,</span> <span class="n">long_message</span><span class="p">)</span>
+    <span class="ne">BaseException</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">long_message</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Method generated by attrs for class InternalServerError.</p>
+</div>
+
+
+                            </div>
+                            <div id="InternalServerError.message" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#InternalServerError.message">#&nbsp;&nbsp</a>
+
+        <span class="name">message</span><span class="annotation">: str</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="InternalServerError.long_message" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#InternalServerError.long_message">#&nbsp;&nbsp</a>
+
+        <span class="name">long_message</span><span class="annotation">: str</span>
+    </div>
+
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt>builtins.BaseException</dt>
+                                <dd id="InternalServerError.with_traceback" class="function">with_traceback</dd>
+                <dd id="InternalServerError.args" class="variable">args</dd>
 
             </div>
                                 </dl>

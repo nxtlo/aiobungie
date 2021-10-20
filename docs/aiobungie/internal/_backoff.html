@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="pdoc 8.0.0" />
-    <title>aiobungie.internal.traits API documentation</title>
+    <title>aiobungie.internal._backoff API documentation</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2264%22%20height%3D%2264%22%20viewBox%3D%2244.5%202.5%2015%2015%22%3E%3Cpath%20d%3D%22M49.351%2021.041c-.233-.721-.546-2.408-.772-4.076-.042-.09-.067-.187-.046-.288-.166-1.347-.277-2.625-.241-3.351-1.378-1.008-2.271-2.586-2.271-4.362%200-.976.272-1.935.788-2.774.057-.094.122-.18.184-.268-.033-.167-.052-.339-.052-.516%200-1.477%201.202-2.679%202.679-2.679.791%200%201.496.352%201.987.9a6.3%206.3%200%200%201%201.001.029c.492-.564%201.207-.929%202.012-.929%201.477%200%202.679%201.202%202.679%202.679a2.65%202.65%200%200%201-.269%201.148c.383.747.595%201.572.595%202.41%200%202.311-1.507%204.29-3.635%205.107.037.699.147%202.27.423%203.294l.137.461c.156%202.136-4.612%205.166-5.199%203.215zm.127-4.919a4.78%204.78%200%200%200%20.775-.584c-.172-.115-.505-.254-.88-.378zm.331%202.302l.828-.502c-.202-.143-.576-.328-.984-.49zm.45%202.157l.701-.403c-.214-.115-.536-.249-.891-.376l.19.779zM49.13%204.141c0%20.152.123.276.276.276s.275-.124.275-.276-.123-.276-.276-.276-.275.124-.275.276zm.735-.389a1.15%201.15%200%200%201%20.314.783%201.16%201.16%200%200%201-1.162%201.162c-.457%200-.842-.27-1.032-.653-.026.117-.042.238-.042.362a1.68%201.68%200%200%200%201.679%201.679%201.68%201.68%200%200%200%201.679-1.679c0-.843-.626-1.535-1.436-1.654zm3.076%201.654a1.68%201.68%200%200%200%201.679%201.679%201.68%201.68%200%200%200%201.679-1.679c0-.037-.009-.072-.011-.109-.21.3-.541.508-.935.508a1.16%201.16%200%200%201-1.162-1.162%201.14%201.14%200%200%201%20.474-.912c-.015%200-.03-.005-.045-.005-.926.001-1.679.754-1.679%201.68zm1.861-1.265c0%20.152.123.276.276.276s.275-.124.275-.276-.123-.276-.276-.276-.275.124-.275.276zm1.823%204.823c0-.52-.103-1.035-.288-1.52-.466.394-1.06.64-1.717.64-1.144%200-2.116-.725-2.499-1.738-.383%201.012-1.355%201.738-2.499%201.738-.867%200-1.631-.421-2.121-1.062-.307.605-.478%201.267-.478%201.942%200%202.486%202.153%204.51%204.801%204.51s4.801-2.023%204.801-4.51zm-3.032%209.156l-.146-.492c-.276-1.02-.395-2.457-.444-3.268a6.11%206.11%200%200%201-1.18.115%206.01%206.01%200%200%201-2.536-.562l.006.175c.802.215%201.848.612%202.021%201.25.079.295-.021.601-.274.837l-.598.501c.667.304%201.243.698%201.311%201.179.02.144.022.507-.393.787l-.564.365c1.285.521%201.361.96%201.381%201.126.018.142.011.496-.427.746l-.854.489c.064-1.19%201.985-2.585%202.697-3.248zM49.34%209.925c0-.667%201-.667%201%200%200%20.653.818%201.205%201.787%201.205s1.787-.552%201.787-1.205c0-.667%201-.667%201%200%200%201.216-1.25%202.205-2.787%202.205s-2.787-.989-2.787-2.205zm-.887-7.633c-.093.077-.205.114-.317.114a.5.5%200%200%201-.318-.886L49.183.397a.5.5%200%200%201%20.703.068.5.5%200%200%201-.069.703zm7.661-.065c-.086%200-.173-.022-.253-.068l-1.523-.893c-.575-.337-.069-1.2.506-.863l1.523.892a.5.5%200%200%201%20.179.685c-.094.158-.261.247-.432.247z%22%20fill%3D%22%233bb300%22/%3E%3C/svg%3E"/>
 
 
@@ -31,55 +31,25 @@
                     <h2>API Documentation</h2>
                         <ul class="memberlist">
             <li>
-                    <a class="class" href="#ClientBase">ClientBase</a>
+                    <a class="class" href="#ExponentialBackOff">ExponentialBackOff</a>
                             <ul class="memberlist">
                         <li>
-                                <a class="function" href="#ClientBase.__init__">ClientBase</a>
+                                <a class="function" href="#ExponentialBackOff.__init__">ExponentialBackOff</a>
                         </li>
                         <li>
-                                <a class="function" href="#ClientBase.run">run</a>
+                                <a class="variable" href="#ExponentialBackOff.base">base</a>
                         </li>
                         <li>
-                                <a class="variable" href="#ClientBase.rest">rest</a>
-                        </li>
-                </ul>
-
-            </li>
-            <li>
-                    <a class="class" href="#Netrunner">Netrunner</a>
-                            <ul class="memberlist">
-                        <li>
-                                <a class="function" href="#Netrunner.__init__">Netrunner</a>
+                                <a class="variable" href="#ExponentialBackOff.increment">increment</a>
                         </li>
                         <li>
-                                <a class="variable" href="#Netrunner.request">request</a>
-                        </li>
-                </ul>
-
-            </li>
-            <li>
-                    <a class="class" href="#Serializable">Serializable</a>
-                            <ul class="memberlist">
-                        <li>
-                                <a class="function" href="#Serializable.__init__">Serializable</a>
+                                <a class="variable" href="#ExponentialBackOff.maximum">maximum</a>
                         </li>
                         <li>
-                                <a class="variable" href="#Serializable.serialize">serialize</a>
-                        </li>
-                </ul>
-
-            </li>
-            <li>
-                    <a class="class" href="#RESTful">RESTful</a>
-                            <ul class="memberlist">
-                        <li>
-                                <a class="function" href="#RESTful.__init__">RESTful</a>
+                                <a class="variable" href="#ExponentialBackOff.jitter_multiplier">jitter_multiplier</a>
                         </li>
                         <li>
-                                <a class="function" href="#RESTful.close">close</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#RESTful.static_request">static_request</a>
+                                <a class="function" href="#ExponentialBackOff.reset">reset</a>
                         </li>
                 </ul>
 
@@ -98,16 +68,17 @@
     <main class="pdoc">
             <section>
                     <h1 class="modulename">
-<a href="./../../aiobungie.html">aiobungie</a><wbr>.<a href="./../internal.html">internal</a><wbr>.traits    </h1>
+<a href="./../../aiobungie.html">aiobungie</a><wbr>.<a href="./../internal.html">internal</a><wbr>._backoff    </h1>
 
-                        <div class="docstring"><p>Module for all client interfaces.</p>
+                        <div class="docstring"><p>Basic lazy ratelimit systems for asyncio.</p>
 </div>
 
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="c1"># MIT License</span>
-<span class="c1">#</span>
-<span class="c1"># Copyright (c) 2020 - Present nxtlo</span>
+            <div class="codehilite"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># cython: language_level=3</span>
+<span class="c1"># Copyright (c) 2020 Nekokatt</span>
+<span class="c1"># Copyright (c) 2021 davfsa</span>
 <span class="c1">#</span>
 <span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
 <span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
@@ -127,175 +98,328 @@
 <span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
 <span class="c1"># SOFTWARE.</span>
 
-<span class="sd">&quot;&quot;&quot;Module for all client interfaces.&quot;&quot;&quot;</span>
+<span class="sd">&quot;&quot;&quot;Basic lazy ratelimit systems for asyncio.&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;ClientBase&quot;</span><span class="p">,</span> <span class="s2">&quot;Netrunner&quot;</span><span class="p">,</span> <span class="s2">&quot;Serializable&quot;</span><span class="p">,</span> <span class="s2">&quot;RESTful&quot;</span><span class="p">)</span>
+<span class="n">__all__</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;ExponentialBackOff&quot;</span><span class="p">,)</span>
 
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">import</span> <span class="nn">typing</span>
 
-<span class="k">if</span> <span class="n">typing</span><span class="o">.</span><span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">aiobungie</span> <span class="kn">import</span> <span class="n">client</span> <span class="k">as</span> <span class="n">base_client</span>
-    <span class="kn">from</span> <span class="nn">aiobungie</span> <span class="kn">import</span> <span class="n">interfaces</span>
-    <span class="kn">from</span> <span class="nn">aiobungie.internal</span> <span class="kn">import</span> <span class="n">factory</span>
 
-
-<span class="nd">@typing</span><span class="o">.</span><span class="n">runtime_checkable</span>
-<span class="k">class</span> <span class="nc">Netrunner</span><span class="p">(</span><span class="n">typing</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A protocol represents The base client.</span>
-
-<span class="sd">    That&#39;s only used for making external requests.</span>
+<span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
+<span class="k">class</span> <span class="nc">ExponentialBackOff</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Implementation of an asyncio-compatible exponential back-off algorithm with random jitter.</span>
+<span class="sd">    .. math::</span>
+<span class="sd">        t_{backoff} = b^{i} +  m \cdot \mathrm{rand}()</span>
+<span class="sd">    Such that \(t_{backoff}\) is the backoff time, \(b\) is the base,</span>
+<span class="sd">    \(i\) is the increment that increases by 1 for each invocation, and</span>
+<span class="sd">    \(m\) is the jitter multiplier. \(\mathrm{rand}()\) returns a value in</span>
+<span class="sd">    the range \([0,1]\).</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    base : builtins.float</span>
+<span class="sd">        The base to use. Defaults to `2.0`.</span>
+<span class="sd">    maximum : builtins.float</span>
+<span class="sd">        The max value the backoff can be in a single iteration. Anything above</span>
+<span class="sd">        this will be capped to this base value plus random jitter.</span>
+<span class="sd">    jitter_multiplier : builtins.float</span>
+<span class="sd">        The multiplier for the random jitter. Defaults to `1.0`.</span>
+<span class="sd">        Set to `0` to disable jitter.</span>
+<span class="sd">    initial_increment : builtins.int</span>
+<span class="sd">        The initial increment to start at. Defaults to `0`.</span>
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If an `builtins.int` that&#39;s too big to be represented as a</span>
+<span class="sd">        `builtins.float` or a non-finite value is passed in place of a field</span>
+<span class="sd">        that&#39;s annotated as `builtins.float`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="vm">__slots__</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="vm">__slots__</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;base&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;increment&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;maximum&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;jitter_multiplier&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">request</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">base_client</span><span class="o">.</span><span class="n">Client</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Returns a client network state for making external requests.&quot;&quot;&quot;</span>
+    <span class="n">base</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Final</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;The base to use. Defaults to 2.0.&quot;&quot;&quot;</span>
 
+    <span class="n">increment</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="sd">&quot;&quot;&quot;The current increment.&quot;&quot;&quot;</span>
 
-<span class="nd">@typing</span><span class="o">.</span><span class="n">runtime_checkable</span>
-<span class="k">class</span> <span class="nc">Serializable</span><span class="p">(</span><span class="n">typing</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A protocol that represents serialized factory objects.&quot;&quot;&quot;</span>
+    <span class="n">maximum</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="sd">&quot;&quot;&quot;This is the max value the backoff can be in a single iteration before an</span>
+<span class="sd">    `asyncio.TimeoutError` is raised.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="vm">__slots__</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="n">jitter_multiplier</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Final</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;The multiplier for the random jitter.</span>
+<span class="sd">    This defaults to `1.0`. Set to `0.0` to disable jitter.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">factory</span><span class="o">.</span><span class="n">Factory</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Returns the entity factory for the client.&quot;&quot;&quot;</span>
-
-
-<span class="nd">@typing</span><span class="o">.</span><span class="n">runtime_checkable</span>
-<span class="k">class</span> <span class="nc">RESTful</span><span class="p">(</span><span class="n">typing</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A protocol for a REST only object.&quot;&quot;&quot;</span>
-
-    <span class="vm">__slots__</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
-
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Close the rest client.&quot;&quot;&quot;</span>
-
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">static_request</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Raw http request given a valid bungie endpoint.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        method : `builtins.str`</span>
-<span class="sd">            The request method, This may be `GET`, `POST`, `PUT`, etc.</span>
-<span class="sd">        path: `builtins.str`</span>
-<span class="sd">            The bungie endpoint or path.</span>
-<span class="sd">            A path must look something like this</span>
-<span class="sd">            `Destiny2/3/Profile/46111239123/...`</span>
-<span class="sd">        **kwargs: `typing.Any`</span>
-<span class="sd">            Any other key words you&#39;d like to pass through.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        `typing.Any`</span>
-<span class="sd">            Any object.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-
-<span class="nd">@typing</span><span class="o">.</span><span class="n">runtime_checkable</span>
-<span class="k">class</span> <span class="nc">ClientBase</span><span class="p">(</span><span class="n">Netrunner</span><span class="p">,</span> <span class="n">Serializable</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A Client based, serializble and netrunner protocol.&quot;&quot;&quot;</span>
-
-    <span class="vm">__slots__</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">future</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Coroutine</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">base</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span>
+        <span class="n">maximum</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">64.0</span><span class="p">,</span>
+        <span class="n">jitter_multiplier</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">initial_increment</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Runs a Coro function until its complete.</span>
-<span class="sd">        This is equivalent to asyncio.get_event_loop().run_until_complete(...)</span>
+        <span class="c1"># https://mypy.readthedocs.io/en/stable/duck_type_compatibility.html</span>
+        <span class="c1"># Mypy makes the assumption that ints will always be compatible with floats, this isn&#39;t the case and could lead</span>
+        <span class="c1"># to some edge cases that we&#39;d be better off catching earlier on by ensuring these values are actually valid</span>
+        <span class="c1"># (most notably floats have a system based maximum size whereas integers theoretically don&#39;t with implicit</span>
+        <span class="c1"># conversion to a float raising an error if an integer that&#39;s too big to be a float is handled).</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">base</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">base</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">maximum</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">maximum</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">jitter_multiplier</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">jitter_multiplier</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">OverflowError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;int too large to be represented as a float&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        future: `typing.Coroutine[typing.Any, typing.Any, typing.Any]`</span>
-<span class="sd">            Your coro function.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;base must be a finite number&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
 
-<span class="sd">        Example</span>
-<span class="sd">        -------</span>
-<span class="sd">        ```py</span>
-<span class="sd">        async def main() -&gt; None:</span>
-<span class="sd">            player = await client.fetch_player(&quot;Fate&quot;)</span>
-<span class="sd">            print(player.name)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">maximum</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;maximum must be a finite number&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
 
-<span class="sd">        client.run(main())</span>
-<span class="sd">        ```</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">jitter_multiplier</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;jitter_multiplier must be a finite number&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">rest</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">interfaces</span><span class="o">.</span><span class="n">RESTInterface</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Returns the REST client for the base client.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">increment</span> <span class="o">=</span> <span class="n">initial_increment</span>
+
+    <span class="k">def</span> <span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the next back off to sleep by.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">increment</span>
+
+            <span class="k">if</span> <span class="n">value</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">maximum</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">maximum</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># This should only be incremented after we verify we haven&#39;t hit the maximum value.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">increment</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">except</span> <span class="ne">OverflowError</span><span class="p">:</span>
+            <span class="c1"># If this happened then we can be sure that we&#39;ve passed maximum.</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">maximum</span>
+
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">value</span> <span class="o">+</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">jitter_multiplier</span>
+        <span class="p">)</span>  <span class="c1"># nosec  # noqa S311 rng for cryptography</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ExponentialBackOff</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return this object, as it is an iterator.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Reset the exponential back-off.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">increment</span> <span class="o">=</span> <span class="mi">0</span>
 </pre></div>
 
         </details>
 
             </section>
-                <section id="ClientBase">
+                <section id="ExponentialBackOff">
                                 <div class="attr class">
-        <a class="headerlink" href="#ClientBase">#&nbsp;&nbsp</a>
+        <a class="headerlink" href="#ExponentialBackOff">#&nbsp;&nbsp</a>
 
-                <div class="decorator">@typing.runtime_checkable</div>
+                <div class="decorator">@typing.final</div>
 
         <span class="def">class</span>
-        <span class="name">ClientBase</span><wbr>(<span class="base"><a href="#Netrunner">Netrunner</a></span>, <span class="base"><a href="#Serializable">Serializable</a></span>, <span class="base">typing.Protocol</span>):
+        <span class="name">ExponentialBackOff</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">runtime_checkable</span>
-<span class="k">class</span> <span class="nc">ClientBase</span><span class="p">(</span><span class="n">Netrunner</span><span class="p">,</span> <span class="n">Serializable</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A Client based, serializble and netrunner protocol.&quot;&quot;&quot;</span>
+            <div class="codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
+<span class="k">class</span> <span class="nc">ExponentialBackOff</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Implementation of an asyncio-compatible exponential back-off algorithm with random jitter.</span>
+<span class="sd">    .. math::</span>
+<span class="sd">        t_{backoff} = b^{i} +  m \cdot \mathrm{rand}()</span>
+<span class="sd">    Such that \(t_{backoff}\) is the backoff time, \(b\) is the base,</span>
+<span class="sd">    \(i\) is the increment that increases by 1 for each invocation, and</span>
+<span class="sd">    \(m\) is the jitter multiplier. \(\mathrm{rand}()\) returns a value in</span>
+<span class="sd">    the range \([0,1]\).</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    base : builtins.float</span>
+<span class="sd">        The base to use. Defaults to `2.0`.</span>
+<span class="sd">    maximum : builtins.float</span>
+<span class="sd">        The max value the backoff can be in a single iteration. Anything above</span>
+<span class="sd">        this will be capped to this base value plus random jitter.</span>
+<span class="sd">    jitter_multiplier : builtins.float</span>
+<span class="sd">        The multiplier for the random jitter. Defaults to `1.0`.</span>
+<span class="sd">        Set to `0` to disable jitter.</span>
+<span class="sd">    initial_increment : builtins.int</span>
+<span class="sd">        The initial increment to start at. Defaults to `0`.</span>
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If an `builtins.int` that&#39;s too big to be represented as a</span>
+<span class="sd">        `builtins.float` or a non-finite value is passed in place of a field</span>
+<span class="sd">        that&#39;s annotated as `builtins.float`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="vm">__slots__</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="vm">__slots__</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;base&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;increment&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;maximum&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;jitter_multiplier&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">future</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Coroutine</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">base</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Final</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;The base to use. Defaults to 2.0.&quot;&quot;&quot;</span>
+
+    <span class="n">increment</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="sd">&quot;&quot;&quot;The current increment.&quot;&quot;&quot;</span>
+
+    <span class="n">maximum</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="sd">&quot;&quot;&quot;This is the max value the backoff can be in a single iteration before an</span>
+<span class="sd">    `asyncio.TimeoutError` is raised.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">jitter_multiplier</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Final</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;The multiplier for the random jitter.</span>
+<span class="sd">    This defaults to `1.0`. Set to `0.0` to disable jitter.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">base</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span>
+        <span class="n">maximum</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">64.0</span><span class="p">,</span>
+        <span class="n">jitter_multiplier</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">initial_increment</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Runs a Coro function until its complete.</span>
-<span class="sd">        This is equivalent to asyncio.get_event_loop().run_until_complete(...)</span>
+        <span class="c1"># https://mypy.readthedocs.io/en/stable/duck_type_compatibility.html</span>
+        <span class="c1"># Mypy makes the assumption that ints will always be compatible with floats, this isn&#39;t the case and could lead</span>
+        <span class="c1"># to some edge cases that we&#39;d be better off catching earlier on by ensuring these values are actually valid</span>
+        <span class="c1"># (most notably floats have a system based maximum size whereas integers theoretically don&#39;t with implicit</span>
+        <span class="c1"># conversion to a float raising an error if an integer that&#39;s too big to be a float is handled).</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">base</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">base</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">maximum</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">maximum</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">jitter_multiplier</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">jitter_multiplier</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">OverflowError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;int too large to be represented as a float&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        future: `typing.Coroutine[typing.Any, typing.Any, typing.Any]`</span>
-<span class="sd">            Your coro function.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;base must be a finite number&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
 
-<span class="sd">        Example</span>
-<span class="sd">        -------</span>
-<span class="sd">        ```py</span>
-<span class="sd">        async def main() -&gt; None:</span>
-<span class="sd">            player = await client.fetch_player(&quot;Fate&quot;)</span>
-<span class="sd">            print(player.name)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">maximum</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;maximum must be a finite number&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
 
-<span class="sd">        client.run(main())</span>
-<span class="sd">        ```</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">jitter_multiplier</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;jitter_multiplier must be a finite number&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">rest</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">interfaces</span><span class="o">.</span><span class="n">RESTInterface</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Returns the REST client for the base client.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">increment</span> <span class="o">=</span> <span class="n">initial_increment</span>
+
+    <span class="k">def</span> <span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the next back off to sleep by.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">increment</span>
+
+            <span class="k">if</span> <span class="n">value</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">maximum</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">maximum</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># This should only be incremented after we verify we haven&#39;t hit the maximum value.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">increment</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">except</span> <span class="ne">OverflowError</span><span class="p">:</span>
+            <span class="c1"># If this happened then we can be sure that we&#39;ve passed maximum.</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">maximum</span>
+
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">value</span> <span class="o">+</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">jitter_multiplier</span>
+        <span class="p">)</span>  <span class="c1"># nosec  # noqa S311 rng for cryptography</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ExponentialBackOff</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return this object, as it is an iterator.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Reset the exponential back-off.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">increment</span> <span class="o">=</span> <span class="mi">0</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>A Client based, serializble and netrunner protocol.</p>
+            <div class="docstring"><p>Implementation of an asyncio-compatible exponential back-off algorithm with random jitter.
+$$t_{backoff} = b^{i} +  m \cdot \mathrm{rand}()$$</p>
+
+<p>Such that (t_{backoff}) is the backoff time, (b) is the base,
+(i) is the increment that increases by 1 for each invocation, and
+(m) is the jitter multiplier. (\mathrm{rand}()) returns a value in
+the range ([0,1]).</p>
+
+<h6 id="parameters">Parameters</h6>
+
+<ul>
+<li><strong>base</strong> (builtins.float):
+The base to use. Defaults to <code>2.0</code>.</li>
+<li><strong>maximum</strong> (builtins.float):
+The max value the backoff can be in a single iteration. Anything above
+this will be capped to this base value plus random jitter.</li>
+<li><strong>jitter_multiplier</strong> (builtins.float):
+The multiplier for the random jitter. Defaults to <code>1.0</code>.
+Set to <code>0</code> to disable jitter.</li>
+<li><strong>initial_increment</strong> (builtins.int):
+The initial increment to start at. Defaults to <code>0</code>.</li>
+</ul>
+
+<h6 id="raises">Raises</h6>
+
+<ul>
+<li><strong>ValueError</strong>: If an <code>builtins.int</code> that's too big to be represented as a
+<code>builtins.float</code> or a non-finite value is passed in place of a field
+that's annotated as <code>builtins.float</code>.</li>
+</ul>
 </div>
 
 
-                            <div id="ClientBase.__init__" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#ClientBase.__init__">#&nbsp;&nbsp</a>
+                            <div id="ExponentialBackOff.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#ExponentialBackOff.__init__">#&nbsp;&nbsp</a>
 
         
-            <span class="name">ClientBase</span><span class="signature">(*args, **kwargs)</span>
+            <span class="name">ExponentialBackOff</span><span class="signature">(
+    base: float = 2.0,
+    maximum: float = 64.0,
+    jitter_multiplier: float = 1.0,
+    initial_increment: int = 0
+)</span>
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">_no_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Protocols cannot be instantiated&#39;</span><span class="p">)</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">base</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span>
+        <span class="n">maximum</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">64.0</span><span class="p">,</span>
+        <span class="n">jitter_multiplier</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">initial_increment</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># https://mypy.readthedocs.io/en/stable/duck_type_compatibility.html</span>
+        <span class="c1"># Mypy makes the assumption that ints will always be compatible with floats, this isn&#39;t the case and could lead</span>
+        <span class="c1"># to some edge cases that we&#39;d be better off catching earlier on by ensuring these values are actually valid</span>
+        <span class="c1"># (most notably floats have a system based maximum size whereas integers theoretically don&#39;t with implicit</span>
+        <span class="c1"># conversion to a float raising an error if an integer that&#39;s too big to be a float is handled).</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">base</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">base</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">maximum</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">maximum</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">jitter_multiplier</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">jitter_multiplier</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">OverflowError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;int too large to be represented as a float&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;base must be a finite number&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">maximum</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;maximum must be a finite number&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">jitter_multiplier</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;jitter_multiplier must be a finite number&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">increment</span> <span class="o">=</span> <span class="n">initial_increment</span>
 </pre></div>
 
         </details>
@@ -303,359 +427,70 @@
     
 
                             </div>
-                            <div id="ClientBase.run" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#ClientBase.run">#&nbsp;&nbsp</a>
+                            <div id="ExponentialBackOff.base" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#ExponentialBackOff.base">#&nbsp;&nbsp</a>
+
+        <span class="name">base</span><span class="annotation">: Final[float]</span><span class="default_value"> = &lt;member &#39;base&#39; of &#39;ExponentialBackOff&#39; objects&gt;</span>
+    </div>
+
+            <div class="docstring"><p>The base to use. Defaults to 2.0.</p>
+</div>
+
+
+                            </div>
+                            <div id="ExponentialBackOff.increment" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#ExponentialBackOff.increment">#&nbsp;&nbsp</a>
+
+        <span class="name">increment</span><span class="annotation">: int</span><span class="default_value"> = &lt;member &#39;increment&#39; of &#39;ExponentialBackOff&#39; objects&gt;</span>
+    </div>
+
+            <div class="docstring"><p>The current increment.</p>
+</div>
+
+
+                            </div>
+                            <div id="ExponentialBackOff.maximum" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#ExponentialBackOff.maximum">#&nbsp;&nbsp</a>
+
+        <span class="name">maximum</span><span class="annotation">: float</span><span class="default_value"> = &lt;member &#39;maximum&#39; of &#39;ExponentialBackOff&#39; objects&gt;</span>
+    </div>
+
+            <div class="docstring"><p>This is the max value the backoff can be in a single iteration before an
+<code>asyncio.TimeoutError</code> is raised.</p>
+</div>
+
+
+                            </div>
+                            <div id="ExponentialBackOff.jitter_multiplier" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#ExponentialBackOff.jitter_multiplier">#&nbsp;&nbsp</a>
+
+        <span class="name">jitter_multiplier</span><span class="annotation">: Final[float]</span><span class="default_value"> = &lt;member &#39;jitter_multiplier&#39; of &#39;ExponentialBackOff&#39; objects&gt;</span>
+    </div>
+
+            <div class="docstring"><p>The multiplier for the random jitter.
+This defaults to <code>1.0</code>. Set to <code>0.0</code> to disable jitter.</p>
+</div>
+
+
+                            </div>
+                            <div id="ExponentialBackOff.reset" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#ExponentialBackOff.reset">#&nbsp;&nbsp</a>
 
         
             <span class="def">def</span>
-            <span class="name">run</span><span class="signature">(
-    self,
-    future: Coroutine[Any, NoneType, NoneType],
-    debug: bool = False
-) -&gt; None</span>:
+            <span class="name">reset</span><span class="signature">(self) -&gt; None</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">future</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Coroutine</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Runs a Coro function until its complete.</span>
-<span class="sd">        This is equivalent to asyncio.get_event_loop().run_until_complete(...)</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        future: `typing.Coroutine[typing.Any, typing.Any, typing.Any]`</span>
-<span class="sd">            Your coro function.</span>
-
-<span class="sd">        Example</span>
-<span class="sd">        -------</span>
-<span class="sd">        ```py</span>
-<span class="sd">        async def main() -&gt; None:</span>
-<span class="sd">            player = await client.fetch_player(&quot;Fate&quot;)</span>
-<span class="sd">            print(player.name)</span>
-
-<span class="sd">        client.run(main())</span>
-<span class="sd">        ```</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Reset the exponential back-off.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">increment</span> <span class="o">=</span> <span class="mi">0</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Runs a Coro function until its complete.
-This is equivalent to asyncio.get_event_loop().run_until_complete(...)</p>
-
-<h6 id="parameters">Parameters</h6>
-
-<ul>
-<li><strong>future</strong> (<code>typing.Coroutine[typing.Any, typing.Any, typing.Any]</code>):
-Your coro function.</li>
-</ul>
-
-<h6 id="example">Example</h6>
-
-<div class="codehilite"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="n">player</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">fetch_player</span><span class="p">(</span><span class="s2">&quot;Fate&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-
-<span class="n">client</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
-</code></pre></div>
-</div>
-
-
-                            </div>
-                            <div id="ClientBase.rest" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#ClientBase.rest">#&nbsp;&nbsp</a>
-
-        <span class="name">rest</span><span class="annotation">: <a href="../interfaces.html#rest.RESTInterface">aiobungie.interfaces.rest.RESTInterface</a></span>
-    </div>
-
-            <div class="docstring"><p>Returns the REST client for the base client.</p>
-</div>
-
-
-                            </div>
-                            <div class="inherited">
-                                <h5>Inherited Members</h5>
-                                <dl>
-                                    <div><dt><a href="#Netrunner">Netrunner</a></dt>
-                                <dd id="ClientBase.request" class="variable"><a href="#Netrunner.request">request</a></dd>
-
-            </div>
-            <div><dt><a href="#Serializable">Serializable</a></dt>
-                                <dd id="ClientBase.serialize" class="variable"><a href="#Serializable.serialize">serialize</a></dd>
-
-            </div>
-                                </dl>
-                            </div>
-                </section>
-                <section id="Netrunner">
-                                <div class="attr class">
-        <a class="headerlink" href="#Netrunner">#&nbsp;&nbsp</a>
-
-                <div class="decorator">@typing.runtime_checkable</div>
-
-        <span class="def">class</span>
-        <span class="name">Netrunner</span><wbr>(<span class="base">typing.Protocol</span>):
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">runtime_checkable</span>
-<span class="k">class</span> <span class="nc">Netrunner</span><span class="p">(</span><span class="n">typing</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A protocol represents The base client.</span>
-
-<span class="sd">    That&#39;s only used for making external requests.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="vm">__slots__</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">request</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">base_client</span><span class="o">.</span><span class="n">Client</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Returns a client network state for making external requests.&quot;&quot;&quot;</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>A protocol represents The base client.</p>
-
-<p>That's only used for making external requests.</p>
-</div>
-
-
-                            <div id="Netrunner.__init__" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#Netrunner.__init__">#&nbsp;&nbsp</a>
-
-        
-            <span class="name">Netrunner</span><span class="signature">(*args, **kwargs)</span>
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">_no_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Protocols cannot be instantiated&#39;</span><span class="p">)</span>
-</pre></div>
-
-        </details>
-
-    
-
-                            </div>
-                            <div id="Netrunner.request" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#Netrunner.request">#&nbsp;&nbsp</a>
-
-        <span class="name">request</span><span class="annotation">: <a href="../client.html#Client">aiobungie.client.Client</a></span>
-    </div>
-
-            <div class="docstring"><p>Returns a client network state for making external requests.</p>
-</div>
-
-
-                            </div>
-                </section>
-                <section id="Serializable">
-                                <div class="attr class">
-        <a class="headerlink" href="#Serializable">#&nbsp;&nbsp</a>
-
-                <div class="decorator">@typing.runtime_checkable</div>
-
-        <span class="def">class</span>
-        <span class="name">Serializable</span><wbr>(<span class="base">typing.Protocol</span>):
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">runtime_checkable</span>
-<span class="k">class</span> <span class="nc">Serializable</span><span class="p">(</span><span class="n">typing</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A protocol that represents serialized factory objects.&quot;&quot;&quot;</span>
-
-    <span class="vm">__slots__</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">factory</span><span class="o">.</span><span class="n">Factory</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Returns the entity factory for the client.&quot;&quot;&quot;</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>A protocol that represents serialized factory objects.</p>
-</div>
-
-
-                            <div id="Serializable.__init__" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#Serializable.__init__">#&nbsp;&nbsp</a>
-
-        
-            <span class="name">Serializable</span><span class="signature">(*args, **kwargs)</span>
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">_no_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Protocols cannot be instantiated&#39;</span><span class="p">)</span>
-</pre></div>
-
-        </details>
-
-    
-
-                            </div>
-                            <div id="Serializable.serialize" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#Serializable.serialize">#&nbsp;&nbsp</a>
-
-        <span class="name">serialize</span><span class="annotation">: <a href="factory.html#Factory">aiobungie.internal.factory.Factory</a></span>
-    </div>
-
-            <div class="docstring"><p>Returns the entity factory for the client.</p>
-</div>
-
-
-                            </div>
-                </section>
-                <section id="RESTful">
-                                <div class="attr class">
-        <a class="headerlink" href="#RESTful">#&nbsp;&nbsp</a>
-
-                <div class="decorator">@typing.runtime_checkable</div>
-
-        <span class="def">class</span>
-        <span class="name">RESTful</span><wbr>(<span class="base">typing.Protocol</span>):
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">runtime_checkable</span>
-<span class="k">class</span> <span class="nc">RESTful</span><span class="p">(</span><span class="n">typing</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A protocol for a REST only object.&quot;&quot;&quot;</span>
-
-    <span class="vm">__slots__</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
-
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Close the rest client.&quot;&quot;&quot;</span>
-
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">static_request</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Raw http request given a valid bungie endpoint.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        method : `builtins.str`</span>
-<span class="sd">            The request method, This may be `GET`, `POST`, `PUT`, etc.</span>
-<span class="sd">        path: `builtins.str`</span>
-<span class="sd">            The bungie endpoint or path.</span>
-<span class="sd">            A path must look something like this</span>
-<span class="sd">            `Destiny2/3/Profile/46111239123/...`</span>
-<span class="sd">        **kwargs: `typing.Any`</span>
-<span class="sd">            Any other key words you&#39;d like to pass through.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        `typing.Any`</span>
-<span class="sd">            Any object.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>A protocol for a REST only object.</p>
-</div>
-
-
-                            <div id="RESTful.__init__" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#RESTful.__init__">#&nbsp;&nbsp</a>
-
-        
-            <span class="name">RESTful</span><span class="signature">(*args, **kwargs)</span>
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">_no_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Protocols cannot be instantiated&#39;</span><span class="p">)</span>
-</pre></div>
-
-        </details>
-
-    
-
-                            </div>
-                            <div id="RESTful.close" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#RESTful.close">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">async def</span>
-            <span class="name">close</span><span class="signature">(self) -&gt; None</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Close the rest client.&quot;&quot;&quot;</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Close the rest client.</p>
-</div>
-
-
-                            </div>
-                            <div id="RESTful.static_request" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#RESTful.static_request">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">async def</span>
-            <span class="name">static_request</span><span class="signature">(self, method: str, path: str, **kwargs: Any) -&gt; Any</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">static_request</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Raw http request given a valid bungie endpoint.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        method : `builtins.str`</span>
-<span class="sd">            The request method, This may be `GET`, `POST`, `PUT`, etc.</span>
-<span class="sd">        path: `builtins.str`</span>
-<span class="sd">            The bungie endpoint or path.</span>
-<span class="sd">            A path must look something like this</span>
-<span class="sd">            `Destiny2/3/Profile/46111239123/...`</span>
-<span class="sd">        **kwargs: `typing.Any`</span>
-<span class="sd">            Any other key words you&#39;d like to pass through.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        `typing.Any`</span>
-<span class="sd">            Any object.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Raw http request given a valid bungie endpoint.</p>
-
-<h6 id="parameters">Parameters</h6>
-
-<ul>
-<li><strong>method</strong> (<code>builtins.str</code>):
-The request method, This may be <code>GET</code>, <code>POST</code>, <code>PUT</code>, etc.</li>
-<li><strong>path</strong> (<code>builtins.str</code>):
-The bungie endpoint or path.
-A path must look something like this
-<code>Destiny2/3/Profile/46111239123/...</code></li>
-<li><strong>**kwargs</strong> (<code>typing.Any</code>):
-Any other key words you'd like to pass through.</li>
-</ul>
-
-<h6 id="returns">Returns</h6>
-
-<ul>
-<li><strong><code>typing.Any</code></strong>: Any object.</li>
-</ul>
+            <div class="docstring"><p>Reset the exponential back-off.</p>
 </div>
 
 

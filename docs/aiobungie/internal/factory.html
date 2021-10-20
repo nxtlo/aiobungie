@@ -108,6 +108,18 @@
                         <li>
                                 <a class="function" href="#Factory.deserialize_clan_banners">deserialize_clan_banners</a>
                         </li>
+                        <li>
+                                <a class="function" href="#Factory.deserialize_public_milestone_content">deserialize_public_milestone_content</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Factory.deserialize_friend">deserialize_friend</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Factory.deserialize_friends">deserialize_friends</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Factory.deserialize_friend_requests">deserialize_friend_requests</a>
+                        </li>
                 </ul>
 
             </li>
@@ -127,7 +139,7 @@
                     <h1 class="modulename">
 <a href="./../../aiobungie.html">aiobungie</a><wbr>.<a href="./../internal.html">internal</a><wbr>.factory    </h1>
 
-                        <div class="docstring"><p>Deserialization for all bungie incoming json payloads.</p>
+                        <div class="docstring"><p>Marshaller factory for incoming json payloads.</p>
 </div>
 
                         <details>
@@ -153,13 +165,12 @@
 <span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
 <span class="c1"># SOFTWARE.</span>
 
-<span class="sd">&quot;&quot;&quot;Deserialization for all bungie incoming json payloads.&quot;&quot;&quot;</span>
+<span class="sd">&quot;&quot;&quot;Marshaller factory for incoming json payloads.&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Factory&quot;</span><span class="p">,)</span>
 
-<span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">typing</span>
 
@@ -169,19 +180,25 @@
 <span class="kn">from</span> <span class="nn">aiobungie.crate</span> <span class="kn">import</span> <span class="n">character</span>
 <span class="kn">from</span> <span class="nn">aiobungie.crate</span> <span class="kn">import</span> <span class="n">clans</span>
 <span class="kn">from</span> <span class="nn">aiobungie.crate</span> <span class="kn">import</span> <span class="n">entity</span>
+<span class="kn">from</span> <span class="nn">aiobungie.crate</span> <span class="kn">import</span> <span class="n">friends</span>
+<span class="kn">from</span> <span class="nn">aiobungie.crate</span> <span class="kn">import</span> <span class="n">milestones</span>
 <span class="kn">from</span> <span class="nn">aiobungie.crate</span> <span class="kn">import</span> <span class="n">profile</span>
 <span class="kn">from</span> <span class="nn">aiobungie.crate</span> <span class="kn">import</span> <span class="n">user</span>
 <span class="kn">from</span> <span class="nn">aiobungie.internal</span> <span class="kn">import</span> <span class="n">enums</span>
 <span class="kn">from</span> <span class="nn">aiobungie.internal</span> <span class="kn">import</span> <span class="n">time</span>
-<span class="kn">from</span> <span class="nn">aiobungie.internal</span> <span class="kn">import</span> <span class="n">traits</span>
 <span class="kn">from</span> <span class="nn">aiobungie.internal.assets</span> <span class="kn">import</span> <span class="n">Image</span>
-<span class="kn">from</span> <span class="nn">aiobungie.internal.helpers</span> <span class="kn">import</span> <span class="n">JsonArray</span>
-<span class="kn">from</span> <span class="nn">aiobungie.internal.helpers</span> <span class="kn">import</span> <span class="n">JsonObject</span>
 <span class="kn">from</span> <span class="nn">aiobungie.internal.helpers</span> <span class="kn">import</span> <span class="n">NoneOr</span>
 <span class="kn">from</span> <span class="nn">aiobungie.internal.helpers</span> <span class="kn">import</span> <span class="n">Undefined</span>
-<span class="kn">from</span> <span class="nn">aiobungie.internal.helpers</span> <span class="kn">import</span> <span class="n">UndefinedOr</span>
 <span class="kn">from</span> <span class="nn">aiobungie.internal.helpers</span> <span class="kn">import</span> <span class="n">Unknown</span>
 <span class="kn">from</span> <span class="nn">aiobungie.internal.helpers</span> <span class="kn">import</span> <span class="n">just</span>
+
+<span class="k">if</span> <span class="n">typing</span><span class="o">.</span><span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">datetime</span>
+
+    <span class="kn">from</span> <span class="nn">aiobungie.internal</span> <span class="kn">import</span> <span class="n">traits</span>
+    <span class="kn">from</span> <span class="nn">aiobungie.internal.helpers</span> <span class="kn">import</span> <span class="n">JsonArray</span>
+    <span class="kn">from</span> <span class="nn">aiobungie.internal.helpers</span> <span class="kn">import</span> <span class="n">JsonObject</span>
+    <span class="kn">from</span> <span class="nn">aiobungie.internal.helpers</span> <span class="kn">import</span> <span class="n">UndefinedOr</span>
 
 <span class="n">_LOG</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Final</span><span class="p">[</span><span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">]</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -452,7 +469,7 @@
             <span class="n">join_level</span><span class="o">=</span><span class="n">features</span><span class="p">[</span><span class="s2">&quot;joinLevel&quot;</span><span class="p">],</span>
         <span class="p">)</span>
 
-        <span class="n">founder</span><span class="p">:</span> <span class="n">UndefinedOr</span><span class="p">[</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanMember</span><span class="p">]</span> <span class="o">=</span> <span class="n">Undefined</span>
+        <span class="n">founder</span><span class="p">:</span> <span class="n">NoneOr</span><span class="p">[</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanMember</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">raw_founder</span> <span class="o">:=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;founder&quot;</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">bound</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
                 <span class="n">founder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deseialize_clan_owner</span><span class="p">(</span><span class="n">raw_founder</span><span class="p">)</span>
@@ -589,6 +606,7 @@
                     <span class="n">name</span> <span class="o">=</span> <span class="n">Undefined</span>
 
                 <span class="n">convo_obj</span> <span class="o">=</span> <span class="n">clans</span><span class="o">.</span><span class="n">ClanConversation</span><span class="p">(</span>
+                    <span class="n">net</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_net</span><span class="p">,</span>
                     <span class="n">group_id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="nb">map</span><span class="p">[</span><span class="s2">&quot;groupId&quot;</span><span class="p">]),</span>
                     <span class="nb">id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="nb">map</span><span class="p">[</span><span class="s2">&quot;conversationId&quot;</span><span class="p">]),</span>
                     <span class="n">chat_enabled</span><span class="o">=</span><span class="nb">map</span><span class="p">[</span><span class="s2">&quot;chatEnabled&quot;</span><span class="p">],</span>
@@ -699,6 +717,7 @@
         <span class="n">total_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">format_played</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;minutesPlayedTotal&quot;</span><span class="p">]),</span> <span class="n">suffix</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">character</span><span class="o">.</span><span class="n">Character</span><span class="p">(</span>
+            <span class="n">net</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_net</span><span class="p">,</span>
             <span class="nb">id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;characterId&quot;</span><span class="p">]),</span>
             <span class="n">gender</span><span class="o">=</span><span class="n">enums</span><span class="o">.</span><span class="n">Gender</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;genderType&quot;</span><span class="p">]),</span>
             <span class="n">race</span><span class="o">=</span><span class="n">enums</span><span class="o">.</span><span class="n">Race</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;raceType&quot;</span><span class="p">]),</span>
@@ -922,6 +941,86 @@
                 <span class="p">)</span>
                 <span class="n">banners_seq</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">banner_obj</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">banners_seq</span>
+
+    <span class="k">def</span> <span class="nf">deserialize_public_milestone_content</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">JsonObject</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">milestones</span><span class="o">.</span><span class="n">Milestone</span><span class="p">:</span>
+        <span class="n">items_categoris</span><span class="p">:</span> <span class="n">NoneOr</span><span class="p">[</span><span class="n">milestones</span><span class="o">.</span><span class="n">MilestoneItems</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">raw_categories</span> <span class="o">:=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;itemCategories&quot;</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">raw_categories</span><span class="p">:</span>
+                <span class="n">title</span> <span class="o">=</span> <span class="n">Undefined</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">raw_title</span> <span class="o">:=</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;title&quot;</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">raw_title</span> <span class="o">!=</span> <span class="n">Unknown</span><span class="p">:</span>
+                        <span class="n">title</span> <span class="o">=</span> <span class="n">raw_title</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">raw_hashes</span> <span class="o">:=</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;itemHashes&quot;</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">hashes</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">raw_hashes</span>
+
+                <span class="n">items_categoris</span> <span class="o">=</span> <span class="n">milestones</span><span class="o">.</span><span class="n">MilestoneItems</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">hashes</span><span class="o">=</span><span class="n">hashes</span><span class="p">)</span>
+
+        <span class="n">about</span> <span class="o">=</span> <span class="n">Undefined</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">raw_about</span> <span class="o">:=</span> <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;about&quot;</span><span class="p">])</span> <span class="o">!=</span> <span class="n">Unknown</span><span class="p">:</span>
+            <span class="n">about</span> <span class="o">=</span> <span class="n">raw_about</span>
+
+        <span class="n">status</span> <span class="o">=</span> <span class="n">Undefined</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">raw_status</span> <span class="o">:=</span> <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">])</span> <span class="o">!=</span> <span class="n">Unknown</span><span class="p">:</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="n">raw_status</span>
+
+        <span class="n">tips</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">MutableSequence</span><span class="p">[</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">raw_tips</span> <span class="o">:=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tips&quot;</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">raw_tip</span> <span class="ow">in</span> <span class="n">raw_tips</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">raw_tip</span> <span class="o">==</span> <span class="n">Unknown</span><span class="p">:</span>
+                    <span class="n">raw_tip</span> <span class="o">=</span> <span class="n">Undefined</span>
+                <span class="n">tips</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">raw_tip</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">milestones</span><span class="o">.</span><span class="n">Milestone</span><span class="p">(</span>
+            <span class="n">about</span><span class="o">=</span><span class="n">about</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="p">,</span> <span class="n">tips</span><span class="o">=</span><span class="n">tips</span><span class="p">,</span> <span class="n">items</span><span class="o">=</span><span class="n">items_categoris</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">deserialize_friend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">JsonObject</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">friends</span><span class="o">.</span><span class="n">Friend</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">Undefined</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">raw_name</span> <span class="o">:=</span> <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;bungieGlobalDisplayName&quot;</span><span class="p">])</span> <span class="o">!=</span> <span class="n">Unknown</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">raw_name</span>
+
+        <span class="n">bungie_user</span><span class="p">:</span> <span class="n">NoneOr</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">raw_bungie_user</span> <span class="o">:=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bungieNetUser&quot;</span><span class="p">):</span>
+            <span class="n">bungie_user</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deserialize_user</span><span class="p">(</span><span class="n">raw_bungie_user</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">friends</span><span class="o">.</span><span class="n">Friend</span><span class="p">(</span>
+            <span class="n">net</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_net</span><span class="p">,</span>
+            <span class="nb">id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;lastSeenAsMembershipId&quot;</span><span class="p">]),</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">code</span><span class="o">=</span><span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bungieGlobalDisplayNameCode&quot;</span><span class="p">),</span>
+            <span class="n">relationship</span><span class="o">=</span><span class="n">enums</span><span class="o">.</span><span class="n">Relationship</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;relationship&quot;</span><span class="p">]),</span>
+            <span class="n">user</span><span class="o">=</span><span class="n">bungie_user</span><span class="p">,</span>
+            <span class="n">online_status</span><span class="o">=</span><span class="n">enums</span><span class="o">.</span><span class="n">Presence</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;onlineStatus&quot;</span><span class="p">]),</span>
+            <span class="n">online_title</span><span class="o">=</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;onlineTitle&quot;</span><span class="p">],</span>
+            <span class="nb">type</span><span class="o">=</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;lastSeenAsBungieMembershipType&quot;</span><span class="p">]),</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">deserialize_friends</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">JsonObject</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">friends</span><span class="o">.</span><span class="n">Friend</span><span class="p">]:</span>
+        <span class="n">mut_seq</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">MutableSequence</span><span class="p">[</span><span class="n">friends</span><span class="o">.</span><span class="n">Friend</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">raw_friends</span> <span class="o">:=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;friends&quot;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">friend</span> <span class="ow">in</span> <span class="n">raw_friends</span><span class="p">:</span>
+                <span class="n">mut_seq</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deserialize_friend</span><span class="p">(</span><span class="n">friend</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">mut_seq</span>
+
+    <span class="k">def</span> <span class="nf">deserialize_friend_requests</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">JsonObject</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">friends</span><span class="o">.</span><span class="n">FriendRequestView</span><span class="p">:</span>
+        <span class="n">incoming</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">MutableSequence</span><span class="p">[</span><span class="n">friends</span><span class="o">.</span><span class="n">Friend</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">outgoing</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">MutableSequence</span><span class="p">[</span><span class="n">friends</span><span class="o">.</span><span class="n">Friend</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">raw_incoming_requests</span> <span class="o">:=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;incmoingRequests&quot;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">incoming_request</span> <span class="ow">in</span> <span class="n">raw_incoming_requests</span><span class="p">:</span>
+                <span class="n">incoming</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deserialize_friend</span><span class="p">(</span><span class="n">incoming_request</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">raw_outgoing_requests</span> <span class="o">:=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;outgoingRequests&quot;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">incoming_request</span> <span class="ow">in</span> <span class="n">raw_outgoing_requests</span><span class="p">:</span>
+                <span class="n">outgoing</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deserialize_friend</span><span class="p">(</span><span class="n">incoming_request</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">friends</span><span class="o">.</span><span class="n">FriendRequestView</span><span class="p">(</span><span class="n">incoming</span><span class="o">=</span><span class="n">incoming</span><span class="p">,</span> <span class="n">outgoing</span><span class="o">=</span><span class="n">outgoing</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -1204,7 +1303,7 @@
             <span class="n">join_level</span><span class="o">=</span><span class="n">features</span><span class="p">[</span><span class="s2">&quot;joinLevel&quot;</span><span class="p">],</span>
         <span class="p">)</span>
 
-        <span class="n">founder</span><span class="p">:</span> <span class="n">UndefinedOr</span><span class="p">[</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanMember</span><span class="p">]</span> <span class="o">=</span> <span class="n">Undefined</span>
+        <span class="n">founder</span><span class="p">:</span> <span class="n">NoneOr</span><span class="p">[</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanMember</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">raw_founder</span> <span class="o">:=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;founder&quot;</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">bound</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
                 <span class="n">founder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deseialize_clan_owner</span><span class="p">(</span><span class="n">raw_founder</span><span class="p">)</span>
@@ -1341,6 +1440,7 @@
                     <span class="n">name</span> <span class="o">=</span> <span class="n">Undefined</span>
 
                 <span class="n">convo_obj</span> <span class="o">=</span> <span class="n">clans</span><span class="o">.</span><span class="n">ClanConversation</span><span class="p">(</span>
+                    <span class="n">net</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_net</span><span class="p">,</span>
                     <span class="n">group_id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="nb">map</span><span class="p">[</span><span class="s2">&quot;groupId&quot;</span><span class="p">]),</span>
                     <span class="nb">id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="nb">map</span><span class="p">[</span><span class="s2">&quot;conversationId&quot;</span><span class="p">]),</span>
                     <span class="n">chat_enabled</span><span class="o">=</span><span class="nb">map</span><span class="p">[</span><span class="s2">&quot;chatEnabled&quot;</span><span class="p">],</span>
@@ -1451,6 +1551,7 @@
         <span class="n">total_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">format_played</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;minutesPlayedTotal&quot;</span><span class="p">]),</span> <span class="n">suffix</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">character</span><span class="o">.</span><span class="n">Character</span><span class="p">(</span>
+            <span class="n">net</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_net</span><span class="p">,</span>
             <span class="nb">id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;characterId&quot;</span><span class="p">]),</span>
             <span class="n">gender</span><span class="o">=</span><span class="n">enums</span><span class="o">.</span><span class="n">Gender</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;genderType&quot;</span><span class="p">]),</span>
             <span class="n">race</span><span class="o">=</span><span class="n">enums</span><span class="o">.</span><span class="n">Race</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;raceType&quot;</span><span class="p">]),</span>
@@ -1674,6 +1775,86 @@
                 <span class="p">)</span>
                 <span class="n">banners_seq</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">banner_obj</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">banners_seq</span>
+
+    <span class="k">def</span> <span class="nf">deserialize_public_milestone_content</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">JsonObject</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">milestones</span><span class="o">.</span><span class="n">Milestone</span><span class="p">:</span>
+        <span class="n">items_categoris</span><span class="p">:</span> <span class="n">NoneOr</span><span class="p">[</span><span class="n">milestones</span><span class="o">.</span><span class="n">MilestoneItems</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">raw_categories</span> <span class="o">:=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;itemCategories&quot;</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">raw_categories</span><span class="p">:</span>
+                <span class="n">title</span> <span class="o">=</span> <span class="n">Undefined</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">raw_title</span> <span class="o">:=</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;title&quot;</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">raw_title</span> <span class="o">!=</span> <span class="n">Unknown</span><span class="p">:</span>
+                        <span class="n">title</span> <span class="o">=</span> <span class="n">raw_title</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">raw_hashes</span> <span class="o">:=</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;itemHashes&quot;</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">hashes</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">raw_hashes</span>
+
+                <span class="n">items_categoris</span> <span class="o">=</span> <span class="n">milestones</span><span class="o">.</span><span class="n">MilestoneItems</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">hashes</span><span class="o">=</span><span class="n">hashes</span><span class="p">)</span>
+
+        <span class="n">about</span> <span class="o">=</span> <span class="n">Undefined</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">raw_about</span> <span class="o">:=</span> <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;about&quot;</span><span class="p">])</span> <span class="o">!=</span> <span class="n">Unknown</span><span class="p">:</span>
+            <span class="n">about</span> <span class="o">=</span> <span class="n">raw_about</span>
+
+        <span class="n">status</span> <span class="o">=</span> <span class="n">Undefined</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">raw_status</span> <span class="o">:=</span> <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">])</span> <span class="o">!=</span> <span class="n">Unknown</span><span class="p">:</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="n">raw_status</span>
+
+        <span class="n">tips</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">MutableSequence</span><span class="p">[</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">raw_tips</span> <span class="o">:=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tips&quot;</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">raw_tip</span> <span class="ow">in</span> <span class="n">raw_tips</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">raw_tip</span> <span class="o">==</span> <span class="n">Unknown</span><span class="p">:</span>
+                    <span class="n">raw_tip</span> <span class="o">=</span> <span class="n">Undefined</span>
+                <span class="n">tips</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">raw_tip</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">milestones</span><span class="o">.</span><span class="n">Milestone</span><span class="p">(</span>
+            <span class="n">about</span><span class="o">=</span><span class="n">about</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="p">,</span> <span class="n">tips</span><span class="o">=</span><span class="n">tips</span><span class="p">,</span> <span class="n">items</span><span class="o">=</span><span class="n">items_categoris</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">deserialize_friend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">JsonObject</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">friends</span><span class="o">.</span><span class="n">Friend</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">Undefined</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">raw_name</span> <span class="o">:=</span> <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;bungieGlobalDisplayName&quot;</span><span class="p">])</span> <span class="o">!=</span> <span class="n">Unknown</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">raw_name</span>
+
+        <span class="n">bungie_user</span><span class="p">:</span> <span class="n">NoneOr</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">raw_bungie_user</span> <span class="o">:=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bungieNetUser&quot;</span><span class="p">):</span>
+            <span class="n">bungie_user</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deserialize_user</span><span class="p">(</span><span class="n">raw_bungie_user</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">friends</span><span class="o">.</span><span class="n">Friend</span><span class="p">(</span>
+            <span class="n">net</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_net</span><span class="p">,</span>
+            <span class="nb">id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;lastSeenAsMembershipId&quot;</span><span class="p">]),</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">code</span><span class="o">=</span><span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bungieGlobalDisplayNameCode&quot;</span><span class="p">),</span>
+            <span class="n">relationship</span><span class="o">=</span><span class="n">enums</span><span class="o">.</span><span class="n">Relationship</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;relationship&quot;</span><span class="p">]),</span>
+            <span class="n">user</span><span class="o">=</span><span class="n">bungie_user</span><span class="p">,</span>
+            <span class="n">online_status</span><span class="o">=</span><span class="n">enums</span><span class="o">.</span><span class="n">Presence</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;onlineStatus&quot;</span><span class="p">]),</span>
+            <span class="n">online_title</span><span class="o">=</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;onlineTitle&quot;</span><span class="p">],</span>
+            <span class="nb">type</span><span class="o">=</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;lastSeenAsBungieMembershipType&quot;</span><span class="p">]),</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">deserialize_friends</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">JsonObject</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">friends</span><span class="o">.</span><span class="n">Friend</span><span class="p">]:</span>
+        <span class="n">mut_seq</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">MutableSequence</span><span class="p">[</span><span class="n">friends</span><span class="o">.</span><span class="n">Friend</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">raw_friends</span> <span class="o">:=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;friends&quot;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">friend</span> <span class="ow">in</span> <span class="n">raw_friends</span><span class="p">:</span>
+                <span class="n">mut_seq</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deserialize_friend</span><span class="p">(</span><span class="n">friend</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">mut_seq</span>
+
+    <span class="k">def</span> <span class="nf">deserialize_friend_requests</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">JsonObject</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">friends</span><span class="o">.</span><span class="n">FriendRequestView</span><span class="p">:</span>
+        <span class="n">incoming</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">MutableSequence</span><span class="p">[</span><span class="n">friends</span><span class="o">.</span><span class="n">Friend</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">outgoing</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">MutableSequence</span><span class="p">[</span><span class="n">friends</span><span class="o">.</span><span class="n">Friend</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">raw_incoming_requests</span> <span class="o">:=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;incmoingRequests&quot;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">incoming_request</span> <span class="ow">in</span> <span class="n">raw_incoming_requests</span><span class="p">:</span>
+                <span class="n">incoming</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deserialize_friend</span><span class="p">(</span><span class="n">incoming_request</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">raw_outgoing_requests</span> <span class="o">:=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;outgoingRequests&quot;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">incoming_request</span> <span class="ow">in</span> <span class="n">raw_outgoing_requests</span><span class="p">:</span>
+                <span class="n">outgoing</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deserialize_friend</span><span class="p">(</span><span class="n">incoming_request</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">friends</span><span class="o">.</span><span class="n">FriendRequestView</span><span class="p">(</span><span class="n">incoming</span><span class="o">=</span><span class="n">incoming</span><span class="p">,</span> <span class="n">outgoing</span><span class="o">=</span><span class="n">outgoing</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -2154,7 +2335,7 @@
             <span class="n">join_level</span><span class="o">=</span><span class="n">features</span><span class="p">[</span><span class="s2">&quot;joinLevel&quot;</span><span class="p">],</span>
         <span class="p">)</span>
 
-        <span class="n">founder</span><span class="p">:</span> <span class="n">UndefinedOr</span><span class="p">[</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanMember</span><span class="p">]</span> <span class="o">=</span> <span class="n">Undefined</span>
+        <span class="n">founder</span><span class="p">:</span> <span class="n">NoneOr</span><span class="p">[</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanMember</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">raw_founder</span> <span class="o">:=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;founder&quot;</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">bound</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
                 <span class="n">founder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deseialize_clan_owner</span><span class="p">(</span><span class="n">raw_founder</span><span class="p">)</span>
@@ -2364,6 +2545,7 @@
                     <span class="n">name</span> <span class="o">=</span> <span class="n">Undefined</span>
 
                 <span class="n">convo_obj</span> <span class="o">=</span> <span class="n">clans</span><span class="o">.</span><span class="n">ClanConversation</span><span class="p">(</span>
+                    <span class="n">net</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_net</span><span class="p">,</span>
                     <span class="n">group_id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="nb">map</span><span class="p">[</span><span class="s2">&quot;groupId&quot;</span><span class="p">]),</span>
                     <span class="nb">id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="nb">map</span><span class="p">[</span><span class="s2">&quot;conversationId&quot;</span><span class="p">]),</span>
                     <span class="n">chat_enabled</span><span class="o">=</span><span class="nb">map</span><span class="p">[</span><span class="s2">&quot;chatEnabled&quot;</span><span class="p">],</span>
@@ -2553,6 +2735,7 @@
         <span class="n">total_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">format_played</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;minutesPlayedTotal&quot;</span><span class="p">]),</span> <span class="n">suffix</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">character</span><span class="o">.</span><span class="n">Character</span><span class="p">(</span>
+            <span class="n">net</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_net</span><span class="p">,</span>
             <span class="nb">id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;characterId&quot;</span><span class="p">]),</span>
             <span class="n">gender</span><span class="o">=</span><span class="n">enums</span><span class="o">.</span><span class="n">Gender</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;genderType&quot;</span><span class="p">]),</span>
             <span class="n">race</span><span class="o">=</span><span class="n">enums</span><span class="o">.</span><span class="n">Race</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;raceType&quot;</span><span class="p">]),</span>
@@ -2872,6 +3055,159 @@
                 <span class="p">)</span>
                 <span class="n">banners_seq</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">banner_obj</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">banners_seq</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="Factory.deserialize_public_milestone_content" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Factory.deserialize_public_milestone_content">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">deserialize_public_milestone_content</span><span class="signature">(
+    self,
+    payload: Dict[str, Any]
+) -&gt; <a href="../crate.html#milestones.Milestone">aiobungie.crate.milestones.Milestone</a></span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">deserialize_public_milestone_content</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">JsonObject</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">milestones</span><span class="o">.</span><span class="n">Milestone</span><span class="p">:</span>
+        <span class="n">items_categoris</span><span class="p">:</span> <span class="n">NoneOr</span><span class="p">[</span><span class="n">milestones</span><span class="o">.</span><span class="n">MilestoneItems</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">raw_categories</span> <span class="o">:=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;itemCategories&quot;</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">raw_categories</span><span class="p">:</span>
+                <span class="n">title</span> <span class="o">=</span> <span class="n">Undefined</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">raw_title</span> <span class="o">:=</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;title&quot;</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">raw_title</span> <span class="o">!=</span> <span class="n">Unknown</span><span class="p">:</span>
+                        <span class="n">title</span> <span class="o">=</span> <span class="n">raw_title</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">raw_hashes</span> <span class="o">:=</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;itemHashes&quot;</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">hashes</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">raw_hashes</span>
+
+                <span class="n">items_categoris</span> <span class="o">=</span> <span class="n">milestones</span><span class="o">.</span><span class="n">MilestoneItems</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">hashes</span><span class="o">=</span><span class="n">hashes</span><span class="p">)</span>
+
+        <span class="n">about</span> <span class="o">=</span> <span class="n">Undefined</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">raw_about</span> <span class="o">:=</span> <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;about&quot;</span><span class="p">])</span> <span class="o">!=</span> <span class="n">Unknown</span><span class="p">:</span>
+            <span class="n">about</span> <span class="o">=</span> <span class="n">raw_about</span>
+
+        <span class="n">status</span> <span class="o">=</span> <span class="n">Undefined</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">raw_status</span> <span class="o">:=</span> <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">])</span> <span class="o">!=</span> <span class="n">Unknown</span><span class="p">:</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="n">raw_status</span>
+
+        <span class="n">tips</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">MutableSequence</span><span class="p">[</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">raw_tips</span> <span class="o">:=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tips&quot;</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">raw_tip</span> <span class="ow">in</span> <span class="n">raw_tips</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">raw_tip</span> <span class="o">==</span> <span class="n">Unknown</span><span class="p">:</span>
+                    <span class="n">raw_tip</span> <span class="o">=</span> <span class="n">Undefined</span>
+                <span class="n">tips</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">raw_tip</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">milestones</span><span class="o">.</span><span class="n">Milestone</span><span class="p">(</span>
+            <span class="n">about</span><span class="o">=</span><span class="n">about</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="p">,</span> <span class="n">tips</span><span class="o">=</span><span class="n">tips</span><span class="p">,</span> <span class="n">items</span><span class="o">=</span><span class="n">items_categoris</span>
+        <span class="p">)</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="Factory.deserialize_friend" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Factory.deserialize_friend">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">deserialize_friend</span><span class="signature">(self, payload: Dict[str, Any], /) -&gt; <a href="../crate.html#friends.Friend">aiobungie.crate.friends.Friend</a></span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">deserialize_friend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">JsonObject</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">friends</span><span class="o">.</span><span class="n">Friend</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">Undefined</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">raw_name</span> <span class="o">:=</span> <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;bungieGlobalDisplayName&quot;</span><span class="p">])</span> <span class="o">!=</span> <span class="n">Unknown</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">raw_name</span>
+
+        <span class="n">bungie_user</span><span class="p">:</span> <span class="n">NoneOr</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">raw_bungie_user</span> <span class="o">:=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bungieNetUser&quot;</span><span class="p">):</span>
+            <span class="n">bungie_user</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deserialize_user</span><span class="p">(</span><span class="n">raw_bungie_user</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">friends</span><span class="o">.</span><span class="n">Friend</span><span class="p">(</span>
+            <span class="n">net</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_net</span><span class="p">,</span>
+            <span class="nb">id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;lastSeenAsMembershipId&quot;</span><span class="p">]),</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">code</span><span class="o">=</span><span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bungieGlobalDisplayNameCode&quot;</span><span class="p">),</span>
+            <span class="n">relationship</span><span class="o">=</span><span class="n">enums</span><span class="o">.</span><span class="n">Relationship</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;relationship&quot;</span><span class="p">]),</span>
+            <span class="n">user</span><span class="o">=</span><span class="n">bungie_user</span><span class="p">,</span>
+            <span class="n">online_status</span><span class="o">=</span><span class="n">enums</span><span class="o">.</span><span class="n">Presence</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;onlineStatus&quot;</span><span class="p">]),</span>
+            <span class="n">online_title</span><span class="o">=</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;onlineTitle&quot;</span><span class="p">],</span>
+            <span class="nb">type</span><span class="o">=</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;lastSeenAsBungieMembershipType&quot;</span><span class="p">]),</span>
+        <span class="p">)</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="Factory.deserialize_friends" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Factory.deserialize_friends">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">deserialize_friends</span><span class="signature">(
+    self,
+    payload: Dict[str, Any]
+) -&gt; Sequence[<a href="../crate.html#friends.Friend">aiobungie.crate.friends.Friend</a>]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">deserialize_friends</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">JsonObject</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">friends</span><span class="o">.</span><span class="n">Friend</span><span class="p">]:</span>
+        <span class="n">mut_seq</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">MutableSequence</span><span class="p">[</span><span class="n">friends</span><span class="o">.</span><span class="n">Friend</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">raw_friends</span> <span class="o">:=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;friends&quot;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">friend</span> <span class="ow">in</span> <span class="n">raw_friends</span><span class="p">:</span>
+                <span class="n">mut_seq</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deserialize_friend</span><span class="p">(</span><span class="n">friend</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">mut_seq</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="Factory.deserialize_friend_requests" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Factory.deserialize_friend_requests">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">deserialize_friend_requests</span><span class="signature">(
+    self,
+    payload: Dict[str, Any]
+) -&gt; <a href="../crate.html#friends.FriendRequestView">aiobungie.crate.friends.FriendRequestView</a></span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">deserialize_friend_requests</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">JsonObject</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">friends</span><span class="o">.</span><span class="n">FriendRequestView</span><span class="p">:</span>
+        <span class="n">incoming</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">MutableSequence</span><span class="p">[</span><span class="n">friends</span><span class="o">.</span><span class="n">Friend</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">outgoing</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">MutableSequence</span><span class="p">[</span><span class="n">friends</span><span class="o">.</span><span class="n">Friend</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">raw_incoming_requests</span> <span class="o">:=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;incmoingRequests&quot;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">incoming_request</span> <span class="ow">in</span> <span class="n">raw_incoming_requests</span><span class="p">:</span>
+                <span class="n">incoming</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deserialize_friend</span><span class="p">(</span><span class="n">incoming_request</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">raw_outgoing_requests</span> <span class="o">:=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;outgoingRequests&quot;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">incoming_request</span> <span class="ow">in</span> <span class="n">raw_outgoing_requests</span><span class="p">:</span>
+                <span class="n">outgoing</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deserialize_friend</span><span class="p">(</span><span class="n">incoming_request</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">friends</span><span class="o">.</span><span class="n">FriendRequestView</span><span class="p">(</span><span class="n">incoming</span><span class="o">=</span><span class="n">incoming</span><span class="p">,</span> <span class="n">outgoing</span><span class="o">=</span><span class="n">outgoing</span><span class="p">)</span>
 </pre></div>
 
         </details>

@@ -768,6 +768,21 @@
                 </ul>
 
             </li>
+            <li>
+                    <a class="class" href="#MembershipOption">MembershipOption</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#MembershipOption.REVIEWD">REVIEWD</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MembershipOption.OPEN">OPEN</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MembershipOption.CLOSED">CLOSED</a>
+                        </li>
+                </ul>
+
+            </li>
     </ul>
 
 
@@ -816,7 +831,7 @@
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
+<span class="n">__all__</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
     <span class="s2">&quot;GameMode&quot;</span><span class="p">,</span>
     <span class="s2">&quot;MembershipType&quot;</span><span class="p">,</span>
     <span class="s2">&quot;Class&quot;</span><span class="p">,</span>
@@ -840,6 +855,7 @@
     <span class="s2">&quot;Presence&quot;</span><span class="p">,</span>
     <span class="s2">&quot;Relationship&quot;</span><span class="p">,</span>
     <span class="s2">&quot;ClanMemberType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;MembershipOption&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="kn">import</span> <span class="nn">enum</span> <span class="k">as</span> <span class="nn">__enum</span>
@@ -1258,6 +1274,15 @@
     <span class="n">ADMIN</span> <span class="o">=</span> <span class="mi">3</span>
     <span class="n">ACTING_FOUNDER</span> <span class="o">=</span> <span class="mi">4</span>
     <span class="n">FOUNDER</span> <span class="o">=</span> <span class="mi">5</span>
+
+
+<span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
+<span class="k">class</span> <span class="nc">MembershipOption</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A enum for GroupV2 membership options.&quot;&quot;&quot;</span>
+
+    <span class="n">REVIEWD</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">OPEN</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">CLOSED</span> <span class="o">=</span> <span class="mi">2</span>
 </pre></div>
 
         </details>
@@ -4453,6 +4478,83 @@
                 <dd id="ClanMemberType.imag" class="variable">imag</dd>
                 <dd id="ClanMemberType.numerator" class="variable">numerator</dd>
                 <dd id="ClanMemberType.denominator" class="variable">denominator</dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="MembershipOption">
+                                <div class="attr class">
+        <a class="headerlink" href="#MembershipOption">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@typing.final</div>
+
+        <span class="def">class</span>
+        <span class="name">MembershipOption</span><wbr>(<span class="base"><a href="#IntEnum">IntEnum</a></span>):
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
+<span class="k">class</span> <span class="nc">MembershipOption</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A enum for GroupV2 membership options.&quot;&quot;&quot;</span>
+
+    <span class="n">REVIEWD</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">OPEN</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">CLOSED</span> <span class="o">=</span> <span class="mi">2</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>A enum for GroupV2 membership options.</p>
+</div>
+
+
+                            <div id="MembershipOption.REVIEWD" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#MembershipOption.REVIEWD">#&nbsp;&nbsp</a>
+
+        <span class="name">REVIEWD</span><span class="default_value"> = &lt;<a href="#MembershipOption.REVIEWD">MembershipOption.REVIEWD</a>: 0&gt;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="MembershipOption.OPEN" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#MembershipOption.OPEN">#&nbsp;&nbsp</a>
+
+        <span class="name">OPEN</span><span class="default_value"> = &lt;<a href="#MembershipOption.OPEN">MembershipOption.OPEN</a>: 1&gt;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="MembershipOption.CLOSED" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#MembershipOption.CLOSED">#&nbsp;&nbsp</a>
+
+        <span class="name">CLOSED</span><span class="default_value"> = &lt;<a href="#MembershipOption.CLOSED">MembershipOption.CLOSED</a>: 2&gt;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt>enum.Enum</dt>
+                                <dd id="MembershipOption.name" class="variable">name</dd>
+                <dd id="MembershipOption.value" class="variable">value</dd>
+
+            </div>
+            <div><dt>builtins.int</dt>
+                                <dd id="MembershipOption.conjugate" class="function">conjugate</dd>
+                <dd id="MembershipOption.bit_length" class="function">bit_length</dd>
+                <dd id="MembershipOption.to_bytes" class="function">to_bytes</dd>
+                <dd id="MembershipOption.from_bytes" class="function">from_bytes</dd>
+                <dd id="MembershipOption.as_integer_ratio" class="function">as_integer_ratio</dd>
+                <dd id="MembershipOption.real" class="variable">real</dd>
+                <dd id="MembershipOption.imag" class="variable">imag</dd>
+                <dd id="MembershipOption.numerator" class="variable">numerator</dd>
+                <dd id="MembershipOption.denominator" class="variable">denominator</dd>
 
             </div>
                                 </dl>

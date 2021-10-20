@@ -28,7 +28,8 @@ import typing
 
 import attr
 
-from aiobungie.internal import helpers
+if typing.TYPE_CHECKING:
+    from aiobungie.internal import helpers
 
 
 @attr.define(hash=False, weakref_slot=False, kw_only=True)

@@ -37,15 +37,18 @@ __all__: tuple[str, ...] = (
 
 import abc
 import typing
-from datetime import datetime
 
 import attr
 
 from aiobungie.crate import profile
 from aiobungie.internal import assets
 from aiobungie.internal import enums
-from aiobungie.internal import helpers
-from aiobungie.internal import traits
+
+if typing.TYPE_CHECKING:
+    from datetime import datetime
+
+    from aiobungie.internal import helpers
+    from aiobungie.internal import traits
 
 
 class UserLike(abc.ABC):
@@ -89,17 +92,12 @@ class UserLike(abc.ABC):
     def code(self) -> helpers.NoneOr[int]:
         """The user like's unique display name code.
         This can be None if the user hasn't logged in after season of the lost update.
-
-        .. versionadded:: 0.2.5
         """
 
     @property
     @abc.abstractmethod
     def unique_name(self) -> str:
-        """The user like's display name. This includes the full name with the user name code.
-
-        .. versionadded:: 0.2.5
-        """
+        """The user like's display name. This includes the full name with the user name code."""
         return f"{self.name}#{self.code}"
 
     @property
@@ -124,8 +122,6 @@ class PartialBungieUser:
     .. note::
         You can fetch the actual bungie user of this partial user
         by using `PartialBungieUser.fetch_self()` method.
-
-    .. versionadded:: 0.2.5
     """
 
     net: traits.Netrunner = attr.field(repr=False)
@@ -161,10 +157,10 @@ class PartialBungieUser:
         ------
         `aiobungie.UserNotFound`
             The user was not found.
-
-        .. versionadded:: 0.2.5
         """
-        return await self.net.request.fetch_user(self.id)
+        user = await self.net.request.fetch_user(self.id)
+        assert isinstance(user, BungieUser)
+        return user
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
@@ -183,33 +179,19 @@ class BungieUser:
     unique_name: str = attr.field(repr=False)
     """The user's unique name which includes their unique code.
     This field could be None if no unique name found.
-
-    .. versionadded:: 0.2.5
     """
 
     theme_id: int = attr.field(repr=False)
-    """User profile's theme id.
-
-    .. versionadded:: 0.2.5
-    """
+    """User profile's theme id."""
 
     show_activity: bool = attr.field(repr=False)
-    """`True` if the user is showing their activity status and `False` if not.
-
-    .. versionadded:: 0.2.5
-    """
+    """`True` if the user is showing their activity status and `False` if not."""
 
     theme_name: str = attr.field(repr=False)
-    """User's profile theme name.
-
-    .. versionadded:: 0.2.5
-    """
+    """User's profile theme name."""
 
     display_title: str = attr.field(repr=False)
-    """User's display title.
-
-    .. versionadded:: 0.2.5
-    """
+    """User's display title."""
 
     is_deleted: bool = attr.field(repr=False, eq=False, hash=False)
     """ True if the user is deleted"""
@@ -233,10 +215,7 @@ class BungieUser:
     """The user's blizzard name if it exists."""
 
     stadia_name: typing.Optional[str] = attr.field(repr=False, hash=False, eq=False)
-    """The user's stadia name if it exists
-
-    .. versionadded:: 0.2.5
-    """
+    """The user's stadia name if it exists."""
 
     status: typing.Optional[str] = attr.field(repr=False, hash=False, eq=False)
     """The user's bungie status text"""
@@ -250,8 +229,6 @@ class BungieUser:
     code: helpers.NoneOr[int] = attr.field(repr=True)
     """The user's unique display name code.
     This can be None if the user hasn't logged in after season of the lost update.
-
-    .. versionadded:: 0.2.5
     """
 
     def __str__(self) -> str:
@@ -263,10 +240,7 @@ class BungieUser:
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
 class DestinyUser(UserLike):
-    """Represents a Bungie user's Destiny memberships.
-
-    .. versionadded:: 0.2.5
-    """
+    """Represents a Bungie user's Destiny memberships."""
 
     net: traits.Netrunner = attr.field(repr=False)
     """A network state used for making external requests."""
@@ -306,7 +280,9 @@ class DestinyUser(UserLike):
         `aiobungie.crate.Profile`
             The profile of this membership.
         """
-        return await self.net.request.fetch_profile(self.id, self.type)
+        profile_ = await self.net.request.fetch_profile(self.id, self.type)
+        assert isinstance(profile_, profile.Profile)
+        return profile_
 
     @property
     def unique_name(self) -> str:
@@ -362,13 +338,7 @@ class User:
     """
 
     bungie: BungieUser = attr.field(repr=True)
-    """The user's bungie net membership.
-
-    .. versionadded:: 0.2.5
-    """
+    """The user's bungie net membership."""
 
     destiny: typing.Sequence[DestinyUser] = attr.field(repr=True)
-    """A sequence of the user's Destiny memberships.
-
-    .. versionadded:: 0.2.5
-    """
+    """A sequence of the user's Destiny memberships."""

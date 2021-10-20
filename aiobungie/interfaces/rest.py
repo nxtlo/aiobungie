@@ -30,49 +30,23 @@ import abc
 import typing
 
 from aiobungie.internal import enums
+from aiobungie.internal import helpers
+from aiobungie.internal import traits
 
 if typing.TYPE_CHECKING:
-    from aiobungie.internal import helpers
 
     ResponseSigT = typing.TypeVar(
         "ResponseSigT",
         covariant=True,
-        bound=typing.Union[helpers.JsonArray, helpers.JsonObject],
+        bound=typing.Union[helpers.JsonArray, helpers.JsonObject, None],
     )
     ResponseSig = typing.Coroutine[typing.Any, typing.Any, ResponseSigT]
 
 
-class RESTInterface(abc.ABC):
-    """An interface for a rest only client implementation."""
+class RESTInterface(traits.RESTful, abc.ABC):
+    """An API interface for the rest only client implementation."""
 
     __slots__: typing.Sequence[str] = ()
-
-    @abc.abstractmethod
-    async def close(self) -> None:
-        """Close the rest client."""
-
-    @abc.abstractmethod
-    def static_request(
-        self, method: str, path: str, **kwargs: typing.Any
-    ) -> ResponseSig[typing.Any]:
-        """Raw http request given a valid bungie endpoint.
-
-        Parameters
-        ----------
-        method : `builtins.str`
-            The request method, This may be `GET`, `POST`, `PUT`, etc.
-        path: `builtins.str`
-            The bungie endpoint or path.
-            A path must look something like this
-            `Destiny2/3/Profile/46111239123/...`
-        **kwargs: `typing.Any`
-            Any other key words you'd like to pass through.
-
-        Returns
-        -------
-        `typing.Any`
-            Any object.
-        """
 
     @abc.abstractmethod
     async def fetch_manifest(self) -> bytes:
@@ -476,7 +450,7 @@ class RESTInterface(abc.ABC):
         /,
         *,
         filter: int = 0,
-        group_type: enums.GroupType = enums.GroupType.CLAN,
+        group_type: helpers.IntAnd[enums.GroupType] = enums.GroupType.CLAN,
     ) -> ResponseSig[helpers.JsonObject]:
         """Get information about the groups that a given member has applied to or been invited to.
 
@@ -640,6 +614,643 @@ class RESTInterface(abc.ABC):
         -------
         `ResponseSig[aiobungie.internal.helpers.JsonObject]`
             A JSON object of information related to the fetched milestone.
+        """
+
+    @abc.abstractmethod
+    def fetch_own_bungie_user(
+        self, access_token: str, /
+    ) -> ResponseSig[helpers.JsonObject]:
+        """Fetch a bungie user's accounts with the signed in user.
+        This GET method  requires a Bearer access token for the authorization.
+
+        .. note::
+            This requires OAuth2 scope enabled and the valid Bearer `access_token`.
+            This token should be stored somewhere safe and just passed as a parameter. e.g., A database.
+
+        Parameters
+        ----------
+        access_token : `builtins.str`
+            The bearer access token associated with the bungie account.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.internal.helpers.JsonObject]`
+            A JSON object of the bungie net user and destiny memberships of this account.
+        """
+
+    @abc.abstractmethod
+    def equip_item(
+        self,
+        access_token: str,
+        /,
+        item_id: int,
+        character_id: int,
+        membership_type: helpers.IntAnd[enums.MembershipType],
+    ) -> ResponseSig[None]:
+        """Equip an item to a character.
+
+        .. note::
+            This requires the OAuth2: MoveEquipDestinyItems scope.
+            Also You must have a valid Destiny account, and either be
+            in a social space, in orbit or offline.
+
+        Parameters
+        ----------
+        access_token : `builtins.str`
+            The bearer access token associated with the bungie account.
+        item_id : `builtins.int`
+            The item id.
+        character_id : `builtins.int`
+            The character's id to equip the item to.
+        membership_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`
+            The membership type assocaiated with this player.
+        """
+
+    @abc.abstractmethod
+    def equip_items(
+        self,
+        access_token: str,
+        /,
+        item_ids: list[int],
+        character_id: int,
+        membership_type: helpers.IntAnd[enums.MembershipType],
+    ) -> ResponseSig[None]:
+        """Equip multiple items to a character.
+
+        .. note::
+            This requires the OAuth2: MoveEquipDestinyItems scope.
+            Also You must have a valid Destiny account, and either be
+            in a social space, in orbit or offline.
+
+        Parameters
+        ----------
+        access_token : `builtins.str`
+            The bearer access token associated with the bungie account.
+        item_ids : `list[builtins.int]`
+            A list of item ids.
+        character_id : `builtins.int`
+            The character's id to equip the item to.
+        membership_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`
+            The membership type assocaiated with this player.
+        """
+
+    @abc.abstractmethod
+    def ban_clan_member(
+        self,
+        access_token: str,
+        /,
+        group_id: int,
+        membership_id: int,
+        membership_type: helpers.IntAnd[enums.MembershipType],
+        *,
+        length: int = 0,
+        comment: helpers.UndefinedOr[str] = helpers.Undefined,
+    ) -> ResponseSig[None]:
+        """Bans a member from the clan.
+
+        .. note::
+            This request requires OAuth2: oauth2: `AdminGroups` scope.
+
+        Parameters
+        ----------
+        access_token : `builtins.str`
+            The bearer access token associated with the bungie account.
+        group_id: `int`
+            The group id.
+        membership_id : `int`
+            The member id to ban.
+        membership_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`
+            The member's membership type.
+
+        Other Parameters
+        ----------------
+        length: `int`
+            An optional ban length.
+        comment: `aiobungie.internal.helpers.UndefinedOr[str]`
+            An optional comment to this ban. Default is `UNDEFINED`
+        """
+
+    @abc.abstractmethod
+    def unban_clan_member(
+        self,
+        access_token: str,
+        /,
+        group_id: int,
+        membership_id: int,
+        membership_type: helpers.IntAnd[enums.MembershipType],
+    ) -> ResponseSig[None]:
+        """Unbans a member from the clan.
+
+        .. note::
+            This request requires OAuth2: oauth2: `AdminGroups` scope.
+
+        Parameters
+        ----------
+        access_token : `builtins.str`
+            The bearer access token associated with the bungie account.
+        group_id: `int`
+            The group id.
+        membership_id : `int`
+            The member id to unban.
+        membership_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`
+            The member's membership type.
+        """
+
+    @abc.abstractmethod
+    def kick_clan_member(
+        self,
+        access_token: str,
+        /,
+        group_id: int,
+        membership_id: int,
+        membership_type: helpers.IntAnd[enums.MembershipType],
+    ) -> ResponseSig[helpers.JsonObject]:
+        """Kick a member from the clan.
+
+        .. note::
+            This request requires OAuth2: oauth2: `AdminGroups` scope.
+
+        Parameters
+        ----------
+        access_token : `builtins.str`
+            The bearer access token associated with the bungie account.
+        group_id: `int`
+            The group id.
+        membership_id : `int`
+            The member id to kick.
+        membership_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`
+            The member's membership type.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.internal.helpers.JsonObject]`
+            A JSON object of the group that the member has been kicked from.
+        """
+
+    @abc.abstractmethod
+    def edit_clan_options(
+        self,
+        access_token: str,
+        /,
+        group_id: int,
+        *,
+        invite_permissions_override: helpers.NoneOr[bool] = None,
+        update_culture_permissionOverride: helpers.NoneOr[bool] = None,
+        host_guided_game_permission_override: helpers.NoneOr[
+            typing.Literal[0, 1, 2]
+        ] = None,
+        update_banner_permission_override: helpers.NoneOr[bool] = None,
+        join_level: helpers.NoneOr[helpers.IntAnd[enums.ClanMemberType]] = None,
+    ) -> ResponseSig[None]:
+        """Edit the clan options.
+
+        Notes
+        -----
+        * This request requires OAuth2: oauth2: `AdminGroups` scope.
+        * All arguments will default to `None` if not provided. This does not include `access_token` and `group_id`
+
+        Parameters
+        ----------
+        access_token : `builtins.str`
+            The bearer access token associated with the bungie account.
+        group_id: `int`
+            The group id.
+
+        Other Parameters
+        ----------------
+        invite_permissions_override : `aiobungie.internal.helpers.NoneOr[bool]`
+            Minimum Member Level allowed to invite new members to group
+            Always Allowed: Founder, Acting Founder
+            True means admins have this power, false means they don't
+            Default is False for clans, True for groups.
+        update_culture_permissionOverride : `aiobungie.internal.helpers.NoneOr[bool]`
+            Minimum Member Level allowed to update group culture
+            Always Allowed: Founder, Acting Founder
+            True means admins have this power, false means they don't
+            Default is False for clans, True for groups.
+        host_guided_game_permission_override : `aiobungie.internal.helpers.NoneOr[typing.Literal[0, 1, 2]]`
+            Minimum Member Level allowed to host guided games
+            Always Allowed: Founder, Acting Founder, Admin
+            Allowed Overrides: `0` -> None, `1` -> Beginner `2` -> Member.
+            Default is Member for clans, None for groups, although this means nothing for groups.
+        update_banner_permission_override : `aiobungie.internal.helpers.NoneOr[bool]`
+            Minimum Member Level allowed to update banner
+            Always Allowed: Founder, Acting Founder
+            True means admins have this power, false means they don't
+            Default is False for clans, True for groups.
+        join_level : `aiobungie.ClanMemberType`
+            Level to join a member at when accepting an invite, application, or joining an open clan.
+            Default is `aiobungie.ClanMemberType.BEGINNER`
+        """
+
+    @abc.abstractmethod
+    def edit_clan(
+        self,
+        access_token: str,
+        /,
+        group_id: int,
+        *,
+        name: helpers.NoneOr[str] = None,
+        about: helpers.NoneOr[str] = None,
+        motto: helpers.NoneOr[str] = None,
+        theme: helpers.NoneOr[str] = None,
+        tags: helpers.NoneOr[typing.Sequence[str]] = None,
+        is_public: helpers.NoneOr[bool] = None,
+        locale: helpers.NoneOr[str] = None,
+        avatar_image_index: helpers.NoneOr[int] = None,
+        membership_option: helpers.NoneOr[
+            helpers.IntAnd[enums.MembershipOption]
+        ] = None,
+        allow_chat: helpers.NoneOr[bool] = None,
+        chat_security: helpers.NoneOr[typing.Literal[0, 1]] = None,
+        call_sign: helpers.NoneOr[str] = None,
+        homepage: helpers.NoneOr[typing.Literal[0, 1, 2]] = None,
+        enable_invite_messaging_for_admins: helpers.NoneOr[bool] = None,
+        default_publicity: helpers.NoneOr[typing.Literal[0, 1, 2]] = None,
+        is_public_topic_admin: helpers.NoneOr[bool] = None,
+    ) -> ResponseSig[None]:
+        """Edit a clan.
+
+        Notes
+        -----
+        * This request requires OAuth2: oauth2: `AdminGroups` scope.
+        * All arguments will default to `None` if not provided. This does not include `access_token` and `group_id`
+
+        Parameters
+        ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+        group_id: `int`
+            The group id to edit.
+
+        Other Parameters
+        ----------------
+        name : `aiobungie.internal.helpers.NoneOr[str]`
+            The name to edit the clan with.
+        about : `aiobungie.internal.helpers.NoneOr[str]`
+            The about section to edit the clan with.
+        motto : `aiobungie.internal.helpers.NoneOr[str]`
+            The motto section to edit the clan with.
+        theme : `aiobungie.internal.helpers.NoneOr[str]`
+            The theme name to edit the clan with.
+        tags : `aiobungie.internal.helpers.NoneOr[typing.Sequence[str]]`
+            A sequence of strings to replace the clan tags with.
+        is_public : `aiobungie.internal.helpers.NoneOr[bool]`
+            If provided and set to `True`, The clan will set to private.
+            If provided and set to `False`, The clan will set to public whether it was or not.
+        locale : `aiobungie.internal.helpers.NoneOr[str]`
+            The locale section to edit the clan with.
+        avatar_image_index : `aiobungie.internal.helpers.NoneOr[int]`
+            The clan avatar image index to edit the clan with.
+        membership_option : `aiobungie.internal.helpers.NoneOr[aiobungie.internal.helpers.IntAnd[aiobungie.MembershipOption]]` # noqa: E501 # Line too long
+            The clan membership option to edit it with.
+        allow_chat : `aiobungie.internal.helpers.NoneOr[bool]`
+            If provided and set to `True`, The clan members will be allowed to chat.
+            If provided and set to `False`, The clan members will not be allowed to chat.
+        chat_security : `aiobungie.internal.helpers.NoneOr[typing.Literal[0, 1]]`
+            If provided and set to `0`, The clan chat security will be edited to `Group` only.
+            If provided and set to `1`, The clan chat security will be edited to `Admin` only.
+        call_sign : `aiobungie.internal.helpers.NoneOr[str]`
+            The clan call sign to edit it with.
+        homepage : `aiobungie.internal.helpers.NoneOr[typing.Literal[0, 1, 2]]`
+            If provided and set to `0`, The clan chat homepage will be edited to `Wall`.
+            If provided and set to `1`, The clan chat homepage will be edited to `Forum`.
+            If provided and set to `0`, The clan chat homepage will be edited to `AllianceForum`.
+        enable_invite_messaging_for_admins : `aiobungie.internal.helpers.NoneOr[bool]`
+            ???
+        default_publicity : `aiobungie.internal.helpers.NoneOr[typing.Literal[0, 1, 2]]`
+            If provided and set to `0`, The clan chat publicity will be edited to `Public`.
+            If provided and set to `1`, The clan chat publicity will be edited to `Alliance`.
+            If provided and set to `2`, The clan chat publicity will be edited to `Private`.
+        is_public_topic_admin : `aiobungie.internal.helpers.NoneOr[bool]`
+            ???
+        """
+
+    @abc.abstractmethod
+    def fetch_friends(self, access_token: str, /) -> ResponseSig[helpers.JsonObject]:
+        """Fetch bungie friend list.
+
+        .. note::
+            This requests OAuth2: ReadUserData scope.
+
+        Parameters
+        -----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.internal.helpers.JsonObject]`
+            A JSON object of an array of the bungie friends's data.
+        """
+
+    @abc.abstractmethod
+    def fetch_friend_requests(
+        self, access_token: str, /
+    ) -> ResponseSig[helpers.JsonObject]:
+        """Fetch pending bungie friend requests queue.
+
+        .. note::
+            This requests OAuth2: ReadUserData scope.
+
+        Parameters
+        -----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.internal.helpers.JsonObject]`
+            A JSON object of incoming requests and outgoing requests.
+        """
+
+    @abc.abstractmethod
+    def accept_friend_request(
+        self, access_token: str, /, member_id: int
+    ) -> ResponseSig[None]:
+        """Accepts a friend relationship with the target user. The user must be on your incoming friend request list.
+
+        .. note::
+            This request requires OAuth2: BnetWrite scope.
+
+        Parameters
+        -----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+        member_id : `int`
+            The member's id to accept.
+        """
+
+    @abc.abstractmethod
+    def send_friend_request(
+        self, access_token: str, /, member_id: int
+    ) -> ResponseSig[None]:
+        """Requests a friend relationship with the target user.
+
+        .. note::
+            This request requires OAuth2: BnetWrite scope.
+
+        Parameters
+        -----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+        member_id: `int`
+            The member's id to send the request to.
+        """
+
+    @abc.abstractmethod
+    def decline_friend_request(
+        self, access_token: str, /, member_id: int
+    ) -> ResponseSig[None]:
+        """Decline a friend request with the target user. The user must be in your incoming friend request list.
+
+        .. note::
+            This request requires OAuth2: BnetWrite scope.
+
+        Parameters
+        -----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+        member_id : `int`
+            The member's id to decline.
+        """
+
+    @abc.abstractmethod
+    def remove_friend(self, access_token: str, /, member_id: int) -> ResponseSig[None]:
+        """Removes a friend from your friend list. The user must be in your friend list.
+
+        .. note::
+            This request requires OAuth2: BnetWrite scope.
+
+        Parameters
+        -----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+        member_id : `int`
+            The member's id to remove.
+        """
+
+    @abc.abstractmethod
+    def remove_friend_request(
+        self, access_token: str, /, member_id: int
+    ) -> ResponseSig[None]:
+        """Removes a friend from your friend list requests. The user must be in your outgoing request list.
+
+        .. note :
+            This request requires OAuth2: BnetWrite scope.
+
+        Parameters
+        -----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+        member_id: `int`
+            The member's id to remove from the requested friend list.
+        """
+
+    @abc.abstractmethod
+    def approve_all_pending_group_users(
+        self,
+        access_token: str,
+        /,
+        group_id: int,
+        message: helpers.UndefinedOr[str] = helpers.Undefined,
+    ) -> ResponseSig[None]:
+        """Apporve all pending users for the given group id.
+
+        .. note::
+            This request requires OAuth2: AdminGroups scope.
+
+        Parameters
+        ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+        group_id: `int`
+            The given group id.
+
+        Other Parameters
+        ----------------
+        message: `aiobungie.internal.helpers.UndefinedOr[str]`
+            An optional message to send with the request. Default is `UNDEFINED`.
+        """
+
+    @abc.abstractmethod
+    def deny_all_pending_group_users(
+        self,
+        access_token: str,
+        /,
+        group_id: int,
+        *,
+        message: helpers.UndefinedOr[str] = helpers.Undefined,
+    ) -> ResponseSig[None]:
+        """Deny all pending users for the given group id.
+
+        .. note::
+            This request requires OAuth2: AdminGroups scope.
+
+        Parameters
+        ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+        group_id: `int`
+            The given group id.
+
+        Other Parameters
+        ----------------
+        message: `aiobungie.internal.helpers.UndefinedOr[str]`
+            An optional message to send with the request. Default is `UNDEFINED`.
+        """
+
+    @abc.abstractmethod
+    def add_optional_conversation(
+        self,
+        access_token: str,
+        /,
+        group_id: int,
+        *,
+        name: helpers.UndefinedOr[str] = helpers.Undefined,
+        security: typing.Literal[0, 1] = 0,
+    ) -> ResponseSig[None]:
+        """Add a new chat channel to a group.
+
+        .. note::
+            This request requires OAuth2: AdminGroups scope.
+
+        Parameters
+        ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+        group_id: `int`
+            The given group id.
+
+        Other parameters
+        ----------------
+        name: `aiobungie.internal.helpers.UndefinedOr[str]`
+            The chat name. Default to `UNDEFINED`
+        security: `typing.Literal[0, 1]`
+            The security level of the chat.
+
+            If provided and set to 0, It will be to `Group` only.
+            If provided and set to 1, It will be `Admins` only.
+            Default is `0`
+        """
+
+    @abc.abstractmethod
+    def edit_optional_conversation(
+        self,
+        access_token: str,
+        /,
+        group_id: int,
+        conversation_id: int,
+        *,
+        name: helpers.UndefinedOr[str] = helpers.Undefined,
+        security: typing.Literal[0, 1] = 0,
+        enable_chat: bool = False,
+    ) -> ResponseSig[None]:
+        """Edit the settings of this chat channel.
+
+        .. note::
+            This request requires OAuth2: AdminGroups scope.
+
+        Parameters
+        ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+        group_id : `int`
+            The given group id.
+        conversation_id : `int`
+            The conversation/chat id.
+
+        Other parameters
+        ----------------
+        name: `aiobungie.internal.helpers.UndefinedOr[str]`
+            The new chat name. Default to `UNDEFINED`
+        security: `typing.Literal[0, 1]`
+            The new security level of the chat.
+
+            If provided and set to 0, It will be to `Group` only.
+            If provided and set to 1, It will be `Admins` only.
+            Default is `0`
+        enable_chat : `bool`
+            Whether to enable chatting or not.
+            If set to `True` then chatting will be enabled. Otherwise it will be disabled.
+        """
+
+    @abc.abstractmethod
+    def transfer_item(
+        self,
+        access_token: str,
+        /,
+        item_id: int,
+        item_hash: int,
+        character_id: int,
+        member_type: helpers.IntAnd[enums.MembershipType],
+        *,
+        stack_size: int = 1,
+        vault: bool = False,
+    ) -> ResponseSig[None]:
+        """Transfer an item from / to your vault.
+
+        Notes
+        -----
+        * This method requires OAuth2: MoveEquipDestinyItems scope.
+        * This method requires both item id and hash.
+
+        Parameters
+        ----------
+        item_id : `int`
+            The item id you to transfer.
+        item_hash : `int`
+            The item hash.
+        character_id : `int`
+            The character id to transfer the item from/to.
+        member_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`
+            The user membership type.
+
+        Other Parameters
+        ----------------
+        stack_size : `int`
+            The item stack size.
+        valut : `bool`
+            Whether to trasnfer this item to your valut or not. Defaults to `False`.
+        """
+
+    @abc.abstractmethod
+    def pull_item(
+        self,
+        access_token: str,
+        /,
+        item_id: int,
+        item_hash: int,
+        character_id: int,
+        member_type: helpers.IntAnd[enums.MembershipType],
+        *,
+        stack_size: int = 1,
+        vault: bool = False,
+    ) -> ResponseSig[None]:
+        """pull an item from the postmaster.
+
+        Notes
+        -----
+        * This method requires OAuth2: MoveEquipDestinyItems scope.
+        * This method requires both item id and hash.
+
+        Parameters
+        ----------
+        item_id : `int`
+            The item id to pull.
+        item_hash : `int`
+            The item hash.
+        character_id : `int`
+            The character id to pull the item to.
+        member_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`
+            The user membership type.
+
+        Other Parameters
+        ----------------
+        stack_size : `int`
+            The item stack size.
+        valut : `bool`
+            Whether to pill this item to your valut or not. Defaults to `False`.
         """
 
     @abc.abstractmethod

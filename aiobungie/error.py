@@ -39,12 +39,15 @@ __all__: list[str] = [
     "Unauthorized",
     "ResponseError",
     "RateLimitedError",
+    "InternalServerError",
 ]
 
 import typing
 
 import attr
-import multidict
+
+if typing.TYPE_CHECKING:
+    import multidict
 
 
 class AiobungieError(Exception):
@@ -56,7 +59,7 @@ class HTTPException(AiobungieError):
     """Exception for handling `aiobungie.rest.RESTClient` requests errors."""
 
     message: str = attr.field(default="")
-    long_message: typing.Optional[str] = attr.field(default=None)
+    long_message: str = attr.field(default="")
 
 
 @attr.define(auto_exc=True, repr=False, weakref_slot=False, kw_only=True)
@@ -66,6 +69,14 @@ class RateLimitedError(HTTPException):
     headers: multidict.CIMultiDictProxy[str] = attr.field(default=None)
     retry_after: float = attr.field(default=0.0)
     url: str = attr.field(default="")
+
+
+@attr.define(auto_exc=True, repr=False, weakref_slot=False)
+class InternalServerError(HTTPException):
+    """Raised for other 5xx errors."""
+
+    message: str = attr.field(default="")
+    long_message: str = attr.field(default="")
 
 
 class NotFound(AiobungieError):

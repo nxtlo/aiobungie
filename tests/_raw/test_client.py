@@ -24,43 +24,45 @@
 
 from __future__ import annotations
 
-import asyncio
-import os
-import typing
-
 import aiobungie
+import os
+import sys
+import typing
+import inspect
+import logging
+import asyncio
 
-client = aiobungie.Client(os.environ['CLIENT_TOKEN'])
+try:
+    import dotenv
+
+    dotenv.load_dotenv(verbose=True)
+except ImportError:
+    pass
+
+# NOTE: If you're on unix based system make sure to run this
+# in your terminal. export CLIENT_TOKEN='TOKEN'
+
+client = aiobungie.Client(os.environ["CLIENT_TOKEN"])
 MID = 4611686018484639825
+_LOG = logging.getLogger(__name__)
+logging.basicConfig(level=logging.DEBUG)
 
-def view(func: typing.Callable[[], typing.Any]) -> typing.Callable[..., typing.Any]:
-    import logging
-    log = logging.getLogger(__name__)
-    logging.basicConfig(level=logging.DEBUG)
-    log.debug(
-        f"Func {func.__name__} Returns {func.__annotations__.get('return', 'Undefined')} Passed."
-    )
-    return lambda *args, **kwargs: func(*args, **kwargs)
 
-@view
 async def test_users() -> aiobungie.crate.user.BungieUser:
     u = await client.fetch_user(20315338)
     return u
 
 
-@view
 async def test_user_themese() -> typing.Sequence[aiobungie.crate.user.UserThemes]:
     ut = await client.fetch_user_themes()
     return ut
 
 
-@view
 async def test_hard_types() -> aiobungie.crate.user.HardLinkedMembership:
     uht = await client.fetch_hard_types(76561198141430157)
     return uht
 
 
-@view
 async def test_clan_from_id() -> aiobungie.crate.Clan:
     c = await client.fetch_clan_from_id(4389205)
     members = await c.fetch_members()
@@ -70,7 +72,6 @@ async def test_clan_from_id() -> aiobungie.crate.Clan:
     return c
 
 
-@view
 async def test_clan() -> aiobungie.crate.Clan:
     c = await client.fetch_clan("Nuanceㅤ ")
     members = await c.fetch_members()
@@ -80,13 +81,11 @@ async def test_clan() -> aiobungie.crate.Clan:
     return c
 
 
-@view
 async def test_fetch_clan_member() -> aiobungie.crate.ClanMember:
     m = await client.fetch_clan_member(4389205, "Fate")
     return m
 
 
-@view
 async def test_fetch_clan_members() -> typing.Sequence[aiobungie.crate.ClanMember]:
     ms = await client.fetch_clan_members(4389205)
     for member in ms:
@@ -95,14 +94,13 @@ async def test_fetch_clan_members() -> typing.Sequence[aiobungie.crate.ClanMembe
             print(repr(fetched_user))
     return ms
 
-@view
+
 async def test_fetch_inventory_item() -> aiobungie.crate.InventoryEntity:
     i = await client.fetch_inventory_item(1397707366)
     print(i.about, i.damage, i.description, i.icon)
     return i
 
 
-@view
 async def test_fetch_app() -> aiobungie.crate.Application:
     a = await client.fetch_app(33226)
     fetched_user = await a.owner.fetch_self()
@@ -110,52 +108,53 @@ async def test_fetch_app() -> aiobungie.crate.Application:
     return a
 
 
-@view
 async def test_profile() -> aiobungie.crate.Profile:
     pf = await client.fetch_profile(MID, aiobungie.MembershipType.STEAM)
-    warlock = await pf.warlock()
-    titan = await pf.titan()
-    hunter = await pf.hunter()
+    warlock = await pf.fetch_warlock()
+    titan = await pf.fetch_titan()
+    hunter = await pf.fetch_hunter()
     print(warlock, titan, hunter)
     return pf
 
 
-@view
-async def test_player() -> typing.Sequence[typing.Optional[aiobungie.crate.DestinyUser]]:
+async def test_player() -> typing.Sequence[
+    typing.Optional[aiobungie.crate.DestinyUser]
+]:
     p = await client.fetch_player("Datto#6446")
     profile = await p[0].fetch_self_profile()
     print(repr(profile))
-    print(repr(await profile.titan()))
+    print(repr(await profile.fetch_titan()))
     return p
 
 
-@view
 async def test_char() -> aiobungie.crate.Character:
     c = await client.fetch_character(
         MID, aiobungie.MembershipType.STEAM, aiobungie.Class.WARLOCK
     )
     return c
 
-@view
+
 async def test_membership_types_from_id() -> aiobungie.crate.User:
     u = await client.fetch_membership_from_id(MID)
     return u
 
-@view
+
 async def test_search_users() -> typing.Any:
     x = await client.search_users("Fate怒")
     return x
 
-@view
-async def test_clan_conves():
+
+async def test_clan_conves() -> typing.Sequence[aiobungie.crate.clans.ClanConversation]:
     return await client.fetch_clan_conversations(881267)
 
-@view
-async def test_clan_admins():
+
+async def test_clan_admins() -> typing.Sequence[aiobungie.crate.clans.ClanAdmin]:
     return await client.fetch_clan_admins(4389205)
 
-@view
-async def test_groups_for_member():
+
+async def test_groups_for_member() -> typing.Optional[
+    aiobungie.crate.clans.GroupMember
+]:
     obj = await client.fetch_groups_for_member(MID, aiobungie.MembershipType.STEAM)
     if obj is None:
         return None
@@ -163,18 +162,24 @@ async def test_groups_for_member():
     print(repr(up_to_date_clan_obj))
     return obj
 
-@view
-async def test_potential_groups_for_member():
-    obj = await client.fetch_potential_groups_for_member(MID, aiobungie.MembershipType.STEAM)
+
+async def test_potential_groups_for_member() -> typing.Optional[
+    aiobungie.crate.GroupMember
+]:
+    obj = await client.fetch_potential_groups_for_member(
+        MID, aiobungie.MembershipType.STEAM
+    )
     if obj is None:
         return None
     up_to_date_clan_obj = await obj.fetch_self_clan()
     print(repr(up_to_date_clan_obj))
     return obj
 
-@view
-async def test_linked_profiles():
-    obj = await client.fetch_linked_profiles(4611686018468008855, aiobungie.MembershipType.ALL, all=True)
+
+async def test_linked_profiles() -> None:
+    obj = await client.fetch_linked_profiles(
+        4611686018468008855, aiobungie.MembershipType.ALL, all=True
+    )
     print(repr(obj.profiles_with_errors), repr(obj.bungie))
     try:
         async for profile in obj:
@@ -184,42 +189,34 @@ async def test_linked_profiles():
     except RuntimeError:
         pass
 
-@view
-async def test_clan_banners():
-    cb = await client.fetch_clan_banners()
-    for banner in cb:
-        print(repr(banner))
 
-@view
-async def test_public_milestones_content():
+async def test_clan_banners() -> typing.Sequence[aiobungie.crate.ClanBanner]:
+    cb = await client.fetch_clan_banners()
+    return cb
+
+
+async def test_public_milestones_content() -> aiobungie.crate.Milestone:
     cb = await client.fetch_public_milestone_content(4253138191)
-    print(repr(cb))
+    return cb
+
+
+async def test_static_request() -> None:
+    return await client.rest.static_request(
+        "GET",
+        f"Destiny2/3/Profile/{MID}/?components={aiobungie.Component.EQUIPED_ITEMS.value}",
+    )
+
 
 async def main() -> None:
-    coros = [
-        test_clan_banners(),
-        test_linked_profiles(),
-        test_clan_admins(),
-        test_player(),
-        test_users(),
-        test_user_themese(),
-        test_hard_types(),
-        test_clan(),
-        test_clan_from_id(),
-        test_fetch_clan_member(),
-        test_fetch_inventory_item(),
-        test_profile(),
-        test_char(),
-        test_membership_types_from_id(),
-        test_search_users(),
-        test_fetch_app(),
-        test_clan_conves(),
-        test_groups_for_member(),
-        test_potential_groups_for_member(),
-        test_public_milestones_content()
-    ]
+    coros: typing.MutableSequence[asyncio.Future] = []
+    for n, coro in inspect.getmembers(
+        sys.modules[__name__], inspect.iscoroutinefunction
+    ):
+        if n == "main" or not n.startswith("test_"):
+            continue
+        coros.append(coro())
     print(await asyncio.gather(*coros))
-    await client.rest.close()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     raise SystemExit(client.run(main()))

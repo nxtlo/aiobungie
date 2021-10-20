@@ -31,7 +31,7 @@ import http
 import logging
 import sys
 import typing
-from urllib.parse import quote
+from urllib import parse
 
 import aiohttp
 import attr
@@ -47,18 +47,18 @@ from aiobungie.internal import helpers
 if typing.TYPE_CHECKING:
     import types
 
-ResponseSigT = typing.TypeVar(
-    "ResponseSigT",
-    covariant=True,
-    bound=typing.Union[helpers.JsonArray, helpers.JsonObject],
-)
-"""The signature of the response."""
+    ResponseSigT = typing.TypeVar(
+        "ResponseSigT",
+        covariant=True,
+        bound=typing.Union[helpers.JsonArray, helpers.JsonObject, None],
+    )
+    """The signature of the response."""
 
-ResponseSig = typing.Coroutine[typing.Any, typing.Any, ResponseSigT]
-"""A type hint for a general coro method that returns a type
-that's mostly going to be on of `aiobungie.internal.helpers.JsonObject`
-or `aiobungie.internal.helpers.JsonArray`
-"""
+    ResponseSig = typing.Coroutine[typing.Any, typing.Any, ResponseSigT]
+    """A type hint for a general coro method that returns a type
+    that's mostly going to be on of `aiobungie.internal.helpers.JsonObject`
+    or `aiobungie.internal.helpers.JsonArray`
+    """
 
 _APP_JSON: typing.Final[str] = "application/json"
 _LOG: typing.Final[logging.Logger] = logging.getLogger("aiobungie.rest")
@@ -87,8 +87,15 @@ async def handle_errors(
 
     if 400 <= status < 500:
         return error.ResponseError(*data, status)
+
+    # For some WEIRD reason bungie doesn't follow the http
+    # error codes protocol and almost return 5xx on any failed request
+    # except very few. The only way currently to handle this is by their
+    # custom error codes.
     elif 500 <= status < 600:
-        # High order errors.
+        if msg in ("ApiKeyMissingFromRequest", "WebAuthRequired"):
+            # No API key or method requires OAuth2 most likely.
+            return error.Unauthorized(*data)
         if msg == "ClanNotFound":
             return error.ClanNotFound(*data)
         elif msg == "NotFound":
@@ -100,7 +107,9 @@ async def handle_errors(
         elif msg == "UserCannotFindRequestedUser":
             return error.UserNotFound(*data)
         else:
-            return error.AiobungieError(*data)
+            return error.InternalServerError(
+                message=str(msg), long_message=from_json.get("Message", "")
+            )
     else:
         return error.HTTPException(*data)
 
@@ -221,6 +230,7 @@ class RESTClient(interfaces.RESTInterface):
 
     @typing.final
     async def close(self) -> None:
+        _LOG.info("Closing REST client.")
         await self._acquire_session().close()
 
     @typing.final
@@ -360,7 +370,7 @@ class RESTClient(interfaces.RESTInterface):
         /,
     ) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request("GET", f"User/GetMembershipsById/{id}/{type}")
+        return self._request("GET", f"User/GetMembershipsById/{id}/{int(type)}")
 
     def static_request(
         self, method: str, path: str, **kwargs: typing.Any
@@ -376,7 +386,7 @@ class RESTClient(interfaces.RESTInterface):
     ) -> ResponseSig[helpers.JsonArray]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
-            "GET", f"Destiny2/SearchDestinyPlayer/{int(type)}/{quote(name)}/"
+            "GET", f"Destiny2/SearchDestinyPlayer/{int(type)}/{parse.quote(name)}/"
         )
 
     def search_users(self, name: str, /) -> ResponseSig[helpers.JsonObject]:
@@ -435,11 +445,6 @@ class RESTClient(interfaces.RESTInterface):
             f"{member_id}/Character/{character_id}/Stats/Activities"
             f"/?mode={int(mode)}&count={limit}&page={page}",
         )
-
-    def fetch_post_activity(self, instance: int, /) -> ResponseSig[helpers.JsonObject]:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        # return self._request("GET", f"Destiny2/Stats/PostGameCarnageReport/{instance}")
-        raise NotImplementedError
 
     def fetch_vendor_sales(self) -> ResponseSig[typing.Any]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
@@ -543,24 +548,413 @@ class RESTClient(interfaces.RESTInterface):
         )
 
     def fetch_clan_banners(self) -> ResponseSig[helpers.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request("GET", "Destiny2/Clan/ClanBannerDictionary/")
 
     def fetch_public_milestones(self) -> ResponseSig[helpers.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request("GET", "Destiny2/Milestones/")
 
     def fetch_public_milestone_content(
         self, milestone_hash: int, /
     ) -> ResponseSig[helpers.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request("GET", f"Destiny2/Milestones/{milestone_hash}/Content/")
+
+    # * OAuth2 methods.
+
+    def fetch_own_bungie_user(
+        self, access_token: str, /
+    ) -> ResponseSig[helpers.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        return self._request(
+            "GET",
+            "User/GetMembershipsForCurrentUser/",
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+
+    def equip_item(
+        self,
+        access_token: str,
+        /,
+        item_id: int,
+        character_id: int,
+        membership_type: helpers.IntAnd[enums.MembershipType],
+    ) -> ResponseSig[None]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        payload = {
+            "itemId": item_id,
+            "characterId": character_id,
+            "membershipType": int(membership_type),
+        }
+
+        return self._request(
+            "POST",
+            "Destiny2/Actions/Items/EquipItem/",
+            json=payload,
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+
+    def equip_items(
+        self,
+        access_token: str,
+        /,
+        item_ids: list[int],
+        character_id: int,
+        membership_type: helpers.IntAnd[enums.MembershipType],
+    ) -> ResponseSig[None]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        payload = {
+            "itemIds": item_ids,
+            "characterId": character_id,
+            "membershipType": int(membership_type),
+        }
+        return self._request(
+            "POST",
+            "Destiny2/Actions/Items/EquipItems/",
+            json=payload,
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+
+    def ban_clan_member(
+        self,
+        access_token: str,
+        /,
+        group_id: int,
+        membership_id: int,
+        membership_type: helpers.IntAnd[enums.MembershipType],
+        *,
+        length: int = 0,
+        comment: helpers.UndefinedOr[str] = helpers.Undefined,
+    ) -> ResponseSig[None]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        payload = {"comment": str(comment), "length": length}
+        return self._request(
+            "POST",
+            f"GroupV2/{group_id}/Members/{int(membership_type)}/{membership_id}/Ban/",
+            json=payload,
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+
+    def unban_clan_member(
+        self,
+        access_token: str,
+        /,
+        group_id: int,
+        membership_id: int,
+        membership_type: helpers.IntAnd[enums.MembershipType],
+    ) -> ResponseSig[None]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        return self._request(
+            "POST",
+            f"GroupV2/{group_id}/Members/{int(membership_type)}/{membership_id}/Unban/",
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+
+    def kick_clan_member(
+        self,
+        access_token: str,
+        /,
+        group_id: int,
+        membership_id: int,
+        membership_type: helpers.IntAnd[enums.MembershipType],
+    ) -> ResponseSig[helpers.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        return self._request(
+            "POST",
+            f"GroupV2/{group_id}/Members/{int(membership_type)}/{membership_id}/Kick/",
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+
+    def edit_clan(
+        self,
+        access_token: str,
+        /,
+        group_id: int,
+        *,
+        name: helpers.NoneOr[str] = None,
+        about: helpers.NoneOr[str] = None,
+        motto: helpers.NoneOr[str] = None,
+        theme: helpers.NoneOr[str] = None,
+        tags: helpers.NoneOr[typing.Sequence[str]] = None,
+        is_public: helpers.NoneOr[bool] = None,
+        locale: helpers.NoneOr[str] = None,
+        avatar_image_index: helpers.NoneOr[int] = None,
+        membership_option: helpers.NoneOr[
+            helpers.IntAnd[enums.MembershipOption]
+        ] = None,
+        allow_chat: helpers.NoneOr[bool] = None,
+        chat_security: helpers.NoneOr[typing.Literal[0, 1]] = None,
+        call_sign: helpers.NoneOr[str] = None,
+        homepage: helpers.NoneOr[typing.Literal[0, 1, 2]] = None,
+        enable_invite_messaging_for_admins: helpers.NoneOr[bool] = None,
+        default_publicity: helpers.NoneOr[typing.Literal[0, 1, 2]] = None,
+        is_public_topic_admin: helpers.NoneOr[bool] = None,
+    ) -> ResponseSig[None]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        payload = {
+            "name": name,
+            "about": about,
+            "motto": motto,
+            "theme": theme,
+            "tags": tags,
+            "isPublic": is_public,
+            "avatarImageIndex": avatar_image_index,
+            "isPublicTopicAdminOnly": is_public_topic_admin,
+            "allowChat": allow_chat,
+            "chatSecurity": chat_security,
+            "callsign": call_sign,
+            "homepage": homepage,
+            "enableInvitationMessagingForAdmins": enable_invite_messaging_for_admins,
+            "defaultPublicity": default_publicity,
+            "locale": locale,
+        }
+        if membership_option is not None:
+            payload["membershipOption"] = int(membership_option)
+
+        return self._request(
+            "POST",
+            f"GroupV2/{group_id}/Edit",
+            json=payload,
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+
+    def edit_clan_options(
+        self,
+        access_token: str,
+        /,
+        group_id: int,
+        *,
+        invite_permissions_override: helpers.NoneOr[bool] = None,
+        update_culture_permissionOverride: helpers.NoneOr[bool] = None,
+        host_guided_game_permission_override: helpers.NoneOr[
+            typing.Literal[0, 1, 2]
+        ] = None,
+        update_banner_permission_override: helpers.NoneOr[bool] = None,
+        join_level: helpers.NoneOr[helpers.IntAnd[enums.ClanMemberType]] = None,
+    ) -> ResponseSig[None]:
+
+        payload = {
+            "InvitePermissionOverride": invite_permissions_override,
+            "UpdateCulturePermissionOverride": update_culture_permissionOverride,
+            "HostGuidedGamePermissionOverride": host_guided_game_permission_override,
+            "UpdateBannerPermissionOverride": update_banner_permission_override,
+            "JoinLevel": int(join_level) if join_level else None,
+        }
+
+        return self._request(
+            "POST",
+            f"GroupV2/{group_id}/EditFounderOptions",
+            json=payload,
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+
+    def fetch_friends(self, access_token: str, /) -> ResponseSig[helpers.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        return self._request(
+            "POST",
+            "Social/Friends",
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+
+    def fetch_friend_requests(
+        self, access_token: str, /
+    ) -> ResponseSig[helpers.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        return self._request(
+            "POST",
+            "Social/Friends/Requests",
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+
+    def accept_friend_request(
+        self, access_token: str, /, member_id: int
+    ) -> ResponseSig[None]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        return self._request(
+            "POST",
+            f"Social/Friends/Requests/Accept/{member_id}",
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+
+    def send_friend_request(
+        self, access_token: str, /, member_id: int
+    ) -> ResponseSig[None]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        return self._request(
+            "POST",
+            f"Social/Friends/Add/{member_id}",
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+
+    def decline_friend_request(
+        self, access_token: str, /, member_id: int
+    ) -> ResponseSig[None]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        return self._request(
+            "POST",
+            f"Social/Friends/Requests/Decline/{member_id}",
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+
+    def remove_friend(self, access_token: str, /, member_id: int) -> ResponseSig[None]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        return self._request(
+            "POST",
+            f"Social/Friends/Remove/{member_id}",
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+
+    def remove_friend_request(
+        self, access_token: str, /, member_id: int
+    ) -> ResponseSig[None]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>
+        return self._request(
+            "POST",
+            f"Social/Friends/Requests/Remove/{member_id}",
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+
+    def approve_all_pending_group_users(
+        self,
+        access_token: str,
+        /,
+        group_id: int,
+        message: helpers.UndefinedOr[str] = helpers.Undefined,
+    ) -> ResponseSig[None]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>
+        return self._request(
+            "POST",
+            f"GroupV2/{group_id}/Members/ApproveAll",
+            headers={"Authorization": f"Bearer {access_token}"},
+            json={"message": str(message)},
+        )
+
+    def deny_all_pending_group_users(
+        self,
+        access_token: str,
+        /,
+        group_id: int,
+        message: helpers.UndefinedOr[str] = helpers.Undefined,
+    ) -> ResponseSig[None]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>
+        return self._request(
+            "POST",
+            f"GroupV2/{group_id}/Members/DenyAll",
+            headers={"Authorization": f"Bearer {access_token}"},
+            json={"message": str(message)},
+        )
+
+    def add_optional_conversation(
+        self,
+        access_token: str,
+        /,
+        group_id: int,
+        *,
+        name: helpers.UndefinedOr[str] = helpers.Undefined,
+        security: typing.Literal[0, 1] = 0,
+    ) -> ResponseSig[None]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>
+        payload = {"chatName": str(name), "chatSecurity": security}
+        return self._request(
+            "POST",
+            f"GroupV2/{group_id}/OptionalConversations/Add",
+            json=payload,
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+
+    def edit_optional_conversation(
+        self,
+        access_token: str,
+        /,
+        group_id: int,
+        conversation_id: int,
+        *,
+        name: helpers.UndefinedOr[str] = helpers.Undefined,
+        security: typing.Literal[0, 1] = 0,
+        enable_chat: bool = False,
+    ) -> ResponseSig[None]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>
+        payload = {
+            "chatEnabled": enable_chat,
+            "chatName": str(name),
+            "chatSecurity": security,
+        }
+        return self._request(
+            "POST",
+            f"GroupV2/{group_id}/OptionalConversations/Edit/{conversation_id}",
+            json=payload,
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+
+    def transfer_item(
+        self,
+        access_token: str,
+        /,
+        item_id: int,
+        item_hash: int,
+        character_id: int,
+        member_type: helpers.IntAnd[enums.MembershipType],
+        *,
+        stack_size: int = 1,
+        vault: bool = False,
+    ) -> ResponseSig[None]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>
+        payload = {
+            "characterId": character_id,
+            "membershipType": int(member_type),
+            "itemId": item_id,
+            "itemReferenceHash": item_hash,
+            "stackSize": stack_size,
+            "transferToVault": vault,
+        }
+        return self._request(
+            "POST",
+            "Destiny2/Actions/Items/PullFromPostmaster",
+            json=payload,
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+
+    def pull_item(
+        self,
+        access_token: str,
+        /,
+        item_id: int,
+        item_hash: int,
+        character_id: int,
+        member_type: helpers.IntAnd[enums.MembershipType],
+        *,
+        stack_size: int = 1,
+        vault: bool = False,
+    ) -> ResponseSig[None]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>
+        payload = {
+            "characterId": character_id,
+            "membershipType": int(member_type),
+            "itemId": item_id,
+            "itemReferenceHash": item_hash,
+            "stackSize": stack_size,
+            "transferToVault": vault,
+        }
+        return self._request(
+            "POST",
+            "Destiny2/Actions/Items/TransferItem",
+            json=payload,
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+
+    # * Not implemented yet.
 
     def fetch_item(
         self, member_id: int, item_id: int, /
     ) -> ResponseSig[helpers.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         raise NotImplementedError
 
     def fetch_clan_weekly_rewards(
         self, clan_id: int, /
     ) -> ResponseSig[helpers.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         raise NotImplementedError
 
     def fetch_weapon_history(
@@ -569,4 +963,10 @@ class RESTClient(interfaces.RESTInterface):
         member_id: int,
         member_type: helpers.IntAnd[enums.MembershipType],
     ) -> ResponseSig[helpers.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        raise NotImplementedError
+
+    def fetch_post_activity(self, instance: int, /) -> ResponseSig[helpers.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        # return self._request("GET", f"Destiny2/Stats/PostGameCarnageReport/{instance}")
         raise NotImplementedError

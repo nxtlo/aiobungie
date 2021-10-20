@@ -25,8 +25,6 @@
 
 from __future__ import annotations
 
-from aiobungie.crate import user
-
 __all__ = (
     "Clan",
     "ClanMember",
@@ -38,18 +36,19 @@ __all__ = (
 )
 
 import typing
-from datetime import datetime
 
 import attr
 
 from aiobungie import url
-from aiobungie.crate.user import UserLike
-from aiobungie.internal import assets
+from aiobungie.crate import user
+from aiobungie.internal import enums
 from aiobungie.internal import helpers
-from aiobungie.internal import traits
-from aiobungie.internal.enums import ClanMemberType
-from aiobungie.internal.enums import GroupType
-from aiobungie.internal.enums import MembershipType
+
+if typing.TYPE_CHECKING:
+    from datetime import datetime
+
+    from aiobungie.internal import assets
+    from aiobungie.internal import traits
 
 
 @attr.define(kw_only=True, hash=False, weakref_slot=False)
@@ -65,7 +64,7 @@ class ClanFeatures:
     capabilities: int = attr.field(repr=False)
     """An int that represents the clan's capabilities."""
 
-    membership_types: typing.List[MembershipType] = attr.field(repr=True)
+    membership_types: typing.List[enums.MembershipType] = attr.field(repr=True)
     """The clan's membership types."""
 
     invite_permissions: bool = attr.field(repr=False)
@@ -84,6 +83,9 @@ class ClanFeatures:
 class ClanConversation:
     """Represents a clan conversation."""
 
+    net: traits.Netrunner = attr.field(repr=False)
+    """A network state used for making external requests."""
+
     group_id: int = attr.field(repr=True)
     """The clan or group's id."""
 
@@ -99,6 +101,54 @@ class ClanConversation:
     security: int = attr.field(repr=False)
     """Conversation's security level."""
 
+    async def edit(
+        self,
+        access_token: str,
+        /,
+        *,
+        name: helpers.UndefinedOr[str] = helpers.Undefined,
+        security: typing.Literal[0, 1] = 0,
+        enable_chat: bool = False,
+    ) -> None:
+        """Edit the settings of this chat/conversation channel.
+
+        ..note::
+            This request requires OAuth2: AdminGroups scope.
+
+        Parameters
+        ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+
+        Other parameters
+        ----------------
+        name: `aiobungie.internal.helpers.UndefinedOr[str]`
+            The new chat name. Default to `UNDEFINED`
+        security: `typing.Literal[0, 1]`
+            The new security level of the chat.
+
+            If provided and set to 0, It will be to `Group` only.
+            If provided and set to 1, It will be `Admins` only.
+            Default is `0`
+        enable_chat : `bool`
+            Whether to enable chatting or not.
+            If set to `True` then chatting will be enabled. Otherwise it will be disabled.
+        """
+        await self.net.request.rest.edit_optional_conversation(
+            access_token,
+            self.group_id,
+            self.id,
+            name=name,
+            security=security,
+            enable_chat=enable_chat,
+        )
+
+    def __int__(self) -> int:
+        return self.id
+
+    def __str__(self) -> str:
+        return str(self.name)
+
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
 class ClanBanner:
@@ -113,9 +163,12 @@ class ClanBanner:
     background: assets.MaybeImage = attr.field(repr=True)
     """The banner's background. This field can be `UNDEFINED` if not found."""
 
+    def __int__(self) -> int:
+        return self.id
+
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
-class ClanMember(UserLike):
+class ClanMember(user.UserLike):
     """Represents a Bungie clan member."""
 
     net: traits.Netrunner = attr.field(repr=False)
@@ -130,10 +183,10 @@ class ClanMember(UserLike):
     last_seen_name: str = attr.field(repr=True)
     """The clan member's last seen display name"""
 
-    type: MembershipType = attr.field(repr=True)
+    type: enums.MembershipType = attr.field(repr=True)
     """Clan member's membership type."""
 
-    types: typing.Sequence[MembershipType] = attr.field(repr=False)
+    types: typing.Sequence[enums.MembershipType] = attr.field(repr=False)
     """A sequence of the available clan member membership types."""
 
     icon: assets.MaybeImage = attr.field(repr=False)
@@ -157,8 +210,6 @@ class ClanMember(UserLike):
     code: helpers.NoneOr[int] = attr.field(repr=True)
     """The clan member's bungie display name code
     This is new and was added in Season of the lost update
-
-    .. versionadded:: 0.2.5
     """
 
     bungie: user.PartialBungieUser = attr.field(repr=True)
@@ -170,10 +221,7 @@ class ClanMember(UserLike):
 
     @property
     def unique_name(self) -> str:
-        """The clan member's unique name which includes their unique code.
-
-        .. versionadded:: 0.2.5
-        """
+        """The clan member's unique name which includes their unique code."""
         return f"{self.name}#{self.code}"
 
     @property
@@ -184,32 +232,80 @@ class ClanMember(UserLike):
     # These are not implemented yet
     # Since they requires OAuth2.
 
-    async def ban(self) -> None:
-        """Bans a clan member from the clan.
-        This requires OAuth2: AdminGroups scope.
+    async def ban(
+        self,
+        access_token: str,
+        /,
+        *,
+        comment: helpers.UndefinedOr[str] = helpers.Undefined,
+        length: int = 0,
+    ) -> None:
+        """Ban this member from the clan.
 
-        .. warning::
-            This method is still not implemented.
+        .. note::
+            This request requires OAuth2: oauth2: `AdminGroups` scope.
+
+        Parameters
+        ----------
+        access_token : `builtins.str`
+            The bearer access token associated with the bungie account.
+
+        Other Parameters
+        ----------------
+        length: `int`
+            An optional ban length. Default is 0
+        comment: `aiobungie.internal.helpers.UndefinedOr[str]`
+            An optional comment to this ban. Default is `UNDEFINED`
         """
-        raise NotImplementedError
+        await self.net.request.rest.ban_clan_member(
+            access_token,
+            self.group_id,
+            self.id,
+            self.type,
+            comment=comment,
+            length=length,
+        )
 
-    async def unban(self) -> None:
-        """Unbans a clan member clan.
-        This requires OAuth2: AdminGroups scope.
+    async def unban(self, access_token: str, /) -> None:
+        """Unbans this member from the clan.
 
-        .. warning::
-            This method is still not implemented.
+        .. note::
+            This request requires OAuth2: oauth2: `AdminGroups` scope.
+
+        Parameters
+        ----------
+        access_token : `builtins.str`
+            The bearer access token associated with the bungie account.
         """
-        raise NotImplementedError
+        await self.net.request.rest.unban_clan_member(
+            access_token,
+            group_id=self.group_id,
+            membership_id=self.id,
+            membership_type=self.type,
+        )
 
-    async def kick(self) -> None:
-        """Kicks a clan member from the clan.
-        The requires OAuth2: AdminsGroup scope.
+    async def kick(self, access_token: str, /) -> Clan:
+        """Kick this member from the clan.
 
-        .. warning::
-            This method is still not implemented.
+        .. note::
+            This request requires OAuth2: oauth2: `AdminGroups` scope.
+
+        Parameters
+        ----------
+        access_token : `builtins.str`
+            The bearer access token associated with the bungie account.
+
+        Returns
+        -------
+        `aiobungie.crate.clan.Clan`
+            The clan that represents the kicked member.
         """
-        raise NotImplementedError
+        return await self.net.request.kick_clan_member(
+            access_token,
+            group_id=self.group_id,
+            membership_id=self.id,
+            membership_type=self.type,
+        )
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
@@ -217,11 +313,12 @@ class GroupMember:
     """Represents information about joined groups/clans for a member."""
 
     net: traits.Netrunner = attr.field(repr=False)
+    """A network state used for making external requests."""
 
     inactive_memberships: helpers.NoneOr[dict[int, bool]] = attr.field(repr=False)
     """The member's inactive memberships if provided. This will be `None` if not provided."""
 
-    member_type: ClanMemberType = attr.field(repr=True)
+    member_type: enums.ClanMemberType = attr.field(repr=True)
     """The member's member type."""
 
     is_online: bool = attr.field(repr=False)
@@ -250,18 +347,21 @@ class GroupMember:
         `Clan`
             The clan object.
         """
-        return await self.net.request.fetch_clan_from_id(self.group_id)
+        clan = await self.net.request.fetch_clan_from_id(self.group_id)
+        assert isinstance(clan, Clan)
+        return clan
+
+    def __int__(self) -> int:
+        return self.group_id
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
-class ClanAdmin(UserLike):
+class ClanAdmin(user.UserLike):
     """Represents a clan admin."""
 
-    member_type: ClanMemberType = attr.field(repr=True)
+    member_type: enums.ClanMemberType = attr.field(repr=True)
     """The clan admin's member type.
     This can be Admin or owner or any other type.
-
-    .. versionadded:: 0.2.5
     """
 
     net: traits.Netrunner = attr.field(repr=False)
@@ -279,10 +379,10 @@ class ClanAdmin(UserLike):
     last_seen_name: str = attr.field(repr=False)
     """The clan admin's last seen display name"""
 
-    type: MembershipType = attr.field(repr=True)
+    type: enums.MembershipType = attr.field(repr=True)
     """Clan admin's membership type."""
 
-    types: typing.Sequence[MembershipType] = attr.field(repr=False)
+    types: typing.Sequence[enums.MembershipType] = attr.field(repr=False)
     """A sequence of the available clan admin membership types."""
 
     icon: assets.MaybeImage = attr.field(repr=False)
@@ -306,8 +406,6 @@ class ClanAdmin(UserLike):
     code: helpers.NoneOr[int] = attr.field(repr=True)
     """The clan admin's bungie display name code
     This is new and was added in Season of the lost update
-
-    .. versionadded:: 0.2.5
     """
 
     bungie: user.PartialBungieUser = attr.field(repr=True)
@@ -326,14 +424,13 @@ class ClanAdmin(UserLike):
         `Clan`
             The clan admins clan.
         """
-        return await self.net.request.fetch_clan_from_id(self.group_id)
+        clan = await self.net.request.fetch_clan_from_id(self.group_id)
+        assert isinstance(clan, Clan)
+        return clan
 
     @property
     def unique_name(self) -> str:
-        """The admin's unique name which includes their unique code.
-
-        .. versionadded:: 0.2.5
-        """
+        """The admin's unique name which includes their unique code."""
         return f"{self.name}#{self.code}"
 
     @property
@@ -352,7 +449,7 @@ class Clan:
     id: int = attr.field(hash=True, repr=True, eq=True)
     """The clan id"""
 
-    type: GroupType = attr.field(repr=True)
+    type: enums.GroupType = attr.field(repr=True)
     """The clan type."""
 
     name: str = attr.field(repr=True)
@@ -388,8 +485,210 @@ class Clan:
     features: ClanFeatures = attr.field(repr=False, hash=False, eq=False)
     """The clan features."""
 
+    async def edit_options(
+        self,
+        access_token: str,
+        /,
+        *,
+        invite_permissions_override: helpers.NoneOr[bool] = None,
+        update_culture_permissionOverride: helpers.NoneOr[bool] = None,
+        host_guided_game_permission_override: helpers.NoneOr[
+            typing.Literal[0, 1, 2]
+        ] = None,
+        update_banner_permission_override: helpers.NoneOr[bool] = None,
+        join_level: helpers.NoneOr[helpers.IntAnd[enums.ClanMemberType]] = None,
+    ) -> None:
+        """Edit the clan options.
+
+        Notes
+        -----
+        * This request requires OAuth2: oauth2: `AdminGroups` scope.
+        * All arguments will default to `None` if not provided. This does not include `access_token` and `group_id`
+
+        Parameters
+        ----------
+        access_token : `builtins.str`
+            The bearer access token associated with the bungie account.
+
+        Other Parameters
+        ----------------
+        invite_permissions_override : `aiobungie.internal.helpers.NoneOr[bool]`
+            Minimum Member Level allowed to invite new members to group
+            Always Allowed: Founder, Acting Founder
+            True means admins have this power, false means they don't
+            Default is False for clans, True for groups.
+        update_culture_permissionOverride : `aiobungie.internal.helpers.NoneOr[bool]`
+            Minimum Member Level allowed to update group culture
+            Always Allowed: Founder, Acting Founder
+            True means admins have this power, false means they don't
+            Default is False for clans, True for groups.
+        host_guided_game_permission_override : `aiobungie.internal.helpers.NoneOr[typing.Literal[0, 1, 2]]`
+            Minimum Member Level allowed to host guided games
+            Always Allowed: Founder, Acting Founder, Admin
+            Allowed Overrides: `0` -> None, `1` -> Beginner `2` -> Member.
+            Default is Member for clans, None for groups, although this means nothing for groups.
+        update_banner_permission_override : `aiobungie.internal.helpers.NoneOr[bool]`
+            Minimum Member Level allowed to update banner
+            Always Allowed: Founder, Acting Founder
+            True means admins have this power, false means they don't
+            Default is False for clans, True for groups.
+        join_level : `aiobungie.ClanMemberType`
+            Level to join a member at when accepting an invite, application, or joining an open clan.
+            Default is `aiobungie.ClanMemberType.BEGINNER`
+        """
+        await self.net.request.rest.edit_clan_options(
+            access_token,
+            group_id=self.id,
+            invite_permissions_override=invite_permissions_override,
+            update_culture_permissionOverride=update_culture_permissionOverride,
+            host_guided_game_permission_override=host_guided_game_permission_override,
+            update_banner_permission_override=update_banner_permission_override,
+            join_level=join_level,
+        )
+
+    async def edit(
+        self,
+        access_token: str,
+        /,
+        *,
+        name: helpers.NoneOr[str] = None,
+        about: helpers.NoneOr[str] = None,
+        motto: helpers.NoneOr[str] = None,
+        theme: helpers.NoneOr[str] = None,
+        tags: helpers.NoneOr[typing.Sequence[str]] = None,
+        is_public: helpers.NoneOr[bool] = None,
+        locale: helpers.NoneOr[str] = None,
+        avatar_image_index: helpers.NoneOr[int] = None,
+        membership_option: helpers.NoneOr[
+            helpers.IntAnd[enums.MembershipOption]
+        ] = None,
+        allow_chat: helpers.NoneOr[bool] = None,
+        chat_security: helpers.NoneOr[typing.Literal[0, 1]] = None,
+        call_sign: helpers.NoneOr[str] = None,
+        homepage: helpers.NoneOr[typing.Literal[0, 1, 2]] = None,
+        enable_invite_messaging_for_admins: helpers.NoneOr[bool] = None,
+        default_publicity: helpers.NoneOr[typing.Literal[0, 1, 2]] = None,
+        is_public_topic_admin: helpers.NoneOr[bool] = None,
+    ) -> None:
+        """Edit this clan.
+
+        Notes
+        -----
+        * This request requires OAuth2: oauth2: `AdminGroups` scope.
+        * All arguments will default to `None` if not provided. This does not include `access_token` and `group_id`
+
+        Parameters
+        ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+
+        Other Parameters
+        ----------------
+        name : `aiobungie.internal.helpers.NoneOr[str]`
+            The name to edit the clan with.
+        about : `aiobungie.internal.helpers.NoneOr[str]`
+            The about section to edit the clan with.
+        motto : `aiobungie.internal.helpers.NoneOr[str]`
+            The motto section to edit the clan with.
+        theme : `aiobungie.internal.helpers.NoneOr[str]`
+            The theme name to edit the clan with.
+        tags : `aiobungie.internal.helpers.NoneOr[typing.Sequence[str]]`
+            A sequence of strings to replace the clan tags with.
+        is_public : `aiobungie.internal.helpers.NoneOr[bool]`
+            If provided and set to `True`, The clan will set to private.
+            If provided and set to `False`, The clan will set to public whether it was or not.
+        locale : `aiobungie.internal.helpers.NoneOr[str]`
+            The locale section to edit the clan with.
+        avatar_image_index : `aiobungie.internal.helpers.NoneOr[int]`
+            The clan avatar image index to edit the clan with.
+        membership_option : `aiobungie.internal.helpers.NoneOr[aiobungie.internal.helpers.IntAnd[aiobungie.MembershipOption]]` # noqa: E501 # Line too long
+            The clan membership option to edit it with.
+        allow_chat : `aiobungie.internal.helpers.NoneOr[bool]`
+            If provided and set to `True`, The clan members will be allowed to chat.
+            If provided and set to `False`, The clan members will not be allowed to chat.
+        chat_security : `aiobungie.internal.helpers.NoneOr[typing.Literal[0, 1]]`
+            If provided and set to `0`, The clan chat security will be edited to `Group` only.
+            If provided and set to `1`, The clan chat security will be edited to `Admin` only.
+        call_sign : `aiobungie.internal.helpers.NoneOr[str]`
+            The clan call sign to edit it with.
+        homepage : `aiobungie.internal.helpers.NoneOr[typing.Literal[0, 1, 2]]`
+            If provided and set to `0`, The clan chat homepage will be edited to `Wall`.
+            If provided and set to `1`, The clan chat homepage will be edited to `Forum`.
+            If provided and set to `0`, The clan chat homepage will be edited to `AllianceForum`.
+        enable_invite_messaging_for_admins : `aiobungie.internal.helpers.NoneOr[bool]`
+            ???
+        default_publicity : `aiobungie.internal.helpers.NoneOr[typing.Literal[0, 1, 2]]`
+            If provided and set to `0`, The clan chat publicity will be edited to `Public`.
+            If provided and set to `1`, The clan chat publicity will be edited to `Alliance`.
+            If provided and set to `2`, The clan chat publicity will be edited to `Private`.
+        is_public_topic_admin : `aiobungie.internal.helpers.NoneOr[bool]`
+            ???
+        """
+        await self.net.request.rest.edit_clan(
+            access_token,
+            group_id=self.id,
+            name=name,
+            about=about,
+            motto=motto,
+            theme=theme,
+            tags=tags,
+            is_public=is_public,
+            locale=locale,
+            avatar_image_index=avatar_image_index,
+            membership_option=membership_option,
+            allow_chat=allow_chat,
+            chat_security=chat_security,
+            call_sign=call_sign,
+            homepage=homepage,
+            enable_invite_messaging_for_admins=enable_invite_messaging_for_admins,
+            default_publicity=default_publicity,
+            is_public_topic_admin=is_public_topic_admin,
+        )
+
+    async def fetch_conversations(self) -> typing.Sequence[ClanConversation]:
+        """Fetch the conversations/chat channels of this clan.
+
+        Returns
+        `typing.Sequence[aiobungie.crate.ClanConversation]`
+            A sequence of the clan chat channels.
+        """
+        return await self.net.request.fetch_clan_conversations(self.id)
+
+    async def add_optional_conversation(
+        self,
+        access_token: str,
+        /,
+        *,
+        name: helpers.UndefinedOr[str] = helpers.Undefined,
+        security: typing.Literal[0, 1] = 0,
+    ) -> None:
+        """Add a new chat channel to a group.
+
+        .. note::
+            This request requires OAuth2: AdminGroups scope.
+
+        Parameters
+        ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+
+        Other parameters
+        ----------------
+        name: `aiobungie.internal.helpers.UndefinedOr[str]`
+            The chat name. Default to `UNDEFINED`
+        security: `typing.Literal[0, 1]`
+            The security level of the chat.
+
+            If provided and set to 0, It will be to `Group` only.
+            If provided and set to 1, It will be `Admins` only.
+            Default is `0`
+        """
+        await self.net.request.rest.add_optional_conversation(
+            access_token, self.id, name=name, security=security
+        )
+
     async def fetch_member(
-        self, name: str, type: MembershipType = MembershipType.NONE, /
+        self, name: str, type: enums.MembershipType = enums.MembershipType.NONE, /
     ) -> ClanMember:
         """Fetch a specific clan member by their name and membership type.
 
@@ -418,10 +717,12 @@ class Clan:
         `aiobungie.NotFound`
             The member was not found
         """
-        return await self.net.request.fetch_clan_member(self.id, name, type)
+        member = await self.net.request.fetch_clan_member(self.id, name, type)
+        assert isinstance(member, ClanMember)
+        return member
 
     async def fetch_members(
-        self, type: MembershipType = MembershipType.NONE, /
+        self, type: enums.MembershipType = enums.MembershipType.NONE, /
     ) -> typing.Sequence[ClanMember]:
         """Fetch the members of the clan.
 
@@ -445,6 +746,58 @@ class Clan:
             The clan was not found.
         """
         return await self.net.request.fetch_clan_members(self.id, type)
+
+    async def approve_pending_members(
+        self,
+        access_token: str,
+        /,
+        *,
+        message: helpers.UndefinedOr[str] = helpers.Undefined,
+    ) -> None:
+        """Approve all pending users for this clan.
+
+        .. note::
+            This request requires OAuth2: AdminGroups scope.
+
+        Parameters
+        ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+
+        Other Parameters
+        ----------------
+        message: `aiobungie.internal.helpers.Undefinedor[str]`
+            A message to send with the request. Defaults to `UNDEFINED`
+        """
+        await self.net.request.rest.approve_all_pending_group_users(
+            access_token, self.id, message=message
+        )
+
+    async def deny_pending_members(
+        self,
+        access_token: str,
+        /,
+        *,
+        message: helpers.UndefinedOr[str] = helpers.Undefined,
+    ) -> None:
+        """Deny all pending users for this clan.
+
+        .. note::
+            This request requires OAuth2: AdminGroups scope.
+
+        Parameters
+        ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+
+        Other Parameters
+        ----------------
+        message: `aiobungie.internal.helpers.Undefinedor[str]`
+            A message to send with the request. Defaults to `UNDEFINED`
+        """
+        await self.net.request.rest.deny_all_pending_group_users(
+            access_token, self.id, message=message
+        )
 
     # These ones is not implemented since it
     # requires OAUth2

@@ -33,11 +33,13 @@ import typing
 
 import attr
 
+from aiobungie.crate import character
 from aiobungie.crate import user
-from aiobungie.crate.character import Character
 from aiobungie.internal import enums
 from aiobungie.internal import helpers
-from aiobungie.internal import traits
+
+if typing.TYPE_CHECKING:
+    from aiobungie.internal import traits
 
 log: typing.Final[logging.Logger] = logging.getLogger(__name__)
 
@@ -84,75 +86,30 @@ class ProfileComponent(abc.ABC):
     def id(self) -> int:
         """The profile's id."""
 
-    async def titan(self) -> Character:
+    async def fetch_titan(self) -> character.Character:
         """Returns the titan character of the profile owner."""
         # We're ignoring the types for the character since
-        char: Character = await self.net.request.fetch_character(
+        char = await self.net.request.fetch_character(
             int(self.id), self.type, enums.Class.TITAN
         )
-        return Character(
-            id=char.id,
-            class_type=char.class_type,
-            emblem=char.emblem,
-            emblem_hash=char.emblem_hash,
-            emblem_icon=char.emblem_icon,
-            light=char.light,
-            last_played=char.last_played,
-            level=char.level,
-            member_id=char.member_id,
-            member_type=char.member_type,
-            gender=char.gender,
-            race=char.race,
-            total_played_time=char.total_played_time,
-            title_hash=char.title_hash,
-            stats=char.stats,
-        )
+        assert isinstance(char, character.Character)
+        return char
 
-    async def hunter(self) -> Character:
+    async def fetch_hunter(self) -> character.Character:
         """Returns the hunter character of the profile owner."""
-        char: Character = await self.net.request.fetch_character(
+        char = await self.net.request.fetch_character(
             self.id, self.type, enums.Class.HUNTER
         )
-        return Character(
-            id=char.id,
-            class_type=char.class_type,
-            emblem=char.emblem,
-            emblem_hash=char.emblem_hash,
-            emblem_icon=char.emblem_icon,
-            light=char.light,
-            last_played=char.last_played,
-            level=char.level,
-            member_id=char.member_id,
-            member_type=char.member_type,
-            gender=char.gender,
-            race=char.race,
-            total_played_time=char.total_played_time,
-            title_hash=char.title_hash,
-            stats=char.stats,
-        )
+        assert isinstance(char, character.Character)
+        return char
 
-    async def warlock(self) -> Character:
+    async def fetch_warlock(self) -> character.Character:
         """Returns the Warlock character of the profile owner."""
-        char: Character = await self.net.request.fetch_character(
+        char = await self.net.request.fetch_character(
             self.id, self.type, enums.Class.WARLOCK
         )
-        return Character(
-            id=char.id,
-            class_type=char.class_type,
-            emblem=char.emblem,
-            emblem_hash=char.emblem_hash,
-            emblem_icon=char.emblem_icon,
-            light=char.light,
-            last_played=char.last_played,
-            level=char.level,
-            member_id=char.member_id,
-            member_type=char.member_type,
-            gender=char.gender,
-            race=char.race,
-            total_played_time=char.total_played_time,
-            title_hash=char.title_hash,
-            stats=char.stats,
-        )
+        assert isinstance(char, character.Character)
+        return char
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
@@ -219,7 +176,7 @@ class Profile(ProfileComponent):
     profile = await client.fetch_profile("Fate")
 
     # access the character component and get my warlock.
-    warlock = await profile.warlock()
+    warlock = await profile.fetch_warlock()
 
     assert warlock.light == 1320
     ```

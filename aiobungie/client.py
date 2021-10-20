@@ -26,18 +26,33 @@ Deserialize the REST payloads and returns `aiobungie.crate` implementations of t
 
 from __future__ import annotations
 
+import logging
+
 __all__: list[str] = ["Client"]
 
 import asyncio
 import typing
 
-from aiobungie import crate
 from aiobungie import rest as rest_
-from aiobungie.ext import Manifest
+from aiobungie.crate import user
+from aiobungie.ext import meta
 from aiobungie.internal import enums
 from aiobungie.internal import factory
 from aiobungie.internal import helpers
 from aiobungie.internal import traits
+
+if typing.TYPE_CHECKING:
+    from aiobungie import interfaces
+    from aiobungie.crate import activity
+    from aiobungie.crate import application
+    from aiobungie.crate import character
+    from aiobungie.crate import clans
+    from aiobungie.crate import entity
+    from aiobungie.crate import friends
+    from aiobungie.crate import milestones
+    from aiobungie.crate import profile
+
+_LOG: typing.Final[logging.Logger] = logging.getLogger("aiobungie.client")
 
 
 class Client(traits.ClientBase):
@@ -68,7 +83,7 @@ class Client(traits.ClientBase):
         return self._serialize
 
     @property
-    def rest(self) -> rest_.RESTClient:
+    def rest(self) -> interfaces.RESTInterface:
         return self._rest
 
     @property
@@ -86,14 +101,16 @@ class Client(traits.ClientBase):
         except Exception as exc:
             raise RuntimeError(f"Failed to run {future.__name__}", exc)
         except KeyboardInterrupt:
+            _LOG.warn("Unexpected Keyboard interrupt. Exiting.")
             raise SystemExit(None)
         finally:
             # Session management.
             self._loop.run_until_complete(self.rest.close())
+            _LOG.info("Client closed normally.")
 
     # * Unspecified methods. *#
 
-    async def fetch_manifest(self) -> Manifest:
+    async def fetch_manifest(self) -> meta.Manifest:
         """Access The bungie Manifest.
 
         Returns
@@ -101,11 +118,32 @@ class Client(traits.ClientBase):
         `aiobungie.ext.Manifest`
             A Manifest crate.
         """
-        return Manifest(self._token)
+        return meta.Manifest(self._token)
 
     # * User methods.
 
-    async def fetch_user(self, id: int) -> crate.user.BungieUser:
+    async def fetch_own_bungie_user(self, *, access_token: str) -> user.User:
+        """Fetch and return a user object of the bungie net user associated with account.
+
+        .. warning::
+            This method requires OAuth2 scope and a Bearer access token.
+            This token should be stored somewhere safe and just passed as a parameter. e.g., A database.
+
+        Parameters
+        ----------
+        access_token : `builtins.str`
+            A valid Bearer access token for the authorization.
+
+        Returns
+        -------
+        `aiobungie.crate.user.User`
+            A user object includes the Destiny memberships and Bungie.net user.
+        """
+        resp = await self.rest.fetch_own_bungie_user(access_token)
+        assert isinstance(resp, dict)
+        return self.serialize.deserialize_user(resp)
+
+    async def fetch_user(self, id: int) -> user.BungieUser:
         """Fetch a Bungie user by their id.
 
         .. note::
@@ -131,7 +169,7 @@ class Client(traits.ClientBase):
         assert isinstance(payload, dict)
         return self.serialize.deserialize_bungie_user(payload)
 
-    async def search_users(self, name: str, /) -> typing.Sequence[crate.DestinyUser]:
+    async def search_users(self, name: str, /) -> typing.Sequence[user.DestinyUser]:
         """Search for players and return all players that matches the same name.
 
         Parameters
@@ -148,7 +186,7 @@ class Client(traits.ClientBase):
         assert isinstance(payload, dict)
         return self.serialize.deseialize_found_users(payload)
 
-    async def fetch_user_themes(self) -> typing.Sequence[crate.user.UserThemes]:
+    async def fetch_user_themes(self) -> typing.Sequence[user.UserThemes]:
         """Fetch all available user themes.
 
         Returns
@@ -165,7 +203,7 @@ class Client(traits.ClientBase):
         credential: int,
         type: helpers.IntAnd[enums.CredentialType] = enums.CredentialType.STEAMID,
         /,
-    ) -> crate.user.HardLinkedMembership:
+    ) -> user.HardLinkedMembership:
         """Gets any hard linked membership given a credential.
         Only works for credentials that are public just `aiobungie.CredentialType.STEAMID` right now.
         Cross Save aware.
@@ -189,7 +227,7 @@ class Client(traits.ClientBase):
         payload = await self.rest.fetch_hard_linked(credential, type)
         assert isinstance(payload, dict)
 
-        return crate.user.HardLinkedMembership(
+        return user.HardLinkedMembership(
             id=int(payload["membershipId"]),
             type=enums.MembershipType(payload["membershipType"]),
             cross_save_type=enums.MembershipType(payload["CrossSaveOverriddenType"]),
@@ -200,7 +238,7 @@ class Client(traits.ClientBase):
         id: int,
         type: helpers.IntAnd[enums.MembershipType] = enums.MembershipType.NONE,
         /,
-    ) -> crate.User:
+    ) -> user.User:
         """Fetch Bungie user's memberships from their id.
 
         Notes
@@ -238,7 +276,7 @@ class Client(traits.ClientBase):
         memberid: int,
         type: helpers.IntAnd[enums.MembershipType],
         /,
-    ) -> crate.Profile:
+    ) -> profile.Profile:
         """
         Fetche a bungie profile.
 
@@ -272,7 +310,7 @@ class Client(traits.ClientBase):
         /,
         *,
         all: bool = False,
-    ) -> crate.profile.LinkedProfile:
+    ) -> profile.LinkedProfile:
         """Returns a summary information about all profiles linked to the requested member.
 
         The passed membership id/type maybe a Bungie.Net membership or a Destiny memberships.
@@ -310,7 +348,7 @@ class Client(traits.ClientBase):
         name: str,
         type: helpers.IntAnd[enums.MembershipType] = enums.MembershipType.ALL,
         /,
-    ) -> typing.Sequence[crate.user.DestinyUser]:
+    ) -> typing.Sequence[user.DestinyUser]:
         """Fetch a Destiny 2 Player.
 
         .. note::
@@ -346,7 +384,7 @@ class Client(traits.ClientBase):
         memberid: int,
         type: helpers.IntAnd[enums.MembershipType],
         character: enums.Class,
-    ) -> crate.Character:
+    ) -> character.Character:
         """Fetch a Destiny 2 character.
 
         Parameters
@@ -386,7 +424,7 @@ class Client(traits.ClientBase):
         *,
         page: int = 1,
         limit: int = 1,
-    ) -> crate.activity.Activity:
+    ) -> activity.Activity:
         """Fetch a Destiny 2 activity for the specified user id and character.
 
         Parameters
@@ -428,9 +466,7 @@ class Client(traits.ClientBase):
         assert isinstance(resp, dict)
         return self.serialize.deserialize_activity(resp)
 
-    async def fetch_post_activity(
-        self, instance: int, /
-    ) -> crate.activity.PostActivity:
+    async def fetch_post_activity(self, instance: int, /) -> activity.PostActivity:
         """Fetch a post activity details.
 
         .. warning::
@@ -453,7 +489,7 @@ class Client(traits.ClientBase):
 
     # * Destiny 2 Clans or GroupsV2.
 
-    async def fetch_clan_from_id(self, id: int, /) -> crate.Clan:
+    async def fetch_clan_from_id(self, id: int, /) -> clans.Clan:
         """Fetch a Bungie Clan by its id.
 
         Parameters
@@ -477,7 +513,7 @@ class Client(traits.ClientBase):
 
     async def fetch_clan(
         self, name: str, /, type: helpers.IntAnd[enums.GroupType] = enums.GroupType.CLAN
-    ) -> crate.Clan:
+    ) -> clans.Clan:
         """Fetch a Clan by its name.
         This method will return the first clan found with given name.
 
@@ -504,14 +540,25 @@ class Client(traits.ClientBase):
 
     async def fetch_clan_conversations(
         self, clan_id: int, /
-    ) -> typing.Sequence[crate.clans.ClanConversation]:
+    ) -> typing.Sequence[clans.ClanConversation]:
+        """Fetch the conversations/chat channels of the given clan id.
+
+        Parameters
+        ----------
+        clan_id : `int`
+            The clan id.
+
+        Returns
+        `typing.Sequence[aiobungie.crate.ClanConversation]`
+            A sequence of the clan chat channels.
+        """
         resp = await self.rest.fetch_clan_conversations(clan_id)
         assert isinstance(resp, list)
         return self.serialize.deserialize_clan_convos(resp)
 
     async def fetch_clan_admins(
         self, clan_id: int, /
-    ) -> typing.Sequence[crate.clans.ClanAdmin]:
+    ) -> typing.Sequence[clans.ClanAdmin]:
         """Fetch the clan founder and admins.
 
         Parameters
@@ -541,7 +588,7 @@ class Client(traits.ClientBase):
         *,
         filter: int = 0,
         group_type: enums.GroupType = enums.GroupType.CLAN,
-    ) -> typing.Optional[crate.clans.GroupMember]:
+    ) -> typing.Optional[clans.GroupMember]:
         """Fetch information about the groups that a given member has joined.
 
         Parameters
@@ -578,7 +625,29 @@ class Client(traits.ClientBase):
         *,
         filter: int = 0,
         group_type: helpers.IntAnd[enums.GroupType] = enums.GroupType.CLAN,
-    ) -> typing.Optional[crate.clans.GroupMember]:
+    ) -> typing.Optional[clans.GroupMember]:
+        """Fetch the potentional groups for a clan member.
+
+        Parameters
+        ----------
+        member_id : `builtins.int`
+            The member's id
+        member_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`
+            The member's membership type.
+
+        Other Parameters
+        ----------------
+        filter : `builsins.int`
+            Filter apply to list of joined groups. This Default to `0`
+        group_type : `aiobungie.internal.helpers.IntAnd[aiobungie.GroupType]`
+            The group's type.
+            This is always set to `aiobungie.GroupType.CLAN` and should not be changed.
+
+        Returns
+        -------
+        `typing.Optional[aiobungie.crate.GroupMember]`
+            An optional information about the group member.
+        """
         resp = await self.rest.fetch_potential_groups_for_member(
             member_id, member_type, filter=filter, group_type=group_type
         )
@@ -591,7 +660,7 @@ class Client(traits.ClientBase):
         name: typing.Optional[str] = None,
         type: helpers.IntAnd[enums.MembershipType] = enums.MembershipType.NONE,
         /,
-    ) -> crate.clans.ClanMember:
+    ) -> clans.ClanMember:
         """Fetch a Bungie Clan member.
 
         .. note::
@@ -633,7 +702,7 @@ class Client(traits.ClientBase):
         clan_id: int,
         type: helpers.IntAnd[enums.MembershipType] = enums.MembershipType.NONE,
         /,
-    ) -> typing.Sequence[crate.clans.ClanMember]:
+    ) -> typing.Sequence[clans.ClanMember]:
         """Fetch a Bungie Clan member. if no members found in the clan
         you will get an empty sequence.
 
@@ -665,7 +734,7 @@ class Client(traits.ClientBase):
         assert isinstance(resp, dict)
         return self.serialize.deserialize_clan_members(resp)
 
-    async def fetch_clan_banners(self) -> typing.Sequence[crate.clans.ClanBanner]:
+    async def fetch_clan_banners(self) -> typing.Sequence[clans.ClanBanner]:
         """Fetch the clan banners.
 
         Returns
@@ -677,15 +746,52 @@ class Client(traits.ClientBase):
         assert isinstance(resp, dict)
         return self.serialize.deserialize_clan_banners(resp)
 
+    # This method is required to be here since it deserialize the clan.
+    async def kick_clan_member(
+        self,
+        access_token: str,
+        /,
+        group_id: int,
+        membership_id: int,
+        membership_type: helpers.IntAnd[enums.MembershipType],
+    ) -> clans.Clan:
+        """Kick a member from the clan.
+
+        .. note::
+            This request requires OAuth2: oauth2: `AdminGroups` scope.
+
+        Parameters
+        ----------
+        access_token : `builtins.str`
+            The bearer access token associated with the bungie account.
+        group_id: `int`
+            The group id.
+        membership_id : `int`
+            The member id to kick.
+        membership_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`
+            The member's membership type.
+
+        Returns
+        -------
+        `aiobungie.crate.clan.Clan`
+            The clan that represents the kicked member.
+        """
+        resp = await self.rest.kick_clan_member(
+            access_token,
+            group_id=group_id,
+            membership_id=membership_id,
+            membership_type=membership_type,
+        )
+        assert isinstance(resp, dict)
+        return self.serialize.deserialize_clan(resp, bound=True)
+
     # * Destiny 2 Definitions. Entities.
 
-    async def fetch_inventory_item(self, hash: int, /) -> crate.entity.InventoryEntity:
+    async def fetch_inventory_item(self, hash: int, /) -> entity.InventoryEntity:
         """Fetch a static inventory item entity given a its hash.
 
         Parameters
         ----------
-        type: `builtins.str`
-            Entity's type definition.
         hash: `builtins.int`
             Entity's hash.
 
@@ -701,7 +807,53 @@ class Client(traits.ClientBase):
     # * These methods should be for Special bungie endpoints, i.e,
     # * Applications, Forums, Polls, Trending, etc.
 
-    async def fetch_app(self, appid: int, /) -> crate.Application:
+    async def fetch_friends(
+        self, access_token: str, /
+    ) -> typing.Sequence[friends.Friend]:
+        """Fetch bungie friend list.
+
+        .. note::
+            This requests OAuth2: ReadUserData scope.
+
+        Parameters
+        -----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+
+        Returns
+        -------
+        `typing.Sequence[aiobungie.crate.Friend]`
+            A sequence of the found friends.
+        """
+
+        resp = await self.rest.fetch_friends(access_token)
+        assert isinstance(resp, dict)
+        return self.serialize.deserialize_friends(resp)
+
+    async def fetch_friend_requests(
+        self, access_token: str, /
+    ) -> friends.FriendRequestView:
+        """Fetch pending bungie friend requests queue.
+
+        .. note::
+            This requests OAuth2: ReadUserData scope.
+
+        Parameters
+        -----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+
+        Returns
+        -------
+        `aiobungie.crate.FriendRequestView`
+            A friend requests view object includes a sequence of incoming and outgoing requests.
+        """
+
+        resp = await self.rest.fetch_friend_requests(access_token)
+        assert isinstance(resp, dict)
+        return self.serialize.deserialize_friend_requests(resp)
+
+    async def fetch_app(self, appid: int, /) -> application.Application:
         """Fetch a Bungie Application.
 
         Parameters
@@ -720,7 +872,7 @@ class Client(traits.ClientBase):
 
     async def fetch_public_milestone_content(
         self, milestone_hash: int, /
-    ) -> crate.milestones.Milestone:
+    ) -> milestones.Milestone:
         """Fetch the milestone content given its hash.
 
         Parameters

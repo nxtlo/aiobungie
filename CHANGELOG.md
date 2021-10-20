@@ -14,6 +14,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added [_backoff.py](https://github.com/hikari-py/hikari/blob/b6c85c932a1dc2117d2caa669bb7e52f6995273d/hikari/impl/rate_limits.py#L411) for/and Handling ratelimiting and retry after REST errors.
 - A new parameter `max_retries` to `RESTClient` and `Client` which lets you choose the max REST requests retries for failuare requests.
 - New exception `RateLimitedError` which's raised when being ratelimited.
+- Import modules under the `typing.TYPE_CHECKING` for non-runtime modules.
+- Implemented methods that requires OAuth2 bearer access tokens
+    - `kick_clan_member` can be accessed either via the `Client` which returns the deserialized object or `RESTClient` for the JSON object.
+    - `ban_clan_member`, `unban_clan_member` can be accessed from `RESTClient`.
+    - `edit_clan`, `edit_clan_options` which edits a clan and can be accessed via `RESTClient`.
+    - `equip_item`, `equip_items` in `RESTClient` and `character.Character`
+    - `fetch_own_bungie_user` methods which can be accessed via `RESTClient`.
+    - `deny_pending_members`, `approve_pending_members`, `add_optional_conversation` methods to `clans.Clan`.
+    - `ClanConversation.edit` method to edit the convo settings.
+    - Implemeted `friends.Friend` methods flow + `friends.FriendRequestView` object.
+    - `transfer_item`, `pull_item` methods.
+- `enums.MembershipOption` enum for group member options.
+- `errors.InternalServerError` exception.
+- `traits.RESTful` REST client protocol for the `RESTClient`.
+
+### Removed
+- `player.py` / `.Player` module / object has been removed in-replacement of `user.DestinyUser`.
 
 ### Changed
 - PRs that used to look like this `patch/...` now should look like this `task/...` instead.
@@ -22,9 +39,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Separate mock tests from real tests.
 - Export `aiobungie/interfaces` and `aiobungie/crates` to `aiobungie/__init__.py`
 - Added real client tests to ci workflow.
+- Minor changes to nox pipelines.
+- Instead of raising `error.AiobungieError` on `5xx` errors. `errors.InternalServerError` is not raised.
+- `Profile.warlock`, `Profile.titan` and `Profile.hunter` method names changed to `Profile.fetch_hunter()`
+`Profile.fetch_...`.
 
 ### Fixed
 - Errors now are correctly raised.
+- `fetch_membership_from_id` wasn't converting `type` enum parameter to `int`.
 
 ## [0.2.5b9](https://github.com/nxtlo/aiobungie/compare/0.2.5b8...HEAD) 2021-10-1
 

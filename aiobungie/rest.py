@@ -752,7 +752,7 @@ class RESTClient(interfaces.RESTInterface):
     def fetch_friends(self, access_token: str, /) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
-            "POST",
+            "GET",
             "Social/Friends",
             headers={"Authorization": f"Bearer {access_token}"},
         )
@@ -762,7 +762,7 @@ class RESTClient(interfaces.RESTInterface):
     ) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
-            "POST",
+            "GET",
             "Social/Friends/Requests",
             headers={"Authorization": f"Bearer {access_token}"},
         )

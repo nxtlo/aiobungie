@@ -4,8 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).All notable changes to this project will be documented in this file.
 
-## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.5b10...HEAD)
+## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.5b11...HEAD)
 
+## [0.2.5b11](https://github.com/nxtlo/aiobungie/compare/0.2.5b10...0.2.5b11) 2021-10-21
+
+### Fixed
+- `fetch_friends` and `fetch_friend_requests` methods were `POST` and fixed to `GET`.
 
 ## [0.2.5b10](https://github.com/nxtlo/aiobungie/compare/0.2.5b9...0.2.5b10) 2021-10-20
 

@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.5b11...HEAD)
 
+### Added
+- `__repr__` overloaded for `enums.Enum` which just returns `enums.Enum.__str__`.
+
+### Changed
+- `RESTClient._request` now takes a string or `rest.RequestMethod` enum for the method.
+- `RESTClient._request` now takes `yarl.URL` or a string for the path. Both changes affect `RESTClient.static_request.
+
 ## [0.2.5b11](https://github.com/nxtlo/aiobungie/compare/0.2.5b10...0.2.5b11) 2021-10-21
 
 ### Fixed

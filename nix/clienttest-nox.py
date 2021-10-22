@@ -25,6 +25,13 @@ import pathlib
 import shutil
 import os
 
+try:
+    import dotenv
+    if (cli_key := dotenv.get_key("./.env", "CLIENT_TOKEN")):
+        os.environ['CLIENT_TOKEN'] = cli_key
+except ImportError:
+    pass
+
 @nox.session(reuse_venv=True)
 def client_test(session: nox.Session) -> None:
     if session.env.get("CLIENT_TOKEN") is None:

@@ -24,7 +24,7 @@
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = ("RESTClient",)
+__all__: tuple[str, ...] = ("RESTClient", "RequestMethod")
 
 import asyncio
 import http
@@ -47,6 +47,8 @@ from aiobungie.internal import helpers
 if typing.TYPE_CHECKING:
     import types
 
+    from aiohttp import typedefs
+
     ResponseSigT = typing.TypeVar(
         "ResponseSigT",
         covariant=True,
@@ -61,6 +63,7 @@ if typing.TYPE_CHECKING:
     """
 
 _APP_JSON: typing.Final[str] = "application/json"
+_RETRY_5XX: typing.Final[set[int]] = {500, 502, 503, 504}
 _LOG: typing.Final[logging.Logger] = logging.getLogger("aiobungie.rest")
 
 
@@ -92,6 +95,7 @@ async def handle_errors(
     # error codes protocol and almost return 5xx on any failed request
     # except very few. The only way currently to handle this is by their
     # custom error codes.
+    # https://github.com/Bungie-net/api/issues/1542
     elif 500 <= status < 600:
         if msg in ("ApiKeyMissingFromRequest", "WebAuthRequired"):
             # No API key or method requires OAuth2 most likely.
@@ -114,7 +118,7 @@ async def handle_errors(
         return error.HTTPException(*data)
 
 
-class PreLock:
+class _Arc:
     __slots__ = ("_lock",)
 
     def __init__(self) -> None:
@@ -186,6 +190,21 @@ class _Session:
         await asyncio.sleep(0.025)
 
 
+class RequestMethod(str, enums.Enum):
+    """Request methods enum."""
+
+    GET = "GET"
+    """GET methods."""
+    POST = "POST"
+    """POST methods."""
+    PUT = "PUT"
+    """PUT methods."""
+    PATCH = "PATCH"
+    """PATCH methods."""
+    DELETE = "DELETE"
+    """DELETE methods"""
+
+
 class RESTClient(interfaces.RESTInterface):
     """A REST only client implementation for interacting with Bungie's REST API.
 
@@ -236,8 +255,8 @@ class RESTClient(interfaces.RESTInterface):
     @typing.final
     async def _request(
         self,
-        method: str,
-        route: str,
+        method: typing.Union[RequestMethod, str],
+        route: typedefs.StrOrURL,
         base: bool = False,
         type: typing.Literal["json", "read"] = "json",
         **kwargs: typing.Any,
@@ -252,7 +271,7 @@ class RESTClient(interfaces.RESTInterface):
 
         while True:
             try:
-                async with PreLock():
+                async with _Arc():
                     async with self._acquire_session().client_session.request(
                         method=method,
                         url=f"{url.REST_EP if base is False else url.BASE}/{route}",
@@ -293,7 +312,7 @@ class RESTClient(interfaces.RESTInterface):
                                     return data
 
                         if (
-                            response.status in {500, 502, 503, 504}
+                            response.status in _RETRY_5XX
                             and retries < self._max_retries  # noqa: W503
                         ):
                             backoff_ = backoff.ExponentialBackOff(maximum=6)
@@ -355,13 +374,21 @@ class RESTClient(interfaces.RESTInterface):
     ) -> typing.NoReturn:
         raise await handle_errors(response, msg)
 
+    def static_request(
+        self,
+        method: typing.Union[RequestMethod, str],
+        path: typedefs.StrOrURL,
+        **kwargs: typing.Any,
+    ) -> ResponseSig[typing.Any]:
+        return self._request(method, path, **kwargs)
+
     def fetch_user(self, id: int) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request("GET", f"User/GetBungieNetUserById/{id}/")
+        return self._request(RequestMethod.GET, f"User/GetBungieNetUserById/{id}/")
 
     def fetch_user_themes(self) -> ResponseSig[helpers.JsonArray]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request("GET", "User/GetAvailableThemes/")
+        return self._request(RequestMethod.GET, "User/GetAvailableThemes/")
 
     def fetch_membership_from_id(
         self,
@@ -370,13 +397,9 @@ class RESTClient(interfaces.RESTInterface):
         /,
     ) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request("GET", f"User/GetMembershipsById/{id}/{int(type)}")
-
-    def static_request(
-        self, method: str, path: str, **kwargs: typing.Any
-    ) -> ResponseSig[typing.Any]:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(method, path, **kwargs)
+        return self._request(
+            RequestMethod.GET, f"User/GetMembershipsById/{id}/{int(type)}"
+        )
 
     def fetch_player(
         self,
@@ -386,43 +409,46 @@ class RESTClient(interfaces.RESTInterface):
     ) -> ResponseSig[helpers.JsonArray]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
-            "GET", f"Destiny2/SearchDestinyPlayer/{int(type)}/{parse.quote(name)}/"
+            RequestMethod.GET,
+            f"Destiny2/SearchDestinyPlayer/{int(type)}/{parse.quote(name)}/",
         )
 
     def search_users(self, name: str, /) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request("GET", f"User/Search/Prefix/{name}/0")
+        return self._request(RequestMethod.GET, f"User/Search/Prefix/{name}/0")
 
     def fetch_clan_from_id(self, id: int) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request("GET", f"GroupV2/{id}")
+        return self._request(RequestMethod.GET, f"GroupV2/{id}")
 
     def fetch_clan(
         self, name: str, type: helpers.IntAnd[enums.GroupType] = enums.GroupType.CLAN
     ) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request("GET", f"GroupV2/Name/{name}/{int(type)}")
+        return self._request(RequestMethod.GET, f"GroupV2/Name/{name}/{int(type)}")
 
     def fetch_clan_admins(self, clan_id: int, /) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request("GET", f"GroupV2/{clan_id}/AdminsAndFounder/")
+        return self._request(RequestMethod.GET, f"GroupV2/{clan_id}/AdminsAndFounder/")
 
     def fetch_clan_conversations(
         self, clan_id: int, /
     ) -> ResponseSig[helpers.JsonArray]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request("GET", f"GroupV2/{clan_id}/OptionalConversations/")
+        return self._request(
+            RequestMethod.GET, f"GroupV2/{clan_id}/OptionalConversations/"
+        )
 
     def fetch_app(self, appid: int, /) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request("GET", f"App/Application/{appid}")
+        return self._request(RequestMethod.GET, f"App/Application/{appid}")
 
     def fetch_character(
         self, memberid: int, type: helpers.IntAnd[enums.MembershipType], /
     ) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
-            "GET",
+            RequestMethod.GET,
             f"Destiny2/{int(type)}/Profile/{memberid}/?components={int(enums.Component.CHARACTERS)}",
         )
 
@@ -440,7 +466,7 @@ class RESTClient(interfaces.RESTInterface):
     ) -> ResponseSig[typing.Any]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
-            "GET",
+            RequestMethod.GET,
             f"Destiny2/{int(membership_type)}/Account/"
             f"{member_id}/Character/{character_id}/Stats/Activities"
             f"/?mode={int(mode)}&count={limit}&page={page}",
@@ -449,7 +475,8 @@ class RESTClient(interfaces.RESTInterface):
     def fetch_vendor_sales(self) -> ResponseSig[typing.Any]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
-            "GET", f"Destiny2/Vendors/?components={int(enums.Component.VENDOR_SALES)}"
+            RequestMethod.GET,
+            f"Destiny2/Vendors/?components={int(enums.Component.VENDOR_SALES)}",
         )
 
     def fetch_profile(
@@ -457,13 +484,15 @@ class RESTClient(interfaces.RESTInterface):
     ) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
-            "GET",
+            RequestMethod.GET,
             f"Destiny2/{int(type)}/Profile/{int(memberid)}/?components={int(enums.Component.PROFILE)}",
         )
 
     def fetch_entity(self, type: str, hash: int) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request("GET", route=f"Destiny2/Manifest/{type}/{hash}")
+        return self._request(
+            RequestMethod.GET, route=f"Destiny2/Manifest/{type}/{hash}"
+        )
 
     def fetch_inventory_item(self, hash: int) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
@@ -479,7 +508,7 @@ class RESTClient(interfaces.RESTInterface):
         group_type: helpers.IntAnd[enums.GroupType] = enums.GroupType.CLAN,
     ) -> ResponseSig[helpers.JsonObject]:
         return self._request(
-            "GET",
+            RequestMethod.GET,
             f"GroupV2/User/{int(member_type)}/{member_id}/{filter}/{int(group_type)}/",
         )
 
@@ -493,7 +522,7 @@ class RESTClient(interfaces.RESTInterface):
         group_type: helpers.IntAnd[enums.GroupType] = enums.GroupType.CLAN,
     ) -> ResponseSig[helpers.JsonObject]:
         return self._request(
-            "GET",
+            RequestMethod.GET,
             f"GroupV2/User/Potential/{int(member_type)}/{member_id}/{filter}/{int(group_type)}/",
         )
 
@@ -506,7 +535,7 @@ class RESTClient(interfaces.RESTInterface):
     ) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
-            "GET",
+            RequestMethod.GET,
             f"/GroupV2/{id}/Members/?memberType={int(type)}&nameSearch={name if name else ''}&currentpage=1",
         )
 
@@ -518,19 +547,19 @@ class RESTClient(interfaces.RESTInterface):
     ) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
-            "GET",
+            RequestMethod.GET,
             f"User/GetMembershipFromHardLinkedCredential/{int(type)}/{credential}/",
         )
 
     async def fetch_manifest_path(self) -> str:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        request = await self._request("GET", "Destiny2/Manifest")
+        request = await self._request(RequestMethod.GET, "Destiny2/Manifest")
         return request["mobileWorldContentPaths"]["en"]
 
     async def fetch_manifest(self) -> bytes:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         content = await self.fetch_manifest_path()
-        resp = await self._request("GET", content, type="read", base=True)
+        resp = await self._request(RequestMethod.GET, content, type="read", base=True)
         return resp
 
     def fetch_linked_profiles(
@@ -543,23 +572,25 @@ class RESTClient(interfaces.RESTInterface):
     ) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
-            "GET",
+            RequestMethod.GET,
             f"Destiny2/{int(member_type)}/Profile/{member_id}/LinkedProfiles/?getAllMemberships={all}",
         )
 
     def fetch_clan_banners(self) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request("GET", "Destiny2/Clan/ClanBannerDictionary/")
+        return self._request(RequestMethod.GET, "Destiny2/Clan/ClanBannerDictionary/")
 
     def fetch_public_milestones(self) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request("GET", "Destiny2/Milestones/")
+        return self._request(RequestMethod.GET, "Destiny2/Milestones/")
 
     def fetch_public_milestone_content(
         self, milestone_hash: int, /
     ) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request("GET", f"Destiny2/Milestones/{milestone_hash}/Content/")
+        return self._request(
+            RequestMethod.GET, f"Destiny2/Milestones/{milestone_hash}/Content/"
+        )
 
     # * OAuth2 methods.
 
@@ -568,7 +599,7 @@ class RESTClient(interfaces.RESTInterface):
     ) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
-            "GET",
+            RequestMethod.GET,
             "User/GetMembershipsForCurrentUser/",
             headers={"Authorization": f"Bearer {access_token}"},
         )
@@ -589,7 +620,7 @@ class RESTClient(interfaces.RESTInterface):
         }
 
         return self._request(
-            "POST",
+            RequestMethod.POST,
             "Destiny2/Actions/Items/EquipItem/",
             json=payload,
             headers={"Authorization": f"Bearer {access_token}"},
@@ -610,7 +641,7 @@ class RESTClient(interfaces.RESTInterface):
             "membershipType": int(membership_type),
         }
         return self._request(
-            "POST",
+            RequestMethod.POST,
             "Destiny2/Actions/Items/EquipItems/",
             json=payload,
             headers={"Authorization": f"Bearer {access_token}"},
@@ -630,7 +661,7 @@ class RESTClient(interfaces.RESTInterface):
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         payload = {"comment": str(comment), "length": length}
         return self._request(
-            "POST",
+            RequestMethod.POST,
             f"GroupV2/{group_id}/Members/{int(membership_type)}/{membership_id}/Ban/",
             json=payload,
             headers={"Authorization": f"Bearer {access_token}"},
@@ -646,7 +677,7 @@ class RESTClient(interfaces.RESTInterface):
     ) -> ResponseSig[None]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
-            "POST",
+            RequestMethod.POST,
             f"GroupV2/{group_id}/Members/{int(membership_type)}/{membership_id}/Unban/",
             headers={"Authorization": f"Bearer {access_token}"},
         )
@@ -661,7 +692,7 @@ class RESTClient(interfaces.RESTInterface):
     ) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
-            "POST",
+            RequestMethod.POST,
             f"GroupV2/{group_id}/Members/{int(membership_type)}/{membership_id}/Kick/",
             headers={"Authorization": f"Bearer {access_token}"},
         )
@@ -713,7 +744,7 @@ class RESTClient(interfaces.RESTInterface):
             payload["membershipOption"] = int(membership_option)
 
         return self._request(
-            "POST",
+            RequestMethod.POST,
             f"GroupV2/{group_id}/Edit",
             json=payload,
             headers={"Authorization": f"Bearer {access_token}"},
@@ -743,7 +774,7 @@ class RESTClient(interfaces.RESTInterface):
         }
 
         return self._request(
-            "POST",
+            RequestMethod.POST,
             f"GroupV2/{group_id}/EditFounderOptions",
             json=payload,
             headers={"Authorization": f"Bearer {access_token}"},
@@ -752,7 +783,7 @@ class RESTClient(interfaces.RESTInterface):
     def fetch_friends(self, access_token: str, /) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
-            "GET",
+            RequestMethod.GET,
             "Social/Friends",
             headers={"Authorization": f"Bearer {access_token}"},
         )
@@ -762,7 +793,7 @@ class RESTClient(interfaces.RESTInterface):
     ) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
-            "GET",
+            RequestMethod.GET,
             "Social/Friends/Requests",
             headers={"Authorization": f"Bearer {access_token}"},
         )
@@ -772,7 +803,7 @@ class RESTClient(interfaces.RESTInterface):
     ) -> ResponseSig[None]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
-            "POST",
+            RequestMethod.POST,
             f"Social/Friends/Requests/Accept/{member_id}",
             headers={"Authorization": f"Bearer {access_token}"},
         )
@@ -782,7 +813,7 @@ class RESTClient(interfaces.RESTInterface):
     ) -> ResponseSig[None]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
-            "POST",
+            RequestMethod.POST,
             f"Social/Friends/Add/{member_id}",
             headers={"Authorization": f"Bearer {access_token}"},
         )
@@ -792,7 +823,7 @@ class RESTClient(interfaces.RESTInterface):
     ) -> ResponseSig[None]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
-            "POST",
+            RequestMethod.POST,
             f"Social/Friends/Requests/Decline/{member_id}",
             headers={"Authorization": f"Bearer {access_token}"},
         )
@@ -800,7 +831,7 @@ class RESTClient(interfaces.RESTInterface):
     def remove_friend(self, access_token: str, /, member_id: int) -> ResponseSig[None]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
-            "POST",
+            RequestMethod.POST,
             f"Social/Friends/Remove/{member_id}",
             headers={"Authorization": f"Bearer {access_token}"},
         )
@@ -810,7 +841,7 @@ class RESTClient(interfaces.RESTInterface):
     ) -> ResponseSig[None]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>
         return self._request(
-            "POST",
+            RequestMethod.POST,
             f"Social/Friends/Requests/Remove/{member_id}",
             headers={"Authorization": f"Bearer {access_token}"},
         )
@@ -824,7 +855,7 @@ class RESTClient(interfaces.RESTInterface):
     ) -> ResponseSig[None]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>
         return self._request(
-            "POST",
+            RequestMethod.POST,
             f"GroupV2/{group_id}/Members/ApproveAll",
             headers={"Authorization": f"Bearer {access_token}"},
             json={"message": str(message)},
@@ -839,7 +870,7 @@ class RESTClient(interfaces.RESTInterface):
     ) -> ResponseSig[None]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>
         return self._request(
-            "POST",
+            RequestMethod.POST,
             f"GroupV2/{group_id}/Members/DenyAll",
             headers={"Authorization": f"Bearer {access_token}"},
             json={"message": str(message)},
@@ -857,7 +888,7 @@ class RESTClient(interfaces.RESTInterface):
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>
         payload = {"chatName": str(name), "chatSecurity": security}
         return self._request(
-            "POST",
+            RequestMethod.POST,
             f"GroupV2/{group_id}/OptionalConversations/Add",
             json=payload,
             headers={"Authorization": f"Bearer {access_token}"},
@@ -881,7 +912,7 @@ class RESTClient(interfaces.RESTInterface):
             "chatSecurity": security,
         }
         return self._request(
-            "POST",
+            RequestMethod.POST,
             f"GroupV2/{group_id}/OptionalConversations/Edit/{conversation_id}",
             json=payload,
             headers={"Authorization": f"Bearer {access_token}"},
@@ -909,7 +940,7 @@ class RESTClient(interfaces.RESTInterface):
             "transferToVault": vault,
         }
         return self._request(
-            "POST",
+            RequestMethod.POST,
             "Destiny2/Actions/Items/PullFromPostmaster",
             json=payload,
             headers={"Authorization": f"Bearer {access_token}"},
@@ -937,7 +968,7 @@ class RESTClient(interfaces.RESTInterface):
             "transferToVault": vault,
         }
         return self._request(
-            "POST",
+            RequestMethod.POST,
             "Destiny2/Actions/Items/TransferItem",
             json=payload,
             headers={"Authorization": f"Bearer {access_token}"},
@@ -968,5 +999,5 @@ class RESTClient(interfaces.RESTInterface):
 
     def fetch_post_activity(self, instance: int, /) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        # return self._request("GET", f"Destiny2/Stats/PostGameCarnageReport/{instance}")
+        # return self._request(RequestMethod.GET, f"Destiny2/Stats/PostGameCarnageReport/{instance}")
         raise NotImplementedError

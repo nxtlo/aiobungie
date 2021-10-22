@@ -29,8 +29,11 @@ __all__ = ("ClientBase", "Netrunner", "Serializable", "RESTful")
 import typing
 
 if typing.TYPE_CHECKING:
+    from aiohttp import typedefs
+
     from aiobungie import client as base_client
     from aiobungie import interfaces
+    from aiobungie import rest
     from aiobungie.internal import factory
 
 
@@ -69,20 +72,23 @@ class RESTful(typing.Protocol):
         """Close the rest client."""
 
     async def static_request(
-        self, method: str, path: str, **kwargs: typing.Any
+        self,
+        method: typing.Union[rest.RequestMethod, str],
+        path: typedefs.StrOrURL,
+        **kwargs: typing.Any
     ) -> typing.Any:
         """Raw http request given a valid bungie endpoint.
 
         Parameters
         ----------
-        method : `builtins.str`
+        method : `typing.Union[aiobungie.rest.RequestMethod, str]`
             The request method, This may be `GET`, `POST`, `PUT`, etc.
-        path: `builtins.str`
+        path: `typing.Union[str, yarl.URL]`
             The bungie endpoint or path.
             A path must look something like this
             `Destiny2/3/Profile/46111239123/...`
         **kwargs: `typing.Any`
-            Any other key words you'd like to pass through.
+            Any other key words to pass to the request.
 
         Returns
         -------

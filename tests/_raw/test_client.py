@@ -32,13 +32,6 @@ import inspect
 import logging
 import asyncio
 
-try:
-    import dotenv
-
-    dotenv.load_dotenv(verbose=True)
-except ImportError:
-    pass
-
 # NOTE: If you're on unix based system make sure to run this
 # in your terminal. export CLIENT_TOKEN='TOKEN'
 

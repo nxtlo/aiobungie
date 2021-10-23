@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - `__repr__` overloaded for `enums.Enum` which just returns `enums.Enum.__str__`.
+- `Profile.collect()` method which fetch and collect all characters at once.
 
 ### Changed
 - `RESTClient._request` now takes a string or `rest.RequestMethod` enum for the method.

@@ -23,32 +23,64 @@ nox is a helper to run all the tests for you. We have 6 tests
     * file formatters.
 * mypy, stubgen
     * mypy type checks and stubgen for generating stub files.
-* pdoc3
+* pdoc
     * docs generator.
 * pytest
     * for testing and mocking aiobungie itself.
 * codespell
     * File text spell checks.
 * client_test and rest_test
-    * Which are real tests for the base client and the rest client. 
+    - Which are real tests for the base client and the rest client. 
     For this you'll need to export your token in an env variable like this `export CLIENT_TOKEN='TOKEN'` for unix based systems.
+
+    If you're on windows i recommend making a `.env` file in the root directory and write this `CLIENT_TOKEN='TOKEN'`
 
 You can list all available session by typing `nox -l`
 
-## Pull requests
+## Notes
 
-Before opening a PR, Please make sure that all nox tests passes.
+### Coding style
+- This project uses numpy style for the docs.
+- Importing stuff should be the module itself and not the absolute object. i.e.,
 
-Clone the repo and
-install the normal and dev packages by running `pip install -r requirements.txt -r dev-requirements.txt`
+This is fine.
+```py
+import typing
+from aiobungie.internal import enums
 
-__NOTE__: You should use a virtual enviroment here.
-run `python -m venv .venv` to create the virtual env
+# non-runtime annotations.
+if typing.TYPE_CHECKING:
+   from ... import ...
+```
+This doesn't follow the coding style.
+```py
+from typing import Union
+from aiobungie.internal.enums import MembershipType
+```
 
-Make your changes.
+### [Type checking](https://www.python.org/dev/peps/pep-0484/)
+This project is statically typed and uses mypy for the type checking, So everything should be type annotated.
 
-run `nox` to make sure everything is working fine and all tests passed with no issues.
+### Client and RESTClient tests
+You may write tests for your new changes(if so) at `tests/_raw`.
 
-You can also run a specific session by running `nox -s mypy` or `nox -s mypy pdoc`
+## Opening your first PR
 
-Commit your changes then push and open a PR.
+- Clone the repo.
+   - `git clone https://github.com/nxtlo/aiobungie/`
+
+- You should use a virtual enviroment.
+   - run inside the project `python -m venv .venv` to create the virtual env
+
+- Install dev requirements.
+   - `pip install -r dev-requirements`
+
+- Checkout to a new branch and make your changes.
+   - `git checkout -b task/small-info-about-the-task`
+
+- Test all pipelines after finishing.
+   - run `nox` to make sure everything is working fine and all tests passed with no issues.
+
+   You can also run a specific session by running `nox -s mypy` or `nox -s mypy pdoc`
+
+Push and open a PR.

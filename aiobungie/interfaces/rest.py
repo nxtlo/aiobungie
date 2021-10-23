@@ -84,7 +84,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Raises
         ------
-        `aiobungie.error.UserNotFound`
+        `aiobungie.error.NotFound`
             The user was not found.
         """
 
@@ -167,7 +167,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Raises
         ------
-        aiobungie.UserNotFound
+        aiobungie.NotFound
             The requested user was not found.
         """
 
@@ -227,7 +227,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Raises
         ------
-        `aiobungie.PlayerNotFound`
+        `aiobungie.NotFound`
             The player was not found.
 
         `aiobungie.MembershipTypeError`
@@ -343,7 +343,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Raises
         ------
-        `aiobungie.ClanNotFound`
+        `aiobungie.NotFound`
             The clan was not found.
         """
 
@@ -368,7 +368,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Raises
         ------
-        `aiobungie.ClanNotFound`
+        `aiobungie.NotFound`
             The clan was not found.
         """
 
@@ -405,7 +405,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Raises
         ------
-        `aiobungie.ClanNotFound`
+        `aiobungie.NotFound`
             The clan was not found.
         """
 
@@ -505,7 +505,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Raises
         ------
-        `aiobungie.ClanNotFound`
+        `aiobungie.NotFound`
             The clan was not found.
         """
 

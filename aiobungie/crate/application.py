@@ -80,7 +80,7 @@ class ApplicationOwner(user.UserLike):
 
         Raises
         ------
-        `aiobungie.UserNotFound`
+        `aiobungie.NotFound`
             The user was not found.
         """
         user_ = await self.net.request.fetch_user(self.id)

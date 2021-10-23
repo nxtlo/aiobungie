@@ -155,7 +155,7 @@ class PartialBungieUser:
 
         Raises
         ------
-        `aiobungie.UserNotFound`
+        `aiobungie.NotFound`
             The user was not found.
         """
         user = await self.net.request.fetch_user(self.id)

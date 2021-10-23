@@ -26,13 +26,9 @@ from __future__ import annotations
 
 __all__: list[str] = [
     "AiobungieError",
-    "PlayerNotFound",
-    "ActivityNotFound",
-    "ClanNotFound",
     "CharacterError",
     "NotFound",
     "HTTPException",
-    "UserNotFound",
     "ComponentError",
     "MembershipTypeError",
     "Forbidden",
@@ -48,10 +44,16 @@ import attr
 
 if typing.TYPE_CHECKING:
     import multidict
+    from aiohttp import typedefs
 
 
 class AiobungieError(Exception):
     """The base exception class that all other errors inherit from."""
+
+
+@typing.final
+class ResponseError(AiobungieError):
+    """Typical Responses error."""
 
 
 @attr.define(auto_exc=True, repr=False, weakref_slot=False)
@@ -60,6 +62,7 @@ class HTTPException(AiobungieError):
 
     message: str = attr.field(default="")
     long_message: str = attr.field(default="")
+    url: typing.Optional[typedefs.StrOrURL] = attr.field(default=None)
 
 
 @attr.define(auto_exc=True, repr=False, weakref_slot=False, kw_only=True)
@@ -68,29 +71,6 @@ class RateLimitedError(HTTPException):
 
     headers: multidict.CIMultiDictProxy[str] = attr.field(default=None)
     retry_after: float = attr.field(default=0.0)
-    url: str = attr.field(default="")
-
-
-@attr.define(auto_exc=True, repr=False, weakref_slot=False)
-class InternalServerError(HTTPException):
-    """Raised for other 5xx errors."""
-
-    message: str = attr.field(default="")
-    long_message: str = attr.field(default="")
-
-
-class NotFound(AiobungieError):
-    """Raised when an unknown request was not found."""
-
-
-@typing.final
-class ResponseError(AiobungieError):
-    """Typical Responses error."""
-
-
-@typing.final
-class PlayerNotFound(NotFound):
-    """Raised when a `aiobungie.crate.Player` is not found."""
 
 
 @typing.final
@@ -99,33 +79,13 @@ class Forbidden(HTTPException):
 
 
 @typing.final
-class Unauthorized(HTTPException):
-    """Unauthorized access."""
-
-
-@typing.final
-class ActivityNotFound(NotFound):
-    """Raised when a `aiobungie.crate.Activity` not found."""
-
-
-@typing.final
-class CharacterError(HTTPException):
-    """Raised when a `aiobungie.crate.Character` not found."""
-
-
-@typing.final
-class ClanNotFound(NotFound):
-    """Raised when a `aiobungie.crate.Clan` not found."""
-
-
-@typing.final
-class UserNotFound(NotFound):
-    """Raised when a user was not found."""
-
-
-@typing.final
 class ComponentError(HTTPException):
     """Raised when someone uses the wrong `aiobungie.internal.enums.Component.`"""
+
+
+@typing.final
+class NotFound(AiobungieError):
+    """Raised when an unknown request was not found."""
 
 
 @typing.final
@@ -134,3 +94,18 @@ class MembershipTypeError(HTTPException):
     or The crate you're trying to fetch doesn't have
     The requested membership type.
     """
+
+
+@typing.final
+class Unauthorized(HTTPException):
+    """Unauthorized access."""
+
+
+@typing.final
+class CharacterError(HTTPException):
+    """Raised when a `aiobungie.crate.Character` not found."""
+
+
+@attr.define(auto_exc=True, repr=False, weakref_slot=False)
+class InternalServerError(HTTPException):
+    """Raised for other 5xx errors."""

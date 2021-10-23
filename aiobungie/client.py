@@ -162,7 +162,7 @@ class Client(traits.ClientBase):
 
         Raises
         ------
-        `aiobungie.error.UserNotFound`
+        `aiobungie.error.NotFound`
             The user was not found.
         """
         payload = await self.rest.fetch_user(id)
@@ -262,7 +262,7 @@ class Client(traits.ClientBase):
 
         Raises
         ------
-        aiobungie.UserNotFound
+        aiobungie.NotFound
             The requested user was not found.
         """
         payload = await self.rest.fetch_membership_from_id(id, type)
@@ -369,7 +369,7 @@ class Client(traits.ClientBase):
 
         Raises
         ------
-        `aiobungie.PlayerNotFound`
+        `aiobungie.NotFound`
             The player was not found.
 
         `aiobungie.MembershipTypeError`
@@ -504,7 +504,7 @@ class Client(traits.ClientBase):
 
         Raises
         ------
-        `aiobungie.ClanNotFound`
+        `aiobungie.NotFound`
             The clan was not found.
         """
         resp = await self.rest.fetch_clan_from_id(id)
@@ -531,7 +531,7 @@ class Client(traits.ClientBase):
 
         Raises
         ------
-        `aiobungie.ClanNotFound`
+        `aiobungie.NotFound`
             The clan was not found.
         """
         resp = await self.rest.fetch_clan(name, type)
@@ -573,7 +573,7 @@ class Client(traits.ClientBase):
 
         Raises
         ------
-        `aiobungie.ClanNotFound`
+        `aiobungie.NotFound`
             The requested clan was not found.
         """
         resp = await self.rest.fetch_clan_admins(clan_id)
@@ -686,7 +686,7 @@ class Client(traits.ClientBase):
 
         Raises
         ------
-        `aiobungie.ClanNotFound`
+        `aiobungie.NotFound`
             The clan was not found.
 
         `aiobungie.NotFound`
@@ -727,7 +727,7 @@ class Client(traits.ClientBase):
 
         Raises
         ------
-        `aiobungie.ClanNotFound`
+        `aiobungie.NotFound`
             The clan was not found.
         """
         resp = await self.rest.fetch_clan_members(clan_id, type)

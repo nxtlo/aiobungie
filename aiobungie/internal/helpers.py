@@ -145,8 +145,8 @@ class AsyncIterator(typing.Generic[T]):
     def __init__(self, sequence: typing.Iterable[T]) -> None:
         self._seq = iter(sequence)
 
-    def __iter__(self) -> AsyncIterator[T]:
-        return self
+    def __iter__(self) -> typing.NoReturn:
+        raise TypeError("This class supports `async for` syntax only.")
 
     def __aiter__(self) -> AsyncIterator[T]:
         return self

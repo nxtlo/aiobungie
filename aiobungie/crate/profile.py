@@ -27,6 +27,7 @@ from __future__ import annotations
 __all__ = ("Profile", "ProfileComponent", "LinkedProfile")
 
 import abc
+import asyncio
 import datetime
 import logging
 import typing
@@ -86,9 +87,30 @@ class ProfileComponent(abc.ABC):
     def id(self) -> int:
         """The profile's id."""
 
+    async def _fetch_all_chars(self) -> typing.Sequence[character.Character]:
+        return await asyncio.gather(
+            *[self.fetch_warlock(), self.fetch_hunter(), self.fetch_warlock()]
+        )
+
+    async def collect(self) -> typing.Sequence[character.Character]:
+        """Gather and collect all characters this profile has.
+
+        Example
+        -------
+        ```py
+        >>> for char in await fetched_profile.collect():
+        ...     print(char.light, char.class_type)
+        ```
+
+        Returns
+        -------
+        `typing.Sequence[aiobungie.crate.Character]`
+            A sequence of character objects.
+        """
+        return await self._fetch_all_chars()
+
     async def fetch_titan(self) -> character.Character:
         """Returns the titan character of the profile owner."""
-        # We're ignoring the types for the character since
         char = await self.net.request.fetch_character(
             int(self.id), self.type, enums.Class.TITAN
         )

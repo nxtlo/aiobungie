@@ -106,6 +106,11 @@ async def test_profile() -> aiobungie.crate.Profile:
     warlock = await pf.fetch_warlock()
     titan = await pf.fetch_titan()
     hunter = await pf.fetch_hunter()
+    try:
+        for char in await pf.collect():
+            print(char.light)
+    except RuntimeError:
+        pass
     print(warlock, titan, hunter)
     return pf
 

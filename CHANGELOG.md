@@ -12,6 +12,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - `RESTClient._request` now takes a string or `rest.RequestMethod` enum for the method.
 - `RESTClient._request` now takes `yarl.URL` or a string for the path. Both changes affect `RESTClient.static_request.
+- Simplify not found raised errors to only raise `error.NotFound` instead of other not found errors.
+
+### Removed
+- Not found errors removed and now only `error.NotFound` is raised instead.
+    - `error.PlayerNotFound`
+    - `error.UserNotFound`
+    - `error.ActivityNotFound`
+    - `error.ClanNotFound` 
 
 ## [0.2.5b11](https://github.com/nxtlo/aiobungie/compare/0.2.5b10...0.2.5b11) 2021-10-21
 

@@ -711,7 +711,7 @@ class Clan:
 
         Raises
         ------
-        `aiobungie.ClanNotFound`
+        `aiobungie.NotFound`
             The clan was not found.
 
         `aiobungie.NotFound`
@@ -742,7 +742,7 @@ class Clan:
 
         Raises
         ------
-        `aiobungie.ClanNotFound`
+        `aiobungie.NotFound`
             The clan was not found.
         """
         return await self.net.request.fetch_clan_members(self.id, type)

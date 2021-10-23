@@ -263,7 +263,7 @@ class Factory:
         self, payload: JsonArray, /
     ) -> typing.Sequence[user.DestinyUser]:
         if payload is None:
-            raise error.PlayerNotFound("Player was not found.") from None
+            raise error.NotFound("Player was not found.") from None
 
         return self.deserialize_destiny_members(payload, bound=True)
 

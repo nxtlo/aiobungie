@@ -97,23 +97,32 @@ async def handle_errors(
     # custom error codes.
     # https://github.com/Bungie-net/api/issues/1542
     elif 500 <= status < 600:
-        if msg in ("ApiKeyMissingFromRequest", "WebAuthRequired"):
-            # No API key or method requires OAuth2 most likely.
-            return error.Unauthorized(*data)
-        if msg == "ClanNotFound":
-            return error.ClanNotFound(*data)
-        elif msg == "NotFound":
+        # No API key or method requires OAuth2 most likely.
+        if msg in {
+            "ApiKeyMissingFromRequest",
+            "WebAuthRequired",
+            "ApiInvalidOrExpiredKey",
+        }:
+            return error.Unauthorized(
+                message=str(msg),
+                long_message=from_json.get("Message", ""),
+                url=str(response.real_url),
+            )
+
+        # Anything that's not found except NotFound.
+        if msg and "NotFound" in msg or "UserCannotFindRequestedUser" == msg:
             return error.NotFound(*data)
+
+        # Membership need to be alone.
         elif msg == "DestinyInvalidMembershipType":
             return error.MembershipTypeError(*data)
-        elif msg == "Group Not Found":
-            return error.ClanNotFound(*data)
-        elif msg == "UserCannotFindRequestedUser":
-            return error.UserNotFound(*data)
+
+        # Any other messages.
         else:
             return error.InternalServerError(
                 message=str(msg), long_message=from_json.get("Message", "")
             )
+    # Not 5xx.
     else:
         return error.HTTPException(*data)
 

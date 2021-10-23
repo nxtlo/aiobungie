@@ -37,11 +37,15 @@ def client_test(session: nox.Session) -> None:
     if session.env.get("CLIENT_TOKEN") is None:
         session.error("CLIENT_TOKEN not found in env variables.")
 
-    session.install('.')
-    path = pathlib.Path(".") / 'tests' / '_raw'
-    if path.exists():
-        for file in path.iterdir():
-            if file.is_file() and file.name == 'test_client.py':
-                shutil.copy(file, '.')
-                session.run("python", 'test_client.py')
-                os.remove("./test_client.py")
+    try:
+        session.install('.')
+        path = pathlib.Path("./tests/_raw/test_client.py")
+        if path.exists() and path.is_file():
+            shutil.copy(path, '.')
+            session.run("python", 'test_client.py')
+        os.remove("./test_client.py")
+    except Exception:
+        try:
+            os.remove("./test_client.py")
+        except FileNotFoundError:
+            pass

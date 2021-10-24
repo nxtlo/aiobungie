@@ -37,7 +37,7 @@ import asyncio
 
 client = aiobungie.Client(os.environ["CLIENT_TOKEN"])
 MID = 4611686018484639825
-_LOG = logging.getLogger(__name__)
+_LOG = logging.getLogger("test_client")
 logging.basicConfig(level=logging.DEBUG)
 
 
@@ -213,7 +213,7 @@ async def main() -> None:
         if n == "main" or not n.startswith("test_"):
             continue
         coros.append(coro())
-    print(await asyncio.gather(*coros))
+    _LOG.debug(await asyncio.gather(*coros))
 
 
 if __name__ == "__main__":

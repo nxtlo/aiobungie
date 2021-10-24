@@ -43,6 +43,19 @@ def client_test(session: nox.Session) -> None:
         if path.exists() and path.is_file():
             shutil.copy(path, '.')
             session.run("python", 'test_client.py')
+            session.log("======Speed ups======")
+
+            if os.name != 'nt':
+                # Avoid windows.
+                try:
+                    session.install("uvloop")
+                    import uvloop
+                except (ImportError, Exception) as exc:
+                    session.log("Coulnd't install uvloop: %s", exc)
+                    pass
+                else:
+                    uvloop.install()
+            session.run("python", "-OO", 'test_client.py')
         os.remove("./test_client.py")
     except Exception:
         try:

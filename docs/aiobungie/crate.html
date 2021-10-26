@@ -1000,6 +1000,9 @@
                                 <a class="variable" href="#ProfileComponent.id">id</a>
                         </li>
                         <li>
+                                <a class="function" href="#ProfileComponent.collect">collect</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#ProfileComponent.fetch_titan">fetch_titan</a>
                         </li>
                         <li>
@@ -1946,7 +1949,7 @@ For an example if it was 0 that means it's a fresh run</p>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
-<span class="sd">        `aiobungie.ClanNotFound`</span>
+<span class="sd">        `aiobungie.NotFound`</span>
 <span class="sd">            The clan was not found.</span>
 
 <span class="sd">        `aiobungie.NotFound`</span>
@@ -1977,7 +1980,7 @@ For an example if it was 0 that means it's a fresh run</p>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
-<span class="sd">        `aiobungie.ClanNotFound`</span>
+<span class="sd">        `aiobungie.NotFound`</span>
 <span class="sd">            The clan was not found.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">fetch_clan_members</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span>
@@ -2775,7 +2778,7 @@ Default is `0`
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
-<span class="sd">        `aiobungie.ClanNotFound`</span>
+<span class="sd">        `aiobungie.NotFound`</span>
 <span class="sd">            The clan was not found.</span>
 
 <span class="sd">        `aiobungie.NotFound`</span>
@@ -2814,7 +2817,7 @@ which returns any member matches the name.</li>
 <h6 id="raises">Raises</h6>
 
 <ul>
-<li><strong><code><a href="../aiobungie.html#ClanNotFound">aiobungie.ClanNotFound</a></code></strong>: The clan was not found.</li>
+<li><strong><code><a href="../aiobungie.html#NotFound">aiobungie.NotFound</a></code></strong>: The clan was not found.</li>
 <li><strong><code><a href="../aiobungie.html#NotFound">aiobungie.NotFound</a></code></strong>: The member was not found</li>
 </ul>
 </div>
@@ -2856,7 +2859,7 @@ which returns any member matches the name.</li>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
-<span class="sd">        `aiobungie.ClanNotFound`</span>
+<span class="sd">        `aiobungie.NotFound`</span>
 <span class="sd">            The clan was not found.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">fetch_clan_members</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span>
@@ -2886,7 +2889,7 @@ Default is <code><a href="../aiobungie.html#MembershipType.NONE">aiobungie.Membe
 <h6 id="raises">Raises</h6>
 
 <ul>
-<li><strong><code><a href="../aiobungie.html#ClanNotFound">aiobungie.ClanNotFound</a></code></strong>: The clan was not found.</li>
+<li><strong><code><a href="../aiobungie.html#NotFound">aiobungie.NotFound</a></code></strong>: The clan was not found.</li>
 </ul>
 </div>
 
@@ -4954,7 +4957,7 @@ The bearer access token associated with the bungie account.</li>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
-<span class="sd">        `aiobungie.UserNotFound`</span>
+<span class="sd">        `aiobungie.NotFound`</span>
 <span class="sd">            The user was not found.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">user_</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">fetch_user</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
@@ -5117,7 +5120,7 @@ This can be None if the user hasn't logged in after season of the lost update.</
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
-<span class="sd">        `aiobungie.UserNotFound`</span>
+<span class="sd">        `aiobungie.NotFound`</span>
 <span class="sd">            The user was not found.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">user_</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">fetch_user</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
@@ -5138,7 +5141,7 @@ This can be None if the user hasn't logged in after season of the lost update.</
 <h6 id="raises">Raises</h6>
 
 <ul>
-<li><strong><code><a href="../aiobungie.html#UserNotFound">aiobungie.UserNotFound</a></code></strong>: The user was not found.</li>
+<li><strong><code><a href="../aiobungie.html#NotFound">aiobungie.NotFound</a></code></strong>: The user was not found.</li>
 </ul>
 </div>
 
@@ -5457,7 +5460,8 @@ crates are basically classes/objects.</p>
                                 <h5>Inherited Members</h5>
                                 <dl>
                                     <div><dt><a href="#ProfileComponent">ProfileComponent</a></dt>
-                                <dd id="Profile.fetch_titan" class="function"><a href="#ProfileComponent.fetch_titan">fetch_titan</a></dd>
+                                <dd id="Profile.collect" class="function"><a href="#ProfileComponent.collect">collect</a></dd>
+                <dd id="Profile.fetch_titan" class="function"><a href="#ProfileComponent.fetch_titan">fetch_titan</a></dd>
                 <dd id="Profile.fetch_hunter" class="function"><a href="#ProfileComponent.fetch_hunter">fetch_hunter</a></dd>
                 <dd id="Profile.fetch_warlock" class="function"><a href="#ProfileComponent.fetch_warlock">fetch_warlock</a></dd>
 
@@ -8455,7 +8459,7 @@ This is new and was added in Season of the lost update</p>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
-<span class="sd">        `aiobungie.UserNotFound`</span>
+<span class="sd">        `aiobungie.NotFound`</span>
 <span class="sd">            The user was not found.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">user</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">fetch_user</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
@@ -8609,7 +8613,7 @@ by using <code><a href="#PartialBungieUser.fetch_self">PartialBungieUser.fetch_s
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
-<span class="sd">        `aiobungie.UserNotFound`</span>
+<span class="sd">        `aiobungie.NotFound`</span>
 <span class="sd">            The user was not found.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">user</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">fetch_user</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
@@ -8630,7 +8634,7 @@ by using <code><a href="#PartialBungieUser.fetch_self">PartialBungieUser.fetch_s
 <h6 id="raises">Raises</h6>
 
 <ul>
-<li><strong><code><a href="../aiobungie.html#UserNotFound">aiobungie.UserNotFound</a></code></strong>: The user was not found.</li>
+<li><strong><code><a href="../aiobungie.html#NotFound">aiobungie.NotFound</a></code></strong>: The user was not found.</li>
 </ul>
 </div>
 
@@ -8690,9 +8694,30 @@ by using <code><a href="#PartialBungieUser.fetch_self">PartialBungieUser.fetch_s
     <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;The profile&#39;s id.&quot;&quot;&quot;</span>
 
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">_fetch_all_chars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">character</span><span class="o">.</span><span class="n">Character</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span>
+            <span class="o">*</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">fetch_warlock</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch_hunter</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch_warlock</span><span class="p">()]</span>
+        <span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">collect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">character</span><span class="o">.</span><span class="n">Character</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Gather and collect all characters this profile has.</span>
+
+<span class="sd">        Example</span>
+<span class="sd">        -------</span>
+<span class="sd">        ```py</span>
+<span class="sd">        &gt;&gt;&gt; for char in await fetched_profile.collect():</span>
+<span class="sd">        ...     print(char.light, char.class_type)</span>
+<span class="sd">        ```</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `typing.Sequence[aiobungie.crate.Character]`</span>
+<span class="sd">            A sequence of character objects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch_all_chars</span><span class="p">()</span>
+
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_titan</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">character</span><span class="o">.</span><span class="n">Character</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Returns the titan character of the profile owner.&quot;&quot;&quot;</span>
-        <span class="c1"># We&#39;re ignoring the types for the character since</span>
         <span class="n">char</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">fetch_character</span><span class="p">(</span>
             <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">enums</span><span class="o">.</span><span class="n">Class</span><span class="o">.</span><span class="n">TITAN</span>
         <span class="p">)</span>
@@ -8800,6 +8825,53 @@ Some fields may or may not be available here.</p>
 
 
                             </div>
+                            <div id="ProfileComponent.collect" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#ProfileComponent.collect">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">async def</span>
+            <span class="name">collect</span><span class="signature">(self) -&gt; Sequence[<a href="#character.Character">aiobungie.crate.character.Character</a>]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">collect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">character</span><span class="o">.</span><span class="n">Character</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Gather and collect all characters this profile has.</span>
+
+<span class="sd">        Example</span>
+<span class="sd">        -------</span>
+<span class="sd">        ```py</span>
+<span class="sd">        &gt;&gt;&gt; for char in await fetched_profile.collect():</span>
+<span class="sd">        ...     print(char.light, char.class_type)</span>
+<span class="sd">        ```</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `typing.Sequence[aiobungie.crate.Character]`</span>
+<span class="sd">            A sequence of character objects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch_all_chars</span><span class="p">()</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Gather and collect all characters this profile has.</p>
+
+<h6 id="example">Example</h6>
+
+<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="k">await</span> <span class="n">fetched_profile</span><span class="o">.</span><span class="n">collect</span><span class="p">():</span>
+<span class="o">...</span>     <span class="nb">print</span><span class="p">(</span><span class="n">char</span><span class="o">.</span><span class="n">light</span><span class="p">,</span> <span class="n">char</span><span class="o">.</span><span class="n">class_type</span><span class="p">)</span>
+</code></pre></div>
+
+<h6 id="returns">Returns</h6>
+
+<ul>
+<li><strong><code>typing.Sequence[<a href="#Character">aiobungie.crate.Character</a>]</code></strong>: A sequence of character objects.</li>
+</ul>
+</div>
+
+
+                            </div>
                             <div id="ProfileComponent.fetch_titan" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#ProfileComponent.fetch_titan">#&nbsp;&nbsp</a>
 
@@ -8812,7 +8884,6 @@ Some fields may or may not be available here.</p>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_titan</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">character</span><span class="o">.</span><span class="n">Character</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Returns the titan character of the profile owner.&quot;&quot;&quot;</span>
-        <span class="c1"># We&#39;re ignoring the types for the character since</span>
         <span class="n">char</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">fetch_character</span><span class="p">(</span>
             <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">enums</span><span class="o">.</span><span class="n">Class</span><span class="o">.</span><span class="n">TITAN</span>
         <span class="p">)</span>

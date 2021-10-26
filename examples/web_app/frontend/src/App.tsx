@@ -1,32 +1,16 @@
 import React from "react";
 import "./App.css";
-
-// Type aliases.
-type int = number;
-type str = string;
-type bool = boolean;
-type list<T extends Array<T>> = T[];
-
-// An interface on what data the JSON player response will expect.
-interface Player extends list<Player> {
-  isPublic: bool;
-  membershipType: int;
-  membershipId: int;
-  displayName: str;
-  bungieGlobalDisplayName: str;
-  bungieGlobalDisplayNameCode: int;
-  iconPath: str;
-}
+import * as types from './types'
 
 // The player name and membership type we're searching for.
 // The player name should include the code as well. i.e., Fate#1234
 // The player type should be a string, i.e., Steam, Xbox, Stadia, PSN. etc.
 // It could be null as well to return all memberships.
-const PLAYER_NAME: string = "Fate怒#4275";
-const PLAYER_TYPE: null | string = null;
+const PLAYER_NAME: types.str = "Fate怒#4275";
+const PLAYER_TYPE: null | types.str = null;
 
 function App(): JSX.Element {
-  const [player, setPlayer] = React.useState<list<Player>>([]);
+  const [player, setPlayer] = React.useState<types.list<types.Player>>([]);
 
   const setPlayers = async (): Promise<void> => {
     await fetchPlayer().then((plr) => {
@@ -36,7 +20,7 @@ function App(): JSX.Element {
   };
 
   // Make a POST request to our fast API.
-  const fetchPlayer = async (): Promise<list<Player>> => {
+  const fetchPlayer = async (): Promise<types.list<types.Player>> => {
     return await fetch("/player", {
       method: "POST",
       headers: { "Content-Type": "application/json" },

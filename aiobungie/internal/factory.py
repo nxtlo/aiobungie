@@ -473,7 +473,12 @@ class Factory:
     def deserialize_clan_members(
         self, data: JsonObject, /
     ) -> typing.Sequence[clans.ClanMember]:
+
         members_vec: list[clans.ClanMember] = []
+        _fn_type_optional = typing.Optional[typing.Callable[..., typing.Dict[str, str]]]
+        _fn_type = typing.Callable[..., typing.Dict[str, str]]
+        payload: typing.List[typing.Dict[str, str]]
+
         if (payload := data["results"]) is not None:
 
             # raw_is_on: list[bool] = just(payload, "isOnline")
@@ -491,14 +496,15 @@ class Factory:
             group_id: list[int] = just(payload, "groupId")
 
             for memberships in payload:
-                wrap_destiny = lambda m: m["destinyUserInfo"]  # noqa: E731 Lambdas
-                wrap_bungie = None
+                wrap_destiny: _fn_type = lambda m: m["destinyUserInfo"]  # type: ignore[no-any-return]
+                wrap_bungie: _fn_type_optional = None
 
                 try:
-                    wrap_bungie = lambda m: m["bungieNetUserInfo"]  # noqa: E731 Lambdas
-                    bungie_user = self.deserialize_partial_bungie_user(
-                        wrap_bungie(memberships), noeq=True
-                    )
+                    wrap_bungie: _fn_type_optional = lambda m: m["bungieNetUserInfo"]  # type: ignore[no-redef]
+                    if wrap_bungie:
+                        bungie_user = self.deserialize_partial_bungie_user(
+                            wrap_bungie(memberships), noeq=True
+                        )
                 except KeyError:
                     continue
 

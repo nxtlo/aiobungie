@@ -29,6 +29,42 @@ classifiers = [
     "Typing :: Typed",
 ]
 
+[tool.pytest.ini_options]
+xfail_strict = true
+norecursedirs = "docs *.egg-info .git .nox .pytest_cache .venv venv _*"
+adopts = ["--showlocals", "--ignore=tests/_raw"]
+
+[tool.isort]
+profile = "black"
+force_single_line = true
+skip_glob = "**/__init__.pyi"
+
+[tool.mypy]
+python_version = 3.8
+pretty = true
+show_column_numbers = true
+show_error_codes = true
+show_error_context = true
+check_untyped_defs = true
+
+# Ignored
+ignore_missing_imports = true
+ignore_missing_imports_per_module = true
+
+# Warns
+warn_no_return = true
+warn_return_any = true
+
+# Disallowed
+disallow_any_generics = true
+disallow_subclassing_any = true
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+
+# Allowed
+allow_redefinition = true
+
 [tool.poetry.dependencies]
 python = "^3.8"
 python-dateutil = "2.8.2"

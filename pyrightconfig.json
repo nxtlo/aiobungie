@@ -1,8 +1,5 @@
 {
-    "reportGeneralTypeIssues": "error",
-    "typeCheckingMode": "basic",
     "venvPath": ".",
     "venv": ".venv",
-    "reportUnboundVariable": false,
-    "reportUndefinedVariable": false
+    "reportUnboundVariable": "none"
 }

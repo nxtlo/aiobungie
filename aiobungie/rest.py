@@ -563,13 +563,13 @@ class RESTClient(interfaces.RESTInterface):
     async def fetch_manifest_path(self) -> str:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         request = await self._request(RequestMethod.GET, "Destiny2/Manifest")
-        return request["mobileWorldContentPaths"]["en"]
+        return str(request["mobileWorldContentPaths"]["en"])
 
     async def fetch_manifest(self) -> bytes:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         content = await self.fetch_manifest_path()
         resp = await self._request(RequestMethod.GET, content, type="read", base=True)
-        return resp
+        return bytes(resp)
 
     def fetch_linked_profiles(
         self,

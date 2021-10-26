@@ -26,4 +26,4 @@ import nox
 @nox.session(reuse_venv=True)
 def pytest(session: nox.Session) -> None:
     session.install("-r", "requirements.txt", "-r", "dev-requirements.txt")
-    session.run("python", "-m", "pytest", "tests", "-c", "pytest.init", "--showlocals", "--ignore=tests/_raw")
+    session.run("python", "-m", "pytest", "tests")

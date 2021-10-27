@@ -1,11 +1,3 @@
-/* Dracula color scheme */
-
-@import url(https://cdn.jsdelivr.net/gh/tonsky/FiraCode@4/distr/fira_code.css);
-
-/* This is for the docstring code,
-Chack under for the actual docs
-***/
-
 pre {
     line-height: 125%;
 }
@@ -38,499 +30,397 @@ span.linenos.special {
     padding-right: 5px;
 }
 
+/* This is for the source code docs */
+
 .pdoc .hll {
-    background-color: #282a36
+    background-color: #282a36;
 }
 
 .pdoc {
-    --text: #ff79c6;
     background: #282a36;
-    color: #ff5555
+    color: #ff5555;
 }
-
 
 /* Comment */
 
 .pdoc .c {
-    color: #6272a4
+    color: #6a7aaa;
 }
-
 
 /* Error */
-
 .pdoc .err {
     color: #ff5555;
-    background-color: #1e0010
+    background-color: #1e0010;
 }
-
 
 /* Keyword */
-
 .pdoc .k {
-    color: #ff79c6
+    color: #ff79c6;
 }
-
 
 /* Literal */
-
 .pdoc .l {
-    color: #ae81ff
+    color: #ae81ff;
 }
-
 
 /* Name */
-
 .pdoc .n {
-    color: #f8f8f2
+    color: #f8f8f2;
 }
-
 
 /* Operator */
-
 .pdoc .o {
-    color: #ff79c6
+    color: #ff79c6;
 }
-
 
 /* Punctuation */
-
 .pdoc .p {
-    color: #f8f8f2
+    color: #f8f8f2;
 }
-
 
 /* Comment.Hashbang */
-
 .pdoc .ch {
-    color: #6272a4
+    color: #6a7aaa;
 }
-
 
 /* Comment.Multiline */
-
 .pdoc .cm {
-    color: #6272a4
+    color: #6a7aaa;
 }
-
 
 /* Comment.Preproc */
-
 .pdoc .cp {
-    color: #6272a4
+    color: #6a7aaa;
 }
-
 
 /* Comment.PreprocFile */
-
 .pdoc .cpf {
-    color: #6272a4
+    color: #6a7aaa;
 }
-
 
 /* Comment.Single */
-
 .pdoc .c1 {
-    color: #6272a4
+    color: #6a7aaa;
 }
-
 
 /* Comment.Special */
-
 .pdoc .cs {
-    color: #6272a4
+    color: #6a7aaa;
 }
-
 
 /* Generic.Deleted */
-
 .pdoc .gd {
-    color: #6272a4
+    color: #6a7aaa;
 }
-
 
 /* Generic.Emph */
-
 .pdoc .ge {
-    font-style: italic
+    font-style: italic;
 }
-
 
 /* Generic.Inserted */
-
 .pdoc .gi {
-    color: #a6e22e
+    color: #a6e22e;
 }
-
 
 /* Generic.Output */
-
 .pdoc .go {
-    color: #ff79c6
+    color: #ff79c6;
 }
-
 
 /* Generic.Prompt */
-
 .pdoc .gp {
     color: #f92672;
-    font-weight: bold
+    font-weight: bold;
 }
-
 
 /* Generic.Strong */
-
 .pdoc .gs {
-    font-weight: bold
+    font-weight: bold;
 }
-
 
 /* Generic.Subheading */
-
 .pdoc .gu {
-    color: #75715e
+    color: #75715e;
 }
-
 
 /* Keyword.Constant */
-
 .pdoc .kc {
-    color: #ff79c6
+    color: #ff79c6;
 }
-
 
 /* Keyword.Declaration */
-
 .pdoc .kd {
-    color: #bd93f9
+    color: #bd93f9;
 }
-
 
 /* Keyword.Namespace */
-
 .pdoc .kn {
-    color: #f92672,
+    color: #ff79c6;
 }
-
 
 /* Keyword.Pseudo */
-
 .pdoc .kp {
-    color: #bd93f9
+    color: #bd93f9;
 }
-
 
 /* Keyword.Reserved */
 
 .pdoc .kr {
-    color: #ff79c6
+    color: #ff79c6;
 }
-
 
 /* Keyword.Type */
 
 .pdoc .kt {
-    color: #ff79c6
+    color: #ff79c6;
 }
-
 
 /* Literal.Date */
 
 .pdoc .ld {
-    color: #e6db74
+    color: #e6db74;
 }
-
 
 /* Literal.Number */
 
 .pdoc .m {
-    color: #ae81ff
+    color: #ae81ff;
 }
-
 
 /* Literal.String */
 
 .pdoc .s {
-    color: #e6db74
+    color: #e6db74;
 }
-
 
 /* Name.Attribute */
 
 .pdoc .na {
-    color: #a6e22e
+    color: #a6e22e;
 }
-
 
 /* Name.Builtin */
 
 .pdoc .nb {
-    color: #8be9fd
+    color: #8be9fd;
 }
-
 
 /* Name.Class */
 
 .pdoc .nc {
-    color: #8be9fd
+    color: #8be9fd;
 }
-
 
 /* Name.Constant */
 
 .pdoc .no {
-    color: #ff79c6
+    color: #ff79c6;
 }
-
 
 /* Name.Decorator */
 
 .pdoc .nd {
-    color: #8be9fd
+    color: #8be9fd;
 }
-
 
 /* Name.Entity */
 
 .pdoc .ni {
-    color: #ff79c6
+    color: #ff79c6;
 }
-
 
 /* Name.Exception */
 
 .pdoc .ne {
-    color: #8be9fd
+    color: #8be9fd;
 }
-
 
 /* Name.Function */
 
 .pdoc .nf {
-    color: #50fa7b
+    color: #50fa7b;
 }
-
 
 /* Name.Label */
 
 .pdoc .nl {
-    color: #f8f8f2
+    color: #f8f8f2;
 }
-
 
 /* Name.Namespace */
 
 .pdoc .nn {
-    color: #f8f8f2
+    color: #f8f8f2;
 }
-
 
 /* Name.Other */
 
 .pdoc .nx {
-    color: #a6e22e
+    color: #a6e22e;
 }
-
 
 /* Name.Property */
 
 .pdoc .py {
-    color: #f8f8f2
+    color: #f8f8f2;
 }
-
 
 /* Name.Tag */
 
 .pdoc .nt {
-    color: #f92672
+    color: #f92672;
 }
-
 
 /* Name.Variable */
 
 .pdoc .nv {
-    color: #f8f8f2
+    color: #f8f8f2;
 }
-
 
 /* Operator.Word */
 
 .pdoc .ow {
-    color: #ff79c6
+    color: #ff79c6;
 }
-
 
 /* Text.Whitespace */
 
 .pdoc .w {
-    color: #f8f8f2
+    color: #f8f8f2;
 }
-
 
 /* Literal.Number.Bin */
 
 .pdoc .mb {
-    color: #ae81ff
+    color: #ae81ff;
 }
-
 
 /* Literal.Number.Float */
 
 .pdoc .mf {
-    color: #ae81ff
+    color: #ae81ff;
 }
-
 
 /* Literal.Number.Hex */
-
 .pdoc .mh {
-    color: #ae81ff
+    color: #ae81ff;
 }
-
 
 /* Literal.Number.Integer */
-
 .pdoc .mi {
-    color: #ae81ff
+    color: #ae81ff;
 }
-
 
 /* Literal.Number.Oct */
-
 .pdoc .mo {
-    color: #ae81ff
+    color: #ae81ff;
 }
-
 
 /* Literal.String.Affix */
-
 .pdoc .sa {
-    color: #e6db74
+    color: #ff79c6;
 }
-
 
 /* Literal.String.Backtick */
-
 .pdoc .sb {
-    color: #e6db74
+    color: #e6db74;
 }
-
 
 /* Literal.String.Char */
-
 .pdoc .sc {
-    color: #e6db74
+    color: #e6db74;
 }
-
 
 /* Literal.String.Delimiter */
-
 .pdoc .dl {
-    color: #e6db74
+    color: #e6db74;
 }
-
 
 /* Literal.String.Doc */
-
 .pdoc .sd {
-    color: #6272a4
+    color: #6272a4;
 }
-
 
 /* Literal.String.Double */
-
 .pdoc .s2 {
-    color: #e6db74
+    color: #e6db74;
 }
-
 
 /* Literal.String.Escape */
-
 .pdoc .se {
-    color: #ae81ff
+    color: #ae81ff;
 }
-
 
 /* Literal.String.Heredoc */
-
 .pdoc .sh {
-    color: #e6db74
+    color: #e6db74;
 }
 
-
-/* Literal.String.Interpol */
-
+/* Literal.String.Interpol. AKA f-strings */
 .pdoc .si {
-    color: #e6db74
+    color: #bd93f9;
 }
-
 
 /* Literal.String.Other */
-
 .pdoc .sx {
-    color: #e6db74
+    color: #e6db74;
 }
-
 
 /* Literal.String.Regex */
-
 .pdoc .sr {
-    color: #e6db74
+    color: #e6db74;
 }
-
 
 /* Literal.String.Single */
-
 .pdoc .s1 {
-    color: #e6db74
+    color: #e6db74;
 }
-
 
 /* Literal.String.Symbol */
 
 .pdoc .ss {
-    color: #e6db74
+    color: #e6db74;
 }
-
 
 /* Name.Builtin.Pseudo */
-
 .pdoc .bp {
-    color: #bd93f9
+    color: #bd93f9;
 }
-
 
 /* Name.Function.Magic */
-
 .pdoc .fm {
-    color: #bd93f9
+    color: #bd93f9;
 }
-
 
 /* Name.Variable.Class */
-
 .pdoc .vc {
-    color: #bd93f9
+    color: #bd93f9;
 }
-
 
 /* Name.Variable.Global */
-
 .pdoc .vg {
-    color: #f8f8f2
+    color: #f8f8f2;
 }
-
 
 /* Name.Variable.Instance */
-
 .pdoc .vi {
-    color: #ffffff
+    color: #ffffff;
 }
 
-
 /* Name.Variable.Magic */
-
 .pdoc .vm {
-    color: #bd93f9
+    color: #bd93f9;
+}
+
+/* Literal.Number.Integer.Long */
+.pdoc .il {
+    color: #ae81ff;
+}
+
+/* Decorator module i.e., @typing.? */
+.pdoc .nd {
+    color: #50fa7b;
 }
 
 
@@ -582,16 +472,18 @@ nav.pdoc a.pdoc-button.module-list-button {
     content: "Module Content";
 }
 
+/* header */
+.pdoc h5 {
+    color: white;
+    font-style: italic;
+}
 
 /* Module name */
 
 .pdoc .modulename {
     color: #FFF;
     font-weight: 0;
-    margin: .3em 0;
-    padding: .2em 0;
 }
-
 
 /* Adds "var varname" to class variables. */
 
@@ -631,6 +523,10 @@ nav.pdoc a.class {
     color: #8be9fd;
 }
 
+nav.pdoc a.class:hover {
+    color: #fff;
+}
+
 nav.pdoc a::before {
     content: "module ";
     font-style: italic;
@@ -641,18 +537,31 @@ nav.pdoc a.function {
     color: #4dec75;
 }
 
-.pdoc h5 {
-    color: white;
-    font-style: italic;
-}
-
 nav.pdoc a.variable {
     color: white;
 }
 
+/* nav modules */
+nav.pdoc li a {
+    color: #bd93f9;
+}
+
+/* Assigned values */
+.pdoc span.default_value {
+    color: #e6db74;
+}
+
+.pdoc span.def {
+    font-weight: normal;
+}
+
+/* 
+Attributes
+----------
+*/
 .pdoc h6#attributes {
     color: #FFF;
-    font-size: 23px;
+    font-size: 25px;
 }
 
 /*
@@ -671,7 +580,7 @@ Notes
 */
 
 .pdoc h6#notes {
-    font-size: 23px;
+    font-size: 27px;
     color: orange;
 }
 
@@ -682,7 +591,7 @@ Returns
 */
 
 .pdoc h6#returns {
-    font-size: 23px;
+    font-size: 27px;
     color: white;
 }
 
@@ -693,7 +602,7 @@ Parameters
 */
 
 .pdoc h6#parameters {
-    font-size: 23px;
+    font-size: 27px;
     color: white;
 }
 
@@ -704,7 +613,7 @@ Raises
 */
 
 .pdoc h6#raises {
-    font-size: 23px;
+    font-size: 27px;
     color: #FF6666;
 }
 
@@ -728,7 +637,8 @@ Raises
 
 .pdoc b,
 strong {
-    color: #FFF;
+    color: #d63384;
+    font-weight: normal;
 }
 
 
@@ -736,6 +646,7 @@ strong {
 
 .pdoc em {
     color: orange;
+    font-size: 23px;
 }
 
 
@@ -775,9 +686,38 @@ strong {
     color: #FFF;
 }
 
+/* Commas that separates parameters "," color */
+.pdoc .inherited dd:not(:last-child)::after {
+    color: #fff;
+}
 
 /* Commas that separates parameters "," color */
 
 .pdoc .inherited dd:not(:last-child)::after {
     color: #FFF;
+}
+
+/* Top left nav button */
+nav.pdoc .module-list-button {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    color: white;
+    border-color: white;
+}
+
+nav.pdoc .module-list-button:hover {
+    border-color: white;
+    color: white;
+}
+
+/* Contents, Submodules, API Documentations */
+/* This also can be separated */
+.pdoc h1,
+.pdoc h2,
+.pdoc h3 {
+    font-weight: 300;
+    margin: 0.3em 0;
+    padding: 0.2em 0;
+    color: white;
 }

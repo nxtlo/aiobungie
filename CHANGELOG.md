@@ -9,11 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `__repr__` overloaded for `enums.Enum` which just returns `enums.Enum.__str__`.
 - `Profile.collect()` method which fetch and collect all characters at once.
+- Implemented `aiobungie.crate.fireteams` objects and `Client.fetch_fireteam()` method.
 
 ### Changed
 - `RESTClient._request` now takes a string or `rest.RequestMethod` enum for the method.
 - `RESTClient._request` now takes `yarl.URL` or a string for the path. Both changes affect `RESTClient.static_request.
 - Simplify not found raised errors to only raise `error.NotFound` instead of other not found errors.
+- Export `enums.Enum` and `enums.IntEnum` to `enums.__all__`.
 
 ### Removed
 - Not found errors removed and now only `error.NotFound` is raised instead.

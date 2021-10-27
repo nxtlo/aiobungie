@@ -204,6 +204,21 @@ async def test_static_request() -> None:
         f"Destiny2/3/Profile/{MID}/?components={aiobungie.Component.EQUIPED_ITEMS.value}",
     )
 
+async def test_fetch_fireteam():
+    f = await client.fetch_fireteam(aiobungie.FireteamActivity.ALL)
+    print(repr(f))
+    if f:
+        print(f[0].url)
+
+    f2 = await client.fetch_fireteam(
+        aiobungie.crate.FireteamActivity.ALL or 4,
+        platform=aiobungie.FireteamPlatform.ANY or 4,
+        language=aiobungie.FireteamLanguage.ENGLISH,
+        date_range=1,
+    )
+    print(repr(f2))
+    if f2:
+        print(f2[0].url)
 
 async def main() -> None:
     coros: typing.MutableSequence[asyncio.Future] = []

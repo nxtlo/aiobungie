@@ -29,6 +29,7 @@ __all__: tuple[str, ...] = ("RESTClient", "RequestMethod")
 import asyncio
 import http
 import logging
+import platform
 import sys
 import typing
 from urllib import parse
@@ -40,6 +41,7 @@ from aiobungie import _info as info
 from aiobungie import error
 from aiobungie import interfaces
 from aiobungie import url
+from aiobungie.crate import fireteams
 from aiobungie.internal import _backoff as backoff
 from aiobungie.internal import enums
 from aiobungie.internal import helpers
@@ -62,9 +64,16 @@ if typing.TYPE_CHECKING:
     or `aiobungie.internal.helpers.JsonArray`
     """
 
+_LOG: typing.Final[logging.Logger] = logging.getLogger("aiobungie.rest")
 _APP_JSON: typing.Final[str] = "application/json"
 _RETRY_5XX: typing.Final[set[int]] = {500, 502, 503, 504}
-_LOG: typing.Final[logging.Logger] = logging.getLogger("aiobungie.rest")
+_AUTH_HEADERS: typing.Final[dict[typing.Literal["Authorization"], str]] = {
+    "Authorization": "Bearer {access_token}"
+}
+_USER_AGENT_HEADERS: typing.Final[str] = sys.intern("User-Agent")
+_USER_AGENT: typing.Final[str] = f"AiobungieClient/{info.__version__}"
+f" ({info.__url__}) {platform.python_implementation()}/{platform.python_version()}"
+f"Aiohttp/{aiohttp.HttpVersion11}"
 
 
 async def handle_errors(
@@ -167,11 +176,7 @@ class _Session:
     ) -> _Session:
         session = aiohttp.ClientSession(
             connector=aiohttp.TCPConnector(verify_ssl=False, **kwargs),
-            headers={
-                "User-Agent": f"AiobungieClient/{info.__version__}"
-                f" ({info.__url__}) Python/{sys.version_info}"
-                f"Aiohttp/{aiohttp.HttpVersion11}"
-            },
+            headers={_USER_AGENT_HEADERS: _USER_AGENT},
             connector_owner=owner,
             raise_for_status=raise_status,
             timeout=aiohttp.ClientTimeout(
@@ -610,7 +615,7 @@ class RESTClient(interfaces.RESTInterface):
         return self._request(
             RequestMethod.GET,
             "User/GetMembershipsForCurrentUser/",
-            headers={"Authorization": f"Bearer {access_token}"},
+            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
         )
 
     def equip_item(
@@ -632,7 +637,7 @@ class RESTClient(interfaces.RESTInterface):
             RequestMethod.POST,
             "Destiny2/Actions/Items/EquipItem/",
             json=payload,
-            headers={"Authorization": f"Bearer {access_token}"},
+            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
         )
 
     def equip_items(
@@ -653,7 +658,7 @@ class RESTClient(interfaces.RESTInterface):
             RequestMethod.POST,
             "Destiny2/Actions/Items/EquipItems/",
             json=payload,
-            headers={"Authorization": f"Bearer {access_token}"},
+            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
         )
 
     def ban_clan_member(
@@ -673,7 +678,7 @@ class RESTClient(interfaces.RESTInterface):
             RequestMethod.POST,
             f"GroupV2/{group_id}/Members/{int(membership_type)}/{membership_id}/Ban/",
             json=payload,
-            headers={"Authorization": f"Bearer {access_token}"},
+            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
         )
 
     def unban_clan_member(
@@ -688,7 +693,7 @@ class RESTClient(interfaces.RESTInterface):
         return self._request(
             RequestMethod.POST,
             f"GroupV2/{group_id}/Members/{int(membership_type)}/{membership_id}/Unban/",
-            headers={"Authorization": f"Bearer {access_token}"},
+            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
         )
 
     def kick_clan_member(
@@ -703,7 +708,7 @@ class RESTClient(interfaces.RESTInterface):
         return self._request(
             RequestMethod.POST,
             f"GroupV2/{group_id}/Members/{int(membership_type)}/{membership_id}/Kick/",
-            headers={"Authorization": f"Bearer {access_token}"},
+            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
         )
 
     def edit_clan(
@@ -756,7 +761,7 @@ class RESTClient(interfaces.RESTInterface):
             RequestMethod.POST,
             f"GroupV2/{group_id}/Edit",
             json=payload,
-            headers={"Authorization": f"Bearer {access_token}"},
+            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
         )
 
     def edit_clan_options(
@@ -786,7 +791,7 @@ class RESTClient(interfaces.RESTInterface):
             RequestMethod.POST,
             f"GroupV2/{group_id}/EditFounderOptions",
             json=payload,
-            headers={"Authorization": f"Bearer {access_token}"},
+            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
         )
 
     def fetch_friends(self, access_token: str, /) -> ResponseSig[helpers.JsonObject]:
@@ -794,7 +799,7 @@ class RESTClient(interfaces.RESTInterface):
         return self._request(
             RequestMethod.GET,
             "Social/Friends",
-            headers={"Authorization": f"Bearer {access_token}"},
+            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
         )
 
     def fetch_friend_requests(
@@ -804,7 +809,7 @@ class RESTClient(interfaces.RESTInterface):
         return self._request(
             RequestMethod.GET,
             "Social/Friends/Requests",
-            headers={"Authorization": f"Bearer {access_token}"},
+            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
         )
 
     def accept_friend_request(
@@ -814,7 +819,7 @@ class RESTClient(interfaces.RESTInterface):
         return self._request(
             RequestMethod.POST,
             f"Social/Friends/Requests/Accept/{member_id}",
-            headers={"Authorization": f"Bearer {access_token}"},
+            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
         )
 
     def send_friend_request(
@@ -824,7 +829,7 @@ class RESTClient(interfaces.RESTInterface):
         return self._request(
             RequestMethod.POST,
             f"Social/Friends/Add/{member_id}",
-            headers={"Authorization": f"Bearer {access_token}"},
+            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
         )
 
     def decline_friend_request(
@@ -834,7 +839,7 @@ class RESTClient(interfaces.RESTInterface):
         return self._request(
             RequestMethod.POST,
             f"Social/Friends/Requests/Decline/{member_id}",
-            headers={"Authorization": f"Bearer {access_token}"},
+            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
         )
 
     def remove_friend(self, access_token: str, /, member_id: int) -> ResponseSig[None]:
@@ -842,7 +847,7 @@ class RESTClient(interfaces.RESTInterface):
         return self._request(
             RequestMethod.POST,
             f"Social/Friends/Remove/{member_id}",
-            headers={"Authorization": f"Bearer {access_token}"},
+            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
         )
 
     def remove_friend_request(
@@ -852,7 +857,7 @@ class RESTClient(interfaces.RESTInterface):
         return self._request(
             RequestMethod.POST,
             f"Social/Friends/Requests/Remove/{member_id}",
-            headers={"Authorization": f"Bearer {access_token}"},
+            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
         )
 
     def approve_all_pending_group_users(
@@ -866,7 +871,7 @@ class RESTClient(interfaces.RESTInterface):
         return self._request(
             RequestMethod.POST,
             f"GroupV2/{group_id}/Members/ApproveAll",
-            headers={"Authorization": f"Bearer {access_token}"},
+            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
             json={"message": str(message)},
         )
 
@@ -881,7 +886,7 @@ class RESTClient(interfaces.RESTInterface):
         return self._request(
             RequestMethod.POST,
             f"GroupV2/{group_id}/Members/DenyAll",
-            headers={"Authorization": f"Bearer {access_token}"},
+            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
             json={"message": str(message)},
         )
 
@@ -900,7 +905,7 @@ class RESTClient(interfaces.RESTInterface):
             RequestMethod.POST,
             f"GroupV2/{group_id}/OptionalConversations/Add",
             json=payload,
-            headers={"Authorization": f"Bearer {access_token}"},
+            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
         )
 
     def edit_optional_conversation(
@@ -924,7 +929,7 @@ class RESTClient(interfaces.RESTInterface):
             RequestMethod.POST,
             f"GroupV2/{group_id}/OptionalConversations/Edit/{conversation_id}",
             json=payload,
-            headers={"Authorization": f"Bearer {access_token}"},
+            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
         )
 
     def transfer_item(
@@ -952,7 +957,7 @@ class RESTClient(interfaces.RESTInterface):
             RequestMethod.POST,
             "Destiny2/Actions/Items/PullFromPostmaster",
             json=payload,
-            headers={"Authorization": f"Bearer {access_token}"},
+            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
         )
 
     def pull_item(
@@ -980,7 +985,27 @@ class RESTClient(interfaces.RESTInterface):
             RequestMethod.POST,
             "Destiny2/Actions/Items/TransferItem",
             json=payload,
-            headers={"Authorization": f"Bearer {access_token}"},
+            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
+        )
+
+    def fetch_fireteam(
+        self,
+        activity_type: helpers.IntAnd[fireteams.FireteamActivity],
+        *,
+        platform: helpers.IntAnd[
+            fireteams.FireteamPlatform
+        ] = fireteams.FireteamPlatform.ANY,
+        language: typing.Union[
+            fireteams.FireteamLanguage, str
+        ] = fireteams.FireteamLanguage.ALL,
+        date_range: int = 0,
+        page: int = 0,
+        slots_filter: int = 0,
+    ) -> ResponseSig[helpers.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        return self._request(
+            RequestMethod.GET,
+            f"Fireteam/Search/Available/{int(platform)}/{int(activity_type)}/{date_range}/{slots_filter}/{page}/?langFilter={str(language)}",  # noqa: E501 Line too long
         )
 
     # * Not implemented yet.

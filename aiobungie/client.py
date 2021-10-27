@@ -34,6 +34,7 @@ import asyncio
 import typing
 
 from aiobungie import rest as rest_
+from aiobungie.crate import fireteams
 from aiobungie.crate import user
 from aiobungie.ext import meta
 from aiobungie.internal import enums
@@ -888,3 +889,28 @@ class Client(traits.ClientBase):
         resp = await self.rest.fetch_public_milestone_content(milestone_hash)
         assert isinstance(resp, dict)
         return self.serialize.deserialize_public_milestone_content(resp)
+
+    async def fetch_fireteam(
+        self,
+        activity_type: helpers.IntAnd[fireteams.FireteamActivity],
+        *,
+        platform: helpers.IntAnd[
+            fireteams.FireteamPlatform
+        ] = fireteams.FireteamPlatform.ANY,
+        language: typing.Union[
+            fireteams.FireteamLanguage, str
+        ] = fireteams.FireteamLanguage.ALL,
+        date_range: int = 0,
+        page: int = 0,
+        slots_filter: int = 0,
+    ) -> typing.Optional[typing.Sequence[fireteams.Fireteam]]:
+        resp = await self.rest.fetch_fireteam(
+            activity_type,
+            platform=platform,
+            language=language,
+            date_range=date_range,
+            page=page,
+            slots_filter=slots_filter,
+        )
+        assert isinstance(resp, dict)
+        return self.serialize.deserialize_fireteam(resp)

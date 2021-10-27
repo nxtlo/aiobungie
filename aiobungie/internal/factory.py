@@ -34,6 +34,7 @@ from aiobungie.crate import application as app
 from aiobungie.crate import character
 from aiobungie.crate import clans
 from aiobungie.crate import entity
+from aiobungie.crate import fireteams
 from aiobungie.crate import friends
 from aiobungie.crate import milestones
 from aiobungie.crate import profile
@@ -881,3 +882,34 @@ class Factory:
                 outgoing.append(self.deserialize_friend(incoming_request))
 
         return friends.FriendRequestView(incoming=incoming, outgoing=outgoing)
+
+    def deserialize_fireteam(
+        self, payload: JsonObject
+    ) -> NoneOr[typing.Sequence[fireteams.Fireteam]]:
+        fireteams_: typing.MutableSequence[fireteams.Fireteam] = []
+
+        result: list[JsonObject]
+        if (result := payload["results"]) is not None:
+            for elem in result:
+                fireteam = fireteams.Fireteam(
+                    id=int(elem["fireteamId"]),
+                    group_id=int(elem["groupId"]),
+                    platform=fireteams.FireteamPlatform(elem["platform"]),
+                    activity_type=fireteams.FireteamActivity(elem["activityType"]),
+                    is_immediate=elem["isImmediate"],
+                    owner_id=int(elem["ownerMembershipId"]),
+                    player_slot_count=elem["playerSlotCount"],
+                    available_player_slots=elem["availablePlayerSlotCount"],
+                    available_alternate_slots=elem["availableAlternateSlotCount"],
+                    title=elem["title"],
+                    date_created=time.clean_date(elem["dateCreated"]),
+                    is_public=elem["isPublic"],
+                    locale=fireteams.FireteamLanguage(elem["locale"]),
+                    is_valid=elem["isValid"],
+                    last_modified=time.clean_date(elem["datePlayerModified"]),
+                    total_results=payload.get("totlaResults", 0),
+                )
+                fireteams_.append(fireteam)
+        else:
+            return None
+        return fireteams_

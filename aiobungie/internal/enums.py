@@ -26,6 +26,8 @@
 from __future__ import annotations
 
 __all__: tuple[str, ...] = (
+    "Enum",
+    "IntEnum",
     "GameMode",
     "MembershipType",
     "Class",
@@ -218,7 +220,7 @@ class GameMode(IntEnum):
     ALLSTRIKES = 18
     DUNGEON = 82
     GAMBIT = 63
-    EMIPIRE_HUNT = 494260690
+    EMPIRE_HUNT = 494260690
     RUMBLE = 964120289
     CLASSIC_MIX = 1472571612
     COUNTDOWN = 3956087078

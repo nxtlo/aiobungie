@@ -35,6 +35,8 @@ from aiobungie.internal import traits
 
 if typing.TYPE_CHECKING:
 
+    from aiobungie.crate import fireteams
+
     ResponseSigT = typing.TypeVar(
         "ResponseSigT",
         covariant=True,
@@ -1251,6 +1253,44 @@ class RESTInterface(traits.RESTful, abc.ABC):
             The item stack size.
         valut : `bool`
             Whether to pill this item to your valut or not. Defaults to `False`.
+        """
+
+    @abc.abstractmethod
+    def fetch_fireteam(
+        self,
+        activity_type: helpers.IntAnd[fireteams.FireteamActivity],
+        *,
+        platform: helpers.IntAnd[fireteams.FireteamPlatform],
+        language: typing.Union[fireteams.FireteamLanguage, str],
+        date_range: int = 0,
+        page: int = 0,
+        slots_filter: int = 0,
+    ) -> ResponseSig[helpers.JsonObject]:
+        """Fetch public Bungie fireteams with open slots.
+
+        Parameters
+        ----------
+        activity_type : `aiobungie.internal.helpers.IntAnd[aiobungie.crate.FireteamActivity]`
+            The fireteam activity type.
+
+        Other Parameters
+        ----------------
+        platform : aiobungie.internal.helpers.IntAnd[aiobungie.crate.fireteams.FireteamPlatform]
+            If this is provided. Then the results will be filtered with the given platform.
+            Defaults to `aiobungie.crate.FireteamPlatform.ANY` which returns all platforms.
+        language : `typing.Union[aiobungie.crate.fireteams.FireteamLanguage, str]`
+            A locale language to filter the used language in that fireteam.
+            Defaults to `aiobungie.crate.FireteamLanguage.ALL`
+        date_range : `int`
+            An integer to filter the date range of the returned fireteams. Defaults to `0`.
+        page : `int`
+            The page number. By default its `0` which returns all available activities.
+        slots_filter : `int`
+            Filter the returned fireteams based on available slots. Default is `0`
+
+        Returns
+        -------
+        A JSON object of an array of the found activities.
         """
 
     @abc.abstractmethod

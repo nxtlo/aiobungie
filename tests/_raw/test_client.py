@@ -24,6 +24,7 @@
 
 from __future__ import annotations
 
+import types
 import aiobungie
 import os
 import sys
@@ -35,11 +36,17 @@ import asyncio
 # NOTE: If you're on unix based system make sure to run this
 # in your terminal. export CLIENT_TOKEN='TOKEN'
 
-client = aiobungie.Client(os.environ["CLIENT_TOKEN"])
 MID = 4611686018484639825
 _LOG = logging.getLogger("test_client")
-logging.basicConfig(level=logging.DEBUG)
 
+def build_client() -> aiobungie.Client:
+    token = os.environ['CLIENT_TOKEN']
+    rest = aiobungie.RESTClient(token, max_retries=1)
+    client = aiobungie.Client(token, rest_client=rest, max_retries=1)
+    return client
+
+
+client = build_client()
 
 async def test_users() -> aiobungie.crate.user.BungieUser:
     u = await client.fetch_user(20315338)
@@ -205,12 +212,12 @@ async def test_static_request() -> None:
     )
 
 async def test_fetch_fireteam():
-    f = await client.fetch_fireteam(aiobungie.FireteamActivity.ALL)
+    f = await client.fetch_fireteams(aiobungie.FireteamActivity.ALL)
     print(repr(f))
     if f:
         print(f[0].url)
 
-    f2 = await client.fetch_fireteam(
+    f2 = await client.fetch_fireteams(
         aiobungie.crate.FireteamActivity.ALL or 4,
         platform=aiobungie.FireteamPlatform.ANY or 4,
         language=aiobungie.FireteamLanguage.ENGLISH,
@@ -221,7 +228,8 @@ async def test_fetch_fireteam():
         print(f2[0].url)
 
 async def main() -> None:
-    coros: typing.MutableSequence[asyncio.Future] = []
+    coro: types.FunctionType
+    coros: typing.MutableSequence[asyncio.Future[types.FunctionType]] = []
     for n, coro in inspect.getmembers(
         sys.modules[__name__], inspect.iscoroutinefunction
     ):

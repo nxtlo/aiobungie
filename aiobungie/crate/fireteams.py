@@ -93,7 +93,7 @@ class FireteamLanguage(str, enums.Enum):
     DEUTSCH = "de"
     ITALIAN = "it"
     JAPANESE = "ja"
-    PORTUGUESE = "pt"
+    PORTUGUESE = "pt-br"
     RUSSIAN = "ru"
     POLISH = "pl"
     KOREAN = "ko"

@@ -1,5 +1,14 @@
 {
     "venvPath": ".",
     "venv": ".venv",
-    "reportUnboundVariable": "none"
+    "reportUnboundVariable": "none",
+    "reportUnknownParameterType": "error",
+    "reportUnknownLambdaType": "warning",
+    "reportUnknownMemberType": "information",
+    "reportUnknownArgumentType": "warning",
+    "reportUnknownVariableType": "information",
+    "typeCheckingMode": "strict",
+    "reportGeneralTypeIssues": "information",
+    "reportPrivateUsage": "warning",
+    "reportIncompatibleMethodOverride": "none"
 }

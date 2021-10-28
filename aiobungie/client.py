@@ -30,7 +30,6 @@ import logging
 
 __all__: list[str] = ["Client"]
 
-import asyncio
 import typing
 
 from aiobungie import rest as rest_
@@ -43,6 +42,8 @@ from aiobungie.internal import helpers
 from aiobungie.internal import traits
 
 if typing.TYPE_CHECKING:
+    import asyncio
+
     from aiobungie import interfaces
     from aiobungie.crate import activity
     from aiobungie.crate import application
@@ -63,19 +64,38 @@ class Client(traits.ClientBase):
     -----------
     token: `builtins.str`
         Your Bungie's API key or Token from the developer's portal.
+    rest_client: `typing.Optional[aiobungie.interfaces.RESTInterface]`
+        An optional rest client instance you can pass,
+        If set to `None` then the client will make a rest instance for you.
+
+    Example
+    -------
+    ```py
+    TOKEN = "SOME_TOKEN"
+    async with aiobungie.RESTClient(TOKEN, max_retries=2) as rest_client:
+        client = aiobungie.Client(TOKEN, rest_client=rest_client)
+    ```
     max_retries : `builtins.int`
         The max retries number to retry if the request hit a `5xx` status code.
     """
 
-    __slots__ = ("_rest", "_serialize", "_token", "_loop")
+    __slots__ = ("_rest", "_serialize", "_token")
 
-    def __init__(self, token: str, /, max_retries: int = 4) -> None:
-        self._loop: asyncio.AbstractEventLoop = helpers.get_or_make_loop()
-
+    def __init__(
+        self,
+        token: str,
+        /,
+        *,
+        rest_client: typing.Optional[interfaces.RESTInterface] = None,
+        max_retries: int = 4,
+    ) -> None:
         if token is None:
             raise ValueError("Missing the API key!")
 
+        if rest_client is not None:
+            self._rest = rest_client
         self._rest = rest_.RESTClient(token, max_retries=max_retries)
+
         self._serialize = factory.Factory(self)
         self._token = token  # We need the token For Manifest.
 
@@ -94,11 +114,12 @@ class Client(traits.ClientBase):
     def run(
         self, future: typing.Coroutine[typing.Any, None, None], debug: bool = False
     ) -> None:
+        loop: typing.Final[asyncio.AbstractEventLoop] = helpers.get_or_make_loop()
         try:
-            if not self._loop.is_running():
+            if not loop.is_running():
                 if debug:
-                    self._loop.set_debug(True)
-                self._loop.run_until_complete(future)
+                    loop.set_debug(True)
+                loop.run_until_complete(future)
         except Exception as exc:
             raise RuntimeError(f"Failed to run {future.__name__}", exc)
         except KeyboardInterrupt:
@@ -106,7 +127,7 @@ class Client(traits.ClientBase):
             raise SystemExit(None)
         finally:
             # Session management.
-            self._loop.run_until_complete(self.rest.close())
+            loop.run_until_complete(self.rest.close())
             _LOG.info("Client closed normally.")
 
     # * Unspecified methods. *#
@@ -890,7 +911,7 @@ class Client(traits.ClientBase):
         assert isinstance(resp, dict)
         return self.serialize.deserialize_public_milestone_content(resp)
 
-    async def fetch_fireteam(
+    async def fetch_fireteams(
         self,
         activity_type: helpers.IntAnd[fireteams.FireteamActivity],
         *,
@@ -904,7 +925,7 @@ class Client(traits.ClientBase):
         page: int = 0,
         slots_filter: int = 0,
     ) -> typing.Optional[typing.Sequence[fireteams.Fireteam]]:
-        resp = await self.rest.fetch_fireteam(
+        resp = await self.rest.fetch_fireteams(
             activity_type,
             platform=platform,
             language=language,

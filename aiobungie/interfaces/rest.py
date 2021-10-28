@@ -40,7 +40,7 @@ if typing.TYPE_CHECKING:
     ResponseSigT = typing.TypeVar(
         "ResponseSigT",
         covariant=True,
-        bound=typing.Union[helpers.JsonArray, helpers.JsonObject, None],
+        bound=typing.Union[helpers.JsonArray, helpers.JsonObject, None, int],
     )
     ResponseSig = typing.Coroutine[typing.Any, typing.Any, ResponseSigT]
 
@@ -1199,6 +1199,8 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Parameters
         ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
         item_id : `int`
             The item id you to transfer.
         item_hash : `int`
@@ -1238,6 +1240,8 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Parameters
         ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
         item_id : `int`
             The item id to pull.
         item_hash : `int`
@@ -1256,7 +1260,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def fetch_fireteam(
+    def fetch_fireteams(
         self,
         activity_type: helpers.IntAnd[fireteams.FireteamActivity],
         *,
@@ -1275,7 +1279,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Other Parameters
         ----------------
-        platform : aiobungie.internal.helpers.IntAnd[aiobungie.crate.fireteams.FireteamPlatform]
+        platform : `aiobungie.internal.helpers.IntAnd[aiobungie.crate.fireteams.FireteamPlatform]`
             If this is provided. Then the results will be filtered with the given platform.
             Defaults to `aiobungie.crate.FireteamPlatform.ANY` which returns all platforms.
         language : `typing.Union[aiobungie.crate.fireteams.FireteamLanguage, str]`
@@ -1290,7 +1294,152 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        A JSON object of an array of the found activities.
+        `ResponseSig[aiobungie.internal.helpers.JsonObject]`
+            A JSON object of the fireteam details.
+        """
+
+    @abc.abstractmethod
+    def fetch_avaliable_clan_fireteams(
+        self,
+        access_token: str,
+        group_id: int,
+        activity_type: helpers.IntAnd[fireteams.FireteamActivity],
+        *,
+        platform: helpers.IntAnd[fireteams.FireteamPlatform],
+        language: typing.Union[fireteams.FireteamLanguage, str],
+        date_range: int = 0,
+        page: int = 0,
+        public_only: bool = False,
+        slots_filter: int = 0,
+    ) -> ResponseSig[helpers.JsonObject]:
+        """Fetch a clan's fireteams with open slots.
+
+        .. note::
+            This method requires OAuth2: ReadGroups scope.
+
+        Parameters
+        ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+        group_id : `int`
+            The group/clan id of the fireteam.
+        activity_type : `aiobungie.internal.helpers.IntAnd[aiobungie.crate.FireteamActivity]`
+            The fireteam activity type.
+
+        Other Parameters
+        ----------------
+        platform : `aiobungie.internal.helpers.IntAnd[aiobungie.crate.fireteams.FireteamPlatform]`
+            If this is provided. Then the results will be filtered with the given platform.
+            Defaults to `aiobungie.crate.FireteamPlatform.ANY` which returns all platforms.
+        language : `typing.Union[aiobungie.crate.fireteams.FireteamLanguage, str]`
+            A locale language to filter the used language in that fireteam.
+            Defaults to `aiobungie.crate.FireteamLanguage.ALL`
+        date_range : `int`
+            An integer to filter the date range of the returned fireteams. Defaults to `0`.
+        page : `int`
+            The page number. By default its `0` which returns all available activities.
+        public_only: `bool`
+            If set to True, Then only public fireteams will be returned.
+        slots_filter : `int`
+            Filter the returned fireteams based on available slots. Default is `0`
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.internal.helpers.JsonObject]`
+            A JSON object of the fireteams detail.
+        """
+
+    @abc.abstractmethod
+    def fetch_clan_fireteam(
+        self, access_token: str, fireteam_id: int, group_id: int
+    ) -> ResponseSig[helpers.JsonObject]:
+        """Fetch a specific clan fireteam.
+
+        .. note::
+            This method requires OAuth2: ReadGroups scope.
+
+        Parameters
+        ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+        group_id : `int`
+            The group/clan id to fetch the fireteam from.
+        fireteam_id : `int`
+            The fireteam id to fetch.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.internal.helpers.JsonObject]`
+            A JSON object of the fireteam details.
+        """
+
+    @abc.abstractmethod
+    def fetch_my_clan_fireteams(
+        self,
+        access_token: str,
+        group_id: int,
+        *,
+        include_closed: bool = True,
+        platform: helpers.IntAnd[fireteams.FireteamPlatform],
+        language: typing.Union[fireteams.FireteamLanguage, str],
+        filtered: bool = True,
+        page: int = 0,
+    ) -> ResponseSig[helpers.JsonObject]:
+        """Fetch a clan's fireteams with open slots.
+
+        .. note::
+            This method requires OAuth2: ReadGroups scope.
+
+        Parameters
+        ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+        group_id : `int`
+            The group/clan id to fetch.
+
+        Other Parameters
+        ----------------
+        include_closed : `bool`
+            If provided and set to `True`, It will also return closed fireteams.
+            If provided and set to `False`, It will only return public fireteams.
+            Default is `True`.
+        platform : `aiobungie.internal.helpers.IntAnd[aiobungie.crate.fireteams.FireteamPlatform]`
+            If this is provided. Then the results will be filtered with the given platform.
+            Defaults to `aiobungie.crate.FireteamPlatform.ANY` which returns all platforms.
+        language : `typing.Union[aiobungie.crate.fireteams.FireteamLanguage, str]`
+            A locale language to filter the used language in that fireteam.
+            Defaults to `aiobungie.crate.FireteamLanguage.ALL`
+        filtered : `bool`
+            If set to `True`, it will filter by clan. Otherwise not. Default is `True`.
+        page : `int`
+            The page number. By default its `0` which returns all available activities.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.internal.helpers.JsonObject]`
+            A JSON object of the fireteams detail.
+        """
+
+    @abc.abstractmethod
+    def fetch_private_clan_fireteams(
+        self, access_token: str, group_id: int, /
+    ) -> ResponseSig[int]:
+        """Fetch the active count of the clan fireteams that are only private.
+
+        .. note::
+            This method requires OAuth2: ReadGroups scope.
+
+        Parameters
+        ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+        group_id : `int`
+            The group/clan id.
+
+        Returns
+        -------
+        `ResponseSig[int]`
+            The active fireteams count. Max value returned is 25.
         """
 
     @abc.abstractmethod

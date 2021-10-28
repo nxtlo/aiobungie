@@ -236,23 +236,20 @@ class Factory:
 
     @staticmethod
     def set_themese_attrs(payload: JsonArray, /) -> typing.Collection[user.UserThemes]:
-        if isinstance(payload, list):
-            if payload is None:
-                raise ValueError("No themes found.")
+        if payload is None:
+            raise ValueError("No themes found.")
 
-            theme_map: dict[int, user.UserThemes] = {}
-            theme_ids: list[int] = just(payload, "userThemeId")
-            theme_names: list[NoneOr[str]] = just(payload, "userThemeName")
-            theme_descriptions: list[NoneOr[str]] = just(
-                payload, "userThemeDescription"
+        theme_map: dict[int, user.UserThemes] = {}
+        theme_ids: list[int] = just(payload, "userThemeId")
+        theme_names: list[NoneOr[str]] = just(payload, "userThemeName")
+        theme_descriptions: list[NoneOr[str]] = just(payload, "userThemeDescription")
+
+        for t_id, t_name, t_desc in zip(theme_ids, theme_names, theme_descriptions):
+            theme_map[t_id] = user.UserThemes(
+                id=int(t_id),
+                name=t_name or Undefined,
+                description=t_desc or Undefined,
             )
-
-            for t_id, t_name, t_desc in zip(theme_ids, theme_names, theme_descriptions):
-                theme_map[t_id] = user.UserThemes(
-                    id=int(t_id),
-                    name=t_name or Undefined,
-                    description=t_desc or Undefined,
-                )
         return theme_map.values()
 
     def deserialize_user_themes(

@@ -27,6 +27,7 @@ from __future__ import annotations
 __all__: tuple[str, ...] = ("RESTClient", "RequestMethod")
 
 import asyncio
+import contextlib
 import http
 import logging
 import platform
@@ -54,7 +55,7 @@ if typing.TYPE_CHECKING:
     ResponseSigT = typing.TypeVar(
         "ResponseSigT",
         covariant=True,
-        bound=typing.Union[helpers.JsonArray, helpers.JsonObject, None],
+        bound=typing.Union[helpers.JsonArray, helpers.JsonObject, int, None],
     )
     """The signature of the response."""
 
@@ -200,7 +201,8 @@ class _Session:
         await self.close()
 
     async def close(self) -> None:
-        await self.client_session.connector.close()  # type: ignore
+        if not self.client_session:
+            await self.client_session.close()
         await asyncio.sleep(0.025)
 
 
@@ -242,7 +244,7 @@ class RESTClient(interfaces.RESTInterface):
         The max retries number to retry if the request hit a `5xx` status code.
     """
 
-    __slots__: typing.Sequence[str] = ("_token", "_session", "_max_retries")
+    __slots__ = ("_token", "_session", "_max_retries")
 
     def __init__(self, token: str, /, *, max_retries: int = 4) -> None:
         self._session: typing.Optional[_Session] = None
@@ -251,6 +253,8 @@ class RESTClient(interfaces.RESTInterface):
 
     def _acquire_session(self) -> _Session:
         asyncio.get_running_loop()
+        # A little hack to make asyncio stop logging unclosed client warns.
+        logging.disable(logging.FATAL)
         if self._session is None:
             self._session = _Session.acquire_session(
                 owner=False,
@@ -263,8 +267,10 @@ class RESTClient(interfaces.RESTInterface):
 
     @typing.final
     async def close(self) -> None:
-        _LOG.info("Closing REST client.")
-        await self._acquire_session().close()
+        if self._session is not None:
+            _LOG.info("Closing REST client.")
+            with contextlib.suppress(aiohttp.ClientError):
+                await self._session.close()
 
     @typing.final
     async def _request(
@@ -277,70 +283,75 @@ class RESTClient(interfaces.RESTInterface):
     ) -> typing.Any:
 
         retries: int = 0
-        if isinstance(self._token, str) and self._token is not None:
+        if self._token is not None:
             kwargs["headers"] = headers = {}
             headers["X-API-KEY"] = self._token
         else:
             raise ValueError("No API KEY was passed.")
 
+        stack = contextlib.AsyncExitStack()
         while True:
             try:
-                async with _Arc():
-                    async with self._acquire_session().client_session.request(
-                        method=method,
-                        url=f"{url.REST_EP if base is False else url.BASE}/{route}",
-                        **kwargs,
-                    ) as response:
+                async with stack:
+                    async with _Arc():
+                        async with self._acquire_session():
+                            response = await stack.enter_async_context(
+                                await self._session.client_session.request(  # type: ignore
+                                    method=method,  # Acquiring the session makes it not None
+                                    url=f"{url.REST_EP if base is False else url.BASE}/{route}",
+                                    **kwargs,
+                                )
+                            )
 
-                        await self._handle_ratelimit(response)
+                            await self._handle_ratelimit(response)
 
-                        if response.status == http.HTTPStatus.NO_CONTENT:
-                            return None
+                            if response.status == http.HTTPStatus.NO_CONTENT:
+                                return None
 
-                        data = await response.json(encoding="utf-8")
-                        if 300 > response.status >= 200:
-                            if type == "read":
-                                # We want to read the bytes for the manifest response.
-                                data = await response.read()
-                                return data
+                            data = await response.json(encoding="utf-8")
+                            if 300 > response.status >= 200:
+                                if type == "read":
+                                    # We want to read the bytes for the manifest response.
+                                    data = await response.read()
+                                    return data
 
-                            _LOG.debug(
-                                "{} Request success from {} with status {}".format(
+                                _LOG.debug(
+                                    "%s Request success from %s with status %i",
                                     method,
                                     f"{url.REST_EP}/{route}",
                                     response.status,
                                 )
-                            )
 
-                            if response.content_type == _APP_JSON:
-                                try:
-                                    return data["Response"]
+                                if response.content_type == _APP_JSON:
+                                    try:
+                                        return data["Response"]
 
-                                # In case we didn't find the Response key
-                                # its safer to just return the data.
-                                except KeyError:
-                                    _LOG.warning(
-                                        "Couldn't return the response key, Data: %s",
-                                        data,
-                                    )
-                                    return data
+                                    # In case we didn't find the Response key
+                                    # its safer to just return the data.
+                                    except KeyError:
+                                        _LOG.warning(
+                                            "Couldn't return the response key, Data: %s",
+                                            data,
+                                        )
+                                        return data
 
-                        if (
-                            response.status in _RETRY_5XX
-                            and retries < self._max_retries  # noqa: W503
-                        ):
-                            backoff_ = backoff.ExponentialBackOff(maximum=6)
-                            sleep_time = next(backoff_)
-                            _LOG.warning(
-                                f"Received: {response.status}, Message: {data['Message']}, sleeping for {sleep_time}, "
-                                f"Remaining retries: {self._max_retries - retries}"
-                            )
+                            if (
+                                response.status in _RETRY_5XX
+                                and retries < self._max_retries  # noqa: W503
+                            ):
+                                backoff_ = backoff.ExponentialBackOff(maximum=6)
+                                sleep_time = next(backoff_)
+                                _LOG.warning(
+                                    f"Received: {response.status}, Message: {data['Message']} "
+                                    f"sleeping for {sleep_time}, "
+                                    f"Remaining retries: {self._max_retries - retries}"
+                                )
 
-                            retries += 1
-                            await asyncio.sleep(sleep_time)
-                            continue
+                                retries += 1
+                                await asyncio.sleep(sleep_time)
+                                continue
 
-                        await self._handle_err(response, data["ErrorStatus"])
+                            await self._handle_err(response, data["ErrorStatus"])
 
             except RuntimeError:
                 continue
@@ -431,12 +442,12 @@ class RESTClient(interfaces.RESTInterface):
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(RequestMethod.GET, f"User/Search/Prefix/{name}/0")
 
-    def fetch_clan_from_id(self, id: int) -> ResponseSig[helpers.JsonObject]:
+    def fetch_clan_from_id(self, id: int, /) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(RequestMethod.GET, f"GroupV2/{id}")
 
     def fetch_clan(
-        self, name: str, type: helpers.IntAnd[enums.GroupType] = enums.GroupType.CLAN
+        self, name: str, /, type: helpers.IntAnd[enums.GroupType] = enums.GroupType.CLAN
     ) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(RequestMethod.GET, f"GroupV2/Name/{name}/{int(type)}")
@@ -508,7 +519,7 @@ class RESTClient(interfaces.RESTInterface):
             RequestMethod.GET, route=f"Destiny2/Manifest/{type}/{hash}"
         )
 
-    def fetch_inventory_item(self, hash: int) -> ResponseSig[helpers.JsonObject]:
+    def fetch_inventory_item(self, hash: int, /) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self.fetch_entity("DestinyInventoryItemDefinition", hash)
 
@@ -605,8 +616,6 @@ class RESTClient(interfaces.RESTInterface):
         return self._request(
             RequestMethod.GET, f"Destiny2/Milestones/{milestone_hash}/Content/"
         )
-
-    # * OAuth2 methods.
 
     def fetch_own_bungie_user(
         self, access_token: str, /
@@ -880,6 +889,7 @@ class RESTClient(interfaces.RESTInterface):
         access_token: str,
         /,
         group_id: int,
+        *,
         message: helpers.UndefinedOr[str] = helpers.Undefined,
     ) -> ResponseSig[None]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>
@@ -988,7 +998,7 @@ class RESTClient(interfaces.RESTInterface):
             headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
         )
 
-    def fetch_fireteam(
+    def fetch_fireteams(
         self,
         activity_type: helpers.IntAnd[fireteams.FireteamActivity],
         *,
@@ -1006,6 +1016,63 @@ class RESTClient(interfaces.RESTInterface):
         return self._request(
             RequestMethod.GET,
             f"Fireteam/Search/Available/{int(platform)}/{int(activity_type)}/{date_range}/{slots_filter}/{page}/?langFilter={str(language)}",  # noqa: E501 Line too long
+        )
+
+    def fetch_avaliable_clan_fireteams(
+        self,
+        access_token: str,
+        group_id: int,
+        activity_type: helpers.IntAnd[fireteams.FireteamActivity],
+        *,
+        platform: helpers.IntAnd[fireteams.FireteamPlatform],
+        language: typing.Union[fireteams.FireteamLanguage, str],
+        date_range: int = 0,
+        page: int = 0,
+        public_only: bool = False,
+        slots_filter: int = 0,
+    ) -> ResponseSig[helpers.JsonObject]:
+        return self._request(
+            RequestMethod.GET,
+            f"Fireteam/Clan/{group_id}/Available/{int(platform)}/{int(activity_type)}/{date_range}/{slots_filter}/{public_only}/{page}",  # noqa: E501
+            json={"langFilter": str(language)},
+            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
+        )
+
+    def fetch_clan_fireteam(
+        self, access_token: str, fireteam_id: int, group_id: int
+    ) -> ResponseSig[helpers.JsonObject]:
+        return self._request(
+            RequestMethod.GET,
+            f"Fireteam/Clan/{group_id}/Summary/{fireteam_id}",
+            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
+        )
+
+    def fetch_my_clan_fireteams(
+        self,
+        access_token: str,
+        group_id: int,
+        *,
+        include_closed: bool = True,
+        platform: helpers.IntAnd[fireteams.FireteamPlatform],
+        language: typing.Union[fireteams.FireteamLanguage, str],
+        filtered: bool = True,
+        page: int = 0,
+    ) -> ResponseSig[helpers.JsonObject]:
+        payload = {"groupFilter": filtered, "langFilter": str(language)}
+        return self._request(
+            RequestMethod.GET,
+            f"Fireteam/Clan/{group_id}/My/{int(platform)}/{include_closed}/{page}",
+            json=payload,
+            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
+        )
+
+    def fetch_private_clan_fireteams(
+        self, access_token: str, group_id: int, /
+    ) -> ResponseSig[int]:
+        return self._request(
+            RequestMethod.GET,
+            f"Fireteam/Clan/{group_id}/ActiveCount",
+            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
         )
 
     # * Not implemented yet.

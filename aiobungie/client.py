@@ -929,6 +929,34 @@ class Client(traits.ClientBase):
         page: int = 0,
         slots_filter: int = 0,
     ) -> typing.Optional[typing.Sequence[fireteams.Fireteam]]:
+        """Fetch public Bungie fireteams with open slots.
+
+        Parameters
+        ----------
+        activity_type : `aiobungie.internal.helpers.IntAnd[aiobungie.crate.FireteamActivity]`
+            The fireteam activity type.
+
+        Other Parameters
+        ----------------
+        platform : `aiobungie.internal.helpers.IntAnd[aiobungie.crate.fireteams.FireteamPlatform]`
+            If this is provided. Then the results will be filtered with the given platform.
+            Defaults to `aiobungie.crate.FireteamPlatform.ANY` which returns all platforms.
+        language : `typing.Union[aiobungie.crate.fireteams.FireteamLanguage, str]`
+            A locale language to filter the used language in that fireteam.
+            Defaults to `aiobungie.crate.FireteamLanguage.ALL`
+        date_range : `int`
+            An integer to filter the date range of the returned fireteams. Defaults to `aiobungie.FireteamDate.ALL`.
+        page : `int`
+            The page number. By default its `0` which returns all available activities.
+        slots_filter : `int`
+            Filter the returned fireteams based on available slots. Default is `0`
+
+        Returns
+        -------
+        `typing.Optional[typing.Sequence[fireteams.Fireteam]]`
+            A sequence of `aiobungie.crate.Fireteam` or `None`.
+        """
+
         resp = await self.rest.fetch_fireteams(
             activity_type,
             platform=platform,
@@ -938,4 +966,152 @@ class Client(traits.ClientBase):
             slots_filter=slots_filter,
         )
         assert isinstance(resp, dict)
-        return self.serialize.deserialize_fireteam(resp)
+        return self.serialize.deserialize_fireteams(resp)
+
+    async def fetch_avaliable_clan_fireteams(
+        self,
+        access_token: str,
+        group_id: int,
+        activity_type: helpers.IntAnd[fireteams.FireteamActivity],
+        *,
+        platform: helpers.IntAnd[fireteams.FireteamPlatform],
+        language: typing.Union[fireteams.FireteamLanguage, str],
+        date_range: int = 0,
+        page: int = 0,
+        public_only: bool = False,
+        slots_filter: int = 0,
+    ) -> typing.Optional[typing.Sequence[fireteams.Fireteam]]:
+        """Fetch a clan's fireteams with open slots.
+
+        .. note::
+            This method requires OAuth2: ReadGroups scope.
+
+        Parameters
+        ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+        group_id : `int`
+            The group/clan id of the fireteam.
+        activity_type : `aiobungie.internal.helpers.IntAnd[aiobungie.crate.FireteamActivity]`
+            The fireteam activity type.
+
+        Other Parameters
+        ----------------
+        platform : `aiobungie.internal.helpers.IntAnd[aiobungie.crate.fireteams.FireteamPlatform]`
+            If this is provided. Then the results will be filtered with the given platform.
+            Defaults to `aiobungie.crate.FireteamPlatform.ANY` which returns all platforms.
+        language : `typing.Union[aiobungie.crate.fireteams.FireteamLanguage, str]`
+            A locale language to filter the used language in that fireteam.
+            Defaults to `aiobungie.crate.FireteamLanguage.ALL`
+        date_range : `int`
+            An integer to filter the date range of the returned fireteams. Defaults to `0`.
+        page : `int`
+            The page number. By default its `0` which returns all available activities.
+        public_only: `bool`
+            If set to True, Then only public fireteams will be returned.
+        slots_filter : `int`
+            Filter the returned fireteams based on available slots. Default is `0`
+
+        Returns
+        -------
+        `typing.Optional[typing.Sequence[aiobungie.crate.Fireteam]]`
+            A sequence of  fireteams found in the clan.
+            `None` will be returned if nothing was found.
+        """
+        resp = await self.rest.fetch_avaliable_clan_fireteams(
+            access_token,
+            group_id,
+            activity_type,
+            platform=platform,
+            language=language,
+            date_range=date_range,
+            page=page,
+            public_only=public_only,
+            slots_filter=slots_filter,
+        )
+        assert isinstance(resp, dict)
+        return self.serialize.deserialize_fireteams(resp)
+
+    async def fetch_clan_fireteam(
+        self, access_token: str, fireteam_id: int, group_id: int
+    ) -> fireteams.AvalaibleFireteam:
+        """Fetch a specific clan fireteam.
+
+        .. note::
+            This method requires OAuth2: ReadGroups scope.
+
+        Parameters
+        ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+        group_id : `int`
+            The group/clan id to fetch the fireteam from.
+        fireteam_id : `int`
+            The fireteam id to fetch.
+
+        Returns
+        -------
+        `typing.Optional[aiobungie.crate.AvalaibleFireteam]`
+            A sequence of available fireteams objects if exists. else `None` will be returned.
+        """
+        resp = await self.rest.fetch_clan_fireteam(access_token, fireteam_id, group_id)
+        assert isinstance(resp, dict)
+        return self.serialize.deserialize_available_fireteams(
+            resp, no_results=True
+        )  # type: ignore[return-value]
+
+    async def fetch_my_clan_fireteams(
+        self,
+        access_token: str,
+        group_id: int,
+        *,
+        include_closed: bool = True,
+        platform: helpers.IntAnd[fireteams.FireteamPlatform],
+        language: typing.Union[fireteams.FireteamLanguage, str],
+        filtered: bool = True,
+        page: int = 0,
+    ) -> typing.Sequence[fireteams.AvalaibleFireteam]:
+        """A method that's similar to `fetch_fireteams` but requires OAuth2.
+
+        .. note::
+            This method requires OAuth2: ReadGroups scope.
+
+        Parameters
+        ----------
+        access_token : str
+            The bearer access token associated with the bungie account.
+        group_id : int
+            The group/clan id to fetch.
+
+        Other Parameters
+        ----------------
+        include_closed : bool
+            If provided and set to True, It will also return closed fireteams.
+            If provided and set to False, It will only return public fireteams. Default is True.
+        platform : aiobungie.internal.helpers.IntAnd[aiobungie.crate.fireteams.FireteamPlatform]
+            If this is provided. Then the results will be filtered with the given platform.
+            Defaults to aiobungie.crate.FireteamPlatform.ANY which returns all platforms.
+        language : typing.Union[aiobungie.crate.fireteams.FireteamLanguage, str]
+            A locale language to filter the used language in that fireteam.
+            Defaults to aiobungie.crate.FireteamLanguage.ALL
+        filtered : bool
+            If set to True, it will filter by clan. Otherwise not. Default is True.
+        page : int
+            The page number. By default its 0 which returns all available activities.
+
+        Returns
+        -------
+        `typing.Optional[typing.Sequence[aiobungie.crate.AvalaibleFireteam]]`
+            A sequence of available fireteams objects if exists. else `None` will be returned.
+        """
+        resp = await self.rest.fetch_my_clan_fireteams(
+            access_token,
+            group_id,
+            include_closed=include_closed,
+            platform=platform,
+            language=language,
+            filtered=filtered,
+            page=page,
+        )
+        assert isinstance(resp, dict)
+        return self.serialize.deserialize_available_fireteams(resp)  # type: ignore[return-value]

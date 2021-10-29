@@ -204,6 +204,7 @@ class _Session:
         await self.close()
 
     async def close(self) -> None:
+        # This currently set like this due to a bug.
         if not self.client_session:
             await self.client_session.close()
         await asyncio.sleep(0.025)
@@ -1019,14 +1020,14 @@ class RESTClient(interfaces.RESTInterface):
         language: typing.Union[
             fireteams.FireteamLanguage, str
         ] = fireteams.FireteamLanguage.ALL,
-        date_range: int = 0,
+        date_range: helpers.IntAnd[fireteams.FireteamDate] = fireteams.FireteamDate.ALL,
         page: int = 0,
         slots_filter: int = 0,
     ) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
             RequestMethod.GET,
-            f"Fireteam/Search/Available/{int(platform)}/{int(activity_type)}/{date_range}/{slots_filter}/{page}/?langFilter={str(language)}",  # noqa: E501 Line too long
+            f"Fireteam/Search/Available/{int(platform)}/{int(activity_type)}/{int(date_range)}/{slots_filter}/{page}/?langFilter={str(language)}",  # noqa: E501 Line too long
         )
 
     def fetch_avaliable_clan_fireteams(
@@ -1037,14 +1038,14 @@ class RESTClient(interfaces.RESTInterface):
         *,
         platform: helpers.IntAnd[fireteams.FireteamPlatform],
         language: typing.Union[fireteams.FireteamLanguage, str],
-        date_range: int = 0,
+        date_range: helpers.IntAnd[fireteams.FireteamDate] = fireteams.FireteamDate.ALL,
         page: int = 0,
         public_only: bool = False,
         slots_filter: int = 0,
     ) -> ResponseSig[helpers.JsonObject]:
         return self._request(
             RequestMethod.GET,
-            f"Fireteam/Clan/{group_id}/Available/{int(platform)}/{int(activity_type)}/{date_range}/{slots_filter}/{public_only}/{page}",  # noqa: E501
+            f"Fireteam/Clan/{group_id}/Available/{int(platform)}/{int(activity_type)}/{int(date_range)}/{slots_filter}/{public_only}/{page}",  # noqa: E501
             json={"langFilter": str(language)},
             headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
         )

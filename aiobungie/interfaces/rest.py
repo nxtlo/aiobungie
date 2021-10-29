@@ -1266,7 +1266,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         *,
         platform: helpers.IntAnd[fireteams.FireteamPlatform],
         language: typing.Union[fireteams.FireteamLanguage, str],
-        date_range: int = 0,
+        date_range: helpers.IntAnd[fireteams.FireteamDate] = 0,
         page: int = 0,
         slots_filter: int = 0,
     ) -> ResponseSig[helpers.JsonObject]:
@@ -1285,8 +1285,8 @@ class RESTInterface(traits.RESTful, abc.ABC):
         language : `typing.Union[aiobungie.crate.fireteams.FireteamLanguage, str]`
             A locale language to filter the used language in that fireteam.
             Defaults to `aiobungie.crate.FireteamLanguage.ALL`
-        date_range : `int`
-            An integer to filter the date range of the returned fireteams. Defaults to `0`.
+        date_range : `aiobungie.internal.helpers.IntAnd[aiobungie.FireteamDate]`
+            An integer to filter the date range of the returned fireteams. Defaults to `aiobungie.FireteamDate.ALL`.
         page : `int`
             The page number. By default its `0` which returns all available activities.
         slots_filter : `int`
@@ -1307,7 +1307,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         *,
         platform: helpers.IntAnd[fireteams.FireteamPlatform],
         language: typing.Union[fireteams.FireteamLanguage, str],
-        date_range: int = 0,
+        date_range: helpers.IntAnd[fireteams.FireteamDate] = 0,
         page: int = 0,
         public_only: bool = False,
         slots_filter: int = 0,
@@ -1334,8 +1334,8 @@ class RESTInterface(traits.RESTful, abc.ABC):
         language : `typing.Union[aiobungie.crate.fireteams.FireteamLanguage, str]`
             A locale language to filter the used language in that fireteam.
             Defaults to `aiobungie.crate.FireteamLanguage.ALL`
-        date_range : `int`
-            An integer to filter the date range of the returned fireteams. Defaults to `0`.
+        date_range : `aiobungie.internal.helpers.IntAnd[aiobungie.FireteamDate]`
+            An integer to filter the date range of the returned fireteams. Defaults to `aiobungie.FireteamDate.ALL`.
         page : `int`
             The page number. By default its `0` which returns all available activities.
         public_only: `bool`

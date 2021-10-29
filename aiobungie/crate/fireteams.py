@@ -29,6 +29,10 @@ __all__: tuple[str, ...] = (
     "FireteamLanguage",
     "FireteamPlatform",
     "FireteamActivity",
+    "FireteamDate",
+    "AvalaibleFireteam",
+    "FireteamUser",
+    "FireteamMember",
 )
 
 import typing
@@ -36,6 +40,7 @@ import typing
 import attr
 
 from aiobungie import url
+from aiobungie.crate import user
 from aiobungie.internal import enums
 
 if typing.TYPE_CHECKING:
@@ -102,6 +107,50 @@ class FireteamLanguage(str, enums.Enum):
         return str(self.value)
 
 
+class FireteamDate(enums.IntEnum):
+    """An enum for fireteam date ranges."""
+
+    ALL = 0
+    NOW = 1
+    TODAY = 2
+    TWO_DAYS = 3
+    THIS_WEEK = 4
+
+
+@attr.define(kw_only=True, weakref_slot=True, hash=False)
+class FireteamUser(user.DestinyUser):
+    """Represents a Bungie fireteam user info."""
+
+    fireteam_display_name: str = attr.field(repr=True)
+    """The fireteam display name."""
+
+    fireteam_membership_id: enums.MembershipType = attr.field(repr=True)
+    """The fireteam's membership type."""
+
+
+@attr.define(kw_only=True, weakref_slot=True, hash=False)
+class FireteamMember(user.PartialBungieUser):
+    """Represents a Bungie fireteam member."""
+
+    destiny_user: FireteamUser = attr.field(repr=True)
+    """The destiny user info related to this fireteam member."""
+
+    character_id: int = attr.field(repr=True)
+    """Fireteam member's character id."""
+
+    date_joined: datetime.datetime = attr.field(repr=False)
+    """Fireteam member's join date."""
+
+    has_microphone: bool = attr.field(repr=False)
+    """Whether the fireteam member has a mic or not."""
+
+    last_platform_invite_date: datetime.datetime = attr.field(repr=False)
+    """"""
+
+    last_platform_invite_result: int = attr.field(repr=False)
+    """"""
+
+
 @attr.define(kw_only=True, weakref_slot=True, hash=False)
 class Fireteam:
     """A representation of a Bungie fireteam."""
@@ -158,3 +207,16 @@ class Fireteam:
     def url(self) -> str:
         """The activity url at Bungie.net."""
         return f"{url.BASE}/en/ClanV2/PublicFireteam?groupId={self.group_id}&fireteamId={self.id}"  # noqa: E501
+
+
+@attr.define(kw_only=True, weakref_slot=True, hash=False)
+class AvalaibleFireteam(Fireteam):
+    """Represents an available clan fireteam. This includes the members and alternative members."""
+
+    members: typing.Optional[typing.Sequence[FireteamMember]] = attr.field(repr=True)
+    """A sequence of the fireteam members."""
+
+    alternatives: typing.Optional[typing.Sequence[FireteamMember]] = attr.field(
+        repr=True
+    )
+    """A sequence of the fireteam alternative members."""

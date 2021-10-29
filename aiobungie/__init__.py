@@ -109,6 +109,7 @@ from ._info import __version__
 
 # Fireteam enums.
 from .crate.fireteams import FireteamActivity
+from .crate.fireteams import FireteamDate
 from .crate.fireteams import FireteamLanguage
 from .crate.fireteams import FireteamPlatform
 

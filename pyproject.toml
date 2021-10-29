@@ -65,6 +65,29 @@ disallow_incomplete_defs = true
 # Allowed
 allow_redefinition = true
 
+[tool.pyright]
+include = ["aiobungie", "tests", "nix", "examples"]
+venvPath = "."
+venv = ".venv"
+pythonVersion = "3.9"
+typeCheckingMode = "strict"
+reportUnboundVariable =  "none"
+reportUnknownParameterType = "error"
+reportUnknownLambdaType = "warning"
+reportUnknownMemberType = "warning"
+reportUnknownArgumentType = "warning"
+reportUnknownVariableType = "warning"
+reportMissingModuleSource = "error"
+reportMissingParameterType = "error"
+reportMissingTypeArgument = "error"
+reportMissingTypeStubs = "error"
+reportGeneralTypeIssues = "information"
+reportPrivateUsage = "warning"
+reportIncompatibleMethodOverride = "none"
+# This will always cause warnings above license.
+reportImportCycles = "warning"
+reportUnusedImport = "warning"
+
 [tool.poetry.dependencies]
 python = "^3.8"
 python-dateutil = "2.8.2"

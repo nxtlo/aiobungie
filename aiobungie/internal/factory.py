@@ -106,8 +106,18 @@ class Factory:
             bungie_info = payload
         else:
             bungie_info = payload["bungieNetUserInfo"]
+
+        memberships = []
+
+        try:
+            for m_ship in bungie_info["applicableMembershipTypes"]:
+                memberships.append(enums.MembershipType(m_ship))
+        except KeyError:
+            pass
+
         return user.PartialBungieUser(
             net=self._net,
+            types=memberships,
             name=bungie_info.get("displayName", Undefined),
             id=int(bungie_info["membershipId"]),
             crossave_override=enums.MembershipType(bungie_info["crossSaveOverride"]),
@@ -886,7 +896,27 @@ class Factory:
 
         return friends.FriendRequestView(incoming=incoming, outgoing=outgoing)
 
-    def deserialize_fireteam(
+    def _set_fireteam_fields(self, payload: JsonObject) -> fireteams.Fireteam:
+        return fireteams.Fireteam(
+            id=int(payload["fireteamId"]),
+            group_id=int(payload["groupId"]),
+            platform=fireteams.FireteamPlatform(payload["platform"]),
+            activity_type=fireteams.FireteamActivity(payload["activityType"]),
+            is_immediate=payload["isImmediate"],
+            owner_id=int(payload["ownerMembershipId"]),
+            player_slot_count=payload["playerSlotCount"],
+            available_player_slots=payload["availablePlayerSlotCount"],
+            available_alternate_slots=payload["availableAlternateSlotCount"],
+            title=payload["title"],
+            date_created=time.clean_date(payload["dateCreated"]),
+            is_public=payload["isPublic"],
+            locale=fireteams.FireteamLanguage(payload["locale"]),
+            is_valid=payload["isValid"],
+            last_modified=time.clean_date(payload["datePlayerModified"]),
+            total_results=payload.get("totlaResults", 0),
+        )
+
+    def deserialize_fireteams(
         self, payload: JsonObject
     ) -> NoneOr[typing.Sequence[fireteams.Fireteam]]:
         fireteams_: typing.MutableSequence[fireteams.Fireteam] = []
@@ -894,25 +924,108 @@ class Factory:
         result: list[JsonObject]
         if (result := payload["results"]) is not None:
             for elem in result:
-                fireteam = fireteams.Fireteam(
-                    id=int(elem["fireteamId"]),
-                    group_id=int(elem["groupId"]),
-                    platform=fireteams.FireteamPlatform(elem["platform"]),
-                    activity_type=fireteams.FireteamActivity(elem["activityType"]),
-                    is_immediate=elem["isImmediate"],
-                    owner_id=int(elem["ownerMembershipId"]),
-                    player_slot_count=elem["playerSlotCount"],
-                    available_player_slots=elem["availablePlayerSlotCount"],
-                    available_alternate_slots=elem["availableAlternateSlotCount"],
-                    title=elem["title"],
-                    date_created=time.clean_date(elem["dateCreated"]),
-                    is_public=elem["isPublic"],
-                    locale=fireteams.FireteamLanguage(elem["locale"]),
-                    is_valid=elem["isValid"],
-                    last_modified=time.clean_date(elem["datePlayerModified"]),
-                    total_results=payload.get("totlaResults", 0),
-                )
-                fireteams_.append(fireteam)
+                fireteams_.append(self._set_fireteam_fields(elem))
         else:
             return None
+        return fireteams_
+
+    def deserialize_fireteam_destiny_users(
+        self, payload: JsonObject
+    ) -> fireteams.FireteamUser:
+        destiny_obj = self.deserialize_destiny_user(payload)
+        # We could just return a DestinyUser object but this is
+        # missing the fireteam display name and id fields.
+        return fireteams.FireteamUser(
+            net=self._net,
+            id=destiny_obj.id,
+            code=destiny_obj.code,
+            icon=destiny_obj.icon,
+            types=destiny_obj.types,
+            type=destiny_obj.type,
+            is_public=destiny_obj.is_public,
+            crossave_override=destiny_obj.crossave_override,
+            name=destiny_obj.name,
+            last_seen_name=destiny_obj.last_seen_name,
+            fireteam_display_name=payload["FireteamDisplayName"],
+            fireteam_membership_id=enums.MembershipType(
+                payload["FireteamMembershipType"]
+            ),
+        )
+
+    def deserialize_fireteam_members(
+        self, payload: JsonObject, *, alternatives: bool = False
+    ) -> typing.Optional[typing.Sequence[fireteams.FireteamMember]]:
+        members_: list[fireteams.FireteamMember] = []
+        if members := payload.get("Members" if not alternatives else "Alternates"):
+            for member in members:
+                bungie_fields = self.deserialize_partial_bungie_user(member)
+                members_fields = fireteams.FireteamMember(
+                    destiny_user=self.deserialize_fireteam_destiny_users(member),
+                    has_microphone=member["hasMicrophone"],
+                    character_id=int(member["characterId"]),
+                    date_joined=time.clean_date(member["dateJoined"]),
+                    last_platform_invite_date=time.clean_date(
+                        member["lastPlatformInviteAttemptDate"]
+                    ),
+                    last_platform_invite_result=int(
+                        member["lastPlatformInviteAttemptResult"]
+                    ),
+                    net=self._net,
+                    name=bungie_fields.name,
+                    id=bungie_fields.id,
+                    icon=bungie_fields.icon,
+                    is_public=bungie_fields.is_public,
+                    crossave_override=bungie_fields.crossave_override,
+                    types=bungie_fields.types,
+                    type=bungie_fields.type,
+                )
+                members_.append(members_fields)
+        else:
+            return None
+        return members_
+
+    def deserialize_available_fireteams(
+        self,
+        data: JsonObject,
+        *,
+        no_results: bool = False,
+    ) -> typing.Union[
+        fireteams.AvalaibleFireteam, typing.Sequence[fireteams.AvalaibleFireteam]
+    ]:
+        fireteams_: list[fireteams.AvalaibleFireteam] = []
+
+        # This needs to be used outside the results
+        # JSON key.
+        if no_results is True:
+            payload = data
+
+        if result := payload.get("results"):
+
+            for fireteam in result:
+                found_fireteams = self._set_fireteam_fields(fireteam["Summary"])
+                fireteams_fields = fireteams.AvalaibleFireteam(
+                    id=found_fireteams.id,
+                    group_id=found_fireteams.group_id,
+                    platform=found_fireteams.platform,
+                    activity_type=found_fireteams.activity_type,
+                    is_immediate=found_fireteams.is_immediate,
+                    is_public=found_fireteams.is_public,
+                    is_valid=found_fireteams.is_valid,
+                    owner_id=found_fireteams.owner_id,
+                    player_slot_count=found_fireteams.player_slot_count,
+                    available_player_slots=found_fireteams.available_player_slots,
+                    available_alternate_slots=found_fireteams.available_alternate_slots,
+                    title=found_fireteams.title,
+                    date_created=found_fireteams.date_created,
+                    locale=found_fireteams.locale,
+                    last_modified=found_fireteams.last_modified,
+                    total_results=found_fireteams.total_results,
+                    members=self.deserialize_fireteam_members(payload),
+                    alternatives=self.deserialize_fireteam_members(
+                        payload, alternatives=True
+                    ),
+                )
+            fireteams_.append(fireteams_fields)
+            if no_results:
+                return fireteams_fields
         return fireteams_

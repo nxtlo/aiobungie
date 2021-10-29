@@ -61,6 +61,10 @@ __all__ = (
     "FireteamLanguage",
     "FireteamActivity",
     "FireteamPlatform",
+    "FireteamDate",
+    "FireteamMember",
+    "FireteamUser",
+    "AvalaibleFireteam",
 )
 
 from .activity import Activity
@@ -77,10 +81,14 @@ from .clans import ClanMember
 from .clans import GroupMember
 from .entity import Entity
 from .entity import InventoryEntity
+from .fireteams import AvalaibleFireteam
 from .fireteams import Fireteam
 from .fireteams import FireteamActivity
+from .fireteams import FireteamDate
 from .fireteams import FireteamLanguage
+from .fireteams import FireteamMember
 from .fireteams import FireteamPlatform
+from .fireteams import FireteamUser
 from .friends import Friend
 from .friends import FriendRequestView
 from .milestones import Milestone

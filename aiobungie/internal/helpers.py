@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""A module for helper functions and types."""
+"""A helper module the provides functions, classes and type hints for various of use."""
 
 
 from __future__ import annotations

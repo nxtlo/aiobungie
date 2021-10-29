@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""An interface for the rest client."""
+"""An API interface for the rest client."""
 
 from __future__ import annotations
 

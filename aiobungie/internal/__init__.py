@@ -20,6 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Package contains internal and helpers for aiobungie."""
+"""Package contains internal helpers for aiobungie."""
 
 from __future__ import annotations

@@ -20,8 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Basic implementation for a Bungie a clan."""
-
+"""Implementation of a Bungie a clan and groups."""
 
 from __future__ import annotations
 

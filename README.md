@@ -91,16 +91,15 @@ async def main() -> None:
 client.run(main())
 ```
 
-## REST-Only client
-For low-level and only to interact with the API directly without any high-level concepts,
-you can use the `RESTClient`.
+## RESTful client
+Alternatively, You can use `RESTClient` which's designed to only make HTTP requests and return JSON objects.
 
-### Simple Example
+### Quick Example
 ```py
 import aiobungie
 import asyncio
 
-async def main(bearer: str) -> None:
+async def main(access_token: str) -> None:
     # Max retries is the maximum retries to backoff when you hit 5xx error codes.
     # It defaults to 4 retries.
     async with aiobungie.RESTClient("TOKEN", max_retries=5) as rest:
@@ -112,11 +111,11 @@ async def main(bearer: str) -> None:
                 print(k, v)
 
             # You can also send your own requests.
-            await rest.static_request("POST", "Need/OAuth2", headers={"Auth": f"Bearer {bearer}"})
+            await rest.static_request("POST", "Need/OAuth2", headers={"Authorization": f"Bearer {access_token}"})
             # Defined methods.
-            await rest.send_friend_request(bearer, member_id=1234)
+            await rest.send_friend_request(access_token, member_id=1234)
 
-asyncio.run(main("1234"))
+asyncio.run(main("DB_ACCESS_TOKEN"))
 ```
 
 ### Requirements
@@ -130,7 +129,7 @@ asyncio.run(main("1234"))
 * uvloop
 
 ## Contributing
-See the [manual](https://github.com/nxtlo/aiobungie/blob/master/CONTRIBUTING.md)
+Please read this [manual](https://github.com/nxtlo/aiobungie/blob/master/CONTRIBUTING.md)
 
 ### Getting Help
 * Discord: `Fate 怒#0008` | `350750086357057537`

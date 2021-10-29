@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Basic implementation for a Bungie a activity.
+"""Implementation of a Bungie a activity.
 
 NOTE that this is still under development ages,
 and you might face some major bugs.

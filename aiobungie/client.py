@@ -20,9 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Basic implementation of a client that interacts with the API,
-Deserialize the REST payloads and returns `aiobungie.crate` implementations of these objects.
-"""
+"""Basic implementation of a Pythonic client that interacts with the API."""
 
 from __future__ import annotations
 
@@ -57,6 +55,12 @@ _LOG: typing.Final[logging.Logger] = logging.getLogger("aiobungie.client")
 
 class Client(traits.ClientBase):
     """Basic implementation for a client that interacts with Bungie's API.
+
+    This client deserialize the REST JSON payloads using `aiobungie.internal.factory.Factory`
+    and returns `aiobungie.crate` Python object implementations of these requests.
+
+    Alternatively, You can also use `aiobungie.RESTClient` to only get the JSON responses
+    and then make your own implementation data classes. Both options are up to you.
 
     Attributes
     -----------

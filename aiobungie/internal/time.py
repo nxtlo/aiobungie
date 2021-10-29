@@ -76,37 +76,3 @@ def to_timestamp(date: datetime.datetime) -> int:
         return calendar.timegm(date.timetuple())
     except Exception as e:
         raise e
-
-
-class DateAware(typing.Generic[DateSigT]):
-    """A Generic date parser which converts ISO string datetime
-    to an aware datetime and from-to timestamp and datetime.
-    """
-
-    __slots__: tuple[str, ...] = ("_entry",)
-
-    def __init__(self, entry: DateSigT) -> None:
-        self._entry = entry
-
-    @property
-    def raw(self) -> DateSigT:
-        return self._entry
-
-    def to_datetime(self) -> datetime.datetime:
-        if isinstance(self._entry, str):
-            if self._entry.endswith(("z", "Z")):
-                new = self._entry[:-1]  # type: ignore
-                return datetime.datetime.fromisoformat(new)
-
-        elif isinstance(self._entry, (float, int)):
-            return datetime.datetime.utcfromtimestamp(self._entry)
-
-        raise TypeError(
-            f"Entry must be one of (float, str) not {type(self._entry).__name__}"
-        )
-
-    def to_timestamp(self) -> float:
-        return datetime.datetime.timestamp(self.to_datetime())
-
-    def timestamp_to_datetime(self) -> datetime.datetime:
-        return datetime.datetime.utcfromtimestamp(self.to_timestamp())

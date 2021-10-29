@@ -39,9 +39,9 @@ if typing.TYPE_CHECKING:
 
 @typing.runtime_checkable
 class Netrunner(typing.Protocol):
-    """A protocol represents The base client.
+    """A supertype protocol represents The `ClientBase`.
 
-    That's only used for making external requests.
+    Objects with this protocol can make requests from outside the base client.
     """
 
     __slots__: typing.Sequence[str] = ()
@@ -53,7 +53,11 @@ class Netrunner(typing.Protocol):
 
 @typing.runtime_checkable
 class Serializable(typing.Protocol):
-    """A protocol that represents serialized factory objects."""
+    """A serializable supertype object protocol.
+
+    Objects with this protocol can serialize JSON REST payloads into
+    a Python data class objects using the client factory.
+    """
 
     __slots__: typing.Sequence[str] = ()
 
@@ -64,7 +68,7 @@ class Serializable(typing.Protocol):
 
 @typing.runtime_checkable
 class RESTful(typing.Protocol):
-    """A protocol for a REST only object."""
+    """A RESTful only supertype object protocol."""
 
     __slots__: typing.Sequence[str] = ()
 
@@ -99,7 +103,7 @@ class RESTful(typing.Protocol):
 
 @typing.runtime_checkable
 class ClientBase(Netrunner, Serializable, typing.Protocol):
-    """A Client based, serializble and netrunner protocol."""
+    """A Pythonic Client supertype, serializble and netrunner protocol."""
 
     __slots__: typing.Sequence[str] = ()
 
@@ -118,13 +122,13 @@ class ClientBase(Netrunner, Serializable, typing.Protocol):
         -------
         ```py
         async def main() -> None:
-            player = await client.fetch_player("Fate")
-            print(player.name)
+            # DO SOME ASYNC WORK
 
+        # Run the coro.
         client.run(main())
         ```
         """
 
     @property
     def rest(self) -> interfaces.RESTInterface:
-        """Returns the REST client for the base client."""
+        """Returns the REST client for the this client."""

@@ -19,7 +19,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Marshaller factory for incoming json payloads."""
+"""Marshaller factory for deserializing Bungie's JSON payloads."""
 
 from __future__ import annotations
 
@@ -59,7 +59,13 @@ _LOG: typing.Final[logging.Logger] = logging.getLogger(__name__)
 
 
 class Factory:
-    """The base Deserialization factory class for all aiobungie objects."""
+    """The base deserialization factory class for all aiobungie data classes.
+
+    This factory is used to deserialize JSON responses from the REST client and turning them
+    into a Python data classes object.
+
+    This is only provided by `aiobungie.Client` base client.
+    """
 
     # This is kinda inspired by hikari's entity factory :p.
 

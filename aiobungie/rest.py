@@ -20,7 +20,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""A basic REST only client to interact with Bungie's REST API."""
+"""Implementation of a RESTful client for Bungie's REST API.
+
+This client only makes HTTP requests to the API and returns pure JSON objects.
+"""
 
 from __future__ import annotations
 
@@ -224,9 +227,17 @@ class RequestMethod(str, enums.Enum):
 class RESTClient(interfaces.RESTInterface):
     """A REST only client implementation for interacting with Bungie's REST API.
 
+    This client is designed to only make HTTP requests and return JSON objects
+    to provide RESTful functionality.
+
+    This client is also used within `aiobungie.Client` which deserialize those returned JSON objects
+    using the factory into Pythonic data classes objects which provide Python functionality.
+
     Example
     -------
     ```py
+    import aiobungie
+
     async def main():
         async with aiobungie.RESTClient("TOKEN") as rest_client:
             req = await rest_client.fetch_clan_members(4389205)

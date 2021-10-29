@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Bungie enums impl for aiobungie."""
+"""Bungie enums implementation used within aiobungie."""
 
 
 from __future__ import annotations

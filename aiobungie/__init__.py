@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""A Pythonic `async`/`await` framework / wrapper for interacting with the Bungie API.
+"""A Pythonic `async`/`await` wrapper for interacting with the Bungie API.
 
 A basic client based example.
 

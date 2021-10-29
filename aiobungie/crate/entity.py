@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Bungie entity definitions implementation.
+"""Implementation of Bungie entity and definitions.
 
 This is still not fully implemented and you may experince bugs.
 This will include all Bungie Definitions.

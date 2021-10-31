@@ -855,9 +855,9 @@ class Factory:
         if (raw_name := payload["bungieGlobalDisplayName"]) != Unknown:
             name = raw_name
 
-        bungie_user: NoneOr[user.User] = None
+        bungie_user: NoneOr[user.BungieUser] = None
         if raw_bungie_user := payload.get("bungieNetUser"):
-            bungie_user = self.deserialize_user(raw_bungie_user)
+            bungie_user = self.deserialize_bungie_user(raw_bungie_user)
 
         return friends.Friend(
             net=self._net,
@@ -886,13 +886,13 @@ class Factory:
         incoming: typing.MutableSequence[friends.Friend] = []
         outgoing: typing.MutableSequence[friends.Friend] = []
 
-        if raw_incoming_requests := payload.get("incmoingRequests"):
+        if raw_incoming_requests := payload.get("incomingRequests"):
             for incoming_request in raw_incoming_requests:
                 incoming.append(self.deserialize_friend(incoming_request))
 
         if raw_outgoing_requests := payload.get("outgoingRequests"):
-            for incoming_request in raw_outgoing_requests:
-                outgoing.append(self.deserialize_friend(incoming_request))
+            for outgoing_request in raw_outgoing_requests:
+                outgoing.append(self.deserialize_friend(outgoing_request))
 
         return friends.FriendRequestView(incoming=incoming, outgoing=outgoing)
 

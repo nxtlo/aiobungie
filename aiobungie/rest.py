@@ -71,9 +71,7 @@ if typing.TYPE_CHECKING:
 _LOG: typing.Final[logging.Logger] = logging.getLogger("aiobungie.rest")
 _APP_JSON: typing.Final[str] = "application/json"
 _RETRY_5XX: typing.Final[set[int]] = {500, 502, 503, 504}
-_AUTH_HEADERS: typing.Final[dict[typing.Literal["Authorization"], str]] = {
-    "Authorization": "Bearer {access_token}"
-}
+_AUTH_HEADER: typing.Final[str] = sys.intern("Authorization")
 _USER_AGENT_HEADERS: typing.Final[str] = sys.intern("User-Agent")
 _USER_AGENT: typing.Final[str] = f"AiobungieClient/{info.__version__}"
 f" ({info.__url__}) {platform.python_implementation()}/{platform.python_version()}"
@@ -190,7 +188,7 @@ class _Session:
                 connect=connect,
             ),
         )
-        return cls(client_session=session)
+        return _Session(client_session=session)
 
     async def __aenter__(self) -> _Session:
         return self
@@ -205,8 +203,7 @@ class _Session:
 
     async def close(self) -> None:
         # This currently set like this due to a bug.
-        if not self.client_session:
-            await self.client_session.close()
+        await self.client_session.close()
         await asyncio.sleep(0.025)
 
 
@@ -265,8 +262,6 @@ class RESTClient(interfaces.RESTInterface):
 
     def _acquire_session(self) -> _Session:
         asyncio.get_running_loop()
-        # A little hack to make asyncio stop logging unclosed client warns.
-        logging.disable(logging.FATAL)
         if self._session is None:
             self._session = _Session.acquire_session(
                 owner=False,
@@ -290,83 +285,90 @@ class RESTClient(interfaces.RESTInterface):
         method: typing.Union[RequestMethod, str],
         route: typedefs.StrOrURL,
         base: bool = False,
+        auth: typing.Optional[str] = None,
         type: typing.Literal["json", "read"] = "json",
         **kwargs: typing.Any,
     ) -> typing.Any:
 
         retries: int = 0
         if self._token is not None:
+            headers: dict[str, str]
             kwargs["headers"] = headers = {}
             headers["X-API-KEY"] = self._token
         else:
             raise ValueError("No API KEY was passed.")
+
+        if auth is not None:
+            headers[_AUTH_HEADER] = f"Bearer {auth}"
 
         stack = contextlib.AsyncExitStack()
         while True:
             try:
                 async with stack:
                     async with _Arc():
-                        async with self._acquire_session():
-                            response = await stack.enter_async_context(
-                                await self._session.client_session.request(  # type: ignore
-                                    method=method,  # Acquiring the session makes it not None
-                                    url=f"{url.REST_EP if base is False else url.BASE}/{route}",
-                                    **kwargs,
-                                )
+
+                        # We make the request here.
+                        response = await stack.enter_async_context(
+                            await self._acquire_session().client_session.request(
+                                method=method,
+                                url=f"{url.REST_EP if base is False else url.BASE}/{route}",
+                                **kwargs,
+                            )
+                        )
+
+                        await self._handle_ratelimit(response)
+
+                        if response.status == http.HTTPStatus.NO_CONTENT:
+                            return None
+
+                        data = await response.json(encoding="utf-8")
+                        if 300 > response.status >= 200:
+                            if type == "read":
+                                # We want to read the bytes for the manifest response.
+                                data = await response.read()
+                                return data
+
+                            _LOG.debug(
+                                "%s Request success from %s with status %i",
+                                method,
+                                f"{url.REST_EP}/{route}",
+                                response.status,
                             )
 
-                            await self._handle_ratelimit(response)
+                            if response.content_type == _APP_JSON:
+                                try:
+                                    return data["Response"]
 
-                            if response.status == http.HTTPStatus.NO_CONTENT:
-                                return None
-
-                            data = await response.json(encoding="utf-8")
-                            if 300 > response.status >= 200:
-                                if type == "read":
-                                    # We want to read the bytes for the manifest response.
-                                    data = await response.read()
+                                # In case we didn't find the Response key
+                                # its safer to just return the data.
+                                except KeyError:
+                                    _LOG.warning(
+                                        "Couldn't return the response key, Data: %s",
+                                        data,
+                                    )
                                     return data
 
-                                _LOG.debug(
-                                    "%s Request success from %s with status %i",
-                                    method,
-                                    f"{url.REST_EP}/{route}",
-                                    response.status,
-                                )
+                        if (
+                            response.status in _RETRY_5XX
+                            and retries < self._max_retries  # noqa: W503
+                        ):
+                            backoff_ = backoff.ExponentialBackOff(maximum=6)
+                            sleep_time = next(backoff_)
+                            _LOG.warning(
+                                f"Received: {response.status}, "
+                                f"Message: {data['Message']}, "
+                                f"sleeping for {sleep_time}, "
+                                f"Remaining retries: {self._max_retries - retries}"
+                            )
 
-                                if response.content_type == _APP_JSON:
-                                    try:
-                                        return data["Response"]
+                            retries += 1
+                            await asyncio.sleep(sleep_time)
+                            continue
 
-                                    # In case we didn't find the Response key
-                                    # its safer to just return the data.
-                                    except KeyError:
-                                        _LOG.warning(
-                                            "Couldn't return the response key, Data: %s",
-                                            data,
-                                        )
-                                        return data
+                        await self._handle_err(response, data["ErrorStatus"])
 
-                            if (
-                                response.status in _RETRY_5XX
-                                and retries < self._max_retries  # noqa: W503
-                            ):
-                                backoff_ = backoff.ExponentialBackOff(maximum=6)
-                                sleep_time = next(backoff_)
-                                _LOG.warning(
-                                    f"Received: {response.status}, Message: {data['Message']} "
-                                    f"sleeping for {sleep_time}, "
-                                    f"Remaining retries: {self._max_retries - retries}"
-                                )
-
-                                retries += 1
-                                await asyncio.sleep(sleep_time)
-                                continue
-
-                            await self._handle_err(response, data["ErrorStatus"])
-
-            except RuntimeError:
-                continue
+            except (RuntimeError, Exception):
+                raise
 
     async def __aenter__(self) -> RESTClient:
         return self
@@ -636,7 +638,7 @@ class RESTClient(interfaces.RESTInterface):
         return self._request(
             RequestMethod.GET,
             "User/GetMembershipsForCurrentUser/",
-            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
+            auth=access_token,
         )
 
     def equip_item(
@@ -658,7 +660,7 @@ class RESTClient(interfaces.RESTInterface):
             RequestMethod.POST,
             "Destiny2/Actions/Items/EquipItem/",
             json=payload,
-            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
+            auth=access_token,
         )
 
     def equip_items(
@@ -679,7 +681,7 @@ class RESTClient(interfaces.RESTInterface):
             RequestMethod.POST,
             "Destiny2/Actions/Items/EquipItems/",
             json=payload,
-            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
+            auth=access_token,
         )
 
     def ban_clan_member(
@@ -699,7 +701,7 @@ class RESTClient(interfaces.RESTInterface):
             RequestMethod.POST,
             f"GroupV2/{group_id}/Members/{int(membership_type)}/{membership_id}/Ban/",
             json=payload,
-            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
+            auth=access_token,
         )
 
     def unban_clan_member(
@@ -714,7 +716,7 @@ class RESTClient(interfaces.RESTInterface):
         return self._request(
             RequestMethod.POST,
             f"GroupV2/{group_id}/Members/{int(membership_type)}/{membership_id}/Unban/",
-            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
+            auth=access_token,
         )
 
     def kick_clan_member(
@@ -729,7 +731,7 @@ class RESTClient(interfaces.RESTInterface):
         return self._request(
             RequestMethod.POST,
             f"GroupV2/{group_id}/Members/{int(membership_type)}/{membership_id}/Kick/",
-            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
+            auth=access_token,
         )
 
     def edit_clan(
@@ -782,7 +784,7 @@ class RESTClient(interfaces.RESTInterface):
             RequestMethod.POST,
             f"GroupV2/{group_id}/Edit",
             json=payload,
-            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
+            auth=access_token,
         )
 
     def edit_clan_options(
@@ -812,15 +814,15 @@ class RESTClient(interfaces.RESTInterface):
             RequestMethod.POST,
             f"GroupV2/{group_id}/EditFounderOptions",
             json=payload,
-            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
+            auth=access_token,
         )
 
     def fetch_friends(self, access_token: str, /) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
             RequestMethod.GET,
-            "Social/Friends",
-            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
+            "Social/Friends/",
+            auth=access_token,
         )
 
     def fetch_friend_requests(
@@ -830,7 +832,7 @@ class RESTClient(interfaces.RESTInterface):
         return self._request(
             RequestMethod.GET,
             "Social/Friends/Requests",
-            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
+            auth=access_token,
         )
 
     def accept_friend_request(
@@ -840,7 +842,7 @@ class RESTClient(interfaces.RESTInterface):
         return self._request(
             RequestMethod.POST,
             f"Social/Friends/Requests/Accept/{member_id}",
-            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
+            auth=access_token,
         )
 
     def send_friend_request(
@@ -850,7 +852,7 @@ class RESTClient(interfaces.RESTInterface):
         return self._request(
             RequestMethod.POST,
             f"Social/Friends/Add/{member_id}",
-            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
+            auth=access_token,
         )
 
     def decline_friend_request(
@@ -860,7 +862,7 @@ class RESTClient(interfaces.RESTInterface):
         return self._request(
             RequestMethod.POST,
             f"Social/Friends/Requests/Decline/{member_id}",
-            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
+            auth=access_token,
         )
 
     def remove_friend(self, access_token: str, /, member_id: int) -> ResponseSig[None]:
@@ -868,7 +870,7 @@ class RESTClient(interfaces.RESTInterface):
         return self._request(
             RequestMethod.POST,
             f"Social/Friends/Remove/{member_id}",
-            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
+            auth=access_token,
         )
 
     def remove_friend_request(
@@ -878,7 +880,7 @@ class RESTClient(interfaces.RESTInterface):
         return self._request(
             RequestMethod.POST,
             f"Social/Friends/Requests/Remove/{member_id}",
-            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
+            auth=access_token,
         )
 
     def approve_all_pending_group_users(
@@ -892,7 +894,7 @@ class RESTClient(interfaces.RESTInterface):
         return self._request(
             RequestMethod.POST,
             f"GroupV2/{group_id}/Members/ApproveAll",
-            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
+            auth=access_token,
             json={"message": str(message)},
         )
 
@@ -908,7 +910,7 @@ class RESTClient(interfaces.RESTInterface):
         return self._request(
             RequestMethod.POST,
             f"GroupV2/{group_id}/Members/DenyAll",
-            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
+            auth=access_token,
             json={"message": str(message)},
         )
 
@@ -927,7 +929,7 @@ class RESTClient(interfaces.RESTInterface):
             RequestMethod.POST,
             f"GroupV2/{group_id}/OptionalConversations/Add",
             json=payload,
-            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
+            auth=access_token,
         )
 
     def edit_optional_conversation(
@@ -951,7 +953,7 @@ class RESTClient(interfaces.RESTInterface):
             RequestMethod.POST,
             f"GroupV2/{group_id}/OptionalConversations/Edit/{conversation_id}",
             json=payload,
-            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
+            auth=access_token,
         )
 
     def transfer_item(
@@ -977,9 +979,9 @@ class RESTClient(interfaces.RESTInterface):
         }
         return self._request(
             RequestMethod.POST,
-            "Destiny2/Actions/Items/PullFromPostmaster",
+            "Destiny2/Actions/Items/TransferItem",
             json=payload,
-            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
+            auth=access_token,
         )
 
     def pull_item(
@@ -1005,9 +1007,9 @@ class RESTClient(interfaces.RESTInterface):
         }
         return self._request(
             RequestMethod.POST,
-            "Destiny2/Actions/Items/TransferItem",
+            "Destiny2/Actions/Items/PullFromPostmaster",
             json=payload,
-            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
+            auth=access_token,
         )
 
     def fetch_fireteams(
@@ -1047,7 +1049,7 @@ class RESTClient(interfaces.RESTInterface):
             RequestMethod.GET,
             f"Fireteam/Clan/{group_id}/Available/{int(platform)}/{int(activity_type)}/{int(date_range)}/{slots_filter}/{public_only}/{page}",  # noqa: E501
             json={"langFilter": str(language)},
-            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
+            auth=access_token,
         )
 
     def fetch_clan_fireteam(
@@ -1056,7 +1058,7 @@ class RESTClient(interfaces.RESTInterface):
         return self._request(
             RequestMethod.GET,
             f"Fireteam/Clan/{group_id}/Summary/{fireteam_id}",
-            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
+            auth=access_token,
         )
 
     def fetch_my_clan_fireteams(
@@ -1075,7 +1077,7 @@ class RESTClient(interfaces.RESTInterface):
             RequestMethod.GET,
             f"Fireteam/Clan/{group_id}/My/{int(platform)}/{include_closed}/{page}",
             json=payload,
-            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
+            auth=access_token,
         )
 
     def fetch_private_clan_fireteams(
@@ -1084,7 +1086,7 @@ class RESTClient(interfaces.RESTInterface):
         return self._request(
             RequestMethod.GET,
             f"Fireteam/Clan/{group_id}/ActiveCount",
-            headers=_AUTH_HEADERS["Authorization"].format(access_token=access_token),
+            auth=access_token,
         )
 
     # * Not implemented yet.

@@ -37,6 +37,7 @@ import asyncio
 # in your terminal. export CLIENT_TOKEN='TOKEN'
 
 MID = 4611686018484639825
+logging.basicConfig(level=logging.DEBUG)
 _LOG = logging.getLogger("test_client")
 
 def build_client() -> aiobungie.Client:
@@ -237,6 +238,7 @@ async def main() -> None:
             continue
         coros.append(coro())
     _LOG.debug(await asyncio.gather(*coros))
+    await client.rest.close()
 
 
 if __name__ == "__main__":

@@ -14,5 +14,9 @@ from ._info import __email__ as __email__
 from ._info import __license__ as __license__
 from ._info import __url__ as __url__
 from ._info import __version__ as __version__
+from .crate.fireteams import FireteamActivity as FireteamActivity
+from .crate.fireteams import FireteamDate as FireteamDate
+from .crate.fireteams import FireteamLanguage as FireteamLanguage
+from .crate.fireteams import FireteamPlatform as FireteamPlatform
 
 __all__: Any

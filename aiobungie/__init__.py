@@ -107,4 +107,10 @@ from ._info import __license__
 from ._info import __url__
 from ._info import __version__
 
+# Fireteam enums.
+from .crate.fireteams import FireteamActivity
+from .crate.fireteams import FireteamDate
+from .crate.fireteams import FireteamLanguage
+from .crate.fireteams import FireteamPlatform
+
 __all__ = [mod for mod in dir() if not mod.startswith("_")]  # type: ignore

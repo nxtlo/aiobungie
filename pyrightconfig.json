@@ -1,5 +1,22 @@
 {
     "venvPath": ".",
     "venv": ".venv",
-    "reportUnboundVariable": "none"
+    "pythonVersion": "3.9",
+    "typeCheckingMode": "strict",
+    "reportUnboundVariable": "none",
+    "reportUnknownParameterType": "error",
+    "reportUnknownLambdaType": "warning",
+    "reportUnknownMemberType": "warning",
+    "reportUnknownArgumentType": "warning",
+    "reportUnknownVariableType": "warning",
+    "reportMissingModuleSource": "error",
+    "reportMissingParameterType": "error",
+    "reportMissingTypeArgument": "error",
+    "reportMissingTypeStubs": "error",
+    "reportGeneralTypeIssues": "information",
+    "reportPrivateUsage": "warning",
+    "reportIncompatibleMethodOverride": "none",
+    // This will always cause warnings above license.
+    "reportImportCycles": "warning",
+    "reportUnusedImport": "warning"
 }

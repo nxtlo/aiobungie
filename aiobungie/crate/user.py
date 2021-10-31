@@ -135,6 +135,9 @@ class PartialBungieUser:
     type: enums.MembershipType = attr.field(repr=True)
     """The user's membership type."""
 
+    types: typing.Sequence[enums.MembershipType] = attr.field(repr=False)
+    """An array of applicable membership types for this user."""
+
     crossave_override: enums.MembershipType = attr.field(repr=False)
     """The user's crossave override membership."""
 

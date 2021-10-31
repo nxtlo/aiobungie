@@ -76,13 +76,13 @@ class Friend:
     relationship: enums.Relationship = attr.field(repr=False)
     """The friend's relationship type."""
 
-    user: helpers.NoneOr[user_.User] = attr.field(repr=True)
+    user: helpers.NoneOr[user_.BungieUser] = attr.field(repr=True)
     """The friend's bungie user account. This field is optional and can be None in some states."""
 
     @property
     def unique_name(self) -> str:
         """The friend's global unique display name. This field could be None if the player hasn't logged in yet."""
-        return self.unique_name
+        return f"{self.name}#{self.code}"
 
     async def accept(self, access_token: str, /) -> None:
         """Accepts a friend request.

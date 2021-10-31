@@ -12,6 +12,14 @@ from .clans import ClanMember as ClanMember
 from .clans import GroupMember as GroupMember
 from .entity import Entity as Entity
 from .entity import InventoryEntity as InventoryEntity
+from .fireteams import AvalaibleFireteam as AvalaibleFireteam
+from .fireteams import Fireteam as Fireteam
+from .fireteams import FireteamActivity as FireteamActivity
+from .fireteams import FireteamDate as FireteamDate
+from .fireteams import FireteamLanguage as FireteamLanguage
+from .fireteams import FireteamMember as FireteamMember
+from .fireteams import FireteamPlatform as FireteamPlatform
+from .fireteams import FireteamUser as FireteamUser
 from .friends import Friend as Friend
 from .friends import FriendRequestView as FriendRequestView
 from .milestones import Milestone as Milestone

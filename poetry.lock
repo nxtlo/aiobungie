@@ -332,7 +332,7 @@ python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
 
 [[package]]
 name = "pdoc"
-version = "8.0.0"
+version = "8.0.1"
 description = "API Documentation for Python Projects"
 category = "dev"
 optional = false
@@ -515,7 +515,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "2118854b08601182e4d924d1bee283ed54628041427b9189929816243be146f3"
+content-hash = "2bc7967dbc4253b7e4879741770c02640605de6a9fbc2029f60d8d1112f074de"
 
 [metadata.files]
 aiohttp = [
@@ -929,7 +929,7 @@ pathspec = [
     {file = "pathspec-0.9.0.tar.gz", hash = "sha256:e564499435a2673d586f6b2130bb5b95f04a3ba06f81b8f895b651a3c76aabb1"},
 ]
 pdoc = [
-    {file = "pdoc-8.0.0-py3-none-any.whl", hash = "sha256:acd96792b03f1930db7af73bb144cc0f12d8cd10d0a9cc9c2d3083a096ea5831"},
+    {file = "pdoc-8.0.1-py3-none-any.whl", hash = "sha256:bc7c869b6bc91fbce03802963f2c5b932cae9f557a2098ae1d006ab8f4b04f21"},
 ]
 platformdirs = [
     {file = "platformdirs-2.4.0-py3-none-any.whl", hash = "sha256:8868bbe3c3c80d42f20156f22e7131d2fb321f5bc86a2a345375c6481a67021d"},

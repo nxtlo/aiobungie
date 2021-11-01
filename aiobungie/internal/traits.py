@@ -79,6 +79,7 @@ class RESTful(typing.Protocol):
         self,
         method: typing.Union[rest.RequestMethod, str],
         path: typedefs.StrOrURL,
+        auth: typing.Optional[str] = None,
         **kwargs: typing.Any
     ) -> typing.Any:
         """Raw http request given a valid bungie endpoint.
@@ -91,6 +92,8 @@ class RESTful(typing.Protocol):
             The bungie endpoint or path.
             A path must look something like this
             `Destiny2/3/Profile/46111239123/...`
+        auth : `typing.Optional[str]`
+            An optional bearer token for methods that requires OAuth2 Authorization header.
         **kwargs: `typing.Any`
             Any other key words to pass to the request.
 

@@ -102,6 +102,9 @@ class FireteamLanguage(str, enums.Enum):
     RUSSIAN = "ru"
     POLISH = "pl"
     KOREAN = "ko"
+    # ? China
+    ZH_CHT = "zh-cht"
+    ZH_CHS = "zh-chs"
 
     def __str__(self) -> str:
         return str(self.value)

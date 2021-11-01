@@ -367,8 +367,8 @@ class RESTClient(interfaces.RESTInterface):
 
                         await self._handle_err(response, data["ErrorStatus"])
 
-            except (RuntimeError, Exception):
-                raise
+            except RuntimeError:
+                continue
 
     async def __aenter__(self) -> RESTClient:
         return self
@@ -417,9 +417,10 @@ class RESTClient(interfaces.RESTInterface):
         self,
         method: typing.Union[RequestMethod, str],
         path: typedefs.StrOrURL,
+        auth: typing.Optional[str] = None,
         **kwargs: typing.Any,
     ) -> ResponseSig[typing.Any]:
-        return self._request(method, path, **kwargs)
+        return self._request(method, path, auth=auth, **kwargs)
 
     def fetch_user(self, id: int) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.

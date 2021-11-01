@@ -111,7 +111,7 @@ async def main(access_token: str) -> None:
                 print(k, v)
 
             # You can also send your own requests.
-            await rest.static_request("POST", "Need/OAuth2", headers={"Authorization": f"Bearer {access_token}"})
+            await rest.static_request("POST", "Need/OAuth2", headers={"A-HEADER": f"A-Value"}, auth=access_token)
             # Defined methods.
             await rest.send_friend_request(access_token, member_id=1234)
 

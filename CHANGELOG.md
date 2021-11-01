@@ -10,9 +10,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `__repr__` overloaded for `enums.Enum` which just returns `enums.Enum.__str__`.
 - `Profile.collect()` method which fetch and collect all characters at once.
 - Implemented `aiobungie.crate.fireteams` objects and its methods.
+- `RESTClient._request` method now takes and extra `auth` parameter for requests that requires `OAuth` header.
+- The base client now takes an extra `rest_client` parameter for a `RESTClient` instance provided by the user.
+This is optional and not required.
+- Chinese attributes to `fireteams.FireteamLanguage`
+- An API interface/abc and docs to the `factory.Factory` deserialazation factory class.
 - `_request` method now takes and extra `auth` parameter for requests that requires `OAuth` header.
 - The base client now takes an extra `rest_client` parameter for a `RESTClient` instance provided by the user.
 This is optional and not required.
+
 
 ### Changed
 - `RESTClient._request` now takes a string or `rest.RequestMethod` enum for the method.
@@ -20,6 +26,8 @@ This is optional and not required.
 - Simplify not found raised errors to only raise `error.NotFound` instead of other not found errors.
 - Export `enums.Enum` and `enums.IntEnum` to `enums.__all__`.
 - `Friend.user` was returning `User` and not `BungieUser`
+- `RESTClient` continues on `RuntimeError` errors instead of raising it.
+- `traits.RESTful.static_request` now takes auth parameter for OAuth2 methods as well.
 
 ### Removed
 - Not found errors removed and now only `error.NotFound` is raised instead.

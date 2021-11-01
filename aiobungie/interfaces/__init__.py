@@ -24,6 +24,7 @@
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = ("RESTInterface",)
+__all__: tuple[str, ...] = ("RESTInterface", "FactoryInterface")
 
+from .factory import FactoryInterface
 from .rest import RESTInterface

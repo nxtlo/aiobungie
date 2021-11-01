@@ -876,6 +876,7 @@ class Factory(interfaces.FactoryInterface):
             name = raw_name
 
         bungie_user: helpers.NoneOr[user.BungieUser] = None
+
         if raw_bungie_user := payload.get("bungieNetUser"):
             bungie_user = self.deserialize_bungie_user(raw_bungie_user)
 

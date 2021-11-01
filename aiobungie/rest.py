@@ -367,8 +367,8 @@ class RESTClient(interfaces.RESTInterface):
 
                         await self._handle_err(response, data["ErrorStatus"])
 
-            except RuntimeError:
-                continue
+            except (RuntimeError, Exception):
+                raise
 
     async def __aenter__(self) -> RESTClient:
         return self

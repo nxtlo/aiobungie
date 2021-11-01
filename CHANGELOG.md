@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 This is optional and not required.
 - Chinese attributes to `fireteams.FireteamLanguage`
 - An API interface/abc and docs to the `factory.Factory` deserialazation factory class.
+- `_request` method now takes and extra `auth` parameter for requests that requires `OAuth` header.
+- The base client now takes an extra `rest_client` parameter for a `RESTClient` instance provided by the user.
+This is optional and not required.
+
 
 ### Changed
 - `RESTClient._request` now takes a string or `rest.RequestMethod` enum for the method.

@@ -37,7 +37,6 @@ import asyncio
 # in your terminal. export CLIENT_TOKEN='TOKEN'
 
 MID = 4611686018484639825
-logging.basicConfig(level=logging.DEBUG)
 _LOG = logging.getLogger("test_client")
 
 def build_client() -> aiobungie.Client:
@@ -110,7 +109,12 @@ async def test_fetch_app() -> aiobungie.crate.Application:
 
 
 async def test_profile() -> aiobungie.crate.Profile:
-    pf = await client.fetch_profile(MID, aiobungie.MembershipType.STEAM)
+    pf = await client.fetch_profile(
+        MID,
+        aiobungie.MembershipType.STEAM,
+        aiobungie.ComponentType.PROFILE,
+        aiobungie.ComponentType.CHARACTERS
+    )
     warlock = await pf.fetch_warlock()
     titan = await pf.fetch_titan()
     hunter = await pf.fetch_hunter()
@@ -127,7 +131,7 @@ async def test_player() -> typing.Sequence[
     typing.Optional[aiobungie.crate.DestinyUser]
 ]:
     p = await client.fetch_player("Datto#6446")
-    profile = await p[0].fetch_self_profile()
+    profile = await p[0].fetch_self_profile(aiobungie.ComponentType.PROFILE)
     print(repr(profile))
     print(repr(await profile.fetch_titan()))
     return p
@@ -190,7 +194,7 @@ async def test_linked_profiles() -> None:
     try:
         async for profile in obj:
             print(repr(profile))
-            transform_profile = await profile.fetch_self_profile()
+            transform_profile = await profile.fetch_self_profile(aiobungie.ComponentType.PROFILE)
             print(repr(transform_profile))
     except RuntimeError:
         pass
@@ -209,7 +213,7 @@ async def test_public_milestones_content() -> aiobungie.crate.Milestone:
 async def test_static_request() -> None:
     return await client.rest.static_request(
         "GET",
-        f"Destiny2/3/Profile/{MID}/?components={aiobungie.Component.EQUIPED_ITEMS.value}",
+        f"Destiny2/3/Profile/{MID}/?components={aiobungie.ComponentType.EQUIPED_ITEMS.value}",
     )
 
 async def test_fetch_fireteam():

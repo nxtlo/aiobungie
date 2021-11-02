@@ -48,6 +48,7 @@ if typing.TYPE_CHECKING:
 
     from aiobungie.internal import helpers
 
+
 @typing.final
 class FireteamPlatform(enums.IntEnum):
     """An enum for fireteam related to bungie fireteams.
@@ -59,6 +60,7 @@ class FireteamPlatform(enums.IntEnum):
     XBOX_LIVE = 2
     STEAM = 4
     STADIA = 5
+
 
 @typing.final
 class FireteamActivity(enums.IntEnum):
@@ -87,6 +89,7 @@ class FireteamActivity(enums.IntEnum):
     S15_ASTRAL_ALIGNMENT = 31
     S15_SHATTERED_RELAM = 32
 
+
 @typing.final
 class FireteamLanguage(str, enums.Enum):
     """An enum for fireteams languages filters."""
@@ -108,6 +111,7 @@ class FireteamLanguage(str, enums.Enum):
 
     def __str__(self) -> str:
         return str(self.value)
+
 
 @typing.final
 class FireteamDate(enums.IntEnum):

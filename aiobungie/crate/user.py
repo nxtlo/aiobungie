@@ -274,15 +274,22 @@ class DestinyUser(UserLike):
     crossave_override: typing.Union[enums.MembershipType, int] = attr.field(repr=False)
     """The member's corssave override membership type."""
 
-    async def fetch_self_profile(self) -> profile.Profile:
+    async def fetch_self_profile(
+        self, *components: enums.ComponentType
+    ) -> profile.Profile:
         """Fetch the player's profile.
+
+        Parameters
+        ----------
+        *components : `aiobungie.ComponentType`
+            Multiple arguments of profile components to collect and return.
 
         Returns
         -------
         `aiobungie.crate.Profile`
             The profile of this membership.
         """
-        profile_ = await self.net.request.fetch_profile(self.id, self.type)
+        profile_ = await self.net.request.fetch_profile(self.id, self.type, *components)
         assert isinstance(profile_, profile.Profile)
         return profile_
 

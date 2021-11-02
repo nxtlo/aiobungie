@@ -65,6 +65,9 @@ __all__ = (
     "FireteamMember",
     "FireteamUser",
     "AvalaibleFireteam",
+    "Component",
+    "ComponentFields",
+    "ComponentPrivacy",
 )
 
 from .activity import Activity
@@ -79,6 +82,9 @@ from .clans import ClanBanner
 from .clans import ClanFeatures
 from .clans import ClanMember
 from .clans import GroupMember
+from .components import Component
+from .components import ComponentFields
+from .components import ComponentPrivacy
 from .entity import Entity
 from .entity import InventoryEntity
 from .fireteams import AvalaibleFireteam

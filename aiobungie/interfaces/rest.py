@@ -178,7 +178,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         self,
         memberid: int,
         type: helpers.IntAnd[enums.MembershipType],
-        /,
+        *components: enums.ComponentType,
     ) -> ResponseSig[helpers.JsonObject]:
         """
         Fetche a bungie profile.
@@ -189,6 +189,8 @@ class RESTInterface(traits.RESTful, abc.ABC):
             The member's id.
         type: `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`
             A valid membership type.
+        *components : `tuple[aiobungie.ComponentType]`
+            Multiple arguments of profile components to collect and return.
 
         Returns
         --------

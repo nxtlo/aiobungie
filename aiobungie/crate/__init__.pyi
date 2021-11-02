@@ -10,6 +10,9 @@ from .clans import ClanBanner as ClanBanner
 from .clans import ClanFeatures as ClanFeatures
 from .clans import ClanMember as ClanMember
 from .clans import GroupMember as GroupMember
+from .components import Component as Component
+from .components import ComponentFields as ComponentFields
+from .components import ComponentPrivacy as ComponentPrivacy
 from .entity import Entity as Entity
 from .entity import InventoryEntity as InventoryEntity
 from .fireteams import AvalaibleFireteam as AvalaibleFireteam

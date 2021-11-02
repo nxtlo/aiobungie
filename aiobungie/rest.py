@@ -75,7 +75,7 @@ _AUTH_HEADER: typing.Final[str] = sys.intern("Authorization")
 _USER_AGENT_HEADERS: typing.Final[str] = sys.intern("User-Agent")
 _USER_AGENT: typing.Final[str] = f"AiobungieClient/{info.__version__}"
 f" ({info.__url__}) {platform.python_implementation()}/{platform.python_version()}"
-f"Aiohttp/{aiohttp.HttpVersion11}"
+f"Aiohttp/{aiohttp.HttpVersion11}"  # type: ignore[UnknownMemberType]
 
 
 async def handle_errors(
@@ -202,8 +202,9 @@ class _Session:
         await self.close()
 
     async def close(self) -> None:
-        # This currently set like this due to a bug.
-        await self.client_session.close()
+        # Close the TCP connector.
+        if self.client_session.connector:
+            await self.client_session.connector.close()
         await asyncio.sleep(0.025)
 
 
@@ -489,7 +490,7 @@ class RESTClient(interfaces.RESTInterface):
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
             RequestMethod.GET,
-            f"Destiny2/{int(type)}/Profile/{memberid}/?components={int(enums.Component.CHARACTERS)}",
+            f"Destiny2/{int(type)}/Profile/{memberid}/?components={int(enums.ComponentType.CHARACTERS)}",
         )
 
     def fetch_activity(
@@ -516,16 +517,28 @@ class RESTClient(interfaces.RESTInterface):
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
             RequestMethod.GET,
-            f"Destiny2/Vendors/?components={int(enums.Component.VENDOR_SALES)}",
+            f"Destiny2/Vendors/?components={int(enums.ComponentType.VENDOR_SALES)}",
         )
 
     def fetch_profile(
-        self, memberid: int, type: helpers.IntAnd[enums.MembershipType], /
+        self,
+        memberid: int,
+        type: helpers.IntAnd[enums.MembershipType],
+        *components: enums.ComponentType,
     ) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+
+        if len(components) <= 0:
+            raise ValueError("No profile components passed.", components)
+
+        # Need to get the int overload of the components to separate them.
+        if len(components) > 1:
+            these = helpers.collect(*[int(k) for k in components])  # type: ignore[call-overload]
+        else:
+            these = helpers.collect(int(*components))
         return self._request(
             RequestMethod.GET,
-            f"Destiny2/{int(type)}/Profile/{int(memberid)}/?components={int(enums.Component.PROFILE)}",
+            f"Destiny2/{int(type)}/Profile/{int(memberid)}/?components={these}",
         )
 
     def fetch_entity(self, type: str, hash: int) -> ResponseSig[helpers.JsonObject]:

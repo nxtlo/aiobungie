@@ -34,6 +34,7 @@ __all__: tuple[str, ...] = (
     "UndefinedType",
     "Unknown",
     "just",
+    "collect",
     "NoneOr",
     "get_or_make_loop",
     "AsyncIterator",
@@ -75,12 +76,28 @@ EnumSig = typing.TypeVar(
 IntAnd = typing.Union[int, EnumSig]
 """A type hint for parameters that may receives an enum or an int."""
 
+ConsumerSigT = typing.TypeVar("ConsumerSigT", bound=typing.Callable[..., typing.Any])
+
 
 def just(lst: list[dict[str, typing.Any]], lookup: str) -> list[typing.Any]:
     """A helper function that takes a list of dicts and return a list of
     all keys found inside the dict
     """
     return list(map(lambda dct: dct[lookup], lst))
+
+
+def collect(
+    *args: typing.Any, consume: ConsumerSigT = str, separator: str = ", "
+) -> typing.Union[ConsumerSigT, str]:
+    """Consume passed argumnts and return them joining ', ' for each argument.
+
+    If only one argument was passed it will just return that argumnt.
+    """
+    if len(args) > 1:
+        if consume:
+            return separator.join(consume(arg) for arg in args)
+        return separator.join(arg for arg in args)
+    return args[0]
 
 
 def deprecated(func: typing.Callable[..., typing.Any]) -> typing.Callable[..., None]:

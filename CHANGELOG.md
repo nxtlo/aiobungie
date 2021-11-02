@@ -18,7 +18,7 @@ This is optional and not required.
 - `_request` method now takes and extra `auth` parameter for requests that requires `OAuth` header.
 - The base client now takes an extra `rest_client` parameter for a `RESTClient` instance provided by the user.
 This is optional and not required.
-
+- A new helper function `helpers.collect()` which collect multiple arguments, join them and separate them.
 
 ### Changed
 - `RESTClient._request` now takes a string or `rest.RequestMethod` enum for the method.
@@ -28,6 +28,9 @@ This is optional and not required.
 - `Friend.user` was returning `User` and not `BungieUser`
 - `RESTClient` continues on `RuntimeError` errors instead of raising it.
 - `traits.RESTful.static_request` now takes auth parameter for OAuth2 methods as well.
+- `fetch_profile` and all alternative methods now takes `*components` parameter which accept multiple components to be passed and retuned at once.
+- `aiobungie.Component` enum name renamed to `ComponentType`.
+- `fireteams` enums are finalized with `typing.final`
 
 ### Removed
 - Not found errors removed and now only `error.NotFound` is raised instead.
@@ -41,6 +44,7 @@ This is optional and not required.
 - The rest client was showing `unclosed client_session` erros and the end of the request.
 - `Friend.unique_name` wan't returning the actual unique name.
 - `Factory.deserialize_friends` wasn getting the wrong payload names.
+- Closing the rest client connector instead of the session.
 
 ## [0.2.5b11](https://github.com/nxtlo/aiobungie/compare/0.2.5b10...0.2.5b11) 2021-10-21
 

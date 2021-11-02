@@ -301,7 +301,7 @@ class Client(traits.ClientBase):
         self,
         memberid: int,
         type: helpers.IntAnd[enums.MembershipType],
-        /,
+        *components: enums.ComponentType,
     ) -> profile.Profile:
         """
         Fetche a bungie profile.
@@ -314,6 +314,8 @@ class Client(traits.ClientBase):
             The member's id.
         type: `aiobungie.MembershipType`
             A valid membership type.
+        *components : `tuple[aiobungie.ComponentType]`
+            Multiple arguments of profile components to collect and return.
 
         Returns
         --------
@@ -325,7 +327,7 @@ class Client(traits.ClientBase):
         `aiobungie.MembershipTypeError`
             The provided membership type was invalid.
         """
-        data = await self.rest.fetch_profile(memberid, type)
+        data = await self.rest.fetch_profile(memberid, type, *components)
         assert isinstance(data, dict)
         return self.serialize.deserialize_profile(data)
 

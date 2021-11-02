@@ -31,6 +31,7 @@ __all__: tuple[str, ...] = (
     "UndefinedType",
     "Unknown",
     "just",
+    "collect",
     "NoneOr",
     "get_or_make_loop",
     "AsyncIterator",
@@ -54,6 +55,7 @@ from typing import Union as __Union
 from aiobungie.internal import enums as __enums
 
 T = __TypeVar("T", covariant=True)
+ConsumerSigT = __TypeVar("ConsumerSigT", bound=__Callable[..., __Any])
 
 JsonObject = __Dict[str, __Any]
 JsonArray = __List[__Any]
@@ -69,6 +71,9 @@ IntAnd = __Union[int, EnumSig]
 def just(lst: list[dict[str, __Any]], lookup: str) -> list[__Any]: ...
 def deprecated(func: __Callable[..., __Any]) -> __Callable[..., None]: ...
 def get_or_make_loop() -> asyncio.AbstractEventLoop: ...
+def collect(
+    *args: __Any, consume: ConsumerSigT = ..., separator: str = ...
+) -> __Union[ConsumerSigT, str]: ...
 
 class AsyncIterator(__Generic[T]):
     def __init__(self, sequence: __Iterable[T]) -> None: ...

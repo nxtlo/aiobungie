@@ -37,7 +37,7 @@ __all__: tuple[str, ...] = (
     "Raid",
     "Dungeon",
     "Gender",
-    "Component",
+    "ComponentType",
     "Planet",
     "Stat",
     "WeaponType",
@@ -231,8 +231,8 @@ class GameMode(IntEnum):
 
 
 @typing.final
-class Component(IntEnum):
-    """An Enum for Destiny 2 Components."""
+class ComponentType(IntEnum):
+    """An Enum for Destiny 2 profile Components."""
 
     NONE = 0
     PROFILE = 100

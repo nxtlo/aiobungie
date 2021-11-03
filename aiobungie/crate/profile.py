@@ -88,7 +88,7 @@ class ProfileComponent(abc.ABC):
         """The profile's id."""
 
     async def _await_all_chars(self) -> typing.Sequence[character.Character]:
-        tasks: list[asyncio.Future[typing.Any]] = []
+        tasks: list[asyncio.Future[character.Character]] = []
         for char in (self.fetch_hunter, self.fetch_titan, self.fetch_warlock):
             tasks.append(asyncio.ensure_future(char()))
         return await asyncio.gather(*tasks)

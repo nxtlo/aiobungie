@@ -189,7 +189,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
             The member's id.
         type: `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`
             A valid membership type.
-        *components : `tuple[aiobungie.ComponentType]`
+        *components : `aiobungie.ComponentType`
             Multiple arguments of profile components to collect and return.
 
         Returns
@@ -240,16 +240,21 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
     @abc.abstractmethod
     def fetch_character(
-        self, memberid: int, type: helpers.IntAnd[enums.MembershipType], /
+        self,
+        member_id: int,
+        membership_type: helpers.IntAnd[enums.MembershipType],
+        character_id: int,
     ) -> ResponseSig[helpers.JsonObject]:
-        """Fetch a Destiny 2 player's characters.
+        """Fetch a Destiny 2 player's character.
 
         Parameters
         ----------
-        memberid: `builtins.int`
+        member_id: `builtins.int`
             A valid bungie member id.
-        type: `aiobungie.internal.helpers.IntAnd[aiobungie.internal.enums.MembershipType]`
+        membership_type: `aiobungie.internal.helpers.IntAnd[aiobungie.internal.enums.MembershipType]`
             The member's membership type.
+        character_id : `int`
+            The character id to return.
 
         Returns
         -------

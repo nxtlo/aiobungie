@@ -36,6 +36,7 @@ import asyncio
 # NOTE: If you're on unix based system make sure to run this
 # in your terminal. export CLIENT_TOKEN='TOKEN'
 
+CID = 2305843009444904605
 MID = 4611686018484639825
 _LOG = logging.getLogger("test_client")
 
@@ -107,41 +108,47 @@ async def test_fetch_app() -> aiobungie.crate.Application:
     print(fetched_user)
     return a
 
+async def test_player() -> typing.Sequence[typing.Optional[aiobungie.crate.DestinyUser]]:
+    p = await client.fetch_player("Datto#6446")
+    profile = await p[0].fetch_self_profile(aiobungie.ComponentType.PROFILE)
+    print(repr(profile))
+    if profile.profiles:
+        print(repr(await profile.profiles.fetch_titan()))
+    return p
 
-async def test_profile() -> aiobungie.crate.Profile:
+async def test_char() -> aiobungie.crate.Character:
+    c = await client.fetch_character(
+        MID, aiobungie.MembershipType.STEAM, CID
+    )
+    _LOG.debug(repr(c))
+    return c
+
+async def test_profile() -> aiobungie.crate.Component:
     pf = await client.fetch_profile(
         MID,
         aiobungie.MembershipType.STEAM,
         aiobungie.ComponentType.PROFILE,
         aiobungie.ComponentType.CHARACTERS
     )
-    warlock = await pf.fetch_warlock()
-    titan = await pf.fetch_titan()
-    hunter = await pf.fetch_hunter()
-    try:
-        for char in await pf.collect():
-            print(char.light)
-    except RuntimeError:
-        pass
-    print(warlock, titan, hunter)
+
+    if (profile := pf.profiles):
+        _LOG.debug(repr(profile))
+        try:
+            for pfile_char in await profile.collect():
+                _LOG.debug(repr(pfile_char))
+        except RuntimeError:
+            pass
+    else:
+        _LOG.warn("Profile -> ", None)
+
+    if (characters := pf.characters):
+        for _, character in characters.items():
+            _LOG.debug(character.class_type, character.emblem, character.light)
+            if profile and character.id == profile.warlock_id:
+                _LOG.debug(True)
+    else:
+        _LOG.warn("Characters -> ", None)
     return pf
-
-
-async def test_player() -> typing.Sequence[
-    typing.Optional[aiobungie.crate.DestinyUser]
-]:
-    p = await client.fetch_player("Datto#6446")
-    profile = await p[0].fetch_self_profile(aiobungie.ComponentType.PROFILE)
-    print(repr(profile))
-    print(repr(await profile.fetch_titan()))
-    return p
-
-
-async def test_char() -> aiobungie.crate.Character:
-    c = await client.fetch_character(
-        MID, aiobungie.MembershipType.STEAM, aiobungie.Class.WARLOCK
-    )
-    return c
 
 
 async def test_membership_types_from_id() -> aiobungie.crate.User:
@@ -213,7 +220,7 @@ async def test_public_milestones_content() -> aiobungie.crate.Milestone:
 async def test_static_request() -> None:
     return await client.rest.static_request(
         "GET",
-        f"Destiny2/3/Profile/{MID}/?components={aiobungie.ComponentType.EQUIPED_ITEMS.value}",
+        f"Destiny2/3/Profile/{MID}/?components={aiobungie.ComponentType.CHARACTER_EQUIPMENT.value}",
     )
 
 async def test_fetch_fireteam():
@@ -240,7 +247,11 @@ async def main() -> None:
     ):
         if n == "main" or not n.startswith("test_"):
             continue
-        coros.append(coro())
+        if len(sys.argv) > 1 and sys.argv[0] == n:
+            print(sys.argv[0])
+            print(await coro())
+        else:
+            coros.append(coro())
     _LOG.debug(await asyncio.gather(*coros))
     await client.rest.close()
 

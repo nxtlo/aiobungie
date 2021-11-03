@@ -46,8 +46,9 @@ log: typing.Final[logging.Logger] = logging.getLogger(__name__)
 
 
 class ProfileComponent(abc.ABC):
-    """An interface that include all bungie profile components.
-    Some fields may or may not be available here.
+    """An interface that include fields found in a Bungie profile Component.
+
+    Fields here available when passing `aiobungie.ComponentType.PROFILE` to `aiobungie.Client.fetch_profile`
     """
 
     __slots__: typing.Sequence[str] = ()
@@ -87,6 +88,21 @@ class ProfileComponent(abc.ABC):
     def id(self) -> int:
         """The profile's id."""
 
+    @property
+    def titan_id(self) -> int:
+        """The titan id of the profile player."""
+        return int(self.character_ids[0])
+
+    @property
+    def hunter_id(self) -> int:
+        """The huter id of the profile player."""
+        return int(self.character_ids[1])
+
+    @property
+    def warlock_id(self) -> int:
+        """The warlock id of the profile player."""
+        return int(self.character_ids[2])
+
     async def _fetch_all_chars(self) -> typing.Sequence[character.Character]:
         return await asyncio.gather(
             *[self.fetch_warlock(), self.fetch_hunter(), self.fetch_warlock()]
@@ -109,10 +125,16 @@ class ProfileComponent(abc.ABC):
         """
         return await self._fetch_all_chars()
 
+    # NOTE: A bug probably exists here. Since not all players have A warlock, hunter or a titan.
+    # The IDs in the sequence are not always in order.
+    # Which means we can't gurantte if self.fetch_titan() returns a titan or a hunter or a warlock?
+    # A fix for this should be simple. Make both ids and fetch methods return An optional of the type
+    # otherwise `None` if The result wasn't found or raised an IndexError.
+
     async def fetch_titan(self) -> character.Character:
         """Returns the titan character of the profile owner."""
         char = await self.net.request.fetch_character(
-            int(self.id), self.type, enums.Class.TITAN
+            int(self.id), self.type, self.titan_id
         )
         assert isinstance(char, character.Character)
         return char
@@ -120,7 +142,7 @@ class ProfileComponent(abc.ABC):
     async def fetch_hunter(self) -> character.Character:
         """Returns the hunter character of the profile owner."""
         char = await self.net.request.fetch_character(
-            self.id, self.type, enums.Class.HUNTER
+            self.id, self.type, self.hunter_id
         )
         assert isinstance(char, character.Character)
         return char
@@ -128,7 +150,7 @@ class ProfileComponent(abc.ABC):
     async def fetch_warlock(self) -> character.Character:
         """Returns the Warlock character of the profile owner."""
         char = await self.net.request.fetch_character(
-            self.id, self.type, enums.Class.WARLOCK
+            self.id, self.type, self.warlock_id
         )
         assert isinstance(char, character.Character)
         return char
@@ -143,12 +165,14 @@ class LinkedProfile:
     Example
     -------
     ```py
-    profiles = await client.fetch_linked_profiles(..., ...)
+    linked_profiles = await client.fetch_linked_profiles(..., ...)
     try:
         while True:
-            async for profile in profiles:
+            async for profile in linked_profiles:
                 real_profile = await profile.fetch_self_profile()
-                print(repr(await real_profile.warlock()))
+                    # Check if profiles Component is not None
+                    if real_profile.profiles is not None:
+                        print(repr(await real_profile.fetch_warlock()))
     except StopIteration:
         pass
     ```
@@ -177,55 +201,33 @@ class LinkedProfile:
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
 class Profile(ProfileComponent):
-    """Represents a Bungie member Profile.
+    """Represents a Bungie member profile component.
 
-    Bungie profiles requires components.
-    But its kinda boring to pass multiple components to a parameter.
-    So. The `.Profile` crate will include all Bungie components.
-    to be accessiable as a crate.
-
-    How?.
-    For an example: to access the `Characters` component you'll need to pass `?component=200`.
-    But here you can just return the character itself from the profile
-    using `await .Profile.titan()` and the other character methods
-    which returns a `aiobungie.crate.Character` crate.
-    crates are basically classes/objects.
-
-    Example
-    -------
-    ```py
-    client = aiobungie.Client(...)
-    profile = await client.fetch_profile("Fate")
-
-    # access the character component and get my warlock.
-    warlock = await profile.fetch_warlock()
-
-    assert warlock.light == 1320
-    ```
+    This is only a `PROFILE` component and not the profile itself. See `aiobungie.crate.Component` for other components.
     """
 
     id: int = attr.field(repr=True, hash=True, eq=False)
     """Profile's id"""
 
-    net: traits.Netrunner = attr.field(repr=False, hash=False, eq=False)
+    net: traits.Netrunner = attr.field(repr=False, eq=False)
     """A network state used for making external requests."""
 
-    name: str = attr.field(repr=True, hash=False, eq=False)
+    name: str = attr.field(repr=True, eq=False)
     """Profile's name."""
 
-    type: enums.MembershipType = attr.field(repr=True, hash=False, eq=False)
+    type: enums.MembershipType = attr.field(repr=True, eq=False)
     """Profile's type."""
 
-    is_public: bool = attr.field(repr=True, hash=False, eq=False)
+    is_public: bool = attr.field(repr=True, eq=False)
     """Profile's privacy status."""
 
-    last_played: datetime.datetime = attr.field(repr=True, hash=False, eq=False)
+    last_played: datetime.datetime = attr.field(repr=False, eq=False)
     """Profile's last played Destiny 2 played date."""
 
-    character_ids: typing.List[int] = attr.field(repr=False, hash=False, eq=False)
+    character_ids: typing.List[int] = attr.field(repr=False, eq=False)
     """A list of the profile's character ids."""
 
-    power_cap: int = attr.field(repr=False, hash=False, eq=False)
+    power_cap: int = attr.field(repr=False, eq=False)
     """The profile's current seaspn power cap."""
 
     def __str__(self) -> str:
@@ -233,18 +235,3 @@ class Profile(ProfileComponent):
 
     def __int__(self) -> int:
         return int(self.id)
-
-    @property
-    def titan_id(self) -> int:
-        """The titan id of the profile player."""
-        return int(self.character_ids[0])
-
-    @property
-    def hunter_id(self) -> int:
-        """The huter id of the profile player."""
-        return int(self.character_ids[1])
-
-    @property
-    def warlock_id(self) -> int:
-        """The warlock id of the profile player."""
-        return int(self.character_ids[2])

@@ -25,7 +25,6 @@ from __future__ import annotations
 
 __all__ = ("Factory",)
 
-import logging
 import typing
 
 from aiobungie import error
@@ -34,6 +33,7 @@ from aiobungie.crate import activity
 from aiobungie.crate import application as app
 from aiobungie.crate import character
 from aiobungie.crate import clans
+from aiobungie.crate import components
 from aiobungie.crate import entity
 from aiobungie.crate import fireteams
 from aiobungie.crate import friends
@@ -49,8 +49,6 @@ if typing.TYPE_CHECKING:
     import datetime
 
     from aiobungie.internal import traits
-
-_LOG: typing.Final[logging.Logger] = logging.getLogger(__name__)
 
 
 class Factory(interfaces.FactoryInterface):
@@ -572,30 +570,8 @@ class Factory(interfaces.FactoryInterface):
             scope=payload.get("scope", helpers.Undefined),
         )
 
-    def deserialize_character(
-        self, payload: helpers.JsonObject, *, chartype: enums.Class
-    ) -> character.Character:
-
-        try:
-            payload = [c for c in payload["characters"]["data"].values()]  # type: ignore
-        except TypeError:
-            raise error.CharacterError(
-                "One of these caused this error, "
-                "The membership type is invalid, "
-                "the character's id or the member's id are wrong "
-                "Please recheck those and retry again."
-            ) from None
-
-        try:
-            payload = payload[int(chartype)]  # type: ignore
-        except IndexError:
-            _LOG.warning(
-                f" Player doesn't have have a {str(chartype)} character. Will return the first character."
-            )
-            payload = payload[0]  # type: ignore
-
+    def _set_character_attrs(self, payload: helpers.JsonObject) -> character.Character:
         total_time = time.format_played(int(payload["minutesPlayedTotal"]), suffix=True)
-
         return character.Character(
             net=self._net,
             id=int(payload["characterId"]),
@@ -612,12 +588,23 @@ class Factory(interfaces.FactoryInterface):
             level=payload["baseCharacterLevel"],
             title_hash=payload.get("titleRecordHash", None),
             light=payload["light"],
-            stats=payload["stats"],
+            stats={enums.Stat(int(k)): v for k, v in payload["stats"].items()},
         )
 
-    def deserialize_profile(self, payload: helpers.JsonObject, /) -> profile.Profile:
+    def deserialize_character(
+        self, payload: helpers.JsonObject
+    ) -> typing.Optional[character.Character]:
+        if (raw_character := payload.get("character")) is None:
+            return None
+        return self._set_character_attrs(raw_character["data"])
 
-        payload = payload["profile"]["data"]
+    def deserialize_profile(
+        self, payload: helpers.JsonObject, /
+    ) -> typing.Optional[profile.Profile]:
+        if (raw_profile := payload.get("data")) is None:
+            return None
+
+        payload = raw_profile
         id = int(payload["userInfo"]["membershipId"])
         name = payload["userInfo"]["displayName"]
         is_public = payload["userInfo"]["isPublic"]
@@ -635,6 +622,26 @@ class Factory(interfaces.FactoryInterface):
             character_ids=character_ids,
             power_cap=power_cap,
             net=self._net,
+        )
+
+    def deserialize_components(
+        self, payload: helpers.JsonObject
+    ) -> components.Component:
+        # We make components None here depends on returned components to save some memory.
+        characters: typing.Optional[typing.Mapping[int, character.Character]] = None
+        profile_: typing.Optional[profile.Profile] = None
+
+        if raw_characters := payload.get("characters"):
+            characters = {
+                int(char_id): self._set_character_attrs(char)
+                for char_id, char in raw_characters["data"].items()
+            }
+
+        if raw_profile := payload.get("profile"):
+            profile_ = self.deserialize_profile(raw_profile)
+
+        return components.Component(
+            net=self._net, profiles=profile_, characters=characters
         )
 
     def deserialize_inventory_entity(
@@ -741,6 +748,7 @@ class Factory(interfaces.FactoryInterface):
             lore_hash=payload.get("loreHash", None),
         )
 
+    # TODO: Re-implement this.
     def deserialize_activity(
         self, payload: helpers.JsonObject, /, *, limit: typing.Optional[int] = 1
     ) -> activity.Activity:

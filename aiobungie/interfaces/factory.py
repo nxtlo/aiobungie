@@ -33,13 +33,13 @@ if typing.TYPE_CHECKING:
     from aiobungie.crate import application
     from aiobungie.crate import character
     from aiobungie.crate import clans
+    from aiobungie.crate import components
     from aiobungie.crate import entity
     from aiobungie.crate import fireteams
     from aiobungie.crate import friends
     from aiobungie.crate import milestones
     from aiobungie.crate import profile
     from aiobungie.crate import user
-    from aiobungie.internal import enums
     from aiobungie.internal import helpers
     from aiobungie.internal import traits
 
@@ -392,8 +392,8 @@ class FactoryInterface(abc.ABC):
     # Characters.
 
     def deserialize_character(
-        self, payload: helpers.JsonObject, *, chartype: enums.Class
-    ) -> character.Character:
+        self, payload: helpers.JsonObject
+    ) -> typing.Optional[character.Character]:
         """Deserialize a JSON payload of Destiny 2 character information.
 
         Parameters
@@ -401,23 +401,17 @@ class FactoryInterface(abc.ABC):
         payload : `aiobungie.internal.helpers.JsonObject`
             The JSON payload.
 
-        TODO: make this not position arg?
-
-        Other Parameters
-        ----------------
-        chartype : `aiobungie.Class`
-            The character to deserialize and return.
-            This parameter is not optional and must be passed to the client.
-
         Returns
         -------
-        `aiobungie.crate.character`
-            A character object of the deserialized payload.
+        `typing.Optional[aiobungie.crate.Character]`
+            A character object of the deserialized payload. If the character wasn't found it will return `None`
         """
 
     # Profiles.
 
-    def deserialize_profile(self, payload: helpers.JsonObject, /) -> profile.Profile:
+    def deserialize_profile(
+        self, payload: helpers.JsonObject, /
+    ) -> typing.Optional[profile.Profile]:
         """Deserialize a JSON payload of Bungie.net profile information.
 
         Parameters
@@ -445,6 +439,25 @@ class FactoryInterface(abc.ABC):
         -------
         `aiobungie.crate.LinkedProfile`
             A hard linked profile object of the deserialized payload.
+        """
+
+    # Components
+
+    def deserialize_components(
+        self, payload: helpers.JsonObject
+    ) -> components.Component:
+        """Deserialize a JSON payload of Bungie.net profile components information.
+
+        Parameters
+        ----------
+        payload : `aiobungie.internal.helpers.JsonObject`
+            The JSON payload.
+
+        Returns
+        -------
+        `aiobungie.crate.Component`
+            A component implementation that includes all other components
+            of the deserialized payload.
         """
 
     # Inventory entities and Definitions.

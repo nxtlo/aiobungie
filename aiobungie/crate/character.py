@@ -75,8 +75,8 @@ class CharacterComponent(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def stats(self) -> typing.Mapping[int, int]:
-        """The character's stats."""
+    def stats(self) -> typing.Mapping[enums.Stat, int]:
+        """A mapping of the character stats and its level."""
 
     @property
     @abc.abstractmethod
@@ -180,8 +180,8 @@ class Character(CharacterComponent):
     level: int = attr.field(repr=False, hash=False)
     """Character's base level."""
 
-    stats: typing.Mapping[int, int] = attr.field(repr=False, hash=False)
-    """Character stats."""
+    stats: typing.Mapping[enums.Stat, int] = attr.field(repr=False, hash=False)
+    """A mapping of the character stats and its level."""
 
     async def transfer_item(
         self,

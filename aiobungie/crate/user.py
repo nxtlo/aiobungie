@@ -39,7 +39,7 @@ import typing
 
 import attr
 
-from aiobungie.crate import profile
+from aiobungie.crate import components as components_
 from aiobungie.internal import assets
 from aiobungie.internal import enums
 
@@ -276,21 +276,23 @@ class DestinyUser(UserLike):
 
     async def fetch_self_profile(
         self, *components: enums.ComponentType
-    ) -> profile.Profile:
-        """Fetch the player's profile.
+    ) -> components_.Component:
+        """Fetche this user's profile.
 
         Parameters
         ----------
         *components : `aiobungie.ComponentType`
             Multiple arguments of profile components to collect and return.
+            This either can be arguments of integers or `aiobungie.ComponentType`.
 
         Returns
-        -------
-        `aiobungie.crate.Profile`
-            The profile of this membership.
+        --------
+        `aiobungie.crate.Component`
+            A Destiny 2 player profile with its components.
+            Only passed components will be available if they exists. Otherwise they will be `None`
         """
         profile_ = await self.net.request.fetch_profile(self.id, self.type, *components)
-        assert isinstance(profile_, profile.Profile)
+        assert isinstance(profile_, components_.Component)
         return profile_
 
     @property

@@ -40,6 +40,7 @@ from urllib import parse
 
 import aiohttp
 import attr
+import yarl
 
 from aiobungie import _info as info
 from aiobungie import error
@@ -131,7 +132,9 @@ async def handle_errors(
         # Any other messages.
         else:
             return error.InternalServerError(
-                message=str(msg), long_message=from_json.get("Message", "")
+                message=str(msg),
+                long_message=from_json.get("Message", ""),
+                url=str(response.real_url),
             )
     # Not 5xx.
     else:
@@ -290,6 +293,9 @@ class RESTClient(interfaces.RESTInterface):
         type: typing.Literal["json", "read"] = "json",
         **kwargs: typing.Any,
     ) -> typing.Any:
+
+        if isinstance(route, yarl.URL):
+            route = yarl.URL(route)
 
         retries: int = 0
         if self._token is not None:
@@ -485,12 +491,15 @@ class RESTClient(interfaces.RESTInterface):
         return self._request(RequestMethod.GET, f"App/Application/{appid}")
 
     def fetch_character(
-        self, memberid: int, type: helpers.IntAnd[enums.MembershipType], /
+        self,
+        member_id: int,
+        membership_type: helpers.IntAnd[enums.MembershipType],
+        character_id: int,
     ) -> ResponseSig[helpers.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
             RequestMethod.GET,
-            f"Destiny2/{int(type)}/Profile/{memberid}/?components={int(enums.ComponentType.CHARACTERS)}",
+            f"Destiny2/{int(membership_type)}/Profile/{member_id}/Character/{character_id}/?components={int(enums.ComponentType.CHARACTERS)}",  # noqa: E501
         )
 
     def fetch_activity(

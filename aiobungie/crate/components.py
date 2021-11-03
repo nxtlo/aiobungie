@@ -69,16 +69,19 @@ class Component:
     net: traits.Netrunner = attr.field(repr=False)
     """A network state used for making external requests."""
 
-    get_profile: typing.Optional[profile.Profile] = attr.field()
+    profiles: typing.Optional[profile.Profile] = attr.field()
     """Returns the profile component.
 
     This will be available when `aiobungie.ComponentType.PROFILE` is passed to the request.
+    otherwise will be `None`.
     """
 
-    get_characters: typing.Optional[typing.Sequence[character.Character]] = attr.field()
-    """Returns a sequence of characters found within the character component.
+    characters: typing.Optional[typing.Mapping[int, character.Character]] = attr.field()
+    """Returns a mapping of character's id to`aiobungie.crate.Character`
+    of the associated character within the character component.
 
     This will be available when `aiobungie.ComponentType.CHARACTERS` is passed to the request.
+    otherwise will be `None`.
     """
 
     # TODO: impl these attribs.

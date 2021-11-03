@@ -107,6 +107,10 @@ from ._info import __license__
 from ._info import __url__
 from ._info import __version__
 
+# Components enums
+from .crate.components import ComponentFields
+from .crate.components import ComponentPrivacy
+
 # Fireteam enums.
 from .crate.fireteams import FireteamActivity
 from .crate.fireteams import FireteamDate

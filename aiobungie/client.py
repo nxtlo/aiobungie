@@ -47,6 +47,7 @@ if typing.TYPE_CHECKING:
     from aiobungie.crate import application
     from aiobungie.crate import character
     from aiobungie.crate import clans
+    from aiobungie.crate import components
     from aiobungie.crate import entity
     from aiobungie.crate import friends
     from aiobungie.crate import milestones
@@ -299,37 +300,37 @@ class Client(traits.ClientBase):
 
     async def fetch_profile(
         self,
-        memberid: int,
+        member_id: int,
         type: helpers.IntAnd[enums.MembershipType],
         *components: enums.ComponentType,
-    ) -> profile.Profile:
+    ) -> components.Component:
         """
-        Fetche a bungie profile.
-
-        See `aiobungie.crate.Profile` to access other components.
+        Fetche a bungie profile passing components to the request.
 
         Parameters
         ----------
-        memberid: `builtins.int`
+        member_id: `builtins.int`
             The member's id.
         type: `aiobungie.MembershipType`
             A valid membership type.
-        *components : `tuple[aiobungie.ComponentType]`
+        *components : `aiobungie.ComponentType`
             Multiple arguments of profile components to collect and return.
+            This either can be arguments of integers or `aiobungie.ComponentType`.
 
         Returns
         --------
-        `aiobungie.crate.Profile`
-            A Destiny 2 player profile.
+        `aiobungie.crate.Component`
+            A Destiny 2 player profile with its components.
+            Only passed components will be available if they exists. Otherwise they will be `None`
 
         Raises
         ------
         `aiobungie.MembershipTypeError`
             The provided membership type was invalid.
         """
-        data = await self.rest.fetch_profile(memberid, type, *components)
+        data = await self.rest.fetch_profile(member_id, type, *components)
         assert isinstance(data, dict)
-        return self.serialize.deserialize_profile(data)
+        return self.serialize.deserialize_components(data)
 
     async def fetch_linked_profiles(
         self,
@@ -409,25 +410,25 @@ class Client(traits.ClientBase):
 
     async def fetch_character(
         self,
-        memberid: int,
-        type: helpers.IntAnd[enums.MembershipType],
-        character: enums.Class,
-    ) -> character.Character:
+        member_id: int,
+        membership_type: helpers.IntAnd[enums.MembershipType],
+        character_id: int,
+    ) -> typing.Optional[character.Character]:
         """Fetch a Destiny 2 character.
 
         Parameters
         ----------
-        memberid: `builtins.int`
+        member_id: `builtins.int`
             A valid bungie member id.
-        character: `aiobungie.internal.enums.Class`
-            The Destiny character to retrieve.
-        type: `aiobungie.internal.enums.MembershipType`
+        character_id: `int`
+            The Destiny character id to retrieve.
+        membership_type: `aiobungie.internal.enums.MembershipType`
             The member's membership type.
 
         Returns
         -------
-        `aiobungie.crate.Character`
-            A Bungie character crate.
+        `typing.Optional[aiobungie.crate.Character]`
+            A Bungie character crate. This can be `None` if the character was not found or the player doesn't have one.
 
         Raises
         ------
@@ -437,9 +438,9 @@ class Client(traits.ClientBase):
         `aiobungie.MembershipTypeError`
             The provided membership type was invalid.
         """
-        resp = await self.rest.fetch_character(memberid, type)
+        resp = await self.rest.fetch_character(member_id, membership_type, character_id)
         assert isinstance(resp, dict)
-        return self.serialize.deserialize_character(resp, chartype=character)
+        return self.serialize.deserialize_character(resp)
 
     # * Destiny 2 Activities.
 

@@ -15,22 +15,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 This is optional and not required.
 - Chinese attributes to `fireteams.FireteamLanguage`
 - An API interface/abc and docs to the `factory.Factory` deserialazation factory class.
-- `_request` method now takes and extra `auth` parameter for requests that requires `OAuth` header.
 - The base client now takes an extra `rest_client` parameter for a `RESTClient` instance provided by the user.
 This is optional and not required.
 - A new helper function `helpers.collect()` which collect multiple arguments, join them and separate them.
+- Missing `ComponentType` enum fields were added.
+
+### Breaking changes
+- `Friend.user` was returning `User` and not `BungieUser`
+- `fetch_profile` and all alternative methods now takes `*components` parameter which accept multiple components to be passed and retuned at once.
+- `fetch_profile` and all alrernative methods now return `components.Component` instead of `profile.Profile`.
+- `aiobungie.Component` enum name renamed to `ComponentType`.
+- `fetch_character` no longer takes an char_type(`aiobungie.Class`) parameter and takes `character_id` which returns the character by its id.
+- `fetch_character` now returns `typing.Optional[character.Character]` instead of `character.Character`
 
 ### Changed
 - `RESTClient._request` now takes a string or `rest.RequestMethod` enum for the method.
 - `RESTClient._request` now takes `yarl.URL` or a string for the path. Both changes affect `RESTClient.static_request.
 - Simplify not found raised errors to only raise `error.NotFound` instead of other not found errors.
 - Export `enums.Enum` and `enums.IntEnum` to `enums.__all__`.
-- `Friend.user` was returning `User` and not `BungieUser`
 - `RESTClient` continues on `RuntimeError` errors instead of raising it.
 - `traits.RESTful.static_request` now takes auth parameter for OAuth2 methods as well.
-- `fetch_profile` and all alternative methods now takes `*components` parameter which accept multiple components to be passed and retuned at once.
-- `aiobungie.Component` enum name renamed to `ComponentType`.
 - `fireteams` enums are finalized with `typing.final`
+- `Character.stats` now returns a mapping of `aiobungie.Stat` to `int` of the character stats.
 
 ### Removed
 - Not found errors removed and now only `error.NotFound` is raised instead.

@@ -87,13 +87,14 @@ class ProfileComponent(abc.ABC):
     def id(self) -> int:
         """The profile's id."""
 
-    async def _fetch_all_chars(self) -> typing.Sequence[character.Character]:
-        return await asyncio.gather(
-            *[self.fetch_warlock(), self.fetch_hunter(), self.fetch_warlock()]
-        )
+    async def _await_all_chars(self) -> typing.Sequence[character.Character]:
+        tasks: list[asyncio.Future[typing.Any]] = []
+        for char in (self.fetch_hunter, self.fetch_titan, self.fetch_warlock):
+            tasks.append(asyncio.ensure_future(char()))
+        return await asyncio.gather(*tasks)
 
     async def collect(self) -> typing.Sequence[character.Character]:
-        """Gather and collect all characters this profile has.
+        """Gather and collect all characters this profile has at once.
 
         Example
         -------
@@ -105,9 +106,9 @@ class ProfileComponent(abc.ABC):
         Returns
         -------
         `typing.Sequence[aiobungie.crate.Character]`
-            A sequence of character objects.
+            A sequence of characters.
         """
-        return await self._fetch_all_chars()
+        return await self._await_all_chars()
 
     async def fetch_titan(self) -> character.Character:
         """Returns the titan character of the profile owner."""

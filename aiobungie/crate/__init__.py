@@ -50,6 +50,7 @@ __all__ = (
     "ClanAdmin",
     "GroupMember",
     "PartialBungieUser",
+    "ProfileProgression",
     "ProfileComponent",
     "CharacterComponent",
     "LinkedProfile",
@@ -68,6 +69,10 @@ __all__ = (
     "Component",
     "ComponentFields",
     "ComponentPrivacy",
+    "PowerBonus",
+    "Artifact",
+    "ArtifactPoint",
+    "FetchableArtifact",
 )
 
 from .activity import Activity
@@ -102,6 +107,11 @@ from .milestones import MilestoneItems
 from .profile import LinkedProfile
 from .profile import Profile
 from .profile import ProfileComponent
+from .profile import ProfileProgression
+from .season import Artifact
+from .season import ArtifactPoint
+from .season import FetchableArtifact
+from .season import PowerBonus
 from .user import BungieUser
 from .user import DestinyUser
 from .user import HardLinkedMembership

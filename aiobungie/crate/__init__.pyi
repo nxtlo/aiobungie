@@ -30,6 +30,11 @@ from .milestones import MilestoneItems as MilestoneItems
 from .profile import LinkedProfile as LinkedProfile
 from .profile import Profile as Profile
 from .profile import ProfileComponent as ProfileComponent
+from .profile import ProfileProgression as ProfileProgression
+from .season import Artifact as Artifact
+from .season import ArtifactPoint as ArtifactPoint
+from .season import FetchableArtifact as FetchableArtifact
+from .season import PowerBonus as PowerBonus
 from .user import BungieUser as BungieUser
 from .user import DestinyUser as DestinyUser
 from .user import HardLinkedMembership as HardLinkedMembership

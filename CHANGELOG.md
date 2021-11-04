@@ -19,6 +19,7 @@ This is optional and not required.
 This is optional and not required.
 - A new helper function `helpers.collect()` which collect multiple arguments, join them and separate them.
 - Missing `ComponentType` enum fields were added.
+- Implemented `profile.ProfileProgression` profile component.
 
 ### Breaking changes
 - `Friend.user` was returning `User` and not `BungieUser`
@@ -37,6 +38,7 @@ This is optional and not required.
 - `traits.RESTful.static_request` now takes auth parameter for OAuth2 methods as well.
 - `fireteams` enums are finalized with `typing.final`
 - `Character.stats` now returns a mapping of `aiobungie.Stat` to `int` of the character stats.
+- `crate.season.*` objects are now exposed to docs and `crate.__init__.py`
 
 ### Removed
 - Not found errors removed and now only `error.NotFound` is raised instead.

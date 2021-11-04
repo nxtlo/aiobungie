@@ -70,11 +70,22 @@ class Component:
     """A network state used for making external requests."""
 
     profiles: typing.Optional[profile.Profile] = attr.field()
-    """Returns the profile component.
+    """The profile component.
 
     This will be available when `aiobungie.ComponentType.PROFILE` is passed to the request.
     otherwise will be `None`.
     """
+
+    profile_progression: typing.Optional[profile.ProfileProgression] = attr.field()
+    """The profile progression component.
+
+    This will be available when `aiobungie.ComponentType.PROFILE_PROGRESSION` is passed to the request.
+    otherwise will be `None`.
+    """
+
+    # profile_inventories
+
+    # profile_currencies
 
     characters: typing.Optional[typing.Mapping[int, character.Character]] = attr.field()
     """Returns a mapping of character's id to`aiobungie.crate.Character`
@@ -84,26 +95,20 @@ class Component:
     otherwise will be `None`.
     """
 
-    # TODO: impl these attribs.
+    # character_inventories
 
-    # get_records
-
-    # get_profile_inventories
-
-    # get_profile_currencies
-
-    # get_character_inventories
-
-    # get_character_progressions
+    # character_progressions
 
     # character_render_data
 
-    # get_character_activities
+    # character_activities
 
-    # get_character_items
+    # character_items
+
+    # records
 
     # # TODO: ^ and return `list[vendors.Vendor]`
-    # get_vendors
+    # vendors
 
     # # TODO: ^ and return `vendors.VendorSale`
-    # get_vendor_sales
+    # vendor_sales

@@ -24,7 +24,7 @@
 
 from __future__ import annotations
 
-__all__ = ("Profile", "ProfileComponent", "LinkedProfile")
+__all__ = ("Profile", "ProfileComponent", "LinkedProfile", "ProfileProgression")
 
 import abc
 import asyncio
@@ -35,6 +35,7 @@ import typing
 import attr
 
 from aiobungie.crate import character
+from aiobungie.crate import season
 from aiobungie.crate import user
 from aiobungie.internal import enums
 from aiobungie.internal import helpers
@@ -198,6 +199,18 @@ class LinkedProfile:
 
     def __aiter__(self) -> helpers.AsyncIterator[user.DestinyUser]:
         return helpers.AsyncIterator(self.profiles)
+
+
+@attr.define(hash=False, kw_only=True, weakref_slot=False, eq=False)
+class ProfileProgression:
+    """Represents a profile progression component details."""
+
+    artifact: season.Artifact = attr.field()
+    """The profile progression seasonal artifact."""
+
+    # No repr for this since its kinda huge dict.
+    checklist: typing.Mapping[int, typing.Mapping[int, bool]] = attr.field(repr=False)
+    """A mapping of int to another mapping of int to bool for the profile progression checklist."""
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)

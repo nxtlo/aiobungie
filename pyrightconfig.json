@@ -8,7 +8,7 @@
     "reportUnknownLambdaType": "warning",
     "reportUnknownMemberType": "warning",
     "reportUnknownArgumentType": "warning",
-    "reportUnknownVariableType": "warning",
+    "reportUnknownVariableType": "information",
     "reportMissingModuleSource": "error",
     "reportMissingParameterType": "error",
     "reportMissingTypeArgument": "error",

@@ -31,11 +31,12 @@ from __future__ import annotations
 # Since this is still being implemented
 # We let pdoc3 not generate pages for this.
 
-__pdoc__: dict[str, bool] = {}
-__all__: list[str] = ["Artifact", "PowerBonus"]
-
-for _cls in __all__:
-    __pdoc__[_cls] = False
+__all__: tuple[str, ...] = (
+    "Artifact",
+    "PowerBonus",
+    "ArtifactPoint",
+    "FetchableArtifact",
+)
 
 import typing
 
@@ -88,22 +89,22 @@ class ArtifactPoint:
     """Represents a Destiny 2 artifact points information."""
 
     progression_hash: int = attr.field(repr=False)
-    """The hash of the power bonus."""
+    """The hash of the artifact points."""
 
     level: int = attr.field(repr=True)
-    """Power bonus's current level aka The total earned bonus."""
+    """Artifact point's current level. AKA The total earned points."""
 
     cap: int = attr.field(repr=False)
-    """The cap of the power bonus."""
+    """The cap of the artifact points."""
 
     daily_limit: int = attr.field(repr=False)
-    """Power bonus's daily limit."""
+    """Artifact point's daily limit."""
 
     weekly_limit: int = attr.field(repr=False)
-    """Power bonus's weekly limit."""
+    """Artifact point's weekly limit."""
 
     current_progress: int = attr.field(repr=True)
-    """Power bonus's current progress."""
+    """Artifact point's current progress."""
 
     daily_progress: int = attr.field(repr=False)
     """Power bonus's daily progress."""
@@ -112,10 +113,10 @@ class ArtifactPoint:
     """The needed progress to earn the next level."""
 
     next_level: int = attr.field(repr=True)
-    """Power bonus's next level at."""
+    """Artifact point's next level at."""
 
 
-@attr.s(init=True, slots=True, weakref_slot=False, eq=True, hash=True, kw_only=True)
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
 class FetchableArtifact(entity.InventoryEntity):
     """A interface for a Destiny 2 artifact entity the can be fetched.
 
@@ -128,19 +129,19 @@ class FetchableArtifact(entity.InventoryEntity):
     hash: int = attr.field(repr=True, hash=True, eq=True)
     """Entity's hash."""
 
-    index: int = attr.field(repr=True, hash=False, eq=False)
+    index: int = attr.field(repr=True, eq=False)
     """Entity's index."""
 
-    app: traits.Netrunner = attr.field(repr=False, hash=False, eq=False)
+    app: traits.Netrunner = attr.field(repr=False, eq=False)
     """A client that we may use to make rest calls."""
 
-    name: str = attr.field(repr=True, hash=False, eq=False)
+    name: str = attr.field(repr=True, eq=False)
     """Entity's name"""
 
-    icon: assets.MaybeImage = attr.field(repr=False, hash=False, eq=False)
+    icon: assets.MaybeImage = attr.field(repr=False, eq=False)
     """Entity's icon"""
 
-    has_icon: bool = attr.field(repr=False, hash=False, eq=False)
+    has_icon: bool = attr.field(repr=False, eq=False)
     """A boolean that returns True if the entity has an icon."""
 
     description: str = attr.field(repr=True)
@@ -164,7 +165,7 @@ class Artifact:
     """The total acquired artifact points"""
 
     bonus: PowerBonus = attr.field(repr=False)
-    """Information about the artifact's power bonus."""
+    """Information about the artifact's power bonus progression."""
 
     points: ArtifactPoint = attr.field(repr=False)
-    """Information about the artifact's power points"""
+    """Information about the artifact's power point progression."""

@@ -39,6 +39,7 @@ from aiobungie.crate import fireteams
 from aiobungie.crate import friends
 from aiobungie.crate import milestones
 from aiobungie.crate import profile
+from aiobungie.crate import season
 from aiobungie.crate import user
 from aiobungie.internal import assets
 from aiobungie.internal import enums
@@ -630,6 +631,7 @@ class Factory(interfaces.FactoryInterface):
         # We make components None here depends on returned components to save some memory.
         characters: typing.Optional[typing.Mapping[int, character.Character]] = None
         profile_: typing.Optional[profile.Profile] = None
+        profile_progression: typing.Optional[profile.ProfileProgression] = None
 
         if raw_characters := payload.get("characters"):
             characters = {
@@ -640,8 +642,16 @@ class Factory(interfaces.FactoryInterface):
         if raw_profile := payload.get("profile"):
             profile_ = self.deserialize_profile(raw_profile)
 
+        if raw_profile_progression := payload.get("profileProgression"):
+            profile_progression = self.deserialize_profile_progression(
+                raw_profile_progression
+            )
+
         return components.Component(
-            net=self._net, profiles=profile_, characters=characters
+            net=self._net,
+            profiles=profile_,
+            characters=characters,
+            profile_progression=profile_progression,
         )
 
     def deserialize_inventory_entity(
@@ -1058,3 +1068,53 @@ class Factory(interfaces.FactoryInterface):
             if no_results:
                 return fireteams_fields
         return fireteams_
+
+    def deserialize_seasonal_artifact(
+        self, payload: helpers.JsonObject
+    ) -> season.Artifact:
+        if raw_artifact := payload.get("seasonalArtifact"):
+            if points := raw_artifact.get("pointProgression"):
+                points_prog = season.ArtifactPoint(
+                    progression_hash=points["progressionHash"],
+                    level=points["level"],
+                    cap=points["levelCap"],
+                    daily_limit=points["dailyLimit"],
+                    weekly_limit=points["weeklyLimit"],
+                    current_progress=points["currentProgress"],
+                    daily_progress=points["dailyProgress"],
+                    needed=points["progressToNextLevel"],
+                    next_level=points["nextLevelAt"],
+                )
+
+            if bonus := raw_artifact.get("powerBonusProgression"):
+                power_bonus_prog = season.PowerBonus(
+                    progression_hash=bonus["progressionHash"],
+                    level=bonus["level"],
+                    cap=bonus["levelCap"],
+                    daily_limit=bonus["dailyLimit"],
+                    weekly_limit=bonus["weeklyLimit"],
+                    current_progress=bonus["currentProgress"],
+                    daily_progress=bonus["dailyProgress"],
+                    needed=bonus["progressToNextLevel"],
+                    next_level=bonus["nextLevelAt"],
+                )
+            artifact = season.Artifact(
+                net=self._net,
+                hash=raw_artifact["artifactHash"],
+                power_bonus=raw_artifact["powerBonus"],
+                acquired_points=raw_artifact["pointsAcquired"],
+                bonus=power_bonus_prog,
+                points=points_prog,
+            )
+        return artifact
+
+    def deserialize_profile_progression(
+        self, payload: helpers.JsonObject
+    ) -> profile.ProfileProgression:
+        return profile.ProfileProgression(
+            artifact=self.deserialize_seasonal_artifact(payload["data"]),
+            checklist={
+                int(check_id): checklists
+                for check_id, checklists in payload["data"]["checklists"].items()
+            },
+        )

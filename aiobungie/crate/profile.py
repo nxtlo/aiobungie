@@ -103,13 +103,14 @@ class ProfileComponent(abc.ABC):
         """The warlock id of the profile player."""
         return int(self.character_ids[2])
 
-    async def _fetch_all_chars(self) -> typing.Sequence[character.Character]:
-        return await asyncio.gather(
-            *[self.fetch_warlock(), self.fetch_hunter(), self.fetch_warlock()]
-        )
+    async def _await_all_chars(self) -> typing.Sequence[character.Character]:
+        tasks: list[asyncio.Future[character.Character]] = []
+        for char in (self.fetch_hunter, self.fetch_titan, self.fetch_warlock):
+            tasks.append(asyncio.ensure_future(char()))
+        return await asyncio.gather(*tasks)
 
     async def collect(self) -> typing.Sequence[character.Character]:
-        """Gather and collect all characters this profile has.
+        """Gather and collect all characters this profile has at once.
 
         Example
         -------
@@ -121,9 +122,9 @@ class ProfileComponent(abc.ABC):
         Returns
         -------
         `typing.Sequence[aiobungie.crate.Character]`
-            A sequence of character objects.
+            A sequence of characters.
         """
-        return await self._fetch_all_chars()
+        return await self._await_all_chars()
 
     # NOTE: A bug probably exists here. Since not all players have A warlock, hunter or a titan.
     # The IDs in the sequence are not always in order.

@@ -31,18 +31,19 @@ __all__: list[str] = ["Client"]
 import typing
 
 from aiobungie import rest as rest_
+from aiobungie import traits
 from aiobungie.crate import fireteams
 from aiobungie.crate import user
 from aiobungie.ext import meta
 from aiobungie.internal import enums
 from aiobungie.internal import factory
 from aiobungie.internal import helpers
-from aiobungie.internal import traits
 
 if typing.TYPE_CHECKING:
     import asyncio
 
     from aiobungie import interfaces
+    from aiobungie import typedefs
     from aiobungie.crate import activity
     from aiobungie.crate import application
     from aiobungie.crate import character
@@ -228,7 +229,7 @@ class Client(traits.ClientBase):
     async def fetch_hard_types(
         self,
         credential: int,
-        type: helpers.IntAnd[enums.CredentialType] = enums.CredentialType.STEAMID,
+        type: typedefs.IntAnd[enums.CredentialType] = enums.CredentialType.STEAMID,
         /,
     ) -> user.HardLinkedMembership:
         """Gets any hard linked membership given a credential.
@@ -263,7 +264,7 @@ class Client(traits.ClientBase):
     async def fetch_membership_from_id(
         self,
         id: int,
-        type: helpers.IntAnd[enums.MembershipType] = enums.MembershipType.NONE,
+        type: typedefs.IntAnd[enums.MembershipType] = enums.MembershipType.NONE,
         /,
     ) -> user.User:
         """Fetch Bungie user's memberships from their id.
@@ -301,7 +302,7 @@ class Client(traits.ClientBase):
     async def fetch_profile(
         self,
         member_id: int,
-        type: helpers.IntAnd[enums.MembershipType],
+        type: typedefs.IntAnd[enums.MembershipType],
         *components: enums.ComponentType,
     ) -> components.Component:
         """
@@ -335,7 +336,7 @@ class Client(traits.ClientBase):
     async def fetch_linked_profiles(
         self,
         member_id: int,
-        member_type: helpers.IntAnd[enums.MembershipType],
+        member_type: typedefs.IntAnd[enums.MembershipType],
         /,
         *,
         all: bool = False,
@@ -375,7 +376,7 @@ class Client(traits.ClientBase):
     async def fetch_player(
         self,
         name: str,
-        type: helpers.IntAnd[enums.MembershipType] = enums.MembershipType.ALL,
+        type: typedefs.IntAnd[enums.MembershipType] = enums.MembershipType.ALL,
         /,
     ) -> typing.Sequence[user.DestinyUser]:
         """Fetch a Destiny 2 Player.
@@ -411,7 +412,7 @@ class Client(traits.ClientBase):
     async def fetch_character(
         self,
         member_id: int,
-        membership_type: helpers.IntAnd[enums.MembershipType],
+        membership_type: typedefs.IntAnd[enums.MembershipType],
         character_id: int,
     ) -> typing.Optional[character.Character]:
         """Fetch a Destiny 2 character.
@@ -448,8 +449,8 @@ class Client(traits.ClientBase):
         self,
         member_id: int,
         character_id: int,
-        mode: helpers.IntAnd[enums.GameMode],
-        membership_type: helpers.IntAnd[enums.MembershipType],
+        mode: typedefs.IntAnd[enums.GameMode],
+        membership_type: typedefs.IntAnd[enums.MembershipType],
         *,
         page: int = 1,
         limit: int = 1,
@@ -541,7 +542,10 @@ class Client(traits.ClientBase):
         return self.serialize.deserialize_clan(resp)
 
     async def fetch_clan(
-        self, name: str, /, type: helpers.IntAnd[enums.GroupType] = enums.GroupType.CLAN
+        self,
+        name: str,
+        /,
+        type: typedefs.IntAnd[enums.GroupType] = enums.GroupType.CLAN,
     ) -> clans.Clan:
         """Fetch a Clan by its name.
         This method will return the first clan found with given name.
@@ -612,7 +616,7 @@ class Client(traits.ClientBase):
     async def fetch_groups_for_member(
         self,
         member_id: int,
-        member_type: helpers.IntAnd[enums.MembershipType],
+        member_type: typedefs.IntAnd[enums.MembershipType],
         /,
         *,
         filter: int = 0,
@@ -649,11 +653,11 @@ class Client(traits.ClientBase):
     async def fetch_potential_groups_for_member(
         self,
         member_id: int,
-        member_type: helpers.IntAnd[enums.MembershipType],
+        member_type: typedefs.IntAnd[enums.MembershipType],
         /,
         *,
         filter: int = 0,
-        group_type: helpers.IntAnd[enums.GroupType] = enums.GroupType.CLAN,
+        group_type: typedefs.IntAnd[enums.GroupType] = enums.GroupType.CLAN,
     ) -> typing.Optional[clans.GroupMember]:
         """Fetch the potentional groups for a clan member.
 
@@ -661,14 +665,14 @@ class Client(traits.ClientBase):
         ----------
         member_id : `builtins.int`
             The member's id
-        member_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`
+        member_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
             The member's membership type.
 
         Other Parameters
         ----------------
         filter : `builsins.int`
             Filter apply to list of joined groups. This Default to `0`
-        group_type : `aiobungie.internal.helpers.IntAnd[aiobungie.GroupType]`
+        group_type : `aiobungie.typedefs.IntAnd[aiobungie.GroupType]`
             The group's type.
             This is always set to `aiobungie.GroupType.CLAN` and should not be changed.
 
@@ -687,7 +691,7 @@ class Client(traits.ClientBase):
         self,
         clan_id: int,
         name: typing.Optional[str] = None,
-        type: helpers.IntAnd[enums.MembershipType] = enums.MembershipType.NONE,
+        type: typedefs.IntAnd[enums.MembershipType] = enums.MembershipType.NONE,
         /,
     ) -> clans.ClanMember:
         """Fetch a Bungie Clan member.
@@ -729,7 +733,7 @@ class Client(traits.ClientBase):
     async def fetch_clan_members(
         self,
         clan_id: int,
-        type: helpers.IntAnd[enums.MembershipType] = enums.MembershipType.NONE,
+        type: typedefs.IntAnd[enums.MembershipType] = enums.MembershipType.NONE,
         /,
     ) -> typing.Sequence[clans.ClanMember]:
         """Fetch a Bungie Clan member. if no members found in the clan
@@ -782,7 +786,7 @@ class Client(traits.ClientBase):
         /,
         group_id: int,
         membership_id: int,
-        membership_type: helpers.IntAnd[enums.MembershipType],
+        membership_type: typedefs.IntAnd[enums.MembershipType],
     ) -> clans.Clan:
         """Kick a member from the clan.
 
@@ -797,7 +801,7 @@ class Client(traits.ClientBase):
             The group id.
         membership_id : `int`
             The member id to kick.
-        membership_type : `aiobungie.internal.helpers.IntAnd[aiobungie.MembershipType]`
+        membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
             The member's membership type.
 
         Returns
@@ -920,9 +924,9 @@ class Client(traits.ClientBase):
 
     async def fetch_fireteams(
         self,
-        activity_type: helpers.IntAnd[fireteams.FireteamActivity],
+        activity_type: typedefs.IntAnd[fireteams.FireteamActivity],
         *,
-        platform: helpers.IntAnd[
+        platform: typedefs.IntAnd[
             fireteams.FireteamPlatform
         ] = fireteams.FireteamPlatform.ANY,
         language: typing.Union[
@@ -936,12 +940,12 @@ class Client(traits.ClientBase):
 
         Parameters
         ----------
-        activity_type : `aiobungie.internal.helpers.IntAnd[aiobungie.crate.FireteamActivity]`
+        activity_type : `aiobungie.typedefs.IntAnd[aiobungie.crate.FireteamActivity]`
             The fireteam activity type.
 
         Other Parameters
         ----------------
-        platform : `aiobungie.internal.helpers.IntAnd[aiobungie.crate.fireteams.FireteamPlatform]`
+        platform : `aiobungie.typedefs.IntAnd[aiobungie.crate.fireteams.FireteamPlatform]`
             If this is provided. Then the results will be filtered with the given platform.
             Defaults to `aiobungie.crate.FireteamPlatform.ANY` which returns all platforms.
         language : `typing.Union[aiobungie.crate.fireteams.FireteamLanguage, str]`
@@ -975,9 +979,9 @@ class Client(traits.ClientBase):
         self,
         access_token: str,
         group_id: int,
-        activity_type: helpers.IntAnd[fireteams.FireteamActivity],
+        activity_type: typedefs.IntAnd[fireteams.FireteamActivity],
         *,
-        platform: helpers.IntAnd[fireteams.FireteamPlatform],
+        platform: typedefs.IntAnd[fireteams.FireteamPlatform],
         language: typing.Union[fireteams.FireteamLanguage, str],
         date_range: int = 0,
         page: int = 0,
@@ -995,12 +999,12 @@ class Client(traits.ClientBase):
             The bearer access token associated with the bungie account.
         group_id : `int`
             The group/clan id of the fireteam.
-        activity_type : `aiobungie.internal.helpers.IntAnd[aiobungie.crate.FireteamActivity]`
+        activity_type : `aiobungie.typedefs.IntAnd[aiobungie.crate.FireteamActivity]`
             The fireteam activity type.
 
         Other Parameters
         ----------------
-        platform : `aiobungie.internal.helpers.IntAnd[aiobungie.crate.fireteams.FireteamPlatform]`
+        platform : `aiobungie.typedefs.IntAnd[aiobungie.crate.fireteams.FireteamPlatform]`
             If this is provided. Then the results will be filtered with the given platform.
             Defaults to `aiobungie.crate.FireteamPlatform.ANY` which returns all platforms.
         language : `typing.Union[aiobungie.crate.fireteams.FireteamLanguage, str]`
@@ -1069,7 +1073,7 @@ class Client(traits.ClientBase):
         group_id: int,
         *,
         include_closed: bool = True,
-        platform: helpers.IntAnd[fireteams.FireteamPlatform],
+        platform: typedefs.IntAnd[fireteams.FireteamPlatform],
         language: typing.Union[fireteams.FireteamLanguage, str],
         filtered: bool = True,
         page: int = 0,
@@ -1091,7 +1095,7 @@ class Client(traits.ClientBase):
         include_closed : bool
             If provided and set to True, It will also return closed fireteams.
             If provided and set to False, It will only return public fireteams. Default is True.
-        platform : aiobungie.internal.helpers.IntAnd[aiobungie.crate.fireteams.FireteamPlatform]
+        platform : aiobungie.typedefs.IntAnd[aiobungie.crate.fireteams.FireteamPlatform]
             If this is provided. Then the results will be filtered with the given platform.
             Defaults to aiobungie.crate.FireteamPlatform.ANY which returns all platforms.
         language : typing.Union[aiobungie.crate.fireteams.FireteamLanguage, str]

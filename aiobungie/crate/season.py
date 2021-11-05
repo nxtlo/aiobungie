@@ -45,8 +45,8 @@ import attr
 from aiobungie.crate import entity
 
 if typing.TYPE_CHECKING:
+    from aiobungie import traits
     from aiobungie.internal import assets
-    from aiobungie.internal import traits
 
     # The artifact tires.
     Tiers: list[dict[int, dict[str, typing.Any]]]

@@ -28,6 +28,11 @@ This is optional and not required.
 - `aiobungie.Component` enum name renamed to `ComponentType`.
 - `fetch_character` no longer takes an char_type(`aiobungie.Class`) parameter and takes `character_id` which returns the character by its id.
 - `fetch_character` now returns `typing.Optional[character.Character]` instead of `character.Character`
+- `traits.py` moved to the root directory instead of being in `helpers`
+-  All type hints used to be in `helpers.py` moved to new module `typedefs.py` in root directory.
+- `undefined` types are now in `undefined.py` new module.
+- `helpers.py` now will only include helper functions and classes.
+- `helpers.just()` now takes a generic type for the return type.
 
 ### Changed
 - `RESTClient._request` now takes a string or `rest.RequestMethod` enum for the method.

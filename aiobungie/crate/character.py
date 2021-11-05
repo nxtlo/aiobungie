@@ -38,8 +38,8 @@ from aiobungie import url
 if typing.TYPE_CHECKING:
     import datetime
 
+    from aiobungie import traits
     from aiobungie.internal import enums
-    from aiobungie.internal import traits
     from aiobungie.internal.assets import Image
 
 

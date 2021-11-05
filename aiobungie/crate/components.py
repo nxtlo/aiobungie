@@ -39,7 +39,7 @@ from aiobungie.crate import profile
 from aiobungie.internal import enums
 
 if typing.TYPE_CHECKING:
-    from aiobungie.internal import traits
+    from aiobungie import traits
 
 
 @typing.final

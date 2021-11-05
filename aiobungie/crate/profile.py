@@ -40,8 +40,8 @@ from aiobungie.internal import enums
 from aiobungie.internal import helpers
 
 if typing.TYPE_CHECKING:
+    from aiobungie import traits
     from aiobungie.crate import season
-    from aiobungie.internal import traits
 
 log: typing.Final[logging.Logger] = logging.getLogger(__name__)
 

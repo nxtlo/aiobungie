@@ -46,7 +46,7 @@ from aiobungie.internal import enums
 if typing.TYPE_CHECKING:
     import datetime
 
-    from aiobungie.internal import helpers
+    from aiobungie import undefined
 
 
 @typing.final
@@ -189,7 +189,7 @@ class Fireteam:
     available_alternate_slots: int = attr.field(repr=False)
     """The alternate available player slots in this fireteam."""
 
-    title: helpers.UndefinedOr[str] = attr.field()
+    title: undefined.UndefinedOr[str] = attr.field()
     """The fireteam title. Could be `UNDEFINED` if not set."""
 
     date_created: datetime.datetime = attr.field(repr=False)

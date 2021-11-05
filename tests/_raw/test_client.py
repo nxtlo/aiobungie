@@ -39,6 +39,7 @@ import asyncio
 CID = 2305843009444904605
 MID = 4611686018484639825
 _LOG = logging.getLogger("test_client")
+logging.basicConfig(level=logging.DEBUG)
 
 def build_client() -> aiobungie.Client:
     token = os.environ['CLIENT_TOKEN']
@@ -128,7 +129,8 @@ async def test_profile() -> aiobungie.crate.Component:
         MID,
         aiobungie.MembershipType.STEAM,
         aiobungie.ComponentType.PROFILE,
-        aiobungie.ComponentType.CHARACTERS
+        aiobungie.ComponentType.CHARACTERS,
+        aiobungie.ComponentType.PROFILE_PROGRESSION,
     )
 
     if (profile := pf.profiles):
@@ -139,17 +141,23 @@ async def test_profile() -> aiobungie.crate.Component:
         except RuntimeError:
             pass
     else:
-        _LOG.warn("Profile -> ", None)
+        pass
+
+    if (profile_progression := pf.profile_progression):
+        _LOG.debug(profile_progression)
+        _LOG.debug(profile_progression.checklist)
+    else:
+        pass
 
     if (characters := pf.characters):
         for _, character in characters.items():
-            _LOG.debug(character.class_type, character.emblem, character.light)
+            # Cant debug this.
+            print(character.class_type, character.emblem, character.light)
             if profile and character.id == profile.warlock_id:
                 _LOG.debug(True)
     else:
-        _LOG.warn("Characters -> ", None)
+        pass
     return pf
-
 
 async def test_membership_types_from_id() -> aiobungie.crate.User:
     u = await client.fetch_membership_from_id(MID)
@@ -247,12 +255,12 @@ async def main() -> None:
     ):
         if n == "main" or not n.startswith("test_"):
             continue
-        if len(sys.argv) > 1 and sys.argv[0] == n:
-            print(sys.argv[0])
-            print(await coro())
-        else:
-            coros.append(coro())
+        coros.append(coro())
     _LOG.debug(await asyncio.gather(*coros))
+    _LOG.info(
+        "Ran %i functions out of %i excluding main.",
+        len(coros), len(inspect.getmembers(sys.modules[__name__], inspect.iscoroutinefunction))
+    )
     await client.rest.close()
 
 

@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from aiobungie.internal import helpers
 from datetime import datetime
 
 import pytest
@@ -52,22 +51,22 @@ class TestHardLinkedUser:
 class TestUserThemes:
     @pytest.fixture()
     def mod(self):
-        return crate.user.UserThemes(id=1122, name="d2_1", description=helpers.Undefined)
+        return crate.user.UserThemes(id=1122, name="d2_1", description=aiobungie.Undefined)
 
     @pytest.fixture()
     def list_objs(self):
         return [
-            crate.user.UserThemes(id=1, name=helpers.Undefined, description=helpers.Undefined),
+            crate.user.UserThemes(id=1, name=aiobungie.Undefined, description=aiobungie.Undefined),
             crate.user.UserThemes(id=239, name="theme name", description="D2_11"),
             crate.user.UserThemes(
-                id=22, name="Ok", description=helpers.Undefined
+                id=22, name="Ok", description=aiobungie.Undefined
             ),
         ]
 
     def test_model_meta(self, mod):
         assert isinstance(mod, crate.user.UserThemes)
         assert mod is not None
-        assert mod.description is helpers.Undefined
+        assert mod.description is aiobungie.Undefined
 
     def test_list_of_objs(self, list_objs):
         assert isinstance(list_objs, list)
@@ -83,7 +82,7 @@ class TestBungieUser:
     def model(self):
         return crate.user.BungieUser(
             id=205432,
-            name=helpers.Undefined,
+            name=aiobungie.Undefined,
             created_at=datetime.utcnow(),
             is_deleted=True,
             about=None,
@@ -105,7 +104,7 @@ class TestBungieUser:
         )
 
     def test_str_op(self, model):
-        assert str(model) is str(helpers.Undefined)
+        assert str(model) is str(aiobungie.Undefined)
 
     def test_int_op(self, model):
         assert int(model) == 205432

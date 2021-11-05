@@ -30,7 +30,7 @@ from pytest import fixture
 
 import aiobungie
 from aiobungie import crate
-from aiobungie.internal import helpers, assets
+from aiobungie.internal import assets
 
 
 @fixture()
@@ -173,7 +173,7 @@ class TestClan:
             name="Cool clan",
             created_at=datetime.datetime(2018, 9, 3, 11, 13, 12),
             member_count=2,
-            motto=str(helpers.Undefined),
+            motto=str(aiobungie.Undefined),
             is_public=True,
             banner=assets.Image("xxx.jpg"),
             avatar=assets.Image("zzz.jpg"),

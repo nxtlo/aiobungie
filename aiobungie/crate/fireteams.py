@@ -46,7 +46,8 @@ from aiobungie.internal import enums
 if typing.TYPE_CHECKING:
     import datetime
 
-    from aiobungie.internal import helpers
+    from aiobungie import undefined
+
 
 @typing.final
 class FireteamPlatform(enums.IntEnum):
@@ -59,6 +60,7 @@ class FireteamPlatform(enums.IntEnum):
     XBOX_LIVE = 2
     STEAM = 4
     STADIA = 5
+
 
 @typing.final
 class FireteamActivity(enums.IntEnum):
@@ -87,6 +89,7 @@ class FireteamActivity(enums.IntEnum):
     S15_ASTRAL_ALIGNMENT = 31
     S15_SHATTERED_RELAM = 32
 
+
 @typing.final
 class FireteamLanguage(str, enums.Enum):
     """An enum for fireteams languages filters."""
@@ -108,6 +111,7 @@ class FireteamLanguage(str, enums.Enum):
 
     def __str__(self) -> str:
         return str(self.value)
+
 
 @typing.final
 class FireteamDate(enums.IntEnum):
@@ -185,7 +189,7 @@ class Fireteam:
     available_alternate_slots: int = attr.field(repr=False)
     """The alternate available player slots in this fireteam."""
 
-    title: helpers.UndefinedOr[str] = attr.field()
+    title: undefined.UndefinedOr[str] = attr.field()
     """The fireteam title. Could be `UNDEFINED` if not set."""
 
     date_created: datetime.datetime = attr.field(repr=False)

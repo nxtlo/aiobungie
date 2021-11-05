@@ -31,16 +31,17 @@ import typing
 
 import attr
 
+from aiobungie import undefined
 from aiobungie import url
 from aiobungie.crate import user
 from aiobungie.internal import enums
-from aiobungie.internal import helpers
 
 if typing.TYPE_CHECKING:
     from datetime import datetime
 
+    from aiobungie import traits
+    from aiobungie import typedefs
     from aiobungie.internal import assets
-    from aiobungie.internal import traits
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
@@ -50,7 +51,7 @@ class ApplicationOwner(user.UserLike):
     net: traits.Netrunner = attr.field(repr=False)
     """A network state used for making external requests."""
 
-    name: helpers.UndefinedOr[str] = attr.field(repr=True, hash=False, eq=False)
+    name: undefined.UndefinedOr[str] = attr.field(repr=True, hash=False, eq=False)
     """The application owner name. This can be `UNDEFINED` if not found."""
 
     type: enums.MembershipType = attr.field(repr=True, hash=False, eq=True)
@@ -65,7 +66,7 @@ class ApplicationOwner(user.UserLike):
     is_public: bool = attr.field(repr=True)
     """The application owner's profile privacy."""
 
-    code: helpers.NoneOr[int] = attr.field(repr=True)
+    code: typedefs.NoneOr[int] = attr.field(repr=True)
     """The user like's unique display name code.
     This can be None if the user hasn't logged in after season of the lost update.
     """
@@ -96,7 +97,7 @@ class ApplicationOwner(user.UserLike):
     def last_seen_name(self) -> str:
         # This is always undefined since an application
         # dev doesn't have this field.
-        return str(helpers.Undefined)
+        return str(undefined.Undefined)
 
     @property
     def link(self) -> str:
@@ -128,7 +129,7 @@ class Application:
     status: int = attr.field(repr=False)
     """App's status"""
 
-    scope: helpers.UndefinedOr[str] = attr.field(repr=False)
+    scope: undefined.UndefinedOr[str] = attr.field(repr=False)
     """App's scope"""
 
     owner: ApplicationOwner = attr.field(repr=True)

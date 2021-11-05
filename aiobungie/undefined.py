@@ -20,47 +20,40 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""aiobungie assets module for API Image hash and path linking."""
-
+"""An undefined type object."""
 
 from __future__ import annotations
 
-__all__: list[str] = ["Image", "MaybeImage"]
-
 import typing
 
-from aiobungie import undefined
-from aiobungie import url
+_T = typing.TypeVar("_T", covariant=True)
 
 
-class Image:
-    def __init__(self, path: typing.Optional[str] = None) -> None:
-        self.path = path
+class UndefinedType:
+    """An `UNDEFINED` type."""
 
-    def __repr__(self) -> str:
-        return self.__str__()
+    __instance: typing.ClassVar[UndefinedType]
 
-    def __str__(self) -> str:
-        return url.BASE + self.path if self.path is not None else self.partial()
-
-    @property
-    def url(self) -> str:
-        return str(self)
-
-    @property
-    def is_jpg(self) -> bool:
-        """Checks if the given path for the image is a JPEG type."""
-        if self.path is not None and self.path.endswith(".jpg"):
-            return True
+    def __bool__(self) -> typing.Literal[False]:
         return False
 
-    @staticmethod
-    def partial() -> str:
-        """A partial image that just returns undefined."""
-        return f"Image <{undefined.Undefined}>"
+    def __repr__(self) -> str:
+        return "UNDEFINED"
+
+    def __str__(self) -> str:
+        return "UNDEFINED"
+
+    def __new__(cls) -> UndefinedType:
+        try:
+            return cls.__instance
+        except AttributeError:
+            o = super().__new__(cls)
+            cls.__instance = o
+            return cls.__instance
 
 
-MaybeImage = typing.Union[Image, str, None]
-"""A type hint for images that may or may not exists in the api.
-Images returned from the api as None will be replaced with `Image.partial`.
-"""
+Undefined: typing.Final[UndefinedType] = UndefinedType()
+"""An undefined type for attribs that may be undefined and not None."""
+
+UndefinedOr = typing.Union[UndefinedType, _T]
+"""A union version of the Undefined type which can be undefined or any other type."""

@@ -35,8 +35,8 @@ from datetime import datetime
 
 import attr
 
+from aiobungie import traits
 from aiobungie.internal import enums
-from aiobungie.internal import traits
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)

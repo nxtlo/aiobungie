@@ -94,10 +94,15 @@ from __future__ import annotations
 
 from aiobungie import crate
 from aiobungie import interfaces
+from aiobungie import traits
+from aiobungie import typedefs
 from aiobungie.client import Client
 from aiobungie.error import *
 from aiobungie.internal.enums import *
 from aiobungie.rest import RESTClient
+from aiobungie.undefined import Undefined
+from aiobungie.undefined import UndefinedOr
+from aiobungie.undefined import UndefinedType
 
 from ._info import __about__
 from ._info import __author__

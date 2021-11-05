@@ -28,6 +28,11 @@ This is optional and not required.
 - `Friend.user` was returning `User` and not `BungieUser`
 - `RESTClient` continues on `RuntimeError` errors instead of raising it.
 - `traits.RESTful.static_request` now takes auth parameter for OAuth2 methods as well.
+- `traits.py` moved to the root directory instead of being in `helpers`
+-  All type hints used to be in `helpers.py` moved to new module `typedefs.py` in root directory.
+- `undefined` types are now in `undefined.py` new module.
+- `helpers.py` now will only include helper functions and classes.
+- `helpers.just()` now takes a generic type for the return type.
 
 ### Removed
 - Not found errors removed and now only `error.NotFound` is raised instead.

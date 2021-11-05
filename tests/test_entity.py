@@ -26,7 +26,7 @@ import pytest
 
 import aiobungie
 from aiobungie import crate
-from aiobungie.internal import helpers, assets
+from aiobungie.internal import assets
 
 
 class TestEntity:
@@ -44,7 +44,7 @@ class TestInventoryItemEntity:
             hash=182371221,
             index=1223,
             name="Midnight Coup",
-            description=helpers.Undefined,
+            description=aiobungie.Undefined,
             icon=None,
             has_icon=False,
             type=aiobungie.Item.WEAPON,
@@ -66,7 +66,7 @@ class TestInventoryItemEntity:
         )
 
     def test_item_description_is_undefined(self, item) -> None:
-        assert item.description is helpers.Undefined
+        assert item.description is aiobungie.Undefined
 
     def test_item_types(self, item):
         assert item.sub_type is aiobungie.Item.HANDCANNON

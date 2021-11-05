@@ -662,14 +662,14 @@ class Client(traits.ClientBase):
         ----------
         member_id : `builtins.int`
             The member's id
-        member_type : `aiobungie.internal.typedefs.IntAnd[aiobungie.MembershipType]`
+        member_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
             The member's membership type.
 
         Other Parameters
         ----------------
         filter : `builsins.int`
             Filter apply to list of joined groups. This Default to `0`
-        group_type : `aiobungie.internal.typedefs.IntAnd[aiobungie.GroupType]`
+        group_type : `aiobungie.typedefs.IntAnd[aiobungie.GroupType]`
             The group's type.
             This is always set to `aiobungie.GroupType.CLAN` and should not be changed.
 
@@ -798,7 +798,7 @@ class Client(traits.ClientBase):
             The group id.
         membership_id : `int`
             The member id to kick.
-        membership_type : `aiobungie.internal.typedefs.IntAnd[aiobungie.MembershipType]`
+        membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
             The member's membership type.
 
         Returns
@@ -937,12 +937,12 @@ class Client(traits.ClientBase):
 
         Parameters
         ----------
-        activity_type : `aiobungie.internal.typedefs.IntAnd[aiobungie.crate.FireteamActivity]`
+        activity_type : `aiobungie.typedefs.IntAnd[aiobungie.crate.FireteamActivity]`
             The fireteam activity type.
 
         Other Parameters
         ----------------
-        platform : `aiobungie.internal.typedefs.IntAnd[aiobungie.crate.fireteams.FireteamPlatform]`
+        platform : `aiobungie.typedefs.IntAnd[aiobungie.crate.fireteams.FireteamPlatform]`
             If this is provided. Then the results will be filtered with the given platform.
             Defaults to `aiobungie.crate.FireteamPlatform.ANY` which returns all platforms.
         language : `typing.Union[aiobungie.crate.fireteams.FireteamLanguage, str]`
@@ -996,12 +996,12 @@ class Client(traits.ClientBase):
             The bearer access token associated with the bungie account.
         group_id : `int`
             The group/clan id of the fireteam.
-        activity_type : `aiobungie.internal.typedefs.IntAnd[aiobungie.crate.FireteamActivity]`
+        activity_type : `aiobungie.typedefs.IntAnd[aiobungie.crate.FireteamActivity]`
             The fireteam activity type.
 
         Other Parameters
         ----------------
-        platform : `aiobungie.internal.typedefs.IntAnd[aiobungie.crate.fireteams.FireteamPlatform]`
+        platform : `aiobungie.typedefs.IntAnd[aiobungie.crate.fireteams.FireteamPlatform]`
             If this is provided. Then the results will be filtered with the given platform.
             Defaults to `aiobungie.crate.FireteamPlatform.ANY` which returns all platforms.
         language : `typing.Union[aiobungie.crate.fireteams.FireteamLanguage, str]`
@@ -1092,7 +1092,7 @@ class Client(traits.ClientBase):
         include_closed : bool
             If provided and set to True, It will also return closed fireteams.
             If provided and set to False, It will only return public fireteams. Default is True.
-        platform : aiobungie.internal.typedefs.IntAnd[aiobungie.crate.fireteams.FireteamPlatform]
+        platform : aiobungie.typedefs.IntAnd[aiobungie.crate.fireteams.FireteamPlatform]
             If this is provided. Then the results will be filtered with the given platform.
             Defaults to aiobungie.crate.FireteamPlatform.ANY which returns all platforms.
         language : typing.Union[aiobungie.crate.fireteams.FireteamLanguage, str]

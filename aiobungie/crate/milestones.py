@@ -31,14 +31,15 @@ import typing
 import attr
 
 if typing.TYPE_CHECKING:
-    from aiobungie.internal import helpers
+    from aiobungie import typedefs
+    from aiobungie import undefined
 
 
 @attr.define(hash=False, weakref_slot=False, kw_only=True)
 class MilestoneItems:
     """Represents items the may be found inside a milestone."""
 
-    title: helpers.UndefinedOr[str] = attr.field(repr=True)
+    title: undefined.UndefinedOr[str] = attr.field(repr=True)
     """The item title. This may be `UNDEFINED` if not specified."""
 
     hashes: typing.Sequence[int] = attr.field(repr=True)
@@ -49,14 +50,14 @@ class MilestoneItems:
 class Milestone:
     """Represents general information about a Destiny milestone."""
 
-    about: helpers.UndefinedOr[str] = attr.field(repr=True)
+    about: undefined.UndefinedOr[str] = attr.field(repr=True)
     """About this milestone."""
 
-    status: helpers.UndefinedOr[str] = attr.field(repr=True, eq=True)
+    status: undefined.UndefinedOr[str] = attr.field(repr=True, eq=True)
     """The milestone's status. This field may be `UNDEFINED` if not specified."""
 
-    tips: typing.Sequence[helpers.UndefinedOr[str]] = attr.field(repr=True)
+    tips: typing.Sequence[undefined.UndefinedOr[str]] = attr.field(repr=True)
     """A sequence of the milestone's tips. fields in the sequence may be `UNDEFINED` if not specified."""
 
-    items: helpers.NoneOr[MilestoneItems] = attr.field(repr=True)
+    items: typedefs.NoneOr[MilestoneItems] = attr.field(repr=True)
     """An optional items for this miletones. This may return `None` if nothing was found."""

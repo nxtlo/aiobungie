@@ -2,10 +2,15 @@ from typing import Any
 
 from aiobungie import crate as crate
 from aiobungie import interfaces as interfaces
+from aiobungie import traits as traits
+from aiobungie import typedefs as typedefs
 from aiobungie.client import Client as Client
 from aiobungie.error import *
 from aiobungie.internal.enums import *
 from aiobungie.rest import RESTClient as RESTClient
+from aiobungie.undefined import Undefined as Undefined
+from aiobungie.undefined import UndefinedOr as UndefinedOr
+from aiobungie.undefined import UndefinedType as UndefinedType
 
 from ._info import __about__ as __about__
 from ._info import __author__ as __author__

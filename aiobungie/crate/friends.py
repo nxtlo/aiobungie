@@ -31,10 +31,11 @@ import typing
 import attr
 
 if typing.TYPE_CHECKING:
+    from aiobungie import traits
+    from aiobungie import typedefs
+    from aiobungie import undefined
     from aiobungie.crate import user as user_
     from aiobungie.internal import enums
-    from aiobungie.internal import helpers
-    from aiobungie.internal import traits
 
 
 @attr.define(weakref_slot=False, hash=False, kw_only=True)
@@ -61,10 +62,10 @@ class Friend:
     type: enums.MembershipType = attr.field(repr=True)
     """The friend's last seen membership type."""
 
-    name: helpers.UndefinedOr[str] = attr.field(repr=True)
+    name: undefined.UndefinedOr[str] = attr.field(repr=True)
     """The friend's last seen global display name. This field could be Undefined if the player hasn't logged in yet."""
 
-    code: helpers.NoneOr[int] = attr.field(repr=True)
+    code: typedefs.NoneOr[int] = attr.field(repr=True)
     """The friend's last seen global code. This field could be None if the player hasn't logged in yet."""
 
     online_status: enums.Presence = attr.field(repr=False)
@@ -76,7 +77,7 @@ class Friend:
     relationship: enums.Relationship = attr.field(repr=False)
     """The friend's relationship type."""
 
-    user: helpers.NoneOr[user_.BungieUser] = attr.field(repr=True)
+    user: typedefs.NoneOr[user_.BungieUser] = attr.field(repr=True)
     """The friend's bungie user account. This field is optional and can be None in some states."""
 
     @property

@@ -40,7 +40,7 @@ from aiobungie.internal import enums
 from aiobungie.internal import helpers
 
 if typing.TYPE_CHECKING:
-    from aiobungie.internal import traits
+    from aiobungie import traits
 
 log: typing.Final[logging.Logger] = logging.getLogger(__name__)
 

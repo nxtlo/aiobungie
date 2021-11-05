@@ -26,7 +26,7 @@ import pytest
 
 import aiobungie
 from aiobungie import crate
-from aiobungie.internal import helpers, assets
+from aiobungie.internal import assets
 
 @pytest.fixture()
 def mock_client():
@@ -66,7 +66,7 @@ class TestApplication:
             created_at=datetime(2017, 4, 8),
             published_at=datetime.utcnow(),
             link="warmind.io",
-            scope=helpers.Undefined,
+            scope=aiobungie.Undefined,
             status=1,
             owner=TestAppOwner.init_owner(),
         )

@@ -20,47 +20,38 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""aiobungie assets module for API Image hash and path linking."""
-
+"""A module that has type definitions used globally in aiobungie."""
 
 from __future__ import annotations
 
-__all__: list[str] = ["Image", "MaybeImage"]
-
 import typing
 
-from aiobungie import undefined
-from aiobungie import url
+from aiobungie.internal import enums
 
+JsonObject = typing.Dict[str, typing.Any]
+"""A json like dict of string key and any value.
 
-class Image:
-    def __init__(self, path: typing.Optional[str] = None) -> None:
-        self.path = path
-
-    def __repr__(self) -> str:
-        return self.__str__()
-
-    def __str__(self) -> str:
-        return url.BASE + self.path if self.path is not None else self.partial()
-
-    @property
-    def url(self) -> str:
-        return str(self)
-
-    @property
-    def is_jpg(self) -> bool:
-        """Checks if the given path for the image is a JPEG type."""
-        if self.path is not None and self.path.endswith(".jpg"):
-            return True
-        return False
-
-    @staticmethod
-    def partial() -> str:
-        """A partial image that just returns undefined."""
-        return f"Image <{undefined.Undefined}>"
-
-
-MaybeImage = typing.Union[Image, str, None]
-"""A type hint for images that may or may not exists in the api.
-Images returned from the api as None will be replaced with `Image.partial`.
+i.e., `{"Key": 1, "Key2": "Value"}`
 """
+
+JsonArray = typing.List[typing.Any]
+"""A json like list of any data type.
+
+i.e., `[{"Key": 1}, {"Key2": "Value"}]`
+"""
+
+Unknown: typing.Final[typing.Literal[""]] = ""
+"""Some Bungie strings comes Empty so we undefine them if so."""
+
+T = typing.TypeVar("T", covariant=True)
+
+NoneOr = typing.Union[None, T]
+"""A Union type that's similar to to `typing.Optional[T]`"""
+
+EnumSig = typing.TypeVar(
+    "EnumSig", covariant=True, bound=typing.Union[enums.Enum, enums.IntEnum]
+)
+"""A type hint bound to `aiobungie.internal.enums.Enum` and `aiobungie.internal.enums.IntEnum`"""
+
+IntAnd = typing.Union[int, EnumSig]
+"""A type hint for parameters that may receives an enum or an int."""

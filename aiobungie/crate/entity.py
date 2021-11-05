@@ -36,10 +36,10 @@ import typing
 import attr
 
 if typing.TYPE_CHECKING:
+    from aiobungie import traits
+    from aiobungie import undefined
     from aiobungie.internal import assets
     from aiobungie.internal import enums
-    from aiobungie.internal import helpers
-    from aiobungie.internal import traits
 
 
 class Entity(abc.ABC):
@@ -58,7 +58,7 @@ class Entity(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def name(self) -> helpers.UndefinedOr[str]:
+    def name(self) -> undefined.UndefinedOr[str]:
         """Entity's name. This can be `UNDEFINED` if not found."""
 
     @property
@@ -73,7 +73,7 @@ class Entity(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def description(self) -> helpers.UndefinedOr[str]:
+    def description(self) -> undefined.UndefinedOr[str]:
         """Entity's description"""
 
     @property
@@ -109,10 +109,10 @@ class InventoryEntity(Entity):
     index: int = attr.field(repr=True, hash=False, eq=False)
     """Entity's index."""
 
-    name: helpers.UndefinedOr[str] = attr.field(repr=True, hash=False, eq=False)
+    name: undefined.UndefinedOr[str] = attr.field(repr=True, hash=False, eq=False)
     """Entity's name. This can be `UNDEFINED` if not found."""
 
-    description: helpers.UndefinedOr[str] = attr.field(repr=True)
+    description: undefined.UndefinedOr[str] = attr.field(repr=True)
     """Entity's description."""
 
     icon: assets.MaybeImage = attr.field(repr=False, hash=False, eq=False)
@@ -121,10 +121,10 @@ class InventoryEntity(Entity):
     has_icon: bool = attr.field(repr=False, hash=False, eq=False)
     """A boolean that returns True if the entity has an icon."""
 
-    type: helpers.UndefinedOr[enums.Item] = attr.field(repr=True, hash=False)
+    type: undefined.UndefinedOr[enums.Item] = attr.field(repr=True, hash=False)
     """Entity's type. Can be undefined if nothing was found."""
 
-    type_name: helpers.UndefinedOr[str] = attr.field(repr=True, hash=False, eq=False)
+    type_name: undefined.UndefinedOr[str] = attr.field(repr=True, hash=False, eq=False)
     """Entity's type name. i.e., `Grenade Launcher`"""
 
     water_mark: typing.Optional[assets.Image] = attr.field(
@@ -135,7 +135,7 @@ class InventoryEntity(Entity):
     tier: typing.Optional[enums.ItemTier] = attr.field(repr=True, hash=False, eq=False)
     """Entity's "tier."""
 
-    tier_name: helpers.UndefinedOr[str] = attr.field(repr=False, eq=False)
+    tier_name: undefined.UndefinedOr[str] = attr.field(repr=False, eq=False)
     """A string version of the item tier."""
 
     bucket_type: typing.Optional[int] = attr.field(repr=True, hash=False, eq=False)
@@ -161,14 +161,14 @@ class InventoryEntity(Entity):
     )
     """The entity's class type."""
 
-    sub_type: helpers.UndefinedOr[enums.Item] = attr.field(
+    sub_type: undefined.UndefinedOr[enums.Item] = attr.field(
         repr=False, hash=False, eq=False
     )
     """The subtype of the entity. A type is a weapon or armor.
     A subtype is a handcannonn or leg armor for an example.
     """
 
-    is_equippable: helpers.UndefinedOr[bool] = attr.field(
+    is_equippable: undefined.UndefinedOr[bool] = attr.field(
         repr=False, hash=False, eq=False
     )
     """True if the entity can be equipped or False."""
@@ -176,12 +176,12 @@ class InventoryEntity(Entity):
     summary_hash: typing.Optional[int] = attr.field(repr=False, hash=False, eq=False)
     """Entity's summary hash."""
 
-    damage: helpers.UndefinedOr[enums.DamageType] = attr.field(
+    damage: undefined.UndefinedOr[enums.DamageType] = attr.field(
         repr=False, hash=False, eq=False
     )
     """Entity's damage type. Only works for weapons."""
 
-    about: helpers.UndefinedOr[str] = attr.field(repr=True, hash=False, eq=False)
+    about: undefined.UndefinedOr[str] = attr.field(repr=True, hash=False, eq=False)
     """Entity's about."""
 
     banner: typing.Optional[assets.Image] = attr.field(repr=False, eq=False, hash=False)

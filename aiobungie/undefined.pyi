@@ -20,47 +20,20 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""aiobungie assets module for API Image hash and path linking."""
-
-
 from __future__ import annotations
 
-__all__: list[str] = ["Image", "MaybeImage"]
+import typing as __typing
 
-import typing
+_T = __typing.TypeVar("_T")
 
-from aiobungie import undefined
-from aiobungie import url
+__all__: tuple[str, ...] = ("UndefinedType", "Undefined", "UndefinedOr")
 
+class UndefinedType:
+    def __bool__(self) -> __typing.Literal[False]: ...
+    def __repr__(self) -> str: ...
+    def __str__(self) -> str: ...
+    def __new__(cls) -> UndefinedType: ...
 
-class Image:
-    def __init__(self, path: typing.Optional[str] = None) -> None:
-        self.path = path
+Undefined: __typing.Final[UndefinedType]
 
-    def __repr__(self) -> str:
-        return self.__str__()
-
-    def __str__(self) -> str:
-        return url.BASE + self.path if self.path is not None else self.partial()
-
-    @property
-    def url(self) -> str:
-        return str(self)
-
-    @property
-    def is_jpg(self) -> bool:
-        """Checks if the given path for the image is a JPEG type."""
-        if self.path is not None and self.path.endswith(".jpg"):
-            return True
-        return False
-
-    @staticmethod
-    def partial() -> str:
-        """A partial image that just returns undefined."""
-        return f"Image <{undefined.Undefined}>"
-
-
-MaybeImage = typing.Union[Image, str, None]
-"""A type hint for images that may or may not exists in the api.
-Images returned from the api as None will be replaced with `Image.partial`.
-"""
+UndefinedOr = __typing.Union[UndefinedType, _T]

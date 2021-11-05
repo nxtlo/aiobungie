@@ -46,8 +46,9 @@ from aiobungie.internal import enums
 if typing.TYPE_CHECKING:
     from datetime import datetime
 
-    from aiobungie.internal import helpers
-    from aiobungie.internal import traits
+    from aiobungie import traits
+    from aiobungie import typedefs
+    from aiobungie import undefined
 
 
 class UserLike(abc.ABC):
@@ -62,7 +63,7 @@ class UserLike(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def name(self) -> helpers.UndefinedOr[str]:
+    def name(self) -> undefined.UndefinedOr[str]:
         """The user like's name."""
 
     @property
@@ -88,7 +89,7 @@ class UserLike(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def code(self) -> helpers.NoneOr[int]:
+    def code(self) -> typedefs.NoneOr[int]:
         """The user like's unique display name code.
         This can be None if the user hasn't logged in after season of the lost update.
         """
@@ -126,7 +127,7 @@ class PartialBungieUser:
     net: traits.Netrunner = attr.field(repr=False)
     """A network state used for making external requests."""
 
-    name: helpers.UndefinedOr[str] = attr.field(repr=True)
+    name: undefined.UndefinedOr[str] = attr.field(repr=True)
     """The user's name. Field may be undefined if not found."""
 
     id: int = attr.field(repr=True, hash=True)
@@ -175,7 +176,7 @@ class BungieUser:
     created_at: datetime = attr.field(hash=True, repr=True, eq=False)
     """The user's creation date in UTC timezone."""
 
-    name: helpers.UndefinedOr[str] = attr.field(hash=False, eq=False, repr=True)
+    name: undefined.UndefinedOr[str] = attr.field(hash=False, eq=False, repr=True)
     """The user's name."""
 
     unique_name: str = attr.field(repr=False)
@@ -228,7 +229,7 @@ class BungieUser:
     picture: assets.MaybeImage = attr.field(repr=False, hash=False, eq=False)
     """The user's profile picture."""
 
-    code: helpers.NoneOr[int] = attr.field(repr=True)
+    code: typedefs.NoneOr[int] = attr.field(repr=True)
     """The user's unique display name code.
     This can be None if the user hasn't logged in after season of the lost update.
     """
@@ -250,7 +251,7 @@ class DestinyUser(UserLike):
     id: int = attr.field(repr=True, hash=True, eq=True)
     """The member's id."""
 
-    name: helpers.UndefinedOr[str] = attr.field(repr=True, eq=False)
+    name: undefined.UndefinedOr[str] = attr.field(repr=True, eq=False)
     """The member's name."""
 
     last_seen_name: str = attr.field(repr=True)
@@ -265,7 +266,7 @@ class DestinyUser(UserLike):
     icon: assets.MaybeImage = attr.field(repr=False)
     """The member's icon if it was present."""
 
-    code: helpers.NoneOr[int] = attr.field(repr=True, eq=True, hash=False, default=0)
+    code: typedefs.NoneOr[int] = attr.field(repr=True, eq=True, hash=False, default=0)
     """The member's name code. This field may be `None` if not found."""
 
     is_public: bool = attr.field(repr=False, default=False)
@@ -322,10 +323,10 @@ class UserThemes:
     id: int = attr.field(repr=True, hash=True)
     """The theme id."""
 
-    name: helpers.UndefinedOr[str] = attr.field(repr=True)
+    name: undefined.UndefinedOr[str] = attr.field(repr=True)
     """An optional theme name. if not found this field will be `None`"""
 
-    description: helpers.UndefinedOr[str] = attr.field(repr=True)
+    description: undefined.UndefinedOr[str] = attr.field(repr=True)
     """An optional theme description. This field could be `None` if no description found."""
 
     def __int__(self) -> int:

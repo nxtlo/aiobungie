@@ -72,23 +72,36 @@ class Component:
     profiles: typing.Optional[profile.Profile] = attr.field()
     """The profile component.
 
-    This will be available when `aiobungie.ComponentType.PROFILE` is passed to the request.
+    This will be available when `aiobungie.ComponentType.PROFILE` is passed to the request components.
     otherwise will be `None`.
     """
 
     profile_progression: typing.Optional[profile.ProfileProgression] = attr.field()
     """The profile progression component.
 
-    This will be available when `aiobungie.ComponentType.PROFILE_PROGRESSION` is passed to the request.
+    This will be available when `aiobungie.ComponentType.PROFILE_PROGRESSION`
+    is passed to the request components.
     otherwise will be `None`.
+    """
+
+    profile_currencies: typing.Optional[
+        typing.Sequence[profile.ProfileCurrencies]
+    ] = attr.field()
+    """A sequence of profile currencies component.
+
+    Notes
+    -----
+    * This will always be `None` unless `auth="access_token"` is passed to the request.
+    * This will always be `None` unless `aiobungie.ComponentType.PROFILE_CURRENCIES`
+    is passed to the request components.
     """
 
     # profile_inventories
 
-    # profile_currencies
-
-    characters: typing.Optional[typing.Mapping[int, character.Character]] = attr.field()
-    """Returns a mapping of character's id to`aiobungie.crate.Character`
+    characters: typing.Optional[typing.Mapping[int, character.Character]] = attr.field(
+        default=None
+    )
+    """A mapping of character's id to`aiobungie.crate.Character`
     of the associated character within the character component.
 
     This will be available when `aiobungie.ComponentType.CHARACTERS` is passed to the request.

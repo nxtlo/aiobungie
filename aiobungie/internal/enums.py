@@ -52,6 +52,10 @@ __all__: tuple[str, ...] = (
     "Relationship",
     "ClanMemberType",
     "MembershipOption",
+    "ItemBindStatus",
+    "ItemLocation",
+    "TransferStatus",
+    "ItemState",
 )
 
 import enum as __enum
@@ -506,3 +510,48 @@ class MembershipOption(IntEnum):
     REVIEWD = 0
     OPEN = 1
     CLOSED = 2
+
+
+@typing.final
+class ItemBindStatus(IntEnum):
+    """An enum for Destiny 2 items bind status."""
+
+    NOT_BOUND = 0
+    BOUND_TO_CHARACTER = 1
+    BOUND_TO_ACCOUNT = 2
+    BOUNT_TO_GUILD = 3
+
+
+@typing.final
+class ItemLocation(IntEnum):
+    """An enum for Destiny 2 items location."""
+
+    UNKNOWN = 0
+    INVENTORY = 1
+    VAULT = 2
+    VENDOR = 3
+    POSTMASTER = 4
+
+
+@typing.final
+class TransferStatus(IntEnum):
+    """An enum for items transfer statuses."""
+
+    CAN_TRANSFER = 0
+    """The item can be transferred."""
+    IS_EQUIPPED = 1
+    """You can't transfer since the item is equipped."""
+    NOT_TRASNFERRABLE = 2
+    """This item can not be transferred."""
+    COULD_BE_TRANSFERRED = 4
+    """You can trasnfer the item. But the place you're trying to put it at has no space for it."""
+
+
+@typing.final
+class ItemState(IntEnum):
+    """An enum for Destiny 2 item states."""
+
+    NONE = 1
+    LOCKED = 2
+    TRACKED = 3
+    MASTERWORKED = 3

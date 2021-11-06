@@ -539,6 +539,7 @@ class RESTClient(interfaces.RESTInterface):
         memberid: int,
         type: typedefs.IntAnd[enums.MembershipType],
         *components: enums.ComponentType,
+        **options: str,
     ) -> ResponseSig[typedefs.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
 
@@ -553,6 +554,7 @@ class RESTClient(interfaces.RESTInterface):
         return self._request(
             RequestMethod.GET,
             f"Destiny2/{int(type)}/Profile/{int(memberid)}/?components={these}",
+            auth=options.get("auth", None),
         )
 
     def fetch_entity(self, type: str, hash: int) -> ResponseSig[typedefs.JsonObject]:

@@ -131,7 +131,11 @@ async def test_profile() -> aiobungie.crate.Component:
         aiobungie.ComponentType.PROFILE,
         aiobungie.ComponentType.CHARACTERS,
         aiobungie.ComponentType.PROFILE_PROGRESSION,
+        aiobungie.ComponentType.PROFILE_CURRENCIES
     )
+
+    # This will always be None since theres no auth.
+    assert pf.profile_currencies is None
 
     if (profile := pf.profiles):
         _LOG.debug(repr(profile))

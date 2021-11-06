@@ -627,6 +627,32 @@ class Factory(interfaces.FactoryInterface):
             net=self._net,
         )
 
+    def _set_profile_currencies_attrs(
+        self, payload: typedefs.JsonObject
+    ) -> profile.ProfileCurrencies:
+        return profile.ProfileCurrencies(
+            hash=payload["itemHash"],
+            quantity=payload["quantity"],
+            bind_status=enums.ItemBindStatus(payload["bindStatus"]),
+            location=enums.ItemLocation(payload["location"]),
+            bucket=payload["bucketHash"],
+            transfer_status=enums.TransferStatus(payload["transferStatus"]),
+            lockable=payload["lockable"],
+            state=enums.ItemState(payload["state"]),
+            dismantel_permissions=payload["dismantlePermission"],
+            is_wrapper=payload["isWrapper"],
+        )
+
+    def deserialize_profile_currencies(
+        self, payload: typedefs.JsonObject, /
+    ) -> typing.Optional[typing.Sequence[profile.ProfileCurrencies]]:
+        if (raw_profile_currs := payload.get("data")) is None:
+            return None
+        return [
+            self._set_profile_currencies_attrs(item)
+            for item in raw_profile_currs["items"]
+        ]
+
     def deserialize_components(
         self, payload: typedefs.JsonObject
     ) -> components.Component:
@@ -634,6 +660,9 @@ class Factory(interfaces.FactoryInterface):
         characters: typing.Optional[typing.Mapping[int, character.Character]] = None
         profile_: typing.Optional[profile.Profile] = None
         profile_progression: typing.Optional[profile.ProfileProgression] = None
+        profile_currencies: typing.Optional[
+            typing.Sequence[profile.ProfileCurrencies]
+        ] = None
 
         if raw_characters := payload.get("characters"):
             characters = {
@@ -649,11 +678,17 @@ class Factory(interfaces.FactoryInterface):
                 raw_profile_progression
             )
 
+        if raw_profile_currencies := payload.get("profileCurrencies"):
+            profile_currencies = self.deserialize_profile_currencies(
+                raw_profile_currencies
+            )
+
         return components.Component(
             net=self._net,
             profiles=profile_,
             characters=characters,
             profile_progression=profile_progression,
+            profile_currencies=profile_currencies,
         )
 
     def deserialize_inventory_entity(

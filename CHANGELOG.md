@@ -20,6 +20,10 @@ This is optional and not required.
 - A new helper function `helpers.collect()` which collect multiple arguments, join them and separate them.
 - Missing `ComponentType` enum fields were added.
 - Implemented `profile.ProfileProgression` profile component.
+- `fetch_profile` and all alternative methods now takes `**options` kwargs which expects `auth` argument
+for components that requires a bearer access token.
+- `profile.ProfileCurrencies` class implements the currencies component.
+- More enums for Destiny 2 items.
 
 ### Breaking changes
 - `Friend.user` was returning `User` and not `BungieUser`

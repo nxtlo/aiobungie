@@ -276,7 +276,7 @@ class DestinyUser(UserLike):
     """The member's corssave override membership type."""
 
     async def fetch_self_profile(
-        self, *components: enums.ComponentType
+        self, *components: enums.ComponentType, **options: str
     ) -> components_.Component:
         """Fetche this user's profile.
 
@@ -286,13 +286,24 @@ class DestinyUser(UserLike):
             Multiple arguments of profile components to collect and return.
             This either can be arguments of integers or `aiobungie.ComponentType`.
 
+        Other Parameters
+        ----------------
+        auth : `typing.Optional[str]`
+            A passed kwarg Bearer access_token to make the request with.
+            This is optional and limited to components that only requires an Authorization token.
+        **options : `str`
+            Other keyword arguments for the request to expect.
+            This is only here for the `auth` option which's a string kwarg.
+
         Returns
         --------
         `aiobungie.crate.Component`
             A Destiny 2 player profile with its components.
             Only passed components will be available if they exists. Otherwise they will be `None`
         """
-        profile_ = await self.net.request.fetch_profile(self.id, self.type, *components)
+        profile_ = await self.net.request.fetch_profile(
+            self.id, self.type, *components, **options
+        )
         assert isinstance(profile_, components_.Component)
         return profile_
 

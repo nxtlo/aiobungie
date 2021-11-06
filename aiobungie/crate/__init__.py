@@ -73,6 +73,7 @@ __all__ = (
     "Artifact",
     "ArtifactPoint",
     "FetchableArtifact",
+    "ProfileCurrencies",
 )
 
 from .activity import Activity
@@ -107,6 +108,7 @@ from .milestones import MilestoneItems
 from .profile import LinkedProfile
 from .profile import Profile
 from .profile import ProfileComponent
+from .profile import ProfileCurrencies
 from .profile import ProfileProgression
 from .season import Artifact
 from .season import ArtifactPoint

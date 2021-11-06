@@ -24,7 +24,13 @@
 
 from __future__ import annotations
 
-__all__ = ("Profile", "ProfileComponent", "LinkedProfile", "ProfileProgression")
+__all__ = (
+    "Profile",
+    "ProfileComponent",
+    "LinkedProfile",
+    "ProfileProgression",
+    "ProfileCurrencies",
+)
 
 import abc
 import asyncio
@@ -211,6 +217,41 @@ class ProfileProgression:
     # No repr for this since its kinda huge dict.
     checklist: typing.Mapping[int, typing.Mapping[int, bool]] = attr.field(repr=False)
     """A mapping of int to another mapping of int to bool for the profile progression checklist."""
+
+
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
+class ProfileCurrencies:
+    """Represents a Bungie profile currencies component."""
+
+    hash: int = attr.field(repr=True, hash=True)
+    """The currency type hash."""
+
+    quantity: int = attr.field(repr=True, hash=True)
+    """The currency quantity."""
+
+    bind_status: enums.ItemBindStatus = attr.field(repr=False)
+    """The currencry binding status."""
+
+    location: enums.ItemLocation = attr.field(repr=True)
+    """The currency location."""
+
+    bucket: int = attr.field(repr=True)
+    """The currency bucket hash."""
+
+    transfer_status: enums.TransferStatus = attr.field(repr=False)
+    """The currency's transfer status."""
+
+    lockable: bool = attr.field(repr=False)
+    """Whether the currency can be locked or not."""
+
+    state: enums.ItemState = attr.field(repr=False)
+    """The currency's state."""
+
+    dismantel_permissions: int = attr.field(repr=False)
+    """The currency's dismantel permission."""
+
+    is_wrapper: bool = attr.field(repr=False)
+    """Whether the currency is a wrapper or not."""
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)

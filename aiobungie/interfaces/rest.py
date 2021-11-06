@@ -180,6 +180,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         memberid: int,
         type: typedefs.IntAnd[enums.MembershipType],
         *components: enums.ComponentType,
+        **options: str,
     ) -> ResponseSig[typedefs.JsonObject]:
         """
         Fetche a bungie profile.
@@ -192,6 +193,15 @@ class RESTInterface(traits.RESTful, abc.ABC):
             A valid membership type.
         *components : `aiobungie.ComponentType`
             Multiple arguments of profile components to collect and return.
+
+        Other Parameters
+        ----------------
+        auth : `typing.Optional[str]`
+            A passed kwarg Bearer access_token to make the request with.
+            This is optional and limited to components that only requires an Authorization token.
+        **options : `str`
+            Other keyword arguments for the request to expect.
+            This is only here for the `auth` option which's a kwarg.
 
         Returns
         --------

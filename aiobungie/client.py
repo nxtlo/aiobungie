@@ -304,6 +304,7 @@ class Client(traits.ClientBase):
         member_id: int,
         type: typedefs.IntAnd[enums.MembershipType],
         *components: enums.ComponentType,
+        **options: str,
     ) -> components.Component:
         """
         Fetche a bungie profile passing components to the request.
@@ -318,6 +319,15 @@ class Client(traits.ClientBase):
             Multiple arguments of profile components to collect and return.
             This either can be arguments of integers or `aiobungie.ComponentType`.
 
+        Other Parameters
+        ----------------
+        auth : `typing.Optional[str]`
+            A passed kwarg Bearer access_token to make the request with.
+            This is optional and limited to components that only requires an Authorization token.
+        **options : `str`
+            Other keyword arguments for the request to expect.
+            This is only here for the `auth` option which's a string kwarg.
+
         Returns
         --------
         `aiobungie.crate.Component`
@@ -329,7 +339,7 @@ class Client(traits.ClientBase):
         `aiobungie.MembershipTypeError`
             The provided membership type was invalid.
         """
-        data = await self.rest.fetch_profile(member_id, type, *components)
+        data = await self.rest.fetch_profile(member_id, type, *components, **options)
         assert isinstance(data, dict)
         return self.serialize.deserialize_components(data)
 

@@ -30,7 +30,8 @@ from .milestones import MilestoneItems as MilestoneItems
 from .profile import LinkedProfile as LinkedProfile
 from .profile import Profile as Profile
 from .profile import ProfileComponent as ProfileComponent
-from .profile import ProfileCurrencies as ProfileCurrencies
+from .profile import ProfileItem as ProfileItem
+from .profile import ProfileItemImpl as ProfileItemImpl
 from .profile import ProfileProgression as ProfileProgression
 from .season import Artifact as Artifact
 from .season import ArtifactPoint as ArtifactPoint

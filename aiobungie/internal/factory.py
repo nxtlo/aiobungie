@@ -627,10 +627,20 @@ class Factory(interfaces.FactoryInterface):
             net=self._net,
         )
 
-    def _set_profile_currencies_attrs(
+    def _deserialize_profile_item_attrs(
         self, payload: typedefs.JsonObject
-    ) -> profile.ProfileCurrencies:
-        return profile.ProfileCurrencies(
+    ) -> profile.ProfileItemImpl:
+
+        instance_id: typing.Optional[int] = None
+        if raw_instance_id := payload.get("itemInstanceId"):
+            instance_id = int(raw_instance_id)
+
+        version_number: typing.Optional[int] = None
+        if raw_version := payload.get("versionNumber"):
+            version_number = int(raw_version)
+
+        return profile.ProfileItemImpl(
+            net=self._net,
             hash=payload["itemHash"],
             quantity=payload["quantity"],
             bind_status=enums.ItemBindStatus(payload["bindStatus"]),
@@ -641,15 +651,17 @@ class Factory(interfaces.FactoryInterface):
             state=enums.ItemState(payload["state"]),
             dismantel_permissions=payload["dismantlePermission"],
             is_wrapper=payload["isWrapper"],
+            instance_id=instance_id,
+            version_number=version_number,
         )
 
-    def deserialize_profile_currencies(
+    def deserialize_profile_items(
         self, payload: typedefs.JsonObject, /
-    ) -> typing.Optional[typing.Sequence[profile.ProfileCurrencies]]:
+    ) -> typing.Optional[typing.Sequence[profile.ProfileItemImpl]]:
         if (raw_profile_currs := payload.get("data")) is None:
             return None
         return [
-            self._set_profile_currencies_attrs(item)
+            self._deserialize_profile_item_attrs(item)
             for item in raw_profile_currs["items"]
         ]
 
@@ -661,7 +673,10 @@ class Factory(interfaces.FactoryInterface):
         profile_: typing.Optional[profile.Profile] = None
         profile_progression: typing.Optional[profile.ProfileProgression] = None
         profile_currencies: typing.Optional[
-            typing.Sequence[profile.ProfileCurrencies]
+            typing.Sequence[profile.ProfileItemImpl]
+        ] = None
+        profile_inventories: typing.Optional[
+            typing.Sequence[profile.ProfileItemImpl]
         ] = None
 
         if raw_characters := payload.get("characters"):
@@ -679,8 +694,11 @@ class Factory(interfaces.FactoryInterface):
             )
 
         if raw_profile_currencies := payload.get("profileCurrencies"):
-            profile_currencies = self.deserialize_profile_currencies(
-                raw_profile_currencies
+            profile_currencies = self.deserialize_profile_items(raw_profile_currencies)
+
+        if raw_profile_inventories := payload.get("profileInventory"):
+            profile_inventories = self.deserialize_profile_items(
+                raw_profile_inventories
             )
 
         return components.Component(
@@ -689,6 +707,7 @@ class Factory(interfaces.FactoryInterface):
             characters=characters,
             profile_progression=profile_progression,
             profile_currencies=profile_currencies,
+            profile_inventories=profile_inventories,
         )
 
     def deserialize_inventory_entity(

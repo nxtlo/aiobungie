@@ -22,7 +22,7 @@ This is optional and not required.
 - Implemented `profile.ProfileProgression` profile component.
 - `fetch_profile` and all alternative methods now takes `**options` kwargs which expects `auth` argument
 for components that requires a bearer access token.
-- `profile.ProfileCurrencies` class implements the currencies component.
+- `profile.ProfileItemImpl` class implements profile components that returns items. i.e., `profileinventories`, `profilecurrencies`, etc.
 - More enums for Destiny 2 items.
 
 ### Breaking changes

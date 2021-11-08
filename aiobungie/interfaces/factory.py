@@ -447,10 +447,13 @@ class FactoryInterface(abc.ABC):
         """
 
     @abc.abstractmethod
-    def deserialize_profile_currencies(
+    def deserialize_profile_items(
         self, payload: typedefs.JsonObject, /
-    ) -> typing.Optional[typing.Sequence[profile.ProfileCurrencies]]:
-        """Deserialize a JSON payload of profile currencies component information.
+    ) -> typing.Optional[typing.Sequence[profile.ProfileItemImpl]]:
+        """Deserialize a JSON payload of profile items component information.
+
+        This may deserialize `profileInventories` or `profileCurrencies` or any
+        other alternatives.
 
         Parameters
         ----------
@@ -459,8 +462,8 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `typing.Optional[typing.Sequence[aiobungie.crate.ProfileCurrencies]]`
-            A profile currencie component object of the deserialized payload.
+        `typing.Optional[typing.Sequence[aiobungie.crate.ProfileItemImpl]]`
+            A profile component object that contains items of the deserialized payload.
         """
 
     @abc.abstractmethod
@@ -482,6 +485,7 @@ class FactoryInterface(abc.ABC):
 
     # Components
 
+    @abc.abstractmethod
     def deserialize_components(
         self, payload: typedefs.JsonObject
     ) -> components.Component:

@@ -125,13 +125,17 @@ async def test_char() -> aiobungie.crate.Character:
     return c
 
 async def test_profile() -> aiobungie.crate.Component:
-    pf = await client.fetch_profile(
-        MID,
-        aiobungie.MembershipType.STEAM,
+    components = (
         aiobungie.ComponentType.PROFILE,
         aiobungie.ComponentType.CHARACTERS,
         aiobungie.ComponentType.PROFILE_PROGRESSION,
-        aiobungie.ComponentType.PROFILE_CURRENCIES
+        aiobungie.ComponentType.PROFILE_CURRENCIES,
+        aiobungie.ComponentType.PROFILE_INVENTORIES
+    )
+    pf = await client.fetch_profile(
+        MID,
+        aiobungie.MembershipType.STEAM,
+        *components
     )
 
     # This will always be None since theres no auth.

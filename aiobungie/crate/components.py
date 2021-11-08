@@ -64,6 +64,41 @@ class Component:
     """Implementation of a Bungie profile components.
 
     This includes all profile components that are available and not private.
+
+    Private components will return `None` unless an `access_token` was passed to the request
+    `**options` parameters.
+
+    Example
+    -------
+    ```py
+    import aiobungie
+
+    # The components to get and return.
+    components = (
+        aiobungie.ComponentType.PROFILE,
+        aiobungie.ComponentType.CHARACTERS,
+        aiobungie.ComponentType.PROFILE_INVENTORIES,
+    )
+    profile = await client.fetch_profile(
+        id,
+        aiobungie.MembershipType.STEAM,
+        *components,
+        # Assuming the component requires an auth token
+        auth="Some Bearer access token"
+    )
+    if items := profile.profile_inventories:
+        for item in items:
+            if item.hash == 1946491241:
+                # Fetch the item if it's a truth-teller.
+                my_item = await item.fetch_self()
+                print(my_item.name, my_item.banner, my_item.icon)
+                # Try to transfer the item.
+                if item.instance_id and item.transfer_status is aiobungie.TransferStatus.CAN_TRANSFER:
+                    try:
+                        await client.rest.transfer_item(...)
+                    except Exception as e:
+                        print(f"Couldn't transfer the item {e}")
+    ```
     """
 
     net: traits.Netrunner = attr.field(repr=False)
@@ -85,7 +120,7 @@ class Component:
     """
 
     profile_currencies: typing.Optional[
-        typing.Sequence[profile.ProfileCurrencies]
+        typing.Sequence[profile.ProfileItemImpl]
     ] = attr.field()
     """A sequence of profile currencies component.
 
@@ -96,11 +131,19 @@ class Component:
     is passed to the request components.
     """
 
-    # profile_inventories
+    profile_inventories: typing.Optional[
+        typing.Optional[typing.Sequence[profile.ProfileItemImpl]]
+    ] = attr.field()
+    """A sequence of profile inventories items component.
 
-    characters: typing.Optional[typing.Mapping[int, character.Character]] = attr.field(
-        default=None
-    )
+    Notes
+    -----
+    * This will always be `None` unless `auth="access_token"` is passed to the request.
+    * This will always be `None` unless `aiobungie.ComponentType.PROFILE_INVENTORIES`
+    is passed to the request components.
+    """
+
+    characters: typing.Optional[typing.Mapping[int, character.Character]] = attr.field()
     """A mapping of character's id to`aiobungie.crate.Character`
     of the associated character within the character component.
 

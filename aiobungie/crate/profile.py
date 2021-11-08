@@ -29,7 +29,8 @@ __all__ = (
     "ProfileComponent",
     "LinkedProfile",
     "ProfileProgression",
-    "ProfileCurrencies",
+    "ProfileItem",
+    "ProfileItemImpl",
 )
 
 import abc
@@ -41,6 +42,7 @@ import typing
 import attr
 
 from aiobungie.crate import character
+from aiobungie.crate import entity
 from aiobungie.crate import user
 from aiobungie.internal import enums
 from aiobungie.internal import helpers
@@ -219,39 +221,122 @@ class ProfileProgression:
     """A mapping of int to another mapping of int to bool for the profile progression checklist."""
 
 
-@attr.define(hash=False, kw_only=True, weakref_slot=False)
-class ProfileCurrencies:
-    """Represents a Bungie profile currencies component."""
+class ProfileItem(abc.ABC):
+    """An interfance for items information found in a profile component.
+
+    Those fields may be found in a `ProfileInventories`, etc.
+    """
+
+    __slots__ = ()
+
+    @property
+    @abc.abstractmethod
+    def net(self) -> traits.Netrunner:
+        """A network state used for making external requests."""
+
+    @property
+    @abc.abstractmethod
+    def hash(self) -> int:
+        """The item type hash."""
+
+    @property
+    @abc.abstractmethod
+    def quantity(self) -> int:
+        """The item quantity."""
+
+    @property
+    @abc.abstractmethod
+    def bind_status(self) -> enums.ItemBindStatus:
+        """The item binding status."""
+
+    @property
+    @abc.abstractmethod
+    def location(self) -> enums.ItemLocation:
+        """The item location."""
+
+    @property
+    @abc.abstractmethod
+    def bucket(self) -> int:
+        """The item bucket hash."""
+
+    @property
+    @abc.abstractmethod
+    def transfer_status(self) -> enums.TransferStatus:
+        """The item's transfer status."""
+
+    @property
+    @abc.abstractmethod
+    def lockable(self) -> bool:
+        """Whether the item can be locked or not."""
+
+    @property
+    @abc.abstractmethod
+    def state(self) -> enums.ItemState:
+        """The item's state."""
+
+    @property
+    @abc.abstractmethod
+    def dismantel_permissions(self) -> int:
+        """The item's dismantel permission."""
+
+    @property
+    @abc.abstractmethod
+    def is_wrapper(self) -> bool:
+        """Whether the item is a wrapper or not."""
+
+
+@attr.mutable(hash=True, kw_only=True, weakref_slot=False)
+class ProfileItemImpl(ProfileItem):
+    """Concrete implementation of any profile component item."""
+
+    net: traits.Netrunner = attr.field(repr=False, eq=False, hash=False)
+    """A network state used for making external requests."""
 
     hash: int = attr.field(repr=True, hash=True)
-    """The currency type hash."""
+    """The item type hash."""
 
     quantity: int = attr.field(repr=True, hash=True)
-    """The currency quantity."""
+    """The item quantity."""
 
     bind_status: enums.ItemBindStatus = attr.field(repr=False)
-    """The currencry binding status."""
+    """The item binding status."""
 
     location: enums.ItemLocation = attr.field(repr=True)
-    """The currency location."""
+    """The item location."""
 
     bucket: int = attr.field(repr=True)
-    """The currency bucket hash."""
+    """The item bucket hash."""
 
     transfer_status: enums.TransferStatus = attr.field(repr=False)
-    """The currency's transfer status."""
+    """The item's transfer status."""
 
     lockable: bool = attr.field(repr=False)
-    """Whether the currency can be locked or not."""
+    """Whether the item can be locked or not."""
 
-    state: enums.ItemState = attr.field(repr=False)
-    """The currency's state."""
+    state: enums.ItemState = attr.field(repr=True)
+    """The item's state."""
 
     dismantel_permissions: int = attr.field(repr=False)
-    """The currency's dismantel permission."""
+    """The item's dismantel permission."""
 
     is_wrapper: bool = attr.field(repr=False)
-    """Whether the currency is a wrapper or not."""
+    """Whether the item is a wrapper or not."""
+
+    instance_id: typing.Optional[int] = attr.field(repr=True)
+    """An inventory item instance id if available, otherwise will be `None`."""
+
+    version_number: typing.Optional[int] = attr.field(repr=False)
+    """The item version number of available, other wise will be `None`."""
+
+    async def fetch_self(self) -> entity.InventoryEntity:
+        """Fetch this profile item.
+
+        Returns
+        -------
+        `aiobungie.crate.InventoryEntity`
+            An inventory item definition entity.
+        """
+        return await self.net.request.fetch_inventory_item(self.hash)
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)

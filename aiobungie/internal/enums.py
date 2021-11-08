@@ -551,7 +551,7 @@ class TransferStatus(IntEnum):
 class ItemState(IntEnum):
     """An enum for Destiny 2 item states."""
 
-    NONE = 1
-    LOCKED = 2
-    TRACKED = 3
-    MASTERWORKED = 3
+    NONE = 0
+    LOCKED = 1
+    TRACKED = 2
+    MASTERWORKED = 4

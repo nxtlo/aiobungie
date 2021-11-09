@@ -71,6 +71,7 @@ class RateLimitedError(HTTPException):
 
     headers: multidict.CIMultiDictProxy[str] = attr.field(default=None)
     retry_after: float = attr.field(default=0.0)
+    json: dict[typing.Any, typing.Any] = attr.field()
 
 
 @typing.final

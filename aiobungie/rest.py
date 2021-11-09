@@ -385,7 +385,7 @@ class RESTClient(interfaces.RESTInterface):
                 f"{cls.__qualname__} is async only, use async-with instead."
             )
 
-        async def __exit__(
+        def __exit__(
             self,
             exception_type: typing.Optional[type[BaseException]],
             exception: typing.Optional[BaseException],

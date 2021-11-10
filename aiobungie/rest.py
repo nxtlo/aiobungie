@@ -393,6 +393,9 @@ class RESTClient(interfaces.RESTInterface):
         ) -> None:
             return None
 
+    async def __aenter__(self) -> RESTClient:
+        return self
+
     async def __aexit__(
         self,
         exception_type: typing.Optional[type[BaseException]],

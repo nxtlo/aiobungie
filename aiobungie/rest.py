@@ -34,6 +34,7 @@ import contextlib
 import http
 import logging
 import platform
+import random
 import sys
 import typing
 from urllib import parse
@@ -116,6 +117,7 @@ async def handle_errors(
             "ApiKeyMissingFromRequest",
             "WebAuthRequired",
             "ApiInvalidOrExpiredKey",
+            "AuthenticationInvalid",
         }:
             return error.Unauthorized(
                 message=str(msg),
@@ -123,8 +125,12 @@ async def handle_errors(
                 url=str(response.real_url),
             )
 
-        # Anything that's not found except NotFound.
-        if msg and "NotFound" in msg or "UserCannotFindRequestedUser" == msg:
+        # API is down...
+        elif msg == "SystemDisabled":
+            raise OSError(*data)
+
+        # Anything contains not found.
+        elif msg and "NotFound" in msg or "UserCannotFindRequestedUser" == msg:
             return error.NotFound(*data)
 
         # Membership need to be alone.
@@ -325,7 +331,7 @@ class RESTClient(interfaces.RESTInterface):
                             )
                         )
 
-                        await self._handle_ratelimit(response)
+                        await self._handle_ratelimit(response, method, str(route))
 
                         if response.status == http.HTTPStatus.NO_CONTENT:
                             return None
@@ -376,11 +382,24 @@ class RESTClient(interfaces.RESTInterface):
 
                         await self._handle_err(response, data["ErrorStatus"])
 
-            except (RuntimeError, Exception):
-                raise
+            except RuntimeError:
+                continue
 
-    async def __aenter__(self) -> RESTClient:
-        return self
+    if not typing.TYPE_CHECKING:
+
+        def __enter__(self) -> typing.NoReturn:
+            cls = type(self)
+            raise TypeError(
+                f"{cls.__qualname__} is async only, use async-with instead."
+            )
+
+        def __exit__(
+            self,
+            exception_type: typing.Optional[type[BaseException]],
+            exception: typing.Optional[BaseException],
+            exception_traceback: typing.Optional[types.TracebackType],
+        ) -> None:
+            return None
 
     async def __aexit__(
         self,
@@ -395,25 +414,37 @@ class RESTClient(interfaces.RESTInterface):
     # We don't want this to be super complicated.
     @typing.final
     @staticmethod
-    async def _handle_ratelimit(response: aiohttp.ClientResponse) -> None:
-        if response.status == http.HTTPStatus.TOO_MANY_REQUESTS:
-            if response.content_type != _APP_JSON:
-                _LOG.error(
-                    f"we're being ratelmited on non JSON request, {response.content_type}. Returning."
-                )
-                return None
-
-            json = await response.json()
-            retry_after = float(json["retry-after"])
-            _LOG.critical("We're being ratelimited. Sleeping for %f:,", retry_after)
-            await asyncio.sleep(retry_after)
-
-            raise error.RateLimitedError(
-                retry_after=retry_after,
-                headers=response.headers,
-                url=str(response.real_url),
+    async def _handle_ratelimit(
+        response: aiohttp.ClientResponse,
+        method: str,
+        route: str,
+    ) -> None:
+        if response.status != http.HTTPStatus.TOO_MANY_REQUESTS:
+            return
+        if response.content_type != _APP_JSON:
+            _LOG.error(
+                f"we're being ratelmited on non JSON request, {response.content_type}."
             )
-        return None
+            raise RuntimeError
+
+        json = await response.json()
+        retry_after = json["ThrottleSeconds"]
+        if retry_after == 0:
+            # Can't really do anything about this.
+            sleep_time = float((retry_after + random.randint(0, 3)))
+        _LOG.warning(
+            "We're being ratelimited with method %s route %s. Sleeping for %f:,",
+            method,
+            route,
+            sleep_time,
+        )
+        await asyncio.sleep(sleep_time)
+        raise error.RateLimitedError(
+            retry_after=retry_after,
+            headers=response.headers,
+            url=str(response.real_url),
+            json=json,
+        )
 
     @staticmethod
     @typing.final

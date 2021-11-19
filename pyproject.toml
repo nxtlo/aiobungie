@@ -91,11 +91,11 @@ reportUnusedImport = "warning"
 [tool.poetry.dependencies]
 python = "^3.8"
 python-dateutil = "2.8.2"
-aiohttp = "3.8.0"
+aiohttp = "3.8.1"
 attrs = "21.2.0"
 
 [tool.poetry.dev-dependencies]
-black = "21.10b0"
+black = "21.11b1"
 mypy = "0.910"
 nox = "2021.10.1"
 pdoc = "8.0.1"
@@ -104,7 +104,7 @@ pytest = "6.2.5"
 pytest-asyncio = "0.16.0"
 mock = "4.0.3"
 flake8 = "4.0.1"
-python-dotenv = "0.19.1"
+python-dotenv = "0.19.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

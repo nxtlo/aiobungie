@@ -520,8 +520,25 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.crate.InventoryEntiry`
-            A hard linked profile object of the deserialized payload.
+        `aiobungie.crate.InventoryEntity`
+            An entity item object of the deserialized payload.
+        """
+
+    @abc.abstractmethod
+    def deserialize_objective_entity(
+        self, payload: typedefs.JsonObject, /
+    ) -> entity.ObjectiveEntity:
+        """Deserialize a JSON payload of an objetive entity information.
+
+        Parameters
+        ----------
+        payload : `aiobungie.typedefs.JsonObject`
+            The JSON payload.
+
+        Returns
+        -------
+        `aiobungie.crate.ObjectiveEntity`
+            An objetive entity object of the deserialized payload.
         """
 
     # Activities.

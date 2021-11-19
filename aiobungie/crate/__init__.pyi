@@ -13,8 +13,12 @@ from .clans import GroupMember as GroupMember
 from .components import Component as Component
 from .components import ComponentFields as ComponentFields
 from .components import ComponentPrivacy as ComponentPrivacy
+from .entity import BaseEntity as BaseEntity
 from .entity import Entity as Entity
+from .entity import GatingScope as GatingScope
 from .entity import InventoryEntity as InventoryEntity
+from .entity import ObjectiveEntity as ObjectiveEntity
+from .entity import ValueUIStyle as ValueUIStyle
 from .fireteams import AvalaibleFireteam as AvalaibleFireteam
 from .fireteams import Fireteam as Fireteam
 from .fireteams import FireteamActivity as FireteamActivity
@@ -33,6 +37,9 @@ from .profile import ProfileComponent as ProfileComponent
 from .profile import ProfileItem as ProfileItem
 from .profile import ProfileItemImpl as ProfileItemImpl
 from .profile import ProfileProgression as ProfileProgression
+from .records import CharacterRecord as CharacterRecord
+from .records import Objective as Objective
+from .records import Record as Record
 from .season import Artifact as Artifact
 from .season import ArtifactPoint as ArtifactPoint
 from .season import FetchableArtifact as FetchableArtifact

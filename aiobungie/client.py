@@ -828,15 +828,15 @@ class Client(traits.ClientBase):
         assert isinstance(resp, dict)
         return self.serialize.deserialize_clan(resp, bound=True)
 
-    # * Destiny 2 Definitions. Entities.
+    # * Destiny 2 Entities aka Definitions.
 
     async def fetch_inventory_item(self, hash: int, /) -> entity.InventoryEntity:
         """Fetch a static inventory item entity given a its hash.
 
         Parameters
         ----------
-        hash: `builtins.int`
-            Entity's hash.
+        hash: `int`
+            Inventory item's hash.
 
         Returns
         -------
@@ -846,6 +846,23 @@ class Client(traits.ClientBase):
         resp = await self.rest.fetch_inventory_item(hash)
         assert isinstance(resp, dict)
         return self.serialize.deserialize_inventory_entity(resp)
+
+    async def fetch_objective_entity(self, hash: int, /) -> entity.ObjectiveEntity:
+        """Fetch a Destiny objective entity given a its hash.
+
+        Parameters
+        ----------
+        hash: `int`
+            objective's hash.
+
+        Returns
+        -------
+        `aiobungie.crate.ObjectiveEntity`
+            An objetive entity item.
+        """
+        resp = await self.rest.fetch_objective_entity(hash)
+        assert isinstance(resp, dict)
+        return self.serialize.deserialize_objective_entity(resp)
 
     # * These methods should be for Special bungie endpoints, i.e,
     # * Applications, Forums, Polls, Trending, etc.

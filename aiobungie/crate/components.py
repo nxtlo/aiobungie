@@ -30,12 +30,14 @@ from __future__ import annotations
 
 __all__: tuple[str, ...] = ("Component", "ComponentPrivacy", "ComponentFields")
 
+import collections.abc as collections
 import typing
 
 import attr
 
 from aiobungie.crate import character
 from aiobungie.crate import profile
+from aiobungie.crate import records as records_
 from aiobungie.internal import enums
 
 if typing.TYPE_CHECKING:
@@ -161,8 +163,25 @@ class Component:
 
     # character_items
 
-    # records
+    profile_records: typing.Optional[
+        collections.Mapping[int, records_.Record]
+    ] = attr.field()
+    """A mapping of the profile record id to a record component.
 
+    This will be available when `aiobungie.ComponentType.RECORDS`
+    is passed to the request components.
+    otherwise will be `None`.
+    """
+
+    character_records: typing.Optional[
+        collections.Mapping[int, records_.CharacterRecord]
+    ] = attr.field()
+    """A list of mapping of the characters id to a record component.
+
+    This will be available when `aiobungie.ComponentType.RECORDS`
+    is passed to the request components.
+    otherwise will be `None`.
+    """
     # # TODO: ^ and return `list[vendors.Vendor]`
     # vendors
 

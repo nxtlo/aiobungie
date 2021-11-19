@@ -25,6 +25,7 @@ from __future__ import annotations
 
 __all__ = ("Factory",)
 
+import collections.abc as collections
 import typing
 
 from aiobungie import error
@@ -41,6 +42,7 @@ from aiobungie.crate import fireteams
 from aiobungie.crate import friends
 from aiobungie.crate import milestones
 from aiobungie.crate import profile
+from aiobungie.crate import records
 from aiobungie.crate import season
 from aiobungie.crate import user
 from aiobungie.internal import assets
@@ -655,6 +657,80 @@ class Factory(interfaces.FactoryInterface):
             version_number=version_number,
         )
 
+    def _deserialize_objectives(
+        self, payload: typedefs.JsonObject
+    ) -> records.Objective:
+        return records.Objective(
+            net=self._net,
+            hash=payload["objectiveHash"],
+            visible=payload["visible"],
+            complete=payload["complete"],
+            completion_value=payload["completionValue"],
+            progress=payload["progress"],
+        )
+
+    def _deserialize_records(
+        self,
+        payload: typedefs.JsonObject,
+        scores: typing.Optional[records.RecordScores] = None,
+        **nodes: int,
+    ) -> records.Record:
+        objectives: typing.Optional[list[records.Objective]] = None
+        interval_objectives: typing.Optional[list[records.Objective]] = None
+        record_state: typedefs.IntAnd[records.RecordState]
+
+        try:
+            record_state = records.RecordState(payload.get("state", 999))
+        except ValueError:
+            record_state = payload.get("state", 0)
+
+        if raw_objs := payload.get("objectives"):
+            objectives = [self._deserialize_objectives(obj) for obj in raw_objs]
+
+        if raw_interval_objs := payload.get("intervalObjectives"):
+            interval_objectives = [
+                self._deserialize_objectives(obj) for obj in raw_interval_objs
+            ]
+
+        if scores:
+            assert scores is not None
+
+        return records.Record(
+            scores=scores,
+            categories_node_hash=nodes.get("categories_hash", undefined.Undefined),
+            seals_node_hash=nodes.get("seals_hash", undefined.Undefined),
+            state=record_state,
+            objectives=objectives,
+            interval_objectives=interval_objectives,
+            redeemed_count=payload.get("intervalsRedeemedCount", 0),
+            completion_times=payload.get("completedCount", None),
+            reward_visibility=payload.get("rewardVisibilty", None),
+        )
+
+    def _deserialize_character_records(
+        self,
+        payload: typedefs.JsonObject,
+        scores: typing.Optional[records.RecordScores] = None,
+        record_hashes: typing.Optional[list[int]] = None,
+    ) -> records.CharacterRecord:
+
+        record = self._deserialize_records(payload, scores)
+        # This is always None but available to keep the Record
+        # Signature.
+        assert scores is None
+        return records.CharacterRecord(
+            scores=scores,
+            categories_node_hash=record.categories_node_hash,
+            seals_node_hash=record.seals_node_hash,
+            state=record.state,
+            objectives=record.objectives,
+            interval_objectives=record.interval_objectives,
+            redeemed_count=payload.get("intervalsRedeemedCount", 0),
+            completion_times=payload.get("completedCount"),
+            reward_visibility=payload.get("rewardVisibilty"),
+            record_hashes=record_hashes or [],
+        )
+
     def deserialize_profile_items(
         self, payload: typedefs.JsonObject, /
     ) -> typing.Optional[typing.Sequence[profile.ProfileItemImpl]]:
@@ -668,38 +744,78 @@ class Factory(interfaces.FactoryInterface):
     def deserialize_components(
         self, payload: typedefs.JsonObject
     ) -> components.Component:
-        # We make components None here depends on returned components to save some memory.
-        characters: typing.Optional[typing.Mapping[int, character.Character]] = None
-        profile_: typing.Optional[profile.Profile] = None
-        profile_progression: typing.Optional[profile.ProfileProgression] = None
-        profile_currencies: typing.Optional[
-            typing.Sequence[profile.ProfileItemImpl]
-        ] = None
-        profile_inventories: typing.Optional[
-            typing.Sequence[profile.ProfileItemImpl]
-        ] = None
+        # We make components None here depends on returned components to save a little memory.
 
+        # Components.
+        characters: typing.Optional[typing.Mapping[int, character.Character]] = None
         if raw_characters := payload.get("characters"):
             characters = {
                 int(char_id): self._set_character_attrs(char)
                 for char_id, char in raw_characters["data"].items()
             }
 
+        profile_: typing.Optional[profile.Profile] = None
         if raw_profile := payload.get("profile"):
             profile_ = self.deserialize_profile(raw_profile)
 
+        profile_progression: typing.Optional[profile.ProfileProgression] = None
         if raw_profile_progression := payload.get("profileProgression"):
             profile_progression = self.deserialize_profile_progression(
                 raw_profile_progression
             )
 
+        profile_currencies: typing.Optional[
+            typing.Sequence[profile.ProfileItemImpl]
+        ] = None
         if raw_profile_currencies := payload.get("profileCurrencies"):
             profile_currencies = self.deserialize_profile_items(raw_profile_currencies)
 
+        profile_inventories: typing.Optional[
+            typing.Sequence[profile.ProfileItemImpl]
+        ] = None
         if raw_profile_inventories := payload.get("profileInventory"):
             profile_inventories = self.deserialize_profile_items(
                 raw_profile_inventories
             )
+
+        profile_records: typing.Optional[
+            collections.Mapping[int, records.Record]
+        ] = None
+
+        if raw_profile_records_ := payload.get("profileRecords"):
+            raw_profile_records = raw_profile_records_["data"]
+            scores = records.RecordScores(
+                current_score=raw_profile_records["score"],
+                legacy_score=raw_profile_records["legacyScore"],
+                lifetime_score=raw_profile_records["lifetimeScore"],
+            )
+            profile_records = {
+                int(record_id): self._deserialize_records(
+                    record,
+                    scores,
+                    categories_hash=raw_profile_records["recordCategoriesRootNodeHash"],
+                    seals_hash=raw_profile_records["recordSealsRootNodeHash"],
+                )
+                for record_id, record in raw_profile_records["records"].items()
+            }
+
+        character_records: typing.Optional[
+            collections.Mapping[int, records.CharacterRecord]
+        ] = None
+
+        if raw_character_records := payload.get("characterRecords"):
+            # Had to do it in two steps..
+            to_update: typedefs.JsonObject = {}
+            for _, data in raw_character_records["data"].items():
+                for record_id, record in data.items():
+                    to_update[record_id] = record
+
+            character_records = {
+                int(rec_id): self._deserialize_character_records(
+                    rec, record_hashes=to_update.get("featuredRecordHashes")
+                )
+                for rec_id, rec in to_update["records"].items()
+            }
 
         return components.Component(
             net=self._net,
@@ -708,17 +824,41 @@ class Factory(interfaces.FactoryInterface):
             profile_progression=profile_progression,
             profile_currencies=profile_currencies,
             profile_inventories=profile_inventories,
+            profile_records=profile_records,
+            character_records=character_records,
+        )
+
+    def _set_entity_attrs(
+        self, payload: typedefs.JsonObject, *, key: str = "displayProperties"
+    ) -> entity.BaseEntity:
+        name: undefined.UndefinedOr[str] = undefined.Undefined
+        description: undefined.UndefinedOr[str] = undefined.Undefined
+        icon: assets.MaybeImage = assets.Image.partial()
+
+        if properties := payload[key]:
+            if raw_name := properties["name"] != typedefs.Unknown:
+                name = raw_name
+            if raw_description := properties["description"] != typedefs.Unknown:
+                description = raw_description
+            if raw_icon := properties.get("icon"):
+                icon = raw_icon
+            has_icon = properties["hasIcon"]
+
+        return entity.BaseEntity(
+            net=self._net,
+            hash=payload["hash"],
+            index=payload["index"],
+            name=name,
+            description=description,
+            has_icon=has_icon,
+            icon=icon,
         )
 
     def deserialize_inventory_entity(
         self, payload: typedefs.JsonObject, /
     ) -> entity.InventoryEntity:
-        try:
-            # All Bungie entities has a display propetie
-            # if we don't find it means the entity was not found.
-            props: typedefs.JsonObject = payload["displayProperties"]
-        except KeyError:
-            raise error.NotFound("The entity inventory item hash is invalid") from None
+
+        props = self._set_entity_attrs(payload)
 
         # Some entities have an inventory which
         # Includes its hash types.
@@ -739,24 +879,13 @@ class Factory(interfaces.FactoryInterface):
 
         tier_name: str = inventory.get("tierTypeName", None)
 
-        if (name := props.get("name", typedefs.Unknown)) == typedefs.Unknown:
-            name = undefined.Undefined
-
         if (
             type_name := payload.get("itemTypeDisplayName", typedefs.Unknown)
         ) == typedefs.Unknown:
             type_name = undefined.Undefined
 
-        if (
-            description := props.get("description", typedefs.Unknown)
-        ) == typedefs.Unknown:
-            description = undefined.Undefined
-
         if (about := payload.get("flavorText", typedefs.Unknown)) == typedefs.Unknown:
             about = undefined.Undefined
-
-        if (raw_icon := props.get("icon", assets.Image.partial())) is not None:
-            icon: assets.Image = assets.Image(str(raw_icon))
 
         if (
             raw_watermark := payload.get("iconWatermark", assets.Image.partial())
@@ -790,12 +919,12 @@ class Factory(interfaces.FactoryInterface):
 
         return entity.InventoryEntity(
             net=self._net,
-            name=name,
-            description=description,
-            hash=payload["hash"],
-            index=payload["index"],
-            icon=icon,
-            has_icon=props["hasIcon"],
+            name=props.name,
+            description=props.description,
+            hash=props.hash,
+            index=props.index,
+            icon=props.icon,
+            has_icon=props.has_icon,
             water_mark=water_mark,
             banner=banner,
             about=about,
@@ -812,6 +941,37 @@ class Factory(interfaces.FactoryInterface):
             stats=stats,
             ammo_type=block,
             lore_hash=payload.get("loreHash", None),
+        )
+
+    def deserialize_objective_entity(
+        self, payload: typedefs.JsonObject, /
+    ) -> entity.ObjectiveEntity:
+        props = self._set_entity_attrs(payload)
+        return entity.ObjectiveEntity(
+            net=self._net,
+            hash=props.hash,
+            index=props.index,
+            description=props.description,
+            name=props.name,
+            has_icon=props.has_icon,
+            icon=props.icon,
+            unlock_value_hash=payload["unlockValueHash"],
+            completion_value=payload["completionValue"],
+            scope=entity.GatingScope(payload["scope"]),
+            location_hash=payload["locationHash"],
+            allowed_negative_value=payload["allowNegativeValue"],
+            allowed_value_change=payload["allowValueChangeWhenCompleted"],
+            counting_downward=payload["isCountingDownward"],
+            value_style=entity.ValueUIStyle(payload["valueStyle"]),
+            progress_description=payload["progressDescription"],
+            perks=payload["perks"],
+            stats=payload["stats"],
+            minimum_visibility=payload["minimumVisibilityThreshold"],
+            allow_over_completion=payload["allowOvercompletion"],
+            show_value_style=payload["showValueOnComplete"],
+            display_only_objective=payload["isDisplayOnlyObjective"],
+            complete_value_style=entity.ValueUIStyle(payload["completedValueStyle"]),
+            progress_value_style=entity.ValueUIStyle(payload["inProgressValueStyle"]),
         )
 
     # TODO: Re-implement this.
@@ -992,12 +1152,17 @@ class Factory(interfaces.FactoryInterface):
         return friends.FriendRequestView(incoming=incoming, outgoing=outgoing)
 
     def _set_fireteam_fields(self, payload: typedefs.JsonObject) -> fireteams.Fireteam:
+        activity_type = payload["activityType"]
+        try:
+            activity_type = fireteams.FireteamActivity(payload["activityType"])
+        except ValueError:
+            pass
         return fireteams.Fireteam(
             id=int(payload["fireteamId"]),
             group_id=int(payload["groupId"]),
             platform=fireteams.FireteamPlatform(payload["platform"]),
-            activity_type=fireteams.FireteamActivity(payload["activityType"]),
             is_immediate=payload["isImmediate"],
+            activity_type=activity_type,
             owner_id=int(payload["ownerMembershipId"]),
             player_slot_count=payload["playerSlotCount"],
             available_player_slots=payload["availablePlayerSlotCount"],

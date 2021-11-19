@@ -43,7 +43,7 @@ import aiohttp
 import attr
 import yarl
 
-from aiobungie import _info as info
+from aiobungie import _info as info  # type: ignore[private-usage]
 from aiobungie import error
 from aiobungie import interfaces
 from aiobungie import typedefs
@@ -77,9 +77,12 @@ _APP_JSON: typing.Final[str] = "application/json"
 _RETRY_5XX: typing.Final[set[int]] = {500, 502, 503, 504}
 _AUTH_HEADER: typing.Final[str] = sys.intern("Authorization")
 _USER_AGENT_HEADERS: typing.Final[str] = sys.intern("User-Agent")
-_USER_AGENT: typing.Final[str] = f"AiobungieClient/{info.__version__}"
-f" ({info.__url__}) {platform.python_implementation()}/{platform.python_version()}"
-f"Aiohttp/{aiohttp.HttpVersion11}"  # type: ignore[UnknownMemberType]
+_USER_AGENT: typing.Final[
+    str
+] = f"AiobungieClient ({info.__about__}), ({info.__author__}), "
+f"({info.__version__}), ({info.__url__}), "
+f"{platform.python_implementation()}/{platform.python_version()} {platform.system()} "
+f"{platform.architecture()[0]}, Aiohttp/{aiohttp.HttpVersion11}"  # type: ignore[UnknownMemberType]
 
 
 async def handle_errors(
@@ -581,7 +584,7 @@ class RESTClient(interfaces.RESTInterface):
             raise ValueError("No profile components passed.", components)
 
         # Need to get the int overload of the components to separate them.
-        if len(components) > 1:
+        elif len(components) > 1:
             these = helpers.collect(*[int(k) for k in components])  # type: ignore[call-overload]
         else:
             these = helpers.collect(int(*components))
@@ -600,6 +603,10 @@ class RESTClient(interfaces.RESTInterface):
     def fetch_inventory_item(self, hash: int, /) -> ResponseSig[typedefs.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self.fetch_entity("DestinyInventoryItemDefinition", hash)
+
+    def fetch_objective_entity(self, hash: int, /) -> ResponseSig[typedefs.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        return self.fetch_entity("DestinyObjectiveDefinition", hash)
 
     def fetch_groups_for_member(
         self,

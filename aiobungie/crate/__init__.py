@@ -75,6 +75,13 @@ __all__ = (
     "FetchableArtifact",
     "ProfileItem",
     "ProfileItemImpl",
+    "Record",
+    "CharacterRecord",
+    "Objective",
+    "GatingScope",
+    "ValueUIStyle",
+    "ObjectiveEntity",
+    "BaseEntity",
 )
 
 from .activity import Activity
@@ -92,8 +99,12 @@ from .clans import GroupMember
 from .components import Component
 from .components import ComponentFields
 from .components import ComponentPrivacy
+from .entity import BaseEntity
 from .entity import Entity
+from .entity import GatingScope
 from .entity import InventoryEntity
+from .entity import ObjectiveEntity
+from .entity import ValueUIStyle
 from .fireteams import AvalaibleFireteam
 from .fireteams import Fireteam
 from .fireteams import FireteamActivity
@@ -112,6 +123,9 @@ from .profile import ProfileComponent
 from .profile import ProfileItem
 from .profile import ProfileItemImpl
 from .profile import ProfileProgression
+from .records import CharacterRecord
+from .records import Objective
+from .records import Record
 from .season import Artifact
 from .season import ArtifactPoint
 from .season import FetchableArtifact

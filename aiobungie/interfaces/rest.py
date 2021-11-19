@@ -533,8 +533,8 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def fetch_inventory_item(self, hash: int, /) -> ResponseSig[typedefs.JsonObject]:
-        """Fetch a static inventory item entity given a its hash.
+    def fetch_entity(self, type: str, hash: int) -> ResponseSig[typedefs.JsonObject]:
+        """Fetch a Destiny definition item given its type and hash.
 
         Parameters
         ----------
@@ -546,7 +546,37 @@ class RESTInterface(traits.RESTful, abc.ABC):
         Returns
         -------
         `ResponseSig[aiobungie.typedefs.JsonObject]`
-            A JSON array object of the inventory item.
+            A JSON object of the definition data.
+        """
+
+    @abc.abstractmethod
+    def fetch_inventory_item(self, hash: int, /) -> ResponseSig[typedefs.JsonObject]:
+        """Fetch a Destiny inventory item entity given a its hash.
+
+        Parameters
+        ----------
+        hash: `builtins.int`
+            Entity's hash.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.typedefs.JsonObject]`
+            A JSON object of the inventory item.
+        """
+
+    @abc.abstractmethod
+    def fetch_objective_entity(self, hash: int, /) -> ResponseSig[typedefs.JsonObject]:
+        """Fetch a Destiny objective entity given a its hash.
+
+        Parameters
+        ----------
+        hash: `builtins.int`
+            objective's hash.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.typedefs.JsonObject]`
+            A JSON object of the objetive data.
         """
 
     @abc.abstractmethod

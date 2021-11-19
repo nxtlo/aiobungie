@@ -122,4 +122,11 @@ from .crate.fireteams import FireteamDate
 from .crate.fireteams import FireteamLanguage
 from .crate.fireteams import FireteamPlatform
 
+# Records enums
+from .crate.records import RecordState
+
+# Entity enums
+from .crate.entity import GatingScope
+from .crate.entity import ValueUIStyle
+
 __all__ = [mod for mod in dir() if not mod.startswith("_")]  # type: ignore

@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.5b11...HEAD)
 
 ### Added
+- `crate.records` which implements Bungie record component.
 - `__repr__` overloaded for `enums.Enum` which just returns `enums.Enum.__str__`.
 - `Profile.collect()` method which fetch and collect all characters at once.
 - Implemented `aiobungie.crate.fireteams` objects and its methods.
@@ -24,9 +25,10 @@ This is optional and not required.
 for components that requires a bearer access token.
 - `profile.ProfileItemImpl` class implements profile components that returns items. i.e., `profileinventories`, `profilecurrencies`, etc.
 - More enums for Destiny 2 items.
+- `entity.BaseEntity` class which all entities now inherit from.
+- `fetch_objective_entity()` method which returns `entity.ObjetiveEntity` entity.
 
 ### Breaking changes
-- `Friend.user` was returning `User` and not `BungieUser`
 - `fetch_profile` and all alternative methods now takes `*components` parameter which accept multiple components to be passed and retuned at once.
 - `fetch_profile` and all alrernative methods now return `components.Component` instead of `profile.Profile`.
 - `aiobungie.Component` enum name renamed to `ComponentType`.
@@ -36,7 +38,7 @@ for components that requires a bearer access token.
 -  All type hints used to be in `helpers.py` moved to new module `typedefs.py` in root directory.
 - `undefined` types are now in `undefined.py` new module.
 - `helpers.py` now will only include helper functions and classes.
-- `helpers.just()` now takes a generic type for the return type.
+- `helpers.just()` now takes a generic type for the return type hint.
 
 ### Changed
 - `RESTClient._request` now takes a string or `rest.RequestMethod` enum for the method.
@@ -57,6 +59,7 @@ for components that requires a bearer access token.
     - `error.ClanNotFound` 
 
 ### Fixed
+- Fixed `Friend.user` was returning `User` and not `BungieUser`
 - Some methods that required OAuth2 was buggy has been fixed.
 - The rest client was showing `unclosed client_session` erros and the end of the request.
 - `Friend.unique_name` wan't returning the actual unique name.

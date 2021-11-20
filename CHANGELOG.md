@@ -27,6 +27,7 @@ for components that requires a bearer access token.
 - More enums for Destiny 2 items.
 - `entity.BaseEntity` class which all entities now inherit from.
 - `fetch_objective_entity()` method which returns `entity.ObjetiveEntity` entity.
+- `enums.ComponentType` now has fields `ALL_X` which includes all component fields for a specific component.
 
 ### Breaking changes
 - `fetch_profile` and all alternative methods now takes `*components` parameter which accept multiple components to be passed and retuned at once.

@@ -126,11 +126,14 @@ class Client(traits.ClientBase):
                 if debug:
                     loop.set_debug(True)
                 loop.run_until_complete(future)
+
         except Exception as exc:
-            raise RuntimeError(f"Failed to run {future.__name__}", exc)
+            raise RuntimeError(f"Failed to run {future.__name__}") from exc
+
         except KeyboardInterrupt:
             _LOG.warn("Unexpected Keyboard interrupt. Exiting.")
             raise SystemExit(None)
+
         finally:
             # Session management.
             loop.run_until_complete(self.rest.close())

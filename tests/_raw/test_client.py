@@ -119,18 +119,19 @@ async def test_char() -> aiobungie.crate.Character:
     return c
 
 async def test_profile() -> None:
-    components = (
-        aiobungie.ComponentType.PROFILE,
-        aiobungie.ComponentType.CHARACTERS,
-        aiobungie.ComponentType.PROFILE_PROGRESSION,
-        aiobungie.ComponentType.PROFILE_CURRENCIES,
-        aiobungie.ComponentType.PROFILE_INVENTORIES,
-        aiobungie.ComponentType.RECORDS
-    )
+    # components = (
+    #     aiobungie.ComponentType.PROFILE,
+    #     aiobungie.ComponentType.CHARACTERS,
+    #     aiobungie.ComponentType.PROFILE_PROGRESSION,
+    #     aiobungie.ComponentType.PROFILE_CURRENCIES,
+    #     aiobungie.ComponentType.PROFILE_INVENTORIES,
+    #     aiobungie.ComponentType.RECORDS,
+    #     aiobungie.ComponentType.CHARACTER_EQUIPMENT
+    # )
     pf = await client.fetch_profile(
         MID,
         aiobungie.MembershipType.STEAM,
-        *components
+        *aiobungie.ComponentType.ALL.value,
     )
 
     # This will always be None since theres no auth.
@@ -181,6 +182,11 @@ async def test_profile() -> None:
             break
     else:
         pass
+
+    if char_equips := pf.character_equipments:
+        for _, items in char_equips.items():
+            _LOG.info(items)
+            _LOG.debug(repr(await items[0].fetch_self()))
 
 async def test_membership_types_from_id() -> aiobungie.crate.User:
     u = await client.fetch_membership_from_id(MID)

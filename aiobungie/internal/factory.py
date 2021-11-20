@@ -641,6 +641,12 @@ class Factory(interfaces.FactoryInterface):
         if raw_version := payload.get("versionNumber"):
             version_number = int(raw_version)
 
+        transfer_status: int = payload["transferStatus"]
+        try:
+            transfer_status = enums.TransferStatus(payload["transferStatus"])
+        except ValueError:
+            pass
+
         return profile.ProfileItemImpl(
             net=self._net,
             hash=payload["itemHash"],
@@ -648,13 +654,14 @@ class Factory(interfaces.FactoryInterface):
             bind_status=enums.ItemBindStatus(payload["bindStatus"]),
             location=enums.ItemLocation(payload["location"]),
             bucket=payload["bucketHash"],
-            transfer_status=enums.TransferStatus(payload["transferStatus"]),
+            transfer_status=transfer_status,
             lockable=payload["lockable"],
             state=enums.ItemState(payload["state"]),
             dismantel_permissions=payload["dismantlePermission"],
             is_wrapper=payload["isWrapper"],
             instance_id=instance_id,
             version_number=version_number,
+            ornament_id=payload.get("overrideStyleItemHash"),
         )
 
     def _deserialize_objectives(
@@ -733,13 +740,8 @@ class Factory(interfaces.FactoryInterface):
 
     def deserialize_profile_items(
         self, payload: typedefs.JsonObject, /
-    ) -> typing.Optional[typing.Sequence[profile.ProfileItemImpl]]:
-        if (raw_profile_currs := payload.get("data")) is None:
-            return None
-        return [
-            self._deserialize_profile_item_attrs(item)
-            for item in raw_profile_currs["items"]
-        ]
+    ) -> list[profile.ProfileItemImpl]:
+        return [self._deserialize_profile_item_attrs(item) for item in payload["items"]]
 
     def deserialize_components(
         self, payload: typedefs.JsonObject
@@ -768,15 +770,24 @@ class Factory(interfaces.FactoryInterface):
             typing.Sequence[profile.ProfileItemImpl]
         ] = None
         if raw_profile_currencies := payload.get("profileCurrencies"):
-            profile_currencies = self.deserialize_profile_items(raw_profile_currencies)
+
+            try:
+                profile_currencies = self.deserialize_profile_items(
+                    raw_profile_currencies["data"]
+                )
+            except KeyError:
+                pass
 
         profile_inventories: typing.Optional[
             typing.Sequence[profile.ProfileItemImpl]
         ] = None
         if raw_profile_inventories := payload.get("profileInventory"):
-            profile_inventories = self.deserialize_profile_items(
-                raw_profile_inventories
-            )
+            try:
+                profile_inventories = self.deserialize_profile_items(
+                    raw_profile_inventories["data"]
+                )
+            except KeyError:
+                pass
 
         profile_records: typing.Optional[
             collections.Mapping[int, records.Record]
@@ -817,6 +828,15 @@ class Factory(interfaces.FactoryInterface):
                 for rec_id, rec in to_update["records"].items()
             }
 
+        character_equipments: typing.Optional[
+            collections.Mapping[int, list[profile.ProfileItemImpl]]
+        ] = None
+        if raw_character_equips := payload.get("characterEquipment"):
+            character_equipments = {
+                int(char_id): self.deserialize_profile_items(item)
+                for char_id, item in raw_character_equips["data"].items()
+            }
+
         return components.Component(
             net=self._net,
             profiles=profile_,
@@ -826,6 +846,7 @@ class Factory(interfaces.FactoryInterface):
             profile_inventories=profile_inventories,
             profile_records=profile_records,
             character_records=character_records,
+            character_equipments=character_equipments,
         )
 
     def _set_entity_attrs(

@@ -580,14 +580,19 @@ class RESTClient(interfaces.RESTInterface):
     ) -> ResponseSig[typedefs.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
 
-        if len(components) <= 0:
-            raise ValueError("No profile components passed.", components)
+        try:
+            if len(components) <= 0:
+                raise ValueError("No profile components passed.", components)
 
-        # Need to get the int overload of the components to separate them.
-        elif len(components) > 1:
-            these = helpers.collect(*[int(k) for k in components])  # type: ignore[call-overload]
-        else:
-            these = helpers.collect(int(*components))
+            # Need to get the int overload of the components to separate them.
+            elif len(components) > 1:
+                these = helpers.collect(*[int(k) for k in components])  # type: ignore[call-overload]
+            else:
+                these = helpers.collect(int(*components))
+            # In case it's a tuple, i.e., ALL_X
+        except TypeError:
+            these = helpers.collect(*list(str(c.value) for c in components))
+
         return self._request(
             RequestMethod.GET,
             f"Destiny2/{int(type)}/Profile/{int(memberid)}/?components={these}",

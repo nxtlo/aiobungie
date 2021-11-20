@@ -61,11 +61,17 @@ __all__: tuple[str, ...] = (
 import enum as __enum
 import typing
 
+_ITERABLE = (set, list, tuple)
+
 
 class IntEnum(__enum.IntEnum):
     """An int only enum."""
 
     def __int__(self) -> int:
+        if isinstance(self.value, _ITERABLE):
+            raise TypeError(
+                f"Can't overload {self.value} in {type(self).__name__}, Please use `.value` attribute.",
+            )
         return int(self.value)
 
     def __str__(self) -> str:
@@ -82,6 +88,10 @@ class Enum(__enum.Enum):
         return self.__str__()
 
     def __int__(self) -> int:
+        if isinstance(self.value, _ITERABLE):
+            raise TypeError(
+                f"Can't overload {self.value} in {type(self).__name__}, Please use `.value` attribute.",
+            )
         return int(self.value)
 
 
@@ -235,26 +245,55 @@ class GameMode(IntEnum):
 
 
 @typing.final
-class ComponentType(IntEnum):
+class ComponentType(Enum):
     """An Enum for Destiny 2 profile Components."""
 
     NONE = 0
-    # Profile components.
+
     PROFILE = 100
     PROFILE_INVENTORIES = 102
     PROFILE_CURRENCIES = 103
     PROFILE_PROGRESSION = 104
-    # Character components.
+    ALL_PROFILES = (
+        PROFILE,
+        PROFILE_INVENTORIES,
+        PROFILE_CURRENCIES,
+        PROFILE_PROGRESSION,
+    )
+    """All profile components.
+
+    This cannot be overloaded `int(ALL_PROFILES)`. You should access it like this `ALL_PROFILES.value`
+    """
+
     CHARACTERS = 200
     CHARACTER_INVENTORY = 201
     CHARECTER_PROGRESSION = 202
     CHARACTER_RENDER_DATA = 203
     CHARACTER_ACTIVITIES = 204
     CHARACTER_EQUIPMENT = 205
-    # Vendor components.
+
+    ALL_CHARACTERS = (
+        CHARACTERS,
+        CHARACTER_INVENTORY,
+        CHARECTER_PROGRESSION,
+        CHARACTER_RENDER_DATA,
+        CHARACTER_ACTIVITIES,
+        CHARACTER_EQUIPMENT,
+    )
+    """All character components.
+
+    This cannot be overloaded `int(ALL_CHARACTERS)`. You should access it like this `ALL_CHARACTERS.value`
+    """
+
     VENDORS = 400
     VENDOR_SALES = 402
     VENDOR_RECEIPTS = 101
+    ALL_VENDORS = (VENDORS, VENDOR_RECEIPTS, VENDOR_SALES)
+    """All vendor components.
+
+    This cannot be overloaded `int(ALL_VENDORS)`. You should access it like this `ALL_VENDORS.value`
+    """
+
     # Items
     ITEM_INSTANCES = 300
     ITEM_OBJECTIVES = 301
@@ -264,6 +303,21 @@ class ComponentType(IntEnum):
     ITEM_SOCKETS = 305
     ITEM_TALENT_GRINDS = 306
     ITEM_REUSABLE_PLUGS = 310
+
+    ALL_ITEMS = (
+        ITEM_INSTANCES,
+        ITEM_OBJECTIVES,
+        ITEM_PERKS,
+        ITEM_RENDER_DATA,
+        ITEM_STATS,
+        ITEM_TALENT_GRINDS,
+        ITEM_REUSABLE_PLUGS,
+    )
+    """All item components.
+
+    This cannot be overloaded `int(ALL_ITEMS)`. You should access it like this `ALL_ITEMS.value`
+    """
+
     # Others
     RECORDS = 900
     PRESENT_NODES = 700
@@ -273,6 +327,25 @@ class ComponentType(IntEnum):
     METRICS = 1100
     INVENTORIES = 102
     STRING_VARIABLES = 1200
+
+    ALL = (
+        *ALL_PROFILES,
+        *ALL_CHARACTERS,
+        *ALL_VENDORS,
+        *ALL_ITEMS,
+        RECORDS,
+        PRESENT_NODES,
+        COLLECTIBLES,
+        KIOSKS,
+        METRICS,
+        PLATFORM_SILVER,
+        INVENTORIES,
+        STRING_VARIABLES,
+    )
+    """ALl components. The usage of this is `*ComponentType.ALL.value` to unpack the values.
+
+    This cannot be overloaded `int(ALL)`. You should access it like this `ALL.value`
+    """
 
 
 @typing.final

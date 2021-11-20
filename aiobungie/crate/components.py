@@ -161,7 +161,14 @@ class Component:
 
     # character_activities
 
-    # character_items
+    character_equipments: typing.Optional[
+        collections.Mapping[int, typing.Sequence[profile.ProfileItemImpl]]
+    ] = attr.field()
+    """A mapping of character's id to a sequence of their character equipment component.
+
+    This will always be `None` unless `aiobungie.ComponentType.CHARACTER_EQUIPMENT`
+    is passed to the request components.
+    """
 
     profile_records: typing.Optional[
         collections.Mapping[int, records_.Record]
@@ -176,12 +183,13 @@ class Component:
     character_records: typing.Optional[
         collections.Mapping[int, records_.CharacterRecord]
     ] = attr.field()
-    """A list of mapping of the characters id to a record component.
+    """A mapping of character record ids to a character record component.
 
     This will be available when `aiobungie.ComponentType.RECORDS`
     is passed to the request components.
     otherwise will be `None`.
     """
+
     # # TODO: ^ and return `list[vendors.Vendor]`
     # vendors
 

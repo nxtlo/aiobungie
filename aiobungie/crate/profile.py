@@ -49,6 +49,7 @@ from aiobungie.internal import helpers
 
 if typing.TYPE_CHECKING:
     from aiobungie import traits
+    from aiobungie import typedefs
     from aiobungie.crate import season
 
 log: typing.Final[logging.Logger] = logging.getLogger(__name__)
@@ -261,7 +262,7 @@ class ProfileItem(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def transfer_status(self) -> enums.TransferStatus:
+    def transfer_status(self) -> typedefs.IntAnd[enums.TransferStatus]:
         """The item's transfer status."""
 
     @property
@@ -284,10 +285,23 @@ class ProfileItem(abc.ABC):
     def is_wrapper(self) -> bool:
         """Whether the item is a wrapper or not."""
 
+    async def fetch_self(self) -> entity.InventoryEntity:
+        """Fetch this profile item.
+
+        Returns
+        -------
+        `aiobungie.crate.InventoryEntity`
+            An inventory item definition entity.
+        """
+        return await self.net.request.fetch_inventory_item(self.hash)
+
 
 @attr.mutable(hash=True, kw_only=True, weakref_slot=False)
 class ProfileItemImpl(ProfileItem):
-    """Concrete implementation of any profile component item."""
+    """Concrete implementation of any profile component item.
+
+    This also can be a character equipment i.e. Weapons, Armor, Ships, etc.
+    """
 
     net: traits.Netrunner = attr.field(repr=False, eq=False, hash=False)
     """A network state used for making external requests."""
@@ -307,7 +321,7 @@ class ProfileItemImpl(ProfileItem):
     bucket: int = attr.field(repr=True)
     """The item bucket hash."""
 
-    transfer_status: enums.TransferStatus = attr.field(repr=False)
+    transfer_status: typedefs.IntAnd[enums.TransferStatus] = attr.field(repr=False)
     """The item's transfer status."""
 
     lockable: bool = attr.field(repr=False)
@@ -325,18 +339,11 @@ class ProfileItemImpl(ProfileItem):
     instance_id: typing.Optional[int] = attr.field(repr=True)
     """An inventory item instance id if available, otherwise will be `None`."""
 
+    ornament_id: typing.Optional[int] = attr.field(repr=True)
+    """The ornament id of this item if it has one. Will be `None` otherwise."""
+
     version_number: typing.Optional[int] = attr.field(repr=False)
     """The item version number of available, other wise will be `None`."""
-
-    async def fetch_self(self) -> entity.InventoryEntity:
-        """Fetch this profile item.
-
-        Returns
-        -------
-        `aiobungie.crate.InventoryEntity`
-            An inventory item definition entity.
-        """
-        return await self.net.request.fetch_inventory_item(self.hash)
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)

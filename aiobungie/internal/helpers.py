@@ -27,11 +27,13 @@ from __future__ import annotations
 __all__: tuple[str, ...] = (
     "deprecated",
     "just",
+    "awaits",
     "get_or_make_loop",
     "AsyncIterator",
 )
 
 import asyncio
+import collections.abc as collections
 import inspect
 import typing
 import warnings
@@ -58,6 +60,44 @@ def deprecated(func: typing.Callable[..., typing.Any]) -> typing.Callable[..., N
             category=DeprecationWarning,
         )
     return lambda *args, **kwargs: func(*args, **kwargs)
+
+
+async def awaits(
+    *aws: collections.Awaitable[JT],
+    timeout: typing.Optional[float] = None,
+    with_exception: bool = True,
+) -> typing.Union[collections.Collection[JT], typing.Sequence[JT]]:
+    """Await all given awaitables concurrently.
+
+    Parameters
+    ----------
+    aws : `collections.Awaitable[JT]`
+        Multiple awaitables to await.
+    timeout : `typing.Optional[float]`
+        An optional timeout.
+    with_exceptions : `bool`
+        If `True` then exceptions will be returned.
+
+    Returns
+    -------
+    `typing.Union[collections.Collection[JT], collections.Collection[JT]]`
+        A collection or sequence of the awaited coros objects.
+    """
+
+    if len(aws) == 0:
+        raise RuntimeError("No awaiables passed.", aws)
+    pending: list[asyncio.Future[JT]] = []
+    for future in aws:
+        pending.append(asyncio.ensure_future(future))
+    try:
+        gatherer = asyncio.gather(*pending, return_exceptions=with_exception)
+        return await asyncio.wait_for(gatherer, timeout=timeout)
+    except asyncio.CancelledError:
+        raise asyncio.CancelledError("Gathered Futures were cancelled.") from None
+    finally:
+        for fs in pending:
+            if not fs.done() and not fs.cancelled():
+                fs.cancelled()
 
 
 # Source [https://github.com/hikari-py/hikari/blob/master/hikari/internal/aio.py]

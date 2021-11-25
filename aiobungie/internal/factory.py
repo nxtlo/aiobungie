@@ -67,7 +67,7 @@ class Factory(interfaces.FactoryInterface):
 
     # This is kinda inspired by hikari's entity factory :p.
 
-    __slots__: typing.Sequence[str] = ("_net",)
+    __slots__: collections.Sequence[str] = ("_net",)
 
     def __init__(self, net: traits.Netrunner) -> None:
         self._net = net
@@ -163,7 +163,7 @@ class Factory(interfaces.FactoryInterface):
         data: typing.Union[typedefs.JsonObject, typedefs.JsonArray],
         *,
         bound: bool = False,
-    ) -> typing.Sequence[user.DestinyUser]:
+    ) -> collections.Sequence[user.DestinyUser]:
         xbox: int = 0
         psn: int = 1
         steam: int = 2
@@ -238,7 +238,7 @@ class Factory(interfaces.FactoryInterface):
 
     def deseialize_found_users(
         self, payload: typedefs.JsonObject
-    ) -> typing.Sequence[user.DestinyUser]:
+    ) -> collections.Sequence[user.DestinyUser]:
         result = payload["searchResults"]
         if result is None:
             raise error.NotFound("User not found.")
@@ -277,12 +277,12 @@ class Factory(interfaces.FactoryInterface):
 
     def deserialize_user_themes(
         self, payload: typedefs.JsonArray
-    ) -> typing.Sequence[user.UserThemes]:
+    ) -> collections.Sequence[user.UserThemes]:
         return list(self.set_themese_attrs(payload))
 
     def deserialize_player(
         self, payload: typedefs.JsonArray, /
-    ) -> typing.Sequence[user.DestinyUser]:
+    ) -> collections.Sequence[user.DestinyUser]:
         if payload is None:
             raise error.NotFound("Player was not found.") from None
 
@@ -404,7 +404,7 @@ class Factory(interfaces.FactoryInterface):
 
     def deserialize_clan_admins(
         self, payload: typedefs.JsonObject
-    ) -> typing.Sequence[clans.ClanAdmin]:
+    ) -> collections.Sequence[clans.ClanAdmin]:
         builder = []
         member_types = helpers.just(payload["results"], "memberType")
         for member_type in zip(member_types):
@@ -469,7 +469,7 @@ class Factory(interfaces.FactoryInterface):
 
     def deserialize_clan_convos(
         self, payload: typedefs.JsonArray
-    ) -> typing.Sequence[clans.ClanConversation]:
+    ) -> collections.Sequence[clans.ClanConversation]:
         map = {}
         vec = []
         if payload is not None:
@@ -493,7 +493,7 @@ class Factory(interfaces.FactoryInterface):
 
     def deserialize_clan_members(
         self, data: typedefs.JsonObject, /
-    ) -> typing.Sequence[clans.ClanMember]:
+    ) -> collections.Sequence[clans.ClanMember]:
 
         members_vec: list[clans.ClanMember] = []
         _fn_type_optional = typing.Optional[typing.Callable[..., typing.Dict[str, str]]]
@@ -738,6 +738,47 @@ class Factory(interfaces.FactoryInterface):
             record_hashes=record_hashes or [],
         )
 
+    def deserialize_available_activity(
+        self, payload: typedefs.JsonObject
+    ) -> activity.AvaliableActivity:
+        return activity.AvaliableActivity(
+            hash=payload["activityHash"],
+            is_new=payload["isNew"],
+            is_completed=payload["isCompleted"],
+            is_visible=payload["isVisible"],
+            display_level=payload.get("displayLevel"),
+            recommended_light=payload.get("recommendedLight"),
+            diffculity=activity.Diffculity(payload["difficultyTier"]),
+            can_join=payload["canJoin"],
+            can_lead=payload["canLead"],
+        )
+
+    def deserialize_available_character_activities(
+        self, payload: typedefs.JsonObject
+    ) -> activity.CharacterActivity:
+        current_mode: typing.Optional[enums.GameMode] = None
+        if raw_current_mode := payload.get("currentActivityModeType"):
+            current_mode = enums.GameMode(raw_current_mode)
+
+        current_mode_types: typing.Optional[collections.Sequence[enums.GameMode]] = None
+        if raw_current_modes := payload.get("currentActivityModeTypes"):
+            current_mode_types = [enums.GameMode(type_) for type_ in raw_current_modes]
+
+        return activity.CharacterActivity(
+            date_started=time.clean_date(payload["dateActivityStarted"]),
+            current_hash=payload["currentActivityHash"],
+            current_mode_hash=payload["currentActivityModeHash"],
+            current_mode=current_mode,
+            current_mode_hashes=payload.get("currentActivityModeHashes"),
+            current_mode_types=current_mode_types,
+            current_playlist_hash=payload.get("currentPlaylistActivityHash"),
+            last_story_hash=payload["lastCompletedStoryHash"],
+            available_activities=[
+                self.deserialize_available_activity(activity_)
+                for activity_ in payload["availableActivities"]
+            ],
+        )
+
     def deserialize_profile_items(
         self, payload: typedefs.JsonObject, /
     ) -> list[profile.ProfileItemImpl]:
@@ -767,7 +808,7 @@ class Factory(interfaces.FactoryInterface):
             )
 
         profile_currencies: typing.Optional[
-            typing.Sequence[profile.ProfileItemImpl]
+            collections.Sequence[profile.ProfileItemImpl]
         ] = None
         if raw_profile_currencies := payload.get("profileCurrencies"):
 
@@ -779,7 +820,7 @@ class Factory(interfaces.FactoryInterface):
                 pass
 
         profile_inventories: typing.Optional[
-            typing.Sequence[profile.ProfileItemImpl]
+            collections.Sequence[profile.ProfileItemImpl]
         ] = None
         if raw_profile_inventories := payload.get("profileInventory"):
             try:
@@ -837,16 +878,39 @@ class Factory(interfaces.FactoryInterface):
                 for char_id, item in raw_character_equips["data"].items()
             }
 
+        character_inventories: typing.Optional[
+            collections.Mapping[int, collections.Sequence[profile.ProfileItemImpl]]
+        ] = None
+        if raw_character_inventories := payload.get("characterInventories"):
+            try:
+                character_inventories = {
+                    int(char_id): self.deserialize_profile_items(item)
+                    for char_id, item in raw_character_inventories["data"].items()
+                }
+            except KeyError:
+                pass
+
+        character_activities: typing.Optional[
+            collections.Mapping[int, activity.CharacterActivity]
+        ] = None
+        if raw_char_acts := payload.get("characterActivities"):
+            character_activities = {
+                int(char_id): self.deserialize_available_character_activities(data)
+                for char_id, data in raw_char_acts["data"].items()
+            }
+
         return components.Component(
             net=self._net,
             profiles=profile_,
-            characters=characters,
             profile_progression=profile_progression,
             profile_currencies=profile_currencies,
             profile_inventories=profile_inventories,
             profile_records=profile_records,
+            characters=characters,
             character_records=character_records,
             character_equipments=character_equipments,
+            character_inventories=character_inventories,
+            character_activities=character_activities,
         )
 
     def _set_entity_attrs(
@@ -1075,7 +1139,7 @@ class Factory(interfaces.FactoryInterface):
 
     def deserialize_clan_banners(
         self, payload: typedefs.JsonObject
-    ) -> typing.Sequence[clans.ClanBanner]:
+    ) -> collections.Sequence[clans.ClanBanner]:
         banners_seq: typing.MutableSequence[clans.ClanBanner] = []
         if (banners := payload.get("clanBannerDecals")) is not None:
             for k, v in banners.items():
@@ -1102,7 +1166,7 @@ class Factory(interfaces.FactoryInterface):
                     if raw_title != typedefs.Unknown:
                         title = raw_title
                 if (raw_hashes := item.get("itemHashes")) is not None:
-                    hashes: typing.Sequence[int] = raw_hashes
+                    hashes: collections.Sequence[int] = raw_hashes
 
                 items_categoris = milestones.MilestoneItems(title=title, hashes=hashes)
 
@@ -1149,7 +1213,7 @@ class Factory(interfaces.FactoryInterface):
 
     def deserialize_friends(
         self, payload: typedefs.JsonObject
-    ) -> typing.Sequence[friends.Friend]:
+    ) -> collections.Sequence[friends.Friend]:
         mut_seq: typing.MutableSequence[friends.Friend] = []
         if raw_friends := payload.get("friends"):
             for friend in raw_friends:
@@ -1199,7 +1263,7 @@ class Factory(interfaces.FactoryInterface):
 
     def deserialize_fireteams(
         self, payload: typedefs.JsonObject
-    ) -> typedefs.NoneOr[typing.Sequence[fireteams.Fireteam]]:
+    ) -> typedefs.NoneOr[collections.Sequence[fireteams.Fireteam]]:
         fireteams_: typing.MutableSequence[fireteams.Fireteam] = []
 
         result: list[typedefs.JsonObject]
@@ -1235,7 +1299,7 @@ class Factory(interfaces.FactoryInterface):
 
     def deserialize_fireteam_members(
         self, payload: typedefs.JsonObject, *, alternatives: bool = False
-    ) -> typing.Optional[typing.Sequence[fireteams.FireteamMember]]:
+    ) -> typing.Optional[collections.Sequence[fireteams.FireteamMember]]:
         members_: list[fireteams.FireteamMember] = []
         if members := payload.get("Members" if not alternatives else "Alternates"):
             for member in members:
@@ -1271,7 +1335,7 @@ class Factory(interfaces.FactoryInterface):
         *,
         no_results: bool = False,
     ) -> typing.Union[
-        fireteams.AvalaibleFireteam, typing.Sequence[fireteams.AvalaibleFireteam]
+        fireteams.AvalaibleFireteam, collections.Sequence[fireteams.AvalaibleFireteam]
     ]:
         fireteams_: list[fireteams.AvalaibleFireteam] = []
 

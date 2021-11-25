@@ -112,6 +112,9 @@ from ._info import __license__
 from ._info import __url__
 from ._info import __version__
 
+# Activity enums
+from .crate.activity import Diffculity
+
 # Components enums
 from .crate.components import ComponentFields
 from .crate.components import ComponentPrivacy

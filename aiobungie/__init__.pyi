@@ -19,6 +19,7 @@ from ._info import __email__ as __email__
 from ._info import __license__ as __license__
 from ._info import __url__ as __url__
 from ._info import __version__ as __version__
+from .crate.activity import Diffculity as Diffculity
 from .crate.components import ComponentFields as ComponentFields
 from .crate.components import ComponentPrivacy as ComponentPrivacy
 from .crate.entity import GatingScope as GatingScope

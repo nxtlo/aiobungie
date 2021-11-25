@@ -28,6 +28,7 @@ for components that requires a bearer access token.
 - `entity.BaseEntity` class which all entities now inherit from.
 - `fetch_objective_entity()` method which returns `entity.ObjetiveEntity` entity.
 - `enums.ComponentType` now has fields `ALL_X` which includes all component fields for a specific component.
+- Implemented new Activities classes and entities in `crate.activity`.
 
 ### Breaking changes
 - `fetch_profile` and all alternative methods now takes `*components` parameter which accept multiple components to be passed and retuned at once.

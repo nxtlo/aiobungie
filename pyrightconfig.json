@@ -13,7 +13,7 @@
     "reportMissingParameterType": "error",
     "reportMissingTypeArgument": "error",
     "reportMissingTypeStubs": "error",
-    "reportGeneralTypeIssues": "information",
+    "reportGeneralTypeIssues": "error",
     "reportPrivateUsage": "warning",
     "reportIncompatibleMethodOverride": "none",
     // This will always cause warnings above license.

@@ -42,6 +42,7 @@ from aiobungie.internal import enums
 
 if typing.TYPE_CHECKING:
     from aiobungie import traits
+    from aiobungie.crate import activity
 
 
 @typing.final
@@ -122,7 +123,7 @@ class Component:
     """
 
     profile_currencies: typing.Optional[
-        typing.Sequence[profile.ProfileItemImpl]
+        collections.Sequence[profile.ProfileItemImpl]
     ] = attr.field()
     """A sequence of profile currencies component.
 
@@ -134,7 +135,7 @@ class Component:
     """
 
     profile_inventories: typing.Optional[
-        typing.Optional[typing.Sequence[profile.ProfileItemImpl]]
+        collections.Sequence[profile.ProfileItemImpl]
     ] = attr.field()
     """A sequence of profile inventories items component.
 
@@ -153,16 +154,35 @@ class Component:
     otherwise will be `None`.
     """
 
-    # character_inventories
+    character_inventories: typing.Optional[
+        collections.Mapping[int, collections.Sequence[profile.ProfileItemImpl]]
+    ] = attr.field()
+    """A mapping of character's id to a sequence of their character inventorie items component.
+
+    Those items may be Weapons, emblems, ships, sparrows, etc.
+
+    Notes
+    -----
+    * This will always be `None` unless `auth="access_token"` is passed to the request.
+    * This will always be `None` unless `aiobungie.ComponentType.CHARACTER_INVENTORY`
+    is passed to the request components.
+    """
 
     # character_progressions
 
     # character_render_data
 
-    # character_activities
+    character_activities: typing.Optional[
+        collections.Mapping[int, activity.CharacterActivity]
+    ] = attr.field()
+    """A mapping of character's id to a sequence of their character activities component.
+
+    This will always be `None` unless `aiobungie.ComponentType.CHARACTER_ACTIVITES`
+    is passed to the request components.
+    """
 
     character_equipments: typing.Optional[
-        collections.Mapping[int, typing.Sequence[profile.ProfileItemImpl]]
+        collections.Mapping[int, collections.Sequence[profile.ProfileItemImpl]]
     ] = attr.field()
     """A mapping of character's id to a sequence of their character equipment component.
 

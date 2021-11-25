@@ -46,8 +46,8 @@ from aiobungie.crate import entity
 
 if typing.TYPE_CHECKING:
     from aiobungie import traits
-    from aiobungie.internal import assets
 
+    # from aiobungie.internal import assets
     # The artifact tires.
     Tiers: list[dict[int, dict[str, typing.Any]]]
 
@@ -84,40 +84,15 @@ class PowerBonus:
     """Power bonus's next level at."""
 
 
+# Both PowerBonus and ArtifactPoint share the same
+# fields and signatures, So no point of redefining attribs again.
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
-class ArtifactPoint:
+class ArtifactPoint(PowerBonus):
     """Represents a Destiny 2 artifact points information."""
 
-    progression_hash: int = attr.field(repr=False)
-    """The hash of the artifact points."""
-
-    level: int = attr.field(repr=True)
-    """Artifact point's current level. AKA The total earned points."""
-
-    cap: int = attr.field(repr=False)
-    """The cap of the artifact points."""
-
-    daily_limit: int = attr.field(repr=False)
-    """Artifact point's daily limit."""
-
-    weekly_limit: int = attr.field(repr=False)
-    """Artifact point's weekly limit."""
-
-    current_progress: int = attr.field(repr=True)
-    """Artifact point's current progress."""
-
-    daily_progress: int = attr.field(repr=False)
-    """Power bonus's daily progress."""
-
-    needed: int = attr.field(repr=True)
-    """The needed progress to earn the next level."""
-
-    next_level: int = attr.field(repr=True)
-    """Artifact point's next level at."""
-
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
-class FetchableArtifact(entity.InventoryEntity):
+class FetchableArtifact(entity.BaseEntity):
     """A interface for a Destiny 2 artifact entity the can be fetched.
 
     This derives from `DestinyArtifactDefinition` definition.
@@ -125,27 +100,6 @@ class FetchableArtifact(entity.InventoryEntity):
     The point of this is to return the artifact from the actual Definition.
     This will be part of `aiobungie.crate.Entity` and acts like an entity later.
     """
-
-    hash: int = attr.field(repr=True, hash=True, eq=True)
-    """Entity's hash."""
-
-    index: int = attr.field(repr=True, eq=False)
-    """Entity's index."""
-
-    app: traits.Netrunner = attr.field(repr=False, eq=False)
-    """A client that we may use to make rest calls."""
-
-    name: str = attr.field(repr=True, eq=False)
-    """Entity's name"""
-
-    icon: assets.MaybeImage = attr.field(repr=False, eq=False)
-    """Entity's icon"""
-
-    has_icon: bool = attr.field(repr=False, eq=False)
-    """A boolean that returns True if the entity has an icon."""
-
-    description: str = attr.field(repr=True)
-    """Entity's description."""
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)

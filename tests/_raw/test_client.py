@@ -131,7 +131,7 @@ async def test_profile() -> None:
     pf = await client.fetch_profile(
         MID,
         aiobungie.MembershipType.STEAM,
-        *aiobungie.ComponentType.ALL.value,
+        *aiobungie.ComponentType.ALL.value  # type: ignore
     )
 
     # This will always be None since theres no auth.
@@ -144,22 +144,16 @@ async def test_profile() -> None:
                 _LOG.debug(pfile_char)
         except RuntimeError:
             pass
-    else:
-        pass
 
     if (profile_progression := pf.profile_progression):
         _LOG.debug(profile_progression)
         _LOG.debug(profile_progression.checklist)
-    else:
-        pass
 
     if (characters := pf.characters):
         for _, character in characters.items():
             _LOG.debug(f'{character.class_type}, {character.emblem}, {character.light}')
             if profile and character.id == profile.warlock_id:
                 _LOG.debug(True)
-    else:
-        pass
 
     if pf_records := pf.profile_records:
         for _, prec in pf_records.items():
@@ -168,8 +162,6 @@ async def test_profile() -> None:
                 _LOG.info(repr(fetched_obj))
             _LOG.info(prec)
             break
-    else:
-        pass
 
     if char_records := pf.character_records:
         for char_id, record in char_records.items():
@@ -180,13 +172,15 @@ async def test_profile() -> None:
                 f'{char_id}::{record}'
             )
             break
-    else:
-        pass
 
     if char_equips := pf.character_equipments:
         for _, items in char_equips.items():
             _LOG.info(items)
             _LOG.debug(repr(await items[0].fetch_self()))
+
+    if char_acts := pf.character_activities:
+        for char_id, act in char_acts.items():
+            _LOG.info(f'{char_id, act.available_activities}')
 
 async def test_membership_types_from_id() -> aiobungie.crate.User:
     u = await client.fetch_membership_from_id(MID)

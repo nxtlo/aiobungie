@@ -1,5 +1,11 @@
 from .activity import Activity as Activity
+from .activity import AvaliableActivity as AvaliableActivity
+from .activity import Challenges as Challenges
+from .activity import GuidedGame as GuidedGame
+from .activity import Location as Location
+from .activity import Matchmaking as Matchmaking
 from .activity import PostActivity as PostActivity
+from .activity import Rewards as Rewards
 from .application import Application as Application
 from .application import ApplicationOwner as ApplicationOwner
 from .character import Character as Character
@@ -13,11 +19,13 @@ from .clans import GroupMember as GroupMember
 from .components import Component as Component
 from .components import ComponentFields as ComponentFields
 from .components import ComponentPrivacy as ComponentPrivacy
+from .entity import ActivityEntity as ActivityEntity
 from .entity import BaseEntity as BaseEntity
 from .entity import Entity as Entity
 from .entity import GatingScope as GatingScope
 from .entity import InventoryEntity as InventoryEntity
 from .entity import ObjectiveEntity as ObjectiveEntity
+from .entity import PlaylistActivityEntity as PlaylistActivityEntity
 from .entity import ValueUIStyle as ValueUIStyle
 from .fireteams import AvalaibleFireteam as AvalaibleFireteam
 from .fireteams import Fireteam as Fireteam

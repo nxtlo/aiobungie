@@ -29,7 +29,7 @@ for functional usage for the Bungie API objects.
 
 from __future__ import annotations
 
-__all__ = (
+__all__: tuple[str, ...] = (
     "Application",
     "PostActivity",
     "Clan",
@@ -82,10 +82,24 @@ __all__ = (
     "ValueUIStyle",
     "ObjectiveEntity",
     "BaseEntity",
+    "AvaliableActivity",
+    "Location",
+    "Rewards",
+    "GuidedGame",
+    "Challenges",
+    "Matchmaking",
+    "ActivityEntity",
+    "PlaylistActivityEntity",
 )
 
 from .activity import Activity
+from .activity import AvaliableActivity
+from .activity import Challenges
+from .activity import GuidedGame
+from .activity import Location
+from .activity import Matchmaking
 from .activity import PostActivity
+from .activity import Rewards
 from .application import Application
 from .application import ApplicationOwner
 from .character import Character
@@ -99,11 +113,13 @@ from .clans import GroupMember
 from .components import Component
 from .components import ComponentFields
 from .components import ComponentPrivacy
+from .entity import ActivityEntity
 from .entity import BaseEntity
 from .entity import Entity
 from .entity import GatingScope
 from .entity import InventoryEntity
 from .entity import ObjectiveEntity
+from .entity import PlaylistActivityEntity
 from .entity import ValueUIStyle
 from .fireteams import AvalaibleFireteam
 from .fireteams import Fireteam

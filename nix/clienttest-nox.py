@@ -27,18 +27,19 @@ import os
 
 try:
     import dotenv
-    if (cli_key := dotenv.get_key("./.env", "CLIENT_TOKEN")):
+    if (cli_key := dotenv.get_key("./.env", "CLIENT_TOKEN")):  # type: ignore
         os.environ['CLIENT_TOKEN'] = cli_key
 except ImportError:
     pass
 
 @nox.session(reuse_venv=True)
 def client_test(session: nox.Session) -> None:
-    if session.env.get("CLIENT_TOKEN") is None:
+    session.install("python-dotenv")
+    if session.env.get("CLIENT_TOKEN") is None:  # type: ignore
         session.error("CLIENT_TOKEN not found in env variables.")
 
+    session.install('.', "--upgrade")
     try:
-        session.install('.')
         path = pathlib.Path("./tests/_raw/test_client.py")
         if path.exists() and path.is_file():
             shutil.copy(path, '.')
@@ -57,8 +58,9 @@ def client_test(session: nox.Session) -> None:
                     uvloop.install()
             session.run("python", "-OO", 'test_client.py')
         os.remove("./test_client.py")
-    except Exception:
+    finally:
         try:
             os.remove("./test_client.py")
         except FileNotFoundError:
             pass
+        session.run("pip", "uninstall", "aiobungie", "--yes", "-v", "--retries", "3")

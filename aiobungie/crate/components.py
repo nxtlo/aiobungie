@@ -170,7 +170,14 @@ class Component:
 
     # character_progressions
 
-    # character_render_data
+    character_render_data: typing.Optional[
+        collections.Mapping[int, character.RenderedData]
+    ] = attr.field()
+    """A mapping from character's id to a character rendered data component.
+
+    This will always be `None` unless `aiobungie.ComponentType.RENDER_DATA`
+    is passed to the request components.
+    """
 
     character_activities: typing.Optional[
         collections.Mapping[int, activity.CharacterActivity]

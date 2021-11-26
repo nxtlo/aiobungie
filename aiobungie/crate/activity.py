@@ -27,7 +27,7 @@ from __future__ import annotations
 __all__: tuple[str, ...] = (
     "Activity",
     "PostActivity",
-    "AvaliableActivity",
+    "AvailableActivity",
     "Diffculity",
     "Rewards",
     "Challenges",
@@ -101,6 +101,7 @@ class Challenges:
 
     async def fetch_objective(self) -> entity.ObjectiveEntity:
         """Fetch the objective of this challenge."""
+        raise NotImplementedError
 
 
 @attr.define(kw_only=True, weakref_slot=False)
@@ -195,14 +196,14 @@ class CharacterActivity:
     last_story_hash: int = attr.field(repr=False)
     """The last completed story hash."""
 
-    available_activities: collections.Sequence[AvaliableActivity] = attr.field(
+    available_activities: collections.Sequence[AvailableActivity] = attr.field(
         repr=False
     )
     """A sequence of the available activities associated with this character."""
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
-class AvaliableActivity:
+class AvailableActivity:
     """Represents an available activity that can be found in character activities profile component."""
 
     hash: int = attr.field()
@@ -234,6 +235,7 @@ class AvaliableActivity:
 
     async def fetch_self(self) -> entity.ActivityEntity:
         """Fetch the definition of this activity."""
+        raise NotImplementedError
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)

@@ -1,60 +1,66 @@
 from .activity import Activity as Activity
-from .activity import AvaliableActivity as AvaliableActivity
+from .activity import AvailableActivity as AvailableActivity
 from .activity import Challenges as Challenges
 from .activity import GuidedGame as GuidedGame
 from .activity import Location as Location
 from .activity import Matchmaking as Matchmaking
 from .activity import PostActivity as PostActivity
 from .activity import Rewards as Rewards
-from .application import Application as Application
-from .application import ApplicationOwner as ApplicationOwner
-from .character import Character as Character
-from .character import CharacterComponent as CharacterComponent
-from .clans import Clan as Clan
-from .clans import ClanAdmin as ClanAdmin
-from .clans import ClanBanner as ClanBanner
-from .clans import ClanFeatures as ClanFeatures
-from .clans import ClanMember as ClanMember
-from .clans import GroupMember as GroupMember
-from .components import Component as Component
-from .components import ComponentFields as ComponentFields
-from .components import ComponentPrivacy as ComponentPrivacy
+from .application import *
+from .character import *
+from .clans import *
+from .components import *
 from .entity import ActivityEntity as ActivityEntity
 from .entity import BaseEntity as BaseEntity
 from .entity import Entity as Entity
-from .entity import GatingScope as GatingScope
 from .entity import InventoryEntity as InventoryEntity
 from .entity import ObjectiveEntity as ObjectiveEntity
 from .entity import PlaylistActivityEntity as PlaylistActivityEntity
-from .entity import ValueUIStyle as ValueUIStyle
 from .fireteams import AvalaibleFireteam as AvalaibleFireteam
 from .fireteams import Fireteam as Fireteam
-from .fireteams import FireteamActivity as FireteamActivity
-from .fireteams import FireteamDate as FireteamDate
-from .fireteams import FireteamLanguage as FireteamLanguage
 from .fireteams import FireteamMember as FireteamMember
-from .fireteams import FireteamPlatform as FireteamPlatform
 from .fireteams import FireteamUser as FireteamUser
-from .friends import Friend as Friend
-from .friends import FriendRequestView as FriendRequestView
-from .milestones import Milestone as Milestone
-from .milestones import MilestoneItems as MilestoneItems
-from .profile import LinkedProfile as LinkedProfile
-from .profile import Profile as Profile
-from .profile import ProfileComponent as ProfileComponent
-from .profile import ProfileItem as ProfileItem
-from .profile import ProfileItemImpl as ProfileItemImpl
-from .profile import ProfileProgression as ProfileProgression
+from .friends import *
+from .milestones import *
+from .profile import *
 from .records import CharacterRecord as CharacterRecord
 from .records import Objective as Objective
 from .records import Record as Record
-from .season import Artifact as Artifact
-from .season import ArtifactPoint as ArtifactPoint
-from .season import FetchableArtifact as FetchableArtifact
-from .season import PowerBonus as PowerBonus
-from .user import BungieUser as BungieUser
-from .user import DestinyUser as DestinyUser
-from .user import HardLinkedMembership as HardLinkedMembership
-from .user import PartialBungieUser as PartialBungieUser
-from .user import User as User
-from .user import UserThemes as UserThemes
+from .records import RecordScores as RecordScores
+from .season import *
+from .user import *
+
+# Names in __all__ with no definition:
+#   Application
+#   ApplicationOwner
+#   Artifact
+#   ArtifactPoint
+#   BungieUser
+#   Character
+#   CharacterComponent
+#   Clan
+#   ClanAdmin
+#   ClanBanner
+#   ClanFeatures
+#   ClanMember
+#   Component
+#   ComponentFields
+#   ComponentPrivacy
+#   DestinyUser
+#   FetchableArtifact
+#   Friend
+#   FriendRequestView
+#   GroupMember
+#   HardLinkedMembership
+#   LinkedProfile
+#   Milestone
+#   MilestoneItems
+#   PartialBungieUser
+#   PowerBonus
+#   Profile
+#   ProfileComponent
+#   ProfileItem
+#   ProfileItemImpl
+#   ProfileProgression
+#   User
+#   UserThemes

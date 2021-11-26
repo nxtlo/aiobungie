@@ -412,5 +412,7 @@ class PlaylistActivityEntity:
     mode_types: collections.Sequence[typedefs.IntAnd[enums.GameMode]] = attr.field()
     """A sequence of the activity gamemode types."""
 
+    # TODO: Implement a REST method for this.
     async def fetch_self(self) -> ActivityEntity:
         """Fetch the definition of this activivy."""
+        raise NotImplementedError

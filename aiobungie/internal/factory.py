@@ -629,7 +629,7 @@ class Factory(interfaces.FactoryInterface):
             net=self._net,
         )
 
-    def _deserialize_profile_item_attrs(
+    def deserialize_profile_item(
         self, payload: typedefs.JsonObject
     ) -> profile.ProfileItemImpl:
 
@@ -664,9 +664,7 @@ class Factory(interfaces.FactoryInterface):
             ornament_id=payload.get("overrideStyleItemHash"),
         )
 
-    def _deserialize_objectives(
-        self, payload: typedefs.JsonObject
-    ) -> records.Objective:
+    def deserialize_objectives(self, payload: typedefs.JsonObject) -> records.Objective:
         return records.Objective(
             net=self._net,
             hash=payload["objectiveHash"],
@@ -676,7 +674,7 @@ class Factory(interfaces.FactoryInterface):
             progress=payload["progress"],
         )
 
-    def _deserialize_records(
+    def deserialize_records(
         self,
         payload: typedefs.JsonObject,
         scores: typing.Optional[records.RecordScores] = None,
@@ -692,11 +690,11 @@ class Factory(interfaces.FactoryInterface):
             record_state = payload.get("state", 0)
 
         if raw_objs := payload.get("objectives"):
-            objectives = [self._deserialize_objectives(obj) for obj in raw_objs]
+            objectives = [self.deserialize_objectives(obj) for obj in raw_objs]
 
         if raw_interval_objs := payload.get("intervalObjectives"):
             interval_objectives = [
-                self._deserialize_objectives(obj) for obj in raw_interval_objs
+                self.deserialize_objectives(obj) for obj in raw_interval_objs
             ]
 
         if scores:
@@ -714,14 +712,14 @@ class Factory(interfaces.FactoryInterface):
             reward_visibility=payload.get("rewardVisibilty", None),
         )
 
-    def _deserialize_character_records(
+    def deserialize_character_records(
         self,
         payload: typedefs.JsonObject,
         scores: typing.Optional[records.RecordScores] = None,
         record_hashes: typing.Optional[list[int]] = None,
     ) -> records.CharacterRecord:
 
-        record = self._deserialize_records(payload, scores)
+        record = self.deserialize_records(payload, scores)
         # This is always None but available to keep the Record
         # Signature.
         assert scores is None
@@ -738,10 +736,63 @@ class Factory(interfaces.FactoryInterface):
             record_hashes=record_hashes or [],
         )
 
+    def deserialize_character_dye(self, payload: typedefs.JsonObject) -> character.Dye:
+        return character.Dye(
+            channel_hash=payload["channelHash"], dye_hash=payload["dyeHash"]
+        )
+
+    def deserialize_character_customazition(
+        self, payload: typedefs.JsonObject
+    ) -> character.CustomizationOptions:
+        return character.CustomizationOptions(
+            personality=payload["personality"],
+            face=payload["face"],
+            skin_color=payload["skinColor"],
+            lip_color=payload["lipColor"],
+            eye_color=payload["eyeColor"],
+            hair_colors=payload.get("hairColors", []),
+            feature_colors=payload.get("featureColors", []),
+            decal_color=payload["decalColor"],
+            wear_helmet=payload["wearHelmet"],
+            hair_index=payload["hairIndex"],
+            feature_index=payload["featureIndex"],
+            decal_index=payload["decalIndex"],
+        )
+
+    def deserialize_character_minimal_equipments(
+        self, payload: typedefs.JsonObject
+    ) -> character.MinimalEquipments:
+        dyes = None
+        if raw_dyes := payload.get("dyes"):
+            if raw_dyes:
+                dyes = [self.deserialize_character_dye(dye) for dye in raw_dyes]
+        return character.MinimalEquipments(
+            net=self._net, item_hash=payload["itemHash"], dyes=dyes
+        )
+
+    def deserialize_character_render_data(
+        self, payload: typedefs.JsonObject, /
+    ) -> character.RenderedData:
+        return character.RenderedData(
+            net=self._net,
+            customization=self.deserialize_character_customazition(
+                payload["customization"]
+            ),
+            custom_dyes=[
+                self.deserialize_character_dye(dye)
+                for dye in payload["customDyes"]
+                if dye
+            ],
+            equipment=[
+                self.deserialize_character_minimal_equipments(equipment)
+                for equipment in payload["peerView"]["equipment"]
+            ],
+        )
+
     def deserialize_available_activity(
         self, payload: typedefs.JsonObject
-    ) -> activity.AvaliableActivity:
-        return activity.AvaliableActivity(
+    ) -> activity.AvailableActivity:
+        return activity.AvailableActivity(
             hash=payload["activityHash"],
             is_new=payload["isNew"],
             is_completed=payload["isCompleted"],
@@ -753,7 +804,7 @@ class Factory(interfaces.FactoryInterface):
             can_lead=payload["canLead"],
         )
 
-    def deserialize_available_character_activities(
+    def deserialize_character_activities(
         self, payload: typedefs.JsonObject
     ) -> activity.CharacterActivity:
         current_mode: typing.Optional[enums.GameMode] = None
@@ -782,7 +833,7 @@ class Factory(interfaces.FactoryInterface):
     def deserialize_profile_items(
         self, payload: typedefs.JsonObject, /
     ) -> list[profile.ProfileItemImpl]:
-        return [self._deserialize_profile_item_attrs(item) for item in payload["items"]]
+        return [self.deserialize_profile_item(item) for item in payload["items"]]
 
     def deserialize_components(
         self, payload: typedefs.JsonObject
@@ -842,7 +893,7 @@ class Factory(interfaces.FactoryInterface):
                 lifetime_score=raw_profile_records["lifetimeScore"],
             )
             profile_records = {
-                int(record_id): self._deserialize_records(
+                int(record_id): self.deserialize_records(
                     record,
                     scores,
                     categories_hash=raw_profile_records["recordCategoriesRootNodeHash"],
@@ -863,7 +914,7 @@ class Factory(interfaces.FactoryInterface):
                     to_update[record_id] = record
 
             character_records = {
-                int(rec_id): self._deserialize_character_records(
+                int(rec_id): self.deserialize_character_records(
                     rec, record_hashes=to_update.get("featuredRecordHashes")
                 )
                 for rec_id, rec in to_update["records"].items()
@@ -895,8 +946,17 @@ class Factory(interfaces.FactoryInterface):
         ] = None
         if raw_char_acts := payload.get("characterActivities"):
             character_activities = {
-                int(char_id): self.deserialize_available_character_activities(data)
+                int(char_id): self.deserialize_character_activities(data)
                 for char_id, data in raw_char_acts["data"].items()
+            }
+
+        character_render_data: typing.Optional[
+            collections.Mapping[int, character.RenderedData]
+        ] = None
+        if raw_character_render_data := payload.get("characterRenderData"):
+            character_render_data = {
+                int(char_id): self.deserialize_character_render_data(data)
+                for char_id, data in raw_character_render_data["data"].items()
             }
 
         return components.Component(
@@ -911,6 +971,7 @@ class Factory(interfaces.FactoryInterface):
             character_equipments=character_equipments,
             character_inventories=character_inventories,
             character_activities=character_activities,
+            character_render_data=character_render_data,
         )
 
     def _set_entity_attrs(
@@ -921,12 +982,12 @@ class Factory(interfaces.FactoryInterface):
         icon: assets.MaybeImage = assets.Image.partial()
 
         if properties := payload[key]:
-            if raw_name := properties["name"] != typedefs.Unknown:
+            if (raw_name := properties["name"]) is not typedefs.Unknown:
                 name = raw_name
-            if raw_description := properties["description"] != typedefs.Unknown:
+            if (raw_description := properties["description"]) is not typedefs.Unknown:
                 description = raw_description
             if raw_icon := properties.get("icon"):
-                icon = raw_icon
+                icon = assets.Image(raw_icon)
             has_icon = properties["hasIcon"]
 
         return entity.BaseEntity(

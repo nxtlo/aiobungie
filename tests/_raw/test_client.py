@@ -111,7 +111,7 @@ async def test_player() -> typing.Sequence[typing.Optional[aiobungie.crate.Desti
         _LOG.debug(await profile.profiles.fetch_titan())
     return p
 
-async def test_char() -> aiobungie.crate.Character:
+async def test_char() -> typing.Optional[aiobungie.crate.Character]:
     c = await client.fetch_character(
         MID, aiobungie.MembershipType.STEAM, CID
     )
@@ -119,23 +119,11 @@ async def test_char() -> aiobungie.crate.Character:
     return c
 
 async def test_profile() -> None:
-    # components = (
-    #     aiobungie.ComponentType.PROFILE,
-    #     aiobungie.ComponentType.CHARACTERS,
-    #     aiobungie.ComponentType.PROFILE_PROGRESSION,
-    #     aiobungie.ComponentType.PROFILE_CURRENCIES,
-    #     aiobungie.ComponentType.PROFILE_INVENTORIES,
-    #     aiobungie.ComponentType.RECORDS,
-    #     aiobungie.ComponentType.CHARACTER_EQUIPMENT
-    # )
     pf = await client.fetch_profile(
         MID,
         aiobungie.MembershipType.STEAM,
         *aiobungie.ComponentType.ALL.value  # type: ignore
     )
-
-    # This will always be None since theres no auth.
-    assert pf.profile_currencies is None
 
     if (profile := pf.profiles):
         _LOG.debug(profile)
@@ -181,6 +169,13 @@ async def test_profile() -> None:
     if char_acts := pf.character_activities:
         for char_id, act in char_acts.items():
             _LOG.info(f'{char_id, act.available_activities}')
+
+    if char_render_data := pf.character_render_data:
+        for char_id_, data in char_render_data.items():
+            _LOG.info(f'{char_id_} | {repr(data)}')
+            items = await data.fetch_my_items(limit=2)
+            for item in items:
+                _LOG.info(repr(item))
 
 async def test_membership_types_from_id() -> aiobungie.crate.User:
     u = await client.fetch_membership_from_id(MID)
@@ -265,7 +260,7 @@ async def test_fetch_fireteam():
         _LOG.debug(f[0].url)
 
     f2 = await client.fetch_fireteams(
-        aiobungie.crate.FireteamActivity.ALL or 4,
+        aiobungie.FireteamActivity.ALL or 4,
         platform=aiobungie.FireteamPlatform.ANY or 4,
         language=aiobungie.FireteamLanguage.ENGLISH,
         date_range=1,

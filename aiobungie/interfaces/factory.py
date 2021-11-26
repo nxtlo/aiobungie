@@ -29,6 +29,8 @@ import abc
 import typing
 
 if typing.TYPE_CHECKING:
+    import collections.abc as collections
+
     from aiobungie import traits
     from aiobungie import typedefs
     from aiobungie.crate import activity
@@ -41,6 +43,7 @@ if typing.TYPE_CHECKING:
     from aiobungie.crate import friends
     from aiobungie.crate import milestones
     from aiobungie.crate import profile
+    from aiobungie.crate import records
     from aiobungie.crate import season
     from aiobungie.crate import user
 
@@ -93,7 +96,7 @@ class FactoryInterface(abc.ABC):
     @abc.abstractmethod
     def deseialize_found_users(
         self, payload: typedefs.JsonObject
-    ) -> typing.Sequence[user.DestinyUser]:
+    ) -> collections.Sequence[user.DestinyUser]:
         """Deserialize a raw JSON of prefix searched users.
 
         Parameters
@@ -168,7 +171,7 @@ class FactoryInterface(abc.ABC):
         data: typing.Union[typedefs.JsonObject, typedefs.JsonArray],
         *,
         bound: bool = False,
-    ) -> typing.Sequence[user.DestinyUser]:
+    ) -> collections.Sequence[user.DestinyUser]:
         """Deserialize a raw JSON payload/array of `destinyUserInfo`.
 
         Parameters
@@ -187,14 +190,14 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `typing.Sequence[aiobungie.crate.user.DestinyUser]`
+        `collections.Sequence[aiobungie.crate.user.DestinyUser]`
             A sequence of destiny membership/user object of the deserialized payload.
         """
 
     @abc.abstractmethod
     def deserialize_user_themes(
         self, payload: typedefs.JsonArray
-    ) -> typing.Sequence[user.UserThemes]:
+    ) -> collections.Sequence[user.UserThemes]:
         """Deserialize a raw JSON array of Bungie user themes.
 
         Parameters
@@ -204,14 +207,14 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `typing.Sequence[aiobungie.crate.user.UserThemes]`
+        `collections.Sequence[aiobungie.crate.user.UserThemes]`
             A sequence of bungie user themes object of the deserialized payload.
         """
 
     @abc.abstractmethod
     def deserialize_player(
         self, payload: typedefs.JsonArray, /
-    ) -> typing.Sequence[user.DestinyUser]:
+    ) -> collections.Sequence[user.DestinyUser]:
         """Deserialize a raw JSON sequence of players.
 
         Parameters
@@ -221,7 +224,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `typing.Sequence[aiobungie.crate.user.DestinyUser]`
+        `collections.Sequence[aiobungie.crate.user.DestinyUser]`
             A sequence of players object of the deserialized payload.
 
             .. note::
@@ -294,7 +297,7 @@ class FactoryInterface(abc.ABC):
     @abc.abstractmethod
     def deserialize_clan_admins(
         self, payload: typedefs.JsonObject
-    ) -> typing.Sequence[clans.ClanAdmin]:
+    ) -> collections.Sequence[clans.ClanAdmin]:
         """Deserialize a JSON payload of clan admins/owners information.
 
         Parameters
@@ -304,7 +307,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `typing.Sequence[aiobungie.crate.ClanAdmin]`
+        `collections.Sequence[aiobungie.crate.ClanAdmin]`
             A sequence of clan admins object of the deserialized payload.
         """
 
@@ -326,7 +329,7 @@ class FactoryInterface(abc.ABC):
     @abc.abstractmethod
     def deserialize_clan_members(
         self, data: typedefs.JsonObject, /
-    ) -> typing.Sequence[clans.ClanMember]:
+    ) -> collections.Sequence[clans.ClanMember]:
         """Deserialize a JSON payload of a clan members information.
 
         Parameters
@@ -336,14 +339,14 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `typing.Sequence[aiobungie.crate.ClanMember]`
+        `collections.Sequence[aiobungie.crate.ClanMember]`
             A sequence of clan members of the deserialized payload.
         """
 
     @abc.abstractmethod
     def deserialize_clan_convos(
         self, payload: typedefs.JsonArray
-    ) -> typing.Sequence[clans.ClanConversation]:
+    ) -> collections.Sequence[clans.ClanConversation]:
         """Deserialize a JSON array of a clan conversations information.
 
         Parameters
@@ -353,14 +356,14 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `typing.Sequence[aiobungie.crate.ClanConversation]`
+        `collections.Sequence[aiobungie.crate.ClanConversation]`
             A sequence of clan conversations of the deserialized payload.
         """
 
     @abc.abstractmethod
     def deserialize_clan_banners(
         self, payload: typedefs.JsonObject
-    ) -> typing.Sequence[clans.ClanBanner]:
+    ) -> collections.Sequence[clans.ClanBanner]:
         """Deserialize a JSON array of a clan banners information.
 
         Parameters
@@ -370,7 +373,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `typing.Sequence[aiobungie.crate.ClanBanner]`
+        `collections.Sequence[aiobungie.crate.ClanBanner]`
             A sequence of clan banners of the deserialized payload.
         """
 
@@ -427,7 +430,91 @@ class FactoryInterface(abc.ABC):
             A character object of the deserialized payload. If the character wasn't found it will return `None`
         """
 
+    @abc.abstractmethod
+    def deserialize_character_render_data(
+        self, payload: typedefs.JsonObject, /
+    ) -> character.RenderedData:
+        """Deserialize a JSON payload of a profile character render data component.
+
+        Parameters
+        ----------
+        payload : `aiobungie.typedefs.JsonObject`
+            The JSON payload.
+
+        Returns
+        -------
+        `aiobungie.crate.RenderedData`
+            A character rendered data profile component.
+        """
+
+    @abc.abstractmethod
+    def deserialize_character_minimal_equipments(
+        self, payload: typedefs.JsonObject
+    ) -> character.MinimalEquipments:
+        """Deserialize a singular JSON peer view of equipment found in character render data profile component.
+
+        Parameters
+        ----------
+        payload : `aiobungie.typedefs.JsonObject`
+            The JSON payload.
+
+        Returns
+        -------
+        `aiobungie.crate.character.MinimalEquipments`
+            A minimal equipment object.
+        """
+
+    @abc.abstractmethod
+    def deserialize_character_dye(self, payload: typedefs.JsonObject) -> character.Dye:
+        """Deserialize a JSON payload of a character's dye information.
+
+        Parameters
+        ----------
+        payload : `aiobungie.typedefs.JsonObject`
+            The JSON payload.
+
+        Returns
+        -------
+        `aiobungie.crate.character.Dye`
+            Information about a character dye object.
+        """
+
+    @abc.abstractmethod
+    def deserialize_character_customazition(
+        self, payload: typedefs.JsonObject
+    ) -> character.CustomizationOptions:
+        """Deserialize a JSON payload of a character customization information found in character
+        render data profile component.
+
+        Parameters
+        ----------
+        payload : `aiobungie.typedefs.JsonObject`
+            The JSON payload.
+
+        Returns
+        -------
+        `aiobungie.crate.character.CustomizationOptions`
+            Information about a character customs object.
+        """
+
     # Profiles.
+
+    @abc.abstractmethod
+    def deserialize_profile_progression(
+        self, payload: typedefs.JsonObject
+    ) -> profile.ProfileProgression:
+        """Deserialize a JSON payload of a profile progression component.
+
+        Parameters
+        ----------
+        payload : `aiobungie.internal.helpers.JsonObject`
+            The JSON payload.
+
+        Returns
+        -------
+        `aiobungie.crate.ProfileProgression`
+            A profile progression component object of the deserialized payload.
+        """
 
     @abc.abstractmethod
     def deserialize_profile(
@@ -449,7 +536,7 @@ class FactoryInterface(abc.ABC):
     @abc.abstractmethod
     def deserialize_profile_items(
         self, payload: typedefs.JsonObject, /
-    ) -> typing.Optional[typing.Sequence[profile.ProfileItemImpl]]:
+    ) -> typing.Optional[collections.Sequence[profile.ProfileItemImpl]]:
         """Deserialize a JSON payload of profile items component information.
 
         This may deserialize `profileInventories` or `profileCurrencies` or any
@@ -462,7 +549,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `typing.Optional[typing.Sequence[aiobungie.crate.ProfileItemImpl]]`
+        `typing.Optional[collections.Sequence[aiobungie.crate.ProfileItemImpl]]`
             A profile component object that contains items of the deserialized payload.
         """
 
@@ -483,6 +570,23 @@ class FactoryInterface(abc.ABC):
             A hard linked profile object of the deserialized payload.
         """
 
+    @abc.abstractmethod
+    def deserialize_profile_item(
+        self, payload: typedefs.JsonObject
+    ) -> profile.ProfileItemImpl:
+        """Deserialize a JSON payload of a singular profile component item.
+
+        Parameters
+        ----------
+        payload : `aiobungie.typedefs.JsonObject`
+            The JSON payload.
+
+        Returns
+        -------
+        `aiobungie.crate.ProfileItemImpl`
+            A concerete implementation of a profile component item.
+        """
+
     # Components
 
     @abc.abstractmethod
@@ -501,6 +605,76 @@ class FactoryInterface(abc.ABC):
         `aiobungie.crate.Component`
             A component implementation that includes all other components
             of the deserialized payload.
+        """
+
+    # Records
+
+    @abc.abstractmethod
+    def deserialize_records(
+        self,
+        payload: typedefs.JsonObject,
+        scores: typing.Optional[records.RecordScores] = None,
+        **nodes: int,
+    ) -> records.Record:
+        """Deserialize a JSON object of a profile record component.
+
+        Parameters
+        ----------
+        payload : `aiobungie.internal.helpers.JsonObject`
+            The JSON object payload
+        scores: `typing.Optional[records.RecordScores]`
+            The records scores object.
+            This exists only to keep the signature of `aiobungie.crate.CharacterRecord` with the record object.
+            As it will always be `None` in that object.
+        **nodes: `int`
+            An int kwargs use to grab the node hashes while deserializing components.
+
+        Returns
+        -------
+        `aiobungie.records.Record`
+            A standard implementation of a profile record component.
+        """
+
+    @abc.abstractmethod
+    def deserialize_character_records(
+        self,
+        payload: typedefs.JsonObject,
+        scores: typing.Optional[records.RecordScores] = None,
+        record_hashes: typing.Optional[list[int]] = None,
+    ) -> records.CharacterRecord:
+        """Deserialize a JSON object of a profile character record component.
+
+        This almost does the same this as `deserialize_records` but
+        has more fields which can only be found in a character record.
+
+        Parameters
+        ----------
+        payload : `aiobungie.internal.helpers.JsonObject`
+            The JSON object payload
+        scores: `typing.Optional[records.RecordScores]`
+            The records scores object.
+        record_hashes: `typing.Optional[list[int]]`
+            A list of record hashes that's included during deserializing the component.
+
+        Returns
+        -------
+        `aiobungie.records.CharacterRecord`
+            A standard implementation of a profile character record component.
+        """
+
+    @abc.abstractmethod
+    def deserialize_objectives(self, payload: typedefs.JsonObject) -> records.Objective:
+        """Deserialize a JSON payload of an objective found in a record profile component.
+
+        Parameters
+        ----------
+        payload : `aiobungie.internal.helpers.JsonObject`
+            The JSON payload.
+
+        Returns
+        -------
+        `aiobungie.crate.records.Objective`
+            A record objective object.
         """
 
     # Inventory entities and Definitions.
@@ -560,6 +734,42 @@ class FactoryInterface(abc.ABC):
             An activity object of the deserialized payload.
         """
 
+    @abc.abstractmethod
+    def deserialize_available_activity(
+        self, payload: typedefs.JsonObject
+    ) -> activity.AvailableActivity:
+        """Deserialize a JSON payload of an available activities.
+
+        This method is used to deserialize an array of `aiobungie.crate.CharacterActivity.available_activities`.
+
+        Parameters
+        ----------
+        payload : `aiobungie.typedefs.JsonObject`
+            The JSON payload.
+
+        Returns
+        -------
+        `aiobungie.crate.AvailableActivity`
+            An available activity object.
+        """
+
+    @abc.abstractmethod
+    def deserialize_character_activities(
+        self, payload: typedefs.JsonObject
+    ) -> activity.CharacterActivity:
+        """Deserialize a JSON payload of character activities profile component.
+
+        Parameters
+        ----------
+        payload : `aiobungie.typedefs.JsonObject`
+            The JSON payload.
+
+        Returns
+        -------
+        `aiobungie.crate.CharacterActivity`
+            A character activities component object.
+        """
+
     # Milestones.
 
     @abc.abstractmethod
@@ -599,7 +809,7 @@ class FactoryInterface(abc.ABC):
     @abc.abstractmethod
     def deserialize_friends(
         self, payload: typedefs.JsonObject
-    ) -> typing.Sequence[friends.Friend]:
+    ) -> collections.Sequence[friends.Friend]:
         """Deserialize a JSON sequence of Bungie friends information.
 
         This is usually used to deserialize the incoming/outgoing friend requests.
@@ -611,7 +821,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `typing.Sequence[aiobungie.crate.Friend]`
+        `collections.Sequence[aiobungie.crate.Friend]`
             A sequence of friends object of the deserialized payload.
         """
 
@@ -630,7 +840,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `typing.Sequence[aiobungie.crate.FriendRequestView]`
+        `collections.Sequence[aiobungie.crate.FriendRequestView]`
             A sequence of incoming and outgoing friends object of the deserialized payload.
         """
 
@@ -639,7 +849,7 @@ class FactoryInterface(abc.ABC):
     @abc.abstractmethod
     def deserialize_fireteams(
         self, payload: typedefs.JsonObject
-    ) -> typedefs.NoneOr[typing.Sequence[fireteams.Fireteam]]:
+    ) -> typedefs.NoneOr[collections.Sequence[fireteams.Fireteam]]:
         """Deserialize a JSON sequence of Bungie fireteams information.
 
         Parameters
@@ -649,7 +859,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `typing.Sequence[aiobungie.crate.Fireteam]`
+        `collections.Sequence[aiobungie.crate.Fireteam]`
             A sequence of fireteam object of the deserialized payload.
         """
 
@@ -673,7 +883,7 @@ class FactoryInterface(abc.ABC):
     @abc.abstractmethod
     def deserialize_fireteam_members(
         self, payload: typedefs.JsonObject, *, alternatives: bool = False
-    ) -> typing.Optional[typing.Sequence[fireteams.FireteamMember]]:
+    ) -> typing.Optional[collections.Sequence[fireteams.FireteamMember]]:
         """Deserialize a JSON sequence of Bungie fireteam members information.
 
         Parameters
@@ -686,7 +896,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `typing.Optional[typing.Sequence[aiobungie.crate.FireteamUser]]`
+        `typing.Optional[collections.Sequence[aiobungie.crate.FireteamUser]]`
             An optional sequence of the fireteam members object of the deserialized payload.
         """
 
@@ -694,7 +904,7 @@ class FactoryInterface(abc.ABC):
     def deserialize_available_fireteams(
         self, data: typedefs.JsonObject, *, no_results: bool = False
     ) -> typing.Union[
-        fireteams.AvalaibleFireteam, typing.Sequence[fireteams.AvalaibleFireteam]
+        fireteams.AvalaibleFireteam, collections.Sequence[fireteams.AvalaibleFireteam]
     ]:
         """Deserialize a JSON payload of a sequence of/fireteam information.
 
@@ -707,9 +917,11 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `typing.Union[aiobungie.crate.fireteams.AvalaibleFireteam, typing.Sequence[aiobungie.crate.fireteams.AvalaibleFireteam]]` # noqa: E501
+        `typing.Union[aiobungie.crate.fireteams.AvalaibleFireteam, collections.Sequence[aiobungie.crate.fireteams.AvalaibleFireteam]]` # noqa: E501
             An available fireteam or a sequence of available fireteam object of the deserialized payload.
         """
+
+    # Seasonal content.
 
     @abc.abstractmethod
     def deserialize_seasonal_artifact(
@@ -726,21 +938,4 @@ class FactoryInterface(abc.ABC):
         -------
         `aiobungie.crate.Artifact`
             A seasonal artifact object of the deserialized payload.
-        """
-
-    @abc.abstractmethod
-    def deserialize_profile_progression(
-        self, payload: typedefs.JsonObject
-    ) -> profile.ProfileProgression:
-        """Deserialize a JSON payload of a profile progression component.
-
-        Parameters
-        ----------
-        payload : `aiobungie.internal.helpers.JsonObject`
-            The JSON payload.
-
-        Returns
-        -------
-        `aiobungie.crate.ProfileProgression`
-            A profile progression component object of the deserialized payload.
         """

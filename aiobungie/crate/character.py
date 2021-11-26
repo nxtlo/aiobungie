@@ -22,11 +22,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Implementation of a Bungie Character."""
+"""Standard implementation of Bungie Character and entities."""
 
 from __future__ import annotations
 
-__all__ = ("CharacterComponent", "Character")
+__all__: tuple[str, ...] = (
+    "CharacterComponent",
+    "Character",
+    "Dye",
+    "MinimalEquipments",
+    "RenderedData",
+    "CustomizationOptions",
+)
 
 import abc
 import typing
@@ -34,11 +41,14 @@ import typing
 import attr
 
 from aiobungie import url
+from aiobungie.internal import helpers
 
 if typing.TYPE_CHECKING:
+    import collections.abc as collections
     import datetime
 
     from aiobungie import traits
+    from aiobungie.crate import entity
     from aiobungie.internal import enums
     from aiobungie.internal.assets import Image
 
@@ -129,6 +139,105 @@ class CharacterComponent(abc.ABC):
         """
         The character's title hash. This is Optional and can be None if no title was found.
         """
+
+
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
+class Dye:
+    """Represents dyes rendered on a Destiny character."""
+
+    channel_hash: int = attr.field()
+    """The hash of the channel."""
+
+    dye_hash: int = attr.field()
+    """The dye's hash."""
+
+
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
+class CustomizationOptions:
+    """Raw data represents a character's customization options."""
+
+    personality: int = attr.field()
+
+    face: int = attr.field()
+
+    skin_color: int = attr.field()
+
+    lip_color: int = attr.field()
+
+    eye_color: int = attr.field()
+
+    hair_colors: collections.Sequence[int] = attr.field()
+
+    feature_colors: collections.Sequence[int] = attr.field()
+
+    decal_color: int = attr.field()
+
+    wear_helmet: bool = attr.field()
+
+    hair_index: int = attr.field()
+
+    feature_index: int = attr.field()
+
+    decal_index: int = attr.field()
+
+
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
+class MinimalEquipments:
+    """Minimal information about a character's equipped items.
+
+    This holds the items hash and collection of dyes.
+
+    This is specifacally used in CharacterRenderData profile component to render
+    3D character object.
+    """
+
+    net: traits.Netrunner = attr.field(repr=False)
+    """A network state used for making external requests."""
+
+    item_hash: int = attr.field()
+    """The equipped items's hash."""
+
+    dyes: typing.Optional[collections.Collection[Dye]] = attr.field()
+    """An optional collection of the item rendering dyes"""
+
+    async def fetch_my_item(self) -> entity.InventoryEntity:
+        """Fetch the inventory item definition of this equipment."""
+        return await self.net.request.fetch_inventory_item(self.item_hash)
+
+
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
+class RenderedData:
+    """Represents a character's rendered data profile component."""
+
+    net: traits.Netrunner = attr.field(repr=False)
+    """A network state used for making external requests."""
+
+    custom_dyes: collections.Collection[Dye] = attr.field()
+    """A collection of the character's custom dyes."""
+
+    customization: CustomizationOptions = attr.field()
+    """Data about what character customization options you picked."""
+
+    equipment: collections.Sequence[MinimalEquipments] = attr.field()
+    """A sequence of minimal view of """
+
+    async def fetch_my_items(
+        self, *, limit: typing.Optional[int] = None
+    ) -> collections.Collection[entity.InventoryEntity]:
+        """Fetch the inventory item definition of all the equipment this component has.
+
+        Other Parameters
+        ----------
+        limit : `typing.Optional[int]`
+            An optional item limit to fetch. Default is the length of the equipment.
+
+        Returns
+        `collections.Collection[aiobungie.crate.InventoryEntity]`
+            A collection of the returned item definitions.
+        """
+        return await helpers.awaits(
+            *[item.fetch_my_item() for item in self.equipment[:limit]]
+        )
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)

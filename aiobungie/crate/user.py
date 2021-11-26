@@ -39,6 +39,7 @@ import typing
 
 import attr
 
+from aiobungie import url
 from aiobungie.crate import components as components_
 from aiobungie.internal import assets
 from aiobungie.internal import enums
@@ -103,6 +104,7 @@ class UserLike(abc.ABC):
     @property
     def link(self) -> str:
         """The user like's profile link."""
+        return f"{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}"
 
     def __str__(self) -> str:
         return self.last_seen_name

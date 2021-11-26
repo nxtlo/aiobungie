@@ -59,10 +59,6 @@ __all__: tuple[str, ...] = (
     "MilestoneItems",
     "FriendRequestView",
     "Fireteam",
-    "FireteamLanguage",
-    "FireteamActivity",
-    "FireteamPlatform",
-    "FireteamDate",
     "FireteamMember",
     "FireteamUser",
     "AvalaibleFireteam",
@@ -78,11 +74,9 @@ __all__: tuple[str, ...] = (
     "Record",
     "CharacterRecord",
     "Objective",
-    "GatingScope",
-    "ValueUIStyle",
     "ObjectiveEntity",
     "BaseEntity",
-    "AvaliableActivity",
+    "AvailableActivity",
     "Location",
     "Rewards",
     "GuidedGame",
@@ -90,65 +84,37 @@ __all__: tuple[str, ...] = (
     "Matchmaking",
     "ActivityEntity",
     "PlaylistActivityEntity",
+    "RecordScores",
 )
 
 from .activity import Activity
-from .activity import AvaliableActivity
+from .activity import AvailableActivity
 from .activity import Challenges
 from .activity import GuidedGame
 from .activity import Location
 from .activity import Matchmaking
 from .activity import PostActivity
 from .activity import Rewards
-from .application import Application
-from .application import ApplicationOwner
-from .character import Character
-from .character import CharacterComponent
-from .clans import Clan
-from .clans import ClanAdmin
-from .clans import ClanBanner
-from .clans import ClanFeatures
-from .clans import ClanMember
-from .clans import GroupMember
-from .components import Component
-from .components import ComponentFields
-from .components import ComponentPrivacy
+from .application import *
+from .character import *
+from .clans import *
+from .components import *
 from .entity import ActivityEntity
 from .entity import BaseEntity
 from .entity import Entity
-from .entity import GatingScope
 from .entity import InventoryEntity
 from .entity import ObjectiveEntity
 from .entity import PlaylistActivityEntity
-from .entity import ValueUIStyle
 from .fireteams import AvalaibleFireteam
 from .fireteams import Fireteam
-from .fireteams import FireteamActivity
-from .fireteams import FireteamDate
-from .fireteams import FireteamLanguage
 from .fireteams import FireteamMember
-from .fireteams import FireteamPlatform
 from .fireteams import FireteamUser
-from .friends import Friend
-from .friends import FriendRequestView
-from .milestones import Milestone
-from .milestones import MilestoneItems
-from .profile import LinkedProfile
-from .profile import Profile
-from .profile import ProfileComponent
-from .profile import ProfileItem
-from .profile import ProfileItemImpl
-from .profile import ProfileProgression
+from .friends import *
+from .milestones import *
+from .profile import *
 from .records import CharacterRecord
 from .records import Objective
 from .records import Record
-from .season import Artifact
-from .season import ArtifactPoint
-from .season import FetchableArtifact
-from .season import PowerBonus
-from .user import BungieUser
-from .user import DestinyUser
-from .user import HardLinkedMembership
-from .user import PartialBungieUser
-from .user import User
-from .user import UserThemes
+from .records import RecordScores
+from .season import *
+from .user import *

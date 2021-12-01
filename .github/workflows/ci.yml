@@ -75,7 +75,7 @@ jobs:
       - name: Format
         run: |
           pip install nox
-          nox -s format spell check_black
+          nox -s format spell
 
   lint:
     runs-on: ubuntu-20.04

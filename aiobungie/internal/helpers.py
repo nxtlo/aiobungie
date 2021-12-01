@@ -114,7 +114,7 @@ async def awaits(
     finally:
         for fs in pending:
             if not fs.done() and not fs.cancelled():
-                fs.cancelled()
+                fs.cancel()
 
 
 # Source [https://github.com/hikari-py/hikari/blob/master/hikari/internal/aio.py]

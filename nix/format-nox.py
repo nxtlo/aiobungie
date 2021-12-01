@@ -30,14 +30,9 @@ WORDS: list[str] = ["crate"]
 @nox.session(reuse_venv=True)
 def format(session: nox.Session) -> None:
     session.install("-r", "dev-requirements.txt")
-    session.run("isort", "aiobungie")
-    session.run("black", "aiobungie")
-
-
-@nox.session(reuse_venv=True)
-def check_black(session: nox.Session) -> None:
-    session.install("black")
-    session.run("black", "aiobungie", "--check")
+    session.run("python", "-m", "isort", "aiobungie")
+    session.run("python", "-m", "black", "aiobungie")
+    session.run("python", "-m", "black", "aiobungie", "--check")
 
 
 @nox.session(reuse_venv=True)

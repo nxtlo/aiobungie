@@ -61,7 +61,7 @@ class ProfileComponent(abc.ABC):
     Fields here available when passing `aiobungie.ComponentType.PROFILE` to `aiobungie.Client.fetch_profile`
     """
 
-    __slots__: typing.Sequence[str] = ()
+    __slots__: collections.Sequence[str] = ()
 
     @property
     @abc.abstractmethod
@@ -191,14 +191,14 @@ class LinkedProfile:
     net: traits.Netrunner = attr.field(repr=False, eq=False, hash=False)
     """A network state used for making external requests."""
 
-    profiles: typing.Sequence[user.DestinyUser] = attr.field(repr=True)
+    profiles: collections.Sequence[user.DestinyUser] = attr.field(repr=True)
     """A sequence of destiny memberships for this profile."""
 
     bungie: user.PartialBungieUser = attr.field(repr=True)
     """The profile's bungie membership."""
 
     profiles_with_errors: typing.Optional[
-        typing.Sequence[user.DestinyUser]
+        collections.Sequence[user.DestinyUser]
     ] = attr.field(repr=True, eq=False)
     """A sequence of optional destiny memberships with errors.
 
@@ -217,7 +217,9 @@ class ProfileProgression:
     """The profile progression seasonal artifact."""
 
     # No repr for this since its kinda huge dict.
-    checklist: typing.Mapping[int, typing.Mapping[int, bool]] = attr.field(repr=False)
+    checklist: collections.Mapping[int, collections.Mapping[int, bool]] = attr.field(
+        repr=False
+    )
     """A mapping of int to another mapping of int to bool for the profile progression checklist."""
 
 

@@ -24,7 +24,6 @@
 
 from __future__ import annotations
 
-import types
 import aiobungie
 import os
 import sys
@@ -33,6 +32,9 @@ import inspect
 import logging
 import asyncio
 
+if typing.TYPE_CHECKING:
+    import types
+    
 # NOTE: If you're on unix based system make sure to run this
 # in your terminal. export CLIENT_TOKEN='TOKEN'
 
@@ -177,6 +179,10 @@ async def test_profile() -> None:
             for item in items:
                 _LOG.info(repr(item))
 
+    if char_progrs := pf.character_progressions:
+        for cid, prog in char_progrs.items():
+            _LOG.debug(f"{cid} | {prog}")
+
 async def test_membership_types_from_id() -> aiobungie.crate.User:
     u = await client.fetch_membership_from_id(MID)
     return u
@@ -241,7 +247,7 @@ async def test_clan_banners() -> typing.Sequence[aiobungie.crate.ClanBanner]:
     return cb
 
 
-async def test_public_milestones_content() -> aiobungie.crate.Milestone:
+async def test_public_milestones_content() -> aiobungie.crate.MilestoneContent:
     cb = await client.fetch_public_milestone_content(4253138191)
     return cb
 

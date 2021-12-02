@@ -55,8 +55,6 @@ __all__: tuple[str, ...] = (
     "CharacterComponent",
     "LinkedProfile",
     "ClanBanner",
-    "Milestone",
-    "MilestoneItems",
     "FriendRequestView",
     "Fireteam",
     "FireteamMember",
@@ -65,10 +63,11 @@ __all__: tuple[str, ...] = (
     "Component",
     "ComponentFields",
     "ComponentPrivacy",
-    "PowerBonus",
     "Artifact",
-    "ArtifactPoint",
-    "FetchableArtifact",
+    "ArtifactTier",
+    "ArtifactTierItem",
+    "CharacterScopedArtifact",
+    "CharacterProgression",
     "ProfileItem",
     "ProfileItemImpl",
     "Record",
@@ -85,6 +84,21 @@ __all__: tuple[str, ...] = (
     "ActivityEntity",
     "PlaylistActivityEntity",
     "RecordScores",
+    "MilestoneContent",
+    "MilestoneItems",
+    "Milestone",
+    "MilestoneReward",
+    "MilestoneRewardEntry",
+    "MilestoneActivity",
+    "MilestoneQuest",
+    "MilestoneVendor",
+    "MilestoneActivityPhase",
+    "QuestStatus",
+    "Progression",
+    "Factions",
+    "ArtifactTier",
+    "ArtifactTierItem",
+    "CharacterScopedArtifact",
 )
 
 from .activity import Activity
@@ -112,6 +126,7 @@ from .fireteams import FireteamUser
 from .friends import *
 from .milestones import *
 from .profile import *
+from .progressions import *
 from .records import CharacterRecord
 from .records import Objective
 from .records import Record

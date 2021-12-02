@@ -28,78 +28,55 @@ season artifact, season content, season pass, etc.
 
 from __future__ import annotations
 
-# Since this is still being implemented
-# We let pdoc3 not generate pages for this.
-
 __all__: tuple[str, ...] = (
     "Artifact",
-    "PowerBonus",
-    "ArtifactPoint",
-    "FetchableArtifact",
+    "ArtifactTier",
+    "ArtifactTierItem",
+    "CharacterScopedArtifact",
 )
 
 import typing
 
 import attr
 
-from aiobungie.crate import entity
-
 if typing.TYPE_CHECKING:
+    import collections.abc as colelctions
+
     from aiobungie import traits
-
-    # from aiobungie.internal import assets
-    # The artifact tires.
-    Tiers: list[dict[int, dict[str, typing.Any]]]
+    from aiobungie.crate import progressions
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
-class PowerBonus:
-    """Represents a Destiny 2 artifact power bonus information."""
+class ArtifactTierItem:
 
-    progression_hash: int = attr.field(repr=False)
-    """The hash of the power bonus."""
+    hash: int = attr.field()
 
-    level: int = attr.field(repr=True)
-    """Power bonus's current level aka The total earned bonus."""
-
-    cap: int = attr.field(repr=False)
-    """The cap of the power bonus."""
-
-    daily_limit: int = attr.field(repr=False)
-    """Power bonus's daily limit."""
-
-    weekly_limit: int = attr.field(repr=False)
-    """Power bonus's weekly limit."""
-
-    current_progress: int = attr.field(repr=True)
-    """Power bonus's current progress."""
-
-    daily_progress: int = attr.field(repr=False)
-    """Power bonus's daily progress."""
-
-    needed: int = attr.field(repr=True)
-    """The needed progress to earn the next level."""
-
-    next_level: int = attr.field(repr=True)
-    """Power bonus's next level at."""
-
-
-# Both PowerBonus and ArtifactPoint share the same
-# fields and signatures, So no point of redefining attribs again.
-@attr.define(hash=False, kw_only=True, weakref_slot=False)
-class ArtifactPoint(PowerBonus):
-    """Represents a Destiny 2 artifact points information."""
+    is_active: bool = attr.field()
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
-class FetchableArtifact(entity.BaseEntity):
-    """A interface for a Destiny 2 artifact entity the can be fetched.
+class ArtifactTier:
 
-    This derives from `DestinyArtifactDefinition` definition.
+    hash: int = attr.field()
 
-    The point of this is to return the artifact from the actual Definition.
-    This will be part of `aiobungie.crate.Entity` and acts like an entity later.
-    """
+    is_unlocked: bool = attr.field()
+
+    points_to_unlock: int = attr.field()
+
+    items: colelctions.Sequence[ArtifactTierItem] = attr.field()
+
+
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
+class CharacterScopedArtifact:
+    """Represetns per-character artifact data."""
+
+    hash: int = attr.field()
+
+    points_used: int = attr.field()
+
+    reset_count: int = attr.field()
+
+    tiers: colelctions.Sequence[ArtifactTier] = attr.field()
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
@@ -118,8 +95,8 @@ class Artifact:
     acquired_points: int = attr.field(repr=False)
     """The total acquired artifact points"""
 
-    bonus: PowerBonus = attr.field(repr=False)
+    bonus: progressions.Progression = attr.field(repr=False)
     """Information about the artifact's power bonus progression."""
 
-    points: ArtifactPoint = attr.field(repr=False)
+    points: progressions.Progression = attr.field(repr=False)
     """Information about the artifact's power point progression."""

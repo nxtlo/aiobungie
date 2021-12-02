@@ -935,7 +935,7 @@ class Client(traits.ClientBase):
 
     async def fetch_public_milestone_content(
         self, milestone_hash: int, /
-    ) -> milestones.Milestone:
+    ) -> milestones.MilestoneContent:
         """Fetch the milestone content given its hash.
 
         Parameters
@@ -945,8 +945,8 @@ class Client(traits.ClientBase):
 
         Returns
         -------
-        `aiobungie.crate.milestones.Milestone`
-            A milestone object.
+        `aiobungie.crate.milestones.MilestoneContent`
+            A milestone content object.
         """
         resp = await self.rest.fetch_public_milestone_content(milestone_hash)
         assert isinstance(resp, dict)

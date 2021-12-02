@@ -30,19 +30,20 @@ from __future__ import annotations
 
 __all__: tuple[str, ...] = ("Component", "ComponentPrivacy", "ComponentFields")
 
-import collections.abc as collections
 import typing
 
 import attr
 
-from aiobungie.crate import character
-from aiobungie.crate import profile
-from aiobungie.crate import records as records_
 from aiobungie.internal import enums
 
 if typing.TYPE_CHECKING:
+    import collections.abc as collections
+
     from aiobungie import traits
     from aiobungie.crate import activity
+    from aiobungie.crate import character
+    from aiobungie.crate import profile
+    from aiobungie.crate import records as records_
 
 
 @typing.final
@@ -146,8 +147,10 @@ class Component:
     is passed to the request components.
     """
 
-    characters: typing.Optional[typing.Mapping[int, character.Character]] = attr.field()
-    """A mapping of character's id to`aiobungie.crate.Character`
+    characters: typing.Optional[
+        collections.Mapping[int, character.Character]
+    ] = attr.field()
+    """A mapping from character's id to`aiobungie.crate.Character`
     of the associated character within the character component.
 
     This will be available when `aiobungie.ComponentType.CHARACTERS` is passed to the request.
@@ -157,7 +160,7 @@ class Component:
     character_inventories: typing.Optional[
         collections.Mapping[int, collections.Sequence[profile.ProfileItemImpl]]
     ] = attr.field()
-    """A mapping of character's id to a sequence of their character inventorie items component.
+    """A mapping from character's id to a sequence of their character inventorie items component.
 
     Those items may be Weapons, emblems, ships, sparrows, etc.
 
@@ -168,7 +171,17 @@ class Component:
     is passed to the request components.
     """
 
-    # character_progressions
+    character_progressions: typing.Optional[
+        collections.Mapping[int, character.CharacterProgression]
+    ] = attr.field(default=None)
+    """A mapping from character's id to a character progression component.
+
+    Notes
+    -----
+    * This will always be `None` unless `auth="access_token"` is passed to the request.
+    * This will always be `None` unless `aiobungie.ComponentType.CHARACTER_PROGRESSION`
+    is passed to the request components.
+    """
 
     character_render_data: typing.Optional[
         collections.Mapping[int, character.RenderedData]
@@ -182,7 +195,7 @@ class Component:
     character_activities: typing.Optional[
         collections.Mapping[int, activity.CharacterActivity]
     ] = attr.field()
-    """A mapping of character's id to a sequence of their character activities component.
+    """A mapping from character's id to a sequence of their character activities component.
 
     This will always be `None` unless `aiobungie.ComponentType.CHARACTER_ACTIVITES`
     is passed to the request components.
@@ -191,7 +204,7 @@ class Component:
     character_equipments: typing.Optional[
         collections.Mapping[int, collections.Sequence[profile.ProfileItemImpl]]
     ] = attr.field()
-    """A mapping of character's id to a sequence of their character equipment component.
+    """A mapping from character's id to a sequence of their character equipment component.
 
     This will always be `None` unless `aiobungie.ComponentType.CHARACTER_EQUIPMENT`
     is passed to the request components.
@@ -200,7 +213,7 @@ class Component:
     profile_records: typing.Optional[
         collections.Mapping[int, records_.Record]
     ] = attr.field()
-    """A mapping of the profile record id to a record component.
+    """A mapping from the profile record id to a record component.
 
     This will be available when `aiobungie.ComponentType.RECORDS`
     is passed to the request components.
@@ -210,11 +223,10 @@ class Component:
     character_records: typing.Optional[
         collections.Mapping[int, records_.CharacterRecord]
     ] = attr.field()
-    """A mapping of character record ids to a character record component.
+    """A mapping from character record ids to a character record component.
 
     This will be available when `aiobungie.ComponentType.RECORDS`
-    is passed to the request components.
-    otherwise will be `None`.
+    is passed to the request components. otherwise will be `None`.
     """
 
     # # TODO: ^ and return `list[vendors.Vendor]`

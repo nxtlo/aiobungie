@@ -33,6 +33,7 @@ __all__: tuple[str, ...] = (
     "MinimalEquipments",
     "RenderedData",
     "CustomizationOptions",
+    "CharacterProgression",
 )
 
 import abc
@@ -49,6 +50,10 @@ if typing.TYPE_CHECKING:
 
     from aiobungie import traits
     from aiobungie.crate import entity
+    from aiobungie.crate import milestones as milestones_
+    from aiobungie.crate import progressions as progressions_
+    from aiobungie.crate import records
+    from aiobungie.crate import season
     from aiobungie.internal import enums
     from aiobungie.internal.assets import Image
 
@@ -238,6 +243,37 @@ class RenderedData:
         return await helpers.awaits(
             *[item.fetch_my_item() for item in self.equipment[:limit]]
         )
+
+
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
+class CharacterProgression:
+    """Represents a character progression profile component."""
+
+    progressions: collections.Mapping[int, progressions_.Progression] = attr.field(
+        repr=False
+    )
+    """A Mapping from progression's hash to progression object."""
+
+    factions: collections.Mapping[int, progressions_.Factions] = attr.field(repr=False)
+    """A Mapping from progression faction's hash to its faction object."""
+
+    milestones: collections.Mapping[int, milestones_.Milestone] = attr.field(repr=False)
+    """A Mapping from the milestone's hash to a milestone object."""
+
+    checklists: collections.Mapping[int, collections.Mapping[int, bool]] = attr.field(
+        repr=False
+    )
+
+    seasonal_artifact: season.CharacterScopedArtifact = attr.field()
+    """Data related to your progress on the current season's artifact that can vary per character."""
+
+    uninstanced_item_objectives: collections.Mapping[
+        int, collections.Sequence[records.Objective]
+    ] = attr.field(repr=False)
+    """A Mapping from an uninstanced inventory item hash to a sequence of its objectives."""
+
+    # Still not sure if this field returned or not.
+    # unsinstanced_item_pers: collections.Mapping[int, ...]?
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)

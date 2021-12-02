@@ -23,6 +23,7 @@ from .fireteams import FireteamUser as FireteamUser
 from .friends import *
 from .milestones import *
 from .profile import *
+from .progressions import *
 from .records import CharacterRecord as CharacterRecord
 from .records import Objective as Objective
 from .records import Record as Record
@@ -34,10 +35,16 @@ from .user import *
 #   Application
 #   ApplicationOwner
 #   Artifact
-#   ArtifactPoint
+#   ArtifactTier
+#   ArtifactTier
+#   ArtifactTierItem
+#   ArtifactTierItem
 #   BungieUser
 #   Character
 #   CharacterComponent
+#   CharacterProgression
+#   CharacterScopedArtifact
+#   CharacterScopedArtifact
 #   Clan
 #   ClanAdmin
 #   ClanBanner
@@ -47,20 +54,28 @@ from .user import *
 #   ComponentFields
 #   ComponentPrivacy
 #   DestinyUser
-#   FetchableArtifact
+#   Factions
 #   Friend
 #   FriendRequestView
 #   GroupMember
 #   HardLinkedMembership
 #   LinkedProfile
 #   Milestone
+#   MilestoneActivity
+#   MilestoneActivityPhase
+#   MilestoneContent
 #   MilestoneItems
+#   MilestoneQuest
+#   MilestoneReward
+#   MilestoneRewardEntry
+#   MilestoneVendor
 #   PartialBungieUser
-#   PowerBonus
 #   Profile
 #   ProfileComponent
 #   ProfileItem
 #   ProfileItemImpl
 #   ProfileProgression
+#   Progression
+#   QuestStatus
 #   User
 #   UserThemes

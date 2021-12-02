@@ -775,7 +775,7 @@ class FactoryInterface(abc.ABC):
     @abc.abstractmethod
     def deserialize_public_milestone_content(
         self, payload: typedefs.JsonObject
-    ) -> milestones.Milestone:
+    ) -> milestones.MilestoneContent:
         """Deserialize a JSON payload of milestone content information.
 
         Parameters
@@ -785,8 +785,8 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.crate.Milestone`
-            A milestone object of the deserialized payload.
+        `aiobungie.crate.MilestoneContent`
+            A milestone content object of the deserialized payload.
         """
 
     # Social and friends.

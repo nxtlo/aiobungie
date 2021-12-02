@@ -42,6 +42,7 @@ from aiobungie.crate import fireteams
 from aiobungie.crate import friends
 from aiobungie.crate import milestones
 from aiobungie.crate import profile
+from aiobungie.crate import progressions
 from aiobungie.crate import records
 from aiobungie.crate import season
 from aiobungie.crate import user
@@ -835,12 +836,184 @@ class Factory(interfaces.FactoryInterface):
     ) -> list[profile.ProfileItemImpl]:
         return [self.deserialize_profile_item(item) for item in payload["items"]]
 
-    def deserialize_components(
+    def _deserialize_progressions(
+        self, payload: typedefs.JsonObject
+    ) -> progressions.Progression:
+        return progressions.Progression(
+            hash=payload["progressionHash"],
+            level=payload["level"],
+            cap=payload["levelCap"],
+            daily_limit=payload["dailyLimit"],
+            weekly_limit=payload["weeklyLimit"],
+            current_progress=payload["currentProgress"],
+            daily_progress=payload["dailyProgress"],
+            needed=payload["progressToNextLevel"],
+            next_level=payload["nextLevelAt"],
+        )
+
+    def _deserialize_factions(
+        self, payload: typedefs.JsonObject
+    ) -> progressions.Factions:
+        progs = self._deserialize_progressions(payload)
+        return progressions.Factions(
+            hash=progs.hash,
+            level=progs.level,
+            cap=progs.cap,
+            daily_limit=progs.daily_limit,
+            weekly_limit=progs.weekly_limit,
+            current_progress=progs.current_progress,
+            daily_progress=progs.daily_progress,
+            needed=progs.needed,
+            next_level=progs.next_level,
+            faction_hash=payload["factionHash"],
+            faction_vendor_hash=payload["factionVendorIndex"],
+        )
+
+    def _deserialize_milestone_available_quest(
+        self, payload: typedefs.JsonObject
+    ) -> milestones.MilestoneQuest:
+        return milestones.MilestoneQuest(
+            item_hash=payload["questItemHash"],
+            status=self._deserialize_milestone_quest_status(payload["status"]),
+        )
+
+    def _deserialize_milestone_activity(
+        self, payload: typedefs.JsonObject
+    ) -> milestones.MilestoneActivity:
+
+        phases: typing.Optional[
+            collections.Sequence[milestones.MilestoneActivityPhase]
+        ] = None
+        if raw_phases := payload.get("phases"):
+            phases = [
+                milestones.MilestoneActivityPhase(
+                    is_completed=obj["complete"], hash=obj["phaseHash"]
+                )
+                for obj in raw_phases
+            ]
+
+        return milestones.MilestoneActivity(
+            hash=payload["activityHash"],
+            challenges=[
+                self.deserialize_objectives(obj["objective"])
+                for obj in payload["challenges"]
+            ],
+            modifier_hashes=payload.get("modifierHashes"),
+            boolean_options=payload.get("booleanActivityOptions"),
+            phases=phases,
+        )
+
+    def _deserialize_milestone_quest_status(
+        self, payload: typedefs.JsonObject
+    ) -> milestones.QuestStatus:
+        return milestones.QuestStatus(
+            net=self._net,
+            quest_hash=payload["questHash"],
+            step_hash=payload["stepHash"],
+            step_objectives=[
+                self.deserialize_objectives(objective)
+                for objective in payload["stepObjectives"]
+            ],
+            is_tracked=payload["tracked"],
+            is_completed=payload["completed"],
+            started=payload["started"],
+            item_instance_id=payload["itemInstanceId"],
+            vendor_hash=payload.get("vendorHash"),
+            is_redeemed=payload["redeemed"],
+        )
+
+    def _deserialize_milestone_rewards(
+        self, payload: typedefs.JsonObject
+    ) -> milestones.MilestoneReward:
+        return milestones.MilestoneReward(
+            category_hash=payload["rewardCategoryHash"],
+            entries=[
+                milestones.MilestoneRewardEntry(
+                    entry_hash=entry["rewardEntryHash"],
+                    is_earned=entry["earned"],
+                    is_redeemed=entry["redeemed"],
+                )
+                for entry in payload["entries"]
+            ],
+        )
+
+    def deserialize_milestone(
+        self, payload: typedefs.JsonObject
+    ) -> milestones.Milestone:
+        start_date: typing.Optional[datetime.datetime] = None
+        if raw_start_date := payload.get("startDate"):
+            start_date = time.clean_date(raw_start_date)
+
+        end_date: typing.Optional[datetime.datetime] = None
+        if raw_end_date := payload.get("endDate"):
+            end_date = time.clean_date(raw_end_date)
+
+        rewards: typing.Optional[
+            collections.Collection[milestones.MilestoneReward]
+        ] = None
+        if raw_rewards := payload.get("rewards"):
+            rewards = [
+                self._deserialize_milestone_rewards(reward) for reward in raw_rewards
+            ]
+
+        activities: typing.Optional[
+            collections.Sequence[milestones.MilestoneActivity]
+        ] = None
+        if raw_activities := payload.get("activities"):
+            activities = [
+                self._deserialize_milestone_activity(active)
+                for active in raw_activities
+            ]
+
+        quests: typing.Optional[collections.Sequence[milestones.MilestoneQuest]] = None
+        if raw_quests := payload.get("availableQuests"):
+            quests = [
+                self._deserialize_milestone_available_quest(quest)
+                for quest in raw_quests
+            ]
+
+        vendors: typing.Optional[
+            collections.Sequence[milestones.MilestoneVendor]
+        ] = None
+        if raw_vendors := payload.get("vendors"):
+            vendors = [
+                milestones.MilestoneVendor(
+                    vendor_hash=vendor["vendorHash"],
+                    preview_itemhash=vendor.get("previewItemHash"),
+                )
+                for vendor in raw_vendors
+            ]
+
+        return milestones.Milestone(
+            hash=payload["milestoneHash"],
+            start_date=start_date,
+            end_date=end_date,
+            order=payload["order"],
+            rewards=rewards,
+            available_quests=quests,
+            activities=activities,
+            vendors=vendors,
+        )
+
+    def _deserialize_artifact_tiers(
+        self, payload: typedefs.JsonObject
+    ) -> season.ArtifactTier:
+        return season.ArtifactTier(
+            hash=payload["tierHash"],
+            is_unlocked=payload["isUnlocked"],
+            points_to_unlock=payload["pointsToUnlock"],
+            items=[
+                season.ArtifactTierItem(
+                    hash=item["itemHash"], is_active=item["isActive"]
+                )
+                for item in payload["items"]
+            ],
+        )
+
+    def deserialize_components(  # noqa: C901 Functions too comples
         self, payload: typedefs.JsonObject
     ) -> components.Component:
-        # We make components None here depends on returned components to save a little memory.
 
-        # Components.
         characters: typing.Optional[typing.Mapping[int, character.Character]] = None
         if raw_characters := payload.get("characters"):
             characters = {
@@ -959,6 +1132,58 @@ class Factory(interfaces.FactoryInterface):
                 for char_id, data in raw_character_render_data["data"].items()
             }
 
+        character_progressions: typing.Optional[
+            collections.Mapping[int, character.CharacterProgression]
+        ] = None
+
+        if raw_character_progressions := payload.get("characterProgressions"):
+            if not character_progressions:
+                character_progressions = {}
+
+            for char_id, data in raw_character_progressions["data"].items():
+
+                progressions_ = {
+                    int(prog_id): self._deserialize_progressions(prog)
+                    for prog_id, prog in data["progressions"].items()
+                }
+
+                factions = {
+                    int(faction_id): self._deserialize_factions(faction)
+                    for faction_id, faction in data["factions"].items()
+                }
+
+                milestones_ = {
+                    int(milestone_hash): self.deserialize_milestone(milestone)
+                    for milestone_hash, milestone in data["milestones"].items()
+                }
+
+                uninstanced_item_objectives = {
+                    int(item_hash): [self.deserialize_objectives(ins) for ins in obj]
+                    for item_hash, obj in data["uninstancedItemObjectives"].items()
+                }
+
+                artifact = data["seasonalArtifact"]
+                seasonal_artifact = season.CharacterScopedArtifact(
+                    hash=artifact["artifactHash"],
+                    points_used=artifact["pointsUsed"],
+                    reset_count=artifact["resetCount"],
+                    tiers=[
+                        self._deserialize_artifact_tiers(tier)
+                        for tier in artifact["tiers"]
+                    ],
+                )
+                checklists = data["checklists"]
+
+                # A little hack to stop mypy complaining about Mapping <-> dict
+                character_progressions[int(char_id)] = character.CharacterProgression(  # type: ignore[index]
+                    progressions=progressions_,
+                    factions=factions,
+                    checklists=checklists,
+                    milestones=milestones_,
+                    seasonal_artifact=seasonal_artifact,
+                    uninstanced_item_objectives=uninstanced_item_objectives,
+                )
+
         return components.Component(
             net=self._net,
             profiles=profile_,
@@ -972,6 +1197,7 @@ class Factory(interfaces.FactoryInterface):
             character_inventories=character_inventories,
             character_activities=character_activities,
             character_render_data=character_render_data,
+            character_progressions=character_progressions,
         )
 
     def _set_entity_attrs(
@@ -1218,7 +1444,7 @@ class Factory(interfaces.FactoryInterface):
 
     def deserialize_public_milestone_content(
         self, payload: typedefs.JsonObject
-    ) -> milestones.Milestone:
+    ) -> milestones.MilestoneContent:
         items_categoris: typedefs.NoneOr[milestones.MilestoneItems] = None
         if (raw_categories := payload.get("itemCategories")) is not None:
             for item in raw_categories:
@@ -1246,7 +1472,7 @@ class Factory(interfaces.FactoryInterface):
                     raw_tip = undefined.Undefined
                 tips.append(raw_tip)
 
-        return milestones.Milestone(
+        return milestones.MilestoneContent(
             about=about, status=status, tips=tips, items=items_categoris
         )
 
@@ -1441,8 +1667,8 @@ class Factory(interfaces.FactoryInterface):
     ) -> season.Artifact:
         if raw_artifact := payload.get("seasonalArtifact"):
             if points := raw_artifact.get("pointProgression"):
-                points_prog = season.ArtifactPoint(
-                    progression_hash=points["progressionHash"],
+                points_prog = progressions.Progression(
+                    hash=points["progressionHash"],
                     level=points["level"],
                     cap=points["levelCap"],
                     daily_limit=points["dailyLimit"],
@@ -1454,8 +1680,8 @@ class Factory(interfaces.FactoryInterface):
                 )
 
             if bonus := raw_artifact.get("powerBonusProgression"):
-                power_bonus_prog = season.PowerBonus(
-                    progression_hash=bonus["progressionHash"],
+                power_bonus_prog = progressions.Progression(
+                    hash=bonus["progressionHash"],
                     level=bonus["level"],
                     cap=bonus["levelCap"],
                     daily_limit=bonus["dailyLimit"],

@@ -7,7 +7,6 @@ import aiobungie
 import aiohttp
 import fastapi
 import uvicorn
-from aiobungie.internal import helpers
 
 from backend import modules, rest
 
@@ -27,7 +26,7 @@ async def home() -> str:
     summary="Fetch a Bungie user and return it if exists.",
     status_code=200,
 )
-async def user_callback(id: int) -> helpers.JsonObject:
+async def user_callback(id: int) -> aiobungie.typedefs.JsonObject:
     try:
         user = await rest.fetch_user(id)
     except aiobungie.NotFound as exc:
@@ -41,7 +40,7 @@ async def user_callback(id: int) -> helpers.JsonObject:
     summary="Fetch a Bungie clan and return it if exists.",
     status_code=200,
 )
-async def clan_callback(name: str) -> helpers.JsonObject:
+async def clan_callback(name: str) -> aiobungie.typedefs.JsonObject:
     try:
         clan = await rest.fetch_clan(name)
     except aiobungie.NotFound as exc:
@@ -53,7 +52,7 @@ async def clan_callback(name: str) -> helpers.JsonObject:
 # the payload should look like this {"name": "Fate#1234", type?: "Steam"}.
 # The payload will be sent from the frontend to our API.
 @app.post("/player", summary="Search for a Bungie player.", status_code=200)
-async def player_callback(payload: modules.PlayerModule) -> helpers.JsonArray:
+async def player_callback(payload: modules.PlayerModule) -> aiobungie.typedefs.JsonArray:
     return await rest.fetch_player(payload.name, payload.type)
 
 

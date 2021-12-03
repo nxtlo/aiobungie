@@ -485,7 +485,6 @@ class RESTClient(interfaces.RESTInterface):
             # In case it's a tuple, i.e., ALL_X
         except TypeError:
             these = helpers.collect(*list(str(c.value) for c in components))
-        print(these)
         return these
 
     def fetch_user(self, id: int) -> ResponseSig[typedefs.JsonObject]:

@@ -106,83 +106,93 @@ async def test_fetch_app() -> aiobungie.crate.Application:
     return a
 
 async def test_player() -> typing.Sequence[typing.Optional[aiobungie.crate.DestinyUser]]:
-    p = await client.fetch_player("Datto#6446")
+    p = await client.fetch_player("Crit#0495")
     profile = await p[0].fetch_self_profile(aiobungie.ComponentType.PROFILE)
     _LOG.debug(profile)
+    components = aiobungie.ComponentType.ALL_CHARACTERS
     if profile.profiles:
-        _LOG.debug(await profile.profiles.fetch_titan())
+        for char in await profile.profiles.collect(
+            *components.value
+        ):
+            print("*" * 30)
+            _LOG.debug(f"{char}")
     return p
 
-async def test_char() -> typing.Optional[aiobungie.crate.Character]:
+async def test_char() -> aiobungie.crate.CharacterComponent:
     c = await client.fetch_character(
-        MID, aiobungie.MembershipType.STEAM, CID
+        MID,
+        aiobungie.MembershipType.STEAM,
+        CID,
+        *aiobungie.ComponentType.ALL_CHARACTERS.value
     )
     _LOG.debug(c)
     return c
-
-async def test_profile() -> None:
-    pf = await client.fetch_profile(
-        MID,
-        aiobungie.MembershipType.STEAM,
-        *aiobungie.ComponentType.ALL.value  # type: ignore
-    )
-
-    if (profile := pf.profiles):
-        _LOG.debug(profile)
-        try:
-            for pfile_char in await profile.collect():
-                _LOG.debug(pfile_char)
-        except RuntimeError:
-            pass
-
-    if (profile_progression := pf.profile_progression):
-        _LOG.debug(profile_progression)
-        _LOG.debug(profile_progression.checklist)
-
-    if (characters := pf.characters):
-        for _, character in characters.items():
-            _LOG.debug(f'{character.class_type}, {character.emblem}, {character.light}')
-            if profile and character.id == profile.warlock_id:
-                _LOG.debug(True)
-
-    if pf_records := pf.profile_records:
-        for _, prec in pf_records.items():
-            if prec.objectives:
-                fetched_obj = await prec.objectives[0].fetch_self()
-                _LOG.info(repr(fetched_obj))
-            _LOG.info(prec)
-            break
-
-    if char_records := pf.character_records:
-        for char_id, record in char_records.items():
-            if record.objectives:
-                fetched_char_obj = await record.objectives[0].fetch_self()
-                _LOG.info(repr(fetched_char_obj))
-            _LOG.info(
-                f'{char_id}::{record}'
-            )
-            break
-
-    if char_equips := pf.character_equipments:
-        for _, items in char_equips.items():
-            _LOG.info(items)
-            _LOG.debug(repr(await items[0].fetch_self()))
-
-    if char_acts := pf.character_activities:
-        for char_id, act in char_acts.items():
-            _LOG.info(f'{char_id, act.available_activities}')
-
-    if char_render_data := pf.character_render_data:
-        for char_id_, data in char_render_data.items():
-            _LOG.info(f'{char_id_} | {repr(data)}')
-            items = await data.fetch_my_items(limit=2)
-            for item in items:
-                _LOG.info(repr(item))
-
-    if char_progrs := pf.character_progressions:
-        for cid, prog in char_progrs.items():
-            _LOG.debug(f"{cid} | {prog}")
-
+# 
+# async def test_profile() -> None:
+#     pf = await client.fetch_profile(
+#         MID,
+#         aiobungie.MembershipType.STEAM,
+#         *aiobungie.ComponentType.ALL.value  # type: ignore
+#     )
+# 
+#     if (profile := pf.profiles):
+#         _LOG.debug(profile)
+#         try:
+#             for pfile_char in await profile.collect(*aiobungie.ComponentType.ALL_CHARACTERS.value):
+#                 print("-" * 30)
+#                 _LOG.debug(pfile_char.character)
+#         except RuntimeError:
+#             pass
+# 
+#     if (profile_progression := pf.profile_progression):
+#         _LOG.debug(profile_progression)
+#         _LOG.debug(profile_progression.checklist)
+# 
+#     if (characters := pf.characters):
+#         for _, character in characters.items():
+#             _LOG.debug(f'{character.class_type}, {character.emblem}, {character.light}')
+#             if profile and character.id in profile.character_ids:
+#                 _LOG.debug(True)
+# 
+#     if pf_records := pf.profile_records:
+#         for _, prec in pf_records.items():
+#             if prec.objectives:
+#                 fetched_obj = await prec.objectives[0].fetch_self()
+#                 _LOG.info(repr(fetched_obj))
+#             _LOG.info(prec)
+#             break
+# 
+#     if char_records := pf.character_records:
+#         for char_id, record in char_records.items():
+#             _LOG.info(f"{char_id}")
+#             if record.objectives:
+#                 fetched_char_obj = await record.objectives[0].fetch_self()
+#                 _LOG.info(repr(fetched_char_obj))
+#             _LOG.info(
+#                 f'{char_id}::{record}'
+#             )
+#             break
+# 
+#     if char_equips := pf.character_equipments:
+#         for _, items in char_equips.items():
+#             _LOG.info(items)
+#             _LOG.debug(repr(await items[0].fetch_self()))
+# 
+#     if char_acts := pf.character_activities:
+#         for char_id, act in char_acts.items():
+#             _LOG.info(f'{char_id, act.available_activities}')
+# 
+#     if char_render_data := pf.character_render_data:
+#         for char_id_, data in char_render_data.items():
+#             _LOG.info(f'{char_id_} | {repr(data)}')
+#             items = await data.fetch_my_items(limit=2)
+#             for item in items:
+#                 _LOG.info(repr(item))
+# 
+#     if char_progrs := pf.character_progressions:
+#         for cid, prog in char_progrs.items():
+#             _LOG.debug(f"{cid} | {prog}")
+# 
 async def test_membership_types_from_id() -> aiobungie.crate.User:
     u = await client.fetch_membership_from_id(MID)
     return u

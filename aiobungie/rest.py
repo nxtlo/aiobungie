@@ -100,9 +100,9 @@ async def handle_errors(
     if response.status == http.HTTPStatus.NOT_FOUND:
         return error.NotFound(*data)
     elif response.status == http.HTTPStatus.FORBIDDEN:
-        return error.Forbidden(*data)
+        return error.Forbidden(*data)  # type: ignore
     elif response.status == http.HTTPStatus.UNAUTHORIZED:
-        return error.Unauthorized(*data)
+        return error.Unauthorized(*data)  # type: ignore
 
     status = http.HTTPStatus(response.status)
 
@@ -138,7 +138,7 @@ async def handle_errors(
 
         # Membership need to be alone.
         elif msg == "DestinyInvalidMembershipType":
-            return error.MembershipTypeError(*data)
+            return error.MembershipTypeError(*data)  # type: ignore
 
         # Any other messages.
         else:
@@ -149,7 +149,7 @@ async def handle_errors(
             )
     # Not 5xx.
     else:
-        return error.HTTPException(*data)
+        return error.HTTPException(*data)  # type: ignore
 
 
 class _Arc:
@@ -468,6 +468,26 @@ class RESTClient(interfaces.RESTInterface):
     ) -> ResponseSig[typing.Any]:
         return self._request(method, path, auth=auth, **kwargs)
 
+    @staticmethod
+    @typing.final
+    def collect_components(
+        *components: enums.ComponentType,
+    ) -> typing.Union[str, type[str]]:
+        try:
+            if len(components) == 0:
+                raise ValueError("No profile components passed.", components)
+
+            # Need to get the int overload of the components to separate them.
+            elif len(components) > 1:
+                these = helpers.collect(*[int(k) for k in components])  # type: ignore[call-overload]
+            else:
+                these = helpers.collect(int(*components))
+            # In case it's a tuple, i.e., ALL_X
+        except TypeError:
+            these = helpers.collect(*list(str(c.value) for c in components))
+        print(these)
+        return these
+
     def fetch_user(self, id: int) -> ResponseSig[typedefs.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(RequestMethod.GET, f"User/GetBungieNetUserById/{id}/")
@@ -537,11 +557,16 @@ class RESTClient(interfaces.RESTInterface):
         member_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
         character_id: int,
+        *components: enums.ComponentType,
+        **options: str,
     ) -> ResponseSig[typedefs.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        collector = self.collect_components(*components)
         return self._request(
             RequestMethod.GET,
-            f"Destiny2/{int(membership_type)}/Profile/{member_id}/Character/{character_id}/?components={int(enums.ComponentType.CHARACTERS)}",  # noqa: E501
+            f"Destiny2/{int(membership_type)}/Profile/{member_id}/"
+            f"Character/{character_id}/?components={collector}",
+            auth=options.get("auth"),
         )
 
     def fetch_activity(
@@ -579,23 +604,10 @@ class RESTClient(interfaces.RESTInterface):
         **options: str,
     ) -> ResponseSig[typedefs.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-
-        try:
-            if len(components) <= 0:
-                raise ValueError("No profile components passed.", components)
-
-            # Need to get the int overload of the components to separate them.
-            elif len(components) > 1:
-                these = helpers.collect(*[int(k) for k in components])  # type: ignore[call-overload]
-            else:
-                these = helpers.collect(int(*components))
-            # In case it's a tuple, i.e., ALL_X
-        except TypeError:
-            these = helpers.collect(*list(str(c.value) for c in components))
-
+        collector = self.collect_components(*components)
         return self._request(
             RequestMethod.GET,
-            f"Destiny2/{int(type)}/Profile/{int(memberid)}/?components={these}",
+            f"Destiny2/{int(type)}/Profile/{int(memberid)}/?components={collector}",
             auth=options.get("auth", None),
         )
 

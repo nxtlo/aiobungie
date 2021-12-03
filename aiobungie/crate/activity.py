@@ -76,10 +76,10 @@ class Rewards:
     instance_id: typing.Optional[int] = attr.field()
     """An optional instance id for this reward. `None` if not found."""
 
-    quantity: int = attr.field()
+    quantity: int = attr.field(repr=False)
     """Reward's quantity."""
 
-    has_conditional_visibility: bool = attr.field()
+    has_conditional_visibility: bool = attr.field(repr=False)
     """???"""
 
     async def fetch_self(self) -> entity.InventoryEntity:
@@ -96,7 +96,7 @@ class Challenges:
     objective_hash: int = attr.field()
     """The challenge's objetive hash."""
 
-    dummy_rewards: collections.Sequence[Rewards]
+    dummy_rewards: collections.Sequence[Rewards] = attr.field(repr=False)
     """A sequence of the challenge rewards as they're represented in the UI."""
 
     async def fetch_objective(self) -> entity.ObjectiveEntity:
@@ -120,7 +120,7 @@ class Matchmaking:
     max_player: int = attr.field()
     """The maximum number of how many player can join this activity."""
 
-    requires_guardian_oath: bool = attr.field()
+    requires_guardian_oath: bool = attr.field(repr=False)
     """If true, you have to Solemnly Swear to be up to Nothing But Good(tm) to play."""
 
 
@@ -154,13 +154,13 @@ class Location:
     activition_source: str = attr.field()
     """A hint that the UI uses to figure out how this location is activated by the player."""
 
-    item_hash: typing.Optional[int] = attr.field()
+    item_hash: typing.Optional[int] = attr.field(repr=False)
     """The items hash if poulated."""
 
-    objective_hash: typing.Optional[int] = attr.field()
+    objective_hash: typing.Optional[int] = attr.field(repr=False)
     """The objecitve hash if populated."""
 
-    activity_hash: typing.Optional[int] = attr.field()
+    activity_hash: typing.Optional[int] = attr.field(repr=False)
     """The activity hash if populated."""
 
 
@@ -209,22 +209,22 @@ class AvailableActivity:
     hash: int = attr.field()
     """Activity's hash."""
 
-    is_new: bool = attr.field()
+    is_new: bool = attr.field(repr=False)
     """Whether the activity is new or not."""
 
-    can_lead: bool = attr.field()
+    can_lead: bool = attr.field(repr=False)
     """Whether the character can lead this activity or not."""
 
-    can_join: bool = attr.field()
+    can_join: bool = attr.field(repr=False)
     """Whether the character can join this activity or not."""
 
     is_completed: bool = attr.field()
     """Whether the character completed this acvitivy before or not."""
 
-    is_visible: bool = attr.field()
+    is_visible: bool = attr.field(repr=False)
     """Whether the activity is visible to this character or not."""
 
-    display_level: typing.Optional[int] = attr.field()
+    display_level: typing.Optional[int] = attr.field(repr=False)
     """The activity's display leve."""
 
     recommended_light: typing.Optional[int] = attr.field()

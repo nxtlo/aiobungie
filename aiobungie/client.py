@@ -46,7 +46,6 @@ if typing.TYPE_CHECKING:
     from aiobungie import typedefs
     from aiobungie.crate import activity
     from aiobungie.crate import application
-    from aiobungie.crate import character
     from aiobungie.crate import clans
     from aiobungie.crate import components
     from aiobungie.crate import entity
@@ -427,7 +426,9 @@ class Client(traits.ClientBase):
         member_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
         character_id: int,
-    ) -> typing.Optional[character.Character]:
+        *components: enums.ComponentType,
+        **options: str,
+    ) -> components.CharacterComponent:
         """Fetch a Destiny 2 character.
 
         Parameters
@@ -438,11 +439,22 @@ class Client(traits.ClientBase):
             The Destiny character id to retrieve.
         membership_type: `aiobungie.internal.enums.MembershipType`
             The member's membership type.
+        *components: `aiobungie.ComponentType`
+            Multiple arguments of character components to collect and return.
+
+        Other Parameters
+        ----------------
+        auth : `typing.Optional[str]`
+            A passed kwarg Bearer access_token to make the request with.
+            This is optional and limited to components that only requires an Authorization token.
+        **options : `str`
+            Other keyword arguments for the request to expect.
+            This is only here for the `auth` option which's a kwarg.
 
         Returns
         -------
-        `typing.Optional[aiobungie.crate.Character]`
-            A Bungie character crate. This can be `None` if the character was not found or the player doesn't have one.
+        `aiobungie.crate.CharacterComponent`
+            A Bungie character component.
 
         Raises
         ------
@@ -452,9 +464,11 @@ class Client(traits.ClientBase):
         `aiobungie.MembershipTypeError`
             The provided membership type was invalid.
         """
-        resp = await self.rest.fetch_character(member_id, membership_type, character_id)
+        resp = await self.rest.fetch_character(
+            member_id, membership_type, character_id, *components, **options
+        )
         assert isinstance(resp, dict)
-        return self.serialize.deserialize_character(resp)
+        return self.serialize.deserialize_character_component(resp)
 
     # * Destiny 2 Activities.
 

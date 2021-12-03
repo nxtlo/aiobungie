@@ -414,10 +414,10 @@ class FactoryInterface(abc.ABC):
     # Characters.
 
     @abc.abstractmethod
-    def deserialize_character(
+    def deserialize_character_component(
         self, payload: typedefs.JsonObject
-    ) -> typing.Optional[character.Character]:
-        """Deserialize a JSON payload of Destiny 2 character information.
+    ) -> components.CharacterComponent:
+        """Deserialize a JSON payload of Destiny 2 character component.
 
         Parameters
         ----------
@@ -426,8 +426,8 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `typing.Optional[aiobungie.crate.Character]`
-            A character object of the deserialized payload. If the character wasn't found it will return `None`
+        `aiobungie.crate.CharacterComponent`
+            A character component object of the deserialized payload.
         """
 
     @abc.abstractmethod
@@ -496,6 +496,42 @@ class FactoryInterface(abc.ABC):
         `aiobungie.crate.character.CustomizationOptions`
             Information about a character customs object.
         """
+
+    @abc.abstractmethod
+    def deserialize_characters(
+        self, payload: typedefs.JsonObject
+    ) -> collections.Mapping[int, character.Character]:
+        ...
+
+    @abc.abstractmethod
+    def deserialize_character(
+        self, payload: typedefs.JsonObject
+    ) -> character.Character:
+        ...
+
+    @abc.abstractmethod
+    def deserialize_character_equipmnets(
+        self, payload: typedefs.JsonObject
+    ) -> collections.Mapping[int, collections.Sequence[profile.ProfileItemImpl]]:
+        ...
+
+    @abc.abstractmethod
+    def deserialize_characters_render_data(
+        self, payload: typedefs.JsonObject
+    ) -> collections.Mapping[int, character.RenderedData]:
+        ...
+
+    @abc.abstractmethod
+    def deserialize_progressions(
+        self, payload: typedefs.JsonObject
+    ) -> character.CharacterProgression:
+        ...
+
+    @abc.abstractmethod
+    def deserialize_character_progressions(
+        self, payload: typedefs.JsonObject
+    ) -> collections.Mapping[int, character.CharacterProgression]:
+        ...
 
     # Profiles.
 
@@ -663,6 +699,21 @@ class FactoryInterface(abc.ABC):
         """
 
     @abc.abstractmethod
+    def deserialize_characters_records(
+        self,
+        payload: typedefs.JsonObject,
+        scores: typing.Optional[records.RecordScores] = None,
+        record_hashes: typing.Optional[list[int]] = None,
+    ) -> collections.Mapping[int, records.CharacterRecord]:
+        ...
+
+    @abc.abstractmethod
+    def deserialize_profile_records(
+        self, payload: typedefs.JsonObject
+    ) -> collections.Mapping[int, records.Record]:
+        ...
+
+    @abc.abstractmethod
     def deserialize_objectives(self, payload: typedefs.JsonObject) -> records.Objective:
         """Deserialize a JSON payload of an objective found in a record profile component.
 
@@ -754,10 +805,10 @@ class FactoryInterface(abc.ABC):
         """
 
     @abc.abstractmethod
-    def deserialize_character_activities(
+    def deserialize_character_activity(
         self, payload: typedefs.JsonObject
     ) -> activity.CharacterActivity:
-        """Deserialize a JSON payload of character activities profile component.
+        """Deserialize a JSON payload of character activity profile component.
 
         Parameters
         ----------
@@ -788,6 +839,12 @@ class FactoryInterface(abc.ABC):
         `aiobungie.crate.MilestoneContent`
             A milestone content object of the deserialized payload.
         """
+
+    @abc.abstractmethod
+    def deserialize_milestone(
+        self, payload: typedefs.JsonObject
+    ) -> milestones.Milestone:
+        ...
 
     # Social and friends.
 

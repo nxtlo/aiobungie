@@ -28,20 +28,36 @@ since it depends on components passed to the request or due to privacy by the pr
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = ("Component", "ComponentPrivacy", "ComponentFields")
+__all__: tuple[str, ...] = (
+    "ComponentPrivacy",
+    "ComponentFields",
+    "Component",
+    "CharacterComponent",
+    "ProfileComponent",
+    "RecordsComponent",
+    "ItemsComponent",
+    "VendorsComponent",
+)
 
+# Attrs have problems with inheriting
+# from multiple defined classes which's why
+# dataclasses are used here.
+import dataclasses
+import sys
 import typing
 
-import attr
+if sys.version_info >= (3, 10):
+    dataclass = dataclasses.dataclass(slots=True)
+else:
+    dataclass = dataclasses.dataclass
 
 from aiobungie.internal import enums
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
 
-    from aiobungie import traits
     from aiobungie.crate import activity
-    from aiobungie.crate import character
+    from aiobungie.crate import character as character_
     from aiobungie.crate import profile
     from aiobungie.crate import records as records_
 
@@ -63,9 +79,197 @@ class ComponentFields(enums.Enum):
     DISABLED = False
 
 
-@attr.mutable(weakref_slot=False, kw_only=True, hash=False)
-class Component:
-    """Implementation of a Bungie profile components.
+@dataclass
+class ProfileComponent:
+    """Represents a profile-only Bungie component.
+
+    This includes all components that falls under the profile object.
+
+    Included Components
+    -------------------
+    - `Profiles`
+    - `ProfileInventories`
+    - `ProfileCurrencies`
+    - `ProfileProgression`
+    """
+
+    profiles: typing.Optional[profile.Profile] = dataclasses.field(default=None)
+    """The profile component.
+
+    This will be available when `aiobungie.ComponentType.PROFILE` is passed to the request components.
+    otherwise will be `None`.
+    """
+
+    profile_progression: typing.Optional[
+        profile.ProfileProgression
+    ] = dataclasses.field(default=None)
+    """The profile progression component.
+
+    This will be available when `aiobungie.ComponentType.PROFILE_PROGRESSION`
+    is passed to the request components.
+    otherwise will be `None`.
+    """
+
+    profile_currencies: typing.Optional[
+        collections.Sequence[profile.ProfileItemImpl]
+    ] = dataclasses.field(default=None)
+    """A sequence of profile currencies component.
+
+    Notes
+    -----
+    * This will always be `None` unless `auth="access_token"` is passed to the request.
+    * This will always be `None` unless `aiobungie.ComponentType.PROFILE_CURRENCIES`
+    is passed to the request components.
+    """
+
+    profile_inventories: typing.Optional[
+        collections.Sequence[profile.ProfileItemImpl]
+    ] = dataclasses.field(default=None)
+    """A sequence of profile inventories items component.
+
+    Notes
+    -----
+    * This will always be `None` unless `auth="access_token"` is passed to the request.
+    * This will always be `None` unless `aiobungie.ComponentType.PROFILE_INVENTORIES`
+    is passed to the request components.
+    """
+
+
+@dataclass
+class RecordsComponent:
+    """Represents records-only Bungie component.
+
+    This includes all components that falls under the records object.
+
+    Notes
+    -----
+    * profile_records is for global profile records
+    * character_records is for character-only records.
+
+    Included Components
+    -------------------
+    - `Records`
+        - `ProfileRecords`
+        - `CharacterRecords`
+    """
+
+    profile_records: typing.Optional[collections.Mapping[int, records_.Record]]
+    """A mapping from the profile record id to a record component.
+
+    Notes
+    -----
+    * This will be available when `aiobungie.ComponentType.RECORDS`
+    is passed to the request components. otherwise will be `None`.
+    * This will always be `None` if it's a character component.
+    """
+
+    character_records: typing.Optional[
+        collections.Mapping[int, records_.CharacterRecord]
+    ]
+    """A mapping from character record ids to a character record component.
+
+    This will be available when `aiobungie.ComponentType.RECORDS`
+    is passed to the request components. otherwise will be `None`.
+    """
+
+
+@dataclass
+class ItemsComponent:
+    """Represents items-only Bungie component.
+
+    This includes any item related object.
+    """
+
+    # TODO: Impl this.
+
+
+@dataclass
+class VendorsComponent:
+    """Represents vendors-only Bungie component."""
+
+    # TODO: Impl this.
+
+
+@dataclass
+class CharacterComponent(RecordsComponent):
+    """Represents a character-only Bungie component.
+
+    This includes all components that falls under the character object.
+
+    Included Components
+    -------------------
+    - `Characters`
+    - `CharacterInventories`
+    - `CharacterProgression`
+    - `CharacterRenderData`
+    - `CharacterActivities`
+    - `CharacterEquipments`
+    """
+
+    character: typing.Optional[character_.Character] = dataclasses.field(default=None)
+    """The character component.
+
+    This will be available when `aiobungie.ComponentType.CHARACTERS` is passed to the request.
+    otherwise will be `None`.
+    """
+
+    inventory: typing.Optional[
+        collections.Sequence[profile.ProfileItemImpl]
+    ] = dataclasses.field(default=None)
+    """A sequence of the character inventorie items component.
+
+    Those items may be Weapons, emblems, ships, sparrows, etc.
+
+    Notes
+    -----
+    * This will always be `None` unless `auth="access_token"` is passed to the request.
+    * This will always be `None` unless `aiobungie.ComponentType.CHARACTER_INVENTORY`
+    is passed to the request components.
+    """
+
+    progressions: typing.Optional[character_.CharacterProgression] = dataclasses.field(
+        default=None, repr=False
+    )
+    """The character progression component.
+
+    Notes
+    -----
+    * This will always be `None` unless `auth="access_token"` is passed to the request.
+    * This will always be `None` unless `aiobungie.ComponentType.CHARACTER_PROGRESSION`
+    is passed to the request components.
+    """
+
+    render_data: typing.Optional[character_.RenderedData] = dataclasses.field(
+        default=None, repr=False
+    )
+    """The character rendered data component.
+
+    This will always be `None` unless `aiobungie.ComponentType.RENDER_DATA`
+    is passed to the request components.
+    """
+
+    activities: typing.Optional[activity.CharacterActivity] = dataclasses.field(
+        default=None, repr=False
+    )
+    """A sequence of the character activities component.
+
+    This will always be `None` unless `aiobungie.ComponentType.CHARACTER_ACTIVITES`
+    is passed to the request components.
+    """
+
+    equipment: typing.Optional[
+        collections.Sequence[profile.ProfileItemImpl]
+    ] = dataclasses.field(default=None)
+    """A sequence of the character equipment component.
+
+    This will always be `None` unless `aiobungie.ComponentType.CHARACTER_EQUIPMENT`
+    is passed to the request components.
+    """
+
+
+@dataclass
+class Component(ProfileComponent, RecordsComponent):
+    """Concerete implementation of all Bungie profile components.
 
     This includes all profile components that are available and not private.
 
@@ -103,53 +307,29 @@ class Component:
                     except Exception as e:
                         print(f"Couldn't transfer the item {e}")
     ```
+
+    Included Components
+    -------------------
+    - `Profiles`
+    - `ProfileInventories`
+    - `ProfileCurrencies`
+    - `ProfileProgression`
+    - `Characters`
+    - `CharacterInventories`
+    - `CharacterProgression`
+    - `CharacterRenderData`
+    - `CharacterActivities`
+    - `CharacterEquipments`
+    - `Records`
+        - `ProfileRecords`
+        - `CharacterRecords`
     """
 
-    net: traits.Netrunner = attr.field(repr=False)
-    """A network state used for making external requests."""
-
-    profiles: typing.Optional[profile.Profile] = attr.field()
-    """The profile component.
-
-    This will be available when `aiobungie.ComponentType.PROFILE` is passed to the request components.
-    otherwise will be `None`.
-    """
-
-    profile_progression: typing.Optional[profile.ProfileProgression] = attr.field()
-    """The profile progression component.
-
-    This will be available when `aiobungie.ComponentType.PROFILE_PROGRESSION`
-    is passed to the request components.
-    otherwise will be `None`.
-    """
-
-    profile_currencies: typing.Optional[
-        collections.Sequence[profile.ProfileItemImpl]
-    ] = attr.field()
-    """A sequence of profile currencies component.
-
-    Notes
-    -----
-    * This will always be `None` unless `auth="access_token"` is passed to the request.
-    * This will always be `None` unless `aiobungie.ComponentType.PROFILE_CURRENCIES`
-    is passed to the request components.
-    """
-
-    profile_inventories: typing.Optional[
-        collections.Sequence[profile.ProfileItemImpl]
-    ] = attr.field()
-    """A sequence of profile inventories items component.
-
-    Notes
-    -----
-    * This will always be `None` unless `auth="access_token"` is passed to the request.
-    * This will always be `None` unless `aiobungie.ComponentType.PROFILE_INVENTORIES`
-    is passed to the request components.
-    """
-
+    # This is actually required since the signature from profiles to characters
+    # Changes from `Mapping[int, object]` -> `object`
     characters: typing.Optional[
-        collections.Mapping[int, character.Character]
-    ] = attr.field()
+        collections.Mapping[int, character_.Character]
+    ] = dataclasses.field(default=None)
     """A mapping from character's id to`aiobungie.crate.Character`
     of the associated character within the character component.
 
@@ -159,7 +339,7 @@ class Component:
 
     character_inventories: typing.Optional[
         collections.Mapping[int, collections.Sequence[profile.ProfileItemImpl]]
-    ] = attr.field()
+    ] = dataclasses.field(default=None)
     """A mapping from character's id to a sequence of their character inventorie items component.
 
     Those items may be Weapons, emblems, ships, sparrows, etc.
@@ -172,8 +352,8 @@ class Component:
     """
 
     character_progressions: typing.Optional[
-        collections.Mapping[int, character.CharacterProgression]
-    ] = attr.field(default=None)
+        collections.Mapping[int, character_.CharacterProgression]
+    ] = dataclasses.field(default=None)
     """A mapping from character's id to a character progression component.
 
     Notes
@@ -184,8 +364,8 @@ class Component:
     """
 
     character_render_data: typing.Optional[
-        collections.Mapping[int, character.RenderedData]
-    ] = attr.field()
+        collections.Mapping[int, character_.RenderedData]
+    ] = dataclasses.field(default=None)
     """A mapping from character's id to a character rendered data component.
 
     This will always be `None` unless `aiobungie.ComponentType.RENDER_DATA`
@@ -194,7 +374,7 @@ class Component:
 
     character_activities: typing.Optional[
         collections.Mapping[int, activity.CharacterActivity]
-    ] = attr.field()
+    ] = dataclasses.field(default=None)
     """A mapping from character's id to a sequence of their character activities component.
 
     This will always be `None` unless `aiobungie.ComponentType.CHARACTER_ACTIVITES`
@@ -203,34 +383,10 @@ class Component:
 
     character_equipments: typing.Optional[
         collections.Mapping[int, collections.Sequence[profile.ProfileItemImpl]]
-    ] = attr.field()
+    ] = dataclasses.field(default=None)
     """A mapping from character's id to a sequence of their character equipment component.
 
     This will always be `None` unless `aiobungie.ComponentType.CHARACTER_EQUIPMENT`
     is passed to the request components.
     """
-
-    profile_records: typing.Optional[
-        collections.Mapping[int, records_.Record]
-    ] = attr.field()
-    """A mapping from the profile record id to a record component.
-
-    This will be available when `aiobungie.ComponentType.RECORDS`
-    is passed to the request components.
-    otherwise will be `None`.
-    """
-
-    character_records: typing.Optional[
-        collections.Mapping[int, records_.CharacterRecord]
-    ] = attr.field()
-    """A mapping from character record ids to a character record component.
-
-    This will be available when `aiobungie.ComponentType.RECORDS`
-    is passed to the request components. otherwise will be `None`.
-    """
-
-    # # TODO: ^ and return `list[vendors.Vendor]`
-    # vendors
-
-    # # TODO: ^ and return `vendors.VendorSale`
-    # vendor_sales
+    # TODO: Impl other components that don't fit anywhere here.

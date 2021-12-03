@@ -101,7 +101,7 @@ class MilestoneActivity:
     challenges: collections.Sequence[records.Objective] = attr.field(repr=False)
     """A sequence of objetvies/challenges bound to this activity."""
 
-    modifier_hashes: typing.Optional[list[int]] = attr.field()
+    modifier_hashes: typing.Optional[list[int]] = attr.field(repr=False)
     """An optional list of the activity's modifier hashes."""
 
     boolean_options: typing.Optional[collections.Mapping[int, bool]] = attr.field(
@@ -127,24 +127,26 @@ class QuestStatus:
     step_hash: int = attr.field(hash=True)
     """The quest step hash."""
 
-    vendor_hash: typing.Optional[int] = attr.field()
+    vendor_hash: typing.Optional[int] = attr.field(repr=False)
     """If the quest has a related Vendor that you should talk to
     in order to initiate the quest/earn rewards/continue the quest
     """
 
-    step_objectives: collections.Sequence[records.Objective] = attr.field(hash=False)
+    step_objectives: collections.Sequence[records.Objective] = attr.field(
+        hash=False, repr=False
+    )
     """A sequence of the step objectives bound to this quest status."""
 
     is_completed: bool = attr.field(hash=False)
     """Whether this quest status has been redeemed or not."""
 
-    is_tracked: bool = attr.field(hash=False)
+    is_tracked: bool = attr.field(hash=False, repr=False)
     """Whether the player is tracking this quest status or not."""
 
-    started: bool = attr.field(hash=False)
+    started: bool = attr.field(hash=False, repr=False)
     """Whether this quest status has started by the player or not."""
 
-    is_redeemed: bool = attr.field()
+    is_redeemed: bool = attr.field(repr=False)
     """Whether the quest has been redmeed or not."""
 
     item_instance_id: int = attr.field(hash=True)
@@ -211,7 +213,9 @@ class MilestoneReward:
 
     category_hash: int = attr.field(hash=True)
 
-    entries: collections.Collection[MilestoneRewardEntry] = attr.field(hash=False)
+    entries: collections.Collection[MilestoneRewardEntry] = attr.field(
+        hash=False, repr=False
+    )
     """A collections of reward entries for this category."""
 
 

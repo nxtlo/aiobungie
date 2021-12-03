@@ -253,8 +253,10 @@ class RESTInterface(traits.RESTful, abc.ABC):
     def fetch_character(
         self,
         member_id: int,
-        type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: typedefs.IntAnd[enums.MembershipType],
         character_id: int,
+        *components: enums.ComponentType,
+        **options: str,
     ) -> ResponseSig[typedefs.JsonObject]:
         """Fetch a Destiny 2 player's characters.
 
@@ -262,10 +264,21 @@ class RESTInterface(traits.RESTful, abc.ABC):
         ----------
         member_id: `builtins.int`
             A valid bungie member id.
-        type: `aiobungie.typedefs.IntAnd[aiobungie.internal.enums.MembershipType]`
+        membership_type: `aiobungie.typedefs.IntAnd[aiobungie.internal.enums.MembershipType]`
             The member's membership type.
         character_id : `int`
             The character id to return.
+        *components: `aiobungie.ComponentType`
+            Multiple arguments of character components to collect and return.
+
+        Other Parameters
+        ----------------
+        auth : `typing.Optional[str]`
+            A passed kwarg Bearer access_token to make the request with.
+            This is optional and limited to components that only requires an Authorization token.
+        **options : `str`
+            Other keyword arguments for the request to expect.
+            This is only here for the `auth` option which's a kwarg.
 
         Returns
         -------

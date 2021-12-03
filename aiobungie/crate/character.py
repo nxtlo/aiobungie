@@ -27,7 +27,6 @@
 from __future__ import annotations
 
 __all__: tuple[str, ...] = (
-    "CharacterComponent",
     "Character",
     "Dye",
     "MinimalEquipments",
@@ -36,7 +35,6 @@ __all__: tuple[str, ...] = (
     "CharacterProgression",
 )
 
-import abc
 import typing
 
 import attr
@@ -58,94 +56,6 @@ if typing.TYPE_CHECKING:
     from aiobungie.internal.assets import Image
 
 
-class CharacterComponent(abc.ABC):
-    """An interface for a Bungie character component."""
-
-    __slots__: typing.Sequence[str] = ()
-
-    @property
-    @abc.abstractmethod
-    def net(self) -> traits.Netrunner:
-        """A network state used for making external requests."""
-
-    @property
-    @abc.abstractmethod
-    def member_type(self) -> enums.MembershipType:
-        """The character's membership type."""
-
-    @property
-    @abc.abstractmethod
-    def member_id(self) -> int:
-        """The profile's member id."""
-
-    @property
-    @abc.abstractmethod
-    def id(self) -> int:
-        """The character's member id."""
-
-    @property
-    @abc.abstractmethod
-    def light(self) -> int:
-        """The character's light."""
-
-    @property
-    @abc.abstractmethod
-    def stats(self) -> typing.Mapping[enums.Stat, int]:
-        """A mapping of the character stats and its level."""
-
-    @property
-    @abc.abstractmethod
-    def url(self) -> str:
-        """The character's url at bungie.net."""
-
-    @property
-    @abc.abstractmethod
-    def emblem(self) -> Image:
-        """The character's current equipped emblem."""
-
-    @property
-    @abc.abstractmethod
-    def last_played(self) -> datetime.datetime:
-        """The character's last played time."""
-
-    @property
-    @abc.abstractmethod
-    def emblem_icon(self) -> Image:
-        """The character's current equipped emblem icon."""
-
-    @property
-    @abc.abstractmethod
-    def emblem_hash(self) -> int:
-        """The character's current equipped emblem hash."""
-
-    @property
-    @abc.abstractmethod
-    def race(self) -> enums.Race:
-        """The character's race."""
-
-    @property
-    @abc.abstractmethod
-    def gender(self) -> enums.Gender:
-        """The character's gender."""
-
-    @property
-    @abc.abstractmethod
-    def total_played_time(self) -> str:
-        """Character's total played time in hours."""
-
-    @property
-    @abc.abstractmethod
-    def class_type(self) -> enums.Class:
-        """The character's class."""
-
-    @property
-    @abc.abstractmethod
-    def title_hash(self) -> typing.Optional[int]:
-        """
-        The character's title hash. This is Optional and can be None if no title was found.
-        """
-
-
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
 class Dye:
     """Represents dyes rendered on a Destiny character."""
@@ -157,7 +67,7 @@ class Dye:
     """The dye's hash."""
 
 
-@attr.define(hash=False, kw_only=True, weakref_slot=False)
+@attr.define(hash=False, kw_only=True, weakref_slot=False, repr=False)
 class CustomizationOptions:
     """Raw data represents a character's customization options."""
 
@@ -202,7 +112,7 @@ class MinimalEquipments:
     item_hash: int = attr.field()
     """The equipped items's hash."""
 
-    dyes: typing.Optional[collections.Collection[Dye]] = attr.field()
+    dyes: typing.Optional[collections.Collection[Dye]] = attr.field(repr=False)
     """An optional collection of the item rendering dyes"""
 
     async def fetch_my_item(self) -> entity.InventoryEntity:
@@ -217,10 +127,10 @@ class RenderedData:
     net: traits.Netrunner = attr.field(repr=False)
     """A network state used for making external requests."""
 
-    custom_dyes: collections.Collection[Dye] = attr.field()
+    custom_dyes: collections.Collection[Dye] = attr.field(repr=False)
     """A collection of the character's custom dyes."""
 
-    customization: CustomizationOptions = attr.field()
+    customization: CustomizationOptions = attr.field(repr=False)
     """Data about what character customization options you picked."""
 
     equipment: collections.Sequence[MinimalEquipments] = attr.field()
@@ -277,7 +187,7 @@ class CharacterProgression:
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
-class Character(CharacterComponent):
+class Character:
     """An implementation for a Bungie character."""
 
     net: traits.Netrunner = attr.field(repr=False, eq=False)

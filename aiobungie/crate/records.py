@@ -66,10 +66,10 @@ class Objective:
 
     net: traits.Netrunner = attr.field(repr=False)
 
-    hash: int = attr.field(repr=True, hash=True)
+    hash: int = attr.field(hash=True)
     """The objective hash."""
 
-    visible: bool = attr.field(repr=True)
+    visible: bool = attr.field()
     """Whether the objective is visible or not."""
 
     complete: bool = attr.field()
@@ -116,13 +116,13 @@ class Record:
     scores: typing.Optional[RecordScores] = attr.field(repr=False)
     """Information about the global records score."""
 
-    categories_node_hash: undefined.UndefinedOr[int] = attr.field(repr=False)
+    categories_node_hash: undefined.UndefinedOr[int] = attr.field()
     """ The hash for the root presentation node definition of Triumph categories.
 
     This will be `UNDEFINED` if not found.
     """
 
-    seals_node_hash: undefined.UndefinedOr[int] = attr.field(repr=False)
+    seals_node_hash: undefined.UndefinedOr[int] = attr.field()
     """The hash for the root presentation node definition of Triumph Seals.
 
     This will be `UNDEFINED` if not found.
@@ -131,7 +131,7 @@ class Record:
     state: typedefs.IntAnd[RecordState] = attr.field()
     """Record's state. This will be an int if the state is a sum of multiple states."""
 
-    objectives: typing.Optional[list[Objective]] = attr.field()
+    objectives: typing.Optional[list[Objective]] = attr.field(repr=False)
     """A list of the record objectives. The objectives are optional and may be `None` if not found."""
 
     interval_objectives: typing.Optional[list[Objective]] = attr.field(repr=False)

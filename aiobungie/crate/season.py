@@ -63,7 +63,7 @@ class ArtifactTier:
 
     points_to_unlock: int = attr.field()
 
-    items: colelctions.Sequence[ArtifactTierItem] = attr.field()
+    items: colelctions.Sequence[ArtifactTierItem] = attr.field(repr=False)
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
@@ -76,7 +76,7 @@ class CharacterScopedArtifact:
 
     reset_count: int = attr.field()
 
-    tiers: colelctions.Sequence[ArtifactTier] = attr.field()
+    tiers: colelctions.Sequence[ArtifactTier] = attr.field(repr=False)
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
@@ -86,13 +86,13 @@ class Artifact:
     net: traits.Netrunner = attr.field(repr=False, eq=False, hash=False)
     """A client app we may use to make external requests."""
 
-    hash: int = attr.field(repr=True, hash=True)
+    hash: int = attr.field(hash=True)
     """The season artifact's hash."""
 
-    power_bonus: int = attr.field(repr=True)
+    power_bonus: int = attr.field()
     """Season artifact's power bonus."""
 
-    acquired_points: int = attr.field(repr=False)
+    acquired_points: int = attr.field()
     """The total acquired artifact points"""
 
     bonus: progressions.Progression = attr.field(repr=False)

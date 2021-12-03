@@ -24,9 +24,8 @@
 
 from __future__ import annotations
 
-__all__ = (
+__all__: tuple[str, ...] = (
     "Profile",
-    "ProfileComponent",
     "LinkedProfile",
     "ProfileProgression",
     "ProfileItem",
@@ -36,12 +35,10 @@ __all__ = (
 import abc
 import collections.abc as collections
 import datetime
-import logging
 import typing
 
 import attr
 
-from aiobungie.crate import character
 from aiobungie.crate import entity
 from aiobungie.crate import user
 from aiobungie.internal import enums
@@ -50,120 +47,8 @@ from aiobungie.internal import helpers
 if typing.TYPE_CHECKING:
     from aiobungie import traits
     from aiobungie import typedefs
+    from aiobungie.crate import components
     from aiobungie.crate import season
-
-log: typing.Final[logging.Logger] = logging.getLogger(__name__)
-
-
-class ProfileComponent(abc.ABC):
-    """An interface that include fields found in a Bungie profile Component.
-
-    Fields here available when passing `aiobungie.ComponentType.PROFILE` to `aiobungie.Client.fetch_profile`
-    """
-
-    __slots__: collections.Sequence[str] = ()
-
-    @property
-    @abc.abstractmethod
-    def net(self) -> traits.Netrunner:
-        """A network state used for making external requests."""
-
-    @property
-    @abc.abstractmethod
-    def name(self) -> str:
-        """Profile's name"""
-
-    @property
-    @abc.abstractmethod
-    def type(self) -> enums.MembershipType:
-        """Profile's membership type."""
-
-    @property
-    @abc.abstractmethod
-    def last_played(self) -> datetime.datetime:
-        """The profile user's last played date time."""
-
-    @property
-    @abc.abstractmethod
-    def is_public(self) -> bool:
-        """Profile's privacy status."""
-
-    @property
-    @abc.abstractmethod
-    def character_ids(self) -> typing.List[int]:
-        """A list of the profile's character ids."""
-
-    @property
-    @abc.abstractmethod
-    def id(self) -> int:
-        """The profile's id."""
-
-    @property
-    def titan_id(self) -> int:
-        """The titan id of the profile player."""
-        return int(self.character_ids[0])
-
-    @property
-    def hunter_id(self) -> int:
-        """The huter id of the profile player."""
-        return int(self.character_ids[1])
-
-    @property
-    def warlock_id(self) -> int:
-        """The warlock id of the profile player."""
-        return int(self.character_ids[2])
-
-    async def _await_all_chars(self) -> collections.Collection[character.Character]:
-        return await helpers.awaits(
-            self.fetch_hunter(), self.fetch_hunter(), self.fetch_warlock()
-        )
-
-    async def collect(self) -> collections.Collection[character.Character]:
-        """Gather and collect all characters this profile has at once.
-
-        Example
-        -------
-        ```py
-        >>> for char in await fetched_profile.collect():
-        ...     print(char.light, char.class_type)
-        ```
-
-        Returns
-        -------
-        `collections.Collection[aiobungie.crate.Character]`
-            A collection of the characters.
-        """
-        return await self._await_all_chars()
-
-    # NOTE: A bug probably exists here. Since not all players have A warlock, hunter or a titan.
-    # The IDs in the sequence are not always in order.
-    # Which means we can't gurantte if self.fetch_titan() returns a titan or a hunter or a warlock?
-    # A fix for this should be simple. Make both ids and fetch methods return An optional of the type
-    # otherwise `None` if The result wasn't found or raised an IndexError.
-
-    async def fetch_titan(self) -> character.Character:
-        """Returns the titan character of the profile owner."""
-        char = await self.net.request.fetch_character(
-            int(self.id), self.type, self.titan_id
-        )
-        assert isinstance(char, character.Character)
-        return char
-
-    async def fetch_hunter(self) -> character.Character:
-        """Returns the hunter character of the profile owner."""
-        char = await self.net.request.fetch_character(
-            self.id, self.type, self.hunter_id
-        )
-        assert isinstance(char, character.Character)
-        return char
-
-    async def fetch_warlock(self) -> character.Character:
-        """Returns the Warlock character of the profile owner."""
-        char = await self.net.request.fetch_character(
-            self.id, self.type, self.warlock_id
-        )
-        assert isinstance(char, character.Character)
-        return char
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
@@ -191,7 +76,7 @@ class LinkedProfile:
     net: traits.Netrunner = attr.field(repr=False, eq=False, hash=False)
     """A network state used for making external requests."""
 
-    profiles: collections.Sequence[user.DestinyUser] = attr.field(repr=True)
+    profiles: collections.Sequence[user.DestinyUser] = attr.field(repr=False)
     """A sequence of destiny memberships for this profile."""
 
     bungie: user.PartialBungieUser = attr.field(repr=True)
@@ -199,7 +84,7 @@ class LinkedProfile:
 
     profiles_with_errors: typing.Optional[
         collections.Sequence[user.DestinyUser]
-    ] = attr.field(repr=True, eq=False)
+    ] = attr.field(repr=False, eq=False)
     """A sequence of optional destiny memberships with errors.
 
     These profiles exists because they have missing fields. Otherwise this will be an empty array.
@@ -307,7 +192,7 @@ class ProfileItemImpl(ProfileItem):
     net: traits.Netrunner = attr.field(repr=False, eq=False, hash=False)
     """A network state used for making external requests."""
 
-    hash: int = attr.field(repr=True, hash=True)
+    hash: int = attr.field(hash=True)
     """The item type hash."""
 
     quantity: int = attr.field(repr=True, hash=True)
@@ -319,7 +204,7 @@ class ProfileItemImpl(ProfileItem):
     location: enums.ItemLocation = attr.field(repr=True)
     """The item location."""
 
-    bucket: int = attr.field(repr=True)
+    bucket: int = attr.field(repr=False)
     """The item bucket hash."""
 
     transfer_status: typedefs.IntAnd[enums.TransferStatus] = attr.field(repr=False)
@@ -328,7 +213,7 @@ class ProfileItemImpl(ProfileItem):
     lockable: bool = attr.field(repr=False)
     """Whether the item can be locked or not."""
 
-    state: enums.ItemState = attr.field(repr=True)
+    state: enums.ItemState = attr.field(repr=False)
     """The item's state."""
 
     dismantel_permissions: int = attr.field(repr=False)
@@ -340,7 +225,7 @@ class ProfileItemImpl(ProfileItem):
     instance_id: typing.Optional[int] = attr.field(repr=True)
     """An inventory item instance id if available, otherwise will be `None`."""
 
-    ornament_id: typing.Optional[int] = attr.field(repr=True)
+    ornament_id: typing.Optional[int] = attr.field(repr=False)
     """The ornament id of this item if it has one. Will be `None` otherwise."""
 
     version_number: typing.Optional[int] = attr.field(repr=False)
@@ -348,10 +233,11 @@ class ProfileItemImpl(ProfileItem):
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
-class Profile(ProfileComponent):
-    """Represents a Bungie member profile component.
+class Profile:
+    """Represents a Bungie member profile-only component.
 
-    This is only a `PROFILE` component and not the profile itself. See `aiobungie.crate.Component` for other components.
+    This is only a `PROFILE` component and not the profile itself.
+    See `aiobungie.crate.Component` for other components.
     """
 
     id: int = attr.field(repr=True, hash=True, eq=False)
@@ -372,11 +258,56 @@ class Profile(ProfileComponent):
     last_played: datetime.datetime = attr.field(repr=False, eq=False)
     """Profile's last played Destiny 2 played date."""
 
-    character_ids: typing.List[int] = attr.field(repr=False, eq=False)
+    character_ids: list[int] = attr.field(repr=False, eq=False)
     """A list of the profile's character ids."""
 
     power_cap: int = attr.field(repr=False, eq=False)
     """The profile's current seaspn power cap."""
+
+    async def _await_all_chars(
+        self, *components: enums.ComponentType, **options: str
+    ) -> collections.Collection[components.CharacterComponent]:
+        return await helpers.awaits(
+            *[
+                self.net.request.fetch_character(
+                    self.id, self.type, char_id, *components, **options
+                )
+                for char_id in self.character_ids
+            ]
+        )
+
+    # TODO: Support for "async with" instead?
+    async def collect(
+        self, *components: enums.ComponentType, **options: str
+    ) -> collections.Collection[components.CharacterComponent]:
+        """Gather and collect all characters this profile has at once.
+
+        Parameters
+        ----------
+        *components: `aiobungie.ComponentType`
+            Multiple arguments of character components to collect and return.
+
+        Other Parameters
+        ----------------
+        auth : `typing.Optional[str]`
+            A passed kwarg Bearer access_token to make the request with.
+            This is optional and limited to components that only requires an Authorization token.
+        **options : `str`
+            Other keyword arguments for the request to expect.
+            This is only here for the `auth` option which's a kwarg.
+
+        Returns
+        -------
+        `collections.Collection[aiobungie.crate.CharacterComponent]`
+            A collection of the characters component.
+        """
+        return await self._await_all_chars(*components, **options)
+
+    # NOTE: A bug probably exists here. Since not all players have A warlock, hunter or a titan.
+    # The IDs in the sequence are not always in order.
+    # Which means we can't gurantte if self.fetch_titan() returns a titan or a hunter or a warlock?
+    # A fix for this should be simple. Make both ids and fetch methods return An optional of the type
+    # otherwise `None` if The result wasn't found or raised an IndexError.
 
     def __str__(self) -> str:
         return self.name

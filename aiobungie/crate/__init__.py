@@ -99,6 +99,11 @@ __all__: tuple[str, ...] = (
     "ArtifactTier",
     "ArtifactTierItem",
     "CharacterScopedArtifact",
+    "CharacterComponent",
+    "ProfileComponent",
+    "RecordsComponent",
+    "ItemsComponent",
+    "VendorsComponent",
 )
 
 from .activity import Activity

@@ -256,7 +256,7 @@ class DestinyUser(UserLike):
     name: undefined.UndefinedOr[str] = attr.field(repr=True, eq=False)
     """The member's name."""
 
-    last_seen_name: str = attr.field(repr=True)
+    last_seen_name: str = attr.field(repr=False)
     """The member's last seen display name. You may use this field if `DestinyUser.name` is `Undefined`."""
 
     type: enums.MembershipType = attr.field(repr=True)
@@ -323,14 +323,14 @@ class HardLinkedMembership:
     Also Cross-Save Aware.
     """
 
-    type: enums.MembershipType = attr.field(repr=True, hash=False)
+    type: enums.MembershipType = attr.field(hash=False)
     """The hard link user membership type."""
 
-    id: int = attr.field(repr=True, hash=True, eq=False)
+    id: int = attr.field(hash=True, eq=False)
     """The hard link user id"""
 
     cross_save_type: enums.MembershipType = attr.field(
-        repr=True, hash=False, eq=False, default=enums.MembershipType.NONE
+        hash=False, eq=False, default=enums.MembershipType.NONE
     )
     """The hard link user's crpss save membership type. Default is set to None-0"""
 
@@ -362,8 +362,8 @@ class User:
     This includes both Bungie net and Destiny memberships information.
     """
 
-    bungie: BungieUser = attr.field(repr=True)
+    bungie: BungieUser = attr.field()
     """The user's bungie net membership."""
 
-    destiny: typing.Sequence[DestinyUser] = attr.field(repr=True)
+    destiny: typing.Sequence[DestinyUser] = attr.field()
     """A sequence of the user's Destiny memberships."""

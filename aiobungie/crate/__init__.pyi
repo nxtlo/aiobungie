@@ -42,6 +42,7 @@ from .user import *
 #   BungieUser
 #   Character
 #   CharacterComponent
+#   CharacterComponent
 #   CharacterProgression
 #   CharacterScopedArtifact
 #   CharacterScopedArtifact
@@ -59,6 +60,7 @@ from .user import *
 #   FriendRequestView
 #   GroupMember
 #   HardLinkedMembership
+#   ItemsComponent
 #   LinkedProfile
 #   Milestone
 #   MilestoneActivity
@@ -72,10 +74,13 @@ from .user import *
 #   PartialBungieUser
 #   Profile
 #   ProfileComponent
+#   ProfileComponent
 #   ProfileItem
 #   ProfileItemImpl
 #   ProfileProgression
 #   Progression
 #   QuestStatus
+#   RecordsComponent
 #   User
 #   UserThemes
+#   VendorsComponent

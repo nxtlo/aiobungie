@@ -316,27 +316,7 @@ class ComponentType(Enum):
     )
     """All profile components.
 
-    This cannot be overloaded `int(ALL_PROFILES)`. You should access it like this `ALL_PROFILES.value`
-    """
-
-    CHARACTERS = 200
-    CHARACTER_INVENTORY = 201
-    CHARECTER_PROGRESSION = 202
-    CHARACTER_RENDER_DATA = 203
-    CHARACTER_ACTIVITIES = 204
-    CHARACTER_EQUIPMENT = 205
-
-    ALL_CHARACTERS = (
-        CHARACTERS,
-        CHARACTER_INVENTORY,
-        CHARECTER_PROGRESSION,
-        CHARACTER_RENDER_DATA,
-        CHARACTER_ACTIVITIES,
-        CHARACTER_EQUIPMENT,
-    )
-    """All character components.
-
-    This cannot be overloaded `int(ALL_CHARACTERS)`. You should access it like this `ALL_CHARACTERS.value`
+    This cannot be overloaded `int(ALL_PROFILES)`. You should access it like this `*ALL_PROFILES.value`
     """
 
     VENDORS = 400
@@ -345,7 +325,7 @@ class ComponentType(Enum):
     ALL_VENDORS = (VENDORS, VENDOR_RECEIPTS, VENDOR_SALES)
     """All vendor components.
 
-    This cannot be overloaded `int(ALL_VENDORS)`. You should access it like this `ALL_VENDORS.value`
+    This cannot be overloaded `int(ALL_VENDORS)`. You should access it like this `*ALL_VENDORS.value`
     """
 
     # Items
@@ -369,10 +349,9 @@ class ComponentType(Enum):
     )
     """All item components.
 
-    This cannot be overloaded `int(ALL_ITEMS)`. You should access it like this `ALL_ITEMS.value`
+    This cannot be overloaded `int(ALL_ITEMS)`. You should access it like this `*ALL_ITEMS.value`
     """
 
-    # Others
     RECORDS = 900
     PRESENT_NODES = 700
     COLLECTIBLES = 800
@@ -381,6 +360,27 @@ class ComponentType(Enum):
     METRICS = 1100
     INVENTORIES = 102
     STRING_VARIABLES = 1200
+
+    CHARACTERS = 200
+    CHARACTER_INVENTORY = 201
+    CHARECTER_PROGRESSION = 202
+    CHARACTER_RENDER_DATA = 203
+    CHARACTER_ACTIVITIES = 204
+    CHARACTER_EQUIPMENT = 205
+
+    ALL_CHARACTERS = (
+        CHARACTERS,
+        CHARACTER_INVENTORY,
+        CHARECTER_PROGRESSION,
+        CHARACTER_RENDER_DATA,
+        CHARACTER_ACTIVITIES,
+        CHARACTER_EQUIPMENT,
+        RECORDS,
+    )
+    """All character components.
+
+    This cannot be overloaded `int(ALL_CHARACTERS)`. You should access it like this `*ALL_CHARACTERS.value`
+    """
 
     ALL = (
         *ALL_PROFILES,  # type: ignore

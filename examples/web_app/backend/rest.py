@@ -5,7 +5,6 @@ All objects returned are JSON objects which we can view them in the frontend.
 import typing
 
 import aiobungie
-from aiobungie.internal import helpers
 
 from backend import config
 
@@ -18,12 +17,12 @@ async def close() -> None:
 
 
 # Fetch some users from their id.
-async def fetch_user(id: int) -> helpers.JsonObject:
+async def fetch_user(id: int) -> aiobungie.typedefs.JsonObject:
     return await rest.fetch_user(id)
 
 
 # Fetch a clan.
-async def fetch_clan(name_or_id: str) -> helpers.JsonObject:
+async def fetch_clan(name_or_id: str) -> aiobungie.typedefs.JsonObject:
     return await rest.fetch_clan(name_or_id)
 
 
@@ -47,5 +46,5 @@ def _convert_membership(type: typing.Optional[str] = None) -> aiobungie.Membersh
 
 async def fetch_player(
     name: str, member_type: typing.Optional[str] = None
-) -> helpers.JsonArray:
+) -> aiobungie.typedefs.JsonArray:
     return await rest.fetch_player(name, _convert_membership(member_type))

@@ -1234,6 +1234,38 @@ class Factory(interfaces.FactoryInterface):
             character_progressions = self.deserialize_character_progressions(
                 raw_character_progressions
             )
+
+        profile_string_vars: typing.Optional[collections.Mapping[int, int]] = None
+        if raw_profile_string_vars := payload.get("profileStringVariables"):
+            profile_string_vars = raw_profile_string_vars["data"]["integerValuesByHash"]
+
+        character_string_vars: typing.Optional[
+            collections.Mapping[int, collections.Mapping[int, int]]
+        ] = None
+        if raw_character_string_vars := payload.get("characterStringVariables"):
+            character_string_vars = {
+                int(char_id): data["integerValuesByHash"]
+                for char_id, data in raw_character_string_vars["data"].items()
+            }
+
+        metrics: typing.Optional[
+            collections.Sequence[
+                collections.Mapping[int, tuple[bool, records.Objective]]
+            ]
+        ] = None
+        root_node_hash: typing.Optional[int] = None
+        if raw_metrics := payload.get("metrics"):
+            root_node_hash = raw_metrics['data']["metricsRootNodeHash"]
+            metrics = [
+                {
+                    int(metrics_hash): (
+                        data["invisible"],
+                        self.deserialize_objectives(data["objectiveProgress"]),
+                    )
+                    for metrics_hash, data in raw_metrics["data"]['metrics'].items()
+                }
+            ]
+
         return components.Component(
             profiles=profile_,
             profile_progression=profile_progression,
@@ -1247,6 +1279,10 @@ class Factory(interfaces.FactoryInterface):
             character_activities=character_activities,
             character_render_data=character_render_data,
             character_progressions=character_progressions,
+            profile_string_variables=profile_string_vars,
+            character_string_variables=character_string_vars,
+            metrics=metrics,
+            root_node_hash=root_node_hash,
         )
 
     def deserialize_character_component(  # type: ignore[call-arg]

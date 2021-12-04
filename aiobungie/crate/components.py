@@ -183,6 +183,55 @@ class VendorsComponent:
 
 
 @attr.attrs(kw_only=True, weakref_slot=False)
+class StringVariableComponent:
+    """Represents the profile string variable component.
+
+    This component will be available when `aiobungie.ComponentType.STRING_VARIABLES`
+    is passed to the request components. otherwise attributes will be `None`.
+
+    Included Components
+    -------------------
+    - `StringVariables`
+    """
+
+    profile_string_variables: typing.Optional[
+        collections.Mapping[int, int]
+    ] = attr.field()
+    """A mapping from an expression mapping difinition hash to its value."""
+
+    character_string_variables: typing.Optional[
+        collections.Mapping[int, collections.Mapping[int, int]]
+    ] = attr.field()
+    """A mapping from the character id to a mapping from an expression mapping difinition hash to its value."""
+
+
+@attr.attrs(kw_only=True, weakref_slot=False)
+class MetricsComponent:
+    """Represents the profile metrics component.
+
+    This will be available when `aiobungie.ComponentType.METRICS`
+    is passed to the request components.
+    otherwise will be `None`.
+
+    Included Components
+    -------------------
+    - `Metrics`
+    """
+
+    metrics: typing.Optional[
+        collections.Sequence[collections.Mapping[int, tuple[bool, records_.Objective]]]
+    ] = attr.field()
+    """A sequence of mappings from the metrics hash to a tuple contains two elements.
+
+    * The first is always a `bool` determines whether the object is visible or not.
+    * The second is an `aiobungie.crate.Objective` of the metrics object.
+    """
+
+    root_node_hash: typing.Optional[int] = attr.field()
+    """The metrics presentation root node hash."""
+
+
+@attr.attrs(kw_only=True, weakref_slot=False)
 class CharacterComponent(RecordsComponent, ItemsComponent, VendorsComponent):
     """Represents a character-only Bungie component.
 
@@ -255,8 +304,10 @@ class CharacterComponent(RecordsComponent, ItemsComponent, VendorsComponent):
     """
 
 
-@attr.attrs(kw_only=True, weakref_slot=False)
-class Component(ProfileComponent, RecordsComponent):
+@attr.define(kw_only=True, weakref_slot=False)
+class Component(
+    ProfileComponent, RecordsComponent, StringVariableComponent, MetricsComponent
+):
     """Concerete implementation of all Bungie profile components.
 
     This includes all profile components that are available and not private.
@@ -309,6 +360,7 @@ class Component(ProfileComponent, RecordsComponent):
     - `CharacterRenderData`
     - `CharacterActivities`
     - `CharacterEquipments`
+    - `StringVariables`
     - `Records`
         - `ProfileRecords`
         - `CharacterRecords`

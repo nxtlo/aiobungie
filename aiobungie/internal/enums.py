@@ -398,7 +398,7 @@ class ComponentType(Enum):
     )
     """ALl components. The usage of this is `*ComponentType.ALL.value` to unpack the values.
 
-    This cannot be overloaded `int(ALL)`. You should access it like this `ALL.value`
+    This cannot be overloaded `int(ALL)`. You should access it like this `*ALL.value`
     """
 
 

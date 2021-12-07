@@ -206,27 +206,25 @@ class RESTInterface(traits.RESTful, abc.ABC):
     def fetch_player(
         self,
         name: str,
+        code: int,
         type: typedefs.IntAnd[enums.MembershipType] = enums.MembershipType.ALL,
         /,
     ) -> ResponseSig[typedefs.JsonArray]:
         """Fetch a Destiny 2 Player.
 
-        .. note::
-            You must also pass the player's unique code.
-            A full name parameter should look like this
-            `Fate怒#4275`
-
         Parameters
         -----------
         name: `builtins.str`
-            The Player's Name.
+            The unqiue Bungie player name.
+        code : `int`
+            The unique Bungie display name code.
         type: `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
             The player's membership type, e,g. XBOX, STEAM, PSN
 
         Returns
         --------
         `ResponseSig[aiobungie.typedefs.JsonArray]`
-            A JSON array of the found players.
+            A JSON array of the found player's memberships.
 
         Raises
         ------

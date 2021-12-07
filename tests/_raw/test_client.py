@@ -126,7 +126,7 @@ async def test_profile() -> aiobungie.crate.Profile:
 async def test_player() -> typing.Sequence[
     typing.Optional[aiobungie.crate.DestinyUser]
 ]:
-    p = await client.fetch_player("Datto#6446")
+    p = await client.fetch_player("Datto", 6446)
     profile = await p[0].fetch_self_profile()
     print(repr(profile))
     print(repr(await profile.fetch_titan()))

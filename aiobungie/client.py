@@ -373,19 +373,18 @@ class Client(traits.ClientBase):
     async def fetch_player(
         self,
         name: str,
+        code: int,
         type: typedefs.IntAnd[enums.MembershipType] = enums.MembershipType.ALL,
         /,
     ) -> typing.Sequence[user.DestinyUser]:
-        """Fetch a Destiny 2 Player.
-
-        .. note::
-            You must also pass the player's unique code.
-            A full name parameter should look like this `Fate怒#4275`.
+        """Fetch a Destiny 2 Player's memberships.
 
         Parameters
         -----------
-        name: `builtins.str`
-            The Player's Name.
+        name: `str`
+            The unqiue Bungie player name.
+        code : `int`
+            The unique Bungie display name code.
         type: `aiobungie.internal.enums.MembershipType`
             The player's membership type, e,g. XBOX, STEAM, PSN
 
@@ -402,7 +401,7 @@ class Client(traits.ClientBase):
         `aiobungie.MembershipTypeError`
             The provided membership type was invalid.
         """
-        resp = await self.rest.fetch_player(name, type)
+        resp = await self.rest.fetch_player(name, code, type)
         assert isinstance(resp, list)
         return self.serialize.deserialize_player(resp)
 

@@ -33,6 +33,7 @@ This is optional and not required.
 - `undefined` types are now in `undefined.py` new module.
 - `helpers.py` now will only include helper functions and classes.
 - `helpers.just()` now takes a generic type for the return type.
+- `fetch_player()` Now requires an extra parameter `code` seperatly instead of `NAME#123`
 
 ### Removed
 - Not found errors removed and now only `error.NotFound` is raised instead.

@@ -8,7 +8,7 @@
     <img src="https://img.shields.io/github/issues/nxtlo/aiobungie"/>
     </a>
     <a href="http://python.org">
-    <img src="https://img.shields.io/badge/python-3.8%20%7C%203.9%20%7C%203.10dev-blue"/>
+    <img src="https://img.shields.io/badge/python-3.8%20%7C%203.9%20%7C%203.10-blue"/>
     </a>
     <a href="https://pypi.org/project/aiobungie/">
     <img src="https://img.shields.io/pypi/v/aiobungie?color=green"/>
@@ -18,6 +18,9 @@
     </a>
     <a href="https://github.com/nxtlo/aiobungie/actions/workflows/ci.yml">
     <img src="https://github.com/nxtlo/aiobungie/actions/workflows/ci.yml/badge.svg?branch=master">
+    </a>
+    <a href="https://pepy.tech/project/aiobungie">
+    <img src="https://pepy.tech/badge/aiobungie">
     </a>
 </div>
 
@@ -103,7 +106,8 @@ async def main(access_token: str) -> None:
     # Max retries is the maximum retries to backoff when you hit 5xx error codes.
     # It defaults to 4 retries.
     async with aiobungie.RESTClient("TOKEN", max_retries=5) as rest:
-        fetch_player = await rest.fetch_player('Fate怒#4275')
+        # Passing the player's name and code -> 'Fate怒#4275'
+        fetch_player = await rest.fetch_player('Fate怒', 4275)
         print(*fetch_player) # A JSON array of dict object
         for player in fetch_player: # Iterate through the array.
             print(player['membershipId'], player['iconPath']) # The player id and icon path.

@@ -37,7 +37,6 @@ import platform
 import random
 import sys
 import typing
-from urllib import parse
 
 import aiohttp
 import attr
@@ -509,18 +508,23 @@ class RESTClient(interfaces.RESTInterface):
     def fetch_player(
         self,
         name: str,
+        code: int,
         type: typedefs.IntAnd[enums.MembershipType] = enums.MembershipType.ALL,
         /,
     ) -> ResponseSig[typedefs.JsonArray]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
-            RequestMethod.GET,
-            f"Destiny2/SearchDestinyPlayer/{int(type)}/{parse.quote(name)}/",
+            RequestMethod.POST,
+            f"Destiny2/SearchDestinyPlayerByBungieName/{int(type)}",
+            json={"displayName": name, "displayNameCode": code}
         )
 
     def search_users(self, name: str, /) -> ResponseSig[typedefs.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(RequestMethod.GET, f"User/Search/Prefix/{name}/0")
+        return self._request(
+            RequestMethod.POST, f"User/Search/GlobalName/0",
+            json={"displayNamePrefix": name}
+        )
 
     def fetch_clan_from_id(self, id: int, /) -> ResponseSig[typedefs.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.

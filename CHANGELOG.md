@@ -52,6 +52,7 @@ for components that requires a bearer access token.
 - `fireteams` enums are finalized with `typing.final`
 - `Character.stats` now returns a mapping of `aiobungie.Stat` to `int` of the character stats.
 - `crate.season.*` objects are now exposed to docs and `crate.__init__.py`
+- `fetch_player()` Now requires an extra parameter `code` seperatly instead of `NAME#123`
 
 ### Removed
 - Not found errors removed and now only `error.NotFound` is raised instead.

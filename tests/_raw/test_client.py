@@ -103,7 +103,7 @@ async def test_fetch_app() -> aiobungie.crate.Application:
     return a
 
 async def test_player() -> typing.Sequence[typing.Optional[aiobungie.crate.DestinyUser]]:
-    p = await client.fetch_player("Crit#0495")
+    p = await client.fetch_player("Fate怒", 4275)
     profile = await p[0].fetch_self_profile(aiobungie.ComponentType.PROFILE)
     _LOG.debug(profile)
     components = aiobungie.ComponentType.ALL_CHARACTERS

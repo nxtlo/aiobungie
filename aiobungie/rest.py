@@ -492,7 +492,7 @@ class RESTClient(interfaces.RESTInterface):
     def search_users(self, name: str, /) -> ResponseSig[typedefs.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
-            RequestMethod.POST, f"User/Search/GlobalName/0",
+            RequestMethod.POST, "User/Search/GlobalName/0",
             json={"displayNamePrefix": name}
         )
 

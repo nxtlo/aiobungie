@@ -65,7 +65,7 @@ async def main() -> None:
     if owner := clan.owner:
 
         # Fetch a profile.
-        profile:  = await client.fetch_profile(
+        profile: aiobungie.crate.Component = await client.fetch_profile(
             owner.id,
             owner.type,
             # Return All profile components and character components.

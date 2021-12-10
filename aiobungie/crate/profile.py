@@ -277,7 +277,7 @@ class Profile:
         )
 
     # TODO: Support for "async with" instead?
-    async def collect(
+    async def collect_characters(
         self, *components: enums.ComponentType, **options: str
     ) -> collections.Collection[components.CharacterComponent]:
         """Gather and collect all characters this profile has at once.
@@ -302,12 +302,6 @@ class Profile:
             A collection of the characters component.
         """
         return await self._await_all_chars(*components, **options)
-
-    # NOTE: A bug probably exists here. Since not all players have A warlock, hunter or a titan.
-    # The IDs in the sequence are not always in order.
-    # Which means we can't gurantte if self.fetch_titan() returns a titan or a hunter or a warlock?
-    # A fix for this should be simple. Make both ids and fetch methods return An optional of the type
-    # otherwise `None` if The result wasn't found or raised an IndexError.
 
     def __str__(self) -> str:
         return self.name

@@ -83,15 +83,17 @@ f"({info.__version__}), ({info.__url__}), "
 f"{platform.python_implementation()}/{platform.python_version()} {platform.system()} "
 f"{platform.architecture()[0]}, Aiohttp/{aiohttp.HttpVersion11}"  # type: ignore[UnknownMemberType]
 
+def _wrong_content_type(response: aiohttp.ClientResponse) -> error.HTTPException:
+    return error.HTTPException(
+        f"Expected JSON content but got {response.content_type}, {str(response.real_url)}"
+    )
 
-async def handle_errors(
-    response: aiohttp.ClientResponse, msg: typing.Optional[str] = None
+async def _handle_errors(
+    response: aiohttp.ClientResponse, msg: undefined.UndefinedOr[str] = undefined.Undefined
 ) -> error.AiobungieError:
 
     if response.content_type != _APP_JSON:
-        return error.HTTPException(
-            f"Expected json content but got {response.content_type}, {str(response.real_url)}"
-        )
+        return _wrong_content_type(response)
 
     from_json = await response.json()
     data = [str(response.real_url), from_json, msg]
@@ -108,11 +110,7 @@ async def handle_errors(
     if 400 <= status < 500:
         return error.ResponseError(*data, status)
 
-    # For some WEIRD reason bungie doesn't follow the http
-    # error codes protocol and almost return 5xx on any failed request
-    # except very few. The only way currently to handle this is by their
-    # custom error codes.
-    # https://github.com/Bungie-net/api/issues/1542
+    # Need to handle errors our selves :>
     elif 500 <= status < 600:
         # No API key or method requires OAuth2 most likely.
         if msg in {
@@ -338,33 +336,22 @@ class RESTClient(interfaces.RESTInterface):
                         if response.status == http.HTTPStatus.NO_CONTENT:
                             return None
 
-                        data = await response.json(encoding="utf-8")
+                        data: typedefs.JsonObject = await response.json(encoding="utf-8")
                         if 300 > response.status >= 200:
                             if type == "read":
                                 # We want to read the bytes for the manifest response.
-                                data = await response.read()
-                                return data
-
-                            _LOG.debug(
-                                "%s Request success from %s with status %i",
-                                method,
-                                f"{url.REST_EP}/{route}",
-                                response.status,
-                            )
+                                return await response.read()
 
                             if response.content_type == _APP_JSON:
-                                try:
-                                    return data["Response"]
-
-                                # In case we didn't find the Response key
-                                # its safer to just return the data.
-                                except KeyError:
-                                    _LOG.warning(
-                                        "Couldn't return the response key, Data: %s",
-                                        data,
+                                if _LOG.isEnabledFor(logging.DEBUG):
+                                    _LOG.debug(
+                                        "%s %s %i",
+                                        method,
+                                        f"{url.REST_EP}/{route}",
+                                        response.status,
                                     )
-                                    return data
-
+                                # Return the response.
+                                return data["Response"]
                         if (
                             response.status in _RETRY_5XX
                             and retries < self._max_retries  # noqa: W503
@@ -372,23 +359,20 @@ class RESTClient(interfaces.RESTInterface):
                             backoff_ = backoff.ExponentialBackOff(maximum=6)
                             sleep_time = next(backoff_)
                             _LOG.warning(
-                                f"Received: {response.status}, "
-                                f"Message: {data['Message']}, "
-                                f"sleeping for {sleep_time}, "
-                                f"Remaining retries: {self._max_retries - retries}"
+                                "Received: %i, Message: %s, Sleeping for %.2f seconds, Remaining retries: %i",
+                                response.status, data['Message'], sleep_time, self._max_retries - retries
                             )
 
                             retries += 1
                             await asyncio.sleep(sleep_time)
                             continue
 
-                        await self._handle_err(response, data["ErrorStatus"])
+                        await self._handle_err(response, data.get("ErrorStatus", undefined.Undefined))
 
             except RuntimeError:
                 continue
 
     if not typing.TYPE_CHECKING:
-
         def __enter__(self) -> typing.NoReturn:
             cls = type(self)
             raise TypeError(
@@ -401,7 +385,7 @@ class RESTClient(interfaces.RESTInterface):
             exception: typing.Optional[BaseException],
             exception_traceback: typing.Optional[types.TracebackType],
         ) -> None:
-            return None
+            ...
 
     async def __aenter__(self) -> RESTClient:
         return self
@@ -414,7 +398,6 @@ class RESTClient(interfaces.RESTInterface):
     ) -> None:
         if self._session:
             await self._session.close()
-        return None
 
     # We don't want this to be super complicated.
     @typing.final
@@ -428,22 +411,24 @@ class RESTClient(interfaces.RESTInterface):
             return
         if response.content_type != _APP_JSON:
             _LOG.error(
-                f"we're being ratelmited on non JSON request, {response.content_type}."
+                f"Being ratelmited on non JSON request, {response.content_type}."
             )
             raise RuntimeError
 
         json = await response.json()
-        retry_after = json["ThrottleSeconds"]
-        if retry_after == 0:
-            # Can't really do anything about this.
+        retry_after: float = json["ThrottleSeconds"]
+        if retry_after >= 0:
+            # Can't really do anything about this...
             sleep_time = float((retry_after + random.randint(0, 3)))
-        _LOG.warning(
-            "We're being ratelimited with method %s route %s. Sleeping for %f:,",
-            method,
-            route,
-            sleep_time,
-        )
-        await asyncio.sleep(sleep_time)
+
+            _LOG.warning(
+                "Ratelimited with method %s route %s. Sleeping for %f:,",
+                method,
+                route,
+                sleep_time,
+            )
+            await asyncio.sleep(sleep_time)
+
         raise error.RateLimitedError(
             retry_after=retry_after,
             headers=response.headers,
@@ -454,9 +439,9 @@ class RESTClient(interfaces.RESTInterface):
     @staticmethod
     @typing.final
     async def _handle_err(
-        response: aiohttp.ClientResponse, msg: typing.Optional[str] = None
+        response: aiohttp.ClientResponse, msg: undefined.UndefinedOr[str] = undefined.Undefined
     ) -> typing.NoReturn:
-        raise await handle_errors(response, msg)
+        raise await _handle_errors(response, msg)
 
     def static_request(
         self,

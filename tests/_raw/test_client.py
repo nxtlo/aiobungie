@@ -50,7 +50,7 @@ def build_client() -> aiobungie.Client:
 client = build_client()
 
 async def test_users() -> aiobungie.crate.user.BungieUser:
-    u = await client.fetch_user(20315338)
+    u = await client.fetch_user(2031531231238)
     return u
 
 async def test_user_themese() -> typing.Sequence[aiobungie.crate.user.UserThemes]:

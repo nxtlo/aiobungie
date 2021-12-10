@@ -7,22 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.5b11...HEAD)
 
 ### Added
+- Implemented Bungie profile components. _`not all of them`_.
 - `crate.records` which implements Bungie record component.
 - `__repr__` overloaded for `enums.Enum` which just returns `enums.Enum.__str__`.
-- `Profile.collect()` method which fetch and collect all characters at once.
+- `Profile.collect_characters()` method which fetch and collect all profile characters at once.
 - Implemented `aiobungie.crate.fireteams` objects and its methods.
 - `RESTClient._request` method now takes and extra `auth` parameter for requests that requires `OAuth` header.
 - The base client now takes an extra `rest_client` parameter for a `RESTClient` instance provided by the user.
 This is optional and not required.
 - Chinese attributes to `fireteams.FireteamLanguage`
 - An API interface/abc and docs to the `factory.Factory` deserialazation factory class.
-- The base client now takes an extra `rest_client` parameter for a `RESTClient` instance provided by the user.
 This is optional and not required.
 - A new helper function `helpers.collect()` which collect multiple arguments, join them and separate them.
 - Missing `ComponentType` enum fields were added.
 - Implemented `profile.ProfileProgression` profile component.
-- `fetch_profile` and all alternative methods now takes `**options` kwargs which expects `auth` argument
-for components that requires a bearer access token.
 - `profile.ProfileItemImpl` class implements profile components that returns items. i.e., `profileinventories`, `profilecurrencies`, etc.
 - More enums for Destiny 2 items.
 - `entity.BaseEntity` class which all entities now inherit from.
@@ -31,20 +29,26 @@ for components that requires a bearer access token.
 - Implemented new Activities classes and entities in `crate.activity`.
 
 ### Breaking changes
-- `fetch_profile` and all alternative methods now takes `*components` parameter which accept multiple components to be passed and retuned at once.
-- `fetch_profile` and all alrernative methods now return `components.Component` instead of `profile.Profile`.
+- `Profile.collect` method renamed to `collect_characters` for consistency.
+- `fetch_profile` and all alternative methods now takes `**options` kwargs which expects `auth` argument- `fetch_profile` and all alternative methods now takes `*components` parameter which accept multiple components to be passed and retuned at once.
+- `fetch_profile` now returns `components.Component` instead of `profile.Profile`.
+- `fetch_character` now returns `components.CharacterComponent` instead of `character.Character`.
+- `fetch_character` no longer takes a char_type(`aiobungie.Class`) parameter and takes `character_id` which returns the character by its id instead of type.
+- `fetch_character` and all alternative methods now takes `*components` parameter which accept multiple components to be passed and retuned at once and
+`**options` kwargs which expects `auth="BEARER_TOKEN"` argument for components that requires a bearer access token.
 - `aiobungie.Component` enum name renamed to `ComponentType`.
-- `fetch_character` no longer takes an char_type(`aiobungie.Class`) parameter and takes `character_id` which returns the character by its id.
-- `fetch_character` now returns `typing.Optional[character.Character]` instead of `character.Character`
 - `traits.py` moved to the root directory instead of being in `helpers`
 -  All type hints used to be in `helpers.py` moved to new module `typedefs.py` in root directory.
 - `undefined` types are now in `undefined.py` new module.
-- `helpers.py` now will only include helper functions and classes.
-- `helpers.just()` now takes a generic type for the return type hint.
+- `profile.ProfileComponent` ABC has been removed in favor of `profile.Profile`.
+- `Client.serialize` property name changed to `Client.factory`.
+- `Client.fetch_public_milestone_content` method now returns `MilesonteContent` instead of `Milesonte`.
 
 ### Changed
 - `RESTClient._request` now takes a string or `rest.RequestMethod` enum for the method.
 - `RESTClient._request` now takes `yarl.URL` or a string for the path. Both changes affect `RESTClient.static_request.
+- `helpers.just()` now takes a generic type for the return type hint.
+- `helpers.py` now only include helper functions and classes.
 - Simplify not found raised errors to only raise `error.NotFound` instead of other not found errors.
 - Export `enums.Enum` and `enums.IntEnum` to `enums.__all__`.
 - `RESTClient` continues on `RuntimeError` errors instead of raising it.
@@ -55,6 +59,21 @@ for components that requires a bearer access token.
 - `fetch_player()` Now requires an extra parameter `code` seperatly instead of `NAME#123`
 
 ### Removed
+- `profile.Profile` methods `fetch_warlock`, `fetch_titan`, and `fetch_hunter` has been removed since the expected character to be returned wasn't always guranteed, This method has been replaced with `collect_characters` which fetch all found characters
+and returns a collection of them.
+
+You can always check for the character class type i.e.,
+```py
+characters_components = await profile.collect_characters(aiobungie.ComponentType.CHARACTERS)
+for component in characters_components:
+    # Check if the character component avilable.
+    # This should always be available since we passed it to the request.
+    if character := component.character:
+        if isinstance(character.class_type, aiobungie.Class.WARLOCK):
+            ...
+    else:
+        ...
+```
 - Not found errors removed and now only `error.NotFound` is raised instead.
     - `error.PlayerNotFound`
     - `error.UserNotFound`
@@ -65,7 +84,7 @@ for components that requires a bearer access token.
 - Fixed `Friend.user` was returning `User` and not `BungieUser`
 - Some methods that required OAuth2 was buggy has been fixed.
 - The rest client was showing `unclosed client_session` erros and the end of the request.
-- `Friend.unique_name` wan't returning the actual unique name.
+- `Friend.unique_name` wasn't returning the actual unique name.
 - `Factory.deserialize_friends` wasn getting the wrong payload names.
 - Closing the rest client connector instead of the session.
 

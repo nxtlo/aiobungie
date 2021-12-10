@@ -179,7 +179,8 @@ class RESTInterface(traits.RESTful, abc.ABC):
         self,
         memberid: int,
         type: typedefs.IntAnd[enums.MembershipType],
-        /,
+        *components: enums.ComponentType,
+        **options: str,
     ) -> ResponseSig[typedefs.JsonObject]:
         """
         Fetche a bungie profile.
@@ -190,6 +191,17 @@ class RESTInterface(traits.RESTful, abc.ABC):
             The member's id.
         type: `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
             A valid membership type.
+        *components : `aiobungie.ComponentType`
+            Multiple arguments of profile components to collect and return.
+
+        Other Parameters
+        ----------------
+        auth : `typing.Optional[str]`
+            A passed kwarg Bearer access_token to make the request with.
+            This is optional and limited to components that only requires an Authorization token.
+        **options : `str`
+            Other keyword arguments for the request to expect.
+            This is only here for the `auth` option which's a kwarg.
 
         Returns
         --------
@@ -215,7 +227,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         Parameters
         -----------
         name: `builtins.str`
-            The unqiue Bungie player name.
+            The unique Bungie player name.
         code : `int`
             The unique Bungie display name code.
         type: `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
@@ -237,16 +249,34 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
     @abc.abstractmethod
     def fetch_character(
-        self, memberid: int, type: typedefs.IntAnd[enums.MembershipType], /
+        self,
+        member_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+        character_id: int,
+        *components: enums.ComponentType,
+        **options: str,
     ) -> ResponseSig[typedefs.JsonObject]:
         """Fetch a Destiny 2 player's characters.
 
         Parameters
         ----------
-        memberid: `builtins.int`
+        member_id: `builtins.int`
             A valid bungie member id.
-        type: `aiobungie.typedefs.IntAnd[aiobungie.internal.enums.MembershipType]`
+        membership_type: `aiobungie.typedefs.IntAnd[aiobungie.internal.enums.MembershipType]`
             The member's membership type.
+        character_id : `int`
+            The character id to return.
+        *components: `aiobungie.ComponentType`
+            Multiple arguments of character components to collect and return.
+
+        Other Parameters
+        ----------------
+        auth : `typing.Optional[str]`
+            A passed kwarg Bearer access_token to make the request with.
+            This is optional and limited to components that only requires an Authorization token.
+        **options : `str`
+            Other keyword arguments for the request to expect.
+            This is only here for the `auth` option which's a kwarg.
 
         Returns
         -------
@@ -514,8 +544,8 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def fetch_inventory_item(self, hash: int, /) -> ResponseSig[typedefs.JsonObject]:
-        """Fetch a static inventory item entity given a its hash.
+    def fetch_entity(self, type: str, hash: int) -> ResponseSig[typedefs.JsonObject]:
+        """Fetch a Destiny definition item given its type and hash.
 
         Parameters
         ----------
@@ -527,7 +557,37 @@ class RESTInterface(traits.RESTful, abc.ABC):
         Returns
         -------
         `ResponseSig[aiobungie.typedefs.JsonObject]`
-            A JSON array object of the inventory item.
+            A JSON object of the definition data.
+        """
+
+    @abc.abstractmethod
+    def fetch_inventory_item(self, hash: int, /) -> ResponseSig[typedefs.JsonObject]:
+        """Fetch a Destiny inventory item entity given a its hash.
+
+        Parameters
+        ----------
+        hash: `builtins.int`
+            Entity's hash.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.typedefs.JsonObject]`
+            A JSON object of the inventory item.
+        """
+
+    @abc.abstractmethod
+    def fetch_objective_entity(self, hash: int, /) -> ResponseSig[typedefs.JsonObject]:
+        """Fetch a Destiny objective entity given a its hash.
+
+        Parameters
+        ----------
+        hash: `builtins.int`
+            objective's hash.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.typedefs.JsonObject]`
+            A JSON object of the objetive data.
         """
 
     @abc.abstractmethod
@@ -1203,8 +1263,8 @@ class RESTInterface(traits.RESTful, abc.ABC):
         ----------
         access_token : `str`
             The bearer access token associated with the bungie account.
-        item_id : `int`
-            The item id you to transfer.
+        item_id: `int`
+            The item instance id you to transfer.
         item_hash : `int`
             The item hash.
         character_id : `int`
@@ -1245,7 +1305,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         access_token : `str`
             The bearer access token associated with the bungie account.
         item_id : `int`
-            The item id to pull.
+            The item instance id to pull.
         item_hash : `int`
             The item hash.
         character_id : `int`

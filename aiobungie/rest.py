@@ -40,8 +40,9 @@ import typing
 
 import aiohttp
 import attr
+import yarl
 
-from aiobungie import _info as info
+from aiobungie import _info as info  # type: ignore[private-usage]
 from aiobungie import error
 from aiobungie import interfaces
 from aiobungie import typedefs
@@ -50,6 +51,7 @@ from aiobungie import url
 from aiobungie.crate import fireteams
 from aiobungie.internal import _backoff as backoff
 from aiobungie.internal import enums
+from aiobungie.internal import helpers
 
 if typing.TYPE_CHECKING:
     import types
@@ -74,19 +76,27 @@ _APP_JSON: typing.Final[str] = "application/json"
 _RETRY_5XX: typing.Final[set[int]] = {500, 502, 503, 504}
 _AUTH_HEADER: typing.Final[str] = sys.intern("Authorization")
 _USER_AGENT_HEADERS: typing.Final[str] = sys.intern("User-Agent")
-_USER_AGENT: typing.Final[str] = f"AiobungieClient/{info.__version__}"
-f" ({info.__url__}) {platform.python_implementation()}/{platform.python_version()}"
-f"Aiohttp/{aiohttp.HttpVersion11}"
+_USER_AGENT: typing.Final[
+    str
+] = f"AiobungieClient ({info.__about__}), ({info.__author__}), "
+f"({info.__version__}), ({info.__url__}), "
+f"{platform.python_implementation()}/{platform.python_version()} {platform.system()} "
+f"{platform.architecture()[0]}, Aiohttp/{aiohttp.HttpVersion11}"  # type: ignore[UnknownMemberType]
 
 
-async def handle_errors(
-    response: aiohttp.ClientResponse, msg: typing.Optional[str] = None
+def _wrong_content_type(response: aiohttp.ClientResponse) -> error.HTTPException:
+    return error.HTTPException(
+        f"Expected JSON content but got {response.content_type}, {str(response.real_url)}"
+    )
+
+
+async def _handle_errors(
+    response: aiohttp.ClientResponse,
+    msg: undefined.UndefinedOr[str] = undefined.Undefined,
 ) -> error.AiobungieError:
 
     if response.content_type != _APP_JSON:
-        return error.HTTPException(
-            f"Expected json content but got {response.content_type}, {str(response.real_url)}"
-        )
+        return _wrong_content_type(response)
 
     from_json = await response.json()
     data = [str(response.real_url), from_json, msg]
@@ -94,20 +104,16 @@ async def handle_errors(
     if response.status == http.HTTPStatus.NOT_FOUND:
         return error.NotFound(*data)
     elif response.status == http.HTTPStatus.FORBIDDEN:
-        return error.Forbidden(*data)
+        return error.Forbidden(*data)  # type: ignore
     elif response.status == http.HTTPStatus.UNAUTHORIZED:
-        return error.Unauthorized(*data)
+        return error.Unauthorized(*data)  # type: ignore
 
     status = http.HTTPStatus(response.status)
 
     if 400 <= status < 500:
         return error.ResponseError(*data, status)
 
-    # For some WEIRD reason bungie doesn't follow the http
-    # error codes protocol and almost return 5xx on any failed request
-    # except very few. The only way currently to handle this is by their
-    # custom error codes.
-    # https://github.com/Bungie-net/api/issues/1542
+    # Need to handle errors our selves :>
     elif 500 <= status < 600:
         # No API key or method requires OAuth2 most likely.
         if msg in {
@@ -132,16 +138,18 @@ async def handle_errors(
 
         # Membership need to be alone.
         elif msg == "DestinyInvalidMembershipType":
-            return error.MembershipTypeError(*data)
+            return error.MembershipTypeError(*data)  # type: ignore
 
         # Any other messages.
         else:
             return error.InternalServerError(
-                message=str(msg), long_message=from_json.get("Message", "")
+                message=str(msg),
+                long_message=from_json.get("Message", ""),
+                url=str(response.real_url),
             )
     # Not 5xx.
     else:
-        return error.HTTPException(*data)
+        return error.HTTPException(*data)  # type: ignore
 
 
 class _Arc:
@@ -208,8 +216,9 @@ class _Session:
         await self.close()
 
     async def close(self) -> None:
-        # This currently set like this due to a bug.
-        await self.client_session.close()
+        # Close the TCP connector.
+        if self.client_session.connector:
+            await self.client_session.connector.close()
         await asyncio.sleep(0.025)
 
 
@@ -296,6 +305,9 @@ class RESTClient(interfaces.RESTInterface):
         **kwargs: typing.Any,
     ) -> typing.Any:
 
+        if isinstance(route, yarl.URL):
+            route = yarl.URL(route)
+
         retries: int = 0
         if self._token is not None:
             headers: dict[str, str]
@@ -327,33 +339,24 @@ class RESTClient(interfaces.RESTInterface):
                         if response.status == http.HTTPStatus.NO_CONTENT:
                             return None
 
-                        data = await response.json(encoding="utf-8")
+                        data: typedefs.JsonObject = await response.json(
+                            encoding="utf-8"
+                        )
                         if 300 > response.status >= 200:
                             if type == "read":
                                 # We want to read the bytes for the manifest response.
-                                data = await response.read()
-                                return data
-
-                            _LOG.debug(
-                                "%s Request success from %s with status %i",
-                                method,
-                                f"{url.REST_EP}/{route}",
-                                response.status,
-                            )
+                                return await response.read()
 
                             if response.content_type == _APP_JSON:
-                                try:
-                                    return data["Response"]
-
-                                # In case we didn't find the Response key
-                                # its safer to just return the data.
-                                except KeyError:
-                                    _LOG.warning(
-                                        "Couldn't return the response key, Data: %s",
-                                        data,
+                                if _LOG.isEnabledFor(logging.DEBUG):
+                                    _LOG.debug(
+                                        "%s %s %i",
+                                        method,
+                                        f"{url.REST_EP}/{route}",
+                                        response.status,
                                     )
-                                    return data
-
+                                # Return the response.
+                                return data["Response"]
                         if (
                             response.status in _RETRY_5XX
                             and retries < self._max_retries  # noqa: W503
@@ -361,17 +364,20 @@ class RESTClient(interfaces.RESTInterface):
                             backoff_ = backoff.ExponentialBackOff(maximum=6)
                             sleep_time = next(backoff_)
                             _LOG.warning(
-                                f"Received: {response.status}, "
-                                f"Message: {data['Message']}, "
-                                f"sleeping for {sleep_time}, "
-                                f"Remaining retries: {self._max_retries - retries}"
+                                "Received: %i, Message: %s, Sleeping for %.2f seconds, Remaining retries: %i",
+                                response.status,
+                                data["Message"],
+                                sleep_time,
+                                self._max_retries - retries,
                             )
 
                             retries += 1
                             await asyncio.sleep(sleep_time)
                             continue
 
-                        await self._handle_err(response, data["ErrorStatus"])
+                        await self._handle_err(
+                            response, data.get("ErrorStatus", undefined.Undefined)
+                        )
 
             except RuntimeError:
                 continue
@@ -390,7 +396,7 @@ class RESTClient(interfaces.RESTInterface):
             exception: typing.Optional[BaseException],
             exception_traceback: typing.Optional[types.TracebackType],
         ) -> None:
-            return None
+            ...
 
     async def __aenter__(self) -> RESTClient:
         return self
@@ -403,7 +409,6 @@ class RESTClient(interfaces.RESTInterface):
     ) -> None:
         if self._session:
             await self._session.close()
-        return None
 
     # We don't want this to be super complicated.
     @typing.final
@@ -417,22 +422,24 @@ class RESTClient(interfaces.RESTInterface):
             return
         if response.content_type != _APP_JSON:
             _LOG.error(
-                f"we're being ratelmited on non JSON request, {response.content_type}."
+                f"Being ratelmited on non JSON request, {response.content_type}."
             )
             raise RuntimeError
 
         json = await response.json()
-        retry_after = json["ThrottleSeconds"]
-        if retry_after == 0:
-            # Can't really do anything about this.
+        retry_after: float = json["ThrottleSeconds"]
+        if retry_after >= 0:
+            # Can't really do anything about this...
             sleep_time = float((retry_after + random.randint(0, 3)))
-        _LOG.warning(
-            "We're being ratelimited with method %s route %s. Sleeping for %f:,",
-            method,
-            route,
-            sleep_time,
-        )
-        await asyncio.sleep(sleep_time)
+
+            _LOG.warning(
+                "Ratelimited with method %s route %s. Sleeping for %f:,",
+                method,
+                route,
+                sleep_time,
+            )
+            await asyncio.sleep(sleep_time)
+
         raise error.RateLimitedError(
             retry_after=retry_after,
             headers=response.headers,
@@ -443,9 +450,10 @@ class RESTClient(interfaces.RESTInterface):
     @staticmethod
     @typing.final
     async def _handle_err(
-        response: aiohttp.ClientResponse, msg: typing.Optional[str] = None
+        response: aiohttp.ClientResponse,
+        msg: undefined.UndefinedOr[str] = undefined.Undefined,
     ) -> typing.NoReturn:
-        raise await handle_errors(response, msg)
+        raise await _handle_errors(response, msg)
 
     def static_request(
         self,
@@ -455,6 +463,25 @@ class RESTClient(interfaces.RESTInterface):
         **kwargs: typing.Any,
     ) -> ResponseSig[typing.Any]:
         return self._request(method, path, auth=auth, **kwargs)
+
+    @staticmethod
+    @typing.final
+    def collect_components(
+        *components: enums.ComponentType,
+    ) -> typing.Union[str, type[str]]:
+        try:
+            if len(components) == 0:
+                raise ValueError("No profile components passed.", components)
+
+            # Need to get the int overload of the components to separate them.
+            elif len(components) > 1:
+                these = helpers.collect(*[int(k) for k in components])  # type: ignore[call-overload]
+            else:
+                these = helpers.collect(int(*components))
+            # In case it's a tuple, i.e., ALL_X
+        except TypeError:
+            these = helpers.collect(*list(str(c.value) for c in components))
+        return these
 
     def fetch_user(self, id: int) -> ResponseSig[typedefs.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
@@ -486,14 +513,15 @@ class RESTClient(interfaces.RESTInterface):
         return self._request(
             RequestMethod.POST,
             f"Destiny2/SearchDestinyPlayerByBungieName/{int(type)}",
-            json={"displayName": name, "displayNameCode": code}
+            json={"displayName": name, "displayNameCode": code},
         )
 
     def search_users(self, name: str, /) -> ResponseSig[typedefs.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
-            RequestMethod.POST, "User/Search/GlobalName/0",
-            json={"displayNamePrefix": name}
+            RequestMethod.POST,
+            "User/Search/GlobalName/0",
+            json={"displayNamePrefix": name},
         )
 
     def fetch_clan_from_id(self, id: int, /) -> ResponseSig[typedefs.JsonObject]:
@@ -526,12 +554,20 @@ class RESTClient(interfaces.RESTInterface):
         return self._request(RequestMethod.GET, f"App/Application/{appid}")
 
     def fetch_character(
-        self, memberid: int, type: typedefs.IntAnd[enums.MembershipType], /
+        self,
+        member_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+        character_id: int,
+        *components: enums.ComponentType,
+        **options: str,
     ) -> ResponseSig[typedefs.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        collector = self.collect_components(*components)
         return self._request(
             RequestMethod.GET,
-            f"Destiny2/{int(type)}/Profile/{memberid}/?components={int(enums.Component.CHARACTERS)}",
+            f"Destiny2/{int(membership_type)}/Profile/{member_id}/"
+            f"Character/{character_id}/?components={collector}",
+            auth=options.get("auth"),
         )
 
     def fetch_activity(
@@ -558,16 +594,22 @@ class RESTClient(interfaces.RESTInterface):
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
             RequestMethod.GET,
-            f"Destiny2/Vendors/?components={int(enums.Component.VENDOR_SALES)}",
+            f"Destiny2/Vendors/?components={int(enums.ComponentType.VENDOR_SALES)}",
         )
 
     def fetch_profile(
-        self, memberid: int, type: typedefs.IntAnd[enums.MembershipType], /
+        self,
+        memberid: int,
+        type: typedefs.IntAnd[enums.MembershipType],
+        *components: enums.ComponentType,
+        **options: str,
     ) -> ResponseSig[typedefs.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        collector = self.collect_components(*components)
         return self._request(
             RequestMethod.GET,
-            f"Destiny2/{int(type)}/Profile/{int(memberid)}/?components={int(enums.Component.PROFILE)}",
+            f"Destiny2/{int(type)}/Profile/{int(memberid)}/?components={collector}",
+            auth=options.get("auth", None),
         )
 
     def fetch_entity(self, type: str, hash: int) -> ResponseSig[typedefs.JsonObject]:
@@ -579,6 +621,10 @@ class RESTClient(interfaces.RESTInterface):
     def fetch_inventory_item(self, hash: int, /) -> ResponseSig[typedefs.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self.fetch_entity("DestinyInventoryItemDefinition", hash)
+
+    def fetch_objective_entity(self, hash: int, /) -> ResponseSig[typedefs.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        return self.fetch_entity("DestinyObjectiveDefinition", hash)
 
     def fetch_groups_for_member(
         self,

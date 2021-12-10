@@ -39,7 +39,8 @@ import typing
 
 import attr
 
-from aiobungie.crate import profile
+from aiobungie import url
+from aiobungie.crate import components as components_
 from aiobungie.internal import assets
 from aiobungie.internal import enums
 
@@ -103,6 +104,7 @@ class UserLike(abc.ABC):
     @property
     def link(self) -> str:
         """The user like's profile link."""
+        return f"{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}"
 
     def __str__(self) -> str:
         return self.last_seen_name
@@ -254,7 +256,7 @@ class DestinyUser(UserLike):
     name: undefined.UndefinedOr[str] = attr.field(repr=True, eq=False)
     """The member's name."""
 
-    last_seen_name: str = attr.field(repr=True)
+    last_seen_name: str = attr.field(repr=False)
     """The member's last seen display name. You may use this field if `DestinyUser.name` is `Undefined`."""
 
     type: enums.MembershipType = attr.field(repr=True)
@@ -275,16 +277,36 @@ class DestinyUser(UserLike):
     crossave_override: typing.Union[enums.MembershipType, int] = attr.field(repr=False)
     """The member's corssave override membership type."""
 
-    async def fetch_self_profile(self) -> profile.Profile:
-        """Fetch the player's profile.
+    async def fetch_self_profile(
+        self, *components: enums.ComponentType, **options: str
+    ) -> components_.Component:
+        """Fetche this user's profile.
+
+        Parameters
+        ----------
+        *components : `aiobungie.ComponentType`
+            Multiple arguments of profile components to collect and return.
+            This either can be arguments of integers or `aiobungie.ComponentType`.
+
+        Other Parameters
+        ----------------
+        auth : `typing.Optional[str]`
+            A passed kwarg Bearer access_token to make the request with.
+            This is optional and limited to components that only requires an Authorization token.
+        **options : `str`
+            Other keyword arguments for the request to expect.
+            This is only here for the `auth` option which's a string kwarg.
 
         Returns
-        -------
-        `aiobungie.crate.Profile`
-            The profile of this membership.
+        --------
+        `aiobungie.crate.Component`
+            A Destiny 2 player profile with its components.
+            Only passed components will be available if they exists. Otherwise they will be `None`
         """
-        profile_ = await self.net.request.fetch_profile(self.id, self.type)
-        assert isinstance(profile_, profile.Profile)
+        profile_ = await self.net.request.fetch_profile(
+            self.id, self.type, *components, **options
+        )
+        assert isinstance(profile_, components_.Component)
         return profile_
 
     @property
@@ -301,14 +323,14 @@ class HardLinkedMembership:
     Also Cross-Save Aware.
     """
 
-    type: enums.MembershipType = attr.field(repr=True, hash=False)
+    type: enums.MembershipType = attr.field(hash=False)
     """The hard link user membership type."""
 
-    id: int = attr.field(repr=True, hash=True, eq=False)
+    id: int = attr.field(hash=True, eq=False)
     """The hard link user id"""
 
     cross_save_type: enums.MembershipType = attr.field(
-        repr=True, hash=False, eq=False, default=enums.MembershipType.NONE
+        hash=False, eq=False, default=enums.MembershipType.NONE
     )
     """The hard link user's crpss save membership type. Default is set to None-0"""
 
@@ -340,8 +362,8 @@ class User:
     This includes both Bungie net and Destiny memberships information.
     """
 
-    bungie: BungieUser = attr.field(repr=True)
+    bungie: BungieUser = attr.field()
     """The user's bungie net membership."""
 
-    destiny: typing.Sequence[DestinyUser] = attr.field(repr=True)
+    destiny: typing.Sequence[DestinyUser] = attr.field()
     """A sequence of the user's Destiny memberships."""

@@ -26,7 +26,7 @@ from __future__ import annotations
 
 import logging
 
-__all__: list[str] = ["Client"]
+__all__: tuple[str, ...] = ("Client",)
 
 import typing
 
@@ -36,7 +36,7 @@ from aiobungie.crate import fireteams
 from aiobungie.crate import user
 from aiobungie.ext import meta
 from aiobungie.internal import enums
-from aiobungie.internal import factory
+from aiobungie.internal import factory as factory_
 from aiobungie.internal import helpers
 
 if typing.TYPE_CHECKING:
@@ -46,8 +46,8 @@ if typing.TYPE_CHECKING:
     from aiobungie import typedefs
     from aiobungie.crate import activity
     from aiobungie.crate import application
-    from aiobungie.crate import character
     from aiobungie.crate import clans
+    from aiobungie.crate import components
     from aiobungie.crate import entity
     from aiobungie.crate import friends
     from aiobungie.crate import milestones
@@ -84,7 +84,7 @@ class Client(traits.ClientBase):
         The max retries number to retry if the request hit a `5xx` status code.
     """
 
-    __slots__ = ("_rest", "_serialize", "_token")
+    __slots__ = ("_rest", "_factory", "_token")
 
     def __init__(
         self,
@@ -101,12 +101,12 @@ class Client(traits.ClientBase):
             self._rest = rest_client
         self._rest = rest_.RESTClient(token, max_retries=max_retries)
 
-        self._serialize = factory.Factory(self)
+        self._factory = factory_.Factory(self)
         self._token = token  # We need the token For Manifest.
 
     @property
-    def serialize(self) -> factory.Factory:
-        return self._serialize
+    def factory(self) -> factory_.Factory:
+        return self._factory
 
     @property
     def rest(self) -> interfaces.RESTInterface:
@@ -122,14 +122,16 @@ class Client(traits.ClientBase):
         loop: typing.Final[asyncio.AbstractEventLoop] = helpers.get_or_make_loop()
         try:
             if not loop.is_running():
-                if debug:
-                    loop.set_debug(True)
+                loop.set_debug(debug)
                 loop.run_until_complete(future)
+
         except Exception as exc:
-            raise RuntimeError(f"Failed to run {future.__name__}", exc)
+            raise RuntimeError(f"Failed to run {future.__name__}") from exc
+
         except KeyboardInterrupt:
             _LOG.warn("Unexpected Keyboard interrupt. Exiting.")
-            raise SystemExit(None)
+            return
+
         finally:
             # Session management.
             loop.run_until_complete(self.rest.close())
@@ -152,9 +154,10 @@ class Client(traits.ClientBase):
     async def fetch_own_bungie_user(self, *, access_token: str) -> user.User:
         """Fetch and return a user object of the bungie net user associated with account.
 
+        This method is obly useful if you have authintacated users and their tokens.
+
         .. warning::
             This method requires OAuth2 scope and a Bearer access token.
-            This token should be stored somewhere safe and just passed as a parameter. e.g., A database.
 
         Parameters
         ----------
@@ -168,10 +171,10 @@ class Client(traits.ClientBase):
         """
         resp = await self.rest.fetch_own_bungie_user(access_token)
         assert isinstance(resp, dict)
-        return self.serialize.deserialize_user(resp)
+        return self.factory.deserialize_user(resp)
 
     async def fetch_user(self, id: int) -> user.BungieUser:
-        """Fetch a Bungie user by their id.
+        """Fetch a Bungie user by their BungieNet id.
 
         .. note::
             This returns a Bungie user membership only. Take a look at `Client.fetch_membership_from_id`
@@ -194,7 +197,7 @@ class Client(traits.ClientBase):
         """
         payload = await self.rest.fetch_user(id)
         assert isinstance(payload, dict)
-        return self.serialize.deserialize_bungie_user(payload)
+        return self.factory.deserialize_bungie_user(payload)
 
     async def search_users(self, name: str, /) -> typing.Sequence[user.DestinyUser]:
         """Search for players and return all players that matches the same name.
@@ -211,7 +214,7 @@ class Client(traits.ClientBase):
         """
         payload = await self.rest.search_users(name)
         assert isinstance(payload, dict)
-        return self.serialize.deseialize_found_users(payload)
+        return self.factory.deseialize_found_users(payload)
 
     async def fetch_user_themes(self) -> typing.Sequence[user.UserThemes]:
         """Fetch all available user themes.
@@ -223,7 +226,7 @@ class Client(traits.ClientBase):
         """
         data = await self.rest.fetch_user_themes()
         assert isinstance(data, list)
-        return self.serialize.deserialize_user_themes(data)
+        return self.factory.deserialize_user_themes(data)
 
     async def fetch_hard_types(
         self,
@@ -294,41 +297,53 @@ class Client(traits.ClientBase):
         """
         payload = await self.rest.fetch_membership_from_id(id, type)
         assert isinstance(payload, dict)
-        return self.serialize.deserialize_user(payload)
+        return self.factory.deserialize_user(payload)
 
     # * Destiny 2 methods.
 
     async def fetch_profile(
         self,
-        memberid: int,
+        member_id: int,
         type: typedefs.IntAnd[enums.MembershipType],
-        /,
-    ) -> profile.Profile:
+        *components: enums.ComponentType,
+        **options: str,
+    ) -> components.Component:
         """
-        Fetche a bungie profile.
-
-        See `aiobungie.crate.Profile` to access other components.
+        Fetche a bungie profile passing components to the request.
 
         Parameters
         ----------
-        memberid: `builtins.int`
+        member_id: `builtins.int`
             The member's id.
         type: `aiobungie.MembershipType`
             A valid membership type.
+        *components : `aiobungie.ComponentType`
+            Multiple arguments of profile components to collect and return.
+            This either can be arguments of integers or `aiobungie.ComponentType`.
+
+        Other Parameters
+        ----------------
+        auth : `typing.Optional[str]`
+            A passed kwarg Bearer access_token to make the request with.
+            This is optional and limited to components that only requires an Authorization token.
+        **options : `str`
+            Other keyword arguments for the request to expect.
+            This is only here for the `auth` option which's a string kwarg.
 
         Returns
         --------
-        `aiobungie.crate.Profile`
-            A Destiny 2 player profile.
+        `aiobungie.crate.Component`
+            A Destiny 2 player profile with its components.
+            Only passed components will be available if they exists. Otherwise they will be `None`
 
         Raises
         ------
         `aiobungie.MembershipTypeError`
             The provided membership type was invalid.
         """
-        data = await self.rest.fetch_profile(memberid, type)
+        data = await self.rest.fetch_profile(member_id, type, *components, **options)
         assert isinstance(data, dict)
-        return self.serialize.deserialize_profile(data)
+        return self.factory.deserialize_components(data)
 
     async def fetch_linked_profiles(
         self,
@@ -368,7 +383,7 @@ class Client(traits.ClientBase):
         """
         resp = await self.rest.fetch_linked_profiles(member_id, member_type, all=all)
         assert isinstance(resp, dict)
-        return self.serialize.deserialize_linked_profiles(resp)
+        return self.factory.deserialize_linked_profiles(resp)
 
     async def fetch_player(
         self,
@@ -382,7 +397,7 @@ class Client(traits.ClientBase):
         Parameters
         -----------
         name: `str`
-            The unqiue Bungie player name.
+            The unique Bungie player name.
         code : `int`
             The unique Bungie display name code.
         type: `aiobungie.internal.enums.MembershipType`
@@ -403,29 +418,42 @@ class Client(traits.ClientBase):
         """
         resp = await self.rest.fetch_player(name, code, type)
         assert isinstance(resp, list)
-        return self.serialize.deserialize_player(resp)
+        return self.factory.deserialize_player(resp)
 
     async def fetch_character(
         self,
-        memberid: int,
-        type: typedefs.IntAnd[enums.MembershipType],
-        character: enums.Class,
-    ) -> character.Character:
+        member_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+        character_id: int,
+        *components: enums.ComponentType,
+        **options: str,
+    ) -> components.CharacterComponent:
         """Fetch a Destiny 2 character.
 
         Parameters
         ----------
-        memberid: `builtins.int`
+        member_id: `builtins.int`
             A valid bungie member id.
-        character: `aiobungie.internal.enums.Class`
-            The Destiny character to retrieve.
-        type: `aiobungie.internal.enums.MembershipType`
+        character_id: `int`
+            The Destiny character id to retrieve.
+        membership_type: `aiobungie.internal.enums.MembershipType`
             The member's membership type.
+        *components: `aiobungie.ComponentType`
+            Multiple arguments of character components to collect and return.
+
+        Other Parameters
+        ----------------
+        auth : `typing.Optional[str]`
+            A passed kwarg Bearer access_token to make the request with.
+            This is optional and limited to components that only requires an Authorization token.
+        **options : `str`
+            Other keyword arguments for the request to expect.
+            This is only here for the `auth` option which's a kwarg.
 
         Returns
         -------
-        `aiobungie.crate.Character`
-            A Bungie character crate.
+        `aiobungie.crate.CharacterComponent`
+            A Bungie character component.
 
         Raises
         ------
@@ -435,9 +463,11 @@ class Client(traits.ClientBase):
         `aiobungie.MembershipTypeError`
             The provided membership type was invalid.
         """
-        resp = await self.rest.fetch_character(memberid, type)
+        resp = await self.rest.fetch_character(
+            member_id, membership_type, character_id, *components, **options
+        )
         assert isinstance(resp, dict)
-        return self.serialize.deserialize_character(resp, chartype=character)
+        return self.factory.deserialize_character_component(resp)
 
     # * Destiny 2 Activities.
 
@@ -490,7 +520,7 @@ class Client(traits.ClientBase):
             limit=limit,
         )
         assert isinstance(resp, dict)
-        return self.serialize.deserialize_activity(resp)
+        return self.factory.deserialize_activity(resp)
 
     async def fetch_post_activity(self, instance: int, /) -> activity.PostActivity:
         """Fetch a post activity details.
@@ -535,7 +565,7 @@ class Client(traits.ClientBase):
         """
         resp = await self.rest.fetch_clan_from_id(id)
         assert isinstance(resp, dict)
-        return self.serialize.deserialize_clan(resp)
+        return self.factory.deserialize_clan(resp)
 
     async def fetch_clan(
         self,
@@ -565,7 +595,7 @@ class Client(traits.ClientBase):
         """
         resp = await self.rest.fetch_clan(name, type)
         assert isinstance(resp, dict)
-        return self.serialize.deserialize_clan(resp)
+        return self.factory.deserialize_clan(resp)
 
     async def fetch_clan_conversations(
         self, clan_id: int, /
@@ -583,7 +613,7 @@ class Client(traits.ClientBase):
         """
         resp = await self.rest.fetch_clan_conversations(clan_id)
         assert isinstance(resp, list)
-        return self.serialize.deserialize_clan_convos(resp)
+        return self.factory.deserialize_clan_convos(resp)
 
     async def fetch_clan_admins(
         self, clan_id: int, /
@@ -607,7 +637,7 @@ class Client(traits.ClientBase):
         """
         resp = await self.rest.fetch_clan_admins(clan_id)
         assert isinstance(resp, dict)
-        return self.serialize.deserialize_clan_admins(resp)
+        return self.factory.deserialize_clan_admins(resp)
 
     async def fetch_groups_for_member(
         self,
@@ -644,7 +674,7 @@ class Client(traits.ClientBase):
             member_id, member_type, filter=filter, group_type=group_type
         )
         assert isinstance(resp, dict)
-        return self.serialize.deserialize_group_member(resp)
+        return self.factory.deserialize_group_member(resp)
 
     async def fetch_potential_groups_for_member(
         self,
@@ -681,7 +711,7 @@ class Client(traits.ClientBase):
             member_id, member_type, filter=filter, group_type=group_type
         )
         assert isinstance(resp, dict)
-        return self.serialize.deserialize_group_member(resp)
+        return self.factory.deserialize_group_member(resp)
 
     async def fetch_clan_member(
         self,
@@ -724,7 +754,7 @@ class Client(traits.ClientBase):
 
         resp = await self.rest.fetch_clan_members(clan_id, type, name)
         assert isinstance(resp, dict)
-        return self.serialize.deserialize_clan_member(resp)
+        return self.factory.deserialize_clan_member(resp)
 
     async def fetch_clan_members(
         self,
@@ -761,7 +791,7 @@ class Client(traits.ClientBase):
         """
         resp = await self.rest.fetch_clan_members(clan_id, type)
         assert isinstance(resp, dict)
-        return self.serialize.deserialize_clan_members(resp)
+        return self.factory.deserialize_clan_members(resp)
 
     async def fetch_clan_banners(self) -> typing.Sequence[clans.ClanBanner]:
         """Fetch the clan banners.
@@ -773,7 +803,7 @@ class Client(traits.ClientBase):
         """
         resp = await self.rest.fetch_clan_banners()
         assert isinstance(resp, dict)
-        return self.serialize.deserialize_clan_banners(resp)
+        return self.factory.deserialize_clan_banners(resp)
 
     # This method is required to be here since it deserialize the clan.
     async def kick_clan_member(
@@ -812,17 +842,17 @@ class Client(traits.ClientBase):
             membership_type=membership_type,
         )
         assert isinstance(resp, dict)
-        return self.serialize.deserialize_clan(resp, bound=True)
+        return self.factory.deserialize_clan(resp, bound=True)
 
-    # * Destiny 2 Definitions. Entities.
+    # * Destiny 2 Entities aka Definitions.
 
     async def fetch_inventory_item(self, hash: int, /) -> entity.InventoryEntity:
         """Fetch a static inventory item entity given a its hash.
 
         Parameters
         ----------
-        hash: `builtins.int`
-            Entity's hash.
+        hash: `int`
+            Inventory item's hash.
 
         Returns
         -------
@@ -831,7 +861,24 @@ class Client(traits.ClientBase):
         """
         resp = await self.rest.fetch_inventory_item(hash)
         assert isinstance(resp, dict)
-        return self.serialize.deserialize_inventory_entity(resp)
+        return self.factory.deserialize_inventory_entity(resp)
+
+    async def fetch_objective_entity(self, hash: int, /) -> entity.ObjectiveEntity:
+        """Fetch a Destiny objective entity given a its hash.
+
+        Parameters
+        ----------
+        hash: `int`
+            objective's hash.
+
+        Returns
+        -------
+        `aiobungie.crate.ObjectiveEntity`
+            An objetive entity item.
+        """
+        resp = await self.rest.fetch_objective_entity(hash)
+        assert isinstance(resp, dict)
+        return self.factory.deserialize_objective_entity(resp)
 
     # * These methods should be for Special bungie endpoints, i.e,
     # * Applications, Forums, Polls, Trending, etc.
@@ -857,7 +904,7 @@ class Client(traits.ClientBase):
 
         resp = await self.rest.fetch_friends(access_token)
         assert isinstance(resp, dict)
-        return self.serialize.deserialize_friends(resp)
+        return self.factory.deserialize_friends(resp)
 
     async def fetch_friend_requests(
         self, access_token: str, /
@@ -880,7 +927,7 @@ class Client(traits.ClientBase):
 
         resp = await self.rest.fetch_friend_requests(access_token)
         assert isinstance(resp, dict)
-        return self.serialize.deserialize_friend_requests(resp)
+        return self.factory.deserialize_friend_requests(resp)
 
     async def fetch_app(self, appid: int, /) -> application.Application:
         """Fetch a Bungie Application.
@@ -897,11 +944,11 @@ class Client(traits.ClientBase):
         """
         resp = await self.rest.fetch_app(appid)
         assert isinstance(resp, dict)
-        return self.serialize.deserialize_app(resp)
+        return self.factory.deserialize_app(resp)
 
     async def fetch_public_milestone_content(
         self, milestone_hash: int, /
-    ) -> milestones.Milestone:
+    ) -> milestones.MilestoneContent:
         """Fetch the milestone content given its hash.
 
         Parameters
@@ -911,12 +958,12 @@ class Client(traits.ClientBase):
 
         Returns
         -------
-        `aiobungie.crate.milestones.Milestone`
-            A milestone object.
+        `aiobungie.crate.milestones.MilestoneContent`
+            A milestone content object.
         """
         resp = await self.rest.fetch_public_milestone_content(milestone_hash)
         assert isinstance(resp, dict)
-        return self.serialize.deserialize_public_milestone_content(resp)
+        return self.factory.deserialize_public_milestone_content(resp)
 
     async def fetch_fireteams(
         self,
@@ -969,7 +1016,7 @@ class Client(traits.ClientBase):
             slots_filter=slots_filter,
         )
         assert isinstance(resp, dict)
-        return self.serialize.deserialize_fireteams(resp)
+        return self.factory.deserialize_fireteams(resp)
 
     async def fetch_avaliable_clan_fireteams(
         self,
@@ -1033,7 +1080,7 @@ class Client(traits.ClientBase):
             slots_filter=slots_filter,
         )
         assert isinstance(resp, dict)
-        return self.serialize.deserialize_fireteams(resp)
+        return self.factory.deserialize_fireteams(resp)
 
     async def fetch_clan_fireteam(
         self, access_token: str, fireteam_id: int, group_id: int
@@ -1059,7 +1106,7 @@ class Client(traits.ClientBase):
         """
         resp = await self.rest.fetch_clan_fireteam(access_token, fireteam_id, group_id)
         assert isinstance(resp, dict)
-        return self.serialize.deserialize_available_fireteams(
+        return self.factory.deserialize_available_fireteams(
             resp, no_results=True
         )  # type: ignore[return-value]
 
@@ -1117,4 +1164,4 @@ class Client(traits.ClientBase):
             page=page,
         )
         assert isinstance(resp, dict)
-        return self.serialize.deserialize_available_fireteams(resp)  # type: ignore[return-value]
+        return self.factory.deserialize_available_fireteams(resp)  # type: ignore[return-value]

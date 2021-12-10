@@ -22,117 +22,172 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Implementation of a Bungie Character."""
+"""Standard implementation of Bungie Character and entities."""
 
 from __future__ import annotations
 
-__all__ = ("CharacterComponent", "Character")
+__all__: tuple[str, ...] = (
+    "Character",
+    "Dye",
+    "MinimalEquipments",
+    "RenderedData",
+    "CustomizationOptions",
+    "CharacterProgression",
+)
 
-import abc
 import typing
 
 import attr
 
 from aiobungie import url
+from aiobungie.internal import helpers
 
 if typing.TYPE_CHECKING:
+    import collections.abc as collections
     import datetime
 
     from aiobungie import traits
+    from aiobungie.crate import entity
+    from aiobungie.crate import milestones as milestones_
+    from aiobungie.crate import progressions as progressions_
+    from aiobungie.crate import records
+    from aiobungie.crate import season
     from aiobungie.internal import enums
     from aiobungie.internal.assets import Image
 
 
-class CharacterComponent(abc.ABC):
-    """An interface for a Bungie character component."""
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
+class Dye:
+    """Represents dyes rendered on a Destiny character."""
 
-    __slots__: typing.Sequence[str] = ()
+    channel_hash: int = attr.field()
+    """The hash of the channel."""
 
-    @property
-    @abc.abstractmethod
-    def net(self) -> traits.Netrunner:
-        """A network state used for making external requests."""
+    dye_hash: int = attr.field()
+    """The dye's hash."""
 
-    @property
-    @abc.abstractmethod
-    def member_type(self) -> enums.MembershipType:
-        """The character's membership type."""
 
-    @property
-    @abc.abstractmethod
-    def member_id(self) -> int:
-        """The profile's member id."""
+@attr.define(hash=False, kw_only=True, weakref_slot=False, repr=False)
+class CustomizationOptions:
+    """Raw data represents a character's customization options."""
 
-    @property
-    @abc.abstractmethod
-    def id(self) -> int:
-        """The character's member id."""
+    personality: int = attr.field()
 
-    @property
-    @abc.abstractmethod
-    def light(self) -> int:
-        """The character's light."""
+    face: int = attr.field()
 
-    @property
-    @abc.abstractmethod
-    def stats(self) -> typing.Mapping[int, int]:
-        """The character's stats."""
+    skin_color: int = attr.field()
 
-    @property
-    @abc.abstractmethod
-    def url(self) -> str:
-        """The character's url at bungie.net."""
+    lip_color: int = attr.field()
 
-    @property
-    @abc.abstractmethod
-    def emblem(self) -> Image:
-        """The character's current equipped emblem."""
+    eye_color: int = attr.field()
 
-    @property
-    @abc.abstractmethod
-    def last_played(self) -> datetime.datetime:
-        """The character's last played time."""
+    hair_colors: collections.Sequence[int] = attr.field()
 
-    @property
-    @abc.abstractmethod
-    def emblem_icon(self) -> Image:
-        """The character's current equipped emblem icon."""
+    feature_colors: collections.Sequence[int] = attr.field()
 
-    @property
-    @abc.abstractmethod
-    def emblem_hash(self) -> int:
-        """The character's current equipped emblem hash."""
+    decal_color: int = attr.field()
 
-    @property
-    @abc.abstractmethod
-    def race(self) -> enums.Race:
-        """The character's race."""
+    wear_helmet: bool = attr.field()
 
-    @property
-    @abc.abstractmethod
-    def gender(self) -> enums.Gender:
-        """The character's gender."""
+    hair_index: int = attr.field()
 
-    @property
-    @abc.abstractmethod
-    def total_played_time(self) -> str:
-        """Character's total played time in hours."""
+    feature_index: int = attr.field()
 
-    @property
-    @abc.abstractmethod
-    def class_type(self) -> enums.Class:
-        """The character's class."""
-
-    @property
-    @abc.abstractmethod
-    def title_hash(self) -> typing.Optional[int]:
-        """
-        The character's title hash. This is Optional and can be None if no title was found.
-        """
+    decal_index: int = attr.field()
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
-class Character(CharacterComponent):
+class MinimalEquipments:
+    """Minimal information about a character's equipped items.
+
+    This holds the items hash and collection of dyes.
+
+    This is specifacally used in CharacterRenderData profile component to render
+    3D character object.
+    """
+
+    net: traits.Netrunner = attr.field(repr=False)
+    """A network state used for making external requests."""
+
+    item_hash: int = attr.field()
+    """The equipped items's hash."""
+
+    dyes: typing.Optional[collections.Collection[Dye]] = attr.field(repr=False)
+    """An optional collection of the item rendering dyes"""
+
+    async def fetch_my_item(self) -> entity.InventoryEntity:
+        """Fetch the inventory item definition of this equipment."""
+        return await self.net.request.fetch_inventory_item(self.item_hash)
+
+
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
+class RenderedData:
+    """Represents a character's rendered data profile component."""
+
+    net: traits.Netrunner = attr.field(repr=False)
+    """A network state used for making external requests."""
+
+    custom_dyes: collections.Collection[Dye] = attr.field(repr=False)
+    """A collection of the character's custom dyes."""
+
+    customization: CustomizationOptions = attr.field(repr=False)
+    """Data about what character customization options you picked."""
+
+    equipment: collections.Sequence[MinimalEquipments] = attr.field()
+    """A sequence of minimal view of """
+
+    async def fetch_my_items(
+        self, *, limit: typing.Optional[int] = None
+    ) -> collections.Collection[entity.InventoryEntity]:
+        """Fetch the inventory item definition of all the equipment this component has.
+
+        Other Parameters
+        ----------
+        limit : `typing.Optional[int]`
+            An optional item limit to fetch. Default is the length of the equipment.
+
+        Returns
+        `collections.Collection[aiobungie.crate.InventoryEntity]`
+            A collection of the returned item definitions.
+        """
+        return await helpers.awaits(
+            *[item.fetch_my_item() for item in self.equipment[:limit]]
+        )
+
+
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
+class CharacterProgression:
+    """Represents a character progression profile component."""
+
+    progressions: collections.Mapping[int, progressions_.Progression] = attr.field(
+        repr=False
+    )
+    """A Mapping from progression's hash to progression object."""
+
+    factions: collections.Mapping[int, progressions_.Factions] = attr.field(repr=False)
+    """A Mapping from progression faction's hash to its faction object."""
+
+    milestones: collections.Mapping[int, milestones_.Milestone] = attr.field(repr=False)
+    """A Mapping from the milestone's hash to a milestone object."""
+
+    checklists: collections.Mapping[int, collections.Mapping[int, bool]] = attr.field(
+        repr=False
+    )
+
+    seasonal_artifact: season.CharacterScopedArtifact = attr.field()
+    """Data related to your progress on the current season's artifact that can vary per character."""
+
+    uninstanced_item_objectives: collections.Mapping[
+        int, collections.Sequence[records.Objective]
+    ] = attr.field(repr=False)
+    """A Mapping from an uninstanced inventory item hash to a sequence of its objectives."""
+
+    # Still not sure if this field returned or not.
+    # unsinstanced_item_pers: collections.Mapping[int, ...]?
+
+
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
+class Character:
     """An implementation for a Bungie character."""
 
     net: traits.Netrunner = attr.field(repr=False, eq=False)
@@ -180,8 +235,8 @@ class Character(CharacterComponent):
     level: int = attr.field(repr=False, hash=False)
     """Character's base level."""
 
-    stats: typing.Mapping[int, int] = attr.field(repr=False, hash=False)
-    """Character stats."""
+    stats: typing.Mapping[enums.Stat, int] = attr.field(repr=False, hash=False)
+    """A mapping of the character stats and its level."""
 
     async def transfer_item(
         self,

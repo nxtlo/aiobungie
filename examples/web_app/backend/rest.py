@@ -4,9 +4,9 @@ All objects returned are JSON objects which we can view them in the frontend.
 """
 import typing
 
-import aiobungie
-
 from backend import config
+
+import aiobungie
 
 # The rest client.
 rest = aiobungie.RESTClient(config.CLIENT_TOKEN)

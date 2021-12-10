@@ -112,10 +112,24 @@ from ._info import __license__
 from ._info import __url__
 from ._info import __version__
 
+# Activity enums
+from .crate.activity import Diffculity
+
+# Components enums
+from .crate.components import ComponentFields
+from .crate.components import ComponentPrivacy
+
+# Entity enums
+from .crate.entity import GatingScope
+from .crate.entity import ValueUIStyle
+
 # Fireteam enums.
 from .crate.fireteams import FireteamActivity
 from .crate.fireteams import FireteamDate
 from .crate.fireteams import FireteamLanguage
 from .crate.fireteams import FireteamPlatform
+
+# Records enums
+from .crate.records import RecordState
 
 __all__ = [mod for mod in dir() if not mod.startswith("_")]  # type: ignore

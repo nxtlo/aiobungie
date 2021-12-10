@@ -225,14 +225,6 @@ class ClanMember(user.UserLike):
         """The clan member's unique name which includes their unique code."""
         return f"{self.name}#{self.code}"
 
-    @property
-    def link(self) -> str:
-        """Clan member's profile link."""
-        return f"{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}"
-
-    # These are not implemented yet
-    # Since they requires OAuth2.
-
     async def ban(
         self,
         access_token: str,
@@ -433,11 +425,6 @@ class ClanAdmin(user.UserLike):
     def unique_name(self) -> str:
         """The admin's unique name which includes their unique code."""
         return f"{self.name}#{self.code}"
-
-    @property
-    def link(self) -> str:
-        """Clan member's profile link."""
-        return f"{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}"
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)

@@ -25,7 +25,7 @@ from __future__ import annotations
 
 __all__ = ("Factory",)
 
-import logging
+import collections.abc as collections
 import typing
 
 from aiobungie import error
@@ -36,11 +36,15 @@ from aiobungie.crate import activity
 from aiobungie.crate import application as app
 from aiobungie.crate import character
 from aiobungie.crate import clans
+from aiobungie.crate import components
 from aiobungie.crate import entity
 from aiobungie.crate import fireteams
 from aiobungie.crate import friends
 from aiobungie.crate import milestones
 from aiobungie.crate import profile
+from aiobungie.crate import progressions
+from aiobungie.crate import records
+from aiobungie.crate import season
 from aiobungie.crate import user
 from aiobungie.internal import assets
 from aiobungie.internal import enums
@@ -51,8 +55,6 @@ if typing.TYPE_CHECKING:
     import datetime
 
     from aiobungie import traits
-
-_LOG: typing.Final[logging.Logger] = logging.getLogger(__name__)
 
 
 class Factory(interfaces.FactoryInterface):
@@ -66,7 +68,7 @@ class Factory(interfaces.FactoryInterface):
 
     # This is kinda inspired by hikari's entity factory :p.
 
-    __slots__: typing.Sequence[str] = ("_net",)
+    __slots__: collections.Sequence[str] = ("_net",)
 
     def __init__(self, net: traits.Netrunner) -> None:
         self._net = net
@@ -162,7 +164,7 @@ class Factory(interfaces.FactoryInterface):
         data: typing.Union[typedefs.JsonObject, typedefs.JsonArray],
         *,
         bound: bool = False,
-    ) -> typing.Sequence[user.DestinyUser]:
+    ) -> collections.Sequence[user.DestinyUser]:
         xbox: int = 0
         psn: int = 1
         steam: int = 2
@@ -237,7 +239,7 @@ class Factory(interfaces.FactoryInterface):
 
     def deseialize_found_users(
         self, payload: typedefs.JsonObject
-    ) -> typing.Sequence[user.DestinyUser]:
+    ) -> collections.Sequence[user.DestinyUser]:
         result = payload["searchResults"]
         if result is None:
             raise error.NotFound("User not found.")
@@ -276,12 +278,12 @@ class Factory(interfaces.FactoryInterface):
 
     def deserialize_user_themes(
         self, payload: typedefs.JsonArray
-    ) -> typing.Sequence[user.UserThemes]:
+    ) -> collections.Sequence[user.UserThemes]:
         return list(self.set_themese_attrs(payload))
 
     def deserialize_player(
         self, payload: typedefs.JsonArray, /
-    ) -> typing.Sequence[user.DestinyUser]:
+    ) -> collections.Sequence[user.DestinyUser]:
         if payload is None:
             raise error.NotFound("Player was not found.") from None
 
@@ -403,7 +405,7 @@ class Factory(interfaces.FactoryInterface):
 
     def deserialize_clan_admins(
         self, payload: typedefs.JsonObject
-    ) -> typing.Sequence[clans.ClanAdmin]:
+    ) -> collections.Sequence[clans.ClanAdmin]:
         builder = []
         member_types = helpers.just(payload["results"], "memberType")
         for member_type in zip(member_types):
@@ -468,7 +470,7 @@ class Factory(interfaces.FactoryInterface):
 
     def deserialize_clan_convos(
         self, payload: typedefs.JsonArray
-    ) -> typing.Sequence[clans.ClanConversation]:
+    ) -> collections.Sequence[clans.ClanConversation]:
         map = {}
         vec = []
         if payload is not None:
@@ -492,7 +494,7 @@ class Factory(interfaces.FactoryInterface):
 
     def deserialize_clan_members(
         self, data: typedefs.JsonObject, /
-    ) -> typing.Sequence[clans.ClanMember]:
+    ) -> collections.Sequence[clans.ClanMember]:
 
         members_vec: list[clans.ClanMember] = []
         _fn_type_optional = typing.Optional[typing.Callable[..., typing.Dict[str, str]]]
@@ -574,30 +576,8 @@ class Factory(interfaces.FactoryInterface):
             scope=payload.get("scope", undefined.Undefined),
         )
 
-    def deserialize_character(
-        self, payload: typedefs.JsonObject, *, chartype: enums.Class
-    ) -> character.Character:
-
-        try:
-            payload = [c for c in payload["characters"]["data"].values()]  # type: ignore
-        except TypeError:
-            raise error.CharacterError(
-                "One of these caused this error, "
-                "The membership type is invalid, "
-                "the character's id or the member's id are wrong "
-                "Please recheck those and retry again."
-            ) from None
-
-        try:
-            payload = payload[int(chartype)]  # type: ignore
-        except IndexError:
-            _LOG.warning(
-                f" Player doesn't have have a {str(chartype)} character. Will return the first character."
-            )
-            payload = payload[0]  # type: ignore
-
+    def _set_character_attrs(self, payload: typedefs.JsonObject) -> character.Character:
         total_time = time.format_played(int(payload["minutesPlayedTotal"]), suffix=True)
-
         return character.Character(
             net=self._net,
             id=int(payload["characterId"]),
@@ -614,12 +594,16 @@ class Factory(interfaces.FactoryInterface):
             level=payload["baseCharacterLevel"],
             title_hash=payload.get("titleRecordHash", None),
             light=payload["light"],
-            stats=payload["stats"],
+            stats={enums.Stat(int(k)): v for k, v in payload["stats"].items()},
         )
 
-    def deserialize_profile(self, payload: typedefs.JsonObject, /) -> profile.Profile:
+    def deserialize_profile(
+        self, payload: typedefs.JsonObject, /
+    ) -> typing.Optional[profile.Profile]:
+        if (raw_profile := payload.get("data")) is None:
+            return None
 
-        payload = payload["profile"]["data"]
+        payload = raw_profile
         id = int(payload["userInfo"]["membershipId"])
         name = payload["userInfo"]["displayName"]
         is_public = payload["userInfo"]["isPublic"]
@@ -639,15 +623,751 @@ class Factory(interfaces.FactoryInterface):
             net=self._net,
         )
 
+    def deserialize_profile_item(
+        self, payload: typedefs.JsonObject
+    ) -> profile.ProfileItemImpl:
+
+        instance_id: typing.Optional[int] = None
+        if raw_instance_id := payload.get("itemInstanceId"):
+            instance_id = int(raw_instance_id)
+
+        version_number: typing.Optional[int] = None
+        if raw_version := payload.get("versionNumber"):
+            version_number = int(raw_version)
+
+        transfer_status: int = payload["transferStatus"]
+        try:
+            transfer_status = enums.TransferStatus(payload["transferStatus"])
+        except ValueError:
+            pass
+
+        return profile.ProfileItemImpl(
+            net=self._net,
+            hash=payload["itemHash"],
+            quantity=payload["quantity"],
+            bind_status=enums.ItemBindStatus(payload["bindStatus"]),
+            location=enums.ItemLocation(payload["location"]),
+            bucket=payload["bucketHash"],
+            transfer_status=transfer_status,
+            lockable=payload["lockable"],
+            state=enums.ItemState(payload["state"]),
+            dismantel_permissions=payload["dismantlePermission"],
+            is_wrapper=payload["isWrapper"],
+            instance_id=instance_id,
+            version_number=version_number,
+            ornament_id=payload.get("overrideStyleItemHash"),
+        )
+
+    def deserialize_objectives(self, payload: typedefs.JsonObject) -> records.Objective:
+        return records.Objective(
+            net=self._net,
+            hash=payload["objectiveHash"],
+            visible=payload["visible"],
+            complete=payload["complete"],
+            completion_value=payload["completionValue"],
+            progress=payload["progress"],
+        )
+
+    def deserialize_records(
+        self,
+        payload: typedefs.JsonObject,
+        scores: typing.Optional[records.RecordScores] = None,
+        **nodes: int,
+    ) -> records.Record:
+        objectives: typing.Optional[list[records.Objective]] = None
+        interval_objectives: typing.Optional[list[records.Objective]] = None
+        record_state: typedefs.IntAnd[records.RecordState]
+
+        try:
+            record_state = records.RecordState(payload.get("state", 999))
+        except ValueError:
+            record_state = payload.get("state", 0)
+
+        if raw_objs := payload.get("objectives"):
+            objectives = [self.deserialize_objectives(obj) for obj in raw_objs]
+
+        if raw_interval_objs := payload.get("intervalObjectives"):
+            interval_objectives = [
+                self.deserialize_objectives(obj) for obj in raw_interval_objs
+            ]
+
+        if scores:
+            assert scores is not None
+
+        return records.Record(
+            scores=scores,
+            categories_node_hash=nodes.get("categories_hash", undefined.Undefined),
+            seals_node_hash=nodes.get("seals_hash", undefined.Undefined),
+            state=record_state,
+            objectives=objectives,
+            interval_objectives=interval_objectives,
+            redeemed_count=payload.get("intervalsRedeemedCount", 0),
+            completion_times=payload.get("completedCount", None),
+            reward_visibility=payload.get("rewardVisibilty", None),
+        )
+
+    def deserialize_character_records(
+        self,
+        payload: typedefs.JsonObject,
+        scores: typing.Optional[records.RecordScores] = None,
+        record_hashes: typing.Optional[list[int]] = None,
+    ) -> records.CharacterRecord:
+
+        record = self.deserialize_records(payload, scores)
+        # This is always None but available to keep the Record
+        # Signature.
+        assert scores is None
+        return records.CharacterRecord(
+            scores=scores,
+            categories_node_hash=record.categories_node_hash,
+            seals_node_hash=record.seals_node_hash,
+            state=record.state,
+            objectives=record.objectives,
+            interval_objectives=record.interval_objectives,
+            redeemed_count=payload.get("intervalsRedeemedCount", 0),
+            completion_times=payload.get("completedCount"),
+            reward_visibility=payload.get("rewardVisibilty"),
+            record_hashes=record_hashes or [],
+        )
+
+    def deserialize_character_dye(self, payload: typedefs.JsonObject) -> character.Dye:
+        return character.Dye(
+            channel_hash=payload["channelHash"], dye_hash=payload["dyeHash"]
+        )
+
+    def deserialize_character_customazition(
+        self, payload: typedefs.JsonObject
+    ) -> character.CustomizationOptions:
+        return character.CustomizationOptions(
+            personality=payload["personality"],
+            face=payload["face"],
+            skin_color=payload["skinColor"],
+            lip_color=payload["lipColor"],
+            eye_color=payload["eyeColor"],
+            hair_colors=payload.get("hairColors", []),
+            feature_colors=payload.get("featureColors", []),
+            decal_color=payload["decalColor"],
+            wear_helmet=payload["wearHelmet"],
+            hair_index=payload["hairIndex"],
+            feature_index=payload["featureIndex"],
+            decal_index=payload["decalIndex"],
+        )
+
+    def deserialize_character_minimal_equipments(
+        self, payload: typedefs.JsonObject
+    ) -> character.MinimalEquipments:
+        dyes = None
+        if raw_dyes := payload.get("dyes"):
+            if raw_dyes:
+                dyes = [self.deserialize_character_dye(dye) for dye in raw_dyes]
+        return character.MinimalEquipments(
+            net=self._net, item_hash=payload["itemHash"], dyes=dyes
+        )
+
+    def deserialize_character_render_data(
+        self, payload: typedefs.JsonObject, /
+    ) -> character.RenderedData:
+        return character.RenderedData(
+            net=self._net,
+            customization=self.deserialize_character_customazition(
+                payload["customization"]
+            ),
+            custom_dyes=[
+                self.deserialize_character_dye(dye)
+                for dye in payload["customDyes"]
+                if dye
+            ],
+            equipment=[
+                self.deserialize_character_minimal_equipments(equipment)
+                for equipment in payload["peerView"]["equipment"]
+            ],
+        )
+
+    def deserialize_available_activity(
+        self, payload: typedefs.JsonObject
+    ) -> activity.AvailableActivity:
+        return activity.AvailableActivity(
+            hash=payload["activityHash"],
+            is_new=payload["isNew"],
+            is_completed=payload["isCompleted"],
+            is_visible=payload["isVisible"],
+            display_level=payload.get("displayLevel"),
+            recommended_light=payload.get("recommendedLight"),
+            diffculity=activity.Diffculity(payload["difficultyTier"]),
+            can_join=payload["canJoin"],
+            can_lead=payload["canLead"],
+        )
+
+    def deserialize_character_activity(
+        self, payload: typedefs.JsonObject
+    ) -> activity.CharacterActivity:
+        current_mode: typing.Optional[enums.GameMode] = None
+        if raw_current_mode := payload.get("currentActivityModeType"):
+            current_mode = enums.GameMode(raw_current_mode)
+
+        current_mode_types: typing.Optional[collections.Sequence[enums.GameMode]] = None
+        if raw_current_modes := payload.get("currentActivityModeTypes"):
+            current_mode_types = [enums.GameMode(type_) for type_ in raw_current_modes]
+
+        return activity.CharacterActivity(
+            date_started=time.clean_date(payload["dateActivityStarted"]),
+            current_hash=payload["currentActivityHash"],
+            current_mode_hash=payload["currentActivityModeHash"],
+            current_mode=current_mode,
+            current_mode_hashes=payload.get("currentActivityModeHashes"),
+            current_mode_types=current_mode_types,
+            current_playlist_hash=payload.get("currentPlaylistActivityHash"),
+            last_story_hash=payload["lastCompletedStoryHash"],
+            available_activities=[
+                self.deserialize_available_activity(activity_)
+                for activity_ in payload["availableActivities"]
+            ],
+        )
+
+    def deserialize_profile_items(
+        self, payload: typedefs.JsonObject, /
+    ) -> list[profile.ProfileItemImpl]:
+        return [self.deserialize_profile_item(item) for item in payload["items"]]
+
+    def _deserialize_progressions(
+        self, payload: typedefs.JsonObject
+    ) -> progressions.Progression:
+        return progressions.Progression(
+            hash=payload["progressionHash"],
+            level=payload["level"],
+            cap=payload["levelCap"],
+            daily_limit=payload["dailyLimit"],
+            weekly_limit=payload["weeklyLimit"],
+            current_progress=payload["currentProgress"],
+            daily_progress=payload["dailyProgress"],
+            needed=payload["progressToNextLevel"],
+            next_level=payload["nextLevelAt"],
+        )
+
+    def _deserialize_factions(
+        self, payload: typedefs.JsonObject
+    ) -> progressions.Factions:
+        progs = self._deserialize_progressions(payload)
+        return progressions.Factions(
+            hash=progs.hash,
+            level=progs.level,
+            cap=progs.cap,
+            daily_limit=progs.daily_limit,
+            weekly_limit=progs.weekly_limit,
+            current_progress=progs.current_progress,
+            daily_progress=progs.daily_progress,
+            needed=progs.needed,
+            next_level=progs.next_level,
+            faction_hash=payload["factionHash"],
+            faction_vendor_hash=payload["factionVendorIndex"],
+        )
+
+    def _deserialize_milestone_available_quest(
+        self, payload: typedefs.JsonObject
+    ) -> milestones.MilestoneQuest:
+        return milestones.MilestoneQuest(
+            item_hash=payload["questItemHash"],
+            status=self._deserialize_milestone_quest_status(payload["status"]),
+        )
+
+    def _deserialize_milestone_activity(
+        self, payload: typedefs.JsonObject
+    ) -> milestones.MilestoneActivity:
+
+        phases: typing.Optional[
+            collections.Sequence[milestones.MilestoneActivityPhase]
+        ] = None
+        if raw_phases := payload.get("phases"):
+            phases = [
+                milestones.MilestoneActivityPhase(
+                    is_completed=obj["complete"], hash=obj["phaseHash"]
+                )
+                for obj in raw_phases
+            ]
+
+        return milestones.MilestoneActivity(
+            hash=payload["activityHash"],
+            challenges=[
+                self.deserialize_objectives(obj["objective"])
+                for obj in payload["challenges"]
+            ],
+            modifier_hashes=payload.get("modifierHashes"),
+            boolean_options=payload.get("booleanActivityOptions"),
+            phases=phases,
+        )
+
+    def _deserialize_milestone_quest_status(
+        self, payload: typedefs.JsonObject
+    ) -> milestones.QuestStatus:
+        return milestones.QuestStatus(
+            net=self._net,
+            quest_hash=payload["questHash"],
+            step_hash=payload["stepHash"],
+            step_objectives=[
+                self.deserialize_objectives(objective)
+                for objective in payload["stepObjectives"]
+            ],
+            is_tracked=payload["tracked"],
+            is_completed=payload["completed"],
+            started=payload["started"],
+            item_instance_id=payload["itemInstanceId"],
+            vendor_hash=payload.get("vendorHash"),
+            is_redeemed=payload["redeemed"],
+        )
+
+    def _deserialize_milestone_rewards(
+        self, payload: typedefs.JsonObject
+    ) -> milestones.MilestoneReward:
+        return milestones.MilestoneReward(
+            category_hash=payload["rewardCategoryHash"],
+            entries=[
+                milestones.MilestoneRewardEntry(
+                    entry_hash=entry["rewardEntryHash"],
+                    is_earned=entry["earned"],
+                    is_redeemed=entry["redeemed"],
+                )
+                for entry in payload["entries"]
+            ],
+        )
+
+    def deserialize_milestone(
+        self, payload: typedefs.JsonObject
+    ) -> milestones.Milestone:
+        start_date: typing.Optional[datetime.datetime] = None
+        if raw_start_date := payload.get("startDate"):
+            start_date = time.clean_date(raw_start_date)
+
+        end_date: typing.Optional[datetime.datetime] = None
+        if raw_end_date := payload.get("endDate"):
+            end_date = time.clean_date(raw_end_date)
+
+        rewards: typing.Optional[
+            collections.Collection[milestones.MilestoneReward]
+        ] = None
+        if raw_rewards := payload.get("rewards"):
+            rewards = [
+                self._deserialize_milestone_rewards(reward) for reward in raw_rewards
+            ]
+
+        activities: typing.Optional[
+            collections.Sequence[milestones.MilestoneActivity]
+        ] = None
+        if raw_activities := payload.get("activities"):
+            activities = [
+                self._deserialize_milestone_activity(active)
+                for active in raw_activities
+            ]
+
+        quests: typing.Optional[collections.Sequence[milestones.MilestoneQuest]] = None
+        if raw_quests := payload.get("availableQuests"):
+            quests = [
+                self._deserialize_milestone_available_quest(quest)
+                for quest in raw_quests
+            ]
+
+        vendors: typing.Optional[
+            collections.Sequence[milestones.MilestoneVendor]
+        ] = None
+        if raw_vendors := payload.get("vendors"):
+            vendors = [
+                milestones.MilestoneVendor(
+                    vendor_hash=vendor["vendorHash"],
+                    preview_itemhash=vendor.get("previewItemHash"),
+                )
+                for vendor in raw_vendors
+            ]
+
+        return milestones.Milestone(
+            hash=payload["milestoneHash"],
+            start_date=start_date,
+            end_date=end_date,
+            order=payload["order"],
+            rewards=rewards,
+            available_quests=quests,
+            activities=activities,
+            vendors=vendors,
+        )
+
+    def _deserialize_artifact_tiers(
+        self, payload: typedefs.JsonObject
+    ) -> season.ArtifactTier:
+        return season.ArtifactTier(
+            hash=payload["tierHash"],
+            is_unlocked=payload["isUnlocked"],
+            points_to_unlock=payload["pointsToUnlock"],
+            items=[
+                season.ArtifactTierItem(
+                    hash=item["itemHash"], is_active=item["isActive"]
+                )
+                for item in payload["items"]
+            ],
+        )
+
+    def deserialize_characters(
+        self, payload: typedefs.JsonObject
+    ) -> collections.Mapping[int, character.Character]:
+        return {
+            int(char_id): self._set_character_attrs(char)
+            for char_id, char in payload["data"].items()
+        }
+
+    def deserialize_character(
+        self, payload: typedefs.JsonObject
+    ) -> character.Character:
+        return self._set_character_attrs(payload)
+
+    def deserialize_character_equipmnets(
+        self, payload: typedefs.JsonObject
+    ) -> collections.Mapping[int, collections.Sequence[profile.ProfileItemImpl]]:
+        return {
+            int(char_id): self.deserialize_profile_items(item)
+            for char_id, item in payload["data"].items()
+        }
+
+    def deserialize_character_activities(
+        self, payload: typedefs.JsonObject
+    ) -> collections.Mapping[int, activity.CharacterActivity]:
+        return {
+            int(char_id): self.deserialize_character_activity(data)
+            for char_id, data in payload["data"].items()
+        }
+
+    def deserialize_characters_render_data(
+        self, payload: typedefs.JsonObject
+    ) -> collections.Mapping[int, character.RenderedData]:
+        return {
+            int(char_id): self.deserialize_character_render_data(data)
+            for char_id, data in payload["data"].items()
+        }
+
+    def deserialize_progressions(
+        self, payload: typedefs.JsonObject
+    ) -> character.CharacterProgression:
+        progressions_ = {
+            int(prog_id): self._deserialize_progressions(prog)
+            for prog_id, prog in payload["progressions"].items()
+        }
+
+        factions = {
+            int(faction_id): self._deserialize_factions(faction)
+            for faction_id, faction in payload["factions"].items()
+        }
+
+        milestones_ = {
+            int(milestone_hash): self.deserialize_milestone(milestone)
+            for milestone_hash, milestone in payload["milestones"].items()
+        }
+
+        uninstanced_item_objectives = {
+            int(item_hash): [self.deserialize_objectives(ins) for ins in obj]
+            for item_hash, obj in payload["uninstancedItemObjectives"].items()
+        }
+
+        artifact = payload["seasonalArtifact"]
+        seasonal_artifact = season.CharacterScopedArtifact(
+            hash=artifact["artifactHash"],
+            points_used=artifact["pointsUsed"],
+            reset_count=artifact["resetCount"],
+            tiers=[
+                self._deserialize_artifact_tiers(tier) for tier in artifact["tiers"]
+            ],
+        )
+        checklists = payload["checklists"]
+
+        return character.CharacterProgression(
+            progressions=progressions_,
+            factions=factions,
+            checklists=checklists,
+            milestones=milestones_,
+            seasonal_artifact=seasonal_artifact,
+            uninstanced_item_objectives=uninstanced_item_objectives,
+        )
+
+    def deserialize_character_progressions(
+        self, payload: typedefs.JsonObject
+    ) -> collections.Mapping[int, character.CharacterProgression]:
+        character_progressions: collections.Mapping[
+            int, character.CharacterProgression
+        ] = {}
+        for char_id, data in payload["data"].items():
+            # A little hack to stop mypy complaining about Mapping <-> dict
+            character_progressions[int(char_id)] = self.deserialize_progressions(data)  # type: ignore[index]
+        return character_progressions
+
+    def deserialize_characters_records(
+        self,
+        payload: typedefs.JsonObject,
+        scores: typing.Optional[records.RecordScores] = None,
+        record_hashes: typing.Optional[list[int]] = None,
+    ) -> collections.Mapping[int, records.CharacterRecord]:
+
+        return {
+            int(rec_id): self.deserialize_character_records(
+                rec, record_hashes=payload.get("featuredRecordHashes")
+            )
+            for rec_id, rec in payload["records"].items()
+        }
+
+    def deserialize_profile_records(
+        self, payload: typedefs.JsonObject
+    ) -> collections.Mapping[int, records.Record]:
+        raw_profile_records = payload["data"]
+        scores = records.RecordScores(
+            current_score=raw_profile_records["score"],
+            legacy_score=raw_profile_records["legacyScore"],
+            lifetime_score=raw_profile_records["lifetimeScore"],
+        )
+        return {
+            int(record_id): self.deserialize_records(
+                record,
+                scores,
+                categories_hash=raw_profile_records["recordCategoriesRootNodeHash"],
+                seals_hash=raw_profile_records["recordSealsRootNodeHash"],
+            )
+            for record_id, record in raw_profile_records["records"].items()
+        }
+
+    def deserialize_components(  # noqa: C901 Too complex.
+        self, payload: typedefs.JsonObject
+    ) -> components.Component:
+
+        profile_: typing.Optional[profile.Profile] = None
+        if raw_profile := payload.get("profile"):
+            profile_ = self.deserialize_profile(raw_profile)
+
+        profile_progression: typing.Optional[profile.ProfileProgression] = None
+        if raw_profile_progression := payload.get("profileProgression"):
+            profile_progression = self.deserialize_profile_progression(
+                raw_profile_progression
+            )
+
+        profile_currencies: typing.Optional[
+            collections.Sequence[profile.ProfileItemImpl]
+        ] = None
+        if raw_profile_currencies := payload.get("profileCurrencies"):
+
+            try:
+                profile_currencies = self.deserialize_profile_items(
+                    raw_profile_currencies["data"]
+                )
+            except KeyError:
+                pass
+
+        profile_inventories: typing.Optional[
+            collections.Sequence[profile.ProfileItemImpl]
+        ] = None
+        if raw_profile_inventories := payload.get("profileInventory"):
+            try:
+                profile_inventories = self.deserialize_profile_items(
+                    raw_profile_inventories["data"]
+                )
+            except KeyError:
+                pass
+
+        profile_records: typing.Optional[
+            collections.Mapping[int, records.Record]
+        ] = None
+
+        if raw_profile_records_ := payload.get("profileRecords"):
+            profile_records = self.deserialize_profile_records(raw_profile_records_)
+
+        characters: typing.Optional[typing.Mapping[int, character.Character]] = None
+        if raw_characters := payload.get("characters"):
+            characters = self.deserialize_characters(raw_characters)
+
+        character_records: typing.Optional[
+            collections.Mapping[int, records.CharacterRecord]
+        ] = None
+
+        if raw_character_records := payload.get("characterRecords"):
+            # Had to do it in two steps..
+            to_update: typedefs.JsonObject = {}
+            for _, data in raw_character_records["data"].items():
+                for record_id, record in data.items():
+                    to_update[record_id] = record
+
+            character_records = {
+                int(rec_id): self.deserialize_character_records(
+                    rec, record_hashes=to_update.get("featuredRecordHashes")
+                )
+                for rec_id, rec in to_update["records"].items()
+            }
+
+        character_equipments: typing.Optional[
+            collections.Mapping[int, collections.Sequence[profile.ProfileItemImpl]]
+        ] = None
+        if raw_character_equips := payload.get("characterEquipment"):
+            character_equipments = self.deserialize_character_equipmnets(
+                raw_character_equips
+            )
+
+        character_inventories: typing.Optional[
+            collections.Mapping[int, collections.Sequence[profile.ProfileItemImpl]]
+        ] = None
+        if raw_character_inventories := payload.get("characterInventories"):
+            try:
+                character_inventories = self.deserialize_character_equipmnets(
+                    raw_character_inventories
+                )
+            except KeyError:
+                pass
+
+        character_activities: typing.Optional[
+            collections.Mapping[int, activity.CharacterActivity]
+        ] = None
+        if raw_char_acts := payload.get("characterActivities"):
+            character_activities = self.deserialize_character_activities(raw_char_acts)
+
+        character_render_data: typing.Optional[
+            collections.Mapping[int, character.RenderedData]
+        ] = None
+        if raw_character_render_data := payload.get("characterRenderData"):
+            character_render_data = self.deserialize_characters_render_data(
+                raw_character_render_data
+            )
+
+        character_progressions: typing.Optional[
+            collections.Mapping[int, character.CharacterProgression]
+        ] = None
+
+        if raw_character_progressions := payload.get("characterProgressions"):
+            character_progressions = self.deserialize_character_progressions(
+                raw_character_progressions
+            )
+
+        profile_string_vars: typing.Optional[collections.Mapping[int, int]] = None
+        if raw_profile_string_vars := payload.get("profileStringVariables"):
+            profile_string_vars = raw_profile_string_vars["data"]["integerValuesByHash"]
+
+        character_string_vars: typing.Optional[
+            collections.Mapping[int, collections.Mapping[int, int]]
+        ] = None
+        if raw_character_string_vars := payload.get("characterStringVariables"):
+            character_string_vars = {
+                int(char_id): data["integerValuesByHash"]
+                for char_id, data in raw_character_string_vars["data"].items()
+            }
+
+        metrics: typing.Optional[
+            collections.Sequence[
+                collections.Mapping[int, tuple[bool, records.Objective]]
+            ]
+        ] = None
+        root_node_hash: typing.Optional[int] = None
+        if raw_metrics := payload.get("metrics"):
+            root_node_hash = raw_metrics["data"]["metricsRootNodeHash"]
+            metrics = [
+                {
+                    int(metrics_hash): (
+                        data["invisible"],
+                        self.deserialize_objectives(data["objectiveProgress"]),
+                    )
+                    for metrics_hash, data in raw_metrics["data"]["metrics"].items()
+                }
+            ]
+
+        return components.Component(
+            profiles=profile_,
+            profile_progression=profile_progression,
+            profile_currencies=profile_currencies,
+            profile_inventories=profile_inventories,
+            profile_records=profile_records,
+            characters=characters,
+            character_records=character_records,
+            character_equipments=character_equipments,
+            character_inventories=character_inventories,
+            character_activities=character_activities,
+            character_render_data=character_render_data,
+            character_progressions=character_progressions,
+            profile_string_variables=profile_string_vars,
+            character_string_variables=character_string_vars,
+            metrics=metrics,
+            root_node_hash=root_node_hash,
+        )
+
+    def deserialize_character_component(  # type: ignore[call-arg]
+        self, payload: typedefs.JsonObject
+    ) -> components.CharacterComponent:
+
+        character_: typing.Optional[character.Character] = None
+        if raw_singuler_character := payload.get("character"):
+            character_ = self.deserialize_character(raw_singuler_character["data"])
+
+        inventory: typing.Optional[collections.Sequence[profile.ProfileItemImpl]] = None
+        if raw_inventory := payload.get("inventory"):
+            try:
+                inventory = self.deserialize_profile_items(raw_inventory["data"])
+            except KeyError:
+                pass
+
+        activities: typing.Optional[activity.CharacterActivity] = None
+        if raw_activities := payload.get("activities"):
+            activities = self.deserialize_character_activity(raw_activities["data"])
+
+        equipment: typing.Optional[collections.Sequence[profile.ProfileItemImpl]] = None
+        if raw_equipments := payload.get("equipment"):
+            equipment = self.deserialize_profile_items(raw_equipments["data"])
+
+        progressions_: typing.Optional[character.CharacterProgression] = None
+        if raw_progressions := payload.get("progressions"):
+            progressions_ = self.deserialize_progressions(raw_progressions["data"])
+
+        render_data: typing.Optional[character.RenderedData] = None
+        if raw_render_data := payload.get("renderData"):
+            render_data = self.deserialize_character_render_data(
+                raw_render_data["data"]
+            )
+
+        character_records: typing.Optional[
+            collections.Mapping[int, records.CharacterRecord]
+        ] = None
+        if raw_char_records := payload.get("records"):
+            character_records = self.deserialize_characters_records(
+                raw_char_records["data"]
+            )
+
+        return components.CharacterComponent(
+            activities=activities,
+            equipment=equipment,
+            inventory=inventory,
+            progressions=progressions_,
+            render_data=render_data,
+            character=character_,
+            character_records=character_records,
+            profile_records=None,
+        )
+
+    def _set_entity_attrs(
+        self, payload: typedefs.JsonObject, *, key: str = "displayProperties"
+    ) -> entity.BaseEntity:
+        name: undefined.UndefinedOr[str] = undefined.Undefined
+        description: undefined.UndefinedOr[str] = undefined.Undefined
+        icon: assets.MaybeImage = assets.Image.partial()
+
+        if properties := payload[key]:
+            if (raw_name := properties["name"]) is not typedefs.Unknown:
+                name = raw_name
+            if (raw_description := properties["description"]) is not typedefs.Unknown:
+                description = raw_description
+            if raw_icon := properties.get("icon"):
+                icon = assets.Image(raw_icon)
+            has_icon = properties["hasIcon"]
+
+        return entity.BaseEntity(
+            net=self._net,
+            hash=payload["hash"],
+            index=payload["index"],
+            name=name,
+            description=description,
+            has_icon=has_icon,
+            icon=icon,
+        )
+
     def deserialize_inventory_entity(
         self, payload: typedefs.JsonObject, /
     ) -> entity.InventoryEntity:
-        try:
-            # All Bungie entities has a display propetie
-            # if we don't find it means the entity was not found.
-            props: typedefs.JsonObject = payload["displayProperties"]
-        except KeyError:
-            raise error.NotFound("The entity inventory item hash is invalid") from None
+
+        props = self._set_entity_attrs(payload)
 
         # Some entities have an inventory which
         # Includes its hash types.
@@ -668,24 +1388,13 @@ class Factory(interfaces.FactoryInterface):
 
         tier_name: str = inventory.get("tierTypeName", None)
 
-        if (name := props.get("name", typedefs.Unknown)) == typedefs.Unknown:
-            name = undefined.Undefined
-
         if (
             type_name := payload.get("itemTypeDisplayName", typedefs.Unknown)
         ) == typedefs.Unknown:
             type_name = undefined.Undefined
 
-        if (
-            description := props.get("description", typedefs.Unknown)
-        ) == typedefs.Unknown:
-            description = undefined.Undefined
-
         if (about := payload.get("flavorText", typedefs.Unknown)) == typedefs.Unknown:
             about = undefined.Undefined
-
-        if (raw_icon := props.get("icon", assets.Image.partial())) is not None:
-            icon: assets.Image = assets.Image(str(raw_icon))
 
         if (
             raw_watermark := payload.get("iconWatermark", assets.Image.partial())
@@ -719,12 +1428,12 @@ class Factory(interfaces.FactoryInterface):
 
         return entity.InventoryEntity(
             net=self._net,
-            name=name,
-            description=description,
-            hash=payload["hash"],
-            index=payload["index"],
-            icon=icon,
-            has_icon=props["hasIcon"],
+            name=props.name,
+            description=props.description,
+            hash=props.hash,
+            index=props.index,
+            icon=props.icon,
+            has_icon=props.has_icon,
             water_mark=water_mark,
             banner=banner,
             about=about,
@@ -743,6 +1452,38 @@ class Factory(interfaces.FactoryInterface):
             lore_hash=payload.get("loreHash", None),
         )
 
+    def deserialize_objective_entity(
+        self, payload: typedefs.JsonObject, /
+    ) -> entity.ObjectiveEntity:
+        props = self._set_entity_attrs(payload)
+        return entity.ObjectiveEntity(
+            net=self._net,
+            hash=props.hash,
+            index=props.index,
+            description=props.description,
+            name=props.name,
+            has_icon=props.has_icon,
+            icon=props.icon,
+            unlock_value_hash=payload["unlockValueHash"],
+            completion_value=payload["completionValue"],
+            scope=entity.GatingScope(payload["scope"]),
+            location_hash=payload["locationHash"],
+            allowed_negative_value=payload["allowNegativeValue"],
+            allowed_value_change=payload["allowValueChangeWhenCompleted"],
+            counting_downward=payload["isCountingDownward"],
+            value_style=entity.ValueUIStyle(payload["valueStyle"]),
+            progress_description=payload["progressDescription"],
+            perks=payload["perks"],
+            stats=payload["stats"],
+            minimum_visibility=payload["minimumVisibilityThreshold"],
+            allow_over_completion=payload["allowOvercompletion"],
+            show_value_style=payload["showValueOnComplete"],
+            display_only_objective=payload["isDisplayOnlyObjective"],
+            complete_value_style=entity.ValueUIStyle(payload["completedValueStyle"]),
+            progress_value_style=entity.ValueUIStyle(payload["inProgressValueStyle"]),
+        )
+
+    # TODO: Re-implement this.
     def deserialize_activity(
         self, payload: typedefs.JsonObject, /, *, limit: typing.Optional[int] = 1
     ) -> activity.Activity:
@@ -822,7 +1563,7 @@ class Factory(interfaces.FactoryInterface):
 
     def deserialize_clan_banners(
         self, payload: typedefs.JsonObject
-    ) -> typing.Sequence[clans.ClanBanner]:
+    ) -> collections.Sequence[clans.ClanBanner]:
         banners_seq: typing.MutableSequence[clans.ClanBanner] = []
         if (banners := payload.get("clanBannerDecals")) is not None:
             for k, v in banners.items():
@@ -840,7 +1581,7 @@ class Factory(interfaces.FactoryInterface):
 
     def deserialize_public_milestone_content(
         self, payload: typedefs.JsonObject
-    ) -> milestones.Milestone:
+    ) -> milestones.MilestoneContent:
         items_categoris: typedefs.NoneOr[milestones.MilestoneItems] = None
         if (raw_categories := payload.get("itemCategories")) is not None:
             for item in raw_categories:
@@ -849,7 +1590,7 @@ class Factory(interfaces.FactoryInterface):
                     if raw_title != typedefs.Unknown:
                         title = raw_title
                 if (raw_hashes := item.get("itemHashes")) is not None:
-                    hashes: typing.Sequence[int] = raw_hashes
+                    hashes: collections.Sequence[int] = raw_hashes
 
                 items_categoris = milestones.MilestoneItems(title=title, hashes=hashes)
 
@@ -868,7 +1609,7 @@ class Factory(interfaces.FactoryInterface):
                     raw_tip = undefined.Undefined
                 tips.append(raw_tip)
 
-        return milestones.Milestone(
+        return milestones.MilestoneContent(
             about=about, status=status, tips=tips, items=items_categoris
         )
 
@@ -896,7 +1637,7 @@ class Factory(interfaces.FactoryInterface):
 
     def deserialize_friends(
         self, payload: typedefs.JsonObject
-    ) -> typing.Sequence[friends.Friend]:
+    ) -> collections.Sequence[friends.Friend]:
         mut_seq: typing.MutableSequence[friends.Friend] = []
         if raw_friends := payload.get("friends"):
             for friend in raw_friends:
@@ -920,12 +1661,17 @@ class Factory(interfaces.FactoryInterface):
         return friends.FriendRequestView(incoming=incoming, outgoing=outgoing)
 
     def _set_fireteam_fields(self, payload: typedefs.JsonObject) -> fireteams.Fireteam:
+        activity_type = payload["activityType"]
+        try:
+            activity_type = fireteams.FireteamActivity(payload["activityType"])
+        except ValueError:
+            pass
         return fireteams.Fireteam(
             id=int(payload["fireteamId"]),
             group_id=int(payload["groupId"]),
             platform=fireteams.FireteamPlatform(payload["platform"]),
-            activity_type=fireteams.FireteamActivity(payload["activityType"]),
             is_immediate=payload["isImmediate"],
+            activity_type=activity_type,
             owner_id=int(payload["ownerMembershipId"]),
             player_slot_count=payload["playerSlotCount"],
             available_player_slots=payload["availablePlayerSlotCount"],
@@ -941,7 +1687,7 @@ class Factory(interfaces.FactoryInterface):
 
     def deserialize_fireteams(
         self, payload: typedefs.JsonObject
-    ) -> typedefs.NoneOr[typing.Sequence[fireteams.Fireteam]]:
+    ) -> typedefs.NoneOr[collections.Sequence[fireteams.Fireteam]]:
         fireteams_: typing.MutableSequence[fireteams.Fireteam] = []
 
         result: list[typedefs.JsonObject]
@@ -977,7 +1723,7 @@ class Factory(interfaces.FactoryInterface):
 
     def deserialize_fireteam_members(
         self, payload: typedefs.JsonObject, *, alternatives: bool = False
-    ) -> typing.Optional[typing.Sequence[fireteams.FireteamMember]]:
+    ) -> typing.Optional[collections.Sequence[fireteams.FireteamMember]]:
         members_: list[fireteams.FireteamMember] = []
         if members := payload.get("Members" if not alternatives else "Alternates"):
             for member in members:
@@ -1013,7 +1759,7 @@ class Factory(interfaces.FactoryInterface):
         *,
         no_results: bool = False,
     ) -> typing.Union[
-        fireteams.AvalaibleFireteam, typing.Sequence[fireteams.AvalaibleFireteam]
+        fireteams.AvalaibleFireteam, collections.Sequence[fireteams.AvalaibleFireteam]
     ]:
         fireteams_: list[fireteams.AvalaibleFireteam] = []
 
@@ -1052,3 +1798,53 @@ class Factory(interfaces.FactoryInterface):
             if no_results:
                 return fireteams_fields
         return fireteams_
+
+    def deserialize_seasonal_artifact(
+        self, payload: typedefs.JsonObject
+    ) -> season.Artifact:
+        if raw_artifact := payload.get("seasonalArtifact"):
+            if points := raw_artifact.get("pointProgression"):
+                points_prog = progressions.Progression(
+                    hash=points["progressionHash"],
+                    level=points["level"],
+                    cap=points["levelCap"],
+                    daily_limit=points["dailyLimit"],
+                    weekly_limit=points["weeklyLimit"],
+                    current_progress=points["currentProgress"],
+                    daily_progress=points["dailyProgress"],
+                    needed=points["progressToNextLevel"],
+                    next_level=points["nextLevelAt"],
+                )
+
+            if bonus := raw_artifact.get("powerBonusProgression"):
+                power_bonus_prog = progressions.Progression(
+                    hash=bonus["progressionHash"],
+                    level=bonus["level"],
+                    cap=bonus["levelCap"],
+                    daily_limit=bonus["dailyLimit"],
+                    weekly_limit=bonus["weeklyLimit"],
+                    current_progress=bonus["currentProgress"],
+                    daily_progress=bonus["dailyProgress"],
+                    needed=bonus["progressToNextLevel"],
+                    next_level=bonus["nextLevelAt"],
+                )
+            artifact = season.Artifact(
+                net=self._net,
+                hash=raw_artifact["artifactHash"],
+                power_bonus=raw_artifact["powerBonus"],
+                acquired_points=raw_artifact["pointsAcquired"],
+                bonus=power_bonus_prog,
+                points=points_prog,
+            )
+        return artifact
+
+    def deserialize_profile_progression(
+        self, payload: typedefs.JsonObject
+    ) -> profile.ProfileProgression:
+        return profile.ProfileProgression(
+            artifact=self.deserialize_seasonal_artifact(payload["data"]),
+            checklist={
+                int(check_id): checklists
+                for check_id, checklists in payload["data"]["checklists"].items()
+            },
+        )

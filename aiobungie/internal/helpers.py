@@ -30,6 +30,7 @@ __all__: tuple[str, ...] = (
     "awaits",
     "get_or_make_loop",
     "AsyncIterator",
+    "collect",
 )
 
 import asyncio
@@ -41,12 +42,28 @@ import warnings
 AT = typing.TypeVar("AT", covariant=True)
 JT = typing.TypeVar("JT")
 
+ConsumerSigT = typing.TypeVar("ConsumerSigT", bound=typing.Callable[..., typing.Any])
+
 
 def just(lst: list[dict[str, JT]], lookup: str) -> list[JT]:
     """A helper function that takes a list of dicts and return a list of
     all keys found inside the dict
     """
     return list(map(lambda dct: dct[lookup], lst))
+
+
+def collect(
+    *args: typing.Any, consume: ConsumerSigT = str, separator: str = ", "  # type: ignore[assignment]
+) -> typing.Union[ConsumerSigT, str]:
+    """Consume passed argumnts and return them joining ', ' for each argument.
+
+    If only one argument was passed it will just return that argumnt.
+    """
+    if len(args) > 1:
+        if consume:
+            return separator.join(consume(arg) for arg in args)
+        return separator.join(arg for arg in args)
+    return args[0]  # type: ignore[no-any-return]
 
 
 def deprecated(func: typing.Callable[..., typing.Any]) -> typing.Callable[..., None]:

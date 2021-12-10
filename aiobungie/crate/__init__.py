@@ -29,7 +29,7 @@ for functional usage for the Bungie API objects.
 
 from __future__ import annotations
 
-__all__ = (
+__all__: tuple[str, ...] = (
     "Application",
     "PostActivity",
     "Clan",
@@ -50,55 +50,91 @@ __all__ = (
     "ClanAdmin",
     "GroupMember",
     "PartialBungieUser",
+    "ProfileProgression",
     "ProfileComponent",
     "CharacterComponent",
     "LinkedProfile",
     "ClanBanner",
-    "Milestone",
-    "MilestoneItems",
     "FriendRequestView",
     "Fireteam",
-    "FireteamLanguage",
-    "FireteamActivity",
-    "FireteamPlatform",
-    "FireteamDate",
     "FireteamMember",
     "FireteamUser",
     "AvalaibleFireteam",
+    "Component",
+    "ComponentFields",
+    "ComponentPrivacy",
+    "Artifact",
+    "ArtifactTier",
+    "ArtifactTierItem",
+    "CharacterScopedArtifact",
+    "CharacterProgression",
+    "ProfileItem",
+    "ProfileItemImpl",
+    "Record",
+    "CharacterRecord",
+    "Objective",
+    "ObjectiveEntity",
+    "BaseEntity",
+    "AvailableActivity",
+    "Location",
+    "Rewards",
+    "GuidedGame",
+    "Challenges",
+    "Matchmaking",
+    "ActivityEntity",
+    "PlaylistActivityEntity",
+    "RecordScores",
+    "MilestoneContent",
+    "MilestoneItems",
+    "Milestone",
+    "MilestoneReward",
+    "MilestoneRewardEntry",
+    "MilestoneActivity",
+    "MilestoneQuest",
+    "MilestoneVendor",
+    "MilestoneActivityPhase",
+    "QuestStatus",
+    "Progression",
+    "Factions",
+    "ArtifactTier",
+    "ArtifactTierItem",
+    "CharacterScopedArtifact",
+    "CharacterComponent",
+    "ProfileComponent",
+    "RecordsComponent",
+    "ItemsComponent",
+    "VendorsComponent",
 )
 
 from .activity import Activity
+from .activity import AvailableActivity
+from .activity import Challenges
+from .activity import GuidedGame
+from .activity import Location
+from .activity import Matchmaking
 from .activity import PostActivity
-from .application import Application
-from .application import ApplicationOwner
-from .character import Character
-from .character import CharacterComponent
-from .clans import Clan
-from .clans import ClanAdmin
-from .clans import ClanBanner
-from .clans import ClanFeatures
-from .clans import ClanMember
-from .clans import GroupMember
+from .activity import Rewards
+from .application import *
+from .character import *
+from .clans import *
+from .components import *
+from .entity import ActivityEntity
+from .entity import BaseEntity
 from .entity import Entity
 from .entity import InventoryEntity
+from .entity import ObjectiveEntity
+from .entity import PlaylistActivityEntity
 from .fireteams import AvalaibleFireteam
 from .fireteams import Fireteam
-from .fireteams import FireteamActivity
-from .fireteams import FireteamDate
-from .fireteams import FireteamLanguage
 from .fireteams import FireteamMember
-from .fireteams import FireteamPlatform
 from .fireteams import FireteamUser
-from .friends import Friend
-from .friends import FriendRequestView
-from .milestones import Milestone
-from .milestones import MilestoneItems
-from .profile import LinkedProfile
-from .profile import Profile
-from .profile import ProfileComponent
-from .user import BungieUser
-from .user import DestinyUser
-from .user import HardLinkedMembership
-from .user import PartialBungieUser
-from .user import User
-from .user import UserThemes
+from .friends import *
+from .milestones import *
+from .profile import *
+from .progressions import *
+from .records import CharacterRecord
+from .records import Objective
+from .records import Record
+from .records import RecordScores
+from .season import *
+from .user import *

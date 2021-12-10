@@ -44,11 +44,10 @@ $ pip install git+https://github.com/nxtlo/aiobungie
 
 ## Quick Example
 
-See [Examples for more.](https://github.com/nxtlo/aiobungie/tree/master/examples)
+See [Examples for advance usage.](https://github.com/nxtlo/aiobungie/tree/master/examples)
 
 ```python
 import aiobungie
-from aiobungie import crate
 
 # crates in aiobungie are implementations
 # of Bungie's objects to provide
@@ -59,38 +58,34 @@ client = aiobungie.Client('YOUR_API_KEY')
 async def main() -> None:
 
     # fetch a clan
-    clan: crate.Clan = await client.fetch_clan("Nuanceㅤ")
-    print(clan.name, clan.id, clan.owner.name, clan.owner.id, ...)
+    clan: aiobungie.crate.Clan = await client.fetch_clan("Nuanceㅤ")
+    print(clan.name, clan.id)
 
-    # fetch a member from the clan.
-    member: crate.ClanMember = await clan.fetch_member("Fate怒")
-    print(member.name, member.id, member.type, ...)
+    # Clan owner.
+    if owner := clan.owner:
 
-    # fetch the clan members and return only steam players
-    members = await clan.fetch_members(aiobungie.MembershipType.STEAM)
-    for member in members:
-        if member.name == "Fate怒" or member.id == 4611686018484639825:
-            print("Found Fate.")
-        else:
-            print(member.name, member.id, member.type)
+        # Fetch a profile.
+        profile:  = await client.fetch_profile(
+            owner.id,
+            owner.type,
+            # Return All profile components and character components.
+            aiobungie.ComponentType.CHARACTERS,
+            *aiobungie.ComponentType.ALL_PROFILES.value
+            # If a method requires OAuth2 you may wanna pass an auth token as a kwarg.
+            auth="access_token"
+        )
 
-    # fetch profiles.
-    profile: crate.Profile = await client.fetch_profile(member.id, member.type)
-    print(profile.name, profile.id, profile.type, ...)
+        # A profile characters component as a mapping from each character id to a character object.
+        if owner_characters := profile.characters:
+            for character_id, character in owner_characters.items():
+                print(f"ID: {character_id}: Character {character}")
 
-    # You can fetch a character in two ways.
-    # Whether from the player's profile or
-    # using `fetch_character()` method.
+                # Check if warlock
+                if character.class_type is aiobungie.Class.WARLOCK:
+                    # Do something with the warlock
+                    ...
 
-    # The profile way.
-    warlock: crate.Character = await profile.fetch_warlock()
-    print(warlock.light, warlock.id, warlock.gender, warlock.race, ...)
-
-    # the fetch_character() way using the profile attrs.
-    character: crate.Character = await client.fetch_character(profile.id, profile.type, profile.warlock_id)
-    print(character.light, character.id, character.gender, character.race, ...)
-
-# You can either run it via the client or just `asyncio.run(main())`
+# You can either run it using the client or just `asyncio.run(main())`
 client.run(main())
 ```
 

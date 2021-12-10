@@ -165,10 +165,10 @@ class Fireteam:
     id: int = attr.field(hash=True)
     """The fireteam id."""
 
-    group_id: int = attr.field(hash=True)
+    group_id: int = attr.field(hash=True, repr=False)
     """The fireteam group id."""
 
-    platform: FireteamPlatform = attr.field()
+    platform: FireteamPlatform = attr.field(repr=False)
     """The fireteam platform."""
 
     activity_type: FireteamActivity = attr.field()
@@ -180,7 +180,7 @@ class Fireteam:
     owner_id: int = attr.field(hash=True, repr=False)
     """The fireteam owner id."""
 
-    player_slot_count: int = attr.field()
+    player_slot_count: int = attr.field(repr=False)
     """The needed player count in this fireteam."""
 
     available_player_slots: int = attr.field()
@@ -198,7 +198,7 @@ class Fireteam:
     is_public: bool = attr.field(repr=False)
     """Whether the fireteam is public or not."""
 
-    locale: FireteamLanguage = attr.field()
+    locale: FireteamLanguage = attr.field(repr=False)
     """The selected locale language for this fireteam."""
 
     is_valid: bool = attr.field(repr=False)

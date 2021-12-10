@@ -37,7 +37,7 @@ __all__: tuple[str, ...] = (
     "Raid",
     "Dungeon",
     "Gender",
-    "Component",
+    "ComponentType",
     "Planet",
     "Stat",
     "WeaponType",
@@ -52,16 +52,26 @@ __all__: tuple[str, ...] = (
     "Relationship",
     "ClanMemberType",
     "MembershipOption",
+    "ItemBindStatus",
+    "ItemLocation",
+    "TransferStatus",
+    "ItemState",
 )
 
 import enum as __enum
 import typing
+
+_ITERABLE = (set, list, tuple)
 
 
 class IntEnum(__enum.IntEnum):
     """An int only enum."""
 
     def __int__(self) -> int:
+        if isinstance(self.value, _ITERABLE):
+            raise TypeError(
+                f"Can't overload {self.value} in {type(self).__name__}, Please use `.value` attribute.",
+            )
         return int(self.value)
 
     def __str__(self) -> str:
@@ -78,6 +88,10 @@ class Enum(__enum.Enum):
         return self.__str__()
 
     def __int__(self) -> int:
+        if isinstance(self.value, _ITERABLE):
+            raise TypeError(
+                f"Can't overload {self.value} in {type(self).__name__}, Please use `.value` attribute.",
+            )
         return int(self.value)
 
 
@@ -212,40 +226,180 @@ class GameMode(IntEnum):
     ALLPVP = 5
     PATROL = 6
     ALLPVE = 7
-    TOF = 14
-    """Trials Of Osiris"""
+    RESERVED9 = 9
     CONTROL = 10
+    RESERVED11 = 11
+    CLASH = 12
+    RESERVED13 = 13
+    CRIMSONDOUBLES = 15
     NIGHTFALL = 16
-    IRONBANER = 19
+    HEROICNIGHTFALL = 17
     ALLSTRIKES = 18
-    DUNGEON = 82
+    IRONBANNER = 19
+    RESERVED20 = 20
+    RESERVED21 = 21
+    RESERVED22 = 22
+    RESERVED24 = 24
+    ALLMAYHEM = 25
+    RESERVED26 = 26
+    RESERVED27 = 27
+    RESERVED28 = 28
+    RESERVED29 = 29
+    RESERVED30 = 30
+    SUPREMACY = 31
+    PRIVATEMATCHESALL = 32
+    SURVIVAL = 37
+    COUNTDOWN = 38
+    TRIALSOFTHENINE = 39
+    SOCIAL = 40
+    TRIALSCOUNTDOWN = 41
+    TRIALSSURVIVAL = 42
+    IRONBANNERCONTROL = 43
+    IRONBANNERCLASH = 44
+    IRONBANNERSUPREMACY = 45
+    SCOREDNIGHTFALL = 46
+    SCOREDHEROICNIGHTFALL = 47
+    RUMBLE = 48
+    ALLDOUBLES = 49
+    DOUBLES = 50
+    PRIVATEMATCHESCLASH = 51
+    PRIVATEMATCHESCONTROL = 52
+    PRIVATEMATCHESSUPREMACY = 53
+    PRIVATEMATCHESCOUNTDOWN = 54
+    PRIVATEMATCHESSURVIVAL = 55
+    PRIVATEMATCHESMAYHEM = 56
+    PRIVATEMATCHESRUMBLE = 57
+    HEROICADVENTURE = 58
+    SHOWDOWN = 59
+    LOCKDOWN = 60
+    SCORCHED = 61
+    SCORCHEDTEAM = 62
     GAMBIT = 63
-    EMPIRE_HUNT = 494260690
-    RUMBLE = 964120289
-    CLASSIC_MIX = 1472571612
-    COUNTDOWN = 3956087078
-    DOUBLES = 4288302346
-    CLASH = 3954711135
-    MAYHEM = 3517186939
-    SURVIVAL = 2175955486
+    ALLPVECOMPETITIVE = 64
+    BREAKTHROUGH = 65
+    BLACKARMORYRUN = 66
+    SALVAGE = 67
+    IRONBANNERSALVAGE = 68
+    PVPCOMPETITIVE = 69
+    PVPQUICKPLAY = 70
+    CLASHQUICKPLAY = 71
+    CLASHCOMPETITIVE = 72
+    CONTROLQUICKPLAY = 73
+    CONTROLCOMPETITIVE = 74
+    GAMBITPRIME = 75
+    RECKONING = 76
+    MENAGERIE = 77
+    VEXOFFENSIVE = 78
+    NIGHTMAREHUNT = 79
+    ELIMINATION = 80
+    MOMENTUM = 81
+    DUNGEON = 82
+    SUNDIAL = 83
+    TRIALSOFOSIRIS = 84
 
 
 @typing.final
-class Component(IntEnum):
-    """An Enum for Destiny 2 Components."""
+class ComponentType(Enum):
+    """An Enum for Destiny 2 profile Components."""
 
     NONE = 0
+
     PROFILE = 100
-    SILVER = 105
-    PROGRESSION = 104
-    INVENTORIES = 102
-    CHARACTERS = 200
-    CHAR_INVENTORY = 201
-    CHARECTER_PROGRESSION = 202
-    EQUIPED_ITEMS = 205
+    PROFILE_INVENTORIES = 102
+    PROFILE_CURRENCIES = 103
+    PROFILE_PROGRESSION = 104
+    ALL_PROFILES = (
+        PROFILE,
+        PROFILE_INVENTORIES,
+        PROFILE_CURRENCIES,
+        PROFILE_PROGRESSION,
+    )
+    """All profile components.
+
+    This cannot be overloaded `int(ALL_PROFILES)`. You should access it like this `*ALL_PROFILES.value`
+    """
+
     VENDORS = 400
-    RECORDS = 900
     VENDOR_SALES = 402
+    VENDOR_RECEIPTS = 101
+    ALL_VENDORS = (VENDORS, VENDOR_RECEIPTS, VENDOR_SALES)
+    """All vendor components.
+
+    This cannot be overloaded `int(ALL_VENDORS)`. You should access it like this `*ALL_VENDORS.value`
+    """
+
+    # Items
+    ITEM_INSTANCES = 300
+    ITEM_OBJECTIVES = 301
+    ITEM_PERKS = 302
+    ITEM_RENDER_DATA = 303
+    ITEM_STATS = 304
+    ITEM_SOCKETS = 305
+    ITEM_TALENT_GRINDS = 306
+    ITEM_REUSABLE_PLUGS = 310
+
+    ALL_ITEMS = (
+        ITEM_INSTANCES,
+        ITEM_OBJECTIVES,
+        ITEM_PERKS,
+        ITEM_RENDER_DATA,
+        ITEM_STATS,
+        ITEM_TALENT_GRINDS,
+        ITEM_REUSABLE_PLUGS,
+    )
+    """All item components.
+
+    This cannot be overloaded `int(ALL_ITEMS)`. You should access it like this `*ALL_ITEMS.value`
+    """
+
+    RECORDS = 900
+    PRESENT_NODES = 700
+    COLLECTIBLES = 800
+    KIOSKS = 500
+    PLATFORM_SILVER = 105
+    METRICS = 1100
+    INVENTORIES = 102
+    STRING_VARIABLES = 1200
+
+    CHARACTERS = 200
+    CHARACTER_INVENTORY = 201
+    CHARECTER_PROGRESSION = 202
+    CHARACTER_RENDER_DATA = 203
+    CHARACTER_ACTIVITIES = 204
+    CHARACTER_EQUIPMENT = 205
+
+    ALL_CHARACTERS = (
+        CHARACTERS,
+        CHARACTER_INVENTORY,
+        CHARECTER_PROGRESSION,
+        CHARACTER_RENDER_DATA,
+        CHARACTER_ACTIVITIES,
+        CHARACTER_EQUIPMENT,
+        RECORDS,
+    )
+    """All character components.
+
+    This cannot be overloaded `int(ALL_CHARACTERS)`. You should access it like this `*ALL_CHARACTERS.value`
+    """
+
+    ALL = (
+        *ALL_PROFILES,  # type: ignore
+        *ALL_CHARACTERS,  # type: ignore
+        *ALL_VENDORS,  # type: ignore
+        *ALL_ITEMS,  # type: ignore
+        RECORDS,
+        PRESENT_NODES,
+        COLLECTIBLES,
+        KIOSKS,
+        METRICS,
+        PLATFORM_SILVER,
+        INVENTORIES,
+        STRING_VARIABLES,
+    )
+    """ALl components. The usage of this is `*ComponentType.ALL.value` to unpack the values.
+
+    This cannot be overloaded `int(ALL)`. You should access it like this `*ALL.value`
+    """
 
 
 @typing.final
@@ -314,6 +468,7 @@ class Stat(IntEnum):
     DISCIPLINE = 1735777505
     INTELLECT = 144602215
     STRENGTH = 4244567218
+    LIGHT_POWER = 1935470627
 
 
 @typing.final
@@ -482,3 +637,49 @@ class MembershipOption(IntEnum):
     REVIEWD = 0
     OPEN = 1
     CLOSED = 2
+
+
+@typing.final
+class ItemBindStatus(IntEnum):
+    """An enum for Destiny 2 items bind status."""
+
+    NOT_BOUND = 0
+    BOUND_TO_CHARACTER = 1
+    BOUND_TO_ACCOUNT = 2
+    BOUNT_TO_GUILD = 3
+
+
+@typing.final
+class ItemLocation(IntEnum):
+    """An enum for Destiny 2 items location."""
+
+    UNKNOWN = 0
+    INVENTORY = 1
+    VAULT = 2
+    VENDOR = 3
+    POSTMASTER = 4
+
+
+@typing.final
+class TransferStatus(IntEnum):
+    """An enum for items transfer statuses."""
+
+    CAN_TRANSFER = 0
+    """The item can be transferred."""
+    IS_EQUIPPED = 1
+    """You can't transfer since the item is equipped."""
+    NOT_TRASNFERRABLE = 2
+    """This item can not be transferred."""
+    COULD_BE_TRANSFERRED = 4
+    """You can trasnfer the item. But the place you're trying to put it at has no space for it."""
+
+
+@typing.final
+class ItemState(IntEnum):
+    """An enum for Destiny 2 item states."""
+
+    NONE = 0
+    LOCKED = 1
+    TRACKED = 2
+    MASTERWORKED = 4
+    LOCKED_AND_MASTERWORKED = LOCKED + MASTERWORKED

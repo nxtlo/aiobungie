@@ -231,6 +231,14 @@ class ProfileItemImpl(ProfileItem):
     version_number: typing.Optional[int] = attr.field(repr=False)
     """The item version number of available, other wise will be `None`."""
 
+    @property
+    def is_transferable(self) -> bool:
+        """Check whether this item can be transferred or not."""
+        return (
+            self.transfer_status is enums.TransferStatus.CAN_TRANSFER
+            and self.instance_id is not None  # noqa: W503
+        )
+
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
 class Profile:

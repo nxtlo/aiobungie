@@ -1255,14 +1255,14 @@ class Factory(interfaces.FactoryInterface):
         ] = None
         root_node_hash: typing.Optional[int] = None
         if raw_metrics := payload.get("metrics"):
-            root_node_hash = raw_metrics['data']["metricsRootNodeHash"]
+            root_node_hash = raw_metrics["data"]["metricsRootNodeHash"]
             metrics = [
                 {
                     int(metrics_hash): (
                         data["invisible"],
                         self.deserialize_objectives(data["objectiveProgress"]),
                     )
-                    for metrics_hash, data in raw_metrics["data"]['metrics'].items()
+                    for metrics_hash, data in raw_metrics["data"]["metrics"].items()
                 }
             ]
 

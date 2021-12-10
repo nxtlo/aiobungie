@@ -50,7 +50,7 @@ def build_client() -> aiobungie.Client:
 client = build_client()
 
 async def test_users() -> aiobungie.crate.user.BungieUser:
-    u = await client.fetch_user(2031531231238)
+    u = await client.fetch_user(20315338)
     return u
 
 async def test_user_themese() -> typing.Sequence[aiobungie.crate.user.UserThemes]:
@@ -108,7 +108,7 @@ async def test_player() -> typing.Sequence[typing.Optional[aiobungie.crate.Desti
     _LOG.debug(profile)
     components = aiobungie.ComponentType.ALL_CHARACTERS
     if profile.profiles:
-        for char in await profile.profiles.collect(
+        for char in await profile.profiles.collect_characters(
             *components.value
         ):
             _LOG.debug(f"{char}")
@@ -134,7 +134,9 @@ async def test_profile() -> None:
     if (profile := pf.profiles):
         _LOG.debug(profile)
         try:
-            for pfile_char in await profile.collect(*aiobungie.ComponentType.ALL_CHARACTERS.value):
+            for pfile_char in await profile.collect_characters(
+                *aiobungie.ComponentType.ALL_CHARACTERS.value
+            ):
                 _LOG.debug(pfile_char.character)
         except RuntimeError:
             pass

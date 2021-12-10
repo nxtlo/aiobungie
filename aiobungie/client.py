@@ -135,7 +135,6 @@ class Client(traits.ClientBase):
         finally:
             # Session management.
             loop.run_until_complete(self.rest.close())
-            loop.close()
             _LOG.info("Client closed normally.")
 
     # * Unspecified methods. *#
@@ -154,7 +153,7 @@ class Client(traits.ClientBase):
 
     async def fetch_own_bungie_user(self, *, access_token: str) -> user.User:
         """Fetch and return a user object of the bungie net user associated with account.
-        
+
         This method is obly useful if you have authintacated users and their tokens.
 
         .. warning::
@@ -398,7 +397,7 @@ class Client(traits.ClientBase):
         Parameters
         -----------
         name: `str`
-            The unqiue Bungie player name.
+            The unique Bungie player name.
         code : `int`
             The unique Bungie display name code.
         type: `aiobungie.internal.enums.MembershipType`

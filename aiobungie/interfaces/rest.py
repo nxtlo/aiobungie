@@ -227,7 +227,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         Parameters
         -----------
         name: `builtins.str`
-            The unqiue Bungie player name.
+            The unique Bungie player name.
         code : `int`
             The unique Bungie display name code.
         type: `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
@@ -1263,8 +1263,8 @@ class RESTInterface(traits.RESTful, abc.ABC):
         ----------
         access_token : `str`
             The bearer access token associated with the bungie account.
-        item_id : `int`
-            The item id you to transfer.
+        item_id: `int`
+            The item instance id you to transfer.
         item_hash : `int`
             The item hash.
         character_id : `int`
@@ -1305,7 +1305,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         access_token : `str`
             The bearer access token associated with the bungie account.
         item_id : `int`
-            The item id to pull.
+            The item instance id to pull.
         item_hash : `int`
             The item hash.
         character_id : `int`

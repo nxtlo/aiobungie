@@ -83,13 +83,16 @@ f"({info.__version__}), ({info.__url__}), "
 f"{platform.python_implementation()}/{platform.python_version()} {platform.system()} "
 f"{platform.architecture()[0]}, Aiohttp/{aiohttp.HttpVersion11}"  # type: ignore[UnknownMemberType]
 
+
 def _wrong_content_type(response: aiohttp.ClientResponse) -> error.HTTPException:
     return error.HTTPException(
         f"Expected JSON content but got {response.content_type}, {str(response.real_url)}"
     )
 
+
 async def _handle_errors(
-    response: aiohttp.ClientResponse, msg: undefined.UndefinedOr[str] = undefined.Undefined
+    response: aiohttp.ClientResponse,
+    msg: undefined.UndefinedOr[str] = undefined.Undefined,
 ) -> error.AiobungieError:
 
     if response.content_type != _APP_JSON:
@@ -336,7 +339,9 @@ class RESTClient(interfaces.RESTInterface):
                         if response.status == http.HTTPStatus.NO_CONTENT:
                             return None
 
-                        data: typedefs.JsonObject = await response.json(encoding="utf-8")
+                        data: typedefs.JsonObject = await response.json(
+                            encoding="utf-8"
+                        )
                         if 300 > response.status >= 200:
                             if type == "read":
                                 # We want to read the bytes for the manifest response.
@@ -360,19 +365,25 @@ class RESTClient(interfaces.RESTInterface):
                             sleep_time = next(backoff_)
                             _LOG.warning(
                                 "Received: %i, Message: %s, Sleeping for %.2f seconds, Remaining retries: %i",
-                                response.status, data['Message'], sleep_time, self._max_retries - retries
+                                response.status,
+                                data["Message"],
+                                sleep_time,
+                                self._max_retries - retries,
                             )
 
                             retries += 1
                             await asyncio.sleep(sleep_time)
                             continue
 
-                        await self._handle_err(response, data.get("ErrorStatus", undefined.Undefined))
+                        await self._handle_err(
+                            response, data.get("ErrorStatus", undefined.Undefined)
+                        )
 
             except RuntimeError:
                 continue
 
     if not typing.TYPE_CHECKING:
+
         def __enter__(self) -> typing.NoReturn:
             cls = type(self)
             raise TypeError(
@@ -439,7 +450,8 @@ class RESTClient(interfaces.RESTInterface):
     @staticmethod
     @typing.final
     async def _handle_err(
-        response: aiohttp.ClientResponse, msg: undefined.UndefinedOr[str] = undefined.Undefined
+        response: aiohttp.ClientResponse,
+        msg: undefined.UndefinedOr[str] = undefined.Undefined,
     ) -> typing.NoReturn:
         raise await _handle_errors(response, msg)
 
@@ -501,14 +513,15 @@ class RESTClient(interfaces.RESTInterface):
         return self._request(
             RequestMethod.POST,
             f"Destiny2/SearchDestinyPlayerByBungieName/{int(type)}",
-            json={"displayName": name, "displayNameCode": code}
+            json={"displayName": name, "displayNameCode": code},
         )
 
     def search_users(self, name: str, /) -> ResponseSig[typedefs.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
-            RequestMethod.POST, f"User/Search/GlobalName/0",
-            json={"displayNamePrefix": name}
+            RequestMethod.POST,
+            "User/Search/GlobalName/0",
+            json={"displayNamePrefix": name},
         )
 
     def fetch_clan_from_id(self, id: int, /) -> ResponseSig[typedefs.JsonObject]:

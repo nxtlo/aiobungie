@@ -3,12 +3,13 @@
 import contextlib
 import logging
 
-import aiobungie
 import aiohttp
 import fastapi
 import uvicorn
+from backend import modules
+from backend import rest
 
-from backend import modules, rest
+import aiobungie
 
 logging.basicConfig(level=logging.INFO)
 app = fastapi.FastAPI(debug=True)
@@ -52,7 +53,9 @@ async def clan_callback(name: str) -> aiobungie.typedefs.JsonObject:
 # the payload should look like this {"name": "Fate#1234", type?: "Steam"}.
 # The payload will be sent from the frontend to our API.
 @app.post("/player", summary="Search for a Bungie player.", status_code=200)
-async def player_callback(payload: modules.PlayerModule) -> aiobungie.typedefs.JsonArray:
+async def player_callback(
+    payload: modules.PlayerModule,
+) -> aiobungie.typedefs.JsonArray:
     return await rest.fetch_player(payload.name, payload.type)
 
 

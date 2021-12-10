@@ -197,12 +197,12 @@ class StringVariableComponent:
     profile_string_variables: typing.Optional[
         collections.Mapping[int, int]
     ] = attr.field()
-    """A mapping from an expression mapping difinition hash to its value."""
+    """A mapping from an expression mapping definition hash to its value."""
 
     character_string_variables: typing.Optional[
         collections.Mapping[int, collections.Mapping[int, int]]
     ] = attr.field()
-    """A mapping from the character id to a mapping from an expression mapping difinition hash to its value."""
+    """A mapping from the character id to a mapping from an expression mapping definition hash to its value."""
 
 
 @attr.attrs(kw_only=True, weakref_slot=False)

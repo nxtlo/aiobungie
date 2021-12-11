@@ -42,79 +42,97 @@ _LOG = logging.getLogger("test_client")
 logging.basicConfig(level=logging.DEBUG)
 
 
-def build_client() -> aiobungie.Client:
+def __build_client() -> aiobungie.Client:
     token = os.environ["CLIENT_TOKEN"]
     rest = aiobungie.RESTClient(token, max_retries=2)
     client = aiobungie.Client(token, rest_client=rest)
     return client
 
 
-client = build_client()
+client = __build_client()
 
 
 async def test_users():
     u = await client.fetch_user(20315338)
-    _LOG.debug(u)
+    assert isinstance(u, aiobungie.crate.BungieUser)
 
 
 async def test_user_themese():
     ut = await client.fetch_user_themes()
-    _LOG.debug(ut)
+    assert isinstance(ut, list)
+    assert isinstance(ut[0], aiobungie.crate.UserThemes)
 
 
 async def test_hard_types():
     uht = await client.fetch_hard_types(76561198141430157)
-    _LOG.debug(uht)
+    assert isinstance(uht, aiobungie.crate.HardLinkedMembership)
 
 
 async def test_clan_from_id():
     c = await client.fetch_clan_from_id(4389205)
     members = await c.fetch_members()
     member = await c.fetch_member("Fate")
-    _LOG.debug("%s, %s", members.__repr__(), member.__repr__())
-    _LOG.debug("%s", c.owner.__repr__())
+    assert isinstance(members, list)
+    assert isinstance(members[0], aiobungie.crate.ClanMember)
+    assert isinstance(member, aiobungie.crate.ClanMember)
 
 
 async def test_clan():
     c = await client.fetch_clan("Nuanceㅤ ")
     members = await c.fetch_members()
     member = await c.fetch_member("Hizxr")
-    _LOG.debug("%s, %s", members.__repr__(), member.__repr__())
-    _LOG.debug("%s", c.owner.__repr__())
+    assert isinstance(members, list)
+    assert isinstance(members[0], aiobungie.crate.ClanMember)
+    assert isinstance(member, aiobungie.crate.ClanMember)
 
 
 async def test_fetch_clan_member():
     m = await client.fetch_clan_member(4389205, "Fate")
-    _LOG.debug(m)
+    assert isinstance(m, aiobungie.crate.ClanMember)
 
 
 async def test_fetch_clan_members():
     ms = await client.fetch_clan_members(4389205)
+    assert isinstance(ms, list)
     for member in ms:
+        assert isinstance(member, aiobungie.crate.ClanMember)
+        assert isinstance(member.bungie, aiobungie.crate.PartialBungieUser)
         if member.bungie.name == "Fate":
             fetched_user = await member.bungie.fetch_self()
-            _LOG.debug(fetched_user)
+            assert isinstance(fetched_user, aiobungie.crate.BungieUser)
 
 
 async def test_fetch_inventory_item():
     i = await client.fetch_inventory_item(1216319404)
-    _LOG.debug(repr(i))
+    assert isinstance(i, aiobungie.crate.InventoryEntity)
 
 
 async def test_fetch_app():
     a = await client.fetch_app(33226)
+    assert isinstance(a, aiobungie.crate.Application)
     fetched_user = await a.owner.fetch_self()
-    _LOG.debug(fetched_user)
+    assert isinstance(fetched_user, aiobungie.crate.BungieUser)
 
 
 async def test_player():
     p = await client.fetch_player("Fate怒", 4275)
     profile = await p[0].fetch_self_profile(aiobungie.ComponentType.PROFILE)
-    _LOG.debug(profile)
+    assert isinstance(profile, aiobungie.crate.Component)
+    assert isinstance(profile.profiles, aiobungie.crate.Profile)
+
     components = aiobungie.ComponentType.ALL_CHARACTERS
-    if profile.profiles:
-        for char in await profile.profiles.collect_characters(*components.value):
-            _LOG.debug(f"{char}")
+    profiles = profile.profiles.collect_characters(*components.value)
+    for char in await profiles:
+        assert isinstance(char, aiobungie.crate.CharacterComponent)
+        assert (
+            char.activities,
+            char.character,
+            char.character_records,
+            char.equipment,
+            char.inventory,
+            char.render_data,
+            char.progressions,
+        ) is not None
 
 
 async def test_char():
@@ -122,13 +140,22 @@ async def test_char():
         MID,
         aiobungie.MembershipType.STEAM,
         CID,
-        *aiobungie.ComponentType.ALL_CHARACTERS.value,
+        aiobungie.ComponentType.CHARACTER_ACTIVITIES,
+        aiobungie.ComponentType.CHARACTERS,
     )
-    if char := c.character:
-        acts = await char.fetch_activities(aiobungie.GameMode.NIGHTFALL, limit=10)
-        for act in acts:
-            _LOG.debug(act)
-    _LOG.debug(c)
+    assert isinstance(c, aiobungie.crate.CharacterComponent)
+    assert c.activities
+    assert c.character
+    assert c.character_records is None
+    assert c.equipment is None
+    assert c.inventory is None
+    assert c.profile_records is None
+    assert c.render_data is None
+    assert c.progressions is None
+    acts = await c.character.fetch_activities(aiobungie.GameMode.RAID, limit=10)
+    assert len(acts) == 10
+    for act in acts:
+        assert isinstance(act, aiobungie.crate.Activity)
 
 
 async def test_profile():
@@ -137,125 +164,138 @@ async def test_profile():
         aiobungie.MembershipType.STEAM,
         *aiobungie.ComponentType.ALL.value,  # type: ignore
     )
+    assert isinstance(pf, aiobungie.crate.Component)
 
-    if profile := pf.profiles:
-        _LOG.debug(profile)
-        try:
-            for pfile_char in await profile.collect_characters(
-                *aiobungie.ComponentType.ALL_CHARACTERS.value
-            ):
-                _LOG.debug(pfile_char.character)
-        except RuntimeError:
-            pass
-
-    if profile_progression := pf.profile_progression:
-        _LOG.debug(profile_progression)
-        _LOG.debug(profile_progression.checklist)
-
-    if characters := pf.characters:
-        for _, character in characters.items():
-            _LOG.debug(f"{character.class_type}, {character.emblem}, {character.light}")
-            if profile and character.id in profile.character_ids:
-                _LOG.debug(True)
-
-    if pf_records := pf.profile_records:
-        for _, prec in pf_records.items():
-            if prec.objectives:
-                fetched_obj = await prec.objectives[0].fetch_self()
-                _LOG.info(repr(fetched_obj))
-            _LOG.info(prec)
-            break
-
-    if char_records := pf.character_records:
-        for char_id, record in char_records.items():
-            _LOG.info(f"{char_id}")
-            if record.objectives:
-                fetched_char_obj = await record.objectives[0].fetch_self()
-                _LOG.info(repr(fetched_char_obj))
-            _LOG.info(f"{char_id}::{record}")
-            break
-
-    if char_equips := pf.character_equipments:
-        for _, items in char_equips.items():
-            _LOG.info(items)
-            _LOG.debug(repr(await items[0].fetch_self()))
-
-    if char_acts := pf.character_activities:
-        for char_id, act in char_acts.items():
-            _LOG.info(f"{char_id, act.available_activities}")
-
-    if char_render_data := pf.character_render_data:
-        for char_id_, data in char_render_data.items():
-            _LOG.info(f"{char_id_} | {repr(data)}")
-            items = await data.fetch_my_items(limit=2)
-            for item in items:
-                _LOG.info(repr(item))
-
-    if char_progrs := pf.character_progressions:
-        for cid, prog in char_progrs.items():
-            _LOG.debug(f"{cid} | {prog}")
-
-    if (strs := pf.profile_string_variables) and (
-        chr_strs := pf.character_string_variables
+    assert pf.profiles
+    for pfile_char in await pf.profiles.collect_characters(
+        *aiobungie.ComponentType.ALL_CHARACTERS.value
     ):
-        _LOG.debug(f"{strs} | {chr_strs}")
+        assert isinstance(pfile_char, aiobungie.crate.CharacterComponent)
+        assert (
+            pfile_char.profile_records is None
+        )  # Always None or a character component.
+        assert pfile_char.activities
+        assert pfile_char.character
+        assert pfile_char.character_records
+        assert pfile_char.equipment
+        assert pfile_char.inventory
+        assert pfile_char.render_data
+        assert pfile_char.progressions
 
-    if metrics := pf.metrics:
-        _LOG.debug(metrics)
+    assert isinstance(pf.profile_progression, aiobungie.crate.ProfileProgression)
+
+    assert pf.characters
+    for cid, character in pf.characters.items():
+        assert isinstance(cid, int)
+        assert isinstance(character, aiobungie.crate.Character)
+        assert cid in pf.profiles.character_ids
+
+    assert pf.profile_records
+    for _, prec in pf.profile_records.items():
+        assert isinstance(prec, aiobungie.crate.Record)
+
+    assert pf.character_records
+    for _, record in pf.character_records.items():
+        assert isinstance(record, aiobungie.crate.CharacterRecord)
+
+    assert pf.character_equipments
+    for cid, items in pf.character_equipments.items():
+        assert isinstance(cid, int)
+        for item in items:
+            assert isinstance(item, aiobungie.crate.ProfileItemImpl)
+
+    assert pf.character_activities
+    for char_id, act in pf.character_activities.items():
+        assert isinstance(char_id, int)
+        assert isinstance(act, aiobungie.crate.activity.CharacterActivity)
+
+    assert pf.character_render_data
+    for char_id_, data in pf.character_render_data.items():
+        assert isinstance(char_id_, int)
+        assert isinstance(data, aiobungie.crate.RenderedData)
+        items = await data.fetch_my_items(limit=2)
+        assert len(items) == 2
+        for item in items:
+            assert isinstance(item, aiobungie.crate.InventoryEntity)
+
+    assert pf.character_progressions
+    for cid, prog in pf.character_progressions.items():
+        assert isinstance(cid, int)
+        assert isinstance(prog, aiobungie.crate.CharacterProgression)
+
+    assert pf.profile_string_variables
+    assert pf.character_string_variables
+    assert isinstance(pf.profile_string_variables, dict)
+    assert isinstance(pf.character_string_variables, dict)
+
+    assert pf.metrics
+    for met in pf.metrics:
+        for met_id, met_ in met.items():
+            assert isinstance(met_id, int)
+            inv, obj = met_
+            assert isinstance(inv, bool)
+            assert isinstance(obj, aiobungie.crate.Objective)
 
 
 async def test_membership_types_from_id():
     u = await client.fetch_membership_from_id(MID)
-    _LOG.debug(u)
+    assert isinstance(u, aiobungie.crate.User)
+    assert isinstance(u.bungie, aiobungie.crate.BungieUser)
+    for du in u.destiny:
+        assert isinstance(du, aiobungie.crate.DestinyUser)
 
 
 async def test_search_users():
     x = await client.search_users("Fate怒")
-    _LOG.debug(x)
+    assert isinstance(x, list)
+    for u in x:
+        assert isinstance(u, aiobungie.crate.DestinyUser)
 
 
 async def test_clan_conves():
     x = await client.fetch_clan_conversations(881267)
-    _LOG.debug(x)
+    assert isinstance(x, list)
+    for c in x:
+        assert isinstance(c, aiobungie.crate.ClanConversation)
 
 
 async def test_clan_admins():
     ca = await client.fetch_clan_admins(4389205)
-    _LOG.debug(ca)
+    assert any(
+        not isinstance(c.name, aiobungie.UndefinedType) and "Karlz" or "Crit" == c.name
+        for c in ca
+    )
+    for ad in ca:
+        assert isinstance(ad, aiobungie.crate.ClanAdmin)
 
 
 async def test_groups_for_member():
     obj = await client.fetch_groups_for_member(MID, aiobungie.MembershipType.STEAM)
-    if obj is None:
-        return None
+    assert obj
     up_to_date_clan_obj = await obj.fetch_self_clan()
-    _LOG.debug(up_to_date_clan_obj)
-    _LOG.debug(obj)
+    assert isinstance(up_to_date_clan_obj, aiobungie.crate.Clan)
 
 
 async def test_potential_groups_for_member():
     obj = await client.fetch_potential_groups_for_member(
         MID, aiobungie.MembershipType.STEAM
     )
-    if obj is None:
-        return None
-    up_to_date_clan_obj = await obj.fetch_self_clan()
-    _LOG.debug(up_to_date_clan_obj)
-    _LOG.debug(obj)
+    assert obj is None
 
 
 async def test_linked_profiles():
     obj = await client.fetch_linked_profiles(
         MID, aiobungie.MembershipType.ALL, all=True
     )
-    print(obj.profiles_with_errors.__repr__(), obj.bungie.__repr__())
+    assert isinstance(obj, aiobungie.crate.LinkedProfile)
     try:
-        async for profile in obj:
-            print(profile.__repr__())
-            transform_profile = await profile.fetch_self_profile(
+        async for user in obj:
+            assert isinstance(user, aiobungie.crate.DestinyUser)
+            transform_profile = await user.fetch_self_profile(
                 aiobungie.ComponentType.PROFILE
             )
-            print(transform_profile.__repr__())
+            assert transform_profile.profiles
+            assert isinstance(transform_profile, aiobungie.crate.Component)
     # This originally should be StopIteration exception
     # But client.run throws RuntimeError
     # TODO: raise the actual exception instead of RuntimeError in client.run?
@@ -265,12 +305,13 @@ async def test_linked_profiles():
 
 async def test_clan_banners():
     cb = await client.fetch_clan_banners()
-    _LOG.debug(cb)
+    for b in cb:
+        assert isinstance(b, aiobungie.crate.ClanBanner)
 
 
 async def test_public_milestones_content():
     cb = await client.fetch_public_milestone_content(4253138191)
-    _LOG.debug(cb)
+    assert isinstance(cb, aiobungie.crate.MilestoneContent)
 
 
 async def test_static_request():
@@ -278,14 +319,13 @@ async def test_static_request():
         "GET",
         f"Destiny2/3/Profile/{MID}/?components={aiobungie.ComponentType.CHARACTER_EQUIPMENT.value}",
     )
-    assert r is not None and isinstance(r, dict)
+    assert isinstance(r, dict)
 
 
 async def test_fetch_fireteam():
     f = await client.fetch_fireteams(aiobungie.FireteamActivity.ALL)
-    _LOG.debug(f)
-    if f:
-        _LOG.debug(f[0].url)
+    assert f
+    assert isinstance(f[0].url, str)
 
     f2 = await client.fetch_fireteams(
         aiobungie.FireteamActivity.ALL or 4,
@@ -293,25 +333,18 @@ async def test_fetch_fireteam():
         language=aiobungie.FireteamLanguage.ENGLISH,
         date_range=1,
     )
-    _LOG.debug(repr(f2))
-    if f2:
-        _LOG.debug(f2[0].url)
+    assert f2
+    for ft in f2:
+        assert isinstance(ft, aiobungie.crate.Fireteam)
 
 
 async def test_fetch_activities():
-    a = await client.fetch_activities(MID, CID, aiobungie.GameMode.RAID, limit=50)
+    a = await client.fetch_activities(MID, CID, aiobungie.GameMode.RAID)
+    assert any(_.is_flawless for _ in a)
     for act in a:
-        _LOG.debug(act)
-        if act.is_flawless:
-            _LOG.debug(
-                "%s, %s, %i, %s",
-                act.values.played_time,
-                act.occurred_at,
-                act.instance_id,
-                act.mode,
-            )
+        assert isinstance(act, aiobungie.crate.Activity)
         if act.hash == aiobungie.Raid.DSC.value:
-            _LOG.debug("%i", act.values.player_count)
+            assert aiobungie.GameMode.RAID in act.modes
 
 
 async def main() -> None:
@@ -325,7 +358,7 @@ async def main() -> None:
         coros.append(coro())
     await asyncio.gather(*coros)
     _LOG.info(
-        "Ran %i functions out of %i excluding main.",
+        "Asserted %i functions out of %i excluding main.",
         len(coros),
         len(inspect.getmembers(sys.modules[__name__], inspect.iscoroutinefunction)),
     )

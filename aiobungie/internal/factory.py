@@ -600,7 +600,7 @@ class Factory(interfaces.FactoryInterface):
         is_public = payload["userInfo"]["isPublic"]
         type = enums.MembershipType(payload["userInfo"]["membershipType"])
         last_played = time.clean_date(str(payload["dateLastPlayed"]))
-        character_ids = payload["characterIds"]
+        character_ids = [int(cid) for cid in payload["characterIds"]]
         power_cap = payload["currentSeasonRewardPowerCap"]
 
         return profile.Profile(

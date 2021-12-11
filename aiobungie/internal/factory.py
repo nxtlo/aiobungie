@@ -28,7 +28,6 @@ __all__ = ("Factory",)
 import collections.abc as collections
 import typing
 
-from aiobungie import error
 from aiobungie import interfaces
 from aiobungie import typedefs
 from aiobungie import undefined
@@ -241,8 +240,6 @@ class Factory(interfaces.FactoryInterface):
         self, payload: typedefs.JsonObject
     ) -> collections.Sequence[user.DestinyUser]:
         result = payload["searchResults"]
-        if result is None:
-            raise error.NotFound("User not found.")
 
         vec: list[user.DestinyUser] = []
         for player in result:
@@ -284,9 +281,6 @@ class Factory(interfaces.FactoryInterface):
     def deserialize_player(
         self, payload: typedefs.JsonArray, /
     ) -> collections.Sequence[user.DestinyUser]:
-        if payload is None:
-            raise error.NotFound("Player was not found.") from None
-
         return self.deserialize_destiny_members(payload, bound=True)
 
     def deseialize_clan_owner(self, data: typedefs.JsonObject) -> clans.ClanMember:
@@ -436,11 +430,8 @@ class Factory(interfaces.FactoryInterface):
     def deserialize_clan_member(self, data: typedefs.JsonObject, /) -> clans.ClanMember:
 
         if (payload := data["results"]) is not None:
-            try:
-                attrs = payload[0]
-                payload = payload[0]["destinyUserInfo"]
-            except (KeyError, IndexError):
-                raise error.NotFound("Clan member not found.") from None
+            attrs = payload[0]
+            payload = payload[0]["destinyUserInfo"]
 
             destiny_member = self.deserialize_destiny_user(payload, noeq=True)
             last_online: datetime.datetime = time.from_timestamp(

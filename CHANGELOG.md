@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.5b12...HEAD)
 
+### Added
+- `BadRequest` exception.
+
+### Changed
+- Exceptions now has fields and improved.
+
 ## [0.2.5b12](https://github.com/nxtlo/aiobungie/compare/0.2.5b11...0.2.5b12) 2021-10-21
 
 ### Added

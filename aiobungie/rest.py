@@ -84,34 +84,92 @@ f"{platform.python_implementation()}/{platform.python_version()} {platform.syste
 f"{platform.architecture()[0]}, Aiohttp/{aiohttp.HttpVersion11}"  # type: ignore[UnknownMemberType]
 
 
-def _wrong_content_type(response: aiohttp.ClientResponse) -> error.HTTPException:
-    return error.HTTPException(
-        f"Expected JSON content but got {response.content_type}, {str(response.real_url)}"
-    )
-
-
 async def _handle_errors(
-    response: aiohttp.ClientResponse,
-    msg: undefined.UndefinedOr[str] = undefined.Undefined,
+    response: aiohttp.ClientResponse, msg: str
 ) -> error.AiobungieError:
 
     if response.content_type != _APP_JSON:
-        return _wrong_content_type(response)
+        return error.HTTPError(
+            f"Expected JSON content but got {response.content_type}, {str(response.real_url)}",
+            http.HTTPStatus.UNSUPPORTED_MEDIA_TYPE,
+        )
 
-    from_json = await response.json()
-    data = [str(response.real_url), from_json, msg]
+    body = await response.json()
+    message: str = body.get("Message", "")
+    error_status: str = body.get("ErrorStatus", "")
+    message_data: dict[str, str] = body.get("MessageData", {})
+    throttle_seconds: int = body.get("ThrottleSeconds", 0)
+    error_code: int = body.get("ErrorCode", 0)
 
     if response.status == http.HTTPStatus.NOT_FOUND:
-        return error.NotFound(*data)
+        return error.NotFound(
+            message=message,
+            error_code=error_code,
+            throttle_seconds=throttle_seconds,
+            url=str(response.real_url),
+            body=body,
+            headers=response.headers,
+            error_status=error_status,
+            message_data=message_data,
+        )
+
     elif response.status == http.HTTPStatus.FORBIDDEN:
-        return error.Forbidden(*data)  # type: ignore
+        return error.Forbidden(
+            message=message,
+            error_code=error_code,
+            throttle_seconds=throttle_seconds,
+            url=str(response.real_url),
+            body=body,
+            headers=response.headers,
+            error_status=error_status,
+            message_data=message_data,
+        )
+
     elif response.status == http.HTTPStatus.UNAUTHORIZED:
-        return error.Unauthorized(*data)  # type: ignore
+        return error.Unauthorized(
+            message=message,
+            error_code=error_code,
+            throttle_seconds=throttle_seconds,
+            url=str(response.real_url),
+            body=body,
+            headers=response.headers,
+            error_status=error_status,
+            message_data=message_data,
+        )
+
+    elif response.status == http.HTTPStatus.BAD_REQUEST:
+        # Membership needs to be alone.
+        if msg == "InvalidParameters":
+            return error.MembershipTypeError(
+                message=message,
+                body=body,
+                headers=response.headers,
+                url=str(response.url),
+                membership_type=message_data["membershipType"],
+                required_membership=message_data["membershipInfo.membershipType"],
+                membership_id=int(message_data["membershipId"]),
+            )
+        return error.BadRequest(
+            message=message,
+            body=body,
+            headers=response.headers,
+            url=str(response.url),
+        )
 
     status = http.HTTPStatus(response.status)
 
     if 400 <= status < 500:
-        return error.ResponseError(*data, status)
+        return error.ResponseError(
+            message=message,
+            error_code=error_code,
+            throttle_seconds=throttle_seconds,
+            url=str(response.real_url),
+            body=body,
+            headers=response.headers,
+            error_status=error_status,
+            message_data=message_data,
+            http_status=status,
+        )
 
     # Need to handle errors our selves :>
     elif 500 <= status < 600:
@@ -123,33 +181,68 @@ async def _handle_errors(
             "AuthenticationInvalid",
         }:
             return error.Unauthorized(
-                message=str(msg),
-                long_message=from_json.get("Message", ""),
+                message=message,
+                error_code=error_code,
+                throttle_seconds=throttle_seconds,
                 url=str(response.real_url),
+                body=body,
+                headers=response.headers,
+                error_status=error_status,
+                message_data=message_data,
             )
 
         # API is down...
         elif msg == "SystemDisabled":
-            raise OSError(*data)
+            raise OSError(
+                message,
+                error_code,
+                throttle_seconds,
+                str(response.real_url),
+                body,
+                response.headers,
+                error_status,
+                message_data,
+            )
 
         # Anything contains not found.
         elif msg and "NotFound" in msg or "UserCannotFindRequestedUser" == msg:
-            return error.NotFound(*data)
+            return error.NotFound(
+                message=message,
+                error_code=error_code,
+                throttle_seconds=throttle_seconds,
+                url=str(response.real_url),
+                body=body,
+                headers=response.headers,
+                error_status=error_status,
+                message_data=message_data,
+            )
 
-        # Membership need to be alone.
-        elif msg == "DestinyInvalidMembershipType":
-            return error.MembershipTypeError(*data)  # type: ignore
-
-        # Any other messages.
+        # Any other errors.
         else:
             return error.InternalServerError(
-                message=str(msg),
-                long_message=from_json.get("Message", ""),
+                message=message,
+                error_code=error_code,
+                throttle_seconds=throttle_seconds,
                 url=str(response.real_url),
+                body=body,
+                headers=response.headers,
+                error_status=error_status,
+                message_data=message_data,
+                http_status=status,
             )
-    # Not 5xx.
+    # Something else.
     else:
-        return error.HTTPException(*data)  # type: ignore
+        return error.HTTPException(
+            message=message,
+            error_code=error_code,
+            throttle_seconds=throttle_seconds,
+            url=str(response.real_url),
+            body=body,
+            headers=response.headers,
+            error_status=error_status,
+            message_data=message_data,
+            http_status=status,
+        )
 
 
 class _Arc:
@@ -374,13 +467,10 @@ class RESTClient(interfaces.RESTInterface):
                             retries += 1
                             await asyncio.sleep(sleep_time)
                             continue
-
-                        await self._handle_err(
-                            response, data.get("ErrorStatus", undefined.Undefined)
-                        )
-
-            except RuntimeError:
-                continue
+                        await self._handle_err(response, data["ErrorStatus"])
+            # eol
+            except error.HTTPError:
+                raise
 
     if not typing.TYPE_CHECKING:
 
@@ -418,13 +508,15 @@ class RESTClient(interfaces.RESTInterface):
         method: str,
         route: str,
     ) -> None:
+
         if response.status != http.HTTPStatus.TOO_MANY_REQUESTS:
             return
+
         if response.content_type != _APP_JSON:
-            _LOG.error(
-                f"Being ratelmited on non JSON request, {response.content_type}."
+            raise error.HTTPError(
+                f"Being ratelmited on non JSON request, {response.content_type}.",
+                http.HTTPStatus.TOO_MANY_REQUESTS,
             )
-            raise RuntimeError
 
         json = await response.json()
         retry_after: float = json["ThrottleSeconds"]
@@ -441,17 +533,15 @@ class RESTClient(interfaces.RESTInterface):
             await asyncio.sleep(sleep_time)
 
         raise error.RateLimitedError(
-            retry_after=retry_after,
-            headers=response.headers,
+            body=json,
             url=str(response.real_url),
-            json=json,
+            retry_after=retry_after,
         )
 
     @staticmethod
     @typing.final
     async def _handle_err(
-        response: aiohttp.ClientResponse,
-        msg: undefined.UndefinedOr[str] = undefined.Undefined,
+        response: aiohttp.ClientResponse, msg: str
     ) -> typing.NoReturn:
         raise await _handle_errors(response, msg)
 

@@ -51,16 +51,18 @@ class TestHardLinkedUser:
 class TestUserThemes:
     @pytest.fixture()
     def mod(self):
-        return crate.user.UserThemes(id=1122, name="d2_1", description=aiobungie.Undefined)
+        return crate.user.UserThemes(
+            id=1122, name="d2_1", description=aiobungie.Undefined
+        )
 
     @pytest.fixture()
     def list_objs(self):
         return [
-            crate.user.UserThemes(id=1, name=aiobungie.Undefined, description=aiobungie.Undefined),
-            crate.user.UserThemes(id=239, name="theme name", description="D2_11"),
             crate.user.UserThemes(
-                id=22, name="Ok", description=aiobungie.Undefined
+                id=1, name=aiobungie.Undefined, description=aiobungie.Undefined
             ),
+            crate.user.UserThemes(id=239, name="theme name", description="D2_11"),
+            crate.user.UserThemes(id=22, name="Ok", description=aiobungie.Undefined),
         ]
 
     def test_model_meta(self, mod):
@@ -77,6 +79,8 @@ class TestUserLike:
     @pytest.fixture()
     def model(self):
         assert None
+
+
 class TestBungieUser:
     @pytest.fixture()
     def model(self):
@@ -99,8 +103,8 @@ class TestBungieUser:
             theme_id=1234,
             show_activity=True,
             theme_name="some_theme_name",
-            display_title='Newbie',
-            stadia_name=None
+            display_title="Newbie",
+            stadia_name=None,
         )
 
     def test_str_op(self, model):
@@ -113,10 +117,13 @@ class TestBungieUser:
         model.status = None
         assert isinstance(model, crate.user.BungieUser) and model.status is None
 
+
 class TestDestinyUser:
     @pytest.fixture()
     def obj(self):
         ...
+
+
 class TestUser:
     @pytest.fixture()
     def obj(self):

@@ -238,122 +238,152 @@ class AvailableActivity:
         raise NotImplementedError
 
 
+@attr.define(kw_only=True, weakref_slot=False, hash=False)
+class ActivityValues:
+    """Information about values found in an activity.
+
+    fields here include kills, deaths, K/D, assists, completion time, etc.
+    """
+
+    assists: int = attr.field(repr=False)
+    """Activity's assists"""
+
+    is_completed: bool = attr.field()
+    """Whether the activity was completed or no."""
+
+    kills: int = attr.field(repr=False)
+    """Activity's kills."""
+
+    deaths: int = attr.field(repr=False)
+    """Activity's deaths."""
+
+    opponents_defeated: int = attr.field(repr=False)
+    """The amount of opponents killed in this activity."""
+
+    efficiency: float = attr.field(repr=False)
+    """Activity's efficienty."""
+
+    kd_ratio: float = attr.field(repr=False)
+    """Activity's kill/death ratio."""
+
+    kd_assists: float = attr.field(repr=False)
+    """Activity's Kill/Death/Assists."""
+
+    score: int = attr.field(repr=False)
+    """If the activity has a score, This will be available otherwise 0."""
+
+    played_time: str = attr.field()
+    """The total time the player was in this activity."""
+
+    team: int = attr.field(repr=False)
+    """???"""
+
+    completion_reason: str = attr.field(repr=False)
+    """The reason why the activity was completed. usually its Unknown."""
+
+    fireteam_id: int = attr.field(repr=False)
+    """The fireteam id associated with this activity."""
+
+    player_count: int = attr.field()
+    """Activity's player count."""
+
+    start_seconds: int = attr.field(repr=False)
+    """When did the player start the activity in seconds."""
+
+    duration: str = attr.field()
+    """A string of The activity's duration, Example format `7m 42s`"""
+
+    # activity_id: typing.Optional[int] = attr.field(repr=False)
+    # """When a stat represents the best, most, longest, fastest or some other personal best,
+    # the actual activity ID where that personal best was established is available on this property.
+    # """
+
+    team_score: int = attr.field(repr=False)
+    """???"""
+
+
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
 class PostActivity:
     """Represents a Destiny 2 post activity details."""
 
-    period: datetime.datetime = attr.field(repr=True, eq=False, hash=False)
-    """The post activity's period utc date."""
+    occurred_at: datetime.datetime = attr.field(repr=True, eq=False, hash=False)
+    """A datetime object of when was this activity occurred.."""
 
     starting_phase: int = attr.field(repr=False, eq=False, hash=False)
     """The postt activity starting phase index.
     For an example if it was 0 that means it's a fresh run"""
 
-    reference_id: int = attr.field(repr=True, eq=False, hash=False)
-    """The post activity reference id. AKA the activity hash."""
+    hash: int = attr.field(repr=True, eq=False, hash=False)
+    """The post activity reference id/hash."""
 
     mode: typing.Optional[enums.GameMode] = attr.field(repr=True, eq=False, hash=False)
     """The post activity's game mode, Can be `Undefined` if unknown."""
 
-    modes: typing.List[enums.GameMode] = attr.field(repr=False, eq=False, hash=False)
+    modes: list[enums.GameMode] = attr.field(repr=False, eq=False, hash=False)
     """A list of the post activity's game mode."""
 
     membership_type: enums.MembershipType = attr.field(repr=True, eq=False, hash=False)
     """The post activity's membership type."""
 
-    players: typing.Sequence[typing.Dict[str, typing.Any]] = attr.field(repr=False)
-
-    # def get_players(self) -> typing.Sequence[player.Player]:
-    #     """Returns a sequence of the players that were in this activity.
-
-    #     Returns
-    #     -------
-    #     `typing.Sequence[aiobungie.crate.Player]`
-    #         the players that were in this activity.
-    #     """
-
-    #     players_entries: typing.List[player.Player] = [
-    #         isplayer["player"]["destinyUserInfo"] for isplayer in self.players
-    #     ]
-
-    #     for raw_player in players_entries:
-    #         players_entries.append(raw_player)
-
-    #     return players_entries
+    players: collections.Sequence[str] = attr.field(repr=False)
 
     @property
-    def is_fresh(self) -> bool:
-        """Determines if the activity was fresh or no."""
-        return self.starting_phase == 0
+    def refrence_id(self) -> int:
+        """An alias to the activity's hash"""
+        return self.hash
 
     def __int__(self) -> int:
-        return self.reference_id
+        return self.hash
 
 
-@attr.define(hash=False, kw_only=True, weakref_slot=False)
+@attr.define(kw_only=True, weakref_slot=False)
 class Activity:
     """Represents a Bungie Activity."""
 
     net: traits.Netrunner = attr.field(repr=False)
     """A network state used for making external requests."""
 
-    is_completed: str = attr.field(repr=False, hash=False, eq=False)
-    """Check if the activity was completed or no."""
+    hash: int = attr.field(hash=True)
+    """The activity's reference id or hash."""
 
-    hash: int = attr.field(hash=True, repr=True, eq=False)
-    """The activity's hash."""
-
-    instance_id: int = attr.field(repr=True)
-    """The activity's instance id."""
-
-    mode: enums.GameMode = attr.field(hash=False, repr=True)
-    """The activity mode or type."""
-
-    kills: int = attr.field(repr=False, eq=False, hash=False)
-    """Activity's kills."""
-
-    deaths: int = attr.field(repr=False, eq=False, hash=False)
-    """Activity's deaths."""
-
-    period: datetime.datetime = attr.field(repr=True, eq=False, hash=False)
-    """When did the activity occurred in UTC datetime."""
-
-    assists: int = attr.field(repr=False, eq=False, hash=False)
-    """Activity's assists"""
-
-    duration: str = attr.field(repr=True, eq=False, hash=False)
-    """A string of The activity's duration, Example format `7m 42s`"""
-
-    player_count: int = attr.field(repr=False, eq=False, hash=False)
-    """Activity's player count."""
-
-    member_type: enums.MembershipType = attr.field(repr=False, eq=False, hash=False)
+    membership_type: enums.MembershipType = attr.field(repr=False, hash=False)
     """The activity player's membership type."""
 
-    kd: float = attr.field(repr=True, eq=False, hash=False)
-    """Activity's kill/death ratio."""
+    instance_id: int = attr.field(repr=True, hash=True)
+    """The activity's instance id."""
 
-    modes: typing.List[enums.GameMode] = attr.field(repr=False, eq=False, hash=False)
-    """A list of the post activity's game mode."""
+    mode: enums.GameMode = attr.field(hash=False)
+    """The activity mode or type."""
 
-    opponents_defeated: int = attr.field(repr=False)
-    """Activity's opponents kills."""
+    modes: list[enums.GameMode] = attr.field(eq=False, hash=False, repr=False)
+    """A list of the activity's gamemodes."""
 
-    efficiency: float = attr.field(repr=False)
-    """Activity's efficienty."""
+    is_private: bool = attr.field(repr=False)
+    """Whether this activity is private or not."""
 
-    score: int = attr.field(repr=False)
-    """Activity's score."""
+    occurred_at: datetime.datetime = attr.field(eq=False, hash=False)
+    """A datetime of when did this activity occurred."""
 
-    completion_reason: str = attr.field(repr=False)
-    """The reason why the activity was completed. usually its Unknown."""
+    values: ActivityValues = attr.field(repr=False, eq=False, hash=False)
+    """Information occurred in this activity."""
 
-    async def post_report(self) -> PostActivity:
+    @property
+    def is_flawless(self) -> bool:
+        """Whether this activity was a flawless run or not."""
+        return self.values.deaths == 0 and self.values.is_completed is True
+
+    @property
+    def refrence_id(self) -> int:
+        """An alias to the activity's hash"""
+        return self.hash
+
+    async def fetch_post(self) -> PostActivity:
         """Get activity's data after its finished.
 
         Returns
         -------
-        `.PostActivity`
+        `PostActivity`
+            A post activity object.
         """
         return await self.net.request.fetch_post_activity(self.instance_id)
 

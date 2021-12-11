@@ -28,9 +28,11 @@ import aiobungie
 from aiobungie import crate
 from aiobungie.internal import assets
 
+
 @pytest.fixture()
 def mock_client():
     return mock.Mock(spec_set=aiobungie.Client)
+
 
 class TestAppOwner:
     @staticmethod
@@ -55,6 +57,7 @@ class TestAppOwner:
         assert isinstance(obj.id, int) and obj.id == 411098
         assert obj.is_public is True
         assert obj.icon is not None and isinstance(obj.icon, assets.Image)
+
 
 class TestApplication:
     @pytest.fixture()

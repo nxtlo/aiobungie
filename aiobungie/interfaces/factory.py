@@ -772,7 +772,7 @@ class FactoryInterface(abc.ABC):
     def deserialize_activity(
         self, payload: typedefs.JsonObject, /
     ) -> activity.Activity:
-        """Deserialize a JSON payload of an occurred activity information.
+        """Deserialize a JSON payload of an activity history information.
 
         Parameters
         ----------
@@ -784,6 +784,29 @@ class FactoryInterface(abc.ABC):
         `aiobungie.crate.Activity`
             An activity object of the deserialized payload.
         """
+
+    @abc.abstractmethod
+    def deserialize_activities(
+        self, payload: typedefs.JsonObject, /
+    ) -> collections.Sequence[activity.Activity]:
+        """Deserialize a JSON payload of an array of activity history information.
+
+        Parameters
+        ----------
+        payload : `aiobungie.typedefs.JsonObject`
+            The JSON payload.
+
+        Returns
+        -------
+        `collections.Sequence[aiobungie.crate.Activity]`
+            A sequence of activity objects of the deserialized payload.
+        """
+
+    @abc.abstractmethod
+    def deserialize_post_activity(
+        self, payload: typedefs.JsonObject
+    ) -> activity.PostActivity:
+        """Deserialize a JSON payload of a post activity information."""
 
     @abc.abstractmethod
     def deserialize_available_activity(

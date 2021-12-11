@@ -660,7 +660,7 @@ class RESTClient(interfaces.RESTInterface):
             auth=options.get("auth"),
         )
 
-    def fetch_activity(
+    def fetch_activities(
         self,
         member_id: int,
         character_id: int,

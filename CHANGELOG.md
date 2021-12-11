@@ -8,9 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - `BadRequest` exception.
+- `Character.transfer_item` and `Character.pull_item` now takes missing `vault` option.
+- `Character.fetch_activities` method.
 
 ### Changed
 - Exceptions now has fields and improved.
+- `fetch_activity` function name changed to `fetch_activities`
+- `fetch_activities` now returns a sequence(`collections.Sequence[Activity]`) of activities instead of a singular activity object.
 
 ## [0.2.5b12](https://github.com/nxtlo/aiobungie/compare/0.2.5b11...0.2.5b12) 2021-10-21
 

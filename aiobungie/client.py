@@ -41,6 +41,7 @@ from aiobungie.internal import helpers
 
 if typing.TYPE_CHECKING:
     import asyncio
+    import collections.abc as collections
 
     from aiobungie import interfaces
     from aiobungie import typedefs
@@ -471,47 +472,47 @@ class Client(traits.ClientBase):
 
     # * Destiny 2 Activities.
 
-    async def fetch_activity(
+    async def fetch_activities(
         self,
         member_id: int,
         character_id: int,
         mode: typedefs.IntAnd[enums.GameMode],
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: typedefs.IntAnd[
+            enums.MembershipType
+        ] = enums.MembershipType.ALL,
         *,
-        page: int = 1,
-        limit: int = 1,
-    ) -> activity.Activity:
-        """Fetch a Destiny 2 activity for the specified user id and character.
+        page: int = 0,
+        limit: int = 250,
+    ) -> collections.Sequence[activity.Activity]:
+        """Fetch a Destiny 2 activity for the specified character id.
 
         Parameters
         ----------
         member_id: `builtins.int`
             The user id that starts with `4611`.
         character_id: `builtins.int`
-            The id of the character to retrieve.
-        mode: `aiobungie.internal.enums.GameMode`
+            The id of the character to retrieve the activities for.
+        mode: `aiobungie.typedefs.IntAnd[aiobungie.internal.enums.GameMode]`
             This parameter filters the game mode, Nightfall, Strike, Iron Banner, etc.
+
+        Other Parameters
+        ----------------
         membership_type: `aiobungie.internal.enums.MembershipType`
             The Member ship type, if nothing was passed than it will return all.
         page: builtins.int
-            The page number. Default is `1`
+            The page number. Default is `0`
         limit: builtins.int
-            Limit the returned result. Default is `1`
+            Limit the returned result. Default is `250`.
 
         Returns
         -------
-        `aiobungie.crate.Activity`
-            A Bungie activity.
-
-        Raises
-        ------
-        `aiobungie.error.ActivityNotFound`
-            The activity was not found.
+        `collections.Sequence[aiobungie.crate.Activity]`
+            A sequence of the player's activities.
 
         `aiobungie.MembershipTypeError`
             The provided membership type was invalid.
         """
-        resp = await self.rest.fetch_activity(
+        resp = await self.rest.fetch_activities(
             member_id,
             character_id,
             mode,
@@ -520,7 +521,7 @@ class Client(traits.ClientBase):
             limit=limit,
         )
         assert isinstance(resp, dict)
-        return self.factory.deserialize_activity(resp)
+        return self.factory.deserialize_activities(resp)
 
     async def fetch_post_activity(self, instance: int, /) -> activity.PostActivity:
         """Fetch a post activity details.

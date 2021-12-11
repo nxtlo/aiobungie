@@ -70,9 +70,11 @@ class TestClanFeatures:
         )
         assert obj.capabilities == 3
 
+
 @fixture()
 def mock_bungie_user() -> crate.user.PartialBungieUser:
     return mock.Mock(spec_set=crate.user.PartialBungieUser)
+
 
 class TestClanMember:
     @fixture()
@@ -91,7 +93,7 @@ class TestClanMember:
             code=5432,
             types=[aiobungie.MembershipType.STEAM, aiobungie.MembershipType.STADIA],
             last_seen_name="YOYONAME",
-            bungie=mock_bungie_user
+            bungie=mock_bungie_user,
         )
 
     def test_clan_member_link(self, obj):
@@ -140,7 +142,7 @@ class TestClanOwner:
             types=self.types,
             code=5432,
             last_seen_name="Some name",
-            bungie=mock_bungie_user
+            bungie=mock_bungie_user,
         )
 
     def test_clan_owner_is_userlike(self, obj):

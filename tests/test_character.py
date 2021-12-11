@@ -29,8 +29,8 @@ import pytest
 
 import aiobungie
 from aiobungie import crate
-from aiobungie.internal import assets
 from aiobungie import url
+from aiobungie.internal import assets
 
 
 @pytest.fixture()

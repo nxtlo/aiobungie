@@ -47,6 +47,8 @@ if typing.TYPE_CHECKING:
     import datetime
 
     from aiobungie import traits
+    from aiobungie import typedefs
+    from aiobungie.crate import activity
     from aiobungie.crate import entity
     from aiobungie.crate import milestones as milestones_
     from aiobungie.crate import progressions as progressions_
@@ -238,6 +240,39 @@ class Character:
     stats: typing.Mapping[enums.Stat, int] = attr.field(repr=False, hash=False)
     """A mapping of the character stats and its level."""
 
+    async def fetch_activities(
+        self,
+        mode: typedefs.IntAnd[enums.GameMode],
+        *,
+        page: int = 0,
+        limit: int = 250,
+    ) -> collections.Sequence[activity.Activity]:
+        """Fetch Destiny 2 activities this character.
+
+        Parameters
+        ----------
+        mode: `aiobungie.typedefs.IntAnd[aiobungie.internal.enums.GameMode]`
+            This parameter filters the game mode, Nightfall, Strike, Iron Banner, etc.
+
+        Other Parameters
+        ----------------
+        page: builtins.int
+            The page number. Default is `0`
+        limit: builtins.int
+            Limit the returned result. Default is `250`.
+
+        Returns
+        -------
+        `collections.Sequence[aiobungie.crate.Activity]`
+            A sequence of the character's activities.
+
+        `aiobungie.MembershipTypeError`
+            The provided membership type was invalid.
+        """
+        return await self.net.request.fetch_activities(
+            self.member_id, self.id, mode, self.member_type, page=page, limit=limit
+        )
+
     async def transfer_item(
         self,
         access_token: str,
@@ -245,6 +280,7 @@ class Character:
         item_id: int,
         item_hash: int,
         *,
+        vault: bool = False,
         stack_size: int = 1,
     ) -> None:
         """Transfer an item from / to your vault.
@@ -265,6 +301,8 @@ class Character:
         ----------------
         stack_size : `int`
             The item stack size.
+        valut : `bool`
+            Whether to pill this item to your valut or not. Defaults to `False`.
         """
         await self.net.request.rest.transfer_item(
             access_token,
@@ -272,6 +310,7 @@ class Character:
             character_id=self.id,
             item_hash=item_hash,
             member_type=self.member_type,
+            vault=vault,
             stack_size=stack_size,
         )
 
@@ -282,6 +321,7 @@ class Character:
         item_id: int,
         item_hash: int,
         *,
+        vault: bool = False,
         stack_size: int = 1,
     ) -> None:
         """Pull an item from the postmaster to this character.
@@ -302,6 +342,8 @@ class Character:
         ----------------
         stack_size : `int`
             The item stack size.
+        valut : `bool`
+            Whether to pill this item to your valut or not. Defaults to `False`.
         """
         await self.net.request.rest.pull_item(
             access_token,
@@ -309,6 +351,7 @@ class Character:
             character_id=self.id,
             item_hash=item_hash,
             member_type=self.member_type,
+            vault=vault,
             stack_size=stack_size,
         )
 

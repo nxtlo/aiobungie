@@ -1474,56 +1474,64 @@ class Factory(interfaces.FactoryInterface):
             progress_value_style=entity.ValueUIStyle(payload["inProgressValueStyle"]),
         )
 
-    # TODO: Re-implement this.
+    def _deserialize_activity_values(
+        self, payload: typedefs.JsonObject, /
+    ) -> activity.ActivityValues:
+        return activity.ActivityValues(
+            assists=payload["assists"]["basic"]["value"],
+            deaths=payload["deaths"]["basic"]["value"],
+            kills=payload["kills"]["basic"]["value"],
+            is_completed=bool(payload["completed"]["basic"]["value"]),
+            opponents_defeated=payload["opponentsDefeated"]["basic"]["value"],
+            efficiency=payload["efficiency"]["basic"]["value"],
+            kd_ratio=payload["killsDeathsRatio"]["basic"]["value"],
+            kd_assists=payload["killsDeathsAssists"]["basic"]["value"],
+            score=payload["score"]["basic"]["value"],
+            duration=payload["activityDurationSeconds"]["basic"]["displayValue"],
+            team=payload["team"]["basic"]["value"],
+            completion_reason=payload["completionReason"]["basic"]["displayValue"],
+            fireteam_id=payload["fireteamId"]["basic"]["value"],
+            start_seconds=payload["startSeconds"]["basic"]["value"],
+            played_time=payload["timePlayedSeconds"]["basic"]["displayValue"],
+            player_count=payload["playerCount"]["basic"]["value"],
+            team_score=payload["teamScore"]["basic"]["value"],
+        )
+
     def deserialize_activity(
-        self, payload: typedefs.JsonObject, /, *, limit: typing.Optional[int] = 1
+        self, payload: typedefs.JsonObject, /
     ) -> activity.Activity:
-
-        if (activs := payload.get("activities")) is not None:
-            activs = dict(*activs)
-            period: datetime.datetime = time.clean_date(str(activs["period"]))
-
-            if (details := activs.get("activityDetails")) is not None:
-                id: int = details["referenceId"]
-                instance_id: int = int(details["instanceId"])
-
-                if game_mode := details.get("mode"):
-                    mode: enums.GameMode = enums.GameMode(game_mode)
-
-                if game_modes := details.get("modes"):
-                    appended_modes: typing.List[enums.GameMode] = []
-                    for _mode in game_modes:
-                        appended_modes.append(enums.GameMode(_mode))
-
-                member_type: enums.MembershipType = enums.MembershipType(
-                    details["membershipType"]
-                )
-                if (inner := activs.get("values")) is not None:
-                    values = dict(inner.items()).values()
-                    data = [
-                        basic_data["basic"]["displayValue"] for basic_data in values
-                    ]
-
+        period = time.clean_date(payload["period"])
+        details = payload["activityDetails"]
+        ref_id = int(details["referenceId"])
+        instance_id = int(details["instanceId"])
+        mode = enums.GameMode(details["mode"])
+        modes = [enums.GameMode(int(mode_)) for mode_ in details["modes"]]
+        is_private = details["isPrivate"]
+        membership_type = enums.MembershipType(int(details["membershipType"]))
+        values = self._deserialize_activity_values(payload["values"])
         return activity.Activity(
             net=self._net,
-            period=period,
-            hash=id,
-            instance_id=int(instance_id),
+            hash=ref_id,
+            instance_id=instance_id,
             mode=mode,
-            modes=appended_modes,
-            member_type=member_type,
-            assists=int(data[0]),
-            is_completed=data[1],
-            deaths=int(data[2]),
-            kills=int(data[3]),
-            opponents_defeated=int(data[4]),
-            efficiency=float(data[5]),
-            kd=float(data[6]),
-            score=int(data[8]),
-            duration=data[9],
-            completion_reason=data[11],
-            player_count=int(data[15]),
+            modes=modes,
+            is_private=is_private,
+            membership_type=membership_type,
+            occurred_at=period,
+            values=values,
         )
+
+    def deserialize_activities(
+        self, payload: typedefs.JsonObject
+    ) -> collections.Sequence[activity.Activity]:
+        return [
+            self.deserialize_activity(activity_) for activity_ in payload["activities"]
+        ]
+
+    def deserialize_post_activity(
+        self, payload: typedefs.JsonObject
+    ) -> activity.PostActivity:
+        ...
 
     def deserialize_linked_profiles(
         self, payload: typedefs.JsonObject

@@ -293,7 +293,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def fetch_activity(
+    def fetch_activities(
         self,
         member_id: int,
         character_id: int,
@@ -315,11 +315,11 @@ class RESTInterface(traits.RESTful, abc.ABC):
             The id of the character to retrieve.
         mode: `aiobungie.typedefs.IntAnd[aiobungie.GameMode]`
             This parameter filters the game mode, Nightfall, Strike, Iron Banner, etc.
-        membership_type: `aiobungie.typedefs.IntAnd[aiobungie.internal.enums.MembershipType]`
-            The Member ship type, if nothing was passed than it will return all.
 
         Other Parameters
         ----------------
+        membership_type: `aiobungie.typedefs.IntAnd[aiobungie.internal.enums.MembershipType]`
+            The Member ship type, if nothing was passed than it will return all.
         page: `builtins.int`
             The page number. Default to `1`
         limit: `builtins.int`

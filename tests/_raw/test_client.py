@@ -21,17 +21,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import aiobungie
+import asyncio
+import inspect
+import logging
 import os
 import sys
 import typing
-import inspect
-import logging
-import asyncio
+
+import aiobungie
 
 if typing.TYPE_CHECKING:
     import types
-    
+
 # NOTE: If you're on unix based system make sure to run this
 # in your terminal. export CLIENT_TOKEN='TOKEN'
 
@@ -40,8 +41,9 @@ MID = 4611686018484639825
 _LOG = logging.getLogger("test_client")
 logging.basicConfig(level=logging.DEBUG)
 
+
 def build_client() -> aiobungie.Client:
-    token = os.environ['CLIENT_TOKEN']
+    token = os.environ["CLIENT_TOKEN"]
     rest = aiobungie.RESTClient(token, max_retries=2)
     client = aiobungie.Client(token, rest_client=rest)
     return client
@@ -49,89 +51,94 @@ def build_client() -> aiobungie.Client:
 
 client = build_client()
 
-async def test_users() -> aiobungie.crate.user.BungieUser:
+
+async def test_users():
     u = await client.fetch_user(20315338)
-    return u
+    _LOG.debug(u)
 
-async def test_user_themese() -> typing.Sequence[aiobungie.crate.user.UserThemes]:
+
+async def test_user_themese():
     ut = await client.fetch_user_themes()
-    return ut
+    _LOG.debug(ut)
 
-async def test_hard_types() -> aiobungie.crate.user.HardLinkedMembership:
+
+async def test_hard_types():
     uht = await client.fetch_hard_types(76561198141430157)
-    return uht
+    _LOG.debug(uht)
 
 
-async def test_clan_from_id() -> aiobungie.crate.Clan:
+async def test_clan_from_id():
     c = await client.fetch_clan_from_id(4389205)
     members = await c.fetch_members()
     member = await c.fetch_member("Fate")
-    print(members.__repr__(), member.__repr__())
-    print(c.owner.__repr__())
-    return c
+    _LOG.debug("%s, %s", members.__repr__(), member.__repr__())
+    _LOG.debug("%s", c.owner.__repr__())
 
-async def test_clan() -> aiobungie.crate.Clan:
+
+async def test_clan():
     c = await client.fetch_clan("Nuanceㅤ ")
     members = await c.fetch_members()
     member = await c.fetch_member("Hizxr")
-    print(members.__repr__(), member.__repr__())
-    print(c.owner.__repr__())
-    return c
+    _LOG.debug("%s, %s", members.__repr__(), member.__repr__())
+    _LOG.debug("%s", c.owner.__repr__())
 
-async def test_fetch_clan_member() -> aiobungie.crate.ClanMember:
+
+async def test_fetch_clan_member():
     m = await client.fetch_clan_member(4389205, "Fate")
-    return m
+    _LOG.debug(m)
 
 
-async def test_fetch_clan_members() -> typing.Sequence[aiobungie.crate.ClanMember]:
+async def test_fetch_clan_members():
     ms = await client.fetch_clan_members(4389205)
     for member in ms:
-        if member.bungie.name == "Cosmic":
+        if member.bungie.name == "Fate":
             fetched_user = await member.bungie.fetch_self()
             _LOG.debug(fetched_user)
-    return ms
 
-async def test_fetch_inventory_item() -> aiobungie.crate.InventoryEntity:
+
+async def test_fetch_inventory_item():
     i = await client.fetch_inventory_item(1216319404)
     _LOG.debug(repr(i))
-    return i
 
-async def test_fetch_app() -> aiobungie.crate.Application:
+
+async def test_fetch_app():
     a = await client.fetch_app(33226)
     fetched_user = await a.owner.fetch_self()
     _LOG.debug(fetched_user)
-    return a
 
-async def test_player() -> typing.Sequence[typing.Optional[aiobungie.crate.DestinyUser]]:
+
+async def test_player():
     p = await client.fetch_player("Fate怒", 4275)
     profile = await p[0].fetch_self_profile(aiobungie.ComponentType.PROFILE)
     _LOG.debug(profile)
     components = aiobungie.ComponentType.ALL_CHARACTERS
     if profile.profiles:
-        for char in await profile.profiles.collect_characters(
-            *components.value
-        ):
+        for char in await profile.profiles.collect_characters(*components.value):
             _LOG.debug(f"{char}")
-    return p
 
-async def test_char() -> aiobungie.crate.CharacterComponent:
+
+async def test_char():
     c = await client.fetch_character(
         MID,
         aiobungie.MembershipType.STEAM,
         CID,
-        *aiobungie.ComponentType.ALL_CHARACTERS.value
+        *aiobungie.ComponentType.ALL_CHARACTERS.value,
     )
+    if char := c.character:
+        acts = await char.fetch_activities(aiobungie.GameMode.NIGHTFALL, limit=10)
+        for act in acts:
+            _LOG.debug(act)
     _LOG.debug(c)
-    return c
 
-async def test_profile() -> None:
+
+async def test_profile():
     pf = await client.fetch_profile(
         MID,
         aiobungie.MembershipType.STEAM,
-        *aiobungie.ComponentType.ALL.value  # type: ignore
+        *aiobungie.ComponentType.ALL.value,  # type: ignore
     )
 
-    if (profile := pf.profiles):
+    if profile := pf.profiles:
         _LOG.debug(profile)
         try:
             for pfile_char in await profile.collect_characters(
@@ -141,13 +148,13 @@ async def test_profile() -> None:
         except RuntimeError:
             pass
 
-    if (profile_progression := pf.profile_progression):
+    if profile_progression := pf.profile_progression:
         _LOG.debug(profile_progression)
         _LOG.debug(profile_progression.checklist)
 
-    if (characters := pf.characters):
+    if characters := pf.characters:
         for _, character in characters.items():
-            _LOG.debug(f'{character.class_type}, {character.emblem}, {character.light}')
+            _LOG.debug(f"{character.class_type}, {character.emblem}, {character.light}")
             if profile and character.id in profile.character_ids:
                 _LOG.debug(True)
 
@@ -165,9 +172,7 @@ async def test_profile() -> None:
             if record.objectives:
                 fetched_char_obj = await record.objectives[0].fetch_self()
                 _LOG.info(repr(fetched_char_obj))
-            _LOG.info(
-                f'{char_id}::{record}'
-            )
+            _LOG.info(f"{char_id}::{record}")
             break
 
     if char_equips := pf.character_equipments:
@@ -177,11 +182,11 @@ async def test_profile() -> None:
 
     if char_acts := pf.character_activities:
         for char_id, act in char_acts.items():
-            _LOG.info(f'{char_id, act.available_activities}')
+            _LOG.info(f"{char_id, act.available_activities}")
 
     if char_render_data := pf.character_render_data:
         for char_id_, data in char_render_data.items():
-            _LOG.info(f'{char_id_} | {repr(data)}')
+            _LOG.info(f"{char_id_} | {repr(data)}")
             items = await data.fetch_my_items(limit=2)
             for item in items:
                 _LOG.info(repr(item))
@@ -190,44 +195,45 @@ async def test_profile() -> None:
         for cid, prog in char_progrs.items():
             _LOG.debug(f"{cid} | {prog}")
 
-    if (strs := pf.profile_string_variables) and (chr_strs := pf.character_string_variables):
-        _LOG.debug(f'{strs} | {chr_strs}')
-    
+    if (strs := pf.profile_string_variables) and (
+        chr_strs := pf.character_string_variables
+    ):
+        _LOG.debug(f"{strs} | {chr_strs}")
+
     if metrics := pf.metrics:
         _LOG.debug(metrics)
 
-async def test_membership_types_from_id() -> aiobungie.crate.User:
+
+async def test_membership_types_from_id():
     u = await client.fetch_membership_from_id(MID)
-    return u
+    _LOG.debug(u)
 
 
-async def test_search_users() -> typing.Any:
+async def test_search_users():
     x = await client.search_users("Fate怒")
-    return x
+    _LOG.debug(x)
 
 
-async def test_clan_conves() -> typing.Sequence[aiobungie.crate.clans.ClanConversation]:
-    return await client.fetch_clan_conversations(881267)
+async def test_clan_conves():
+    x = await client.fetch_clan_conversations(881267)
+    _LOG.debug(x)
 
 
-async def test_clan_admins() -> typing.Sequence[aiobungie.crate.clans.ClanAdmin]:
-    return await client.fetch_clan_admins(4389205)
+async def test_clan_admins():
+    ca = await client.fetch_clan_admins(4389205)
+    _LOG.debug(ca)
 
 
-async def test_groups_for_member() -> typing.Optional[
-    aiobungie.crate.clans.GroupMember
-]:
+async def test_groups_for_member():
     obj = await client.fetch_groups_for_member(MID, aiobungie.MembershipType.STEAM)
     if obj is None:
         return None
     up_to_date_clan_obj = await obj.fetch_self_clan()
     _LOG.debug(up_to_date_clan_obj)
-    return obj
+    _LOG.debug(obj)
 
 
-async def test_potential_groups_for_member() -> typing.Optional[
-    aiobungie.crate.GroupMember
-]:
+async def test_potential_groups_for_member():
     obj = await client.fetch_potential_groups_for_member(
         MID, aiobungie.MembershipType.STEAM
     )
@@ -235,18 +241,20 @@ async def test_potential_groups_for_member() -> typing.Optional[
         return None
     up_to_date_clan_obj = await obj.fetch_self_clan()
     _LOG.debug(up_to_date_clan_obj)
-    return obj
+    _LOG.debug(obj)
 
 
-async def test_linked_profiles() -> None:
+async def test_linked_profiles():
     obj = await client.fetch_linked_profiles(
-        4611686018468008855, aiobungie.MembershipType.ALL, all=True
+        MID, aiobungie.MembershipType.ALL, all=True
     )
     print(obj.profiles_with_errors.__repr__(), obj.bungie.__repr__())
     try:
         async for profile in obj:
             print(profile.__repr__())
-            transform_profile = await profile.fetch_self_profile(aiobungie.ComponentType.PROFILE)
+            transform_profile = await profile.fetch_self_profile(
+                aiobungie.ComponentType.PROFILE
+            )
             print(transform_profile.__repr__())
     # This originally should be StopIteration exception
     # But client.run throws RuntimeError
@@ -255,22 +263,23 @@ async def test_linked_profiles() -> None:
         pass
 
 
-async def test_clan_banners() -> typing.Sequence[aiobungie.crate.ClanBanner]:
+async def test_clan_banners():
     cb = await client.fetch_clan_banners()
-    return cb
+    _LOG.debug(cb)
 
 
-async def test_public_milestones_content() -> aiobungie.crate.MilestoneContent:
+async def test_public_milestones_content():
     cb = await client.fetch_public_milestone_content(4253138191)
-    return cb
+    _LOG.debug(cb)
 
 
-async def test_static_request() -> None:
+async def test_static_request():
     r = await client.rest.static_request(
         "GET",
         f"Destiny2/3/Profile/{MID}/?components={aiobungie.ComponentType.CHARACTER_EQUIPMENT.value}",
     )
     assert r is not None and isinstance(r, dict)
+
 
 async def test_fetch_fireteam():
     f = await client.fetch_fireteams(aiobungie.FireteamActivity.ALL)
@@ -288,6 +297,23 @@ async def test_fetch_fireteam():
     if f2:
         _LOG.debug(f2[0].url)
 
+
+async def test_fetch_activities():
+    a = await client.fetch_activities(MID, CID, aiobungie.GameMode.RAID, limit=50)
+    for act in a:
+        _LOG.debug(act)
+        if act.is_flawless:
+            _LOG.debug(
+                "%s, %s, %i, %s",
+                act.values.played_time,
+                act.occurred_at,
+                act.instance_id,
+                act.mode,
+            )
+        if act.hash == aiobungie.Raid.DSC.value:
+            _LOG.debug("%i", act.values.player_count)
+
+
 async def main() -> None:
     coro: types.FunctionType
     coros: typing.MutableSequence[asyncio.Future[types.FunctionType]] = []
@@ -297,11 +323,13 @@ async def main() -> None:
         if n == "main" or not n.startswith("test_"):
             continue
         coros.append(coro())
-    _LOG.debug(await asyncio.gather(*coros))
+    await asyncio.gather(*coros)
     _LOG.info(
         "Ran %i functions out of %i excluding main.",
-        len(coros), len(inspect.getmembers(sys.modules[__name__], inspect.iscoroutinefunction))
+        len(coros),
+        len(inspect.getmembers(sys.modules[__name__], inspect.iscoroutinefunction)),
     )
+
 
 if __name__ == "__main__":
     client.run(main())

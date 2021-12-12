@@ -324,8 +324,8 @@ async def test_static_request():
 
 async def test_fetch_fireteam():
     f = await client.fetch_fireteams(aiobungie.FireteamActivity.ALL)
-    assert f
-    assert isinstance(f[0].url, str)
+    if f:
+        assert isinstance(f[0].url, str)
 
     f2 = await client.fetch_fireteams(
         aiobungie.FireteamActivity.ALL or 4,
@@ -333,9 +333,9 @@ async def test_fetch_fireteam():
         language=aiobungie.FireteamLanguage.ENGLISH,
         date_range=1,
     )
-    assert f2
-    for ft in f2:
-        assert isinstance(ft, aiobungie.crate.Fireteam)
+    if f2:
+        for ft in f2:
+            assert isinstance(ft, aiobungie.crate.Fireteam)
 
 
 async def test_fetch_activities():
@@ -345,6 +345,28 @@ async def test_fetch_activities():
         assert isinstance(act, aiobungie.crate.Activity)
         if act.hash == aiobungie.Raid.DSC.value:
             assert aiobungie.GameMode.RAID in act.modes
+    post = await a[0].fetch_post()
+    assert isinstance(post, aiobungie.crate.PostActivity)
+
+
+async def test_post_activity():
+    a = await client.fetch_post_activity(9538108571)
+    assert a.mode is aiobungie.GameMode.RAID
+    assert a.hash == aiobungie.Raid.DSC.value
+    assert not a.is_flawless
+    assert not a.is_solo
+    assert not a.is_solo_flawless
+    for player in a.players:
+        assert isinstance(player, aiobungie.crate.activity.PostActivityPlayer)
+
+
+async def test_activity_flawless():
+    a = await client.fetch_post_activity(9710513682)
+    assert a.is_flawless
+    assert a.is_solo
+    assert a.is_solo_flawless
+    a2 = await client.fetch_post_activity(9711329560)
+    assert a2.is_solo and not a2.is_flawless
 
 
 async def main() -> None:

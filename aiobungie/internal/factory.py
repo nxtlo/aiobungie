@@ -1477,6 +1477,9 @@ class Factory(interfaces.FactoryInterface):
     def _deserialize_activity_values(
         self, payload: typedefs.JsonObject, /
     ) -> activity.ActivityValues:
+        team: typing.Optional[int] = None
+        if raw_team := payload.get("team"):
+            team = raw_team["basic"]["value"]
         return activity.ActivityValues(
             assists=payload["assists"]["basic"]["value"],
             deaths=payload["deaths"]["basic"]["value"],
@@ -1488,7 +1491,7 @@ class Factory(interfaces.FactoryInterface):
             kd_assists=payload["killsDeathsAssists"]["basic"]["value"],
             score=payload["score"]["basic"]["value"],
             duration=payload["activityDurationSeconds"]["basic"]["displayValue"],
-            team=payload["team"]["basic"]["value"],
+            team=team,
             completion_reason=payload["completionReason"]["basic"]["displayValue"],
             fireteam_id=payload["fireteamId"]["basic"]["value"],
             start_seconds=payload["startSeconds"]["basic"]["value"],
@@ -1498,7 +1501,9 @@ class Factory(interfaces.FactoryInterface):
         )
 
     def deserialize_activity(
-        self, payload: typedefs.JsonObject, /
+        self,
+        payload: typedefs.JsonObject,
+        /,
     ) -> activity.Activity:
         period = time.clean_date(payload["period"])
         details = payload["activityDetails"]
@@ -1508,7 +1513,11 @@ class Factory(interfaces.FactoryInterface):
         modes = [enums.GameMode(int(mode_)) for mode_ in details["modes"]]
         is_private = details["isPrivate"]
         membership_type = enums.MembershipType(int(details["membershipType"]))
+
+        # Since we're using the same fields for post activity method
+        # this check is required since post activity doesn't values values
         values = self._deserialize_activity_values(payload["values"])
+
         return activity.Activity(
             net=self._net,
             hash=ref_id,
@@ -1528,10 +1537,68 @@ class Factory(interfaces.FactoryInterface):
             self.deserialize_activity(activity_) for activity_ in payload["activities"]
         ]
 
+    # TODO: Impl this later.
+    @typing.no_type_check
+    def _deserialize_extended_values(self, payload: typedefs.JsonObject):
+        ...
+
+    def _deserialize_post_activity_player(
+        self, payload: typedefs.JsonObject
+    ) -> activity.PostActivityPlayer:
+        return activity.PostActivityPlayer(
+            standing=int(payload["standing"]),
+            score=int(payload["score"]["basic"]["value"]),
+            character_id=payload["characterId"],
+            destiny_user=self.deserialize_destiny_user(payload["player"]),
+            character_class=payload["player"]["characterClass"],
+            character_level=int(payload["player"]["characterLevel"]),
+            race_hash=int(payload["player"]["raceHash"]),
+            gender_hash=int(payload["player"]["genderHash"]),
+            light_level=int(payload["player"]["lightLevel"]),
+            emblem_hash=int(payload["player"]["emblemHash"]),
+            class_hash=payload["player"]["classHash"],
+            values=self._deserialize_activity_values(payload["values"]),
+        )
+
+    def _deserialize_post_activity_team(
+        self, payload: typedefs.JsonObject
+    ) -> activity.PostActivityTeam:
+        return activity.PostActivityTeam(
+            id=payload["teamId"],
+            is_defeated=bool(payload["standing"]["basic"]["value"]),
+            score=int(payload["score"]["basic"]["value"]),
+            name=payload["teamName"],
+        )
+
     def deserialize_post_activity(
         self, payload: typedefs.JsonObject
     ) -> activity.PostActivity:
-        ...
+        period = time.clean_date(payload["period"])
+        details = payload["activityDetails"]
+        ref_id = int(details["referenceId"])
+        instance_id = int(details["instanceId"])
+        mode = enums.GameMode(details["mode"])
+        modes = [enums.GameMode(int(mode_)) for mode_ in details["modes"]]
+        is_private = details["isPrivate"]
+        membership_type = enums.MembershipType(int(details["membershipType"]))
+        return activity.PostActivity(
+            net=self._net,
+            hash=ref_id,
+            membership_type=membership_type,
+            instance_id=instance_id,
+            mode=mode,
+            modes=modes,
+            is_private=is_private,
+            occurred_at=period,
+            starting_phase=int(payload["startingPhaseIndex"]),
+            players=[
+                self._deserialize_post_activity_player(player)
+                for player in payload["entries"]
+            ],
+            teams=[
+                self._deserialize_post_activity_team(team) for team in payload["teams"]
+            ],
+        )
 
     def deserialize_linked_profiles(
         self, payload: typedefs.JsonObject

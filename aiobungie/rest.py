@@ -1228,6 +1228,7 @@ class RESTClient(interfaces.RESTInterface):
         public_only: bool = False,
         slots_filter: int = 0,
     ) -> ResponseSig[typedefs.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
             RequestMethod.GET,
             f"Fireteam/Clan/{group_id}/Available/{int(platform)}/{int(activity_type)}/{int(date_range)}/{slots_filter}/{public_only}/{page}",  # noqa: E501
@@ -1238,6 +1239,7 @@ class RESTClient(interfaces.RESTInterface):
     def fetch_clan_fireteam(
         self, access_token: str, fireteam_id: int, group_id: int
     ) -> ResponseSig[typedefs.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
             RequestMethod.GET,
             f"Fireteam/Clan/{group_id}/Summary/{fireteam_id}",
@@ -1256,6 +1258,7 @@ class RESTClient(interfaces.RESTInterface):
         page: int = 0,
     ) -> ResponseSig[typedefs.JsonObject]:
         payload = {"groupFilter": filtered, "langFilter": str(language)}
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
             RequestMethod.GET,
             f"Fireteam/Clan/{group_id}/My/{int(platform)}/{include_closed}/{page}",
@@ -1266,10 +1269,19 @@ class RESTClient(interfaces.RESTInterface):
     def fetch_private_clan_fireteams(
         self, access_token: str, group_id: int, /
     ) -> ResponseSig[int]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
             RequestMethod.GET,
             f"Fireteam/Clan/{group_id}/ActiveCount",
             auth=access_token,
+        )
+
+    def fetch_post_activity(
+        self, instance_id: int, /
+    ) -> ResponseSig[typedefs.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        return self._request(
+            RequestMethod.GET, f"Destiny2/Stats/PostGameCarnageReport/{instance_id}"
         )
 
     # * Not implemented yet.
@@ -1293,9 +1305,4 @@ class RESTClient(interfaces.RESTInterface):
         member_type: typedefs.IntAnd[enums.MembershipType],
     ) -> ResponseSig[typedefs.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        raise NotImplementedError
-
-    def fetch_post_activity(self, instance: int, /) -> ResponseSig[typedefs.JsonObject]:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        # return self._request(RequestMethod.GET, f"Destiny2/Stats/PostGameCarnageReport/{instance}")
         raise NotImplementedError

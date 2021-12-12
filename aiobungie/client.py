@@ -523,26 +523,22 @@ class Client(traits.ClientBase):
         assert isinstance(resp, dict)
         return self.factory.deserialize_activities(resp)
 
-    async def fetch_post_activity(self, instance: int, /) -> activity.PostActivity:
+    async def fetch_post_activity(self, instance_id: int, /) -> activity.PostActivity:
         """Fetch a post activity details.
-
-        .. warning::
-            This http request is not implemented yet
-            and it will raise `NotImplementedError`
 
         Parameters
         ----------
-        instance: `builtins.int`
+        instance_id: `int`
             The activity instance id.
 
         Returns
         -------
-        `aiobungie.crate.activity.PostActivity`
-           Information about the requested post activity.
+        `aiobungie.crate.PostActivity`
+           A post activity object.
         """
-        # resp = await self.rest.fetch_post_activity(instance)
-        # assert isinstance(resp, list)
-        raise NotImplementedError
+        resp = await self.rest.fetch_post_activity(instance_id)
+        assert isinstance(resp, dict)
+        return self.factory.deserialize_post_activity(resp)
 
     # * Destiny 2 Clans or GroupsV2.
 

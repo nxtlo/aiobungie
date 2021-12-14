@@ -140,6 +140,11 @@ class Dungeon(IntEnum):
     SHATTERED = 2032534090
     """Shattered Throne"""
 
+    GOA_LEGEND = 4078656646
+    """Grasp of Avarice legend."""
+
+    GOA_MASTER = 3774021532
+    """Grasp of Avarice master."""
 
 @typing.final
 class Planet(IntEnum):

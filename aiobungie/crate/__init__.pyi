@@ -2,6 +2,8 @@ from .activity import Activity as Activity
 from .activity import ActivityValues as ActivityValues
 from .activity import AvailableActivity as AvailableActivity
 from .activity import Challenges as Challenges
+from .activity import ExtendedValues as ExtendedValues
+from .activity import ExtendedWeaponValues as ExtendedWeaponValues
 from .activity import GuidedGame as GuidedGame
 from .activity import Location as Location
 from .activity import Matchmaking as Matchmaking

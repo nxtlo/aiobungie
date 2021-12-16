@@ -28,7 +28,8 @@ __all__: tuple[str, ...] = (
     "Activity",
     "PostActivity",
     "ActivityValues",
-    # "PostActivityValues",
+    "ExtendedValues",
+    "ExtendedWeaponValues",
     "PostActivityPlayer",
     "PostActivityTeam",
     "AvailableActivity",
@@ -277,8 +278,8 @@ class ActivityValues:
     score: int = attr.field(repr=False)
     """If the activity has a score, This will be available otherwise 0."""
 
-    played_time: str = attr.field()
-    """The total time the player was in this activity."""
+    played_time: tuple[int, str] = attr.field()
+    """The total time the player was in this activity represented as a tuple of int, str."""
 
     team: typing.Optional[int] = attr.field(repr=False)
     """???"""
@@ -292,11 +293,11 @@ class ActivityValues:
     player_count: int = attr.field()
     """Activity's player count."""
 
-    start_seconds: int = attr.field(repr=False)
-    """When did the player start the activity in seconds."""
+    start_seconds: tuple[int, str] = attr.field(repr=False)
+    """A tuple of int and str of when did the player start the activity in seconds."""
 
-    duration: str = attr.field()
-    """A string of The activity's duration, Example format `7m 42s`"""
+    duration: tuple[int, str] = attr.field()
+    """A tuple of int, string of The activity's duration, Example int, string format `1845`, `30m 45s`"""
 
     # activity_id: typing.Optional[int] = attr.field(repr=False)
     # """When a stat represents the best, most, longest, fastest or some other personal best,
@@ -307,9 +308,50 @@ class ActivityValues:
     """???"""
 
 
-# @attr.define(kw_only=True, weakref_slot=False)
-# class PostActivityValues:
-#     """Represents information about a post activity values."""
+@attr.define(kw_only=True, weakref_slot=False)
+class ExtendedWeaponValues:
+    """Information about post activity extended player's weapon values data."""
+
+    reference_id: int = attr.field()
+    """Weapon's hash or reference id."""
+
+    kills: int = attr.field()
+    """Weapon's total kills."""
+
+    precision_kills: int = attr.field()
+    """Weapon's total precision kills."""
+
+    precision_kills_percentage: tuple[int, str] = attr.field()
+    """A tuple of weapon's precision kills percentage as an int and a str.
+
+    A string version will be formatted as: `100%`
+    and the int version will be formatted as: `1`
+    """
+
+
+@attr.define(kw_only=True, weakref_slot=False)
+class ExtendedValues:
+    """Information about post activity extended player values data."""
+
+    precision_kills: int = attr.field()
+    """Player preci kills."""
+
+    grenade_kills: int = attr.field()
+    """Player grenade kills."""
+
+    melee_kills: int = attr.field()
+    """Player mele kills."""
+
+    super_kills: int = attr.field()
+    """Player super kills."""
+
+    ability_kills: int = attr.field()
+    """Player ability kills."""
+
+    weapons: typing.Optional[
+        collections.Collection[ExtendedWeaponValues]
+    ] = attr.field()
+    """Collection of unique player per-weapons used in this activity. if no weapons found None will be returned."""
 
 
 @attr.define(kw_only=True, weakref_slot=False)
@@ -371,6 +413,12 @@ class PostActivityPlayer:
 
     values: ActivityValues = attr.field(repr=False, eq=False, hash=False)
     """Player's information that occurred in this activity."""
+
+    extended_values: ExtendedValues = attr.field(repr=False)
+    """Extended player information occurred in this activity.
+
+    This include weapon, super, grenade kills and more.
+    """
 
 
 @attr.define(kw_only=True, weakref_slot=False)

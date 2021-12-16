@@ -358,6 +358,10 @@ async def test_post_activity():
     assert not a.is_solo_flawless
     for player in a.players:
         assert isinstance(player, aiobungie.crate.activity.PostActivityPlayer)
+        assert isinstance(player.extended_values, aiobungie.crate.activity.ExtendedValues)
+        if weapons := player.extended_values.weapons:
+            for weapon in weapons:
+                assert isinstance(weapon, aiobungie.crate.activity.ExtendedWeaponValues)
 
 
 async def test_activity_flawless():

@@ -23,7 +23,7 @@
 
 from __future__ import annotations
 
-__all__ = ("Factory",)
+__all__: tuple[str, ...] = ("Factory",)
 
 import collections.abc as collections
 import typing
@@ -59,15 +59,13 @@ if typing.TYPE_CHECKING:
 class Factory(interfaces.FactoryInterface):
     """The base deserialization factory class for all aiobungie data classes.
 
-    This factory is used to deserialize JSON responses from the REST client and turning them
+    Highly inspired hikari entity factory used to deserialize JSON responses from the REST client and turning them
     into a Python data classes object.
 
     This is only provided by `aiobungie.Client` base client.
     """
 
-    # This is kinda inspired by hikari's entity factory :p.
-
-    __slots__: collections.Sequence[str] = ("_net",)
+    __slots__ = ("_net",)
 
     def __init__(self, net: traits.Netrunner) -> None:
         self._net = net
@@ -156,6 +154,8 @@ class Factory(interfaces.FactoryInterface):
             icon=assets.Image(user_info.get("iconPath", assets.Image.partial())),
             types=memberships,
         )
+
+    # TODO: Rework this horibble function.
 
     # Deserialize a list of `destinyUserInfo`
     def deserialize_destiny_members(
@@ -1537,10 +1537,43 @@ class Factory(interfaces.FactoryInterface):
             self.deserialize_activity(activity_) for activity_ in payload["activities"]
         ]
 
-    # TODO: Impl this later.
-    @typing.no_type_check
-    def _deserialize_extended_values(self, payload: typedefs.JsonObject):
-        ...
+    def _deserialize_extended_weapon_values(
+        self, payload: typedefs.JsonObject
+    ) -> activity.ExtendedWeaponValues:
+        return activity.ExtendedWeaponValues(
+            reference_id=int(payload["referenceId"]),
+            kills=payload["values"]["uniqueWeaponKills"]["basic"]["value"],
+            precision_kills=payload["values"]["uniqueWeaponPrecisionKills"]["basic"][
+                "value"
+            ],
+            precision_kills_percentage=(
+                payload["values"]["uniqueWeaponKillsPrecisionKills"]["basic"]["value"],
+                payload["values"]["uniqueWeaponKillsPrecisionKills"]["basic"][
+                    "displayValue"
+                ],
+            ),
+        )
+
+    def _deserialize_extended_values(
+        self, payload: typedefs.JsonObject
+    ) -> activity.ExtendedValues:
+        weapons: typing.Optional[
+            collections.Collection[activity.ExtendedWeaponValues]
+        ] = None
+
+        if raw_weapons := payload.get("weapons"):
+            weapons = [
+                self._deserialize_extended_weapon_values(value) for value in raw_weapons
+            ]
+
+        return activity.ExtendedValues(
+            precision_kills=payload["values"]["precisionKills"]["basic"]["value"],
+            grenade_kills=payload["values"]["weaponKillsGrenade"]["basic"]["value"],
+            melee_kills=payload["values"]["weaponKillsMelee"]["basic"]["value"],
+            super_kills=payload["values"]["weaponKillsSuper"]["basic"]["value"],
+            ability_kills=payload["values"]["weaponKillsAbility"]["basic"]["value"],
+            weapons=weapons,
+        )
 
     def _deserialize_post_activity_player(
         self, payload: typedefs.JsonObject
@@ -1558,6 +1591,7 @@ class Factory(interfaces.FactoryInterface):
             emblem_hash=int(payload["player"]["emblemHash"]),
             class_hash=payload["player"]["classHash"],
             values=self._deserialize_activity_values(payload["values"]),
+            extended_values=self._deserialize_extended_values(payload["extended"]),
         )
 
     def _deserialize_post_activity_team(

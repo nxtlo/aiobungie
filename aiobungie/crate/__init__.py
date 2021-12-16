@@ -104,15 +104,25 @@ __all__: tuple[str, ...] = (
     "RecordsComponent",
     "ItemsComponent",
     "VendorsComponent",
+    "ActivityValues",
+    "PostActivityPlayer",
+    "PostActivityTeam",
+    "ExtendedValues",
+    "ExtendedWeaponValues",
 )
 
 from .activity import Activity
+from .activity import ActivityValues
 from .activity import AvailableActivity
 from .activity import Challenges
+from .activity import ExtendedValues
+from .activity import ExtendedWeaponValues
 from .activity import GuidedGame
 from .activity import Location
 from .activity import Matchmaking
 from .activity import PostActivity
+from .activity import PostActivityPlayer
+from .activity import PostActivityTeam
 from .activity import Rewards
 from .application import *
 from .character import *

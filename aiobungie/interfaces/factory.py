@@ -806,7 +806,18 @@ class FactoryInterface(abc.ABC):
     def deserialize_post_activity(
         self, payload: typedefs.JsonObject
     ) -> activity.PostActivity:
-        """Deserialize a JSON payload of a post activity information."""
+        """Deserialize a JSON payload of a post activity information.
+
+        Parameters
+        ----------
+        payload : `aiobungie.typedefs.JsonObject`
+            The JSON payload.
+
+        Returns
+        -------
+        `aiobungie.crate.PostActivity`
+            A post activity object.
+        """
 
     @abc.abstractmethod
     def deserialize_available_activity(

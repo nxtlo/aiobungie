@@ -27,6 +27,11 @@ from __future__ import annotations
 __all__: tuple[str, ...] = (
     "Activity",
     "PostActivity",
+    "ActivityValues",
+    "ExtendedValues",
+    "ExtendedWeaponValues",
+    "PostActivityPlayer",
+    "PostActivityTeam",
     "AvailableActivity",
     "Diffculity",
     "Rewards",
@@ -50,6 +55,7 @@ if typing.TYPE_CHECKING:
     from aiobungie import traits
     from aiobungie import typedefs
     from aiobungie.crate import entity
+    from aiobungie.crate import user
 
 
 @typing.final
@@ -202,7 +208,7 @@ class CharacterActivity:
     """A sequence of the available activities associated with this character."""
 
 
-@attr.define(hash=False, kw_only=True, weakref_slot=False)
+@attr.define(kw_only=True, weakref_slot=False)
 class AvailableActivity:
     """Represents an available activity that can be found in character activities profile component."""
 
@@ -238,7 +244,7 @@ class AvailableActivity:
         raise NotImplementedError
 
 
-@attr.define(kw_only=True, weakref_slot=False, hash=False)
+@attr.define(kw_only=True, weakref_slot=False)
 class ActivityValues:
     """Information about values found in an activity.
 
@@ -272,10 +278,10 @@ class ActivityValues:
     score: int = attr.field(repr=False)
     """If the activity has a score, This will be available otherwise 0."""
 
-    played_time: str = attr.field()
-    """The total time the player was in this activity."""
+    played_time: tuple[int, str] = attr.field()
+    """The total time the player was in this activity represented as a tuple of int, str."""
 
-    team: int = attr.field(repr=False)
+    team: typing.Optional[int] = attr.field(repr=False)
     """???"""
 
     completion_reason: str = attr.field(repr=False)
@@ -287,11 +293,11 @@ class ActivityValues:
     player_count: int = attr.field()
     """Activity's player count."""
 
-    start_seconds: int = attr.field(repr=False)
-    """When did the player start the activity in seconds."""
+    start_seconds: tuple[int, str] = attr.field(repr=False)
+    """A tuple of int and str of when did the player start the activity in seconds."""
 
-    duration: str = attr.field()
-    """A string of The activity's duration, Example format `7m 42s`"""
+    duration: tuple[int, str] = attr.field()
+    """A tuple of int, string of The activity's duration, Example int, string format `1845`, `30m 45s`"""
 
     # activity_id: typing.Optional[int] = attr.field(repr=False)
     # """When a stat represents the best, most, longest, fastest or some other personal best,
@@ -302,30 +308,175 @@ class ActivityValues:
     """???"""
 
 
-@attr.define(hash=False, kw_only=True, weakref_slot=False)
+@attr.define(kw_only=True, weakref_slot=False)
+class ExtendedWeaponValues:
+    """Information about post activity extended player's weapon values data."""
+
+    reference_id: int = attr.field()
+    """Weapon's hash or reference id."""
+
+    kills: int = attr.field()
+    """Weapon's total kills."""
+
+    precision_kills: int = attr.field()
+    """Weapon's total precision kills."""
+
+    precision_kills_percentage: tuple[int, str] = attr.field()
+    """A tuple of weapon's precision kills percentage as an int and a str.
+
+    A string version will be formatted as: `100%`
+    and the int version will be formatted as: `1`
+    """
+
+
+@attr.define(kw_only=True, weakref_slot=False)
+class ExtendedValues:
+    """Information about post activity extended player values data."""
+
+    precision_kills: int = attr.field()
+    """Player preci kills."""
+
+    grenade_kills: int = attr.field()
+    """Player grenade kills."""
+
+    melee_kills: int = attr.field()
+    """Player mele kills."""
+
+    super_kills: int = attr.field()
+    """Player super kills."""
+
+    ability_kills: int = attr.field()
+    """Player ability kills."""
+
+    weapons: typing.Optional[
+        collections.Collection[ExtendedWeaponValues]
+    ] = attr.field()
+    """Collection of unique player per-weapons used in this activity. if no weapons found None will be returned."""
+
+
+@attr.define(kw_only=True, weakref_slot=False)
+class PostActivityTeam:
+    """Represents a post activity team information.
+
+    Teams will be available in PvP gamemodes, e.g., Gambit, Crucible, Iron Banner. etc.
+    """
+
+    id: int = attr.field(hash=True)
+    """Team id."""
+
+    name: str = attr.field()
+    """Team name."""
+
+    is_defeated: bool = attr.field()
+    """Whether the team has been defeated or won."""
+
+    score: int = attr.field()
+    """Team score"""
+
+
+@attr.define(kw_only=True, weakref_slot=False)
+class PostActivityPlayer:
+    """Represents a post activity Destiny 2 player."""
+
+    standing: int = attr.field(repr=False)
+    """Sanding of the player."""
+
+    destiny_user: user.DestinyUser = attr.field(repr=False)
+    """An object of the destiny membership bound to this player."""
+
+    score: int = attr.field(repr=False)
+    """Score of the player."""
+
+    character_id: int = attr.field(hash=True)
+    """The id of the character the player finished this activity with."""
+
+    character_class: str = attr.field()
+    """A string of the character class the player finished this activity with."""
+
+    class_hash: int = attr.field(repr=False)
+    """The hash of the player's character class."""
+
+    race_hash: int = attr.field(repr=False)
+    """The hash of the player's character race."""
+
+    gender_hash: int = attr.field(repr=False)
+    """The hash of the player's character gender."""
+
+    character_level: int = attr.field(repr=False)
+    """The player's character's level."""
+
+    light_level: int = attr.field(repr=False)
+    """The light level of the player's character."""
+
+    emblem_hash: int = attr.field(repr=False, hash=True)
+    """The embelem hash of the player's character."""
+
+    values: ActivityValues = attr.field(repr=False, eq=False, hash=False)
+    """Player's information that occurred in this activity."""
+
+    extended_values: ExtendedValues = attr.field(repr=False)
+    """Extended player information occurred in this activity.
+
+    This include weapon, super, grenade kills and more.
+    """
+
+
+@attr.define(kw_only=True, weakref_slot=False)
 class PostActivity:
     """Represents a Destiny 2 post activity details."""
 
-    occurred_at: datetime.datetime = attr.field(repr=True, eq=False, hash=False)
-    """A datetime object of when was this activity occurred.."""
+    net: traits.Netrunner = attr.field(repr=False)
+    """A network state used for making external requests."""
 
-    starting_phase: int = attr.field(repr=False, eq=False, hash=False)
-    """The postt activity starting phase index.
-    For an example if it was 0 that means it's a fresh run"""
+    starting_phase: int = attr.field(repr=False)
+    """If this activity has "phases", this is the phase at which the activity was started."""
 
-    hash: int = attr.field(repr=True, eq=False, hash=False)
-    """The post activity reference id/hash."""
+    hash: int = attr.field(hash=True)
+    """The activity's reference id or hash."""
 
-    mode: typing.Optional[enums.GameMode] = attr.field(repr=True, eq=False, hash=False)
-    """The post activity's game mode, Can be `Undefined` if unknown."""
+    membership_type: enums.MembershipType = attr.field(repr=False, hash=False)
+    """The activity player's membership type."""
 
-    modes: list[enums.GameMode] = attr.field(repr=False, eq=False, hash=False)
-    """A list of the post activity's game mode."""
+    instance_id: int = attr.field(repr=True, hash=True)
+    """The activity's instance id."""
 
-    membership_type: enums.MembershipType = attr.field(repr=True, eq=False, hash=False)
-    """The post activity's membership type."""
+    mode: enums.GameMode = attr.field(hash=False)
+    """The activity mode or type."""
 
-    players: collections.Sequence[str] = attr.field(repr=False)
+    modes: collections.Sequence[enums.GameMode] = attr.field(
+        eq=False, hash=False, repr=False
+    )
+    """A sequence of the activity's gamemodes."""
+
+    is_private: bool = attr.field(repr=False)
+    """Whether this activity is private or not."""
+
+    occurred_at: datetime.datetime = attr.field(eq=False, hash=False)
+    """A datetime of when did this activity occurred."""
+
+    players: collections.Collection[PostActivityPlayer] = attr.field(repr=False)
+    """Collection of players that were in the activity."""
+
+    teams: typing.Optional[collections.Collection[PostActivityTeam]] = attr.field()
+    """Collections the teams that were playing against each other.
+
+    This field is optional and will be `None` if the activity don't have teams.
+    """
+
+    @property
+    def is_flawless(self) -> bool:
+        """Whether this activity was a flawless run or not."""
+        return all(player.values.deaths == 0 for player in self.players)
+
+    @property
+    def is_solo(self) -> bool:
+        """Whether this activity was completed solo or not."""
+        return len(self.players) == 1
+
+    @property
+    def is_solo_flawless(self) -> bool:
+        """Whether this activity was completed solo and flawless."""
+        return self.is_solo & self.is_flawless
 
     @property
     def refrence_id(self) -> int:
@@ -355,8 +506,10 @@ class Activity:
     mode: enums.GameMode = attr.field(hash=False)
     """The activity mode or type."""
 
-    modes: list[enums.GameMode] = attr.field(eq=False, hash=False, repr=False)
-    """A list of the activity's gamemodes."""
+    modes: collections.Sequence[enums.GameMode] = attr.field(
+        eq=False, hash=False, repr=False
+    )
+    """Sequence of the activity's gamemodes."""
 
     is_private: bool = attr.field(repr=False)
     """Whether this activity is private or not."""
@@ -373,12 +526,22 @@ class Activity:
         return self.values.deaths == 0 and self.values.is_completed is True
 
     @property
+    def is_solo(self) -> bool:
+        """Whether this activity was completed solo or not."""
+        return self.values.player_count == 1 and self.values.is_completed
+
+    @property
+    def is_solo_flawless(self) -> bool:
+        """Whether this activity was completed solo and flawless."""
+        return self.is_solo & self.is_flawless
+
+    @property
     def refrence_id(self) -> int:
         """An alias to the activity's hash"""
         return self.hash
 
     async def fetch_post(self) -> PostActivity:
-        """Get activity's data after its finished.
+        """Fetch this activity's data after was finished.
 
         Returns
         -------

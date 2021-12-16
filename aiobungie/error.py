@@ -37,6 +37,7 @@ __all__: list[str] = [
     "InternalServerError",
     "HTTPError",
     "BadRequest",
+    "raise_error",
 ]
 
 import http
@@ -45,6 +46,7 @@ import typing
 import attr
 
 if typing.TYPE_CHECKING:
+    import aiohttp
     import multidict
     from aiohttp import typedefs
 
@@ -224,3 +226,163 @@ class RateLimitedError(HTTPError):
 
     def __str__(self) -> str:
         return self.message
+
+
+async def raise_error(response: aiohttp.ClientResponse, msg: str) -> AiobungieError:
+    """Generates and raise exceptions on error responses."""
+
+    if response.content_type != "application/json":
+        return HTTPError(
+            f"Expected JSON content but got {response.content_type}, {str(response.real_url)}",
+            http.HTTPStatus.UNSUPPORTED_MEDIA_TYPE,
+        )
+
+    body = await response.json()
+    message: str = body.get("Message", "")
+    error_status: str = body.get("ErrorStatus", "")
+    message_data: dict[str, str] = body.get("MessageData", {})
+    throttle_seconds: int = body.get("ThrottleSeconds", 0)
+    error_code: int = body.get("ErrorCode", 0)
+
+    if response.status == http.HTTPStatus.NOT_FOUND:
+        return NotFound(
+            message=message,
+            error_code=error_code,
+            throttle_seconds=throttle_seconds,
+            url=str(response.real_url),
+            body=body,
+            headers=response.headers,
+            error_status=error_status,
+            message_data=message_data,
+        )
+
+    elif response.status == http.HTTPStatus.FORBIDDEN:
+        return Forbidden(
+            message=message,
+            error_code=error_code,
+            throttle_seconds=throttle_seconds,
+            url=str(response.real_url),
+            body=body,
+            headers=response.headers,
+            error_status=error_status,
+            message_data=message_data,
+        )
+
+    elif response.status == http.HTTPStatus.UNAUTHORIZED:
+        return Unauthorized(
+            message=message,
+            error_code=error_code,
+            throttle_seconds=throttle_seconds,
+            url=str(response.real_url),
+            body=body,
+            headers=response.headers,
+            error_status=error_status,
+            message_data=message_data,
+        )
+
+    elif response.status == http.HTTPStatus.BAD_REQUEST:
+        # Membership needs to be alone.
+        if msg == "InvalidParameters":
+            return MembershipTypeError(
+                message=message,
+                body=body,
+                headers=response.headers,
+                url=str(response.url),
+                membership_type=message_data["membershipType"],
+                required_membership=message_data["membershipInfo.membershipType"],
+                membership_id=int(message_data["membershipId"]),
+            )
+        return BadRequest(
+            message=message,
+            body=body,
+            headers=response.headers,
+            url=str(response.url),
+        )
+
+    status = http.HTTPStatus(response.status)
+
+    if 400 <= status < 500:
+        return ResponseError(
+            message=message,
+            error_code=error_code,
+            throttle_seconds=throttle_seconds,
+            url=str(response.real_url),
+            body=body,
+            headers=response.headers,
+            error_status=error_status,
+            message_data=message_data,
+            http_status=status,
+        )
+
+    # Need to handle errors our selves :>
+    elif 500 <= status < 600:
+        # No API key or method requires OAuth2 most likely.
+        if msg in {
+            "ApiKeyMissingFromRequest",
+            "WebAuthRequired",
+            "ApiInvalidOrExpiredKey",
+            "AuthenticationInvalid",
+        }:
+            return Unauthorized(
+                message=message,
+                error_code=error_code,
+                throttle_seconds=throttle_seconds,
+                url=str(response.real_url),
+                body=body,
+                headers=response.headers,
+                error_status=error_status,
+                message_data=message_data,
+            )
+
+        # API is down...
+        elif msg == "SystemDisabled":
+            raise OSError(
+                message,
+                error_code,
+                throttle_seconds,
+                str(response.real_url),
+                body,
+                response.headers,
+                error_status,
+                message_data,
+            )
+
+        # Anything contains not found.
+        elif msg and "NotFound" in msg or "UserCannotFindRequestedUser" == msg:
+            return NotFound(
+                message=message,
+                error_code=error_code,
+                throttle_seconds=throttle_seconds,
+                url=str(response.real_url),
+                body=body,
+                headers=response.headers,
+                error_status=error_status,
+                message_data=message_data,
+            )
+
+        # Any other errors.
+        else:
+            return InternalServerError(
+                message=message,
+                error_code=error_code,
+                throttle_seconds=throttle_seconds,
+                url=str(response.real_url),
+                body=body,
+                headers=response.headers,
+                error_status=error_status,
+                message_data=message_data,
+                http_status=status,
+            )
+    # Something else.
+    else:
+        return HTTPException(
+            message=message,
+            error_code=error_code,
+            throttle_seconds=throttle_seconds,
+            url=str(response.real_url),
+            body=body,
+            headers=response.headers,
+            error_status=error_status,
+            message_data=message_data,
+            http_status=status,
+        )

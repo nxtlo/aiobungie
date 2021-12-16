@@ -10,11 +10,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `BadRequest` exception.
 - `Character.transfer_item` and `Character.pull_item` now takes missing `vault` option.
 - `Character.fetch_activities` method.
+- Finished implementing post activities methods.
+- `is_flawless`, `is_solo` and `is_solo_flawless` useful properties to for both `Activity` and `PostActivity`.
+- Post activity extended values and player weapons values.
+- `rest._handle_error` method moved to `error.py` and renamed to `raise_error`
 
 ### Changed
 - Exceptions now has fields and improved.
 - `fetch_activity` function name changed to `fetch_activities`
 - `fetch_activities` now returns a sequence(`collections.Sequence[Activity]`) of activities instead of a singular activity object.
+- `ActivityVaules.team` returns `typing.Optional[int]` now instead of `int`.
 
 ## [0.2.5b12](https://github.com/nxtlo/aiobungie/compare/0.2.5b11...0.2.5b12) 2021-10-21
 

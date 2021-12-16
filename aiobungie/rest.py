@@ -84,167 +84,6 @@ f"{platform.python_implementation()}/{platform.python_version()} {platform.syste
 f"{platform.architecture()[0]}, Aiohttp/{aiohttp.HttpVersion11}"  # type: ignore[UnknownMemberType]
 
 
-async def _handle_errors(
-    response: aiohttp.ClientResponse, msg: str
-) -> error.AiobungieError:
-
-    if response.content_type != _APP_JSON:
-        return error.HTTPError(
-            f"Expected JSON content but got {response.content_type}, {str(response.real_url)}",
-            http.HTTPStatus.UNSUPPORTED_MEDIA_TYPE,
-        )
-
-    body = await response.json()
-    message: str = body.get("Message", "")
-    error_status: str = body.get("ErrorStatus", "")
-    message_data: dict[str, str] = body.get("MessageData", {})
-    throttle_seconds: int = body.get("ThrottleSeconds", 0)
-    error_code: int = body.get("ErrorCode", 0)
-
-    if response.status == http.HTTPStatus.NOT_FOUND:
-        return error.NotFound(
-            message=message,
-            error_code=error_code,
-            throttle_seconds=throttle_seconds,
-            url=str(response.real_url),
-            body=body,
-            headers=response.headers,
-            error_status=error_status,
-            message_data=message_data,
-        )
-
-    elif response.status == http.HTTPStatus.FORBIDDEN:
-        return error.Forbidden(
-            message=message,
-            error_code=error_code,
-            throttle_seconds=throttle_seconds,
-            url=str(response.real_url),
-            body=body,
-            headers=response.headers,
-            error_status=error_status,
-            message_data=message_data,
-        )
-
-    elif response.status == http.HTTPStatus.UNAUTHORIZED:
-        return error.Unauthorized(
-            message=message,
-            error_code=error_code,
-            throttle_seconds=throttle_seconds,
-            url=str(response.real_url),
-            body=body,
-            headers=response.headers,
-            error_status=error_status,
-            message_data=message_data,
-        )
-
-    elif response.status == http.HTTPStatus.BAD_REQUEST:
-        # Membership needs to be alone.
-        if msg == "InvalidParameters":
-            return error.MembershipTypeError(
-                message=message,
-                body=body,
-                headers=response.headers,
-                url=str(response.url),
-                membership_type=message_data["membershipType"],
-                required_membership=message_data["membershipInfo.membershipType"],
-                membership_id=int(message_data["membershipId"]),
-            )
-        return error.BadRequest(
-            message=message,
-            body=body,
-            headers=response.headers,
-            url=str(response.url),
-        )
-
-    status = http.HTTPStatus(response.status)
-
-    if 400 <= status < 500:
-        return error.ResponseError(
-            message=message,
-            error_code=error_code,
-            throttle_seconds=throttle_seconds,
-            url=str(response.real_url),
-            body=body,
-            headers=response.headers,
-            error_status=error_status,
-            message_data=message_data,
-            http_status=status,
-        )
-
-    # Need to handle errors our selves :>
-    elif 500 <= status < 600:
-        # No API key or method requires OAuth2 most likely.
-        if msg in {
-            "ApiKeyMissingFromRequest",
-            "WebAuthRequired",
-            "ApiInvalidOrExpiredKey",
-            "AuthenticationInvalid",
-        }:
-            return error.Unauthorized(
-                message=message,
-                error_code=error_code,
-                throttle_seconds=throttle_seconds,
-                url=str(response.real_url),
-                body=body,
-                headers=response.headers,
-                error_status=error_status,
-                message_data=message_data,
-            )
-
-        # API is down...
-        elif msg == "SystemDisabled":
-            raise OSError(
-                message,
-                error_code,
-                throttle_seconds,
-                str(response.real_url),
-                body,
-                response.headers,
-                error_status,
-                message_data,
-            )
-
-        # Anything contains not found.
-        elif msg and "NotFound" in msg or "UserCannotFindRequestedUser" == msg:
-            return error.NotFound(
-                message=message,
-                error_code=error_code,
-                throttle_seconds=throttle_seconds,
-                url=str(response.real_url),
-                body=body,
-                headers=response.headers,
-                error_status=error_status,
-                message_data=message_data,
-            )
-
-        # Any other errors.
-        else:
-            return error.InternalServerError(
-                message=message,
-                error_code=error_code,
-                throttle_seconds=throttle_seconds,
-                url=str(response.real_url),
-                body=body,
-                headers=response.headers,
-                error_status=error_status,
-                message_data=message_data,
-                http_status=status,
-            )
-    # Something else.
-    else:
-        return error.HTTPException(
-            message=message,
-            error_code=error_code,
-            throttle_seconds=throttle_seconds,
-            url=str(response.real_url),
-            body=body,
-            headers=response.headers,
-            error_status=error_status,
-            message_data=message_data,
-            http_status=status,
-        )
-
-
 class _Arc:
     __slots__ = ("_lock",)
 
@@ -543,7 +382,7 @@ class RESTClient(interfaces.RESTInterface):
     async def _handle_err(
         response: aiohttp.ClientResponse, msg: str
     ) -> typing.NoReturn:
-        raise await _handle_errors(response, msg)
+        raise await error.raise_error(response, msg)
 
     def static_request(
         self,
@@ -1228,6 +1067,7 @@ class RESTClient(interfaces.RESTInterface):
         public_only: bool = False,
         slots_filter: int = 0,
     ) -> ResponseSig[typedefs.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
             RequestMethod.GET,
             f"Fireteam/Clan/{group_id}/Available/{int(platform)}/{int(activity_type)}/{int(date_range)}/{slots_filter}/{public_only}/{page}",  # noqa: E501
@@ -1238,6 +1078,7 @@ class RESTClient(interfaces.RESTInterface):
     def fetch_clan_fireteam(
         self, access_token: str, fireteam_id: int, group_id: int
     ) -> ResponseSig[typedefs.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
             RequestMethod.GET,
             f"Fireteam/Clan/{group_id}/Summary/{fireteam_id}",
@@ -1256,6 +1097,7 @@ class RESTClient(interfaces.RESTInterface):
         page: int = 0,
     ) -> ResponseSig[typedefs.JsonObject]:
         payload = {"groupFilter": filtered, "langFilter": str(language)}
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
             RequestMethod.GET,
             f"Fireteam/Clan/{group_id}/My/{int(platform)}/{include_closed}/{page}",
@@ -1266,10 +1108,19 @@ class RESTClient(interfaces.RESTInterface):
     def fetch_private_clan_fireteams(
         self, access_token: str, group_id: int, /
     ) -> ResponseSig[int]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
             RequestMethod.GET,
             f"Fireteam/Clan/{group_id}/ActiveCount",
             auth=access_token,
+        )
+
+    def fetch_post_activity(
+        self, instance_id: int, /
+    ) -> ResponseSig[typedefs.JsonObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        return self._request(
+            RequestMethod.GET, f"Destiny2/Stats/PostGameCarnageReport/{instance_id}"
         )
 
     # * Not implemented yet.
@@ -1293,9 +1144,4 @@ class RESTClient(interfaces.RESTInterface):
         member_type: typedefs.IntAnd[enums.MembershipType],
     ) -> ResponseSig[typedefs.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        raise NotImplementedError
-
-    def fetch_post_activity(self, instance: int, /) -> ResponseSig[typedefs.JsonObject]:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        # return self._request(RequestMethod.GET, f"Destiny2/Stats/PostGameCarnageReport/{instance}")
         raise NotImplementedError

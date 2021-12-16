@@ -332,7 +332,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Raises
         ------
-        `aiobungie.error.ActivityNotFound`
+        `aiobungie.error.NotFound`
             The activity was not found.
 
         `aiobungie.MembershipTypeError`
@@ -340,16 +340,14 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def fetch_post_activity(self, instance: int, /) -> ResponseSig[typedefs.JsonObject]:
+    def fetch_post_activity(
+        self, instance_id: int, /
+    ) -> ResponseSig[typedefs.JsonObject]:
         """Fetch a post activity details.
-
-        .. warning::
-            This http request is not implemented yet
-            and it will raise `NotImplementedError`
 
         Parameters
         ----------
-        instance: `builtins.int`
+        instance_id: `int`
             The activity instance id.
 
         Returns

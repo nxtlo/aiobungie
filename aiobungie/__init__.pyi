@@ -4,9 +4,11 @@ from aiobungie import crate as crate
 from aiobungie import interfaces as interfaces
 from aiobungie import traits as traits
 from aiobungie import typedefs as typedefs
+from aiobungie import url as url
 from aiobungie.client import Client as Client
 from aiobungie.error import *
 from aiobungie.internal.enums import *
+from aiobungie.rest import OAuth2Response as OAuth2Response
 from aiobungie.rest import RESTClient as RESTClient
 from aiobungie.undefined import Undefined as Undefined
 from aiobungie.undefined import UndefinedOr as UndefinedOr

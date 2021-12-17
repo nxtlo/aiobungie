@@ -37,10 +37,10 @@ import platform
 import random
 import sys
 import typing
+import uuid
 
 import aiohttp
 import attr
-import yarl
 
 from aiobungie import _info as info  # type: ignore[private-usage]
 from aiobungie import error
@@ -56,12 +56,15 @@ from aiobungie.internal import helpers
 if typing.TYPE_CHECKING:
     import types
 
-    from aiohttp import typedefs as aiohttp_typedefs
-
     ResponseSigT = typing.TypeVar(
         "ResponseSigT",
         covariant=True,
-        bound=typing.Union[typedefs.JsonArray, typedefs.JsonObject, int, None],
+        bound=typing.Union[
+            typedefs.JsonArray,
+            typedefs.JsonObject,
+            int,
+            None,
+        ],
     )
     """The signature of the response."""
 
@@ -155,7 +158,7 @@ class _Session:
 
 
 class RequestMethod(str, enums.Enum):
-    """Request methods enum."""
+    """HTTP request methods enum."""
 
     GET = "GET"
     """GET methods."""
@@ -169,8 +172,43 @@ class RequestMethod(str, enums.Enum):
     """DELETE methods"""
 
 
+@attr.mutable(weakref_slot=False, kw_only=True, repr=False)
+class OAuth2Response:
+    """Represents a proxy object for returned information from an OAuth2 successful response."""
+
+    access_token: str = attr.field(hash=False)
+    """The returned OAuth2 `access_token` field."""
+
+    refresh_token: str = attr.field(hash=False)
+    """The returned OAuth2 `refresh_token` field."""
+
+    expires_in: int = attr.field(hash=True)
+    """The returned OAuth2 `expires_in` field."""
+
+    token_type: str = attr.field(hash=False)
+    """The returned OAuth2 `token_type` field. This is usually just `Bearer`"""
+
+    refresh_expires_in: int = attr.field(hash=True)
+    """The returned OAuth2 `refresh_expires_in` field."""
+
+    membership_id: int = attr.field(hash=True)
+    """The returned BungieNet membership id for the authorized user."""
+
+    @classmethod
+    def build_response(cls, payload: typedefs.JsonObject, /) -> OAuth2Response:
+        """Deserialize and builds the JSON object into this object."""
+        return OAuth2Response(
+            access_token=payload["access_token"],
+            refresh_token=payload["refresh_token"],
+            expires_in=int(payload["expires_in"]),
+            token_type=payload["token_type"],
+            refresh_expires_in=payload["refresh_expires_in"],
+            membership_id=int(payload["membership_id"]),
+        )
+
+
 class RESTClient(interfaces.RESTInterface):
-    """A REST only client implementation for interacting with Bungie's REST API.
+    """A RESTful client implementation for Bungie's API.
 
     This client is designed to only make HTTP requests and return JSON objects
     to provide RESTful functionality.
@@ -192,18 +230,37 @@ class RESTClient(interfaces.RESTInterface):
                     print(k, v)
     ```
 
-    Attributes
+    Parameters
     ----------
-    token : `builtins.str`
+    token : `str`
         A valid application token from Bungie's developer portal.
-    max_retries : `builtins.int`
+
+    Other Parameters
+    ----------------
+    max_retries : `int`
         The max retries number to retry if the request hit a `5xx` status code.
+    client_secret : `typing.Optional[str]`
+        An optional application client secret,
+        This is only needed if you're fetching OAuth2 tokens with this client.
+    client_id : `typing.Optional[int]`
+        An optional application client id,
+        This is only needed if you're fetching OAuth2 tokens with this client.
     """
 
-    __slots__ = ("_token", "_session", "_max_retries")
+    __slots__ = ("_token", "_session", "_max_retries", "_client_secret", "_client_id")
 
-    def __init__(self, token: str, /, *, max_retries: int = 4) -> None:
+    def __init__(
+        self,
+        token: str,
+        /,
+        client_secret: typing.Optional[str] = None,
+        client_id: typing.Optional[int] = None,
+        *,
+        max_retries: int = 4,
+    ) -> None:
         self._session: typing.Optional[_Session] = None
+        self._client_secret = client_secret
+        self._client_id = client_id
         self._token: str = token
         self._max_retries = max_retries
 
@@ -223,22 +280,23 @@ class RESTClient(interfaces.RESTInterface):
     async def close(self) -> None:
         if self._session is not None:
             _LOG.info("Closing REST client.")
-            with contextlib.suppress(aiohttp.ClientError):
-                await self._session.close()
+            await self._session.close()
+
+    @property
+    def client_id(self) -> typing.Optional[int]:
+        return self._client_id
 
     @typing.final
     async def _request(
         self,
         method: typing.Union[RequestMethod, str],
-        route: aiohttp_typedefs.StrOrURL,
+        route: str,
         base: bool = False,
+        oauth2: bool = False,
         auth: typing.Optional[str] = None,
         type: typing.Literal["json", "read"] = "json",
         **kwargs: typing.Any,
     ) -> typing.Any:
-
-        if isinstance(route, yarl.URL):
-            route = yarl.URL(route)
 
         retries: int = 0
         if self._token is not None:
@@ -251,6 +309,16 @@ class RESTClient(interfaces.RESTInterface):
         if auth is not None:
             headers[_AUTH_HEADER] = f"Bearer {auth}"
 
+        # Handling endpoints
+        endpoint = url.BASE
+
+        if not base:
+            endpoint = endpoint + url.REST_EP
+
+        if oauth2:
+            headers["Content-Type"] = "application/x-www-form-urlencoded"
+            endpoint = endpoint + url.TOKEN_EP
+
         stack = contextlib.AsyncExitStack()
         while True:
             try:
@@ -261,7 +329,7 @@ class RESTClient(interfaces.RESTInterface):
                         response = await stack.enter_async_context(
                             await self._acquire_session().client_session.request(
                                 method=method,
-                                url=f"{url.REST_EP if base is False else url.BASE}/{route}",
+                                url=f"{endpoint}/{route}",
                                 **kwargs,
                             )
                         )
@@ -287,7 +355,12 @@ class RESTClient(interfaces.RESTInterface):
                                         f"{url.REST_EP}/{route}",
                                         response.status,
                                     )
+
                                 # Return the response.
+                                # oauth2 responses are not packed inside a Response object.
+                                if oauth2:
+                                    return data
+
                                 return data["Response"]
                         if (
                             response.status in _RETRY_5XX
@@ -306,7 +379,7 @@ class RESTClient(interfaces.RESTInterface):
                             retries += 1
                             await asyncio.sleep(sleep_time)
                             continue
-                        await self._handle_err(response, data["ErrorStatus"])
+                        await self._handle_err(response, data.get("ErrorStatus", ""))
             # eol
             except error.HTTPError:
                 raise
@@ -316,7 +389,7 @@ class RESTClient(interfaces.RESTInterface):
         def __enter__(self) -> typing.NoReturn:
             cls = type(self)
             raise TypeError(
-                f"{cls.__qualname__} is async only, use async-with instead."
+                f"{cls.__qualname__} is async only, use 'async with' instead."
             )
 
         def __exit__(
@@ -384,18 +457,9 @@ class RESTClient(interfaces.RESTInterface):
     ) -> typing.NoReturn:
         raise await error.raise_error(response, msg)
 
-    def static_request(
-        self,
-        method: typing.Union[RequestMethod, str],
-        path: aiohttp_typedefs.StrOrURL,
-        auth: typing.Optional[str] = None,
-        **kwargs: typing.Any,
-    ) -> ResponseSig[typing.Any]:
-        return self._request(method, path, auth=auth, **kwargs)
-
     @staticmethod
-    @typing.final
-    def collect_components(
+    @typing.no_type_check
+    def _collect_components(
         *components: enums.ComponentType,
     ) -> typing.Union[str, type[str]]:
         try:
@@ -404,13 +468,85 @@ class RESTClient(interfaces.RESTInterface):
 
             # Need to get the int overload of the components to separate them.
             elif len(components) > 1:
-                these = helpers.collect(*[int(k) for k in components])  # type: ignore[call-overload]
+                these = helpers.collect(*[int(k) for k in components])
             else:
                 these = helpers.collect(int(*components))
             # In case it's a tuple, i.e., ALL_X
         except TypeError:
             these = helpers.collect(*list(str(c.value) for c in components))
         return these
+
+    @typing.final
+    def static_request(
+        self,
+        method: typing.Union[RequestMethod, str],
+        path: str,
+        auth: typing.Optional[str] = None,
+        **kwargs: typing.Any,
+    ) -> ResponseSig[typing.Any]:
+        return self._request(method, path, auth=auth, **kwargs)
+
+    @typing.final
+    def build_oauth2_url(
+        self, client_id: typing.Optional[int] = None
+    ) -> typing.Optional[str]:
+        client_id = client_id or self._client_id
+        if client_id is None:
+            return None
+
+        return url.OAUTH2_EP_BUILDER.format(
+            oauth_endpoint=url.OAUTH_EP,
+            client_id=client_id,
+            uuid=str(uuid.uuid4()),
+        )
+
+    async def fetch_oauth2_tokens(self, code: str, /) -> OAuth2Response:
+
+        if not isinstance(self._client_id, int):
+            raise TypeError(
+                f"Expected (str) for client id but got {type(self._client_id).__qualname__}"  # type: ignore
+            )
+
+        if not isinstance(self._client_secret, str):
+            raise TypeError(
+                f"Expected (str) for client secret but got {type(self._client_secret).__qualname__}"  # type: ignore
+            )
+
+        headers = {
+            "client_secret": self._client_secret,
+        }
+
+        data = (
+            f"grant_type=authorization_code&code={code}"
+            f"&client_id={self._client_id}&client_secret={self._client_secret}"
+        )
+
+        response = await self._request(
+            RequestMethod.POST, "", headers=headers, data=data, oauth2=True
+        )
+        return OAuth2Response.build_response(response)
+
+    async def refresh_access_token(self, refresh_token: str, /) -> OAuth2Response:
+        if not isinstance(self._client_id, int):
+            raise TypeError(
+                f"Expected (str) for client id but got {type(self._client_id).__qualname__}"  # type: ignore
+            )
+
+        if not isinstance(self._client_secret, str):
+            raise TypeError(
+                f"Expected (str) for client secret but got {type(self._client_secret).__qualname__}"  # type: ignore
+            )
+
+        data = {
+            "grant_type": "refresh_token",
+            "refresh_token": refresh_token,
+            "client_id": self._client_id,
+            "client_secret": self._client_secret,
+            "Content-Type": "application/x-www-form-urlencoded",
+        }
+
+        response = await self._request(RequestMethod.POST, "", data=data, oauth2=True)
+        return OAuth2Response.build_response(response)
 
     def fetch_user(self, id: int) -> ResponseSig[typedefs.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
@@ -491,7 +627,7 @@ class RESTClient(interfaces.RESTInterface):
         **options: str,
     ) -> ResponseSig[typedefs.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        collector = self.collect_components(*components)
+        collector = self._collect_components(*components)
         return self._request(
             RequestMethod.GET,
             f"Destiny2/{int(membership_type)}/Profile/{member_id}/"
@@ -534,7 +670,7 @@ class RESTClient(interfaces.RESTInterface):
         **options: str,
     ) -> ResponseSig[typedefs.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        collector = self.collect_components(*components)
+        collector = self._collect_components(*components)
         return self._request(
             RequestMethod.GET,
             f"Destiny2/{int(type)}/Profile/{int(memberid)}/?components={collector}",

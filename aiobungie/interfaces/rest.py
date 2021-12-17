@@ -35,13 +35,19 @@ from aiobungie.internal import enums
 
 if typing.TYPE_CHECKING:
 
+    from aiobungie import rest as _rest
     from aiobungie import typedefs
     from aiobungie.crate import fireteams
 
     ResponseSigT = typing.TypeVar(
         "ResponseSigT",
         covariant=True,
-        bound=typing.Union[typedefs.JsonArray, typedefs.JsonObject, None, int],
+        bound=typing.Union[
+            typedefs.JsonArray,
+            typedefs.JsonObject,
+            int,
+            None,
+        ],
     )
     ResponseSig = typing.Coroutine[typing.Any, typing.Any, ResponseSigT]
 
@@ -49,7 +55,7 @@ if typing.TYPE_CHECKING:
 class RESTInterface(traits.RESTful, abc.ABC):
     """An API interface for the rest only client implementation."""
 
-    __slots__: typing.Sequence[str] = ()
+    __slots__ = ()
 
     @abc.abstractmethod
     async def fetch_manifest(self) -> bytes:
@@ -1500,6 +1506,41 @@ class RESTInterface(traits.RESTful, abc.ABC):
         -------
         `ResponseSig[int]`
             The active fireteams count. Max value returned is 25.
+        """
+
+    @abc.abstractmethod
+    async def fetch_oauth2_tokens(self, code: str, /) -> _rest.OAuth2Response:
+        """Makes a POST request and fetch the OAuth2 access_token and refresh token.
+
+        Parameters
+        -----------
+        code : `str`
+            The Authorization code received from the authorization endpoint found in the URL parameters.
+
+        Returns
+        -------
+        `aiobungie.rest.OAuth2Response`
+            An OAuth2 deserialized response.
+
+        Raises
+        ------
+        `aiobungie.error.Unauthorized`
+            The passed code was invalid.
+        """
+
+    @abc.abstractmethod
+    async def refresh_access_token(self, refresh_token: str, /) -> _rest.OAuth2Response:
+        """Refresh OAuth2 access token given its refresh token.
+
+        Parameters
+        ----------
+        refresh_token : `str`
+            The refresh token.
+
+        Returns
+        -------
+        `aiobungie.rest.OAuth2Response`
+            An OAuth2 deserialized response.
         """
 
     @abc.abstractmethod

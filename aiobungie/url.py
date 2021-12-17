@@ -24,18 +24,37 @@
 
 from __future__ import annotations
 
-__all__ = ("BASE", "REST_EP", "OAUTH_EP", "TOKEN_EP")
+__all__ = ("BASE", "REST_EP", "OAUTH_EP", "TOKEN_EP", "OAUTH2_EP_BUILDER")
 
 import typing
 
 BASE: typing.Final[str] = "https://www.bungie.net"
 """Base bungie url"""
 
-REST_EP: typing.Final[str] = f"{BASE}/Platform"
+REST_EP: typing.Final[str] = "/Platform"
 """REST API endpoint"""
 
 OAUTH_EP: typing.Final[str] = f"{BASE}/en/OAuth/Authorize"
 """OAuth endpoint"""
 
-TOKEN_EP: typing.Final[str] = f"{REST_EP}/App/OAuth/token"
+TOKEN_EP: typing.Final[str] = "/App/OAuth/token"
 """OAuth token endpoint"""
+
+OAUTH2_EP_BUILDER: typing.Final[
+    str
+] = "{oauth_endpoint}?client_id={client_id}&response_type=code&state={uuid}"
+"""Builds an OAuth2 authorize URL given an application client id.
+
+Parameters may be passed as kwargs using `str.format` method. i.e.,
+
+Example
+-------
+```py
+import aiobungie
+import uuid
+
+aiobungie.url.OAUTH2_EP_BUILDER.format(
+    oauth_endpoint=aiobungie.url.OAUTH_EP, client_id=1234, uuid=str(uuid.uuid4())
+)
+```
+"""

@@ -29,12 +29,11 @@ __all__ = ("ClientBase", "Netrunner", "Serializable", "RESTful")
 import typing
 
 if typing.TYPE_CHECKING:
-    from aiohttp import typedefs
 
     from aiobungie import client as base_client
     from aiobungie import interfaces
     from aiobungie import rest
-    from aiobungie.internal import factory
+    from aiobungie.internal import factory as factory_
 
 
 @typing.runtime_checkable
@@ -49,6 +48,7 @@ class Netrunner(typing.Protocol):
     @property
     def request(self) -> base_client.Client:
         """Returns a client network state for making external requests."""
+        raise NotImplementedError
 
 
 @typing.runtime_checkable
@@ -62,8 +62,9 @@ class Serializable(typing.Protocol):
     __slots__: typing.Sequence[str] = ()
 
     @property
-    def serialize(self) -> factory.Factory:
+    def factory(self) -> factory_.Factory:
         """Returns the entity factory for the client."""
+        raise NotImplementedError
 
 
 @typing.runtime_checkable
@@ -72,13 +73,39 @@ class RESTful(typing.Protocol):
 
     __slots__: typing.Sequence[str] = ()
 
+    def build_oauth2_url(
+        self, client_id: typing.Optional[int] = None
+    ) -> typing.Optional[str]:
+        """Builds an OAuth2 URL.
+
+        Parameters
+        ----------
+        client_id : `typing.Optional[int]`
+            An optional client id to provide, If left `None` it will roll back to the id passed
+            to the `RESTClient`, If both is `None` this method will return `None`.
+
+        Returns
+        -------
+        `typing.Optional[str]`
+            If the client id was provided as a parameter or provided in `aiobungie.RESTClient`,
+            A complete URL will be returned.
+            Otherwise `None` will be returned.
+        """
+        raise NotImplementedError
+
+    @property
+    def client_id(self) -> typing.Optional[int]:
+        """Return the client id of this REST client if provided, Otherwise None"""
+        raise NotImplementedError
+
     async def close(self) -> None:
         """Close the rest client."""
+        raise NotImplementedError
 
     async def static_request(
         self,
         method: typing.Union[rest.RequestMethod, str],
-        path: typedefs.StrOrURL,
+        path: str,
         auth: typing.Optional[str] = None,
         **kwargs: typing.Any
     ) -> typing.Any:
@@ -88,7 +115,7 @@ class RESTful(typing.Protocol):
         ----------
         method : `typing.Union[aiobungie.rest.RequestMethod, str]`
             The request method, This may be `GET`, `POST`, `PUT`, etc.
-        path: `typing.Union[str, yarl.URL]`
+        path: `str`
             The bungie endpoint or path.
             A path must look something like this
             `Destiny2/3/Profile/46111239123/...`
@@ -102,6 +129,7 @@ class RESTful(typing.Protocol):
         `typing.Any`
             Any object.
         """
+        raise NotImplementedError
 
 
 @typing.runtime_checkable
@@ -135,3 +163,4 @@ class ClientBase(Netrunner, Serializable, typing.Protocol):
     @property
     def rest(self) -> interfaces.RESTInterface:
         """Returns the REST client for the this client."""
+        raise NotImplementedError

@@ -322,6 +322,7 @@ async def raise_error(response: aiohttp.ClientResponse, msg: str) -> AiobungieEr
             "WebAuthRequired",
             "ApiInvalidOrExpiredKey",
             "AuthenticationInvalid",
+            "AuthorizationCodeInvalid",
         }:
             return Unauthorized(
                 message=message,

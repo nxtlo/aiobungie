@@ -146,6 +146,7 @@ class Dungeon(IntEnum):
     GOA_MASTER = 3774021532
     """Grasp of Avarice master."""
 
+
 @typing.final
 class Planet(IntEnum):
     """An Enum for all available planets in Destiny 2."""

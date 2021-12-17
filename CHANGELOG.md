@@ -14,12 +14,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `is_flawless`, `is_solo` and `is_solo_flawless` useful properties to for both `Activity` and `PostActivity`.
 - Post activity extended values and player weapons values.
 - `rest._handle_error` method moved to `error.py` and renamed to `raise_error`
+- `rest.OAuth2Response` class returned for OAuth2 responses.
+- `RESTClient.client_id` property.
+- `RESTClient.collect_components` is now protected for the class.
+- `RESTClient.build_oauth2_url` method to build an OAuth2 URL.
+- `RESTClient.fetch_oauth2_tokens` and `RESTClient.refresh_access_token` new methods.
 
 ### Changed
 - Exceptions now has fields and improved.
 - `fetch_activity` function name changed to `fetch_activities`
 - `fetch_activities` now returns a sequence(`collections.Sequence[Activity]`) of activities instead of a singular activity object.
 - `ActivityVaules.team` returns `typing.Optional[int]` now instead of `int`.
+- Exported `aiobungie.url` to `aiobungie.__init__.py`
+- `Client` and `RESTClient` now take 2 extra optional parameters, `client_secret` and `client_id` for OAuth2 usage.
+- `traits.Serializeable.serialize` property name changed to `factory`.
+- `static_request` now only takes a str for the route.
 
 ## [0.2.5b12](https://github.com/nxtlo/aiobungie/compare/0.2.5b11...0.2.5b12) 2021-10-21
 

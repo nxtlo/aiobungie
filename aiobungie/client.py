@@ -66,10 +66,13 @@ class Client(traits.ClientBase):
     Alternatively, You can also use `aiobungie.RESTClient` to only get the JSON responses
     and then make your own implementation data classes. Both options are up to you.
 
-    Attributes
+    Parameters
     -----------
-    token: `builtins.str`
+    token: `str`
         Your Bungie's API key or Token from the developer's portal.
+
+    Other Parameters
+    ----------------
     rest_client: `typing.Optional[aiobungie.interfaces.RESTInterface]`
         An optional rest client instance you can pass,
         If set to `None` then the client will make a rest instance for you.
@@ -81,26 +84,38 @@ class Client(traits.ClientBase):
     async with aiobungie.RESTClient(TOKEN, max_retries=2) as rest_client:
         client = aiobungie.Client(TOKEN, rest_client=rest_client)
     ```
-    max_retries : `builtins.int`
+    max_retries : `int`
         The max retries number to retry if the request hit a `5xx` status code.
+    client_secret : `typing.Optional[str]`
+        An optional application client secret,
+        This is only needed if you're fetching OAuth2 tokens with this client.
+    client_id : `typing.Optional[int]`
+        An optional application client id,
+        This is only needed if you're fetching OAuth2 tokens with this client.
     """
 
-    __slots__ = ("_rest", "_factory", "_token")
+    __slots__ = ("_rest", "_factory", "_token", "_client_secret", "_client_id")
 
     def __init__(
         self,
         token: str,
         /,
+        client_secret: typing.Optional[str] = None,
+        client_id: typing.Optional[int] = None,
         *,
         rest_client: typing.Optional[interfaces.RESTInterface] = None,
         max_retries: int = 4,
     ) -> None:
-        if token is None:
-            raise ValueError("Missing the API key!")
+
+        self._client_secret = client_secret
+        self._client_id = client_id
 
         if rest_client is not None:
             self._rest = rest_client
-        self._rest = rest_.RESTClient(token, max_retries=max_retries)
+
+        self._rest = rest_.RESTClient(
+            token, client_secret, client_id, max_retries=max_retries
+        )
 
         self._factory = factory_.Factory(self)
         self._token = token  # We need the token For Manifest.

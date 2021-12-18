@@ -1354,93 +1354,211 @@ class Factory(interfaces.FactoryInterface):
             icon=icon,
         )
 
-    def deserialize_inventory_entity(
+    def _deserialize_inventory_item_objects(
+        self, payload: typedefs.JsonObject
+    ) -> entity.InventoryEntityObjects:
+        return entity.InventoryEntityObjects(
+            action=payload.get("action"),
+            set_data=payload.get("setData"),
+            stats=payload.get("stats"),
+            equipping_block=payload.get("equippingBlock"),
+            translation_block=payload.get("translationBlock"),
+            preview=payload.get("preview"),
+            quality=payload.get("quality"),
+            value=payload.get("value"),
+            source_data=payload.get("sourceData"),
+            objectives=payload.get("objectives"),
+            plug=payload.get("plug"),
+            metrics=payload.get("metrics"),
+            gearset=payload.get("gearset"),
+            sack=payload.get("sack"),
+            sockets=payload.get("sockets"),
+            summary=payload.get("summary"),
+            talent_gird=payload.get("talentGrid"),
+            investments_stats=payload.get("investmentStats"),
+            perks=payload.get("perks"),
+            animations=payload.get("animations", []),
+            links=payload.get("links", []),
+        )
+
+    def deserialize_inventory_entity(  # noqa: C901 Too complex.
         self, payload: typedefs.JsonObject, /
     ) -> entity.InventoryEntity:
 
         props = self._set_entity_attrs(payload)
+        objects = self._deserialize_inventory_item_objects(payload)
 
-        # Some entities have an inventory which
-        # Includes its hash types.
-        # Most entities has this
-        # and for some it doesn't exists
+        collectible_hash: typing.Optional[int] = None
+        if raw_collectible_hash := payload.get("collectibleHash"):
+            collectible_hash = int(raw_collectible_hash)
 
-        if (raw_inventory := payload.get("inventory", {})) is not None:
-            inventory: typedefs.JsonObject = raw_inventory
+        secondary_icon: undefined.UndefinedOr[assets.Image] = undefined.Undefined
+        if raw_second_icon := payload.get("secondaryIcon"):
+            secondary_icon = assets.Image(raw_second_icon)
 
-        # Entity tier type. Most entities have a tier
-        # and some doesn't exists so we have to check.
+        secondary_overlay: undefined.UndefinedOr[assets.Image] = undefined.Undefined
+        if raw_second_overlay := payload.get("secondaryOverlay"):
+            secondary_overlay = assets.Image(raw_second_overlay)
 
-        bucket_type: int = inventory.get("bucketTypeHash", 0)
+        secondary_special: undefined.UndefinedOr[assets.Image] = undefined.Undefined
+        if raw_second_special := payload.get("secondarySpecial"):
+            secondary_special = assets.Image(raw_second_special)
 
-        tier: enums.ItemTier = enums.ItemTier(
-            int(inventory.get("tierTypeHash", enums.ItemTier.NONE))
-        )
+        screenshot: undefined.UndefinedOr[assets.Image] = undefined.Undefined
+        if raw_screenshot := payload.get("screenshot"):
+            screenshot = assets.Image(raw_screenshot)
 
-        tier_name: str = inventory.get("tierTypeName", None)
+        watermark_icon: typing.Optional[assets.Image] = None
+        if raw_watermark_icon := payload.get("iconWatermark"):
+            watermark_icon = assets.Image(raw_watermark_icon)
 
+        watermark_shelved: typing.Optional[assets.Image] = None
+        if raw_watermark_shelved := payload.get("iconWatermarkShelved"):
+            watermark_shelved = assets.Image(raw_watermark_shelved)
+
+        about: undefined.UndefinedOr[str] = undefined.Undefined
+        if (raw_about := payload.get("flavorText")) and not typedefs.is_unknown(
+            raw_about
+        ):
+            about = raw_about
+
+        ui_item_style: undefined.UndefinedOr[str] = undefined.Undefined
         if (
-            type_name := payload.get("itemTypeDisplayName", typedefs.Unknown)
-        ) == typedefs.Unknown:
-            type_name = undefined.Undefined
+            raw_ui_style := payload.get("uiItemDisplayStyle")
+        ) and not typedefs.is_unknown(raw_ui_style):
+            ui_item_style = raw_ui_style
 
-        if (about := payload.get("flavorText", typedefs.Unknown)) == typedefs.Unknown:
-            about = undefined.Undefined
-
+        tier_and_name: undefined.UndefinedOr[str] = undefined.Undefined
         if (
-            raw_watermark := payload.get("iconWatermark", assets.Image.partial())
-        ) is not None:
-            water_mark: assets.Image = assets.Image(str(raw_watermark))
+            raw_tier_and_name := payload.get("itemTypeAndTierDisplayName")
+        ) and not typedefs.is_unknown(raw_tier_and_name):
+            tier_and_name = raw_tier_and_name
 
+        type_name: undefined.UndefinedOr[str] = undefined.Undefined
         if (
-            raw_banner := payload.get("screenshot", assets.Image.partial())
-        ) is not None:
-            banner = assets.Image(str(raw_banner))
+            raw_type_name := payload.get("itemTypeDisplayName")
+        ) and not typedefs.is_unknown(raw_type_name):
+            type_name = raw_type_name
 
-        damage: undefined.UndefinedOr[enums.DamageType] = undefined.Undefined
-        if (raw_damage := payload.get("defaultDamageTypeHash")) is not None:
-            damage = enums.DamageType(raw_damage)
+        display_source: undefined.UndefinedOr[str] = undefined.Undefined
+        if (
+            raw_display_source := payload.get("displaySource")
+        ) and not typedefs.is_unknown(raw_display_source):
+            display_source = raw_display_source
 
-        # Ignoring those two so mypy doesn't cry.
-        summary_hash: int = 0
-        if (raw_summary_hash := payload.get("summaryItemHash")) is not None:
-            summary_hash: int = int(raw_summary_hash)  # type: ignore
+        lorehash: typing.Optional[int] = None
+        if raw_lore_hash := payload.get("loreHash"):
+            lorehash = int(raw_lore_hash)
 
-        if (raw_stats := payload.get("stats", {})) is not None:
-            stats: typedefs.JsonObject = raw_stats
+        summary_hash: typing.Optional[int] = None
+        if raw_summary_hash := payload.get("summaryItemHash"):
+            summary_hash = raw_summary_hash
 
-        block = enums.AmmoType.NONE
-        if (ammo := payload.get("equippingBlock")) is not None:
-            block: enums.AmmoType = enums.AmmoType(ammo["ammoType"])  # type: ignore
+        breaker_type_hash: typing.Optional[int] = None
+        if raw_breaker_type_hash := payload.get("breakerTypeHash"):
+            breaker_type_hash = int(raw_breaker_type_hash)
 
-        item_class: enums.Class = enums.Class(
-            payload.get("classType", enums.Class.UNKNOWN)
-        )
+        damage_types: typing.Optional[collections.Sequence[int]] = None
+        if raw_damage_types := payload.get("damageTypes"):
+            damage_types = [int(type_) for type_ in raw_damage_types]
+
+        damagetype_hashes: typing.Optional[
+            collections.Sequence[enums.DamageType]
+        ] = None
+        if raw_damagetype_hashes := payload.get("damageTypeHashes"):
+            damagetype_hashes = [
+                enums.DamageType(int(type_)) for type_ in raw_damagetype_hashes
+            ]
+
+        default_damagetype_hash: typing.Optional[enums.DamageType] = None
+        if raw_defaultdmg_hash := payload.get("defaultDamageTypeHash"):
+            default_damagetype_hash = enums.DamageType(int(raw_defaultdmg_hash))
+
+        emblem_objective_hash: typing.Optional[int] = None
+        if raw_emblem_obj_hash := payload.get("emblemObjectiveHash"):
+            emblem_objective_hash = int(raw_emblem_obj_hash)
+
+        tier_type: typing.Optional[int] = None
+        tier: typing.Optional[enums.ItemTier] = None
+        bucket_hash: typing.Optional[int] = None
+        recovery_hash: typing.Optional[int] = None
+        tier_name: undefined.UndefinedOr[str] = undefined.Undefined
+        isinstance_item: bool = False
+        expire_tool_tip: undefined.UndefinedOr[str] = undefined.Undefined
+        expire_in_orbit_message: undefined.UndefinedOr[str] = undefined.Undefined
+        suppress_expiration: bool = False
+        max_stack_size: typing.Optional[int] = None
+        stack_label: undefined.UndefinedOr[str] = undefined.Undefined
+
+        if inventory := payload.get("inventory"):
+            tier_type = int(inventory["tierType"])
+            tier = enums.ItemTier(int(inventory["tierTypeHash"]))
+            bucket_hash = int(inventory["bucketTypeHash"])
+            recovery_hash = int(inventory["recoveryBucketTypeHash"])
+            tier_name = inventory["tierTypeName"]
+            isinstance_item = inventory["isInstanceItem"]
+            suppress_expiration = inventory["suppressExpirationWhenObjectivesComplete"]
+            max_stack_size = int(inventory["maxStackSize"])
+
+            try:
+                stack_label = inventory["stackUniqueLabel"]
+            except KeyError:
+                pass
 
         return entity.InventoryEntity(
             net=self._net,
+            collectible_hash=collectible_hash,
             name=props.name,
+            about=about,
+            emblem_objective_hash=emblem_objective_hash,
+            suppress_expiration=suppress_expiration,
+            max_stack_size=max_stack_size,
+            stack_label=stack_label,
+            tier=tier,
+            tier_type=tier_type,
+            tier_name=tier_name,
+            bucket_hash=bucket_hash,
+            recovery_bucket_hash=recovery_hash,
+            isinstance_item=isinstance_item,
+            expire_in_orbit_message=expire_in_orbit_message,
+            expiration_tooltip=expire_tool_tip,
+            lore_hash=lorehash,
+            type_and_tier_name=tier_and_name,
+            summary_hash=summary_hash,
+            ui_display_style=ui_item_style,
+            type_name=type_name,
+            breaker_type_hash=breaker_type_hash,
             description=props.description,
+            display_source=display_source,
             hash=props.hash,
+            damage_types=damage_types,
             index=props.index,
             icon=props.icon,
             has_icon=props.has_icon,
-            water_mark=water_mark,
-            banner=banner,
-            about=about,
-            type=payload.get("itemType", undefined.Undefined),
-            bucket_type=bucket_type,
-            tier=tier,
-            tier_name=tier_name,
-            type_name=type_name,
-            sub_type=payload.get("itemSubType", undefined.Undefined),
-            item_class=item_class,
-            damage=damage,
-            summary_hash=summary_hash,
-            is_equippable=payload.get("equippable", False),
-            stats=stats,
-            ammo_type=block,
-            lore_hash=payload.get("loreHash", None),
+            screenshot=screenshot,
+            watermark_icon=watermark_icon,
+            watermark_shelved=watermark_shelved,
+            secondary_icon=secondary_icon,
+            secondary_overlay=secondary_overlay,
+            secondary_special=secondary_special,
+            type=enums.Item(int(payload["itemType"])),
+            trait_hashes=[int(id_) for id_ in payload["traitHashes"]],
+            trait_ids=[trait for trait in payload["traitIds"]],
+            category_hashes=[int(hash_) for hash_ in payload["itemCategoryHashes"]],
+            item_class=enums.Class(int(payload["classType"])),
+            sub_type=enums.Item(int(payload["itemSubType"])),
+            breaker_type=int(payload["breakerType"]),
+            default_damagetype=int(payload["defaultDamageType"]),
+            default_damagetype_hash=default_damagetype_hash,
+            damagetype_hashes=damagetype_hashes,
+            tooltip_notifications=payload["tooltipNotifications"],
+            not_transferable=payload["nonTransferrable"],
+            allow_actions=payload["allowActions"],
+            is_equippable=payload["equippable"],
+            objects=objects,
+            background_colors=payload.get("backgroundColor", {}),
+            season_hash=payload.get("seasonHash"),
+            has_postmaster_effect=payload["doesPostmasterPullHaveSideEffects"],
         )
 
     def deserialize_objective_entity(

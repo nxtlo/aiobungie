@@ -33,59 +33,28 @@ class TestEntity:
     # ABCs not being tested currently.
     @pytest.fixture()
     def entity(self):
-        assert lambda: None
+        ...
 
 
 class TestInventoryItemEntity:
     @pytest.fixture()
     def item(self):
-        return crate.InventoryEntity(
-            net=mock.Mock(),
-            hash=182371221,
-            index=1223,
-            name="Midnight Coup",
-            description=aiobungie.Undefined,
-            icon=None,
-            has_icon=False,
-            type=aiobungie.Item.WEAPON,
-            sub_type=aiobungie.Item.HANDCANNON,
-            type_name="Hand Cannon",
-            water_mark=None,
-            tier=aiobungie.ItemTier.LEGENDERY,
-            tier_name="Legendery",
-            bucket_type=aiobungie.Item.KINETIC,
-            stats={},
-            ammo_type=aiobungie.AmmoType.PRIMARY,
-            lore_hash=123230123,
-            item_class=aiobungie.Class.UNKNOWN,
-            is_equippable=True,
-            summary_hash=190230123,
-            damage=aiobungie.DamageType.KINETIC,
-            about="Best hand cannon in the game. :p",
-            banner=assets.Image("someImagePath.jpg"),
-        )
+        ...
 
     def test_item_description_is_undefined(self, item) -> None:
-        assert item.description is aiobungie.Undefined
+        ...
 
     def test_item_types(self, item):
-        assert item.sub_type is aiobungie.Item.HANDCANNON
-        assert item.damage is aiobungie.DamageType.KINETIC
-        assert item.item_class is aiobungie.Class.UNKNOWN
-        assert item.tier is aiobungie.ItemTier.LEGENDERY
-        assert item.bucket_type is aiobungie.Item.KINETIC
+        ...
 
     def test_item_numbers(self, item):
-        assert item.lore_hash == 123230123
-        assert isinstance(item.hash, int) and item.hash == 182371221
-        assert isinstance(item.index, int) and item.index == 1223
+        ...
 
     def test_item_bool_stuff(self, item):
-        assert item.is_equippable is True
-        assert item.has_icon is False
+        ...
 
     def test_int_over(self, item):
-        assert int(item) == item.hash
+        ...
 
     def test_str_over(self, item):
-        assert str(item) == item.name
+        ...

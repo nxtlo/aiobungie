@@ -37,6 +37,7 @@ __all__: tuple[str, ...] = (
     "BaseEntity",
     "ActivityEntity",
     "PlaylistActivityEntity",
+    "InventoryEntityObjects"
 )
 
 import abc
@@ -164,85 +165,253 @@ class BaseEntity(Entity):
     description: undefined.UndefinedOr[str]
     """Entity's description"""
 
-    icon: assets.MaybeImage
+    icon: assets.MaybeImage = attr.field(repr=False)
     """Entity's icon."""
 
-    has_icon: bool
+    has_icon: bool = attr.field(repr=False)
     """A boolean that returns True if the entity has an icon."""
 
 
-@attr.define(kw_only=True, hash=False, weakref_slot=False)
+# For the sake of not making stuff a little bit clunky, We separate the JSON objects
+# from the normal fields.
+@attr.define(kw_only=True, hash=False, weakref_slot=False, repr=False)
+class InventoryEntityObjects:
+    """JSON object found inside an inventory item definition."""
+
+    action: typing.Optional[typedefs.JsonObject] = attr.field()
+    """"""
+
+    set_data: typing.Optional[typedefs.JsonObject] = attr.field()
+    """If this item is a quest, this block will be non-null."""
+
+    quality: typing.Optional[typedefs.JsonObject] = attr.field()
+    """If this item can have a level or stats, this block will be available."""
+
+    preview: typing.Optional[typedefs.JsonObject] = attr.field()
+    """If this item can be Used or Acquired to gain other items
+    (for instance, how Eververse Boxes can be consumed to get items from the box), this block will available.
+    """
+
+    value: typing.Optional[typedefs.JsonObject] = attr.field()
+    """The conceptual "Value" of an item, if any was defined."""
+
+    source_data: typing.Optional[typedefs.JsonObject] = attr.field()
+    """If this item has a known source, this block will be available."""
+
+    objectives: typing.Optional[typedefs.JsonObject] = attr.field()
+    """If this item has Objectives (extra tasks that can be accomplished related to the item,
+    This field will be available.
+    """
+
+    plug: typing.Optional[typedefs.JsonObject] = attr.field()
+    """If this item is a Plug, this will be available."""
+
+    gearset: typing.Optional[typedefs.JsonObject] = attr.field()
+    """"""
+
+    metrics: typing.Optional[typedefs.JsonObject] = attr.field()
+    """If this item has available metrics to be shown, this block will be available."""
+
+    sack: typing.Optional[typedefs.JsonObject] = attr.field()
+    """"""
+
+    sockets: typing.Optional[typedefs.JsonObject] = attr.field()
+    """"""
+
+    summary: typing.Optional[typedefs.JsonObject] = attr.field()
+    """"""
+
+    talent_gird: typing.Optional[typedefs.JsonObject] = attr.field()
+    """"""
+
+    stats: typing.Optional[typedefs.JsonObject] = attr.field()
+    """If this item can have stats (such as a weapon, armor, or vehicle),
+    this block will be non-null and populated with the stats found on the item.
+    """
+
+    equipping_block: typing.Optional[typedefs.JsonObject] = attr.field()
+    """If this item can be equipped, this block will be available."""
+
+    translation_block: typing.Optional[typedefs.JsonObject] = attr.field()
+    """If this item can be rendered, this block will be available."""
+
+    investments_stats: typing.Optional[typedefs.JsonObject] = attr.field()
+    """"""
+
+    perks: typing.Optional[typedefs.JsonObject] = attr.field()
+    """"""
+
+    animations: collections.Sequence[typedefs.JsonObject] = attr.field()
+    """"""
+
+    links: collections.Sequence[dict[str, str]] = attr.field()
+    """"""
+
+
+@attr.define(kw_only=True, hash=True, weakref_slot=False)
 class InventoryEntity(BaseEntity, Entity):
     """Represents a bungie inventory item entity.
 
     This derives from `DestinyInventoryItemDefinition` definition.
     """
 
-    type: undefined.UndefinedOr[enums.Item] = attr.field(repr=True, hash=False)
+    type: enums.Item = attr.field(repr=True, hash=False)
     """Entity's type. Can be undefined if nothing was found."""
 
-    type_name: undefined.UndefinedOr[str] = attr.field(repr=True, hash=False, eq=False)
-    """Entity's type name. i.e., `Grenade Launcher`"""
+    objects: InventoryEntityObjects = attr.field(repr=False)
+    """JSON objects found within the item."""
 
-    water_mark: typing.Optional[assets.Image] = attr.field(
-        repr=False, hash=False, eq=False
-    )
-    """Entity's water mark."""
+    trait_ids: list[str] = attr.field(repr=False)
+    """"""
 
-    tier: typing.Optional[enums.ItemTier] = attr.field(repr=True, hash=False, eq=False)
-    """Entity's "tier."""
+    trait_hashes: list[int] = attr.field(repr=False)
+    """"""
 
-    tier_name: undefined.UndefinedOr[str] = attr.field(repr=False, eq=False)
-    """A string version of the item tier."""
-
-    bucket_type: typing.Optional[int] = attr.field(repr=True, hash=False, eq=False)
-    """The entity's bucket type, None if unknown"""
-
-    stats: typing.Optional[dict[str, typing.Any]] = attr.field(
-        repr=False, hash=False, eq=False
-    )
-    """Entity's stats. this currently returns a dict object
-    of the stats.
-    """
-
-    ammo_type: typing.Optional[enums.AmmoType] = attr.field(
-        repr=False, hash=False, eq=False
-    )
-    """Entity's ammo type if it was a wepon, otherwise it will return None"""
-
-    lore_hash: typing.Optional[int] = attr.field(repr=False, hash=False, eq=False)
-    """The entity's lore hash. Can be undefined if no lore hash found."""
-
-    item_class: typing.Optional[enums.Class] = attr.field(
-        repr=False, hash=False, eq=False
-    )
+    item_class: enums.Class = attr.field(repr=False, hash=False, eq=False)
     """The entity's class type."""
 
-    sub_type: undefined.UndefinedOr[enums.Item] = attr.field(
-        repr=False, hash=False, eq=False
-    )
+    sub_type: enums.Item = attr.field(repr=False, hash=False, eq=False)
     """The subtype of the entity. A type is a weapon or armor.
     A subtype is a handcannonn or leg armor for an example.
     """
 
-    is_equippable: undefined.UndefinedOr[bool] = attr.field(
-        repr=False, hash=False, eq=False
+    breaker_type: int = attr.field(repr=False)
+    """Some weapons and plugs can have a "Breaker Type",
+    a special ability that works sort of like damage type vulnerabilities.
+    """
+
+    breaker_type_hash: typing.Optional[int] = attr.field(repr=False)
+    """The item breaker type hash."""
+
+    damagetype_hashes: typing.Optional[collections.Sequence[int]] = attr.field(
+        repr=False
     )
+    """"""
+
+    damage_types: typing.Optional[collections.Sequence[int]] = attr.field(repr=False)
+    """The list of all damage types."""
+
+    default_damagetype: int = attr.field(repr=False)
+    """"""
+
+    default_damagetype_hash: typing.Optional[enums.DamageType] = attr.field(repr=False)
+    """"""
+
+    collectible_hash: typing.Optional[int] = attr.field(repr=False, hash=True)
+    """If this item has a collectible related to it, this is the hash identifier of that collectible entry."""
+
+    watermark_icon: typing.Optional[assets.Image] = attr.field(repr=False, hash=False)
+    """Entity's water mark."""
+
+    watermark_shelved: typing.Optional[assets.Image] = attr.field(
+        repr=False, hash=False
+    )
+    """If available, this is the 'shelved' release watermark overlay for the icon."""
+
+    secondary_icon: undefined.UndefinedOr[assets.Image] = attr.field(
+        repr=False, hash=False
+    )
+    """A secondary icon associated with the item.
+
+    Currently this is used in very context specific applications, such as Emblem Nameplates.
+    """
+
+    secondary_overlay: undefined.UndefinedOr[assets.Image] = attr.field(
+        repr=False, hash=False
+    )
+    """The "secondary background" of the secondary icon."""
+
+    secondary_special: undefined.UndefinedOr[assets.Image] = attr.field(
+        repr=False, hash=False
+    )
+    """The "special" background for the item. For Emblems"""
+
+    background_colors: collections.Mapping[str, bytes] = attr.field(
+        repr=False, hash=False
+    )
+    """Most emblems have a background colour, This field represents them."""
+
+    screenshot: undefined.UndefinedOr[assets.Image] = attr.field(repr=False, hash=False)
+    """Entity's screenshot."""
+
+    ui_display_style: undefined.UndefinedOr[str] = attr.field(repr=False)
+    """"""
+
+    tier_type: typing.Optional[int] = attr.field(repr=False, hash=False)
+    """Entity's tier type."""
+
+    tier: typing.Optional[enums.ItemTier] = attr.field(repr=False)
+    """The item tier hash as an enum if exists."""
+
+    tier_name: undefined.UndefinedOr[str] = attr.field(repr=False)
+    """A string version of the item tier. i.e., `Legendery`"""
+
+    type_name: undefined.UndefinedOr[str] = attr.field(repr=False, hash=False)
+    """Entity's type name. i.e., `Grenade Launcher`."""
+
+    type_and_tier_name: undefined.UndefinedOr[str] = attr.field(hash=False)
+    """Entity's tier and type name combined, i.e., `Legendery Grenade Launcher`."""
+
+    bucket_hash: typing.Optional[int] = attr.field(repr=False, hash=False)
+    """The entity's bucket type hash, None if it doesn't have one."""
+
+    recovery_bucket_hash: typing.Optional[int] = attr.field(repr=False)
+    """If the item is picked up by the lost loot queue,
+    this is the hash identifier for the DestinyInventoryBucketDefinition.
+    """
+
+    max_stack_size: typing.Optional[int] = attr.field(repr=False)
+    """The maximum quantity of this item that can exist in a stack."""
+
+    stack_label: undefined.UndefinedOr[str] = attr.field(repr=False)
+    """If this string is populated, you can't have more than one stack with this label in a given inventory."""
+
+    tooltip_notifications: list[str] = attr.field(repr=False)
+    """"""
+
+    display_source: undefined.UndefinedOr[str] = attr.field(hash=False, repr=False)
+    """String telling you about how you can find the item."""
+
+    emblem_objective_hash: typing.Optional[int] = attr.field(repr=False)
+    """If the item is an emblem that has a special Objective attached to it, This will be its hash."""
+
+    isinstance_item: bool = attr.field(repr=False)
+    """If True, This item is instanced."""
+
+    expiration_tooltip: undefined.UndefinedOr[str] = attr.field(repr=False)
+    """If the item expires while playing in an activity, we show a different message."""
+
+    expire_in_orbit_message: undefined.UndefinedOr[str] = attr.field(repr=False)
+    """If the item expires in orbit, This message will be available."""
+
+    suppress_expiration: typing.Optional[bool] = attr.field(repr=False)
+    """"""
+
+    lore_hash: typing.Optional[int] = attr.field(repr=False, hash=False, eq=False)
+    """The entity's lore hash. Can be undefined if no lore hash found."""
+
+    is_equippable: bool = attr.field(repr=False)
     """True if the entity can be equipped or False."""
 
     summary_hash: typing.Optional[int] = attr.field(repr=False, hash=False, eq=False)
     """Entity's summary hash."""
 
-    damage: undefined.UndefinedOr[enums.DamageType] = attr.field(
-        repr=False, hash=False, eq=False
-    )
-    """Entity's damage type. Only works for weapons."""
-
     about: undefined.UndefinedOr[str] = attr.field(repr=True, hash=False, eq=False)
-    """Entity's about."""
+    """Entity's about. Originally this is the flavorText field but to make readable its renamed to about.."""
 
-    banner: typing.Optional[assets.Image] = attr.field(repr=False, eq=False, hash=False)
-    """Entity's banner."""
+    allow_actions: bool = attr.field(repr=False)
+    """"""
+
+    has_postmaster_effect: bool = attr.field(repr=False)
+    """Whether something will occur if you transfer this item from postmaster or not."""
+
+    not_transferable: bool = attr.field(repr=False)
+    """If True, this item cannot be transferred, Otherwise it can."""
+
+    category_hashes: collections.Sequence[int] = attr.field(repr=False)
+    """"""
+
+    season_hash: typing.Optional[int] = attr.field(repr=False)
 
 
 @attr.define(kw_only=True, weakref_slot=False)

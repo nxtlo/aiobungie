@@ -503,58 +503,35 @@ class DamageType(IntEnum):
 
 @typing.final
 class Item(IntEnum):
-    """Enums for Destiny2's inventory bucket items"""
+    """Enums for Destiny2's item types."""
 
     NONE = 0
+    CURRENCY = 1
     ARMOR = 2
     WEAPON = 3
-    AUTO_RIFLE = 6
-    SHOTGUN = 7
-    MACHINE_GUN = 8
-    HANDCANNON = 9
-    ROCKET_LAUNCHER = 10
-    FUSION_RIFLE = 11
-    SNIPER_RIFLE = 12
-    PULSE_RIFLE = 13
-    SCOUT_RIFLE = 14
-    SIDEARM = 17
-    SWORD = 18
-    MASK = 19
-    SHADER = 20
-    ORNAMENT = 21
-    FUSION_RIFLELINE = 22
-    GRENADE_LAUNCHER = 23
-    SUBMACHINE = 24
-    TRACE_RIFLE = 25
-
-    # the actual armor hash.
-    HELMET_ARMOR = 26
-    GAUNTLET_ARMOR = 27
-    CHEST_ARMOR = 28
-    LEG_ARMOR = 29
-    CLASS_ARMOR = 30
-
-    # Only for inventory item definitions.
-    HELMET = 3448274439
-    GAUNTLET = 3551918588
-    CHEST = 14239492
-    LEG = 20886954
-    CLASS = 1585787867
-
-    BOW = 31
-    EMBLEMS = 4274335291
-    LEGENDRY_SHARDS = 2689798309
-    GHOST = 4023194814
-    SUBCLASS = 3284755031
-    SEASONAL_ARTIFACT = 1506418338
-    EMOTES = 3054419239
-    SYNTHWAEV_TEMPLATE = 4092644517
-
-    # This is also required here since
-    # All bungie items are entities.
-    KINETIC = 1498876634
-    ENERGY = 2465295065
-    POWER = 953998645
+    MESSAGE = 7
+    ENGRAM = 8
+    CONSUMABLE = 9
+    EXCHANGEMATERIAL = 10
+    MISSIONREWARD = 11
+    QUESTSTEP = 12
+    QUESTSTEPCOMPLETE = 13
+    EMBLEM = 14
+    QUEST = 15
+    SUBCLASS = 16
+    CLANBANNER = 17
+    AURA = 18
+    MOD = 19
+    DUMMY = 20
+    SHIP = 21
+    VEHICLE = 22
+    EMOTE = 23
+    GHOST = 24
+    PACKAGE = 25
+    BOUNTY = 26
+    WRAPPER = 27
+    SEASONALARTIFACT = 28
+    FINISHER = 29
 
 
 @typing.final

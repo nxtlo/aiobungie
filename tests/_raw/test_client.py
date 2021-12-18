@@ -213,10 +213,10 @@ async def test_profile():
     for char_id_, data in pf.character_render_data.items():
         assert isinstance(char_id_, int)
         assert isinstance(data, aiobungie.crate.RenderedData)
-        items = await data.fetch_my_items(limit=2)
-        assert len(items) == 2
-        for item in items:
-            assert isinstance(item, aiobungie.crate.InventoryEntity)
+        items_ = await data.fetch_my_items(limit=2)
+        assert len(items_) == 2
+        for item_ in items_:
+            assert isinstance(item_, aiobungie.crate.InventoryEntity)
 
     assert pf.character_progressions
     for cid, prog in pf.character_progressions.items():

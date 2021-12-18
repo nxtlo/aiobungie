@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `RESTClient.collect_components` is now protected for the class.
 - `RESTClient.build_oauth2_url` method to build an OAuth2 URL.
 - `RESTClient.fetch_oauth2_tokens` and `RESTClient.refresh_access_token` new methods.
+- Missing `entity.InventoryEntity` fields were added.
 
 ### Changed
 - Exceptions now has fields and improved.
@@ -29,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Client` and `RESTClient` now take 2 extra optional parameters, `client_secret` and `client_id` for OAuth2 usage.
 - `traits.Serializeable.serialize` property name changed to `factory`.
 - `static_request` now only takes a str for the route.
+- Removed some fields from `enums.Item` since they don't belong to there.
 
 ## [0.2.5b12](https://github.com/nxtlo/aiobungie/compare/0.2.5b11...0.2.5b12) 2021-10-21
 

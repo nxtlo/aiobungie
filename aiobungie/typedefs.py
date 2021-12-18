@@ -24,6 +24,16 @@
 
 from __future__ import annotations
 
+__all__: tuple[str, ...] = (
+    "JsonObject",
+    "JsonArray",
+    "Unknown",
+    "NoneOr",
+    "EnumSig",
+    "IntAnd",
+    "is_unknown",
+)
+
 import typing
 
 from aiobungie.internal import enums
@@ -41,7 +51,7 @@ i.e., `[{"Key": 1}, {"Key2": "Value"}]`
 """
 
 Unknown: typing.Final[typing.Literal[""]] = ""
-"""Some Bungie strings comes Empty so we undefine them if so."""
+"""Some Bungie strings return empty so we undefine them if so."""
 
 T = typing.TypeVar("T", covariant=True)
 
@@ -55,3 +65,7 @@ EnumSig = typing.TypeVar(
 
 IntAnd = typing.Union[int, EnumSig]
 """A type hint for parameters that may receives an enum or an int."""
+
+
+def is_unknown(string: str) -> bool:
+    return string == Unknown

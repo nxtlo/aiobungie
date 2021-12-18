@@ -120,12 +120,7 @@ asyncio.run(main("DB_ACCESS_TOKEN"))
 ### Requirements
 * Python >=3.8 ,<=3.12
 * aiohttp
-* attrs.
-
-### Optional Requirements for speedups.
-* aiodns
-* cchardet
-* uvloop
+* attrs
 
 ## Contributing
 Please read this [manual](https://github.com/nxtlo/aiobungie/blob/master/CONTRIBUTING.md)

@@ -27,7 +27,7 @@ This client only makes HTTP requests to the API and returns pure JSON objects.
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = ("RESTClient", "RequestMethod")
+__all__: tuple[str, ...] = ("RESTClient", "RequestMethod", "OAuth2Response")
 
 import asyncio
 import contextlib

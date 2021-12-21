@@ -88,6 +88,10 @@ class FireteamActivity(enums.IntEnum):
     S14_EXPUNGE = 30
     S15_ASTRAL_ALIGNMENT = 31
     S15_SHATTERED_RELAM = 32
+    DOE = 36
+    """Dares of Eterinity."""
+    DUNGEON_GOA = 37
+    """Grasp of Avarice."""
 
 
 @typing.final

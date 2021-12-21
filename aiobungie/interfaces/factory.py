@@ -767,6 +767,23 @@ class FactoryInterface(abc.ABC):
         """
 
     @abc.abstractmethod
+    def deserialize_inventory_results(
+        self, payload: typedefs.JsonObject
+    ) -> collections.Sequence[entity.SearchableEntity]:
+        """Deserialize results of searched Destiny2 entities.
+
+        Parameters
+        ----------
+        payload : `aiobungie.typedefs.JsonObject`
+            The JSON payload.
+
+        Returns
+        -------
+        `collections.Sequence[aiobungie.crate.SearchableEntity]`
+            A sequence of the found searched entities.
+        """
+
+    @abc.abstractmethod
     def deserialize_objective_entity(
         self, payload: typedefs.JsonObject, /
     ) -> entity.ObjectiveEntity:

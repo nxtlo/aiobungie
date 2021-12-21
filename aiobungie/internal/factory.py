@@ -1367,6 +1367,29 @@ class Factory(interfaces.FactoryInterface):
             icon=icon,
         )
 
+    def deserialize_inventory_results(
+        self, payload: typedefs.JsonObject
+    ) -> collections.Sequence[entity.SearchableEntity]:
+        suggested_words: list[str] = payload["suggestedWords"]
+
+        def _check_unknown(s: str) -> undefined.UndefinedOr[str]:
+            return s if not typedefs.is_unknown(s) else undefined.Undefined
+
+        return [
+            entity.SearchableEntity(
+                net=self._net,
+                hash=data["hash"],
+                entity_type=data["entityType"],
+                weight=data["weight"],
+                suggested_words=suggested_words,
+                name=data["displayProperties"]["name"],
+                has_icon=data["displayProperties"]["hasIcon"],
+                description=_check_unknown(data["displayProperties"]["description"]),
+                icon=data["displayProperties"]["icon"],
+            )
+            for data in payload["results"]["results"]
+        ]
+
     def _deserialize_inventory_item_objects(
         self, payload: typedefs.JsonObject
     ) -> entity.InventoryEntityObjects:

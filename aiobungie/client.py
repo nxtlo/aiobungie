@@ -919,6 +919,32 @@ class Client(traits.ClientBase):
         assert isinstance(resp, dict)
         return self.factory.deserialize_objective_entity(resp)
 
+    async def search_entities(
+        self, name: str, entity_type: str, *, page: int = 0
+    ) -> collections.Sequence[entity.SearchableEntity]:
+        """Search for Destiny2 entities given a name and its type.
+
+        Parameters
+        ----------
+        name : `str`
+            The name of the entity, i.e., Thunderlord, One thousand voices.
+        entity_type : `str`
+            The type of the entity, AKA Definition, For an example `DestinyInventoryItemDefinition`
+
+        Other Parameters
+        ----------------
+        page : `int`
+            An optional page to return. Default to 0.
+
+        Returns
+        -------
+        `collections.Sequence[aiobungie.crate.SearchableEntity]`
+            A sequence of the found results matching the provided name.
+        """
+        resp = await self.rest.search_entities(name, entity_type, page=page)
+        assert isinstance(resp, dict)
+        return self.factory.deserialize_inventory_results(resp)
+
     # * These methods should be for Special bungie endpoints, i.e,
     # * Applications, Forums, Polls, Trending, etc.
 

@@ -110,6 +110,7 @@ __all__: tuple[str, ...] = (
     "ExtendedValues",
     "ExtendedWeaponValues",
     "UserCredentials",
+    "SearchableEntity",
 )
 
 from .activity import Activity
@@ -135,6 +136,7 @@ from .entity import Entity
 from .entity import InventoryEntity
 from .entity import ObjectiveEntity
 from .entity import PlaylistActivityEntity
+from .entity import SearchableEntity
 from .fireteams import AvalaibleFireteam
 from .fireteams import Fireteam
 from .fireteams import FireteamMember

@@ -38,6 +38,7 @@ __all__: tuple[str, ...] = (
     "ActivityEntity",
     "PlaylistActivityEntity",
     "InventoryEntityObjects",
+    "SearchableEntity",
 )
 
 import abc
@@ -172,9 +173,57 @@ class BaseEntity(Entity):
     """A boolean that returns True if the entity has an icon."""
 
 
+@attr.define(kw_only=True, weakref_slot=False, hash=True)
+class SearchableEntity:
+    """Represents an entity object returned from a seachable term."""
+
+    suggested_words: list[str] = attr.field(repr=False)
+    """A list of suggested words that might make for better search results, based on the text searched for."""
+
+    net: traits.Netrunner = attr.field(repr=False, eq=False)
+    """A network state used for making external requests."""
+
+    hash: int = attr.field()
+    """Entity's hash."""
+
+    entity_type: str = attr.field()
+    """The entity's type, i.e., `DestinyInventoryItemDefinition`."""
+
+    name: str = attr.field()
+    """Entity's name."""
+
+    description: undefined.UndefinedOr[str] = attr.field()
+    """Entity's description. Undefined if not set."""
+
+    icon: assets.Image = attr.field(repr=False)
+    """Entity's icon."""
+
+    has_icon: bool = attr.field(repr=False)
+    """Whether this entity has an icon or not."""
+
+    weight: float = attr.field(repr=False)
+    """The ranking value for sorting that we calculated using our relevance formula."""
+
+    async def fetch_self_item(self) -> typing.Optional[InventoryEntity]:
+        """Fetch an item definition of this partial entity.
+
+        Note
+        ----
+        This will return `None` if the entity type is not `DestinyInventoryItemDefinition`.
+
+        Returns
+        -------
+        `typing.Optional[InventoryEntity]`
+            An inventory item entity or `None` if its not.
+        """
+        if self.entity_type != "DestinyInventoryItemDefinition":
+            return None
+        return await self.net.request.fetch_inventory_item(self.hash)
+
+
 # For the sake of not making stuff a little bit clunky, We separate the JSON objects
 # from the normal fields.
-@attr.define(kw_only=True, hash=False, weakref_slot=False, repr=False)
+@attr.define(kw_only=True, weakref_slot=False, repr=False)
 class InventoryEntityObjects:
     """JSON object found inside an inventory item definition."""
 

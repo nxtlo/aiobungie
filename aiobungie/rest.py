@@ -1448,6 +1448,15 @@ class RESTClient(interfaces.RESTInterface):
             RequestMethod.GET, f"Destiny2/Stats/PostGameCarnageReport/{instance_id}"
         )
 
+    def search_entities(
+        self, name: str, entity_type: str, *, page: int = 0
+    ) -> ResponseSig[typedefs.JsonObject]:
+        return self._request(
+            RequestMethod.GET,
+            f"Destiny2/Armory/Search/{entity_type}/{name}/",
+            json={"page": page},
+        )
+
     # * Not implemented yet.
 
     def fetch_item(

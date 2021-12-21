@@ -28,7 +28,6 @@ import os
 import sys
 
 import aiobungie
-from aiobungie.internal.helpers import awaits
 
 
 # NOTE: If you're on unix based system make sure to run this

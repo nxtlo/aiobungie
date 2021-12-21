@@ -32,6 +32,7 @@ __all__: tuple[str, ...] = (
     "BungieUser",
     "PartialBungieUser",
     "DestinyUser",
+    "UserCredentials",
 )
 
 import abc
@@ -336,6 +337,29 @@ class HardLinkedMembership:
 
     def __int__(self) -> int:
         return self.id
+
+
+@attr.define(hash=False, kw_only=True, weakref_slot=False)
+class UserCredentials:
+    """Represents a Bungie user's credential types.
+
+    Those credentials should be the linked profiles such as Twitch, Steam, Blizzard, etc.
+    """
+
+    type: typedefs.IntAnd[enums.CredentialType] = attr.field()
+    """The credential type."""
+
+    display_name: str = attr.field()
+    """The user displayname for this credential."""
+
+    is_public: bool = attr.field()
+    """Whether this credential is public or not."""
+
+    self_as_string: undefined.UndefinedOr[str] = attr.field()
+    """The self credential as string,
+
+    For an example if a Steam user's credentials this will be the id as a string.
+    """
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)

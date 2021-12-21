@@ -1544,6 +1544,217 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
+    def fetch_user_credentials(
+        self, access_token: str, membership_id: int, /
+    ) -> ResponseSig[typedefs.JsonArray]:
+        """Fetch an array of credential types attached to the requested account.
+
+        .. note::
+            This method require OAuth2 Bearer access token.
+
+        Parameters
+        ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+        membership_id : `int`
+            The id of the membership to return.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.typedefs.JsonArray]`
+            A JSON array of the returned credentials.
+
+        Raises
+        ------
+        `aiobungie.Unauthorized`
+            The access token was wrong or no access token passed.
+        """
+
+    @abc.abstractmethod
+    def insert_socket_plug(
+        self,
+        action_token: str,
+        /,
+        instance_id: int,
+        plug: typing.Union[_rest.PlugSocketBuilder, dict[str, int]],
+        character_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+    ) -> ResponseSig[typedefs.JsonObject]:
+        """Insert a plug into a socketed item.
+
+        .. note::
+            OAuth2: AdvancedWriteActions scope is required
+
+        Parameters
+        ----------
+        action_token : `str`
+            Action token provided by the AwaGetActionToken API call.
+        instance_id : `int`
+            The item instance id that's plug inserted.
+        plug : `typing.Union[aiobungie.PlugSocketbuilder, dict[str, int]]`
+            Either a PlugSocketBuilder object or a raw dict contains key, value for the plug entries.
+
+        Example
+        -------
+        ```py
+        plug = (
+            aiobungie.PlugSocketBuilder()
+            .set_socket_array(0)
+            .set_socket_index(0)
+            .set_plug_item(3023847)
+            .collect()
+        )
+        await insert_socket_plug_free(..., plug=plug)
+        ```
+        character_id : `int`
+            The character's id.
+        membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
+            The membership type.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.typedefs.JsonObject]`
+            A JSON object contains the changed item details.
+
+        Raises
+        ------
+        `aiobungie.Unauthorized`
+            The access token was wrong or no access token passed.
+        """
+
+    @abc.abstractmethod
+    def insert_socket_plug_free(
+        self,
+        access_token: str,
+        /,
+        instance_id: int,
+        plug: typing.Union[_rest.PlugSocketBuilder, dict[str, int]],
+        character_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+    ) -> ResponseSig[typedefs.JsonObject]:
+        """Insert a plug into a socketed item. This doesn't require an Action token.
+
+        .. note::
+            OAuth2: MoveEquipDestinyItems scope is required
+
+        Parameters
+        ----------
+        instance_id : `int`
+            The item instance id that's plug inserted.
+        plug : `typing.Union[aiobungie.PlugSocketbuilder, dict[str, int]]`
+            Either a PlugSocketBuilder object or a raw dict contains key, value for the plug entries.
+
+        Example
+        -------
+        ```py
+        plug = (
+            aiobungie.PlugSocketBuilder()
+            .set_socket_array(0)
+            .set_socket_index(0)
+            .set_plug_item(3023847)
+            .collect()
+        )
+        await insert_socket_plug_free(..., plug=plug)
+        ```
+        character_id : `int`
+            The character's id.
+        membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
+            The membership type.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.typedefs.JsonObject]`
+            A JSON object contains the changed item details.
+
+        Raises
+        ------
+        `aiobungie.Unauthorized`
+            The access token was wrong or no access token passed.
+        """
+
+    @abc.abstractmethod
+    def set_item_lock_state(
+        self,
+        access_token: str,
+        state: bool,
+        /,
+        item_id: int,
+        character_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+    ) -> ResponseSig[int]:
+        """Set the Lock State for an instanced item.
+
+        .. note::
+            OAuth2: MoveEquipDestinyItems scope is required
+
+        Parameters
+        ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+        state : `bool`
+            If `True`, The item will be locked, If `False`, The item will be unlocked.
+        item_id : `int`
+            The item id.
+        character_id : `int`
+            The character id.
+        membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
+            The membership type for the associated account.
+
+        Returns
+        -------
+        `ResponseSig[int]`
+            An integer represents whether the request was successful or failed.
+
+        Raises
+        ------
+        `aiobungie.Unauthorized`
+            - The access token was wrong
+            - No access token passed.
+            - Other authorization causes.
+        """
+
+    @abc.abstractmethod
+    def set_quest_track_state(
+        self,
+        access_token: str,
+        state: bool,
+        /,
+        item_id: int,
+        character_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+    ) -> ResponseSig[int]:
+        """Set the Tracking State for an instanced Quest or Bounty.
+
+        .. note::
+            OAuth2: MoveEquipDestinyItems scope is required
+
+        Parameters
+        ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+        state : `bool`
+            If `True`, The item will be locked, If `False`, The item will be unlocked.
+        item_id : `int`
+            The item id.
+        character_id : `int`
+            The character id.
+        membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
+            The membership type for the associated account.
+
+        Returns
+        -------
+        `ResponseSig[int]`
+            An integer represents whether the request was successful or failed.
+
+        Raises
+        ------
+        `aiobungie.Unauthorized`
+            - The access token was wrong
+            - No access token passed.
+            - Other authorization causes.
+        """
+
+    @abc.abstractmethod
     def fetch_item(
         self, member_id: int, item_id: int, /
     ) -> ResponseSig[typedefs.JsonObject]:

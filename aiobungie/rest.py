@@ -27,7 +27,12 @@ This client only makes HTTP requests to the API and returns pure JSON objects.
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = ("RESTClient", "RequestMethod", "OAuth2Response")
+__all__: tuple[str, ...] = (
+    "RESTClient",
+    "RequestMethod",
+    "OAuth2Response",
+    "PlugSocketBuilder",
+)
 
 import asyncio
 import contextlib
@@ -207,6 +212,91 @@ class OAuth2Response:
         )
 
 
+class PlugSocketBuilder:
+    """A helper for building insert socket plugs.
+
+    Example
+    -------
+    ```py
+    import aiobungie
+
+    rest = aiobungie.RESTClient(...)
+    plug = (
+        aiobungie.PlugSocketBuilder()
+        .set_socket_array(0)
+        .set_socket_index(0)
+        .set_plug_item(3023847)
+        .collect()
+    )
+    await rest.insert_socket_plug_free(..., plug=plug)
+    ```
+    """
+
+    __slots__ = ("_map",)
+
+    def __init__(self, map: typing.Optional[dict[str, int]] = None, /) -> None:
+        self._map = map or {}
+
+    def set_socket_array(self, socket_type: typing.Literal[0, 1]) -> PlugSocketBuilder:
+        """Set the array socket type.
+
+        Parameters
+        ----------
+        socket_type : `typing.Literal[0, 1]`
+            Either 0, or 1. If set to 0 it will be the default,
+            Otherwise if 1 it will be Intrinsic.
+
+        Returns
+        -------
+        `Self`
+            The class itself to allow chained methods.
+        """
+        self._map["socketArrayType"] = socket_type
+        return self
+
+    def set_socket_index(self, index: int) -> PlugSocketBuilder:
+        """Set the socket index into the array.
+
+        Parameters
+        ----------
+        index : `int`
+            The socket index.
+
+        Returns
+        -------
+        `Self`
+            The class itself to allow chained methods.
+        """
+        self._map["socketIndex"] = index
+        return self
+
+    def set_plug_item(self, item_hash: int) -> PlugSocketBuilder:
+        """Set the socket index into the array.
+
+        Parameters
+        ----------
+        item_hash : `int`
+            The hash of the item to plug.
+
+        Returns
+        -------
+        `Self`
+            The class itself to allow chained methods.
+        """
+        self._map["plugItemHash"] = item_hash
+        return self
+
+    def collect(self) -> dict[str, int]:
+        """Collect the set values and return its map to be passed to the request.
+
+        Returns
+        -------
+        `dict[str, int]`
+            The built map.
+        """
+        return self._map
+
+
 class RESTClient(interfaces.RESTInterface):
     """A RESTful client implementation for Bungie's API.
 
@@ -294,7 +384,8 @@ class RESTClient(interfaces.RESTInterface):
         base: bool = False,
         oauth2: bool = False,
         auth: typing.Optional[str] = None,
-        type: typing.Literal["json", "read"] = "json",
+        unwrapping: typing.Literal["json", "read"] = "json",
+        json: typing.Optional[dict[str, typing.Any]] = None,
         **kwargs: typing.Any,
     ) -> typing.Any:
 
@@ -330,6 +421,7 @@ class RESTClient(interfaces.RESTInterface):
                             await self._acquire_session().client_session.request(
                                 method=method,
                                 url=f"{endpoint}/{route}",
+                                json=json,
                                 **kwargs,
                             )
                         )
@@ -343,7 +435,7 @@ class RESTClient(interfaces.RESTInterface):
                             encoding="utf-8"
                         )
                         if 300 > response.status >= 200:
-                            if type == "read":
+                            if unwrapping == "read":
                                 # We want to read the bytes for the manifest response.
                                 return await response.read()
 
@@ -379,7 +471,10 @@ class RESTClient(interfaces.RESTInterface):
                             retries += 1
                             await asyncio.sleep(sleep_time)
                             continue
-                        await self._handle_err(response, data.get("ErrorStatus", ""))
+
+                        raise await error.raise_error(
+                            response, data.get("ErrorStatus", "")
+                        )
             # eol
             except error.HTTPError:
                 raise
@@ -451,13 +546,6 @@ class RESTClient(interfaces.RESTInterface):
         )
 
     @staticmethod
-    @typing.final
-    async def _handle_err(
-        response: aiohttp.ClientResponse, msg: str
-    ) -> typing.NoReturn:
-        raise await error.raise_error(response, msg)
-
-    @staticmethod
     @typing.no_type_check
     def _collect_components(
         *components: enums.ComponentType,
@@ -482,9 +570,10 @@ class RESTClient(interfaces.RESTInterface):
         method: typing.Union[RequestMethod, str],
         path: str,
         auth: typing.Optional[str] = None,
+        json: typing.Optional[dict[str, typing.Any]] = None,
         **kwargs: typing.Any,
     ) -> ResponseSig[typing.Any]:
-        return self._request(method, path, auth=auth, **kwargs)
+        return self._request(method, path, auth=auth, json=json, **kwargs)
 
     @typing.final
     def build_oauth2_url(
@@ -735,13 +824,113 @@ class RESTClient(interfaces.RESTInterface):
     def fetch_hard_linked(
         self,
         credential: int,
-        type: typedefs.IntAnd[enums.CredentialType] = enums.CredentialType.STADIAID,
+        type: typedefs.IntAnd[enums.CredentialType] = enums.CredentialType.STEAMID,
         /,
     ) -> ResponseSig[typedefs.JsonObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
             RequestMethod.GET,
             f"User/GetMembershipFromHardLinkedCredential/{int(type)}/{credential}/",
+        )
+
+    def fetch_user_credentials(
+        self, access_token: str, membership_id: int, /
+    ) -> ResponseSig[typedefs.JsonArray]:
+        return self._request(
+            RequestMethod.GET,
+            f"User/GetCredentialTypesForTargetAccount/{membership_id}",
+            auth=access_token,
+        )
+
+    def insert_socket_plug(
+        self,
+        action_token: str,
+        /,
+        instance_id: int,
+        plug: typing.Union[PlugSocketBuilder, dict[str, int]],
+        character_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+    ) -> ResponseSig[typedefs.JsonObject]:
+
+        if isinstance(plug, PlugSocketBuilder):
+            plug = plug.collect()
+
+        body = {
+            "actionToken": action_token,
+            "itemInstanceId": instance_id,
+            "plug": plug,
+            "characterId": character_id,
+            "membershipType": int(membership_type),
+        }
+        return self._request(
+            RequestMethod.POST, "Destiny2/Actions/Items/InsertSocketPlug", json=body
+        )
+
+    def insert_socket_plug_free(
+        self,
+        access_token: str,
+        /,
+        instance_id: int,
+        plug: typing.Union[PlugSocketBuilder, dict[str, int]],
+        character_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+    ) -> ResponseSig[typedefs.JsonObject]:
+
+        if isinstance(plug, PlugSocketBuilder):
+            plug = plug.collect()
+
+        body = {
+            "itemInstanceId": instance_id,
+            "plug": plug,
+            "characterId": character_id,
+            "membershipType": int(membership_type),
+        }
+        return self._request(
+            RequestMethod.POST,
+            "Destiny2/Actions/Items/InsertSocketPlugFree",
+            json=body,
+            auth=access_token,
+        )
+
+    def set_item_lock_state(
+        self,
+        access_token: str,
+        state: bool,
+        /,
+        item_id: int,
+        character_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+    ) -> ResponseSig[int]:
+        body = {
+            "state": state,
+            "itemId": item_id,
+            "characterId": character_id,
+            "membership_type": int(membership_type),
+        }
+        return self._request(
+            RequestMethod.POST, "Destiny2/Actions/Items/SetLockState", json=body
+        )
+
+    def set_quest_track_state(
+        self,
+        access_token: str,
+        state: bool,
+        /,
+        item_id: int,
+        character_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+    ) -> ResponseSig[int]:
+        body = {
+            "state": state,
+            "itemId": item_id,
+            "characterId": character_id,
+            "membership_type": int(membership_type),
+        }
+        return self._request(
+            RequestMethod.POST,
+            "Destiny2/Actions/Items/SetTrackedState",
+            json=body,
+            auth=access_token,
         )
 
     async def fetch_manifest_path(self) -> str:

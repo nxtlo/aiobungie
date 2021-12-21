@@ -87,5 +87,6 @@ from .user import *
 #   QuestStatus
 #   RecordsComponent
 #   User
+#   UserCredentials
 #   UserThemes
 #   VendorsComponent

@@ -21,6 +21,7 @@ from .entity import Entity as Entity
 from .entity import InventoryEntity as InventoryEntity
 from .entity import ObjectiveEntity as ObjectiveEntity
 from .entity import PlaylistActivityEntity as PlaylistActivityEntity
+from .entity import SearchableEntity as SearchableEntity
 from .fireteams import AvalaibleFireteam as AvalaibleFireteam
 from .fireteams import Fireteam as Fireteam
 from .fireteams import FireteamMember as FireteamMember

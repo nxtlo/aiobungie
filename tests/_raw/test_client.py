@@ -28,6 +28,7 @@ import os
 import sys
 
 import aiobungie
+from aiobungie.internal.helpers import awaits
 
 
 # NOTE: If you're on unix based system make sure to run this
@@ -384,6 +385,18 @@ async def test_insert_plug_free():
         resp = None
         pass
     del resp
+
+async def test_search_entities():
+    e = await client.search_entities("Parallel", "DestinyInventoryItemDefinition")
+    for i in e:
+        assert isinstance(i, aiobungie.crate.SearchableEntity)
+        awts = await i.fetch_self_item()
+        assert isinstance(awts, aiobungie.crate.InventoryEntity)
+        assert awts.name == i.name
+    acts = await client.search_entities("Scourge", "DestinyActivityDefinition")
+    assert len(acts) > 1
+    assert any(act.name == "Scourge of the Past" for act in acts)
+    assert not await acts[0].fetch_self_item()
 
 async def main() -> None:
     coros = []

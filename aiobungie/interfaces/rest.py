@@ -1755,6 +1755,30 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
+    def search_entities(
+        self, name: str, entity_type: str, *, page: int = 0
+    ) -> ResponseSig[typedefs.JsonObject]:
+        """Search for Destiny2 entities given a name and its type.
+
+        Parameters
+        ----------
+        name : `str`
+            The name of the entity, i.e., Thunderlord, One thousand voices.
+        entity_type : `str`
+            The type of the entity, AKA Definition, For an example `DestinyInventoryItemDefinition`
+
+        Other Parameters
+        ----------------
+        page : `int`
+            An optional page to return. Default to 0.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.typedefs.JsonObject]`
+            A JSON object contains details about the searched term.
+        """
+
+    @abc.abstractmethod
     def fetch_item(
         self, member_id: int, item_id: int, /
     ) -> ResponseSig[typedefs.JsonObject]:

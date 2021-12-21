@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `insert_socket_plug` and `insert_socket_plug_free` methods.
 - `rest.PlugSocketBuilder` to build socket plugs.
 - `set_item_lock_state` and `set_quest_lock_state` methods.
+- `search_entities` method.
 
 ### Changed
 - Exceptions now has fields and improved.

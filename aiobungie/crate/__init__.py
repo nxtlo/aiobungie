@@ -109,6 +109,7 @@ __all__: tuple[str, ...] = (
     "PostActivityTeam",
     "ExtendedValues",
     "ExtendedWeaponValues",
+    "UserCredentials",
 )
 
 from .activity import Activity

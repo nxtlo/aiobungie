@@ -100,8 +100,7 @@ from aiobungie import url
 from aiobungie.client import Client
 from aiobungie.error import *
 from aiobungie.internal.enums import *
-from aiobungie.rest import OAuth2Response
-from aiobungie.rest import RESTClient
+from aiobungie.rest import *
 from aiobungie.undefined import Undefined
 from aiobungie.undefined import UndefinedOr
 from aiobungie.undefined import UndefinedType

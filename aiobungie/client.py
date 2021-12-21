@@ -315,6 +315,35 @@ class Client(traits.ClientBase):
         assert isinstance(payload, dict)
         return self.factory.deserialize_user(payload)
 
+    async def fetch_user_credentials(
+        self, access_token: str, membership_id: int, /
+    ) -> collections.Sequence[user.UserCredentials]:
+        """Fetch an array of credential types attached to the requested account.
+
+        .. note::
+            This method require OAuth2 Bearer access token.
+
+        Parameters
+        ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+        membership_id : `int`
+            The id of the membership to return.
+
+        Returns
+        -------
+        `collections.Sequence[aiobungie.crate.UserCredentials]`
+            A sequence of the attached user credentials.
+
+        Raises
+        ------
+        `aiobungie.Unauthorized`
+            The access token was wrong or no access token passed.
+        """
+        resp = await self.rest.fetch_user_credentials(access_token, membership_id)
+        assert isinstance(resp, list)
+        return self.factory.deserialize_user_credentials(resp)
+
     # * Destiny 2 methods.
 
     async def fetch_profile(
@@ -423,12 +452,10 @@ class Client(traits.ClientBase):
         --------
         `typing.Sequence[aiobungie.crate.Player]`
             A sequence of the found Destiny 2 Player memberships.
+            An empty sequene will be returned if no one found.
 
         Raises
         ------
-        `aiobungie.NotFound`
-            The player was not found.
-
         `aiobungie.MembershipTypeError`
             The provided membership type was invalid.
         """

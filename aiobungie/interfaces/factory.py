@@ -232,6 +232,23 @@ class FactoryInterface(abc.ABC):
                 but keeping it a sequence to match the JSON array signature.
         """
 
+    @abc.abstractmethod
+    def deserialize_user_credentials(
+        self, payload: typedefs.JsonArray
+    ) -> collections.Sequence[user.UserCredentials]:
+        """Deserialize a JSON array of Bungie user credentials.
+
+        Parameters
+        ----------
+        payload : `aiobungie.typedefs.JsonArray`
+            The JSON payload.
+
+        Returns
+        -------
+        `collections.Sequence[aiobungie.crate.UserCredentials]`
+            A sequence of user's credentials.
+        """
+
     # Clans, Groups.
 
     @abc.abstractmethod

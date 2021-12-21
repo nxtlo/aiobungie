@@ -251,6 +251,19 @@ class Factory(interfaces.FactoryInterface):
                 vec.append(mship)
         return vec
 
+    def deserialize_user_credentials(
+        self, payload: typedefs.JsonArray
+    ) -> collections.Sequence[user.UserCredentials]:
+        return [
+            user.UserCredentials(
+                type=enums.CredentialType(int(creds["credentialType"])),
+                display_name=creds["credentialDisplayName"],
+                is_public=creds["isPublic"],
+                self_as_string=creds.get("credentialAsString", undefined.Undefined),
+            )
+            for creds in payload
+        ]
+
     @staticmethod
     def set_themese_attrs(
         payload: typedefs.JsonArray, /

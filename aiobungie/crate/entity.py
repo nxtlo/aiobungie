@@ -37,7 +37,7 @@ __all__: tuple[str, ...] = (
     "BaseEntity",
     "ActivityEntity",
     "PlaylistActivityEntity",
-    "InventoryEntityObjects"
+    "InventoryEntityObjects",
 )
 
 import abc

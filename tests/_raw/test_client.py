@@ -26,12 +26,9 @@ import inspect
 import logging
 import os
 import sys
-import typing
 
 import aiobungie
 
-if typing.TYPE_CHECKING:
-    import types
 
 # NOTE: If you're on unix based system make sure to run this
 # in your terminal. export CLIENT_TOKEN='TOKEN'
@@ -44,8 +41,8 @@ logging.basicConfig(level=logging.DEBUG)
 
 def __build_client() -> aiobungie.Client:
     token = os.environ["CLIENT_TOKEN"]
-    rest = aiobungie.RESTClient(token, max_retries=2)
-    client = aiobungie.Client(token, rest_client=rest)
+    rest = aiobungie.RESTClient(token, max_retries=1)
+    client = aiobungie.Client(token, rest_client=rest, max_retries=1)
     return client
 
 
@@ -372,10 +369,24 @@ async def test_activity_flawless():
     a2 = await client.fetch_post_activity(9711329560)
     assert a2.is_solo and not a2.is_flawless
 
+async def test_insert_plug_free():
+    p = (
+        aiobungie.PlugSocketBuilder()
+        .set_socket_array(0)
+        .set_socket_index(0)
+        .set_plug_item(3000)
+        .collect()
+    )
+    try:
+        resp = await client.rest.insert_socket_plug_free("", 619, p, 1234, 3)
+    # This will always fail due to OAuth2
+    except aiobungie.Unauthorized:
+        resp = None
+        pass
+    del resp
 
 async def main() -> None:
-    coro: types.FunctionType
-    coros: typing.MutableSequence[asyncio.Future[types.FunctionType]] = []
+    coros = []
     for n, coro in inspect.getmembers(
         sys.modules[__name__], inspect.iscoroutinefunction
     ):

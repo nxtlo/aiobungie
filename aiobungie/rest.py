@@ -59,24 +59,25 @@ from aiobungie.internal import enums
 from aiobungie.internal import helpers
 
 if typing.TYPE_CHECKING:
+    import collections.abc as collections
     import types
 
     ResponseSigT = typing.TypeVar(
         "ResponseSigT",
         covariant=True,
         bound=typing.Union[
-            typedefs.JsonArray,
-            typedefs.JsonObject,
+            typedefs.JSONArray,
+            typedefs.JSONObject,
             int,
             None,
         ],
     )
     """The signature of the response."""
 
-    ResponseSig = typing.Coroutine[typing.Any, typing.Any, ResponseSigT]
+    ResponseSig = collections.Coroutine[None, None, ResponseSigT]
     """A type hint for a general coro method that returns a type
-    that's mostly going to be on of `aiobungie.typedefs.JsonObject`
-    or `aiobungie.typedefs.JsonArray`
+    that's mostly going to be on of `aiobungie.typedefs.JSONObject`
+    or `aiobungie.typedefs.JSONArray`
     """
 
 _LOG: typing.Final[logging.Logger] = logging.getLogger("aiobungie.rest")
@@ -200,7 +201,7 @@ class OAuth2Response:
     """The returned BungieNet membership id for the authorized user."""
 
     @classmethod
-    def build_response(cls, payload: typedefs.JsonObject, /) -> OAuth2Response:
+    def build_response(cls, payload: typedefs.JSONObject, /) -> OAuth2Response:
         """Deserialize and builds the JSON object into this object."""
         return OAuth2Response(
             access_token=payload["access_token"],
@@ -431,7 +432,7 @@ class RESTClient(interfaces.RESTInterface):
                         if response.status == http.HTTPStatus.NO_CONTENT:
                             return None
 
-                        data: typedefs.JsonObject = await response.json(
+                        data: typedefs.JSONObject = await response.json(
                             encoding="utf-8"
                         )
                         if 300 > response.status >= 200:
@@ -637,11 +638,11 @@ class RESTClient(interfaces.RESTInterface):
         response = await self._request(RequestMethod.POST, "", data=data, oauth2=True)
         return OAuth2Response.build_response(response)
 
-    def fetch_user(self, id: int) -> ResponseSig[typedefs.JsonObject]:
+    def fetch_user(self, id: int) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(RequestMethod.GET, f"User/GetBungieNetUserById/{id}/")
 
-    def fetch_user_themes(self) -> ResponseSig[typedefs.JsonArray]:
+    def fetch_user_themes(self) -> ResponseSig[typedefs.JSONArray]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(RequestMethod.GET, "User/GetAvailableThemes/")
 
@@ -650,7 +651,7 @@ class RESTClient(interfaces.RESTInterface):
         id: int,
         type: typedefs.IntAnd[enums.MembershipType] = enums.MembershipType.NONE,
         /,
-    ) -> ResponseSig[typedefs.JsonObject]:
+    ) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
             RequestMethod.GET, f"User/GetMembershipsById/{id}/{int(type)}"
@@ -662,7 +663,7 @@ class RESTClient(interfaces.RESTInterface):
         code: int,
         type: typedefs.IntAnd[enums.MembershipType] = enums.MembershipType.ALL,
         /,
-    ) -> ResponseSig[typedefs.JsonArray]:
+    ) -> ResponseSig[typedefs.JSONArray]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
             RequestMethod.POST,
@@ -670,7 +671,7 @@ class RESTClient(interfaces.RESTInterface):
             json={"displayName": name, "displayNameCode": code},
         )
 
-    def search_users(self, name: str, /) -> ResponseSig[typedefs.JsonObject]:
+    def search_users(self, name: str, /) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
             RequestMethod.POST,
@@ -678,7 +679,7 @@ class RESTClient(interfaces.RESTInterface):
             json={"displayNamePrefix": name},
         )
 
-    def fetch_clan_from_id(self, id: int, /) -> ResponseSig[typedefs.JsonObject]:
+    def fetch_clan_from_id(self, id: int, /) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(RequestMethod.GET, f"GroupV2/{id}")
 
@@ -687,23 +688,23 @@ class RESTClient(interfaces.RESTInterface):
         name: str,
         /,
         type: typedefs.IntAnd[enums.GroupType] = enums.GroupType.CLAN,
-    ) -> ResponseSig[typedefs.JsonObject]:
+    ) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(RequestMethod.GET, f"GroupV2/Name/{name}/{int(type)}")
 
-    def fetch_clan_admins(self, clan_id: int, /) -> ResponseSig[typedefs.JsonObject]:
+    def fetch_clan_admins(self, clan_id: int, /) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(RequestMethod.GET, f"GroupV2/{clan_id}/AdminsAndFounder/")
 
     def fetch_clan_conversations(
         self, clan_id: int, /
-    ) -> ResponseSig[typedefs.JsonArray]:
+    ) -> ResponseSig[typedefs.JSONArray]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
             RequestMethod.GET, f"GroupV2/{clan_id}/OptionalConversations/"
         )
 
-    def fetch_app(self, appid: int, /) -> ResponseSig[typedefs.JsonObject]:
+    def fetch_app(self, appid: int, /) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(RequestMethod.GET, f"App/Application/{appid}")
 
@@ -714,7 +715,7 @@ class RESTClient(interfaces.RESTInterface):
         character_id: int,
         *components: enums.ComponentType,
         **options: str,
-    ) -> ResponseSig[typedefs.JsonObject]:
+    ) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         collector = self._collect_components(*components)
         return self._request(
@@ -757,7 +758,7 @@ class RESTClient(interfaces.RESTInterface):
         type: typedefs.IntAnd[enums.MembershipType],
         *components: enums.ComponentType,
         **options: str,
-    ) -> ResponseSig[typedefs.JsonObject]:
+    ) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         collector = self._collect_components(*components)
         return self._request(
@@ -766,17 +767,17 @@ class RESTClient(interfaces.RESTInterface):
             auth=options.get("auth", None),
         )
 
-    def fetch_entity(self, type: str, hash: int) -> ResponseSig[typedefs.JsonObject]:
+    def fetch_entity(self, type: str, hash: int) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
             RequestMethod.GET, route=f"Destiny2/Manifest/{type}/{hash}"
         )
 
-    def fetch_inventory_item(self, hash: int, /) -> ResponseSig[typedefs.JsonObject]:
+    def fetch_inventory_item(self, hash: int, /) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self.fetch_entity("DestinyInventoryItemDefinition", hash)
 
-    def fetch_objective_entity(self, hash: int, /) -> ResponseSig[typedefs.JsonObject]:
+    def fetch_objective_entity(self, hash: int, /) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self.fetch_entity("DestinyObjectiveDefinition", hash)
 
@@ -788,7 +789,7 @@ class RESTClient(interfaces.RESTInterface):
         *,
         filter: int = 0,
         group_type: typedefs.IntAnd[enums.GroupType] = enums.GroupType.CLAN,
-    ) -> ResponseSig[typedefs.JsonObject]:
+    ) -> ResponseSig[typedefs.JSONObject]:
         return self._request(
             RequestMethod.GET,
             f"GroupV2/User/{int(member_type)}/{member_id}/{filter}/{int(group_type)}/",
@@ -802,7 +803,7 @@ class RESTClient(interfaces.RESTInterface):
         *,
         filter: int = 0,
         group_type: typedefs.IntAnd[enums.GroupType] = enums.GroupType.CLAN,
-    ) -> ResponseSig[typedefs.JsonObject]:
+    ) -> ResponseSig[typedefs.JSONObject]:
         return self._request(
             RequestMethod.GET,
             f"GroupV2/User/Potential/{int(member_type)}/{member_id}/{filter}/{int(group_type)}/",
@@ -814,7 +815,7 @@ class RESTClient(interfaces.RESTInterface):
         type: typedefs.IntAnd[enums.MembershipType] = enums.MembershipType.NONE,
         name: typing.Optional[str] = None,
         /,
-    ) -> ResponseSig[typedefs.JsonObject]:
+    ) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
             RequestMethod.GET,
@@ -826,7 +827,7 @@ class RESTClient(interfaces.RESTInterface):
         credential: int,
         type: typedefs.IntAnd[enums.CredentialType] = enums.CredentialType.STEAMID,
         /,
-    ) -> ResponseSig[typedefs.JsonObject]:
+    ) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
             RequestMethod.GET,
@@ -835,7 +836,7 @@ class RESTClient(interfaces.RESTInterface):
 
     def fetch_user_credentials(
         self, access_token: str, membership_id: int, /
-    ) -> ResponseSig[typedefs.JsonArray]:
+    ) -> ResponseSig[typedefs.JSONArray]:
         return self._request(
             RequestMethod.GET,
             f"User/GetCredentialTypesForTargetAccount/{membership_id}",
@@ -850,7 +851,7 @@ class RESTClient(interfaces.RESTInterface):
         plug: typing.Union[PlugSocketBuilder, dict[str, int]],
         character_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
-    ) -> ResponseSig[typedefs.JsonObject]:
+    ) -> ResponseSig[typedefs.JSONObject]:
 
         if isinstance(plug, PlugSocketBuilder):
             plug = plug.collect()
@@ -874,7 +875,7 @@ class RESTClient(interfaces.RESTInterface):
         plug: typing.Union[PlugSocketBuilder, dict[str, int]],
         character_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
-    ) -> ResponseSig[typedefs.JsonObject]:
+    ) -> ResponseSig[typedefs.JSONObject]:
 
         if isinstance(plug, PlugSocketBuilder):
             plug = plug.collect()
@@ -951,24 +952,24 @@ class RESTClient(interfaces.RESTInterface):
         /,
         *,
         all: bool = False,
-    ) -> ResponseSig[typedefs.JsonObject]:
+    ) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
             RequestMethod.GET,
             f"Destiny2/{int(member_type)}/Profile/{member_id}/LinkedProfiles/?getAllMemberships={all}",
         )
 
-    def fetch_clan_banners(self) -> ResponseSig[typedefs.JsonObject]:
+    def fetch_clan_banners(self) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(RequestMethod.GET, "Destiny2/Clan/ClanBannerDictionary/")
 
-    def fetch_public_milestones(self) -> ResponseSig[typedefs.JsonObject]:
+    def fetch_public_milestones(self) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(RequestMethod.GET, "Destiny2/Milestones/")
 
     def fetch_public_milestone_content(
         self, milestone_hash: int, /
-    ) -> ResponseSig[typedefs.JsonObject]:
+    ) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
             RequestMethod.GET, f"Destiny2/Milestones/{milestone_hash}/Content/"
@@ -976,7 +977,7 @@ class RESTClient(interfaces.RESTInterface):
 
     def fetch_own_bungie_user(
         self, access_token: str, /
-    ) -> ResponseSig[typedefs.JsonObject]:
+    ) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
             RequestMethod.GET,
@@ -1069,7 +1070,7 @@ class RESTClient(interfaces.RESTInterface):
         group_id: int,
         membership_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
-    ) -> ResponseSig[typedefs.JsonObject]:
+    ) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
             RequestMethod.POST,
@@ -1087,7 +1088,7 @@ class RESTClient(interfaces.RESTInterface):
         about: typedefs.NoneOr[str] = None,
         motto: typedefs.NoneOr[str] = None,
         theme: typedefs.NoneOr[str] = None,
-        tags: typedefs.NoneOr[typing.Sequence[str]] = None,
+        tags: typedefs.NoneOr[collections.Sequence[str]] = None,
         is_public: typedefs.NoneOr[bool] = None,
         locale: typedefs.NoneOr[str] = None,
         avatar_image_index: typedefs.NoneOr[int] = None,
@@ -1160,7 +1161,7 @@ class RESTClient(interfaces.RESTInterface):
             auth=access_token,
         )
 
-    def fetch_friends(self, access_token: str, /) -> ResponseSig[typedefs.JsonObject]:
+    def fetch_friends(self, access_token: str, /) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
             RequestMethod.GET,
@@ -1170,7 +1171,7 @@ class RESTClient(interfaces.RESTInterface):
 
     def fetch_friend_requests(
         self, access_token: str, /
-    ) -> ResponseSig[typedefs.JsonObject]:
+    ) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
             RequestMethod.GET,
@@ -1370,7 +1371,7 @@ class RESTClient(interfaces.RESTInterface):
         ] = fireteams.FireteamDate.ALL,
         page: int = 0,
         slots_filter: int = 0,
-    ) -> ResponseSig[typedefs.JsonObject]:
+    ) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
             RequestMethod.GET,
@@ -1391,7 +1392,7 @@ class RESTClient(interfaces.RESTInterface):
         page: int = 0,
         public_only: bool = False,
         slots_filter: int = 0,
-    ) -> ResponseSig[typedefs.JsonObject]:
+    ) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
             RequestMethod.GET,
@@ -1402,7 +1403,7 @@ class RESTClient(interfaces.RESTInterface):
 
     def fetch_clan_fireteam(
         self, access_token: str, fireteam_id: int, group_id: int
-    ) -> ResponseSig[typedefs.JsonObject]:
+    ) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
             RequestMethod.GET,
@@ -1420,7 +1421,7 @@ class RESTClient(interfaces.RESTInterface):
         language: typing.Union[fireteams.FireteamLanguage, str],
         filtered: bool = True,
         page: int = 0,
-    ) -> ResponseSig[typedefs.JsonObject]:
+    ) -> ResponseSig[typedefs.JSONObject]:
         payload = {"groupFilter": filtered, "langFilter": str(language)}
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
@@ -1442,7 +1443,7 @@ class RESTClient(interfaces.RESTInterface):
 
     def fetch_post_activity(
         self, instance_id: int, /
-    ) -> ResponseSig[typedefs.JsonObject]:
+    ) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
             RequestMethod.GET, f"Destiny2/Stats/PostGameCarnageReport/{instance_id}"
@@ -1450,7 +1451,7 @@ class RESTClient(interfaces.RESTInterface):
 
     def search_entities(
         self, name: str, entity_type: str, *, page: int = 0
-    ) -> ResponseSig[typedefs.JsonObject]:
+    ) -> ResponseSig[typedefs.JSONObject]:
         return self._request(
             RequestMethod.GET,
             f"Destiny2/Armory/Search/{entity_type}/{name}/",
@@ -1461,13 +1462,13 @@ class RESTClient(interfaces.RESTInterface):
 
     def fetch_item(
         self, member_id: int, item_id: int, /
-    ) -> ResponseSig[typedefs.JsonObject]:
+    ) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         raise NotImplementedError
 
     def fetch_clan_weekly_rewards(
         self, clan_id: int, /
-    ) -> ResponseSig[typedefs.JsonObject]:
+    ) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         raise NotImplementedError
 
@@ -1476,6 +1477,6 @@ class RESTClient(interfaces.RESTInterface):
         character_id: int,
         member_id: int,
         member_type: typedefs.IntAnd[enums.MembershipType],
-    ) -> ResponseSig[typedefs.JsonObject]:
+    ) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         raise NotImplementedError

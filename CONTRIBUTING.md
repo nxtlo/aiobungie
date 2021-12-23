@@ -50,12 +50,18 @@ from aiobungie.internal import enums
 
 # non-runtime annotations.
 if typing.TYPE_CHECKING:
-   from ... import ...
+    import collections.abc as collections
+
+# Use the builtin tuple type and collections's Collection.
+foo = typing.Union[tuple[str, ...], collections.Collection[str]]
 ```
 This doesn't follow the coding style.
 ```py
-from typing import Union
+from typing import Union, Tuple, Collection
 from aiobungie.internal.enums import MembershipType
+
+foo = Union[Tuple[str, ...], Collection[str]]
+
 ```
 
 ### [Type checking](https://www.python.org/dev/peps/pep-0484/)
@@ -81,6 +87,6 @@ You may write tests for your new changes(if so) at `tests/_raw`.
 - Test all pipelines after finishing.
    - run `nox` to make sure everything is working fine and all tests passed with no issues.
 
-   You can also run a specific session by running `nox -s mypy` or `nox -s mypy pdoc`
+   You can also run a specific session by running `nox -s type_check` or `nox -s type_check pdoc`
 
 Push and open a PR.

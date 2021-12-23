@@ -133,7 +133,7 @@ class Client(traits.ClientBase):
         return self
 
     def run(
-        self, future: typing.Coroutine[typing.Any, None, None], debug: bool = False
+        self, future: collections.Coroutine[typing.Any, None, None], debug: bool = False
     ) -> None:
         loop: typing.Final[asyncio.AbstractEventLoop] = helpers.get_or_make_loop()
         try:
@@ -215,7 +215,9 @@ class Client(traits.ClientBase):
         assert isinstance(payload, dict)
         return self.factory.deserialize_bungie_user(payload)
 
-    async def search_users(self, name: str, /) -> typing.Sequence[user.DestinyUser]:
+    async def search_users(
+        self, name: str, /
+    ) -> collections.Sequence[user.DestinyUser]:
         """Search for players and return all players that matches the same name.
 
         Parameters
@@ -225,19 +227,19 @@ class Client(traits.ClientBase):
 
         Returns
         -------
-        `typing.Sequence[aiobungie.crate.DestinyUser]`
+        `collections.Sequence[aiobungie.crate.DestinyUser]`
             A sequence of destiny memberships.
         """
         payload = await self.rest.search_users(name)
         assert isinstance(payload, dict)
         return self.factory.deseialize_found_users(payload)
 
-    async def fetch_user_themes(self) -> typing.Sequence[user.UserThemes]:
+    async def fetch_user_themes(self) -> collections.Sequence[user.UserThemes]:
         """Fetch all available user themes.
 
         Returns
         -------
-        `typing.Sequence[aiobungie.crate.user.UserThemes]`
+        `collections.Sequence[aiobungie.crate.user.UserThemes]`
             A sequence of user themes.
         """
         data = await self.rest.fetch_user_themes()
@@ -436,7 +438,7 @@ class Client(traits.ClientBase):
         code: int,
         type: typedefs.IntAnd[enums.MembershipType] = enums.MembershipType.ALL,
         /,
-    ) -> typing.Sequence[user.DestinyUser]:
+    ) -> collections.Sequence[user.DestinyUser]:
         """Fetch a Destiny 2 Player's memberships.
 
         Parameters
@@ -450,7 +452,7 @@ class Client(traits.ClientBase):
 
         Returns
         --------
-        `typing.Sequence[aiobungie.crate.Player]`
+        `collections.Sequence[aiobungie.crate.Player]`
             A sequence of the found Destiny 2 Player memberships.
             An empty sequene will be returned if no one found.
 
@@ -638,7 +640,7 @@ class Client(traits.ClientBase):
 
     async def fetch_clan_conversations(
         self, clan_id: int, /
-    ) -> typing.Sequence[clans.ClanConversation]:
+    ) -> collections.Sequence[clans.ClanConversation]:
         """Fetch the conversations/chat channels of the given clan id.
 
         Parameters
@@ -647,7 +649,7 @@ class Client(traits.ClientBase):
             The clan id.
 
         Returns
-        `typing.Sequence[aiobungie.crate.ClanConversation]`
+        `collections.Sequence[aiobungie.crate.ClanConversation]`
             A sequence of the clan chat channels.
         """
         resp = await self.rest.fetch_clan_conversations(clan_id)
@@ -656,7 +658,7 @@ class Client(traits.ClientBase):
 
     async def fetch_clan_admins(
         self, clan_id: int, /
-    ) -> typing.Sequence[clans.ClanAdmin]:
+    ) -> collections.Sequence[clans.ClanAdmin]:
         """Fetch the clan founder and admins.
 
         Parameters
@@ -666,7 +668,7 @@ class Client(traits.ClientBase):
 
         Returns
         -------
-        `typing.Sequence[aiobungie.crate.ClanAdmin]`
+        `collections.Sequence[aiobungie.crate.ClanAdmin]`
             A sequence of the found clan admins and founder.
 
         Raises
@@ -800,7 +802,7 @@ class Client(traits.ClientBase):
         clan_id: int,
         type: typedefs.IntAnd[enums.MembershipType] = enums.MembershipType.NONE,
         /,
-    ) -> typing.Sequence[clans.ClanMember]:
+    ) -> collections.Sequence[clans.ClanMember]:
         """Fetch a Bungie Clan member. if no members found in the clan
         you will get an empty sequence.
 
@@ -820,7 +822,7 @@ class Client(traits.ClientBase):
 
         Returns
         -------
-        `typing.Sequence[aiobungie.crate.ClanMember]`
+        `collections.Sequence[aiobungie.crate.ClanMember]`
             A sequence of bungie clan members.
 
         Raises
@@ -832,12 +834,12 @@ class Client(traits.ClientBase):
         assert isinstance(resp, dict)
         return self.factory.deserialize_clan_members(resp)
 
-    async def fetch_clan_banners(self) -> typing.Sequence[clans.ClanBanner]:
+    async def fetch_clan_banners(self) -> collections.Sequence[clans.ClanBanner]:
         """Fetch the clan banners.
 
         Returns
         -------
-        `typing.Sequence[aiobungie.crate.ClanBanner]`
+        `collections.Sequence[aiobungie.crate.ClanBanner]`
             A sequence of the clan banners.
         """
         resp = await self.rest.fetch_clan_banners()
@@ -950,7 +952,7 @@ class Client(traits.ClientBase):
 
     async def fetch_friends(
         self, access_token: str, /
-    ) -> typing.Sequence[friends.Friend]:
+    ) -> collections.Sequence[friends.Friend]:
         """Fetch bungie friend list.
 
         .. note::
@@ -963,7 +965,7 @@ class Client(traits.ClientBase):
 
         Returns
         -------
-        `typing.Sequence[aiobungie.crate.Friend]`
+        `collections.Sequence[aiobungie.crate.Friend]`
             A sequence of the found friends.
         """
 
@@ -1043,7 +1045,7 @@ class Client(traits.ClientBase):
         date_range: int = 0,
         page: int = 0,
         slots_filter: int = 0,
-    ) -> typing.Optional[typing.Sequence[fireteams.Fireteam]]:
+    ) -> typing.Optional[collections.Sequence[fireteams.Fireteam]]:
         """Fetch public Bungie fireteams with open slots.
 
         Parameters
@@ -1068,7 +1070,7 @@ class Client(traits.ClientBase):
 
         Returns
         -------
-        `typing.Optional[typing.Sequence[fireteams.Fireteam]]`
+        `typing.Optional[collections.Sequence[fireteams.Fireteam]]`
             A sequence of `aiobungie.crate.Fireteam` or `None`.
         """
 
@@ -1095,7 +1097,7 @@ class Client(traits.ClientBase):
         page: int = 0,
         public_only: bool = False,
         slots_filter: int = 0,
-    ) -> typing.Optional[typing.Sequence[fireteams.Fireteam]]:
+    ) -> typing.Optional[collections.Sequence[fireteams.Fireteam]]:
         """Fetch a clan's fireteams with open slots.
 
         .. note::
@@ -1129,7 +1131,7 @@ class Client(traits.ClientBase):
 
         Returns
         -------
-        `typing.Optional[typing.Sequence[aiobungie.crate.Fireteam]]`
+        `typing.Optional[collections.Sequence[aiobungie.crate.Fireteam]]`
             A sequence of  fireteams found in the clan.
             `None` will be returned if nothing was found.
         """
@@ -1185,7 +1187,7 @@ class Client(traits.ClientBase):
         language: typing.Union[fireteams.FireteamLanguage, str],
         filtered: bool = True,
         page: int = 0,
-    ) -> typing.Sequence[fireteams.AvalaibleFireteam]:
+    ) -> collections.Sequence[fireteams.AvalaibleFireteam]:
         """A method that's similar to `fetch_fireteams` but requires OAuth2.
 
         .. note::
@@ -1216,7 +1218,7 @@ class Client(traits.ClientBase):
 
         Returns
         -------
-        `typing.Optional[typing.Sequence[aiobungie.crate.AvalaibleFireteam]]`
+        `typing.Optional[collections.Sequence[aiobungie.crate.AvalaibleFireteam]]`
             A sequence of available fireteams objects if exists. else `None` will be returned.
         """
         resp = await self.rest.fetch_my_clan_fireteams(

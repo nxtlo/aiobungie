@@ -46,6 +46,7 @@ from aiobungie.internal import assets
 from aiobungie.internal import enums
 
 if typing.TYPE_CHECKING:
+    import collections.abc as collections
     from datetime import datetime
 
     from aiobungie import traits
@@ -56,7 +57,7 @@ if typing.TYPE_CHECKING:
 class UserLike(abc.ABC):
     """An ABC that's used for all userlike objects."""
 
-    __slots__: typing.Sequence[str] = ()
+    __slots__ = ()
 
     @property
     @abc.abstractmethod
@@ -139,7 +140,7 @@ class PartialBungieUser:
     type: enums.MembershipType = attr.field(repr=True)
     """The user's membership type."""
 
-    types: typing.Sequence[enums.MembershipType] = attr.field(repr=False)
+    types: collections.Sequence[enums.MembershipType] = attr.field(repr=False)
     """An array of applicable membership types for this user."""
 
     crossave_override: enums.MembershipType = attr.field(repr=False)
@@ -263,7 +264,7 @@ class DestinyUser(UserLike):
     type: enums.MembershipType = attr.field(repr=True)
     """The member's membership type."""
 
-    types: typing.Sequence[enums.MembershipType] = attr.field(repr=False)
+    types: collections.Sequence[enums.MembershipType] = attr.field(repr=False)
     """A sequence of the member's membership types."""
 
     icon: assets.MaybeImage = attr.field(repr=False)
@@ -389,5 +390,5 @@ class User:
     bungie: BungieUser = attr.field()
     """The user's bungie net membership."""
 
-    destiny: typing.Sequence[DestinyUser] = attr.field()
+    destiny: collections.Sequence[DestinyUser] = attr.field()
     """A sequence of the user's Destiny memberships."""

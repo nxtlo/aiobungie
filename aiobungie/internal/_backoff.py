@@ -61,7 +61,7 @@ class ExponentialBackOff:
         that's annotated as `builtins.float`.
     """
 
-    __slots__: typing.Sequence[str] = (
+    __slots__ = (
         "base",
         "increment",
         "maximum",

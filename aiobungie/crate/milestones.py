@@ -59,7 +59,7 @@ class MilestoneItems:
     title: undefined.UndefinedOr[str] = attr.field(repr=True)
     """The item title. This may be `UNDEFINED` if not specified."""
 
-    hashes: typing.Sequence[int] = attr.field(repr=True)
+    hashes: collections.Sequence[int] = attr.field(repr=True)
     """The items hashes"""
 
 
@@ -73,7 +73,7 @@ class MilestoneContent:
     status: undefined.UndefinedOr[str] = attr.field(repr=True, eq=True)
     """The milestone's status. This field may be `UNDEFINED` if not specified."""
 
-    tips: typing.Sequence[undefined.UndefinedOr[str]] = attr.field(repr=True)
+    tips: collections.Sequence[undefined.UndefinedOr[str]] = attr.field(repr=True)
     """A sequence of the milestone's tips. fields in the sequence may be `UNDEFINED` if not specified."""
 
     items: typedefs.NoneOr[MilestoneItems] = attr.field(repr=True)

@@ -29,6 +29,7 @@ __all__ = ("ClientBase", "Netrunner", "Serializable", "RESTful")
 import typing
 
 if typing.TYPE_CHECKING:
+    import collections.abc as collections
 
     from aiobungie import client as base_client
     from aiobungie import interfaces
@@ -43,7 +44,7 @@ class Netrunner(typing.Protocol):
     Objects with this protocol can make requests from outside the base client.
     """
 
-    __slots__: typing.Sequence[str] = ()
+    __slots__ = ()
 
     @property
     def request(self) -> base_client.Client:
@@ -59,7 +60,7 @@ class Serializable(typing.Protocol):
     a Python data class objects using the client factory.
     """
 
-    __slots__: typing.Sequence[str] = ()
+    __slots__ = ()
 
     @property
     def factory(self) -> factory_.Factory:
@@ -71,7 +72,7 @@ class Serializable(typing.Protocol):
 class RESTful(typing.Protocol):
     """A RESTful only supertype object protocol."""
 
-    __slots__: typing.Sequence[str] = ()
+    __slots__ = ()
 
     def build_oauth2_url(
         self, client_id: typing.Optional[int] = None
@@ -136,18 +137,20 @@ class RESTful(typing.Protocol):
 class ClientBase(Netrunner, Serializable, typing.Protocol):
     """A Pythonic Client supertype, serializble and netrunner protocol."""
 
-    __slots__: typing.Sequence[str] = ()
+    __slots__ = ()
 
     def run(
-        self, future: typing.Coroutine[typing.Any, None, None], debug: bool = False
+        self, future: collections.Coroutine[None, None, None], debug: bool = False
     ) -> None:
         """Runs a Coro function until its complete.
         This is equivalent to asyncio.get_event_loop().run_until_complete(...)
 
         Parameters
         ----------
-        future: `typing.Coroutine[typing.Any, typing.Any, typing.Any]`
-            Your coro function.
+        future: `collections.Coroutine[None, None, None]`
+            A coroutine object.
+        debug : `bool`
+            Either to enable asyncio debug or not. Disabled by default.
 
         Example
         -------

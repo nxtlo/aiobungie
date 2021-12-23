@@ -83,7 +83,7 @@ async def awaits(
     *aws: collections.Awaitable[JT],
     timeout: typing.Optional[float] = None,
     with_exception: bool = True,
-) -> typing.Union[collections.Collection[JT], typing.Sequence[JT]]:
+) -> typing.Union[collections.Collection[JT], collections.Sequence[JT]]:
     """Await all given awaitables concurrently.
 
     Parameters
@@ -158,7 +158,7 @@ class AsyncIterator(typing.Generic[AT]):
         A sequence of the generic iterables type.
     """
 
-    __slots__: typing.Sequence[str] = ("_seq",)
+    __slots__: collections.Sequence[str] = ("_seq",)
 
     def __init__(self, sequence: typing.Iterable[AT]) -> None:
         self._seq = iter(sequence)

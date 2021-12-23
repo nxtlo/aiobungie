@@ -45,6 +45,7 @@ from aiobungie.crate import user
 from aiobungie.internal import enums
 
 if typing.TYPE_CHECKING:
+    import collections.abc as collections
     from datetime import datetime
 
     from aiobungie import traits
@@ -65,7 +66,7 @@ class ClanFeatures:
     capabilities: int = attr.field(repr=False)
     """An int that represents the clan's capabilities."""
 
-    membership_types: typing.List[enums.MembershipType] = attr.field(repr=True)
+    membership_types: list[enums.MembershipType] = attr.field(repr=True)
     """The clan's membership types."""
 
     invite_permissions: bool = attr.field(repr=False)
@@ -187,7 +188,7 @@ class ClanMember(user.UserLike):
     type: enums.MembershipType = attr.field(repr=True)
     """Clan member's membership type."""
 
-    types: typing.Sequence[enums.MembershipType] = attr.field(repr=False)
+    types: collections.Sequence[enums.MembershipType] = attr.field(repr=False)
     """A sequence of the available clan member membership types."""
 
     icon: assets.MaybeImage = attr.field(repr=False)
@@ -375,7 +376,7 @@ class ClanAdmin(user.UserLike):
     type: enums.MembershipType = attr.field(repr=True)
     """Clan admin's membership type."""
 
-    types: typing.Sequence[enums.MembershipType] = attr.field(repr=False)
+    types: collections.Sequence[enums.MembershipType] = attr.field(repr=False)
     """A sequence of the available clan admin membership types."""
 
     icon: assets.MaybeImage = attr.field(repr=False)
@@ -464,7 +465,7 @@ class Clan:
     about: str = attr.field(repr=False, eq=False)
     """Clan's about title."""
 
-    tags: typing.List[str] = attr.field(repr=False)
+    tags: list[str] = attr.field(repr=False)
     """A list of the clan's tags."""
 
     owner: typedefs.NoneOr[ClanMember] = attr.field(repr=True)
@@ -543,7 +544,7 @@ class Clan:
         about: typedefs.NoneOr[str] = None,
         motto: typedefs.NoneOr[str] = None,
         theme: typedefs.NoneOr[str] = None,
-        tags: typedefs.NoneOr[typing.Sequence[str]] = None,
+        tags: typedefs.NoneOr[collections.Sequence[str]] = None,
         is_public: typedefs.NoneOr[bool] = None,
         locale: typedefs.NoneOr[str] = None,
         avatar_image_index: typedefs.NoneOr[int] = None,
@@ -580,7 +581,7 @@ class Clan:
             The motto section to edit the clan with.
         theme : `aiobungie.typedefs.NoneOr[str]`
             The theme name to edit the clan with.
-        tags : `aiobungie.typedefs.NoneOr[typing.Sequence[str]]`
+        tags : `aiobungie.typedefs.NoneOr[collections.Sequence[str]]`
             A sequence of strings to replace the clan tags with.
         is_public : `aiobungie.typedefs.NoneOr[bool]`
             If provided and set to `True`, The clan will set to private.
@@ -646,7 +647,7 @@ class Clan:
         page: int = 0,
         public_only: bool = False,
         slots_filter: int = 0,
-    ) -> typing.Optional[typing.Sequence[fireteams.Fireteam]]:
+    ) -> typing.Optional[collections.Sequence[fireteams.Fireteam]]:
         """Fetch a clan's fireteams with open slots.
 
         .. note::
@@ -701,7 +702,7 @@ class Clan:
         language: typing.Union[fireteams.FireteamLanguage, str],
         filtered: bool = True,
         page: int = 0,
-    ) -> typing.Sequence[fireteams.AvalaibleFireteam]:
+    ) -> collections.Sequence[fireteams.AvalaibleFireteam]:
         """Fetch all clan available fireteams.
 
         .. note::
@@ -730,7 +731,7 @@ class Clan:
 
         Returns
         -------
-        `typing.Optional[typing.Sequence[aiobungie.crate.AvalaibleFireteam]]`
+        `typing.Optional[collections.Sequence[aiobungie.crate.AvalaibleFireteam]]`
             A sequence of available fireteams objects if exists. else `None` will be returned.
         """
         fireteams_ = await self.net.request.fetch_my_clan_fireteams(
@@ -745,11 +746,11 @@ class Clan:
         assert isinstance(fireteams, list)
         return fireteams_
 
-    async def fetch_conversations(self) -> typing.Sequence[ClanConversation]:
+    async def fetch_conversations(self) -> collections.Sequence[ClanConversation]:
         """Fetch the conversations/chat channels of this clan.
 
         Returns
-        `typing.Sequence[aiobungie.crate.ClanConversation]`
+        `collections.Sequence[aiobungie.crate.ClanConversation]`
             A sequence of the clan chat channels.
         """
         return await self.net.request.fetch_clan_conversations(self.id)
@@ -823,7 +824,7 @@ class Clan:
 
     async def fetch_members(
         self, type: enums.MembershipType = enums.MembershipType.NONE, /
-    ) -> typing.Sequence[ClanMember]:
+    ) -> collections.Sequence[ClanMember]:
         """Fetch the members of the clan.
 
         if the memberhship type is None it will
@@ -837,7 +838,7 @@ class Clan:
 
         Returns
         --------
-        `typing.Sequence[ClanMember]`
+        `collections.Sequence[ClanMember]`
             A sequence of the clan members found in this clan.
 
         Raises
@@ -902,7 +903,7 @@ class Clan:
     # These ones is not implemented since it
     # requires OAUth2
 
-    async def fetch_banned_members(self) -> typing.Sequence[ClanMember]:
+    async def fetch_banned_members(self) -> collections.Sequence[ClanMember]:
         """Fetch members who has been banned from the clan.
 
         .. warning::
@@ -910,12 +911,12 @@ class Clan:
 
         Returns
         --------
-        `typing.Sequence[aiobungie.crate.clans.ClanMember]`
+        `collections.Sequence[aiobungie.crate.clans.ClanMember]`
             A sequence of clan members or are banned.
         """
         raise NotImplementedError
 
-    async def fetch_pending_members(self) -> typing.Sequence[ClanMember]:
+    async def fetch_pending_members(self) -> collections.Sequence[ClanMember]:
         """Fetch members who are waiting to get accepted.
 
         .. warning::
@@ -923,13 +924,13 @@ class Clan:
 
         Returns
         --------
-        `typing.Sequence[aiobungie.crate.clans.ClanMember]`
+        `collections.Sequence[aiobungie.crate.clans.ClanMember]`
             A sequence of clan members who are awaiting
             to get accepted to the clan.
         """
         raise NotImplementedError
 
-    async def fetch_invited_members(self) -> typing.Sequence[ClanMember]:
+    async def fetch_invited_members(self) -> collections.Sequence[ClanMember]:
         """Fetch members who has been invited.
 
         .. warning::
@@ -937,7 +938,7 @@ class Clan:
 
         Returns
         --------
-        `typing.Sequence[aiobungie.crate.clans.ClanMember]`
+        `collections.Sequence[aiobungie.crate.clans.ClanMember]`
             A sequence of members who have been invited.
         """
         raise NotImplementedError

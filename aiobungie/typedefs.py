@@ -25,8 +25,8 @@
 from __future__ import annotations
 
 __all__: tuple[str, ...] = (
-    "JsonObject",
-    "JsonArray",
+    "JSONObject",
+    "JSONArray",
     "Unknown",
     "NoneOr",
     "EnumSig",
@@ -38,14 +38,14 @@ import typing
 
 from aiobungie.internal import enums
 
-JsonObject = typing.Dict[str, typing.Any]
-"""A json like dict of string key and any value.
+JSONObject = dict[str, typing.Any]  # type: ignore[misc]
+"""A JSON like dict of string key and any value.
 
 i.e., `{"Key": 1, "Key2": "Value"}`
 """
 
-JsonArray = typing.List[typing.Any]
-"""A json like list of any data type.
+JSONArray = list[typing.Any]  # type: ignore[misc]
+"""A JSON like list of any data type.
 
 i.e., `[{"Key": 1}, {"Key2": "Value"}]`
 """

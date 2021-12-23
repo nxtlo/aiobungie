@@ -227,70 +227,70 @@ class SearchableEntity:
 class InventoryEntityObjects:
     """JSON object found inside an inventory item definition."""
 
-    action: typing.Optional[typedefs.JsonObject] = attr.field()
+    action: typing.Optional[typedefs.JSONObject] = attr.field()
     """"""
 
-    set_data: typing.Optional[typedefs.JsonObject] = attr.field()
+    set_data: typing.Optional[typedefs.JSONObject] = attr.field()
     """If this item is a quest, this block will be non-null."""
 
-    quality: typing.Optional[typedefs.JsonObject] = attr.field()
+    quality: typing.Optional[typedefs.JSONObject] = attr.field()
     """If this item can have a level or stats, this block will be available."""
 
-    preview: typing.Optional[typedefs.JsonObject] = attr.field()
+    preview: typing.Optional[typedefs.JSONObject] = attr.field()
     """If this item can be Used or Acquired to gain other items
     (for instance, how Eververse Boxes can be consumed to get items from the box), this block will available.
     """
 
-    value: typing.Optional[typedefs.JsonObject] = attr.field()
+    value: typing.Optional[typedefs.JSONObject] = attr.field()
     """The conceptual "Value" of an item, if any was defined."""
 
-    source_data: typing.Optional[typedefs.JsonObject] = attr.field()
+    source_data: typing.Optional[typedefs.JSONObject] = attr.field()
     """If this item has a known source, this block will be available."""
 
-    objectives: typing.Optional[typedefs.JsonObject] = attr.field()
+    objectives: typing.Optional[typedefs.JSONObject] = attr.field()
     """If this item has Objectives (extra tasks that can be accomplished related to the item,
     This field will be available.
     """
 
-    plug: typing.Optional[typedefs.JsonObject] = attr.field()
+    plug: typing.Optional[typedefs.JSONObject] = attr.field()
     """If this item is a Plug, this will be available."""
 
-    gearset: typing.Optional[typedefs.JsonObject] = attr.field()
+    gearset: typing.Optional[typedefs.JSONObject] = attr.field()
     """"""
 
-    metrics: typing.Optional[typedefs.JsonObject] = attr.field()
+    metrics: typing.Optional[typedefs.JSONObject] = attr.field()
     """If this item has available metrics to be shown, this block will be available."""
 
-    sack: typing.Optional[typedefs.JsonObject] = attr.field()
+    sack: typing.Optional[typedefs.JSONObject] = attr.field()
     """"""
 
-    sockets: typing.Optional[typedefs.JsonObject] = attr.field()
+    sockets: typing.Optional[typedefs.JSONObject] = attr.field()
     """"""
 
-    summary: typing.Optional[typedefs.JsonObject] = attr.field()
+    summary: typing.Optional[typedefs.JSONObject] = attr.field()
     """"""
 
-    talent_gird: typing.Optional[typedefs.JsonObject] = attr.field()
+    talent_gird: typing.Optional[typedefs.JSONObject] = attr.field()
     """"""
 
-    stats: typing.Optional[typedefs.JsonObject] = attr.field()
+    stats: typing.Optional[typedefs.JSONObject] = attr.field()
     """If this item can have stats (such as a weapon, armor, or vehicle),
     this block will be non-null and populated with the stats found on the item.
     """
 
-    equipping_block: typing.Optional[typedefs.JsonObject] = attr.field()
+    equipping_block: typing.Optional[typedefs.JSONObject] = attr.field()
     """If this item can be equipped, this block will be available."""
 
-    translation_block: typing.Optional[typedefs.JsonObject] = attr.field()
+    translation_block: typing.Optional[typedefs.JSONObject] = attr.field()
     """If this item can be rendered, this block will be available."""
 
-    investments_stats: typing.Optional[typedefs.JsonObject] = attr.field()
+    investments_stats: typing.Optional[typedefs.JSONObject] = attr.field()
     """"""
 
-    perks: typing.Optional[typedefs.JsonObject] = attr.field()
+    perks: typing.Optional[typedefs.JSONObject] = attr.field()
     """"""
 
-    animations: collections.Sequence[typedefs.JsonObject] = attr.field()
+    animations: collections.Sequence[typedefs.JSONObject] = attr.field()
     """"""
 
     links: collections.Sequence[dict[str, str]] = attr.field()

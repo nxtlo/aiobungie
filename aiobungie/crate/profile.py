@@ -33,7 +33,6 @@ __all__: tuple[str, ...] = (
 )
 
 import abc
-import collections.abc as collections
 import datetime
 import typing
 
@@ -45,6 +44,8 @@ from aiobungie.internal import enums
 from aiobungie.internal import helpers
 
 if typing.TYPE_CHECKING:
+    import collections.abc as collections
+
     from aiobungie import traits
     from aiobungie import typedefs
     from aiobungie.crate import components

@@ -8,7 +8,7 @@
     <img src="https://img.shields.io/github/issues/nxtlo/aiobungie"/>
     </a>
     <a href="http://python.org">
-    <img src="https://img.shields.io/badge/python-3.8%20%7C%203.9%20%7C%203.10-blue"/>
+    <img src="https://img.shields.io/badge/python-3.9%20%7C%203.10-blue"/>
     </a>
     <a href="https://pypi.org/project/aiobungie/">
     <img src="https://img.shields.io/pypi/v/aiobungie?color=green"/>
@@ -118,7 +118,7 @@ asyncio.run(main("DB_ACCESS_TOKEN"))
 ```
 
 ### Requirements
-* Python >=3.8 ,<=3.12
+* Python 3.9 or higher
 * aiohttp
 * attrs
 

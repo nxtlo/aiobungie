@@ -44,6 +44,7 @@ from aiobungie.crate import user
 from aiobungie.internal import enums
 
 if typing.TYPE_CHECKING:
+    import collections.abc as collections
     import datetime
 
     from aiobungie import undefined
@@ -224,10 +225,12 @@ class Fireteam:
 class AvalaibleFireteam(Fireteam):
     """Represents an available clan fireteam. This includes the members and alternative members."""
 
-    members: typing.Optional[typing.Sequence[FireteamMember]] = attr.field(repr=True)
+    members: typing.Optional[collections.Sequence[FireteamMember]] = attr.field(
+        repr=True
+    )
     """A sequence of the fireteam members."""
 
-    alternatives: typing.Optional[typing.Sequence[FireteamMember]] = attr.field(
+    alternatives: typing.Optional[collections.Sequence[FireteamMember]] = attr.field(
         repr=True
     )
     """A sequence of the fireteam alternative members."""

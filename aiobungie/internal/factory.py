@@ -25,7 +25,6 @@ from __future__ import annotations
 
 __all__: tuple[str, ...] = ("Factory",)
 
-import collections.abc as collections
 import typing
 
 from aiobungie import interfaces
@@ -51,6 +50,7 @@ from aiobungie.internal import helpers
 from aiobungie.internal import time
 
 if typing.TYPE_CHECKING:
+    import collections.abc as collections
     import datetime
 
     from aiobungie import traits
@@ -70,7 +70,7 @@ class Factory(interfaces.FactoryInterface):
     def __init__(self, net: traits.Netrunner) -> None:
         self._net = net
 
-    def deserialize_bungie_user(self, data: typedefs.JsonObject) -> user.BungieUser:
+    def deserialize_bungie_user(self, data: typedefs.JSONObject) -> user.BungieUser:
         return user.BungieUser(
             id=int(data["membershipId"]),
             created_at=time.clean_date(data["firstAccess"]),
@@ -96,7 +96,7 @@ class Factory(interfaces.FactoryInterface):
 
     # Deserializer for a `bungieNetUserInfo`
     def deserialize_partial_bungie_user(
-        self, payload: typedefs.JsonObject, *, noeq: bool = False
+        self, payload: typedefs.JSONObject, *, noeq: bool = False
     ) -> user.PartialBungieUser:
         if noeq is True:
             bungie_info = payload
@@ -124,7 +124,7 @@ class Factory(interfaces.FactoryInterface):
 
     # Deserializer for a `destinyUserInfo`
     def deserialize_destiny_user(
-        self, payload: typedefs.JsonObject, *, noeq: bool = False
+        self, payload: typedefs.JSONObject, *, noeq: bool = False
     ) -> user.DestinyUser:
         if noeq is True:
             user_info = payload
@@ -160,7 +160,7 @@ class Factory(interfaces.FactoryInterface):
     # Deserialize a list of `destinyUserInfo`
     def deserialize_destiny_members(
         self,
-        data: typing.Union[typedefs.JsonObject, typedefs.JsonArray],
+        data: typing.Union[typedefs.JSONObject, typedefs.JSONArray],
         *,
         bound: bool = False,
     ) -> collections.Sequence[user.DestinyUser]:
@@ -174,7 +174,7 @@ class Factory(interfaces.FactoryInterface):
         # a json object or a json array of objects.
 
         raw_members: typing.Union[
-            typedefs.JsonArray, typedefs.JsonObject, dict[int, typing.Any]
+            typedefs.JSONArray, typedefs.JSONObject, dict[int, typing.Any]
         ] = data
 
         if bound:
@@ -230,14 +230,14 @@ class Factory(interfaces.FactoryInterface):
             vec.append(obj)
         return vec
 
-    def deserialize_user(self, data: typedefs.JsonObject) -> user.User:
+    def deserialize_user(self, data: typedefs.JSONObject) -> user.User:
         return user.User(
             bungie=self.deserialize_bungie_user(data["bungieNetUser"]),
             destiny=self.deserialize_destiny_members(data),
         )
 
     def deseialize_found_users(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> collections.Sequence[user.DestinyUser]:
         result = payload["searchResults"]
 
@@ -252,7 +252,7 @@ class Factory(interfaces.FactoryInterface):
         return vec
 
     def deserialize_user_credentials(
-        self, payload: typedefs.JsonArray
+        self, payload: typedefs.JSONArray
     ) -> collections.Sequence[user.UserCredentials]:
         return [
             user.UserCredentials(
@@ -266,7 +266,7 @@ class Factory(interfaces.FactoryInterface):
 
     @staticmethod
     def set_themese_attrs(
-        payload: typedefs.JsonArray, /
+        payload: typedefs.JSONArray, /
     ) -> typing.Collection[user.UserThemes]:
         if payload is None:
             raise ValueError("No themes found.")
@@ -287,16 +287,16 @@ class Factory(interfaces.FactoryInterface):
         return theme_map.values()
 
     def deserialize_user_themes(
-        self, payload: typedefs.JsonArray
+        self, payload: typedefs.JSONArray
     ) -> collections.Sequence[user.UserThemes]:
         return list(self.set_themese_attrs(payload))
 
     def deserialize_player(
-        self, payload: typedefs.JsonArray, /
+        self, payload: typedefs.JSONArray, /
     ) -> collections.Sequence[user.DestinyUser]:
         return self.deserialize_destiny_members(payload, bound=True)
 
-    def deseialize_clan_owner(self, data: typedefs.JsonObject) -> clans.ClanMember:
+    def deseialize_clan_owner(self, data: typedefs.JSONObject) -> clans.ClanMember:
         joined_at = data["joinDate"]
         last_online = time.from_timestamp(int(data["lastOnlineStatusChange"]))
         clan_id = data["groupId"]
@@ -320,7 +320,7 @@ class Factory(interfaces.FactoryInterface):
         )
 
     def deserialize_clan(
-        self, payload: typedefs.JsonObject, *, bound: bool = False
+        self, payload: typedefs.JSONObject, *, bound: bool = False
     ) -> clans.Clan:
         # To bind this function between this and group for member.
         if bound is True:
@@ -375,7 +375,7 @@ class Factory(interfaces.FactoryInterface):
         )
 
     def deserialize_group_member(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> typedefs.NoneOr[clans.GroupMember]:
         inactive_memberships = payload.get("areAllMembershipsInactive", None)
         if (raw_results := payload.get("results")) is not None:
@@ -411,7 +411,7 @@ class Factory(interfaces.FactoryInterface):
         return None
 
     def deserialize_clan_admins(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> collections.Sequence[clans.ClanAdmin]:
         builder = []
         member_types = helpers.just(payload["results"], "memberType")
@@ -440,7 +440,7 @@ class Factory(interfaces.FactoryInterface):
             builder.append(clan_admin)
         return builder
 
-    def deserialize_clan_member(self, data: typedefs.JsonObject, /) -> clans.ClanMember:
+    def deserialize_clan_member(self, data: typedefs.JSONObject, /) -> clans.ClanMember:
 
         if (payload := data["results"]) is not None:
             attrs = payload[0]
@@ -473,7 +473,7 @@ class Factory(interfaces.FactoryInterface):
         )
 
     def deserialize_clan_convos(
-        self, payload: typedefs.JsonArray
+        self, payload: typedefs.JSONArray
     ) -> collections.Sequence[clans.ClanConversation]:
         map = {}
         vec = []
@@ -497,13 +497,13 @@ class Factory(interfaces.FactoryInterface):
         return vec
 
     def deserialize_clan_members(
-        self, data: typedefs.JsonObject, /
+        self, data: typedefs.JSONObject, /
     ) -> collections.Sequence[clans.ClanMember]:
 
         members_vec: list[clans.ClanMember] = []
         _fn_type_optional = typing.Optional[typing.Callable[..., typing.Dict[str, str]]]
         _fn_type = typing.Callable[..., typing.Dict[str, str]]
-        payload: typing.List[typing.Dict[str, typing.Any]]
+        payload: list[typing.Dict[str, typing.Any]]
 
         if (payload := data["results"]) is not None:
 
@@ -555,7 +555,7 @@ class Factory(interfaces.FactoryInterface):
         return members_vec
 
     def deserialize_app_owner(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> app.ApplicationOwner:
         return app.ApplicationOwner(
             net=self._net,
@@ -567,7 +567,7 @@ class Factory(interfaces.FactoryInterface):
             code=payload.get("bungieGlobalDisplayNameCode", None),
         )
 
-    def deserialize_app(self, payload: typedefs.JsonObject) -> app.Application:
+    def deserialize_app(self, payload: typedefs.JSONObject) -> app.Application:
         return app.Application(
             id=int(payload["applicationId"]),
             name=payload["name"],
@@ -580,7 +580,7 @@ class Factory(interfaces.FactoryInterface):
             scope=payload.get("scope", undefined.Undefined),
         )
 
-    def _set_character_attrs(self, payload: typedefs.JsonObject) -> character.Character:
+    def _set_character_attrs(self, payload: typedefs.JSONObject) -> character.Character:
         total_time = time.format_played(int(payload["minutesPlayedTotal"]), suffix=True)
         return character.Character(
             net=self._net,
@@ -602,7 +602,7 @@ class Factory(interfaces.FactoryInterface):
         )
 
     def deserialize_profile(
-        self, payload: typedefs.JsonObject, /
+        self, payload: typedefs.JSONObject, /
     ) -> typing.Optional[profile.Profile]:
         if (raw_profile := payload.get("data")) is None:
             return None
@@ -628,7 +628,7 @@ class Factory(interfaces.FactoryInterface):
         )
 
     def deserialize_profile_item(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> profile.ProfileItemImpl:
 
         instance_id: typing.Optional[int] = None
@@ -662,7 +662,7 @@ class Factory(interfaces.FactoryInterface):
             ornament_id=payload.get("overrideStyleItemHash"),
         )
 
-    def deserialize_objectives(self, payload: typedefs.JsonObject) -> records.Objective:
+    def deserialize_objectives(self, payload: typedefs.JSONObject) -> records.Objective:
         return records.Objective(
             net=self._net,
             hash=payload["objectiveHash"],
@@ -674,7 +674,7 @@ class Factory(interfaces.FactoryInterface):
 
     def deserialize_records(
         self,
-        payload: typedefs.JsonObject,
+        payload: typedefs.JSONObject,
         scores: typing.Optional[records.RecordScores] = None,
         **nodes: int,
     ) -> records.Record:
@@ -712,7 +712,7 @@ class Factory(interfaces.FactoryInterface):
 
     def deserialize_character_records(
         self,
-        payload: typedefs.JsonObject,
+        payload: typedefs.JSONObject,
         scores: typing.Optional[records.RecordScores] = None,
         record_hashes: typing.Optional[list[int]] = None,
     ) -> records.CharacterRecord:
@@ -734,13 +734,13 @@ class Factory(interfaces.FactoryInterface):
             record_hashes=record_hashes or [],
         )
 
-    def deserialize_character_dye(self, payload: typedefs.JsonObject) -> character.Dye:
+    def deserialize_character_dye(self, payload: typedefs.JSONObject) -> character.Dye:
         return character.Dye(
             channel_hash=payload["channelHash"], dye_hash=payload["dyeHash"]
         )
 
     def deserialize_character_customazition(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> character.CustomizationOptions:
         return character.CustomizationOptions(
             personality=payload["personality"],
@@ -758,7 +758,7 @@ class Factory(interfaces.FactoryInterface):
         )
 
     def deserialize_character_minimal_equipments(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> character.MinimalEquipments:
         dyes = None
         if raw_dyes := payload.get("dyes"):
@@ -769,7 +769,7 @@ class Factory(interfaces.FactoryInterface):
         )
 
     def deserialize_character_render_data(
-        self, payload: typedefs.JsonObject, /
+        self, payload: typedefs.JSONObject, /
     ) -> character.RenderedData:
         return character.RenderedData(
             net=self._net,
@@ -788,7 +788,7 @@ class Factory(interfaces.FactoryInterface):
         )
 
     def deserialize_available_activity(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> activity.AvailableActivity:
         return activity.AvailableActivity(
             hash=payload["activityHash"],
@@ -803,7 +803,7 @@ class Factory(interfaces.FactoryInterface):
         )
 
     def deserialize_character_activity(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> activity.CharacterActivity:
         current_mode: typing.Optional[enums.GameMode] = None
         if raw_current_mode := payload.get("currentActivityModeType"):
@@ -829,12 +829,12 @@ class Factory(interfaces.FactoryInterface):
         )
 
     def deserialize_profile_items(
-        self, payload: typedefs.JsonObject, /
+        self, payload: typedefs.JSONObject, /
     ) -> list[profile.ProfileItemImpl]:
         return [self.deserialize_profile_item(item) for item in payload["items"]]
 
     def _deserialize_progressions(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> progressions.Progression:
         return progressions.Progression(
             hash=payload["progressionHash"],
@@ -849,7 +849,7 @@ class Factory(interfaces.FactoryInterface):
         )
 
     def _deserialize_factions(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> progressions.Factions:
         progs = self._deserialize_progressions(payload)
         return progressions.Factions(
@@ -867,7 +867,7 @@ class Factory(interfaces.FactoryInterface):
         )
 
     def _deserialize_milestone_available_quest(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> milestones.MilestoneQuest:
         return milestones.MilestoneQuest(
             item_hash=payload["questItemHash"],
@@ -875,7 +875,7 @@ class Factory(interfaces.FactoryInterface):
         )
 
     def _deserialize_milestone_activity(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> milestones.MilestoneActivity:
 
         phases: typing.Optional[
@@ -901,7 +901,7 @@ class Factory(interfaces.FactoryInterface):
         )
 
     def _deserialize_milestone_quest_status(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> milestones.QuestStatus:
         return milestones.QuestStatus(
             net=self._net,
@@ -920,7 +920,7 @@ class Factory(interfaces.FactoryInterface):
         )
 
     def _deserialize_milestone_rewards(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> milestones.MilestoneReward:
         return milestones.MilestoneReward(
             category_hash=payload["rewardCategoryHash"],
@@ -935,7 +935,7 @@ class Factory(interfaces.FactoryInterface):
         )
 
     def deserialize_milestone(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> milestones.Milestone:
         start_date: typing.Optional[datetime.datetime] = None
         if raw_start_date := payload.get("startDate"):
@@ -993,7 +993,7 @@ class Factory(interfaces.FactoryInterface):
         )
 
     def _deserialize_artifact_tiers(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> season.ArtifactTier:
         return season.ArtifactTier(
             hash=payload["tierHash"],
@@ -1008,7 +1008,7 @@ class Factory(interfaces.FactoryInterface):
         )
 
     def deserialize_characters(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> collections.Mapping[int, character.Character]:
         return {
             int(char_id): self._set_character_attrs(char)
@@ -1016,12 +1016,12 @@ class Factory(interfaces.FactoryInterface):
         }
 
     def deserialize_character(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> character.Character:
         return self._set_character_attrs(payload)
 
     def deserialize_character_equipmnets(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> collections.Mapping[int, collections.Sequence[profile.ProfileItemImpl]]:
         return {
             int(char_id): self.deserialize_profile_items(item)
@@ -1029,7 +1029,7 @@ class Factory(interfaces.FactoryInterface):
         }
 
     def deserialize_character_activities(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> collections.Mapping[int, activity.CharacterActivity]:
         return {
             int(char_id): self.deserialize_character_activity(data)
@@ -1037,7 +1037,7 @@ class Factory(interfaces.FactoryInterface):
         }
 
     def deserialize_characters_render_data(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> collections.Mapping[int, character.RenderedData]:
         return {
             int(char_id): self.deserialize_character_render_data(data)
@@ -1045,7 +1045,7 @@ class Factory(interfaces.FactoryInterface):
         }
 
     def deserialize_progressions(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> character.CharacterProgression:
         progressions_ = {
             int(prog_id): self._deserialize_progressions(prog)
@@ -1088,7 +1088,7 @@ class Factory(interfaces.FactoryInterface):
         )
 
     def deserialize_character_progressions(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> collections.Mapping[int, character.CharacterProgression]:
         character_progressions: collections.Mapping[
             int, character.CharacterProgression
@@ -1100,7 +1100,7 @@ class Factory(interfaces.FactoryInterface):
 
     def deserialize_characters_records(
         self,
-        payload: typedefs.JsonObject,
+        payload: typedefs.JSONObject,
         scores: typing.Optional[records.RecordScores] = None,
         record_hashes: typing.Optional[list[int]] = None,
     ) -> collections.Mapping[int, records.CharacterRecord]:
@@ -1113,7 +1113,7 @@ class Factory(interfaces.FactoryInterface):
         }
 
     def deserialize_profile_records(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> collections.Mapping[int, records.Record]:
         raw_profile_records = payload["data"]
         scores = records.RecordScores(
@@ -1132,7 +1132,7 @@ class Factory(interfaces.FactoryInterface):
         }
 
     def deserialize_components(  # noqa: C901 Too complex.
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> components.Component:
 
         profile_: typing.Optional[profile.Profile] = None
@@ -1185,7 +1185,7 @@ class Factory(interfaces.FactoryInterface):
 
         if raw_character_records := payload.get("characterRecords"):
             # Had to do it in two steps..
-            to_update: typedefs.JsonObject = {}
+            to_update: typedefs.JSONObject = {}
             for _, data in raw_character_records["data"].items():
                 for record_id, record in data.items():
                     to_update[record_id] = record
@@ -1290,7 +1290,7 @@ class Factory(interfaces.FactoryInterface):
         )
 
     def deserialize_character_component(  # type: ignore[call-arg]
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> components.CharacterComponent:
 
         character_: typing.Optional[character.Character] = None
@@ -1342,7 +1342,7 @@ class Factory(interfaces.FactoryInterface):
         )
 
     def _set_entity_attrs(
-        self, payload: typedefs.JsonObject, *, key: str = "displayProperties"
+        self, payload: typedefs.JSONObject, *, key: str = "displayProperties"
     ) -> entity.BaseEntity:
         name: undefined.UndefinedOr[str] = undefined.Undefined
         description: undefined.UndefinedOr[str] = undefined.Undefined
@@ -1368,7 +1368,7 @@ class Factory(interfaces.FactoryInterface):
         )
 
     def deserialize_inventory_results(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> collections.Sequence[entity.SearchableEntity]:
         suggested_words: list[str] = payload["suggestedWords"]
 
@@ -1391,7 +1391,7 @@ class Factory(interfaces.FactoryInterface):
         ]
 
     def _deserialize_inventory_item_objects(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> entity.InventoryEntityObjects:
         return entity.InventoryEntityObjects(
             action=payload.get("action"),
@@ -1418,7 +1418,7 @@ class Factory(interfaces.FactoryInterface):
         )
 
     def deserialize_inventory_entity(  # noqa: C901 Too complex.
-        self, payload: typedefs.JsonObject, /
+        self, payload: typedefs.JSONObject, /
     ) -> entity.InventoryEntity:
 
         props = self._set_entity_attrs(payload)
@@ -1598,7 +1598,7 @@ class Factory(interfaces.FactoryInterface):
         )
 
     def deserialize_objective_entity(
-        self, payload: typedefs.JsonObject, /
+        self, payload: typedefs.JSONObject, /
     ) -> entity.ObjectiveEntity:
         props = self._set_entity_attrs(payload)
         return entity.ObjectiveEntity(
@@ -1629,7 +1629,7 @@ class Factory(interfaces.FactoryInterface):
         )
 
     def _deserialize_activity_values(
-        self, payload: typedefs.JsonObject, /
+        self, payload: typedefs.JSONObject, /
     ) -> activity.ActivityValues:
         team: typing.Optional[int] = None
         if raw_team := payload.get("team"):
@@ -1656,7 +1656,7 @@ class Factory(interfaces.FactoryInterface):
 
     def deserialize_activity(
         self,
-        payload: typedefs.JsonObject,
+        payload: typedefs.JSONObject,
         /,
     ) -> activity.Activity:
         period = time.clean_date(payload["period"])
@@ -1685,14 +1685,14 @@ class Factory(interfaces.FactoryInterface):
         )
 
     def deserialize_activities(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> collections.Sequence[activity.Activity]:
         return [
             self.deserialize_activity(activity_) for activity_ in payload["activities"]
         ]
 
     def _deserialize_extended_weapon_values(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> activity.ExtendedWeaponValues:
         return activity.ExtendedWeaponValues(
             reference_id=int(payload["referenceId"]),
@@ -1709,7 +1709,7 @@ class Factory(interfaces.FactoryInterface):
         )
 
     def _deserialize_extended_values(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> activity.ExtendedValues:
         weapons: typing.Optional[
             collections.Collection[activity.ExtendedWeaponValues]
@@ -1730,7 +1730,7 @@ class Factory(interfaces.FactoryInterface):
         )
 
     def _deserialize_post_activity_player(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> activity.PostActivityPlayer:
         return activity.PostActivityPlayer(
             standing=int(payload["standing"]),
@@ -1749,7 +1749,7 @@ class Factory(interfaces.FactoryInterface):
         )
 
     def _deserialize_post_activity_team(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> activity.PostActivityTeam:
         return activity.PostActivityTeam(
             id=payload["teamId"],
@@ -1759,7 +1759,7 @@ class Factory(interfaces.FactoryInterface):
         )
 
     def deserialize_post_activity(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> activity.PostActivity:
         period = time.clean_date(payload["period"])
         details = payload["activityDetails"]
@@ -1789,7 +1789,7 @@ class Factory(interfaces.FactoryInterface):
         )
 
     def deserialize_linked_profiles(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> profile.LinkedProfile:
         bungie_user = self.deserialize_partial_bungie_user(
             payload["bnetMembership"], noeq=True
@@ -1816,7 +1816,7 @@ class Factory(interfaces.FactoryInterface):
         )
 
     def deserialize_clan_banners(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> collections.Sequence[clans.ClanBanner]:
         banners_seq: typing.MutableSequence[clans.ClanBanner] = []
         if (banners := payload.get("clanBannerDecals")) is not None:
@@ -1834,7 +1834,7 @@ class Factory(interfaces.FactoryInterface):
         return banners_seq
 
     def deserialize_public_milestone_content(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> milestones.MilestoneContent:
         items_categoris: typedefs.NoneOr[milestones.MilestoneItems] = None
         if (raw_categories := payload.get("itemCategories")) is not None:
@@ -1867,7 +1867,7 @@ class Factory(interfaces.FactoryInterface):
             about=about, status=status, tips=tips, items=items_categoris
         )
 
-    def deserialize_friend(self, payload: typedefs.JsonObject, /) -> friends.Friend:
+    def deserialize_friend(self, payload: typedefs.JSONObject, /) -> friends.Friend:
         name = undefined.Undefined
         if (raw_name := payload["bungieGlobalDisplayName"]) != typedefs.Unknown:
             name = raw_name
@@ -1890,7 +1890,7 @@ class Factory(interfaces.FactoryInterface):
         )
 
     def deserialize_friends(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> collections.Sequence[friends.Friend]:
         mut_seq: typing.MutableSequence[friends.Friend] = []
         if raw_friends := payload.get("friends"):
@@ -1899,7 +1899,7 @@ class Factory(interfaces.FactoryInterface):
         return mut_seq
 
     def deserialize_friend_requests(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> friends.FriendRequestView:
         incoming: typing.MutableSequence[friends.Friend] = []
         outgoing: typing.MutableSequence[friends.Friend] = []
@@ -1914,7 +1914,7 @@ class Factory(interfaces.FactoryInterface):
 
         return friends.FriendRequestView(incoming=incoming, outgoing=outgoing)
 
-    def _set_fireteam_fields(self, payload: typedefs.JsonObject) -> fireteams.Fireteam:
+    def _set_fireteam_fields(self, payload: typedefs.JSONObject) -> fireteams.Fireteam:
         activity_type = payload["activityType"]
         try:
             activity_type = fireteams.FireteamActivity(payload["activityType"])
@@ -1940,11 +1940,11 @@ class Factory(interfaces.FactoryInterface):
         )
 
     def deserialize_fireteams(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> typedefs.NoneOr[collections.Sequence[fireteams.Fireteam]]:
         fireteams_: typing.MutableSequence[fireteams.Fireteam] = []
 
-        result: list[typedefs.JsonObject]
+        result: list[typedefs.JSONObject]
         if (result := payload["results"]) is not None:
             for elem in result:
                 fireteams_.append(self._set_fireteam_fields(elem))
@@ -1953,7 +1953,7 @@ class Factory(interfaces.FactoryInterface):
         return fireteams_
 
     def deserialize_fireteam_destiny_users(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> fireteams.FireteamUser:
         destiny_obj = self.deserialize_destiny_user(payload)
         # We could helpers.just return a DestinyUser object but this is
@@ -1976,7 +1976,7 @@ class Factory(interfaces.FactoryInterface):
         )
 
     def deserialize_fireteam_members(
-        self, payload: typedefs.JsonObject, *, alternatives: bool = False
+        self, payload: typedefs.JSONObject, *, alternatives: bool = False
     ) -> typing.Optional[collections.Sequence[fireteams.FireteamMember]]:
         members_: list[fireteams.FireteamMember] = []
         if members := payload.get("Members" if not alternatives else "Alternates"):
@@ -2009,7 +2009,7 @@ class Factory(interfaces.FactoryInterface):
 
     def deserialize_available_fireteams(
         self,
-        data: typedefs.JsonObject,
+        data: typedefs.JSONObject,
         *,
         no_results: bool = False,
     ) -> typing.Union[
@@ -2054,7 +2054,7 @@ class Factory(interfaces.FactoryInterface):
         return fireteams_
 
     def deserialize_seasonal_artifact(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> season.Artifact:
         if raw_artifact := payload.get("seasonalArtifact"):
             if points := raw_artifact.get("pointProgression"):
@@ -2093,7 +2093,7 @@ class Factory(interfaces.FactoryInterface):
         return artifact
 
     def deserialize_profile_progression(
-        self, payload: typedefs.JsonObject
+        self, payload: typedefs.JSONObject
     ) -> profile.ProfileProgression:
         return profile.ProfileProgression(
             artifact=self.deserialize_seasonal_artifact(payload["data"]),

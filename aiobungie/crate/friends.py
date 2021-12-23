@@ -31,6 +31,8 @@ import typing
 import attr
 
 if typing.TYPE_CHECKING:
+    import collections.abc as collections
+
     from aiobungie import traits
     from aiobungie import typedefs
     from aiobungie import undefined
@@ -42,10 +44,10 @@ if typing.TYPE_CHECKING:
 class FriendRequestView:
     """A view of the pending friend requests queue."""
 
-    incoming: typing.Sequence[Friend] = attr.field(repr=True, hash=False)
+    incoming: collections.Sequence[Friend] = attr.field(repr=True, hash=False)
     """The incoming friend request view."""
 
-    outgoing: typing.Sequence[Friend] = attr.field(repr=True, hash=False)
+    outgoing: collections.Sequence[Friend] = attr.field(repr=True, hash=False)
     """The outgoing friend request view."""
 
 

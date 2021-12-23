@@ -28,6 +28,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - OAuth2 example.
 
 ### Changed
+- Python 3.8 is now dropped, Python 3.9 and above are supported.
+- `collections.abc` is now used for all type hints excluding `typing.Union[]` and `typing.Opional[]`.
+- `typedefs.JsonObject` and `JsonArray` uses uppercase `JSON`.
 - Exceptions now has fields and improved.
 - `fetch_activity` function name changed to `fetch_activities`
 - `fetch_activities` now returns a sequence(`collections.Sequence[Activity]`) of activities instead of a singular activity object.

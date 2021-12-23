@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `rest.PlugSocketBuilder` to build socket plugs.
 - `set_item_lock_state` and `set_quest_lock_state` methods.
 - `search_entities` method.
+- OAuth2 example.
 
 ### Changed
 - Exceptions now has fields and improved.
@@ -35,7 +36,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Client` and `RESTClient` now take 2 extra optional parameters, `client_secret` and `client_id` for OAuth2 usage.
 - `traits.Serializeable.serialize` property name changed to `factory`.
 - `static_request` now only takes a str for the route.
-- Removed some fields from `enums.Item` since they don't belong to there.
+
+### Removed
+- Fields from `enums.Item` since they don't belong to there.
+- web_app example.
 
 ## [0.2.5b12](https://github.com/nxtlo/aiobungie/compare/0.2.5b11...0.2.5b12) 2021-10-21
 

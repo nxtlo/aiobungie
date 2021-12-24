@@ -42,6 +42,9 @@
             <li>
                     <a class="variable" href="#TOKEN_EP">TOKEN_EP</a>
             </li>
+            <li>
+                    <a class="variable" href="#OAUTH2_EP_BUILDER">OAUTH2_EP_BUILDER</a>
+            </li>
     </ul>
 
 
@@ -89,21 +92,40 @@
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;BASE&quot;</span><span class="p">,</span> <span class="s2">&quot;REST_EP&quot;</span><span class="p">,</span> <span class="s2">&quot;OAUTH_EP&quot;</span><span class="p">,</span> <span class="s2">&quot;TOKEN_EP&quot;</span><span class="p">)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;BASE&quot;</span><span class="p">,</span> <span class="s2">&quot;REST_EP&quot;</span><span class="p">,</span> <span class="s2">&quot;OAUTH_EP&quot;</span><span class="p">,</span> <span class="s2">&quot;TOKEN_EP&quot;</span><span class="p">,</span> <span class="s2">&quot;OAUTH2_EP_BUILDER&quot;</span><span class="p">)</span>
 
 <span class="kn">import</span> <span class="nn">typing</span>
 
 <span class="n">BASE</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Final</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;https://www.bungie.net&quot;</span>
 <span class="sd">&quot;&quot;&quot;Base bungie url&quot;&quot;&quot;</span>
 
-<span class="n">REST_EP</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Final</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">BASE</span><span class="si">}</span><span class="s2">/Platform&quot;</span>
+<span class="n">REST_EP</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Final</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;/Platform&quot;</span>
 <span class="sd">&quot;&quot;&quot;REST API endpoint&quot;&quot;&quot;</span>
 
 <span class="n">OAUTH_EP</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Final</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">BASE</span><span class="si">}</span><span class="s2">/en/OAuth/Authorize&quot;</span>
 <span class="sd">&quot;&quot;&quot;OAuth endpoint&quot;&quot;&quot;</span>
 
-<span class="n">TOKEN_EP</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Final</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">REST_EP</span><span class="si">}</span><span class="s2">/App/OAuth/token&quot;</span>
+<span class="n">TOKEN_EP</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Final</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;/App/OAuth/token&quot;</span>
 <span class="sd">&quot;&quot;&quot;OAuth token endpoint&quot;&quot;&quot;</span>
+
+<span class="n">OAUTH2_EP_BUILDER</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Final</span><span class="p">[</span>
+    <span class="nb">str</span>
+<span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{oauth_endpoint}</span><span class="s2">?client_id=</span><span class="si">{client_id}</span><span class="s2">&amp;response_type=code&amp;state=</span><span class="si">{uuid}</span><span class="s2">&quot;</span>
+<span class="sd">&quot;&quot;&quot;Builds an OAuth2 authorize URL given an application client id.</span>
+
+<span class="sd">Parameters may be passed as kwargs using `str.format` method. i.e.,</span>
+
+<span class="sd">Example</span>
+<span class="sd">-------</span>
+<span class="sd">```py</span>
+<span class="sd">import aiobungie</span>
+<span class="sd">import uuid</span>
+
+<span class="sd">aiobungie.url.OAUTH2_EP_BUILDER.format(</span>
+<span class="sd">    oauth_endpoint=aiobungie.url.OAUTH_EP, client_id=1234, uuid=str(uuid.uuid4())</span>
+<span class="sd">)</span>
+<span class="sd">```</span>
+<span class="sd">&quot;&quot;&quot;</span>
 </pre></div>
 
         </details>
@@ -123,7 +145,7 @@
                 <section id="REST_EP">
                                 <div class="attr variable"><a class="headerlink" href="#REST_EP">#&nbsp;&nbsp</a>
 
-        <span class="name">REST_EP</span><span class="annotation">: Final[str]</span><span class="default_value"> = &#39;https://www.bungie.net/Platform&#39;</span>
+        <span class="name">REST_EP</span><span class="annotation">: Final[str]</span><span class="default_value"> = &#39;/Platform&#39;</span>
     </div>
 
             <div class="docstring"><p>REST API endpoint</p>
@@ -145,10 +167,33 @@
                 <section id="TOKEN_EP">
                                 <div class="attr variable"><a class="headerlink" href="#TOKEN_EP">#&nbsp;&nbsp</a>
 
-        <span class="name">TOKEN_EP</span><span class="annotation">: Final[str]</span><span class="default_value"> = &#39;https://www.bungie.net/Platform/App/OAuth/token&#39;</span>
+        <span class="name">TOKEN_EP</span><span class="annotation">: Final[str]</span><span class="default_value"> = &#39;/App/OAuth/token&#39;</span>
     </div>
 
             <div class="docstring"><p>OAuth token endpoint</p>
+</div>
+
+
+                </section>
+                <section id="OAUTH2_EP_BUILDER">
+                                <div class="attr variable"><a class="headerlink" href="#OAUTH2_EP_BUILDER">#&nbsp;&nbsp</a>
+
+        <span class="name">OAUTH2_EP_BUILDER</span><span class="annotation">: Final[str]</span><span class="default_value"> = &#39;{oauth_endpoint}?client_id={client_id}&amp;response_type=code&amp;state={uuid}&#39;</span>
+    </div>
+
+            <div class="docstring"><p>Builds an OAuth2 authorize URL given an application client id.</p>
+
+<p>Parameters may be passed as kwargs using <code>str.format</code> method. i.e.,</p>
+
+<h6 id="example">Example</h6>
+
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">aiobungie</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
+
+<span class="n">aiobungie</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="n">OAUTH2_EP_BUILDER</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+    <span class="n">oauth_endpoint</span><span class="o">=</span><span class="n">aiobungie</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="n">OAUTH_EP</span><span class="p">,</span> <span class="n">client_id</span><span class="o">=</span><span class="mi">1234</span><span class="p">,</span> <span class="n">uuid</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
+<span class="p">)</span>
+</code></pre></div>
 </div>
 
 

@@ -49,9 +49,6 @@
                                 <a class="function" href="#Client.run">run</a>
                         </li>
                         <li>
-                                <a class="function" href="#Client.fetch_manifest">fetch_manifest</a>
-                        </li>
-                        <li>
                                 <a class="function" href="#Client.fetch_own_bungie_user">fetch_own_bungie_user</a>
                         </li>
                         <li>
@@ -70,6 +67,9 @@
                                 <a class="function" href="#Client.fetch_membership_from_id">fetch_membership_from_id</a>
                         </li>
                         <li>
+                                <a class="function" href="#Client.fetch_user_credentials">fetch_user_credentials</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#Client.fetch_profile">fetch_profile</a>
                         </li>
                         <li>
@@ -82,7 +82,7 @@
                                 <a class="function" href="#Client.fetch_character">fetch_character</a>
                         </li>
                         <li>
-                                <a class="function" href="#Client.fetch_activity">fetch_activity</a>
+                                <a class="function" href="#Client.fetch_activities">fetch_activities</a>
                         </li>
                         <li>
                                 <a class="function" href="#Client.fetch_post_activity">fetch_post_activity</a>
@@ -122,6 +122,9 @@
                         </li>
                         <li>
                                 <a class="function" href="#Client.fetch_objective_entity">fetch_objective_entity</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Client.search_entities">search_entities</a>
                         </li>
                         <li>
                                 <a class="function" href="#Client.fetch_friends">fetch_friends</a>
@@ -207,13 +210,13 @@
 <span class="kn">from</span> <span class="nn">aiobungie</span> <span class="kn">import</span> <span class="n">traits</span>
 <span class="kn">from</span> <span class="nn">aiobungie.crate</span> <span class="kn">import</span> <span class="n">fireteams</span>
 <span class="kn">from</span> <span class="nn">aiobungie.crate</span> <span class="kn">import</span> <span class="n">user</span>
-<span class="kn">from</span> <span class="nn">aiobungie.ext</span> <span class="kn">import</span> <span class="n">meta</span>
 <span class="kn">from</span> <span class="nn">aiobungie.internal</span> <span class="kn">import</span> <span class="n">enums</span>
 <span class="kn">from</span> <span class="nn">aiobungie.internal</span> <span class="kn">import</span> <span class="n">factory</span> <span class="k">as</span> <span class="n">factory_</span>
 <span class="kn">from</span> <span class="nn">aiobungie.internal</span> <span class="kn">import</span> <span class="n">helpers</span>
 
 <span class="k">if</span> <span class="n">typing</span><span class="o">.</span><span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">asyncio</span>
+    <span class="kn">import</span> <span class="nn">collections.abc</span> <span class="k">as</span> <span class="nn">collections</span>
 
     <span class="kn">from</span> <span class="nn">aiobungie</span> <span class="kn">import</span> <span class="n">interfaces</span>
     <span class="kn">from</span> <span class="nn">aiobungie</span> <span class="kn">import</span> <span class="n">typedefs</span>
@@ -238,10 +241,13 @@
 <span class="sd">    Alternatively, You can also use `aiobungie.RESTClient` to only get the JSON responses</span>
 <span class="sd">    and then make your own implementation data classes. Both options are up to you.</span>
 
-<span class="sd">    Attributes</span>
+<span class="sd">    Parameters</span>
 <span class="sd">    -----------</span>
-<span class="sd">    token: `builtins.str`</span>
+<span class="sd">    token: `str`</span>
 <span class="sd">        Your Bungie&#39;s API key or Token from the developer&#39;s portal.</span>
+
+<span class="sd">    Other Parameters</span>
+<span class="sd">    ----------------</span>
 <span class="sd">    rest_client: `typing.Optional[aiobungie.interfaces.RESTInterface]`</span>
 <span class="sd">        An optional rest client instance you can pass,</span>
 <span class="sd">        If set to `None` then the client will make a rest instance for you.</span>
@@ -253,26 +259,38 @@
 <span class="sd">    async with aiobungie.RESTClient(TOKEN, max_retries=2) as rest_client:</span>
 <span class="sd">        client = aiobungie.Client(TOKEN, rest_client=rest_client)</span>
 <span class="sd">    ```</span>
-<span class="sd">    max_retries : `builtins.int`</span>
+<span class="sd">    max_retries : `int`</span>
 <span class="sd">        The max retries number to retry if the request hit a `5xx` status code.</span>
+<span class="sd">    client_secret : `typing.Optional[str]`</span>
+<span class="sd">        An optional application client secret,</span>
+<span class="sd">        This is only needed if you&#39;re fetching OAuth2 tokens with this client.</span>
+<span class="sd">    client_id : `typing.Optional[int]`</span>
+<span class="sd">        An optional application client id,</span>
+<span class="sd">        This is only needed if you&#39;re fetching OAuth2 tokens with this client.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_rest&quot;</span><span class="p">,</span> <span class="s2">&quot;_factory&quot;</span><span class="p">,</span> <span class="s2">&quot;_token&quot;</span><span class="p">)</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_rest&quot;</span><span class="p">,</span> <span class="s2">&quot;_factory&quot;</span><span class="p">,</span> <span class="s2">&quot;_token&quot;</span><span class="p">,</span> <span class="s2">&quot;_client_secret&quot;</span><span class="p">,</span> <span class="s2">&quot;_client_id&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
+        <span class="n">client_secret</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">client_id</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">rest_client</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">interfaces</span><span class="o">.</span><span class="n">RESTInterface</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">max_retries</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">token</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Missing the API key!&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client_secret</span> <span class="o">=</span> <span class="n">client_secret</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client_id</span> <span class="o">=</span> <span class="n">client_id</span>
 
         <span class="k">if</span> <span class="n">rest_client</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_rest</span> <span class="o">=</span> <span class="n">rest_client</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_rest</span> <span class="o">=</span> <span class="n">rest_</span><span class="o">.</span><span class="n">RESTClient</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">max_retries</span><span class="o">=</span><span class="n">max_retries</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rest</span> <span class="o">=</span> <span class="n">rest_</span><span class="o">.</span><span class="n">RESTClient</span><span class="p">(</span>
+            <span class="n">token</span><span class="p">,</span> <span class="n">client_secret</span><span class="p">,</span> <span class="n">client_id</span><span class="p">,</span> <span class="n">max_retries</span><span class="o">=</span><span class="n">max_retries</span>
+        <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_factory</span> <span class="o">=</span> <span class="n">factory_</span><span class="o">.</span><span class="n">Factory</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_token</span> <span class="o">=</span> <span class="n">token</span>  <span class="c1"># We need the token For Manifest.</span>
@@ -290,7 +308,7 @@
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">future</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Coroutine</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">future</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Coroutine</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">loop</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Final</span><span class="p">[</span><span class="n">asyncio</span><span class="o">.</span><span class="n">AbstractEventLoop</span><span class="p">]</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">get_or_make_loop</span><span class="p">()</span>
         <span class="k">try</span><span class="p">:</span>
@@ -309,18 +327,6 @@
             <span class="c1"># Session management.</span>
             <span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">close</span><span class="p">())</span>
             <span class="n">_LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Client closed normally.&quot;</span><span class="p">)</span>
-
-    <span class="c1"># * Unspecified methods. *#</span>
-
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_manifest</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">meta</span><span class="o">.</span><span class="n">Manifest</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Access The bungie Manifest.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        `aiobungie.ext.Manifest`</span>
-<span class="sd">            A Manifest crate.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">meta</span><span class="o">.</span><span class="n">Manifest</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_token</span><span class="p">)</span>
 
     <span class="c1"># * User methods.</span>
 
@@ -372,7 +378,9 @@
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">deserialize_bungie_user</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">search_users</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">DestinyUser</span><span class="p">]:</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">search_users</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">DestinyUser</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Search for players and return all players that matches the same name.</span>
 
 <span class="sd">        Parameters</span>
@@ -382,19 +390,19 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `typing.Sequence[aiobungie.crate.DestinyUser]`</span>
+<span class="sd">        `collections.Sequence[aiobungie.crate.DestinyUser]`</span>
 <span class="sd">            A sequence of destiny memberships.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">payload</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">search_users</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">deseialize_found_users</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_user_themes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">UserThemes</span><span class="p">]:</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_user_themes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">UserThemes</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch all available user themes.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `typing.Sequence[aiobungie.crate.user.UserThemes]`</span>
+<span class="sd">        `collections.Sequence[aiobungie.crate.user.UserThemes]`</span>
 <span class="sd">            A sequence of user themes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">fetch_user_themes</span><span class="p">()</span>
@@ -471,6 +479,35 @@
         <span class="n">payload</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">fetch_membership_from_id</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">deserialize_user</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_user_credentials</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">membership_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">UserCredentials</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Fetch an array of credential types attached to the requested account.</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">            This method require OAuth2 Bearer access token.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        access_token : `str`</span>
+<span class="sd">            The bearer access token associated with the bungie account.</span>
+<span class="sd">        membership_id : `int`</span>
+<span class="sd">            The id of the membership to return.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `collections.Sequence[aiobungie.crate.UserCredentials]`</span>
+<span class="sd">            A sequence of the attached user credentials.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        `aiobungie.Unauthorized`</span>
+<span class="sd">            The access token was wrong or no access token passed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">fetch_user_credentials</span><span class="p">(</span><span class="n">access_token</span><span class="p">,</span> <span class="n">membership_id</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">deserialize_user_credentials</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
 
     <span class="c1"># * Destiny 2 methods.</span>
 
@@ -564,7 +601,7 @@
         <span class="n">code</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="nb">type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">DestinyUser</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">DestinyUser</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a Destiny 2 Player&#39;s memberships.</span>
 
 <span class="sd">        Parameters</span>
@@ -578,14 +615,12 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        --------</span>
-<span class="sd">        `typing.Sequence[aiobungie.crate.Player]`</span>
+<span class="sd">        `collections.Sequence[aiobungie.crate.Player]`</span>
 <span class="sd">            A sequence of the found Destiny 2 Player memberships.</span>
+<span class="sd">            An empty sequene will be returned if no one found.</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
-<span class="sd">        `aiobungie.NotFound`</span>
-<span class="sd">            The player was not found.</span>
-
 <span class="sd">        `aiobungie.MembershipTypeError`</span>
 <span class="sd">            The provided membership type was invalid.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -644,47 +679,47 @@
 
     <span class="c1"># * Destiny 2 Activities.</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_activity</span><span class="p">(</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_activities</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">mode</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">GameMode</span><span class="p">],</span>
-        <span class="n">membership_type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
+        <span class="n">membership_type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span>
+            <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">activity</span><span class="o">.</span><span class="n">Activity</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Fetch a Destiny 2 activity for the specified user id and character.</span>
+        <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">250</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">activity</span><span class="o">.</span><span class="n">Activity</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Fetch a Destiny 2 activity for the specified character id.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        member_id: `builtins.int`</span>
 <span class="sd">            The user id that starts with `4611`.</span>
 <span class="sd">        character_id: `builtins.int`</span>
-<span class="sd">            The id of the character to retrieve.</span>
-<span class="sd">        mode: `aiobungie.internal.enums.GameMode`</span>
+<span class="sd">            The id of the character to retrieve the activities for.</span>
+<span class="sd">        mode: `aiobungie.typedefs.IntAnd[aiobungie.internal.enums.GameMode]`</span>
 <span class="sd">            This parameter filters the game mode, Nightfall, Strike, Iron Banner, etc.</span>
+
+<span class="sd">        Other Parameters</span>
+<span class="sd">        ----------------</span>
 <span class="sd">        membership_type: `aiobungie.internal.enums.MembershipType`</span>
 <span class="sd">            The Member ship type, if nothing was passed than it will return all.</span>
 <span class="sd">        page: builtins.int</span>
-<span class="sd">            The page number. Default is `1`</span>
+<span class="sd">            The page number. Default is `0`</span>
 <span class="sd">        limit: builtins.int</span>
-<span class="sd">            Limit the returned result. Default is `1`</span>
+<span class="sd">            Limit the returned result. Default is `250`.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `aiobungie.crate.Activity`</span>
-<span class="sd">            A Bungie activity.</span>
-
-<span class="sd">        Raises</span>
-<span class="sd">        ------</span>
-<span class="sd">        `aiobungie.error.ActivityNotFound`</span>
-<span class="sd">            The activity was not found.</span>
+<span class="sd">        `collections.Sequence[aiobungie.crate.Activity]`</span>
+<span class="sd">            A sequence of the player&#39;s activities.</span>
 
 <span class="sd">        `aiobungie.MembershipTypeError`</span>
 <span class="sd">            The provided membership type was invalid.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">fetch_activity</span><span class="p">(</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">fetch_activities</span><span class="p">(</span>
             <span class="n">member_id</span><span class="p">,</span>
             <span class="n">character_id</span><span class="p">,</span>
             <span class="n">mode</span><span class="p">,</span>
@@ -693,28 +728,24 @@
             <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">deserialize_activity</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">deserialize_activities</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_post_activity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">activity</span><span class="o">.</span><span class="n">PostActivity</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_post_activity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">activity</span><span class="o">.</span><span class="n">PostActivity</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a post activity details.</span>
-
-<span class="sd">        .. warning::</span>
-<span class="sd">            This http request is not implemented yet</span>
-<span class="sd">            and it will raise `NotImplementedError`</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        instance: `builtins.int`</span>
+<span class="sd">        instance_id: `int`</span>
 <span class="sd">            The activity instance id.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `aiobungie.crate.activity.PostActivity`</span>
-<span class="sd">           Information about the requested post activity.</span>
+<span class="sd">        `aiobungie.crate.PostActivity`</span>
+<span class="sd">           A post activity object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># resp = await self.rest.fetch_post_activity(instance)</span>
-        <span class="c1"># assert isinstance(resp, list)</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">fetch_post_activity</span><span class="p">(</span><span class="n">instance_id</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">deserialize_post_activity</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
 
     <span class="c1"># * Destiny 2 Clans or GroupsV2.</span>
 
@@ -772,7 +803,7 @@
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_clan_conversations</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">clan_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanConversation</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanConversation</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch the conversations/chat channels of the given clan id.</span>
 
 <span class="sd">        Parameters</span>
@@ -781,7 +812,7 @@
 <span class="sd">            The clan id.</span>
 
 <span class="sd">        Returns</span>
-<span class="sd">        `typing.Sequence[aiobungie.crate.ClanConversation]`</span>
+<span class="sd">        `collections.Sequence[aiobungie.crate.ClanConversation]`</span>
 <span class="sd">            A sequence of the clan chat channels.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">fetch_clan_conversations</span><span class="p">(</span><span class="n">clan_id</span><span class="p">)</span>
@@ -790,7 +821,7 @@
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_clan_admins</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">clan_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanAdmin</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanAdmin</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch the clan founder and admins.</span>
 
 <span class="sd">        Parameters</span>
@@ -800,7 +831,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `typing.Sequence[aiobungie.crate.ClanAdmin]`</span>
+<span class="sd">        `collections.Sequence[aiobungie.crate.ClanAdmin]`</span>
 <span class="sd">            A sequence of the found clan admins and founder.</span>
 
 <span class="sd">        Raises</span>
@@ -934,7 +965,7 @@
         <span class="n">clan_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="nb">type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanMember</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanMember</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a Bungie Clan member. if no members found in the clan</span>
 <span class="sd">        you will get an empty sequence.</span>
 
@@ -954,7 +985,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `typing.Sequence[aiobungie.crate.ClanMember]`</span>
+<span class="sd">        `collections.Sequence[aiobungie.crate.ClanMember]`</span>
 <span class="sd">            A sequence of bungie clan members.</span>
 
 <span class="sd">        Raises</span>
@@ -966,12 +997,12 @@
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">deserialize_clan_members</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_clan_banners</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanBanner</span><span class="p">]:</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_clan_banners</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanBanner</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch the clan banners.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `typing.Sequence[aiobungie.crate.ClanBanner]`</span>
+<span class="sd">        `collections.Sequence[aiobungie.crate.ClanBanner]`</span>
 <span class="sd">            A sequence of the clan banners.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">fetch_clan_banners</span><span class="p">()</span>
@@ -1053,12 +1084,38 @@
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">deserialize_objective_entity</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
 
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">search_entities</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">entity_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">SearchableEntity</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Search for Destiny2 entities given a name and its type.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name : `str`</span>
+<span class="sd">            The name of the entity, i.e., Thunderlord, One thousand voices.</span>
+<span class="sd">        entity_type : `str`</span>
+<span class="sd">            The type of the entity, AKA Definition, For an example `DestinyInventoryItemDefinition`</span>
+
+<span class="sd">        Other Parameters</span>
+<span class="sd">        ----------------</span>
+<span class="sd">        page : `int`</span>
+<span class="sd">            An optional page to return. Default to 0.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `collections.Sequence[aiobungie.crate.SearchableEntity]`</span>
+<span class="sd">            A sequence of the found results matching the provided name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">search_entities</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">entity_type</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="n">page</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">deserialize_inventory_results</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
+
     <span class="c1"># * These methods should be for Special bungie endpoints, i.e,</span>
     <span class="c1"># * Applications, Forums, Polls, Trending, etc.</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_friends</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">friends</span><span class="o">.</span><span class="n">Friend</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">friends</span><span class="o">.</span><span class="n">Friend</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch bungie friend list.</span>
 
 <span class="sd">        .. note::</span>
@@ -1071,7 +1128,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `typing.Sequence[aiobungie.crate.Friend]`</span>
+<span class="sd">        `collections.Sequence[aiobungie.crate.Friend]`</span>
 <span class="sd">            A sequence of the found friends.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -1151,7 +1208,7 @@
         <span class="n">date_range</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">slots_filter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">fireteams</span><span class="o">.</span><span class="n">Fireteam</span><span class="p">]]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">fireteams</span><span class="o">.</span><span class="n">Fireteam</span><span class="p">]]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch public Bungie fireteams with open slots.</span>
 
 <span class="sd">        Parameters</span>
@@ -1176,7 +1233,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `typing.Optional[typing.Sequence[fireteams.Fireteam]]`</span>
+<span class="sd">        `typing.Optional[collections.Sequence[fireteams.Fireteam]]`</span>
 <span class="sd">            A sequence of `aiobungie.crate.Fireteam` or `None`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -1203,7 +1260,7 @@
         <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">public_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">slots_filter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">fireteams</span><span class="o">.</span><span class="n">Fireteam</span><span class="p">]]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">fireteams</span><span class="o">.</span><span class="n">Fireteam</span><span class="p">]]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a clan&#39;s fireteams with open slots.</span>
 
 <span class="sd">        .. note::</span>
@@ -1237,7 +1294,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `typing.Optional[typing.Sequence[aiobungie.crate.Fireteam]]`</span>
+<span class="sd">        `typing.Optional[collections.Sequence[aiobungie.crate.Fireteam]]`</span>
 <span class="sd">            A sequence of  fireteams found in the clan.</span>
 <span class="sd">            `None` will be returned if nothing was found.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1293,7 +1350,7 @@
         <span class="n">language</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">fireteams</span><span class="o">.</span><span class="n">FireteamLanguage</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
         <span class="n">filtered</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">fireteams</span><span class="o">.</span><span class="n">AvalaibleFireteam</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">fireteams</span><span class="o">.</span><span class="n">AvalaibleFireteam</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;A method that&#39;s similar to `fetch_fireteams` but requires OAuth2.</span>
 
 <span class="sd">        .. note::</span>
@@ -1324,7 +1381,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `typing.Optional[typing.Sequence[aiobungie.crate.AvalaibleFireteam]]`</span>
+<span class="sd">        `typing.Optional[collections.Sequence[aiobungie.crate.AvalaibleFireteam]]`</span>
 <span class="sd">            A sequence of available fireteams objects if exists. else `None` will be returned.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">fetch_my_clan_fireteams</span><span class="p">(</span>
@@ -1363,10 +1420,13 @@
 <span class="sd">    Alternatively, You can also use `aiobungie.RESTClient` to only get the JSON responses</span>
 <span class="sd">    and then make your own implementation data classes. Both options are up to you.</span>
 
-<span class="sd">    Attributes</span>
+<span class="sd">    Parameters</span>
 <span class="sd">    -----------</span>
-<span class="sd">    token: `builtins.str`</span>
+<span class="sd">    token: `str`</span>
 <span class="sd">        Your Bungie&#39;s API key or Token from the developer&#39;s portal.</span>
+
+<span class="sd">    Other Parameters</span>
+<span class="sd">    ----------------</span>
 <span class="sd">    rest_client: `typing.Optional[aiobungie.interfaces.RESTInterface]`</span>
 <span class="sd">        An optional rest client instance you can pass,</span>
 <span class="sd">        If set to `None` then the client will make a rest instance for you.</span>
@@ -1378,26 +1438,38 @@
 <span class="sd">    async with aiobungie.RESTClient(TOKEN, max_retries=2) as rest_client:</span>
 <span class="sd">        client = aiobungie.Client(TOKEN, rest_client=rest_client)</span>
 <span class="sd">    ```</span>
-<span class="sd">    max_retries : `builtins.int`</span>
+<span class="sd">    max_retries : `int`</span>
 <span class="sd">        The max retries number to retry if the request hit a `5xx` status code.</span>
+<span class="sd">    client_secret : `typing.Optional[str]`</span>
+<span class="sd">        An optional application client secret,</span>
+<span class="sd">        This is only needed if you&#39;re fetching OAuth2 tokens with this client.</span>
+<span class="sd">    client_id : `typing.Optional[int]`</span>
+<span class="sd">        An optional application client id,</span>
+<span class="sd">        This is only needed if you&#39;re fetching OAuth2 tokens with this client.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_rest&quot;</span><span class="p">,</span> <span class="s2">&quot;_factory&quot;</span><span class="p">,</span> <span class="s2">&quot;_token&quot;</span><span class="p">)</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_rest&quot;</span><span class="p">,</span> <span class="s2">&quot;_factory&quot;</span><span class="p">,</span> <span class="s2">&quot;_token&quot;</span><span class="p">,</span> <span class="s2">&quot;_client_secret&quot;</span><span class="p">,</span> <span class="s2">&quot;_client_id&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
+        <span class="n">client_secret</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">client_id</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">rest_client</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">interfaces</span><span class="o">.</span><span class="n">RESTInterface</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">max_retries</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">token</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Missing the API key!&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client_secret</span> <span class="o">=</span> <span class="n">client_secret</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client_id</span> <span class="o">=</span> <span class="n">client_id</span>
 
         <span class="k">if</span> <span class="n">rest_client</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_rest</span> <span class="o">=</span> <span class="n">rest_client</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_rest</span> <span class="o">=</span> <span class="n">rest_</span><span class="o">.</span><span class="n">RESTClient</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">max_retries</span><span class="o">=</span><span class="n">max_retries</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rest</span> <span class="o">=</span> <span class="n">rest_</span><span class="o">.</span><span class="n">RESTClient</span><span class="p">(</span>
+            <span class="n">token</span><span class="p">,</span> <span class="n">client_secret</span><span class="p">,</span> <span class="n">client_id</span><span class="p">,</span> <span class="n">max_retries</span><span class="o">=</span><span class="n">max_retries</span>
+        <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_factory</span> <span class="o">=</span> <span class="n">factory_</span><span class="o">.</span><span class="n">Factory</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_token</span> <span class="o">=</span> <span class="n">token</span>  <span class="c1"># We need the token For Manifest.</span>
@@ -1415,7 +1487,7 @@
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">future</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Coroutine</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">future</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Coroutine</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">loop</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Final</span><span class="p">[</span><span class="n">asyncio</span><span class="o">.</span><span class="n">AbstractEventLoop</span><span class="p">]</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">get_or_make_loop</span><span class="p">()</span>
         <span class="k">try</span><span class="p">:</span>
@@ -1434,18 +1506,6 @@
             <span class="c1"># Session management.</span>
             <span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">close</span><span class="p">())</span>
             <span class="n">_LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Client closed normally.&quot;</span><span class="p">)</span>
-
-    <span class="c1"># * Unspecified methods. *#</span>
-
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_manifest</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">meta</span><span class="o">.</span><span class="n">Manifest</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Access The bungie Manifest.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        `aiobungie.ext.Manifest`</span>
-<span class="sd">            A Manifest crate.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">meta</span><span class="o">.</span><span class="n">Manifest</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_token</span><span class="p">)</span>
 
     <span class="c1"># * User methods.</span>
 
@@ -1497,7 +1557,9 @@
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">deserialize_bungie_user</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">search_users</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">DestinyUser</span><span class="p">]:</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">search_users</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">DestinyUser</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Search for players and return all players that matches the same name.</span>
 
 <span class="sd">        Parameters</span>
@@ -1507,19 +1569,19 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `typing.Sequence[aiobungie.crate.DestinyUser]`</span>
+<span class="sd">        `collections.Sequence[aiobungie.crate.DestinyUser]`</span>
 <span class="sd">            A sequence of destiny memberships.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">payload</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">search_users</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">deseialize_found_users</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_user_themes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">UserThemes</span><span class="p">]:</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_user_themes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">UserThemes</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch all available user themes.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `typing.Sequence[aiobungie.crate.user.UserThemes]`</span>
+<span class="sd">        `collections.Sequence[aiobungie.crate.user.UserThemes]`</span>
 <span class="sd">            A sequence of user themes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">fetch_user_themes</span><span class="p">()</span>
@@ -1596,6 +1658,35 @@
         <span class="n">payload</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">fetch_membership_from_id</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">deserialize_user</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_user_credentials</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">membership_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">UserCredentials</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Fetch an array of credential types attached to the requested account.</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">            This method require OAuth2 Bearer access token.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        access_token : `str`</span>
+<span class="sd">            The bearer access token associated with the bungie account.</span>
+<span class="sd">        membership_id : `int`</span>
+<span class="sd">            The id of the membership to return.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `collections.Sequence[aiobungie.crate.UserCredentials]`</span>
+<span class="sd">            A sequence of the attached user credentials.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        `aiobungie.Unauthorized`</span>
+<span class="sd">            The access token was wrong or no access token passed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">fetch_user_credentials</span><span class="p">(</span><span class="n">access_token</span><span class="p">,</span> <span class="n">membership_id</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">deserialize_user_credentials</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
 
     <span class="c1"># * Destiny 2 methods.</span>
 
@@ -1689,7 +1780,7 @@
         <span class="n">code</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="nb">type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">DestinyUser</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">DestinyUser</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a Destiny 2 Player&#39;s memberships.</span>
 
 <span class="sd">        Parameters</span>
@@ -1703,14 +1794,12 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        --------</span>
-<span class="sd">        `typing.Sequence[aiobungie.crate.Player]`</span>
+<span class="sd">        `collections.Sequence[aiobungie.crate.Player]`</span>
 <span class="sd">            A sequence of the found Destiny 2 Player memberships.</span>
+<span class="sd">            An empty sequene will be returned if no one found.</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
-<span class="sd">        `aiobungie.NotFound`</span>
-<span class="sd">            The player was not found.</span>
-
 <span class="sd">        `aiobungie.MembershipTypeError`</span>
 <span class="sd">            The provided membership type was invalid.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1769,47 +1858,47 @@
 
     <span class="c1"># * Destiny 2 Activities.</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_activity</span><span class="p">(</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_activities</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">mode</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">GameMode</span><span class="p">],</span>
-        <span class="n">membership_type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
+        <span class="n">membership_type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span>
+            <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">activity</span><span class="o">.</span><span class="n">Activity</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Fetch a Destiny 2 activity for the specified user id and character.</span>
+        <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">250</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">activity</span><span class="o">.</span><span class="n">Activity</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Fetch a Destiny 2 activity for the specified character id.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        member_id: `builtins.int`</span>
 <span class="sd">            The user id that starts with `4611`.</span>
 <span class="sd">        character_id: `builtins.int`</span>
-<span class="sd">            The id of the character to retrieve.</span>
-<span class="sd">        mode: `aiobungie.internal.enums.GameMode`</span>
+<span class="sd">            The id of the character to retrieve the activities for.</span>
+<span class="sd">        mode: `aiobungie.typedefs.IntAnd[aiobungie.internal.enums.GameMode]`</span>
 <span class="sd">            This parameter filters the game mode, Nightfall, Strike, Iron Banner, etc.</span>
+
+<span class="sd">        Other Parameters</span>
+<span class="sd">        ----------------</span>
 <span class="sd">        membership_type: `aiobungie.internal.enums.MembershipType`</span>
 <span class="sd">            The Member ship type, if nothing was passed than it will return all.</span>
 <span class="sd">        page: builtins.int</span>
-<span class="sd">            The page number. Default is `1`</span>
+<span class="sd">            The page number. Default is `0`</span>
 <span class="sd">        limit: builtins.int</span>
-<span class="sd">            Limit the returned result. Default is `1`</span>
+<span class="sd">            Limit the returned result. Default is `250`.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `aiobungie.crate.Activity`</span>
-<span class="sd">            A Bungie activity.</span>
-
-<span class="sd">        Raises</span>
-<span class="sd">        ------</span>
-<span class="sd">        `aiobungie.error.ActivityNotFound`</span>
-<span class="sd">            The activity was not found.</span>
+<span class="sd">        `collections.Sequence[aiobungie.crate.Activity]`</span>
+<span class="sd">            A sequence of the player&#39;s activities.</span>
 
 <span class="sd">        `aiobungie.MembershipTypeError`</span>
 <span class="sd">            The provided membership type was invalid.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">fetch_activity</span><span class="p">(</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">fetch_activities</span><span class="p">(</span>
             <span class="n">member_id</span><span class="p">,</span>
             <span class="n">character_id</span><span class="p">,</span>
             <span class="n">mode</span><span class="p">,</span>
@@ -1818,28 +1907,24 @@
             <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">deserialize_activity</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">deserialize_activities</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_post_activity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">activity</span><span class="o">.</span><span class="n">PostActivity</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_post_activity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">activity</span><span class="o">.</span><span class="n">PostActivity</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a post activity details.</span>
-
-<span class="sd">        .. warning::</span>
-<span class="sd">            This http request is not implemented yet</span>
-<span class="sd">            and it will raise `NotImplementedError`</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        instance: `builtins.int`</span>
+<span class="sd">        instance_id: `int`</span>
 <span class="sd">            The activity instance id.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `aiobungie.crate.activity.PostActivity`</span>
-<span class="sd">           Information about the requested post activity.</span>
+<span class="sd">        `aiobungie.crate.PostActivity`</span>
+<span class="sd">           A post activity object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># resp = await self.rest.fetch_post_activity(instance)</span>
-        <span class="c1"># assert isinstance(resp, list)</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">fetch_post_activity</span><span class="p">(</span><span class="n">instance_id</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">deserialize_post_activity</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
 
     <span class="c1"># * Destiny 2 Clans or GroupsV2.</span>
 
@@ -1897,7 +1982,7 @@
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_clan_conversations</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">clan_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanConversation</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanConversation</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch the conversations/chat channels of the given clan id.</span>
 
 <span class="sd">        Parameters</span>
@@ -1906,7 +1991,7 @@
 <span class="sd">            The clan id.</span>
 
 <span class="sd">        Returns</span>
-<span class="sd">        `typing.Sequence[aiobungie.crate.ClanConversation]`</span>
+<span class="sd">        `collections.Sequence[aiobungie.crate.ClanConversation]`</span>
 <span class="sd">            A sequence of the clan chat channels.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">fetch_clan_conversations</span><span class="p">(</span><span class="n">clan_id</span><span class="p">)</span>
@@ -1915,7 +2000,7 @@
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_clan_admins</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">clan_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanAdmin</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanAdmin</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch the clan founder and admins.</span>
 
 <span class="sd">        Parameters</span>
@@ -1925,7 +2010,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `typing.Sequence[aiobungie.crate.ClanAdmin]`</span>
+<span class="sd">        `collections.Sequence[aiobungie.crate.ClanAdmin]`</span>
 <span class="sd">            A sequence of the found clan admins and founder.</span>
 
 <span class="sd">        Raises</span>
@@ -2059,7 +2144,7 @@
         <span class="n">clan_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="nb">type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanMember</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanMember</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a Bungie Clan member. if no members found in the clan</span>
 <span class="sd">        you will get an empty sequence.</span>
 
@@ -2079,7 +2164,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `typing.Sequence[aiobungie.crate.ClanMember]`</span>
+<span class="sd">        `collections.Sequence[aiobungie.crate.ClanMember]`</span>
 <span class="sd">            A sequence of bungie clan members.</span>
 
 <span class="sd">        Raises</span>
@@ -2091,12 +2176,12 @@
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">deserialize_clan_members</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_clan_banners</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanBanner</span><span class="p">]:</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_clan_banners</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanBanner</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch the clan banners.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `typing.Sequence[aiobungie.crate.ClanBanner]`</span>
+<span class="sd">        `collections.Sequence[aiobungie.crate.ClanBanner]`</span>
 <span class="sd">            A sequence of the clan banners.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">fetch_clan_banners</span><span class="p">()</span>
@@ -2178,12 +2263,38 @@
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">deserialize_objective_entity</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
 
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">search_entities</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">entity_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">SearchableEntity</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Search for Destiny2 entities given a name and its type.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name : `str`</span>
+<span class="sd">            The name of the entity, i.e., Thunderlord, One thousand voices.</span>
+<span class="sd">        entity_type : `str`</span>
+<span class="sd">            The type of the entity, AKA Definition, For an example `DestinyInventoryItemDefinition`</span>
+
+<span class="sd">        Other Parameters</span>
+<span class="sd">        ----------------</span>
+<span class="sd">        page : `int`</span>
+<span class="sd">            An optional page to return. Default to 0.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `collections.Sequence[aiobungie.crate.SearchableEntity]`</span>
+<span class="sd">            A sequence of the found results matching the provided name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">search_entities</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">entity_type</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="n">page</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">deserialize_inventory_results</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
+
     <span class="c1"># * These methods should be for Special bungie endpoints, i.e,</span>
     <span class="c1"># * Applications, Forums, Polls, Trending, etc.</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_friends</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">friends</span><span class="o">.</span><span class="n">Friend</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">friends</span><span class="o">.</span><span class="n">Friend</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch bungie friend list.</span>
 
 <span class="sd">        .. note::</span>
@@ -2196,7 +2307,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `typing.Sequence[aiobungie.crate.Friend]`</span>
+<span class="sd">        `collections.Sequence[aiobungie.crate.Friend]`</span>
 <span class="sd">            A sequence of the found friends.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -2276,7 +2387,7 @@
         <span class="n">date_range</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">slots_filter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">fireteams</span><span class="o">.</span><span class="n">Fireteam</span><span class="p">]]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">fireteams</span><span class="o">.</span><span class="n">Fireteam</span><span class="p">]]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch public Bungie fireteams with open slots.</span>
 
 <span class="sd">        Parameters</span>
@@ -2301,7 +2412,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `typing.Optional[typing.Sequence[fireteams.Fireteam]]`</span>
+<span class="sd">        `typing.Optional[collections.Sequence[fireteams.Fireteam]]`</span>
 <span class="sd">            A sequence of `aiobungie.crate.Fireteam` or `None`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -2328,7 +2439,7 @@
         <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">public_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">slots_filter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">fireteams</span><span class="o">.</span><span class="n">Fireteam</span><span class="p">]]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">fireteams</span><span class="o">.</span><span class="n">Fireteam</span><span class="p">]]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a clan&#39;s fireteams with open slots.</span>
 
 <span class="sd">        .. note::</span>
@@ -2362,7 +2473,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `typing.Optional[typing.Sequence[aiobungie.crate.Fireteam]]`</span>
+<span class="sd">        `typing.Optional[collections.Sequence[aiobungie.crate.Fireteam]]`</span>
 <span class="sd">            A sequence of  fireteams found in the clan.</span>
 <span class="sd">            `None` will be returned if nothing was found.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -2418,7 +2529,7 @@
         <span class="n">language</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">fireteams</span><span class="o">.</span><span class="n">FireteamLanguage</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
         <span class="n">filtered</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">fireteams</span><span class="o">.</span><span class="n">AvalaibleFireteam</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">fireteams</span><span class="o">.</span><span class="n">AvalaibleFireteam</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;A method that&#39;s similar to `fetch_fireteams` but requires OAuth2.</span>
 
 <span class="sd">        .. note::</span>
@@ -2449,7 +2560,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `typing.Optional[typing.Sequence[aiobungie.crate.AvalaibleFireteam]]`</span>
+<span class="sd">        `typing.Optional[collections.Sequence[aiobungie.crate.AvalaibleFireteam]]`</span>
 <span class="sd">            A sequence of available fireteams objects if exists. else `None` will be returned.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">fetch_my_clan_fireteams</span><span class="p">(</span>
@@ -2475,11 +2586,16 @@ and returns <code><a href="crate.html">aiobungie.crate</a></code> Python object 
 <p>Alternatively, You can also use <code><a href="../aiobungie.html#RESTClient">aiobungie.RESTClient</a></code> to only get the JSON responses
 and then make your own implementation data classes. Both options are up to you.</p>
 
-<h6 id="attributes">Attributes</h6>
+<h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>token</strong> (<code>builtins.str</code>):
+<li><strong>token</strong> (<code>str</code>):
 Your Bungie's API key or Token from the developer's portal.</li>
+</ul>
+
+<h6 id="other-parameters">Other Parameters</h6>
+
+<ul>
 <li><strong>rest_client</strong> (<code>typing.Optional[<a href="interfaces.html#RESTInterface">aiobungie.interfaces.RESTInterface</a>]</code>):
 An optional rest client instance you can pass,
 If set to <code>None</code> then the client will make a rest instance for you.</li>
@@ -2492,8 +2608,14 @@ If set to <code>None</code> then the client will make a rest instance for you.</
     <span class="n">client</span> <span class="o">=</span> <span class="n">aiobungie</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">TOKEN</span><span class="p">,</span> <span class="n">rest_client</span><span class="o">=</span><span class="n">rest_client</span><span class="p">)</span>
 </code></pre></div>
 
-<p>max_retries : <code>builtins.int</code>
-    The max retries number to retry if the request hit a <code>5xx</code> status code.</p>
+<p>max_retries : <code>int</code>
+    The max retries number to retry if the request hit a <code>5xx</code> status code.
+client_secret : <code>typing.Optional[str]</code>
+    An optional application client secret,
+    This is only needed if you're fetching OAuth2 tokens with this client.
+client_id : <code>typing.Optional[int]</code>
+    An optional application client id,
+    This is only needed if you're fetching OAuth2 tokens with this client.</p>
 </div>
 
 
@@ -2504,6 +2626,8 @@ If set to <code>None</code> then the client will make a rest instance for you.</
             <span class="name">Client</span><span class="signature">(
     token: str,
     /,
+    client_secret: Optional[str] = None,
+    client_id: Optional[int] = None,
     *,
     rest_client: Optional[<a href="interfaces.html#rest.RESTInterface">aiobungie.interfaces.rest.RESTInterface</a>] = None,
     max_retries: int = 4
@@ -2516,16 +2640,22 @@ If set to <code>None</code> then the client will make a rest instance for you.</
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
+        <span class="n">client_secret</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">client_id</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">rest_client</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">interfaces</span><span class="o">.</span><span class="n">RESTInterface</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">max_retries</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">token</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Missing the API key!&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client_secret</span> <span class="o">=</span> <span class="n">client_secret</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client_id</span> <span class="o">=</span> <span class="n">client_id</span>
 
         <span class="k">if</span> <span class="n">rest_client</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_rest</span> <span class="o">=</span> <span class="n">rest_client</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_rest</span> <span class="o">=</span> <span class="n">rest_</span><span class="o">.</span><span class="n">RESTClient</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">max_retries</span><span class="o">=</span><span class="n">max_retries</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rest</span> <span class="o">=</span> <span class="n">rest_</span><span class="o">.</span><span class="n">RESTClient</span><span class="p">(</span>
+            <span class="n">token</span><span class="p">,</span> <span class="n">client_secret</span><span class="p">,</span> <span class="n">client_id</span><span class="p">,</span> <span class="n">max_retries</span><span class="o">=</span><span class="n">max_retries</span>
+        <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_factory</span> <span class="o">=</span> <span class="n">factory_</span><span class="o">.</span><span class="n">Factory</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_token</span> <span class="o">=</span> <span class="n">token</span>  <span class="c1"># We need the token For Manifest.</span>
@@ -2542,7 +2672,9 @@ If set to <code>None</code> then the client will make a rest instance for you.</
         <span class="name">factory</span><span class="annotation">: <a href="internal/factory.html#Factory">aiobungie.internal.factory.Factory</a></span>
     </div>
 
-    
+            <div class="docstring"><p>Returns the entity factory for the client.</p>
+</div>
+
 
                             </div>
                             <div id="Client.rest" class="classattr">
@@ -2572,17 +2704,13 @@ If set to <code>None</code> then the client will make a rest instance for you.</
 
         
             <span class="def">def</span>
-            <span class="name">run</span><span class="signature">(
-    self,
-    future: Coroutine[Any, NoneType, NoneType],
-    debug: bool = False
-) -&gt; None</span>:
+            <span class="name">run</span><span class="signature">(self, future: collections.abc.Coroutine, debug: bool = False) -&gt; None</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">future</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Coroutine</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">future</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Coroutine</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">loop</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Final</span><span class="p">[</span><span class="n">asyncio</span><span class="o">.</span><span class="n">AbstractEventLoop</span><span class="p">]</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">get_or_make_loop</span><span class="p">()</span>
         <span class="k">try</span><span class="p">:</span>
@@ -2611,8 +2739,10 @@ This is equivalent to asyncio.get_event_loop().run_until_complete(...)</p>
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>future</strong> (<code>typing.Coroutine[typing.Any, typing.Any, typing.Any]</code>):
-Your coro function.</li>
+<li><strong>future</strong> (<code>collections.Coroutine[None, None, None]</code>):
+A coroutine object.</li>
+<li><strong>debug</strong> (<code>bool</code>):
+Either to enable asyncio debug or not. Disabled by default.</li>
 </ul>
 
 <h6 id="example">Example</h6>
@@ -2623,40 +2753,6 @@ Your coro function.</li>
 <span class="c1"># Run the coro.</span>
 <span class="n">client</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
 </code></pre></div>
-</div>
-
-
-                            </div>
-                            <div id="Client.fetch_manifest" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#Client.fetch_manifest">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">async def</span>
-            <span class="name">fetch_manifest</span><span class="signature">(self) -&gt; <a href="ext.html#meta.Manifest">aiobungie.ext.meta.Manifest</a></span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_manifest</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">meta</span><span class="o">.</span><span class="n">Manifest</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Access The bungie Manifest.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        `aiobungie.ext.Manifest`</span>
-<span class="sd">            A Manifest crate.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">meta</span><span class="o">.</span><span class="n">Manifest</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_token</span><span class="p">)</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Access The bungie Manifest.</p>
-
-<h6 id="returns">Returns</h6>
-
-<ul>
-<li><strong><code><a href="ext.html#Manifest">aiobungie.ext.Manifest</a></code></strong>: A Manifest crate.</li>
-</ul>
 </div>
 
 
@@ -2791,12 +2887,18 @@ The user id.</li>
 
         
             <span class="def">async def</span>
-            <span class="name">search_users</span><span class="signature">(self, name: str, /) -&gt; Sequence[<a href="crate.html#user.DestinyUser">aiobungie.crate.user.DestinyUser</a>]</span>:
+            <span class="name">search_users</span><span class="signature">(
+    self,
+    name: str,
+    /
+) -&gt; collections.abc.Sequence[<a href="crate.html#user.DestinyUser">aiobungie.crate.user.DestinyUser</a>]</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">search_users</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">DestinyUser</span><span class="p">]:</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">search_users</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">DestinyUser</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Search for players and return all players that matches the same name.</span>
 
 <span class="sd">        Parameters</span>
@@ -2806,7 +2908,7 @@ The user id.</li>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `typing.Sequence[aiobungie.crate.DestinyUser]`</span>
+<span class="sd">        `collections.Sequence[aiobungie.crate.DestinyUser]`</span>
 <span class="sd">            A sequence of destiny memberships.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">payload</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">search_users</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
@@ -2828,7 +2930,7 @@ The user name.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code>typing.Sequence[<a href="crate.html#DestinyUser">aiobungie.crate.DestinyUser</a>]</code></strong>: A sequence of destiny memberships.</li>
+<li><strong><code>collections.Sequence[<a href="crate.html#DestinyUser">aiobungie.crate.DestinyUser</a>]</code></strong>: A sequence of destiny memberships.</li>
 </ul>
 </div>
 
@@ -2839,17 +2941,17 @@ The user name.</li>
 
         
             <span class="def">async def</span>
-            <span class="name">fetch_user_themes</span><span class="signature">(self) -&gt; Sequence[<a href="crate.html#user.UserThemes">aiobungie.crate.user.UserThemes</a>]</span>:
+            <span class="name">fetch_user_themes</span><span class="signature">(self) -&gt; collections.abc.Sequence[<a href="crate.html#user.UserThemes">aiobungie.crate.user.UserThemes</a>]</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_user_themes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">UserThemes</span><span class="p">]:</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_user_themes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">UserThemes</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch all available user themes.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `typing.Sequence[aiobungie.crate.user.UserThemes]`</span>
+<span class="sd">        `collections.Sequence[aiobungie.crate.user.UserThemes]`</span>
 <span class="sd">            A sequence of user themes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">fetch_user_themes</span><span class="p">()</span>
@@ -2864,7 +2966,7 @@ The user name.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code>typing.Sequence[<a href="crate.html#user.UserThemes">aiobungie.crate.user.UserThemes</a>]</code></strong>: A sequence of user themes.</li>
+<li><strong><code>collections.Sequence[<a href="crate.html#user.UserThemes">aiobungie.crate.user.UserThemes</a>]</code></strong>: A sequence of user themes.</li>
 </ul>
 </div>
 
@@ -3030,6 +3132,82 @@ The user's membership type.</li>
 
 <ul>
 <li><strong><a href="../aiobungie.html#NotFound">aiobungie.NotFound</a></strong>: The requested user was not found.</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="Client.fetch_user_credentials" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Client.fetch_user_credentials">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">async def</span>
+            <span class="name">fetch_user_credentials</span><span class="signature">(
+    self,
+    access_token: str,
+    membership_id: int,
+    /
+) -&gt; collections.abc.Sequence[<a href="crate.html#user.UserCredentials">aiobungie.crate.user.UserCredentials</a>]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_user_credentials</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">membership_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">UserCredentials</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Fetch an array of credential types attached to the requested account.</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">            This method require OAuth2 Bearer access token.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        access_token : `str`</span>
+<span class="sd">            The bearer access token associated with the bungie account.</span>
+<span class="sd">        membership_id : `int`</span>
+<span class="sd">            The id of the membership to return.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `collections.Sequence[aiobungie.crate.UserCredentials]`</span>
+<span class="sd">            A sequence of the attached user credentials.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        `aiobungie.Unauthorized`</span>
+<span class="sd">            The access token was wrong or no access token passed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">fetch_user_credentials</span><span class="p">(</span><span class="n">access_token</span><span class="p">,</span> <span class="n">membership_id</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">deserialize_user_credentials</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Fetch an array of credential types attached to the requested account.</p>
+
+<p><em>Note:</em>
+This method require OAuth2 Bearer access token.</p>
+
+<h6 id="parameters">Parameters</h6>
+
+<ul>
+<li><strong>access_token</strong> (<code>str</code>):
+The bearer access token associated with the bungie account.</li>
+<li><strong>membership_id</strong> (<code>int</code>):
+The id of the membership to return.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<ul>
+<li><strong><code>collections.Sequence[<a href="crate.html#UserCredentials">aiobungie.crate.UserCredentials</a>]</code></strong>: A sequence of the attached user credentials.</li>
+</ul>
+
+<h6 id="raises">Raises</h6>
+
+<ul>
+<li><strong><code><a href="../aiobungie.html#Unauthorized">aiobungie.Unauthorized</a></code></strong>: The access token was wrong or no access token passed.</li>
 </ul>
 </div>
 
@@ -3246,7 +3424,7 @@ The default for this is <code>False</code>.</p></li>
     code: int,
     type: Union[int, <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>] = &lt;MembershipType.ALL: -1&gt;,
     /
-) -&gt; Sequence[<a href="crate.html#user.DestinyUser">aiobungie.crate.user.DestinyUser</a>]</span>:
+) -&gt; collections.abc.Sequence[<a href="crate.html#user.DestinyUser">aiobungie.crate.user.DestinyUser</a>]</span>:
     </div>
 
                 <details>
@@ -3257,7 +3435,7 @@ The default for this is <code>False</code>.</p></li>
         <span class="n">code</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="nb">type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">DestinyUser</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">DestinyUser</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a Destiny 2 Player&#39;s memberships.</span>
 
 <span class="sd">        Parameters</span>
@@ -3271,14 +3449,12 @@ The default for this is <code>False</code>.</p></li>
 
 <span class="sd">        Returns</span>
 <span class="sd">        --------</span>
-<span class="sd">        `typing.Sequence[aiobungie.crate.Player]`</span>
+<span class="sd">        `collections.Sequence[aiobungie.crate.Player]`</span>
 <span class="sd">            A sequence of the found Destiny 2 Player memberships.</span>
+<span class="sd">            An empty sequene will be returned if no one found.</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
-<span class="sd">        `aiobungie.NotFound`</span>
-<span class="sd">            The player was not found.</span>
-
 <span class="sd">        `aiobungie.MembershipTypeError`</span>
 <span class="sd">            The provided membership type was invalid.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -3305,13 +3481,13 @@ The player's membership type, e,g. XBOX, STEAM, PSN</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code>typing.Sequence[<a href="crate.html#Player">aiobungie.crate.Player</a>]</code></strong>: A sequence of the found Destiny 2 Player memberships.</li>
+<li><strong><code>collections.Sequence[<a href="crate.html#Player">aiobungie.crate.Player</a>]</code></strong>: A sequence of the found Destiny 2 Player memberships.
+An empty sequene will be returned if no one found.</li>
 </ul>
 
 <h6 id="raises">Raises</h6>
 
 <ul>
-<li><strong><code><a href="../aiobungie.html#NotFound">aiobungie.NotFound</a></code></strong>: The player was not found.</li>
 <li><strong><code><a href="../aiobungie.html#MembershipTypeError">aiobungie.MembershipTypeError</a></code></strong>: The provided membership type was invalid.</li>
 </ul>
 </div>
@@ -3429,66 +3605,66 @@ This is only here for the <code>auth</code> option which's a kwarg.</li>
 
 
                             </div>
-                            <div id="Client.fetch_activity" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#Client.fetch_activity">#&nbsp;&nbsp</a>
+                            <div id="Client.fetch_activities" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Client.fetch_activities">#&nbsp;&nbsp</a>
 
         
             <span class="def">async def</span>
-            <span class="name">fetch_activity</span><span class="signature">(
+            <span class="name">fetch_activities</span><span class="signature">(
     self,
     member_id: int,
     character_id: int,
     mode: Union[int, <a href="internal/enums.html#GameMode">aiobungie.internal.enums.GameMode</a>],
-    membership_type: Union[int, <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>],
+    membership_type: Union[int, <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>] = &lt;MembershipType.ALL: -1&gt;,
     *,
-    page: int = 1,
-    limit: int = 1
-) -&gt; <a href="crate.html#activity.Activity">aiobungie.crate.activity.Activity</a></span>:
+    page: int = 0,
+    limit: int = 250
+) -&gt; collections.abc.Sequence[<a href="crate.html#activity.Activity">aiobungie.crate.activity.Activity</a>]</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_activity</span><span class="p">(</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_activities</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">mode</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">GameMode</span><span class="p">],</span>
-        <span class="n">membership_type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
+        <span class="n">membership_type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span>
+            <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">activity</span><span class="o">.</span><span class="n">Activity</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Fetch a Destiny 2 activity for the specified user id and character.</span>
+        <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">250</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">activity</span><span class="o">.</span><span class="n">Activity</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Fetch a Destiny 2 activity for the specified character id.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        member_id: `builtins.int`</span>
 <span class="sd">            The user id that starts with `4611`.</span>
 <span class="sd">        character_id: `builtins.int`</span>
-<span class="sd">            The id of the character to retrieve.</span>
-<span class="sd">        mode: `aiobungie.internal.enums.GameMode`</span>
+<span class="sd">            The id of the character to retrieve the activities for.</span>
+<span class="sd">        mode: `aiobungie.typedefs.IntAnd[aiobungie.internal.enums.GameMode]`</span>
 <span class="sd">            This parameter filters the game mode, Nightfall, Strike, Iron Banner, etc.</span>
+
+<span class="sd">        Other Parameters</span>
+<span class="sd">        ----------------</span>
 <span class="sd">        membership_type: `aiobungie.internal.enums.MembershipType`</span>
 <span class="sd">            The Member ship type, if nothing was passed than it will return all.</span>
 <span class="sd">        page: builtins.int</span>
-<span class="sd">            The page number. Default is `1`</span>
+<span class="sd">            The page number. Default is `0`</span>
 <span class="sd">        limit: builtins.int</span>
-<span class="sd">            Limit the returned result. Default is `1`</span>
+<span class="sd">            Limit the returned result. Default is `250`.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `aiobungie.crate.Activity`</span>
-<span class="sd">            A Bungie activity.</span>
-
-<span class="sd">        Raises</span>
-<span class="sd">        ------</span>
-<span class="sd">        `aiobungie.error.ActivityNotFound`</span>
-<span class="sd">            The activity was not found.</span>
+<span class="sd">        `collections.Sequence[aiobungie.crate.Activity]`</span>
+<span class="sd">            A sequence of the player&#39;s activities.</span>
 
 <span class="sd">        `aiobungie.MembershipTypeError`</span>
 <span class="sd">            The provided membership type was invalid.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">fetch_activity</span><span class="p">(</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">fetch_activities</span><span class="p">(</span>
             <span class="n">member_id</span><span class="p">,</span>
             <span class="n">character_id</span><span class="p">,</span>
             <span class="n">mode</span><span class="p">,</span>
@@ -3497,12 +3673,12 @@ This is only here for the <code>auth</code> option which's a kwarg.</li>
             <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">deserialize_activity</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">deserialize_activities</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Fetch a Destiny 2 activity for the specified user id and character.</p>
+            <div class="docstring"><p>Fetch a Destiny 2 activity for the specified character id.</p>
 
 <h6 id="parameters">Parameters</h6>
 
@@ -3510,27 +3686,26 @@ This is only here for the <code>auth</code> option which's a kwarg.</li>
 <li><strong>member_id</strong> (<code>builtins.int</code>):
 The user id that starts with <code>4611</code>.</li>
 <li><strong>character_id</strong> (<code>builtins.int</code>):
-The id of the character to retrieve.</li>
-<li><strong>mode</strong> (<code><a href="internal/enums.html#GameMode">aiobungie.internal.enums.GameMode</a></code>):
+The id of the character to retrieve the activities for.</li>
+<li><strong>mode</strong> (<code><a href="typedefs.html#IntAnd">aiobungie.typedefs.IntAnd</a>[<a href="internal/enums.html#GameMode">aiobungie.internal.enums.GameMode</a>]</code>):
 This parameter filters the game mode, Nightfall, Strike, Iron Banner, etc.</li>
+</ul>
+
+<h6 id="other-parameters">Other Parameters</h6>
+
+<ul>
 <li><strong>membership_type</strong> (<code><a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a></code>):
 The Member ship type, if nothing was passed than it will return all.</li>
 <li><strong>page</strong> (builtins.int):
-The page number. Default is <code>1</code></li>
+The page number. Default is <code>0</code></li>
 <li><strong>limit</strong> (builtins.int):
-Limit the returned result. Default is <code>1</code></li>
+Limit the returned result. Default is <code>250</code>.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code><a href="crate.html#Activity">aiobungie.crate.Activity</a></code></strong>: A Bungie activity.</li>
-</ul>
-
-<h6 id="raises">Raises</h6>
-
-<ul>
-<li><strong><code><a href="error.html#ActivityNotFound">aiobungie.error.ActivityNotFound</a></code></strong>: The activity was not found.</li>
+<li><strong><code>collections.Sequence[<a href="crate.html#Activity">aiobungie.crate.Activity</a>]</code></strong>: A sequence of the player's activities.</li>
 <li><strong><code><a href="../aiobungie.html#MembershipTypeError">aiobungie.MembershipTypeError</a></code></strong>: The provided membership type was invalid.</li>
 </ul>
 </div>
@@ -3542,52 +3717,44 @@ Limit the returned result. Default is <code>1</code></li>
 
         
             <span class="def">async def</span>
-            <span class="name">fetch_post_activity</span><span class="signature">(self, instance: int, /) -&gt; <a href="crate.html#activity.PostActivity">aiobungie.crate.activity.PostActivity</a></span>:
+            <span class="name">fetch_post_activity</span><span class="signature">(self, instance_id: int, /) -&gt; <a href="crate.html#activity.PostActivity">aiobungie.crate.activity.PostActivity</a></span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_post_activity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">activity</span><span class="o">.</span><span class="n">PostActivity</span><span class="p">:</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_post_activity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">activity</span><span class="o">.</span><span class="n">PostActivity</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a post activity details.</span>
-
-<span class="sd">        .. warning::</span>
-<span class="sd">            This http request is not implemented yet</span>
-<span class="sd">            and it will raise `NotImplementedError`</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        instance: `builtins.int`</span>
+<span class="sd">        instance_id: `int`</span>
 <span class="sd">            The activity instance id.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `aiobungie.crate.activity.PostActivity`</span>
-<span class="sd">           Information about the requested post activity.</span>
+<span class="sd">        `aiobungie.crate.PostActivity`</span>
+<span class="sd">           A post activity object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># resp = await self.rest.fetch_post_activity(instance)</span>
-        <span class="c1"># assert isinstance(resp, list)</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">fetch_post_activity</span><span class="p">(</span><span class="n">instance_id</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">deserialize_post_activity</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
             <div class="docstring"><p>Fetch a post activity details.</p>
 
-<p><em>Warning:</em>
-This http request is not implemented yet
-and it will raise <code>NotImplementedError</code></p>
-
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>instance</strong> (<code>builtins.int</code>):
+<li><strong>instance_id</strong> (<code>int</code>):
 The activity instance id.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code><a href="crate.html#activity.PostActivity">aiobungie.crate.activity.PostActivity</a></code></strong>: Information about the requested post activity.</li>
+<li><strong><code><a href="crate.html#PostActivity">aiobungie.crate.PostActivity</a></code></strong>: A post activity object.</li>
 </ul>
 </div>
 
@@ -3735,14 +3902,14 @@ The clan name</li>
     self,
     clan_id: int,
     /
-) -&gt; Sequence[<a href="crate.html#clans.ClanConversation">aiobungie.crate.clans.ClanConversation</a>]</span>:
+) -&gt; collections.abc.Sequence[<a href="crate.html#clans.ClanConversation">aiobungie.crate.clans.ClanConversation</a>]</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_clan_conversations</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">clan_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanConversation</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanConversation</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch the conversations/chat channels of the given clan id.</span>
 
 <span class="sd">        Parameters</span>
@@ -3751,7 +3918,7 @@ The clan name</li>
 <span class="sd">            The clan id.</span>
 
 <span class="sd">        Returns</span>
-<span class="sd">        `typing.Sequence[aiobungie.crate.ClanConversation]`</span>
+<span class="sd">        `collections.Sequence[aiobungie.crate.ClanConversation]`</span>
 <span class="sd">            A sequence of the clan chat channels.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">fetch_clan_conversations</span><span class="p">(</span><span class="n">clan_id</span><span class="p">)</span>
@@ -3769,7 +3936,7 @@ The clan name</li>
 <li><strong>clan_id</strong> (<code>int</code>):
 The clan id.</li>
 <li><strong>Returns</strong></li>
-<li><strong><code>typing.Sequence[<a href="crate.html#ClanConversation">aiobungie.crate.ClanConversation</a>]</code></strong>: A sequence of the clan chat channels.</li>
+<li><strong><code>collections.Sequence[<a href="crate.html#ClanConversation">aiobungie.crate.ClanConversation</a>]</code></strong>: A sequence of the clan chat channels.</li>
 </ul>
 </div>
 
@@ -3780,14 +3947,18 @@ The clan id.</li>
 
         
             <span class="def">async def</span>
-            <span class="name">fetch_clan_admins</span><span class="signature">(self, clan_id: int, /) -&gt; Sequence[<a href="crate.html#clans.ClanAdmin">aiobungie.crate.clans.ClanAdmin</a>]</span>:
+            <span class="name">fetch_clan_admins</span><span class="signature">(
+    self,
+    clan_id: int,
+    /
+) -&gt; collections.abc.Sequence[<a href="crate.html#clans.ClanAdmin">aiobungie.crate.clans.ClanAdmin</a>]</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_clan_admins</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">clan_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanAdmin</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanAdmin</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch the clan founder and admins.</span>
 
 <span class="sd">        Parameters</span>
@@ -3797,7 +3968,7 @@ The clan id.</li>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `typing.Sequence[aiobungie.crate.ClanAdmin]`</span>
+<span class="sd">        `collections.Sequence[aiobungie.crate.ClanAdmin]`</span>
 <span class="sd">            A sequence of the found clan admins and founder.</span>
 
 <span class="sd">        Raises</span>
@@ -3824,7 +3995,7 @@ The clan id.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code>typing.Sequence[<a href="crate.html#ClanAdmin">aiobungie.crate.ClanAdmin</a>]</code></strong>: A sequence of the found clan admins and founder.</li>
+<li><strong><code>collections.Sequence[<a href="crate.html#ClanAdmin">aiobungie.crate.ClanAdmin</a>]</code></strong>: A sequence of the found clan admins and founder.</li>
 </ul>
 
 <h6 id="raises">Raises</h6>
@@ -4120,7 +4291,7 @@ Which returns the first matched clan member by their name.</li>
     clan_id: int,
     type: Union[int, <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>] = &lt;MembershipType.NONE: 0&gt;,
     /
-) -&gt; Sequence[<a href="crate.html#clans.ClanMember">aiobungie.crate.clans.ClanMember</a>]</span>:
+) -&gt; collections.abc.Sequence[<a href="crate.html#clans.ClanMember">aiobungie.crate.clans.ClanMember</a>]</span>:
     </div>
 
                 <details>
@@ -4130,7 +4301,7 @@ Which returns the first matched clan member by their name.</li>
         <span class="n">clan_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="nb">type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanMember</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanMember</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a Bungie Clan member. if no members found in the clan</span>
 <span class="sd">        you will get an empty sequence.</span>
 
@@ -4150,7 +4321,7 @@ Which returns the first matched clan member by their name.</li>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `typing.Sequence[aiobungie.crate.ClanMember]`</span>
+<span class="sd">        `collections.Sequence[aiobungie.crate.ClanMember]`</span>
 <span class="sd">            A sequence of bungie clan members.</span>
 
 <span class="sd">        Raises</span>
@@ -4187,7 +4358,7 @@ Which returns the first matched clan member by their name.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code>typing.Sequence[<a href="crate.html#ClanMember">aiobungie.crate.ClanMember</a>]</code></strong>: A sequence of bungie clan members.</li>
+<li><strong><code>collections.Sequence[<a href="crate.html#ClanMember">aiobungie.crate.ClanMember</a>]</code></strong>: A sequence of bungie clan members.</li>
 </ul>
 
 <h6 id="raises">Raises</h6>
@@ -4204,17 +4375,17 @@ Which returns the first matched clan member by their name.</li>
 
         
             <span class="def">async def</span>
-            <span class="name">fetch_clan_banners</span><span class="signature">(self) -&gt; Sequence[<a href="crate.html#clans.ClanBanner">aiobungie.crate.clans.ClanBanner</a>]</span>:
+            <span class="name">fetch_clan_banners</span><span class="signature">(self) -&gt; collections.abc.Sequence[<a href="crate.html#clans.ClanBanner">aiobungie.crate.clans.ClanBanner</a>]</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_clan_banners</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanBanner</span><span class="p">]:</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_clan_banners</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanBanner</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch the clan banners.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `typing.Sequence[aiobungie.crate.ClanBanner]`</span>
+<span class="sd">        `collections.Sequence[aiobungie.crate.ClanBanner]`</span>
 <span class="sd">            A sequence of the clan banners.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">fetch_clan_banners</span><span class="p">()</span>
@@ -4229,7 +4400,7 @@ Which returns the first matched clan member by their name.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code>typing.Sequence[<a href="crate.html#ClanBanner">aiobungie.crate.ClanBanner</a>]</code></strong>: A sequence of the clan banners.</li>
+<li><strong><code>collections.Sequence[<a href="crate.html#ClanBanner">aiobungie.crate.ClanBanner</a>]</code></strong>: A sequence of the clan banners.</li>
 </ul>
 </div>
 
@@ -4416,6 +4587,78 @@ objective's hash.</li>
 
 
                             </div>
+                            <div id="Client.search_entities" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Client.search_entities">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">async def</span>
+            <span class="name">search_entities</span><span class="signature">(
+    self,
+    name: str,
+    entity_type: str,
+    *,
+    page: int = 0
+) -&gt; collections.abc.Sequence[<a href="crate.html#entity.SearchableEntity">aiobungie.crate.entity.SearchableEntity</a>]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">search_entities</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">entity_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">SearchableEntity</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Search for Destiny2 entities given a name and its type.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name : `str`</span>
+<span class="sd">            The name of the entity, i.e., Thunderlord, One thousand voices.</span>
+<span class="sd">        entity_type : `str`</span>
+<span class="sd">            The type of the entity, AKA Definition, For an example `DestinyInventoryItemDefinition`</span>
+
+<span class="sd">        Other Parameters</span>
+<span class="sd">        ----------------</span>
+<span class="sd">        page : `int`</span>
+<span class="sd">            An optional page to return. Default to 0.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `collections.Sequence[aiobungie.crate.SearchableEntity]`</span>
+<span class="sd">            A sequence of the found results matching the provided name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">search_entities</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">entity_type</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="n">page</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">deserialize_inventory_results</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Search for Destiny2 entities given a name and its type.</p>
+
+<h6 id="parameters">Parameters</h6>
+
+<ul>
+<li><strong>name</strong> (<code>str</code>):
+The name of the entity, i.e., Thunderlord, One thousand voices.</li>
+<li><strong>entity_type</strong> (<code>str</code>):
+The type of the entity, AKA Definition, For an example <code>DestinyInventoryItemDefinition</code></li>
+</ul>
+
+<h6 id="other-parameters">Other Parameters</h6>
+
+<ul>
+<li><strong>page</strong> (<code>int</code>):
+An optional page to return. Default to 0.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<ul>
+<li><strong><code>collections.Sequence[<a href="crate.html#SearchableEntity">aiobungie.crate.SearchableEntity</a>]</code></strong>: A sequence of the found results matching the provided name.</li>
+</ul>
+</div>
+
+
+                            </div>
                             <div id="Client.fetch_friends" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#Client.fetch_friends">#&nbsp;&nbsp</a>
 
@@ -4425,14 +4668,14 @@ objective's hash.</li>
     self,
     access_token: str,
     /
-) -&gt; Sequence[<a href="crate.html#friends.Friend">aiobungie.crate.friends.Friend</a>]</span>:
+) -&gt; collections.abc.Sequence[<a href="crate.html#friends.Friend">aiobungie.crate.friends.Friend</a>]</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_friends</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">friends</span><span class="o">.</span><span class="n">Friend</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">friends</span><span class="o">.</span><span class="n">Friend</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch bungie friend list.</span>
 
 <span class="sd">        .. note::</span>
@@ -4445,7 +4688,7 @@ objective's hash.</li>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `typing.Sequence[aiobungie.crate.Friend]`</span>
+<span class="sd">        `collections.Sequence[aiobungie.crate.Friend]`</span>
 <span class="sd">            A sequence of the found friends.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -4471,7 +4714,7 @@ The bearer access token associated with the bungie account.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code>typing.Sequence[<a href="crate.html#Friend">aiobungie.crate.Friend</a>]</code></strong>: A sequence of the found friends.</li>
+<li><strong><code>collections.Sequence[<a href="crate.html#Friend">aiobungie.crate.Friend</a>]</code></strong>: A sequence of the found friends.</li>
 </ul>
 </div>
 
@@ -4654,7 +4897,7 @@ The milestone hash.</li>
     date_range: int = 0,
     page: int = 0,
     slots_filter: int = 0
-) -&gt; Optional[Sequence[<a href="crate.html#fireteams.Fireteam">aiobungie.crate.fireteams.Fireteam</a>]]</span>:
+) -&gt; Optional[collections.abc.Sequence[<a href="crate.html#fireteams.Fireteam">aiobungie.crate.fireteams.Fireteam</a>]]</span>:
     </div>
 
                 <details>
@@ -4672,7 +4915,7 @@ The milestone hash.</li>
         <span class="n">date_range</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">slots_filter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">fireteams</span><span class="o">.</span><span class="n">Fireteam</span><span class="p">]]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">fireteams</span><span class="o">.</span><span class="n">Fireteam</span><span class="p">]]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch public Bungie fireteams with open slots.</span>
 
 <span class="sd">        Parameters</span>
@@ -4697,7 +4940,7 @@ The milestone hash.</li>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `typing.Optional[typing.Sequence[fireteams.Fireteam]]`</span>
+<span class="sd">        `typing.Optional[collections.Sequence[fireteams.Fireteam]]`</span>
 <span class="sd">            A sequence of `aiobungie.crate.Fireteam` or `None`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -4744,7 +4987,7 @@ Filter the returned fireteams based on available slots. Default is <code>0</code
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code>typing.Optional[typing.Sequence[fireteams.Fireteam]]</code></strong>: A sequence of <code><a href="crate.html#Fireteam">aiobungie.crate.Fireteam</a></code> or <code>None</code>.</li>
+<li><strong><code>typing.Optional[collections.Sequence[fireteams.Fireteam]]</code></strong>: A sequence of <code><a href="crate.html#Fireteam">aiobungie.crate.Fireteam</a></code> or <code>None</code>.</li>
 </ul>
 </div>
 
@@ -4767,7 +5010,7 @@ Filter the returned fireteams based on available slots. Default is <code>0</code
     page: int = 0,
     public_only: bool = False,
     slots_filter: int = 0
-) -&gt; Optional[Sequence[<a href="crate.html#fireteams.Fireteam">aiobungie.crate.fireteams.Fireteam</a>]]</span>:
+) -&gt; Optional[collections.abc.Sequence[<a href="crate.html#fireteams.Fireteam">aiobungie.crate.fireteams.Fireteam</a>]]</span>:
     </div>
 
                 <details>
@@ -4784,7 +5027,7 @@ Filter the returned fireteams based on available slots. Default is <code>0</code
         <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">public_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">slots_filter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">fireteams</span><span class="o">.</span><span class="n">Fireteam</span><span class="p">]]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">fireteams</span><span class="o">.</span><span class="n">Fireteam</span><span class="p">]]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a clan&#39;s fireteams with open slots.</span>
 
 <span class="sd">        .. note::</span>
@@ -4818,7 +5061,7 @@ Filter the returned fireteams based on available slots. Default is <code>0</code
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `typing.Optional[typing.Sequence[aiobungie.crate.Fireteam]]`</span>
+<span class="sd">        `typing.Optional[collections.Sequence[aiobungie.crate.Fireteam]]`</span>
 <span class="sd">            A sequence of  fireteams found in the clan.</span>
 <span class="sd">            `None` will be returned if nothing was found.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -4877,7 +5120,7 @@ Filter the returned fireteams based on available slots. Default is <code>0</code
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code>typing.Optional[typing.Sequence[<a href="crate.html#Fireteam">aiobungie.crate.Fireteam</a>]]</code></strong>: A sequence of  fireteams found in the clan.
+<li><strong><code>typing.Optional[collections.Sequence[<a href="crate.html#Fireteam">aiobungie.crate.Fireteam</a>]]</code></strong>: A sequence of  fireteams found in the clan.
 <code>None</code> will be returned if nothing was found.</li>
 </ul>
 </div>
@@ -4970,7 +5213,7 @@ The fireteam id to fetch.</li>
     language: Union[<a href="crate.html#fireteams.FireteamLanguage">aiobungie.crate.fireteams.FireteamLanguage</a>, str],
     filtered: bool = True,
     page: int = 0
-) -&gt; Sequence[<a href="crate.html#fireteams.AvalaibleFireteam">aiobungie.crate.fireteams.AvalaibleFireteam</a>]</span>:
+) -&gt; collections.abc.Sequence[<a href="crate.html#fireteams.AvalaibleFireteam">aiobungie.crate.fireteams.AvalaibleFireteam</a>]</span>:
     </div>
 
                 <details>
@@ -4985,7 +5228,7 @@ The fireteam id to fetch.</li>
         <span class="n">language</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">fireteams</span><span class="o">.</span><span class="n">FireteamLanguage</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
         <span class="n">filtered</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">fireteams</span><span class="o">.</span><span class="n">AvalaibleFireteam</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">fireteams</span><span class="o">.</span><span class="n">AvalaibleFireteam</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;A method that&#39;s similar to `fetch_fireteams` but requires OAuth2.</span>
 
 <span class="sd">        .. note::</span>
@@ -5016,7 +5259,7 @@ The fireteam id to fetch.</li>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `typing.Optional[typing.Sequence[aiobungie.crate.AvalaibleFireteam]]`</span>
+<span class="sd">        `typing.Optional[collections.Sequence[aiobungie.crate.AvalaibleFireteam]]`</span>
 <span class="sd">            A sequence of available fireteams objects if exists. else `None` will be returned.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">fetch_my_clan_fireteams</span><span class="p">(</span>
@@ -5069,20 +5312,11 @@ The page number. By default its 0 which returns all available activities.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code>typing.Optional[typing.Sequence[<a href="crate.html#AvalaibleFireteam">aiobungie.crate.AvalaibleFireteam</a>]]</code></strong>: A sequence of available fireteams objects if exists. else <code>None</code> will be returned.</li>
+<li><strong><code>typing.Optional[collections.Sequence[<a href="crate.html#AvalaibleFireteam">aiobungie.crate.AvalaibleFireteam</a>]]</code></strong>: A sequence of available fireteams objects if exists. else <code>None</code> will be returned.</li>
 </ul>
 </div>
 
 
-                            </div>
-                            <div class="inherited">
-                                <h5>Inherited Members</h5>
-                                <dl>
-                                    <div><dt><a href="traits.html#Serializable">aiobungie.traits.Serializable</a></dt>
-                                <dd id="Client.serialize" class="variable"><a href="traits.html#Serializable.serialize">serialize</a></dd>
-
-            </div>
-                                </dl>
                             </div>
                 </section>
     </main>

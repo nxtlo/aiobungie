@@ -31,10 +31,88 @@
                     <h2>API Documentation</h2>
                         <ul class="memberlist">
             <li>
-                    <a class="variable" href="#JsonObject">JsonObject</a>
+                    <a class="class" href="#JSONObject">JSONObject</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#JSONObject.__init__">JSONObject</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#JSONObject.get">get</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#JSONObject.setdefault">setdefault</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#JSONObject.pop">pop</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#JSONObject.popitem">popitem</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#JSONObject.keys">keys</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#JSONObject.items">items</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#JSONObject.values">values</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#JSONObject.update">update</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#JSONObject.fromkeys">fromkeys</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#JSONObject.clear">clear</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#JSONObject.copy">copy</a>
+                        </li>
+                </ul>
+
             </li>
             <li>
-                    <a class="variable" href="#JsonArray">JsonArray</a>
+                    <a class="class" href="#JSONArray">JSONArray</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#JSONArray.__init__">JSONArray</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#JSONArray.clear">clear</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#JSONArray.copy">copy</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#JSONArray.append">append</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#JSONArray.insert">insert</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#JSONArray.extend">extend</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#JSONArray.pop">pop</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#JSONArray.remove">remove</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#JSONArray.index">index</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#JSONArray.count">count</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#JSONArray.reverse">reverse</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#JSONArray.sort">sort</a>
+                        </li>
+                </ul>
+
             </li>
             <li>
                     <a class="variable" href="#Unknown">Unknown</a>
@@ -47,6 +125,9 @@
             </li>
             <li>
                     <a class="variable" href="#IntAnd">IntAnd</a>
+            </li>
+            <li>
+                    <a class="function" href="#is_unknown">is_unknown</a>
             </li>
     </ul>
 
@@ -95,24 +176,34 @@
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
+<span class="n">__all__</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">&quot;JSONObject&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;JSONArray&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Unknown&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;NoneOr&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;EnumSig&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;IntAnd&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;is_unknown&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
 <span class="kn">import</span> <span class="nn">typing</span>
 
 <span class="kn">from</span> <span class="nn">aiobungie.internal</span> <span class="kn">import</span> <span class="n">enums</span>
 
-<span class="n">JsonObject</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span>
-<span class="sd">&quot;&quot;&quot;A json like dict of string key and any value.</span>
+<span class="n">JSONObject</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span>  <span class="c1"># type: ignore[misc]</span>
+<span class="sd">&quot;&quot;&quot;A JSON like dict of string key and any value.</span>
 
 <span class="sd">i.e., `{&quot;Key&quot;: 1, &quot;Key2&quot;: &quot;Value&quot;}`</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="n">JsonArray</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span>
-<span class="sd">&quot;&quot;&quot;A json like list of any data type.</span>
+<span class="n">JSONArray</span> <span class="o">=</span> <span class="nb">list</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span>  <span class="c1"># type: ignore[misc]</span>
+<span class="sd">&quot;&quot;&quot;A JSON like list of any data type.</span>
 
 <span class="sd">i.e., `[{&quot;Key&quot;: 1}, {&quot;Key2&quot;: &quot;Value&quot;}]`</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="n">Unknown</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Final</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-<span class="sd">&quot;&quot;&quot;Some Bungie strings comes Empty so we undefine them if so.&quot;&quot;&quot;</span>
+<span class="sd">&quot;&quot;&quot;Some Bungie strings return empty so we undefine them if so.&quot;&quot;&quot;</span>
 
 <span class="n">T</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="n">covariant</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
@@ -126,36 +217,409 @@
 
 <span class="n">IntAnd</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">EnumSig</span><span class="p">]</span>
 <span class="sd">&quot;&quot;&quot;A type hint for parameters that may receives an enum or an int.&quot;&quot;&quot;</span>
+
+
+<span class="k">def</span> <span class="nf">is_unknown</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">string</span> <span class="o">==</span> <span class="n">Unknown</span>
 </pre></div>
 
         </details>
 
             </section>
-                <section id="JsonObject">
-                                <div class="attr variable"><a class="headerlink" href="#JsonObject">#&nbsp;&nbsp</a>
+                <section id="JSONObject">
+                                <div class="attr class">
+        <a class="headerlink" href="#JSONObject">#&nbsp;&nbsp</a>
 
-        <span class="name">JsonObject</span><span class="default_value"> = typing.Dict[str, typing.Any]</span>
+        
+        <span class="def">class</span>
+        <span class="name">JSONObject</span>:
     </div>
 
-            <div class="docstring"><p>A json like dict of string key and any value.</p>
-
-<p>i.e., <code>{"Key": 1, "Key2": "Value"}</code></p>
+        
+            <div class="docstring"><p>dict() -> new empty dictionary
+dict(mapping) -> new dictionary initialized from a mapping object's
+    (key, value) pairs
+dict(iterable) -> new dictionary initialized as if via:
+    d = {}
+    for k, v in iterable:
+        d[k] = v
+dict(**kwargs) -> new dictionary initialized with the name=value pairs
+    in the keyword argument list.  For example:  dict(one=1, two=2)</p>
 </div>
 
 
+                            <div id="JSONObject.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#JSONObject.__init__">#&nbsp;&nbsp</a>
+
+        
+            <span class="name">JSONObject</span><span class="signature">(*args, **kwargs)</span>
+    </div>
+
+        
+    
+
+                            </div>
+                            <div id="JSONObject.get" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#JSONObject.get">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">get</span><span class="signature">(self, key, default=None, /)</span>:
+    </div>
+
+        
+            <div class="docstring"><p>Return the value for key if key is in the dictionary, else default.</p>
+</div>
+
+
+                            </div>
+                            <div id="JSONObject.setdefault" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#JSONObject.setdefault">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">setdefault</span><span class="signature">(self, key, default=None, /)</span>:
+    </div>
+
+        
+            <div class="docstring"><p>Insert key with a value of default if key is not in the dictionary.</p>
+
+<p>Return the value for key if key is in the dictionary, else default.</p>
+</div>
+
+
+                            </div>
+                            <div id="JSONObject.pop" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#JSONObject.pop">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">pop</span><span class="signature">(unknown)</span>:
+    </div>
+
+        
+            <div class="docstring"><p>D.pop(k[,d]) -> v, remove specified key and return the corresponding value.</p>
+
+<p>If key is not found, default is returned if given, otherwise KeyError is raised</p>
+</div>
+
+
+                            </div>
+                            <div id="JSONObject.popitem" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#JSONObject.popitem">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">popitem</span><span class="signature">(self, /)</span>:
+    </div>
+
+        
+            <div class="docstring"><p>Remove and return a (key, value) pair as a 2-tuple.</p>
+
+<p>Pairs are returned in LIFO (last-in, first-out) order.
+Raises KeyError if the dict is empty.</p>
+</div>
+
+
+                            </div>
+                            <div id="JSONObject.keys" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#JSONObject.keys">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">keys</span><span class="signature">(unknown)</span>:
+    </div>
+
+        
+            <div class="docstring"><p>D.keys() -> a set-like object providing a view on D's keys</p>
+</div>
+
+
+                            </div>
+                            <div id="JSONObject.items" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#JSONObject.items">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">items</span><span class="signature">(unknown)</span>:
+    </div>
+
+        
+            <div class="docstring"><p>D.items() -> a set-like object providing a view on D's items</p>
+</div>
+
+
+                            </div>
+                            <div id="JSONObject.values" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#JSONObject.values">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">values</span><span class="signature">(unknown)</span>:
+    </div>
+
+        
+            <div class="docstring"><p>D.values() -> an object providing a view on D's values</p>
+</div>
+
+
+                            </div>
+                            <div id="JSONObject.update" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#JSONObject.update">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">update</span><span class="signature">(unknown)</span>:
+    </div>
+
+        
+            <div class="docstring"><p>D.update([E, ]**F) -> None.  Update D from dict/iterable E and F.
+If E is present and has a .keys() method, then does:  for k in E: D[k] = E[k]
+If E is present and lacks a .keys() method, then does:  for k, v in E: D[k] = v
+In either case, this is followed by: for k in F:  D[k] = F[k]</p>
+</div>
+
+
+                            </div>
+                            <div id="JSONObject.fromkeys" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#JSONObject.fromkeys">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">fromkeys</span><span class="signature">(type, iterable, value=None, /)</span>:
+    </div>
+
+        
+            <div class="docstring"><p>Create a new dictionary with keys from iterable and values set to value.</p>
+</div>
+
+
+                            </div>
+                            <div id="JSONObject.clear" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#JSONObject.clear">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">clear</span><span class="signature">(unknown)</span>:
+    </div>
+
+        
+            <div class="docstring"><p>D.clear() -> None.  Remove all items from D.</p>
+</div>
+
+
+                            </div>
+                            <div id="JSONObject.copy" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#JSONObject.copy">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">copy</span><span class="signature">(unknown)</span>:
+    </div>
+
+        
+            <div class="docstring"><p>D.copy() -> a shallow copy of D</p>
+</div>
+
+
+                            </div>
                 </section>
-                <section id="JsonArray">
-                                <div class="attr variable"><a class="headerlink" href="#JsonArray">#&nbsp;&nbsp</a>
+                <section id="JSONArray">
+                                <div class="attr class">
+        <a class="headerlink" href="#JSONArray">#&nbsp;&nbsp</a>
 
-        <span class="name">JsonArray</span><span class="default_value"> = typing.List[typing.Any]</span>
+        
+        <span class="def">class</span>
+        <span class="name">JSONArray</span>:
     </div>
 
-            <div class="docstring"><p>A json like list of any data type.</p>
+        
+            <div class="docstring"><p>Built-in mutable sequence.</p>
 
-<p>i.e., <code>[{"Key": 1}, {"Key2": "Value"}]</code></p>
+<p>If no argument is given, the constructor creates a new empty list.
+The argument must be an iterable if specified.</p>
 </div>
 
 
+                            <div id="JSONArray.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#JSONArray.__init__">#&nbsp;&nbsp</a>
+
+        
+            <span class="name">JSONArray</span><span class="signature">(*args, **kwargs)</span>
+    </div>
+
+        
+    
+
+                            </div>
+                            <div id="JSONArray.clear" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#JSONArray.clear">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">clear</span><span class="signature">(self, /)</span>:
+    </div>
+
+        
+            <div class="docstring"><p>Remove all items from list.</p>
+</div>
+
+
+                            </div>
+                            <div id="JSONArray.copy" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#JSONArray.copy">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">copy</span><span class="signature">(self, /)</span>:
+    </div>
+
+        
+            <div class="docstring"><p>Return a shallow copy of the list.</p>
+</div>
+
+
+                            </div>
+                            <div id="JSONArray.append" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#JSONArray.append">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">append</span><span class="signature">(self, object, /)</span>:
+    </div>
+
+        
+            <div class="docstring"><p>Append object to the end of the list.</p>
+</div>
+
+
+                            </div>
+                            <div id="JSONArray.insert" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#JSONArray.insert">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">insert</span><span class="signature">(self, index, object, /)</span>:
+    </div>
+
+        
+            <div class="docstring"><p>Insert object before index.</p>
+</div>
+
+
+                            </div>
+                            <div id="JSONArray.extend" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#JSONArray.extend">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">extend</span><span class="signature">(self, iterable, /)</span>:
+    </div>
+
+        
+            <div class="docstring"><p>Extend list by appending elements from the iterable.</p>
+</div>
+
+
+                            </div>
+                            <div id="JSONArray.pop" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#JSONArray.pop">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">pop</span><span class="signature">(self, index=-1, /)</span>:
+    </div>
+
+        
+            <div class="docstring"><p>Remove and return item at index (default last).</p>
+
+<p>Raises IndexError if list is empty or index is out of range.</p>
+</div>
+
+
+                            </div>
+                            <div id="JSONArray.remove" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#JSONArray.remove">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">remove</span><span class="signature">(self, value, /)</span>:
+    </div>
+
+        
+            <div class="docstring"><p>Remove first occurrence of value.</p>
+
+<p>Raises ValueError if the value is not present.</p>
+</div>
+
+
+                            </div>
+                            <div id="JSONArray.index" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#JSONArray.index">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">index</span><span class="signature">(self, value, start=0, stop=9223372036854775807, /)</span>:
+    </div>
+
+        
+            <div class="docstring"><p>Return first index of value.</p>
+
+<p>Raises ValueError if the value is not present.</p>
+</div>
+
+
+                            </div>
+                            <div id="JSONArray.count" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#JSONArray.count">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">count</span><span class="signature">(self, value, /)</span>:
+    </div>
+
+        
+            <div class="docstring"><p>Return number of occurrences of value.</p>
+</div>
+
+
+                            </div>
+                            <div id="JSONArray.reverse" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#JSONArray.reverse">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">reverse</span><span class="signature">(self, /)</span>:
+    </div>
+
+        
+            <div class="docstring"><p>Reverse <em>IN PLACE</em>.</p>
+</div>
+
+
+                            </div>
+                            <div id="JSONArray.sort" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#JSONArray.sort">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">sort</span><span class="signature">(self, /, *, key=None, reverse=False)</span>:
+    </div>
+
+        
+            <div class="docstring"><p>Sort the list in ascending order and return None.</p>
+
+<p>The sort is in-place (i.e. the list itself is modified) and stable (i.e. the
+order of two equal elements is maintained).</p>
+
+<p>If a key function is given, apply it once to each list item and sort them,
+ascending or descending, according to their function values.</p>
+
+<p>The reverse flag can be set to sort in descending order.</p>
+</div>
+
+
+                            </div>
                 </section>
                 <section id="Unknown">
                                 <div class="attr variable"><a class="headerlink" href="#Unknown">#&nbsp;&nbsp</a>
@@ -163,7 +627,7 @@
         <span class="name">Unknown</span><span class="annotation">: Final[Literal[&#39;&#39;]]</span><span class="default_value"> = &#39;&#39;</span>
     </div>
 
-            <div class="docstring"><p>Some Bungie strings comes Empty so we undefine them if so.</p>
+            <div class="docstring"><p>Some Bungie strings return empty so we undefine them if so.</p>
 </div>
 
 
@@ -182,7 +646,7 @@
                 <section id="EnumSig">
                                 <div class="attr variable"><a class="headerlink" href="#EnumSig">#&nbsp;&nbsp</a>
 
-        <span class="name">EnumSig</span>
+        <span class="name">EnumSig</span><span class="default_value"> = +EnumSig</span>
     </div>
 
             <div class="docstring"><p>A type hint bound to <code><a href="internal/enums.html#Enum">aiobungie.internal.enums.Enum</a></code> and <code><a href="internal/enums.html#IntEnum">aiobungie.internal.enums.IntEnum</a></code></p>
@@ -199,6 +663,25 @@
             <div class="docstring"><p>A type hint for parameters that may receives an enum or an int.</p>
 </div>
 
+
+                </section>
+                <section id="is_unknown">
+                            <div class="attr function"><a class="headerlink" href="#is_unknown">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">is_unknown</span><span class="signature">(string: str) -&gt; bool</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">is_unknown</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">string</span> <span class="o">==</span> <span class="n">Unknown</span>
+</pre></div>
+
+        </details>
+
+    
 
                 </section>
     </main>

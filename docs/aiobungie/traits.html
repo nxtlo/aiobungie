@@ -64,7 +64,7 @@
                                 <a class="function" href="#Serializable.__init__">Serializable</a>
                         </li>
                         <li>
-                                <a class="variable" href="#Serializable.serialize">serialize</a>
+                                <a class="variable" href="#Serializable.factory">factory</a>
                         </li>
                 </ul>
 
@@ -74,6 +74,12 @@
                             <ul class="memberlist">
                         <li>
                                 <a class="function" href="#RESTful.__init__">RESTful</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#RESTful.build_oauth2_url">build_oauth2_url</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#RESTful.client_id">client_id</a>
                         </li>
                         <li>
                                 <a class="function" href="#RESTful.close">close</a>
@@ -136,12 +142,12 @@
 <span class="kn">import</span> <span class="nn">typing</span>
 
 <span class="k">if</span> <span class="n">typing</span><span class="o">.</span><span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">aiohttp</span> <span class="kn">import</span> <span class="n">typedefs</span>
+    <span class="kn">import</span> <span class="nn">collections.abc</span> <span class="k">as</span> <span class="nn">collections</span>
 
     <span class="kn">from</span> <span class="nn">aiobungie</span> <span class="kn">import</span> <span class="n">client</span> <span class="k">as</span> <span class="n">base_client</span>
     <span class="kn">from</span> <span class="nn">aiobungie</span> <span class="kn">import</span> <span class="n">interfaces</span>
     <span class="kn">from</span> <span class="nn">aiobungie</span> <span class="kn">import</span> <span class="n">rest</span>
-    <span class="kn">from</span> <span class="nn">aiobungie.internal</span> <span class="kn">import</span> <span class="n">factory</span>
+    <span class="kn">from</span> <span class="nn">aiobungie.internal</span> <span class="kn">import</span> <span class="n">factory</span> <span class="k">as</span> <span class="n">factory_</span>
 
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">runtime_checkable</span>
@@ -151,11 +157,12 @@
 <span class="sd">    Objects with this protocol can make requests from outside the base client.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="vm">__slots__</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">request</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">base_client</span><span class="o">.</span><span class="n">Client</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Returns a client network state for making external requests.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">runtime_checkable</span>
@@ -166,26 +173,53 @@
 <span class="sd">    a Python data class objects using the client factory.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="vm">__slots__</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">factory</span><span class="o">.</span><span class="n">Factory</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">factory</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">factory_</span><span class="o">.</span><span class="n">Factory</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Returns the entity factory for the client.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">runtime_checkable</span>
 <span class="k">class</span> <span class="nc">RESTful</span><span class="p">(</span><span class="n">typing</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A RESTful only supertype object protocol.&quot;&quot;&quot;</span>
 
-    <span class="vm">__slots__</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">build_oauth2_url</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">client_id</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Builds an OAuth2 URL.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        client_id : `typing.Optional[int]`</span>
+<span class="sd">            An optional client id to provide, If left `None` it will roll back to the id passed</span>
+<span class="sd">            to the `RESTClient`, If both is `None` this method will return `None`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `typing.Optional[str]`</span>
+<span class="sd">            If the client id was provided as a parameter or provided in `aiobungie.RESTClient`,</span>
+<span class="sd">            A complete URL will be returned.</span>
+<span class="sd">            Otherwise `None` will be returned.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">client_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Return the client id of this REST client if provided, Otherwise None&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Close the rest client.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">static_request</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">method</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">rest</span><span class="o">.</span><span class="n">RequestMethod</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
-        <span class="n">path</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">StrOrURL</span><span class="p">,</span>
+        <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">auth</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
@@ -195,7 +229,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        method : `typing.Union[aiobungie.rest.RequestMethod, str]`</span>
 <span class="sd">            The request method, This may be `GET`, `POST`, `PUT`, etc.</span>
-<span class="sd">        path: `typing.Union[str, yarl.URL]`</span>
+<span class="sd">        path: `str`</span>
 <span class="sd">            The bungie endpoint or path.</span>
 <span class="sd">            A path must look something like this</span>
 <span class="sd">            `Destiny2/3/Profile/46111239123/...`</span>
@@ -209,24 +243,27 @@
 <span class="sd">        `typing.Any`</span>
 <span class="sd">            Any object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">runtime_checkable</span>
 <span class="k">class</span> <span class="nc">ClientBase</span><span class="p">(</span><span class="n">Netrunner</span><span class="p">,</span> <span class="n">Serializable</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A Pythonic Client supertype, serializble and netrunner protocol.&quot;&quot;&quot;</span>
 
-    <span class="vm">__slots__</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">future</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Coroutine</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">future</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Coroutine</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Runs a Coro function until its complete.</span>
 <span class="sd">        This is equivalent to asyncio.get_event_loop().run_until_complete(...)</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        future: `typing.Coroutine[typing.Any, typing.Any, typing.Any]`</span>
-<span class="sd">            Your coro function.</span>
+<span class="sd">        future: `collections.Coroutine[None, None, None]`</span>
+<span class="sd">            A coroutine object.</span>
+<span class="sd">        debug : `bool`</span>
+<span class="sd">            Either to enable asyncio debug or not. Disabled by default.</span>
 
 <span class="sd">        Example</span>
 <span class="sd">        -------</span>
@@ -242,6 +279,7 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">rest</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">interfaces</span><span class="o">.</span><span class="n">RESTInterface</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Returns the REST client for the this client.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 </pre></div>
 
         </details>
@@ -263,18 +301,20 @@
 <span class="k">class</span> <span class="nc">ClientBase</span><span class="p">(</span><span class="n">Netrunner</span><span class="p">,</span> <span class="n">Serializable</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A Pythonic Client supertype, serializble and netrunner protocol.&quot;&quot;&quot;</span>
 
-    <span class="vm">__slots__</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">future</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Coroutine</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">future</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Coroutine</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Runs a Coro function until its complete.</span>
 <span class="sd">        This is equivalent to asyncio.get_event_loop().run_until_complete(...)</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        future: `typing.Coroutine[typing.Any, typing.Any, typing.Any]`</span>
-<span class="sd">            Your coro function.</span>
+<span class="sd">        future: `collections.Coroutine[None, None, None]`</span>
+<span class="sd">            A coroutine object.</span>
+<span class="sd">        debug : `bool`</span>
+<span class="sd">            Either to enable asyncio debug or not. Disabled by default.</span>
 
 <span class="sd">        Example</span>
 <span class="sd">        -------</span>
@@ -290,6 +330,7 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">rest</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">interfaces</span><span class="o">.</span><span class="n">RESTInterface</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Returns the REST client for the this client.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 </pre></div>
 
         </details>
@@ -321,25 +362,23 @@
 
         
             <span class="def">def</span>
-            <span class="name">run</span><span class="signature">(
-    self,
-    future: Coroutine[Any, NoneType, NoneType],
-    debug: bool = False
-) -&gt; None</span>:
+            <span class="name">run</span><span class="signature">(self, future: collections.abc.Coroutine, debug: bool = False) -&gt; None</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">future</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Coroutine</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">future</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Coroutine</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Runs a Coro function until its complete.</span>
 <span class="sd">        This is equivalent to asyncio.get_event_loop().run_until_complete(...)</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        future: `typing.Coroutine[typing.Any, typing.Any, typing.Any]`</span>
-<span class="sd">            Your coro function.</span>
+<span class="sd">        future: `collections.Coroutine[None, None, None]`</span>
+<span class="sd">            A coroutine object.</span>
+<span class="sd">        debug : `bool`</span>
+<span class="sd">            Either to enable asyncio debug or not. Disabled by default.</span>
 
 <span class="sd">        Example</span>
 <span class="sd">        -------</span>
@@ -361,8 +400,10 @@ This is equivalent to asyncio.get_event_loop().run_until_complete(...)</p>
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>future</strong> (<code>typing.Coroutine[typing.Any, typing.Any, typing.Any]</code>):
-Your coro function.</li>
+<li><strong>future</strong> (<code>collections.Coroutine[None, None, None]</code>):
+A coroutine object.</li>
+<li><strong>debug</strong> (<code>bool</code>):
+Either to enable asyncio debug or not. Disabled by default.</li>
 </ul>
 
 <h6 id="example">Example</h6>
@@ -396,7 +437,7 @@ Your coro function.</li>
 
             </div>
             <div><dt><a href="#Serializable">Serializable</a></dt>
-                                <dd id="ClientBase.serialize" class="variable"><a href="#Serializable.serialize">serialize</a></dd>
+                                <dd id="ClientBase.factory" class="variable"><a href="#Serializable.factory">factory</a></dd>
 
             </div>
                                 </dl>
@@ -421,11 +462,12 @@ Your coro function.</li>
 <span class="sd">    Objects with this protocol can make requests from outside the base client.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="vm">__slots__</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">request</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">base_client</span><span class="o">.</span><span class="n">Client</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Returns a client network state for making external requests.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 </pre></div>
 
         </details>
@@ -486,11 +528,12 @@ Your coro function.</li>
 <span class="sd">    a Python data class objects using the client factory.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="vm">__slots__</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">factory</span><span class="o">.</span><span class="n">Factory</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">factory</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">factory_</span><span class="o">.</span><span class="n">Factory</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Returns the entity factory for the client.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 </pre></div>
 
         </details>
@@ -520,10 +563,10 @@ a Python data class objects using the client factory.</p>
     
 
                             </div>
-                            <div id="Serializable.serialize" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#Serializable.serialize">#&nbsp;&nbsp</a>
+                            <div id="Serializable.factory" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#Serializable.factory">#&nbsp;&nbsp</a>
 
-        <span class="name">serialize</span><span class="annotation">: <a href="internal/factory.html#Factory">aiobungie.internal.factory.Factory</a></span>
+        <span class="name">factory</span><span class="annotation">: <a href="internal/factory.html#Factory">aiobungie.internal.factory.Factory</a></span>
     </div>
 
             <div class="docstring"><p>Returns the entity factory for the client.</p>
@@ -548,15 +591,41 @@ a Python data class objects using the client factory.</p>
 <span class="k">class</span> <span class="nc">RESTful</span><span class="p">(</span><span class="n">typing</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A RESTful only supertype object protocol.&quot;&quot;&quot;</span>
 
-    <span class="vm">__slots__</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">build_oauth2_url</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">client_id</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Builds an OAuth2 URL.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        client_id : `typing.Optional[int]`</span>
+<span class="sd">            An optional client id to provide, If left `None` it will roll back to the id passed</span>
+<span class="sd">            to the `RESTClient`, If both is `None` this method will return `None`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `typing.Optional[str]`</span>
+<span class="sd">            If the client id was provided as a parameter or provided in `aiobungie.RESTClient`,</span>
+<span class="sd">            A complete URL will be returned.</span>
+<span class="sd">            Otherwise `None` will be returned.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">client_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Return the client id of this REST client if provided, Otherwise None&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Close the rest client.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">static_request</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">method</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">rest</span><span class="o">.</span><span class="n">RequestMethod</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
-        <span class="n">path</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">StrOrURL</span><span class="p">,</span>
+        <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">auth</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
@@ -566,7 +635,7 @@ a Python data class objects using the client factory.</p>
 <span class="sd">        ----------</span>
 <span class="sd">        method : `typing.Union[aiobungie.rest.RequestMethod, str]`</span>
 <span class="sd">            The request method, This may be `GET`, `POST`, `PUT`, etc.</span>
-<span class="sd">        path: `typing.Union[str, yarl.URL]`</span>
+<span class="sd">        path: `str`</span>
 <span class="sd">            The bungie endpoint or path.</span>
 <span class="sd">            A path must look something like this</span>
 <span class="sd">            `Destiny2/3/Profile/46111239123/...`</span>
@@ -580,6 +649,7 @@ a Python data class objects using the client factory.</p>
 <span class="sd">        `typing.Any`</span>
 <span class="sd">            Any object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 </pre></div>
 
         </details>
@@ -606,6 +676,71 @@ a Python data class objects using the client factory.</p>
     
 
                             </div>
+                            <div id="RESTful.build_oauth2_url" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTful.build_oauth2_url">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">build_oauth2_url</span><span class="signature">(self, client_id: Optional[int] = None) -&gt; Optional[str]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">build_oauth2_url</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">client_id</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Builds an OAuth2 URL.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        client_id : `typing.Optional[int]`</span>
+<span class="sd">            An optional client id to provide, If left `None` it will roll back to the id passed</span>
+<span class="sd">            to the `RESTClient`, If both is `None` this method will return `None`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `typing.Optional[str]`</span>
+<span class="sd">            If the client id was provided as a parameter or provided in `aiobungie.RESTClient`,</span>
+<span class="sd">            A complete URL will be returned.</span>
+<span class="sd">            Otherwise `None` will be returned.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Builds an OAuth2 URL.</p>
+
+<h6 id="parameters">Parameters</h6>
+
+<ul>
+<li><strong>client_id</strong> (<code>typing.Optional[int]</code>):
+An optional client id to provide, If left <code>None</code> it will roll back to the id passed
+to the <code>RESTClient</code>, If both is <code>None</code> this method will return <code>None</code>.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<ul>
+<li><strong><code>typing.Optional[str]</code></strong>: If the client id was provided as a parameter or provided in <code><a href="../aiobungie.html#RESTClient">aiobungie.RESTClient</a></code>,
+A complete URL will be returned.
+Otherwise <code>None</code> will be returned.</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="RESTful.client_id" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#RESTful.client_id">#&nbsp;&nbsp</a>
+
+        <span class="name">client_id</span><span class="annotation">: Optional[int]</span>
+    </div>
+
+            <div class="docstring"><p>Return the client id of this REST client if provided, Otherwise None</p>
+</div>
+
+
+                            </div>
                             <div id="RESTful.close" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#RESTful.close">#&nbsp;&nbsp</a>
 
@@ -618,6 +753,7 @@ a Python data class objects using the client factory.</p>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Close the rest client.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 </pre></div>
 
         </details>
@@ -635,7 +771,7 @@ a Python data class objects using the client factory.</p>
             <span class="name">static_request</span><span class="signature">(
     self,
     method: Union[<a href="rest.html#RequestMethod">aiobungie.rest.RequestMethod</a>, str],
-    path: Union[str, yarl.URL],
+    path: str,
     auth: Optional[str] = None,
     **kwargs: Any
 ) -&gt; Any</span>:
@@ -646,7 +782,7 @@ a Python data class objects using the client factory.</p>
             <div class="codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">static_request</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">method</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">rest</span><span class="o">.</span><span class="n">RequestMethod</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
-        <span class="n">path</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">StrOrURL</span><span class="p">,</span>
+        <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">auth</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>
@@ -656,7 +792,7 @@ a Python data class objects using the client factory.</p>
 <span class="sd">        ----------</span>
 <span class="sd">        method : `typing.Union[aiobungie.rest.RequestMethod, str]`</span>
 <span class="sd">            The request method, This may be `GET`, `POST`, `PUT`, etc.</span>
-<span class="sd">        path: `typing.Union[str, yarl.URL]`</span>
+<span class="sd">        path: `str`</span>
 <span class="sd">            The bungie endpoint or path.</span>
 <span class="sd">            A path must look something like this</span>
 <span class="sd">            `Destiny2/3/Profile/46111239123/...`</span>
@@ -670,6 +806,7 @@ a Python data class objects using the client factory.</p>
 <span class="sd">        `typing.Any`</span>
 <span class="sd">            Any object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 </pre></div>
 
         </details>
@@ -681,7 +818,7 @@ a Python data class objects using the client factory.</p>
 <ul>
 <li><strong>method</strong> (<code>typing.Union[<a href="rest.html#RequestMethod">aiobungie.rest.RequestMethod</a>, str]</code>):
 The request method, This may be <code>GET</code>, <code>POST</code>, <code>PUT</code>, etc.</li>
-<li><strong>path</strong> (<code>typing.Union[str, yarl.URL]</code>):
+<li><strong>path</strong> (<code>str</code>):
 The bungie endpoint or path.
 A path must look something like this
 <code>Destiny2/3/Profile/46111239123/...</code></li>

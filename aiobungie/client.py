@@ -34,7 +34,6 @@ from aiobungie import rest as rest_
 from aiobungie import traits
 from aiobungie.crate import fireteams
 from aiobungie.crate import user
-from aiobungie.ext import meta
 from aiobungie.internal import enums
 from aiobungie.internal import factory as factory_
 from aiobungie.internal import helpers
@@ -152,18 +151,6 @@ class Client(traits.ClientBase):
             # Session management.
             loop.run_until_complete(self.rest.close())
             _LOG.info("Client closed normally.")
-
-    # * Unspecified methods. *#
-
-    async def fetch_manifest(self) -> meta.Manifest:
-        """Access The bungie Manifest.
-
-        Returns
-        -------
-        `aiobungie.ext.Manifest`
-            A Manifest crate.
-        """
-        return meta.Manifest(self._token)
 
     # * User methods.
 

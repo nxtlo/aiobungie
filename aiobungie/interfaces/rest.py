@@ -35,6 +35,8 @@ from aiobungie.internal import enums
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
+    import pathlib
+    import sqlite3
 
     from aiobungie import rest as _rest
     from aiobungie import typedefs
@@ -59,23 +61,66 @@ class RESTInterface(traits.RESTful, abc.ABC):
     __slots__ = ()
 
     @abc.abstractmethod
-    async def fetch_manifest(self) -> bytes:
-        """Access The bungie Manifest.
+    async def read_manifest_bytes(self) -> bytes:
+        """Read Bungie's manifest sqlite bytes respond.
+
+        This method can be used to write the bytes to zipped file
+        and then extract it to get the manifest content.
 
         Returns
         -------
-        `builtins.bytes`
+        `bytes`
             The bytes to read and write the manifest database.
         """
 
     @abc.abstractmethod
     async def fetch_manifest_path(self) -> str:
-        """Return a string of the bungie manifest database url.
+        """Return a string of the Bungie sqlite manifest `.content` url.
 
         Returns
         -------
-        `builtins.str`
-            A downloadable url for the bungie manifest database.
+        `str`
+            A url for the Bungie manifest content.
+        """
+
+    @abc.abstractmethod
+    async def download_manifest(
+        self, language: str = "en", name: str = "manifest.sqlite3"
+    ) -> None:
+        """A helper method to download the manifest.
+
+        Note
+        ----
+        This method downloads the sqlite database and not JSON.
+
+        Parameters
+        ----------
+        language : `str`
+            The manifest language to download, Default is english.
+        name : `str`
+            The manifest database file name. Default is `manifest.sqlite3`
+
+        Returns
+        --------
+        `None`
+        """
+
+    @staticmethod
+    @abc.abstractmethod
+    def connect_manifest(
+        path: typing.Optional[pathlib.Path] = None,
+    ) -> sqlite3.Connection:
+        """A friendly method to connect to the manifest database.
+
+        Parameters
+        ----------
+        path : `typing.Optional[pathlib.Path]`
+            An optional path to pass, The assumed path to connect to is './manifest.sqlite3'
+
+        Returns
+        -------
+        `sqlite3.Connection`
+            An sqlite database connection.
         """
 
     @abc.abstractmethod

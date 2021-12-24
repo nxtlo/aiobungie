@@ -38,11 +38,15 @@ import asyncio
 import contextlib
 import http
 import logging
+import os
+import pathlib
 import platform
 import random
+import sqlite3
 import sys
 import typing
 import uuid
+import zipfile
 
 import aiohttp
 import attr
@@ -432,9 +436,9 @@ class RESTClient(interfaces.RESTInterface):
                         if response.status == http.HTTPStatus.NO_CONTENT:
                             return None
 
-                        data: typedefs.JSONObject = await response.json(
-                            encoding="utf-8"
-                        )
+                        if unwrapping != "read":
+                            data: typedefs.JSONObject = await response.json()
+
                         if 300 > response.status >= 200:
                             if unwrapping == "read":
                                 # We want to read the bytes for the manifest response.
@@ -934,16 +938,68 @@ class RESTClient(interfaces.RESTInterface):
             auth=access_token,
         )
 
-    async def fetch_manifest_path(self) -> str:
+    async def fetch_manifest_path(self, language: str = "en", /) -> str:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        if language not in (
+            langs := {
+                "en",
+                "fr",
+                "es",
+                "es-mx",
+                "de",
+                "it",
+                "ja",
+                "pt-br",
+                "ru",
+                "pl",
+                "ko",
+                "zh-cht",
+                "zh-chs",
+            }
+        ):
+            raise ValueError("Language must be in ", langs)
         request = await self._request(RequestMethod.GET, "Destiny2/Manifest")
-        return str(request["mobileWorldContentPaths"]["en"])
+        return str(request["mobileWorldContentPaths"][language])
 
-    async def fetch_manifest(self) -> bytes:
+    async def read_manifest_bytes(self, language: str = "en", /) -> bytes:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        content = await self.fetch_manifest_path()
-        resp = await self._request(RequestMethod.GET, content, type="read", base=True)
+        content = await self.fetch_manifest_path(language)
+        resp = await self._request(
+            RequestMethod.GET, content, unwrapping="read", base=True
+        )
         return bytes(resp)
+
+    async def download_manifest(
+        self, language: str = "en", name: str = "manifest.sqlite3"
+    ) -> None:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        if os.path.exists("manifest.sqlite3"):
+            raise FileExistsError("Manifest file already exists.")
+
+        _LOG.debug("Downloading manifest...")
+        try:
+            # TODO: Use tempfile instead?
+            with open("tmp-file.zip", "wb") as tmp:
+                tmp.write(await self.read_manifest_bytes(language))
+
+            with zipfile.ZipFile(tmp.name) as zipped:
+                file = zipped.namelist()
+                zipped.extractall(".")
+                os.rename(file[0], name)
+                _LOG.debug("Finished downloading manifest.")
+        finally:
+            pathlib.Path(tmp.name).unlink(missing_ok=True)
+
+    @staticmethod
+    def connect_manifest(
+        path: typing.Optional[pathlib.Path] = None,
+        connection: type[sqlite3.Connection] = sqlite3.Connection,
+    ) -> sqlite3.Connection:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        path = path or pathlib.Path("./manifest.sqlite3")
+        if not path.exists():
+            raise FileNotFoundError(f"Manifest in path {path.name} doesn't exists.")
+        return connection(path.name)
 
     def fetch_linked_profiles(
         self,

@@ -26,6 +26,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `set_item_lock_state` and `set_quest_lock_state` methods.
 - `search_entities` method.
 - OAuth2 example.
+- Manifest example.
+- `download_manifest`, `connect_manifest` REST methods.
 
 ### Changed
 - Python 3.8 is now dropped, Python 3.9 and above are supported.
@@ -39,10 +41,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Client` and `RESTClient` now take 2 extra optional parameters, `client_secret` and `client_id` for OAuth2 usage.
 - `traits.Serializeable.serialize` property name changed to `factory`.
 - `static_request` now only takes a str for the route.
+- All manifest methods are accessed through the RESTClient.
+- `fetch_manifest` method renamed to `read_manifest_bytes`.
 
 ### Removed
 - Fields from `enums.Item` since they don't belong to there.
 - web_app example.
+- `Client.fetch_manifest` method.
+- Manifest object
 
 ## [0.2.5b12](https://github.com/nxtlo/aiobungie/compare/0.2.5b11...0.2.5b12) 2021-10-21
 

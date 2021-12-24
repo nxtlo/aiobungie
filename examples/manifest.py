@@ -22,7 +22,7 @@ async def main():
 
     # Select an inventory item from the manifest and return the object if it matches the given id.
     levante_prize_json = manifest.execute(
-        "SELECT json FROM  WHERE id = -757221402"
+        "SELECT json FROM DestinyInventoryItemDefinition WHERE id = -757221402"
     ).fetchone()
 
     # Load the JSON string to a JSON object.

@@ -1385,7 +1385,7 @@ class Factory(interfaces.FactoryInterface):
                 name=data["displayProperties"]["name"],
                 has_icon=data["displayProperties"]["hasIcon"],
                 description=_check_unknown(data["displayProperties"]["description"]),
-                icon=data["displayProperties"]["icon"],
+                icon=assets.Image(data["displayProperties"]["icon"]),
             )
             for data in payload["results"]["results"]
         ]

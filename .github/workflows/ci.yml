@@ -51,7 +51,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: 3.9
 
       - name: Client Tests
         env:
@@ -133,10 +133,10 @@ jobs:
           name: docs
           path: ./docs
           if-no-files-found: error
-  # This is still broken.
+
   deploy:
     if: github.event_name == 'release'
-    needs: [test]
+    needs: [test, "client_test"]
 
     runs-on: ubuntu-20.04
 

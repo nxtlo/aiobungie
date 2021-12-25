@@ -889,6 +889,23 @@ class FactoryInterface(abc.ABC):
             A character activities component object.
         """
 
+    @abc.abstractmethod
+    def deserialize_extended_weapon_values(
+        self, payload: typedefs.JSONObject
+    ) -> activity.ExtendedWeaponValues:
+        """Deserialize values of extended weapons JSON object.
+
+        Parameters
+        ----------
+        payload : `aiobungie.typedefs.JSONObject`
+            The JSON payload.
+
+        Returns
+        -------
+        `aiobungie.crate.ExtendedWeaponValues`
+            Information about an extended weapon values.
+        """
+
     # Milestones.
 
     @abc.abstractmethod

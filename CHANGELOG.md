@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.5b13...HEAD)
 
+### Added
+- `fetch_unique_weapon_history` method.
+- Assists fields to `activity.ExtendedWeaponValues`
+
 ## [0.2.5b13](https://github.com/nxtlo/aiobungie/compare/0.2.5b12...0.2.5b13) 2021-12-24
 
 ### Added

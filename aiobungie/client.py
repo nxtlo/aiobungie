@@ -1219,3 +1219,34 @@ class Client(traits.ClientBase):
         )
         assert isinstance(resp, dict)
         return self.factory.deserialize_available_fireteams(resp)  # type: ignore[return-value]
+
+    async def fetch_unique_weapon_history(
+        self,
+        membership_id: int,
+        character_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+    ) -> collections.Sequence[activity.ExtendedWeaponValues]:
+        """Fetch details about unique weapon usage for a character. Includes all exotics.
+
+        Parameters
+        ----------
+        membership_id : `int`
+            The Destiny user membership id.
+        character_id : `int`
+            The character id to retrieve.
+        membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
+            The Destiny user's membership type.
+
+        Returns
+        -------
+        `collections.Sequence[aiobungie.crate.ExtendedWeaponValues]`
+            A sequence of the weapons extende values.
+        """
+        resp = await self._rest.fetch_unique_weapon_history(
+            membership_id, character_id, membership_type
+        )
+        assert isinstance(resp, dict)
+        return [
+            self._factory.deserialize_extended_weapon_values(weapon)
+            for weapon in resp["weapons"]
+        ]

@@ -1514,6 +1514,17 @@ class RESTClient(interfaces.RESTInterface):
             json={"page": page},
         )
 
+    def fetch_unique_weapon_history(
+        self,
+        membership_id: int,
+        character_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+    ) -> ResponseSig[typedefs.JSONObject]:
+        return self._request(
+            RequestMethod.GET,
+            f"Destiny2/{int(membership_type)}/Account/{membership_id}/Character/{character_id}/Stats/UniqueWeapons/",
+        )
+
     # * Not implemented yet.
 
     def fetch_item(
@@ -1524,15 +1535,6 @@ class RESTClient(interfaces.RESTInterface):
 
     def fetch_clan_weekly_rewards(
         self, clan_id: int, /
-    ) -> ResponseSig[typedefs.JSONObject]:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        raise NotImplementedError
-
-    def fetch_weapon_history(
-        self,
-        character_id: int,
-        member_id: int,
-        member_type: typedefs.IntAnd[enums.MembershipType],
     ) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         raise NotImplementedError

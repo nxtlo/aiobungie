@@ -321,6 +321,12 @@ class ExtendedWeaponValues:
     precision_kills: int = attr.field()
     """Weapon's total precision kills."""
 
+    assists: typing.Optional[int] = attr.field()
+    """Optional weapon assists number."""
+
+    assists_damage: typing.Optional[int] = attr.field()
+    """Optional weapon assists damage number."""
+
     precision_kills_percentage: tuple[int, str] = attr.field()
     """A tuple of weapon's precision kills percentage as an int and a str.
 

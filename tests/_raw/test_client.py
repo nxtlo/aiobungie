@@ -397,6 +397,11 @@ async def test_search_entities():
     assert any(act.name == "Scourge of the Past" for act in acts)
     assert not await acts[0].fetch_self_item()
 
+async def test_unique_weapon_history():
+    w = await client.fetch_unique_weapon_history(MID, CID, aiobungie.MembershipType.STEAM)
+    for weapon in w:
+        assert isinstance(weapon, aiobungie.crate.ExtendedWeaponValues)
+
 async def main() -> None:
     coros = []
     for n, coro in inspect.getmembers(

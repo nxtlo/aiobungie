@@ -1825,6 +1825,30 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
+    def fetch_unique_weapon_history(
+        self,
+        membership_id: int,
+        character_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+    ) -> ResponseSig[typedefs.JSONObject]:
+        """Fetch details about unique weapon usage for a character. Includes all exotics.
+
+        Parameters
+        ----------
+        membership_id : `int`
+            The Destiny user membership id.
+        character_id : `int`
+            The character id to retrieve.
+        membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
+            The Destiny user's membership type.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.typedefs.JSONObject]`
+            A JSON object contains details about the returned weapons.
+        """
+
+    @abc.abstractmethod
     def fetch_item(
         self, member_id: int, item_id: int, /
     ) -> ResponseSig[typedefs.JSONObject]:
@@ -1833,14 +1857,5 @@ class RESTInterface(traits.RESTful, abc.ABC):
     @abc.abstractmethod
     def fetch_clan_weekly_rewards(
         self, clan_id: int, /
-    ) -> ResponseSig[typedefs.JSONObject]:
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    def fetch_weapon_history(
-        self,
-        character_id: int,
-        member_id: int,
-        member_type: typedefs.IntAnd[enums.MembershipType],
     ) -> ResponseSig[typedefs.JSONObject]:
         raise NotImplementedError

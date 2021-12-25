@@ -1691,15 +1691,26 @@ class Factory(interfaces.FactoryInterface):
             self.deserialize_activity(activity_) for activity_ in payload["activities"]
         ]
 
-    def _deserialize_extended_weapon_values(
+    def deserialize_extended_weapon_values(
         self, payload: typedefs.JSONObject
     ) -> activity.ExtendedWeaponValues:
+
+        assists: typing.Optional[int] = None
+        if raw_assists := payload["values"].get("uniqueWeaponAssists"):
+            assists = raw_assists["basic"]["value"]
+        assists_damage: typing.Optional[int] = None
+
+        if raw_assists_damage := payload["values"].get("uniqueWeaponAssistDamage"):
+            assists_damage = raw_assists_damage["basic"]["value"]
+
         return activity.ExtendedWeaponValues(
             reference_id=int(payload["referenceId"]),
             kills=payload["values"]["uniqueWeaponKills"]["basic"]["value"],
             precision_kills=payload["values"]["uniqueWeaponPrecisionKills"]["basic"][
                 "value"
             ],
+            assists=assists,
+            assists_damage=assists_damage,
             precision_kills_percentage=(
                 payload["values"]["uniqueWeaponKillsPrecisionKills"]["basic"]["value"],
                 payload["values"]["uniqueWeaponKillsPrecisionKills"]["basic"][
@@ -1717,7 +1728,7 @@ class Factory(interfaces.FactoryInterface):
 
         if raw_weapons := payload.get("weapons"):
             weapons = [
-                self._deserialize_extended_weapon_values(value) for value in raw_weapons
+                self.deserialize_extended_weapon_values(value) for value in raw_weapons
             ]
 
         return activity.ExtendedValues(

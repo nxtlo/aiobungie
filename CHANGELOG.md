@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `fetch_unique_weapon_history` method.
 - Assists fields to `activity.ExtendedWeaponValues`
+- `joine_date` field to `clans.ClanAdmin`
+- Logging time takes between each request.
+
+### Changed
+- Significantly optimized factory's checkings and deserializing.
+- `Client.fetch_groups_for_member` now returns a sequence instead of a signle object.
+This also references `fetch_potentional_groups_forr_member`.
+
+### Fixed
+- `Character.last_played` wasn't returning a datetime object.
 
 ## [0.2.5b13](https://github.com/nxtlo/aiobungie/compare/0.2.5b12...0.2.5b13) 2021-12-24
 

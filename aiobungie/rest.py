@@ -47,6 +47,7 @@ import sys
 import typing
 import uuid
 import zipfile
+import time
 
 import aiohttp
 import attr
@@ -415,13 +416,13 @@ class RESTClient(interfaces.RESTInterface):
             headers["Content-Type"] = "application/x-www-form-urlencoded"
             endpoint = endpoint + url.TOKEN_EP
 
-        stack = contextlib.AsyncExitStack()
         while True:
             try:
-                async with stack:
+                async with (stack := contextlib.AsyncExitStack()):
                     async with _Arc():
 
                         # We make the request here.
+                        taken_time = time.monotonic()
                         response = await stack.enter_async_context(
                             await self._acquire_session().client_session.request(
                                 method=method,
@@ -430,6 +431,7 @@ class RESTClient(interfaces.RESTInterface):
                                 **kwargs,
                             )
                         )
+                        response_time = (time.monotonic() - taken_time) * 1_000
 
                         await self._handle_ratelimit(response, method, str(route))
 
@@ -447,10 +449,11 @@ class RESTClient(interfaces.RESTInterface):
                             if response.content_type == _APP_JSON:
                                 if _LOG.isEnabledFor(logging.DEBUG):
                                     _LOG.debug(
-                                        "%s %s %i",
+                                        "Method %s Route %s Status %i Time %.4fms",
                                         method,
                                         f"{url.REST_EP}/{route}",
                                         response.status,
+                                        response_time,
                                     )
 
                                 # Return the response.

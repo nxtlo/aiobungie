@@ -178,7 +178,7 @@ class BungieUser:
     """The user's id"""
 
     created_at: datetime = attr.field(hash=True, repr=True, eq=False)
-    """The user's creation date in UTC timezone."""
+    """The user's creation datetime."""
 
     name: undefined.UndefinedOr[str] = attr.field(hash=False, eq=False, repr=True)
     """The user's name."""
@@ -380,7 +380,7 @@ class UserThemes:
         return self.id
 
 
-@attr.define(hash=False, kw_only=True, weakref_slot=False)
+@attr.define(hash=True, kw_only=True, weakref_slot=False)
 class User:
     """Concrete representtion of a Bungie user.
 
@@ -392,3 +392,6 @@ class User:
 
     destiny: collections.Sequence[DestinyUser] = attr.field()
     """A sequence of the user's Destiny memberships."""
+
+    primary_membership_id: typing.Optional[int] = attr.field(hash=True)
+    """IF the user has a primary membership id, This field will be available."""

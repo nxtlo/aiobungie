@@ -257,11 +257,8 @@ class Client(traits.ClientBase):
             Information about the hard linked data.
         """
 
-        # This doesn't really needs to be serialized like other stuff
-        # since the dict only contains 3 keys.
         payload = await self.rest.fetch_hard_linked(credential, type)
         assert isinstance(payload, dict)
-
         return user.HardLinkedMembership(
             id=int(payload["membershipId"]),
             type=enums.MembershipType(payload["membershipType"]),
@@ -450,7 +447,7 @@ class Client(traits.ClientBase):
         """
         resp = await self.rest.fetch_player(name, code, type)
         assert isinstance(resp, list)
-        return self.factory.deserialize_player(resp)
+        return self.factory.deserialize_players(resp)
 
     async def fetch_character(
         self,
@@ -675,7 +672,7 @@ class Client(traits.ClientBase):
         *,
         filter: int = 0,
         group_type: enums.GroupType = enums.GroupType.CLAN,
-    ) -> typing.Optional[clans.GroupMember]:
+    ) -> collections.Sequence[clans.GroupMember]:
         """Fetch information about the groups that a given member has joined.
 
         Parameters
@@ -695,14 +692,16 @@ class Client(traits.ClientBase):
 
         Returns
         -------
-        `typing.Optional[aiobungie.crate.clans.GroupMember]`
-            The member if found and `None` if not.
+        `collections.Sequence[aiobungie.crate.GroupMember]`
+            A sequence of joined groups for the fetched member.
         """
         resp = await self.rest.fetch_groups_for_member(
             member_id, member_type, filter=filter, group_type=group_type
         )
         assert isinstance(resp, dict)
-        return self.factory.deserialize_group_member(resp)
+        return [
+            self.factory.deserialize_group_member(group) for group in resp["results"]
+        ]
 
     async def fetch_potential_groups_for_member(
         self,
@@ -712,7 +711,7 @@ class Client(traits.ClientBase):
         *,
         filter: int = 0,
         group_type: typedefs.IntAnd[enums.GroupType] = enums.GroupType.CLAN,
-    ) -> typing.Optional[clans.GroupMember]:
+    ) -> collections.Sequence[clans.GroupMember]:
         """Fetch the potentional groups for a clan member.
 
         Parameters
@@ -732,14 +731,16 @@ class Client(traits.ClientBase):
 
         Returns
         -------
-        `typing.Optional[aiobungie.crate.GroupMember]`
-            An optional information about the group member.
+        `collections.Sequence[aiobungie.crate.GroupMember]`
+            A sequence of joined potentional groups for the fetched member.
         """
         resp = await self.rest.fetch_potential_groups_for_member(
             member_id, member_type, filter=filter, group_type=group_type
         )
         assert isinstance(resp, dict)
-        return self.factory.deserialize_group_member(resp)
+        return [
+            self.factory.deserialize_group_member(group) for group in resp["results"]
+        ]
 
     async def fetch_clan_member(
         self,
@@ -870,7 +871,7 @@ class Client(traits.ClientBase):
             membership_type=membership_type,
         )
         assert isinstance(resp, dict)
-        return self.factory.deserialize_clan(resp, bound=True)
+        return self.factory.deserialize_clan(resp)
 
     # * Destiny 2 Entities aka Definitions.
 

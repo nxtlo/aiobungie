@@ -136,7 +136,7 @@ class RenderedData:
     """Data about what character customization options you picked."""
 
     equipment: collections.Sequence[MinimalEquipments] = attr.field()
-    """A sequence of minimal view of """
+    """A sequence of minimal view of this character's equipment."""
 
     async def fetch_my_items(
         self, *, limit: typing.Optional[int] = None
@@ -149,8 +149,9 @@ class RenderedData:
             An optional item limit to fetch. Default is the length of the equipment.
 
         Returns
+        -------
         `collections.Collection[aiobungie.crate.InventoryEntity]`
-            A collection of the returned item definitions.
+            A collection of the fetched item definitions.
         """
         return await helpers.awaits(
             *[item.fetch_my_item() for item in self.equipment[:limit]]
@@ -188,7 +189,7 @@ class CharacterProgression:
     # unsinstanced_item_pers: collections.Mapping[int, ...]?
 
 
-@attr.define(hash=False, kw_only=True, weakref_slot=False)
+@attr.define(hash=True, kw_only=True, weakref_slot=False)
 class Character:
     """An implementation for a Bungie character."""
 
@@ -247,18 +248,18 @@ class Character:
         page: int = 0,
         limit: int = 250,
     ) -> collections.Sequence[activity.Activity]:
-        """Fetch Destiny 2 activities this character.
+        """Fetch Destiny 2 activities for this character.
 
         Parameters
         ----------
         mode: `aiobungie.typedefs.IntAnd[aiobungie.internal.enums.GameMode]`
-            This parameter filters the game mode, Nightfall, Strike, Iron Banner, etc.
+            Filters the gamemodes to fetch. i.e., Nightfall, Strike, Iron Banner, etc.
 
         Other Parameters
         ----------------
-        page: builtins.int
+        page : `int`
             The page number. Default is `0`
-        limit: builtins.int
+        limit: `int`
             Limit the returned result. Default is `250`.
 
         Returns
@@ -266,6 +267,8 @@ class Character:
         `collections.Sequence[aiobungie.crate.Activity]`
             A sequence of the character's activities.
 
+        Raises
+        ------
         `aiobungie.MembershipTypeError`
             The provided membership type was invalid.
         """

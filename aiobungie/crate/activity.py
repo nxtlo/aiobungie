@@ -74,7 +74,9 @@ class Diffculity(enums.IntEnum):
 
 @attr.define(kw_only=True, weakref_slot=False)
 class Rewards:
-    """Represents awards achieved from activities."""
+    """Represents rewards achieved from activities."""
+
+    net: traits.Netrunner = attr.field(repr=False, hash=False)
 
     hash: int = attr.field()
     """Reward's hash."""
@@ -89,8 +91,14 @@ class Rewards:
     """???"""
 
     async def fetch_self(self) -> entity.InventoryEntity:
-        """Fetch the definition of this reward."""
-        raise NotImplementedError
+        """Fetch the definition of this reward.
+
+        Returns
+        -------
+        `aiobungie.crate.InventoryEntity`
+            An inventory item entity of the associated hash.
+        """
+        return await self.net.request.fetch_inventory_item(self.hash)
 
 
 @attr.define(kw_only=True, weakref_slot=False)

@@ -350,7 +350,7 @@ class GroupMember:
 
 
 @attr.define(hash=False, kw_only=True, weakref_slot=False)
-class ClanAdmin(user.UserLike):
+class ClanAdmin(ClanMember):
     """Represents a clan admin."""
 
     member_type: enums.ClanMemberType = attr.field(repr=True)
@@ -358,57 +358,7 @@ class ClanAdmin(user.UserLike):
     This can be Admin or owner or any other type.
     """
 
-    net: traits.Netrunner = attr.field(repr=False)
-    """A network state used for making external requests."""
-
-    total_admins: int = attr.field(repr=True)
-    """The total count of the clan admins."""
-
-    id: int = attr.field(repr=True, hash=True)
-    """Clan admin's id"""
-
-    name: undefined.UndefinedOr[str] = attr.field(repr=True)
-    """Clan admin's name. This can be `UNDEFINED` if not found."""
-
-    last_seen_name: str = attr.field(repr=False)
-    """The clan admin's last seen display name"""
-
-    type: enums.MembershipType = attr.field(repr=True)
-    """Clan admin's membership type."""
-
-    types: collections.Sequence[enums.MembershipType] = attr.field(repr=False)
-    """A sequence of the available clan admin membership types."""
-
-    icon: assets.MaybeImage = attr.field(repr=False)
-    """Clan admin's icon"""
-
-    is_public: bool = attr.field(repr=False)
-    """`builtins.True` if the clan admin is public."""
-
-    group_id: int = attr.field(repr=True)
-    """The admin's group or clan id."""
-
-    is_online: bool = attr.field(repr=False, default=None)
-    """True if the clan admin is online or not."""
-
-    last_online: datetime = attr.field(repr=False, default=None)
-    """The date of the clan admin's last online in UTC time zone."""
-
-    joined_at: datetime = attr.field(repr=False, default=None)
-    """The clan admin's join date in UTC time zone."""
-
-    code: typedefs.NoneOr[int] = attr.field(repr=True)
-    """The clan admin's bungie display name code
-    This is new and was added in Season of the lost update
-    """
-
-    bungie: user.PartialBungieUser = attr.field(repr=True)
-    """The clan admin's bungie partial net user.
-
-    .. note:: This only returns a partial bungie net user.
-    You can fetch the fully implemented user using
-    `aiobungie.crate.PartialBungieUser.fetch_self()` method.
-    """
+    join_date: datetime = attr.field()
 
     async def fetch_clan(self) -> Clan:
         """Fetch the clan that represents the clan admins.

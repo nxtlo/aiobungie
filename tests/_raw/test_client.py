@@ -267,9 +267,9 @@ async def test_clan_admins():
 
 
 async def test_groups_for_member():
-    obj = await client.fetch_groups_for_member(MID, aiobungie.MembershipType.STEAM)
+    obj = await client.fetch_groups_for_member(4611686018475612431, aiobungie.MembershipType.STEAM)
     assert obj
-    up_to_date_clan_obj = await obj.fetch_self_clan()
+    up_to_date_clan_obj = await obj[0].fetch_self_clan()
     assert isinstance(up_to_date_clan_obj, aiobungie.crate.Clan)
 
 
@@ -277,7 +277,7 @@ async def test_potential_groups_for_member():
     obj = await client.fetch_potential_groups_for_member(
         MID, aiobungie.MembershipType.STEAM
     )
-    assert obj is None
+    assert not obj
 
 
 async def test_linked_profiles():

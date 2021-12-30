@@ -38,7 +38,7 @@ __all__: tuple[str, ...] = (
 import abc
 import typing
 
-import attr
+import attrs
 
 from aiobungie import url
 from aiobungie.crate import components as components_
@@ -116,7 +116,7 @@ class UserLike(abc.ABC):
 
 
 # This is meant for Bungie destiny users which's different from a normal bungie user.
-@attr.define(hash=False, kw_only=True, weakref_slot=False)
+@attrs.define(hash=False, kw_only=True, weakref_slot=False)
 class PartialBungieUser:
     """Represents partial bungie user.
 
@@ -128,28 +128,28 @@ class PartialBungieUser:
         by using `PartialBungieUser.fetch_self()` method.
     """
 
-    net: traits.Netrunner = attr.field(repr=False)
+    net: traits.Netrunner = attrs.field(repr=False)
     """A network state used for making external requests."""
 
-    name: undefined.UndefinedOr[str] = attr.field(repr=True)
+    name: undefined.UndefinedOr[str] = attrs.field(repr=True)
     """The user's name. Field may be undefined if not found."""
 
-    id: int = attr.field(repr=True, hash=True)
+    id: int = attrs.field(repr=True, hash=True)
     """The user's id."""
 
-    type: enums.MembershipType = attr.field(repr=True)
+    type: enums.MembershipType = attrs.field(repr=True)
     """The user's membership type."""
 
-    types: collections.Sequence[enums.MembershipType] = attr.field(repr=False)
+    types: collections.Sequence[enums.MembershipType] = attrs.field(repr=False)
     """An array of applicable membership types for this user."""
 
-    crossave_override: enums.MembershipType = attr.field(repr=False)
+    crossave_override: enums.MembershipType = attrs.field(repr=False)
     """The user's crossave override membership."""
 
-    is_public: bool = attr.field(repr=False)
+    is_public: bool = attrs.field(repr=False)
     """The user's privacy."""
 
-    icon: assets.MaybeImage = attr.field(repr=False)
+    icon: assets.MaybeImage = attrs.field(repr=False)
     """The user's icon."""
 
     async def fetch_self(self) -> BungieUser:
@@ -170,70 +170,70 @@ class PartialBungieUser:
         return user
 
 
-@attr.define(hash=False, kw_only=True, weakref_slot=False)
+@attrs.define(hash=False, kw_only=True, weakref_slot=False)
 class BungieUser:
     """Represents a Bungie user."""
 
-    id: int = attr.field(hash=True, repr=True)
+    id: int = attrs.field(hash=True, repr=True)
     """The user's id"""
 
-    created_at: datetime = attr.field(hash=True, repr=True, eq=False)
+    created_at: datetime = attrs.field(hash=True, repr=True, eq=False)
     """The user's creation datetime."""
 
-    name: undefined.UndefinedOr[str] = attr.field(hash=False, eq=False, repr=True)
+    name: undefined.UndefinedOr[str] = attrs.field(hash=False, eq=False, repr=True)
     """The user's name."""
 
-    unique_name: str = attr.field(repr=False)
+    unique_name: str = attrs.field(repr=False)
     """The user's unique name which includes their unique code.
     This field could be None if no unique name found.
     """
 
-    theme_id: int = attr.field(repr=False)
+    theme_id: int = attrs.field(repr=False)
     """User profile's theme id."""
 
-    show_activity: bool = attr.field(repr=False)
+    show_activity: bool = attrs.field(repr=False)
     """`True` if the user is showing their activity status and `False` if not."""
 
-    theme_name: str = attr.field(repr=False)
+    theme_name: str = attrs.field(repr=False)
     """User's profile theme name."""
 
-    display_title: str = attr.field(repr=False)
+    display_title: str = attrs.field(repr=False)
     """User's display title."""
 
-    is_deleted: bool = attr.field(repr=False, eq=False, hash=False)
+    is_deleted: bool = attrs.field(repr=False, eq=False, hash=False)
     """ True if the user is deleted"""
 
-    about: typing.Optional[str] = attr.field(repr=True, hash=False, eq=False)
+    about: typing.Optional[str] = attrs.field(repr=True, hash=False, eq=False)
     """The user's about, Default is None if nothing is Found."""
 
-    updated_at: datetime = attr.field(repr=False, hash=False, eq=False)
+    updated_at: datetime = attrs.field(repr=False, hash=False, eq=False)
     """The user's last updated om UTC date."""
 
-    psn_name: typing.Optional[str] = attr.field(repr=False, hash=False, eq=False)
+    psn_name: typing.Optional[str] = attrs.field(repr=False, hash=False, eq=False)
     """The user's psn id if it exists."""
 
-    steam_name: typing.Optional[str] = attr.field(repr=False, hash=False, eq=False)
+    steam_name: typing.Optional[str] = attrs.field(repr=False, hash=False, eq=False)
     """The user's steam name if it exists"""
 
-    twitch_name: typing.Optional[str] = attr.field(repr=False, hash=False, eq=False)
+    twitch_name: typing.Optional[str] = attrs.field(repr=False, hash=False, eq=False)
     """The user's twitch name if it exists."""
 
-    blizzard_name: typing.Optional[str] = attr.field(repr=False, hash=False, eq=False)
+    blizzard_name: typing.Optional[str] = attrs.field(repr=False, hash=False, eq=False)
     """The user's blizzard name if it exists."""
 
-    stadia_name: typing.Optional[str] = attr.field(repr=False, hash=False, eq=False)
+    stadia_name: typing.Optional[str] = attrs.field(repr=False, hash=False, eq=False)
     """The user's stadia name if it exists."""
 
-    status: typing.Optional[str] = attr.field(repr=False, hash=False, eq=False)
+    status: typing.Optional[str] = attrs.field(repr=False, hash=False, eq=False)
     """The user's bungie status text"""
 
-    locale: typing.Optional[str] = attr.field(repr=False, hash=False, eq=False)
+    locale: typing.Optional[str] = attrs.field(repr=False, hash=False, eq=False)
     """The user's locale."""
 
-    picture: assets.MaybeImage = attr.field(repr=False, hash=False, eq=False)
+    picture: assets.MaybeImage = attrs.field(repr=False, hash=False, eq=False)
     """The user's profile picture."""
 
-    code: typedefs.NoneOr[int] = attr.field(repr=True)
+    code: typedefs.NoneOr[int] = attrs.field(repr=True)
     """The user's unique display name code.
     This can be None if the user hasn't logged in after season of the lost update.
     """
@@ -245,38 +245,38 @@ class BungieUser:
         return self.id
 
 
-@attr.define(hash=False, kw_only=True, weakref_slot=False)
+@attrs.define(hash=False, kw_only=True, weakref_slot=False)
 class DestinyUser(UserLike):
     """Represents a Bungie user's Destiny memberships."""
 
-    net: traits.Netrunner = attr.field(repr=False)
+    net: traits.Netrunner = attrs.field(repr=False)
     """A network state used for making external requests."""
 
-    id: int = attr.field(repr=True, hash=True, eq=True)
+    id: int = attrs.field(repr=True, hash=True, eq=True)
     """The member's id."""
 
-    name: undefined.UndefinedOr[str] = attr.field(repr=True, eq=False)
+    name: undefined.UndefinedOr[str] = attrs.field(repr=True, eq=False)
     """The member's name."""
 
-    last_seen_name: str = attr.field(repr=False)
+    last_seen_name: str = attrs.field(repr=False)
     """The member's last seen display name. You may use this field if `DestinyUser.name` is `Undefined`."""
 
-    type: enums.MembershipType = attr.field(repr=True)
+    type: enums.MembershipType = attrs.field(repr=True)
     """The member's membership type."""
 
-    types: collections.Sequence[enums.MembershipType] = attr.field(repr=False)
+    types: collections.Sequence[enums.MembershipType] = attrs.field(repr=False)
     """A sequence of the member's membership types."""
 
-    icon: assets.MaybeImage = attr.field(repr=False)
+    icon: assets.MaybeImage = attrs.field(repr=False)
     """The member's icon if it was present."""
 
-    code: typedefs.NoneOr[int] = attr.field(repr=True, eq=True, hash=False, default=0)
+    code: typedefs.NoneOr[int] = attrs.field(repr=True, eq=True, hash=False, default=0)
     """The member's name code. This field may be `None` if not found."""
 
-    is_public: bool = attr.field(repr=False, default=False)
+    is_public: bool = attrs.field(repr=False, default=False)
     """The member's profile privacy status."""
 
-    crossave_override: typing.Union[enums.MembershipType, int] = attr.field(repr=False)
+    crossave_override: typing.Union[enums.MembershipType, int] = attrs.field(repr=False)
     """The member's corssave override membership type."""
 
     async def fetch_self_profile(
@@ -317,7 +317,7 @@ class DestinyUser(UserLike):
         return f"{self.name}#{self.code}"
 
 
-@attr.define(hash=False, kw_only=True, weakref_slot=False)
+@attrs.define(hash=False, kw_only=True, weakref_slot=False)
 class HardLinkedMembership:
     """Represents hard linked Bungie user membership.
 
@@ -325,13 +325,13 @@ class HardLinkedMembership:
     Also Cross-Save Aware.
     """
 
-    type: enums.MembershipType = attr.field(hash=False)
+    type: enums.MembershipType = attrs.field(hash=False)
     """The hard link user membership type."""
 
-    id: int = attr.field(hash=True, eq=False)
+    id: int = attrs.field(hash=True, eq=False)
     """The hard link user id"""
 
-    cross_save_type: enums.MembershipType = attr.field(
+    cross_save_type: enums.MembershipType = attrs.field(
         hash=False, eq=False, default=enums.MembershipType.NONE
     )
     """The hard link user's crpss save membership type. Default is set to None-0"""
@@ -340,58 +340,58 @@ class HardLinkedMembership:
         return self.id
 
 
-@attr.define(hash=False, kw_only=True, weakref_slot=False)
+@attrs.define(hash=False, kw_only=True, weakref_slot=False)
 class UserCredentials:
     """Represents a Bungie user's credential types.
 
     Those credentials should be the linked profiles such as Twitch, Steam, Blizzard, etc.
     """
 
-    type: typedefs.IntAnd[enums.CredentialType] = attr.field()
+    type: typedefs.IntAnd[enums.CredentialType] = attrs.field()
     """The credential type."""
 
-    display_name: str = attr.field()
+    display_name: str = attrs.field()
     """The user displayname for this credential."""
 
-    is_public: bool = attr.field()
+    is_public: bool = attrs.field()
     """Whether this credential is public or not."""
 
-    self_as_string: undefined.UndefinedOr[str] = attr.field()
+    self_as_string: undefined.UndefinedOr[str] = attrs.field()
     """The self credential as string,
 
     For an example if a Steam user's credentials this will be the id as a string.
     """
 
 
-@attr.define(hash=False, kw_only=True, weakref_slot=False)
+@attrs.define(hash=False, kw_only=True, weakref_slot=False)
 class UserThemes:
     """Represents a Bungie User theme."""
 
-    id: int = attr.field(repr=True, hash=True)
+    id: int = attrs.field(repr=True, hash=True)
     """The theme id."""
 
-    name: undefined.UndefinedOr[str] = attr.field(repr=True)
+    name: undefined.UndefinedOr[str] = attrs.field(repr=True)
     """An optional theme name. if not found this field will be `None`"""
 
-    description: undefined.UndefinedOr[str] = attr.field(repr=True)
+    description: undefined.UndefinedOr[str] = attrs.field(repr=True)
     """An optional theme description. This field could be `None` if no description found."""
 
     def __int__(self) -> int:
         return self.id
 
 
-@attr.define(hash=True, kw_only=True, weakref_slot=False)
+@attrs.define(hash=True, kw_only=True, weakref_slot=False)
 class User:
     """Concrete representtion of a Bungie user.
 
     This includes both Bungie net and Destiny memberships information.
     """
 
-    bungie: BungieUser = attr.field()
+    bungie: BungieUser = attrs.field()
     """The user's bungie net membership."""
 
-    destiny: collections.Sequence[DestinyUser] = attr.field()
+    destiny: collections.Sequence[DestinyUser] = attrs.field()
     """A sequence of the user's Destiny memberships."""
 
-    primary_membership_id: typing.Optional[int] = attr.field(hash=True)
+    primary_membership_id: typing.Optional[int] = attrs.field(hash=True)
     """IF the user has a primary membership id, This field will be available."""

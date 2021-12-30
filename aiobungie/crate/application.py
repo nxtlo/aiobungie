@@ -29,7 +29,7 @@ __all__ = ("Application", "ApplicationOwner")
 
 import typing
 
-import attr
+import attrs
 
 from aiobungie import undefined
 from aiobungie import url
@@ -44,29 +44,29 @@ if typing.TYPE_CHECKING:
     from aiobungie.internal import assets
 
 
-@attr.define(hash=False, kw_only=True, weakref_slot=False)
+@attrs.define(hash=False, kw_only=True, weakref_slot=False)
 class ApplicationOwner(user.UserLike):
     """Represents a Bungie Application owner."""
 
-    net: traits.Netrunner = attr.field(repr=False)
+    net: traits.Netrunner = attrs.field(repr=False)
     """A network state used for making external requests."""
 
-    name: undefined.UndefinedOr[str] = attr.field(repr=True, hash=False, eq=False)
+    name: undefined.UndefinedOr[str] = attrs.field(repr=True, hash=False, eq=False)
     """The application owner name. This can be `UNDEFINED` if not found."""
 
-    type: enums.MembershipType = attr.field(repr=True, hash=False, eq=True)
+    type: enums.MembershipType = attrs.field(repr=True, hash=False, eq=True)
     """The membership of the application owner."""
 
-    id: int = attr.field(repr=True, hash=True, eq=True)
+    id: int = attrs.field(repr=True, hash=True, eq=True)
     """The application owner's id."""
 
-    icon: assets.MaybeImage = attr.field(repr=False)
+    icon: assets.MaybeImage = attrs.field(repr=False)
     """The application owner's icon."""
 
-    is_public: bool = attr.field(repr=True)
+    is_public: bool = attrs.field(repr=True)
     """The application owner's profile privacy."""
 
-    code: typedefs.NoneOr[int] = attr.field(repr=True)
+    code: typedefs.NoneOr[int] = attrs.field(repr=True)
     """The user like's unique display name code.
     This can be None if the user hasn't logged in after season of the lost update.
     """
@@ -104,35 +104,35 @@ class ApplicationOwner(user.UserLike):
         return f"{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}"
 
 
-@attr.define(hash=False, kw_only=True, weakref_slot=False)
+@attrs.define(hash=False, kw_only=True, weakref_slot=False)
 class Application:
     """Represents a Bungie developer application."""
 
-    id: int = attr.field(repr=True, hash=True, eq=True)
+    id: int = attrs.field(repr=True, hash=True, eq=True)
     """App id"""
 
-    name: str = attr.field(repr=True, hash=False, eq=False)
+    name: str = attrs.field(repr=True, hash=False, eq=False)
     """App name"""
 
-    redirect_url: typing.Optional[str] = attr.field(repr=True)
+    redirect_url: typing.Optional[str] = attrs.field(repr=True)
     """App redirect url"""
 
-    created_at: datetime = attr.field(repr=True)
+    created_at: datetime = attrs.field(repr=True)
     """App creation date in UTC timezone"""
 
-    published_at: datetime = attr.field(repr=True)
+    published_at: datetime = attrs.field(repr=True)
     """App's publish date in UTC timezone"""
 
-    link: str = attr.field(repr=True)
+    link: str = attrs.field(repr=True)
     """App's link"""
 
-    status: int = attr.field(repr=False)
+    status: int = attrs.field(repr=False)
     """App's status"""
 
-    scope: undefined.UndefinedOr[str] = attr.field(repr=False)
+    scope: undefined.UndefinedOr[str] = attrs.field(repr=False)
     """App's scope"""
 
-    owner: ApplicationOwner = attr.field(repr=True)
+    owner: ApplicationOwner = attrs.field(repr=True)
     """App's owner"""
 
     def __str__(self) -> str:

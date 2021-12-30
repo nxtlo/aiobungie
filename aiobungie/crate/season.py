@@ -37,7 +37,7 @@ __all__: tuple[str, ...] = (
 
 import typing
 
-import attr
+import attrs
 
 if typing.TYPE_CHECKING:
     import collections.abc as colelctions
@@ -46,57 +46,57 @@ if typing.TYPE_CHECKING:
     from aiobungie.crate import progressions
 
 
-@attr.define(hash=False, kw_only=True, weakref_slot=False)
+@attrs.define(hash=False, kw_only=True, weakref_slot=False)
 class ArtifactTierItem:
 
-    hash: int = attr.field()
+    hash: int = attrs.field()
 
-    is_active: bool = attr.field()
+    is_active: bool = attrs.field()
 
 
-@attr.define(hash=False, kw_only=True, weakref_slot=False)
+@attrs.define(hash=False, kw_only=True, weakref_slot=False)
 class ArtifactTier:
 
-    hash: int = attr.field()
+    hash: int = attrs.field()
 
-    is_unlocked: bool = attr.field()
+    is_unlocked: bool = attrs.field()
 
-    points_to_unlock: int = attr.field()
+    points_to_unlock: int = attrs.field()
 
-    items: colelctions.Sequence[ArtifactTierItem] = attr.field(repr=False)
+    items: colelctions.Sequence[ArtifactTierItem] = attrs.field(repr=False)
 
 
-@attr.define(hash=False, kw_only=True, weakref_slot=False)
+@attrs.define(hash=False, kw_only=True, weakref_slot=False)
 class CharacterScopedArtifact:
     """Represetns per-character artifact data."""
 
-    hash: int = attr.field()
+    hash: int = attrs.field()
 
-    points_used: int = attr.field()
+    points_used: int = attrs.field()
 
-    reset_count: int = attr.field()
+    reset_count: int = attrs.field()
 
-    tiers: colelctions.Sequence[ArtifactTier] = attr.field(repr=False)
+    tiers: colelctions.Sequence[ArtifactTier] = attrs.field(repr=False)
 
 
-@attr.define(hash=False, kw_only=True, weakref_slot=False)
+@attrs.define(hash=False, kw_only=True, weakref_slot=False)
 class Artifact:
     """Represents a Destiny 2 Season artifact."""
 
-    net: traits.Netrunner = attr.field(repr=False, eq=False, hash=False)
+    net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
     """A client app we may use to make external requests."""
 
-    hash: int = attr.field(hash=True)
+    hash: int = attrs.field(hash=True)
     """The season artifact's hash."""
 
-    power_bonus: int = attr.field()
+    power_bonus: int = attrs.field()
     """Season artifact's power bonus."""
 
-    acquired_points: int = attr.field()
+    acquired_points: int = attrs.field()
     """The total acquired artifact points"""
 
-    bonus: progressions.Progression = attr.field(repr=False)
+    bonus: progressions.Progression = attrs.field(repr=False)
     """Information about the artifact's power bonus progression."""
 
-    points: progressions.Progression = attr.field(repr=False)
+    points: progressions.Progression = attrs.field(repr=False)
     """Information about the artifact's power point progression."""

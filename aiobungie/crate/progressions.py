@@ -28,7 +28,7 @@ __all__: tuple[str, ...] = ("Progression", "BaseProgression", "Factions")
 
 import abc
 
-import attr
+import attrs
 
 # if typing.TYPE_CHECKING:
 #     from aiobungie import traits
@@ -89,11 +89,11 @@ class BaseProgression(abc.ABC):
         """The limit of the weekly earned progress."""
 
 
-@attr.define(weakref_slot=False, kw_only=True)
+@attrs.define(weakref_slot=False, kw_only=True)
 class Progression(BaseProgression):
     """The base progression class that all progression objects must inherit from."""
 
-    # net: traits.Netrunner = attr.field(repr=False)
+    # net: traits.Netrunner = attrs.field(repr=False)
 
     hash: int
     # <<inherited docstring from aiobungie.crate.specials.Progression>>.
@@ -123,12 +123,12 @@ class Progression(BaseProgression):
     # <<inherited docstring from aiobungie.crate.specials.Progression>>.
 
 
-@attr.define(weakref_slot=False, kw_only=True)
+@attrs.define(weakref_slot=False, kw_only=True)
 class Factions(Progression, BaseProgression):
     """Represent a Bungie progression faction found in a character progressions component."""
 
-    faction_hash: int = attr.field()
+    faction_hash: int = attrs.field()
     """The faction's hash related to this progression."""
 
-    faction_vendor_hash: int = attr.field()
+    faction_vendor_hash: int = attrs.field()
     """The index of the Faction vendor that is currently available. Will be set to -1 if no vendors are available."""

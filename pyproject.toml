@@ -31,7 +31,7 @@ classifiers = [
 python = "^3.9"
 python-dateutil = "2.8.2"
 aiohttp = "3.8.1"
-attrs = "21.3.0"
+attrs = "21.4.0"
 
 [tool.poetry.extras]
 reformat = [

@@ -42,7 +42,7 @@ __all__: tuple[str, ...] = (
     "Stat",
     "WeaponType",
     "DamageType",
-    "Item",
+    "ItemType",
     "Place",
     "ItemTier",
     "AmmoType",
@@ -502,7 +502,7 @@ class DamageType(IntEnum):
 
 
 @typing.final
-class Item(IntEnum):
+class ItemType(IntEnum):
     """Enums for Destiny2's item types."""
 
     NONE = 0

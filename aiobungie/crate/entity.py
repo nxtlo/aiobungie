@@ -304,7 +304,7 @@ class InventoryEntity(BaseEntity, Entity):
     This derives from `DestinyInventoryItemDefinition` definition.
     """
 
-    type: enums.Item = attr.field(repr=True, hash=False)
+    type: enums.ItemType = attr.field(repr=True, hash=False)
     """Entity's type. Can be undefined if nothing was found."""
 
     objects: InventoryEntityObjects = attr.field(repr=False)
@@ -319,7 +319,7 @@ class InventoryEntity(BaseEntity, Entity):
     item_class: enums.Class = attr.field(repr=False, hash=False, eq=False)
     """The entity's class type."""
 
-    sub_type: enums.Item = attr.field(repr=False, hash=False, eq=False)
+    sub_type: enums.ItemType = attr.field(repr=False, hash=False, eq=False)
     """The subtype of the entity. A type is a weapon or armor.
     A subtype is a handcannonn or leg armor for an example.
     """

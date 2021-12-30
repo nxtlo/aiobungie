@@ -49,6 +49,7 @@ if typing.TYPE_CHECKING:
     import collections.abc as collections
 
     from aiobungie.crate import activity
+    from aiobungie.crate import items
     from aiobungie.crate import character as character_
     from aiobungie.crate import profile
     from aiobungie.crate import records as records_
@@ -172,8 +173,35 @@ class ItemsComponent:
     This includes any item related object.
     """
 
-    # TODO: Impl this.
+    item_objectives: typing.Optional[
+        collections.Mapping[int, collections.Sequence[records_.Objective]]
+    ] = attr.field()
+    """A mapping from the character id to a sequence of its items objectives component."""
 
+    profile_plugsets: typing.Optional[collections.Sequence[profile.ProfilePlug]] = attr.field()
+    """A sequence of the profile's plug sets."""
+
+    character_plugsets: typing.Optional[collections.Mapping[int, collections.Sequence[profile.ProfilePlug]]] = attr.field()
+    """A mapping from the character's id to a sequence of plug objects bound to that character."""
+
+    item_instances: typing.Optional[collections.Mapping[int, ...]] = attr.field()
+
+    item_render_data: typing.Optional[collections.Mapping[int, ...]] = attr.field()
+
+    item_stats: typing.Optional[collections.Mapping[int, dict[str, int]]] = attr.field()
+
+    item_sockets: typing.Optional[collections.Mapping[int, collections.Sequence[profile.ProfilePlug]]] = attr.field()
+
+    reusable_plugs: typing.Optional[collections.Mapping[int, collections.Sequence[profile.ProfilePlug]]] = attr.field()
+
+    plug_objectives: typing.Optional[collections.Mapping[int, collections.Mapping[int, collections.Collection[records_.Objective]]]] = attr.field()
+
+    # TODO: Is this needed?
+    # talen_grids: ...
+    
+    plug_states: typing.Optional[collections.Collection[profile.ProfilePlug]] = attr.field()
+
+    item_perks: typing.Optional[collections.Mapping[int, collections.Collection[items.Perk]]] = attr.field()
 
 @attr.attrs(kw_only=True, weakref_slot=False)
 class VendorsComponent:

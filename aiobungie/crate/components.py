@@ -41,7 +41,7 @@ __all__: tuple[str, ...] = (
 
 import typing
 
-import attr
+import attrs
 
 from aiobungie.internal import enums
 
@@ -72,7 +72,9 @@ class ComponentFields(enums.Enum):
     DISABLED = False
 
 
-@attr.attrs(kw_only=True, weakref_slot=False)
+# Main component cannot inherit from multiple classes that have `__slots__`
+# Which's why some components have no slots.
+@attrs.define(kw_only=True, weakref_slot=False, slots=False)
 class RecordsComponent:
     """Represents records-only Bungie component.
 
@@ -92,7 +94,7 @@ class RecordsComponent:
 
     profile_records: typing.Optional[
         collections.Mapping[int, records_.Record]
-    ] = attr.field()
+    ] = attrs.field()
     """A mapping from the profile record id to a record component.
 
     Notes
@@ -104,7 +106,7 @@ class RecordsComponent:
 
     character_records: typing.Optional[
         collections.Mapping[int, records_.CharacterRecord]
-    ] = attr.field()
+    ] = attrs.field()
     """A mapping from character record ids to a character record component.
 
     This will be available when `aiobungie.ComponentType.RECORDS`
@@ -112,7 +114,7 @@ class RecordsComponent:
     """
 
 
-@attr.attrs(kw_only=True, weakref_slot=False)
+@attrs.define(kw_only=True, weakref_slot=False)
 class ProfileComponent:
     """Represents a profile-only Bungie component.
 
@@ -126,14 +128,14 @@ class ProfileComponent:
     - `ProfileProgression`
     """
 
-    profiles: typing.Optional[profile.Profile] = attr.field()
+    profiles: typing.Optional[profile.Profile] = attrs.field()
     """The profile component.
 
     This will be available when `aiobungie.ComponentType.PROFILE` is passed to the request components.
     otherwise will be `None`.
     """
 
-    profile_progression: typing.Optional[profile.ProfileProgression] = attr.field()
+    profile_progression: typing.Optional[profile.ProfileProgression] = attrs.field()
     """The profile progression component.
 
     This will be available when `aiobungie.ComponentType.PROFILE_PROGRESSION`
@@ -143,7 +145,7 @@ class ProfileComponent:
 
     profile_currencies: typing.Optional[
         collections.Sequence[profile.ProfileItemImpl]
-    ] = attr.field()
+    ] = attrs.field()
     """A sequence of profile currencies component.
 
     Notes
@@ -155,7 +157,7 @@ class ProfileComponent:
 
     profile_inventories: typing.Optional[
         collections.Sequence[profile.ProfileItemImpl]
-    ] = attr.field()
+    ] = attrs.field()
     """A sequence of profile inventories items component.
 
     Notes
@@ -166,7 +168,7 @@ class ProfileComponent:
     """
 
 
-@attr.attrs(kw_only=True, weakref_slot=False)
+@attrs.define(kw_only=True, weakref_slot=False, slots=False)
 class ItemsComponent:
     """Represents items-only Bungie component.
 
@@ -175,42 +177,42 @@ class ItemsComponent:
 
     item_objectives: typing.Optional[
         collections.Mapping[int, collections.Sequence[records_.Objective]]
-    ] = attr.field()
+    ] = attrs.field()
     """A mapping from the character id to a sequence of its items objectives component."""
 
-    profile_plugsets: typing.Optional[collections.Sequence[profile.ProfilePlug]] = attr.field()
+    profile_plugsets: typing.Optional[collections.Sequence[profile.ProfilePlug]] = attrs.field()
     """A sequence of the profile's plug sets."""
 
-    character_plugsets: typing.Optional[collections.Mapping[int, collections.Sequence[profile.ProfilePlug]]] = attr.field()
+    character_plugsets: typing.Optional[collections.Mapping[int, collections.Sequence[profile.ProfilePlug]]] = attrs.field()
     """A mapping from the character's id to a sequence of plug objects bound to that character."""
 
-    item_instances: typing.Optional[collections.Mapping[int, ...]] = attr.field()
+    item_instances: typing.Optional[collections.Mapping[int, ...]] = attrs.field()
 
-    item_render_data: typing.Optional[collections.Mapping[int, ...]] = attr.field()
+    item_render_data: typing.Optional[collections.Mapping[int, ...]] = attrs.field()
 
-    item_stats: typing.Optional[collections.Mapping[int, dict[str, int]]] = attr.field()
+    item_stats: typing.Optional[collections.Mapping[int, dict[str, int]]] = attrs.field()
 
-    item_sockets: typing.Optional[collections.Mapping[int, collections.Sequence[profile.ProfilePlug]]] = attr.field()
+    item_sockets: typing.Optional[collections.Mapping[int, collections.Sequence[profile.ProfilePlug]]] = attrs.field()
 
-    reusable_plugs: typing.Optional[collections.Mapping[int, collections.Sequence[profile.ProfilePlug]]] = attr.field()
+    reusable_plugs: typing.Optional[collections.Mapping[int, collections.Sequence[profile.ProfilePlug]]] = attrs.field()
 
-    plug_objectives: typing.Optional[collections.Mapping[int, collections.Mapping[int, collections.Collection[records_.Objective]]]] = attr.field()
+    plug_objectives: typing.Optional[collections.Mapping[int, collections.Mapping[int, collections.Collection[records_.Objective]]]] = attrs.field()
 
     # TODO: Is this needed?
     # talen_grids: ...
     
-    plug_states: typing.Optional[collections.Collection[profile.ProfilePlug]] = attr.field()
+    plug_states: typing.Optional[collections.Collection[profile.ProfilePlug]] = attrs.field()
 
-    item_perks: typing.Optional[collections.Mapping[int, collections.Collection[items.Perk]]] = attr.field()
+    item_perks: typing.Optional[collections.Mapping[int, collections.Collection[items.Perk]]] = attrs.field()
 
-@attr.attrs(kw_only=True, weakref_slot=False)
+@attrs.define(kw_only=True, weakref_slot=False, slots=False)
 class VendorsComponent:
     """Represents vendors-only Bungie component."""
 
     # TODO: Impl this.
 
 
-@attr.attrs(kw_only=True, weakref_slot=False)
+@attrs.define(kw_only=True, weakref_slot=False, slots=False)
 class StringVariableComponent:
     """Represents the profile string variable component.
 
@@ -224,16 +226,16 @@ class StringVariableComponent:
 
     profile_string_variables: typing.Optional[
         collections.Mapping[int, int]
-    ] = attr.field()
+    ] = attrs.field()
     """A mapping from an expression mapping definition hash to its value."""
 
     character_string_variables: typing.Optional[
         collections.Mapping[int, collections.Mapping[int, int]]
-    ] = attr.field()
+    ] = attrs.field()
     """A mapping from the character id to a mapping from an expression mapping definition hash to its value."""
 
 
-@attr.attrs(kw_only=True, weakref_slot=False)
+@attrs.define(kw_only=True, weakref_slot=False, slots=False)
 class MetricsComponent:
     """Represents the profile metrics component.
 
@@ -248,18 +250,18 @@ class MetricsComponent:
 
     metrics: typing.Optional[
         collections.Sequence[collections.Mapping[int, tuple[bool, records_.Objective]]]
-    ] = attr.field()
+    ] = attrs.field()
     """A sequence of mappings from the metrics hash to a tuple contains two elements.
 
     * The first is always a `bool` determines whether the object is visible or not.
     * The second is an `aiobungie.crate.Objective` of the metrics object.
     """
 
-    root_node_hash: typing.Optional[int] = attr.field()
+    root_node_hash: typing.Optional[int] = attrs.field()
     """The metrics presentation root node hash."""
 
 
-@attr.attrs(kw_only=True, weakref_slot=False)
+@attrs.define(kw_only=True, weakref_slot=False)
 class CharacterComponent(RecordsComponent, ItemsComponent, VendorsComponent):
     """Represents a character-only Bungie component.
 
@@ -275,7 +277,7 @@ class CharacterComponent(RecordsComponent, ItemsComponent, VendorsComponent):
     - `CharacterEquipments`
     """
 
-    character: typing.Optional[character_.Character] = attr.field()
+    character: typing.Optional[character_.Character] = attrs.field()
     """The character component.
 
     This will be available when `aiobungie.ComponentType.CHARACTERS` is passed to the request.
@@ -284,7 +286,7 @@ class CharacterComponent(RecordsComponent, ItemsComponent, VendorsComponent):
 
     inventory: typing.Optional[
         collections.Sequence[profile.ProfileItemImpl]
-    ] = attr.field()
+    ] = attrs.field()
     """A sequence of the character inventorie items component.
 
     Those items may be Weapons, emblems, ships, sparrows, etc.
@@ -296,7 +298,7 @@ class CharacterComponent(RecordsComponent, ItemsComponent, VendorsComponent):
     is passed to the request components.
     """
 
-    progressions: typing.Optional[character_.CharacterProgression] = attr.field(
+    progressions: typing.Optional[character_.CharacterProgression] = attrs.field(
         repr=False
     )
     """The character progression component.
@@ -308,14 +310,14 @@ class CharacterComponent(RecordsComponent, ItemsComponent, VendorsComponent):
     is passed to the request components.
     """
 
-    render_data: typing.Optional[character_.RenderedData] = attr.field(repr=False)
+    render_data: typing.Optional[character_.RenderedData] = attrs.field(repr=False)
     """The character rendered data component.
 
     This will always be `None` unless `aiobungie.ComponentType.RENDER_DATA`
     is passed to the request components.
     """
 
-    activities: typing.Optional[activity.CharacterActivity] = attr.field(repr=False)
+    activities: typing.Optional[activity.CharacterActivity] = attrs.field(repr=False)
     """A sequence of the character activities component.
 
     This will always be `None` unless `aiobungie.ComponentType.CHARACTER_ACTIVITES`
@@ -324,7 +326,7 @@ class CharacterComponent(RecordsComponent, ItemsComponent, VendorsComponent):
 
     equipment: typing.Optional[
         collections.Sequence[profile.ProfileItemImpl]
-    ] = attr.field()
+    ] = attrs.field()
     """A sequence of the character equipment component.
 
     This will always be `None` unless `aiobungie.ComponentType.CHARACTER_EQUIPMENT`
@@ -332,7 +334,7 @@ class CharacterComponent(RecordsComponent, ItemsComponent, VendorsComponent):
     """
 
 
-@attr.define(kw_only=True, weakref_slot=False)
+@attrs.define(kw_only=True, weakref_slot=False)
 class Component(
     ProfileComponent, RecordsComponent, StringVariableComponent, MetricsComponent
 ):
@@ -396,7 +398,7 @@ class Component(
 
     characters: typing.Optional[
         collections.Mapping[int, character_.Character]
-    ] = attr.field()
+    ] = attrs.field()
     """A mapping from character's id to`aiobungie.crate.Character`
     of the associated character within the character component.
 
@@ -406,7 +408,7 @@ class Component(
 
     character_inventories: typing.Optional[
         collections.Mapping[int, collections.Sequence[profile.ProfileItemImpl]]
-    ] = attr.field()
+    ] = attrs.field()
     """A mapping from character's id to a sequence of their character inventorie items component.
 
     Those items may be Weapons, emblems, ships, sparrows, etc.
@@ -420,7 +422,7 @@ class Component(
 
     character_progressions: typing.Optional[
         collections.Mapping[int, character_.CharacterProgression]
-    ] = attr.field()
+    ] = attrs.field()
     """A mapping from character's id to a character progression component.
 
     Notes
@@ -432,7 +434,7 @@ class Component(
 
     character_render_data: typing.Optional[
         collections.Mapping[int, character_.RenderedData]
-    ] = attr.field()
+    ] = attrs.field()
     """A mapping from character's id to a character rendered data component.
 
     This will always be `None` unless `aiobungie.ComponentType.RENDER_DATA`
@@ -441,7 +443,7 @@ class Component(
 
     character_activities: typing.Optional[
         collections.Mapping[int, activity.CharacterActivity]
-    ] = attr.field()
+    ] = attrs.field()
     """A mapping from character's id to a sequence of their character activities component.
 
     This will always be `None` unless `aiobungie.ComponentType.CHARACTER_ACTIVITES`
@@ -450,7 +452,7 @@ class Component(
 
     character_equipments: typing.Optional[
         collections.Mapping[int, collections.Sequence[profile.ProfileItemImpl]]
-    ] = attr.field()
+    ] = attrs.field()
     """A mapping from character's id to a sequence of their character equipment component.
 
     This will always be `None` unless `aiobungie.ComponentType.CHARACTER_EQUIPMENT`

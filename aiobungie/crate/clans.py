@@ -36,7 +36,7 @@ __all__ = (
 
 import typing
 
-import attr
+import attrs
 
 from aiobungie import undefined
 from aiobungie import url
@@ -53,54 +53,54 @@ if typing.TYPE_CHECKING:
     from aiobungie.internal import assets
 
 
-@attr.define(kw_only=True, hash=False, weakref_slot=False)
+@attrs.define(kw_only=True, hash=False, weakref_slot=False)
 class ClanFeatures:
     """Represents Bungie clan features."""
 
-    max_members: int = attr.field(repr=True)
+    max_members: int = attrs.field(repr=True)
     """The maximum members the clan can have"""
 
-    max_membership_types: int = attr.field(repr=False)
+    max_membership_types: int = attrs.field(repr=False)
     """The maximum membership types the clan can have"""
 
-    capabilities: int = attr.field(repr=False)
+    capabilities: int = attrs.field(repr=False)
     """An int that represents the clan's capabilities."""
 
-    membership_types: list[enums.MembershipType] = attr.field(repr=True)
+    membership_types: list[enums.MembershipType] = attrs.field(repr=True)
     """The clan's membership types."""
 
-    invite_permissions: bool = attr.field(repr=False)
+    invite_permissions: bool = attrs.field(repr=False)
     """True if the clan has permissions to invite."""
 
-    update_banner_permissions: bool = attr.field(repr=False)
+    update_banner_permissions: bool = attrs.field(repr=False)
     """True if the clan has permissions to updates its banner."""
 
-    update_culture_permissions: bool = attr.field(repr=False)
+    update_culture_permissions: bool = attrs.field(repr=False)
 
-    join_level: int = attr.field(repr=True)
+    join_level: int = attrs.field(repr=True)
     """The clan's join level."""
 
 
-@attr.define(hash=False, kw_only=True, weakref_slot=False)
+@attrs.define(hash=False, kw_only=True, weakref_slot=False)
 class ClanConversation:
     """Represents a clan conversation."""
 
-    net: traits.Netrunner = attr.field(repr=False)
+    net: traits.Netrunner = attrs.field(repr=False)
     """A network state used for making external requests."""
 
-    group_id: int = attr.field(repr=True)
+    group_id: int = attrs.field(repr=True)
     """The clan or group's id."""
 
-    id: int = attr.field(repr=True, hash=True)
+    id: int = attrs.field(repr=True, hash=True)
     """The conversation's id"""
 
-    chat_enabled: bool = attr.field(repr=True)
+    chat_enabled: bool = attrs.field(repr=True)
     """`True` if the Conversation's chat is enabled."""
 
-    name: undefined.UndefinedOr[str] = attr.field(repr=True)
+    name: undefined.UndefinedOr[str] = attrs.field(repr=True)
     """Conversation chat's name."""
 
-    security: int = attr.field(repr=False)
+    security: int = attrs.field(repr=False)
     """Conversation's security level."""
 
     async def edit(
@@ -152,69 +152,69 @@ class ClanConversation:
         return str(self.name)
 
 
-@attr.define(hash=False, kw_only=True, weakref_slot=False)
+@attrs.define(hash=False, kw_only=True, weakref_slot=False)
 class ClanBanner:
     """Representation of information of the clan banner."""
 
-    id: int = attr.field(repr=True)
+    id: int = attrs.field(repr=True)
     """The banner's id."""
 
-    foreground: assets.MaybeImage = attr.field(repr=True)
+    foreground: assets.MaybeImage = attrs.field(repr=True)
     """The banner's foreground. This field can be `UNDEFINED` if not found."""
 
-    background: assets.MaybeImage = attr.field(repr=True)
+    background: assets.MaybeImage = attrs.field(repr=True)
     """The banner's background. This field can be `UNDEFINED` if not found."""
 
     def __int__(self) -> int:
         return self.id
 
 
-@attr.define(hash=False, kw_only=True, weakref_slot=False)
+@attrs.define(hash=False, kw_only=True, weakref_slot=False)
 class ClanMember(user.UserLike):
     """Represents a Bungie clan member."""
 
-    net: traits.Netrunner = attr.field(repr=False)
+    net: traits.Netrunner = attrs.field(repr=False)
     """A network state used for making external requests."""
 
-    id: int = attr.field(repr=True, hash=True)
+    id: int = attrs.field(repr=True, hash=True)
     """Clan member's id"""
 
-    name: undefined.UndefinedOr[str] = attr.field(repr=True)
+    name: undefined.UndefinedOr[str] = attrs.field(repr=True)
     """Clan member's name. This can be `UNDEFINED` if not found."""
 
-    last_seen_name: str = attr.field(repr=True)
+    last_seen_name: str = attrs.field(repr=True)
     """The clan member's last seen display name"""
 
-    type: enums.MembershipType = attr.field(repr=True)
+    type: enums.MembershipType = attrs.field(repr=True)
     """Clan member's membership type."""
 
-    types: collections.Sequence[enums.MembershipType] = attr.field(repr=False)
+    types: collections.Sequence[enums.MembershipType] = attrs.field(repr=False)
     """A sequence of the available clan member membership types."""
 
-    icon: assets.MaybeImage = attr.field(repr=False)
+    icon: assets.MaybeImage = attrs.field(repr=False)
     """Clan member's icon"""
 
-    is_public: bool = attr.field(repr=False)
+    is_public: bool = attrs.field(repr=False)
     """`builtins.True` if the clan member is public."""
 
-    group_id: int = attr.field(repr=True)
+    group_id: int = attrs.field(repr=True)
     """The member's group id."""
 
-    is_online: bool = attr.field(repr=False, default=None)
+    is_online: bool = attrs.field(repr=False, default=None)
     """True if the clan member is online or not."""
 
-    last_online: datetime = attr.field(repr=False, default=None)
+    last_online: datetime = attrs.field(repr=False, default=None)
     """The date of the clan member's last online in UTC time zone."""
 
-    joined_at: datetime = attr.field(repr=False, default=None)
+    joined_at: datetime = attrs.field(repr=False, default=None)
     """The clan member's join date in UTC time zone."""
 
-    code: typedefs.NoneOr[int] = attr.field(repr=True)
+    code: typedefs.NoneOr[int] = attrs.field(repr=True)
     """The clan member's bungie display name code
     This is new and was added in Season of the lost update
     """
 
-    bungie: user.PartialBungieUser = attr.field(repr=True)
+    bungie: user.PartialBungieUser = attrs.field(repr=True)
     """The clan member's bungie partial net user.
 
     .. note:: This only returns a partial bungie net user.
@@ -302,35 +302,35 @@ class ClanMember(user.UserLike):
         )
 
 
-@attr.define(hash=False, kw_only=True, weakref_slot=False)
+@attrs.define(hash=False, kw_only=True, weakref_slot=False)
 class GroupMember:
     """Represents information about joined groups/clans for a member."""
 
-    net: traits.Netrunner = attr.field(repr=False)
+    net: traits.Netrunner = attrs.field(repr=False)
     """A network state used for making external requests."""
 
-    inactive_memberships: typedefs.NoneOr[dict[int, bool]] = attr.field(repr=False)
+    inactive_memberships: typedefs.NoneOr[dict[int, bool]] = attrs.field(repr=False)
     """The member's inactive memberships if provided. This will be `None` if not provided."""
 
-    member_type: enums.ClanMemberType = attr.field(repr=True)
+    member_type: enums.ClanMemberType = attrs.field(repr=True)
     """The member's member type."""
 
-    is_online: bool = attr.field(repr=False)
+    is_online: bool = attrs.field(repr=False)
     """Whether the member is online or not."""
 
-    last_online: datetime = attr.field(repr=False)
+    last_online: datetime = attrs.field(repr=False)
     """An awre UTC datetime of the member's last online status."""
 
-    group_id: int = attr.field(repr=True)
+    group_id: int = attrs.field(repr=True)
     """The group id of this member."""
 
-    join_date: datetime = attr.field(repr=False)
+    join_date: datetime = attrs.field(repr=False)
     """An awre UTC datetime of the member's join date."""
 
-    member: user.DestinyUser = attr.field(repr=True)
+    member: user.DestinyUser = attrs.field(repr=True)
     """The member's destiny object that represents the group member."""
 
-    group: Clan = attr.field(repr=True)
+    group: Clan = attrs.field(repr=True)
     """The member's group/clan object that represents the group member."""
 
     async def fetch_self_clan(self) -> Clan:
@@ -349,16 +349,16 @@ class GroupMember:
         return self.group_id
 
 
-@attr.define(hash=False, kw_only=True, weakref_slot=False)
+@attrs.define(hash=False, kw_only=True, weakref_slot=False)
 class ClanAdmin(ClanMember):
     """Represents a clan admin."""
 
-    member_type: enums.ClanMemberType = attr.field(repr=True)
+    member_type: enums.ClanMemberType = attrs.field(repr=True)
     """The clan admin's member type.
     This can be Admin or owner or any other type.
     """
 
-    join_date: datetime = attr.field()
+    join_date: datetime = attrs.field()
 
     async def fetch_clan(self) -> Clan:
         """Fetch the clan that represents the clan admins.
@@ -378,50 +378,50 @@ class ClanAdmin(ClanMember):
         return f"{self.name}#{self.code}"
 
 
-@attr.define(hash=False, kw_only=True, weakref_slot=False)
+@attrs.define(hash=False, kw_only=True, weakref_slot=False)
 class Clan:
     """Represents a Bungie clan."""
 
-    net: traits.Netrunner = attr.field(repr=False, eq=False, hash=False)
+    net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
     """A network state used for making external requests."""
 
-    id: int = attr.field(hash=True, repr=True, eq=True)
+    id: int = attrs.field(hash=True, repr=True, eq=True)
     """The clan id"""
 
-    type: enums.GroupType = attr.field(repr=True)
+    type: enums.GroupType = attrs.field(repr=True)
     """The clan type."""
 
-    name: str = attr.field(repr=True)
+    name: str = attrs.field(repr=True)
     """The clan's name"""
 
-    created_at: datetime = attr.field(repr=True)
+    created_at: datetime = attrs.field(repr=True)
     """Clan's creation date time in UTC."""
 
-    member_count: int = attr.field(repr=True)
+    member_count: int = attrs.field(repr=True)
     """Clan's member count."""
 
-    motto: str = attr.field(repr=False, eq=False)
+    motto: str = attrs.field(repr=False, eq=False)
     """Clan's motto."""
 
-    is_public: bool = attr.field(repr=False, eq=False)
+    is_public: bool = attrs.field(repr=False, eq=False)
     """Clan's privacy status."""
 
-    banner: assets.MaybeImage = attr.field(repr=False)
+    banner: assets.MaybeImage = attrs.field(repr=False)
     """Clan's banner"""
 
-    avatar: assets.MaybeImage = attr.field(repr=False)
+    avatar: assets.MaybeImage = attrs.field(repr=False)
     """Clan's avatar"""
 
-    about: str = attr.field(repr=False, eq=False)
+    about: str = attrs.field(repr=False, eq=False)
     """Clan's about title."""
 
-    tags: list[str] = attr.field(repr=False)
+    tags: list[str] = attrs.field(repr=False)
     """A list of the clan's tags."""
 
-    owner: typedefs.NoneOr[ClanMember] = attr.field(repr=True)
+    owner: typedefs.NoneOr[ClanMember] = attrs.field(repr=True)
     """The clan owner. This field could be `None` if not found."""
 
-    features: ClanFeatures = attr.field(repr=False, hash=False, eq=False)
+    features: ClanFeatures = attrs.field(repr=False, hash=False, eq=False)
     """The clan features."""
 
     async def edit_options(

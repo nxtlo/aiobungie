@@ -28,7 +28,7 @@ __all__: list[str] = ["Friend", "FriendRequestView"]
 
 import typing
 
-import attr
+import attrs
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
@@ -40,46 +40,46 @@ if typing.TYPE_CHECKING:
     from aiobungie.internal import enums
 
 
-@attr.define(weakref_slot=False, hash=False, kw_only=True)
+@attrs.define(weakref_slot=False, hash=False, kw_only=True)
 class FriendRequestView:
     """A view of the pending friend requests queue."""
 
-    incoming: collections.Sequence[Friend] = attr.field(repr=True, hash=False)
+    incoming: collections.Sequence[Friend] = attrs.field(repr=True, hash=False)
     """The incoming friend request view."""
 
-    outgoing: collections.Sequence[Friend] = attr.field(repr=True, hash=False)
+    outgoing: collections.Sequence[Friend] = attrs.field(repr=True, hash=False)
     """The outgoing friend request view."""
 
 
-@attr.define(weakref_slot=False, hash=False, kw_only=True)
+@attrs.define(weakref_slot=False, hash=False, kw_only=True)
 class Friend:
     """Represents a bungie friend in your account."""
 
-    net: traits.Netrunner = attr.field(repr=False)
+    net: traits.Netrunner = attrs.field(repr=False)
     """A network state we use to make external requests."""
 
-    id: int = attr.field(repr=False, hash=True)
+    id: int = attrs.field(repr=False, hash=True)
     """The friend's last seen at id."""
 
-    type: enums.MembershipType = attr.field(repr=True)
+    type: enums.MembershipType = attrs.field(repr=True)
     """The friend's last seen membership type."""
 
-    name: undefined.UndefinedOr[str] = attr.field(repr=True)
+    name: undefined.UndefinedOr[str] = attrs.field(repr=True)
     """The friend's last seen global display name. This field could be Undefined if the player hasn't logged in yet."""
 
-    code: typedefs.NoneOr[int] = attr.field(repr=True)
+    code: typedefs.NoneOr[int] = attrs.field(repr=True)
     """The friend's last seen global code. This field could be None if the player hasn't logged in yet."""
 
-    online_status: enums.Presence = attr.field(repr=False)
+    online_status: enums.Presence = attrs.field(repr=False)
     """The friend's online status."""
 
-    online_title: int = attr.field(repr=False)
+    online_title: int = attrs.field(repr=False)
     """The friend's online title."""
 
-    relationship: enums.Relationship = attr.field(repr=False)
+    relationship: enums.Relationship = attrs.field(repr=False)
     """The friend's relationship type."""
 
-    user: typedefs.NoneOr[user_.BungieUser] = attr.field(repr=True)
+    user: typedefs.NoneOr[user_.BungieUser] = attrs.field(repr=True)
     """The friend's bungie user account. This field is optional and can be None in some states."""
 
     @property

@@ -37,7 +37,7 @@ import abc
 import datetime
 import typing
 
-import attr
+import attrs
 
 from aiobungie.crate import entity
 from aiobungie.crate import user
@@ -53,7 +53,11 @@ if typing.TYPE_CHECKING:
     from aiobungie.crate import season
 
 
+<<<<<<< HEAD
 @attr.define(hash=True, kw_only=True, weakref_slot=False)
+=======
+@attrs.define(hash=False, kw_only=True, weakref_slot=False)
+>>>>>>> bb5f6f4327e773f5324a27e8b807952de5aaa3d2
 class LinkedProfile:
     """Represents a membership linked profile information summary.
 
@@ -75,18 +79,18 @@ class LinkedProfile:
     ```
     """
 
-    net: traits.Netrunner = attr.field(repr=False, eq=False, hash=False)
+    net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
     """A network state used for making external requests."""
 
-    profiles: collections.Sequence[user.DestinyUser] = attr.field(repr=False)
+    profiles: collections.Sequence[user.DestinyUser] = attrs.field(repr=False)
     """A sequence of destiny memberships for this profile."""
 
-    bungie: user.PartialBungieUser = attr.field(repr=True)
+    bungie: user.PartialBungieUser = attrs.field(repr=True)
     """The profile's bungie membership."""
 
     profiles_with_errors: typing.Optional[
         collections.Sequence[user.DestinyUser]
-    ] = attr.field(repr=False, eq=False)
+    ] = attrs.field(repr=False, eq=False)
     """A sequence of optional destiny memberships with errors.
 
     These profiles exists because they have missing fields. Otherwise this will be an empty array.
@@ -114,15 +118,15 @@ class ProfilePlug:
     enable_fail_indexes: typing.Optional[list[int]] = attr.field(repr=False, hash=False)
     """If a plug is inserted but not enabled, this field will be available with indexes into the plug item definition."""
 
-@attr.define(hash=False, kw_only=True, weakref_slot=False, eq=False)
+@attrs.define(hash=False, kw_only=True, weakref_slot=False, eq=False)
 class ProfileProgression:
     """Represents a profile progression component details."""
 
-    artifact: season.Artifact = attr.field()
+    artifact: season.Artifact = attrs.field()
     """The profile progression seasonal artifact."""
 
     # No repr for this since its kinda huge dict.
-    checklist: collections.Mapping[int, collections.Mapping[int, bool]] = attr.field(
+    checklist: collections.Mapping[int, collections.Mapping[int, bool]] = attrs.field(
         repr=False
     )
     """A mapping of int to another mapping of int to bool for the profile progression checklist."""
@@ -202,53 +206,53 @@ class ProfileItem(abc.ABC):
         return await self.net.request.fetch_inventory_item(self.hash)
 
 
-@attr.mutable(hash=True, kw_only=True, weakref_slot=False)
+@attrs.mutable(hash=True, kw_only=True, weakref_slot=False)
 class ProfileItemImpl(ProfileItem):
     """Concrete implementation of any profile component item.
 
     This also can be a character equipment i.e. Weapons, Armor, Ships, etc.
     """
 
-    net: traits.Netrunner = attr.field(repr=False, eq=False, hash=False)
+    net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
     """A network state used for making external requests."""
 
-    hash: int = attr.field(hash=True)
+    hash: int = attrs.field(hash=True)
     """The item type hash."""
 
-    quantity: int = attr.field(repr=True, hash=True)
+    quantity: int = attrs.field(repr=True, hash=True)
     """The item quantity."""
 
-    bind_status: enums.ItemBindStatus = attr.field(repr=False)
+    bind_status: enums.ItemBindStatus = attrs.field(repr=False)
     """The item binding status."""
 
-    location: enums.ItemLocation = attr.field(repr=True)
+    location: enums.ItemLocation = attrs.field(repr=True)
     """The item location."""
 
-    bucket: int = attr.field(repr=False)
+    bucket: int = attrs.field(repr=False)
     """The item bucket hash."""
 
-    transfer_status: typedefs.IntAnd[enums.TransferStatus] = attr.field(repr=False)
+    transfer_status: typedefs.IntAnd[enums.TransferStatus] = attrs.field(repr=False)
     """The item's transfer status."""
 
-    lockable: bool = attr.field(repr=False)
+    lockable: bool = attrs.field(repr=False)
     """Whether the item can be locked or not."""
 
-    state: enums.ItemState = attr.field(repr=False)
+    state: enums.ItemState = attrs.field(repr=False)
     """The item's state."""
 
-    dismantel_permissions: int = attr.field(repr=False)
+    dismantel_permissions: int = attrs.field(repr=False)
     """The item's dismantel permission."""
 
-    is_wrapper: bool = attr.field(repr=False)
+    is_wrapper: bool = attrs.field(repr=False)
     """Whether the item is a wrapper or not."""
 
-    instance_id: typing.Optional[int] = attr.field(repr=True)
+    instance_id: typing.Optional[int] = attrs.field(repr=True)
     """An inventory item instance id if available, otherwise will be `None`."""
 
-    ornament_id: typing.Optional[int] = attr.field(repr=False)
+    ornament_id: typing.Optional[int] = attrs.field(repr=False)
     """The ornament id of this item if it has one. Will be `None` otherwise."""
 
-    version_number: typing.Optional[int] = attr.field(repr=False)
+    version_number: typing.Optional[int] = attrs.field(repr=False)
     """The item version number of available, other wise will be `None`."""
 
     @property
@@ -260,7 +264,7 @@ class ProfileItemImpl(ProfileItem):
         )
 
 
-@attr.define(hash=False, kw_only=True, weakref_slot=False)
+@attrs.define(hash=False, kw_only=True, weakref_slot=False)
 class Profile:
     """Represents a Bungie member profile-only component.
 
@@ -268,28 +272,28 @@ class Profile:
     See `aiobungie.crate.Component` for other components.
     """
 
-    id: int = attr.field(repr=True, hash=True, eq=False)
+    id: int = attrs.field(repr=True, hash=True, eq=False)
     """Profile's id"""
 
-    net: traits.Netrunner = attr.field(repr=False, eq=False)
+    net: traits.Netrunner = attrs.field(repr=False, eq=False)
     """A network state used for making external requests."""
 
-    name: str = attr.field(repr=True, eq=False)
+    name: str = attrs.field(repr=True, eq=False)
     """Profile's name."""
 
-    type: enums.MembershipType = attr.field(repr=True, eq=False)
+    type: enums.MembershipType = attrs.field(repr=True, eq=False)
     """Profile's type."""
 
-    is_public: bool = attr.field(repr=True, eq=False)
+    is_public: bool = attrs.field(repr=True, eq=False)
     """Profile's privacy status."""
 
-    last_played: datetime.datetime = attr.field(repr=False, eq=False)
+    last_played: datetime.datetime = attrs.field(repr=False, eq=False)
     """Profile's last played Destiny 2 played date."""
 
-    character_ids: list[int] = attr.field(repr=False, eq=False)
+    character_ids: list[int] = attrs.field(repr=False, eq=False)
     """A list of the profile's character ids."""
 
-    power_cap: int = attr.field(repr=False, eq=False)
+    power_cap: int = attrs.field(repr=False, eq=False)
     """The profile's current seaspn power cap."""
 
     async def _await_all_chars(

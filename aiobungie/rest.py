@@ -44,13 +44,13 @@ import platform
 import random
 import sqlite3
 import sys
+import time
 import typing
 import uuid
 import zipfile
-import time
 
 import aiohttp
-import attr
+import attrs
 
 from aiobungie import _info as info  # type: ignore[private-usage]
 from aiobungie import error
@@ -120,9 +120,9 @@ class _Arc:
             await self._lock.acquire()
 
 
-@attr.define()
+@attrs.define()
 class _Session:
-    client_session: aiohttp.ClientSession = attr.field()
+    client_session: aiohttp.ClientSession = attrs.field()
 
     @classmethod
     def acquire_session(
@@ -183,26 +183,26 @@ class RequestMethod(str, enums.Enum):
     """DELETE methods"""
 
 
-@attr.mutable(weakref_slot=False, kw_only=True, repr=False)
+@attrs.mutable(weakref_slot=False, kw_only=True, repr=False)
 class OAuth2Response:
     """Represents a proxy object for returned information from an OAuth2 successful response."""
 
-    access_token: str = attr.field(hash=False)
+    access_token: str = attrs.field(hash=False)
     """The returned OAuth2 `access_token` field."""
 
-    refresh_token: str = attr.field(hash=False)
+    refresh_token: str = attrs.field(hash=False)
     """The returned OAuth2 `refresh_token` field."""
 
-    expires_in: int = attr.field(hash=True)
+    expires_in: int = attrs.field(hash=True)
     """The returned OAuth2 `expires_in` field."""
 
-    token_type: str = attr.field(hash=False)
+    token_type: str = attrs.field(hash=False)
     """The returned OAuth2 `token_type` field. This is usually just `Bearer`"""
 
-    refresh_expires_in: int = attr.field(hash=True)
+    refresh_expires_in: int = attrs.field(hash=True)
     """The returned OAuth2 `refresh_expires_in` field."""
 
-    membership_id: int = attr.field(hash=True)
+    membership_id: int = attrs.field(hash=True)
     """The returned BungieNet membership id for the authorized user."""
 
     @classmethod

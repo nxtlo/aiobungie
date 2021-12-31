@@ -37,7 +37,7 @@ __all__: tuple[str, ...] = (
 
 import typing
 
-import attr
+import attrs
 
 from aiobungie import url
 from aiobungie.crate import user
@@ -129,90 +129,90 @@ class FireteamDate(enums.IntEnum):
     THIS_WEEK = 4
 
 
-@attr.define(kw_only=True, weakref_slot=True, hash=False)
+@attrs.define(kw_only=True, weakref_slot=True, hash=False)
 class FireteamUser(user.DestinyUser):
     """Represents a Bungie fireteam user info."""
 
-    fireteam_display_name: str = attr.field(repr=True)
+    fireteam_display_name: str = attrs.field(repr=True)
     """The fireteam display name."""
 
-    fireteam_membership_id: enums.MembershipType = attr.field(repr=True)
+    fireteam_membership_id: enums.MembershipType = attrs.field(repr=True)
     """The fireteam's membership type."""
 
 
-@attr.define(kw_only=True, weakref_slot=True, hash=False)
+@attrs.define(kw_only=True, weakref_slot=True, hash=False)
 class FireteamMember(user.PartialBungieUser):
     """Represents a Bungie fireteam member."""
 
-    destiny_user: FireteamUser = attr.field(repr=True)
+    destiny_user: FireteamUser = attrs.field(repr=True)
     """The destiny user info related to this fireteam member."""
 
-    character_id: int = attr.field(repr=True)
+    character_id: int = attrs.field(repr=True)
     """Fireteam member's character id."""
 
-    date_joined: datetime.datetime = attr.field(repr=False)
+    date_joined: datetime.datetime = attrs.field(repr=False)
     """Fireteam member's join date."""
 
-    has_microphone: bool = attr.field(repr=False)
+    has_microphone: bool = attrs.field(repr=False)
     """Whether the fireteam member has a mic or not."""
 
-    last_platform_invite_date: datetime.datetime = attr.field(repr=False)
+    last_platform_invite_date: datetime.datetime = attrs.field(repr=False)
     """"""
 
-    last_platform_invite_result: int = attr.field(repr=False)
+    last_platform_invite_result: int = attrs.field(repr=False)
     """"""
 
 
-@attr.define(kw_only=True, weakref_slot=True, hash=False)
+@attrs.define(kw_only=True, weakref_slot=True, hash=False)
 class Fireteam:
     """A representation of a Bungie fireteam."""
 
-    id: int = attr.field(hash=True)
+    id: int = attrs.field(hash=True)
     """The fireteam id."""
 
-    group_id: int = attr.field(hash=True, repr=False)
+    group_id: int = attrs.field(hash=True, repr=False)
     """The fireteam group id."""
 
-    platform: FireteamPlatform = attr.field(repr=False)
+    platform: FireteamPlatform = attrs.field(repr=False)
     """The fireteam platform."""
 
-    activity_type: FireteamActivity = attr.field()
+    activity_type: FireteamActivity = attrs.field()
     """The activity this fireteam is planning to run."""
 
-    is_immediate: bool = attr.field(repr=False)
+    is_immediate: bool = attrs.field(repr=False)
     """Whether the fireteam activity is immediate or not."""
 
-    owner_id: int = attr.field(hash=True, repr=False)
+    owner_id: int = attrs.field(hash=True, repr=False)
     """The fireteam owner id."""
 
-    player_slot_count: int = attr.field(repr=False)
+    player_slot_count: int = attrs.field(repr=False)
     """The needed player count in this fireteam."""
 
-    available_player_slots: int = attr.field()
+    available_player_slots: int = attrs.field()
     """The available player slots in this fireteam."""
 
-    available_alternate_slots: int = attr.field(repr=False)
+    available_alternate_slots: int = attrs.field(repr=False)
     """The alternate available player slots in this fireteam."""
 
-    title: undefined.UndefinedOr[str] = attr.field()
+    title: undefined.UndefinedOr[str] = attrs.field()
     """The fireteam title. Could be `UNDEFINED` if not set."""
 
-    date_created: datetime.datetime = attr.field(repr=False)
+    date_created: datetime.datetime = attrs.field(repr=False)
     """A datetime of when was this fireteam created."""
 
-    is_public: bool = attr.field(repr=False)
+    is_public: bool = attrs.field(repr=False)
     """Whether the fireteam is public or not."""
 
-    locale: FireteamLanguage = attr.field(repr=False)
+    locale: FireteamLanguage = attrs.field(repr=False)
     """The selected locale language for this fireteam."""
 
-    is_valid: bool = attr.field(repr=False)
+    is_valid: bool = attrs.field(repr=False)
     """Whether this fireteam is valid or not."""
 
-    last_modified: datetime.datetime = attr.field(repr=False)
+    last_modified: datetime.datetime = attrs.field(repr=False)
     """A datetime of when was this fireteam created."""
 
-    total_results: int = attr.field(repr=False)
+    total_results: int = attrs.field(repr=False)
     """The total results of the found activities."""
 
     @property
@@ -221,16 +221,16 @@ class Fireteam:
         return f"{url.BASE}/en/ClanV2/PublicFireteam?groupId={self.group_id}&fireteamId={self.id}"  # noqa: E501
 
 
-@attr.define(kw_only=True, weakref_slot=True, hash=False)
+@attrs.define(kw_only=True, weakref_slot=True, hash=False)
 class AvalaibleFireteam(Fireteam):
     """Represents an available clan fireteam. This includes the members and alternative members."""
 
-    members: typing.Optional[collections.Sequence[FireteamMember]] = attr.field(
+    members: typing.Optional[collections.Sequence[FireteamMember]] = attrs.field(
         repr=True
     )
     """A sequence of the fireteam members."""
 
-    alternatives: typing.Optional[collections.Sequence[FireteamMember]] = attr.field(
+    alternatives: typing.Optional[collections.Sequence[FireteamMember]] = attrs.field(
         repr=True
     )
     """A sequence of the fireteam alternative members."""

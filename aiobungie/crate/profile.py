@@ -28,7 +28,6 @@ __all__: tuple[str, ...] = (
     "Profile",
     "LinkedProfile",
     "ProfileProgression",
-    "ProfileItem",
     "ProfileItemImpl",
 )
 

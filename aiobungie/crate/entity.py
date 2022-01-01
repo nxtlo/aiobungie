@@ -32,8 +32,6 @@ __all__: tuple[str, ...] = (
     "InventoryEntity",
     "Entity",
     "ObjectiveEntity",
-    "GatingScope",
-    "ValueUIStyle",
     "BaseEntity",
     "ActivityEntity",
     "PlaylistActivityEntity",

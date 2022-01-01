@@ -31,7 +31,7 @@ from aiobungie import interfaces
 from aiobungie import typedefs
 from aiobungie import undefined
 from aiobungie.crate import activity
-from aiobungie.crate import application as app
+from aiobungie.crate import application
 from aiobungie.crate import character
 from aiobungie.crate import clans
 from aiobungie.crate import components
@@ -449,8 +449,8 @@ class Factory(interfaces.FactoryInterface):
 
     def deserialize_app_owner(
         self, payload: typedefs.JSONObject
-    ) -> app.ApplicationOwner:
-        return app.ApplicationOwner(
+    ) -> application.ApplicationOwner:
+        return application.ApplicationOwner(
             net=self._net,
             name=payload.get("bungieGlobalDisplayName", undefined.Undefined),
             id=int(payload["membershipId"]),
@@ -460,8 +460,8 @@ class Factory(interfaces.FactoryInterface):
             code=payload.get("bungieGlobalDisplayNameCode", None),
         )
 
-    def deserialize_app(self, payload: typedefs.JSONObject) -> app.Application:
-        return app.Application(
+    def deserialize_app(self, payload: typedefs.JSONObject) -> application.Application:
+        return application.Application(
             id=int(payload["applicationId"]),
             name=payload["name"],
             link=payload["link"],
@@ -1162,6 +1162,10 @@ class Factory(interfaces.FactoryInterface):
                     for metrics_hash, data in raw_metrics["data"]["metrics"].items()
                 }
             ]
+        transitory: typing.Optional[fireteams.FireteamParty] = None
+        if raw_transitory := payload.get("profileTransitoryData"):
+            if "data" in raw_transitory:
+                transitory = self.deserialize_fireteam_party(raw_transitory["data"])
 
         return components.Component(
             profiles=profile_,
@@ -1180,6 +1184,7 @@ class Factory(interfaces.FactoryInterface):
             character_string_variables=character_string_vars,
             metrics=metrics,
             root_node_hash=root_node_hash,
+            transitory=transitory,
         )
 
     def deserialize_character_component(  # type: ignore[call-arg]
@@ -1955,6 +1960,79 @@ class Factory(interfaces.FactoryInterface):
             if no_results:
                 return fireteams_fields
         return fireteams_
+
+    def deserialize_fireteam_party(
+        self, payload: typedefs.JSONObject
+    ) -> fireteams.FireteamParty:
+        last_destination_hash: typing.Optional[int] = None
+        if raw_dest_hash := payload.get("lastOrbitedDestinationHash"):
+            last_destination_hash = int(raw_dest_hash)
+
+        return fireteams.FireteamParty(
+            members=[
+                self._deserialize_fireteam_party_member(member)
+                for member in payload["partyMembers"]
+            ],
+            activity=self._deserialize_fireteam_party_current_activity(
+                payload["currentActivity"]
+            ),
+            settings=self._deserialize_fireteam_party_settings(payload["joinability"]),
+            last_destination_hash=last_destination_hash,
+            tracking=payload["tracking"],
+        )
+
+    def _deserialize_fireteam_party_member(
+        self, payload: typedefs.JSONObject
+    ) -> fireteams.FireteamPartyMember:
+        status = int(payload["status"])
+        try:
+            status = fireteams.FireteamPartyMemberState(status)
+        except ValueError:
+            pass
+
+        displayname: undefined.UndefinedOr[str] = undefined.Undefined
+        if raw_name := payload.get("displayName"):
+            displayname = raw_name
+
+        return fireteams.FireteamPartyMember(
+            membership_id=int(payload["membershipId"]),
+            emblem_hash=int(payload["emblemHash"]),
+            status=status,
+            display_name=displayname,
+        )
+
+    def _deserialize_fireteam_party_current_activity(
+        self, payload: typedefs.JSONObject
+    ) -> fireteams.FireteamPartyCurrentActivity:
+        start_date: typing.Optional[datetime.datetime] = None
+        if raw_start_date := payload.get("startTime"):
+            start_date = time.clean_date(raw_start_date)
+
+        end_date: typing.Optional[datetime.datetime] = None
+        if raw_end_date := payload.get("endTime"):
+            end_date = time.clean_date(raw_end_date)
+        return fireteams.FireteamPartyCurrentActivity(
+            start_time=start_date,
+            end_time=end_date,
+            score=float(payload["score"]),
+            highest_opposing_score=float(payload["highestOpposingFactionScore"]),
+            opponenst_count=int(payload["numberOfOpponents"]),
+            player_count=int(payload["numberOfPlayers"]),
+        )
+
+    def _deserialize_fireteam_party_settings(
+        self, payload: typedefs.JSONObject
+    ) -> fireteams.FireteamPartySettings:
+        closed_reasons: int = int(payload["closedReasons"])
+        try:
+            closed_reasons = enums.ClosedReasons(closed_reasons)
+        except ValueError:
+            pass
+        return fireteams.FireteamPartySettings(
+            open_slots=int(payload["openSlots"]),
+            privacy_setting=enums.PrivacySetting(int(payload["privacySetting"])),
+            closed_reasons=closed_reasons,
+        )
 
     def deserialize_seasonal_artifact(
         self, payload: typedefs.JSONObject

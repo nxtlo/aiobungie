@@ -1020,6 +1020,23 @@ class FactoryInterface(abc.ABC):
             An available fireteam or a sequence of available fireteam object of the deserialized payload.
         """
 
+    @abc.abstractmethod
+    def deserialize_fireteam_party(
+        self, payload: typedefs.JSONObject
+    ) -> fireteams.FireteamParty:
+        """Deserialize a JSON payload of `profileTransitory` component response.
+
+        Parameters
+        ----------
+        payload : `aiobungie.typedefs.JSONObject`
+            The JSON payload.
+
+        Returns
+        -------
+        `aiobungie.crate.FireteamParty`
+            A fireteam party object of the current fireteam.
+        """
+
     # Seasonal content.
 
     @abc.abstractmethod

@@ -29,8 +29,6 @@ since it depends on components passed to the request or due to privacy by the pr
 from __future__ import annotations
 
 __all__: tuple[str, ...] = (
-    "ComponentPrivacy",
-    "ComponentFields",
     "Component",
     "CharacterComponent",
     "ProfileComponent",
@@ -50,6 +48,7 @@ if typing.TYPE_CHECKING:
 
     from aiobungie.crate import activity
     from aiobungie.crate import character as character_
+    from aiobungie.crate import fireteams
     from aiobungie.crate import profile
     from aiobungie.crate import records as records_
 
@@ -366,6 +365,7 @@ class Component(
     - `Records`
         - `ProfileRecords`
         - `CharacterRecords`
+    - Transitory
     """
 
     characters: typing.Optional[
@@ -430,4 +430,13 @@ class Component(
     This will always be `None` unless `aiobungie.ComponentType.CHARACTER_EQUIPMENT`
     is passed to the request components.
     """
-    # TODO: Impl other components that don't fit anywhere here.
+
+    transitory: typing.Optional[fireteams.FireteamParty] = attrs.field()
+    """Profile Transitory component.
+
+    This component is used to show minimal information about the player's current fireteam party along
+    with the its members and the activity.
+
+    This will always be `None` unless `aiobungie.ComponentType.TRANSITORY`
+    is passed to the request components.
+    """

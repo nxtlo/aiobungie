@@ -233,6 +233,8 @@ async def test_profile():
             assert isinstance(inv, bool)
             assert isinstance(obj, aiobungie.crate.Objective)
 
+    if pf.transitory:
+        assert isinstance(pf.transitory, aiobungie.crate.FireteamParty)
 
 async def test_membership_types_from_id():
     u = await client.fetch_membership_from_id(MID)

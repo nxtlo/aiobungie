@@ -26,13 +26,13 @@ from __future__ import annotations
 
 __all__: tuple[str, ...] = (
     "Fireteam",
-    "FireteamLanguage",
-    "FireteamPlatform",
-    "FireteamActivity",
-    "FireteamDate",
     "AvalaibleFireteam",
     "FireteamUser",
     "FireteamMember",
+    "FireteamPartySettings",
+    "FireteamPartyMember",
+    "FireteamPartyCurrentActivity",
+    "FireteamParty",
 )
 
 import typing
@@ -47,6 +47,7 @@ if typing.TYPE_CHECKING:
     import collections.abc as collections
     import datetime
 
+    from aiobungie import typedefs
     from aiobungie import undefined
 
 
@@ -129,7 +130,100 @@ class FireteamDate(enums.IntEnum):
     THIS_WEEK = 4
 
 
-@attrs.define(kw_only=True, weakref_slot=True, hash=False)
+@typing.final
+class FireteamPartyMemberState(enums.IntEnum):
+    """An enum flag represents a fireteam party member status."""
+
+    NONE = 0
+    """???"""
+    MEMBER = 1
+    """A stanard member in the fireteam."""
+    POSSE_MEMBER = 2
+    """???"""
+    POSSE_AND_MEMBER = MEMBER + POSSE_MEMBER
+    """???"""
+    GROUP_MEMBER = 4
+    """???"""
+    PARTY_LEADER = 8
+    """Fireteam party member leader."""
+    LEADER_AND_POSSE = PARTY_LEADER + POSSE_AND_MEMBER
+
+
+@attrs.define(kw_only=True, weakref_slot=False, hash=True)
+class FireteamPartyMember:
+    """Minimal information about a party member in a fireteam."""
+
+    membership_id: int = attrs.field()
+    """Party member's membership id."""
+
+    emblem_hash: int = attrs.field()
+    """Party member's emblem hash."""
+
+    display_name: undefined.UndefinedOr[str] = attrs.field()
+    """Party member's display name. `UNDEFINED` if not set."""
+
+    status: typedefs.IntAnd[FireteamPartyMemberState] = attrs.field()
+    """A Flags Enumeration value indicating the states that the player is in relevant to being on a fireteam."""
+
+
+@attrs.define(kw_only=True, weakref_slot=False, hash=True)
+class FireteamPartyCurrentActivity:
+    """Represents information about a fireteam party's current activity."""
+
+    start_time: typing.Optional[datetime.datetime]
+    """An optional datetime of when was this activity started."""
+
+    end_time: typing.Optional[datetime.datetime]
+    """An optional datetime of when was this activity ended."""
+
+    score: float = attrs.field()
+    """This is the total score of the activity."""
+
+    highest_opposing_score: float = attrs.field(repr=False)
+    """If the activity was against humans, This will be their highest score."""
+
+    opponenst_count: int = attrs.field()
+    """How many human opponents were playing against this fireteam."""
+
+    player_count: int = attrs.field(hash=True)
+    """How many human players were playing in this fireteam."""
+
+
+@attrs.define(kw_only=True, weakref_slot=False, hash=True)
+class FireteamPartySettings:
+    """Represents information about a fireteam's joinability settngs."""
+
+    open_slots: int = attrs.field()
+    """The number of open slots this fireteam has."""
+
+    privacy_setting: enums.PrivacySetting = attrs.field()
+    """Fireteam leader's fireteam privacy setting."""
+
+    closed_reasons: typedefs.IntAnd[enums.ClosedReasons] = attrs.field()
+    """Reasons why a person can't join this person's fireteam."""
+
+
+@attrs.define(kw_only=True, weakref_slot=False, hash=True)
+class FireteamParty:
+    """Represents a fireteam party. This information found in profile transitory component."""
+
+    members: collections.Sequence[FireteamPartyMember] = attrs.field(eq=False)
+    """The party members currently in this fireteam."""
+
+    activity: FireteamPartyCurrentActivity = attrs.field(repr=False)
+    """The current activity this fireteam is in."""
+
+    settings: FireteamPartySettings = attrs.field(repr=False)
+    """Information about the fireteam joinability settings, e.g. Privacy, Open slots."""
+
+    last_destination_hash: typing.Optional[int] = attrs.field(eq=False, hash=True)
+    """The hash identifier for the destination of the last location you were orbiting when in orbit."""
+
+    tracking: list[dict[str, typing.Any]] = attrs.field()
+    """???"""
+
+
+@attrs.define(kw_only=True, weakref_slot=False, hash=True)
 class FireteamUser(user.DestinyUser):
     """Represents a Bungie fireteam user info."""
 
@@ -140,7 +234,7 @@ class FireteamUser(user.DestinyUser):
     """The fireteam's membership type."""
 
 
-@attrs.define(kw_only=True, weakref_slot=True, hash=False)
+@attrs.define(kw_only=True, weakref_slot=False, hash=False)
 class FireteamMember(user.PartialBungieUser):
     """Represents a Bungie fireteam member."""
 
@@ -163,7 +257,7 @@ class FireteamMember(user.PartialBungieUser):
     """"""
 
 
-@attrs.define(kw_only=True, weakref_slot=True, hash=False)
+@attrs.define(kw_only=True, weakref_slot=False, hash=False)
 class Fireteam:
     """A representation of a Bungie fireteam."""
 
@@ -221,7 +315,7 @@ class Fireteam:
         return f"{url.BASE}/en/ClanV2/PublicFireteam?groupId={self.group_id}&fireteamId={self.id}"  # noqa: E501
 
 
-@attrs.define(kw_only=True, weakref_slot=True, hash=False)
+@attrs.define(kw_only=True, weakref_slot=False, hash=False)
 class AvalaibleFireteam(Fireteam):
     """Represents an available clan fireteam. This includes the members and alternative members."""
 

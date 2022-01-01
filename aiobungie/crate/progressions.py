@@ -24,24 +24,15 @@
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = ("Progression", "BaseProgression", "Factions")
+__all__: tuple[str, ...] = ("Progression", "Factions")
 
 import abc
 
 import attrs
 
-# if typing.TYPE_CHECKING:
-#     from aiobungie import traits
-
 
 class BaseProgression(abc.ABC):
     """An interface for standard Bungie progressions objects."""
-
-    # Do we need this?.
-    # @property
-    # @abc.abstractmethod
-    # def net(self) -> traits.Netrunner:
-    #     """A client network state used to make external requests."""
 
     @property
     @abc.abstractmethod

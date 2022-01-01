@@ -33,7 +33,6 @@ __all__: tuple[str, ...] = (
     "PostActivityPlayer",
     "PostActivityTeam",
     "AvailableActivity",
-    "Diffculity",
     "Rewards",
     "Challenges",
     "Matchmaking",

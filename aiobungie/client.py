@@ -131,6 +131,10 @@ class Client(traits.ClientBase):
     def request(self) -> Client:
         return self
 
+    @property
+    def metadata(self) -> collections.MutableMapping[typing.Any, typing.Any]:
+        return self._rest.metadata
+
     def run(
         self, future: collections.Coroutine[typing.Any, None, None], debug: bool = False
     ) -> None:
@@ -149,12 +153,12 @@ class Client(traits.ClientBase):
 
         finally:
             # Session management.
-            loop.run_until_complete(self.rest.close())
+            loop.run_until_complete(self._rest.close())
             _LOG.info("Client closed normally.")
 
     # * User methods.
 
-    async def fetch_own_bungie_user(self, *, access_token: str) -> user.User:
+    async def fetch_own_bungie_user(self, access_token: str, /) -> user.User:
         """Fetch and return a user object of the bungie net user associated with account.
 
         This method is obly useful if you have authintacated users and their tokens.
@@ -176,7 +180,7 @@ class Client(traits.ClientBase):
         assert isinstance(resp, dict)
         return self.factory.deserialize_user(resp)
 
-    async def fetch_user(self, id: int) -> user.BungieUser:
+    async def fetch_user(self, id: int, /) -> user.BungieUser:
         """Fetch a Bungie user by their BungieNet id.
 
         .. note::
@@ -268,8 +272,8 @@ class Client(traits.ClientBase):
     async def fetch_membership_from_id(
         self,
         id: int,
-        type: typedefs.IntAnd[enums.MembershipType] = enums.MembershipType.NONE,
         /,
+        type: typedefs.IntAnd[enums.MembershipType] = enums.MembershipType.NONE,
     ) -> user.User:
         """Fetch Bungie user's memberships from their id.
 
@@ -420,8 +424,8 @@ class Client(traits.ClientBase):
         self,
         name: str,
         code: int,
-        type: typedefs.IntAnd[enums.MembershipType] = enums.MembershipType.ALL,
         /,
+        type: typedefs.IntAnd[enums.MembershipType] = enums.MembershipType.ALL,
     ) -> collections.Sequence[user.DestinyUser]:
         """Fetch a Destiny 2 Player's memberships.
 
@@ -505,10 +509,10 @@ class Client(traits.ClientBase):
         member_id: int,
         character_id: int,
         mode: typedefs.IntAnd[enums.GameMode],
+        *,
         membership_type: typedefs.IntAnd[
             enums.MembershipType
         ] = enums.MembershipType.ALL,
-        *,
         page: int = 0,
         limit: int = 250,
     ) -> collections.Sequence[activity.Activity]:
@@ -745,9 +749,9 @@ class Client(traits.ClientBase):
     async def fetch_clan_member(
         self,
         clan_id: int,
+        /,
         name: typing.Optional[str] = None,
         type: typedefs.IntAnd[enums.MembershipType] = enums.MembershipType.NONE,
-        /,
     ) -> clans.ClanMember:
         """Fetch a Bungie Clan member.
 
@@ -788,8 +792,8 @@ class Client(traits.ClientBase):
     async def fetch_clan_members(
         self,
         clan_id: int,
-        type: typedefs.IntAnd[enums.MembershipType] = enums.MembershipType.NONE,
         /,
+        type: typedefs.IntAnd[enums.MembershipType] = enums.MembershipType.NONE,
     ) -> collections.Sequence[clans.ClanMember]:
         """Fetch a Bungie Clan member. if no members found in the clan
         you will get an empty sequence.
@@ -803,10 +807,14 @@ class Client(traits.ClientBase):
         ----------
         clan_id : `builsins.int`
             The clans id
+
+        Other Parameters
+        ----------------
         type : `aiobungie.MembershipType`
             An optional clan member's membership type.
-            Default is set to `aiobungie.MembershipType.NONE`
-            Which returns the first matched clan member by their name.
+            This parameter is used to filter the returned results
+            by the provided membership, For an example XBox memberships only,
+            Otherwise will return all memberships.
 
         Returns
         -------
@@ -862,7 +870,7 @@ class Client(traits.ClientBase):
         Returns
         -------
         `aiobungie.crate.clan.Clan`
-            The clan that represents the kicked member.
+            The clan that the member was kicked from.
         """
         resp = await self.rest.kick_clan_member(
             access_token,
@@ -919,7 +927,8 @@ class Client(traits.ClientBase):
         name : `str`
             The name of the entity, i.e., Thunderlord, One thousand voices.
         entity_type : `str`
-            The type of the entity, AKA Definition, For an example `DestinyInventoryItemDefinition`
+            The type of the entity, AKA Definition,
+            For an example `DestinyInventoryItemDefinition` for emblems, weapons, and other inventory items.
 
         Other Parameters
         ----------------
@@ -1241,7 +1250,7 @@ class Client(traits.ClientBase):
         Returns
         -------
         `collections.Sequence[aiobungie.crate.ExtendedWeaponValues]`
-            A sequence of the weapons extende values.
+            A sequence of the weapon's extended values.
         """
         resp = await self._rest.fetch_unique_weapon_history(
             membership_id, character_id, membership_type

@@ -275,7 +275,12 @@ class Character:
             The provided membership type was invalid.
         """
         return await self.net.request.fetch_activities(
-            self.member_id, self.id, mode, self.member_type, page=page, limit=limit
+            self.member_id,
+            self.id,
+            mode,
+            membership_type=self.member_type,
+            page=page,
+            limit=limit,
         )
 
     async def transfer_item(

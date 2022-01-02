@@ -79,9 +79,7 @@ async def my_user(request: aiohttp.web.Request) -> aiohttp.web.Response:
     # Check our storage if it has the tokens stored.
     if my_tokens := request.app["storage"].get("me"):
         # Fetch our Bungie.net user.
-        my_user = await client.fetch_own_bungie_user(
-            access_token=my_tokens.access_token
-        )
+        my_user = await client.fetch_own_bungie_user(my_tokens.access_token)
         # Return an HTML response.
         return aiohttp.web.Response(
             text=user_html(my_user.bungie), content_type="text/html"

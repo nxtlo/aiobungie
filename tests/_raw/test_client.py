@@ -404,6 +404,11 @@ async def test_unique_weapon_history():
     for weapon in w:
         assert isinstance(weapon, aiobungie.crate.ExtendedWeaponValues)
 
+async def test_client_metadata():
+    client.metadata['pepe'] = 'laugh'
+    clan = await client.fetch_clan("Math Class")
+    assert clan.net.request.metadata['pepe'] == 'laugh'
+
 async def main() -> None:
     coros = []
     for n, coro in inspect.getmembers(

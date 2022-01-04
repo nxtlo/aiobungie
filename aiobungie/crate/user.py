@@ -237,6 +237,11 @@ class BungieUser:
     This can be None if the user hasn't logged in after season of the lost update.
     """
 
+    @property
+    def profile_url(self) -> str:
+        """The user's profile URL at Bungie.net"""
+        return f"{url.BASE}/7/en/User/Profile/254/{self.id}"
+
     def __str__(self) -> str:
         return str(self.name)
 
@@ -387,10 +392,10 @@ class User:
     """
 
     bungie: BungieUser = attrs.field()
-    """The user's bungie net membership."""
+    """The user's bungie net user."""
 
     destiny: collections.Sequence[DestinyUser] = attrs.field()
     """A sequence of the user's Destiny memberships."""
 
     primary_membership_id: typing.Optional[int] = attrs.field(hash=True)
-    """IF the user has a primary membership id, This field will be available."""
+    """If the user has a primary membership id, This field will be available."""

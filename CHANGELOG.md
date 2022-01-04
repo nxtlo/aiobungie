@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Logging time takes between each request.
 - Implmented `transitory` profile component along with its objects in `fireteams.py`.
 - You can now store data using `client.metadata` property from either rest or base client which can be used globally.
+- Added a profile_link property to `BungieUser` which returns their profile link.
 
 ### Changed
 - Significantly optimized factory's checkings and deserializing.

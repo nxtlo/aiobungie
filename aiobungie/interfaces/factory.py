@@ -41,6 +41,7 @@ if typing.TYPE_CHECKING:
     from aiobungie.crate import entity
     from aiobungie.crate import fireteams
     from aiobungie.crate import friends
+    from aiobungie.crate import items
     from aiobungie.crate import milestones
     from aiobungie.crate import profile
     from aiobungie.crate import records
@@ -617,6 +618,12 @@ class FactoryInterface(abc.ABC):
             of the deserialized payload.
         """
 
+    @abc.abstractmethod
+    def deserialize_items_component(
+        self, payload: typedefs.JSONObject
+    ) -> components.ItemsComponent:
+        """Deserialize a JSON objects within the `itemComponents` key.`"""
+
     # Records
 
     @abc.abstractmethod
@@ -1020,6 +1027,23 @@ class FactoryInterface(abc.ABC):
             An available fireteam or a sequence of available fireteam object of the deserialized payload.
         """
 
+    @abc.abstractmethod
+    def deserialize_fireteam_party(
+        self, payload: typedefs.JSONObject
+    ) -> fireteams.FireteamParty:
+        """Deserialize a JSON payload of `profileTransitory` component response.
+
+        Parameters
+        ----------
+        payload : `aiobungie.typedefs.JSONObject`
+            The JSON payload.
+
+        Returns
+        -------
+        `aiobungie.crate.FireteamParty`
+            A fireteam party object of the current fireteam.
+        """
+
     # Seasonal content.
 
     @abc.abstractmethod
@@ -1038,3 +1062,35 @@ class FactoryInterface(abc.ABC):
         `aiobungie.crate.Artifact`
             A seasonal artifact object of the deserialized payload.
         """
+
+    # Items
+
+    @abc.abstractmethod
+    def deserialize_instanced_item(
+        self, payload: typedefs.JSONObject
+    ) -> items.ItemInstance:
+        """Deserialize a JSON object into an instanced item."""
+
+    @abc.abstractmethod
+    def deserialize_item_energy(self, payload: typedefs.JSONObject) -> items.ItemEnergy:
+        """Deserialize a JSON object into item energy object."""
+
+    @abc.abstractmethod
+    def deserialize_item_perk(self, payload: typedefs.JSONObject) -> items.ItemPerk:
+        ...
+
+    @abc.abstractmethod
+    def deserialize_item_socket(self, payload: typedefs.JSONObject) -> items.ItemSocket:
+        ...
+
+    @abc.abstractmethod
+    def deserialize_item_stats_view(
+        self, payload: typedefs.JSONObject
+    ) -> items.ItemStatsView:
+        ...
+
+    @abc.abstractmethod
+    def deserialize_plug_item_state(
+        self, payload: typedefs.JSONObject
+    ) -> items.PlugItemState:
+        ...

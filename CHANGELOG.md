@@ -11,11 +11,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Assists fields to `activity.ExtendedWeaponValues`
 - `joine_date` field to `clans.ClanAdmin`
 - Logging time takes between each request.
+- Implmented `transitory` profile component along with its objects in `fireteams.py`.
+- You can now store data using `client.metadata` property from either rest or base client which can be used globally.
+- Added a profile_link property to `BungieUser` which returns their profile link.
 
 ### Changed
 - Significantly optimized factory's checkings and deserializing.
 - `Client.fetch_groups_for_member` now returns a sequence instead of a signle object.
 This also references `fetch_potentional_groups_forr_member`.
+- Only non-abcs and non-enums classes are exported to `__all__` in `crate.__init__.py`
+- `access_token` parameter is now always positional on all methods.
 
 ### Fixed
 - `Character.last_played` wasn't returning a datetime object.

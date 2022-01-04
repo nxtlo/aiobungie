@@ -56,12 +56,16 @@ __all__: tuple[str, ...] = (
     "ItemLocation",
     "TransferStatus",
     "ItemState",
+    "PrivacySetting",
+    "ClosedReasons",
 )
 
 import enum as __enum
 import typing
 
 _ITERABLE = (set, list, tuple)
+
+# TODO: Use Flags for bitwised fields?
 
 
 class IntEnum(__enum.IntEnum):
@@ -363,6 +367,7 @@ class ComponentType(Enum):
     COLLECTIBLES = 800
     KIOSKS = 500
     PLATFORM_SILVER = 105
+    TRANSITORY = 1000
     METRICS = 1100
     INVENTORIES = 102
     STRING_VARIABLES = 1200
@@ -401,6 +406,7 @@ class ComponentType(Enum):
         PLATFORM_SILVER,
         INVENTORIES,
         STRING_VARIABLES,
+        TRANSITORY,
     )
     """ALl components. The usage of this is `*ComponentType.ALL.value` to unpack the values.
 
@@ -492,13 +498,13 @@ class DamageType(IntEnum):
     """Enums for Destiny Damage types"""
 
     NONE = 0
-    KINETIC = 3373582085
-    SOLAR = 1847026933
-    VOID = 3454344768
-    ARC = 2303181850
-    STASIS = 151347233
-    RAID = 1067729826
+    KINETIC = 1
+    ARC = 2
+    SOLAR = 3
+    VOID = 4
+    RAID = 5
     """This is a special damage type reserved for some raid activity encounters."""
+    STASIS = 6
 
 
 @typing.final
@@ -666,3 +672,35 @@ class ItemState(IntEnum):
     TRACKED = 2
     MASTERWORKED = 4
     LOCKED_AND_MASTERWORKED = LOCKED + MASTERWORKED
+
+
+@typing.final
+class PrivacySetting(IntEnum):
+    """An enum for players's privacy settings."""
+
+    OPEN = 0
+    CLAN_AND_FRIENDS = 1
+    FRIENDS_ONLY = 2
+    INVITE_ONLY = 3
+    CLOSED = 4
+
+
+@typing.final
+class ClosedReasons(IntEnum):
+    """A Flags enumeration representing the reasons why a person can't join this user's fireteam."""
+
+    NONE = 0
+    MATCHMAKING = 1
+    LOADING = 2
+    SOLO = 4
+    """The activity is required to be played solo."""
+    INTERNAL_REASONS = 8
+    """
+    The user can't be joined for one of a variety of internal reasons.
+    Basically, the game can't let you join at this time,
+    but for reasons that aren't under the control of this user
+    """
+    DISALLOWED_BY_GAME_STATE = 16
+    """The user's current activity/quest/other transitory game state is preventing joining."""
+    OFFLINE = 32768
+    """The user appears offline."""

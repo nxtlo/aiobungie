@@ -31,13 +31,14 @@ from aiobungie import interfaces
 from aiobungie import typedefs
 from aiobungie import undefined
 from aiobungie.crate import activity
-from aiobungie.crate import application as app
+from aiobungie.crate import application
 from aiobungie.crate import character
 from aiobungie.crate import clans
 from aiobungie.crate import components
 from aiobungie.crate import entity
 from aiobungie.crate import fireteams
 from aiobungie.crate import friends
+from aiobungie.crate import items
 from aiobungie.crate import milestones
 from aiobungie.crate import profile
 from aiobungie.crate import progressions
@@ -115,7 +116,7 @@ class Factory(interfaces.FactoryInterface):
         self, payload: typedefs.JSONObject
     ) -> user.DestinyUser:
         name: undefined.UndefinedOr[str] = undefined.Undefined
-        if (raw_name := payload["bungieGlobalDisplayName"]) and not typedefs.is_unknown(
+        if (raw_name := payload.get("bungieGlobalDisplayName", "")) and not typedefs.is_unknown(
             raw_name
         ):
             name = raw_name
@@ -449,8 +450,8 @@ class Factory(interfaces.FactoryInterface):
 
     def deserialize_app_owner(
         self, payload: typedefs.JSONObject
-    ) -> app.ApplicationOwner:
-        return app.ApplicationOwner(
+    ) -> application.ApplicationOwner:
+        return application.ApplicationOwner(
             net=self._net,
             name=payload.get("bungieGlobalDisplayName", undefined.Undefined),
             id=int(payload["membershipId"]),
@@ -460,8 +461,8 @@ class Factory(interfaces.FactoryInterface):
             code=payload.get("bungieGlobalDisplayNameCode", None),
         )
 
-    def deserialize_app(self, payload: typedefs.JSONObject) -> app.Application:
-        return app.Application(
+    def deserialize_app(self, payload: typedefs.JSONObject) -> application.Application:
+        return application.Application(
             id=int(payload["applicationId"]),
             name=payload["name"],
             link=payload["link"],
@@ -1162,6 +1163,10 @@ class Factory(interfaces.FactoryInterface):
                     for metrics_hash, data in raw_metrics["data"]["metrics"].items()
                 }
             ]
+        transitory: typing.Optional[fireteams.FireteamParty] = None
+        if raw_transitory := payload.get("profileTransitoryData"):
+            if "data" in raw_transitory:
+                transitory = self.deserialize_fireteam_party(raw_transitory["data"])
 
         return components.Component(
             profiles=profile_,
@@ -1180,6 +1185,94 @@ class Factory(interfaces.FactoryInterface):
             character_string_variables=character_string_vars,
             metrics=metrics,
             root_node_hash=root_node_hash,
+            transitory=transitory,
+            item_components=None,
+            profile_plugsets=None,
+            character_plugsets=None
+        )
+
+    def deserialize_items_component(
+        self, payload: typedefs.JSONObject
+    ) -> components.ItemsComponent:
+        instances: typing.Optional[
+            collections.Sequence[collections.Mapping[int, items.ItemInstance]]
+        ] = None
+        if raw_instances := payload.get("instances"):
+            instances = [
+                {
+                    int(ins_id): self.deserialize_instanced_item(item)
+                    for ins_id, item in raw_instances["data"]
+                }
+            ]
+
+        render_data: typing.Optional[
+            collections.Mapping[int, tuple[bool, dict[int, int]]]
+        ] = None
+        if raw_render_data := payload.get("renderData"):
+            render_data = {
+                int(ins_id): (data["useCustomDyes"], data["artRegions"])
+                for ins_id, data in raw_render_data["data"]
+            }
+
+        stats: typing.Optional[collections.Mapping[int, items.ItemStatsView]] = None
+        if raw_stats := payload.get("stats"):
+            builder: collections.Mapping[int, items.ItemStatsView] = {}
+            for ins_id, stat in raw_stats["data"].items():
+                for _, items in stat.items():
+                    builder[int(ins_id)] = self.deserialize_item_stats_view(items)
+            stats = builder
+
+        sockets: typing.Optional[
+            collections.Mapping[int, collections.Sequence[items.ItemSocket]]
+        ] = None
+        if raw_sockets := payload.get("sockets"):
+            sockets = {
+                int(ins_id): [self.deserialize_item_socket(item["sockets"])]
+                for ins_id, item in raw_sockets["data"]
+            }
+
+        objeectives: typing.Optional[
+            collections.Mapping[int, collections.Sequence[records.Objective]]
+        ] = None
+        if raw_objectives := payload.get("objectives"):
+            objeectives = {
+                int(ins_id): [self.deserialize_objectives(data["objectives"])]
+                for ins_id, data in raw_objectives["data"]
+            }
+
+        perks: typing.Optional[
+            collections.Mapping[int, collections.Collection[items.ItemPerk]]
+        ] = None
+        if raw_perks := payload.get("perks"):
+            perks = {
+                int(ins_id): [self.deserialize_item_perk(item["perks"])]
+                for ins_id, item in raw_perks["data"]
+            }
+
+        plug_states: typing.Optional[collections.Sequence[items.PlugItemState]] = None
+        if raw_plug_states := payload.get("plugStates"):
+            pending: collections.Sequence[items.PlugItemState] = []
+            for _, plug in raw_plug_states["data"].items():
+                pending.append(self.deserialize_plug_item_state(plug))
+            plug_states = pending
+
+        reusable_plugs: typing.Optional[collections.Mapping[int, collections.Sequence[items.PlugItemState]]] = None
+        if raw_re_plugs := payload.get("reusablePlugs"):
+            reusable_plugs = {
+                int(ins_id): [self.deserialize_plug_item_state(plug['plugs'])]
+                for ins_id, plug in raw_re_plugs['data']
+            }
+
+        return components.ItemsComponent(
+            sockets=sockets,
+            stats=stats,
+            render_data=render_data,
+            instances=instances,
+            objectives=objeectives,
+            perks=perks,
+            plug_states=plug_states,
+            reusable_plugs=reusable_plugs,
+            plug_objectives=None
         )
 
     def deserialize_character_component(  # type: ignore[call-arg]
@@ -1223,6 +1316,10 @@ class Factory(interfaces.FactoryInterface):
                 raw_char_records["data"]
             )
 
+        item_components: typing.Optional[components.ItemsComponent] = None
+        if raw_item_components := payload.get("itemComponents"):
+            item_components = self.deserialize_items_component(raw_item_components)
+
         return components.CharacterComponent(
             activities=activities,
             equipment=equipment,
@@ -1232,6 +1329,7 @@ class Factory(interfaces.FactoryInterface):
             character=character_,
             character_records=character_records,
             profile_records=None,
+            item_components=item_components
         )
 
     def _set_entity_attrs(
@@ -1392,16 +1490,14 @@ class Factory(interfaces.FactoryInterface):
             damage_types = [int(type_) for type_ in raw_damage_types]
 
         damagetype_hashes: typing.Optional[
-            collections.Sequence[enums.DamageType]
+            collections.Sequence[int]
         ] = None
         if raw_damagetype_hashes := payload.get("damageTypeHashes"):
-            damagetype_hashes = [
-                enums.DamageType(int(type_)) for type_ in raw_damagetype_hashes
-            ]
+            damagetype_hashes = [int(type_) for type_ in raw_damagetype_hashes]
 
-        default_damagetype_hash: typing.Optional[enums.DamageType] = None
+        default_damagetype_hash: typing.Optional[int] = None
         if raw_defaultdmg_hash := payload.get("defaultDamageTypeHash"):
-            default_damagetype_hash = enums.DamageType(int(raw_defaultdmg_hash))
+            default_damagetype_hash = int(raw_defaultdmg_hash)
 
         emblem_objective_hash: typing.Optional[int] = None
         if raw_emblem_obj_hash := payload.get("emblemObjectiveHash"):
@@ -1956,6 +2052,79 @@ class Factory(interfaces.FactoryInterface):
                 return fireteams_fields
         return fireteams_
 
+    def deserialize_fireteam_party(
+        self, payload: typedefs.JSONObject
+    ) -> fireteams.FireteamParty:
+        last_destination_hash: typing.Optional[int] = None
+        if raw_dest_hash := payload.get("lastOrbitedDestinationHash"):
+            last_destination_hash = int(raw_dest_hash)
+
+        return fireteams.FireteamParty(
+            members=[
+                self._deserialize_fireteam_party_member(member)
+                for member in payload["partyMembers"]
+            ],
+            activity=self._deserialize_fireteam_party_current_activity(
+                payload["currentActivity"]
+            ),
+            settings=self._deserialize_fireteam_party_settings(payload["joinability"]),
+            last_destination_hash=last_destination_hash,
+            tracking=payload["tracking"],
+        )
+
+    def _deserialize_fireteam_party_member(
+        self, payload: typedefs.JSONObject
+    ) -> fireteams.FireteamPartyMember:
+        status = int(payload["status"])
+        try:
+            status = fireteams.FireteamPartyMemberState(status)
+        except ValueError:
+            pass
+
+        displayname: undefined.UndefinedOr[str] = undefined.Undefined
+        if raw_name := payload.get("displayName"):
+            displayname = raw_name
+
+        return fireteams.FireteamPartyMember(
+            membership_id=int(payload["membershipId"]),
+            emblem_hash=int(payload["emblemHash"]),
+            status=status,
+            display_name=displayname,
+        )
+
+    def _deserialize_fireteam_party_current_activity(
+        self, payload: typedefs.JSONObject
+    ) -> fireteams.FireteamPartyCurrentActivity:
+        start_date: typing.Optional[datetime.datetime] = None
+        if raw_start_date := payload.get("startTime"):
+            start_date = time.clean_date(raw_start_date)
+
+        end_date: typing.Optional[datetime.datetime] = None
+        if raw_end_date := payload.get("endTime"):
+            end_date = time.clean_date(raw_end_date)
+        return fireteams.FireteamPartyCurrentActivity(
+            start_time=start_date,
+            end_time=end_date,
+            score=float(payload["score"]),
+            highest_opposing_score=float(payload["highestOpposingFactionScore"]),
+            opponenst_count=int(payload["numberOfOpponents"]),
+            player_count=int(payload["numberOfPlayers"]),
+        )
+
+    def _deserialize_fireteam_party_settings(
+        self, payload: typedefs.JSONObject
+    ) -> fireteams.FireteamPartySettings:
+        closed_reasons: int = int(payload["closedReasons"])
+        try:
+            closed_reasons = enums.ClosedReasons(closed_reasons)
+        except ValueError:
+            pass
+        return fireteams.FireteamPartySettings(
+            open_slots=int(payload["openSlots"]),
+            privacy_setting=enums.PrivacySetting(int(payload["privacySetting"])),
+            closed_reasons=closed_reasons,
+        )
+
     def deserialize_seasonal_artifact(
         self, payload: typedefs.JSONObject
     ) -> season.Artifact:
@@ -2004,4 +2173,114 @@ class Factory(interfaces.FactoryInterface):
                 int(check_id): checklists
                 for check_id, checklists in payload["data"]["checklists"].items()
             },
+        )
+
+    def deserialize_instanced_item(
+        self, payload: typedefs.JSONObject
+    ) -> items.ItemInstance:
+        damage_type_hash: typing.Optional[int] = None
+        if raw_damagetype_hash := payload.get("damageTypeHash"):
+            damage_type_hash = int(raw_damagetype_hash)
+
+        required_hashes: typing.Optional[collections.Collection[int]] = None
+        if raw_required_hashes := payload.get("unlockHashesRequiredToEquip"):
+            required_hashes = [int(raw_hash) for raw_hash in raw_required_hashes]
+
+        breaker_type: typing.Optional[items.ItemBreakerType] = None
+        if raw_break_type := payload.get("breakerType"):
+            breaker_type = items.ItemBreakerType(int(raw_break_type))
+
+        breaker_type_hash: typing.Optional[int] = None
+        if raw_break_type_hash := payload.get("breakerTypeHash"):
+            breaker_type_hash = int(raw_break_type_hash)
+
+        energy: typing.Optional[items.ItemEnergy] = None
+        if raw_energy := payload.get("energy"):
+            energy = self.deserialize_item_energy(raw_energy)
+
+        return items.ItemInstance(
+            damage_type=enums.DamageType(int(payload["damageType"])),
+            damage_type_hash=damage_type_hash,
+            primary_stat=self.deserialize_item_stats_view(payload),
+            item_level=int(payload["itemLevel"]),
+            quality=int(payload["quality"]),
+            is_equipped=payload["isEquipped"],
+            can_equip=payload["canEquip"],
+            equip_required_level=int(payload["equipRequiredLevel"]),
+            required_equip_unlock_hashes=required_hashes,
+            cant_equip_reason=int(payload["cannotEquipReason"]),
+            breaker_type=breaker_type,
+            breaker_type_hash=breaker_type_hash,
+            energy=energy,
+        )
+
+    def deserialize_item_energy(self, payload: typedefs.JSONObject) -> items.ItemEnergy:
+        energy_hash: typing.Optional[int] = None
+        if raw_energy_hash := payload.get("energyTypeHash"):
+            energy_hash = int(raw_energy_hash)
+
+        return items.ItemEnergy(
+            hash=energy_hash,
+            type=items.ItemEnergyType(int(payload["energyType"])),
+            capacity=int(payload["energyCapacity"]),
+            used_energy=int(payload["energyUsed"]),
+            unused_energy=int(payload["energyUnused"]),
+        )
+
+    def deserialize_item_perk(self, payload: typedefs.JSONObject) -> items.ItemPerk:
+        perk_hash: typing.Optional[int] = None
+        if raw_perk_hash := payload.get("perkHash"):
+            perk_hash = int(raw_perk_hash)
+
+        return items.ItemPerk(
+            hash=perk_hash,
+            icon=assets.Image(payload["iconPath"]),
+            is_active=payload["isActive"],
+            is_visible=payload["isVisible"],
+        )
+
+    def deserialize_item_socket(self, payload: typedefs.JSONObject) -> items.ItemSocket:
+        plug_hash: typing.Optional[int] = None
+        if raw_plug_hash := payload.get("plugHash"):
+            plug_hash = int(raw_plug_hash)
+
+        enable_fail_indexes: typing.Optional[list[int]] = None
+        if raw_indexes := payload.get("enableFailIndexes"):
+            enable_fail_indexes = [int(index) for index in raw_indexes]
+
+        return items.ItemSocket(
+            plug_hash=plug_hash,
+            is_enabled=payload["isEnabled"],
+            enable_fail_indexes=enable_fail_indexes,
+            is_visible=payload.get("visible"),
+        )
+
+    def deserialize_item_stats_view(
+        self, payload: typedefs.JSONObject
+    ) -> items.ItemStatsView:
+        return items.ItemStatsView(
+            stat_hash=int(payload["statHash"]), value=int(payload["value"])
+        )
+
+    def deserialize_plug_item_state(
+        self, payload: typedefs.JSONObject
+    ) -> items.PlugItemState:
+        item_hash: typing.Optional[int] = None
+        if raw_item_hash := payload.get("plugItemHash"):
+            item_hash = int(raw_item_hash)
+
+        insert_fail_indexes: typedefs.NoneOr[list[int]] = None
+        if raw_fail_indexes := payload.get("insertFailIndexes"):
+            insert_fail_indexes = [int(k) for k in raw_fail_indexes]
+
+        enable_fail_indexes: typedefs.NoneOr[list[int]] = None
+        if raw_enabled_indexes := payload.get("enableFailIndexes"):
+            enable_fail_indexes = [int(k) for k in raw_enabled_indexes]
+
+        return items.PlugItemState(
+            item_hash=item_hash,
+            insert_fail_indexes=insert_fail_indexes,
+            enable_fail_indexes=enable_fail_indexes,
+            is_enabled=payload["enabled"],
+            can_insert=payload["canInsert"],
         )

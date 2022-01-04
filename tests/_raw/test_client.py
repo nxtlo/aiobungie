@@ -233,6 +233,8 @@ async def test_profile():
             assert isinstance(inv, bool)
             assert isinstance(obj, aiobungie.crate.Objective)
 
+    if pf.transitory:
+        assert isinstance(pf.transitory, aiobungie.crate.FireteamParty)
 
 async def test_membership_types_from_id():
     u = await client.fetch_membership_from_id(MID)
@@ -401,6 +403,11 @@ async def test_unique_weapon_history():
     w = await client.fetch_unique_weapon_history(MID, CID, aiobungie.MembershipType.STEAM)
     for weapon in w:
         assert isinstance(weapon, aiobungie.crate.ExtendedWeaponValues)
+
+async def test_client_metadata():
+    client.metadata['pepe'] = 'laugh'
+    clan = await client.fetch_clan("Math Class")
+    assert clan.net.request.metadata['pepe'] == 'laugh'
 
 async def main() -> None:
     coros = []

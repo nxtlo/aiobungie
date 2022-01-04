@@ -30,124 +30,117 @@ for functional usage for the Bungie API objects.
 from __future__ import annotations
 
 __all__: tuple[str, ...] = (
-    "Application",
-    "PostActivity",
-    "Clan",
-    "Character",
+    # activity.py
     "Activity",
-    "User",
-    "ClanMember",
-    "ApplicationOwner",
-    "Profile",
-    "InventoryEntity",
-    "Entity",
-    "HardLinkedMembership",
-    "Friend",
-    "UserThemes",
-    "DestinyUser",
-    "BungieUser",
-    "ClanFeatures",
-    "ClanAdmin",
-    "GroupMember",
-    "PartialBungieUser",
-    "ProfileProgression",
-    "ProfileComponent",
-    "CharacterComponent",
-    "LinkedProfile",
-    "ClanBanner",
-    "FriendRequestView",
-    "Fireteam",
-    "FireteamMember",
-    "FireteamUser",
-    "AvalaibleFireteam",
-    "Component",
-    "ComponentFields",
-    "ComponentPrivacy",
-    "Artifact",
-    "ArtifactTier",
-    "ArtifactTierItem",
-    "CharacterScopedArtifact",
-    "CharacterProgression",
-    "ProfileItem",
-    "ProfileItemImpl",
-    "Record",
-    "CharacterRecord",
-    "Objective",
-    "ObjectiveEntity",
-    "BaseEntity",
+    "PostActivity",
+    "ActivityValues",
+    "ExtendedValues",
+    "ExtendedWeaponValues",
+    "PostActivityPlayer",
+    "PostActivityTeam",
     "AvailableActivity",
-    "Location",
     "Rewards",
-    "GuidedGame",
     "Challenges",
     "Matchmaking",
-    "ActivityEntity",
-    "PlaylistActivityEntity",
-    "RecordScores",
-    "MilestoneContent",
-    "MilestoneItems",
-    "Milestone",
-    "MilestoneReward",
-    "MilestoneRewardEntry",
-    "MilestoneActivity",
-    "MilestoneQuest",
-    "MilestoneVendor",
-    "MilestoneActivityPhase",
-    "QuestStatus",
-    "Progression",
-    "Factions",
-    "ArtifactTier",
-    "ArtifactTierItem",
-    "CharacterScopedArtifact",
+    "GuidedGame",
+    "Location",
+    "CharacterActivity",
+    # application.py
+    "Application",
+    "ApplicationOwner",
+    # character.py
+    "Character",
+    "Dye",
+    "MinimalEquipments",
+    "RenderedData",
+    "CustomizationOptions",
+    "CharacterProgression",
+    # clans.py
+    "Clan",
+    "ClanMember",
+    "ClanAdmin",
+    "ClanFeatures",
+    "ClanConversation",
+    "ClanBanner",
+    "GroupMember",
+    # components.py
+    "Component",
     "CharacterComponent",
     "ProfileComponent",
     "RecordsComponent",
     "ItemsComponent",
     "VendorsComponent",
-    "ActivityValues",
-    "PostActivityPlayer",
-    "PostActivityTeam",
-    "ExtendedValues",
-    "ExtendedWeaponValues",
-    "UserCredentials",
+    # entity.py
+    "InventoryEntity",
+    "ActivityEntity",
+    "PlaylistActivityEntity",
+    "ObjectiveEntity",
+    "BaseEntity",
     "SearchableEntity",
+    "ActivityEntity",
+    "PlaylistActivityEntity",
+    # fireteams.py
+    "Fireteam",
+    "AvalaibleFireteam",
+    "FireteamUser",
+    "FireteamMember",
+    "FireteamPartySettings",
+    "FireteamPartyMember",
+    "FireteamPartyCurrentActivity",
+    "FireteamParty",
+    # friends.py
+    "Friend",
+    "FriendRequestView",
+    # milestones.py
+    "MilestoneContent",
+    "MilestoneItems",
+    "Milestone",
+    "MilestoneActivity",
+    "MilestoneQuest",
+    "MilestoneVendor",
+    "MilestoneActivityPhase",
+    "QuestStatus",
+    "MilestoneReward",
+    "MilestoneRewardEntry",
+    # profile.py
+    "Profile",
+    "LinkedProfile",
+    "ProfileProgression",
+    "ProfileItemImpl",
+    # progressions.py
+    "Progression",
+    "Factions",
+    # records.py
+    "Objective",
+    "Record",
+    "CharacterRecord",
+    "RecordScores",
+    # season.py
+    "Artifact",
+    "ArtifactTier",
+    "ArtifactTierItem",
+    "CharacterScopedArtifact",
+    # user.py
+    "User",
+    "HardLinkedMembership",
+    "UserThemes",
+    "BungieUser",
+    "PartialBungieUser",
+    "DestinyUser",
+    "UserCredentials",
 )
 
-from .activity import Activity
-from .activity import ActivityValues
-from .activity import AvailableActivity
-from .activity import Challenges
-from .activity import ExtendedValues
-from .activity import ExtendedWeaponValues
-from .activity import GuidedGame
-from .activity import Location
-from .activity import Matchmaking
-from .activity import PostActivity
-from .activity import PostActivityPlayer
-from .activity import PostActivityTeam
-from .activity import Rewards
+from .activity import *
 from .application import *
 from .character import *
 from .clans import *
 from .components import *
-from .entity import ActivityEntity
-from .entity import BaseEntity
-from .entity import Entity
-from .entity import InventoryEntity
-from .entity import ObjectiveEntity
-from .entity import PlaylistActivityEntity
-from .entity import SearchableEntity
-from .fireteams import AvalaibleFireteam
-from .fireteams import Fireteam
-from .fireteams import FireteamMember
-from .fireteams import FireteamUser
+from .entity import *
+from .fireteams import *
 from .friends import *
 from .milestones import *
 from .profile import *
 from .progressions import *
-from .records import CharacterRecord
-from .records import Objective
-from .records import Record
-from .records import RecordScores
+from .records import *
 from .season import *
 from .user import *

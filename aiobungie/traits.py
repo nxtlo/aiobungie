@@ -99,6 +99,11 @@ class RESTful(typing.Protocol):
         """Return the client id of this REST client if provided, Otherwise None"""
         raise NotImplementedError
 
+    @property
+    def metadata(self) -> collections.MutableMapping[typing.Any, typing.Any]:
+        """A mutable mapping storage for the user's needs."""
+        raise NotImplementedError
+
     async def close(self) -> None:
         """Close the rest client."""
         raise NotImplementedError
@@ -166,4 +171,9 @@ class ClientBase(Netrunner, Serializable, typing.Protocol):
     @property
     def rest(self) -> interfaces.RESTInterface:
         """Returns the REST client for the this client."""
+        raise NotImplementedError
+
+    @property
+    def metadata(self) -> collections.MutableMapping[typing.Any, typing.Any]:
+        """A mutable mapping storage for the user's needs."""
         raise NotImplementedError

@@ -28,9 +28,7 @@ __all__: tuple[str, ...] = (
     "Profile",
     "LinkedProfile",
     "ProfileProgression",
-    "ProfileItem",
     "ProfileItemImpl",
-    "ProfilePlug"
 )
 
 import abc
@@ -95,24 +93,6 @@ class LinkedProfile:
     def __aiter__(self) -> helpers.AsyncIterator[user.DestinyUser]:
         return helpers.AsyncIterator(self.profiles)
 
-@attrs.define(hash=True, kw_only=True, weakref_slot=False)
-class ProfilePlug:
-    """Information found in a profile item sockets component."""
-
-    plug_hash: typing.Optional[int] = attrs.field(hash=True)
-    """The plug item hash."""
-
-    can_insert: bool = attrs.field(hash=False)
-    """Whether you can insert the plug or not."""
-
-    is_enabled: bool = attrs.field(hash=False)
-    """Whether this plug is enabled or not."""
-
-    is_visible: typing.Optional[bool] = attrs.field(hash=False)
-    """Either the plug is visible or not."""
-
-    enable_fail_indexes: typing.Optional[list[int]] = attrs.field(repr=False, hash=False)
-    """If a plug is inserted but not enabled, this field will be available with indexes into the plug item definition."""
 
 @attrs.define(hash=False, kw_only=True, weakref_slot=False, eq=False)
 class ProfileProgression:

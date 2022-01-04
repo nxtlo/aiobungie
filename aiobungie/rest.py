@@ -343,7 +343,14 @@ class RESTClient(interfaces.RESTInterface):
         This is only needed if you're fetching OAuth2 tokens with this client.
     """
 
-    __slots__ = ("_token", "_session", "_max_retries", "_client_secret", "_client_id")
+    __slots__ = (
+        "_token",
+        "_session",
+        "_max_retries",
+        "_client_secret",
+        "_client_id",
+        "_metadata",
+    )
 
     def __init__(
         self,
@@ -359,6 +366,7 @@ class RESTClient(interfaces.RESTInterface):
         self._client_id = client_id
         self._token: str = token
         self._max_retries = max_retries
+        self._metadata: collections.MutableMapping[typing.Any, typing.Any] = {}
 
     def _acquire_session(self) -> _Session:
         asyncio.get_running_loop()
@@ -381,6 +389,10 @@ class RESTClient(interfaces.RESTInterface):
     @property
     def client_id(self) -> typing.Optional[int]:
         return self._client_id
+
+    @property
+    def metadata(self) -> collections.MutableMapping[typing.Any, typing.Any]:
+        return self._metadata
 
     @typing.final
     async def _request(

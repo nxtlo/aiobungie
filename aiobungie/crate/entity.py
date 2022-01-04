@@ -32,8 +32,6 @@ __all__: tuple[str, ...] = (
     "InventoryEntity",
     "Entity",
     "ObjectiveEntity",
-    "GatingScope",
-    "ValueUIStyle",
     "BaseEntity",
     "ActivityEntity",
     "PlaylistActivityEntity",
@@ -343,7 +341,7 @@ class InventoryEntity(BaseEntity, Entity):
     default_damagetype: int = attrs.field(repr=False)
     """"""
 
-    default_damagetype_hash: typing.Optional[enums.DamageType] = attrs.field(repr=False)
+    default_damagetype_hash: typing.Optional[int] = attrs.field(repr=False)
     """"""
 
     collectible_hash: typing.Optional[int] = attrs.field(repr=False, hash=True)

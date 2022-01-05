@@ -116,9 +116,9 @@ class Factory(interfaces.FactoryInterface):
         self, payload: typedefs.JSONObject
     ) -> user.DestinyUser:
         name: undefined.UndefinedOr[str] = undefined.Undefined
-        if (raw_name := payload.get("bungieGlobalDisplayName", "")) and not typedefs.is_unknown(
-            raw_name
-        ):
+        if (
+            raw_name := payload.get("bungieGlobalDisplayName", "")
+        ) and not typedefs.is_unknown(raw_name):
             name = raw_name
 
         return user.DestinyUser(
@@ -1168,6 +1168,24 @@ class Factory(interfaces.FactoryInterface):
             if "data" in raw_transitory:
                 transitory = self.deserialize_fireteam_party(raw_transitory["data"])
 
+        item_components: typing.Optional[components.ItemsComponent] = None
+        if raw_item_components := payload.get("itemComponents"):
+            item_components = self.deserialize_items_component(raw_item_components)
+
+        profile_plugsets: typing.Optional[collections.Sequence[items.ItemSocket]] = None
+
+        # TODO: Finish this
+        # if raw_profile_plugs := payload.get("profilePlugSets"):
+        #     profile_plugsets = [
+        #         self.deserialize_item_socket(inner)
+        #         for item in raw_profile_plugs["data"]
+        #         for inner in list(item['plugs'].values())
+        #     ]
+
+        character_plugsets: typing.Optional[
+            collections.Mapping[int, collections.Sequence[items.ItemSocket]]
+        ] = None
+
         return components.Component(
             profiles=profile_,
             profile_progression=profile_progression,
@@ -1186,9 +1204,9 @@ class Factory(interfaces.FactoryInterface):
             metrics=metrics,
             root_node_hash=root_node_hash,
             transitory=transitory,
-            item_components=None,
-            profile_plugsets=None,
-            character_plugsets=None
+            item_components=item_components,
+            profile_plugsets=profile_plugsets,
+            character_plugsets=character_plugsets,
         )
 
     def deserialize_items_component(
@@ -1201,7 +1219,7 @@ class Factory(interfaces.FactoryInterface):
             instances = [
                 {
                     int(ins_id): self.deserialize_instanced_item(item)
-                    for ins_id, item in raw_instances["data"]
+                    for ins_id, item in raw_instances["data"].items()
                 }
             ]
 
@@ -1211,15 +1229,15 @@ class Factory(interfaces.FactoryInterface):
         if raw_render_data := payload.get("renderData"):
             render_data = {
                 int(ins_id): (data["useCustomDyes"], data["artRegions"])
-                for ins_id, data in raw_render_data["data"]
+                for ins_id, data in raw_render_data["data"].items()
             }
 
         stats: typing.Optional[collections.Mapping[int, items.ItemStatsView]] = None
         if raw_stats := payload.get("stats"):
             builder: collections.Mapping[int, items.ItemStatsView] = {}
             for ins_id, stat in raw_stats["data"].items():
-                for _, items in stat.items():
-                    builder[int(ins_id)] = self.deserialize_item_stats_view(items)
+                for _, items_ in stat.items():
+                    builder[int(ins_id)] = self.deserialize_item_stats_view(items_)  # type: ignore[index]
             stats = builder
 
         sockets: typing.Optional[
@@ -1227,8 +1245,10 @@ class Factory(interfaces.FactoryInterface):
         ] = None
         if raw_sockets := payload.get("sockets"):
             sockets = {
-                int(ins_id): [self.deserialize_item_socket(item["sockets"])]
-                for ins_id, item in raw_sockets["data"]
+                int(ins_id): [
+                    self.deserialize_item_socket(socket) for socket in item["sockets"]
+                ]
+                for ins_id, item in raw_sockets["data"].items()
             }
 
         objeectives: typing.Optional[
@@ -1236,8 +1256,9 @@ class Factory(interfaces.FactoryInterface):
         ] = None
         if raw_objectives := payload.get("objectives"):
             objeectives = {
-                int(ins_id): [self.deserialize_objectives(data["objectives"])]
-                for ins_id, data in raw_objectives["data"]
+                int(ins_id): [self.deserialize_objectives(objective)]
+                for ins_id, data in raw_objectives["data"].items()
+                for objective in data["objectives"]
             }
 
         perks: typing.Optional[
@@ -1245,22 +1266,43 @@ class Factory(interfaces.FactoryInterface):
         ] = None
         if raw_perks := payload.get("perks"):
             perks = {
-                int(ins_id): [self.deserialize_item_perk(item["perks"])]
-                for ins_id, item in raw_perks["data"]
+                int(ins_id): [
+                    self.deserialize_item_perk(perk) for perk in item["perks"]
+                ]
+                for ins_id, item in raw_perks["data"].items()
             }
 
         plug_states: typing.Optional[collections.Sequence[items.PlugItemState]] = None
         if raw_plug_states := payload.get("plugStates"):
-            pending: collections.Sequence[items.PlugItemState] = []
+            pending_states: list[items.PlugItemState] = []
             for _, plug in raw_plug_states["data"].items():
-                pending.append(self.deserialize_plug_item_state(plug))
-            plug_states = pending
+                pending_states.append(self.deserialize_plug_item_state(plug))
+            plug_states = pending_states
 
-        reusable_plugs: typing.Optional[collections.Mapping[int, collections.Sequence[items.PlugItemState]]] = None
+        reusable_plugs: typing.Optional[
+            collections.Mapping[int, collections.Sequence[items.PlugItemState]]
+        ] = None
         if raw_re_plugs := payload.get("reusablePlugs"):
             reusable_plugs = {
-                int(ins_id): [self.deserialize_plug_item_state(plug['plugs'])]
-                for ins_id, plug in raw_re_plugs['data']
+                int(ins_id): [
+                    self.deserialize_plug_item_state(state) for state in inner
+                ]
+                for ins_id, plug in raw_re_plugs["data"].items()
+                for inner in list(plug["plugs"].values())
+            }
+
+        plug_objectives: typing.Optional[
+            collections.Mapping[
+                int, collections.Mapping[int, collections.Collection[records.Objective]]
+            ]
+        ] = None
+        if raw_plug_objectives := payload.get("plugObjectives"):
+            plug_objectives = {
+                int(ins_id): {
+                    int(obj_hash): [self.deserialize_objectives(obj) for obj in objs]
+                    for obj_hash, objs in inner["objectivesPerPlug"].items()
+                }
+                for ins_id, inner in raw_plug_objectives["data"].items()
             }
 
         return components.ItemsComponent(
@@ -1272,7 +1314,7 @@ class Factory(interfaces.FactoryInterface):
             perks=perks,
             plug_states=plug_states,
             reusable_plugs=reusable_plugs,
-            plug_objectives=None
+            plug_objectives=plug_objectives,
         )
 
     def deserialize_character_component(  # type: ignore[call-arg]
@@ -1329,7 +1371,7 @@ class Factory(interfaces.FactoryInterface):
             character=character_,
             character_records=character_records,
             profile_records=None,
-            item_components=item_components
+            item_components=item_components,
         )
 
     def _set_entity_attrs(
@@ -1489,9 +1531,7 @@ class Factory(interfaces.FactoryInterface):
         if raw_damage_types := payload.get("damageTypes"):
             damage_types = [int(type_) for type_ in raw_damage_types]
 
-        damagetype_hashes: typing.Optional[
-            collections.Sequence[int]
-        ] = None
+        damagetype_hashes: typing.Optional[collections.Sequence[int]] = None
         if raw_damagetype_hashes := payload.get("damageTypeHashes"):
             damagetype_hashes = [int(type_) for type_ in raw_damagetype_hashes]
 
@@ -2198,10 +2238,14 @@ class Factory(interfaces.FactoryInterface):
         if raw_energy := payload.get("energy"):
             energy = self.deserialize_item_energy(raw_energy)
 
+        primary_stats = None
+        if raw_primary_stats := payload.get("primaryStat"):
+            primary_stats = self.deserialize_item_stats_view(raw_primary_stats)
+
         return items.ItemInstance(
             damage_type=enums.DamageType(int(payload["damageType"])),
             damage_type_hash=damage_type_hash,
-            primary_stat=self.deserialize_item_stats_view(payload),
+            primary_stat=primary_stats,
             item_level=int(payload["itemLevel"]),
             quality=int(payload["quality"]),
             is_equipped=payload["isEquipped"],
@@ -2236,7 +2280,7 @@ class Factory(interfaces.FactoryInterface):
             hash=perk_hash,
             icon=assets.Image(payload["iconPath"]),
             is_active=payload["isActive"],
-            is_visible=payload["isVisible"],
+            is_visible=payload["visible"],
         )
 
     def deserialize_item_socket(self, payload: typedefs.JSONObject) -> items.ItemSocket:
@@ -2259,7 +2303,7 @@ class Factory(interfaces.FactoryInterface):
         self, payload: typedefs.JSONObject
     ) -> items.ItemStatsView:
         return items.ItemStatsView(
-            stat_hash=int(payload["statHash"]), value=int(payload["value"])
+            stat_hash=payload.get("statHash"), value=payload.get("value")
         )
 
     def deserialize_plug_item_state(

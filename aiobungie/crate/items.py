@@ -30,6 +30,8 @@ __all__: tuple[str, ...] = (
     "ItemEnergy",
     "ItemStatsView",
     "PlugItemState",
+    "ItemSocket",
+    "ItemPerk",
 )
 
 import typing
@@ -88,7 +90,9 @@ class ItemSocket:
     enable_fail_indexes: typing.Optional[list[int]] = attrs.field(
         repr=False, hash=False
     )
-    """If a plug is inserted but not enabled, this field will be available with indexes into the plug item definition."""
+    """If a plug is inserted but not enabled,
+    this field will be available with indexes into the plug item definition.
+    """
 
 
 @attrs.define(hash=True, kw_only=True, weakref_slot=False)
@@ -107,7 +111,9 @@ class PlugItemState:
     insert_fail_indexes: typing.Optional[list[int]]
 
     enable_fail_indexes: typing.Optional[list[int]]
-    """If a plug is inserted but not enabled, this field will be available with indexes into the plug item definition."""
+    """If a plug is inserted but not enabled,
+    this field will be available with indexes into the plug item definition.
+    """
 
 
 @attrs.define(kw_only=True)
@@ -151,11 +157,11 @@ class ItemEnergy:
 class ItemStatsView:
     """A view of a Destiny 2 item stats."""
 
-    stat_hash: int
-    """The stat hash."""
+    stat_hash: typing.Optional[int]
+    """The stat hash if set."""
 
-    value: int
-    """The value of this stat."""
+    value: typing.Optional[int]
+    """The value of this stat if set."""
 
 
 @attrs.define(kw_only=True)
@@ -168,8 +174,8 @@ class ItemInstance:
     damage_type_hash: typing.Optional[int]
     """The hash of the item damage type."""
 
-    primary_stat: ItemStatsView
-    """The item's stats."""
+    primary_stat: typing.Optional[ItemStatsView]
+    """The item's primary stats if has one."""
 
     item_level: int
     """The level of this item."""
@@ -187,7 +193,9 @@ class ItemInstance:
     """The required level to be able to equip this item."""
 
     required_equip_unlock_hashes: typing.Optional[collections.Collection[int]]
-    """If available, A collections of hash flags mapped to a its definitions needed in oreder to equip this item will be returned."""
+    """If available, A collections of hash flags mapped to a its definitions
+    needed in oreder to equip this item will be returned.
+    """
 
     cant_equip_reason: int
     """If the item can't be equipped, This will be the reason why."""

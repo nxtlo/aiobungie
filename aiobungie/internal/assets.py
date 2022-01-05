@@ -41,7 +41,7 @@ class Image:
         return self.__str__()
 
     def __str__(self) -> str:
-        return f"{url.BASE}/{self.path if self.path else self.missing_path}"
+        return f"{url.BASE}/{self.path if self.path else self.missing_path()}"
 
     @staticmethod
     def missing_path() -> str:
@@ -52,7 +52,7 @@ class Image:
         return f"<Image {undefined.Undefined}>"
 
     def is_missing(self) -> bool:
-        return self.path == self.missing_path()
+        return not self.path
 
     @property
     def url(self) -> str:

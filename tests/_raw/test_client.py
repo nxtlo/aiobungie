@@ -137,18 +137,19 @@ async def test_char():
         MID,
         aiobungie.MembershipType.STEAM,
         CID,
-        aiobungie.ComponentType.CHARACTER_ACTIVITIES,
-        aiobungie.ComponentType.CHARACTERS,
+        *aiobungie.ComponentType.ALL_CHARACTERS.value,
+        *aiobungie.ComponentType.ALL_ITEMS.value
     )
     assert isinstance(c, aiobungie.crate.CharacterComponent)
     assert c.activities
     assert c.character
-    assert c.character_records is None
-    assert c.equipment is None
-    assert c.inventory is None
+    assert c.character_records
+    assert c.equipment
+    assert c.inventory
+    assert c.render_data
+    assert c.progressions
     assert c.profile_records is None
-    assert c.render_data is None
-    assert c.progressions is None
+    assert c.item_components
     acts = await c.character.fetch_activities(aiobungie.GameMode.RAID, limit=10)
     assert len(acts) == 10
     for act in acts:
@@ -235,6 +236,7 @@ async def test_profile():
 
     if pf.transitory:
         assert isinstance(pf.transitory, aiobungie.crate.FireteamParty)
+    assert pf.item_components
 
 async def test_membership_types_from_id():
     u = await client.fetch_membership_from_id(MID)

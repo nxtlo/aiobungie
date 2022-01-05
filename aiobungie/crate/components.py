@@ -35,6 +35,9 @@ __all__: tuple[str, ...] = (
     "RecordsComponent",
     "ItemsComponent",
     "VendorsComponent",
+    "RecordsComponent",
+    "UninstancedItemsComponent",
+    "StringVariableComponent",
 )
 
 import typing
@@ -182,7 +185,7 @@ class UninstancedItemsComponent:
     """A mapping for the item instance id to its perks."""
 
 
-@attrs.define(kw_only=True)
+@attrs.define(kw_only=True, repr=False)
 class ItemsComponent(UninstancedItemsComponent):
     """Represents items-only Bungie component.
 
@@ -190,7 +193,7 @@ class ItemsComponent(UninstancedItemsComponent):
 
     Note
     -----
-    All fields will always be `None` until either `aiobungie.ComponentType.CHARACTER_INVENTORY`
+    Some fields will always be `None` until either `aiobungie.ComponentType.CHARACTER_INVENTORY`
     or `aiobungie.ComponentType.CHARACTER_EQUIPMENT` is passed to the request.
     """
 
@@ -228,7 +231,7 @@ class ItemsComponent(UninstancedItemsComponent):
         collections.Mapping[int, collections.Sequence[items.ItemSocket]]
     ] = attrs.field()
     """A mapping from the item instance id to a sequence of inserted sockets into it.
-    
+
     This will be available when `aiobungie.ComponentType.ITEM_SOCKETS` is passed to the request.
     otherwise will be `None`.
     """
@@ -238,7 +241,7 @@ class ItemsComponent(UninstancedItemsComponent):
     ] = attrs.field()
     """If the item supports reusable plugs,
     this is the mapping from the item instance id to a sequence of plugs that are allowed to be used for the socket.
-    
+
     This will be available when `aiobungie.ComponentType.ITEM_SOCKETS` is passed to the request.
     otherwise will be `None`.
     """
@@ -248,9 +251,12 @@ class ItemsComponent(UninstancedItemsComponent):
             int, collections.Mapping[int, collections.Collection[records_.Objective]]
         ]
     ] = attrs.field()
+    """A mapping from the item instance id to a mapping of the plug hash to
+    a collections of the plug objectives being returned.
 
-    # TODO: Is this needed?
-    # talen_grids: ...
+    This will be available when `aiobungie.ComponentType.ITEM_OBJECTIVES` is passed to the request.
+    otherwise will be `None`.
+    """
 
     plug_states: typing.Optional[
         collections.Sequence[items.PlugItemState]
@@ -422,7 +428,10 @@ class CharacterComponent(RecordsComponent, VendorsComponent):
 
 @attrs.define(kw_only=True)
 class Component(
-    ProfileComponent, RecordsComponent, StringVariableComponent, MetricsComponent
+    ProfileComponent,
+    RecordsComponent,
+    StringVariableComponent,
+    MetricsComponent
 ):
     """Concerete implementation of all Bungie components.
 
@@ -531,6 +540,11 @@ class Component(
     This will always be `None` unless `aiobungie.ComponentType.CHARACTER_EQUIPMENT`
     is passed to the request components.
     """
+
+    # character_uninstanced_component: typing.Optional[
+    #     collections.Mapping[int, UninstancedItemsComponent]
+    # ] = attrs.field()
+    """A mapping from the character id to its uninstanced item components."""
 
     transitory: typing.Optional[fireteams.FireteamParty] = attrs.field()
     """Profile Transitory component.

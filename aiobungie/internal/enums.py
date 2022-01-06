@@ -42,7 +42,7 @@ __all__: tuple[str, ...] = (
     "Stat",
     "WeaponType",
     "DamageType",
-    "Item",
+    "ItemType",
     "Place",
     "ItemTier",
     "AmmoType",
@@ -346,9 +346,14 @@ class ComponentType(Enum):
     ITEM_STATS = 304
     ITEM_SOCKETS = 305
     ITEM_TALENT_GRINDS = 306
+    ITEM_PLUG_STATES = 308
+    ITEM_PLUG_OBJECTIVES = 309
     ITEM_REUSABLE_PLUGS = 310
 
     ALL_ITEMS = (
+        ITEM_PLUG_OBJECTIVES,
+        ITEM_PLUG_STATES,
+        ITEM_SOCKETS,
         ITEM_INSTANCES,
         ITEM_OBJECTIVES,
         ITEM_PERKS,
@@ -498,17 +503,17 @@ class DamageType(IntEnum):
     """Enums for Destiny Damage types"""
 
     NONE = 0
-    KINETIC = 3373582085
-    SOLAR = 1847026933
-    VOID = 3454344768
-    ARC = 2303181850
-    STASIS = 151347233
-    RAID = 1067729826
+    KINETIC = 1
+    ARC = 2
+    SOLAR = 3
+    VOID = 4
+    RAID = 5
     """This is a special damage type reserved for some raid activity encounters."""
+    STASIS = 6
 
 
 @typing.final
-class Item(IntEnum):
+class ItemType(IntEnum):
     """Enums for Destiny2's item types."""
 
     NONE = 0

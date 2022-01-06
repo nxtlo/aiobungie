@@ -6,6 +6,7 @@ from .components import *
 from .entity import *
 from .fireteams import *
 from .friends import *
+from .items import *
 from .milestones import *
 from .profile import *
 from .progressions import *
@@ -60,6 +61,12 @@ from .user import *
 #   GuidedGame
 #   HardLinkedMembership
 #   InventoryEntity
+#   ItemEnergy
+#   ItemInstance
+#   ItemPerk
+#   ItemPerk
+#   ItemSocket
+#   ItemStatsView
 #   ItemsComponent
 #   LinkedProfile
 #   Location
@@ -79,6 +86,7 @@ from .user import *
 #   PartialBungieUser
 #   PlaylistActivityEntity
 #   PlaylistActivityEntity
+#   PlugItemState
 #   PostActivity
 #   PostActivityPlayer
 #   PostActivityTeam
@@ -91,9 +99,12 @@ from .user import *
 #   Record
 #   RecordScores
 #   RecordsComponent
+#   RecordsComponent
 #   RenderedData
 #   Rewards
 #   SearchableEntity
+#   StringVariableComponent
+#   UninstancedItemsComponent
 #   User
 #   UserCredentials
 #   UserThemes

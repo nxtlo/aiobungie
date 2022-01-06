@@ -41,23 +41,27 @@ class Image:
         return self.__str__()
 
     def __str__(self) -> str:
-        return url.BASE + self.path if self.path is not None else self.partial()
+        return f"{url.BASE}/{self.path if self.path else self.missing_path()}"
+
+    @staticmethod
+    def missing_path() -> str:
+        return "img/misc/missing_icon_d2.png"
+
+    @staticmethod
+    def partial() -> str:
+        return f"<Image {undefined.Undefined}>"
+
+    def is_missing(self) -> bool:
+        return not self.path
 
     @property
     def url(self) -> str:
         return str(self)
 
-    @property
-    def is_jpg(self) -> bool:
-        """Checks if the given path for the image is a JPEG type."""
-        if self.path is not None and self.path.endswith(".jpg"):
+    def typeof(self, mimtype: typing.Literal[".jpg", ".png", ".gif"]) -> bool:
+        if self.path is not None and self.path.endswith(mimtype):
             return True
         return False
-
-    @staticmethod
-    def partial() -> str:
-        """A partial image that just returns undefined."""
-        return f"Image <{undefined.Undefined}>"
 
 
 MaybeImage = typing.Union[Image, str, None]

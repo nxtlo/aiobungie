@@ -51,7 +51,7 @@ if typing.TYPE_CHECKING:
     from aiobungie.crate import season
 
 
-@attrs.define(hash=False, kw_only=True, weakref_slot=False)
+@attrs.define(hash=True, kw_only=True, weakref_slot=False)
 class LinkedProfile:
     """Represents a membership linked profile information summary.
 

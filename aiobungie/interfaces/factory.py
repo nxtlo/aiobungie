@@ -41,6 +41,7 @@ if typing.TYPE_CHECKING:
     from aiobungie.crate import entity
     from aiobungie.crate import fireteams
     from aiobungie.crate import friends
+    from aiobungie.crate import items
     from aiobungie.crate import milestones
     from aiobungie.crate import profile
     from aiobungie.crate import records
@@ -617,6 +618,12 @@ class FactoryInterface(abc.ABC):
             of the deserialized payload.
         """
 
+    @abc.abstractmethod
+    def deserialize_items_component(
+        self, payload: typedefs.JSONObject
+    ) -> components.ItemsComponent:
+        """Deserialize a JSON objects within the `itemComponents` key.`"""
+
     # Records
 
     @abc.abstractmethod
@@ -1055,3 +1062,47 @@ class FactoryInterface(abc.ABC):
         `aiobungie.crate.Artifact`
             A seasonal artifact object of the deserialized payload.
         """
+
+    # Items
+
+    @abc.abstractmethod
+    def deserialize_instanced_item(
+        self, payload: typedefs.JSONObject
+    ) -> items.ItemInstance:
+        """Deserialize a JSON object into an instanced item.
+
+        Parameters
+        -----------
+        payload : `aiobungie.internal.helpers.JsonObject`
+            The JSON payload.
+
+        Returns
+        -------
+        `aiobungie.crate.ItemInstance`
+            An instanced item object.
+        """
+
+    # No docs for this.
+    @abc.abstractmethod
+    def deserialize_item_energy(self, payload: typedefs.JSONObject) -> items.ItemEnergy:
+        ...
+
+    @abc.abstractmethod
+    def deserialize_item_perk(self, payload: typedefs.JSONObject) -> items.ItemPerk:
+        ...
+
+    @abc.abstractmethod
+    def deserialize_item_socket(self, payload: typedefs.JSONObject) -> items.ItemSocket:
+        ...
+
+    @abc.abstractmethod
+    def deserialize_item_stats_view(
+        self, payload: typedefs.JSONObject
+    ) -> items.ItemStatsView:
+        ...
+
+    @abc.abstractmethod
+    def deserialize_plug_item_state(
+        self, payload: typedefs.JSONObject
+    ) -> items.PlugItemState:
+        ...

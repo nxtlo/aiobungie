@@ -70,6 +70,9 @@ __all__: tuple[str, ...] = (
     "RecordsComponent",
     "ItemsComponent",
     "VendorsComponent",
+    "RecordsComponent",
+    "UninstancedItemsComponent",
+    "StringVariableComponent",
     # entity.py
     "InventoryEntity",
     "ActivityEntity",
@@ -128,6 +131,14 @@ __all__: tuple[str, ...] = (
     "PartialBungieUser",
     "DestinyUser",
     "UserCredentials",
+    # items.py
+    "ItemPerk",
+    "ItemInstance",
+    "ItemEnergy",
+    "ItemStatsView",
+    "PlugItemState",
+    "ItemSocket",
+    "ItemPerk",
 )
 
 from .activity import *
@@ -138,6 +149,7 @@ from .components import *
 from .entity import *
 from .fireteams import *
 from .friends import *
+from .items import *
 from .milestones import *
 from .profile import *
 from .progressions import *

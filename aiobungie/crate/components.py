@@ -35,6 +35,9 @@ __all__: tuple[str, ...] = (
     "RecordsComponent",
     "ItemsComponent",
     "VendorsComponent",
+    "RecordsComponent",
+    "UninstancedItemsComponent",
+    "StringVariableComponent",
 )
 
 import typing
@@ -49,6 +52,7 @@ if typing.TYPE_CHECKING:
     from aiobungie.crate import activity
     from aiobungie.crate import character as character_
     from aiobungie.crate import fireteams
+    from aiobungie.crate import items
     from aiobungie.crate import profile
     from aiobungie.crate import records as records_
 
@@ -72,7 +76,7 @@ class ComponentFields(enums.Enum):
 
 # Main component cannot inherit from multiple classes that have `__slots__`
 # Which's why some components have no slots.
-@attrs.define(kw_only=True, weakref_slot=False, slots=False)
+@attrs.define(kw_only=True, slots=False)
 class RecordsComponent:
     """Represents records-only Bungie component.
 
@@ -112,7 +116,7 @@ class RecordsComponent:
     """
 
 
-@attrs.define(kw_only=True, weakref_slot=False)
+@attrs.define(kw_only=True)
 class ProfileComponent:
     """Represents a profile-only Bungie component.
 
@@ -166,24 +170,140 @@ class ProfileComponent:
     """
 
 
-@attrs.define(kw_only=True, weakref_slot=False, slots=False)
-class ItemsComponent:
+@attrs.define(kw_only=True)
+class UninstancedItemsComponent:
+    """Represents Components belonging to the player's uninstanced items."""
+
+    objectives: typing.Optional[
+        collections.Mapping[int, collections.Sequence[records_.Objective]]
+    ] = attrs.field()
+    """A mapping from the objective id to a sequence of objectives component."""
+
+    perks: typing.Optional[
+        collections.Mapping[int, collections.Collection[items.ItemPerk]]
+    ] = attrs.field()
+    """A mapping for the item instance id to its perks."""
+
+
+@attrs.define(kw_only=True, repr=False)
+class ItemsComponent(UninstancedItemsComponent):
     """Represents items-only Bungie component.
 
-    This includes any item related object.
+    This component implements most of the `ItemX` components, i.e. ItemInstances, ItemStats, ItemSockets, etc.
+
+    Note
+    -----
+    Some fields will always be `None` until either `aiobungie.ComponentType.CHARACTER_INVENTORY`
+    or `aiobungie.ComponentType.CHARACTER_EQUIPMENT` is passed to the request.
     """
 
-    # TODO: Impl this.
+    instances: typing.Optional[
+        collections.Sequence[collections.Mapping[int, items.ItemInstance]]
+    ] = attrs.field()
+    """A sequence from the item instance id to an item object bound to this instance.
+
+    This will be available when `aiobungie.ComponentType.ITEM_INSTANCES` is passed to the request.
+    otherwise will be `None`.
+    """
+
+    render_data: typing.Optional[
+        collections.Mapping[int, tuple[bool, dict[int, int]]]
+    ] = attrs.field()
+    """A mapping from the item instance id to tuple that holds two values.
+
+    * First one is a bool that determines whether this item uses custom dyes or not.
+    * Second one is dict that holds int key that mapps to int value of the art regions.
+
+    This will be available when `aiobungie.ComponentType.ITEM_RENDER_DATA` is passed to the request.
+    otherwise will be `None`.
+    """
+
+    stats: typing.Optional[
+        collections.Mapping[int, items.ItemStatsView]
+    ] = attrs.field()
+    """A mapping of the item instance id to a view of its stats.
+
+    This will be available when `aiobungie.ComponentType.ITEM_STATS` is passed to the request.
+    otherwise will be `None`.
+    """
+
+    sockets: typing.Optional[
+        collections.Mapping[int, collections.Sequence[items.ItemSocket]]
+    ] = attrs.field()
+    """A mapping from the item instance id to a sequence of inserted sockets into it.
+
+    This will be available when `aiobungie.ComponentType.ITEM_SOCKETS` is passed to the request.
+    otherwise will be `None`.
+    """
+
+    reusable_plugs: typing.Optional[
+        collections.Mapping[int, collections.Sequence[items.PlugItemState]]
+    ] = attrs.field()
+    """If the item supports reusable plugs,
+    this is the mapping from the item instance id to a sequence of plugs that are allowed to be used for the socket.
+
+    This will be available when `aiobungie.ComponentType.ITEM_SOCKETS` is passed to the request.
+    otherwise will be `None`.
+    """
+
+    plug_objectives: typing.Optional[
+        collections.Mapping[
+            int, collections.Mapping[int, collections.Collection[records_.Objective]]
+        ]
+    ] = attrs.field()
+    """A mapping from the item instance id to a mapping of the plug hash to
+    a collections of the plug objectives being returned.
+
+    This will be available when `aiobungie.ComponentType.ITEM_OBJECTIVES` is passed to the request.
+    otherwise will be `None`.
+    """
+
+    plug_states: typing.Optional[
+        collections.Sequence[items.PlugItemState]
+    ] = attrs.field()
+    """A sequence of the plug states.
+
+    This will be available when `aiobungie.ComponentType.ITEM_SOCKETS` is passed to the request.
+    otherwise will be `None`.
+    """
+
+    def any(self) -> bool:
+        """Returns `True` if one if the components are available, `False` otherwise."""
+        return any(
+            (
+                self.instances,
+                self.render_data,
+                self.stats,
+                self.sockets,
+                self.reusable_plugs,
+                self.plug_objectives,
+                self.plug_states,
+            )
+        )
+
+    def all(self) -> bool:
+        """Returns `True` if all components are available, `False` otherwise."""
+        return all(
+            (
+                self.instances,
+                self.render_data,
+                self.stats,
+                self.sockets,
+                self.reusable_plugs,
+                self.plug_objectives,
+                self.plug_states,
+            )
+        )
 
 
-@attrs.define(kw_only=True, weakref_slot=False, slots=False)
+@attrs.define(kw_only=True, slots=False)
 class VendorsComponent:
     """Represents vendors-only Bungie component."""
 
     # TODO: Impl this.
 
 
-@attrs.define(kw_only=True, weakref_slot=False, slots=False)
+@attrs.define(kw_only=True, slots=False)
 class StringVariableComponent:
     """Represents the profile string variable component.
 
@@ -206,7 +326,7 @@ class StringVariableComponent:
     """A mapping from the character id to a mapping from an expression mapping definition hash to its value."""
 
 
-@attrs.define(kw_only=True, weakref_slot=False, slots=False)
+@attrs.define(kw_only=True, slots=False)
 class MetricsComponent:
     """Represents the profile metrics component.
 
@@ -232,8 +352,8 @@ class MetricsComponent:
     """The metrics presentation root node hash."""
 
 
-@attrs.define(kw_only=True, weakref_slot=False)
-class CharacterComponent(RecordsComponent, ItemsComponent, VendorsComponent):
+@attrs.define(kw_only=True)
+class CharacterComponent(RecordsComponent, VendorsComponent):
     """Represents a character-only Bungie component.
 
     This includes all components that falls under the character object.
@@ -269,9 +389,7 @@ class CharacterComponent(RecordsComponent, ItemsComponent, VendorsComponent):
     is passed to the request components.
     """
 
-    progressions: typing.Optional[character_.CharacterProgression] = attrs.field(
-        repr=False
-    )
+    progressions: typing.Optional[character_.CharacterProgression] = attrs.field()
     """The character progression component.
 
     Notes
@@ -281,14 +399,14 @@ class CharacterComponent(RecordsComponent, ItemsComponent, VendorsComponent):
     is passed to the request components.
     """
 
-    render_data: typing.Optional[character_.RenderedData] = attrs.field(repr=False)
+    render_data: typing.Optional[character_.RenderedData] = attrs.field()
     """The character rendered data component.
 
     This will always be `None` unless `aiobungie.ComponentType.RENDER_DATA`
     is passed to the request components.
     """
 
-    activities: typing.Optional[activity.CharacterActivity] = attrs.field(repr=False)
+    activities: typing.Optional[activity.CharacterActivity] = attrs.field()
     """A sequence of the character activities component.
 
     This will always be `None` unless `aiobungie.ComponentType.CHARACTER_ACTIVITES`
@@ -304,12 +422,15 @@ class CharacterComponent(RecordsComponent, ItemsComponent, VendorsComponent):
     is passed to the request components.
     """
 
+    item_components: typing.Optional[ItemsComponent] = attrs.field()
+    """A component that includes all items components for this character component."""
 
-@attrs.define(kw_only=True, weakref_slot=False)
+
+@attrs.define(kw_only=True)
 class Component(
     ProfileComponent, RecordsComponent, StringVariableComponent, MetricsComponent
 ):
-    """Concerete implementation of all Bungie profile components.
+    """Concerete implementation of all Bungie components.
 
     This includes all profile components that are available and not private.
 
@@ -351,21 +472,7 @@ class Component(
 
     Included Components
     -------------------
-    - `Profiles`
-    - `ProfileInventories`
-    - `ProfileCurrencies`
-    - `ProfileProgression`
-    - `Characters`
-    - `CharacterInventories`
-    - `CharacterProgression`
-    - `CharacterRenderData`
-    - `CharacterActivities`
-    - `CharacterEquipments`
-    - `StringVariables`
-    - `Records`
-        - `ProfileRecords`
-        - `CharacterRecords`
-    - Transitory
+    - All
     """
 
     characters: typing.Optional[
@@ -431,6 +538,11 @@ class Component(
     is passed to the request components.
     """
 
+    # character_uninstanced_component: typing.Optional[
+    #     collections.Mapping[int, UninstancedItemsComponent]
+    # ] = attrs.field()
+    """A mapping from the character id to its uninstanced item components."""
+
     transitory: typing.Optional[fireteams.FireteamParty] = attrs.field()
     """Profile Transitory component.
 
@@ -439,4 +551,21 @@ class Component(
 
     This will always be `None` unless `aiobungie.ComponentType.TRANSITORY`
     is passed to the request components.
+    """
+
+    item_components: typing.Optional[ItemsComponent] = attrs.field(repr=False)
+    """A component that includes all items components for this profile component."""
+
+    profile_plugsets: typing.Optional[
+        collections.Mapping[int, collections.Sequence[items.PlugItemState]]
+    ] = attrs.field()
+    """A mapping from the index of the plugset to a sequence of the profile's plug set objects."""
+
+    character_plugsets: typing.Optional[
+        collections.Mapping[
+            int, collections.Mapping[int, collections.Sequence[items.PlugItemState]]
+        ]
+    ] = attrs.field()
+    """A mapping from the character's id to mapping from the index of
+    the plug set to a sequence of plug objects bound to that character.
     """

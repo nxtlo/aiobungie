@@ -302,7 +302,7 @@ class InventoryEntity(BaseEntity, Entity):
     This derives from `DestinyInventoryItemDefinition` definition.
     """
 
-    type: enums.Item = attrs.field(repr=True, hash=False)
+    type: enums.ItemType = attrs.field(repr=True, hash=False)
     """Entity's type. Can be undefined if nothing was found."""
 
     objects: InventoryEntityObjects = attrs.field(repr=False)
@@ -317,7 +317,7 @@ class InventoryEntity(BaseEntity, Entity):
     item_class: enums.Class = attrs.field(repr=False, hash=False, eq=False)
     """The entity's class type."""
 
-    sub_type: enums.Item = attrs.field(repr=False, hash=False, eq=False)
+    sub_type: enums.ItemType = attrs.field(repr=False, hash=False, eq=False)
     """The subtype of the entity. A type is a weapon or armor.
     A subtype is a handcannonn or leg armor for an example.
     """
@@ -341,7 +341,7 @@ class InventoryEntity(BaseEntity, Entity):
     default_damagetype: int = attrs.field(repr=False)
     """"""
 
-    default_damagetype_hash: typing.Optional[enums.DamageType] = attrs.field(repr=False)
+    default_damagetype_hash: typing.Optional[int] = attrs.field(repr=False)
     """"""
 
     collectible_hash: typing.Optional[int] = attrs.field(repr=False, hash=True)

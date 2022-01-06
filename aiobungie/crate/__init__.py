@@ -149,10 +149,10 @@ from .components import *
 from .entity import *
 from .fireteams import *
 from .friends import *
+from .items import *
 from .milestones import *
 from .profile import *
 from .progressions import *
 from .records import *
 from .season import *
 from .user import *
-from .items import *

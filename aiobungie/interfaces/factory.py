@@ -1069,11 +1069,23 @@ class FactoryInterface(abc.ABC):
     def deserialize_instanced_item(
         self, payload: typedefs.JSONObject
     ) -> items.ItemInstance:
-        """Deserialize a JSON object into an instanced item."""
+        """Deserialize a JSON object into an instanced item.
 
+        Parameters
+        -----------
+        payload : `aiobungie.internal.helpers.JsonObject`
+            The JSON payload.
+
+        Returns
+        -------
+        `aiobungie.crate.ItemInstance`
+            An instanced item object.
+        """
+
+    # No docs for this.
     @abc.abstractmethod
     def deserialize_item_energy(self, payload: typedefs.JSONObject) -> items.ItemEnergy:
-        """Deserialize a JSON object into item energy object."""
+        ...
 
     @abc.abstractmethod
     def deserialize_item_perk(self, payload: typedefs.JSONObject) -> items.ItemPerk:

@@ -1172,19 +1172,31 @@ class Factory(interfaces.FactoryInterface):
         if raw_item_components := payload.get("itemComponents"):
             item_components = self.deserialize_items_component(raw_item_components)
 
-        profile_plugsets: typing.Optional[collections.Sequence[items.ItemSocket]] = None
+        profile_plugsets: typing.Optional[
+            collections.Mapping[int, collections.Sequence[items.PlugItemState]]
+        ] = None
 
-        # TODO: Finish this
-        # if raw_profile_plugs := payload.get("profilePlugSets"):
-        #     profile_plugsets = [
-        #         self.deserialize_item_socket(inner)
-        #         for item in raw_profile_plugs["data"]
-        #         for inner in list(item['plugs'].values())
-        #     ]
+        if raw_profile_plugs := payload.get("profilePlugSets"):
+            profile_plugsets = {
+                int(index): [self.deserialize_plug_item_state(state) for state in data]
+                for index, data in raw_profile_plugs["data"]["plugs"].items()
+            }
 
         character_plugsets: typing.Optional[
-            collections.Mapping[int, collections.Sequence[items.ItemSocket]]
+            collections.Mapping[
+                int, collections.Mapping[int, collections.Sequence[items.PlugItemState]]
+            ]
         ] = None
+        if raw_char_plugsets := payload.get("characterPlugSets"):
+            character_plugsets = {
+                int(char_id): {
+                    int(index): [
+                        self.deserialize_plug_item_state(state) for state in data
+                    ]
+                    for index, data in inner["plugs"].items()
+                }
+                for char_id, inner in raw_char_plugsets["data"].items()
+            }
 
         return components.Component(
             profiles=profile_,

@@ -428,10 +428,7 @@ class CharacterComponent(RecordsComponent, VendorsComponent):
 
 @attrs.define(kw_only=True)
 class Component(
-    ProfileComponent,
-    RecordsComponent,
-    StringVariableComponent,
-    MetricsComponent
+    ProfileComponent, RecordsComponent, StringVariableComponent, MetricsComponent
 ):
     """Concerete implementation of all Bungie components.
 
@@ -560,11 +557,15 @@ class Component(
     """A component that includes all items components for this profile component."""
 
     profile_plugsets: typing.Optional[
-        collections.Sequence[items.ItemSocket]
+        collections.Mapping[int, collections.Sequence[items.PlugItemState]]
     ] = attrs.field()
-    """A sequence of the profile's plug sets."""
+    """A mapping from the index of the plugset to a sequence of the profile's plug set objects."""
 
     character_plugsets: typing.Optional[
-        collections.Mapping[int, collections.Sequence[items.ItemSocket]]
+        collections.Mapping[
+            int, collections.Mapping[int, collections.Sequence[items.PlugItemState]]
+        ]
     ] = attrs.field()
-    """A mapping from the character's id to a sequence of plug objects bound to that character."""
+    """A mapping from the character's id to mapping from the index of
+    the plug set to a sequence of plug objects bound to that character.
+    """

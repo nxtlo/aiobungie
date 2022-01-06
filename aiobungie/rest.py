@@ -116,8 +116,7 @@ class _Arc:
         self._lock.release()
 
     async def acquire(self) -> None:
-        if not self._lock.locked():
-            await self._lock.acquire()
+        await self._lock.acquire()
 
 
 @attrs.define()
@@ -350,6 +349,7 @@ class RESTClient(interfaces.RESTInterface):
         "_client_secret",
         "_client_id",
         "_metadata",
+        "_mutex",
     )
 
     def __init__(
@@ -431,70 +431,68 @@ class RESTClient(interfaces.RESTInterface):
         while True:
             try:
                 async with (stack := contextlib.AsyncExitStack()):
-                    async with _Arc():
+                    await stack.enter_async_context(_Arc())
 
-                        # We make the request here.
-                        taken_time = time.monotonic()
-                        response = await stack.enter_async_context(
-                            await self._acquire_session().client_session.request(
-                                method=method,
-                                url=f"{endpoint}/{route}",
-                                json=json,
-                                **kwargs,
-                            )
+                    # We make the request here.
+                    taken_time = time.monotonic()
+                    response = await stack.enter_async_context(
+                        self._acquire_session().client_session.request(
+                            method=method,
+                            url=f"{endpoint}/{route}",
+                            json=json,
+                            **kwargs,
                         )
-                        response_time = (time.monotonic() - taken_time) * 1_000
+                    )
+                    response_time = (time.monotonic() - taken_time) * 1_000
 
-                        await self._handle_ratelimit(response, method, str(route))
+                    await self._handle_ratelimit(response, method, str(route))
 
-                        if response.status == http.HTTPStatus.NO_CONTENT:
-                            return None
+                    if response.status == http.HTTPStatus.NO_CONTENT:
+                        return None
 
-                        if unwrapping != "read":
-                            data: typedefs.JSONObject = await response.json()
+                    if unwrapping != "read":
+                        data: typedefs.JSONObject = await response.json()
 
-                        if 300 > response.status >= 200:
-                            if unwrapping == "read":
-                                # We want to read the bytes for the manifest response.
-                                return await response.read()
+                    if 300 > response.status >= 200:
+                        if unwrapping == "read":
+                            # We want to read the bytes for the manifest response.
+                            return await response.read()
 
-                            if response.content_type == _APP_JSON:
-                                if _LOG.isEnabledFor(logging.DEBUG):
-                                    _LOG.debug(
-                                        "Method %s Route %s Status %i Time %.4fms",
-                                        method,
-                                        f"{url.REST_EP}/{route}",
-                                        response.status,
-                                        response_time,
-                                    )
+                        if response.content_type == _APP_JSON:
+                            if _LOG.isEnabledFor(logging.DEBUG):
+                                _LOG.debug(
+                                    "Method %s Route %s Status %i Time %.4fms",
+                                    method,
+                                    f"{url.REST_EP}/{route}",
+                                    response.status,
+                                    response_time,
+                                )
 
-                                # Return the response.
-                                # oauth2 responses are not packed inside a Response object.
-                                if oauth2:
-                                    return data
+                            # Return the response.
+                            # oauth2 responses are not packed inside a Response object.
+                            if oauth2:
+                                return data
 
-                                return data["Response"]
-                        if (
-                            response.status in _RETRY_5XX
-                            and retries < self._max_retries  # noqa: W503
-                        ):
-                            backoff_ = backoff.ExponentialBackOff(maximum=6)
-                            sleep_time = next(backoff_)
-                            _LOG.warning(
-                                "Received: %i, Message: %s, Sleeping for %.2f seconds, Remaining retries: %i",
-                                response.status,
-                                data["Message"],
-                                sleep_time,
-                                self._max_retries - retries,
-                            )
-
-                            retries += 1
-                            await asyncio.sleep(sleep_time)
-                            continue
-
-                        raise await error.raise_error(
-                            response, data.get("ErrorStatus", "")
+                            return data["Response"]
+                    if (
+                        response.status in _RETRY_5XX
+                        and retries < self._max_retries  # noqa: W503
+                    ):
+                        backoff_ = backoff.ExponentialBackOff(maximum=6)
+                        sleep_time = next(backoff_)
+                        _LOG.warning(
+                            "Received: %i, Message: %s, Sleeping for %.2f seconds, Remaining retries: %i",
+                            response.status,
+                            data["Message"],
+                            sleep_time,
+                            self._max_retries - retries,
                         )
+
+                        retries += 1
+                        await asyncio.sleep(sleep_time)
+                        continue
+
+                    raise await error.raise_error(response, data.get("ErrorStatus", ""))
             # eol
             except error.HTTPError:
                 raise
@@ -1523,6 +1521,7 @@ class RESTClient(interfaces.RESTInterface):
     def search_entities(
         self, name: str, entity_type: str, *, page: int = 0
     ) -> ResponseSig[typedefs.JSONObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
             RequestMethod.GET,
             f"Destiny2/Armory/Search/{entity_type}/{name}/",
@@ -1535,6 +1534,7 @@ class RESTClient(interfaces.RESTInterface):
         character_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
     ) -> ResponseSig[typedefs.JSONObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
             RequestMethod.GET,
             f"Destiny2/{int(membership_type)}/Account/{membership_id}/Character/{character_id}/Stats/UniqueWeapons/",

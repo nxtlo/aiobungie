@@ -153,6 +153,7 @@ async def test_char():
     acts = await c.character.fetch_activities(aiobungie.GameMode.RAID, limit=10)
     assert len(acts) == 10
     for act in acts:
+        assert act.mode is aiobungie.GameMode.RAID
         assert isinstance(act, aiobungie.crate.Activity)
 
 
@@ -236,7 +237,8 @@ async def test_profile():
 
     if pf.transitory:
         assert isinstance(pf.transitory, aiobungie.crate.FireteamParty)
-    assert pf.item_components
+    if pf.item_components:
+        assert isinstance(pf.item_components, aiobungie.crate.ItemsComponent)
 
 async def test_membership_types_from_id():
     u = await client.fetch_membership_from_id(MID)

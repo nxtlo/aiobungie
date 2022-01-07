@@ -1,6 +1,6 @@
 black~=21.12b0
 mypy~=0.930
-pdoc~=8.1.0
+pdoc~=8.2.0
 nox~=2021.10.1
 isort~=5.10.1
 pytest~=6.2.5

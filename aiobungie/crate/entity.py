@@ -320,8 +320,9 @@ class InventoryEntity(BaseEntity, Entity):
     item_class: enums.Class = attrs.field(repr=False)
     """The entity's class type."""
 
-    sub_type: enums.ItemType = attrs.field(repr=False)
+    sub_type: enums.ItemSubType = attrs.field(repr=False)
     """The subtype of the entity. A type is a weapon or armor.
+
     A subtype is a handcannonn or leg armor for an example.
     """
 

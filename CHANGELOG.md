@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added a profile_link property to `BungieUser` which returns their profile link.
 - Implemented `components.ItemComponent`.
 - new `items.py` module includes all item related objects.
+- `enums.ItemSubType` for subtype inventory items.
 
 ### Removed
 - `Friend.is_pending` method since this can be checked using `Friend.relationship`.
@@ -34,6 +35,7 @@ This also references `fetch_potentional_groups_forr_member`.
 - All crate fields are now relaxed. Which have the field name and type only.
 - All objects that inherits from `user.UserLike`. `object.__str__()` and `str(object)` will now return the full unique name for that object.
 - `LinkedProfile` no longer supports `async for`.
+- `InventoryEntity.sub_type` now returns `enums.ItemSubType` instead of `enums.ItemType`.
 
 ### Fixed
 - `Character.last_played` wasn't returning a datetime object.

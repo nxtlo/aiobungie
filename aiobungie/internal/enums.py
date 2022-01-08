@@ -58,6 +58,7 @@ __all__: tuple[str, ...] = (
     "ItemState",
     "PrivacySetting",
     "ClosedReasons",
+    "ItemSubType",
 )
 
 import enum as __enum
@@ -65,7 +66,7 @@ import typing
 
 _ITERABLE = (set, list, tuple)
 
-# TODO: Use Flags for bitwised fields?
+# TODO = Use Flags for bitwised fields?
 
 
 class IntEnum(__enum.IntEnum):
@@ -543,6 +544,38 @@ class ItemType(IntEnum):
     WRAPPER = 27
     SEASONALARTIFACT = 28
     FINISHER = 29
+
+
+@typing.final
+class ItemSubType(IntEnum):
+    """An enum for Destiny 2 inventory items subtype."""
+
+    NONE = 0
+    AUTORIFLE = 6
+    SHOTGUN = 7
+    MACHINEGUN = 8
+    HANDCANNON = 9
+    ROCKETLAUNCHER = 10
+    FUSIONRIFLE = 11
+    SNIPERRIFLE = 12
+    PULSERIFLE = 13
+    SCOUTRIFLE = 14
+    SIDEARM = 17
+    SWORD = 18
+    MASK = 19
+    SHADER = 20
+    ORNAMENT = 21
+    FUSIONRIFLELINE = 22
+    GRENADELAUNCHER = 23
+    SUBMACHINEGUN = 24
+    TRACERIFLE = 25
+    HELMETARMOR = 26
+    GAUNTLETSARMOR = 27
+    CHESTARMOR = 28
+    LEGARMOR = 29
+    CLASSARMOR = 30
+    BOW = 31
+    DUMMYREPEATABLEBOUNTY = 32
 
 
 @typing.final

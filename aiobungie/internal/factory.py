@@ -1625,7 +1625,7 @@ class Factory(interfaces.FactoryInterface):
             trait_ids=[trait for trait in payload.get("traitIds", [])],
             category_hashes=[int(hash_) for hash_ in payload["itemCategoryHashes"]],
             item_class=enums.Class(int(payload["classType"])),
-            sub_type=enums.ItemType(int(payload["itemSubType"])),
+            sub_type=enums.ItemSubType(int(payload["itemSubType"])),
             breaker_type=int(payload["breakerType"]),
             default_damagetype=int(payload["defaultDamageType"]),
             default_damagetype_hash=default_damagetype_hash,

@@ -29,7 +29,6 @@ __all__: tuple[str, ...] = (
     "just",
     "awaits",
     "get_or_make_loop",
-    "AsyncIterator",
     "collect",
 )
 
@@ -101,16 +100,20 @@ async def awaits(
         A collection or sequence of the awaited coros objects.
     """
 
-    if len(aws) == 0:
+    if not aws:
         raise RuntimeError("No awaiables passed.", aws)
+
     pending: list[asyncio.Future[JT]] = []
+
     for future in aws:
-        pending.append(asyncio.ensure_future(future))
+        pending.append(asyncio.create_task(future))
     try:
         gatherer = asyncio.gather(*pending, return_exceptions=with_exception)
         return await asyncio.wait_for(gatherer, timeout=timeout)
+
     except asyncio.CancelledError:
         raise asyncio.CancelledError("Gathered Futures were cancelled.") from None
+
     finally:
         for fs in pending:
             if not fs.done() and not fs.cancelled():
@@ -139,41 +142,3 @@ def get_or_make_loop() -> asyncio.AbstractEventLoop:
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     return loop
-
-
-class Ok(StopIteration):
-    def __init__(self) -> None:
-        self.__call__()
-
-    def __call__(self) -> typing.NoReturn:
-        raise StopIteration("Reached the maximum iterables.") from None
-
-
-class AsyncIterator(typing.Generic[AT]):
-    """A simple async iterator for iterating over sequences asynchronously.
-
-    Attributes
-    ----------
-    sequence: `typing.Iterable[AT]`
-        A sequence of the generic iterables type.
-    """
-
-    __slots__: collections.Sequence[str] = ("_seq",)
-
-    def __init__(self, sequence: typing.Iterable[AT]) -> None:
-        self._seq = iter(sequence)
-
-    def __iter__(self) -> typing.NoReturn:
-        raise TypeError("This class supports `async for` syntax only.")
-
-    def __aiter__(self) -> AsyncIterator[AT]:
-        return self
-
-    def __next__(self) -> AT:
-        return next(self._seq)
-
-    async def __anext__(self) -> AT:
-        try:
-            return next(self._seq)
-        except StopIteration:
-            raise Ok()

@@ -58,47 +58,47 @@ if typing.TYPE_CHECKING:
     from aiobungie.internal.assets import Image
 
 
-@attrs.define(hash=False, kw_only=True, weakref_slot=False)
+@attrs.define(kw_only=True)
 class Dye:
     """Represents dyes rendered on a Destiny character."""
 
-    channel_hash: int = attrs.field()
+    channel_hash: int
     """The hash of the channel."""
 
-    dye_hash: int = attrs.field()
+    dye_hash: int
     """The dye's hash."""
 
 
-@attrs.define(hash=False, kw_only=True, weakref_slot=False, repr=False)
+@attrs.define(kw_only=True, repr=False)
 class CustomizationOptions:
     """Raw data represents a character's customization options."""
 
-    personality: int = attrs.field()
+    personality: int
 
-    face: int = attrs.field()
+    face: int
 
-    skin_color: int = attrs.field()
+    skin_color: int
 
-    lip_color: int = attrs.field()
+    lip_color: int
 
-    eye_color: int = attrs.field()
+    eye_color: int
 
-    hair_colors: collections.Sequence[int] = attrs.field()
+    hair_colors: collections.Sequence[int]
 
-    feature_colors: collections.Sequence[int] = attrs.field()
+    feature_colors: collections.Sequence[int]
 
-    decal_color: int = attrs.field()
+    decal_color: int
 
-    wear_helmet: bool = attrs.field()
+    wear_helmet: bool
 
-    hair_index: int = attrs.field()
+    hair_index: int
 
-    feature_index: int = attrs.field()
+    feature_index: int
 
-    decal_index: int = attrs.field()
+    decal_index: int
 
 
-@attrs.define(hash=False, kw_only=True, weakref_slot=False)
+@attrs.define(kw_only=True)
 class MinimalEquipments:
     """Minimal information about a character's equipped items.
 
@@ -108,13 +108,13 @@ class MinimalEquipments:
     3D character object.
     """
 
-    net: traits.Netrunner = attrs.field(repr=False)
+    net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
     """A network state used for making external requests."""
 
-    item_hash: int = attrs.field()
+    item_hash: int
     """The equipped items's hash."""
 
-    dyes: typing.Optional[collections.Collection[Dye]] = attrs.field(repr=False)
+    dyes: typing.Optional[collections.Collection[Dye]]
     """An optional collection of the item rendering dyes"""
 
     async def fetch_my_item(self) -> entity.InventoryEntity:
@@ -122,20 +122,20 @@ class MinimalEquipments:
         return await self.net.request.fetch_inventory_item(self.item_hash)
 
 
-@attrs.define(hash=False, kw_only=True, weakref_slot=False)
+@attrs.define(kw_only=True)
 class RenderedData:
     """Represents a character's rendered data profile component."""
 
-    net: traits.Netrunner = attrs.field(repr=False)
+    net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
     """A network state used for making external requests."""
 
-    custom_dyes: collections.Collection[Dye] = attrs.field(repr=False)
+    custom_dyes: collections.Collection[Dye]
     """A collection of the character's custom dyes."""
 
-    customization: CustomizationOptions = attrs.field(repr=False)
+    customization: CustomizationOptions
     """Data about what character customization options you picked."""
 
-    equipment: collections.Sequence[MinimalEquipments] = attrs.field()
+    equipment: collections.Sequence[MinimalEquipments]
     """A sequence of minimal view of this character's equipment."""
 
     async def fetch_my_items(
@@ -158,89 +158,83 @@ class RenderedData:
         )
 
 
-@attrs.define(hash=False, kw_only=True, weakref_slot=False)
+@attrs.define(kw_only=True)
 class CharacterProgression:
     """Represents a character progression profile component."""
 
-    progressions: collections.Mapping[int, progressions_.Progression] = attrs.field(
-        repr=False
-    )
+    progressions: collections.Mapping[int, progressions_.Progression]
     """A Mapping from progression's hash to progression object."""
 
-    factions: collections.Mapping[int, progressions_.Factions] = attrs.field(repr=False)
+    factions: collections.Mapping[int, progressions_.Factions]
     """A Mapping from progression faction's hash to its faction object."""
 
-    milestones: collections.Mapping[int, milestones_.Milestone] = attrs.field(
-        repr=False
-    )
+    milestones: collections.Mapping[int, milestones_.Milestone]
     """A Mapping from the milestone's hash to a milestone object."""
 
-    checklists: collections.Mapping[int, collections.Mapping[int, bool]] = attrs.field(
-        repr=False
-    )
+    checklists: collections.Mapping[int, collections.Mapping[int, bool]]
 
-    seasonal_artifact: season.CharacterScopedArtifact = attrs.field()
+    seasonal_artifact: season.CharacterScopedArtifact
     """Data related to your progress on the current season's artifact that can vary per character."""
 
     uninstanced_item_objectives: collections.Mapping[
         int, collections.Sequence[records.Objective]
-    ] = attrs.field(repr=False)
+    ]
     """A Mapping from an uninstanced inventory item hash to a sequence of its objectives."""
 
     # Still not sure if this field returned or not.
     # unsinstanced_item_pers: collections.Mapping[int, ...]?
 
 
-@attrs.define(hash=True, kw_only=True, weakref_slot=False)
+@attrs.define(kw_only=True)
 class Character:
     """An implementation for a Bungie character."""
 
-    net: traits.Netrunner = attrs.field(repr=False, eq=False)
+    net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
     """A network state used for making external requests."""
 
-    id: int = attrs.field(hash=True, repr=True)
+    id: int
     """Character's id"""
 
-    member_id: int = attrs.field(hash=True, repr=True)
+    member_id: int
     """The character's member id."""
 
-    member_type: enums.MembershipType = attrs.field(repr=True, hash=False)
+    member_type: enums.MembershipType
     """The character's memberhip type."""
 
-    light: int = attrs.field(repr=True, hash=False)
+    light: int
     """Character's light"""
 
-    gender: enums.Gender = attrs.field(repr=True, hash=False)
+    gender: enums.Gender
     """Character's gender"""
 
-    race: enums.Race = attrs.field(repr=True, hash=False)
+    race: enums.Race
     """Character's race"""
 
-    emblem: Image = attrs.field(repr=False, hash=False)
+    emblem: Image
     """Character's emblem"""
 
-    emblem_icon: Image = attrs.field(repr=False, hash=False)
+    emblem_icon: Image
     """Character's emblem icon"""
 
-    emblem_hash: int = attrs.field(repr=False, hash=False)
+    emblem_hash: int
     """Character's emblem hash."""
 
-    last_played: datetime.datetime = attrs.field(repr=False, hash=False)
+    last_played: datetime.datetime
     """Character's last played date."""
 
-    total_played_time: str = attrs.field(repr=False, hash=False)
+    total_played_time: str
     """Character's total plyed time minutes."""
 
-    class_type: enums.Class = attrs.field(repr=True, hash=False)
+    class_type: enums.Class
     """Character's class."""
 
-    title_hash: typing.Optional[int] = attrs.field(repr=True, hash=False)
+    title_hash: typing.Optional[int]
     """Character's equipped title hash."""
 
-    level: int = attrs.field(repr=False, hash=False)
+    level: int
     """Character's base level."""
 
-    stats: typing.Mapping[enums.Stat, int] = attrs.field(repr=False, hash=False)
+    stats: typing.Mapping[enums.Stat, int]
     """A mapping of the character stats and its level."""
 
     async def fetch_activities(

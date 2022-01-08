@@ -44,29 +44,29 @@ if typing.TYPE_CHECKING:
     from aiobungie.internal import assets
 
 
-@attrs.define(hash=False, kw_only=True, weakref_slot=False)
+@attrs.define(kw_only=True)
 class ApplicationOwner(user.UserLike):
     """Represents a Bungie Application owner."""
 
-    net: traits.Netrunner = attrs.field(repr=False)
+    net: traits.Netrunner = attrs.field(repr=False, hash=False, eq=False)
     """A network state used for making external requests."""
 
-    name: undefined.UndefinedOr[str] = attrs.field(repr=True, hash=False, eq=False)
+    name: undefined.UndefinedOr[str]
     """The application owner name. This can be `UNDEFINED` if not found."""
 
-    type: enums.MembershipType = attrs.field(repr=True, hash=False, eq=True)
+    type: enums.MembershipType
     """The membership of the application owner."""
 
-    id: int = attrs.field(repr=True, hash=True, eq=True)
+    id: int
     """The application owner's id."""
 
-    icon: assets.MaybeImage = attrs.field(repr=False)
+    icon: assets.MaybeImage
     """The application owner's icon."""
 
-    is_public: bool = attrs.field(repr=True)
+    is_public: bool
     """The application owner's profile privacy."""
 
-    code: typedefs.NoneOr[int] = attrs.field(repr=True)
+    code: typedefs.NoneOr[int]
     """The user like's unique display name code.
     This can be None if the user hasn't logged in after season of the lost update.
     """
@@ -104,35 +104,35 @@ class ApplicationOwner(user.UserLike):
         return f"{url.BASE}/en/Profile/index/{int(self.type)}/{self.id}"
 
 
-@attrs.define(hash=False, kw_only=True, weakref_slot=False)
+@attrs.define(kw_only=True)
 class Application:
     """Represents a Bungie developer application."""
 
-    id: int = attrs.field(repr=True, hash=True, eq=True)
+    id: int
     """App id"""
 
-    name: str = attrs.field(repr=True, hash=False, eq=False)
+    name: str
     """App name"""
 
-    redirect_url: typing.Optional[str] = attrs.field(repr=True)
+    redirect_url: typing.Optional[str]
     """App redirect url"""
 
-    created_at: datetime = attrs.field(repr=True)
+    created_at: datetime
     """App creation date in UTC timezone"""
 
-    published_at: datetime = attrs.field(repr=True)
+    published_at: datetime
     """App's publish date in UTC timezone"""
 
-    link: str = attrs.field(repr=True)
+    link: str
     """App's link"""
 
-    status: int = attrs.field(repr=False)
+    status: int
     """App's status"""
 
-    scope: undefined.UndefinedOr[str] = attrs.field(repr=False)
+    scope: undefined.UndefinedOr[str]
     """App's scope"""
 
-    owner: ApplicationOwner = attrs.field(repr=True)
+    owner: ApplicationOwner
     """App's owner"""
 
     def __str__(self) -> str:

@@ -46,57 +46,57 @@ if typing.TYPE_CHECKING:
     from aiobungie.crate import progressions
 
 
-@attrs.define(hash=False, kw_only=True, weakref_slot=False)
+@attrs.define(kw_only=True)
 class ArtifactTierItem:
 
-    hash: int = attrs.field()
+    hash: int
 
-    is_active: bool = attrs.field()
+    is_active: bool
 
 
-@attrs.define(hash=False, kw_only=True, weakref_slot=False)
+@attrs.define(kw_only=True)
 class ArtifactTier:
 
-    hash: int = attrs.field()
+    hash: int
 
-    is_unlocked: bool = attrs.field()
+    is_unlocked: bool
 
-    points_to_unlock: int = attrs.field()
+    points_to_unlock: int
 
-    items: colelctions.Sequence[ArtifactTierItem] = attrs.field(repr=False)
+    items: colelctions.Sequence[ArtifactTierItem]
 
 
-@attrs.define(hash=False, kw_only=True, weakref_slot=False)
+@attrs.define(kw_only=True)
 class CharacterScopedArtifact:
     """Represetns per-character artifact data."""
 
-    hash: int = attrs.field()
+    hash: int
 
-    points_used: int = attrs.field()
+    points_used: int
 
-    reset_count: int = attrs.field()
+    reset_count: int
 
-    tiers: colelctions.Sequence[ArtifactTier] = attrs.field(repr=False)
+    tiers: colelctions.Sequence[ArtifactTier]
 
 
-@attrs.define(hash=False, kw_only=True, weakref_slot=False)
+@attrs.define(kw_only=True)
 class Artifact:
     """Represents a Destiny 2 Season artifact."""
 
     net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
     """A client app we may use to make external requests."""
 
-    hash: int = attrs.field(hash=True)
+    hash: int
     """The season artifact's hash."""
 
-    power_bonus: int = attrs.field()
+    power_bonus: int
     """Season artifact's power bonus."""
 
-    acquired_points: int = attrs.field()
+    acquired_points: int
     """The total acquired artifact points"""
 
-    bonus: progressions.Progression = attrs.field(repr=False)
+    bonus: progressions.Progression
     """Information about the artifact's power bonus progression."""
 
-    points: progressions.Progression = attrs.field(repr=False)
+    points: progressions.Progression
     """Information about the artifact's power point progression."""

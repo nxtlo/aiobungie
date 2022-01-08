@@ -80,7 +80,7 @@ class BaseProgression(abc.ABC):
         """The limit of the weekly earned progress."""
 
 
-@attrs.define(weakref_slot=False, kw_only=True)
+@attrs.define(kw_only=True)
 class Progression(BaseProgression):
     """The base progression class that all progression objects must inherit from."""
 
@@ -114,12 +114,12 @@ class Progression(BaseProgression):
     # <<inherited docstring from aiobungie.crate.specials.Progression>>.
 
 
-@attrs.define(weakref_slot=False, kw_only=True)
+@attrs.define(kw_only=True)
 class Factions(Progression, BaseProgression):
     """Represent a Bungie progression faction found in a character progressions component."""
 
-    faction_hash: int = attrs.field()
+    faction_hash: int
     """The faction's hash related to this progression."""
 
-    faction_vendor_hash: int = attrs.field()
+    faction_vendor_hash: int
     """The index of the Faction vendor that is currently available. Will be set to -1 if no vendors are available."""

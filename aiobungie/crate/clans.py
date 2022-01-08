@@ -53,54 +53,54 @@ if typing.TYPE_CHECKING:
     from aiobungie.internal import assets
 
 
-@attrs.define(kw_only=True, hash=False, weakref_slot=False)
+@attrs.define(kw_only=True)
 class ClanFeatures:
     """Represents Bungie clan features."""
 
-    max_members: int = attrs.field(repr=True)
+    max_members: int
     """The maximum members the clan can have"""
 
-    max_membership_types: int = attrs.field(repr=False)
+    max_membership_types: int
     """The maximum membership types the clan can have"""
 
-    capabilities: int = attrs.field(repr=False)
+    capabilities: int
     """An int that represents the clan's capabilities."""
 
-    membership_types: list[enums.MembershipType] = attrs.field(repr=True)
+    membership_types: list[enums.MembershipType]
     """The clan's membership types."""
 
-    invite_permissions: bool = attrs.field(repr=False)
+    invite_permissions: bool
     """True if the clan has permissions to invite."""
 
-    update_banner_permissions: bool = attrs.field(repr=False)
+    update_banner_permissions: bool
     """True if the clan has permissions to updates its banner."""
 
-    update_culture_permissions: bool = attrs.field(repr=False)
+    update_culture_permissions: bool
 
-    join_level: int = attrs.field(repr=True)
+    join_level: int
     """The clan's join level."""
 
 
-@attrs.define(hash=False, kw_only=True, weakref_slot=False)
+@attrs.define(kw_only=True)
 class ClanConversation:
     """Represents a clan conversation."""
 
-    net: traits.Netrunner = attrs.field(repr=False)
+    net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
     """A network state used for making external requests."""
 
-    group_id: int = attrs.field(repr=True)
+    group_id: int
     """The clan or group's id."""
 
-    id: int = attrs.field(repr=True, hash=True)
+    id: int
     """The conversation's id"""
 
-    chat_enabled: bool = attrs.field(repr=True)
+    chat_enabled: bool
     """`True` if the Conversation's chat is enabled."""
 
-    name: undefined.UndefinedOr[str] = attrs.field(repr=True)
+    name: undefined.UndefinedOr[str]
     """Conversation chat's name."""
 
-    security: int = attrs.field(repr=False)
+    security: int
     """Conversation's security level."""
 
     async def edit(
@@ -152,79 +152,75 @@ class ClanConversation:
         return str(self.name)
 
 
-@attrs.define(hash=False, kw_only=True, weakref_slot=False)
+@attrs.define(kw_only=True)
 class ClanBanner:
     """Representation of information of the clan banner."""
 
-    id: int = attrs.field(repr=True)
+    id: int
     """The banner's id."""
 
-    foreground: assets.MaybeImage = attrs.field(repr=True)
+    foreground: assets.MaybeImage
     """The banner's foreground. This field can be `UNDEFINED` if not found."""
 
-    background: assets.MaybeImage = attrs.field(repr=True)
+    background: assets.MaybeImage
     """The banner's background. This field can be `UNDEFINED` if not found."""
 
     def __int__(self) -> int:
         return self.id
 
 
-@attrs.define(hash=False, kw_only=True, weakref_slot=False)
+@attrs.define(kw_only=True)
 class ClanMember(user.UserLike):
     """Represents a Bungie clan member."""
 
-    net: traits.Netrunner = attrs.field(repr=False)
+    net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
     """A network state used for making external requests."""
 
-    id: int = attrs.field(repr=True, hash=True)
+    id: int
     """Clan member's id"""
 
-    name: undefined.UndefinedOr[str] = attrs.field(repr=True)
+    name: undefined.UndefinedOr[str]
     """Clan member's name. This can be `UNDEFINED` if not found."""
 
-    last_seen_name: str = attrs.field(repr=True)
+    last_seen_name: str
     """The clan member's last seen display name"""
 
-    type: enums.MembershipType = attrs.field(repr=True)
+    type: enums.MembershipType
     """Clan member's membership type."""
 
-    types: collections.Sequence[enums.MembershipType] = attrs.field(repr=False)
+    types: collections.Sequence[enums.MembershipType]
     """A sequence of the available clan member membership types."""
 
-    icon: assets.MaybeImage = attrs.field(repr=False)
+    icon: assets.MaybeImage
     """Clan member's icon"""
 
-    is_public: bool = attrs.field(repr=False)
+    is_public: bool
     """`builtins.True` if the clan member is public."""
 
-    group_id: int = attrs.field(repr=True)
+    group_id: int
     """The member's group id."""
 
-    is_online: bool = attrs.field(repr=False, default=None)
+    # These fields are always undefined.
+    is_online: undefined.UndefinedOr[bool]
     """True if the clan member is online or not."""
 
-    last_online: datetime = attrs.field(repr=False, default=None)
+    last_online: undefined.UndefinedOr[datetime]
     """The date of the clan member's last online in UTC time zone."""
 
-    joined_at: datetime = attrs.field(repr=False, default=None)
+    joined_at: undefined.UndefinedOr[datetime]
     """The clan member's join date in UTC time zone."""
 
-    code: typedefs.NoneOr[int] = attrs.field(repr=True)
+    code: typedefs.NoneOr[int]
     """The clan member's bungie display name code
     This is new and was added in Season of the lost update
     """
 
-    bungie: user.PartialBungieUser = attrs.field(repr=True)
+    bungie: user.PartialBungieUser
     """The clan member's bungie partial net user.
 
     .. note:: This only returns a partial bungie net user.
     You can fetch the fully implemented user using `aiobungie.crate.PartialBungieUser.fetch_self()` method.
     """
-
-    @property
-    def unique_name(self) -> str:
-        """The clan member's unique name which includes their unique code."""
-        return f"{self.name}#{self.code}"
 
     async def ban(
         self,
@@ -302,35 +298,35 @@ class ClanMember(user.UserLike):
         )
 
 
-@attrs.define(hash=False, kw_only=True, weakref_slot=False)
+@attrs.define(kw_only=True)
 class GroupMember:
     """Represents information about joined groups/clans for a member."""
 
-    net: traits.Netrunner = attrs.field(repr=False)
+    net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
     """A network state used for making external requests."""
 
-    inactive_memberships: typedefs.NoneOr[dict[int, bool]] = attrs.field(repr=False)
+    inactive_memberships: typedefs.NoneOr[dict[int, bool]]
     """The member's inactive memberships if provided. This will be `None` if not provided."""
 
-    member_type: enums.ClanMemberType = attrs.field(repr=True)
+    member_type: enums.ClanMemberType
     """The member's member type."""
 
-    is_online: bool = attrs.field(repr=False)
+    is_online: bool
     """Whether the member is online or not."""
 
-    last_online: datetime = attrs.field(repr=False)
+    last_online: datetime
     """An awre UTC datetime of the member's last online status."""
 
-    group_id: int = attrs.field(repr=True)
+    group_id: int
     """The group id of this member."""
 
-    join_date: datetime = attrs.field(repr=False)
+    join_date: datetime
     """An awre UTC datetime of the member's join date."""
 
-    member: user.DestinyUser = attrs.field(repr=True)
+    member: user.DestinyUser
     """The member's destiny object that represents the group member."""
 
-    group: Clan = attrs.field(repr=True)
+    group: Clan
     """The member's group/clan object that represents the group member."""
 
     async def fetch_self_clan(self) -> Clan:
@@ -349,16 +345,12 @@ class GroupMember:
         return self.group_id
 
 
-@attrs.define(hash=False, kw_only=True, weakref_slot=False)
+@attrs.define(kw_only=True)
 class ClanAdmin(ClanMember):
     """Represents a clan admin."""
 
-    member_type: enums.ClanMemberType = attrs.field(repr=True)
-    """The clan admin's member type.
-    This can be Admin or owner or any other type.
-    """
-
-    join_date: datetime = attrs.field()
+    member_type: enums.ClanMemberType
+    """The clan admin's member type. This can be Admin or owner or any other type."""
 
     async def fetch_clan(self) -> Clan:
         """Fetch the clan that represents the clan admins.
@@ -378,50 +370,50 @@ class ClanAdmin(ClanMember):
         return f"{self.name}#{self.code}"
 
 
-@attrs.define(hash=False, kw_only=True, weakref_slot=False)
+@attrs.define(kw_only=True)
 class Clan:
     """Represents a Bungie clan."""
 
     net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
     """A network state used for making external requests."""
 
-    id: int = attrs.field(hash=True, repr=True, eq=True)
+    id: int
     """The clan id"""
 
-    type: enums.GroupType = attrs.field(repr=True)
+    type: enums.GroupType
     """The clan type."""
 
-    name: str = attrs.field(repr=True)
+    name: str
     """The clan's name"""
 
-    created_at: datetime = attrs.field(repr=True)
+    created_at: datetime
     """Clan's creation date time in UTC."""
 
-    member_count: int = attrs.field(repr=True)
+    member_count: int
     """Clan's member count."""
 
-    motto: str = attrs.field(repr=False, eq=False)
+    motto: str
     """Clan's motto."""
 
-    is_public: bool = attrs.field(repr=False, eq=False)
+    is_public: bool
     """Clan's privacy status."""
 
-    banner: assets.MaybeImage = attrs.field(repr=False)
+    banner: assets.MaybeImage
     """Clan's banner"""
 
-    avatar: assets.MaybeImage = attrs.field(repr=False)
+    avatar: assets.MaybeImage
     """Clan's avatar"""
 
-    about: str = attrs.field(repr=False, eq=False)
+    about: str
     """Clan's about title."""
 
-    tags: list[str] = attrs.field(repr=False)
+    tags: list[str]
     """A list of the clan's tags."""
 
-    owner: typedefs.NoneOr[ClanMember] = attrs.field(repr=True)
+    owner: typedefs.NoneOr[ClanMember]
     """The clan owner. This field could be `None` if not found."""
 
-    features: ClanFeatures = attrs.field(repr=False, hash=False, eq=False)
+    features: ClanFeatures
     """The clan features."""
 
     async def edit_options(
@@ -442,7 +434,7 @@ class Clan:
         Notes
         -----
         * This request requires OAuth2: oauth2: `AdminGroups` scope.
-        * All arguments will default to `None` if not provided. This does not include `access_token` and `group_id`
+        * All arguments will be ignored if set to `None`. This does not include `access_token`
 
         Parameters
         ----------
@@ -743,10 +735,7 @@ class Clan:
     ) -> ClanMember:
         """Fetch a specific clan member by their name and membership type.
 
-        if the memberhship type is None we will
-        try to return the first member matches the name.
-        its also better to leave this parameter on None
-        since usually only one player has this name.
+        if the memberhship type not provided it will try to return the first member matches the name.
 
         Parameters
         ----------
@@ -759,14 +748,12 @@ class Clan:
         Returns
         --------
         `ClanMember`
+            A Bungie clan member.
 
         Raises
         ------
         `aiobungie.NotFound`
-            The clan was not found.
-
-        `aiobungie.NotFound`
-            The member was not found
+            Clan member with the provided name was not found.
         """
         member = await self.net.request.fetch_clan_member(self.id, name, type)
         assert isinstance(member, ClanMember)
@@ -777,8 +764,7 @@ class Clan:
     ) -> collections.Sequence[ClanMember]:
         """Fetch the members of the clan.
 
-        if the memberhship type is None it will
-        All membership types.
+        if the memberhship type is left. it will return all membership types.
 
         Parameters
         ----------

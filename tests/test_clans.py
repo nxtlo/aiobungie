@@ -25,6 +25,7 @@
 import datetime
 
 import mock
+from aiobungie import undefined
 import pytest
 from pytest import fixture
 
@@ -143,6 +144,7 @@ class TestClanOwner:
             code=5432,
             last_seen_name="Some name",
             bungie=mock_bungie_user,
+            is_online=undefined.Undefined
         )
 
     def test_clan_owner_is_userlike(self, obj):
@@ -157,10 +159,10 @@ class TestClanOwner:
         assert int(obj) == obj.id
 
     def test_clan_owner_str_over(self, obj):
-        assert str(obj) == obj.last_seen_name
+        assert str(obj) == obj.unique_name
 
     def test_clan_owner_link(self, obj):
-        assert obj.id, int(obj.type) in obj.link
+        assert obj.id == 2938
 
 
 class TestClan:

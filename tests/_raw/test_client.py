@@ -291,19 +291,13 @@ async def test_linked_profiles():
         MID, aiobungie.MembershipType.ALL, all=True
     )
     assert isinstance(obj, aiobungie.crate.LinkedProfile)
-    try:
-        async for user in obj:
-            assert isinstance(user, aiobungie.crate.DestinyUser)
-            transform_profile = await user.fetch_self_profile(
-                aiobungie.ComponentType.PROFILE
-            )
-            assert transform_profile.profiles
-            assert isinstance(transform_profile, aiobungie.crate.Component)
-    # This originally should be StopIteration exception
-    # But client.run throws RuntimeError
-    # TODO: raise the actual exception instead of RuntimeError in client.run?
-    except RuntimeError:
-        pass
+    for user in obj.profiles:
+        assert isinstance(user, aiobungie.crate.DestinyUser)
+        transform_profile = await user.fetch_self_profile(
+            aiobungie.ComponentType.PROFILE
+        )
+        assert transform_profile.profiles
+        assert isinstance(transform_profile, aiobungie.crate.Component)
 
 
 async def test_clan_banners():

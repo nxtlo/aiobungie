@@ -59,25 +59,25 @@ class RecordState(enums.IntEnum):
     UNDEFINED = 999
 
 
-@attrs.mutable(kw_only=True, weakref_slot=True, hash=False)
+@attrs.mutable(kw_only=True)
 class Objective:
     """Represents a Destiny 2 record objective."""
 
-    net: traits.Netrunner = attrs.field(repr=False)
+    net: traits.Netrunner = attrs.field(repr=False, hash=False, eq=False)
 
-    hash: int = attrs.field(hash=True)
+    hash: int
     """The objective hash."""
 
-    visible: bool = attrs.field()
+    visible: bool
     """Whether the objective is visible or not."""
 
-    complete: bool = attrs.field()
+    complete: bool
     """Whether the objective is completed or not."""
 
-    completion_value: int = attrs.field(repr=False)
+    completion_value: int
     """An integer represents the objective completion value."""
 
-    progress: int = attrs.field(repr=False)
+    progress: int
     """An integer represents the objective progress."""
 
     async def fetch_self(self) -> entity.ObjectiveEntity:
@@ -91,70 +91,67 @@ class Objective:
         return await self.net.request.fetch_objective_entity(self.hash)
 
 
-@attrs.mutable(kw_only=True, weakref_slot=True, hash=False)
+@attrs.mutable(kw_only=True)
 class RecordScores:
     """Represents the records scores.
 
     This includes active, lifetime and legacy scores.
     """
 
-    current_score: int = attrs.field()
+    current_score: int
     """The active triumphs score."""
 
-    legacy_score: int = attrs.field()
+    legacy_score: int
     """The legacy triumphs score."""
 
-    lifetime_score: int = attrs.field()
+    lifetime_score: int
     """The lifetime triumphs score. This includes both legacy and current scores."""
 
 
-@attrs.define(kw_only=True, weakref_slot=True, hash=False)
+@attrs.define(kw_only=True)
 class Record:
     """Represents a Bungie profile records/triumphs component."""
 
-    scores: typing.Optional[RecordScores] = attrs.field(repr=False)
+    scores: typing.Optional[RecordScores]
     """Information about the global records score."""
 
-    categories_node_hash: undefined.UndefinedOr[int] = attrs.field()
+    categories_node_hash: undefined.UndefinedOr[int]
     """ The hash for the root presentation node definition of Triumph categories.
 
     This will be `UNDEFINED` if not found.
     """
 
-    seals_node_hash: undefined.UndefinedOr[int] = attrs.field()
+    seals_node_hash: undefined.UndefinedOr[int]
     """The hash for the root presentation node definition of Triumph Seals.
 
     This will be `UNDEFINED` if not found.
     """
 
-    state: typedefs.IntAnd[RecordState] = attrs.field()
+    state: typedefs.IntAnd[RecordState]
     """Record's state. This will be an int if the state is a sum of multiple states."""
 
-    objectives: typing.Optional[list[Objective]] = attrs.field(repr=False)
+    objectives: typing.Optional[list[Objective]]
     """A list of the record objectives. The objectives are optional and may be `None` if not found."""
 
-    interval_objectives: typing.Optional[list[Objective]] = attrs.field(repr=False)
+    interval_objectives: typing.Optional[list[Objective]]
     """A list of the interval record objectives. The objectives are optional and may be `None` if not found."""
 
-    redeemed_count: int = attrs.field(repr=False)
+    redeemed_count: int
     """The number of times this record has been redeemed."""
 
-    completion_times: typing.Optional[int] = attrs.field(repr=False)
+    completion_times: typing.Optional[int]
     """An optional number of time this record has been completed, `None` if not found."""
 
-    reward_visibility: typing.Optional[list[bool]] = attrs.field(repr=False)
+    reward_visibility: typing.Optional[list[bool]]
     """An optional list of bool for the record reward visibility."""
 
 
-@attrs.define(kw_only=True, weakref_slot=True)
+@attrs.define(kw_only=True)
 class CharacterRecord(Record):
     """Represents a character focused records component.
 
     This derives from `Record` but returns a character focused's records.
     """
 
-    record_hashes: list[int] = attrs.field(hash=False)
+    record_hashes: list[int]
     """A list of int of the featured record hashes."""
-
-    async def fetch_records(self) -> typing.NoReturn:
-        raise NotImplementedError

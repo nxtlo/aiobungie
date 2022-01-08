@@ -119,9 +119,9 @@ class _Arc:
         await self._lock.acquire()
 
 
-@attrs.define()
+@attrs.define(kw_only=True, repr=False)
 class _Session:
-    client_session: aiohttp.ClientSession = attrs.field()
+    client_session: aiohttp.ClientSession
 
     @classmethod
     def acquire_session(
@@ -182,26 +182,26 @@ class RequestMethod(str, enums.Enum):
     """DELETE methods"""
 
 
-@attrs.mutable(weakref_slot=False, kw_only=True, repr=False)
+@attrs.mutable(kw_only=True, repr=False)
 class OAuth2Response:
     """Represents a proxy object for returned information from an OAuth2 successful response."""
 
-    access_token: str = attrs.field(hash=False)
+    access_token: str
     """The returned OAuth2 `access_token` field."""
 
-    refresh_token: str = attrs.field(hash=False)
+    refresh_token: str
     """The returned OAuth2 `refresh_token` field."""
 
-    expires_in: int = attrs.field(hash=True)
+    expires_in: int
     """The returned OAuth2 `expires_in` field."""
 
-    token_type: str = attrs.field(hash=False)
+    token_type: str
     """The returned OAuth2 `token_type` field. This is usually just `Bearer`"""
 
-    refresh_expires_in: int = attrs.field(hash=True)
+    refresh_expires_in: int
     """The returned OAuth2 `refresh_expires_in` field."""
 
-    membership_id: int = attrs.field(hash=True)
+    membership_id: int
     """The returned BungieNet membership id for the authorized user."""
 
     @classmethod

@@ -94,9 +94,7 @@ class RecordsComponent:
         - `CharacterRecords`
     """
 
-    profile_records: typing.Optional[
-        collections.Mapping[int, records_.Record]
-    ] = attrs.field()
+    profile_records: typing.Optional[collections.Mapping[int, records_.Record]]
     """A mapping from the profile record id to a record component.
 
     Notes
@@ -108,7 +106,7 @@ class RecordsComponent:
 
     character_records: typing.Optional[
         collections.Mapping[int, records_.CharacterRecord]
-    ] = attrs.field()
+    ]
     """A mapping from character record ids to a character record component.
 
     This will be available when `aiobungie.ComponentType.RECORDS`
@@ -130,14 +128,14 @@ class ProfileComponent:
     - `ProfileProgression`
     """
 
-    profiles: typing.Optional[profile.Profile] = attrs.field()
+    profiles: typing.Optional[profile.Profile]
     """The profile component.
 
     This will be available when `aiobungie.ComponentType.PROFILE` is passed to the request components.
     otherwise will be `None`.
     """
 
-    profile_progression: typing.Optional[profile.ProfileProgression] = attrs.field()
+    profile_progression: typing.Optional[profile.ProfileProgression]
     """The profile progression component.
 
     This will be available when `aiobungie.ComponentType.PROFILE_PROGRESSION`
@@ -145,9 +143,7 @@ class ProfileComponent:
     otherwise will be `None`.
     """
 
-    profile_currencies: typing.Optional[
-        collections.Sequence[profile.ProfileItemImpl]
-    ] = attrs.field()
+    profile_currencies: typing.Optional[collections.Sequence[profile.ProfileItemImpl]]
     """A sequence of profile currencies component.
 
     Notes
@@ -157,9 +153,7 @@ class ProfileComponent:
     is passed to the request components.
     """
 
-    profile_inventories: typing.Optional[
-        collections.Sequence[profile.ProfileItemImpl]
-    ] = attrs.field()
+    profile_inventories: typing.Optional[collections.Sequence[profile.ProfileItemImpl]]
     """A sequence of profile inventories items component.
 
     Notes
@@ -176,12 +170,12 @@ class UninstancedItemsComponent:
 
     objectives: typing.Optional[
         collections.Mapping[int, collections.Sequence[records_.Objective]]
-    ] = attrs.field()
+    ]
     """A mapping from the objective id to a sequence of objectives component."""
 
     perks: typing.Optional[
         collections.Mapping[int, collections.Collection[items.ItemPerk]]
-    ] = attrs.field()
+    ]
     """A mapping for the item instance id to its perks."""
 
 
@@ -199,16 +193,14 @@ class ItemsComponent(UninstancedItemsComponent):
 
     instances: typing.Optional[
         collections.Sequence[collections.Mapping[int, items.ItemInstance]]
-    ] = attrs.field()
+    ]
     """A sequence from the item instance id to an item object bound to this instance.
 
     This will be available when `aiobungie.ComponentType.ITEM_INSTANCES` is passed to the request.
     otherwise will be `None`.
     """
 
-    render_data: typing.Optional[
-        collections.Mapping[int, tuple[bool, dict[int, int]]]
-    ] = attrs.field()
+    render_data: typing.Optional[collections.Mapping[int, tuple[bool, dict[int, int]]]]
     """A mapping from the item instance id to tuple that holds two values.
 
     * First one is a bool that determines whether this item uses custom dyes or not.
@@ -218,9 +210,7 @@ class ItemsComponent(UninstancedItemsComponent):
     otherwise will be `None`.
     """
 
-    stats: typing.Optional[
-        collections.Mapping[int, items.ItemStatsView]
-    ] = attrs.field()
+    stats: typing.Optional[collections.Mapping[int, items.ItemStatsView]]
     """A mapping of the item instance id to a view of its stats.
 
     This will be available when `aiobungie.ComponentType.ITEM_STATS` is passed to the request.
@@ -229,7 +219,7 @@ class ItemsComponent(UninstancedItemsComponent):
 
     sockets: typing.Optional[
         collections.Mapping[int, collections.Sequence[items.ItemSocket]]
-    ] = attrs.field()
+    ]
     """A mapping from the item instance id to a sequence of inserted sockets into it.
 
     This will be available when `aiobungie.ComponentType.ITEM_SOCKETS` is passed to the request.
@@ -238,7 +228,7 @@ class ItemsComponent(UninstancedItemsComponent):
 
     reusable_plugs: typing.Optional[
         collections.Mapping[int, collections.Sequence[items.PlugItemState]]
-    ] = attrs.field()
+    ]
     """If the item supports reusable plugs,
     this is the mapping from the item instance id to a sequence of plugs that are allowed to be used for the socket.
 
@@ -250,7 +240,7 @@ class ItemsComponent(UninstancedItemsComponent):
         collections.Mapping[
             int, collections.Mapping[int, collections.Collection[records_.Objective]]
         ]
-    ] = attrs.field()
+    ]
     """A mapping from the item instance id to a mapping of the plug hash to
     a collections of the plug objectives being returned.
 
@@ -258,9 +248,7 @@ class ItemsComponent(UninstancedItemsComponent):
     otherwise will be `None`.
     """
 
-    plug_states: typing.Optional[
-        collections.Sequence[items.PlugItemState]
-    ] = attrs.field()
+    plug_states: typing.Optional[collections.Sequence[items.PlugItemState]]
     """A sequence of the plug states.
 
     This will be available when `aiobungie.ComponentType.ITEM_SOCKETS` is passed to the request.
@@ -315,14 +303,12 @@ class StringVariableComponent:
     - `StringVariables`
     """
 
-    profile_string_variables: typing.Optional[
-        collections.Mapping[int, int]
-    ] = attrs.field()
+    profile_string_variables: typing.Optional[collections.Mapping[int, int]]
     """A mapping from an expression mapping definition hash to its value."""
 
     character_string_variables: typing.Optional[
         collections.Mapping[int, collections.Mapping[int, int]]
-    ] = attrs.field()
+    ]
     """A mapping from the character id to a mapping from an expression mapping definition hash to its value."""
 
 
@@ -341,14 +327,14 @@ class MetricsComponent:
 
     metrics: typing.Optional[
         collections.Sequence[collections.Mapping[int, tuple[bool, records_.Objective]]]
-    ] = attrs.field()
+    ]
     """A sequence of mappings from the metrics hash to a tuple contains two elements.
 
     * The first is always a `bool` determines whether the object is visible or not.
     * The second is an `aiobungie.crate.Objective` of the metrics object.
     """
 
-    root_node_hash: typing.Optional[int] = attrs.field()
+    root_node_hash: typing.Optional[int]
     """The metrics presentation root node hash."""
 
 
@@ -368,16 +354,14 @@ class CharacterComponent(RecordsComponent, VendorsComponent):
     - `CharacterEquipments`
     """
 
-    character: typing.Optional[character_.Character] = attrs.field()
+    character: typing.Optional[character_.Character]
     """The character component.
 
     This will be available when `aiobungie.ComponentType.CHARACTERS` is passed to the request.
     otherwise will be `None`.
     """
 
-    inventory: typing.Optional[
-        collections.Sequence[profile.ProfileItemImpl]
-    ] = attrs.field()
+    inventory: typing.Optional[collections.Sequence[profile.ProfileItemImpl]]
     """A sequence of the character inventorie items component.
 
     Those items may be Weapons, emblems, ships, sparrows, etc.
@@ -389,7 +373,7 @@ class CharacterComponent(RecordsComponent, VendorsComponent):
     is passed to the request components.
     """
 
-    progressions: typing.Optional[character_.CharacterProgression] = attrs.field()
+    progressions: typing.Optional[character_.CharacterProgression]
     """The character progression component.
 
     Notes
@@ -399,30 +383,28 @@ class CharacterComponent(RecordsComponent, VendorsComponent):
     is passed to the request components.
     """
 
-    render_data: typing.Optional[character_.RenderedData] = attrs.field()
+    render_data: typing.Optional[character_.RenderedData]
     """The character rendered data component.
 
     This will always be `None` unless `aiobungie.ComponentType.RENDER_DATA`
     is passed to the request components.
     """
 
-    activities: typing.Optional[activity.CharacterActivity] = attrs.field()
+    activities: typing.Optional[activity.CharacterActivity]
     """A sequence of the character activities component.
 
     This will always be `None` unless `aiobungie.ComponentType.CHARACTER_ACTIVITES`
     is passed to the request components.
     """
 
-    equipment: typing.Optional[
-        collections.Sequence[profile.ProfileItemImpl]
-    ] = attrs.field()
+    equipment: typing.Optional[collections.Sequence[profile.ProfileItemImpl]]
     """A sequence of the character equipment component.
 
     This will always be `None` unless `aiobungie.ComponentType.CHARACTER_EQUIPMENT`
     is passed to the request components.
     """
 
-    item_components: typing.Optional[ItemsComponent] = attrs.field()
+    item_components: typing.Optional[ItemsComponent] = attrs.field(repr=False)
     """A component that includes all items components for this character component."""
 
 
@@ -475,9 +457,7 @@ class Component(
     - All
     """
 
-    characters: typing.Optional[
-        collections.Mapping[int, character_.Character]
-    ] = attrs.field()
+    characters: typing.Optional[collections.Mapping[int, character_.Character]]
     """A mapping from character's id to`aiobungie.crate.Character`
     of the associated character within the character component.
 
@@ -487,7 +467,7 @@ class Component(
 
     character_inventories: typing.Optional[
         collections.Mapping[int, collections.Sequence[profile.ProfileItemImpl]]
-    ] = attrs.field()
+    ]
     """A mapping from character's id to a sequence of their character inventorie items component.
 
     Those items may be Weapons, emblems, ships, sparrows, etc.
@@ -501,7 +481,7 @@ class Component(
 
     character_progressions: typing.Optional[
         collections.Mapping[int, character_.CharacterProgression]
-    ] = attrs.field()
+    ]
     """A mapping from character's id to a character progression component.
 
     Notes
@@ -513,7 +493,7 @@ class Component(
 
     character_render_data: typing.Optional[
         collections.Mapping[int, character_.RenderedData]
-    ] = attrs.field()
+    ]
     """A mapping from character's id to a character rendered data component.
 
     This will always be `None` unless `aiobungie.ComponentType.RENDER_DATA`
@@ -522,7 +502,7 @@ class Component(
 
     character_activities: typing.Optional[
         collections.Mapping[int, activity.CharacterActivity]
-    ] = attrs.field()
+    ]
     """A mapping from character's id to a sequence of their character activities component.
 
     This will always be `None` unless `aiobungie.ComponentType.CHARACTER_ACTIVITES`
@@ -531,7 +511,7 @@ class Component(
 
     character_equipments: typing.Optional[
         collections.Mapping[int, collections.Sequence[profile.ProfileItemImpl]]
-    ] = attrs.field()
+    ]
     """A mapping from character's id to a sequence of their character equipment component.
 
     This will always be `None` unless `aiobungie.ComponentType.CHARACTER_EQUIPMENT`
@@ -540,10 +520,10 @@ class Component(
 
     # character_uninstanced_component: typing.Optional[
     #     collections.Mapping[int, UninstancedItemsComponent]
-    # ] = attrs.field()
+    # ]
     """A mapping from the character id to its uninstanced item components."""
 
-    transitory: typing.Optional[fireteams.FireteamParty] = attrs.field()
+    transitory: typing.Optional[fireteams.FireteamParty]
     """Profile Transitory component.
 
     This component is used to show minimal information about the player's current fireteam party along
@@ -558,14 +538,14 @@ class Component(
 
     profile_plugsets: typing.Optional[
         collections.Mapping[int, collections.Sequence[items.PlugItemState]]
-    ] = attrs.field()
+    ]
     """A mapping from the index of the plugset to a sequence of the profile's plug set objects."""
 
     character_plugsets: typing.Optional[
         collections.Mapping[
             int, collections.Mapping[int, collections.Sequence[items.PlugItemState]]
         ]
-    ] = attrs.field()
+    ]
     """A mapping from the character's id to mapping from the index of
     the plug set to a sequence of plug objects bound to that character.
     """

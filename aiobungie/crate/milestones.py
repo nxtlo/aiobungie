@@ -52,104 +52,98 @@ if typing.TYPE_CHECKING:
     from aiobungie.crate import records
 
 
-@attrs.define(hash=False, weakref_slot=False, kw_only=True)
+@attrs.define(kw_only=True)
 class MilestoneItems:
     """Represents items the may be found inside a milestone."""
 
-    title: undefined.UndefinedOr[str] = attrs.field(repr=True)
+    title: undefined.UndefinedOr[str]
     """The item title. This may be `UNDEFINED` if not specified."""
 
-    hashes: collections.Sequence[int] = attrs.field(repr=True)
+    hashes: collections.Sequence[int]
     """The items hashes"""
 
 
-@attrs.define(hash=False, weakref_slot=False, kw_only=True)
+@attrs.define(kw_only=True)
 class MilestoneContent:
     """Represents information about a Destiny milestone content."""
 
-    about: undefined.UndefinedOr[str] = attrs.field(repr=True)
+    about: undefined.UndefinedOr[str]
     """About this milestone."""
 
-    status: undefined.UndefinedOr[str] = attrs.field(repr=True, eq=True)
+    status: undefined.UndefinedOr[str]
     """The milestone's status. This field may be `UNDEFINED` if not specified."""
 
-    tips: collections.Sequence[undefined.UndefinedOr[str]] = attrs.field(repr=True)
+    tips: collections.Sequence[undefined.UndefinedOr[str]]
     """A sequence of the milestone's tips. fields in the sequence may be `UNDEFINED` if not specified."""
 
-    items: typedefs.NoneOr[MilestoneItems] = attrs.field(repr=True)
+    items: typedefs.NoneOr[MilestoneItems]
     """An optional items for this miletones. This may return `None` if nothing was found."""
 
 
-@attrs.define(weakref_slot=False, kw_only=True)
+@attrs.define(kw_only=True)
 class MilestoneActivityPhase:
     """Represents information about a milestone activity phase."""
 
-    is_completed: bool = attrs.field()
+    is_completed: bool
     """Whether this phase has been completed or not."""
 
-    hash: int = attrs.field()
+    hash: int
     """The phase's hash."""
 
 
-@attrs.define(weakref_slot=False, kw_only=True)
+@attrs.define(kw_only=True)
 class MilestoneActivity:
     """Represents a Bungie milestone activity."""
 
-    hash: int = attrs.field()
+    hash: int
     """The activity hash."""
 
-    challenges: collections.Sequence[records.Objective] = attrs.field(repr=False)
+    challenges: collections.Sequence[records.Objective]
     """A sequence of objetvies/challenges bound to this activity."""
 
-    modifier_hashes: typing.Optional[list[int]] = attrs.field(repr=False)
+    modifier_hashes: typing.Optional[list[int]]
     """An optional list of the activity's modifier hashes."""
 
-    boolean_options: typing.Optional[collections.Mapping[int, bool]] = attrs.field(
-        repr=False
-    )
+    boolean_options: typing.Optional[collections.Mapping[int, bool]]
     """An optional mapping from int to bool of the activity available options."""
 
-    phases: typing.Optional[
-        collections.Collection[MilestoneActivityPhase]
-    ] = attrs.field(repr=False)
+    phases: typing.Optional[collections.Collection[MilestoneActivityPhase]]
     """An optional collection of the activity phases."""
 
 
-@attrs.define(weakref_slot=False, kw_only=True)
+@attrs.define(kw_only=True)
 class QuestStatus:
     """Information that an available quest status has."""
 
-    net: traits.Netrunner = attrs.field(repr=False)
+    net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
 
-    quest_hash: int = attrs.field(hash=True)
+    quest_hash: int
     """The quest hash."""
 
-    step_hash: int = attrs.field(hash=True)
+    step_hash: int
     """The quest step hash."""
 
-    vendor_hash: typing.Optional[int] = attrs.field(repr=False)
+    vendor_hash: typing.Optional[int]
     """If the quest has a related Vendor that you should talk to
     in order to initiate the quest/earn rewards/continue the quest
     """
 
-    step_objectives: collections.Sequence[records.Objective] = attrs.field(
-        hash=False, repr=False
-    )
+    step_objectives: collections.Sequence[records.Objective]
     """A sequence of the step objectives bound to this quest status."""
 
-    is_completed: bool = attrs.field(hash=False)
+    is_completed: bool
     """Whether this quest status has been redeemed or not."""
 
-    is_tracked: bool = attrs.field(hash=False, repr=False)
+    is_tracked: bool
     """Whether the player is tracking this quest status or not."""
 
-    started: bool = attrs.field(hash=False, repr=False)
+    started: bool
     """Whether this quest status has started by the player or not."""
 
-    is_redeemed: bool = attrs.field(repr=False)
+    is_redeemed: bool
     """Whether the quest has been redmeed or not."""
 
-    item_instance_id: int = attrs.field(hash=True)
+    item_instance_id: int
     """ The current Quest Step will be an instanced item in the player's inventory.
 
     If you care about that, this is the instance ID of that item.
@@ -176,80 +170,70 @@ class QuestStatus:
         return await self.net.request.fetch_inventory_item(self.step_hash)
 
 
-@attrs.define(weakref_slot=False, kw_only=True)
+@attrs.define(kw_only=True)
 class MilestoneQuest:
 
-    item_hash: int = attrs.field(hash=True)
+    item_hash: int
 
-    status: QuestStatus = attrs.field(repr=False, hash=False)
+    status: QuestStatus
 
 
-@attrs.define(weakref_slot=False, kw_only=True)
+@attrs.define(kw_only=True)
 class MilestoneVendor:
     """Represents a vendor found inside a milestone object."""
 
-    vendor_hash: int = attrs.field(hash=True)
+    vendor_hash: int
 
-    preview_itemhash: typing.Optional[int] = attrs.field(hash=True)
+    preview_itemhash: typing.Optional[int]
 
 
-@attrs.define(weakref_slot=False, kw_only=True)
+@attrs.define(kw_only=True)
 class MilestoneRewardEntry:
     """Represents a charatcer-specific data for a milestone reward entry."""
 
-    entry_hash: int = attrs.field(hash=True)
+    entry_hash: int
     """The entry hash."""
 
-    is_earned: bool = attrs.field(hash=False)
+    is_earned: bool
     """Whether the entry has been earned or not."""
 
-    is_redeemed: bool = attrs.field(hash=False)
+    is_redeemed: bool
     """Whether the entry has been redeemed or not."""
 
 
-@attrs.define(weakref_slot=False, kw_only=True, eq=False)
+@attrs.define(kw_only=True)
 class MilestoneReward:
     """Represents a summary of rewards that can be earned from a milestone."""
 
-    category_hash: int = attrs.field(hash=True)
+    category_hash: int
 
-    entries: collections.Collection[MilestoneRewardEntry] = attrs.field(
-        hash=False, repr=False
-    )
+    entries: collections.Collection[MilestoneRewardEntry]
     """A collections of reward entries for this category."""
 
 
-@attrs.define(weakref_slot=False, kw_only=True)
+@attrs.define(kw_only=True)
 class Milestone:
     """Represents a milestone at Bungie."""
 
-    hash: int = attrs.field(hash=True)
+    hash: int
     """Milestone hash."""
 
-    available_quests: typing.Optional[
-        collections.Sequence[MilestoneQuest]
-    ] = attrs.field(repr=False, hash=False, eq=False)
+    available_quests: typing.Optional[collections.Sequence[MilestoneQuest]]
     """If there're active quests related to this milestone. they will appear here."""
 
-    activities: typing.Optional[collections.Sequence[MilestoneActivity]] = attrs.field(
-        repr=False, hash=False, eq=False
-    )
+    activities: typing.Optional[collections.Sequence[MilestoneActivity]]
     """A sequence of activities related to this milestone."""
 
-    vendors: typing.Optional[collections.Sequence[MilestoneVendor]] = attrs.field(
-        repr=False, hash=False, eq=False
-    )
+    vendors: typing.Optional[collections.Sequence[MilestoneVendor]]
     """A sequence of vendors related to this milestone."""
 
-    start_date: typing.Optional[datetime.datetime] = attrs.field(hash=False)
+    start_date: typing.Optional[datetime.datetime]
     """If the date of the milestone is known. This will be returned."""
 
-    end_date: typing.Optional[datetime.datetime] = attrs.field(hash=False)
+    end_date: typing.Optional[datetime.datetime]
     """If the end date of the milestone is known. This will be returned."""
 
-    order: int = attrs.field(repr=False, hash=False)
+    order: int
 
-    rewards: typing.Optional[collections.Collection[MilestoneReward]] = attrs.field(
-        hash=False
-    )
+    rewards: typing.Optional[collections.Collection[MilestoneReward]]
     """A colelctions of rewards that can be earned from this miletone"""

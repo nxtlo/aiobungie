@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Time formatting module."""
+"""Time helper functions."""
 
 
 from __future__ import annotations
@@ -37,42 +37,28 @@ import datetime
 import math
 import typing
 
-from dateutil.parser import parse
-
-DateSigT = typing.TypeVar("DateSigT", covariant=True)
-"""A type hint for the Date type signature."""
+import dateutil.parser
 
 
-def format_played(mins: int, *, suffix: bool = False) -> str:
-    """
-    Converts A Bungie's total played time in minutes
-    to a a readable time.
-    """
+def format_played(mins: int, /, *, suffix: bool = False) -> str:
+    """Converts A memberships's total played time from minutes to a readable string."""
     hrs = math.floor(mins // 60)
     seconds = math.floor(mins % 60)
     return f"{hrs} hours{' and' if suffix else ''} {seconds} seconds."
 
 
-def from_timestamp(timer: int) -> datetime.datetime:
-    """
-    Converts timestamp to `datetime.datetime`
-    """
+def from_timestamp(timer: typing.Union[int, float], /) -> datetime.datetime:
+    """Converts a timestamp to `datetime.datetime`"""
     return datetime.datetime.utcfromtimestamp(timer)
 
 
-def clean_date(date: str) -> datetime.datetime:
-    """Formats `datetime.datetime` to a readable date."""
-    parsed = parse(date)
-    ts = to_timestamp(parsed)  # had to do it in two ways.
-    ft = from_timestamp(ts)
-    return ft
+def clean_date(iso_date: str, /) -> datetime.datetime:
+    """Parse a Bungie ISO format string date to a Python `datetime.datetime` object."""
+    parsed = dateutil.parser.parse(iso_date)
+    ts = to_timestamp(parsed)  # had to do it in two ways...
+    return from_timestamp(ts)
 
 
-def to_timestamp(date: datetime.datetime) -> int:
-    """
-    Converts datetime.datetime.utctimetuple() to timestamp.
-    """
-    try:
-        return calendar.timegm(date.timetuple())
-    except Exception as e:
-        raise e
+def to_timestamp(date: datetime.datetime, /) -> int:
+    """Converts `datetime.datetime` to timestamp."""
+    return calendar.timegm(date.timetuple())

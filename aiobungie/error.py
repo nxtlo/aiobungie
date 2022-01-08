@@ -51,56 +51,56 @@ if typing.TYPE_CHECKING:
     from aiohttp import typedefs
 
 
-@attrs.define(auto_exc=True, repr=False, weakref_slot=False)
+@attrs.define(auto_exc=True)
 class AiobungieError(RuntimeError):
     """Base exception class that all other errors inherit from."""
 
 
-@attrs.define(auto_exc=True, repr=False, weakref_slot=False)
+@attrs.define(auto_exc=True)
 class HTTPError(AiobungieError):
     """Exception base used for HTTP request errors."""
 
-    message: str = attrs.field()
+    message: str
     """The error message."""
 
-    http_status: http.HTTPStatus = attrs.field()
+    http_status: http.HTTPStatus
     """The response status."""
 
 
-@attrs.define(auto_exc=True, repr=False, weakref_slot=False)
+@attrs.define(auto_exc=True)
 class CharacterError(HTTPError):
     """Raised when a encountring making a character-based request."""
 
 
-@attrs.define(auto_exc=True, repr=False, weakref_slot=False, kw_only=True)
+@attrs.define(auto_exc=True, kw_only=True)
 class HTTPException(HTTPError):
     """Exception base internally used for an HTTP request response errors."""
 
-    error_code: int = attrs.field()
+    error_code: int
     """The returned Bungie error status code."""
 
-    http_status: http.HTTPStatus = attrs.field()
+    http_status: http.HTTPStatus
     """The request response http status."""
 
-    throttle_seconds: int = attrs.field()
+    throttle_seconds: int
     """The Bungie response throttle seconds."""
 
-    url: typing.Optional[typedefs.StrOrURL] = attrs.field()
+    url: typing.Optional[typedefs.StrOrURL]
     """The URL/endpoint caused this error."""
 
-    body: typing.Any = attrs.field()
+    body: typing.Any
     """The response body."""
 
-    headers: multidict.CIMultiDictProxy[str] = attrs.field()
+    headers: multidict.CIMultiDictProxy[str]
     """The response headers."""
 
-    message: str = attrs.field()
+    message: str
     """A Bungie human readable message describes the cause of the error."""
 
-    error_status: str = attrs.field()
+    error_status: str
     """A Bungie short error status describes the cause of the error."""
 
-    message_data: dict[str, str] = attrs.field()
+    message_data: dict[str, str]
     """A dict of string key, value that includes each cause of the error
     to a message describes information about that error.
     """
@@ -119,7 +119,7 @@ class HTTPException(HTTPError):
         )
 
 
-@attrs.define(auto_exc=True, repr=False, weakref_slot=False)
+@attrs.define(auto_exc=True)
 class Forbidden(HTTPException):
     """Exception that's raised for when status code 403 occurs."""
 
@@ -128,7 +128,7 @@ class Forbidden(HTTPException):
     )
 
 
-@attrs.define(auto_exc=True, repr=False, weakref_slot=False)
+@attrs.define(auto_exc=True)
 class NotFound(HTTPException):
     """Raised when an unknown request was not found."""
 
@@ -137,7 +137,7 @@ class NotFound(HTTPException):
     )
 
 
-@attrs.define(auto_exc=True, repr=False, weakref_slot=False)
+@attrs.define(auto_exc=True)
 class Unauthorized(HTTPException):
     """Unauthorized access."""
 
@@ -146,23 +146,23 @@ class Unauthorized(HTTPException):
     )
 
 
-@attrs.define(auto_exc=True, repr=False, weakref_slot=False)
+@attrs.define(auto_exc=True)
 class BadRequest(HTTPError):
     """Bad requests exceptions."""
 
-    url: typing.Optional[typedefs.StrOrURL] = attrs.field()
+    url: typing.Optional[typedefs.StrOrURL]
     """The URL/endpoint caused this error."""
 
-    body: typing.Any = attrs.field()
+    body: typing.Any
     """The response body."""
 
-    headers: multidict.CIMultiDictProxy[str] = attrs.field()
+    headers: multidict.CIMultiDictProxy[str]
     """The response headers."""
 
     http_status: http.HTTPStatus = attrs.field(default=http.HTTPStatus.BAD_REQUEST)
 
 
-@attrs.define(auto_exc=True, repr=False, weakref_slot=False)
+@attrs.define(auto_exc=True)
 class MembershipTypeError(BadRequest):
     """A bad request error raised when passing wrong membership to the request.
 
@@ -189,17 +189,17 @@ class MembershipTypeError(BadRequest):
         return int(self.membership_id)
 
 
-@attrs.define(auto_exc=True, repr=False, weakref_slot=False)
+@attrs.define(auto_exc=True)
 class InternalServerError(HTTPException):
-    """Raised for other 5xx errors."""
+    """Raised for 5xx internal server errors."""
 
 
-@attrs.define(auto_exc=True, repr=False, weakref_slot=False)
+@attrs.define(auto_exc=True)
 class ResponseError(HTTPException):
-    """Standard Responses error."""
+    """Standard HTTP responses exception."""
 
 
-@attrs.define(auto_exc=True, repr=False, weakref_slot=False)
+@attrs.define(auto_exc=True)
 class RateLimitedError(HTTPError):
     """Raiased when being hit with ratelimits."""
 
@@ -208,10 +208,10 @@ class RateLimitedError(HTTPError):
     )
     """The request response http status."""
 
-    url: typedefs.StrOrURL = attrs.field()
+    url: typedefs.StrOrURL
     """The URL/endpoint caused this error."""
 
-    body: typing.Any = attrs.field()
+    body: typing.Any
     """The response body."""
 
     retry_after: float = attrs.field(default=0.0)

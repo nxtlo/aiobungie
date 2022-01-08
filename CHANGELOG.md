@@ -17,6 +17,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Implemented `components.ItemComponent`.
 - new `items.py` module includes all item related objects.
 
+### Removed
+- `Friend.is_pending` method since this can be checked using `Friend.relationship`.
+- `Friend.pending` method since this can be checked using `Client.fetch_friend_requests`.
+- `Friend.add` method since this can be used via `RESTClient.send_friend_request`
+- `helpers.AsyncIterator` has been removed.
+
 ### Changed
 - Significantly optimized factory's checkings and deserializing.
 - `Client.fetch_groups_for_member` now returns a sequence instead of a signle object.
@@ -25,6 +31,9 @@ This also references `fetch_potentional_groups_forr_member`.
 - `access_token` parameter is now always positional on all methods.
 - enum `Item` name changed to `ItemType`.
 - enum `DamageType` now holds the actual enum values instead of the hashes.
+- All crate fields are now relaxed. Which have the field name and type only.
+- All objects that inherits from `user.UserLike`. `object.__str__()` and `str(object)` will now return the full unique name for that object.
+- `LinkedProfile` no longer supports `async for`.
 
 ### Fixed
 - `Character.last_played` wasn't returning a datetime object.

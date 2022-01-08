@@ -74,28 +74,26 @@ class ItemEnergyType(enums.IntEnum):
     STASIS = 6
 
 
-@attrs.define(hash=True, kw_only=True, weakref_slot=False)
+@attrs.define(kw_only=True)
 class ItemSocket:
     """Information found in a profile item sockets component."""
 
-    plug_hash: typing.Optional[int] = attrs.field(hash=True)
+    plug_hash: typing.Optional[int]
     """The plug item hash."""
 
-    is_enabled: bool = attrs.field(hash=False)
+    is_enabled: bool
     """Whether this plug is enabled or not."""
 
-    is_visible: typing.Optional[bool] = attrs.field(hash=False)
+    is_visible: typing.Optional[bool]
     """Either the plug is visible or not."""
 
-    enable_fail_indexes: typing.Optional[list[int]] = attrs.field(
-        repr=False, hash=False
-    )
+    enable_fail_indexes: typing.Optional[list[int]]
     """If a plug is inserted but not enabled,
     this field will be available with indexes into the plug item definition.
     """
 
 
-@attrs.define(hash=True, kw_only=True, weakref_slot=False)
+@attrs.define(kw_only=True)
 class PlugItemState:
     """Information about a plug item's state."""
 

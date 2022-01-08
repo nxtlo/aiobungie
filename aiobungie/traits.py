@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Module for all client interfaces."""
+"""Interfaces used for the main clients implementations."""
 
 from __future__ import annotations
 
@@ -39,45 +39,49 @@ if typing.TYPE_CHECKING:
 
 @typing.runtime_checkable
 class Netrunner(typing.Protocol):
-    """A supertype protocol represents The `ClientBase`.
+    """A supertype protocol represents a readonly `ClientBase`.
 
-    Objects with this protocol can make requests from outside the base client.
+    Clients that implements this can make requests from outside the base client.
+    This is useually used within the `aiobungie.crate` implementations for easier access to the base client instance.
     """
 
     __slots__ = ()
 
     @property
     def request(self) -> base_client.Client:
-        """Returns a client network state for making external requests."""
+        """A readonly `ClientBase` instance used for external requests."""
         raise NotImplementedError
 
 
 @typing.runtime_checkable
 class Serializable(typing.Protocol):
-    """A serializable supertype object protocol.
+    """A supertype protocol for deserializable clients.
 
-    Objects with this protocol can serialize JSON REST payloads into
-    a Python data class objects using the client factory.
+    Clients that implements this can deserialize JSON REST payloads into
+    a Python `aiobungie.crate` object using the client `aiobungie.internal.factory.Factory`.
     """
 
     __slots__ = ()
 
     @property
     def factory(self) -> factory_.Factory:
-        """Returns the entity factory for the client."""
+        """Returns the marshalling factory for the client."""
         raise NotImplementedError
 
 
 @typing.runtime_checkable
 class RESTful(typing.Protocol):
-    """A RESTful only supertype object protocol."""
+    """A RESTful only supertype protocol.
+
+    Clients with this are raw-only JSON REST clients. i.e., `aiobungie.rest.RESTClient`
+    """
 
     __slots__ = ()
 
     def build_oauth2_url(
         self, client_id: typing.Optional[int] = None
     ) -> typing.Optional[str]:
-        """Builds an OAuth2 URL.
+        """Builds an OAuth2 URL using the provided user REST/Base client secret/id.
 
         Parameters
         ----------
@@ -113,20 +117,22 @@ class RESTful(typing.Protocol):
         method: typing.Union[rest.RequestMethod, str],
         path: str,
         auth: typing.Optional[str] = None,
+        json: typing.Optional[dict[str, typing.Any]] = None,
         **kwargs: typing.Any
     ) -> typing.Any:
-        """Raw http request given a valid bungie endpoint.
+        """Perform an HTTP request given a valid Bungie endpoint.
 
         Parameters
         ----------
         method : `typing.Union[aiobungie.rest.RequestMethod, str]`
             The request method, This may be `GET`, `POST`, `PUT`, etc.
         path: `str`
-            The bungie endpoint or path.
-            A path must look something like this
-            `Destiny2/3/Profile/46111239123/...`
+            The Bungie endpoint or path.
+            A path must look something like this `Destiny2/3/Profile/46111239123/...`
         auth : `typing.Optional[str]`
             An optional bearer token for methods that requires OAuth2 Authorization header.
+        json : `typing.Optional[dict[str, typing.Any]]`
+            An optional JSON data to include in the request.
         **kwargs: `typing.Any`
             Any other key words to pass to the request.
 
@@ -140,7 +146,10 @@ class RESTful(typing.Protocol):
 
 @typing.runtime_checkable
 class ClientBase(Netrunner, Serializable, typing.Protocol):
-    """A Pythonic Client supertype, serializble and netrunner protocol."""
+    """A supertype that implements all protocols.
+
+    This can also access its REST client via `ClientBase.rest`
+    """
 
     __slots__ = ()
 
@@ -161,7 +170,7 @@ class ClientBase(Netrunner, Serializable, typing.Protocol):
         -------
         ```py
         async def main() -> None:
-            # DO SOME ASYNC WORK
+            await fetch(...)
 
         # Run the coro.
         client.run(main())

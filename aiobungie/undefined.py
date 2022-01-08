@@ -32,7 +32,7 @@ _T = typing.TypeVar("_T", covariant=True)
 class UndefinedType:
     """An `UNDEFINED` type."""
 
-    __instance: typing.ClassVar[UndefinedType]
+    __instance: typing.Optional[UndefinedType] = None
 
     def __bool__(self) -> typing.Literal[False]:
         return False
@@ -44,12 +44,10 @@ class UndefinedType:
         return "UNDEFINED"
 
     def __new__(cls) -> UndefinedType:
-        try:
-            return cls.__instance
-        except AttributeError:
+        if cls.__instance is None:
             o = super().__new__(cls)
             cls.__instance = o
-            return cls.__instance
+        return cls.__instance
 
 
 Undefined: typing.Final[UndefinedType] = UndefinedType()

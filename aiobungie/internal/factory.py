@@ -19,7 +19,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Marshaller factory for deserializing Bungie's JSON payloads."""
+"""Marshalling factory used to deserializing REST JSON payloads into an `aiobungie.crate`."""
 
 from __future__ import annotations
 
@@ -58,12 +58,10 @@ if typing.TYPE_CHECKING:
 
 
 class Factory(interfaces.FactoryInterface):
-    """The base deserialization factory class for all aiobungie data classes.
+    """The base deserialization factory class for all aiobungie objects.
 
     Highly inspired hikari entity factory used to deserialize JSON responses from the REST client and turning them
-    into a Python data classes object.
-
-    This is only provided by `aiobungie.Client` base client.
+    into a `aiobungie.crate` Python classes.
     """
 
     __slots__ = ("_net",)
@@ -229,6 +227,7 @@ class Factory(interfaces.FactoryInterface):
             type=destiny_user.type,
             code=destiny_user.code,
             bungie=bungie_user,
+            is_online=undefined.Undefined,
         )
 
     def deserialize_clan(self, payload: typedefs.JSONObject) -> clans.Clan:
@@ -327,7 +326,7 @@ class Factory(interfaces.FactoryInterface):
             icon=destiny_user.icon,
             is_public=destiny_user.is_public,
             bungie=self.deserialize_partial_bungie_user(payload["bungieNetUserInfo"]),
-            join_date=time.clean_date(payload["joinDate"]),
+            joined_at=time.clean_date(payload["joinDate"]),
         )
 
     def deserialize_clan_admins(
@@ -444,6 +443,9 @@ class Factory(interfaces.FactoryInterface):
                     last_seen_name=member.last_seen_name,
                     group_id=group_id[0],
                     bungie=bungie_user,
+                    is_online=undefined.Undefined,
+                    last_online=undefined.Undefined,
+                    joined_at=undefined.Undefined,
                 )
                 members_vec.append(member_obj)
         return members_vec

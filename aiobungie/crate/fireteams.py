@@ -149,24 +149,30 @@ class FireteamPartyMemberState(enums.IntEnum):
     LEADER_AND_POSSE = PARTY_LEADER + POSSE_AND_MEMBER
 
 
-@attrs.define(kw_only=True, weakref_slot=False, hash=True)
+@attrs.define(kw_only=True)
 class FireteamPartyMember:
     """Minimal information about a party member in a fireteam."""
 
-    membership_id: int = attrs.field()
+    membership_id: int
     """Party member's membership id."""
 
-    emblem_hash: int = attrs.field()
+    emblem_hash: int
     """Party member's emblem hash."""
 
-    display_name: undefined.UndefinedOr[str] = attrs.field()
+    display_name: undefined.UndefinedOr[str]
     """Party member's display name. `UNDEFINED` if not set."""
 
-    status: typedefs.IntAnd[FireteamPartyMemberState] = attrs.field()
+    status: typedefs.IntAnd[FireteamPartyMemberState]
     """A Flags Enumeration value indicating the states that the player is in relevant to being on a fireteam."""
 
+    def __str__(self) -> str:
+        return str(self.display_name)
 
-@attrs.define(kw_only=True, weakref_slot=False, hash=True)
+    def __int__(self) -> int:
+        return self.membership_id
+
+
+@attrs.define(kw_only=True)
 class FireteamPartyCurrentActivity:
     """Represents information about a fireteam party's current activity."""
 
@@ -176,137 +182,137 @@ class FireteamPartyCurrentActivity:
     end_time: typing.Optional[datetime.datetime]
     """An optional datetime of when was this activity ended."""
 
-    score: float = attrs.field()
+    score: float
     """This is the total score of the activity."""
 
-    highest_opposing_score: float = attrs.field(repr=False)
+    highest_opposing_score: float
     """If the activity was against humans, This will be their highest score."""
 
-    opponenst_count: int = attrs.field()
+    opponenst_count: int
     """How many human opponents were playing against this fireteam."""
 
-    player_count: int = attrs.field(hash=True)
+    player_count: int
     """How many human players were playing in this fireteam."""
 
 
-@attrs.define(kw_only=True, weakref_slot=False, hash=True)
+@attrs.define(kw_only=True)
 class FireteamPartySettings:
     """Represents information about a fireteam's joinability settngs."""
 
-    open_slots: int = attrs.field()
+    open_slots: int
     """The number of open slots this fireteam has."""
 
-    privacy_setting: enums.PrivacySetting = attrs.field()
+    privacy_setting: enums.PrivacySetting
     """Fireteam leader's fireteam privacy setting."""
 
-    closed_reasons: typedefs.IntAnd[enums.ClosedReasons] = attrs.field()
+    closed_reasons: typedefs.IntAnd[enums.ClosedReasons]
     """Reasons why a person can't join this person's fireteam."""
 
 
-@attrs.define(kw_only=True, weakref_slot=False, hash=True)
+@attrs.define(kw_only=True)
 class FireteamParty:
     """Represents a fireteam party. This information found in profile transitory component."""
 
-    members: collections.Sequence[FireteamPartyMember] = attrs.field(eq=False)
+    members: collections.Sequence[FireteamPartyMember]
     """The party members currently in this fireteam."""
 
-    activity: FireteamPartyCurrentActivity = attrs.field(repr=False)
+    activity: FireteamPartyCurrentActivity
     """The current activity this fireteam is in."""
 
-    settings: FireteamPartySettings = attrs.field(repr=False)
+    settings: FireteamPartySettings
     """Information about the fireteam joinability settings, e.g. Privacy, Open slots."""
 
-    last_destination_hash: typing.Optional[int] = attrs.field(eq=False, hash=True)
+    last_destination_hash: typing.Optional[int]
     """The hash identifier for the destination of the last location you were orbiting when in orbit."""
 
-    tracking: list[dict[str, typing.Any]] = attrs.field()
+    tracking: list[dict[str, typing.Any]]
     """???"""
 
 
-@attrs.define(kw_only=True, weakref_slot=False, hash=True)
+@attrs.define(kw_only=True)
 class FireteamUser(user.DestinyUser):
     """Represents a Bungie fireteam user info."""
 
-    fireteam_display_name: str = attrs.field(repr=True)
+    fireteam_display_name: str
     """The fireteam display name."""
 
-    fireteam_membership_id: enums.MembershipType = attrs.field(repr=True)
+    fireteam_membership_id: enums.MembershipType
     """The fireteam's membership type."""
 
 
-@attrs.define(kw_only=True, weakref_slot=False, hash=False)
+@attrs.define(kw_only=True)
 class FireteamMember(user.PartialBungieUser):
     """Represents a Bungie fireteam member."""
 
-    destiny_user: FireteamUser = attrs.field(repr=True)
+    destiny_user: FireteamUser
     """The destiny user info related to this fireteam member."""
 
-    character_id: int = attrs.field(repr=True)
+    character_id: int
     """Fireteam member's character id."""
 
-    date_joined: datetime.datetime = attrs.field(repr=False)
+    date_joined: datetime.datetime
     """Fireteam member's join date."""
 
-    has_microphone: bool = attrs.field(repr=False)
+    has_microphone: bool
     """Whether the fireteam member has a mic or not."""
 
-    last_platform_invite_date: datetime.datetime = attrs.field(repr=False)
+    last_platform_invite_date: datetime.datetime
     """"""
 
-    last_platform_invite_result: int = attrs.field(repr=False)
+    last_platform_invite_result: int
     """"""
 
 
-@attrs.define(kw_only=True, weakref_slot=False, hash=False)
+@attrs.define(kw_only=True)
 class Fireteam:
     """A representation of a Bungie fireteam."""
 
-    id: int = attrs.field(hash=True)
+    id: int
     """The fireteam id."""
 
-    group_id: int = attrs.field(hash=True, repr=False)
+    group_id: int
     """The fireteam group id."""
 
-    platform: FireteamPlatform = attrs.field(repr=False)
+    platform: FireteamPlatform
     """The fireteam platform."""
 
-    activity_type: FireteamActivity = attrs.field()
+    activity_type: FireteamActivity
     """The activity this fireteam is planning to run."""
 
-    is_immediate: bool = attrs.field(repr=False)
+    is_immediate: bool
     """Whether the fireteam activity is immediate or not."""
 
-    owner_id: int = attrs.field(hash=True, repr=False)
+    owner_id: int
     """The fireteam owner id."""
 
-    player_slot_count: int = attrs.field(repr=False)
+    player_slot_count: int
     """The needed player count in this fireteam."""
 
-    available_player_slots: int = attrs.field()
+    available_player_slots: int
     """The available player slots in this fireteam."""
 
-    available_alternate_slots: int = attrs.field(repr=False)
+    available_alternate_slots: int
     """The alternate available player slots in this fireteam."""
 
-    title: undefined.UndefinedOr[str] = attrs.field()
+    title: undefined.UndefinedOr[str]
     """The fireteam title. Could be `UNDEFINED` if not set."""
 
-    date_created: datetime.datetime = attrs.field(repr=False)
+    date_created: datetime.datetime
     """A datetime of when was this fireteam created."""
 
-    is_public: bool = attrs.field(repr=False)
+    is_public: bool
     """Whether the fireteam is public or not."""
 
-    locale: FireteamLanguage = attrs.field(repr=False)
+    locale: FireteamLanguage
     """The selected locale language for this fireteam."""
 
-    is_valid: bool = attrs.field(repr=False)
+    is_valid: bool
     """Whether this fireteam is valid or not."""
 
-    last_modified: datetime.datetime = attrs.field(repr=False)
+    last_modified: datetime.datetime
     """A datetime of when was this fireteam created."""
 
-    total_results: int = attrs.field(repr=False)
+    total_results: int
     """The total results of the found activities."""
 
     @property
@@ -314,17 +320,19 @@ class Fireteam:
         """The activity url at Bungie.net."""
         return f"{url.BASE}/en/ClanV2/PublicFireteam?groupId={self.group_id}&fireteamId={self.id}"  # noqa: E501
 
+    def __int__(self) -> int:
+        return self.id
 
-@attrs.define(kw_only=True, weakref_slot=False, hash=False)
+    def __str__(self) -> str:
+        return str(self.title)
+
+
+@attrs.define(kw_only=True)
 class AvalaibleFireteam(Fireteam):
     """Represents an available clan fireteam. This includes the members and alternative members."""
 
-    members: typing.Optional[collections.Sequence[FireteamMember]] = attrs.field(
-        repr=True
-    )
+    members: typing.Optional[collections.Sequence[FireteamMember]]
     """A sequence of the fireteam members."""
 
-    alternatives: typing.Optional[collections.Sequence[FireteamMember]] = attrs.field(
-        repr=True
-    )
+    alternatives: typing.Optional[collections.Sequence[FireteamMember]]
     """A sequence of the fireteam alternative members."""

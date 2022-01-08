@@ -40,55 +40,55 @@ if typing.TYPE_CHECKING:
     from aiobungie.internal import enums
 
 
-@attrs.define(weakref_slot=False, hash=False, kw_only=True)
+@attrs.define(kw_only=True)
 class FriendRequestView:
     """A view of the pending friend requests queue."""
 
-    incoming: collections.Sequence[Friend] = attrs.field(repr=True, hash=False)
+    incoming: collections.Sequence[Friend]
     """The incoming friend request view."""
 
-    outgoing: collections.Sequence[Friend] = attrs.field(repr=True, hash=False)
+    outgoing: collections.Sequence[Friend]
     """The outgoing friend request view."""
 
 
-@attrs.define(weakref_slot=False, hash=False, kw_only=True)
+@attrs.define(kw_only=True)
 class Friend:
     """Represents a bungie friend in your account."""
 
-    net: traits.Netrunner = attrs.field(repr=False)
+    net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
     """A network state we use to make external requests."""
 
-    id: int = attrs.field(repr=False, hash=True)
+    id: int
     """The friend's last seen at id."""
 
-    type: enums.MembershipType = attrs.field(repr=True)
+    type: enums.MembershipType
     """The friend's last seen membership type."""
 
-    name: undefined.UndefinedOr[str] = attrs.field(repr=True)
+    name: undefined.UndefinedOr[str]
     """The friend's last seen global display name. This field could be Undefined if the player hasn't logged in yet."""
 
-    code: typedefs.NoneOr[int] = attrs.field(repr=True)
+    code: typedefs.NoneOr[int]
     """The friend's last seen global code. This field could be None if the player hasn't logged in yet."""
 
-    online_status: enums.Presence = attrs.field(repr=False)
+    online_status: enums.Presence
     """The friend's online status."""
 
-    online_title: int = attrs.field(repr=False)
+    online_title: int
     """The friend's online title."""
 
-    relationship: enums.Relationship = attrs.field(repr=False)
+    relationship: enums.Relationship
     """The friend's relationship type."""
 
-    user: typedefs.NoneOr[user_.BungieUser] = attrs.field(repr=True)
+    user: typedefs.NoneOr[user_.BungieUser]
     """The friend's bungie user account. This field is optional and can be None in some states."""
 
     @property
     def unique_name(self) -> str:
-        """The friend's global unique display name. This field could be None if the player hasn't logged in yet."""
+        """Friend's global unique display name."""
         return f"{self.name}#{self.code}"
 
     async def accept(self, access_token: str, /) -> None:
-        """Accepts a friend request.
+        """Accepts this friend's request.
 
         Parameters
         ----------
@@ -98,12 +98,12 @@ class Friend:
         Raises
         ------
         `aiobungie.NotFound`
-            The friend was not found in your pending requests.
+            This user was not found in your pending requests.
         """
         await self.net.request.rest.accept_friend_request(access_token, self.id)
 
     async def decline(self, access_token: str, /) -> None:
-        """Decline a friend request.
+        """Decline this friend request.
 
         Parameters
         ----------
@@ -113,24 +113,9 @@ class Friend:
         Raises
         ------
         `aiobungie.NotFound`
-            The friend was not found in your pending requests.
+            This user is not found in your pending requests.
         """
         await self.net.request.rest.decline_friend_request(access_token, self.id)
-
-    async def add(self, access_token: str, /) -> None:
-        """Adds a bungie member to your friend list.
-
-        Parameters
-        ----------
-        access_token : `str`
-            The bearer access token associated with the bungie account.
-
-        Raises
-        ------
-        `aiobungie.NotFound`
-            The player was not found.
-        """
-        await self.net.request.rest.send_friend_request(access_token, self.id)
 
     async def remove(self, access_token: str, /) -> None:
         """Removed an existing friend from your friend list.
@@ -143,24 +128,9 @@ class Friend:
         Raises
         ------
         `aiobungie.NotFound`
-            The friend was not found in your friend list.
+            This friend was is found in your friend list.
         """
         await self.net.request.rest.remove_friend(access_token, self.id)
-
-    async def pending(self, access_token: str, /) -> FriendRequestView:
-        """Returns the pending friend requests.
-
-        Parameters
-        ----------
-        access_token : `str`
-            The bearer access token associated with the bungie account.
-
-        Returns
-        -------
-        `FriendRequestView`
-            A friend requests view object includes a sequence of incoming and outgoing requests.
-        """
-        return await self.net.request.fetch_friend_requests(access_token)
 
     async def remove_request(self, access_token: str, /) -> None:
         """Removed an existing friend request.
@@ -175,10 +145,16 @@ class Friend:
 
         Returns
         -------
-        `builtins.NoneType`
+        `None`
             None
         """
         await self.net.request.rest.remove_friend_request(access_token, self.id)
+
+    def __str__(self) -> str:
+        return self.unique_name
+
+    def __int__(self) -> int:
+        return self.id
 
     # N/A ?
     # async def fetch_platform_friends(self, access_token: str, /, platform: enums.MembershipType) -> None:
@@ -196,24 +172,3 @@ class Friend:
     #     `aiobungie.NotFound`
     #         The requested friend was not found.
     #     """
-
-    async def is_pending(self, access_token: str, /, id: int) -> bool:
-        """Check if a member is in the pending incoming requests by their id.
-
-        Parameters
-        ----------
-        access_token : `str`
-            The bearer access token associated with the bungie account.
-        id: `int`
-            The member's id to look up.
-
-        Returns
-        -------
-        `bool`
-            A boolean `True` if the passed id is in the pending friend list. `False` if not.
-        """
-        pending_requests = await self.pending(access_token)
-        for friend_request in pending_requests.incoming:
-            if id == friend_request.id:
-                return True
-        return False

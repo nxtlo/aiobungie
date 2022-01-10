@@ -1,7 +1,7 @@
 black~=21.12b0
 mypy~=0.930
 pdoc~=8.2.0
-nox~=2021.10.1
+nox~=2022.1.7
 isort~=5.10.1
 pytest~=6.2.5
 pytest-asyncio~=0.16.0

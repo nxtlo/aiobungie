@@ -93,7 +93,7 @@ class Client(traits.ClientBase):
         This is only needed if you're fetching OAuth2 tokens with this client.
     """
 
-    __slots__ = ("_rest", "_factory", "_token", "_client_secret", "_client_id")
+    __slots__ = ("_rest", "_factory", "_client_secret", "_client_id")
 
     def __init__(
         self,
@@ -117,7 +117,6 @@ class Client(traits.ClientBase):
         )
 
         self._factory = factory_.Factory(self)
-        self._token = token  # We need the token For Manifest.
 
     @property
     def factory(self) -> factory_.Factory:

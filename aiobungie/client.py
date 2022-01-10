@@ -600,6 +600,7 @@ class Client(traits.ClientBase):
         self,
         name: str,
         /,
+        *,
         type: typedefs.IntAnd[enums.GroupType] = enums.GroupType.CLAN,
     ) -> clans.Clan:
         """Fetch a Clan by its name.
@@ -609,6 +610,9 @@ class Client(traits.ClientBase):
         ----------
         name: `builtins.str`
             The clan name
+
+        Other Parameters
+        ----------------
         type `aiobungie.GroupType`
             The group type, Default is aiobungie.GroupType.CLAN.
 
@@ -646,7 +650,7 @@ class Client(traits.ClientBase):
 
     async def fetch_clan_admins(
         self, clan_id: int, /
-    ) -> collections.Sequence[clans.ClanAdmin]:
+    ) -> collections.Sequence[clans.ClanMember]:
         """Fetch the clan founder and admins.
 
         Parameters
@@ -656,7 +660,7 @@ class Client(traits.ClientBase):
 
         Returns
         -------
-        `collections.Sequence[aiobungie.crate.ClanAdmin]`
+        `collections.Sequence[aiobungie.crate.ClanMember]`
             A sequence of the found clan admins and founder.
 
         Raises
@@ -666,7 +670,7 @@ class Client(traits.ClientBase):
         """
         resp = await self.rest.fetch_clan_admins(clan_id)
         assert isinstance(resp, dict)
-        return self.factory.deserialize_clan_admins(resp)
+        return self.factory.deserialize_clan_members(resp)
 
     async def fetch_groups_for_member(
         self,
@@ -746,62 +750,15 @@ class Client(traits.ClientBase):
             self.factory.deserialize_group_member(group) for group in resp["results"]
         ]
 
-    async def fetch_clan_member(
-        self,
-        clan_id: int,
-        /,
-        name: typing.Optional[str] = None,
-        type: typedefs.IntAnd[enums.MembershipType] = enums.MembershipType.NONE,
-    ) -> clans.ClanMember:
-        """Fetch a Bungie Clan member.
-
-        .. note::
-            This method also can be also accessed via
-            `aiobungie.crate.Clan.fetch_member()`
-            to fetch a member for the fetched clan.
-
-        Parameters
-        ----------
-        clan_id : `builsins.int`
-            The clans id
-        name : `builtins.str`
-            The clan member's name
-        type : `aiobungie.MembershipType`
-            An optional clan member's membership type.
-            Default is set to `aiobungie.MembershipType.NONE`
-            Which returns the first matched clan member by their name.
-
-        Returns
-        -------
-        `aiobungie.crate.ClanMember`
-            A Bungie Clan member.
-
-        Raises
-        ------
-        `aiobungie.NotFound`
-            The clan was not found.
-
-        `aiobungie.NotFound`
-            The member was not found.
-        """
-
-        resp = await self.rest.fetch_clan_members(clan_id, type, name)
-        assert isinstance(resp, dict)
-        return self.factory.deserialize_clan_member(resp)
-
     async def fetch_clan_members(
         self,
         clan_id: int,
         /,
+        *,
+        name: typing.Optional[str] = None,
         type: typedefs.IntAnd[enums.MembershipType] = enums.MembershipType.NONE,
     ) -> collections.Sequence[clans.ClanMember]:
-        """Fetch a Bungie Clan member. if no members found in the clan
-        you will get an empty sequence.
-
-        .. note::
-            This method also can be also accessed via
-            `aiobungie.crate.Clan.fetch_members()`
-            to fetch a member for the fetched clan.
+        """Fetch Bungie clan members.
 
         Parameters
         ----------
@@ -810,6 +767,8 @@ class Client(traits.ClientBase):
 
         Other Parameters
         ----------------
+        name : `typing.Optional[str]`
+            If provided, Only players matching this name will be returned.
         type : `aiobungie.MembershipType`
             An optional clan member's membership type.
             This parameter is used to filter the returned results
@@ -826,7 +785,7 @@ class Client(traits.ClientBase):
         `aiobungie.NotFound`
             The clan was not found.
         """
-        resp = await self.rest.fetch_clan_members(clan_id, type)
+        resp = await self.rest.fetch_clan_members(clan_id, type=type, name=name)
         assert isinstance(resp, dict)
         return self.factory.deserialize_clan_members(resp)
 

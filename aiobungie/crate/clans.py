@@ -27,7 +27,6 @@ from __future__ import annotations
 __all__ = (
     "Clan",
     "ClanMember",
-    "ClanAdmin",
     "ClanFeatures",
     "ClanConversation",
     "ClanBanner",
@@ -50,6 +49,7 @@ if typing.TYPE_CHECKING:
 
     from aiobungie import traits
     from aiobungie import typedefs
+    from aiobungie.crate import progressions as progressions_
     from aiobungie.internal import assets
 
 
@@ -170,57 +170,59 @@ class ClanBanner:
 
 
 @attrs.define(kw_only=True)
-class ClanMember(user.UserLike):
+class ClanMember(user.DestinyUser):
     """Represents a Bungie clan member."""
 
     net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
     """A network state used for making external requests."""
 
-    id: int
-    """Clan member's id"""
-
-    name: undefined.UndefinedOr[str]
-    """Clan member's name. This can be `UNDEFINED` if not found."""
-
     last_seen_name: str
     """The clan member's last seen display name"""
-
-    type: enums.MembershipType
-    """Clan member's membership type."""
-
-    types: collections.Sequence[enums.MembershipType]
-    """A sequence of the available clan member membership types."""
-
-    icon: assets.MaybeImage
-    """Clan member's icon"""
-
-    is_public: bool
-    """`builtins.True` if the clan member is public."""
 
     group_id: int
     """The member's group id."""
 
+    member_type: enums.ClanMemberType
+    """The runtime type of this clan member."""
+
     # These fields are always undefined.
-    is_online: undefined.UndefinedOr[bool]
+    is_online: bool
     """True if the clan member is online or not."""
 
-    last_online: undefined.UndefinedOr[datetime]
+    last_online: datetime
     """The date of the clan member's last online in UTC time zone."""
 
-    joined_at: undefined.UndefinedOr[datetime]
+    joined_at: datetime
     """The clan member's join date in UTC time zone."""
 
-    code: typedefs.NoneOr[int]
-    """The clan member's bungie display name code
-    This is new and was added in Season of the lost update
-    """
-
-    bungie: user.PartialBungieUser
-    """The clan member's bungie partial net user.
+    bungie: typing.Optional[user.PartialBungieUser]
+    """The clan member's bungie partial net user if set. `None` if not found.
 
     .. note:: This only returns a partial bungie net user.
     You can fetch the fully implemented user using `aiobungie.crate.PartialBungieUser.fetch_self()` method.
     """
+
+    @property
+    def is_admin(self) -> bool:
+        """Check whether this member is a clan admin or not."""
+        return self.member_type is enums.ClanMemberType.ADMIN
+
+    @property
+    def is_founder(self) -> bool:
+        """Check whether this member is the clan founder or not."""
+        return self.member_type is enums.ClanMemberType.FOUNDER
+
+    async def fetch_clan(self) -> Clan:
+        """Fetch the clan this member belongs to.
+
+        Returns
+        -------
+        `Clan`
+            The clan admins clan.
+        """
+        clan = await self.net.request.fetch_clan_from_id(self.group_id)
+        assert isinstance(clan, Clan)
+        return clan
 
     async def ban(
         self,
@@ -346,31 +348,6 @@ class GroupMember:
 
 
 @attrs.define(kw_only=True)
-class ClanAdmin(ClanMember):
-    """Represents a clan admin."""
-
-    member_type: enums.ClanMemberType
-    """The clan admin's member type. This can be Admin or owner or any other type."""
-
-    async def fetch_clan(self) -> Clan:
-        """Fetch the clan that represents the clan admins.
-
-        Returns
-        -------
-        `Clan`
-            The clan admins clan.
-        """
-        clan = await self.net.request.fetch_clan_from_id(self.group_id)
-        assert isinstance(clan, Clan)
-        return clan
-
-    @property
-    def unique_name(self) -> str:
-        """The admin's unique name which includes their unique code."""
-        return f"{self.name}#{self.code}"
-
-
-@attrs.define(kw_only=True)
 class Clan:
     """Represents a Bungie clan."""
 
@@ -410,11 +387,35 @@ class Clan:
     tags: list[str]
     """A list of the clan's tags."""
 
+    theme: str
+    """The set clan theme."""
+
+    conversation_id: int
+
+    allow_chat: bool
+
+    chat_security: int
+
+    progressions: collections.Mapping[int, progressions_.Progression]
+    """A mapping from progression hash to a progression object."""
+
+    banner_data: collections.Mapping[str, int]
+
+    call_sign: str
+    """The clan call sign."""
+
     owner: typedefs.NoneOr[ClanMember]
     """The clan owner. This field could be `None` if not found."""
 
     features: ClanFeatures
     """The clan features."""
+
+    current_user_membership: typing.Optional[collections.Mapping[str, ClanMember]]
+    """If an authorized user made this request and this user belongs to this clan.
+    This field will be available.
+
+    This maps from the membership type represented as a string to the authorized clan member.
+    """
 
     async def edit_options(
         self,
@@ -429,7 +430,7 @@ class Clan:
         update_banner_permission_override: typedefs.NoneOr[bool] = None,
         join_level: typedefs.NoneOr[typedefs.IntAnd[enums.ClanMemberType]] = None,
     ) -> None:
-        """Edit the clan options.
+        """Edit this clan's options.
 
         Notes
         -----
@@ -635,7 +636,7 @@ class Clan:
         assert isinstance(fireteams_, list)
         return fireteams_
 
-    async def fetch_my_fireteams(
+    async def fetch_fireteams(
         self,
         access_token: str,
         *,
@@ -645,7 +646,7 @@ class Clan:
         filtered: bool = True,
         page: int = 0,
     ) -> collections.Sequence[fireteams.AvalaibleFireteam]:
-        """Fetch all clan available fireteams.
+        """Fetch this clan's available fireteams.
 
         .. note::
             This method requires OAuth2: ReadGroups scope.
@@ -730,46 +731,20 @@ class Clan:
             access_token, self.id, name=name, security=security
         )
 
-    async def fetch_member(
-        self, name: str, type: enums.MembershipType = enums.MembershipType.NONE, /
-    ) -> ClanMember:
-        """Fetch a specific clan member by their name and membership type.
-
-        if the memberhship type not provided it will try to return the first member matches the name.
-
-        Parameters
-        ----------
-        name: `builtins.str`
-            The clan member name.
-        type: `aiobungie.MembershipType`
-            The member's membership type. Default is 0
-            which returns any member matches the name.
-
-        Returns
-        --------
-        `ClanMember`
-            A Bungie clan member.
-
-        Raises
-        ------
-        `aiobungie.NotFound`
-            Clan member with the provided name was not found.
-        """
-        member = await self.net.request.fetch_clan_member(self.id, name, type)
-        assert isinstance(member, ClanMember)
-        return member
-
     async def fetch_members(
-        self, type: enums.MembershipType = enums.MembershipType.NONE, /
+        self,
+        *,
+        name: typing.Optional[str] = None,
+        type: enums.MembershipType = enums.MembershipType.NONE,
     ) -> collections.Sequence[ClanMember]:
         """Fetch the members of the clan.
 
-        if the memberhship type is left. it will return all membership types.
-
         Parameters
         ----------
+        name : `typing.Optional[str]`
+            If provided, Only players matching this name will be returned.
         type: `aiobungie.MembershipType`
-            Filters the membership types to return.
+            Filters the membership types of the players to return.
             Default is `aiobungie.MembershipType.NONE` which returns all membership types.
 
         Returns
@@ -782,7 +757,7 @@ class Clan:
         `aiobungie.NotFound`
             The clan was not found.
         """
-        return await self.net.request.fetch_clan_members(self.id, type)
+        return await self.net.request.fetch_clan_members(self.id, type=type, name=name)
 
     async def approve_pending_members(
         self,
@@ -835,9 +810,6 @@ class Clan:
         await self.net.request.rest.deny_all_pending_group_users(
             access_token, self.id, message=message
         )
-
-    # These ones is not implemented since it
-    # requires OAUth2
 
     async def fetch_banned_members(self) -> collections.Sequence[ClanMember]:
         """Fetch members who has been banned from the clan.

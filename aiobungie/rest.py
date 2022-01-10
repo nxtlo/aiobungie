@@ -828,15 +828,16 @@ class RESTClient(interfaces.RESTInterface):
 
     def fetch_clan_members(
         self,
-        id: int,
-        type: typedefs.IntAnd[enums.MembershipType] = enums.MembershipType.NONE,
-        name: typing.Optional[str] = None,
+        clan_id: int,
         /,
+        *,
+        name: typing.Optional[str] = None,
+        type: typedefs.IntAnd[enums.MembershipType] = enums.MembershipType.NONE,
     ) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
             RequestMethod.GET,
-            f"/GroupV2/{id}/Members/?memberType={int(type)}&nameSearch={name if name else ''}&currentpage=1",
+            f"/GroupV2/{clan_id}/Members/?memberType={int(type)}&nameSearch={name if name else ''}&currentpage=1",
         )
 
     def fetch_hard_linked(

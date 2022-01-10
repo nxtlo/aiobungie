@@ -17,12 +17,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Implemented `components.ItemComponent`.
 - new `items.py` module includes all item related objects.
 - `enums.ItemSubType` for subtype inventory items.
+- `ClanMember.member_type` field.
+- `ClanMember.is_admin` and `is_founder` fields.
+- `Clan.progression` and some extra other fields to `clans.Clan`.
 
 ### Removed
 - `Friend.is_pending` method since this can be checked using `Friend.relationship`.
 - `Friend.pending` method since this can be checked using `Client.fetch_friend_requests`.
 - `Friend.add` method since this can be used via `RESTClient.send_friend_request`
 - `helpers.AsyncIterator` has been removed.
+- `clans.ClanOwner` in-favor of `clans.ClanMember`.
+- `fetch_member`, use `fetch_members(name="...")` instead.
 
 ### Changed
 - Significantly optimized factory's checkings and deserializing.
@@ -36,9 +41,16 @@ This also references `fetch_potentional_groups_forr_member`.
 - All objects that inherits from `user.UserLike`. `object.__str__()` and `str(object)` will now return the full unique name for that object.
 - `LinkedProfile` no longer supports `async for`.
 - `InventoryEntity.sub_type` now returns `enums.ItemSubType` instead of `enums.ItemType`.
+- Some parameters are now positional.
+- `Client.fetch_clan_members` now accepts `name` parameter.
+- `Client.fetch_clan_admins` now returns a sequence of `ClanMember` instead of `ClanAdmin`.
+- `ClanMember.bungie` is now an optional field.
+- `Clan.fetch_my_fireteams` method renamed to `fetch_fireteams`.
+- `ClanMember` now inherits from `user.DesinyUser` for no field duplications.
 
 ### Fixed
 - `Character.last_played` wasn't returning a datetime object.
+- `is_online`, `last_online`, `joined_at` and `group_id` fields now correctly returned for `ClanMember`
 
 ## [0.2.5b13](https://github.com/nxtlo/aiobungie/compare/0.2.5b12...0.2.5b13) 2021-12-24
 

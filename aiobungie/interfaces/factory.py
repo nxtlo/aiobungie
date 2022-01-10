@@ -44,6 +44,7 @@ if typing.TYPE_CHECKING:
     from aiobungie.crate import items
     from aiobungie.crate import milestones
     from aiobungie.crate import profile
+    from aiobungie.crate import progressions
     from aiobungie.crate import records
     from aiobungie.crate import season
     from aiobungie.crate import user
@@ -223,21 +224,6 @@ class FactoryInterface(abc.ABC):
     # Clans, Groups.
 
     @abc.abstractmethod
-    def deseialize_clan_owner(self, data: typedefs.JSONObject) -> clans.ClanMember:
-        """Deserialize a raw JSON payload of clan founder information.
-
-        Parameters
-        ----------
-        data : `aiobungie.typedefs.JSONObject`
-            The JSON payload.
-
-        Returns
-        -------
-        `aiobungie.crate.ClanMember`
-            A clan owner object of the deserialized payload.
-        """
-
-    @abc.abstractmethod
     def deserialize_clan(self, payload: typedefs.JSONObject) -> clans.Clan:
         """Deserialize a raw JSON payload of Bungie clan information.
 
@@ -267,23 +253,6 @@ class FactoryInterface(abc.ABC):
         -------
         `aiobungie.typedefs.NoneOr[aiobungie.crate.GroupMember]`
             A group member object of the deserialized payload. This can return `None` if nothing was found.
-        """
-
-    @abc.abstractmethod
-    def deserialize_clan_admins(
-        self, payload: typedefs.JSONObject
-    ) -> collections.Sequence[clans.ClanAdmin]:
-        """Deserialize a JSON payload of clan admins/owners information.
-
-        Parameters
-        ----------
-        payload : `aiobungie.typedefs.JSONObject`
-            The JSON payload.
-
-        Returns
-        -------
-        `collections.Sequence[aiobungie.crate.ClanAdmin]`
-            A sequence of clan admins object of the deserialized payload.
         """
 
     @abc.abstractmethod
@@ -499,11 +468,17 @@ class FactoryInterface(abc.ABC):
     @abc.abstractmethod
     def deserialize_progressions(
         self, payload: typedefs.JSONObject
-    ) -> character.CharacterProgression:
+    ) -> progressions.Progression:
         ...
 
     @abc.abstractmethod
     def deserialize_character_progressions(
+        self, payload: typedefs.JSONObject
+    ) -> character.CharacterProgression:
+        ...
+
+    @abc.abstractmethod
+    def deserialize_character_progressions_mapping(
         self, payload: typedefs.JSONObject
     ) -> collections.Mapping[int, character.CharacterProgression]:
         ...

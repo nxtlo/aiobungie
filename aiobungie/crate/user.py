@@ -126,7 +126,7 @@ class PartialBungieUser:
         by using `PartialBungieUser.fetch_self()` method.
     """
 
-    net: traits.Netrunner
+    net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
     """A network state used for making external requests."""
 
     name: undefined.UndefinedOr[str]
@@ -256,7 +256,7 @@ class BungieUser:
 class DestinyUser(UserLike):
     """Represents a Bungie user's Destiny memberships."""
 
-    net: traits.Netrunner
+    net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
     """A network state used for making external requests."""
 
     id: int

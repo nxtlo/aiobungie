@@ -68,35 +68,29 @@ async def test_hard_types():
 async def test_clan_from_id():
     c = await client.fetch_clan_from_id(4389205)
     members = await c.fetch_members()
-    member = await c.fetch_member("Fate")
     assert isinstance(members, list)
     assert isinstance(members[0], aiobungie.crate.ClanMember)
-    assert isinstance(member, aiobungie.crate.ClanMember)
-
+    for member in members:
+        assert isinstance(member, aiobungie.crate.ClanMember)
 
 async def test_clan():
     c = await client.fetch_clan("Nuanceㅤ ")
     members = await c.fetch_members()
-    member = await c.fetch_member("Hizxr")
     assert isinstance(members, list)
     assert isinstance(members[0], aiobungie.crate.ClanMember)
-    assert isinstance(member, aiobungie.crate.ClanMember)
-
-
-async def test_fetch_clan_member():
-    m = await client.fetch_clan_member(4389205, "Fate")
-    assert isinstance(m, aiobungie.crate.ClanMember)
+    assert any(member.last_seen_name == "Hizxr" for member in members)
 
 
 async def test_fetch_clan_members():
-    ms = await client.fetch_clan_members(4389205)
+    ms = await client.fetch_clan_members(4389205, name="Fate")
+    assert len(ms) == 1
     assert isinstance(ms, list)
     for member in ms:
         assert isinstance(member, aiobungie.crate.ClanMember)
         assert isinstance(member.bungie, aiobungie.crate.PartialBungieUser)
-        if member.bungie.name == "Fate":
-            fetched_user = await member.bungie.fetch_self()
-            assert isinstance(fetched_user, aiobungie.crate.BungieUser)
+        assert member.bungie.name == "Fate怒"
+        fetched_user = await member.bungie.fetch_self()
+        assert isinstance(fetched_user, aiobungie.crate.BungieUser)
 
 
 async def test_fetch_inventory_item():
@@ -268,9 +262,8 @@ async def test_clan_admins():
         not isinstance(c.name, aiobungie.UndefinedType) and "Karlz" or "Crit" == c.name
         for c in ca
     )
-    for ad in ca:
-        assert isinstance(ad, aiobungie.crate.ClanAdmin)
-
+    assert any(member.is_admin or member.is_founder for member in ca)
+    assert all(isinstance(admin, aiobungie.crate.ClanMember) for admin in ca)
 
 async def test_groups_for_member():
     obj = await client.fetch_groups_for_member(4611686018475612431, aiobungie.MembershipType.STEAM)

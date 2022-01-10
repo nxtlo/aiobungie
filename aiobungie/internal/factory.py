@@ -206,33 +206,21 @@ class Factory(interfaces.FactoryInterface):
     ) -> collections.Sequence[user.DestinyUser]:
         return self.deserialize_destiny_members(payload)
 
-    def deseialize_clan_owner(self, data: typedefs.JSONObject) -> clans.ClanMember:
-        joined_at = data["joinDate"]
-        last_online = time.from_timestamp(int(data["lastOnlineStatusChange"]))
-        clan_id = data["groupId"]
-        destiny_user = self.deserialize_destiny_user(data["destinyUserInfo"])
-        bungie_user = self.deserialize_partial_bungie_user(data["bungieNetUserInfo"])
-
-        return clans.ClanMember(
-            net=self._net,
-            last_seen_name=destiny_user.last_seen_name,
-            id=destiny_user.id,
-            name=destiny_user.name,
-            icon=destiny_user.icon,
-            last_online=last_online,
-            group_id=int(clan_id),
-            joined_at=time.clean_date(joined_at),
-            types=destiny_user.types,
-            is_public=destiny_user.is_public,
-            type=destiny_user.type,
-            code=destiny_user.code,
-            bungie=bungie_user,
-            is_online=undefined.Undefined,
-        )
-
     def deserialize_clan(self, payload: typedefs.JSONObject) -> clans.Clan:
 
+        # This is kinda redundant
         data = payload
+
+        # This is always outside the details.
+        current_user_map: typing.Optional[
+            collections.Mapping[str, clans.ClanMember]
+        ] = None
+        if raw_current_user_map := payload.get("currentUserMemberMap"):
+            current_user_map = {
+                membership_type: self.deserialize_clan_member(membership)
+                for membership_type, membership in raw_current_user_map.items()
+            }
+
         try:
             data = payload["detail"]
         except KeyError:
@@ -248,9 +236,9 @@ class Factory(interfaces.FactoryInterface):
         banner = assets.Image(str(data["bannerPath"]))
         avatar = assets.Image(str(data["avatarPath"]))
         tags = data["tags"]
-        features = data["features"]
         type = data["groupType"]
 
+        features = data["features"]
         features_obj = clans.ClanFeatures(
             max_members=features["maximumMembers"],
             max_membership_types=features["maximumMembershipsOfGroupType"],
@@ -262,9 +250,15 @@ class Factory(interfaces.FactoryInterface):
             join_level=features["joinLevel"],
         )
 
+        information: typedefs.JSONObject = data["clanInfo"]
+        progression: collections.Mapping[int, progressions.Progression] = {
+            int(prog_hash): self.deserialize_progressions(prog)
+            for prog_hash, prog in information["d2ClanProgressions"].items()
+        }
+
         founder: typedefs.NoneOr[clans.ClanMember] = None
         if raw_founder := payload.get("founder"):
-            founder = self.deseialize_clan_owner(raw_founder)
+            founder = self.deserialize_clan_member(raw_founder)
 
         return clans.Clan(
             net=self._net,
@@ -281,89 +275,58 @@ class Factory(interfaces.FactoryInterface):
             tags=tags,
             features=features_obj,
             owner=founder,
+            progressions=progression,
+            call_sign=information["clanCallsign"],
+            banner_data=information["clanBannerData"],
+            chat_security=data["chatSecurity"],
+            conversation_id=int(data["conversationId"]),
+            allow_chat=data["allowChat"],
+            theme=data["theme"],
+            current_user_membership=current_user_map,
         )
+
+    def deserialize_clan_member(self, data: typedefs.JSONObject, /) -> clans.ClanMember:
+        destiny_user = self.deserialize_destiny_user(data["destinyUserInfo"])
+        return clans.ClanMember(
+            net=self._net,
+            last_seen_name=destiny_user.last_seen_name,
+            id=destiny_user.id,
+            name=destiny_user.name,
+            icon=destiny_user.icon,
+            last_online=time.from_timestamp(int(data["lastOnlineStatusChange"])),
+            group_id=int(data["groupId"]),
+            joined_at=time.clean_date(data["joinDate"]),
+            types=destiny_user.types,
+            is_public=destiny_user.is_public,
+            type=destiny_user.type,
+            code=destiny_user.code,
+            is_online=data["isOnline"],
+            crossave_override=destiny_user.crossave_override,
+            bungie=self.deserialize_partial_bungie_user(data["bungieNetUserInfo"])
+            if "bungieNetUserInfo" in data
+            else None,
+            member_type=enums.ClanMemberType(int(data["memberType"])),
+        )
+
+    def deserialize_clan_members(
+        self, data: typedefs.JSONObject, /
+    ) -> collections.Sequence[clans.ClanMember]:
+        return [self.deserialize_clan_member(member) for member in data["results"]]
 
     def deserialize_group_member(
         self, payload: typedefs.JSONObject
     ) -> clans.GroupMember:
-        inactive_memberships = payload.get("areAllMembershipsInactive")
         member = payload["member"]
-        last_online: datetime.datetime = time.from_timestamp(
-            int(member["lastOnlineStatusChange"])
-        )
-        join_date_fmt: datetime.datetime = time.clean_date(member["joinDate"])
-        member_type: enums.ClanMemberType = enums.ClanMemberType(member["memberType"])
-        is_online: bool = member["isOnline"]
-        group_id: int = member["groupId"]
-        destiny_member = self.deserialize_destiny_user(member["destinyUserInfo"])
-        member_obj = clans.GroupMember(
+        return clans.GroupMember(
             net=self._net,
-            join_date=join_date_fmt,
-            group_id=int(group_id),
-            member_type=member_type,
-            is_online=is_online,
-            last_online=last_online,
-            inactive_memberships=inactive_memberships,
-            member=destiny_member,
+            join_date=time.clean_date(member["joinDate"]),
+            group_id=int(member["groupId"]),
+            member_type=enums.ClanMemberType(member["memberType"]),
+            is_online=member["isOnline"],
+            last_online=time.from_timestamp(int(member["lastOnlineStatusChange"])),
+            inactive_memberships=payload.get("areAllMembershipsInactive", None),
+            member=self.deserialize_destiny_user(member["destinyUserInfo"]),
             group=self.deserialize_clan(payload["group"]),
-        )
-        return member_obj
-
-    def _deserialize_clan_admin(self, payload: typedefs.JSONObject) -> clans.ClanAdmin:
-        destiny_user = self.deserialize_destiny_user(payload["destinyUserInfo"])
-        return clans.ClanAdmin(
-            net=self._net,
-            member_type=enums.ClanMemberType(payload["memberType"]),
-            is_online=payload["isOnline"],
-            group_id=int(payload["groupId"]),
-            last_online=time.from_timestamp(int(payload["lastOnlineStatusChange"])),
-            type=destiny_user.type,
-            types=destiny_user.types,
-            name=destiny_user.name,
-            last_seen_name=destiny_user.last_seen_name,
-            code=destiny_user.code,
-            id=destiny_user.id,
-            icon=destiny_user.icon,
-            is_public=destiny_user.is_public,
-            bungie=self.deserialize_partial_bungie_user(payload["bungieNetUserInfo"]),
-            joined_at=time.clean_date(payload["joinDate"]),
-        )
-
-    def deserialize_clan_admins(
-        self, payload: typedefs.JSONObject
-    ) -> collections.Sequence[clans.ClanAdmin]:
-        return [self._deserialize_clan_admin(admin) for admin in payload["results"]]
-
-    def deserialize_clan_member(self, data: typedefs.JSONObject, /) -> clans.ClanMember:
-
-        if payload := data["results"]:
-            attrs = payload[0]
-            payload = payload[0]["destinyUserInfo"]
-
-            destiny_member = self.deserialize_destiny_user(payload)
-            last_online: datetime.datetime = time.from_timestamp(
-                int(attrs["lastOnlineStatusChange"])
-            )
-            is_online: bool = attrs["isOnline"]
-            group_id: int = attrs["groupId"]
-            joined_at: datetime.datetime = time.clean_date(str(attrs["joinDate"]))
-            bungie_user = self.deserialize_partial_bungie_user(payload)
-
-        return clans.ClanMember(
-            net=self._net,
-            group_id=int(group_id),
-            is_online=is_online,
-            last_online=last_online,
-            id=destiny_member.id,
-            joined_at=joined_at,
-            name=destiny_member.name,
-            type=destiny_member.type,
-            is_public=destiny_member.is_public,
-            icon=destiny_member.icon,
-            code=destiny_member.code,
-            types=destiny_member.types,
-            last_seen_name=destiny_member.last_seen_name,
-            bungie=bungie_user,
         )
 
     def deserialize_clan_convos(
@@ -390,65 +353,6 @@ class Factory(interfaces.FactoryInterface):
                 )
                 vec.append(convo_obj)
         return vec
-
-    def deserialize_clan_members(
-        self, data: typedefs.JSONObject, /
-    ) -> collections.Sequence[clans.ClanMember]:
-
-        members_vec: list[clans.ClanMember] = []
-        _fn_type_optional = typing.Optional[typing.Callable[..., typing.Dict[str, str]]]
-        _fn_type = typing.Callable[..., typing.Dict[str, str]]
-        payload: list[typing.Dict[str, typing.Any]]
-
-        if payload := data["results"]:
-
-            # raw_is_on: list[bool] = helpers.just(payload, "isOnline")
-            # raw_last_sts: list[int] = helpers.just(payload, "lastOnlineStatusChange")
-            # raw_join_date: list[str] = helpers.just(payload, "joinDate")
-            # metadata = map(
-            #     lambda *args: args, raw_is_on, raw_last_sts, raw_join_date
-            # )
-            # for is_online, last_online, join_date in metadata:
-            #     last_online_fmt: datetime.datetime = time.from_timestamp(
-            #         int(last_online)
-            #     )
-            #     join_date_fmt: datetime.datetime = time.clean_date(join_date)
-
-            group_id = helpers.just(payload, "groupId")
-
-            for memberships in payload:
-                wrap_destiny: _fn_type = lambda m: m["destinyUserInfo"]  # type: ignore[no-any-return]
-                wrap_bungie: _fn_type_optional = None
-
-                try:
-                    wrap_bungie: _fn_type_optional = lambda m: m["bungieNetUserInfo"]  # type: ignore[no-redef]
-                    if wrap_bungie:
-                        bungie_user = self.deserialize_partial_bungie_user(
-                            wrap_bungie(memberships)
-                        )
-                except KeyError:
-                    continue
-
-                member = self.deserialize_destiny_user(wrap_destiny(memberships))
-
-                member_obj = clans.ClanMember(
-                    net=self._net,
-                    id=member.id,
-                    name=member.name,
-                    type=member.type,
-                    icon=member.icon,
-                    is_public=member.is_public,
-                    code=member.code,
-                    types=member.types,
-                    last_seen_name=member.last_seen_name,
-                    group_id=group_id[0],
-                    bungie=bungie_user,
-                    is_online=undefined.Undefined,
-                    last_online=undefined.Undefined,
-                    joined_at=undefined.Undefined,
-                )
-                members_vec.append(member_obj)
-        return members_vec
 
     def deserialize_app_owner(
         self, payload: typedefs.JSONObject
@@ -729,25 +633,25 @@ class Factory(interfaces.FactoryInterface):
     ) -> list[profile.ProfileItemImpl]:
         return [self.deserialize_profile_item(item) for item in payload["items"]]
 
-    def _deserialize_progressions(
+    def deserialize_progressions(
         self, payload: typedefs.JSONObject
     ) -> progressions.Progression:
         return progressions.Progression(
-            hash=payload["progressionHash"],
-            level=payload["level"],
-            cap=payload["levelCap"],
-            daily_limit=payload["dailyLimit"],
-            weekly_limit=payload["weeklyLimit"],
-            current_progress=payload["currentProgress"],
-            daily_progress=payload["dailyProgress"],
-            needed=payload["progressToNextLevel"],
-            next_level=payload["nextLevelAt"],
+            hash=int(payload["progressionHash"]),
+            level=int(payload["level"]),
+            cap=int(payload["levelCap"]),
+            daily_limit=int(payload["dailyLimit"]),
+            weekly_limit=int(payload["weeklyLimit"]),
+            current_progress=int(payload["currentProgress"]),
+            daily_progress=int(payload["dailyProgress"]),
+            needed=int(payload["progressToNextLevel"]),
+            next_level=int(payload["nextLevelAt"]),
         )
 
     def _deserialize_factions(
         self, payload: typedefs.JSONObject
     ) -> progressions.Factions:
-        progs = self._deserialize_progressions(payload)
+        progs = self.deserialize_progressions(payload)
         return progressions.Factions(
             hash=progs.hash,
             level=progs.level,
@@ -940,11 +844,11 @@ class Factory(interfaces.FactoryInterface):
             for char_id, data in payload["data"].items()
         }
 
-    def deserialize_progressions(
+    def deserialize_character_progressions(
         self, payload: typedefs.JSONObject
     ) -> character.CharacterProgression:
         progressions_ = {
-            int(prog_id): self._deserialize_progressions(prog)
+            int(prog_id): self.deserialize_progressions(prog)
             for prog_id, prog in payload["progressions"].items()
         }
 
@@ -983,7 +887,7 @@ class Factory(interfaces.FactoryInterface):
             uninstanced_item_objectives=uninstanced_item_objectives,
         )
 
-    def deserialize_character_progressions(
+    def deserialize_character_progressions_mapping(
         self, payload: typedefs.JSONObject
     ) -> collections.Mapping[int, character.CharacterProgression]:
         character_progressions: collections.Mapping[
@@ -991,7 +895,7 @@ class Factory(interfaces.FactoryInterface):
         ] = {}
         for char_id, data in payload["data"].items():
             # A little hack to stop mypy complaining about Mapping <-> dict
-            character_progressions[int(char_id)] = self.deserialize_progressions(data)  # type: ignore[index]
+            character_progressions[int(char_id)] = self.deserialize_character_progressions(data)  # type: ignore[index]
         return character_progressions
 
     def deserialize_characters_records(
@@ -1131,7 +1035,7 @@ class Factory(interfaces.FactoryInterface):
         ] = None
 
         if raw_character_progressions := payload.get("characterProgressions"):
-            character_progressions = self.deserialize_character_progressions(
+            character_progressions = self.deserialize_character_progressions_mapping(
                 raw_character_progressions
             )
 
@@ -1356,7 +1260,9 @@ class Factory(interfaces.FactoryInterface):
 
         progressions_: typing.Optional[character.CharacterProgression] = None
         if raw_progressions := payload.get("progressions"):
-            progressions_ = self.deserialize_progressions(raw_progressions["data"])
+            progressions_ = self.deserialize_character_progressions(
+                raw_progressions["data"]
+            )
 
         render_data: typing.Optional[character.RenderedData] = None
         if raw_render_data := payload.get("renderData"):

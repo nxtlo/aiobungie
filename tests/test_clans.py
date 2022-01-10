@@ -25,7 +25,6 @@
 import datetime
 
 import mock
-from aiobungie import undefined
 import pytest
 from pytest import fixture
 
@@ -95,6 +94,8 @@ class TestClanMember:
             types=[aiobungie.MembershipType.STEAM, aiobungie.MembershipType.STADIA],
             last_seen_name="YOYONAME",
             bungie=mock_bungie_user,
+            crossave_override=1,
+            member_type=aiobungie.ClanMemberType.ADMIN
         )
 
     def test_clan_member_link(self, obj):
@@ -144,7 +145,9 @@ class TestClanOwner:
             code=5432,
             last_seen_name="Some name",
             bungie=mock_bungie_user,
-            is_online=undefined.Undefined
+            is_online=True,
+            crossave_override=aiobungie.MembershipType.STADIA,
+            member_type=aiobungie.ClanMemberType.BEGINNER
         )
 
     def test_clan_owner_is_userlike(self, obj):
@@ -185,6 +188,14 @@ class TestClan:
             tags=["Raids", "Tag", "Another tag"],
             owner=mock_owner,
             features=mock_features,
+            theme="SomeClanTheme",
+            allow_chat=True,
+            chat_security=1,
+            conversation_id=12345,
+            progressions={},
+            banner_data={},
+            call_sign="C",
+            current_user_membership=None
         )
 
     @pytest.mark.asyncio()
@@ -193,33 +204,23 @@ class TestClan:
         obj.owner = None
         assert obj.owner is None
 
-    @pytest.mark.asyncio()
-    async def test_fetch_clan_member(self, obj):
-        mock_member = mock.Mock(spec_set=crate.ClanMember)
-        obj.net.request.fetch_clan_member = mock.AsyncMock(return_value=mock_member)
-        member = await obj.fetch_member("DiggaD", aiobungie.MembershipType.STEAM)
-        obj.net.request.fetch_clan_member.assert_awaited_once_with(
-            obj.id, "DiggaD", aiobungie.MembershipType.STEAM
-        )
-        assert member is obj.net.request.fetch_clan_member.return_value
 
     @pytest.mark.asyncio()
     async def test_fetch_clan_members(self, obj):
-        first_member = crate.ClanMember
+        first_member = mock.Mock(spec_set=crate.ClanMember)
         first_member.type = aiobungie.MembershipType.XBOX
 
-        another_member = crate.ClanMember
+        another_member = mock.Mock(spec_set=crate.ClanMember)
         another_member.type = aiobungie.MembershipType.STEAM
 
         mock_members = mock.Mock(spec_set=[first_member, another_member])
         obj.net.request.fetch_clan_members = mock.AsyncMock(return_value=mock_members)
         members = await obj.fetch_members()
 
-        assert members is not None
         assert obj.member_count == 2
 
         obj.net.request.fetch_clan_members.assert_awaited_once_with(
-            obj.id, aiobungie.MembershipType.NONE
+            obj.id, type=aiobungie.MembershipType.NONE, name=None
         )
         assert members is obj.net.request.fetch_clan_members.return_value
 

@@ -563,9 +563,10 @@ class RESTInterface(traits.RESTful, abc.ABC):
     def fetch_clan_members(
         self,
         clan_id: int,
-        type: typedefs.IntAnd[enums.MembershipType] = enums.MembershipType.NONE,
-        name: typing.Optional[str] = None,
         /,
+        *,
+        name: typing.Optional[str] = None,
+        type: typedefs.IntAnd[enums.MembershipType] = enums.MembershipType.NONE,
     ) -> ResponseSig[typedefs.JSONObject]:
         """Fetch all Bungie Clan members.
 
@@ -573,14 +574,15 @@ class RESTInterface(traits.RESTful, abc.ABC):
         ----------
         clan_id : `builsins.int`
             The clans id
+
+        Other Parameters
+        ----------------
+        name : `typing.Optional[str]`
+            If provided, Only players matching this name will be returned.
         type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
             An optional clan member's membership type.
             Default is set to `aiobungie.MembershipType.NONE`
             Which returns the first matched clan member by their name.
-        name : `builtins.str`
-            This parameter is only provided here to keep the signature with
-            the main client implementation, Which only works with the non-rest clients.
-            It returns a specific clan member by their name.
 
         Returns
         -------

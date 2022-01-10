@@ -185,7 +185,6 @@ class ClanMember(user.DestinyUser):
     member_type: enums.ClanMemberType
     """The runtime type of this clan member."""
 
-    # These fields are always undefined.
     is_online: bool
     """True if the clan member is online or not."""
 

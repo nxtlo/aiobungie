@@ -655,7 +655,7 @@ class RESTClient(interfaces.RESTInterface):
         response = await self._request(RequestMethod.POST, "", data=data, oauth2=True)
         return OAuth2Response.build_response(response)
 
-    def fetch_user(self, id: int) -> ResponseSig[typedefs.JSONObject]:
+    def fetch_bungie_user(self, id: int) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(RequestMethod.GET, f"User/GetBungieNetUserById/{id}/")
 
@@ -721,7 +721,7 @@ class RESTClient(interfaces.RESTInterface):
             RequestMethod.GET, f"GroupV2/{clan_id}/OptionalConversations/"
         )
 
-    def fetch_app(self, appid: int, /) -> ResponseSig[typedefs.JSONObject]:
+    def fetch_application(self, appid: int, /) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(RequestMethod.GET, f"App/Application/{appid}")
 
@@ -840,7 +840,7 @@ class RESTClient(interfaces.RESTInterface):
             f"/GroupV2/{clan_id}/Members/?memberType={int(type)}&nameSearch={name if name else ''}&currentpage=1",
         )
 
-    def fetch_hard_linked(
+    def fetch_hardlinked_credentials(
         self,
         credential: int,
         type: typedefs.IntAnd[enums.CredentialType] = enums.CredentialType.STEAMID,
@@ -927,7 +927,10 @@ class RESTClient(interfaces.RESTInterface):
             "membership_type": int(membership_type),
         }
         return self._request(
-            RequestMethod.POST, "Destiny2/Actions/Items/SetLockState", json=body
+            RequestMethod.POST,
+            "Destiny2/Actions/Items/SetLockState",
+            json=body,
+            auth=access_token,
         )
 
     def set_quest_track_state(
@@ -1045,7 +1048,7 @@ class RESTClient(interfaces.RESTInterface):
             RequestMethod.GET, f"Destiny2/Milestones/{milestone_hash}/Content/"
         )
 
-    def fetch_own_bungie_user(
+    def fetch_current_user_memberships(
         self, access_token: str, /
     ) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
@@ -1541,16 +1544,141 @@ class RESTClient(interfaces.RESTInterface):
             f"Destiny2/{int(membership_type)}/Account/{membership_id}/Character/{character_id}/Stats/UniqueWeapons/",
         )
 
-    # * Not implemented yet.
-
     def fetch_item(
-        self, member_id: int, item_id: int, /
+        self,
+        member_id: int,
+        item_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+        *components: enums.ComponentType,
     ) -> ResponseSig[typedefs.JSONObject]:
+        collector = self._collect_components(*components)
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        raise NotImplementedError
+        return self._request(
+            RequestMethod.GET,
+            f"Destiny2/{int(membership_type)}/Profile/{member_id}/Item/{item_id}/?components={collector}",
+        )
 
     def fetch_clan_weekly_rewards(
         self, clan_id: int, /
     ) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        raise NotImplementedError
+        return self._request(
+            RequestMethod.GET, f"Destiny2/Clan/{clan_id}/WeeklyRewardState/"
+        )
+
+    def fetch_available_locales(self) -> ResponseSig[typedefs.JSONObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        return self._request(RequestMethod.GET, "GetAvailableLocales")
+
+    def fetch_common_settings(self) -> ResponseSig[typedefs.JSONObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        return self._request(RequestMethod.GET, "Settings")
+
+    def fetch_user_systems_overrides(self) -> ResponseSig[typedefs.JSONObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        return self._request(RequestMethod.GET, "UserSystemOverrides")
+
+    def fetch_global_alerts(self, *, include_streaming: bool = False) -> ResponseSig[typedefs.JSONArray]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        return self._request(
+            RequestMethod.GET, f"GlobalAlerts/?includestreaming={include_streaming}"
+        )
+
+    def awainitialize_request(
+        self,
+        access_token: str,
+        type: typing.Literal[0, 1],
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+        /,
+        *,
+        affected_item_id: typing.Optional[int] = None,
+        character_id: typing.Optional[int] = None,
+    ) -> ResponseSig[typedefs.JSONObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+
+        body = {"type": type, "membershipType": int(membership_type)}
+
+        if affected_item_id is not None:
+            body["affectedItemId"] = affected_item_id
+
+        if character_id is not None:
+            body["characterId"] = character_id
+
+        return self._request(
+            RequestMethod.POST, "Destiny2/Awa/Initialize", json=body, auth=access_token
+        )
+
+    def awaget_action_token(
+        self, access_token: str, correlation_id: str, /
+    ) -> ResponseSig[typedefs.JSONObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        return self._request(
+            RequestMethod.POST,
+            f"Destiny2/Awa/GetActionToken/{correlation_id}",
+            auth=access_token,
+        )
+
+    def awa_provide_authorization_result(
+        self,
+        access_token: str,
+        selection: int,
+        correlation_id: str,
+        nonce: collections.MutableSequence[typing.Union[str, bytes]],
+    ) -> ResponseSig[int]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+
+        body = {"selection": selection, "correlationId": correlation_id, "nonce": nonce}
+
+        return self._request(
+            RequestMethod.POST,
+            "Destiny2/Awa/AwaProvideAuthorizationResult",
+            json=body,
+            auth=access_token,
+        )
+
+    def fetch_vendors(
+        self,
+        access_token: str,
+        character_id: int,
+        membership_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+        /,
+        *components: enums.ComponentType,
+        **options: typing.Optional[int],
+    ) -> ResponseSig[typedefs.JSONObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        components_ = self._collect_components(*components)
+        route = (
+            f"Destiny2/{int(membership_type)}/Profile/{membership_id}"
+            f"/Character/{character_id}/Vendors/?components={components_}"
+        )
+
+        if "filter" in options:
+            route = route + f"&filter={options['filter']}"
+
+        return self._request(
+            RequestMethod.GET,
+            route,
+            auth=access_token,
+        )
+
+    def fetch_vendor(
+        self,
+        access_token: str,
+        character_id: int,
+        membership_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+        vendor_hash: int,
+        /,
+        *components: enums.ComponentType,
+    ) -> ResponseSig[typedefs.JSONObject]:
+        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+        components_ = self._collect_components(*components)
+        return self._request(
+            RequestMethod.GET,
+            (
+                f"Platform/Destiny2/{int(membership_type)}/Profile/{membership_id}"
+                f"/Character/{character_id}/Vendors/{vendor_hash}/?components={components_}"
+            ),
+            auth=access_token,
+        )

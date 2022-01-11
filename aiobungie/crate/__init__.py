@@ -58,7 +58,6 @@ __all__: tuple[str, ...] = (
     # clans.py
     "Clan",
     "ClanMember",
-    "ClanAdmin",
     "ClanFeatures",
     "ClanConversation",
     "ClanBanner",

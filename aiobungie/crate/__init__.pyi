@@ -36,7 +36,6 @@ from .user import *
 #   CharacterRecord
 #   CharacterScopedArtifact
 #   Clan
-#   ClanAdmin
 #   ClanBanner
 #   ClanConversation
 #   ClanFeatures

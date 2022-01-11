@@ -84,7 +84,7 @@ class ApplicationOwner(user.UserLike):
         `aiobungie.NotFound`
             The user was not found.
         """
-        user_ = await self.net.request.fetch_user(self.id)
+        user_ = await self.net.request.fetch_bungie_user(self.id)
         assert isinstance(user_, user.BungieUser)
         return user_
 

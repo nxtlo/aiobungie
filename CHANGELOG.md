@@ -47,6 +47,12 @@ This also references `fetch_potentional_groups_forr_member`.
 - `ClanMember.bungie` is now an optional field.
 - `Clan.fetch_my_fireteams` method renamed to `fetch_fireteams`.
 - `ClanMember` now inherits from `user.DesinyUser` for no field duplications.
+- Name Changes for consistensy
+    * `fetch_user` method renamed to `fetch_bungie_user`.
+    * `fetch_hard_linked` method renamed to `fetch_hardlinked_credentials`.
+    * `fetch_app` method renamed to `fetch_application`.
+    * `fetch_own_bungie_user` renamed to `fetch_current_user_memberships`.
+- More methods has been added to `RESTClient`.
 
 ### Fixed
 - `Character.last_played` wasn't returning a datetime object.

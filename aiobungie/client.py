@@ -57,13 +57,12 @@ _LOG: typing.Final[logging.Logger] = logging.getLogger("aiobungie.client")
 
 
 class Client(traits.ClientBase):
-    """Basic implementation for a client that interacts with Bungie's API.
+    """Standard Bungie API client.
 
-    This client deserialize the REST JSON payloads using `aiobungie.internal.factory.Factory`
-    and returns `aiobungie.crate` Python object implementations of these requests.
+    This client deserialize the REST JSON responses using `aiobungie.internal.factory.Factory`
+    and returns `aiobungie.crate` Python object implementations of the responses.
 
-    Alternatively, You can also use `aiobungie.RESTClient` to only get the JSON responses
-    and then make your own implementation data classes. Both options are up to you.
+    Alternatively, You can also use `aiobungie.RESTClient` alone for low-level concepts.
 
     Parameters
     -----------
@@ -73,8 +72,8 @@ class Client(traits.ClientBase):
     Other Parameters
     ----------------
     rest_client: `typing.Optional[aiobungie.interfaces.RESTInterface]`
-        An optional rest client instance you can pass,
-        If set to `None` then the client will make a rest instance for you.
+        An optional rest client instance you can pass.
+        If set to `None` then the client will use the default instance.
 
     Example
     -------
@@ -157,7 +156,7 @@ class Client(traits.ClientBase):
 
     # * User methods.
 
-    async def fetch_own_bungie_user(self, access_token: str, /) -> user.User:
+    async def fetch_current_user_memberships(self, access_token: str, /) -> user.User:
         """Fetch and return a user object of the bungie net user associated with account.
 
         This method is obly useful if you have authintacated users and their tokens.
@@ -175,11 +174,11 @@ class Client(traits.ClientBase):
         `aiobungie.crate.user.User`
             A user object includes the Destiny memberships and Bungie.net user.
         """
-        resp = await self.rest.fetch_own_bungie_user(access_token)
+        resp = await self.rest.fetch_current_user_memberships(access_token)
         assert isinstance(resp, dict)
         return self.factory.deserialize_user(resp)
 
-    async def fetch_user(self, id: int, /) -> user.BungieUser:
+    async def fetch_bungie_user(self, id: int, /) -> user.BungieUser:
         """Fetch a Bungie user by their BungieNet id.
 
         .. note::
@@ -201,7 +200,7 @@ class Client(traits.ClientBase):
         `aiobungie.error.NotFound`
             The user was not found.
         """
-        payload = await self.rest.fetch_user(id)
+        payload = await self.rest.fetch_bungie_user(id)
         assert isinstance(payload, dict)
         return self.factory.deserialize_bungie_user(payload)
 
@@ -260,7 +259,7 @@ class Client(traits.ClientBase):
             Information about the hard linked data.
         """
 
-        payload = await self.rest.fetch_hard_linked(credential, type)
+        payload = await self.rest.fetch_hardlinked_credentials(credential, type)
         assert isinstance(payload, dict)
         return user.HardLinkedMembership(
             id=int(payload["membershipId"]),
@@ -951,7 +950,7 @@ class Client(traits.ClientBase):
         assert isinstance(resp, dict)
         return self.factory.deserialize_friend_requests(resp)
 
-    async def fetch_app(self, appid: int, /) -> application.Application:
+    async def fetch_application(self, appid: int, /) -> application.Application:
         """Fetch a Bungie Application.
 
         Parameters
@@ -964,7 +963,7 @@ class Client(traits.ClientBase):
         `aiobungie.crate.Application`
             A Bungie application.
         """
-        resp = await self.rest.fetch_app(appid)
+        resp = await self.rest.fetch_application(appid)
         assert isinstance(resp, dict)
         return self.factory.deserialize_app(resp)
 
@@ -1173,7 +1172,7 @@ class Client(traits.ClientBase):
 
         Returns
         -------
-        `typing.Optional[collections.Sequence[aiobungie.crate.AvalaibleFireteam]]`
+        `collections.Sequence[aiobungie.crate.AvalaibleFireteam]`
             A sequence of available fireteams objects if exists. else `None` will be returned.
         """
         resp = await self.rest.fetch_my_clan_fireteams(

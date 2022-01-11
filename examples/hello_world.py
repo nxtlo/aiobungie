@@ -21,7 +21,7 @@ async def fetch_me() -> None:
             print(member_ship.name, member_ship.unique_name, member_ship.type)
 
     # Fetch a BungieNet user.
-    user = await client.fetch_user(20315338)
+    user = await client.fetch_bungie_user(20315338)
     print(
         user.name,
         user.about,

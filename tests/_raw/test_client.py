@@ -50,7 +50,7 @@ client = __build_client()
 
 
 async def test_users():
-    u = await client.fetch_user(20315338)
+    u = await client.fetch_bungie_user(20315338)
     assert isinstance(u, aiobungie.crate.BungieUser)
 
 
@@ -99,7 +99,7 @@ async def test_fetch_inventory_item():
 
 
 async def test_fetch_app():
-    a = await client.fetch_app(33226)
+    a = await client.fetch_application(33226)
     assert isinstance(a, aiobungie.crate.Application)
     fetched_user = await a.owner.fetch_self()
     assert isinstance(fetched_user, aiobungie.crate.BungieUser)

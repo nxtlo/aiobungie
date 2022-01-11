@@ -27,6 +27,7 @@ from __future__ import annotations
 __all__: list[str] = ["RESTInterface"]
 
 import abc
+import collections.abc as collections
 import typing
 
 from aiobungie import traits
@@ -34,7 +35,6 @@ from aiobungie import undefined
 from aiobungie.internal import enums
 
 if typing.TYPE_CHECKING:
-    import collections.abc as collections
     import pathlib
     import sqlite3
 
@@ -52,7 +52,7 @@ if typing.TYPE_CHECKING:
             None,
         ],
     )
-    ResponseSig = typing.Coroutine[None, None, ResponseSigT]
+    ResponseSig = collections.Coroutine[None, None, ResponseSigT]
 
 
 class RESTInterface(traits.RESTful, abc.ABC):
@@ -124,7 +124,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def fetch_user(self, id: int) -> ResponseSig[typedefs.JSONObject]:
+    def fetch_bungie_user(self, id: int) -> ResponseSig[typedefs.JSONObject]:
         """Fetch a Bungie user by their id.
 
         Parameters
@@ -175,13 +175,14 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def fetch_hard_linked(
+    def fetch_hardlinked_credentials(
         self,
         credential: int,
         type: typedefs.IntAnd[enums.CredentialType] = enums.CredentialType.STEAMID,
         /,
     ) -> ResponseSig[typedefs.JSONObject]:
         """Gets any hard linked membership given a credential.
+
         Only works for credentials that are public just `aiobungie.CredentialType.STEAMID` right now.
         Cross Save aware.
 
@@ -643,7 +644,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def fetch_app(self, appid: int, /) -> ResponseSig[typedefs.JSONObject]:
+    def fetch_application(self, appid: int, /) -> ResponseSig[typedefs.JSONObject]:
         """Fetch a Bungie Application.
 
         Parameters
@@ -733,7 +734,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def fetch_own_bungie_user(
+    def fetch_current_user_memberships(
         self, access_token: str, /
     ) -> ResponseSig[typedefs.JSONObject]:
         """Fetch a bungie user's accounts with the signed in user.
@@ -741,7 +742,6 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         .. note::
             This requires OAuth2 scope enabled and the valid Bearer `access_token`.
-            This token should be stored somewhere safe and just passed as a parameter. e.g., A database.
 
         Parameters
         ----------
@@ -1851,13 +1851,256 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
+    def fetch_available_locales(self) -> ResponseSig[typedefs.JSONObject]:
+        """Fetch available locales at Bungie.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.typedefs.JSONObject]`
+            A JSON object contains a list of all available localization cultures.
+        """
+
+    @abc.abstractmethod
+    def fetch_common_settings(self) -> ResponseSig[typedefs.JSONObject]:
+        """Fetch the common settings used by Bungie's envirotment.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.typedefs.JSONObject]`
+            The common settings JSON object.
+        """
+
+    @abc.abstractmethod
+    def fetch_user_systems_overrides(self) -> ResponseSig[typedefs.JSONObject]:
+        """Fetch a user's specific system overrides.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.typedefs.JSONObject]`
+            The system overrides JSON object.
+        """
+
+    @abc.abstractmethod
+    def fetch_global_alerts(
+        self, *, include_streaming: bool = False
+    ) -> ResponseSig[typedefs.JSONArray]:
+        """Fetch any active global alerts.
+
+        Parameters
+        ----------
+        include_streaming : `bool`
+            If True, the returned results will include streaming alerts. Default is False.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.typedefs.JSONArray]`
+            A JSON array of the global alerts objects.
+        """
+
+    @abc.abstractmethod
     def fetch_item(
-        self, member_id: int, item_id: int, /
+        self,
+        member_id: int,
+        item_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+        *components: enums.ComponentType,
     ) -> ResponseSig[typedefs.JSONObject]:
-        raise NotImplementedError
+        """Fetch an instanced Destiny 2 item's details.
+
+        Parameters
+        ----------
+        member_id : `int`
+            The membership id of the Destiny 2 player.
+        item_id : `int`
+            The instance id of the item.
+        membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
+            The membership type of the Destiny 2 player.
+        *components : `aiobungie.ComponentType`
+            Multiple item components to retrieve.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.typedefs.JSONObject]`
+            A JSON object response contains the fetched item with its components.
+        """
 
     @abc.abstractmethod
     def fetch_clan_weekly_rewards(
         self, clan_id: int, /
     ) -> ResponseSig[typedefs.JSONObject]:
-        raise NotImplementedError
+        """Fetch the weekly reward state for a clan.
+
+        Parameters
+        ----------
+        clan_id : `int`
+            The clan id.
+
+        Returns
+        ------
+        `ResponseSig[aiobungie.typedefs.JSONObject]`
+            A JSON response of the clan rewards state.
+        """
+
+    @abc.abstractmethod
+    def awainitialize_request(
+        self,
+        access_token: str,
+        type: typing.Literal[0, 1],
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+        /,
+        *,
+        affected_item_id: typing.Optional[int] = None,
+        character_id: typing.Optional[int] = None,
+    ) -> ResponseSig[typedefs.JSONObject]:
+        """Initialize a request to perform an advanced write action.
+
+        .. warning::
+            OAuth2: AdvancedWriteActions application scope is required to perform this request.
+
+        Parameters
+        ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+        type : `typing.Literal[0, 1]`
+            Type of the advanced write action. Its either 0 or 1.
+            If set to 0 that means it `None`. Otherwise if 1 that means its insert plugs.
+        membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
+            The Destiny membership type of the account to modify.
+
+        Other Parameters
+        ----------------
+        affected_item_id : `typing.Optional[int]`
+            Item instance ID the action shall be applied to.
+            This is optional for all but a new AwaType values.
+        character_id : `typing.Optional[int]`
+            The Destiny character ID to perform this action on.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.typedefs.JSONObject]`
+            A JSON object response.
+        """
+
+    @abc.abstractmethod
+    def awaget_action_token(
+        self, access_token: str, correlation_id: str, /
+    ) -> ResponseSig[typedefs.JSONObject]:
+        """Returns the action token if user approves the request.
+
+        .. warning::
+            OAuth2: AdvancedWriteActions application scope is required to perform this request.
+
+        Parameters
+        ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+        correlation_id : `str`
+            The identifier for the advanced write action request.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.typedefs.JSONObject]`
+            A JSON object response.
+        """
+
+    @abc.abstractmethod
+    def awa_provide_authorization_result(
+        self,
+        access_token: str,
+        selection: int,
+        correlation_id: str,
+        nonce: collections.MutableSequence[typing.Union[str, bytes]],
+    ) -> ResponseSig[int]:
+        """Provide the result of the user interaction. Called by the Bungie Destiny App to approve or reject a request.
+
+        .. warning::
+            OAuth2: AdvancedWriteActions application scope is required to perform this request.
+
+        Parameters
+        ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+        selection : `int`
+            Indication of the selection the user has made (Approving or rejecting the action)
+        correlation_id : `str`
+            Correlation ID of the request.
+        nonce : `collections.MutableSequence[str, bytes]`
+            Secret nonce received via the PUSH notification.
+
+        Returns
+        -------
+        `ResponseSig[int]`
+            ...
+        """
+
+    @abc.abstractmethod
+    def fetch_vendors(
+        self,
+        access_token: str,
+        character_id: int,
+        membership_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+        /,
+        *components: enums.ComponentType,
+        **options: typing.Optional[int],
+    ) -> ResponseSig[typedefs.JSONObject]:
+        """Get currently available vendors from the list of vendors that can possibly have rotating inventory.
+
+        Parameters
+        ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+        character_id : `int`
+            The character ID to return the vendor info for.
+        membership_id : `int`
+            The Destiny membership id to return the vendor info for.
+        membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
+            The Destiny membership type to return the vendor info for.
+        *components: `aiobungie.ComponentType`
+            Multiple arguments of vendor components to collect and return.
+
+        Other Parameters
+        ----------------
+        **options : `int`
+            This optional kwarg expects a `filter` argumnt which filters the type
+            of items returned from the vendor. This can be left to `None`.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.typedefs.JSONObject]`
+            A JSON object of the vendor response.
+        """
+
+    @abc.abstractmethod
+    def fetch_vendor(
+        self,
+        access_token: str,
+        character_id: int,
+        membership_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+        vendor_hash: int,
+        /,
+        *components: enums.ComponentType,
+    ) -> ResponseSig[typedefs.JSONObject]:
+        """Fetch details for a specific vendor.
+
+        Parameters
+        ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+        character_id : `int`
+            The character ID to return the vendor info for.
+        membership_id : `int`
+            The Destiny membership id to return the vendor info for.
+        membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
+            The Destiny membership type to return the vendor info for.
+        vendor_hash : `int`
+            The vendor hash to return the details for.
+        *components: `aiobungie.ComponentType`
+            Multiple arguments of vendor components to collect and return.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.typedefs.JSONObject]`
+            A JSON object of the vendor response.
+        """

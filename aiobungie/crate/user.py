@@ -163,7 +163,7 @@ class PartialBungieUser:
         `aiobungie.NotFound`
             The user was not found.
         """
-        user = await self.net.request.fetch_user(self.id)
+        user = await self.net.request.fetch_bungie_user(self.id)
         assert isinstance(user, BungieUser)
         return user
 

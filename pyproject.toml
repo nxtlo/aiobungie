@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "aiobungie"
-version = "0.2.5b13"
-description = "A small async api wrapper for the bungie api"
+version = "0.2.5b14"
+description = "A Python and Asyncio API for Bungie."
 authors = ["nxtlo <dhmony-99@hotmail.com>"]
 license = "MIT"
 keywords = ['async', 'api', 'destiny', 'bungie']
@@ -32,34 +32,6 @@ python = "^3.9"
 python-dateutil = "2.8.2"
 aiohttp = "3.8.1"
 attrs = "21.4.0"
-
-[tool.poetry.extras]
-reformat = [
-    "black==21.11b1",
-    "isort==5.10.1"
-]
-
-type_check = [
-    "mypy==0.910"
-]
-
-lint = [
-    "flake8==4.0.1"
-]
-
-tests = [
-    "pytest==6.2.5",
-    "mock==4.0.3",
-    "pytest-asyncio==0.16.0"
-]
-
-docs = [
-    "pdoc==8.0.1"
-]
-
-clients_tests = [
-    "python-dotenv==0.19.2"
-]
 
 [tool.pytest.ini_options]
 xfail_strict = true

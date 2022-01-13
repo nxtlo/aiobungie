@@ -24,6 +24,8 @@
 
 from __future__ import annotations
 
+import datetime
+
 __all__: list[str] = ["RESTInterface"]
 
 import abc
@@ -410,13 +412,24 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def fetch_clan_from_id(self, id: int, /) -> ResponseSig[typedefs.JSONObject]:
+    def fetch_clan_from_id(
+        self, id: int, /, access_token: typing.Optional[str] = None
+    ) -> ResponseSig[typedefs.JSONObject]:
         """Fetch a Bungie Clan by its id.
 
         Parameters
         -----------
-        id: `builtins.int`
+        id : `int`
             The clan id.
+
+        Other Parameters
+        ----------------
+        access_token : `typing.Optional[str]`
+            An optional access token to make the request with.
+
+            If the token was bound to a member of the clan,
+            This field `aiobungie.crate.Clan.current_user_membership` will be available
+            and will return the membership of the user who made this request.
 
         Returns
         --------
@@ -434,6 +447,8 @@ class RESTInterface(traits.RESTful, abc.ABC):
         self,
         name: str,
         /,
+        access_token: typing.Optional[str] = None,
+        *,
         type: typedefs.IntAnd[enums.GroupType] = enums.GroupType.CLAN,
     ) -> ResponseSig[typedefs.JSONObject]:
         """Fetch a Clan by its name.
@@ -441,9 +456,18 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Parameters
         ----------
-        name: `builtins.str`
-            The clan name
-        type `aiobungie.typedefs.IntAnd[aiobungie.GroupType]`
+        name : `str`
+            The clan name.
+
+        Other Parameters
+        ----------------
+        access_token : `typing.Optional[str]`
+            An optional access token to make the request with.
+
+            If the token was bound to a member of the clan,
+            This field `aiobungie.crate.Clan.current_user_membership` will be available
+            and will return the membership of the user who made this request.
+        type : `aiobungie.typedefs.IntAnd[aiobungie.GroupType]`
             The group type, Default is one.
 
         Returns
@@ -2103,4 +2127,62 @@ class RESTInterface(traits.RESTful, abc.ABC):
         -------
         `ResponseSig[aiobungie.typedefs.JSONObject]`
             A JSON object of the vendor response.
+        """
+
+    @abc.abstractmethod
+    def fetch_bungie_applications(self) -> ResponseSig[typedefs.JSONArray]:
+        """Fetch details for applications created by Bungie.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.typedefs.JSONArray]`
+            An array of Bungie created applications.
+        """
+
+    @abc.abstractmethod
+    def fetch_application_api_usage(
+        self,
+        access_token: str,
+        application_id: int,
+        /,
+        *,
+        start: typing.Optional[datetime.datetime] = None,
+        end: typing.Optional[datetime.datetime] = None,
+    ) -> ResponseSig[typedefs.JSONObject]:
+        """Fetch a Bungie application's API usage.
+
+        Parameters
+        ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+        application_id : `int`
+            The application id to get.
+
+        Other Parameters
+        ----------------
+        start : `typing.Optional[datetime.datetime]`
+            A datetime object can be used to collect the start of the application usage.
+            This is limited and can go back to 30 days maximum.
+
+            If this is left to `None`. It will return the last 24 hours.
+        end : `typing.Optional[datetime.datetime]`
+            A datetime object can be used to collect the end of the application usage.
+
+            If this is left to `None`. It will return `now`.
+
+        Example
+        -------
+        ```py
+        import datetime
+
+        # Fetch data from 2021 Dec 10th to 2021 Dec 20th
+        await fetch_application_api_usage(
+            start=datetime.datetime(2021, 12, 10), end=datetime.datetime(2021, 12, 20)
+        )
+        ```
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.typedefs.JSONObject]`
+            A JSON object of the application usage details.
         """

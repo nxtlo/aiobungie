@@ -36,6 +36,7 @@ __all__: tuple[str, ...] = (
 
 import asyncio
 import contextlib
+import datetime
 import http
 import logging
 import os
@@ -62,6 +63,7 @@ from aiobungie.crate import fireteams
 from aiobungie.internal import _backoff as backoff
 from aiobungie.internal import enums
 from aiobungie.internal import helpers
+from aiobungie.internal import time as aiobungie_time
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
@@ -696,18 +698,24 @@ class RESTClient(interfaces.RESTInterface):
             json={"displayNamePrefix": name},
         )
 
-    def fetch_clan_from_id(self, id: int, /) -> ResponseSig[typedefs.JSONObject]:
+    def fetch_clan_from_id(
+        self, id: int, /, access_token: typing.Optional[str] = None
+    ) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(RequestMethod.GET, f"GroupV2/{id}")
+        return self._request(RequestMethod.GET, f"GroupV2/{id}", auth=access_token)
 
     def fetch_clan(
         self,
         name: str,
         /,
+        access_token: typing.Optional[str] = None,
+        *,
         type: typedefs.IntAnd[enums.GroupType] = enums.GroupType.CLAN,
     ) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(RequestMethod.GET, f"GroupV2/Name/{name}/{int(type)}")
+        return self._request(
+            RequestMethod.GET, f"GroupV2/Name/{name}/{int(type)}", auth=access_token
+        )
 
     def fetch_clan_admins(self, clan_id: int, /) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
@@ -1578,7 +1586,9 @@ class RESTClient(interfaces.RESTInterface):
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(RequestMethod.GET, "UserSystemOverrides")
 
-    def fetch_global_alerts(self, *, include_streaming: bool = False) -> ResponseSig[typedefs.JSONArray]:
+    def fetch_global_alerts(
+        self, *, include_streaming: bool = False
+    ) -> ResponseSig[typedefs.JSONArray]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
             RequestMethod.GET, f"GlobalAlerts/?includestreaming={include_streaming}"
@@ -1682,3 +1692,23 @@ class RESTClient(interfaces.RESTInterface):
             ),
             auth=access_token,
         )
+
+    def fetch_application_api_usage(
+        self,
+        access_token: str,
+        application_id: int,
+        /,
+        *,
+        start: typing.Optional[datetime.datetime] = None,
+        end: typing.Optional[datetime.datetime] = None,
+    ) -> ResponseSig[typedefs.JSONObject]:
+
+        end_date, start_date = aiobungie_time.parse_date_range(end, start)
+        return self._request(
+            RequestMethod.GET,
+            f"App/ApiUsage/{application_id}/?end={end_date}&start={start_date}",
+            auth=access_token,
+        )
+
+    def fetch_bungie_applications(self) -> ResponseSig[typedefs.JSONArray]:
+        return self._request(RequestMethod.GET, "App/FirstParty")

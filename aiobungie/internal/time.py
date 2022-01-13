@@ -30,6 +30,7 @@ __all__: list[str] = [
     "from_timestamp",
     "clean_date",
     "to_timestamp",
+    "parse_date_range",
 ]
 
 import calendar
@@ -62,3 +63,24 @@ def clean_date(iso_date: str, /) -> datetime.datetime:
 def to_timestamp(date: datetime.datetime, /) -> int:
     """Converts `datetime.datetime` to timestamp."""
     return calendar.timegm(date.timetuple())
+
+
+def parse_date_range(
+    end: typing.Optional[datetime.datetime] = None,
+    start: typing.Optional[datetime.datetime] = None,
+) -> tuple[str, str]:
+    """Parse Bungie's datetime ranges to string."""
+
+    if end is not None:
+        end_date = f"{end.year}-{end.month}-{end.day}"
+    else:
+        now = datetime.datetime.now()
+        end_date = f"{now.year}-{now.month}-{now.day}"
+
+    if start is not None:
+        start_date = f"{start.year}-{start.month}-{start.day}"
+    else:
+        last_24_hrs = datetime.datetime.now() - datetime.timedelta(hours=23)
+        start_date = f"{last_24_hrs.year}-{last_24_hrs.month}-{last_24_hrs.day}"
+
+    return end_date, start_date

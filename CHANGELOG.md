@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ClanMember.member_type` field.
 - `ClanMember.is_admin` and `is_founder` fields.
 - `Clan.progression` and some extra other fields to `clans.Clan`.
+- `fetch_clan_weekly_rewards` method.
+- `fetch_clan` and `fetch_clan_from_id` now can take `access_token` parameter for authorized user requests.
 
 ### Removed
 - `Friend.is_pending` method since this can be checked using `Friend.relationship`.

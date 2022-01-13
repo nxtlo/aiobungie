@@ -388,6 +388,8 @@ async def test_search_entities():
     acts = await client.search_entities("Scourge", "DestinyActivityDefinition")
     assert len(acts) > 1
     assert any(act.name == "Scourge of the Past" for act in acts)
+
+    # This will always return None since its not an inventory item.
     assert not await acts[0].fetch_self_item()
 
 async def test_unique_weapon_history():
@@ -399,6 +401,10 @@ async def test_client_metadata():
     client.metadata['pepe'] = 'laugh'
     clan = await client.fetch_clan("Math Class")
     assert clan.net.request.metadata['pepe'] == 'laugh'
+
+async def test_clan_weekly_rewards():
+    r = await client.fetch_clan_weekly_rewards(4389205)
+    assert isinstance(r, aiobungie.crate.Milestone)
 
 async def main() -> None:
     coros = []

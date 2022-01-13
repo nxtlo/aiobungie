@@ -166,7 +166,7 @@ class Client(traits.ClientBase):
 
         Parameters
         ----------
-        access_token : `builtins.str`
+        access_token : `str`
             A valid Bearer access token for the authorization.
 
         Returns
@@ -187,7 +187,7 @@ class Client(traits.ClientBase):
 
         Parameters
         ----------
-        id: `builtins.int`
+        id: `int`
             The user id.
 
         Returns
@@ -247,7 +247,7 @@ class Client(traits.ClientBase):
 
         Parameters
         ----------
-        credential: `builtins.int`
+        credential: `int`
             A valid SteamID64
         type: `aiobungie.CredentialType`
             The crededntial type. This must not be changed
@@ -284,7 +284,7 @@ class Client(traits.ClientBase):
 
         Parameters
         ----------
-        id : `builtins.int`
+        id : `int`
             The user's id.
         type : `aiobungie.MembershipType`
             The user's membership type.
@@ -332,7 +332,7 @@ class Client(traits.ClientBase):
         assert isinstance(resp, list)
         return self.factory.deserialize_user_credentials(resp)
 
-    # * Destiny 2 methods.
+    # * Destiny 2.
 
     async def fetch_profile(
         self,
@@ -346,7 +346,7 @@ class Client(traits.ClientBase):
 
         Parameters
         ----------
-        member_id: `builtins.int`
+        member_id: `int`
             The member's id.
         type: `aiobungie.MembershipType`
             A valid membership type.
@@ -395,14 +395,14 @@ class Client(traits.ClientBase):
 
         Parameters
         ----------
-        member_id : `builtins.int`
+        member_id : `int`
             The ID of the membership. This must be a valid Bungie.Net or PSN or Xbox ID.
         member_type : `aiobungie.MembershipType`
             The type for the membership whose linked Destiny account you want to return.
 
         Other Parameters
         ----------------
-        all : `builtins.bool`
+        all : `bool`
             If provided and set to `True`, All memberships regardless
             of whether thry're obscured by overrides will be returned,
 
@@ -463,7 +463,7 @@ class Client(traits.ClientBase):
 
         Parameters
         ----------
-        member_id: `builtins.int`
+        member_id: `int`
             A valid bungie member id.
         character_id: `int`
             The Destiny character id to retrieve.
@@ -500,6 +500,37 @@ class Client(traits.ClientBase):
         assert isinstance(resp, dict)
         return self.factory.deserialize_character_component(resp)
 
+    async def fetch_unique_weapon_history(
+        self,
+        membership_id: int,
+        character_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+    ) -> collections.Sequence[activity.ExtendedWeaponValues]:
+        """Fetch details about unique weapon usage for a character. Includes all exotics.
+
+        Parameters
+        ----------
+        membership_id : `int`
+            The Destiny user membership id.
+        character_id : `int`
+            The character id to retrieve.
+        membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
+            The Destiny user's membership type.
+
+        Returns
+        -------
+        `collections.Sequence[aiobungie.crate.ExtendedWeaponValues]`
+            A sequence of the weapon's extended values.
+        """
+        resp = await self._rest.fetch_unique_weapon_history(
+            membership_id, character_id, membership_type
+        )
+        assert isinstance(resp, dict)
+        return [
+            self._factory.deserialize_extended_weapon_values(weapon)
+            for weapon in resp["weapons"]
+        ]
+
     # * Destiny 2 Activities.
 
     async def fetch_activities(
@@ -518,9 +549,9 @@ class Client(traits.ClientBase):
 
         Parameters
         ----------
-        member_id: `builtins.int`
+        member_id: `int`
             The user id that starts with `4611`.
-        character_id: `builtins.int`
+        character_id: `int`
             The id of the character to retrieve the activities for.
         mode: `aiobungie.typedefs.IntAnd[aiobungie.internal.enums.GameMode]`
             This parameter filters the game mode, Nightfall, Strike, Iron Banner, etc.
@@ -529,9 +560,9 @@ class Client(traits.ClientBase):
         ----------------
         membership_type: `aiobungie.internal.enums.MembershipType`
             The Member ship type, if nothing was passed than it will return all.
-        page: builtins.int
+        page: int
             The page number. Default is `0`
-        limit: builtins.int
+        limit: int
             Limit the returned result. Default is `250`.
 
         Returns
@@ -572,12 +603,17 @@ class Client(traits.ClientBase):
 
     # * Destiny 2 Clans or GroupsV2.
 
-    async def fetch_clan_from_id(self, id: int, /) -> clans.Clan:
+    async def fetch_clan_from_id(
+        self,
+        id: int,
+        /,
+        access_token: typing.Optional[str] = None,
+    ) -> clans.Clan:
         """Fetch a Bungie Clan by its id.
 
         Parameters
         -----------
-        id: `builtins.int`
+        id: `int`
             The clan id.
 
         Returns
@@ -590,7 +626,7 @@ class Client(traits.ClientBase):
         `aiobungie.NotFound`
             The clan was not found.
         """
-        resp = await self.rest.fetch_clan_from_id(id)
+        resp = await self.rest.fetch_clan_from_id(id, access_token)
         assert isinstance(resp, dict)
         return self.factory.deserialize_clan(resp)
 
@@ -598,6 +634,7 @@ class Client(traits.ClientBase):
         self,
         name: str,
         /,
+        access_token: typing.Optional[str] = None,
         *,
         type: typedefs.IntAnd[enums.GroupType] = enums.GroupType.CLAN,
     ) -> clans.Clan:
@@ -606,12 +643,18 @@ class Client(traits.ClientBase):
 
         Parameters
         ----------
-        name: `builtins.str`
+        name: `str`
             The clan name
 
         Other Parameters
         ----------------
-        type `aiobungie.GroupType`
+        access_token : `typing.Optional[str]`
+            An optional access token to make the request with.
+
+            If the token was bound to a member of the clan,
+            This field `aiobungie.crate.Clan.current_user_membership` will be available
+            and will return the membership of the user who made this request.
+        type : `aiobungie.GroupType`
             The group type, Default is aiobungie.GroupType.CLAN.
 
         Returns
@@ -624,7 +667,7 @@ class Client(traits.ClientBase):
         `aiobungie.NotFound`
             The clan was not found.
         """
-        resp = await self.rest.fetch_clan(name, type)
+        resp = await self.rest.fetch_clan(name, access_token, type=type)
         assert isinstance(resp, dict)
         return self.factory.deserialize_clan(resp)
 
@@ -653,7 +696,7 @@ class Client(traits.ClientBase):
 
         Parameters
         ----------
-        clan_id : `builtins.int`
+        clan_id : `int`
             The clan id.
 
         Returns
@@ -683,7 +726,7 @@ class Client(traits.ClientBase):
 
         Parameters
         ----------
-        member_id : `builtins.int`
+        member_id : `int`
             The member's id
         member_type : `aiobungie.MembershipType`
             The member's membership type.
@@ -722,7 +765,7 @@ class Client(traits.ClientBase):
 
         Parameters
         ----------
-        member_id : `builtins.int`
+        member_id : `int`
             The member's id
         member_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
             The member's membership type.
@@ -815,7 +858,7 @@ class Client(traits.ClientBase):
 
         Parameters
         ----------
-        access_token : `builtins.str`
+        access_token : `str`
             The bearer access token associated with the bungie account.
         group_id: `int`
             The group id.
@@ -837,6 +880,24 @@ class Client(traits.ClientBase):
         )
         assert isinstance(resp, dict)
         return self.factory.deserialize_clan(resp)
+
+    async def fetch_clan_weekly_rewards(self, clan_id: int) -> milestones.Milestone:
+        """Fetch a Bungie clan's weekly reward state.
+
+        Parameters
+        ----------
+        clan_id : `int`
+            The clan's id.
+
+        Returns
+        -------
+        `aiobungie.crate.Milestone`
+            A runtime status of the clan's milestone data.
+        """
+
+        resp = await self.rest.fetch_clan_weekly_rewards(clan_id)
+        assert isinstance(resp, dict)
+        return self.factory.deserialize_milestone(resp)
 
     # * Destiny 2 Entities aka Definitions.
 
@@ -901,90 +962,7 @@ class Client(traits.ClientBase):
         assert isinstance(resp, dict)
         return self.factory.deserialize_inventory_results(resp)
 
-    # * These methods should be for Special bungie endpoints, i.e,
-    # * Applications, Forums, Polls, Trending, etc.
-
-    async def fetch_friends(
-        self, access_token: str, /
-    ) -> collections.Sequence[friends.Friend]:
-        """Fetch bungie friend list.
-
-        .. note::
-            This requests OAuth2: ReadUserData scope.
-
-        Parameters
-        -----------
-        access_token : `str`
-            The bearer access token associated with the bungie account.
-
-        Returns
-        -------
-        `collections.Sequence[aiobungie.crate.Friend]`
-            A sequence of the found friends.
-        """
-
-        resp = await self.rest.fetch_friends(access_token)
-        assert isinstance(resp, dict)
-        return self.factory.deserialize_friends(resp)
-
-    async def fetch_friend_requests(
-        self, access_token: str, /
-    ) -> friends.FriendRequestView:
-        """Fetch pending bungie friend requests queue.
-
-        .. note::
-            This requests OAuth2: ReadUserData scope.
-
-        Parameters
-        -----------
-        access_token : `str`
-            The bearer access token associated with the bungie account.
-
-        Returns
-        -------
-        `aiobungie.crate.FriendRequestView`
-            A friend requests view object includes a sequence of incoming and outgoing requests.
-        """
-
-        resp = await self.rest.fetch_friend_requests(access_token)
-        assert isinstance(resp, dict)
-        return self.factory.deserialize_friend_requests(resp)
-
-    async def fetch_application(self, appid: int, /) -> application.Application:
-        """Fetch a Bungie Application.
-
-        Parameters
-        -----------
-        appid: `builtins.int`
-            The application id.
-
-        Returns
-        --------
-        `aiobungie.crate.Application`
-            A Bungie application.
-        """
-        resp = await self.rest.fetch_application(appid)
-        assert isinstance(resp, dict)
-        return self.factory.deserialize_app(resp)
-
-    async def fetch_public_milestone_content(
-        self, milestone_hash: int, /
-    ) -> milestones.MilestoneContent:
-        """Fetch the milestone content given its hash.
-
-        Parameters
-        ----------
-        milestone_hash : `builtins.int`
-            The milestone hash.
-
-        Returns
-        -------
-        `aiobungie.crate.milestones.MilestoneContent`
-            A milestone content object.
-        """
-        resp = await self.rest.fetch_public_milestone_content(milestone_hash)
-        assert isinstance(resp, dict)
-        return self.factory.deserialize_public_milestone_content(resp)
+    # Fireteams
 
     async def fetch_fireteams(
         self,
@@ -1187,33 +1165,90 @@ class Client(traits.ClientBase):
         assert isinstance(resp, dict)
         return self.factory.deserialize_available_fireteams(resp)  # type: ignore[return-value]
 
-    async def fetch_unique_weapon_history(
-        self,
-        membership_id: int,
-        character_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
-    ) -> collections.Sequence[activity.ExtendedWeaponValues]:
-        """Fetch details about unique weapon usage for a character. Includes all exotics.
+    # Friends and social.
+
+    async def fetch_friends(
+        self, access_token: str, /
+    ) -> collections.Sequence[friends.Friend]:
+        """Fetch bungie friend list.
+
+        .. note::
+            This requests OAuth2: ReadUserData scope.
 
         Parameters
-        ----------
-        membership_id : `int`
-            The Destiny user membership id.
-        character_id : `int`
-            The character id to retrieve.
-        membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
-            The Destiny user's membership type.
+        -----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
 
         Returns
         -------
-        `collections.Sequence[aiobungie.crate.ExtendedWeaponValues]`
-            A sequence of the weapon's extended values.
+        `collections.Sequence[aiobungie.crate.Friend]`
+            A sequence of the friends associated with that access token.
         """
-        resp = await self._rest.fetch_unique_weapon_history(
-            membership_id, character_id, membership_type
-        )
+
+        resp = await self.rest.fetch_friends(access_token)
         assert isinstance(resp, dict)
-        return [
-            self._factory.deserialize_extended_weapon_values(weapon)
-            for weapon in resp["weapons"]
-        ]
+        return self.factory.deserialize_friends(resp)
+
+    async def fetch_friend_requests(
+        self, access_token: str, /
+    ) -> friends.FriendRequestView:
+        """Fetch pending bungie friend requests queue.
+
+        .. note::
+            This requests OAuth2: ReadUserData scope.
+
+        Parameters
+        -----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+
+        Returns
+        -------
+        `aiobungie.crate.FriendRequestView`
+            A friend requests view of that associated access token.
+        """
+
+        resp = await self.rest.fetch_friend_requests(access_token)
+        assert isinstance(resp, dict)
+        return self.factory.deserialize_friend_requests(resp)
+
+    # Applications and Developer portal.
+
+    async def fetch_application(self, appid: int, /) -> application.Application:
+        """Fetch a Bungie application.
+
+        Parameters
+        -----------
+        appid: `int`
+            The application id.
+
+        Returns
+        --------
+        `aiobungie.crate.Application`
+            A Bungie application.
+        """
+        resp = await self.rest.fetch_application(appid)
+        assert isinstance(resp, dict)
+        return self.factory.deserialize_app(resp)
+
+    # Milestones
+
+    async def fetch_public_milestone_content(
+        self, milestone_hash: int, /
+    ) -> milestones.MilestoneContent:
+        """Fetch the milestone content given its hash.
+
+        Parameters
+        ----------
+        milestone_hash : `int`
+            The milestone hash.
+
+        Returns
+        -------
+        `aiobungie.crate.milestones.MilestoneContent`
+            A milestone content object.
+        """
+        resp = await self.rest.fetch_public_milestone_content(milestone_hash)
+        assert isinstance(resp, dict)
+        return self.factory.deserialize_public_milestone_content(resp)

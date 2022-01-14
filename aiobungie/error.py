@@ -335,19 +335,6 @@ async def raise_error(response: aiohttp.ClientResponse, msg: str) -> AiobungieEr
                 message_data=message_data,
             )
 
-        # API is down...
-        elif msg == "SystemDisabled":
-            raise OSError(
-                message,
-                error_code,
-                throttle_seconds,
-                str(response.real_url),
-                body,
-                response.headers,
-                error_status,
-                message_data,
-            )
-
         # Anything contains not found.
         elif msg and "NotFound" in msg or "UserCannotFindRequestedUser" == msg:
             return NotFound(
@@ -361,7 +348,7 @@ async def raise_error(response: aiohttp.ClientResponse, msg: str) -> AiobungieEr
                 message_data=message_data,
             )
 
-        # Any other errors.
+        # Other 5xx errors.
         else:
             return InternalServerError(
                 message=message,

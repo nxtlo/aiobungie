@@ -72,7 +72,7 @@ class FactoryInterface(abc.ABC):
         Returns
         -------
         `aiobungie.crate.User`
-            A user object of the deserialized payload.
+            A user object.
         """
 
     @abc.abstractmethod
@@ -90,14 +90,14 @@ class FactoryInterface(abc.ABC):
         Returns
         -------
         `aiobungie.crate.BungieUser`
-            A Bungie user object of the deserialized payload.
+            A Bungie user.
         """
 
     @abc.abstractmethod
-    def deseialize_found_users(
+    def deseialize_searched_user(
         self, payload: typedefs.JSONObject
-    ) -> collections.Sequence[user.DestinyUser]:
-        """Deserialize a raw JSON of prefix searched users.
+    ) -> user.SearchableDestinyUser:
+        """Deserialize the results of user search details.
 
         Parameters
         ----------
@@ -106,8 +106,8 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `collections.Sequence[aiobungie.crate.DestinyUser]`
-            A sequence of the deserialized Destiny users/memberships.
+        `aiobungie.crate.SearchableDestinyUser`
+            The searched for Destiny 2 membership.
         """
 
     @abc.abstractmethod
@@ -127,16 +127,14 @@ class FactoryInterface(abc.ABC):
         Returns
         -------
         `aiobungie.crate.PartialBungieUser`
-            A partial bungie user object of the deserialized payload.
+            A partial bungie user.
         """
 
     @abc.abstractmethod
-    def deserialize_destiny_user(
+    def deserialize_destiny_membership(
         self, payload: typedefs.JSONObject
     ) -> user.DestinyUser:
-        """Deserialize a raw JSON of `destinyUserInfo` destiny memberships information.
-
-        A destiny user is just destiny memberships, i.e., Xbox membershio, Steam membership. etc.
+        """Deserialize a raw JSON of `destinyUserInfo` destiny membership information.
 
         Parameters
         ----------
@@ -146,11 +144,11 @@ class FactoryInterface(abc.ABC):
         Returns
         -------
         `aiobungie.crate.user.DestinyUser`
-            A destiny membership/user object of the deserialized payload.
+            A Destiny 2 membership.
         """
 
     @abc.abstractmethod
-    def deserialize_destiny_members(
+    def deserialize_destiny_memberships(
         self, data: typedefs.JSONArray
     ) -> collections.Sequence[user.DestinyUser]:
         """Deserialize a raw JSON payload/array of `destinyUserInfo`.
@@ -163,7 +161,7 @@ class FactoryInterface(abc.ABC):
         Returns
         -------
         `collections.Sequence[aiobungie.crate.user.DestinyUser]`
-            A sequence of destiny membership/user object of the deserialized payload.
+            A sequence of Destiny 2 memberships.
         """
 
     @abc.abstractmethod
@@ -180,28 +178,7 @@ class FactoryInterface(abc.ABC):
         Returns
         -------
         `collections.Sequence[aiobungie.crate.user.UserThemes]`
-            A sequence of bungie user themes object of the deserialized payload.
-        """
-
-    @abc.abstractmethod
-    def deserialize_players(
-        self, payload: typedefs.JSONArray, /
-    ) -> collections.Sequence[user.DestinyUser]:
-        """Deserialize a raw JSON sequence of players.
-
-        Parameters
-        ----------
-        payload : `aiobungie.typedefs.JSONArray`
-            The JSON payload.
-
-        Returns
-        -------
-        `collections.Sequence[aiobungie.crate.user.DestinyUser]`
-            A sequence of players object of the deserialized payload.
-
-            .. note::
-                This typically returns just 1 element
-                but keeping it a sequence to match the JSON array signature.
+            A sequence of bungie user themes.
         """
 
     @abc.abstractmethod
@@ -235,7 +212,7 @@ class FactoryInterface(abc.ABC):
         Returns
         -------
         `aiobungie.crate.Clan`
-            A clan owner object of the deserialized payload.
+            A clan owner.
         """
 
     @abc.abstractmethod
@@ -252,7 +229,7 @@ class FactoryInterface(abc.ABC):
         Returns
         -------
         `aiobungie.typedefs.NoneOr[aiobungie.crate.GroupMember]`
-            A group member object of the deserialized payload. This can return `None` if nothing was found.
+            A group member. This can return `None` if nothing was found.
         """
 
     @abc.abstractmethod
@@ -267,7 +244,7 @@ class FactoryInterface(abc.ABC):
         Returns
         -------
         `aiobungie.crate.ClanMember`
-            A clan member object of the deserialized payload.
+            A clan member.
         """
 
     @abc.abstractmethod
@@ -337,7 +314,7 @@ class FactoryInterface(abc.ABC):
         Returns
         -------
         `aiobungie.crate.application.ApplicationOwner`
-            An application owner object of the deserialized payload.
+            An application owner.
         """
 
     @abc.abstractmethod
@@ -352,7 +329,7 @@ class FactoryInterface(abc.ABC):
         Returns
         -------
         `aiobungie.crate.application.Application`
-            An application object of the deserialized payload.
+            An application.
         """
 
     # Characters.
@@ -371,7 +348,7 @@ class FactoryInterface(abc.ABC):
         Returns
         -------
         `aiobungie.crate.CharacterComponent`
-            A character component object of the deserialized payload.
+            A character component.
         """
 
     @abc.abstractmethod
@@ -499,7 +476,7 @@ class FactoryInterface(abc.ABC):
         Returns
         -------
         `aiobungie.crate.ProfileProgression`
-            A profile progression component object of the deserialized payload.
+            A profile progression component.
         """
 
     @abc.abstractmethod
@@ -516,7 +493,7 @@ class FactoryInterface(abc.ABC):
         Returns
         -------
         `typing.Optional[aiobungie.crate.Profile]`
-            A profile object of the deserialized payload.
+            A profile.
         """
 
     @abc.abstractmethod
@@ -553,7 +530,7 @@ class FactoryInterface(abc.ABC):
         Returns
         -------
         `aiobungie.crate.LinkedProfile`
-            A hard linked profile object of the deserialized payload.
+            A hard linked profile.
         """
 
     @abc.abstractmethod
@@ -702,7 +679,7 @@ class FactoryInterface(abc.ABC):
         Returns
         -------
         `aiobungie.crate.InventoryEntity`
-            An entity item object of the deserialized payload.
+            An entity item.
         """
 
     @abc.abstractmethod
@@ -736,7 +713,7 @@ class FactoryInterface(abc.ABC):
         Returns
         -------
         `aiobungie.crate.ObjectiveEntity`
-            An objetive entity object of the deserialized payload.
+            An objetive entity.
         """
 
     # Activities.
@@ -755,7 +732,7 @@ class FactoryInterface(abc.ABC):
         Returns
         -------
         `aiobungie.crate.Activity`
-            An activity object of the deserialized payload.
+            An activity.
         """
 
     @abc.abstractmethod
@@ -861,7 +838,7 @@ class FactoryInterface(abc.ABC):
         Returns
         -------
         `aiobungie.crate.MilestoneContent`
-            A milestone content object of the deserialized payload.
+            A milestone content.
         """
 
     @abc.abstractmethod
@@ -884,7 +861,7 @@ class FactoryInterface(abc.ABC):
         Returns
         -------
         `aiobungie.crate.Friend`
-            A friend object of the deserialized payload.
+            A friend.
         """
 
     @abc.abstractmethod
@@ -903,7 +880,7 @@ class FactoryInterface(abc.ABC):
         Returns
         -------
         `collections.Sequence[aiobungie.crate.Friend]`
-            A sequence of friends object of the deserialized payload.
+            A sequence of friends.
         """
 
     @abc.abstractmethod
@@ -922,7 +899,7 @@ class FactoryInterface(abc.ABC):
         Returns
         -------
         `collections.Sequence[aiobungie.crate.FriendRequestView]`
-            A sequence of incoming and outgoing friends object of the deserialized payload.
+            A sequence of incoming and outgoing friends.
         """
 
     # Fireteams.
@@ -941,7 +918,7 @@ class FactoryInterface(abc.ABC):
         Returns
         -------
         `collections.Sequence[aiobungie.crate.Fireteam]`
-            A sequence of fireteam object of the deserialized payload.
+            A sequence of fireteam.
         """
 
     @abc.abstractmethod
@@ -958,7 +935,7 @@ class FactoryInterface(abc.ABC):
         Returns
         -------
         `aiobungie.crate.FireteamUser`
-            A fireteam user object of the deserialized payload.
+            A fireteam user.
         """
 
     @abc.abstractmethod
@@ -978,7 +955,7 @@ class FactoryInterface(abc.ABC):
         Returns
         -------
         `typing.Optional[collections.Sequence[aiobungie.crate.FireteamUser]]`
-            An optional sequence of the fireteam members object of the deserialized payload.
+            An optional sequence of the fireteam members.
         """
 
     @abc.abstractmethod
@@ -999,7 +976,7 @@ class FactoryInterface(abc.ABC):
         Returns
         -------
         `typing.Union[aiobungie.crate.fireteams.AvalaibleFireteam, collections.Sequence[aiobungie.crate.fireteams.AvalaibleFireteam]]` # noqa: E501
-            An available fireteam or a sequence of available fireteam object of the deserialized payload.
+            An available fireteam or a sequence of available fireteam.
         """
 
     @abc.abstractmethod
@@ -1035,7 +1012,7 @@ class FactoryInterface(abc.ABC):
         Returns
         -------
         `aiobungie.crate.Artifact`
-            A seasonal artifact object of the deserialized payload.
+            A seasonal artifact.
         """
 
     # Items

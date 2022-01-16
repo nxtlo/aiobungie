@@ -206,7 +206,7 @@ class Client(traits.ClientBase):
 
     async def search_users(
         self, name: str, /
-    ) -> collections.Sequence[user.DestinyUser]:
+    ) -> collections.Sequence[user.SearchableDestinyUser]:
         """Search for players and return all players that matches the same name.
 
         Parameters
@@ -221,7 +221,10 @@ class Client(traits.ClientBase):
         """
         payload = await self.rest.search_users(name)
         assert isinstance(payload, dict)
-        return self.factory.deseialize_found_users(payload)
+        return [
+            self.factory.deseialize_searched_user(user)
+            for user in payload["searchResults"]
+        ]
 
     async def fetch_user_themes(self) -> collections.Sequence[user.UserThemes]:
         """Fetch all available user themes.
@@ -425,7 +428,7 @@ class Client(traits.ClientBase):
         /,
         type: typedefs.IntAnd[enums.MembershipType] = enums.MembershipType.ALL,
     ) -> collections.Sequence[user.DestinyUser]:
-        """Fetch a Destiny 2 Player's memberships.
+        """Fetch a Destiny 2 player's memberships.
 
         Parameters
         -----------
@@ -438,8 +441,8 @@ class Client(traits.ClientBase):
 
         Returns
         --------
-        `collections.Sequence[aiobungie.crate.Player]`
-            A sequence of the found Destiny 2 Player memberships.
+        `collections.Sequence[aiobungie.crate.DestinyUser]`
+            A sequence of the found Destiny 2 player memberships.
             An empty sequene will be returned if no one found.
 
         Raises
@@ -449,7 +452,7 @@ class Client(traits.ClientBase):
         """
         resp = await self.rest.fetch_player(name, code, type)
         assert isinstance(resp, list)
-        return self.factory.deserialize_players(resp)
+        return self.factory.deserialize_destiny_memberships(resp)
 
     async def fetch_character(
         self,

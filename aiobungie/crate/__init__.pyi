@@ -101,6 +101,7 @@ from .user import *
 #   RecordsComponent
 #   RenderedData
 #   Rewards
+#   SearchableDestinyUser
 #   SearchableEntity
 #   StringVariableComponent
 #   UninstancedItemsComponent

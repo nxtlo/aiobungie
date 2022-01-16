@@ -241,13 +241,13 @@ async def test_membership_types_from_id():
     for du in u.destiny:
         assert isinstance(du, aiobungie.crate.DestinyUser)
 
-
 async def test_search_users():
-    x = await client.search_users("Fate怒")
+    x = await client.search_users("Fate")
     assert isinstance(x, list)
     for u in x:
-        assert isinstance(u, aiobungie.crate.DestinyUser)
-
+        assert isinstance(u, aiobungie.crate.SearchableDestinyUser)
+        for membership in u.memberships:
+            assert isinstance(membership, aiobungie.crate.DestinyUser)
 
 async def test_clan_conves():
     x = await client.fetch_clan_conversations(881267)

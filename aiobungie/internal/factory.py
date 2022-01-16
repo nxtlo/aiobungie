@@ -110,7 +110,7 @@ class Factory(interfaces.FactoryInterface):
             type=enums.MembershipType(payload["membershipType"]),
         )
 
-    def deserialize_destiny_user(
+    def deserialize_destiny_membership(
         self, payload: typedefs.JSONObject
     ) -> user.DestinyUser:
         name: undefined.UndefinedOr[str] = undefined.Undefined
@@ -135,10 +135,10 @@ class Factory(interfaces.FactoryInterface):
             ],
         )
 
-    def deserialize_destiny_members(
+    def deserialize_destiny_memberships(
         self, data: typedefs.JSONArray
     ) -> collections.Sequence[user.DestinyUser]:
-        return [self.deserialize_destiny_user(membership) for membership in data]
+        return [self.deserialize_destiny_membership(membership) for membership in data]
 
     def deserialize_user(self, data: typedefs.JSONObject) -> user.User:
 
@@ -148,18 +148,35 @@ class Factory(interfaces.FactoryInterface):
 
         return user.User(
             bungie=self.deserialize_bungie_user(data["bungieNetUser"]),
-            destiny=self.deserialize_destiny_members(data["destinyMemberships"]),
+            destiny=self.deserialize_destiny_memberships(data["destinyMemberships"]),
             primary_membership_id=primary_membership_id,
         )
 
-    def deseialize_found_users(
+    def deseialize_searched_user(
         self, payload: typedefs.JSONObject
-    ) -> collections.Sequence[user.DestinyUser]:
-        # TODO: Add missing fields here.
-        return [
-            self.deserialize_destiny_user(*mship["destinyMemberships"])
-            for mship in payload["searchResults"]
-        ]
+    ) -> user.SearchableDestinyUser:
+        name: undefined.UndefinedOr[str] = undefined.Undefined
+        if (raw_name := payload["bungieGlobalDisplayName"]) and not typedefs.is_unknown(
+            raw_name
+        ):
+            name = raw_name
+
+        code: typing.Optional[int] = None
+        if raw_code := payload.get("bungieGlobalDisplayNameCode"):
+            code = int(raw_code)
+
+        bungie_id: typing.Optional[int] = None
+        if raw_bungie_id := payload.get("bungieNetMembershipId"):
+            bungie_id = int(raw_bungie_id)
+
+        return user.SearchableDestinyUser(
+            name=name,
+            code=code,
+            bungie_id=bungie_id,
+            memberships=self.deserialize_destiny_memberships(
+                payload["destinyMemberships"]
+            ),
+        )
 
     def deserialize_user_credentials(
         self, payload: typedefs.JSONArray
@@ -200,11 +217,6 @@ class Factory(interfaces.FactoryInterface):
         self, payload: typedefs.JSONArray
     ) -> collections.Sequence[user.UserThemes]:
         return list(self.set_themese_attrs(payload))
-
-    def deserialize_players(
-        self, payload: typedefs.JSONArray, /
-    ) -> collections.Sequence[user.DestinyUser]:
-        return self.deserialize_destiny_members(payload)
 
     def deserialize_clan(self, payload: typedefs.JSONObject) -> clans.Clan:
 
@@ -286,7 +298,7 @@ class Factory(interfaces.FactoryInterface):
         )
 
     def deserialize_clan_member(self, data: typedefs.JSONObject, /) -> clans.ClanMember:
-        destiny_user = self.deserialize_destiny_user(data["destinyUserInfo"])
+        destiny_user = self.deserialize_destiny_membership(data["destinyUserInfo"])
         return clans.ClanMember(
             net=self._net,
             last_seen_name=destiny_user.last_seen_name,
@@ -325,7 +337,7 @@ class Factory(interfaces.FactoryInterface):
             is_online=member["isOnline"],
             last_online=time.from_timestamp(int(member["lastOnlineStatusChange"])),
             inactive_memberships=payload.get("areAllMembershipsInactive", None),
-            member=self.deserialize_destiny_user(member["destinyUserInfo"]),
+            member=self.deserialize_destiny_membership(member["destinyUserInfo"]),
             group=self.deserialize_clan(payload["group"]),
         )
 
@@ -1696,7 +1708,7 @@ class Factory(interfaces.FactoryInterface):
             standing=int(payload["standing"]),
             score=int(payload["score"]["basic"]["value"]),
             character_id=payload["characterId"],
-            destiny_user=self.deserialize_destiny_user(
+            destiny_user=self.deserialize_destiny_membership(
                 payload["player"]["destinyUserInfo"]
             ),
             character_class=payload["player"]["characterClass"],
@@ -1759,13 +1771,13 @@ class Factory(interfaces.FactoryInterface):
 
         if raw_profile := payload.get("profiles"):
             for pfile in raw_profile:
-                profiles_vec.append(self.deserialize_destiny_user(pfile))
+                profiles_vec.append(self.deserialize_destiny_membership(pfile))
 
         if raw_profiles_with_errors := payload.get("profilesWithErrors"):
             for raw_error_pfile in raw_profiles_with_errors:
                 if error_pfile := raw_error_pfile.get("infoCard"):
                     error_profiles_vec.append(
-                        self.deserialize_destiny_user(error_pfile)
+                        self.deserialize_destiny_membership(error_pfile)
                     )
 
         return profile.LinkedProfile(
@@ -1914,7 +1926,7 @@ class Factory(interfaces.FactoryInterface):
     def deserialize_fireteam_destiny_users(
         self, payload: typedefs.JSONObject
     ) -> fireteams.FireteamUser:
-        destiny_obj = self.deserialize_destiny_user(payload)
+        destiny_obj = self.deserialize_destiny_membership(payload)
         # We could helpers.just return a DestinyUser object but this is
         # missing the fireteam display name and id fields.
         return fireteams.FireteamUser(

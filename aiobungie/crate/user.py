@@ -32,6 +32,7 @@ __all__: tuple[str, ...] = (
     "PartialBungieUser",
     "DestinyUser",
     "UserCredentials",
+    "SearchableDestinyUser",
 )
 
 import abc
@@ -317,6 +318,23 @@ class DestinyUser(UserLike):
         )
         assert isinstance(profile_, components_.Component)
         return profile_
+
+
+@attrs.define(kw_only=True)
+class SearchableDestinyUser:
+    """Representation of the result of the searched users details."""
+
+    name: undefined.UndefinedOr[str]
+    """The user's global display name."""
+
+    code: typing.Optional[int]
+    """The user's global dsplay name code if set."""
+
+    bungie_id: typing.Optional[int]
+    """The user's Bungie.net id if set."""
+
+    memberships: collections.Sequence[DestinyUser]
+    """A sequence of the user's Destiny 2 memberships."""
 
 
 @attrs.define(kw_only=True)

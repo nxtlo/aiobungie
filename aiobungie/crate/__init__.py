@@ -130,6 +130,7 @@ __all__: tuple[str, ...] = (
     "PartialBungieUser",
     "DestinyUser",
     "UserCredentials",
+    "SearchableDestinyUser",
     # items.py
     "ItemPerk",
     "ItemInstance",

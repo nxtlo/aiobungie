@@ -5,14 +5,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).All notable changes to this project will be documented in this file.
 
 ## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.5b14...HEAD)
+
 ### Added
+- `user.SearchableDestinyUser`.
 
 ### Removed
 
 ### Changed
 - `InternalServerError` is now raised when the API is down instead of `OSError`.
+- Factory methods name changes for consistency.
+    * `deserialize_destiny_user` -> `*_destiny_membership`.
+    * `deserialize_destiny_members` -> `*_destiny_memberships`
+    * `deserialize_found_users` -> `*_searched_user` and no longer returns a sequence.
+- `Client.search_users` now returns `Sequence[SearchableDestinyUser]`
 
 ### Fixed
+- `Client.search_users` was raising errors due to deserializing.
 
 
 ## [0.2.5b14](https://github.com/nxtlo/aiobungie/compare/0.2.5b13...0.2.5b14) 2022-1-13

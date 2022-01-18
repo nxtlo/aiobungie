@@ -19,9 +19,6 @@
     <a href="https://github.com/nxtlo/aiobungie/actions/workflows/ci.yml">
     <img src="https://github.com/nxtlo/aiobungie/actions/workflows/ci.yml/badge.svg?branch=master">
     </a>
-    <a href="https://pepy.tech/project/aiobungie">
-    <img src="https://pepy.tech/badge/aiobungie">
-    </a>
 </div>
 
 # Installing

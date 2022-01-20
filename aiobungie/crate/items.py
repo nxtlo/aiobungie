@@ -32,6 +32,8 @@ __all__: tuple[str, ...] = (
     "PlugItemState",
     "ItemSocket",
     "ItemPerk",
+    "Collectible",
+    "Currency",
 )
 
 import typing
@@ -72,6 +74,34 @@ class ItemEnergyType(enums.IntEnum):
     GHOST = 4
     SUBCLASS = 5
     STASIS = 6
+
+
+@attrs.define(kw_only=True)
+class Collectible:
+    """Represents a collectible Destiny 2 item."""
+
+    recent_collectibles: typing.Optional[collections.Collection[int]]
+    """If this is accessd from a profile response, This will be collection of the recent acquired items hashes."""
+
+    collectibles: collections.Mapping[int, int]
+    """A mapping of each collected item hash to its state."""
+
+    collection_categorie_hash: int
+    """The hash for the root presentation node definition of Collection categories."""
+
+    collection_badges_hash: int
+    """The hash for the root presentation node definition of Collection Badges."""
+
+
+@attrs.define(kw_only=True)
+class Currency:
+    """Represents a curency item in Destiny 2."""
+
+    hash: int
+    """The hash of this currency."""
+
+    amount: int
+    """The amount of this currency you have."""
 
 
 @attrs.define(kw_only=True)

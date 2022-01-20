@@ -262,11 +262,10 @@ class Profile:
             ]
         )
 
-    # TODO: Support for "async with" instead?
     async def collect_characters(
         self, *components: enums.ComponentType, **options: str
     ) -> collections.Collection[components.CharacterComponent]:
-        """Gather and collect all characters this profile has at once.
+        """Fetch this profile's characters.
 
         Parameters
         ----------
@@ -279,8 +278,8 @@ class Profile:
             A passed kwarg Bearer access_token to make the request with.
             This is optional and limited to components that only requires an Authorization token.
         **options : `str`
-            Other keyword arguments for the request to expect.
-            This is only here for the `auth` option which's a kwarg.
+            if an `auth` kwarg passed to the options. This request will be authorized using the
+            passed access_token.
 
         Returns
         -------

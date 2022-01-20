@@ -352,6 +352,9 @@ class CharacterComponent(RecordsComponent, VendorsComponent):
     - `CharacterRenderData`
     - `CharacterActivities`
     - `CharacterEquipments`
+    - `PresentationNodes`
+    - `CharacterCurrencyLookups`
+    - `Collectibles`
     """
 
     character: typing.Optional[character_.Character]
@@ -406,6 +409,29 @@ class CharacterComponent(RecordsComponent, VendorsComponent):
 
     item_components: typing.Optional[ItemsComponent] = attrs.field(repr=False)
     """A component that includes all items components for this character component."""
+
+    nodes: typing.Optional[collections.Mapping[int, records_.Node]]
+    """A mapping from the presentation node hash to a node object.
+
+    This will always be `None` unless `aiobungie.ComponentType.PRESENTATION_NODES`
+    is passed to the request components.
+    """
+
+    currency_lookups: typing.Optional[collections.Sequence[items.Currency]]
+    """A sequence of the character currency lookups component.
+
+    Notes
+    -----
+    * This will always be `None` unless `auth="access_token"` is passed to the request.
+    * This will always be `None` unless `aiobungie.ComponentType.CURRENCY_LOOKUPS`
+    is passed to the request components.
+    """
+
+    collectibles: typing.Optional[items.Collectible]
+    """The character's collectibles component.
+
+    This will always be `None` unless `aiobungie.ComponentType.COLLECTIBLES`
+    """
 
 
 @attrs.define(kw_only=True)
@@ -523,6 +549,12 @@ class Component(
     # ]
     """A mapping from the character id to its uninstanced item components."""
 
+    character_collectibles: typing.Optional[collections.Mapping[int, items.Collectible]]
+    """A mapping from each character ID to its collectibles component for this profile.
+
+    This will always be `None` unless `aiobungie.ComponentType.COLLECTIBLES`
+    """
+
     transitory: typing.Optional[fireteams.FireteamParty]
     """Profile Transitory component.
 
@@ -548,4 +580,49 @@ class Component(
     ]
     """A mapping from the character's id to mapping from the index of
     the plug set to a sequence of plug objects bound to that character.
+    """
+
+    character_nodes: typing.Optional[
+        collections.Mapping[int, collections.Mapping[int, records_.Node]]
+    ]
+    """A mapping from each character ID to a mapping of the node hash
+    to a sequence of presentation nodes component.
+
+    This will always be `None` unless `aiobungie.ComponentType.PRESENTATION_NODES`
+    is passed to the request components.
+    """
+
+    platform_silver: typing.Optional[collections.Mapping[str, profile.ProfileItemImpl]]
+    """A mapping from each platform name to its silver information.
+
+    Notes
+    -----
+    * This will always be `None` unless `auth="access_token"` is passed to the request.
+    * This will always be `None` unless `aiobungie.ComponentType.PLATFORM_SILVER`
+    is passed to the request components.
+    """
+
+    profile_nodes: typing.Optional[collections.Mapping[int, records_.Node]]
+    """A mapping from the profile presentation node hash to a node object.
+
+    This will always be `None` unless `aiobungie.ComponentType.PRESENTATION_NODES`
+    is passed to the request components.
+    """
+
+    character_currency_lookups: typing.Optional[
+        collections.Mapping[int, collections.Sequence[items.Currency]]
+    ]
+    """A mapping from each character ID to a sequence of its currency lookups.
+
+    Notes
+    -----
+    * This will always be `None` unless `auth="access_token"` is passed to the request.
+    * This will always be `None` unless `aiobungie.ComponentType.CURRENCY_LOOKUPS`
+    is passed to the request components.
+    """
+
+    profile_collectibles: typing.Optional[items.Collectible]
+    """Represents this profile's collectibles component.
+
+    This will always be `None` unless `aiobungie.ComponentType.COLLECTIBLES`
     """

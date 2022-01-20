@@ -368,11 +368,12 @@ class ComponentType(Enum):
     This cannot be overloaded `int(ALL_ITEMS)`. You should access it like this `*ALL_ITEMS.value`
     """
 
-    RECORDS = 900
-    PRESENT_NODES = 700
-    COLLECTIBLES = 800
-    KIOSKS = 500
     PLATFORM_SILVER = 105
+    KIOSKS = 500
+    CURRENCY_LOOKUPS = 600
+    PRESENTATION_NODES = 700
+    COLLECTIBLES = 800
+    RECORDS = 900
     TRANSITORY = 1000
     METRICS = 1100
     INVENTORIES = 102
@@ -405,7 +406,8 @@ class ComponentType(Enum):
         *ALL_VENDORS,  # type: ignore
         *ALL_ITEMS,  # type: ignore
         RECORDS,
-        PRESENT_NODES,
+        CURRENCY_LOOKUPS,
+        PRESENTATION_NODES,
         COLLECTIBLES,
         KIOSKS,
         METRICS,

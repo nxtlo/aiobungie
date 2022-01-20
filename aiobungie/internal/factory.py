@@ -645,6 +645,47 @@ class Factory(interfaces.FactoryInterface):
     ) -> list[profile.ProfileItemImpl]:
         return [self.deserialize_profile_item(item) for item in payload["items"]]
 
+    def _deserialize_node(self, payload: typedefs.JSONObject) -> records.Node:
+        return records.Node(
+            state=int(payload["state"]),
+            objective=self.deserialize_objectives(payload["objective"])
+            if "objective" in payload
+            else None,
+            progress_value=int(payload["progressValue"]),
+            completion_value=int(payload["completionValue"]),
+            record_category_score=int(payload["recordCategoryScore"])
+            if "recordCategoryScore" in payload
+            else None,
+        )
+
+    @staticmethod
+    def _deserialize_collectible(payload: typedefs.JSONObject) -> items.Collectible:
+        recent_collectibles: typing.Optional[collections.Collection[int]] = None
+        if raw_recent_collectibles := payload.get("recentCollectibleHashes"):
+            recent_collectibles = [
+                int(item_hash) for item_hash in raw_recent_collectibles
+            ]
+
+        collectibles: dict[int, int] = {}
+        for item_hash, mapping in payload["collectibles"].items():
+            collectibles[int(item_hash)] = int(mapping["state"])
+
+        return items.Collectible(
+            recent_collectibles=recent_collectibles,
+            collectibles=collectibles,
+            collection_categorie_hash=int(payload["collectionCategoriesRootNodeHash"]),
+            collection_badges_hash=int(payload["collectionBadgesRootNodeHash"]),
+        )
+
+    @staticmethod
+    def _deserialize_currencies(
+        payload: typedefs.JSONObject,
+    ) -> collections.Sequence[items.Currency]:
+        return [
+            items.Currency(hash=int(item_hash), amount=int(amount))
+            for item_hash, amount in payload["itemQuantities"].items()
+        ]
+
     def deserialize_progressions(
         self, payload: typedefs.JSONObject
     ) -> progressions.Progression:
@@ -961,24 +1002,19 @@ class Factory(interfaces.FactoryInterface):
             collections.Sequence[profile.ProfileItemImpl]
         ] = None
         if raw_profile_currencies := payload.get("profileCurrencies"):
-
-            try:
+            if "data" in raw_profile_currencies:
                 profile_currencies = self.deserialize_profile_items(
                     raw_profile_currencies["data"]
                 )
-            except KeyError:
-                pass
 
         profile_inventories: typing.Optional[
             collections.Sequence[profile.ProfileItemImpl]
         ] = None
         if raw_profile_inventories := payload.get("profileInventory"):
-            try:
+            if "data" in raw_profile_inventories:
                 profile_inventories = self.deserialize_profile_items(
                     raw_profile_inventories["data"]
                 )
-            except KeyError:
-                pass
 
         profile_records: typing.Optional[
             collections.Mapping[int, records.Record]
@@ -1021,12 +1057,10 @@ class Factory(interfaces.FactoryInterface):
             collections.Mapping[int, collections.Sequence[profile.ProfileItemImpl]]
         ] = None
         if raw_character_inventories := payload.get("characterInventories"):
-            try:
+            if "data" in raw_character_inventories:
                 character_inventories = self.deserialize_character_equipmnets(
                     raw_character_inventories
                 )
-            except KeyError:
-                pass
 
         character_activities: typing.Optional[
             collections.Mapping[int, activity.CharacterActivity]
@@ -1116,6 +1150,62 @@ class Factory(interfaces.FactoryInterface):
                 for char_id, inner in raw_char_plugsets["data"].items()
             }
 
+        character_collectibles: typing.Optional[
+            collections.Mapping[int, items.Collectible]
+        ] = None
+        if raw_character_collectibles := payload.get("characterCollectibles"):
+            character_collectibles = {
+                int(char_id): self._deserialize_collectible(data)
+                for char_id, data in raw_character_collectibles["data"].items()
+            }
+
+        profile_collectibles: typing.Optional[items.Collectible] = None
+        if raw_profile_collectibles := payload.get("profileCollectibles"):
+            profile_collectibles = self._deserialize_collectible(
+                raw_profile_collectibles["data"]
+            )
+
+        profile_nodes: typing.Optional[collections.Mapping[int, records.Node]] = None
+        if raw_profile_nodes := payload.get("profilePresentationNodes"):
+            profile_nodes = {
+                int(node_hash): self._deserialize_node(node)
+                for node_hash, node in raw_profile_nodes["data"]["nodes"].items()
+            }
+
+        character_nodes: typing.Optional[
+            collections.Mapping[int, collections.Mapping[int, records.Node]]
+        ] = None
+        if raw_character_nodes := payload.get("characterPresentationNodes"):
+            character_nodes = {
+                int(char_id): {
+                    int(node_hash): self._deserialize_node(node)
+                    for node_hash, node in each_character["nodes"].items()
+                }
+                for char_id, each_character in raw_character_nodes["data"].items()
+            }
+
+        platform_silver: typing.Optional[
+            collections.Mapping[str, profile.ProfileItemImpl]
+        ] = None
+        if raw_platform_silver := payload.get("platformSilver"):
+            if "data" in raw_platform_silver:
+                platform_silver = {
+                    platform_name: self.deserialize_profile_item(item)
+                    for platform_name, item in raw_platform_silver["data"][
+                        "platformSilver"
+                    ].items()
+                }
+
+        character_currency_lookups: typing.Optional[
+            collections.Mapping[int, collections.Sequence[items.Currency]]
+        ] = None
+        if raw_char_lookups := payload.get("characterCurrencyLookups"):
+            if "data" in raw_char_lookups:
+                character_currency_lookups = {
+                    int(char_id): self._deserialize_currencies(currencie)
+                    for char_id, currencie in raw_char_lookups["data"].items()
+                }
+
         return components.Component(
             profiles=profile_,
             profile_progression=profile_progression,
@@ -1137,6 +1227,12 @@ class Factory(interfaces.FactoryInterface):
             item_components=item_components,
             profile_plugsets=profile_plugsets,
             character_plugsets=character_plugsets,
+            character_collectibles=character_collectibles,
+            profile_collectibles=profile_collectibles,
+            profile_nodes=profile_nodes,
+            character_nodes=character_nodes,
+            platform_silver=platform_silver,
+            character_currency_lookups=character_currency_lookups,
         )
 
     def deserialize_items_component(
@@ -1257,10 +1353,8 @@ class Factory(interfaces.FactoryInterface):
 
         inventory: typing.Optional[collections.Sequence[profile.ProfileItemImpl]] = None
         if raw_inventory := payload.get("inventory"):
-            try:
+            if "data" in raw_inventory:
                 inventory = self.deserialize_profile_items(raw_inventory["data"])
-            except KeyError:
-                pass
 
         activities: typing.Optional[activity.CharacterActivity] = None
         if raw_activities := payload.get("activities"):
@@ -1294,6 +1388,22 @@ class Factory(interfaces.FactoryInterface):
         if raw_item_components := payload.get("itemComponents"):
             item_components = self.deserialize_items_component(raw_item_components)
 
+        nodes: typing.Optional[collections.Mapping[int, records.Node]] = None
+        if raw_nodes := payload.get("presentationNodes"):
+            nodes = {
+                int(node_hash): self._deserialize_node(node)
+                for node_hash, node in raw_nodes["data"]["nodes"].items()
+            }
+
+        collectibles: typing.Optional[items.Collectible] = None
+        if raw_collectibles := payload.get("collectibles"):
+            collectibles = self._deserialize_collectible(raw_collectibles["data"])
+
+        currency_lookups: typing.Optional[collections.Sequence[items.Currency]] = None
+        if raw_currencies := payload.get("currencyLookups"):
+            if "data" in raw_currencies:
+                currency_lookups = self._deserialize_currencies(raw_currencies)
+
         return components.CharacterComponent(
             activities=activities,
             equipment=equipment,
@@ -1304,6 +1414,9 @@ class Factory(interfaces.FactoryInterface):
             character_records=character_records,
             profile_records=None,
             item_components=item_components,
+            currency_lookups=currency_lookups,
+            collectibles=collectibles,
+            nodes=nodes,
         )
 
     def _set_entity_attrs(

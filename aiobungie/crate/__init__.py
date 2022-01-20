@@ -117,6 +117,7 @@ __all__: tuple[str, ...] = (
     "Record",
     "CharacterRecord",
     "RecordScores",
+    "Node",
     # season.py
     "Artifact",
     "ArtifactTier",
@@ -139,6 +140,8 @@ __all__: tuple[str, ...] = (
     "PlugItemState",
     "ItemSocket",
     "ItemPerk",
+    "Collectible",
+    "Currency",
 )
 
 from .activity import *

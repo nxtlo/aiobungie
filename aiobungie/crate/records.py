@@ -29,6 +29,7 @@ __all__: tuple[str, ...] = (
     "Record",
     "CharacterRecord",
     "RecordScores",
+    "Node",
 )
 
 import typing
@@ -57,6 +58,25 @@ class RecordState(enums.IntEnum):
     ENTITLEMENT_UNOWNED = 32
     CAN_EQUIP_TITLE = 64
     UNDEFINED = 999
+
+
+@attrs.define(kw_only=True)
+class Node:
+    """Represent a Destiny 2 presentation node."""
+
+    state: int
+    """The state of this node."""
+
+    objective: typing.Optional[Objective]
+
+    progress_value: int
+    """How much of the presentation node is considered to be completed so far by the given character/profile."""
+
+    completion_value: int
+    """The value at which the presenation node is considered to be completed."""
+
+    record_category_score: typing.Optional[int]
+    """If available, this is the current score for the record category that this node represents."""
 
 
 @attrs.mutable(kw_only=True)

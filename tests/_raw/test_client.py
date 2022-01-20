@@ -126,13 +126,12 @@ async def test_player():
         ) is not None
 
 
-async def test_char():
+async def test_fetch_character():
     c = await client.fetch_character(
         MID,
         aiobungie.MembershipType.STEAM,
         CID,
-        *aiobungie.ComponentType.ALL_CHARACTERS.value,
-        *aiobungie.ComponentType.ALL_ITEMS.value
+        *aiobungie.ComponentType.ALL.value,
     )
     assert isinstance(c, aiobungie.crate.CharacterComponent)
     assert c.activities

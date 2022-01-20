@@ -40,7 +40,9 @@ from .user import *
 #   ClanConversation
 #   ClanFeatures
 #   ClanMember
+#   Collectible
 #   Component
+#   Currency
 #   CustomizationOptions
 #   DestinyUser
 #   Dye
@@ -80,6 +82,7 @@ from .user import *
 #   MilestoneRewardEntry
 #   MilestoneVendor
 #   MinimalEquipments
+#   Node
 #   Objective
 #   ObjectiveEntity
 #   PartialBungieUser

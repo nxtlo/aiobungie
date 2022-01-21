@@ -351,7 +351,7 @@ class RESTClient(interfaces.RESTInterface):
         "_client_secret",
         "_client_id",
         "_metadata",
-        "_mutex",
+        "_lock",
     )
 
     def __init__(
@@ -364,6 +364,7 @@ class RESTClient(interfaces.RESTInterface):
         max_retries: int = 4,
     ) -> None:
         self._session: typing.Optional[_Session] = None
+        self._lock = _Arc()
         self._client_secret = client_secret
         self._client_id = client_id
         self._token: str = token
@@ -433,7 +434,7 @@ class RESTClient(interfaces.RESTInterface):
         while True:
             try:
                 async with (stack := contextlib.AsyncExitStack()):
-                    await stack.enter_async_context(_Arc())
+                    await stack.enter_async_context(self._lock)
 
                     # We make the request here.
                     taken_time = time.monotonic()

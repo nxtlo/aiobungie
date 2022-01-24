@@ -12,6 +12,8 @@ from aiobungie.rest import *
 from aiobungie.undefined import Undefined as Undefined
 from aiobungie.undefined import UndefinedOr as UndefinedOr
 from aiobungie.undefined import UndefinedType as UndefinedType
+from aiobungie.internal.assets import Image as Image
+from aiobungie.internal.factory import Factory as Factory
 
 from ._info import __about__ as __about__
 from ._info import __author__ as __author__

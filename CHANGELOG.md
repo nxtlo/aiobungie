@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `user.SearchableDestinyUser`.
 - More profile and characters components.
+- `factory.Factory` and `assets.Image` are now exported to top level.
 
 ### Removed
 

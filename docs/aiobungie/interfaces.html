@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="pdoc 8.2.0" />
+    <meta name="generator" content="pdoc 9.0.1" />
     <title>aiobungie.interfaces API documentation</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2264%22%20height%3D%2264%22%20viewBox%3D%2244.5%202.5%2015%2015%22%3E%3Cpath%20d%3D%22M49.351%2021.041c-.233-.721-.546-2.408-.772-4.076-.042-.09-.067-.187-.046-.288-.166-1.347-.277-2.625-.241-3.351-1.378-1.008-2.271-2.586-2.271-4.362%200-.976.272-1.935.788-2.774.057-.094.122-.18.184-.268-.033-.167-.052-.339-.052-.516%200-1.477%201.202-2.679%202.679-2.679.791%200%201.496.352%201.987.9a6.3%206.3%200%200%201%201.001.029c.492-.564%201.207-.929%202.012-.929%201.477%200%202.679%201.202%202.679%202.679a2.65%202.65%200%200%201-.269%201.148c.383.747.595%201.572.595%202.41%200%202.311-1.507%204.29-3.635%205.107.037.699.147%202.27.423%203.294l.137.461c.156%202.136-4.612%205.166-5.199%203.215zm.127-4.919a4.78%204.78%200%200%200%20.775-.584c-.172-.115-.505-.254-.88-.378zm.331%202.302l.828-.502c-.202-.143-.576-.328-.984-.49zm.45%202.157l.701-.403c-.214-.115-.536-.249-.891-.376l.19.779zM49.13%204.141c0%20.152.123.276.276.276s.275-.124.275-.276-.123-.276-.276-.276-.275.124-.275.276zm.735-.389a1.15%201.15%200%200%201%20.314.783%201.16%201.16%200%200%201-1.162%201.162c-.457%200-.842-.27-1.032-.653-.026.117-.042.238-.042.362a1.68%201.68%200%200%200%201.679%201.679%201.68%201.68%200%200%200%201.679-1.679c0-.843-.626-1.535-1.436-1.654zm3.076%201.654a1.68%201.68%200%200%200%201.679%201.679%201.68%201.68%200%200%200%201.679-1.679c0-.037-.009-.072-.011-.109-.21.3-.541.508-.935.508a1.16%201.16%200%200%201-1.162-1.162%201.14%201.14%200%200%201%20.474-.912c-.015%200-.03-.005-.045-.005-.926.001-1.679.754-1.679%201.68zm1.861-1.265c0%20.152.123.276.276.276s.275-.124.275-.276-.123-.276-.276-.276-.275.124-.275.276zm1.823%204.823c0-.52-.103-1.035-.288-1.52-.466.394-1.06.64-1.717.64-1.144%200-2.116-.725-2.499-1.738-.383%201.012-1.355%201.738-2.499%201.738-.867%200-1.631-.421-2.121-1.062-.307.605-.478%201.267-.478%201.942%200%202.486%202.153%204.51%204.801%204.51s4.801-2.023%204.801-4.51zm-3.032%209.156l-.146-.492c-.276-1.02-.395-2.457-.444-3.268a6.11%206.11%200%200%201-1.18.115%206.01%206.01%200%200%201-2.536-.562l.006.175c.802.215%201.848.612%202.021%201.25.079.295-.021.601-.274.837l-.598.501c.667.304%201.243.698%201.311%201.179.02.144.022.507-.393.787l-.564.365c1.285.521%201.361.96%201.381%201.126.018.142.011.496-.427.746l-.854.489c.064-1.19%201.985-2.585%202.697-3.248zM49.34%209.925c0-.667%201-.667%201%200%200%20.653.818%201.205%201.787%201.205s1.787-.552%201.787-1.205c0-.667%201-.667%201%200%200%201.216-1.25%202.205-2.787%202.205s-2.787-.989-2.787-2.205zm-.887-7.633c-.093.077-.205.114-.317.114a.5.5%200%200%201-.318-.886L49.183.397a.5.5%200%200%201%20.703.068.5.5%200%200%201-.069.703zm7.661-.065c-.086%200-.173-.022-.253-.068l-1.523-.893c-.575-.337-.069-1.2.506-.863l1.523.892a.5.5%200%200%201%20.179.685c-.094.158-.261.247-.432.247z%22%20fill%3D%22%233bb300%22/%3E%3C/svg%3E"/>
 
 
 <style>/*! * Bootstrap Reboot v5.0.0 (https://getbootstrap.com/) * Copyright 2011-2021 The Bootstrap Authors * Copyright 2011-2021 Twitter, Inc. * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE) * Forked from Normalize.css, licensed MIT (https://github.com/necolas/normalize.css/blob/master/LICENSE.md) */*,::after,::before{box-sizing:border-box}@media (prefers-reduced-motion:no-preference){:root{scroll-behavior:smooth}}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";font-size:1rem;font-weight:400;line-height:1.5;color:#212529;background-color:#fff;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}hr{margin:1rem 0;color:inherit;background-color:currentColor;border:0;opacity:.25}hr:not([size]){height:1px}h1,h2,h3,h4,h5,h6{margin-top:0;margin-bottom:.5rem;font-weight:500;line-height:1.2}h1{font-size:calc(1.375rem + 1.5vw)}@media (min-width:1200px){h1{font-size:2.5rem}}h2{font-size:calc(1.325rem + .9vw)}@media (min-width:1200px){h2{font-size:2rem}}h3{font-size:calc(1.3rem + .6vw)}@media (min-width:1200px){h3{font-size:1.75rem}}h4{font-size:calc(1.275rem + .3vw)}@media (min-width:1200px){h4{font-size:1.5rem}}h5{font-size:1.25rem}h6{font-size:1rem}p{margin-top:0;margin-bottom:1rem}abbr[data-bs-original-title],abbr[title]{-webkit-text-decoration:underline dotted;text-decoration:underline dotted;cursor:help;-webkit-text-decoration-skip-ink:none;text-decoration-skip-ink:none}address{margin-bottom:1rem;font-style:normal;line-height:inherit}ol,ul{padding-left:2rem}dl,ol,ul{margin-top:0;margin-bottom:1rem}ol ol,ol ul,ul ol,ul ul{margin-bottom:0}dt{font-weight:700}dd{margin-bottom:.5rem;margin-left:0}blockquote{margin:0 0 1rem}b,strong{font-weight:bolder}small{font-size:.875em}mark{padding:.2em;background-color:#fcf8e3}sub,sup{position:relative;font-size:.75em;line-height:0;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}a{color:#0d6efd;text-decoration:underline}a:hover{color:#0a58ca}a:not([href]):not([class]),a:not([href]):not([class]):hover{color:inherit;text-decoration:none}code,kbd,pre,samp{font-family:SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:1em;direction:ltr;unicode-bidi:bidi-override}pre{display:block;margin-top:0;margin-bottom:1rem;overflow:auto;font-size:.875em}pre code{font-size:inherit;color:inherit;word-break:normal}code{font-size:.875em;color:#d63384;word-wrap:break-word}a>code{color:inherit}kbd{padding:.2rem .4rem;font-size:.875em;color:#fff;background-color:#212529;border-radius:.2rem}kbd kbd{padding:0;font-size:1em;font-weight:700}figure{margin:0 0 1rem}img,svg{vertical-align:middle}table{caption-side:bottom;border-collapse:collapse}caption{padding-top:.5rem;padding-bottom:.5rem;color:#6c757d;text-align:left}th{text-align:inherit;text-align:-webkit-match-parent}tbody,td,tfoot,th,thead,tr{border-color:inherit;border-style:solid;border-width:0}label{display:inline-block}button{border-radius:0}button:focus:not(:focus-visible){outline:0}button,input,optgroup,select,textarea{margin:0;font-family:inherit;font-size:inherit;line-height:inherit}button,select{text-transform:none}[role=button]{cursor:pointer}select{word-wrap:normal}select:disabled{opacity:1}[list]::-webkit-calendar-picker-indicator{display:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button}[type=button]:not(:disabled),[type=reset]:not(:disabled),[type=submit]:not(:disabled),button:not(:disabled){cursor:pointer}::-moz-focus-inner{padding:0;border-style:none}textarea{resize:vertical}fieldset{min-width:0;padding:0;margin:0;border:0}legend{float:left;width:100%;padding:0;margin-bottom:.5rem;font-size:calc(1.275rem + .3vw);line-height:inherit}@media (min-width:1200px){legend{font-size:1.5rem}}legend+*{clear:left}::-webkit-datetime-edit-day-field,::-webkit-datetime-edit-fields-wrapper,::-webkit-datetime-edit-hour-field,::-webkit-datetime-edit-minute,::-webkit-datetime-edit-month-field,::-webkit-datetime-edit-text,::-webkit-datetime-edit-year-field{padding:0}::-webkit-inner-spin-button{height:auto}[type=search]{outline-offset:-2px;-webkit-appearance:textfield}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-color-swatch-wrapper{padding:0}::file-selector-button{font:inherit}::-webkit-file-upload-button{font:inherit;-webkit-appearance:button}output{display:inline-block}iframe{border:0}summary{display:list-item;cursor:pointer}progress{vertical-align:baseline}[hidden]{display:none!important}</style>
 <style>pre{line-height:125%;}td.linenos pre{color:#ff5555;background-color:#282a36;padding-left:5px;padding-right:5px;}span.linenos{color:#ff5555;background-color:#282a36;padding-left:5px;padding-right:5px;}td.linenos pre.special{color:#ff5555;background-color:#ffffc0;padding-left:5px;padding-right:5px;}span.linenos.special{color:#ff5555;background-color:#ffffc0;padding-left:5px;padding-right:5px;}.pdoc .hll{background-color:#282a36;}.pdoc{background:#282a36;color:#ff5555;}.pdoc .c{color:#6a7aaa;}.pdoc .err{color:#ff5555;background-color:#1e0010;}.pdoc .k{color:#ff79c6;}.pdoc .l{color:#ae81ff;}.pdoc .n{color:#f8f8f2;}.pdoc .o{color:#ff79c6;}.pdoc .p{color:#f8f8f2;}.pdoc .ch{color:#6a7aaa;}.pdoc .cm{color:#6a7aaa;}.pdoc .cp{color:#6a7aaa;}.pdoc .cpf{color:#6a7aaa;}.pdoc .c1{color:#6a7aaa;}.pdoc .cs{color:#6a7aaa;}.pdoc .gd{color:#6a7aaa;}.pdoc .ge{font-style:italic;}.pdoc .gi{color:#a6e22e;}.pdoc .go{color:#ff79c6;}.pdoc .gp{color:#f92672;font-weight:bold;}.pdoc .gs{font-weight:bold;}.pdoc .gu{color:#75715e;}.pdoc .kc{color:#ff79c6;}.pdoc .kd{color:#bd93f9;}.pdoc .kn{color:#ff79c6;}.pdoc .kp{color:#bd93f9;}.pdoc .kr{color:#ff79c6;}.pdoc .kt{color:#ff79c6;}.pdoc .ld{color:#e6db74;}.pdoc .m{color:#ae81ff;}.pdoc .s{color:#e6db74;}.pdoc .na{color:#a6e22e;}.pdoc .nb{color:#8be9fd;}.pdoc .nc{color:#8be9fd;}.pdoc .no{color:#ff79c6;}.pdoc .nd{color:#8be9fd;}.pdoc .ni{color:#ff79c6;}.pdoc .ne{color:#8be9fd;}.pdoc .nf{color:#50fa7b;}.pdoc .nl{color:#f8f8f2;}.pdoc .nn{color:#f8f8f2;}.pdoc .nx{color:#a6e22e;}.pdoc .py{color:#f8f8f2;}.pdoc .nt{color:#f92672;}.pdoc .nv{color:#f8f8f2;}.pdoc .ow{color:#ff79c6;}.pdoc .w{color:#f8f8f2;}.pdoc .mb{color:#ae81ff;}.pdoc .mf{color:#ae81ff;}.pdoc .mh{color:#ae81ff;}.pdoc .mi{color:#ae81ff;}.pdoc .mo{color:#ae81ff;}.pdoc .sa{color:#ff79c6;}.pdoc .sb{color:#e6db74;}.pdoc .sc{color:#e6db74;}.pdoc .dl{color:#e6db74;}.pdoc .sd{color:#6272a4;}.pdoc .s2{color:#e6db74;}.pdoc .se{color:#ae81ff;}.pdoc .sh{color:#e6db74;}.pdoc .si{color:#bd93f9;}.pdoc .sx{color:#e6db74;}.pdoc .sr{color:#e6db74;}.pdoc .s1{color:#e6db74;}.pdoc .ss{color:#e6db74;}.pdoc .bp{color:#bd93f9;}.pdoc .fm{color:#bd93f9;}.pdoc .vc{color:#bd93f9;}.pdoc .vg{color:#f8f8f2;}.pdoc .vi{color:#ffffff;}.pdoc .vm{color:#bd93f9;}.pdoc .il{color:#ae81ff;}.pdoc .nd{color:#50fa7b;}.pdoc .il{color:#ae81ff}*{font-family:SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}nav.pdoc a.pdoc-button.module-list-button{display:none;}.pdoc .modulename a:hover{color:#ff79c6;}.pdoc .classattr{color:#FFF;}.pdoc p{color:#FFF;font-weight:300;}.pdoc li.code{color:#d63384;}.pdoc h2{color:#FFF;font-weight:0;margin:.3em 0;padding:.2em 0;content:"Module Content";}.pdoc h5{color:white;font-style:italic;}.pdoc .modulename{color:#FFF;font-weight:0;}nav.pdoc a.variable::before{content:"var ";color:#9d9d9d;font-style:italic;}nav.pdoc .function::before{content:"func ";color:#9d9d9d;font-style:italic;}nav.pdoc .function::after{content:"";color:#9d9d9d;}nav.pdoc .class::before{content:"class ";font-style:italic;}nav.pdoc .class::after{content:"";}nav.pdoc a.class{color:#8be9fd;}nav.pdoc a.class:hover{color:#fff;}nav.pdoc a::before{content:"module ";font-style:italic;color:#9d9d9d;}nav.pdoc a.function{color:#4dec75;}nav.pdoc a.variable{color:white;}nav.pdoc li a{color:#bd93f9;}.pdoc span.default_value{color:#e6db74;}.pdoc span.def{font-weight:normal;}.pdoc h6#attributes{color:#FFF;font-size:25px;}.pdoc h6#example{color:#FFF;font-size:29px;}.pdoc h6#notes{font-size:27px;color:orange;}.pdoc h6#returns{font-size:27px;color:white;}.pdoc h6#parameters{font-size:27px;color:white;}.pdoc h6#raises{font-size:27px;color:#FF6666;}.pdoc .kc{color:#bd93f9;}.pdoc li{color:white;}.pdoc .nd{color:#50fa7b;}.pdoc b,strong{color:#d63384;font-weight:normal;}.pdoc em{color:orange;font-size:23px;}.pdoc div.decorator{color:#50fa7b;}.pdoc span.name{color:#8be9fd;}.pdoc span.base{color:#8be9fd;}.pdoc .inherited dt,.pdoc .inherited dt::before{color:#8be9fd;}.pdoc .inherited dd,.pdoc .inherited dd{color:#FFF;}.pdoc .inherited dd:not(:last-child)::after{color:#fff;}.pdoc .inherited dd:not(:last-child)::after{color:#FFF;}nav.pdoc .module-list-button{display:inline-flex;align-items:center;margin-bottom:1rem;color:white;border-color:white;}nav.pdoc .module-list-button:hover{border-color:white;color:white;}.pdoc h1,.pdoc h2,.pdoc h3{font-weight:300;margin:0.3em 0;padding:0.2em 0;color:white;}</style>
-<style>/*! pdoc */:root{--pdoc-background:#272935;}.pdoc{--text:white;--muted:#9d9d9d;--link:#bd93f9;--link-hover:white;--active:#555;--code:#232627;--accent:#232627;--accent2:#FFF;--nav-hover:rgba(0, 0, 0, 0.1);--name:#50fa7b;--def:rgb(244, 90, 177);--annotation:white;}body{background-color:var(--pdoc-background);}html, body{width:100%;height:100%;}@media (max-width:769px){#navtoggle{cursor:pointer;position:absolute;width:50px;height:40px;top:1rem;right:1rem;border-color:var(--text);color:var(--text);display:flex;opacity:0.8;}#navtoggle:hover{opacity:1;}#togglestate + div{display:none;}#togglestate:checked + div{display:inherit;}main, header{padding:2rem 3vw;}.git-button{display:none !important;}nav input[type="search"]:valid ~ *{display:none !important;}}@media (min-width:770px){:root{--sidebar-width:clamp(12.5rem, 28vw, 22rem);}nav{position:fixed;overflow:auto;height:100vh;width:var(--sidebar-width);}main, header{padding:3rem 2rem 3rem calc(var(--sidebar-width) + 3rem);width:calc(54rem + var(--sidebar-width));max-width:100%;}#navtoggle{display:none;}}#togglestate{display:none;}nav.pdoc{--pad:1.75rem;--indent:1.5rem;background-color:var(--accent);border-right:1px solid var(--accent2);box-shadow:0 0 20px rgba(50, 50, 50, .2) inset;padding:0 0 0 var(--pad);overflow-wrap:anywhere;scrollbar-width:thin; scrollbar-color:var(--accent2) transparent }nav.pdoc::-webkit-scrollbar{width:.4rem; }nav.pdoc::-webkit-scrollbar-thumb{background-color:var(--accent2); }nav.pdoc > div{padding:var(--pad) 0;}nav.pdoc .module-list-button{display:inline-flex;align-items:center;color:var(--text);border-color:var(--muted);margin-bottom:1rem;}nav.pdoc .module-list-button:hover{border-color:var(--text);}nav.pdoc input[type=search]{display:block;outline-offset:0;width:calc(100% - var(--pad));}nav.pdoc .logo{max-width:calc(100% - var(--pad));max-height:35vh;display:block;margin:0 auto 1rem;transform:translate(calc(-.5 * var(--pad)), 0);}nav.pdoc ul{list-style:none;padding-left:0;}nav.pdoc li{display:block;margin:0;padding:.2rem 0 .2rem var(--indent);transition:all 100ms;}nav.pdoc > div > ul > li{padding-left:0;}nav.pdoc li:hover{background-color:var(--nav-hover);}nav.pdoc a, nav.pdoc a:hover{color:var(--text);}nav.pdoc a{display:block;}nav.pdoc > h2:first-of-type{margin-top:1.5rem;}nav.pdoc .class:before{content:"class ";color:var(--muted);}nav.pdoc .function:after{content:"()";color:var(--muted);}nav.pdoc footer:before{content:"";display:block;width:calc(100% - var(--pad));border-top:solid var(--accent2) 1px;margin-top:1.5rem;padding-top:.5rem;}nav.pdoc footer{font-size:small;}html, main{scroll-behavior:smooth;}.pdoc{color:var(--text);box-sizing:border-box;line-height:1.5;background:none;}.pdoc .pdoc-button{display:inline-block;border:solid black 1px;border-radius:2px;font-size:.75rem;padding:calc(0.5em - 1px) 1em;transition:100ms all;}.pdoc .visually-hidden{position:absolute !important;width:1px !important;height:1px !important;padding:0 !important;margin:-1px !important;overflow:hidden !important;clip:rect(0, 0, 0, 0) !important;white-space:nowrap !important;border:0 !important;}.pdoc h1, .pdoc h2, .pdoc h3{font-weight:300;margin:.3em 0;padding:.2em 0;}.pdoc a{text-decoration:none;color:var(--link);}.pdoc a:hover{color:var(--link-hover);}.pdoc blockquote{margin-left:2rem;}.pdoc pre{background-color:var(--code);border-top:1px solid var(--accent2);border-bottom:1px solid var(--accent2);margin-bottom:1em;padding:.5rem 0 .5rem .5rem;overflow-x:auto;}.pdoc code{color:var(--text);padding:.2em .4em;margin:0;font-size:85%;background-color:var(--code);border-radius:6px;}.pdoc a > code{color:inherit;}.pdoc pre > code{display:inline-block;font-size:inherit;background:none;border:none;padding:0;}.pdoc .modulename{margin-top:0;font-weight:bold;}.pdoc .modulename a{color:var(--link);transition:100ms all;}.pdoc .git-button{float:right;border:solid var(--link) 1px;}.pdoc .git-button:hover{background-color:var(--link);color:var(--pdoc-background);}.pdoc details{--shift:-40px;text-align:right;margin-top:var(--shift);margin-bottom:calc(0px - var(--shift));clear:both;filter:opacity(1);}.pdoc details:not([open]){height:0;overflow:visible;}.pdoc details > summary{font-size:.75rem;cursor:pointer;color:var(--muted);border-width:0;padding:0 .7em;display:inline-block;display:inline list-item;user-select:none;}.pdoc details > summary:focus{outline:0;}.pdoc details > div{margin-top:calc(0px - var(--shift) / 2);text-align:left;}.pdoc .docstring{margin-bottom:1.5rem;}.pdoc > section:first-of-type > .docstring{margin-bottom:3rem;}.pdoc .docstring pre{margin-left:1em;margin-right:1em;}.pdoc h1:target,.pdoc h2:target,.pdoc h3:target,.pdoc h4:target,.pdoc h5:target,.pdoc h6:target{background-color:var(--active);box-shadow:-1rem 0 0 0 var(--active);}.pdoc div:target > .attr,.pdoc section:target > .attr,.pdoc dd:target > a{background-color:var(--active);}.pdoc .attr:hover{filter:contrast(0.95);}.pdoc .headerlink{position:absolute;width:0;margin-left:-1.5rem;line-height:1.4rem;font-size:1.5rem;font-weight:normal;transition:all 100ms ease-in-out;opacity:0;}.pdoc .attr > .headerlink{margin-left:-2.5rem;}.pdoc *:hover > .headerlink,.pdoc *:target > .attr > .headerlink{opacity:1;}.pdoc .attr{display:block;color:var(--text);margin:1rem 0 .5rem;padding:.4rem 5rem .4rem 1rem;background-color:var(--accent);}.pdoc .classattr{margin-left:2rem;}.pdoc .name{color:var(--name);font-weight:bold;}.pdoc .def{color:var(--def);font-weight:bold;}.pdoc .signature{white-space:pre-wrap;}.pdoc .annotation{color:var(--annotation);}.pdoc .inherited{margin-left:2rem;}.pdoc .inherited dt{font-weight:700;}.pdoc .inherited dt, .pdoc .inherited dd{display:inline;margin-left:0;margin-bottom:.5rem;}.pdoc .inherited dd:not(:last-child):after{content:", ";}.pdoc .inherited .class:before{content:"class ";}.pdoc .inherited .function a:after{content:"()";}.pdoc .search-result .docstring{overflow:auto;max-height:25vh;}.pdoc .search-result.focused > .attr{background-color:var(--active);}.pdoc .attribution{margin-top:2rem;display:block;opacity:0.5;transition:all 200ms;filter:grayscale(100%);}.pdoc .attribution:hover{opacity:1;filter:grayscale(0%);}.pdoc .attribution img{margin-left:5px;height:35px;vertical-align:middle;width:70px;transition:all 200ms;}.pdoc table{display:block;width:max-content;max-width:100%;overflow:auto;margin-bottom:1rem;}.pdoc table th{font-weight:600;}.pdoc table th, .pdoc table td{padding:6px 13px;border:1px solid var(--accent2);}</style>
+<style>/*! pdoc */:root{--pdoc-background:#272935;}.pdoc{--text:white;--muted:#9d9d9d;--link:#bd93f9;--link-hover:white;--active:#555;--code:#232627;--accent:#232627;--accent2:#FFF;--nav-hover:rgba(0, 0, 0, 0.1);--name:#50fa7b;--def:rgb(244, 90, 177);--annotation:white;}body{background-color:var(--pdoc-background);}html, body{width:100%;height:100%;}@media (max-width:769px){#navtoggle{cursor:pointer;position:absolute;width:50px;height:40px;top:1rem;right:1rem;border-color:var(--text);color:var(--text);display:flex;opacity:0.8;}#navtoggle:hover{opacity:1;}#togglestate + div{display:none;}#togglestate:checked + div{display:inherit;}main, header{padding:2rem 3vw;}.git-button{display:none !important;}nav input[type="search"]{max-width:77%;}nav input[type="search"]:first-child{margin-top:-6px;}nav input[type="search"]:valid ~ *{display:none !important;}}@media (min-width:770px){:root{--sidebar-width:clamp(12.5rem, 28vw, 22rem);}nav{position:fixed;overflow:auto;height:100vh;width:var(--sidebar-width);}main, header{padding:3rem 2rem 3rem calc(var(--sidebar-width) + 3rem);width:calc(54rem + var(--sidebar-width));max-width:100%;}#navtoggle{display:none;}}#togglestate{position:absolute;height:0;}nav.pdoc{--pad:1.75rem;--indent:1.5rem;background-color:var(--accent);border-right:1px solid var(--accent2);box-shadow:0 0 20px rgba(50, 50, 50, .2) inset;padding:0 0 0 var(--pad);overflow-wrap:anywhere;scrollbar-width:thin; scrollbar-color:var(--accent2) transparent }nav.pdoc::-webkit-scrollbar{width:.4rem; }nav.pdoc::-webkit-scrollbar-thumb{background-color:var(--accent2); }nav.pdoc > div{padding:var(--pad) 0;}nav.pdoc .module-list-button{display:inline-flex;align-items:center;color:var(--text);border-color:var(--muted);margin-bottom:1rem;}nav.pdoc .module-list-button:hover{border-color:var(--text);}nav.pdoc input[type=search]{display:block;outline-offset:0;width:calc(100% - var(--pad));}nav.pdoc .logo{max-width:calc(100% - var(--pad));max-height:35vh;display:block;margin:0 auto 1rem;transform:translate(calc(-.5 * var(--pad)), 0);}nav.pdoc ul{list-style:none;padding-left:0;}nav.pdoc li{display:block;margin:0;padding:.2rem 0 .2rem var(--indent);transition:all 100ms;}nav.pdoc > div > ul > li{padding-left:0;}nav.pdoc li:hover{background-color:var(--nav-hover);}nav.pdoc a, nav.pdoc a:hover{color:var(--text);}nav.pdoc a{display:block;}nav.pdoc > h2:first-of-type{margin-top:1.5rem;}nav.pdoc .class:before{content:"class ";color:var(--muted);}nav.pdoc .function:after{content:"()";color:var(--muted);}nav.pdoc footer:before{content:"";display:block;width:calc(100% - var(--pad));border-top:solid var(--accent2) 1px;margin-top:1.5rem;padding-top:.5rem;}nav.pdoc footer{font-size:small;}html, main{scroll-behavior:smooth;}.pdoc{color:var(--text);box-sizing:border-box;line-height:1.5;background:none;}.pdoc .pdoc-button{display:inline-block;border:solid black 1px;border-radius:2px;font-size:.75rem;padding:calc(0.5em - 1px) 1em;transition:100ms all;}.pdoc .visually-hidden{position:absolute !important;width:1px !important;height:1px !important;padding:0 !important;margin:-1px !important;overflow:hidden !important;clip:rect(0, 0, 0, 0) !important;white-space:nowrap !important;border:0 !important;}.pdoc h1, .pdoc h2, .pdoc h3{font-weight:300;margin:.3em 0;padding:.2em 0;}.pdoc a{text-decoration:none;color:var(--link);}.pdoc a:hover{color:var(--link-hover);}.pdoc blockquote{margin-left:2rem;}.pdoc pre{background-color:var(--code);border-top:1px solid var(--accent2);border-bottom:1px solid var(--accent2);margin-bottom:1em;padding:.5rem 0 .5rem .5rem;overflow-x:auto;}.pdoc code{color:var(--text);padding:.2em .4em;margin:0;font-size:85%;background-color:var(--code);border-radius:6px;}.pdoc a > code{color:inherit;}.pdoc pre > code{display:inline-block;font-size:inherit;background:none;border:none;padding:0;}.pdoc .modulename{margin-top:0;font-weight:bold;}.pdoc .modulename a{color:var(--link);transition:100ms all;}.pdoc .git-button{float:right;border:solid var(--link) 1px;}.pdoc .git-button:hover{background-color:var(--link);color:var(--pdoc-background);}.pdoc details{filter:opacity(1);}.pdoc details:not([open]){height:0;}.pdoc details > summary{position:absolute;top:-35px;right:0;font-size:.75rem;color:var(--muted);padding:0 .7em;user-select:none;}.pdoc details > summary:focus{outline:0;}.pdoc .docstring{margin-bottom:1.5rem;}.pdoc > section:first-of-type > .docstring{margin-bottom:2.5rem;}.pdoc .docstring pre{margin-left:1em;margin-right:1em;}.pdoc h1:target,.pdoc h2:target,.pdoc h3:target,.pdoc h4:target,.pdoc h5:target,.pdoc h6:target{background-color:var(--active);box-shadow:-1rem 0 0 0 var(--active);}.pdoc div:target > .attr,.pdoc section:target > .attr,.pdoc dd:target > a{background-color:var(--active);}.pdoc .attr:hover{filter:contrast(0.95);}.pdoc .headerlink{position:absolute;width:0;margin-left:-1.5rem;line-height:1.4rem;font-size:1.5rem;font-weight:normal;transition:all 100ms ease-in-out;opacity:0;user-select:none;}.pdoc .attr > .headerlink{margin-left:-2.5rem;}.pdoc *:hover > .headerlink,.pdoc *:target > .attr > .headerlink{opacity:1;}.pdoc .attr{display:block;color:var(--text);margin:.5rem 0 .5rem;padding:.4rem 5rem .4rem 1rem;background-color:var(--accent);}.pdoc .classattr{margin-left:2rem;}.pdoc .name{color:var(--name);font-weight:bold;}.pdoc .def{color:var(--def);font-weight:bold;}.pdoc .signature{white-space:pre-wrap;}.pdoc .annotation{color:var(--annotation);}.pdoc .inherited{margin-left:2rem;}.pdoc .inherited dt{font-weight:700;}.pdoc .inherited dt, .pdoc .inherited dd{display:inline;margin-left:0;margin-bottom:.5rem;}.pdoc .inherited dd:not(:last-child):after{content:", ";}.pdoc .inherited .class:before{content:"class ";}.pdoc .inherited .function a:after{content:"()";}.pdoc .search-result .docstring{overflow:auto;max-height:25vh;}.pdoc .search-result.focused > .attr{background-color:var(--active);}.pdoc .attribution{margin-top:2rem;display:block;opacity:0.5;transition:all 200ms;filter:grayscale(100%);}.pdoc .attribution:hover{opacity:1;filter:grayscale(0%);}.pdoc .attribution img{margin-left:5px;height:35px;vertical-align:middle;width:70px;transition:all 200ms;}.pdoc table{display:block;width:max-content;max-width:100%;overflow:auto;margin-bottom:1rem;}.pdoc table th{font-weight:600;}.pdoc table th, .pdoc table td{padding:6px 13px;border:1px solid var(--accent2);}</style>
 </head>
 <body>        <nav class="pdoc">
             <label id="navtoggle" for="togglestate" class="pdoc-button"><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'><path stroke-linecap='round' stroke="currentColor" stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/></svg></label>
-            <input id="togglestate" type="checkbox">
+            <input id="togglestate" type="checkbox" aria-hidden="true" tabindex="-1">
             <div>
                         <a class="pdoc-button module-list-button" href="../aiobungie.html">
 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-in-left" viewBox="0 0 16 16">
@@ -264,6 +264,78 @@
                         <li>
                                 <a class="function" href="#RESTInterface.fetch_application_api_usage">fetch_application_api_usage</a>
                         </li>
+                        <li>
+                                <a class="function" href="#RESTInterface.fetch_content_type">fetch_content_type</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#RESTInterface.fetch_content_by_id">fetch_content_by_id</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#RESTInterface.fetch_content_by_tag_and_type">fetch_content_by_tag_and_type</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#RESTInterface.search_content_with_text">search_content_with_text</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#RESTInterface.search_content_by_tag_and_type">search_content_by_tag_and_type</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#RESTInterface.search_help_articles">search_help_articles</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#RESTInterface.fetch_topics_page">fetch_topics_page</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#RESTInterface.fetch_core_topics_page">fetch_core_topics_page</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#RESTInterface.fetch_posts_threaded_page">fetch_posts_threaded_page</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#RESTInterface.fetch_posts_threaded_page_from_child">fetch_posts_threaded_page_from_child</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#RESTInterface.fetch_post_and_parent">fetch_post_and_parent</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#RESTInterface.fetch_posts_and_parent_awaiting">fetch_posts_and_parent_awaiting</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#RESTInterface.fetch_topic_for_content">fetch_topic_for_content</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#RESTInterface.fetch_forum_tag_suggestions">fetch_forum_tag_suggestions</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#RESTInterface.fetch_poll">fetch_poll</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#RESTInterface.fetch_recuirement_thread_summaries">fetch_recuirement_thread_summaries</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#RESTInterface.fetch_recommended_groups">fetch_recommended_groups</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#RESTInterface.fetch_available_avatars">fetch_available_avatars</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#RESTInterface.fetch_user_clan_invite_setting">fetch_user_clan_invite_setting</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#RESTInterface.fetch_banned_group_members">fetch_banned_group_members</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#RESTInterface.fetch_pending_group_memberships">fetch_pending_group_memberships</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#RESTInterface.fetch_invited_group_memberships">fetch_invited_group_memberships</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#RESTInterface.invite_member_to_group">invite_member_to_group</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#RESTInterface.cancel_group_member_invite">cancel_group_member_invite</a>
+                        </li>
                 </ul>
 
             </li>
@@ -277,22 +349,19 @@
                                 <a class="function" href="#FactoryInterface.deserialize_bungie_user">deserialize_bungie_user</a>
                         </li>
                         <li>
-                                <a class="function" href="#FactoryInterface.deseialize_found_users">deseialize_found_users</a>
+                                <a class="function" href="#FactoryInterface.deseialize_searched_user">deseialize_searched_user</a>
                         </li>
                         <li>
                                 <a class="function" href="#FactoryInterface.deserialize_partial_bungie_user">deserialize_partial_bungie_user</a>
                         </li>
                         <li>
-                                <a class="function" href="#FactoryInterface.deserialize_destiny_user">deserialize_destiny_user</a>
+                                <a class="function" href="#FactoryInterface.deserialize_destiny_membership">deserialize_destiny_membership</a>
                         </li>
                         <li>
-                                <a class="function" href="#FactoryInterface.deserialize_destiny_members">deserialize_destiny_members</a>
+                                <a class="function" href="#FactoryInterface.deserialize_destiny_memberships">deserialize_destiny_memberships</a>
                         </li>
                         <li>
                                 <a class="function" href="#FactoryInterface.deserialize_user_themes">deserialize_user_themes</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#FactoryInterface.deserialize_players">deserialize_players</a>
                         </li>
                         <li>
                                 <a class="function" href="#FactoryInterface.deserialize_user_credentials">deserialize_user_credentials</a>
@@ -2670,6 +2739,207 @@
 <span class="sd">        `ResponseSig[aiobungie.typedefs.JSONObject]`</span>
 <span class="sd">            A JSON object of the application usage details.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_content_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="o">...</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_content_by_id</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">locale</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">head</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="o">...</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_content_by_tag_and_type</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">locale</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">head</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="o">...</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">search_content_with_text</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">locale</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="n">content_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">search_text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">page</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">Undefined</span><span class="p">,</span>
+        <span class="n">source</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">Undefined</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="o">...</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">search_content_by_tag_and_type</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">locale</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">page</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">Undefined</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="o">...</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">search_help_articles</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="o">...</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_topics_page</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">category_filter</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">group</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">date_filter</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">sort</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">],</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">page</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">Undefined</span><span class="p">,</span>
+        <span class="n">locales</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="n">collections</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">Undefined</span><span class="p">,</span>
+        <span class="n">tag_filter</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">Undefined</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="o">...</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_core_topics_page</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">category_filter</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">date_filter</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">sort</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">],</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">page</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">Undefined</span><span class="p">,</span>
+        <span class="n">locales</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="n">collections</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">Undefined</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="o">...</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_posts_threaded_page</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">parent_post</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">page</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">page_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">parent_post_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">reply_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">root_thread_mode</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">sort_mode</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">show_banned</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="o">...</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_posts_threaded_page_from_child</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">child_id</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">page</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">page_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">reply_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">root_thread_mode</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">sort_mode</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">show_banned</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="o">...</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_post_and_parent</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">child_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">show_banned</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="o">...</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_posts_and_parent_awaiting</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">child_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">show_banned</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="o">...</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_topic_for_content</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="o">...</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_forum_tag_suggestions</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">partial_tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="o">...</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_poll</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topic_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="o">...</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_recuirement_thread_summaries</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONArray</span><span class="p">]:</span>
+        <span class="o">...</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_recommended_groups</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">accecss_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">date_range</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">group_type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">GroupType</span><span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">GroupType</span><span class="o">.</span><span class="n">CLAN</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONArray</span><span class="p">]:</span>
+        <span class="o">...</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_available_avatars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+        <span class="o">...</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_user_clan_invite_setting</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="n">membership_type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+        <span class="o">...</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_banned_group_members</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">group_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="o">...</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_pending_group_memberships</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">group_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">current_page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="o">...</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_invited_group_memberships</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">group_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">current_page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="o">...</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">invite_member_to_group</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="n">group_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">membership_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">membership_type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">message</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">Undefined</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="o">...</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">cancel_group_member_invite</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="n">group_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">membership_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">membership_type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="o">...</span>
 </pre></div>
 
         </details>
@@ -8344,6 +8614,765 @@ A datetime object can be used to collect the end of the application usage.</p>
 
 
                             </div>
+                            <div id="RESTInterface.fetch_content_type" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTInterface.fetch_content_type">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@abc.abstractmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">fetch_content_type</span><span class="signature">(
+    self,
+    type: str,
+    /
+) -&gt; collections.abc.Coroutine[None, None, dict[str, typing.Any]]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_content_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="o">...</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="RESTInterface.fetch_content_by_id" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTInterface.fetch_content_by_id">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@abc.abstractmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">fetch_content_by_id</span><span class="signature">(
+    self,
+    id: int,
+    locale: str,
+    /,
+    *,
+    head: bool = False
+) -&gt; collections.abc.Coroutine[None, None, dict[str, typing.Any]]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_content_by_id</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">locale</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">head</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="o">...</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="RESTInterface.fetch_content_by_tag_and_type" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTInterface.fetch_content_by_tag_and_type">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@abc.abstractmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">fetch_content_by_tag_and_type</span><span class="signature">(
+    self,
+    locale: str,
+    tag: str,
+    type: str,
+    *,
+    head: bool = False
+) -&gt; collections.abc.Coroutine[None, None, dict[str, typing.Any]]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_content_by_tag_and_type</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">locale</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">head</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="o">...</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="RESTInterface.search_content_with_text" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTInterface.search_content_with_text">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@abc.abstractmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">search_content_with_text</span><span class="signature">(
+    self,
+    locale: str,
+    /,
+    content_type: str,
+    search_text: str,
+    tag: str,
+    *,
+    page: Union[<a href="undefined.html#UndefinedType">aiobungie.undefined.UndefinedType</a>, int] = UNDEFINED,
+    source: Union[<a href="undefined.html#UndefinedType">aiobungie.undefined.UndefinedType</a>, str] = UNDEFINED
+) -&gt; collections.abc.Coroutine[None, None, dict[str, typing.Any]]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">search_content_with_text</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">locale</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="n">content_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">search_text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">page</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">Undefined</span><span class="p">,</span>
+        <span class="n">source</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">Undefined</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="o">...</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="RESTInterface.search_content_by_tag_and_type" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTInterface.search_content_by_tag_and_type">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@abc.abstractmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">search_content_by_tag_and_type</span><span class="signature">(
+    self,
+    locale: str,
+    tag: str,
+    type: str,
+    *,
+    page: Union[<a href="undefined.html#UndefinedType">aiobungie.undefined.UndefinedType</a>, int] = UNDEFINED
+) -&gt; collections.abc.Coroutine[None, None, dict[str, typing.Any]]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">search_content_by_tag_and_type</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">locale</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">page</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">Undefined</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="o">...</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="RESTInterface.search_help_articles" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTInterface.search_help_articles">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@abc.abstractmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">search_help_articles</span><span class="signature">(
+    self,
+    text: str,
+    size: str,
+    /
+) -&gt; collections.abc.Coroutine[None, None, dict[str, typing.Any]]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">search_help_articles</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="o">...</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="RESTInterface.fetch_topics_page" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTInterface.fetch_topics_page">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@abc.abstractmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">fetch_topics_page</span><span class="signature">(
+    self,
+    category_filter: int,
+    group: int,
+    date_filter: int,
+    sort: Union[str, bytes],
+    *,
+    page: Union[<a href="undefined.html#UndefinedType">aiobungie.undefined.UndefinedType</a>, int] = UNDEFINED,
+    locales: Union[<a href="undefined.html#UndefinedType">aiobungie.undefined.UndefinedType</a>, collections.abc.Iterable[str]] = UNDEFINED,
+    tag_filter: Union[<a href="undefined.html#UndefinedType">aiobungie.undefined.UndefinedType</a>, str] = UNDEFINED
+) -&gt; collections.abc.Coroutine[None, None, dict[str, typing.Any]]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_topics_page</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">category_filter</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">group</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">date_filter</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">sort</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">],</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">page</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">Undefined</span><span class="p">,</span>
+        <span class="n">locales</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="n">collections</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">Undefined</span><span class="p">,</span>
+        <span class="n">tag_filter</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">Undefined</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="o">...</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="RESTInterface.fetch_core_topics_page" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTInterface.fetch_core_topics_page">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@abc.abstractmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">fetch_core_topics_page</span><span class="signature">(
+    self,
+    category_filter: int,
+    date_filter: int,
+    sort: Union[str, bytes],
+    *,
+    page: Union[<a href="undefined.html#UndefinedType">aiobungie.undefined.UndefinedType</a>, int] = UNDEFINED,
+    locales: Union[<a href="undefined.html#UndefinedType">aiobungie.undefined.UndefinedType</a>, collections.abc.Iterable[str]] = UNDEFINED
+) -&gt; collections.abc.Coroutine[None, None, dict[str, typing.Any]]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_core_topics_page</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">category_filter</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">date_filter</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">sort</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">],</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">page</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">Undefined</span><span class="p">,</span>
+        <span class="n">locales</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="n">collections</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">Undefined</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="o">...</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="RESTInterface.fetch_posts_threaded_page" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTInterface.fetch_posts_threaded_page">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@abc.abstractmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">fetch_posts_threaded_page</span><span class="signature">(
+    self,
+    parent_post: bool,
+    page: int,
+    page_size: int,
+    parent_post_id: int,
+    reply_size: int,
+    root_thread_mode: bool,
+    sort_mode: int,
+    show_banned: Optional[str] = None
+) -&gt; collections.abc.Coroutine[None, None, dict[str, typing.Any]]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_posts_threaded_page</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">parent_post</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">page</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">page_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">parent_post_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">reply_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">root_thread_mode</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">sort_mode</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">show_banned</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="o">...</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="RESTInterface.fetch_posts_threaded_page_from_child" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTInterface.fetch_posts_threaded_page_from_child">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@abc.abstractmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">fetch_posts_threaded_page_from_child</span><span class="signature">(
+    self,
+    child_id: bool,
+    page: int,
+    page_size: int,
+    reply_size: int,
+    root_thread_mode: bool,
+    sort_mode: int,
+    show_banned: Optional[str] = None
+) -&gt; collections.abc.Coroutine[None, None, dict[str, typing.Any]]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_posts_threaded_page_from_child</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">child_id</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">page</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">page_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">reply_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">root_thread_mode</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">sort_mode</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">show_banned</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="o">...</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="RESTInterface.fetch_post_and_parent" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTInterface.fetch_post_and_parent">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@abc.abstractmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">fetch_post_and_parent</span><span class="signature">(
+    self,
+    child_id: int,
+    /,
+    *,
+    show_banned: Optional[str] = None
+) -&gt; collections.abc.Coroutine[None, None, dict[str, typing.Any]]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_post_and_parent</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">child_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">show_banned</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="o">...</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="RESTInterface.fetch_posts_and_parent_awaiting" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTInterface.fetch_posts_and_parent_awaiting">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@abc.abstractmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">fetch_posts_and_parent_awaiting</span><span class="signature">(
+    self,
+    child_id: int,
+    /,
+    *,
+    show_banned: Optional[str] = None
+) -&gt; collections.abc.Coroutine[None, None, dict[str, typing.Any]]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_posts_and_parent_awaiting</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">child_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">show_banned</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="o">...</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="RESTInterface.fetch_topic_for_content" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTInterface.fetch_topic_for_content">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@abc.abstractmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">fetch_topic_for_content</span><span class="signature">(
+    self,
+    content_id: int,
+    /
+) -&gt; collections.abc.Coroutine[None, None, int]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_topic_for_content</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="o">...</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="RESTInterface.fetch_forum_tag_suggestions" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTInterface.fetch_forum_tag_suggestions">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@abc.abstractmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">fetch_forum_tag_suggestions</span><span class="signature">(
+    self,
+    partial_tag: str,
+    /
+) -&gt; collections.abc.Coroutine[None, None, dict[str, typing.Any]]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_forum_tag_suggestions</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">partial_tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="o">...</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="RESTInterface.fetch_poll" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTInterface.fetch_poll">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@abc.abstractmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">fetch_poll</span><span class="signature">(
+    self,
+    topic_id: int,
+    /
+) -&gt; collections.abc.Coroutine[None, None, dict[str, typing.Any]]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_poll</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topic_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="o">...</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="RESTInterface.fetch_recuirement_thread_summaries" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTInterface.fetch_recuirement_thread_summaries">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@abc.abstractmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">fetch_recuirement_thread_summaries</span><span class="signature">(self) -&gt; collections.abc.Coroutine[None, None, list[typing.Any]]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_recuirement_thread_summaries</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONArray</span><span class="p">]:</span>
+        <span class="o">...</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="RESTInterface.fetch_recommended_groups" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTInterface.fetch_recommended_groups">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@abc.abstractmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">fetch_recommended_groups</span><span class="signature">(
+    self,
+    accecss_token: str,
+    /,
+    *,
+    date_range: int = 0,
+    group_type: Union[int, <a href="internal/enums.html#GroupType">aiobungie.internal.enums.GroupType</a>] = &lt;GroupType.CLAN: 1&gt;
+) -&gt; collections.abc.Coroutine[None, None, list[typing.Any]]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_recommended_groups</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">accecss_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">date_range</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">group_type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">GroupType</span><span class="p">]</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">GroupType</span><span class="o">.</span><span class="n">CLAN</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONArray</span><span class="p">]:</span>
+        <span class="o">...</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="RESTInterface.fetch_available_avatars" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTInterface.fetch_available_avatars">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@abc.abstractmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">fetch_available_avatars</span><span class="signature">(self) -&gt; collections.abc.Coroutine[None, None, dict[str, int]]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_available_avatars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+        <span class="o">...</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="RESTInterface.fetch_user_clan_invite_setting" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTInterface.fetch_user_clan_invite_setting">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@abc.abstractmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">fetch_user_clan_invite_setting</span><span class="signature">(
+    self,
+    access_token: str,
+    /,
+    membership_type: Union[int, <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>]
+) -&gt; collections.abc.Coroutine[None, None, bool]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_user_clan_invite_setting</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="n">membership_type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+        <span class="o">...</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="RESTInterface.fetch_banned_group_members" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTInterface.fetch_banned_group_members">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@abc.abstractmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">fetch_banned_group_members</span><span class="signature">(
+    self,
+    access_token: str,
+    group_id: int,
+    /,
+    *,
+    page: int = 1
+) -&gt; collections.abc.Coroutine[None, None, dict[str, typing.Any]]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_banned_group_members</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">group_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="o">...</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="RESTInterface.fetch_pending_group_memberships" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTInterface.fetch_pending_group_memberships">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@abc.abstractmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">fetch_pending_group_memberships</span><span class="signature">(
+    self,
+    access_token: str,
+    group_id: int,
+    /,
+    *,
+    current_page: int = 1
+) -&gt; collections.abc.Coroutine[None, None, dict[str, typing.Any]]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_pending_group_memberships</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">group_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">current_page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="o">...</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="RESTInterface.fetch_invited_group_memberships" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTInterface.fetch_invited_group_memberships">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@abc.abstractmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">fetch_invited_group_memberships</span><span class="signature">(
+    self,
+    access_token: str,
+    group_id: int,
+    /,
+    *,
+    current_page: int = 1
+) -&gt; collections.abc.Coroutine[None, None, dict[str, typing.Any]]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">fetch_invited_group_memberships</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">group_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">current_page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="o">...</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="RESTInterface.invite_member_to_group" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTInterface.invite_member_to_group">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@abc.abstractmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">invite_member_to_group</span><span class="signature">(
+    self,
+    access_token: str,
+    /,
+    group_id: int,
+    membership_id: int,
+    membership_type: Union[int, <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>],
+    *,
+    message: Union[<a href="undefined.html#UndefinedType">aiobungie.undefined.UndefinedType</a>, str] = UNDEFINED
+) -&gt; collections.abc.Coroutine[None, None, dict[str, typing.Any]]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">invite_member_to_group</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="n">group_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">membership_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">membership_type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">message</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">Undefined</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="o">...</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="RESTInterface.cancel_group_member_invite" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTInterface.cancel_group_member_invite">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@abc.abstractmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">cancel_group_member_invite</span><span class="signature">(
+    self,
+    access_token: str,
+    /,
+    group_id: int,
+    membership_id: int,
+    membership_type: Union[int, <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>]
+) -&gt; collections.abc.Coroutine[None, None, dict[str, typing.Any]]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">cancel_group_member_invite</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="n">group_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">membership_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">membership_type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="o">...</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
@@ -8391,7 +9420,7 @@ A datetime object can be used to collect the end of the application usage.</p>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `aiobungie.crate.User`</span>
-<span class="sd">            A user object of the deserialized payload.</span>
+<span class="sd">            A user object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -8409,14 +9438,14 @@ A datetime object can be used to collect the end of the application usage.</p>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `aiobungie.crate.BungieUser`</span>
-<span class="sd">            A Bungie user object of the deserialized payload.</span>
+<span class="sd">            A Bungie user.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">deseialize_found_users</span><span class="p">(</span>
+    <span class="k">def</span> <span class="nf">deseialize_searched_user</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">DestinyUser</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Deserialize a raw JSON of prefix searched users.</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">user</span><span class="o">.</span><span class="n">SearchableDestinyUser</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Deserialize the results of user search details.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -8425,8 +9454,8 @@ A datetime object can be used to collect the end of the application usage.</p>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `collections.Sequence[aiobungie.crate.DestinyUser]`</span>
-<span class="sd">            A sequence of the deserialized Destiny users/memberships.</span>
+<span class="sd">        `aiobungie.crate.SearchableDestinyUser`</span>
+<span class="sd">            The searched for Destiny 2 membership.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -8446,16 +9475,14 @@ A datetime object can be used to collect the end of the application usage.</p>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `aiobungie.crate.PartialBungieUser`</span>
-<span class="sd">            A partial bungie user object of the deserialized payload.</span>
+<span class="sd">            A partial bungie user.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">deserialize_destiny_user</span><span class="p">(</span>
+    <span class="k">def</span> <span class="nf">deserialize_destiny_membership</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">user</span><span class="o">.</span><span class="n">DestinyUser</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Deserialize a raw JSON of `destinyUserInfo` destiny memberships information.</span>
-
-<span class="sd">        A destiny user is just destiny memberships, i.e., Xbox membershio, Steam membership. etc.</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">user</span><span class="o">.</span><span class="n">DestinyMembership</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Deserialize a raw JSON of `destinyUserInfo` destiny membership information.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -8464,14 +9491,14 @@ A datetime object can be used to collect the end of the application usage.</p>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `aiobungie.crate.user.DestinyUser`</span>
-<span class="sd">            A destiny membership/user object of the deserialized payload.</span>
+<span class="sd">        `aiobungie.crate.user.DestinyMembership`</span>
+<span class="sd">            A Destiny 2 membership.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">deserialize_destiny_members</span><span class="p">(</span>
+    <span class="k">def</span> <span class="nf">deserialize_destiny_memberships</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONArray</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">DestinyUser</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">DestinyMembership</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Deserialize a raw JSON payload/array of `destinyUserInfo`.</span>
 
 <span class="sd">        Parameters</span>
@@ -8481,8 +9508,8 @@ A datetime object can be used to collect the end of the application usage.</p>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `collections.Sequence[aiobungie.crate.user.DestinyUser]`</span>
-<span class="sd">            A sequence of destiny membership/user object of the deserialized payload.</span>
+<span class="sd">        `collections.Sequence[aiobungie.crate.user.DestinyMembership]`</span>
+<span class="sd">            A sequence of Destiny 2 memberships.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -8499,28 +9526,7 @@ A datetime object can be used to collect the end of the application usage.</p>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `collections.Sequence[aiobungie.crate.user.UserThemes]`</span>
-<span class="sd">            A sequence of bungie user themes object of the deserialized payload.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">deserialize_players</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONArray</span><span class="p">,</span> <span class="o">/</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">DestinyUser</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Deserialize a raw JSON sequence of players.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        payload : `aiobungie.typedefs.JSONArray`</span>
-<span class="sd">            The JSON payload.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        `collections.Sequence[aiobungie.crate.user.DestinyUser]`</span>
-<span class="sd">            A sequence of players object of the deserialized payload.</span>
-
-<span class="sd">            .. note::</span>
-<span class="sd">                This typically returns just 1 element</span>
-<span class="sd">                but keeping it a sequence to match the JSON array signature.</span>
+<span class="sd">            A sequence of bungie user themes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -8554,7 +9560,7 @@ A datetime object can be used to collect the end of the application usage.</p>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `aiobungie.crate.Clan`</span>
-<span class="sd">            A clan owner object of the deserialized payload.</span>
+<span class="sd">            A clan owner.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -8571,7 +9577,7 @@ A datetime object can be used to collect the end of the application usage.</p>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `aiobungie.typedefs.NoneOr[aiobungie.crate.GroupMember]`</span>
-<span class="sd">            A group member object of the deserialized payload. This can return `None` if nothing was found.</span>
+<span class="sd">            A group member. This can return `None` if nothing was found.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -8586,7 +9592,7 @@ A datetime object can be used to collect the end of the application usage.</p>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `aiobungie.crate.ClanMember`</span>
-<span class="sd">            A clan member object of the deserialized payload.</span>
+<span class="sd">            A clan member.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -8656,7 +9662,7 @@ A datetime object can be used to collect the end of the application usage.</p>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `aiobungie.crate.application.ApplicationOwner`</span>
-<span class="sd">            An application owner object of the deserialized payload.</span>
+<span class="sd">            An application owner.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -8671,7 +9677,7 @@ A datetime object can be used to collect the end of the application usage.</p>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `aiobungie.crate.application.Application`</span>
-<span class="sd">            An application object of the deserialized payload.</span>
+<span class="sd">            An application.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="c1"># Characters.</span>
@@ -8690,7 +9696,7 @@ A datetime object can be used to collect the end of the application usage.</p>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `aiobungie.crate.CharacterComponent`</span>
-<span class="sd">            A character component object of the deserialized payload.</span>
+<span class="sd">            A character component.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -8818,7 +9824,7 @@ A datetime object can be used to collect the end of the application usage.</p>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `aiobungie.crate.ProfileProgression`</span>
-<span class="sd">            A profile progression component object of the deserialized payload.</span>
+<span class="sd">            A profile progression component.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -8835,7 +9841,7 @@ A datetime object can be used to collect the end of the application usage.</p>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `typing.Optional[aiobungie.crate.Profile]`</span>
-<span class="sd">            A profile object of the deserialized payload.</span>
+<span class="sd">            A profile.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -8872,7 +9878,7 @@ A datetime object can be used to collect the end of the application usage.</p>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `aiobungie.crate.LinkedProfile`</span>
-<span class="sd">            A hard linked profile object of the deserialized payload.</span>
+<span class="sd">            A hard linked profile.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -9021,7 +10027,7 @@ A datetime object can be used to collect the end of the application usage.</p>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `aiobungie.crate.InventoryEntity`</span>
-<span class="sd">            An entity item object of the deserialized payload.</span>
+<span class="sd">            An entity item.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -9055,7 +10061,7 @@ A datetime object can be used to collect the end of the application usage.</p>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `aiobungie.crate.ObjectiveEntity`</span>
-<span class="sd">            An objetive entity object of the deserialized payload.</span>
+<span class="sd">            An objetive entity.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="c1"># Activities.</span>
@@ -9074,7 +10080,7 @@ A datetime object can be used to collect the end of the application usage.</p>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `aiobungie.crate.Activity`</span>
-<span class="sd">            An activity object of the deserialized payload.</span>
+<span class="sd">            An activity.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -9180,7 +10186,7 @@ A datetime object can be used to collect the end of the application usage.</p>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `aiobungie.crate.MilestoneContent`</span>
-<span class="sd">            A milestone content object of the deserialized payload.</span>
+<span class="sd">            A milestone content.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -9203,7 +10209,7 @@ A datetime object can be used to collect the end of the application usage.</p>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `aiobungie.crate.Friend`</span>
-<span class="sd">            A friend object of the deserialized payload.</span>
+<span class="sd">            A friend.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -9222,7 +10228,7 @@ A datetime object can be used to collect the end of the application usage.</p>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `collections.Sequence[aiobungie.crate.Friend]`</span>
-<span class="sd">            A sequence of friends object of the deserialized payload.</span>
+<span class="sd">            A sequence of friends.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -9241,7 +10247,7 @@ A datetime object can be used to collect the end of the application usage.</p>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `collections.Sequence[aiobungie.crate.FriendRequestView]`</span>
-<span class="sd">            A sequence of incoming and outgoing friends object of the deserialized payload.</span>
+<span class="sd">            A sequence of incoming and outgoing friends.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="c1"># Fireteams.</span>
@@ -9260,7 +10266,7 @@ A datetime object can be used to collect the end of the application usage.</p>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `collections.Sequence[aiobungie.crate.Fireteam]`</span>
-<span class="sd">            A sequence of fireteam object of the deserialized payload.</span>
+<span class="sd">            A sequence of fireteam.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -9277,7 +10283,7 @@ A datetime object can be used to collect the end of the application usage.</p>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `aiobungie.crate.FireteamUser`</span>
-<span class="sd">            A fireteam user object of the deserialized payload.</span>
+<span class="sd">            A fireteam user.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -9297,7 +10303,7 @@ A datetime object can be used to collect the end of the application usage.</p>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `typing.Optional[collections.Sequence[aiobungie.crate.FireteamUser]]`</span>
-<span class="sd">            An optional sequence of the fireteam members object of the deserialized payload.</span>
+<span class="sd">            An optional sequence of the fireteam members.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -9318,7 +10324,7 @@ A datetime object can be used to collect the end of the application usage.</p>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `typing.Union[aiobungie.crate.fireteams.AvalaibleFireteam, collections.Sequence[aiobungie.crate.fireteams.AvalaibleFireteam]]` # noqa: E501</span>
-<span class="sd">            An available fireteam or a sequence of available fireteam object of the deserialized payload.</span>
+<span class="sd">            An available fireteam or a sequence of available fireteam.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -9354,7 +10360,7 @@ A datetime object can be used to collect the end of the application usage.</p>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `aiobungie.crate.Artifact`</span>
-<span class="sd">            A seasonal artifact object of the deserialized payload.</span>
+<span class="sd">            A seasonal artifact.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="c1"># Items</span>
@@ -9431,7 +10437,7 @@ A datetime object can be used to collect the end of the application usage.</p>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `aiobungie.crate.User`</span>
-<span class="sd">            A user object of the deserialized payload.</span>
+<span class="sd">            A user object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
@@ -9449,7 +10455,7 @@ The JSON data/payload.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code><a href="crate.html#User">aiobungie.crate.User</a></code></strong>: A user object of the deserialized payload.</li>
+<li><strong><code><a href="crate.html#User">aiobungie.crate.User</a></code></strong>: A user object.</li>
 </ul>
 </div>
 
@@ -9481,7 +10487,7 @@ The JSON data/payload.</li>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `aiobungie.crate.BungieUser`</span>
-<span class="sd">            A Bungie user object of the deserialized payload.</span>
+<span class="sd">            A Bungie user.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
@@ -9502,31 +10508,28 @@ The JSON data/payload.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code><a href="crate.html#BungieUser">aiobungie.crate.BungieUser</a></code></strong>: A Bungie user object of the deserialized payload.</li>
+<li><strong><code><a href="crate.html#BungieUser">aiobungie.crate.BungieUser</a></code></strong>: A Bungie user.</li>
 </ul>
 </div>
 
 
                             </div>
-                            <div id="FactoryInterface.deseialize_found_users" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#FactoryInterface.deseialize_found_users">#&nbsp;&nbsp</a>
+                            <div id="FactoryInterface.deseialize_searched_user" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#FactoryInterface.deseialize_searched_user">#&nbsp;&nbsp</a>
 
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deseialize_found_users</span><span class="signature">(
-    self,
-    payload: dict
-) -&gt; collections.abc.Sequence[<a href="crate.html#user.DestinyUser">aiobungie.crate.user.DestinyUser</a>]</span>:
+            <span class="name">deseialize_searched_user</span><span class="signature">(self, payload: dict) -&gt; <a href="crate.html#user.SearchableDestinyUser">aiobungie.crate.user.SearchableDestinyUser</a></span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">deseialize_found_users</span><span class="p">(</span>
+    <span class="k">def</span> <span class="nf">deseialize_searched_user</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">DestinyUser</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Deserialize a raw JSON of prefix searched users.</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">user</span><span class="o">.</span><span class="n">SearchableDestinyUser</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Deserialize the results of user search details.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -9535,14 +10538,14 @@ The JSON data/payload.</li>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `collections.Sequence[aiobungie.crate.DestinyUser]`</span>
-<span class="sd">            A sequence of the deserialized Destiny users/memberships.</span>
+<span class="sd">        `aiobungie.crate.SearchableDestinyUser`</span>
+<span class="sd">            The searched for Destiny 2 membership.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Deserialize a raw JSON of prefix searched users.</p>
+            <div class="docstring"><p>Deserialize the results of user search details.</p>
 
 <h6 id="parameters">Parameters</h6>
 
@@ -9554,7 +10557,7 @@ The JSON payload.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code>collections.Sequence[<a href="crate.html#DestinyUser">aiobungie.crate.DestinyUser</a>]</code></strong>: A sequence of the deserialized Destiny users/memberships.</li>
+<li><strong><code><a href="crate.html#SearchableDestinyUser">aiobungie.crate.SearchableDestinyUser</a></code></strong>: The searched for Destiny 2 membership.</li>
 </ul>
 </div>
 
@@ -9588,7 +10591,7 @@ The JSON payload.</li>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `aiobungie.crate.PartialBungieUser`</span>
-<span class="sd">            A partial bungie user object of the deserialized payload.</span>
+<span class="sd">            A partial bungie user.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
@@ -9609,30 +10612,28 @@ The JSON payload.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code><a href="crate.html#PartialBungieUser">aiobungie.crate.PartialBungieUser</a></code></strong>: A partial bungie user object of the deserialized payload.</li>
+<li><strong><code><a href="crate.html#PartialBungieUser">aiobungie.crate.PartialBungieUser</a></code></strong>: A partial bungie user.</li>
 </ul>
 </div>
 
 
                             </div>
-                            <div id="FactoryInterface.deserialize_destiny_user" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#FactoryInterface.deserialize_destiny_user">#&nbsp;&nbsp</a>
+                            <div id="FactoryInterface.deserialize_destiny_membership" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#FactoryInterface.deserialize_destiny_membership">#&nbsp;&nbsp</a>
 
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_destiny_user</span><span class="signature">(self, payload: dict) -&gt; <a href="crate.html#user.DestinyUser">aiobungie.crate.user.DestinyUser</a></span>:
+            <span class="name">deserialize_destiny_membership</span><span class="signature">(self, payload: dict) -&gt; <a href="crate.html#user.DestinyMembership">aiobungie.crate.user.DestinyMembership</a></span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">deserialize_destiny_user</span><span class="p">(</span>
+    <span class="k">def</span> <span class="nf">deserialize_destiny_membership</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">user</span><span class="o">.</span><span class="n">DestinyUser</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Deserialize a raw JSON of `destinyUserInfo` destiny memberships information.</span>
-
-<span class="sd">        A destiny user is just destiny memberships, i.e., Xbox membershio, Steam membership. etc.</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">user</span><span class="o">.</span><span class="n">DestinyMembership</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Deserialize a raw JSON of `destinyUserInfo` destiny membership information.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -9641,16 +10642,14 @@ The JSON payload.</li>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `aiobungie.crate.user.DestinyUser`</span>
-<span class="sd">            A destiny membership/user object of the deserialized payload.</span>
+<span class="sd">        `aiobungie.crate.user.DestinyMembership`</span>
+<span class="sd">            A Destiny 2 membership.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Deserialize a raw JSON of <code>destinyUserInfo</code> destiny memberships information.</p>
-
-<p>A destiny user is just destiny memberships, i.e., Xbox membershio, Steam membership. etc.</p>
+            <div class="docstring"><p>Deserialize a raw JSON of <code>destinyUserInfo</code> destiny membership information.</p>
 
 <h6 id="parameters">Parameters</h6>
 
@@ -9662,30 +10661,30 @@ The JSON payload.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code><a href="crate.html#user.DestinyUser">aiobungie.crate.user.DestinyUser</a></code></strong>: A destiny membership/user object of the deserialized payload.</li>
+<li><strong><code><a href="crate.html#user.DestinyMembership">aiobungie.crate.user.DestinyMembership</a></code></strong>: A Destiny 2 membership.</li>
 </ul>
 </div>
 
 
                             </div>
-                            <div id="FactoryInterface.deserialize_destiny_members" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#FactoryInterface.deserialize_destiny_members">#&nbsp;&nbsp</a>
+                            <div id="FactoryInterface.deserialize_destiny_memberships" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#FactoryInterface.deserialize_destiny_memberships">#&nbsp;&nbsp</a>
 
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_destiny_members</span><span class="signature">(
+            <span class="name">deserialize_destiny_memberships</span><span class="signature">(
     self,
     data: list
-) -&gt; collections.abc.Sequence[<a href="crate.html#user.DestinyUser">aiobungie.crate.user.DestinyUser</a>]</span>:
+) -&gt; collections.abc.Sequence[<a href="crate.html#user.DestinyMembership">aiobungie.crate.user.DestinyMembership</a>]</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">deserialize_destiny_members</span><span class="p">(</span>
+    <span class="k">def</span> <span class="nf">deserialize_destiny_memberships</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONArray</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">DestinyUser</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">DestinyMembership</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Deserialize a raw JSON payload/array of `destinyUserInfo`.</span>
 
 <span class="sd">        Parameters</span>
@@ -9695,8 +10694,8 @@ The JSON payload.</li>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `collections.Sequence[aiobungie.crate.user.DestinyUser]`</span>
-<span class="sd">            A sequence of destiny membership/user object of the deserialized payload.</span>
+<span class="sd">        `collections.Sequence[aiobungie.crate.user.DestinyMembership]`</span>
+<span class="sd">            A sequence of Destiny 2 memberships.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
@@ -9714,7 +10713,7 @@ The JSON payload.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code>collections.Sequence[<a href="crate.html#user.DestinyUser">aiobungie.crate.user.DestinyUser</a>]</code></strong>: A sequence of destiny membership/user object of the deserialized payload.</li>
+<li><strong><code>collections.Sequence[<a href="crate.html#user.DestinyMembership">aiobungie.crate.user.DestinyMembership</a>]</code></strong>: A sequence of Destiny 2 memberships.</li>
 </ul>
 </div>
 
@@ -9748,7 +10747,7 @@ The JSON payload.</li>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `collections.Sequence[aiobungie.crate.user.UserThemes]`</span>
-<span class="sd">            A sequence of bungie user themes object of the deserialized payload.</span>
+<span class="sd">            A sequence of bungie user themes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
@@ -9766,69 +10765,8 @@ The JSON payload.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code>collections.Sequence[<a href="crate.html#user.UserThemes">aiobungie.crate.user.UserThemes</a>]</code></strong>: A sequence of bungie user themes object of the deserialized payload.</li>
+<li><strong><code>collections.Sequence[<a href="crate.html#user.UserThemes">aiobungie.crate.user.UserThemes</a>]</code></strong>: A sequence of bungie user themes.</li>
 </ul>
-</div>
-
-
-                            </div>
-                            <div id="FactoryInterface.deserialize_players" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#FactoryInterface.deserialize_players">#&nbsp;&nbsp</a>
-
-                <div class="decorator">@abc.abstractmethod</div>
-
-            <span class="def">def</span>
-            <span class="name">deserialize_players</span><span class="signature">(
-    self,
-    payload: list,
-    /
-) -&gt; collections.abc.Sequence[<a href="crate.html#user.DestinyUser">aiobungie.crate.user.DestinyUser</a>]</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">deserialize_players</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONArray</span><span class="p">,</span> <span class="o">/</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">DestinyUser</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Deserialize a raw JSON sequence of players.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        payload : `aiobungie.typedefs.JSONArray`</span>
-<span class="sd">            The JSON payload.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        `collections.Sequence[aiobungie.crate.user.DestinyUser]`</span>
-<span class="sd">            A sequence of players object of the deserialized payload.</span>
-
-<span class="sd">            .. note::</span>
-<span class="sd">                This typically returns just 1 element</span>
-<span class="sd">                but keeping it a sequence to match the JSON array signature.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Deserialize a raw JSON sequence of players.</p>
-
-<h6 id="parameters">Parameters</h6>
-
-<ul>
-<li><strong>payload</strong> (<code><a href="typedefs.html#JSONArray">aiobungie.typedefs.JSONArray</a></code>):
-The JSON payload.</li>
-</ul>
-
-<h6 id="returns">Returns</h6>
-
-<ul>
-<li><strong><code>collections.Sequence[<a href="crate.html#user.DestinyUser">aiobungie.crate.user.DestinyUser</a>]</code></strong>: A sequence of players object of the deserialized payload.</li>
-</ul>
-
-<p><em>Note:</em>
-This typically returns just 1 element
-but keeping it a sequence to match the JSON array signature.</p>
 </div>
 
 
@@ -9908,7 +10846,7 @@ The JSON payload.</li>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `aiobungie.crate.Clan`</span>
-<span class="sd">            A clan owner object of the deserialized payload.</span>
+<span class="sd">            A clan owner.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
@@ -9926,7 +10864,7 @@ The JSON payload.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code><a href="crate.html#Clan">aiobungie.crate.Clan</a></code></strong>: A clan owner object of the deserialized payload.</li>
+<li><strong><code><a href="crate.html#Clan">aiobungie.crate.Clan</a></code></strong>: A clan owner.</li>
 </ul>
 </div>
 
@@ -9957,7 +10895,7 @@ The JSON payload.</li>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `aiobungie.typedefs.NoneOr[aiobungie.crate.GroupMember]`</span>
-<span class="sd">            A group member object of the deserialized payload. This can return `None` if nothing was found.</span>
+<span class="sd">            A group member. This can return `None` if nothing was found.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
@@ -9975,7 +10913,7 @@ The JSON payload.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code><a href="typedefs.html#NoneOr">aiobungie.typedefs.NoneOr</a>[<a href="crate.html#GroupMember">aiobungie.crate.GroupMember</a>]</code></strong>: A group member object of the deserialized payload. This can return <code>None</code> if nothing was found.</li>
+<li><strong><code><a href="typedefs.html#NoneOr">aiobungie.typedefs.NoneOr</a>[<a href="crate.html#GroupMember">aiobungie.crate.GroupMember</a>]</code></strong>: A group member. This can return <code>None</code> if nothing was found.</li>
 </ul>
 </div>
 
@@ -10004,7 +10942,7 @@ The JSON payload.</li>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `aiobungie.crate.ClanMember`</span>
-<span class="sd">            A clan member object of the deserialized payload.</span>
+<span class="sd">            A clan member.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
@@ -10022,7 +10960,7 @@ The JSON payload.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code><a href="crate.html#ClanMember">aiobungie.crate.ClanMember</a></code></strong>: A clan member object of the deserialized payload.</li>
+<li><strong><code><a href="crate.html#ClanMember">aiobungie.crate.ClanMember</a></code></strong>: A clan member.</li>
 </ul>
 </div>
 
@@ -10210,7 +11148,7 @@ The JSON payload.</li>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `aiobungie.crate.application.ApplicationOwner`</span>
-<span class="sd">            An application owner object of the deserialized payload.</span>
+<span class="sd">            An application owner.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
@@ -10228,7 +11166,7 @@ The JSON payload.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code><a href="crate.html#application.ApplicationOwner">aiobungie.crate.application.ApplicationOwner</a></code></strong>: An application owner object of the deserialized payload.</li>
+<li><strong><code><a href="crate.html#application.ApplicationOwner">aiobungie.crate.application.ApplicationOwner</a></code></strong>: An application owner.</li>
 </ul>
 </div>
 
@@ -10257,7 +11195,7 @@ The JSON payload.</li>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `aiobungie.crate.application.Application`</span>
-<span class="sd">            An application object of the deserialized payload.</span>
+<span class="sd">            An application.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
@@ -10275,7 +11213,7 @@ The JSON payload.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code><a href="crate.html#application.Application">aiobungie.crate.application.Application</a></code></strong>: An application object of the deserialized payload.</li>
+<li><strong><code><a href="crate.html#application.Application">aiobungie.crate.application.Application</a></code></strong>: An application.</li>
 </ul>
 </div>
 
@@ -10306,7 +11244,7 @@ The JSON payload.</li>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `aiobungie.crate.CharacterComponent`</span>
-<span class="sd">            A character component object of the deserialized payload.</span>
+<span class="sd">            A character component.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
@@ -10324,7 +11262,7 @@ The JSON payload.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code><a href="crate.html#CharacterComponent">aiobungie.crate.CharacterComponent</a></code></strong>: A character component object of the deserialized payload.</li>
+<li><strong><code><a href="crate.html#CharacterComponent">aiobungie.crate.CharacterComponent</a></code></strong>: A character component.</li>
 </ul>
 </div>
 
@@ -10730,7 +11668,7 @@ The JSON payload.</li>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `aiobungie.crate.ProfileProgression`</span>
-<span class="sd">            A profile progression component object of the deserialized payload.</span>
+<span class="sd">            A profile progression component.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
@@ -10748,7 +11686,7 @@ The JSON payload.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code><a href="crate.html#ProfileProgression">aiobungie.crate.ProfileProgression</a></code></strong>: A profile progression component object of the deserialized payload.</li>
+<li><strong><code><a href="crate.html#ProfileProgression">aiobungie.crate.ProfileProgression</a></code></strong>: A profile progression component.</li>
 </ul>
 </div>
 
@@ -10779,7 +11717,7 @@ The JSON payload.</li>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `typing.Optional[aiobungie.crate.Profile]`</span>
-<span class="sd">            A profile object of the deserialized payload.</span>
+<span class="sd">            A profile.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
@@ -10797,7 +11735,7 @@ The JSON payload.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code>typing.Optional[<a href="crate.html#Profile">aiobungie.crate.Profile</a>]</code></strong>: A profile object of the deserialized payload.</li>
+<li><strong><code>typing.Optional[<a href="crate.html#Profile">aiobungie.crate.Profile</a>]</code></strong>: A profile.</li>
 </ul>
 </div>
 
@@ -10887,7 +11825,7 @@ The JSON payload.</li>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `aiobungie.crate.LinkedProfile`</span>
-<span class="sd">            A hard linked profile object of the deserialized payload.</span>
+<span class="sd">            A hard linked profile.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
@@ -10905,7 +11843,7 @@ The JSON payload.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code><a href="crate.html#LinkedProfile">aiobungie.crate.LinkedProfile</a></code></strong>: A hard linked profile object of the deserialized payload.</li>
+<li><strong><code><a href="crate.html#LinkedProfile">aiobungie.crate.LinkedProfile</a></code></strong>: A hard linked profile.</li>
 </ul>
 </div>
 
@@ -11307,7 +12245,7 @@ The JSON payload.</li>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `aiobungie.crate.InventoryEntity`</span>
-<span class="sd">            An entity item object of the deserialized payload.</span>
+<span class="sd">            An entity item.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
@@ -11327,7 +12265,7 @@ The JSON payload.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code><a href="crate.html#InventoryEntity">aiobungie.crate.InventoryEntity</a></code></strong>: An entity item object of the deserialized payload.</li>
+<li><strong><code><a href="crate.html#InventoryEntity">aiobungie.crate.InventoryEntity</a></code></strong>: An entity item.</li>
 </ul>
 </div>
 
@@ -11410,7 +12348,7 @@ The JSON payload.</li>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `aiobungie.crate.ObjectiveEntity`</span>
-<span class="sd">            An objetive entity object of the deserialized payload.</span>
+<span class="sd">            An objetive entity.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
@@ -11428,7 +12366,7 @@ The JSON payload.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code><a href="crate.html#ObjectiveEntity">aiobungie.crate.ObjectiveEntity</a></code></strong>: An objetive entity object of the deserialized payload.</li>
+<li><strong><code><a href="crate.html#ObjectiveEntity">aiobungie.crate.ObjectiveEntity</a></code></strong>: An objetive entity.</li>
 </ul>
 </div>
 
@@ -11459,7 +12397,7 @@ The JSON payload.</li>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `aiobungie.crate.Activity`</span>
-<span class="sd">            An activity object of the deserialized payload.</span>
+<span class="sd">            An activity.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
@@ -11477,7 +12415,7 @@ The JSON payload.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code><a href="crate.html#Activity">aiobungie.crate.Activity</a></code></strong>: An activity object of the deserialized payload.</li>
+<li><strong><code><a href="crate.html#Activity">aiobungie.crate.Activity</a></code></strong>: An activity.</li>
 </ul>
 </div>
 
@@ -11761,7 +12699,7 @@ The JSON payload.</li>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `aiobungie.crate.MilestoneContent`</span>
-<span class="sd">            A milestone content object of the deserialized payload.</span>
+<span class="sd">            A milestone content.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
@@ -11779,7 +12717,7 @@ The JSON payload.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code><a href="crate.html#MilestoneContent">aiobungie.crate.MilestoneContent</a></code></strong>: A milestone content object of the deserialized payload.</li>
+<li><strong><code><a href="crate.html#MilestoneContent">aiobungie.crate.MilestoneContent</a></code></strong>: A milestone content.</li>
 </ul>
 </div>
 
@@ -11831,7 +12769,7 @@ The JSON payload.</li>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `aiobungie.crate.Friend`</span>
-<span class="sd">            A friend object of the deserialized payload.</span>
+<span class="sd">            A friend.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
@@ -11849,7 +12787,7 @@ The JSON payload.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code><a href="crate.html#Friend">aiobungie.crate.Friend</a></code></strong>: A friend object of the deserialized payload.</li>
+<li><strong><code><a href="crate.html#Friend">aiobungie.crate.Friend</a></code></strong>: A friend.</li>
 </ul>
 </div>
 
@@ -11885,7 +12823,7 @@ The JSON payload.</li>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `collections.Sequence[aiobungie.crate.Friend]`</span>
-<span class="sd">            A sequence of friends object of the deserialized payload.</span>
+<span class="sd">            A sequence of friends.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
@@ -11905,7 +12843,7 @@ The JSON payload.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code>collections.Sequence[<a href="crate.html#Friend">aiobungie.crate.Friend</a>]</code></strong>: A sequence of friends object of the deserialized payload.</li>
+<li><strong><code>collections.Sequence[<a href="crate.html#Friend">aiobungie.crate.Friend</a>]</code></strong>: A sequence of friends.</li>
 </ul>
 </div>
 
@@ -11938,7 +12876,7 @@ The JSON payload.</li>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `collections.Sequence[aiobungie.crate.FriendRequestView]`</span>
-<span class="sd">            A sequence of incoming and outgoing friends object of the deserialized payload.</span>
+<span class="sd">            A sequence of incoming and outgoing friends.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
@@ -11958,7 +12896,7 @@ The JSON payload.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code>collections.Sequence[<a href="crate.html#FriendRequestView">aiobungie.crate.FriendRequestView</a>]</code></strong>: A sequence of incoming and outgoing friends object of the deserialized payload.</li>
+<li><strong><code>collections.Sequence[<a href="crate.html#FriendRequestView">aiobungie.crate.FriendRequestView</a>]</code></strong>: A sequence of incoming and outgoing friends.</li>
 </ul>
 </div>
 
@@ -11992,7 +12930,7 @@ The JSON payload.</li>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `collections.Sequence[aiobungie.crate.Fireteam]`</span>
-<span class="sd">            A sequence of fireteam object of the deserialized payload.</span>
+<span class="sd">            A sequence of fireteam.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
@@ -12010,7 +12948,7 @@ The JSON payload.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code>collections.Sequence[<a href="crate.html#Fireteam">aiobungie.crate.Fireteam</a>]</code></strong>: A sequence of fireteam object of the deserialized payload.</li>
+<li><strong><code>collections.Sequence[<a href="crate.html#Fireteam">aiobungie.crate.Fireteam</a>]</code></strong>: A sequence of fireteam.</li>
 </ul>
 </div>
 
@@ -12041,7 +12979,7 @@ The JSON payload.</li>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `aiobungie.crate.FireteamUser`</span>
-<span class="sd">            A fireteam user object of the deserialized payload.</span>
+<span class="sd">            A fireteam user.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
@@ -12059,7 +12997,7 @@ The JSON payload.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code><a href="crate.html#FireteamUser">aiobungie.crate.FireteamUser</a></code></strong>: A fireteam user object of the deserialized payload.</li>
+<li><strong><code><a href="crate.html#FireteamUser">aiobungie.crate.FireteamUser</a></code></strong>: A fireteam user.</li>
 </ul>
 </div>
 
@@ -12098,7 +13036,7 @@ The JSON payload.</li>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `typing.Optional[collections.Sequence[aiobungie.crate.FireteamUser]]`</span>
-<span class="sd">            An optional sequence of the fireteam members object of the deserialized payload.</span>
+<span class="sd">            An optional sequence of the fireteam members.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
@@ -12119,7 +13057,7 @@ If not the it will just deserialize the <code>members</code> data.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code>typing.Optional[collections.Sequence[<a href="crate.html#FireteamUser">aiobungie.crate.FireteamUser</a>]]</code></strong>: An optional sequence of the fireteam members object of the deserialized payload.</li>
+<li><strong><code>typing.Optional[collections.Sequence[<a href="crate.html#FireteamUser">aiobungie.crate.FireteamUser</a>]]</code></strong>: An optional sequence of the fireteam members.</li>
 </ul>
 </div>
 
@@ -12159,7 +13097,7 @@ If not the it will just deserialize the <code>members</code> data.</li>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `typing.Union[aiobungie.crate.fireteams.AvalaibleFireteam, collections.Sequence[aiobungie.crate.fireteams.AvalaibleFireteam]]` # noqa: E501</span>
-<span class="sd">            An available fireteam or a sequence of available fireteam object of the deserialized payload.</span>
+<span class="sd">            An available fireteam or a sequence of available fireteam.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
@@ -12180,7 +13118,7 @@ Whether to deserialize the data from <code>results</code> in the payload or not.
 
 <ul>
 <li><strong><code>typing.Union[<a href="crate.html#fireteams.AvalaibleFireteam">aiobungie.crate.fireteams.AvalaibleFireteam</a>, collections.Sequence[<a href="crate.html#fireteams.AvalaibleFireteam">aiobungie.crate.fireteams.AvalaibleFireteam</a>]]</code> # noqa</strong> (E501):
-An available fireteam or a sequence of available fireteam object of the deserialized payload.</li>
+An available fireteam or a sequence of available fireteam.</li>
 </ul>
 </div>
 
@@ -12260,7 +13198,7 @@ The JSON payload.</li>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `aiobungie.crate.Artifact`</span>
-<span class="sd">            A seasonal artifact object of the deserialized payload.</span>
+<span class="sd">            A seasonal artifact.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
@@ -12278,7 +13216,7 @@ The JSON payload.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code><a href="crate.html#Artifact">aiobungie.crate.Artifact</a></code></strong>: A seasonal artifact object of the deserialized payload.</li>
+<li><strong><code><a href="crate.html#Artifact">aiobungie.crate.Artifact</a></code></strong>: A seasonal artifact.</li>
 </ul>
 </div>
 
@@ -12546,10 +13484,20 @@ The JSON payload.</li>
                 let heading;
                 switch (result.doc.type) {
                     case "function":
-                        heading = `<span class="def">${doc.funcdef}</span> <span class="name">${doc.fullname}</span><span class="signature">(${doc.parameters.join(", ")})</span>`;
+                        heading = `<span class="def">${doc.funcdef}</span> <span class="name">${doc.fullname}</span><span class="signature">${doc.signature}:</span>`;
                         break;
                     case "class":
                         heading = `<span class="def">class</span> <span class="name">${doc.fullname}</span>`;
+                        if (doc.bases)
+                            heading += `<wbr>(<span class="base">${doc.bases}</span>)`;
+                        heading += `:`;
+                        break;
+                    case "variable":
+                        heading = `<span class="name">${doc.fullname}</span>`;
+                        if (doc.annotation)
+                            heading += `<span class="annotation">${doc.annotation}</span>`;
+                        if (doc.default_value)
+                            heading += `<span class="default_value">${doc.default_value}</span>`;
                         break;
                     default:
                         heading = `<span class="name">${doc.fullname}</span>`;

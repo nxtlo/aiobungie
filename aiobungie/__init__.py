@@ -22,7 +22,9 @@
 
 """A Pythonic `async`/`await` wrapper for interacting with the Bungie API.
 
-A basic client based example.
+Example
+-------
+A Basic aiobungie API client.
 
 ```py
 import aiobungie
@@ -34,28 +36,38 @@ import aiobungie
 
 client = aiobungie.Client('YOUR_API_KEY')
 
+# An example on how to search for Destiny 2 users/memberships and get their characters.
 async def main() -> None:
-    users = await client.search_users('Indica')
+    users = await client.search_users('Fate')
     for user in users:
-        if user.type is aiobungie.MembershipType.STEAM and user.code == 868:
-            print('Found the user', user.name, user.id, user.type)
+        if user.code == 868:
+            print('Found the desired user!', user.name, user.bungie_id)
 
-        try:
-            character: aiobungie.crate.Character = await client.fetch_character(
-                user.id, user.type, aiobungie.Class.HUNTER)
-        except aiobungie.CharacterError as exc:
-            print(f'Couldn't get {user.name}'s hunter character. Due to: {exc}')
-        else:
-            print(character.light, character.id, character.emblem, character.class_type)
+            # Iterate through the user's memberships.
+            for membership in user.memberships:
+                if membership.type is aiobungie.MembershipType.STEAM:
+                    try:
+                        # Fetch the membership's profile and get characters component.
+                        my_profile = await membership.fetch_self_profile(aiobungie.ComponentType.CHARACTERS)
+
+                    # Handle the error.
+                    except aiobungie.CharacterError as exc:
+                        print(f'Couldn't get {user.name}'s characters. Due to: {exc.message}')
+                        return
+
+                    else:
+                        # Will return a Mapping from the character's id to `aiobungie.crate.Character` object.
+                        for character_id, character in my_profile.characters.items():
+                            print(character_id, character)
 
 client.run(main()) # or asyncio.run(main())
 ```
 
-A basic REST only client.
+A basic RESTful client.
 
 The difference between base client and the REST one are:
 
-* No Hight-Level concepts. Just interact with Bungie's API.
+* No Hight-Level concepts. Just interact with the API.
 * All returned data are pure JSON objects from Bungie's API.
 * No runtime assertions.
 
@@ -65,15 +77,21 @@ Which lets you to implement your own logic, classes objects to get the desired r
 import aiobungie
 
 async def main() -> None:
-    # First player in the array. Always returns one player.
-
     # Using `async with` context manager to close the session properly.
     async with aiobungie.RESTClient("TOKEN") as rest:
-        fetch_player = await rest.fetch_player('Fate怒#4275')
-        print(*fetch_player)  # A JSON array of dict object
-        for player in fetch_player:  # Iterate through the array.
-            print(player['membershipId'], player['iconPath']) # Print the player id and icon path.
-            for k, v in player.items(): # Key, Value
+        # Fetch the memberships of a Destiny 2 player.
+        payload = await rest.fetch_player('Fate怒', 4275)
+        print(*payload)  # A JSON array of dict objects of our memberships.
+
+        for membership in payload:
+            # Print the ID and icon path of each membership.
+            print(membership['membershipId'], membership['iconPath'])
+
+            # Printing the icon URL.
+            icon_url = aiobungie.Image(membership['iconPath'])
+            print(icon_url)
+
+            for k, v in membership.items(): # key, value
                 print(k, v)
 
 import asyncio
@@ -84,7 +102,7 @@ Should you use the base client or the REST client?
 This returns to you. For an example if you're building a website.
 
 You can use python as a REST API in the backend with the RESTClient since all returned object are JSON objects.
-Which gives you the freedom to deserialize it and implement you own logic in the front-end.
+Which gives you the freedom to deserialize it and implement your own logic in the front-end.
 
 Or of you're building a Discord bot for an example or something simple. The base client is the way to go.
 """

@@ -10,10 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `user.SearchableDestinyUser`.
 - More profile and characters components.
 - `factory.Factory` and `assets.Image` are now exported to top level.
+- Almost 95% of the API endpoints has been added.
+- `__int__` method to `UndefinedType` which returns a literal `0`
 
 ### Removed
 
 ### Changed
+- `DestinyUser` has been renamed to `DestinyMembership`.
 - `InternalServerError` is now raised when the API is down instead of `OSError`.
 - Factory methods name changes for consistency.
     * `deserialize_destiny_user` -> `*_destiny_membership`.

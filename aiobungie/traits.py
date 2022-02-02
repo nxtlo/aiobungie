@@ -118,7 +118,7 @@ class RESTful(typing.Protocol):
         path: str,
         auth: typing.Optional[str] = None,
         json: typing.Optional[dict[str, typing.Any]] = None,
-        **kwargs: typing.Any
+        **kwargs: typing.Any,
     ) -> typing.Any:
         """Perform an HTTP request given a valid Bungie endpoint.
 

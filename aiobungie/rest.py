@@ -1713,3 +1713,290 @@ class RESTClient(interfaces.RESTInterface):
 
     def fetch_bungie_applications(self) -> ResponseSig[typedefs.JSONArray]:
         return self._request(RequestMethod.GET, "App/FirstParty")
+
+    def fetch_content_type(self, type: str, /) -> ResponseSig[typedefs.JSONObject]:
+        return self._request(RequestMethod.GET, f"Content/GetContentType/{type}/")
+
+    def fetch_content_by_id(
+        self, id: int, locale: str, /, *, head: bool = False
+    ) -> ResponseSig[typedefs.JSONObject]:
+        return self._request(
+            RequestMethod.GET,
+            f"Content/GetContentById/{id}/{locale}/",
+            json={"head": head},
+        )
+
+    def fetch_content_by_tag_and_type(
+        self, locale: str, tag: str, type: str, *, head: bool = False
+    ) -> ResponseSig[typedefs.JSONObject]:
+        return self._request(
+            RequestMethod.GET,
+            f"Content/GetContentByTagAndType/{tag}/{type}/{locale}/",
+            json={"head": head},
+        )
+
+    def search_content_with_text(
+        self,
+        locale: str,
+        /,
+        content_type: str,
+        search_text: str,
+        tag: str,
+        *,
+        page: undefined.UndefinedOr[int] = undefined.Undefined,
+        source: undefined.UndefinedOr[str] = undefined.Undefined,
+    ) -> ResponseSig[typedefs.JSONObject]:
+
+        body: typedefs.JSONObject = {}
+
+        body["ctype"] = content_type
+        body["searchtext"] = search_text
+        body["tag"] = tag
+
+        if page is not undefined.Undefined:
+            body["currentpage"] = page
+        else:
+            body["currentpage"] = 1
+
+        if source is not undefined.Undefined:
+            body["source"] = source
+        else:
+            source = ""
+        return self._request(RequestMethod.GET, f"Content/Search/{locale}/", json=body)
+
+    def search_content_by_tag_and_type(
+        self,
+        locale: str,
+        tag: str,
+        type: str,
+        *,
+        page: undefined.UndefinedOr[int] = undefined.Undefined,
+    ) -> ResponseSig[typedefs.JSONObject]:
+        body: typedefs.JSONObject = {}
+        body["currentpage"] = 1 if page is undefined.Undefined else page
+        return self._request(
+            RequestMethod.GET,
+            f"Content/SearchContentByTagAndType/{tag}/{type}/{locale}/",
+            json=body,
+        )
+
+    def search_help_articles(
+        self, text: str, size: str, /
+    ) -> ResponseSig[typedefs.JSONObject]:
+        return self._request(
+            RequestMethod.GET, f"Content/SearchHelpArticles/{text}/{size}/"
+        )
+
+    def fetch_topics_page(
+        self,
+        category_filter: int,
+        group: int,
+        date_filter: int,
+        sort: typing.Union[str, bytes],
+        *,
+        page: undefined.UndefinedOr[int] = undefined.Undefined,
+        locales: undefined.UndefinedOr[collections.Iterable[str]] = undefined.Undefined,
+        tag_filter: undefined.UndefinedOr[str] = undefined.Undefined,
+    ) -> ResponseSig[typedefs.JSONObject]:
+
+        body: typedefs.JSONObject = {}
+        if locales is not undefined.Undefined:
+            body["locales"] = ",".join(str(locales))
+        else:
+            body["locales"] = ",".join([])
+
+        if tag_filter is not undefined.Undefined:
+            body["tagstring"] = tag_filter
+        else:
+            body["tagstring"] = ""
+
+        page = 0 if page is not undefined.Undefined else page
+
+        return self._request(
+            RequestMethod.GET,
+            f"Forum/GetTopicsPaged/{page}/{0}/{group}/{sort!s}/{date_filter}/{category_filter}/",
+            json=body,
+        )
+
+    def fetch_core_topics_page(
+        self,
+        category_filter: int,
+        date_filter: int,
+        sort: typing.Union[str, bytes],
+        *,
+        page: undefined.UndefinedOr[int] = undefined.Undefined,
+        locales: undefined.UndefinedOr[collections.Iterable[str]] = undefined.Undefined,
+    ) -> ResponseSig[typedefs.JSONObject]:
+        body: typedefs.JSONObject = {}
+
+        if locales is not undefined.Undefined:
+            body["locales"] = ",".join(str(locales))
+        else:
+            body["locales"] = ",".join([])
+
+        return self._request(
+            RequestMethod.GET,
+            f"Forum/GetCoreTopicsPaged/{0 if page is undefined.Undefined else page}"
+            f"/{sort!s}/{date_filter}/{category_filter}/",
+            json=body,
+        )
+
+    def fetch_posts_threaded_page(
+        self,
+        parent_post: bool,
+        page: int,
+        page_size: int,
+        parent_post_id: int,
+        reply_size: int,
+        root_thread_mode: bool,
+        sort_mode: int,
+        show_banned: typing.Optional[str] = None,
+    ) -> ResponseSig[typedefs.JSONObject]:
+        return self._request(
+            RequestMethod.GET,
+            f"Forum/GetPostsThreadedPaged/{parent_post}/{page}/"
+            f"{page_size}/{reply_size}/{parent_post_id}/{root_thread_mode}/{sort_mode}/",
+            json={"showbanned": show_banned},
+        )
+
+    def fetch_posts_threaded_page_from_child(
+        self,
+        child_id: bool,
+        page: int,
+        page_size: int,
+        reply_size: int,
+        root_thread_mode: bool,
+        sort_mode: int,
+        show_banned: typing.Optional[str] = None,
+    ) -> ResponseSig[typedefs.JSONObject]:
+        return self._request(
+            RequestMethod.GET,
+            f"Forum/GetPostsThreadedPagedFromChild/{child_id}/"
+            f"{page}/{page_size}/{reply_size}/{root_thread_mode}/{sort_mode}/",
+            json={"showbanned": show_banned},
+        )
+
+    def fetch_post_and_parent(
+        self, child_id: int, /, *, show_banned: typing.Optional[str] = None
+    ) -> ResponseSig[typedefs.JSONObject]:
+        return self._request(
+            RequestMethod.GET,
+            f"Forum/GetPostAndParent/{child_id}/",
+            json={"showbanned": show_banned},
+        )
+
+    def fetch_posts_and_parent_awaiting(
+        self, child_id: int, /, *, show_banned: typing.Optional[str] = None
+    ) -> ResponseSig[typedefs.JSONObject]:
+        return self._request(
+            RequestMethod.GET,
+            f"Forum/GetPostAndParentAwaitingApproval/{child_id}/",
+            json={"showbanned": show_banned},
+        )
+
+    def fetch_topic_for_content(self, content_id: int, /) -> ResponseSig[int]:
+        return self._request(
+            RequestMethod.GET, f"Forum/GetTopicForContent/{content_id}/"
+        )
+
+    def fetch_forum_tag_suggestions(
+        self, partial_tag: str, /
+    ) -> ResponseSig[typedefs.JSONObject]:
+        return self._request(
+            RequestMethod.GET,
+            "Forum/GetForumTagSuggestions/",
+            json={"partialtag": partial_tag},
+        )
+
+    def fetch_poll(self, topic_id: int, /) -> ResponseSig[typedefs.JSONObject]:
+        return self._request(RequestMethod.GET, f"Forum/Poll/{topic_id}/")
+
+    def fetch_recuirement_thread_summaries(self) -> ResponseSig[typedefs.JSONArray]:
+        return self._request(RequestMethod.POST, "Forum/Recruit/Summaries/")
+
+    def fetch_recommended_groups(
+        self,
+        accecss_token: str,
+        /,
+        *,
+        date_range: int = 0,
+        group_type: typedefs.IntAnd[enums.GroupType] = enums.GroupType.CLAN,
+    ) -> ResponseSig[typedefs.JSONArray]:
+        return self._request(
+            RequestMethod.POST,
+            f"GroupV2/Recommended/{int(group_type)}/{date_range}/",
+            auth=accecss_token,
+        )
+
+    def fetch_available_avatars(self) -> ResponseSig[dict[str, int]]:
+        return self._request(RequestMethod.GET, "GroupV2/GetAvailableAvatars/")
+
+    def fetch_user_clan_invite_setting(
+        self,
+        access_token: str,
+        /,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+    ) -> ResponseSig[bool]:
+        return self._request(
+            RequestMethod.GET,
+            f"GroupV2/GetUserClanInviteSetting/{int(membership_type)}/",
+            auth=access_token,
+        )
+
+    def fetch_banned_group_members(
+        self, access_token: str, group_id: int, /, *, page: int = 1
+    ) -> ResponseSig[typedefs.JSONObject]:
+        return self._request(
+            RequestMethod.GET,
+            f"GroupV2/{group_id}/Banned/?currentpage={page}",
+            auth=access_token,
+        )
+
+    def fetch_pending_group_memberships(
+        self, access_token: str, group_id: int, /, *, current_page: int = 1
+    ) -> ResponseSig[typedefs.JSONObject]:
+        return self._request(
+            RequestMethod.GET,
+            f"GroupV2/{group_id}/Members/Pending/?currentpage={current_page}",
+            auth=access_token,
+        )
+
+    def fetch_invited_group_memberships(
+        self, access_token: str, group_id: int, /, *, current_page: int = 1
+    ) -> ResponseSig[typedefs.JSONObject]:
+        return self._request(
+            RequestMethod.GET,
+            f"GroupV2/{group_id}/Members/InvitedIndividuals/?currentpage={current_page}",
+            auth=access_token,
+        )
+
+    def invite_member_to_group(
+        self,
+        access_token: str,
+        /,
+        group_id: int,
+        membership_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+        *,
+        message: undefined.UndefinedOr[str] = undefined.Undefined,
+    ) -> ResponseSig[typedefs.JSONObject]:
+        return self._request(
+            RequestMethod.POST,
+            f"GroupV2/{group_id}/Members/IndividualInvite/{int(membership_type)}/{membership_id}/",
+            auth=access_token,
+            json={"message": str(message)},
+        )
+
+    def cancel_group_member_invite(
+        self,
+        access_token: str,
+        /,
+        group_id: int,
+        membership_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+    ) -> ResponseSig[typedefs.JSONObject]:
+        return self._request(
+            RequestMethod.POST,
+            f"GroupV2/{group_id}/Members/IndividualInviteCancel/{int(membership_type)}/{membership_id}/",
+            auth=access_token,
+        )

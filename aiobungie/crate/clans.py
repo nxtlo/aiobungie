@@ -170,7 +170,7 @@ class ClanBanner:
 
 
 @attrs.define(kw_only=True)
-class ClanMember(user.DestinyUser):
+class ClanMember(user.DestinyMembership):
     """Represents a Bungie clan member."""
 
     net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
@@ -324,7 +324,7 @@ class GroupMember:
     join_date: datetime
     """An awre UTC datetime of the member's join date."""
 
-    member: user.DestinyUser
+    member: user.DestinyMembership
     """The member's destiny object that represents the group member."""
 
     group: Clan

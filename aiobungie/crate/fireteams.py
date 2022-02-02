@@ -230,7 +230,7 @@ class FireteamParty:
 
 
 @attrs.define(kw_only=True)
-class FireteamUser(user.DestinyUser):
+class FireteamUser(user.DestinyMembership):
     """Represents a Bungie fireteam user info."""
 
     fireteam_display_name: str

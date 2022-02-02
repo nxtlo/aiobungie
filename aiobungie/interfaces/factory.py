@@ -133,7 +133,7 @@ class FactoryInterface(abc.ABC):
     @abc.abstractmethod
     def deserialize_destiny_membership(
         self, payload: typedefs.JSONObject
-    ) -> user.DestinyUser:
+    ) -> user.DestinyMembership:
         """Deserialize a raw JSON of `destinyUserInfo` destiny membership information.
 
         Parameters
@@ -143,14 +143,14 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.crate.user.DestinyUser`
+        `aiobungie.crate.user.DestinyMembership`
             A Destiny 2 membership.
         """
 
     @abc.abstractmethod
     def deserialize_destiny_memberships(
         self, data: typedefs.JSONArray
-    ) -> collections.Sequence[user.DestinyUser]:
+    ) -> collections.Sequence[user.DestinyMembership]:
         """Deserialize a raw JSON payload/array of `destinyUserInfo`.
 
         Parameters
@@ -160,7 +160,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `collections.Sequence[aiobungie.crate.user.DestinyUser]`
+        `collections.Sequence[aiobungie.crate.user.DestinyMembership]`
             A sequence of Destiny 2 memberships.
         """
 

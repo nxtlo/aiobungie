@@ -30,7 +30,7 @@ __all__: tuple[str, ...] = (
     "UserThemes",
     "BungieUser",
     "PartialBungieUser",
-    "DestinyUser",
+    "DestinyMembership",
     "UserCredentials",
     "SearchableDestinyUser",
 )
@@ -254,8 +254,8 @@ class BungieUser:
 
 
 @attrs.define(kw_only=True)
-class DestinyUser(UserLike):
-    """Represents a Bungie user's Destiny memberships."""
+class DestinyMembership(UserLike):
+    """Represents a Bungie user's Destiny2 membership."""
 
     net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
     """A network state used for making external requests."""
@@ -267,7 +267,7 @@ class DestinyUser(UserLike):
     """The member's name."""
 
     last_seen_name: str
-    """The member's last seen display name. You may use this field if `DestinyUser.name` is `Undefined`."""
+    """The member's last seen display name. You may use this field if `DestinyMembership.name` is `Undefined`."""
 
     type: enums.MembershipType
     """The member's membership type."""
@@ -333,7 +333,7 @@ class SearchableDestinyUser:
     bungie_id: typing.Optional[int]
     """The user's Bungie.net id if set."""
 
-    memberships: collections.Sequence[DestinyUser]
+    memberships: collections.Sequence[DestinyMembership]
     """A sequence of the user's Destiny 2 memberships."""
 
 
@@ -411,7 +411,7 @@ class User:
     bungie: BungieUser
     """The user's bungie net user."""
 
-    destiny: collections.Sequence[DestinyUser]
+    destiny: collections.Sequence[DestinyMembership]
     """A sequence of the user's Destiny memberships."""
 
     primary_membership_id: typing.Optional[int]

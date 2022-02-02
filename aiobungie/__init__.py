@@ -99,13 +99,13 @@ from aiobungie import typedefs
 from aiobungie import url
 from aiobungie.client import Client
 from aiobungie.error import *
+from aiobungie.internal.assets import Image
 from aiobungie.internal.enums import *
+from aiobungie.internal.factory import Factory
 from aiobungie.rest import *
 from aiobungie.undefined import Undefined
 from aiobungie.undefined import UndefinedOr
 from aiobungie.undefined import UndefinedType
-from aiobungie.internal.assets import Image
-from aiobungie.internal.factory import Factory
 
 from ._info import __about__
 from ._info import __author__

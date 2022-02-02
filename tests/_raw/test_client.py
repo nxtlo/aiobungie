@@ -238,7 +238,7 @@ async def test_membership_types_from_id():
     assert isinstance(u, aiobungie.crate.User)
     assert isinstance(u.bungie, aiobungie.crate.BungieUser)
     for du in u.destiny:
-        assert isinstance(du, aiobungie.crate.DestinyUser)
+        assert isinstance(du, aiobungie.crate.DestinyMembership)
 
 async def test_search_users():
     x = await client.search_users("Fate")
@@ -246,7 +246,7 @@ async def test_search_users():
     for u in x:
         assert isinstance(u, aiobungie.crate.SearchableDestinyUser)
         for membership in u.memberships:
-            assert isinstance(membership, aiobungie.crate.DestinyUser)
+            assert isinstance(membership, aiobungie.crate.DestinyMembership)
 
 async def test_clan_conves():
     x = await client.fetch_clan_conversations(881267)
@@ -284,7 +284,7 @@ async def test_linked_profiles():
     )
     assert isinstance(obj, aiobungie.crate.LinkedProfile)
     for user in obj.profiles:
-        assert isinstance(user, aiobungie.crate.DestinyUser)
+        assert isinstance(user, aiobungie.crate.DestinyMembership)
         transform_profile = await user.fetch_self_profile(
             aiobungie.ComponentType.PROFILE
         )

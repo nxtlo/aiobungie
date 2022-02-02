@@ -37,6 +37,9 @@ class UndefinedType:
     def __bool__(self) -> typing.Literal[False]:
         return False
 
+    def __int__(self) -> typing.Literal[0]:
+        return 0
+
     def __repr__(self) -> str:
         return "UNDEFINED"
 

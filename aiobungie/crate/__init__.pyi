@@ -44,7 +44,7 @@ from .user import *
 #   Component
 #   Currency
 #   CustomizationOptions
-#   DestinyUser
+#   DestinyMembership
 #   Dye
 #   ExtendedValues
 #   ExtendedWeaponValues

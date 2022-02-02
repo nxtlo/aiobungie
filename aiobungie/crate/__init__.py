@@ -129,7 +129,7 @@ __all__: tuple[str, ...] = (
     "UserThemes",
     "BungieUser",
     "PartialBungieUser",
-    "DestinyUser",
+    "DestinyMembership",
     "UserCredentials",
     "SearchableDestinyUser",
     # items.py

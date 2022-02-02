@@ -216,7 +216,7 @@ class Client(traits.ClientBase):
 
         Returns
         -------
-        `collections.Sequence[aiobungie.crate.DestinyUser]`
+        `collections.Sequence[aiobungie.crate.DestinyMembership]`
             A sequence of destiny memberships.
         """
         payload = await self.rest.search_users(name)
@@ -282,7 +282,7 @@ class Client(traits.ClientBase):
         -----
         * This returns both BungieNet membership and a sequence of the player's DestinyMemberships
         Which includes Stadia, Xbox, Steam and PSN memberships if the player has them,
-        see `aiobungie.crate.user.DestinyUser` for indetailed.
+        see `aiobungie.crate.user.DestinyMembership` for indetailed.
         * If you only want the bungie user. Consider using `Client.fetch_user` method.
 
         Parameters
@@ -427,7 +427,7 @@ class Client(traits.ClientBase):
         code: int,
         /,
         type: typedefs.IntAnd[enums.MembershipType] = enums.MembershipType.ALL,
-    ) -> collections.Sequence[user.DestinyUser]:
+    ) -> collections.Sequence[user.DestinyMembership]:
         """Fetch a Destiny 2 player's memberships.
 
         Parameters
@@ -441,7 +441,7 @@ class Client(traits.ClientBase):
 
         Returns
         --------
-        `collections.Sequence[aiobungie.crate.DestinyUser]`
+        `collections.Sequence[aiobungie.crate.DestinyMembership]`
             A sequence of the found Destiny 2 player memberships.
             An empty sequene will be returned if no one found.
 

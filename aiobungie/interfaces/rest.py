@@ -51,6 +51,7 @@ if typing.TYPE_CHECKING:
             typedefs.JSONArray,
             typedefs.JSONObject,
             int,
+            bool,
             None,
         ],
     )
@@ -2186,3 +2187,204 @@ class RESTInterface(traits.RESTful, abc.ABC):
         `ResponseSig[aiobungie.typedefs.JSONObject]`
             A JSON object of the application usage details.
         """
+
+    @abc.abstractmethod
+    def fetch_content_type(self, type: str, /) -> ResponseSig[typedefs.JSONObject]:
+        ...
+
+    @abc.abstractmethod
+    def fetch_content_by_id(
+        self, id: int, locale: str, /, *, head: bool = False
+    ) -> ResponseSig[typedefs.JSONObject]:
+        ...
+
+    @abc.abstractmethod
+    def fetch_content_by_tag_and_type(
+        self, locale: str, tag: str, type: str, *, head: bool = False
+    ) -> ResponseSig[typedefs.JSONObject]:
+        ...
+
+    @abc.abstractmethod
+    def search_content_with_text(
+        self,
+        locale: str,
+        /,
+        content_type: str,
+        search_text: str,
+        tag: str,
+        *,
+        page: undefined.UndefinedOr[int] = undefined.Undefined,
+        source: undefined.UndefinedOr[str] = undefined.Undefined,
+    ) -> ResponseSig[typedefs.JSONObject]:
+        ...
+
+    @abc.abstractmethod
+    def search_content_by_tag_and_type(
+        self,
+        locale: str,
+        tag: str,
+        type: str,
+        *,
+        page: undefined.UndefinedOr[int] = undefined.Undefined,
+    ) -> ResponseSig[typedefs.JSONObject]:
+        ...
+
+    @abc.abstractmethod
+    def search_help_articles(
+        self, text: str, size: str, /
+    ) -> ResponseSig[typedefs.JSONObject]:
+        ...
+
+    @abc.abstractmethod
+    def fetch_topics_page(
+        self,
+        category_filter: int,
+        group: int,
+        date_filter: int,
+        sort: typing.Union[str, bytes],
+        *,
+        page: undefined.UndefinedOr[int] = undefined.Undefined,
+        locales: undefined.UndefinedOr[collections.Iterable[str]] = undefined.Undefined,
+        tag_filter: undefined.UndefinedOr[str] = undefined.Undefined,
+    ) -> ResponseSig[typedefs.JSONObject]:
+        ...
+
+    @abc.abstractmethod
+    def fetch_core_topics_page(
+        self,
+        category_filter: int,
+        date_filter: int,
+        sort: typing.Union[str, bytes],
+        *,
+        page: undefined.UndefinedOr[int] = undefined.Undefined,
+        locales: undefined.UndefinedOr[collections.Iterable[str]] = undefined.Undefined,
+    ) -> ResponseSig[typedefs.JSONObject]:
+        ...
+
+    @abc.abstractmethod
+    def fetch_posts_threaded_page(
+        self,
+        parent_post: bool,
+        page: int,
+        page_size: int,
+        parent_post_id: int,
+        reply_size: int,
+        root_thread_mode: bool,
+        sort_mode: int,
+        show_banned: typing.Optional[str] = None,
+    ) -> ResponseSig[typedefs.JSONObject]:
+        ...
+
+    @abc.abstractmethod
+    def fetch_posts_threaded_page_from_child(
+        self,
+        child_id: bool,
+        page: int,
+        page_size: int,
+        reply_size: int,
+        root_thread_mode: bool,
+        sort_mode: int,
+        show_banned: typing.Optional[str] = None,
+    ) -> ResponseSig[typedefs.JSONObject]:
+        ...
+
+    @abc.abstractmethod
+    def fetch_post_and_parent(
+        self, child_id: int, /, *, show_banned: typing.Optional[str] = None
+    ) -> ResponseSig[typedefs.JSONObject]:
+        ...
+
+    @abc.abstractmethod
+    def fetch_posts_and_parent_awaiting(
+        self, child_id: int, /, *, show_banned: typing.Optional[str] = None
+    ) -> ResponseSig[typedefs.JSONObject]:
+        ...
+
+    @abc.abstractmethod
+    def fetch_topic_for_content(self, content_id: int, /) -> ResponseSig[int]:
+        ...
+
+    @abc.abstractmethod
+    def fetch_forum_tag_suggestions(
+        self, partial_tag: str, /
+    ) -> ResponseSig[typedefs.JSONObject]:
+        ...
+
+    @abc.abstractmethod
+    def fetch_poll(self, topic_id: int, /) -> ResponseSig[typedefs.JSONObject]:
+        ...
+
+    @abc.abstractmethod
+    def fetch_recuirement_thread_summaries(self) -> ResponseSig[typedefs.JSONArray]:
+        ...
+
+    @abc.abstractmethod
+    def fetch_recommended_groups(
+        self,
+        accecss_token: str,
+        /,
+        *,
+        date_range: int = 0,
+        group_type: typedefs.IntAnd[enums.GroupType] = enums.GroupType.CLAN,
+    ) -> ResponseSig[typedefs.JSONArray]:
+        ...
+
+    @abc.abstractmethod
+    def fetch_available_avatars(self) -> ResponseSig[dict[str, int]]:
+        ...
+
+    @abc.abstractmethod
+    def fetch_user_clan_invite_setting(
+        self,
+        access_token: str,
+        /,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+    ) -> ResponseSig[bool]:
+        ...
+
+    @abc.abstractmethod
+    def fetch_banned_group_members(
+        self,
+        access_token: str,
+        group_id: int,
+        /,
+        *,
+        page: int = 1,
+    ) -> ResponseSig[typedefs.JSONObject]:
+        ...
+
+    @abc.abstractmethod
+    def fetch_pending_group_memberships(
+        self, access_token: str, group_id: int, /, *, current_page: int = 1
+    ) -> ResponseSig[typedefs.JSONObject]:
+        ...
+
+    @abc.abstractmethod
+    def fetch_invited_group_memberships(
+        self, access_token: str, group_id: int, /, *, current_page: int = 1
+    ) -> ResponseSig[typedefs.JSONObject]:
+        ...
+
+    @abc.abstractmethod
+    def invite_member_to_group(
+        self,
+        access_token: str,
+        /,
+        group_id: int,
+        membership_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+        *,
+        message: undefined.UndefinedOr[str] = undefined.Undefined,
+    ) -> ResponseSig[typedefs.JSONObject]:
+        ...
+
+    @abc.abstractmethod
+    def cancel_group_member_invite(
+        self,
+        access_token: str,
+        /,
+        group_id: int,
+        membership_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+    ) -> ResponseSig[typedefs.JSONObject]:
+        ...

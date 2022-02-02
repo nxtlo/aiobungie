@@ -112,14 +112,14 @@ class Factory(interfaces.FactoryInterface):
 
     def deserialize_destiny_membership(
         self, payload: typedefs.JSONObject
-    ) -> user.DestinyUser:
+    ) -> user.DestinyMembership:
         name: undefined.UndefinedOr[str] = undefined.Undefined
         if (
             raw_name := payload.get("bungieGlobalDisplayName", "")
         ) and not typedefs.is_unknown(raw_name):
             name = raw_name
 
-        return user.DestinyUser(
+        return user.DestinyMembership(
             net=self._net,
             id=int(payload["membershipId"]),
             name=name,
@@ -137,7 +137,7 @@ class Factory(interfaces.FactoryInterface):
 
     def deserialize_destiny_memberships(
         self, data: typedefs.JSONArray
-    ) -> collections.Sequence[user.DestinyUser]:
+    ) -> collections.Sequence[user.DestinyMembership]:
         return [self.deserialize_destiny_membership(membership) for membership in data]
 
     def deserialize_user(self, data: typedefs.JSONObject) -> user.User:
@@ -1879,8 +1879,8 @@ class Factory(interfaces.FactoryInterface):
         self, payload: typedefs.JSONObject
     ) -> profile.LinkedProfile:
         bungie_user = self.deserialize_partial_bungie_user(payload["bnetMembership"])
-        error_profiles_vec: typing.MutableSequence[user.DestinyUser] = []
-        profiles_vec: typing.MutableSequence[user.DestinyUser] = []
+        error_profiles_vec: typing.MutableSequence[user.DestinyMembership] = []
+        profiles_vec: typing.MutableSequence[user.DestinyMembership] = []
 
         if raw_profile := payload.get("profiles"):
             for pfile in raw_profile:
@@ -2040,7 +2040,7 @@ class Factory(interfaces.FactoryInterface):
         self, payload: typedefs.JSONObject
     ) -> fireteams.FireteamUser:
         destiny_obj = self.deserialize_destiny_membership(payload)
-        # We could helpers.just return a DestinyUser object but this is
+        # We could helpers.just return a DestinyMembership object but this is
         # missing the fireteam display name and id fields.
         return fireteams.FireteamUser(
             net=self._net,

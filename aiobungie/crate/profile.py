@@ -135,13 +135,13 @@ class LinkedProfile:
     net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
     """A network state used for making external requests."""
 
-    profiles: collections.Sequence[user.DestinyUser]
+    profiles: collections.Sequence[user.DestinyMembership]
     """A sequence of destiny memberships for this profile."""
 
     bungie: user.PartialBungieUser
     """The profile's bungie membership."""
 
-    profiles_with_errors: typing.Optional[collections.Sequence[user.DestinyUser]]
+    profiles_with_errors: typing.Optional[collections.Sequence[user.DestinyMembership]]
     """A sequence of optional destiny memberships with errors.
 
     These profiles exists because they have missing fields. Otherwise this will be an empty array.

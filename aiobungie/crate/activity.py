@@ -386,7 +386,7 @@ class PostActivityPlayer:
     standing: int
     """Sanding of the player."""
 
-    destiny_user: user.DestinyUser
+    destiny_user: user.DestinyMembership
     """An object of the destiny membership bound to this player."""
 
     score: int

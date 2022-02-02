@@ -23,20 +23,10 @@
 
 # Installing
 
-_IT IS recommended_ to use the latest pre-release from master
-since `0.2.4` is missing features from `0.2.5`.
-
-
-PyPI stable release. __Not Recommended Currently__.
+PyPI stable release.
 
 ```sh
 $ pip install aiobungie
-```
-
-From master __Recommended Currently__.
-
-```sh
-$ pip install git+https://github.com/nxtlo/aiobungie
 ```
 
 ## Quick Example

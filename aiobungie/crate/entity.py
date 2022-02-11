@@ -85,6 +85,7 @@ class ValueUIStyle(enums.IntEnum):
     TIME_DURATION = 7
     HIDDEN = 8
     MULTIPLIER = 9
+    GREEN_PIPS = 10
     RED_PIPS = 11
     EXPLICIT_PERCENTAGE = 12
     RAW_FLOAT = 13

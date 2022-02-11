@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.5...HEAD)
 
+## Fixed
+enum field `GreenPips` wasn't incluede in `ValueUIStyle` which was raising `ValueError` [#123](https://github.com/nxtlo/aiobungie/pull/132)
+
 ## [0.2.5](https://github.com/nxtlo/aiobungie/compare/0.2.5b14...0.2.5) 2022-02-02
 This is `0.2.5` stable release and all alpha/beta releases falls under this.
 

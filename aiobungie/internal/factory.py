@@ -1685,12 +1685,12 @@ class Factory(interfaces.FactoryInterface):
             icon=props.icon,
             unlock_value_hash=payload["unlockValueHash"],
             completion_value=payload["completionValue"],
-            scope=entity.GatingScope(payload["scope"]),
+            scope=entity.GatingScope(int(payload["scope"])),
             location_hash=payload["locationHash"],
             allowed_negative_value=payload["allowNegativeValue"],
             allowed_value_change=payload["allowValueChangeWhenCompleted"],
             counting_downward=payload["isCountingDownward"],
-            value_style=entity.ValueUIStyle(payload["valueStyle"]),
+            value_style=entity.ValueUIStyle(int(payload["valueStyle"])),
             progress_description=payload["progressDescription"],
             perks=payload["perks"],
             stats=payload["stats"],
@@ -1698,8 +1698,8 @@ class Factory(interfaces.FactoryInterface):
             allow_over_completion=payload["allowOvercompletion"],
             show_value_style=payload["showValueOnComplete"],
             display_only_objective=payload["isDisplayOnlyObjective"],
-            complete_value_style=entity.ValueUIStyle(payload["completedValueStyle"]),
-            progress_value_style=entity.ValueUIStyle(payload["inProgressValueStyle"]),
+            complete_value_style=entity.ValueUIStyle(int(payload["completedValueStyle"])),
+            progress_value_style=entity.ValueUIStyle(int(payload["inProgressValueStyle"])),
         )
 
     def _deserialize_activity_values(

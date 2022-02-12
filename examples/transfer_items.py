@@ -81,6 +81,7 @@ class ClientAware:
 
         except aiobungie.CharacterError:
             print(f"Couldn't find the titan for player id {self.membership_id}.")
+            return
 
     def run_it(self) -> None:
         """A method to run our titan worker."""

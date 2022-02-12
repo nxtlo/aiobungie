@@ -58,15 +58,9 @@ async def fetch_me() -> None:
             *aiobungie.ComponentType.ALL_CHARACTERS.value,
         )
 
-        # A Mapping from each character id to a character object.
-        if datto_characters := profile.characters:
-            for character_id, character in datto_characters.items():
-                print(f"ID: {character_id}: Character {character}")
-
-                # Check if warlock
-                if character.class_type is aiobungie.Class.WARLOCK:
-                    # Do something with the warlock
-                    ...
-
+        if equiments := profile.character_equipments:
+            for equipped_item in equiments.values():
+                for item in equipped_item:
+                    print(item)
 
 client.run(fetch_me())

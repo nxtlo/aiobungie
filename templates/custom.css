@@ -1,0 +1,294 @@
+* {
+    font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+.pdoc .il {
+    color: #ae81ff
+}
+
+
+nav.pdoc a.pdoc-button.module-list-button {
+    display: none;
+}
+
+.pdoc .modulename a:hover {
+    color: #ff79c6;
+}
+
+.pdoc .classattr {
+    color: #FFF;
+}
+
+
+/* Docstrings */
+
+.pdoc p {
+    color: #FFF;
+    font-weight: 300;
+}
+
+.pdoc li.code {
+    color: #d63384;
+}
+
+
+/* Submodules and API Doc. */
+
+.pdoc h2 {
+    color: #FFF;
+    font-weight: 0;
+    margin: .3em 0;
+    padding: .2em 0;
+    content: "Module Content";
+}
+
+/* header */
+.pdoc h5 {
+    color: white;
+    font-style: italic;
+}
+
+/* Module name */
+
+.pdoc .modulename {
+    color: #FFF;
+    font-weight: 0;
+}
+
+/* Adds "var varname" to class variables. */
+
+nav.pdoc a.variable::before {
+    content: "var ";
+    color: #9d9d9d;
+    font-style: italic;
+}
+
+
+/* Before the function name. This adds "func 'Funcname'". */
+
+nav.pdoc .function::before {
+    content: "func ";
+    color: #9d9d9d;
+    font-style: italic;
+}
+
+nav.pdoc .function::after {
+    content: "";
+    color: #9d9d9d;
+}
+
+
+/* Before the class name. This adds "class 'className'". */
+
+nav.pdoc .class::before {
+    content: "class ";
+    font-style: italic;
+}
+
+nav.pdoc .class::after {
+    content: "";
+}
+
+nav.pdoc a.class {
+    color: #8be9fd;
+}
+
+nav.pdoc a.class:hover {
+    color: #fff;
+}
+
+nav.pdoc a::before {
+    content: "module ";
+    font-style: italic;
+    color: #9d9d9d;
+}
+
+nav.pdoc a.function {
+    color: #4dec75;
+}
+
+nav.pdoc a.variable {
+    color: white;
+}
+
+/* nav modules */
+nav.pdoc li a {
+    color: #bd93f9;
+}
+
+/* Assigned values */
+.pdoc span.default_value {
+    color: #e6db74;
+}
+
+.pdoc span.def {
+    font-weight: normal;
+}
+
+/* 
+Attributes
+----------
+*/
+.pdoc h6#attributes {
+    color: #FFF;
+    font-size: 25px;
+}
+
+/*
+Example
+-------
+*/
+
+.pdoc h6#example {
+    color: #FFF;
+    font-size: 29px;
+}
+
+/* 
+Notes
+-----
+*/
+
+.pdoc h6#notes {
+    font-size: 27px;
+    color: orange;
+}
+
+
+/* 
+Returns
+-------
+*/
+
+.pdoc h6#returns {
+    font-size: 27px;
+    color: white;
+}
+
+
+/* 
+Parameters
+----------
+*/
+
+.pdoc h6#parameters {
+    font-size: 27px;
+    color: white;
+}
+
+
+/*
+Raises
+------
+*/
+
+.pdoc h6#raises {
+    font-size: 27px;
+    color: #FF6666;
+}
+
+
+/* False, True */
+
+.pdoc .kc {
+    color: #bd93f9;
+}
+
+.pdoc li {
+    color: white;
+}
+
+
+/* Decorator module */
+
+.pdoc .nd {
+    color: #50fa7b;
+}
+
+.pdoc b,
+strong {
+    color: #d63384;
+    font-weight: normal;
+}
+
+
+/* colors for .. warning:: and .. note:: */
+
+.pdoc em {
+    color: orange;
+    font-size: 23px;
+}
+
+
+/* Decorator color */
+
+.pdoc div.decorator {
+    color: #50fa7b;
+}
+
+
+/* Class names colors */
+
+.pdoc span.name {
+    color: #8be9fd;
+}
+
+
+/* Inherited class name color */
+
+.pdoc span.base {
+    color: #8be9fd;
+}
+
+
+/* Before inherited members colors, i.e., "builtins.Exception" */
+
+.pdoc .inherited dt,
+.pdoc .inherited dt::before {
+    color: #8be9fd;
+}
+
+
+/* After inherited members colors, i.e., "Exception" */
+
+.pdoc .inherited dd,
+.pdoc .inherited dd {
+    color: #FFF;
+}
+
+/* Commas that separates parameters "," color */
+.pdoc .inherited dd:not(:last-child)::after {
+    color: #fff;
+}
+
+/* Commas that separates parameters "," color */
+
+.pdoc .inherited dd:not(:last-child)::after {
+    color: #FFF;
+}
+
+/* Contents, Submodules, API Documentations */
+/* This also can be separated */
+.pdoc h1,
+.pdoc h2,
+.pdoc h3 {
+    font-weight: 300;
+    margin: 0.3em 0;
+    padding: 0.2em 0;
+    color: white;
+}
+
+/* Top left nav button */
+nav.pdoc .module-list-button {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    color: white;
+    border-color: white;
+}
+
+nav.pdoc .module-list-button:hover {
+    border-color: white;
+    color: white;
+}
+

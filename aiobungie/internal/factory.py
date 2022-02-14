@@ -1698,8 +1698,12 @@ class Factory(interfaces.FactoryInterface):
             allow_over_completion=payload["allowOvercompletion"],
             show_value_style=payload["showValueOnComplete"],
             display_only_objective=payload["isDisplayOnlyObjective"],
-            complete_value_style=entity.ValueUIStyle(int(payload["completedValueStyle"])),
-            progress_value_style=entity.ValueUIStyle(int(payload["inProgressValueStyle"])),
+            complete_value_style=entity.ValueUIStyle(
+                int(payload["completedValueStyle"])
+            ),
+            progress_value_style=entity.ValueUIStyle(
+                int(payload["inProgressValueStyle"])
+            ),
         )
 
     def _deserialize_activity_values(

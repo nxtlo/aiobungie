@@ -32,692 +32,393 @@ span.linenos.special {
 
 /* This is for the source code docs */
 
-.pdoc .hll {
+.pdoc-code .hll {
     background-color: #282a36;
 }
 
-.pdoc {
+.pdoc-code {
     background: #282a36;
     color: #ff5555;
 }
 
 /* Comment */
 
-.pdoc .c {
+.pdoc-code .c {
     color: #6a7aaa;
 }
 
 /* Error */
-.pdoc .err {
+.pdoc-code .err {
     color: #ff5555;
     background-color: #1e0010;
 }
 
 /* Keyword */
-.pdoc .k {
+.pdoc-code .k {
     color: #ff79c6;
 }
 
 /* Literal */
-.pdoc .l {
+.pdoc-code .l {
     color: #ae81ff;
 }
 
 /* Name */
-.pdoc .n {
+.pdoc-code .n {
     color: #f8f8f2;
 }
 
 /* Operator */
-.pdoc .o {
+.pdoc-code .o {
     color: #ff79c6;
 }
 
 /* Punctuation */
-.pdoc .p {
+.pdoc-code .p {
     color: #f8f8f2;
 }
 
 /* Comment.Hashbang */
-.pdoc .ch {
+.pdoc-code .ch {
     color: #6a7aaa;
 }
 
 /* Comment.Multiline */
-.pdoc .cm {
+.pdoc-code .cm {
     color: #6a7aaa;
 }
 
 /* Comment.Preproc */
-.pdoc .cp {
+.pdoc-code .cp {
     color: #6a7aaa;
 }
 
 /* Comment.PreprocFile */
-.pdoc .cpf {
+.pdoc-code .cpf {
     color: #6a7aaa;
 }
 
 /* Comment.Single */
-.pdoc .c1 {
+.pdoc-code .c1 {
     color: #6a7aaa;
 }
 
 /* Comment.Special */
-.pdoc .cs {
+.pdoc-code .cs {
     color: #6a7aaa;
 }
 
 /* Generic.Deleted */
-.pdoc .gd {
+.pdoc-code .gd {
     color: #6a7aaa;
 }
 
 /* Generic.Emph */
-.pdoc .ge {
+.pdoc-code .ge {
     font-style: italic;
 }
 
 /* Generic.Inserted */
-.pdoc .gi {
+.pdoc-code .gi {
     color: #a6e22e;
 }
 
 /* Generic.Output */
-.pdoc .go {
+.pdoc-code .go {
     color: #ff79c6;
 }
 
 /* Generic.Prompt */
-.pdoc .gp {
+.pdoc-code .gp {
     color: #f92672;
     font-weight: bold;
 }
 
 /* Generic.Strong */
-.pdoc .gs {
+.pdoc-code .gs {
     font-weight: bold;
 }
 
 /* Generic.Subheading */
-.pdoc .gu {
+.pdoc-code .gu {
     color: #75715e;
 }
 
 /* Keyword.Constant */
-.pdoc .kc {
+.pdoc-code .kc {
     color: #ff79c6;
 }
 
 /* Keyword.Declaration */
-.pdoc .kd {
+.pdoc-code .kd {
     color: #bd93f9;
 }
 
 /* Keyword.Namespace */
-.pdoc .kn {
+.pdoc-code .kn {
     color: #ff79c6;
 }
 
 /* Keyword.Pseudo */
-.pdoc .kp {
+.pdoc-code .kp {
     color: #bd93f9;
 }
 
 /* Keyword.Reserved */
 
-.pdoc .kr {
+.pdoc-code .kr {
     color: #ff79c6;
 }
 
 /* Keyword.Type */
 
-.pdoc .kt {
+.pdoc-code .kt {
     color: #ff79c6;
 }
 
 /* Literal.Date */
 
-.pdoc .ld {
+.pdoc-code .ld {
     color: #e6db74;
 }
 
 /* Literal.Number */
 
-.pdoc .m {
+.pdoc-code .m {
     color: #ae81ff;
 }
 
 /* Literal.String */
 
-.pdoc .s {
+.pdoc-code .s {
     color: #e6db74;
 }
 
 /* Name.Attribute */
 
-.pdoc .na {
+.pdoc-code .na {
     color: #a6e22e;
 }
 
 /* Name.Builtin */
 
-.pdoc .nb {
+.pdoc-code .nb {
     color: #8be9fd;
 }
 
 /* Name.Class */
 
-.pdoc .nc {
+.pdoc-code .nc {
     color: #8be9fd;
 }
 
 /* Name.Constant */
 
-.pdoc .no {
+.pdoc-code .no {
     color: #ff79c6;
 }
 
 /* Name.Decorator */
 
-.pdoc .nd {
+.pdoc-code .nd {
     color: #8be9fd;
 }
 
 /* Name.Entity */
 
-.pdoc .ni {
+.pdoc-code .ni {
     color: #ff79c6;
 }
 
 /* Name.Exception */
 
-.pdoc .ne {
+.pdoc-code .ne {
     color: #8be9fd;
 }
 
 /* Name.Function */
 
-.pdoc .nf {
+.pdoc-code .nf {
     color: #50fa7b;
 }
 
 /* Name.Label */
 
-.pdoc .nl {
+.pdoc-code .nl {
     color: #f8f8f2;
 }
 
 /* Name.Namespace */
 
-.pdoc .nn {
+.pdoc-code .nn {
     color: #f8f8f2;
 }
 
 /* Name.Other */
 
-.pdoc .nx {
+.pdoc-code .nx {
     color: #a6e22e;
 }
 
 /* Name.Property */
 
-.pdoc .py {
+.pdoc-code .py {
     color: #f8f8f2;
 }
 
 /* Name.Tag */
 
-.pdoc .nt {
+.pdoc-code .nt {
     color: #f92672;
 }
 
 /* Name.Variable */
 
-.pdoc .nv {
+.pdoc-code .nv {
     color: #f8f8f2;
 }
 
 /* Operator.Word */
 
-.pdoc .ow {
+.pdoc-code .ow {
     color: #ff79c6;
 }
 
 /* Text.Whitespace */
 
-.pdoc .w {
+.pdoc-code .w {
     color: #f8f8f2;
 }
 
 /* Literal.Number.Bin */
 
-.pdoc .mb {
+.pdoc-code .mb {
     color: #ae81ff;
 }
 
 /* Literal.Number.Float */
 
-.pdoc .mf {
+.pdoc-code .mf {
     color: #ae81ff;
 }
 
 /* Literal.Number.Hex */
-.pdoc .mh {
+.pdoc-code .mh {
     color: #ae81ff;
 }
 
 /* Literal.Number.Integer */
-.pdoc .mi {
+.pdoc-code .mi {
     color: #ae81ff;
 }
 
 /* Literal.Number.Oct */
-.pdoc .mo {
+.pdoc-code .mo {
     color: #ae81ff;
 }
 
 /* Literal.String.Affix */
-.pdoc .sa {
+.pdoc-code .sa {
     color: #ff79c6;
 }
 
 /* Literal.String.Backtick */
-.pdoc .sb {
+.pdoc-code .sb {
     color: #e6db74;
 }
 
 /* Literal.String.Char */
-.pdoc .sc {
+.pdoc-code .sc {
     color: #e6db74;
 }
 
 /* Literal.String.Delimiter */
-.pdoc .dl {
+.pdoc-code .dl {
     color: #e6db74;
 }
 
 /* Literal.String.Doc */
-.pdoc .sd {
+.pdoc-code .sd {
     color: #6272a4;
 }
 
 /* Literal.String.Double */
-.pdoc .s2 {
+.pdoc-code .s2 {
     color: #e6db74;
 }
 
 /* Literal.String.Escape */
-.pdoc .se {
+.pdoc-code .se {
     color: #ae81ff;
 }
 
 /* Literal.String.Heredoc */
-.pdoc .sh {
+.pdoc-code .sh {
     color: #e6db74;
 }
 
 /* Literal.String.Interpol. AKA f-strings */
-.pdoc .si {
+.pdoc-code .si {
     color: #bd93f9;
 }
 
 /* Literal.String.Other */
-.pdoc .sx {
+.pdoc-code .sx {
     color: #e6db74;
 }
 
 /* Literal.String.Regex */
-.pdoc .sr {
+.pdoc-code .sr {
     color: #e6db74;
 }
 
 /* Literal.String.Single */
-.pdoc .s1 {
+.pdoc-code .s1 {
     color: #e6db74;
 }
 
 /* Literal.String.Symbol */
 
-.pdoc .ss {
+.pdoc-code .ss {
     color: #e6db74;
 }
 
 /* Name.Builtin.Pseudo */
-.pdoc .bp {
+.pdoc-code .bp {
     color: #bd93f9;
 }
 
 /* Name.Function.Magic */
-.pdoc .fm {
+.pdoc-code .fm {
     color: #bd93f9;
 }
 
 /* Name.Variable.Class */
-.pdoc .vc {
+.pdoc-code .vc {
     color: #bd93f9;
 }
 
 /* Name.Variable.Global */
-.pdoc .vg {
+.pdoc-code .vg {
     color: #f8f8f2;
 }
 
 /* Name.Variable.Instance */
-.pdoc .vi {
+.pdoc-code .vi {
     color: #ffffff;
 }
 
 /* Name.Variable.Magic */
-.pdoc .vm {
+.pdoc-code .vm {
     color: #bd93f9;
 }
 
 /* Literal.Number.Integer.Long */
-.pdoc .il {
+.pdoc-code .il {
     color: #ae81ff;
 }
 
 /* Decorator module i.e., @typing.? */
-.pdoc .nd {
+.pdoc-code .nd {
     color: #50fa7b;
-}
-
-
-/* Literal.Number.Integer.Long */
-
-
-/**** Actual Docs ***/
-
-.pdoc .il {
-    color: #ae81ff
-}
-
-* {
-    font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-}
-
-nav.pdoc a.pdoc-button.module-list-button {
-    display: none;
-}
-
-.pdoc .modulename a:hover {
-    color: #ff79c6;
-}
-
-.pdoc .classattr {
-    color: #FFF;
-}
-
-
-/* Docstrings */
-
-.pdoc p {
-    color: #FFF;
-    font-weight: 300;
-}
-
-.pdoc li.code {
-    color: #d63384;
-}
-
-
-/* Submodules and API Doc. */
-
-.pdoc h2 {
-    color: #FFF;
-    font-weight: 0;
-    margin: .3em 0;
-    padding: .2em 0;
-    content: "Module Content";
-}
-
-/* header */
-.pdoc h5 {
-    color: white;
-    font-style: italic;
-}
-
-/* Module name */
-
-.pdoc .modulename {
-    color: #FFF;
-    font-weight: 0;
-}
-
-/* Adds "var varname" to class variables. */
-
-nav.pdoc a.variable::before {
-    content: "var ";
-    color: #9d9d9d;
-    font-style: italic;
-}
-
-
-/* Before the function name. This adds "func 'Funcname'". */
-
-nav.pdoc .function::before {
-    content: "func ";
-    color: #9d9d9d;
-    font-style: italic;
-}
-
-nav.pdoc .function::after {
-    content: "";
-    color: #9d9d9d;
-}
-
-
-/* Before the class name. This adds "class 'className'". */
-
-nav.pdoc .class::before {
-    content: "class ";
-    font-style: italic;
-}
-
-nav.pdoc .class::after {
-    content: "";
-}
-
-nav.pdoc a.class {
-    color: #8be9fd;
-}
-
-nav.pdoc a.class:hover {
-    color: #fff;
-}
-
-nav.pdoc a::before {
-    content: "module ";
-    font-style: italic;
-    color: #9d9d9d;
-}
-
-nav.pdoc a.function {
-    color: #4dec75;
-}
-
-nav.pdoc a.variable {
-    color: white;
-}
-
-/* nav modules */
-nav.pdoc li a {
-    color: #bd93f9;
-}
-
-/* Assigned values */
-.pdoc span.default_value {
-    color: #e6db74;
-}
-
-.pdoc span.def {
-    font-weight: normal;
-}
-
-/* 
-Attributes
-----------
-*/
-.pdoc h6#attributes {
-    color: #FFF;
-    font-size: 25px;
-}
-
-/*
-Example
--------
-*/
-
-.pdoc h6#example {
-    color: #FFF;
-    font-size: 29px;
-}
-
-/* 
-Notes
------
-*/
-
-.pdoc h6#notes {
-    font-size: 27px;
-    color: orange;
-}
-
-
-/* 
-Returns
--------
-*/
-
-.pdoc h6#returns {
-    font-size: 27px;
-    color: white;
-}
-
-
-/* 
-Parameters
-----------
-*/
-
-.pdoc h6#parameters {
-    font-size: 27px;
-    color: white;
-}
-
-
-/*
-Raises
-------
-*/
-
-.pdoc h6#raises {
-    font-size: 27px;
-    color: #FF6666;
-}
-
-
-/* False, True */
-
-.pdoc .kc {
-    color: #bd93f9;
-}
-
-.pdoc li {
-    color: white;
-}
-
-
-/* Decorator module */
-
-.pdoc .nd {
-    color: #50fa7b;
-}
-
-.pdoc b,
-strong {
-    color: #d63384;
-    font-weight: normal;
-}
-
-
-/* colors for .. warning:: and .. note:: */
-
-.pdoc em {
-    color: orange;
-    font-size: 23px;
-}
-
-
-/* Decorator color */
-
-.pdoc div.decorator {
-    color: #50fa7b;
-}
-
-
-/* Class names colors */
-
-.pdoc span.name {
-    color: #8be9fd;
-}
-
-
-/* Inherited class name color */
-
-.pdoc span.base {
-    color: #8be9fd;
-}
-
-
-/* Before inherited members colors, i.e., "builtins.Exception" */
-
-.pdoc .inherited dt,
-.pdoc .inherited dt::before {
-    color: #8be9fd;
-}
-
-
-/* After inherited members colors, i.e., "Exception" */
-
-.pdoc .inherited dd,
-.pdoc .inherited dd {
-    color: #FFF;
-}
-
-/* Commas that separates parameters "," color */
-.pdoc .inherited dd:not(:last-child)::after {
-    color: #fff;
-}
-
-/* Commas that separates parameters "," color */
-
-.pdoc .inherited dd:not(:last-child)::after {
-    color: #FFF;
-}
-
-/* Top left nav button */
-nav.pdoc .module-list-button {
-    display: inline-flex;
-    align-items: center;
-    margin-bottom: 1rem;
-    color: white;
-    border-color: white;
-}
-
-nav.pdoc .module-list-button:hover {
-    border-color: white;
-    color: white;
-}
-
-/* Contents, Submodules, API Documentations */
-/* This also can be separated */
-.pdoc h1,
-.pdoc h2,
-.pdoc h3 {
-    font-weight: 300;
-    margin: 0.3em 0;
-    padding: 0.2em 0;
-    color: white;
 }

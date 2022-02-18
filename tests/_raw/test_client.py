@@ -39,7 +39,8 @@ _LOG = logging.getLogger("test_client")
 
 def __build_client() -> aiobungie.Client:
     token = os.environ["CLIENT_TOKEN"]
-    rest = aiobungie.RESTClient(token, max_retries=1, enable_debugging=True)
+    rest = aiobungie.RESTClient(token, max_retries=1, enable_debugging=False)
+    rest.enable_debugging()
     client = aiobungie.Client(token, rest_client=rest, max_retries=1)
     return client
 

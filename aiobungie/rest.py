@@ -113,7 +113,7 @@ You can enable this with the following code
 >>> client = aiobungie.RESTClient(..., enable_debug=True)
 # Or if you're using `aiobungie.Cient`
 >>> client = aiobungie.Client(...)
->>> client.rest.enable_debugging()
+>>> client.rest.enable_debugging(file="rest_logs.txt") # optional file
 """
 logging.addLevelName(REST_DEBUG, "REST_DEBUG")
 
@@ -393,7 +393,7 @@ class RESTClient(interfaces.RESTInterface):
         self._metadata: collections.MutableMapping[typing.Any, typing.Any] = {}
 
         if enable_debugging:
-            logging.getLogger("aiobungie.rest").setLevel(REST_DEBUG)
+            logging.basicConfig(level=REST_DEBUG)
 
     def _acquire_session(self) -> _Session:
         asyncio.get_running_loop()
@@ -422,9 +422,15 @@ class RESTClient(interfaces.RESTInterface):
         return self._metadata
 
     @staticmethod
-    def enable_debugging() -> None:
-        """Enables debugging for the REST client."""
-        logging.getLogger("aiobungie.rest").setLevel(REST_DEBUG)
+    def enable_debugging(file: typing.Optional[typing.Union[pathlib.Path, str]] = None, /) -> None:
+        """Enables debugging for the REST client.
+
+        Parameters
+        -----------
+        file : `typing.Union[pathlib.Path, str]`
+            The file to write the debug logs to. If provided.
+        """
+        logging.basicConfig(level=REST_DEBUG, filename=file, filemode='w')
 
     @typing.final
     async def _request(
@@ -478,7 +484,7 @@ class RESTClient(interfaces.RESTInterface):
 
                     if _LOG.isEnabledFor(REST_DEBUG):
                         _LOG.log(
-                            911,
+                            REST_DEBUG,
                             "%s %s %s\n%s",
                             method,
                             f"{endpoint}/{route}",
@@ -502,7 +508,7 @@ class RESTClient(interfaces.RESTInterface):
 
                             if _LOG.isEnabledFor(REST_DEBUG):
                                 _LOG.log(
-                                    911,
+                                    REST_DEBUG,
                                     "%s %s %s Time %.4fms\n%s",
                                     method,
                                     f"{endpoint}/{route}",

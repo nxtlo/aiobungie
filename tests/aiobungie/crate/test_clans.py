@@ -163,7 +163,7 @@ class TestClanMember:
     def test_is_founder_property(self, obj: crate.ClanMember):
         assert not obj.is_founder
 
-    @pytest.mark.asncio()
+    @pytest.mark.asyncio()
     async def test_fetch_clan(self, obj: crate.ClanMember):
         obj.net.request.fetch_clan_from_id = mock.AsyncMock()
 
@@ -171,7 +171,7 @@ class TestClanMember:
 
         assert obj.net.request.fetch_clan_from_id.call_count == 1
 
-        assert obj.net.request.fetch_clan_from_id.assert_awaited_once_with(obj.group_id)
+        obj.net.request.fetch_clan_from_id.assert_awaited_once_with(obj.group_id)
 
     @pytest.mark.asyncio()
     async def test_clan_member_ban(self, obj: crate.ClanMember):
@@ -299,7 +299,6 @@ class TestClan:
     def test_clan_about(self, obj: crate.Clan):
         assert obj.about == "A cool clan."
 
-    @pytest.mark.asyncio()
     def test_clan_owner_is_None(self, obj: crate.Clan):
         assert obj.owner is not None
         obj.owner = None

@@ -35,6 +35,8 @@ These changes are considered part of `0.2.5`.
     * `deserialize_destiny_members` -> `*_destiny_memberships`
     * `deserialize_found_users` -> `*_searched_user` and no longer returns a sequence.
 - `Client.search_users` now returns `Sequence[SearchableDestinyUser]`
+- Improve documentation for `traits.py`.
+- `traits.ClientBase` name changed to `ClientApp`.
 
 ### Fixed
 - `Client.search_users` was raising errors due to deserializing.

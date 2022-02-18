@@ -22,8 +22,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from aiobungie.internal import enums
 from aiobungie import typedefs
+from aiobungie.internal import enums
+
 
 class TestTypedefs:
     def test_json_object(self):
@@ -34,15 +35,15 @@ class TestTypedefs:
         mock_json_array: typedefs.JSONArray = [{"Key": 1}, {"Key2": "Value"}]
         assert isinstance(mock_json_array, list)
         assert len(mock_json_array) == 2
-        assert 'Key' in mock_json_array[0]
-        assert 'Key2' in mock_json_array[1]
+        assert "Key" in mock_json_array[0]
+        assert "Key2" in mock_json_array[1]
 
     def test_unknown_is_true(self):
         unknwon_str = typedefs.Unknown
         assert typedefs.is_unknown(unknwon_str)
 
     def test_unknown_is_not_true(self):
-        known_str = 'yoyoyo'
+        known_str = "yoyoyo"
         assert not typedefs.is_unknown(known_str)
 
     def test_none_or_is_true(self):

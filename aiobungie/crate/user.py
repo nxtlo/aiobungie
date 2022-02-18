@@ -164,9 +164,7 @@ class PartialBungieUser:
         `aiobungie.NotFound`
             The user was not found.
         """
-        user = await self.net.request.fetch_bungie_user(self.id)
-        assert isinstance(user, BungieUser)
-        return user
+        return await self.net.request.fetch_bungie_user(self.id)
 
     def __str__(self) -> str:
         return str(self.name)
@@ -313,11 +311,9 @@ class DestinyMembership(UserLike):
             A Destiny 2 player profile with its components.
             Only passed components will be available if they exists. Otherwise they will be `None`
         """
-        profile_ = await self.net.request.fetch_profile(
+        return await self.net.request.fetch_profile(
             self.id, self.type, *components, **options
         )
-        assert isinstance(profile_, components_.Component)
-        return profile_
 
 
 @attrs.define(kw_only=True)

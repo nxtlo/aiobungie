@@ -21,40 +21,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import mock
-import pytest
-
-import aiobungie
-from aiobungie import crate
-from aiobungie.internal import assets
-
-
-class TestEntity:
-    # ABCs not being tested currently.
-    @pytest.fixture()
-    def entity(self):
-        ...
-
 
 class TestInventoryItemEntity:
-    @pytest.fixture()
-    def item(self):
-        ...
-
-    def test_item_description_is_undefined(self, item) -> None:
-        ...
-
-    def test_item_types(self, item):
-        ...
-
-    def test_item_numbers(self, item):
-        ...
-
-    def test_item_bool_stuff(self, item):
-        ...
-
-    def test_int_over(self, item):
-        ...
-
-    def test_str_over(self, item):
-        ...
+    # TODO
+    ...

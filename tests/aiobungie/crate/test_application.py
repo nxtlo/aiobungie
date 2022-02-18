@@ -22,8 +22,8 @@
 
 from datetime import datetime
 
-import pytest
 import mock
+import pytest
 
 import aiobungie
 from aiobungie import crate
@@ -53,7 +53,9 @@ class TestAppOwner:
 
     def test_app_owner_type(self, obj: crate.ApplicationOwner):
         with mock.patch.object(crate.ApplicationOwner, "type") as type:
-            assert obj.type == type and int(obj.type) == int(aiobungie.MembershipType.XBOX)
+            assert obj.type == type and int(obj.type) == int(
+                aiobungie.MembershipType.XBOX
+            )
 
     def test_app_owner_is_public(self, obj: crate.ApplicationOwner):
         with mock.patch.object(crate.ApplicationOwner, "is_public") as is_public:
@@ -67,15 +69,14 @@ class TestAppOwner:
         with mock.patch.object(crate.ApplicationOwner, "code") as code:
             assert obj.code == code
 
-
     def test___int__(self, obj: crate.ApplicationOwner) -> None:
         assert int(obj) == obj.id
 
     def test___str__(self, obj: crate.ApplicationOwner) -> None:
         assert str(obj) == "rose#2463"
 
-class TestApplication:
 
+class TestApplication:
     @pytest.fixture()
     def owner(self) -> crate.ApplicationOwner:
         return crate.ApplicationOwner(
@@ -117,9 +118,13 @@ class TestApplication:
         assert app.owner.code == 2463
 
     @pytest.mark.asyncio()
-    async def test_fetch_self_app_owner_bungie_user(self, owner: crate.ApplicationOwner) -> None:
+    async def test_fetch_self_app_owner_bungie_user(
+        self, owner: crate.ApplicationOwner
+    ) -> None:
         owner.net.request.fetch_bungie_user = mock.AsyncMock()
 
-        assert await owner.fetch_self() is owner.net.request.fetch_bungie_user.return_value
+        assert (
+            await owner.fetch_self() is owner.net.request.fetch_bungie_user.return_value
+        )
 
         owner.net.request.fetch_bungie_user.assert_called_once_with(411098)

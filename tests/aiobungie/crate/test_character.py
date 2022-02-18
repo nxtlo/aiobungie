@@ -28,9 +28,10 @@ import mock
 import pytest
 
 import aiobungie
-
 from aiobungie import crate
-from aiobungie.internal import assets, helpers
+from aiobungie.internal import assets
+from aiobungie.internal import helpers
+
 
 class TestDye:
     @pytest.fixture()
@@ -43,6 +44,7 @@ class TestDye:
     def test_channel_hash(self, dye: crate.Dye):
         assert dye.channel_hash == 123
 
+
 class TestCustomizationOptions:
     @pytest.fixture()
     def model(self) -> crate.CustomizationOptions:
@@ -52,7 +54,7 @@ class TestCustomizationOptions:
             skin_color=3,
             lip_color=4,
             eye_color=5,
-            hair_colors=[1,2,3,4],
+            hair_colors=[1, 2, 3, 4],
             feature_colors=[321, 345],
             decal_color=12445,
             wear_helmet=True,
@@ -68,7 +70,8 @@ class TestCustomizationOptions:
         assert model.wear_helmet
 
     def test_hair_colors(self, model: crate.CustomizationOptions):
-        assert model.hair_colors == [1,2,3,4]
+        assert model.hair_colors == [1, 2, 3, 4]
+
 
 class TestMinimalEquipments:
     @pytest.fixture()
@@ -95,6 +98,7 @@ class TestMinimalEquipments:
         )
         assert item is equipment.net.request.fetch_inventory_item.return_value
 
+
 class TestRenderedData:
     @pytest.fixture()
     def model(self) -> crate.RenderedData:
@@ -114,14 +118,40 @@ class TestRenderedData:
         helpers.awaits = mock.AsyncMock()
 
         items = await model.fetch_my_items()
-        assert all(item is model.net.request.fetch_inventory_item.return_value for item in items)
+        assert all(
+            item is model.net.request.fetch_inventory_item.return_value
+            for item in items
+        )
         model.net.request.fetch_inventory_item.assert_has_calls([])
+
 
 class TestCharacterProgression:
     @pytest.fixture()
     def model(self) -> crate.CharacterProgression:
-        ...
+        return crate.CharacterProgression(
+            progressions={0: mock.Mock()},
+            factions={1: mock.Mock()},
+            milestones={2: mock.Mock()},
+            checklists={3: mock.Mock()},
+            seasonal_artifact=mock.Mock(spec=crate.CharacterScopedArtifact),
+            uninstanced_item_objectives={4: [mock.Mock()]},
+        )
 
+    def test_progressions(self, model: crate.CharacterProgression) -> None:
+        with mock.patch.object(model, "progressions", new={0: mock.Mock()}) as progress:
+            assert model.progressions == progress
+
+    def test_factions(self, model: crate.CharacterProgression) -> None:
+        with mock.patch.object(model, "factions", new={1: mock.Mock()}) as factions:
+            assert model.factions == factions
+
+    def test_milestones(self, model: crate.CharacterProgression) -> None:
+        with mock.patch.object(model, "milestones", new={2: mock.Mock()}) as milestone:
+            assert model.milestones == milestone
+
+    def test_checklists(self, model: crate.CharacterProgression) -> None:
+        with mock.patch.object(model, "checklists", new={3: mock.Mock()}) as checklist:
+            assert model.checklists == checklist
 
 
 class TestCharacter:
@@ -143,8 +173,6 @@ class TestCharacter:
             class_type=aiobungie.Class.TITAN,
             title_hash=None,
             level=50,
-            # TODO: Maybe return a dict like this during
-            # Serielizing the data.
             stats={
                 aiobungie.Stat.MOBILITY: 100,
                 aiobungie.Stat.RECOVERY: 100,
@@ -159,13 +187,28 @@ class TestCharacter:
         assert int(model) == model.id
 
     def test_url(self, model: crate.Character) -> None:
-        assert model.url == f"{aiobungie.url.BASE}/en/Gear/{int(model.member_type)}/{model.member_id}/{model.id}"
+        assert (
+            model.url
+            == f"{aiobungie.url.BASE}/en/Gear/{int(model.member_type)}/{model.member_id}/{model.id}"
+        )
 
     def test_stats(self, model: crate.Character) -> None:
-        assert aiobungie.Stat.MOBILITY in model.stats and model.stats[aiobungie.Stat.RECOVERY] == 100
+        assert (
+            aiobungie.Stat.MOBILITY in model.stats
+            and model.stats[aiobungie.Stat.RECOVERY] == 100
+        )
 
     def test_title_hash(self, model: crate.Character) -> None:
         assert model.title_hash is None
+
+    def test_emblem(self, model: crate.Character) -> None:
+        assert model.emblem.url == assets.Image("emblempath.jpg").url
+
+    def test_emblem___str__(self, model: crate.Character) -> None:
+        assert str(model.emblem) == str(assets.Image("emblempath.jpg"))
+
+    def test_emblem_icon(self, model: crate.Character) -> None:
+        assert model.emblem_icon.url == assets.Image("emblemiconpath.jpg").url
 
     @pytest.mark.asyncio()
     async def test_fetch_activities(self, model: crate.Character) -> None:
@@ -177,7 +220,7 @@ class TestCharacter:
             aiobungie.GameMode.RAID,
             membership_type=model.member_type,
             limit=250,
-            page=0
+            page=0,
         )
         assert activities is model.net.request.fetch_activities.return_value
 
@@ -190,13 +233,13 @@ class TestCharacter:
             item_hash=293,
         )
         model.net.request.rest.transfer_item.assert_called_once_with(
-            'token',
+            "token",
             item_id=123,
             character_id=model.id,
             item_hash=293,
             member_type=model.member_type,
             vault=False,
-            stack_size=1
+            stack_size=1,
         )
 
     @pytest.mark.asyncio()
@@ -208,13 +251,13 @@ class TestCharacter:
             item_hash=293,
         )
         model.net.request.rest.pull_item.assert_called_once_with(
-            'token',
+            "token",
             item_id=123,
             character_id=model.id,
             item_hash=293,
             member_type=model.member_type,
             vault=False,
-            stack_size=1
+            stack_size=1,
         )
 
     @pytest.mark.asyncio()
@@ -225,7 +268,7 @@ class TestCharacter:
             123,
         )
         model.net.request.rest.equip_item.assert_called_once_with(
-            'token',
+            "token",
             item_id=123,
             character_id=model.id,
             membership_type=model.member_type,
@@ -239,7 +282,7 @@ class TestCharacter:
             [123, 234],
         )
         model.net.request.rest.equip_items.assert_called_once_with(
-            'token',
+            "token",
             item_ids=[123, 234],
             character_id=model.id,
             membership_type=model.member_type,

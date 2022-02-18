@@ -19,35 +19,3 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
-import nox
-import pathlib
-import shutil
-import os
-
-try:
-    import dotenv
-    if (cli_key := dotenv.get_key("./.env", "CLIENT_TOKEN")):  # type: ignore
-        os.environ['CLIENT_TOKEN'] = cli_key
-except ImportError:
-    pass
-
-@nox.session(reuse_venv=True)
-def client_test(session: nox.Session) -> None:
-    session.install("python-dotenv")
-    if session.env.get("CLIENT_TOKEN") is None:  # type: ignore
-        session.error("CLIENT_TOKEN not found in env variables.")
-
-    session.install('.', "--upgrade")
-    try:
-        path = pathlib.Path("./tests/aiobungie/test_client.py")
-        if path.exists() and path.is_file():
-            shutil.copy(path, '.')
-            session.run("python", 'test_client.py')
-        os.remove("./test_client.py")
-    finally:
-        try:
-            os.remove("./test_client.py")
-        except FileNotFoundError:
-            pass
-        session.run("pip", "uninstall", "aiobungie", "--yes", "-v", "--retries", "3")

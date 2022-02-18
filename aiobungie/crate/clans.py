@@ -219,9 +219,7 @@ class ClanMember(user.DestinyMembership):
         `Clan`
             The clan admins clan.
         """
-        clan = await self.net.request.fetch_clan_from_id(self.group_id)
-        assert isinstance(clan, Clan)
-        return clan
+        return await self.net.request.fetch_clan_from_id(self.group_id)
 
     async def ban(
         self,
@@ -338,9 +336,7 @@ class GroupMember:
         `Clan`
             The clan object.
         """
-        clan = await self.net.request.fetch_clan_from_id(self.group_id)
-        assert isinstance(clan, Clan)
-        return clan
+        return await self.net.request.fetch_clan_from_id(self.group_id)
 
     def __int__(self) -> int:
         return self.group_id
@@ -632,7 +628,7 @@ class Clan:
         )
         if fireteams_ is None:
             return None
-        assert isinstance(fireteams_, list)
+
         return fireteams_
 
     async def fetch_fireteams(
@@ -676,7 +672,7 @@ class Clan:
         `typing.Optional[collections.Sequence[aiobungie.crate.AvalaibleFireteam]]`
             A sequence of available fireteams objects if exists. else `None` will be returned.
         """
-        fireteams_ = await self.net.request.fetch_my_clan_fireteams(
+        return await self.net.request.fetch_my_clan_fireteams(
             access_token,
             self.id,
             include_closed=include_closed,
@@ -685,8 +681,6 @@ class Clan:
             filtered=filtered,
             page=page,
         )
-        assert isinstance(fireteams, list)
-        return fireteams_
 
     async def fetch_conversations(self) -> collections.Sequence[ClanConversation]:
         """Fetch the conversations/chat channels of this clan.

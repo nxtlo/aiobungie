@@ -29,7 +29,6 @@ import sys
 
 import aiobungie
 
-
 # NOTE: If you're on unix based system make sure to run this
 # in your terminal. export CLIENT_TOKEN='TOKEN'
 
@@ -72,6 +71,7 @@ async def test_clan_from_id():
     assert isinstance(members[0], aiobungie.crate.ClanMember)
     for member in members:
         assert isinstance(member, aiobungie.crate.ClanMember)
+
 
 async def test_clan():
     c = await client.fetch_clan("Nuanceㅤ ")
@@ -233,12 +233,14 @@ async def test_profile():
     if pf.item_components:
         assert isinstance(pf.item_components, aiobungie.crate.ItemsComponent)
 
+
 async def test_membership_types_from_id():
     u = await client.fetch_membership_from_id(MID)
     assert isinstance(u, aiobungie.crate.User)
     assert isinstance(u.bungie, aiobungie.crate.BungieUser)
     for du in u.destiny:
         assert isinstance(du, aiobungie.crate.DestinyMembership)
+
 
 async def test_search_users():
     x = await client.search_users("Fate")
@@ -247,6 +249,7 @@ async def test_search_users():
         assert isinstance(u, aiobungie.crate.SearchableDestinyUser)
         for membership in u.memberships:
             assert isinstance(membership, aiobungie.crate.DestinyMembership)
+
 
 async def test_clan_conves():
     x = await client.fetch_clan_conversations(881267)
@@ -264,8 +267,11 @@ async def test_clan_admins():
     assert any(member.is_admin or member.is_founder for member in ca)
     assert all(isinstance(admin, aiobungie.crate.ClanMember) for admin in ca)
 
+
 async def test_groups_for_member():
-    obj = await client.fetch_groups_for_member(4611686018475612431, aiobungie.MembershipType.STEAM)
+    obj = await client.fetch_groups_for_member(
+        4611686018475612431, aiobungie.MembershipType.STEAM
+    )
     assert obj
     up_to_date_clan_obj = await obj[0].fetch_self_clan()
     assert isinstance(up_to_date_clan_obj, aiobungie.crate.Clan)
@@ -347,7 +353,9 @@ async def test_post_activity():
     assert not a.is_solo_flawless
     for player in a.players:
         assert isinstance(player, aiobungie.crate.activity.PostActivityPlayer)
-        assert isinstance(player.extended_values, aiobungie.crate.activity.ExtendedValues)
+        assert isinstance(
+            player.extended_values, aiobungie.crate.activity.ExtendedValues
+        )
         if weapons := player.extended_values.weapons:
             for weapon in weapons:
                 assert isinstance(weapon, aiobungie.crate.activity.ExtendedWeaponValues)
@@ -360,6 +368,7 @@ async def test_activity_flawless():
     assert a.is_solo_flawless
     a2 = await client.fetch_post_activity(9711329560)
     assert a2.is_solo and not a2.is_flawless
+
 
 async def test_insert_plug_free():
     p = (
@@ -377,6 +386,7 @@ async def test_insert_plug_free():
         pass
     del resp
 
+
 async def test_search_entities():
     e = await client.search_entities("Parallel", "DestinyInventoryItemDefinition")
     for i in e:
@@ -391,19 +401,25 @@ async def test_search_entities():
     # This will always return None since its not an inventory item.
     assert not await acts[0].fetch_self_item()
 
+
 async def test_unique_weapon_history():
-    w = await client.fetch_unique_weapon_history(MID, CID, aiobungie.MembershipType.STEAM)
+    w = await client.fetch_unique_weapon_history(
+        MID, CID, aiobungie.MembershipType.STEAM
+    )
     for weapon in w:
         assert isinstance(weapon, aiobungie.crate.ExtendedWeaponValues)
 
+
 async def test_client_metadata():
-    client.metadata['pepe'] = 'laugh'
+    client.metadata["pepe"] = "laugh"
     clan = await client.fetch_clan("Math Class")
-    assert clan.net.request.metadata['pepe'] == 'laugh'
+    assert clan.net.request.metadata["pepe"] == "laugh"
+
 
 async def test_clan_weekly_rewards():
     r = await client.fetch_clan_weekly_rewards(4389205)
     assert isinstance(r, aiobungie.crate.Milestone)
+
 
 async def main() -> None:
     coros = []

@@ -142,6 +142,7 @@ from .crate.components import ComponentPrivacy
 
 # Entity enums
 from .crate.entity import GatingScope
+from .crate.entity import ObjectiveUIStyle
 from .crate.entity import ValueUIStyle
 
 # Fireteam enums.

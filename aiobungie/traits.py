@@ -20,18 +20,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Interfaces used for the main clients implementations."""
+"""Interfaces used for the core client implementations."""
 
 from __future__ import annotations
 
-__all__ = ("ClientBase", "Netrunner", "Serializable", "RESTful")
+__all__ = ("ClientApp", "Netrunner", "Serializable", "RESTful")
 
 import typing
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
 
-    from aiobungie import client as base_client
+    from aiobungie import client
     from aiobungie import interfaces
     from aiobungie import rest
     from aiobungie.internal import factory as factory_
@@ -39,26 +39,35 @@ if typing.TYPE_CHECKING:
 
 @typing.runtime_checkable
 class Netrunner(typing.Protocol):
-    """A supertype protocol represents a readonly `ClientBase`.
+    """Core trait for types which it is possible for crates to run external requests.
 
-    Clients that implements this can make requests from outside the base client.
-    This is useually used within the `aiobungie.crate` implementations for easier access to the base client instance.
+    These requests are performed by a reference of your `aiobungie.Client` instance.
+
+    Example
+    -------
+    ```py
+    import aiobungie
+
+    membership = aiobungie.crate.DestinyMembership(…)
+    # Access the base client that references this membership.
+    external_request = await membership.net.request.fetch_user(…)
+    ```
     """
 
     __slots__ = ()
 
     @property
-    def request(self) -> base_client.Client:
-        """A readonly `ClientBase` instance used for external requests."""
+    def request(self) -> client.Client:
+        """A readonly `ClientApp` instance used for external requests."""
         raise NotImplementedError
 
 
 @typing.runtime_checkable
 class Serializable(typing.Protocol):
-    """A supertype protocol for deserializable clients.
+    """Core trait for types which it is possible to deserialize incoming REST payloads
+    into a `aiobungie.crate` implementation using the `Serializable.factory` property.
 
-    Clients that implements this can deserialize JSON REST payloads into
-    a Python `aiobungie.crate` object using the client `aiobungie.internal.factory.Factory`.
+    Currently only `ClientBase` implement this trait
     """
 
     __slots__ = ()
@@ -71,9 +80,10 @@ class Serializable(typing.Protocol):
 
 @typing.runtime_checkable
 class RESTful(typing.Protocol):
-    """A RESTful only supertype protocol.
+    """Core trait for types which it is possible to interact with the API directly which provides RESTful functionalities.
 
-    Clients with this are raw-only JSON REST clients. i.e., `aiobungie.rest.RESTClient`
+    Currently only `aiobungie.RESTClient` implement this trait,
+    `ClientBase` may access its RESTClient using `aiobungie.Client.rest` property.
     """
 
     __slots__ = ()
@@ -105,11 +115,33 @@ class RESTful(typing.Protocol):
 
     @property
     def metadata(self) -> collections.MutableMapping[typing.Any, typing.Any]:
-        """A mutable mapping storage for the user's needs."""
+        """A mutable mapping storage for the user's needs.
+
+        This mapping is useful for storing any kind of data that the user may need.
+
+        Example
+        -------
+        ```py
+        import aiobungie
+
+        client = aiobungie.RESTClient(…)
+
+        async with client:
+            # Fetch auth tokens and store them
+            client.metadata["tokens"] = await client.fetch_access_token("code")
+
+        # Some other time.
+        async with client:
+            # Retrieve the tokens
+            tokens: aiobungie.OAuth2Response = client.metadata["tokens"]
+
+            # Use them to fetch your user.
+            user = await client.fetch_current_user_memberships(tokens.access_token)
+        """
         raise NotImplementedError
 
     async def close(self) -> None:
-        """Close the rest client."""
+        """Close this REST client session if it was acquired."""
         raise NotImplementedError
 
     async def static_request(
@@ -145,10 +177,10 @@ class RESTful(typing.Protocol):
 
 
 @typing.runtime_checkable
-class ClientBase(Netrunner, Serializable, typing.Protocol):
-    """A supertype that implements all protocols.
+class ClientApp(Netrunner, Serializable, typing.Protocol):
+    """Core trait for the standard `aiobungie.Client` implementation.
 
-    This can also access its REST client via `ClientBase.rest`
+    This trait includes all previous trait implementations.
     """
 
     __slots__ = ()
@@ -157,7 +189,8 @@ class ClientBase(Netrunner, Serializable, typing.Protocol):
         self, future: collections.Coroutine[None, None, None], debug: bool = False
     ) -> None:
         """Runs a Coro function until its complete.
-        This is equivalent to asyncio.get_event_loop().run_until_complete(...)
+
+        This is equivalent to `asyncio.get_event_loop().run_until_complete(...)`
 
         Parameters
         ----------

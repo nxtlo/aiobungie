@@ -24,11 +24,12 @@
 
 from __future__ import annotations
 
-import logging
 
 __all__: tuple[str, ...] = ("Client",)
 
 import typing
+import copy
+import logging
 
 from aiobungie import rest as rest_
 from aiobungie import traits
@@ -56,13 +57,13 @@ if typing.TYPE_CHECKING:
 _LOG: typing.Final[logging.Logger] = logging.getLogger("aiobungie.client")
 
 
-class Client(traits.ClientBase):
-    """Standard Bungie API client.
+class Client(traits.ClientApp):
+    """Standard Bungie API client application.
 
     This client deserialize the REST JSON responses using `aiobungie.internal.factory.Factory`
     and returns `aiobungie.crate` Python object implementations of the responses.
 
-    Alternatively, You can also use `aiobungie.RESTClient` alone for low-level concepts.
+    A `aiobungie.RESTClient` REST client can also be used alone for low-level concepts.
 
     Parameters
     -----------
@@ -108,11 +109,12 @@ class Client(traits.ClientBase):
         self._client_secret = client_secret
         self._client_id = client_id
 
-        if rest_client is not None:
-            self._rest = rest_client
-
-        self._rest = rest_.RESTClient(
-            token, client_secret, client_id, max_retries=max_retries
+        self._rest = (
+            rest_client
+            if rest_client is not None
+            else rest_.RESTClient(
+                token, client_secret, client_id, max_retries=max_retries
+            )
         )
 
         self._factory = factory_.Factory(self)
@@ -127,7 +129,7 @@ class Client(traits.ClientBase):
 
     @property
     def request(self) -> Client:
-        return self
+        return copy.copy(self)
 
     @property
     def metadata(self) -> collections.MutableMapping[typing.Any, typing.Any]:

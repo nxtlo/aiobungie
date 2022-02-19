@@ -72,6 +72,7 @@ __all__: tuple[str, ...] = (
     "RecordsComponent",
     "UninstancedItemsComponent",
     "StringVariableComponent",
+    "CraftablesComponent",
     # entity.py
     "InventoryEntity",
     "ActivityEntity",

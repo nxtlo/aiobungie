@@ -44,7 +44,7 @@ if typing.TYPE_CHECKING:
     T_co = typing.TypeVar("T_co", covariant=True)
     T = typing.TypeVar("T", bound=collections.Callable[..., typing.Any])
 
-ConsumerSigT = typing.TypeVar("ConsumerSigT", bound=typing.Callable[..., typing.Any])
+ConsumerSigT = typing.TypeVar("ConsumerSigT", bound=collections.Callable[..., typing.Any])
 
 
 def just(lst: list[dict[str, T_co]], lookup: str) -> list[T_co]:
@@ -108,7 +108,7 @@ def deprecated(
 
 def unimplemented(
     message: typing.Optional[str] = None, available_in: typing.Optional[str] = None
-) -> typing.Callable[[T], T]:
+) -> collections.Callable[[T], T]:
     """A decorator that marks a function or classes as unimplemented.
 
     Parameters

@@ -37,6 +37,7 @@ __all__: tuple[str, ...] = (
     "PlaylistActivityEntity",
     "InventoryEntityObjects",
     "SearchableEntity",
+    "ObjectiveUIStyle",
 )
 
 import abc
@@ -45,6 +46,7 @@ import typing
 import attrs
 
 from aiobungie.internal import enums
+from aiobungie.internal import helpers
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
@@ -89,6 +91,18 @@ class ValueUIStyle(enums.IntEnum):
     RED_PIPS = 11
     EXPLICIT_PERCENTAGE = 12
     RAW_FLOAT = 13
+    LEVEL_AND_REWARD = 14
+
+
+@typing.final
+class ObjectiveUIStyle(enums.IntEnum):
+    NONE = 0
+    HIGHLITED = 1
+    CRAFTING_WEAPON_LEVEL = 2
+    CRAFTING_WEAPON_LEVEL_PROGRESS = 3
+    CRAFTING_WEAPON_TIMESTAMP = 4
+    CRAFTING_MEMENTOS = 5
+    CRAFTING_MEMENTO_TITLE = 6
 
 
 class Entity(abc.ABC):
@@ -379,8 +393,8 @@ class InventoryEntity(BaseEntity, Entity):
     ui_display_style: undefined.UndefinedOr[str] = attrs.field(repr=False)
     """"""
 
-    tier_type: typing.Optional[int] = attrs.field(repr=False, hash=False)
-    """Entity's tier type."""
+    tier_type: typing.Optional[enums.TierType] = attrs.field(repr=False, hash=False)
+    """Entity's tier type. This can be Exotic, Rare, or Common etc."""
 
     tier: typing.Optional[enums.ItemTier] = attrs.field(repr=False)
     """The item tier hash as an enum if exists."""
@@ -495,6 +509,10 @@ class ObjectiveEntity(BaseEntity, Entity):
     perks: dict[str, int]
 
     stats: dict[str, int]
+
+    ui_label: str
+
+    ui_style: ObjectiveUIStyle
 
 
 @attrs.define(kw_only=True, hash=True, weakref_slot=False)
@@ -614,7 +632,7 @@ class PlaylistActivityEntity:
     mode_types: collections.Sequence[typedefs.IntAnd[enums.GameMode]]
     """A sequence of the activity gamemode types."""
 
-    # TODO: Implement a REST method for this.
+    @helpers.unimplemented(available_in="0.2.7")
     async def fetch_self(self) -> ActivityEntity:
         """Fetch the definition of this activivy."""
-        raise NotImplementedError
+        ...

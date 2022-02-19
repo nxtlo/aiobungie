@@ -46,6 +46,7 @@ import typing
 import attrs
 
 from aiobungie.internal import enums
+from aiobungie.internal import helpers
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
@@ -240,9 +241,10 @@ class AvailableActivity:
     diffculity: typedefs.IntAnd[Diffculity]
     """Activity's diffculity tier."""
 
+    @helpers.unimplemented(available_in="0.2.7")
     async def fetch_self(self) -> entity.ActivityEntity:
         """Fetch the definition of this activity."""
-        raise NotImplementedError
+        ...
 
 
 @attrs.define(kw_only=True)

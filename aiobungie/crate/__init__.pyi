@@ -42,6 +42,7 @@ from .user import *
 #   ClanMember
 #   Collectible
 #   Component
+#   CraftablesComponent
 #   Currency
 #   CustomizationOptions
 #   DestinyMembership

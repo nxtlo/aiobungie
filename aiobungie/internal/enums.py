@@ -59,6 +59,7 @@ __all__: tuple[str, ...] = (
     "PrivacySetting",
     "ClosedReasons",
     "ItemSubType",
+    "TierType",
 )
 
 import enum as __enum
@@ -306,7 +307,9 @@ class GameMode(IntEnum):
     MOMENTUM = 81
     DUNGEON = 82
     SUNDIAL = 83
-    TRIALSOFOSIRIS = 84
+    TRIALS_OF_OSIRIS = 84
+    DARES = 85
+    OFFENSIVE = 86
 
 
 @typing.final
@@ -378,6 +381,7 @@ class ComponentType(Enum):
     METRICS = 1100
     INVENTORIES = 102
     STRING_VARIABLES = 1200
+    CRAFTABLES = 1300
 
     CHARACTERS = 200
     CHARACTER_INVENTORY = 201
@@ -415,6 +419,7 @@ class ComponentType(Enum):
         INVENTORIES,
         STRING_VARIABLES,
         TRANSITORY,
+        CRAFTABLES,
     )
     """ALl components. The usage of this is `*ComponentType.ALL.value` to unpack the values.
 
@@ -593,6 +598,19 @@ class ItemTier(IntEnum):
 
 
 @typing.final
+class TierType(IntEnum):
+    """An enum for a Destiny 2 item tier type."""
+
+    UNKNOWN = 0
+    CURRENCY = 1
+    BASIC = 2
+    COMMON = 3
+    RARE = 4
+    SUPERIOR = 5
+    EXOTIC = 6
+
+
+@typing.final
 class AmmoType(IntEnum):
     """AN enum for Detyiny 2 ammo types."""
 
@@ -712,6 +730,10 @@ class ItemState(IntEnum):
     TRACKED = 2
     MASTERWORKED = 4
     LOCKED_AND_MASTERWORKED = LOCKED + MASTERWORKED
+    CRAFTED = 8
+    """If this bit is set, the item has been 'crafted' by the player."""
+    HIGHLITED_OBJECTIVE = 16
+    """If this bit is set, the item is a 'highlighted' objective."""
 
 
 @typing.final

@@ -1021,8 +1021,8 @@ class Factory(interfaces.FactoryInterface):
         return components.CraftablesComponent(
             net=self._net,
             craftables={
-                int(item_id): self._deserialize_craftable_item(item["craftables"])
-                for item_id, item in payload.items()
+                int(item_id): self._deserialize_craftable_item(item)
+                for item_id, item in payload['craftables'].items()
             },
             crafting_root_node_hash=payload["craftingRootNodeHash"],
         )

@@ -984,6 +984,49 @@ class Factory(interfaces.FactoryInterface):
             for record_id, record in raw_profile_records["records"].items()
         }
 
+    def _deserialize_craftable_socket_plug(
+        self, payload: typedefs.JSONObject
+    ) -> items.CraftableSocketPlug:
+        return items.CraftableSocketPlug(
+            item_hash=int(payload["plugItemHash"]),
+            failed_requirement_indexes=payload.get("failedRequirementIndexes", []),
+        )
+
+    def _deserialize_craftable_socket(
+        self, payload: typedefs.JSONObject
+    ) -> items.CraftableSocket:
+        return items.CraftableSocket(
+            plug_set_hash=int(payload["plugSetHash"]),
+            plugs=[
+                self._deserialize_craftable_socket_plug(plug)
+                for plug in payload["plugs"]
+            ],
+        )
+
+    def _deserialize_craftable_item(
+        self, payload: typedefs.JSONObject
+    ) -> items.CraftableItem:
+        return items.CraftableItem(
+            is_visible=payload["visible"],
+            failed_requirement_indexes=payload.get("failedRequirementIndexes", []),
+            sockets=[
+                self._deserialize_craftable_socket(socket)
+                for socket in payload["sockets"]
+            ],
+        )
+
+    def deserialize_craftables_component(
+        self, payload: typedefs.JSONObject
+    ) -> components.CraftablesComponent:
+        return components.CraftablesComponent(
+            net=self._net,
+            craftables={
+                int(item_id): self._deserialize_craftable_item(item)
+                for item_id, item in payload['craftables'].items()
+            },
+            crafting_root_node_hash=payload["craftingRootNodeHash"],
+        )
+
     def deserialize_components(  # noqa: C901 Too complex.
         self, payload: typedefs.JSONObject
     ) -> components.Component:
@@ -1206,6 +1249,17 @@ class Factory(interfaces.FactoryInterface):
                     for char_id, currencie in raw_char_lookups["data"].items()
                 }
 
+        character_craftables: typing.Optional[
+            collections.Mapping[int, components.CraftablesComponent]
+        ] = None
+        if raw_character_craftables := payload.get("characterCraftables"):
+
+            if "data" in raw_character_craftables:
+                character_craftables = {
+                    int(char_id): self.deserialize_craftables_component(craftable)
+                    for char_id, craftable in raw_character_craftables["data"].items()
+                }
+
         return components.Component(
             profiles=profile_,
             profile_progression=profile_progression,
@@ -1233,6 +1287,7 @@ class Factory(interfaces.FactoryInterface):
             character_nodes=character_nodes,
             platform_silver=platform_silver,
             character_currency_lookups=character_currency_lookups,
+            character_craftables=character_craftables,
         )
 
     def deserialize_items_component(
@@ -1588,7 +1643,7 @@ class Factory(interfaces.FactoryInterface):
         if raw_emblem_obj_hash := payload.get("emblemObjectiveHash"):
             emblem_objective_hash = int(raw_emblem_obj_hash)
 
-        tier_type: typing.Optional[int] = None
+        tier_type: typing.Optional[enums.TierType] = None
         tier: typing.Optional[enums.ItemTier] = None
         bucket_hash: typing.Optional[int] = None
         recovery_hash: typing.Optional[int] = None
@@ -1601,7 +1656,7 @@ class Factory(interfaces.FactoryInterface):
         stack_label: undefined.UndefinedOr[str] = undefined.Undefined
 
         if inventory := payload.get("inventory"):
-            tier_type = int(inventory["tierType"])
+            tier_type = enums.TierType(int(inventory["tierType"]))
             tier = enums.ItemTier(int(inventory["tierTypeHash"]))
             bucket_hash = int(inventory["bucketTypeHash"])
             recovery_hash = int(inventory["recoveryBucketTypeHash"])
@@ -1704,6 +1759,8 @@ class Factory(interfaces.FactoryInterface):
             progress_value_style=entity.ValueUIStyle(
                 int(payload["inProgressValueStyle"])
             ),
+            ui_label=payload["uiLabel"],
+            ui_style=entity.ObjectiveUIStyle(int(payload["uiStyle"])),
         )
 
     def _deserialize_activity_values(

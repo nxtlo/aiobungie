@@ -42,6 +42,7 @@ from aiobungie import url
 from aiobungie.crate import fireteams
 from aiobungie.crate import user
 from aiobungie.internal import enums
+from aiobungie.internal import helpers
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
@@ -804,6 +805,7 @@ class Clan:
             access_token, self.id, message=message
         )
 
+    @helpers.unimplemented()
     async def fetch_banned_members(self) -> collections.Sequence[ClanMember]:
         """Fetch members who has been banned from the clan.
 
@@ -815,8 +817,9 @@ class Clan:
         `collections.Sequence[aiobungie.crate.clans.ClanMember]`
             A sequence of clan members or are banned.
         """
-        raise NotImplementedError
+        ...
 
+    @helpers.unimplemented()
     async def fetch_pending_members(self) -> collections.Sequence[ClanMember]:
         """Fetch members who are waiting to get accepted.
 
@@ -829,8 +832,9 @@ class Clan:
             A sequence of clan members who are awaiting
             to get accepted to the clan.
         """
-        raise NotImplementedError
+        ...
 
+    @helpers.unimplemented()
     async def fetch_invited_members(self) -> collections.Sequence[ClanMember]:
         """Fetch members who has been invited.
 
@@ -842,7 +846,7 @@ class Clan:
         `collections.Sequence[aiobungie.crate.clans.ClanMember]`
             A sequence of members who have been invited.
         """
-        raise NotImplementedError
+        ...
 
     @property
     def url(self) -> str:

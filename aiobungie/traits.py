@@ -58,7 +58,7 @@ class Netrunner(typing.Protocol):
 
     @property
     def request(self) -> client.Client:
-        """A readonly `ClientBase` instance used for external requests."""
+        """A readonly `ClientApp` instance used for external requests."""
         raise NotImplementedError
 
 

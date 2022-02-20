@@ -7,7 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.5...HEAD)
 
 ## Added
-- Missing tests.
+- Implemented The Witch Queen API update changes
+    * `OFFSNSIVE` Game field to enum `GameMode`.
+    * `CRAFTABLES` enum field to `ComponentType`.
+    * New `CraftablesComponent` which's returned when fetching a profile with the craftables component,
+    This is accessed by `Component.character_craftables`.
+    * Added `entity.ObjectiveUIStyle` enum.
+    * `ui_label` and `ui_style` fields to `ObjectiveEntity`.
+    * `LEVEL_AND_REWARD` field to `ValueUIStyle` enum.
+    * `CraftableItem` and `CraftableSocket` and `CraftableSocketPlug` objects.
+
+- `InventoryEntity.tier_type` now returns `TierType` instead of `int`.
+- `TierType` enum.
+- `helpers.unimplemented` methods which marks methods and classes as unimplemented.
+
+## Changed
+- Improve documentation for `traits.py`.
+- `traits.ClientBase` name changed to `ClientApp`.
+- Methods that used to raise `NotImplementedError` no only warns.
+- Improve `helpers.deprecated` method.
+
+## Removed
 
 ## Fixed
 - enum field `GreenPips` wasn't incluede in `ValueUIStyle` which was raising `ValueError` [#123](https://github.com/nxtlo/aiobungie/pull/132)
@@ -25,7 +45,6 @@ These changes are considered part of `0.2.5`.
 - Almost 95% of the API endpoints has been added.
 - `__int__` method to `UndefinedType` which returns a literal `0`
 
-### Removed
 
 ### Changed
 - `DestinyUser` has been renamed to `DestinyMembership`.
@@ -35,8 +54,6 @@ These changes are considered part of `0.2.5`.
     * `deserialize_destiny_members` -> `*_destiny_memberships`
     * `deserialize_found_users` -> `*_searched_user` and no longer returns a sequence.
 - `Client.search_users` now returns `Sequence[SearchableDestinyUser]`
-- Improve documentation for `traits.py`.
-- `traits.ClientBase` name changed to `ClientApp`.
 
 ### Fixed
 - `Client.search_users` was raising errors due to deserializing.

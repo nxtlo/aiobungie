@@ -30,6 +30,8 @@ import typing
 
 import attrs
 
+from aiobungie.internal import helpers
+
 if typing.TYPE_CHECKING:
     import collections.abc as collections
 
@@ -156,19 +158,21 @@ class Friend:
     def __int__(self) -> int:
         return self.id
 
-    # N/A ?
-    # async def fetch_platform_friends(self, access_token: str, /, platform: enums.MembershipType) -> None:
-    #     """Gets the platform friend of the requested type.
+    @helpers.unimplemented()
+    async def fetch_platform_friends(
+        self, access_token: str, /, platform: enums.MembershipType
+    ) -> None:
+        """Gets the platform friend of the requested type.
 
-    #     Parameters
-    #     ----------
-    #     access_token : `str`
-    #         The bearer access token associated with the bungie account.
-    #     platform : `aiobungie.MembershipType`
-    #         The friend memebrship type.
+        Parameters
+        ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+        platform : `aiobungie.MembershipType`
+            The friend memebrship type.
 
-    #     Raises
-    #     ------
-    #     `aiobungie.NotFound`
-    #         The requested friend was not found.
-    #     """
+        Raises
+        ------
+        `aiobungie.NotFound`
+            The requested friend was not found.
+        """

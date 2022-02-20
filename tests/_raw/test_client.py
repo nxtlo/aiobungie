@@ -36,18 +36,15 @@ import aiobungie
 CID = 2305843009444904605
 MID = 4611686018484639825
 _LOG = logging.getLogger("test_client")
-logging.basicConfig(level=logging.DEBUG)
-
 
 def __build_client() -> aiobungie.Client:
     token = os.environ["CLIENT_TOKEN"]
-    rest = aiobungie.RESTClient(token, max_retries=1)
+    rest = aiobungie.RESTClient(token, max_retries=1, enable_debugging=False)
+    rest.enable_debugging()
     client = aiobungie.Client(token, rest_client=rest, max_retries=1)
     return client
 
-
 client = __build_client()
-
 
 async def test_users():
     u = await client.fetch_bungie_user(20315338)

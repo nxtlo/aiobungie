@@ -38,6 +38,7 @@ __all__: list[str] = [
     "HTTPError",
     "BadRequest",
     "raise_error",
+    "stringify_http_message",
 ]
 
 import http
@@ -228,12 +229,16 @@ class RateLimitedError(HTTPError):
         return self.message
 
 
-async def raise_error(response: aiohttp.ClientResponse, msg: str) -> AiobungieError:
+async def raise_error(response: aiohttp.ClientResponse) -> AiobungieError:
     """Generates and raise exceptions on error responses."""
 
+    # Not a JSON response, raise immendiately.
+
+    # Also Bungie sometimes can get funky and return HTML instead of JSON when making an authorized
+    # request with a dummy access token. I can't really do anything about this..
     if response.content_type != "application/json":
         return HTTPError(
-            f"Expected JSON content but got {response.content_type}, {str(response.real_url)}",
+            f"Expected JSON content but got {response.content_type!s}, {response.real_url!s}",
             http.HTTPStatus.UNSUPPORTED_MEDIA_TYPE,
         )
 
@@ -282,7 +287,7 @@ async def raise_error(response: aiohttp.ClientResponse, msg: str) -> AiobungieEr
 
     elif response.status == http.HTTPStatus.BAD_REQUEST:
         # Membership needs to be alone.
-        if msg == "InvalidParameters":
+        if error_status == "InvalidParameters":
             return MembershipTypeError(
                 message=message,
                 body=body,
@@ -317,7 +322,7 @@ async def raise_error(response: aiohttp.ClientResponse, msg: str) -> AiobungieEr
     # Need to handle errors our selves :>
     elif 500 <= status < 600:
         # No API key or method requires OAuth2 most likely.
-        if msg in {
+        if error_status in {
             "ApiKeyMissingFromRequest",
             "WebAuthRequired",
             "ApiInvalidOrExpiredKey",
@@ -336,7 +341,9 @@ async def raise_error(response: aiohttp.ClientResponse, msg: str) -> AiobungieEr
             )
 
         # Anything contains not found.
-        elif msg and "NotFound" in msg or "UserCannotFindRequestedUser" == msg:
+        elif (
+            "NotFound" in error_status or error_status == "UserCannotFindRequestedUser"
+        ):
             return NotFound(
                 message=message,
                 error_code=error_code,
@@ -374,3 +381,14 @@ async def raise_error(response: aiohttp.ClientResponse, msg: str) -> AiobungieEr
             message_data=message_data,
             http_status=status,
         )
+
+
+def stringify_http_message(headers: multidict.CIMultiDictProxy[str]) -> str:
+    return (
+        "{ \n"
+        + "\n".join(  # noqa: W503
+            f"{f'   {key}'}: {value}" if key != "Authorization" else "HIDDEN_TOKEN"
+            for key, value in headers.items()
+        )
+        + "\n}"  # noqa: W503
+    )

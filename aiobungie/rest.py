@@ -32,6 +32,7 @@ __all__: tuple[str, ...] = (
     "RequestMethod",
     "OAuth2Response",
     "PlugSocketBuilder",
+    "REST_DEBUG",
 )
 
 import asyncio
@@ -98,6 +99,23 @@ _USER_AGENT: typing.Final[
 f"({info.__version__}), ({info.__url__}), "
 f"{platform.python_implementation()}/{platform.python_version()} {platform.system()} "
 f"{platform.architecture()[0]}, Aiohttp/{aiohttp.HttpVersion11}"  # type: ignore[UnknownMemberType]
+
+REST_DEBUG: typing.Final[int] = logging.DEBUG - 5
+"""The debug logging level for the `RESTClient` responses.
+
+You can enable this with the following code
+
+>>> import logging
+>>> logging.getLogger("aiobungie.rest").setLevel(aiobungie.REST_DEBUG)
+# or
+>>> logging.basicConfig(level=aiobungie.REST_DEBUG)
+# Or
+>>> client = aiobungie.RESTClient(..., enable_debug=True)
+# Or if you're using `aiobungie.Cient`
+>>> client = aiobungie.Client(...)
+>>> client.rest.enable_debugging(file="rest_logs.txt") # optional file
+"""
+logging.addLevelName(REST_DEBUG, "REST_DEBUG")
 
 
 class _Arc:
@@ -342,6 +360,8 @@ class RESTClient(interfaces.RESTInterface):
     client_id : `typing.Optional[int]`
         An optional application client id,
         This is only needed if you're fetching OAuth2 tokens with this client.
+    enable_logging : `bool`
+        Whether to enable debugging responses or not.
     """
 
     __slots__ = (
@@ -362,6 +382,7 @@ class RESTClient(interfaces.RESTInterface):
         client_id: typing.Optional[int] = None,
         *,
         max_retries: int = 4,
+        enable_debugging: bool = False,
     ) -> None:
         self._session: typing.Optional[_Session] = None
         self._lock = _Arc()
@@ -370,6 +391,9 @@ class RESTClient(interfaces.RESTInterface):
         self._token: str = token
         self._max_retries = max_retries
         self._metadata: collections.MutableMapping[typing.Any, typing.Any] = {}
+
+        if enable_debugging:
+            logging.basicConfig(level=REST_DEBUG)
 
     def _acquire_session(self) -> _Session:
         asyncio.get_running_loop()
@@ -396,6 +420,17 @@ class RESTClient(interfaces.RESTInterface):
     @property
     def metadata(self) -> collections.MutableMapping[typing.Any, typing.Any]:
         return self._metadata
+
+    @staticmethod
+    def enable_debugging(file: typing.Optional[typing.Union[pathlib.Path, str]] = None, /) -> None:
+        """Enables debugging for the REST client.
+
+        Parameters
+        -----------
+        file : `typing.Union[pathlib.Path, str]`
+            The file to write the debug logs to. If provided.
+        """
+        logging.basicConfig(level=REST_DEBUG, filename=file, filemode='w')
 
     @typing.final
     async def _request(
@@ -446,6 +481,16 @@ class RESTClient(interfaces.RESTInterface):
                             **kwargs,
                         )
                     )
+
+                    if _LOG.isEnabledFor(REST_DEBUG):
+                        _LOG.log(
+                            REST_DEBUG,
+                            "%s %s %s\n%s",
+                            method,
+                            f"{endpoint}/{route}",
+                            f"{response.status} {response.reason}",
+                            error.stringify_http_message(response.headers),
+                        )
                     response_time = (time.monotonic() - taken_time) * 1_000
 
                     await self._handle_ratelimit(response, method, str(route))
@@ -453,22 +498,23 @@ class RESTClient(interfaces.RESTInterface):
                     if response.status == http.HTTPStatus.NO_CONTENT:
                         return None
 
-                    if unwrapping != "read":
-                        data: typedefs.JSONObject = await response.json()
-
                     if 300 > response.status >= 200:
                         if unwrapping == "read":
-                            # We want to read the bytes for the manifest response.
+                            # We need to read the bytes for the manifest response.
                             return await response.read()
 
                         if response.content_type == _APP_JSON:
-                            if _LOG.isEnabledFor(logging.DEBUG):
-                                _LOG.debug(
-                                    "Method %s Route %s Status %i Time %.4fms",
+                            data = await response.json()
+
+                            if _LOG.isEnabledFor(REST_DEBUG):
+                                _LOG.log(
+                                    REST_DEBUG,
+                                    "%s %s %s Time %.4fms\n%s",
                                     method,
-                                    f"{url.REST_EP}/{route}",
-                                    response.status,
+                                    f"{endpoint}/{route}",
+                                    f"{response.status} {response.reason}",
                                     response_time,
+                                    error.stringify_http_message(response.headers),
                                 )
 
                             # Return the response.
@@ -477,6 +523,7 @@ class RESTClient(interfaces.RESTInterface):
                                 return data
 
                             return data["Response"]
+
                     if (
                         response.status in _RETRY_5XX
                         and retries < self._max_retries  # noqa: W503
@@ -484,9 +531,8 @@ class RESTClient(interfaces.RESTInterface):
                         backoff_ = backoff.ExponentialBackOff(maximum=6)
                         sleep_time = next(backoff_)
                         _LOG.warning(
-                            "Received: %i, Message: %s, Sleeping for %.2f seconds, Remaining retries: %i",
+                            "Received: %i, Sleeping for %.2f seconds, Remaining retries: %i",
                             response.status,
-                            data["Message"],
                             sleep_time,
                             self._max_retries - retries,
                         )
@@ -495,7 +541,7 @@ class RESTClient(interfaces.RESTInterface):
                         await asyncio.sleep(sleep_time)
                         continue
 
-                    raise await error.raise_error(response, data.get("ErrorStatus", ""))
+                    raise await error.raise_error(response)
             # eol
             except error.HTTPError:
                 raise
@@ -529,8 +575,8 @@ class RESTClient(interfaces.RESTInterface):
             await self._session.close()
 
     # We don't want this to be super complicated.
-    @typing.final
     @staticmethod
+    @typing.final
     async def _handle_ratelimit(
         response: aiohttp.ClientResponse,
         method: str,

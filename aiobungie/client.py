@@ -24,11 +24,12 @@
 
 from __future__ import annotations
 
-import logging
 
 __all__: tuple[str, ...] = ("Client",)
 
 import typing
+import copy
+import logging
 
 from aiobungie import rest as rest_
 from aiobungie import traits
@@ -128,7 +129,7 @@ class Client(traits.ClientApp):
 
     @property
     def request(self) -> Client:
-        return self
+        return copy.copy(self)
 
     @property
     def metadata(self) -> collections.MutableMapping[typing.Any, typing.Any]:

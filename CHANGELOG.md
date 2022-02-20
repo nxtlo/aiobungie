@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.5...HEAD)
 
 ## Added
+- `RESTClient` now takes an extra parameter `enable_debugging`, If set to `True` then
+it will debug responses and log them.
+- `RESTClient.enable_debugging` method which does the same thing as above.
+- A better looking headers logging.
+- A unique trace logging level `rest.REST_DEBUG` which will be used as the main logging level
+for REST debugging.
+
+## Changed
 - Implemented The Witch Queen API update changes
     * `OFFSNSIVE` Game field to enum `GameMode`.
     * `CRAFTABLES` enum field to `ComponentType`.
@@ -16,12 +24,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     * `ui_label` and `ui_style` fields to `ObjectiveEntity`.
     * `LEVEL_AND_REWARD` field to `ValueUIStyle` enum.
     * `CraftableItem` and `CraftableSocket` and `CraftableSocketPlug` objects.
-
 - `InventoryEntity.tier_type` now returns `TierType` instead of `int`.
 - `TierType` enum.
 - `helpers.unimplemented` methods which marks methods and classes as unimplemented.
-
-## Changed
 - Improve documentation for `traits.py`.
 - `traits.ClientBase` name changed to `ClientApp`.
 - Methods that used to raise `NotImplementedError` no only warns.
@@ -30,7 +35,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Removed
 
 ## Fixed
-enum field `GreenPips` wasn't incluede in `ValueUIStyle` which was raising `ValueError` [#123](https://github.com/nxtlo/aiobungie/pull/132)
+- enum field `GreenPips` wasn't incluede in `ValueUIStyle` which was raising `ValueError` [#123](https://github.com/nxtlo/aiobungie/pull/132)
+- Fixes an error where `error.raise_error` wasn't being called when getting a non JSON response AKA `text/**`.
+See [#143](https://github.com/nxtlo/aiobungie/issues/143)
 
 ## [0.2.5](https://github.com/nxtlo/aiobungie/compare/0.2.5b14...0.2.5) 2022-02-02
 This is `0.2.5` stable release and all alpha/beta releases falls under this.

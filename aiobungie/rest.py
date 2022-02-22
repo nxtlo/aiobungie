@@ -111,20 +111,23 @@ You can enable this with the following code
 >>> logging.basicConfig(level=aiobungie.REST_DEBUG)
 # Or
 >>> client = aiobungie.RESTClient(..., enable_debug=True)
-# Or if you're using `aiobungie.Cient`
+# Or if you're using `aiobungie.Client`
 >>> client = aiobungie.Client(...)
 >>> client.rest.enable_debugging(file="rest_logs.txt") # optional file
 """
+
 logging.addLevelName(REST_DEBUG, "REST_DEBUG")
 
 
 class _Arc:
-    __slots__ = ("_lock",)
+    __slots__ = ("_lock", "_bucket")
 
-    def __init__(self) -> None:
+    def __init__(self, bucket: str) -> None:
         self._lock = asyncio.Lock()
+        self._bucket = bucket
 
     async def __aenter__(self) -> None:
+        _LOG.debug(f"Lock acquired on bucket {self._bucket}")
         await self.acquire()
 
     async def __aexit__(
@@ -136,12 +139,16 @@ class _Arc:
         self._lock.release()
 
     async def acquire(self) -> None:
+        _LOG.log(REST_DEBUG, f"Lock released for bucket {self._bucket}")
         await self._lock.acquire()
 
 
-@attrs.define(kw_only=True, repr=False)
 class _Session:
-    client_session: aiohttp.ClientSession
+
+    __slots__ = ("client_session",)
+
+    def __init__(self, client_session: aiohttp.ClientSession) -> None:
+        self.client_session = client_session
 
     @classmethod
     def acquire_session(
@@ -155,6 +162,7 @@ class _Session:
         socket_connect: typing.Optional[float] = None,
         **kwargs: typing.Any,
     ) -> _Session:
+        """Creates a new TCP connection client session."""
         session = aiohttp.ClientSession(
             connector=aiohttp.TCPConnector(verify_ssl=False, **kwargs),
             headers={_USER_AGENT_HEADERS: _USER_AGENT},
@@ -167,24 +175,17 @@ class _Session:
                 connect=connect,
             ),
         )
+        _LOG.log(REST_DEBUG, "Acquired new session.")
         return _Session(client_session=session)
 
-    async def __aenter__(self) -> _Session:
-        return self
-
-    async def __aexit__(
-        self,
-        exception_type: typing.Optional[type[BaseException]],
-        exception: typing.Optional[BaseException],
-        exception_traceback: typing.Optional[types.TracebackType],
-    ) -> None:
-        await self.close()
-
     async def close(self) -> None:
-        # Close the TCP connector.
-        if self.client_session.connector:
+        # Close the TCP connector and all sessions.
+        _LOG.log(REST_DEBUG, "Closing connections...")
+        if self.client_session.connector is not None:
+            # await self.client_session.connector.close()
             await self.client_session.connector.close()
-        await asyncio.sleep(0.025)
+            await asyncio.sleep(0.025)
+            _LOG.log(REST_DEBUG, "All connections has been closed.")
 
 
 class RequestMethod(str, enums.Enum):
@@ -322,6 +323,10 @@ class PlugSocketBuilder:
         return self._map
 
 
+class _Dyn(RuntimeError):
+    ...
+
+
 class RESTClient(interfaces.RESTInterface):
     """A RESTful client implementation for Bungie's API.
 
@@ -354,6 +359,8 @@ class RESTClient(interfaces.RESTInterface):
     ----------------
     max_retries : `int`
         The max retries number to retry if the request hit a `5xx` status code.
+    max_ratelimit_retries : `int`
+        The max retries number to retry if the request hit a `429` status code. Defaults to `3`.
     client_secret : `typing.Optional[str]`
         An optional application client secret,
         This is only needed if you're fetching OAuth2 tokens with this client.
@@ -371,7 +378,7 @@ class RESTClient(interfaces.RESTInterface):
         "_client_secret",
         "_client_id",
         "_metadata",
-        "_lock",
+        "_max_rate_limit_retries",
     )
 
     def __init__(
@@ -382,20 +389,38 @@ class RESTClient(interfaces.RESTInterface):
         client_id: typing.Optional[int] = None,
         *,
         max_retries: int = 4,
+        max_ratelimit_retries: int = 3,
         enable_debugging: bool = False,
     ) -> None:
         self._session: typing.Optional[_Session] = None
-        self._lock = _Arc()
         self._client_secret = client_secret
         self._client_id = client_id
         self._token: str = token
         self._max_retries = max_retries
+        self._max_rate_limit_retries = max_ratelimit_retries
         self._metadata: collections.MutableMapping[typing.Any, typing.Any] = {}
 
         if enable_debugging:
-            logging.basicConfig(level=REST_DEBUG)
+            logging.basicConfig(level=logging.DEBUG)
 
-    def _acquire_session(self) -> _Session:
+    @property
+    def client_id(self) -> typing.Optional[int]:
+        return self._client_id
+
+    @property
+    def metadata(self) -> collections.MutableMapping[typing.Any, typing.Any]:
+        return self._metadata
+
+    @property
+    def is_alive(self) -> bool:
+        return self._session is not None
+
+    @typing.final
+    def _acquire(self) -> _Session:
+        """Acquire a AIOHTTP Client session for this REST client.
+
+        This is means to used internally by the client.
+        """
         asyncio.get_running_loop()
         if self._session is None:
             self._session = _Session.acquire_session(
@@ -410,27 +435,17 @@ class RESTClient(interfaces.RESTInterface):
     @typing.final
     async def close(self) -> None:
         if self._session is not None:
-            _LOG.info("Closing REST client.")
             await self._session.close()
-
-    @property
-    def client_id(self) -> typing.Optional[int]:
-        return self._client_id
-
-    @property
-    def metadata(self) -> collections.MutableMapping[typing.Any, typing.Any]:
-        return self._metadata
+            self._session = None
 
     @staticmethod
-    def enable_debugging(file: typing.Optional[typing.Union[pathlib.Path, str]] = None, /) -> None:
-        """Enables debugging for the REST client.
-
-        Parameters
-        -----------
-        file : `typing.Union[pathlib.Path, str]`
-            The file to write the debug logs to. If provided.
-        """
-        logging.basicConfig(level=REST_DEBUG, filename=file, filemode='w')
+    def enable_debugging(
+        file: typing.Optional[typing.Union[pathlib.Path, str]] = None, /
+    ) -> None:
+        logging.basicConfig(
+            level=REST_DEBUG,
+            filename=file,
+        )
 
     @typing.final
     async def _request(
@@ -446,9 +461,11 @@ class RESTClient(interfaces.RESTInterface):
     ) -> typing.Any:
 
         retries: int = 0
+        session = self._acquire()
+        headers: dict[str, str]
+        kwargs["headers"] = headers = {}
+
         if self._token is not None:
-            headers: dict[str, str]
-            kwargs["headers"] = headers = {}
             headers["X-API-KEY"] = self._token
         else:
             raise ValueError("No API KEY was passed.")
@@ -469,12 +486,12 @@ class RESTClient(interfaces.RESTInterface):
         while True:
             try:
                 async with (stack := contextlib.AsyncExitStack()):
-                    await stack.enter_async_context(self._lock)
+                    await stack.enter_async_context(_Arc(f"{method}:{route}"))
 
                     # We make the request here.
                     taken_time = time.monotonic()
                     response = await stack.enter_async_context(
-                        self._acquire_session().client_session.request(
+                        session.client_session.request(
                             method=method,
                             url=f"{endpoint}/{route}",
                             json=json,
@@ -493,7 +510,9 @@ class RESTClient(interfaces.RESTInterface):
                         )
                     response_time = (time.monotonic() - taken_time) * 1_000
 
-                    await self._handle_ratelimit(response, method, str(route))
+                    await self._handle_ratelimit(
+                        response, method, route, self._max_rate_limit_retries
+                    )
 
                     if response.status == http.HTTPStatus.NO_CONTENT:
                         return None
@@ -531,8 +550,9 @@ class RESTClient(interfaces.RESTInterface):
                         backoff_ = backoff.ExponentialBackOff(maximum=6)
                         sleep_time = next(backoff_)
                         _LOG.warning(
-                            "Received: %i, Sleeping for %.2f seconds, Remaining retries: %i",
+                            "Got %i - %s. Sleeping for %.2f seconds. Remaining retries: %i",
                             response.status,
+                            response.reason,
                             sleep_time,
                             self._max_retries - retries,
                         )
@@ -543,8 +563,8 @@ class RESTClient(interfaces.RESTInterface):
 
                     raise await error.raise_error(response)
             # eol
-            except error.HTTPError:
-                raise
+            except _Dyn:
+                continue
 
     if not typing.TYPE_CHECKING:
 
@@ -563,6 +583,7 @@ class RESTClient(interfaces.RESTInterface):
             ...
 
     async def __aenter__(self) -> RESTClient:
+        self._acquire()
         return self
 
     async def __aexit__(
@@ -581,6 +602,7 @@ class RESTClient(interfaces.RESTInterface):
         response: aiohttp.ClientResponse,
         method: str,
         route: str,
+        max_ratelimit_retries: int = 3,
     ) -> None:
 
         if response.status != http.HTTPStatus.TOO_MANY_REQUESTS:
@@ -588,29 +610,37 @@ class RESTClient(interfaces.RESTInterface):
 
         if response.content_type != _APP_JSON:
             raise error.HTTPError(
-                f"Being ratelmited on non JSON request, {response.content_type}.",
+                f"Being ratelimited on non JSON request, {response.content_type}.",
                 http.HTTPStatus.TOO_MANY_REQUESTS,
             )
 
-        json = await response.json()
-        retry_after: float = json["ThrottleSeconds"]
-        if retry_after >= 0:
-            # Can't really do anything about this...
-            sleep_time = float((retry_after + random.randint(0, 3)))
+        count: int = 0
+        json: typedefs.JSONObject = await response.json()
+        retry_after = float(json["ThrottleSeconds"])
 
-            _LOG.warning(
-                "Ratelimited with method %s route %s. Sleeping for %f:,",
-                method,
-                route,
-                sleep_time,
+        while True:
+            if count == max_ratelimit_retries:
+                raise _Dyn
+
+            if retry_after <= 0:
+                # We sleep for a little bit to avoid funky behavior.
+                sleep_time = float(random.random() + 1) / 2
+
+                _LOG.warning(
+                    "We're being ratelimited with method %s route %s. Sleeping for %.2fs.",
+                    method,
+                    route,
+                    sleep_time,
+                )
+                count += 1
+                await asyncio.sleep(sleep_time)
+                continue
+
+            raise error.RateLimitedError(
+                body=json,
+                url=str(response.real_url),
+                retry_after=retry_after,
             )
-            await asyncio.sleep(sleep_time)
-
-        raise error.RateLimitedError(
-            body=json,
-            url=str(response.real_url),
-            retry_after=retry_after,
-        )
 
     @staticmethod
     @typing.no_type_check

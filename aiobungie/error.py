@@ -46,6 +46,8 @@ import typing
 
 import attrs
 
+from aiobungie.internal import helpers
+
 if typing.TYPE_CHECKING:
     import aiohttp
     import multidict
@@ -68,9 +70,14 @@ class HTTPError(AiobungieError):
     """The response status."""
 
 
+@helpers.deprecated("o.2.5", removed_in="0.2.6")
 @attrs.define(auto_exc=True)
 class CharacterError(HTTPError):
-    """Raised when a encountring making a character-based request."""
+    """Raised when a encountering making a character-based request.
+
+    .. warning::
+        This is deprecated since 0.2.5 and will be removed in 0.2.6.
+    """
 
 
 @attrs.define(auto_exc=True, kw_only=True)
@@ -202,7 +209,7 @@ class ResponseError(HTTPException):
 
 @attrs.define(auto_exc=True)
 class RateLimitedError(HTTPError):
-    """Raiased when being hit with ratelimits."""
+    """Raised when being hit with ratelimits."""
 
     http_status: http.HTTPStatus = attrs.field(
         default=http.HTTPStatus.TOO_MANY_REQUESTS, init=False
@@ -223,7 +230,7 @@ class RateLimitedError(HTTPError):
 
     @message.default  # type: ignore
     def _(self) -> str:
-        return f"You're being ratelimited for {self.retry_after} endpoint: {self.url}"
+        return f"You're ratelimited for {self.retry_after}, Endpoint: {self.url}. Slow down!"
 
     def __str__(self) -> str:
         return self.message
@@ -232,9 +239,9 @@ class RateLimitedError(HTTPError):
 async def raise_error(response: aiohttp.ClientResponse) -> AiobungieError:
     """Generates and raise exceptions on error responses."""
 
-    # Not a JSON response, raise immendiately.
+    # Not a JSON response, raise immediately.
 
-    # Also Bungie sometimes can get funky and return HTML instead of JSON when making an authorized
+    # Also Bungie sometimes get funky and return HTML instead of JSON when making an authorized
     # request with a dummy access token. I can't really do anything about this..
     if response.content_type != "application/json":
         return HTTPError(
@@ -243,12 +250,13 @@ async def raise_error(response: aiohttp.ClientResponse) -> AiobungieError:
         )
 
     body = await response.json()
-    message: str = body.get("Message", "")
-    error_status: str = body.get("ErrorStatus", "")
+    message: str = body.get("Message", "UNDEFINED_MESSAGE")
+    error_status: str = body.get("ErrorStatus", "UNDEFINED_ERROR_STATUS")
     message_data: dict[str, str] = body.get("MessageData", {})
     throttle_seconds: int = body.get("ThrottleSeconds", 0)
     error_code: int = body.get("ErrorCode", 0)
 
+    # Standard HTTP status.
     if response.status == http.HTTPStatus.NOT_FOUND:
         return NotFound(
             message=message,
@@ -319,7 +327,7 @@ async def raise_error(response: aiohttp.ClientResponse) -> AiobungieError:
             http_status=status,
         )
 
-    # Need to handle errors our selves :>
+    # Need to self handle ~5xx errors
     elif 500 <= status < 600:
         # No API key or method requires OAuth2 most likely.
         if error_status in {

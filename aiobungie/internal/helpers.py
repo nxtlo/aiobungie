@@ -44,7 +44,9 @@ if typing.TYPE_CHECKING:
     T_co = typing.TypeVar("T_co", covariant=True)
     T = typing.TypeVar("T", bound=collections.Callable[..., typing.Any])
 
-ConsumerSigT = typing.TypeVar("ConsumerSigT", bound=collections.Callable[..., typing.Any])
+ConsumerSigT = typing.TypeVar(
+    "ConsumerSigT", bound=collections.Callable[..., typing.Any]
+)
 
 
 def just(lst: list[dict[str, T_co]], lookup: str) -> list[T_co]:
@@ -73,7 +75,9 @@ class UnimplementedWarning(RuntimeWarning):
 
 
 def deprecated(
-    since: str, use_instead: typing.Optional[str] = None
+    since: str,
+    removed_in: typing.Optional[str] = None,
+    use_instead: typing.Optional[str] = None,
 ) -> collections.Callable[[T], T]:
     """A decorator that marks a function as deprecated.
 
@@ -91,6 +95,10 @@ def deprecated(
 
             obj_type = "class" if inspect.isclass(func) else "function"
             msg = f"Warning! {obj_type} {func.__module__}.{func.__name__} is deprecated since {since}."
+
+            if removed_in:
+                msg += f" Will be removed in {removed_in}."
+
             if use_instead:
                 msg += f" Use {use_instead} instead."
 

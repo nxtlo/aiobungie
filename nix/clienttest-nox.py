@@ -38,6 +38,7 @@ def client_test(session: nox.Session) -> None:
     if session.env.get("CLIENT_TOKEN") is None:  # type: ignore
         session.error("CLIENT_TOKEN not found in env variables.")
 
+    session.install("-r", "requirements.txt")
     session.install('.', "--upgrade")
     try:
         path = pathlib.Path("./tests/_raw/test_client.py")

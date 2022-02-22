@@ -134,7 +134,7 @@ from ._info import __url__
 from ._info import __version__
 
 # Activity enums
-from .crate.activity import Diffculity
+from .crate.activity import Difficulty
 
 # Components enums
 from .crate.components import ComponentFields

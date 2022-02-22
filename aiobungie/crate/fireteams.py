@@ -26,7 +26,7 @@ from __future__ import annotations
 
 __all__: tuple[str, ...] = (
     "Fireteam",
-    "AvalaibleFireteam",
+    "AvailableFireteam",
     "FireteamUser",
     "FireteamMember",
     "FireteamPartySettings",
@@ -328,7 +328,7 @@ class Fireteam:
 
 
 @attrs.define(kw_only=True)
-class AvalaibleFireteam(Fireteam):
+class AvailableFireteam(Fireteam):
     """Represents an available clan fireteam. This includes the members and alternative members."""
 
     members: typing.Optional[collections.Sequence[FireteamMember]]

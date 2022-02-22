@@ -152,7 +152,7 @@ class Factory(interfaces.FactoryInterface):
             primary_membership_id=primary_membership_id,
         )
 
-    def deseialize_searched_user(
+    def deserialize_searched_user(
         self, payload: typedefs.JSONObject
     ) -> user.SearchableDestinyUser:
         name: undefined.UndefinedOr[str] = undefined.Undefined
@@ -341,7 +341,7 @@ class Factory(interfaces.FactoryInterface):
             group=self.deserialize_clan(payload["group"]),
         )
 
-    def deserialize_clan_convos(
+    def deserialize_clan_conversations(
         self, payload: typedefs.JSONArray
     ) -> collections.Sequence[clans.ClanConversation]:
         map = {}
@@ -551,7 +551,7 @@ class Factory(interfaces.FactoryInterface):
             channel_hash=payload["channelHash"], dye_hash=payload["dyeHash"]
         )
 
-    def deserialize_character_customazition(
+    def deserialize_character_customization(
         self, payload: typedefs.JSONObject
     ) -> character.CustomizationOptions:
         return character.CustomizationOptions(
@@ -585,7 +585,7 @@ class Factory(interfaces.FactoryInterface):
     ) -> character.RenderedData:
         return character.RenderedData(
             net=self._net,
-            customization=self.deserialize_character_customazition(
+            customization=self.deserialize_character_customization(
                 payload["customization"]
             ),
             custom_dyes=[
@@ -609,7 +609,7 @@ class Factory(interfaces.FactoryInterface):
             is_visible=payload["isVisible"],
             display_level=payload.get("displayLevel"),
             recommended_light=payload.get("recommendedLight"),
-            diffculity=activity.Diffculity(payload["difficultyTier"]),
+            difficulty=activity.Difficulty(payload["difficultyTier"]),
             can_join=payload["canJoin"],
             can_lead=payload["canLead"],
         )
@@ -873,7 +873,7 @@ class Factory(interfaces.FactoryInterface):
     ) -> character.Character:
         return self._set_character_attrs(payload)
 
-    def deserialize_character_equipmnets(
+    def deserialize_character_equipments(
         self, payload: typedefs.JSONObject
     ) -> collections.Mapping[int, collections.Sequence[profile.ProfileItemImpl]]:
         return {
@@ -1022,7 +1022,7 @@ class Factory(interfaces.FactoryInterface):
             net=self._net,
             craftables={
                 int(item_id): self._deserialize_craftable_item(item)
-                for item_id, item in payload['craftables'].items()
+                for item_id, item in payload["craftables"].items()
             },
             crafting_root_node_hash=payload["craftingRootNodeHash"],
         )
@@ -1092,7 +1092,7 @@ class Factory(interfaces.FactoryInterface):
             collections.Mapping[int, collections.Sequence[profile.ProfileItemImpl]]
         ] = None
         if raw_character_equips := payload.get("characterEquipment"):
-            character_equipments = self.deserialize_character_equipmnets(
+            character_equipments = self.deserialize_character_equipments(
                 raw_character_equips
             )
 
@@ -1101,7 +1101,7 @@ class Factory(interfaces.FactoryInterface):
         ] = None
         if raw_character_inventories := payload.get("characterInventories"):
             if "data" in raw_character_inventories:
-                character_inventories = self.deserialize_character_equipmnets(
+                character_inventories = self.deserialize_character_equipments(
                     raw_character_inventories
                 )
 
@@ -2082,7 +2082,7 @@ class Factory(interfaces.FactoryInterface):
             locale=fireteams.FireteamLanguage(payload["locale"]),
             is_valid=payload["isValid"],
             last_modified=time.clean_date(payload["datePlayerModified"]),
-            total_results=payload.get("totlaResults", 0),
+            total_results=int(payload["totalResults"]),
         )
 
     def deserialize_fireteams(
@@ -2158,9 +2158,9 @@ class Factory(interfaces.FactoryInterface):
         *,
         no_results: bool = False,
     ) -> typing.Union[
-        fireteams.AvalaibleFireteam, collections.Sequence[fireteams.AvalaibleFireteam]
+        fireteams.AvailableFireteam, collections.Sequence[fireteams.AvailableFireteam]
     ]:
-        fireteams_: list[fireteams.AvalaibleFireteam] = []
+        fireteams_: list[fireteams.AvailableFireteam] = []
 
         # This needs to be used outside the results
         # JSON key.
@@ -2171,7 +2171,7 @@ class Factory(interfaces.FactoryInterface):
 
             for fireteam in result:
                 found_fireteams = self._set_fireteam_fields(fireteam["Summary"])
-                fireteams_fields = fireteams.AvalaibleFireteam(
+                fireteams_fields = fireteams.AvailableFireteam(
                     id=found_fireteams.id,
                     group_id=found_fireteams.group_id,
                     platform=found_fireteams.platform,

@@ -20,11 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Implementation of Bungie entity and definitions.
-
-This is still not fully implemented and you may experince bugs.
-This will include all Bungie Definitions.
-"""
+"""Implementation of Bungie entity and definitions."""
 
 from __future__ import annotations
 
@@ -97,7 +93,7 @@ class ValueUIStyle(enums.IntEnum):
 @typing.final
 class ObjectiveUIStyle(enums.IntEnum):
     NONE = 0
-    HIGHLITED = 1
+    HIGHLIGHTED = 1
     CRAFTING_WEAPON_LEVEL = 2
     CRAFTING_WEAPON_LEVEL_PROGRESS = 3
     CRAFTING_WEAPON_TIMESTAMP = 4
@@ -106,11 +102,7 @@ class ObjectiveUIStyle(enums.IntEnum):
 
 
 class Entity(abc.ABC):
-    """An interface of any Bungie Definition/Entity.
-
-    This is the main entity which all other entities should inherit from.
-    it holds core information that all bungie entities has.
-    """
+    """An interface of any Bungie Definition/Entity."""
 
     __slots__ = ()
 
@@ -158,11 +150,11 @@ class Entity(abc.ABC):
 
 @attrs.mutable(kw_only=True)
 class BaseEntity(Entity):
-    """Concerate Bungie entity implementation."""
+    """Base Bungie entity implementation.
 
-    # These are not attribs on purpose.
-    # We dont want to redefine them again in the actual entity
-    # implementation.
+    This is the core object which all other entities should inherit from.
+    it holds core information that all bungie entities has.
+    """
 
     net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
     """A network state used for making external requests."""
@@ -406,7 +398,7 @@ class InventoryEntity(BaseEntity, Entity):
     """Entity's type name. i.e., `Grenade Launcher`."""
 
     type_and_tier_name: undefined.UndefinedOr[str] = attrs.field(hash=False)
-    """Entity's tier and type name combined, i.e., `Legendery Grenade Launcher`."""
+    """Entity's tier and type name combined, i.e., `Legendary Grenade Launcher`."""
 
     bucket_hash: typing.Optional[int] = attrs.field(repr=False, hash=False)
     """The entity's bucket type hash, None if it doesn't have one."""
@@ -540,8 +532,8 @@ class ActivityEntity(BaseEntity, Entity):
     type_hash: int
     """The activity's type hash. This bounds to activity types such as Strikes, Crucible, Raids, etc."""
 
-    tier: typedefs.IntAnd[activity.Diffculity]
-    """Activity's diffculity tier."""
+    tier: typedefs.IntAnd[activity.Difficulty]
+    """Activity's difficulty tier."""
 
     image: assets.MaybeImage
     """Activity's pgcr image."""
@@ -634,5 +626,5 @@ class PlaylistActivityEntity:
 
     @helpers.unimplemented(available_in="0.2.7")
     async def fetch_self(self) -> ActivityEntity:
-        """Fetch the definition of this activivy."""
+        """Fetch the definition of this activity."""
         ...

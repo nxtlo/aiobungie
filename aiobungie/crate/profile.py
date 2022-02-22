@@ -52,7 +52,7 @@ if typing.TYPE_CHECKING:
 
 
 class ProfileItem(abc.ABC):
-    """An interfance for items information found in a profile component.
+    """An interface for items information found in a profile component.
 
     Those fields may be found in a `ProfileInventories`, etc.
     """

@@ -25,7 +25,7 @@ from .user import *
 #   ArtifactTier
 #   ArtifactTierItem
 #   AvailableActivity
-#   AvalaibleFireteam
+#   AvailableFireteam
 #   BaseEntity
 #   BungieUser
 #   Challenges

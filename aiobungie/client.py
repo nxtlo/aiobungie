@@ -24,12 +24,11 @@
 
 from __future__ import annotations
 
-
 __all__: tuple[str, ...] = ("Client",)
 
-import typing
 import copy
 import logging
+import typing
 
 from aiobungie import rest as rest_
 from aiobungie import traits

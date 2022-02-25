@@ -422,7 +422,9 @@ class RESTClient(interfaces.RESTInterface):
         return self._metadata
 
     @staticmethod
-    def enable_debugging(file: typing.Optional[typing.Union[pathlib.Path, str]] = None, /) -> None:
+    def enable_debugging(
+        file: typing.Optional[typing.Union[pathlib.Path, str]] = None, /
+    ) -> None:
         """Enables debugging for the REST client.
 
         Parameters
@@ -430,7 +432,7 @@ class RESTClient(interfaces.RESTInterface):
         file : `typing.Union[pathlib.Path, str]`
             The file to write the debug logs to. If provided.
         """
-        logging.basicConfig(level=REST_DEBUG, filename=file, filemode='w')
+        logging.basicConfig(level=REST_DEBUG, filename=file, filemode="w")
 
     @typing.final
     async def _request(

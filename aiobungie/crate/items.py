@@ -51,7 +51,7 @@ if typing.TYPE_CHECKING:
     from aiobungie.internal import assets
 
 
-class ItemBreakerType(enums.IntEnum):
+class ItemBreakerType(int, enums.Enum):
     """An enum for Destiny2 item breaker types."""
 
     NONE = 0
@@ -67,7 +67,7 @@ class ItemBreakerType(enums.IntEnum):
     """An alias to SHIELD_PIERCING."""
 
 
-class ItemEnergyType(enums.IntEnum):
+class ItemEnergyType(int, enums.Enum):
     """An enum for Destiny 2 item energy types for Armor 2.0, Ghosts 2.0 and stasis subclasses."""
 
     ANY = 0

@@ -59,9 +59,9 @@ NoneOr = typing.Union[None, T]
 """A Union type that's similar to to `typing.Optional[T]`"""
 
 EnumSig = typing.TypeVar(
-    "EnumSig", covariant=True, bound=typing.Union[enums.Enum, enums.IntEnum]
+    "EnumSig", covariant=True, bound=typing.Union[enums.Enum, enums.Flag]
 )
-"""A type hint bound to `aiobungie.internal.enums.Enum` and `aiobungie.internal.enums.IntEnum`"""
+"""A type hint bound to `aiobungie.internal.enums.Enum` and `aiobungie.internal.enums.Flag`"""
 
 IntAnd = typing.Union[int, EnumSig]
 """A type hint for parameters that may receives an enum or an int."""

@@ -608,8 +608,6 @@ class FactoryInterface(abc.ABC):
     def deserialize_character_records(
         self,
         payload: typedefs.JSONObject,
-        scores: typing.Optional[records.RecordScores] = None,
-        record_hashes: typing.Optional[list[int]] = None,
     ) -> records.CharacterRecord:
         """Deserialize a JSON object of a profile character record component.
 
@@ -620,10 +618,6 @@ class FactoryInterface(abc.ABC):
         ----------
         payload : `aiobungie.internal.helpers.JsonObject`
             The JSON object payload
-        scores: `typing.Optional[records.RecordScores]`
-            The records scores object.
-        record_hashes: `typing.Optional[list[int]]`
-            A list of record hashes that's included during deserializing the component.
 
         Returns
         -------
@@ -635,8 +629,6 @@ class FactoryInterface(abc.ABC):
     def deserialize_characters_records(
         self,
         payload: typedefs.JSONObject,
-        scores: typing.Optional[records.RecordScores] = None,
-        record_hashes: typing.Optional[list[int]] = None,
     ) -> collections.Mapping[int, records.CharacterRecord]:
         ...
 

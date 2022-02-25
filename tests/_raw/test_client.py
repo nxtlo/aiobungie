@@ -223,12 +223,23 @@ async def test_profile():
             assert isinstance(met_id, int)
             inv, obj = met_
             assert isinstance(inv, bool)
-            assert isinstance(obj, aiobungie.crate.Objective)
+
+            if obj is not None:
+                assert isinstance(obj, aiobungie.crate.Objective)
 
     if pf.transitory:
         assert isinstance(pf.transitory, aiobungie.crate.FireteamParty)
     if pf.item_components:
         assert isinstance(pf.item_components, aiobungie.crate.ItemsComponent)
+
+    if pf.character_craftables:
+        for craftable_item_hash, craftable_item in pf.character_craftables.items():
+            assert isinstance(craftable_item_hash, int)
+            for item in craftable_item.craftables.values():
+                if item:
+                    assert isinstance(item, aiobungie.crate.CraftableItem)
+        first = list(pf.character_craftables.values())[0]
+        assert await first.fetch_craftables()
 
 async def test_membership_types_from_id():
     u = await client.fetch_membership_from_id(MID)

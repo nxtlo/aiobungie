@@ -44,7 +44,9 @@ if typing.TYPE_CHECKING:
     T_co = typing.TypeVar("T_co", covariant=True)
     T = typing.TypeVar("T", bound=collections.Callable[..., typing.Any])
 
-ConsumerSigT = typing.TypeVar("ConsumerSigT", bound=collections.Callable[..., typing.Any])
+ConsumerSigT = typing.TypeVar(
+    "ConsumerSigT", bound=collections.Callable[..., typing.Any]
+)
 
 
 def just(lst: list[dict[str, T_co]], lookup: str) -> list[T_co]:

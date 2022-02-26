@@ -256,6 +256,7 @@
 
 <span class="sd">            # Use them to fetch your user.</span>
 <span class="sd">            user = await client.fetch_current_user_memberships(tokens.access_token)</span>
+<span class="sd">        ```</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
@@ -751,6 +752,7 @@ into a <code><a href="crate.html">aiobungie.crate</a></code> implementation usin
 
 <span class="sd">            # Use them to fetch your user.</span>
 <span class="sd">            user = await client.fetch_current_user_memberships(tokens.access_token)</span>
+<span class="sd">        ```</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
@@ -896,24 +898,22 @@ Otherwise <code>None</code> will be returned.</li>
 
 <h6 id="example">Example</h6>
 
-<p>```py
-import aiobungie</p>
+<div class="pdoc-code codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">aiobungie</span>
 
-<p>client = <a href="../aiobungie.html#RESTClient">aiobungie.RESTClient</a>(…)</p>
+<span class="n">client</span> <span class="o">=</span> <span class="n">aiobungie</span><span class="o">.</span><span class="n">RESTClient</span><span class="p">(</span><span class="err">…</span><span class="p">)</span>
 
-<p>async with client:
-    # Fetch auth tokens and store them
-    client.metadata["tokens"] = await client.fetch_access_token("code")</p>
+<span class="k">async</span> <span class="k">with</span> <span class="n">client</span><span class="p">:</span>
+    <span class="c1"># Fetch auth tokens and store them</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;tokens&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">fetch_access_token</span><span class="p">(</span><span class="s2">&quot;code&quot;</span><span class="p">)</span>
 
-<h1 id="some-other-time">Some other time.</h1>
+<span class="c1"># Some other time.</span>
+<span class="k">async</span> <span class="k">with</span> <span class="n">client</span><span class="p">:</span>
+    <span class="c1"># Retrieve the tokens</span>
+    <span class="n">tokens</span><span class="p">:</span> <span class="n">aiobungie</span><span class="o">.</span><span class="n">OAuth2Response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;tokens&quot;</span><span class="p">]</span>
 
-<p>async with client:
-    # Retrieve the tokens
-    tokens: <a href="../aiobungie.html#OAuth2Response">aiobungie.OAuth2Response</a> = client.metadata["tokens"]</p>
-
-<pre><code># Use them to fetch your user.
-user = await client.fetch_current_user_memberships(tokens.access_token)
-</code></pre>
+    <span class="c1"># Use them to fetch your user.</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">fetch_current_user_memberships</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">access_token</span><span class="p">)</span>
+</code></pre></div>
 </div>
 
 

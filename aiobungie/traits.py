@@ -137,6 +137,7 @@ class RESTful(typing.Protocol):
 
             # Use them to fetch your user.
             user = await client.fetch_current_user_memberships(tokens.access_token)
+        ```
         """
         raise NotImplementedError
 

@@ -46,6 +46,9 @@
                                 <a class="variable" href="#RESTClient.metadata">metadata</a>
                         </li>
                         <li>
+                                <a class="function" href="#RESTClient.enable_debugging">enable_debugging</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#RESTClient.static_request">static_request</a>
                         </li>
                         <li>
@@ -432,6 +435,9 @@
                 </ul>
 
             </li>
+            <li>
+                    <a class="variable" href="#REST_DEBUG">REST_DEBUG</a>
+            </li>
     </ul>
 
 
@@ -489,6 +495,7 @@
     <span class="s2">&quot;RequestMethod&quot;</span><span class="p">,</span>
     <span class="s2">&quot;OAuth2Response&quot;</span><span class="p">,</span>
     <span class="s2">&quot;PlugSocketBuilder&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;REST_DEBUG&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="kn">import</span> <span class="nn">asyncio</span>
@@ -555,6 +562,23 @@
 <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">), (</span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">__url__</span><span class="si">}</span><span class="s2">), &quot;</span>
 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">platform</span><span class="o">.</span><span class="n">python_implementation</span><span class="p">()</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">platform</span><span class="o">.</span><span class="n">python_version</span><span class="p">()</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span><span class="si">}</span><span class="s2"> &quot;</span>
 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">platform</span><span class="o">.</span><span class="n">architecture</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">, Aiohttp/</span><span class="si">{</span><span class="n">aiohttp</span><span class="o">.</span><span class="n">HttpVersion11</span><span class="si">}</span><span class="s2">&quot;</span>  <span class="c1"># type: ignore[UnknownMemberType]</span>
+
+<span class="n">REST_DEBUG</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Final</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span> <span class="o">-</span> <span class="mi">5</span>
+<span class="sd">&quot;&quot;&quot;The debug logging level for the `RESTClient` responses.</span>
+
+<span class="sd">You can enable this with the following code</span>
+
+<span class="sd">&gt;&gt;&gt; import logging</span>
+<span class="sd">&gt;&gt;&gt; logging.getLogger(&quot;aiobungie.rest&quot;).setLevel(aiobungie.REST_DEBUG)</span>
+<span class="sd"># or</span>
+<span class="sd">&gt;&gt;&gt; logging.basicConfig(level=aiobungie.REST_DEBUG)</span>
+<span class="sd"># Or</span>
+<span class="sd">&gt;&gt;&gt; client = aiobungie.RESTClient(..., enable_debug=True)</span>
+<span class="sd"># Or if you&#39;re using `aiobungie.Cient`</span>
+<span class="sd">&gt;&gt;&gt; client = aiobungie.Client(...)</span>
+<span class="sd">&gt;&gt;&gt; client.rest.enable_debugging(file=&quot;rest_logs.txt&quot;) # optional file</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">addLevelName</span><span class="p">(</span><span class="n">REST_DEBUG</span><span class="p">,</span> <span class="s2">&quot;REST_DEBUG&quot;</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">_Arc</span><span class="p">:</span>
@@ -799,6 +823,8 @@
 <span class="sd">    client_id : `typing.Optional[int]`</span>
 <span class="sd">        An optional application client id,</span>
 <span class="sd">        This is only needed if you&#39;re fetching OAuth2 tokens with this client.</span>
+<span class="sd">    enable_logging : `bool`</span>
+<span class="sd">        Whether to enable debugging responses or not.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span>
@@ -819,6 +845,7 @@
         <span class="n">client_id</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">max_retries</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+        <span class="n">enable_debugging</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">_Session</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span> <span class="o">=</span> <span class="n">_Arc</span><span class="p">()</span>
@@ -827,6 +854,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_token</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">token</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_max_retries</span> <span class="o">=</span> <span class="n">max_retries</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="n">enable_debugging</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">REST_DEBUG</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_acquire_session</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_Session</span><span class="p">:</span>
         <span class="n">asyncio</span><span class="o">.</span><span class="n">get_running_loop</span><span class="p">()</span>
@@ -853,6 +883,19 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">enable_debugging</span><span class="p">(</span>
+        <span class="n">file</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">/</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Enables debugging for the REST client.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        file : `typing.Union[pathlib.Path, str]`</span>
+<span class="sd">            The file to write the debug logs to. If provided.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">REST_DEBUG</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">file</span><span class="p">,</span> <span class="n">filemode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">)</span>
 
     <span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">_request</span><span class="p">(</span>
@@ -903,6 +946,16 @@
                             <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
                         <span class="p">)</span>
                     <span class="p">)</span>
+
+                    <span class="k">if</span> <span class="n">_LOG</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">REST_DEBUG</span><span class="p">):</span>
+                        <span class="n">_LOG</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+                            <span class="n">REST_DEBUG</span><span class="p">,</span>
+                            <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="n">method</span><span class="p">,</span>
+                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">endpoint</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">route</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">reason</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="n">error</span><span class="o">.</span><span class="n">stringify_http_message</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">),</span>
+                        <span class="p">)</span>
                     <span class="n">response_time</span> <span class="o">=</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">-</span> <span class="n">taken_time</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1_000</span>
 
                     <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_ratelimit</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">route</span><span class="p">))</span>
@@ -910,22 +963,23 @@
                     <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">http</span><span class="o">.</span><span class="n">HTTPStatus</span><span class="o">.</span><span class="n">NO_CONTENT</span><span class="p">:</span>
                         <span class="k">return</span> <span class="kc">None</span>
 
-                    <span class="k">if</span> <span class="n">unwrapping</span> <span class="o">!=</span> <span class="s2">&quot;read&quot;</span><span class="p">:</span>
-                        <span class="n">data</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span> <span class="o">=</span> <span class="k">await</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
-
                     <span class="k">if</span> <span class="mi">300</span> <span class="o">&gt;</span> <span class="n">response</span><span class="o">.</span><span class="n">status</span> <span class="o">&gt;=</span> <span class="mi">200</span><span class="p">:</span>
                         <span class="k">if</span> <span class="n">unwrapping</span> <span class="o">==</span> <span class="s2">&quot;read&quot;</span><span class="p">:</span>
-                            <span class="c1"># We want to read the bytes for the manifest response.</span>
+                            <span class="c1"># We need to read the bytes for the manifest response.</span>
                             <span class="k">return</span> <span class="k">await</span> <span class="n">response</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
 
                         <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">content_type</span> <span class="o">==</span> <span class="n">_APP_JSON</span><span class="p">:</span>
-                            <span class="k">if</span> <span class="n">_LOG</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
-                                <span class="n">_LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                                    <span class="s2">&quot;Method </span><span class="si">%s</span><span class="s2"> Route </span><span class="si">%s</span><span class="s2"> Status </span><span class="si">%i</span><span class="s2"> Time </span><span class="si">%.4f</span><span class="s2">ms&quot;</span><span class="p">,</span>
+                            <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+                            <span class="k">if</span> <span class="n">_LOG</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">REST_DEBUG</span><span class="p">):</span>
+                                <span class="n">_LOG</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+                                    <span class="n">REST_DEBUG</span><span class="p">,</span>
+                                    <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> Time </span><span class="si">%.4f</span><span class="s2">ms</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
                                     <span class="n">method</span><span class="p">,</span>
-                                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">url</span><span class="o">.</span><span class="n">REST_EP</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">route</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                                    <span class="n">response</span><span class="o">.</span><span class="n">status</span><span class="p">,</span>
+                                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">endpoint</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">route</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">reason</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
                                     <span class="n">response_time</span><span class="p">,</span>
+                                    <span class="n">error</span><span class="o">.</span><span class="n">stringify_http_message</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">),</span>
                                 <span class="p">)</span>
 
                             <span class="c1"># Return the response.</span>
@@ -934,6 +988,7 @@
                                 <span class="k">return</span> <span class="n">data</span>
 
                             <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Response&quot;</span><span class="p">]</span>
+
                     <span class="k">if</span> <span class="p">(</span>
                         <span class="n">response</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="n">_RETRY_5XX</span>
                         <span class="ow">and</span> <span class="n">retries</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_retries</span>  <span class="c1"># noqa: W503</span>
@@ -941,9 +996,8 @@
                         <span class="n">backoff_</span> <span class="o">=</span> <span class="n">backoff</span><span class="o">.</span><span class="n">ExponentialBackOff</span><span class="p">(</span><span class="n">maximum</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
                         <span class="n">sleep_time</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">backoff_</span><span class="p">)</span>
                         <span class="n">_LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                            <span class="s2">&quot;Received: </span><span class="si">%i</span><span class="s2">, Message: </span><span class="si">%s</span><span class="s2">, Sleeping for </span><span class="si">%.2f</span><span class="s2"> seconds, Remaining retries: </span><span class="si">%i</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;Received: </span><span class="si">%i</span><span class="s2">, Sleeping for </span><span class="si">%.2f</span><span class="s2"> seconds, Remaining retries: </span><span class="si">%i</span><span class="s2">&quot;</span><span class="p">,</span>
                             <span class="n">response</span><span class="o">.</span><span class="n">status</span><span class="p">,</span>
-                            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Message&quot;</span><span class="p">],</span>
                             <span class="n">sleep_time</span><span class="p">,</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">_max_retries</span> <span class="o">-</span> <span class="n">retries</span><span class="p">,</span>
                         <span class="p">)</span>
@@ -952,7 +1006,7 @@
                         <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">sleep_time</span><span class="p">)</span>
                         <span class="k">continue</span>
 
-                    <span class="k">raise</span> <span class="k">await</span> <span class="n">error</span><span class="o">.</span><span class="n">raise_error</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ErrorStatus&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span>
+                    <span class="k">raise</span> <span class="k">await</span> <span class="n">error</span><span class="o">.</span><span class="n">raise_error</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
             <span class="c1"># eol</span>
             <span class="k">except</span> <span class="n">error</span><span class="o">.</span><span class="n">HTTPError</span><span class="p">:</span>
                 <span class="k">raise</span>
@@ -986,8 +1040,8 @@
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
     <span class="c1"># We don&#39;t want this to be super complicated.</span>
-    <span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
     <span class="nd">@staticmethod</span>
+    <span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">_handle_ratelimit</span><span class="p">(</span>
         <span class="n">response</span><span class="p">:</span> <span class="n">aiohttp</span><span class="o">.</span><span class="n">ClientResponse</span><span class="p">,</span>
         <span class="n">method</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -2511,6 +2565,8 @@
 <span class="sd">    client_id : `typing.Optional[int]`</span>
 <span class="sd">        An optional application client id,</span>
 <span class="sd">        This is only needed if you&#39;re fetching OAuth2 tokens with this client.</span>
+<span class="sd">    enable_logging : `bool`</span>
+<span class="sd">        Whether to enable debugging responses or not.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span>
@@ -2531,6 +2587,7 @@
         <span class="n">client_id</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">max_retries</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+        <span class="n">enable_debugging</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">_Session</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span> <span class="o">=</span> <span class="n">_Arc</span><span class="p">()</span>
@@ -2539,6 +2596,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_token</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">token</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_max_retries</span> <span class="o">=</span> <span class="n">max_retries</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="n">enable_debugging</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">REST_DEBUG</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_acquire_session</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_Session</span><span class="p">:</span>
         <span class="n">asyncio</span><span class="o">.</span><span class="n">get_running_loop</span><span class="p">()</span>
@@ -2565,6 +2625,19 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">enable_debugging</span><span class="p">(</span>
+        <span class="n">file</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">/</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Enables debugging for the REST client.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        file : `typing.Union[pathlib.Path, str]`</span>
+<span class="sd">            The file to write the debug logs to. If provided.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">REST_DEBUG</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">file</span><span class="p">,</span> <span class="n">filemode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">)</span>
 
     <span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">_request</span><span class="p">(</span>
@@ -2615,6 +2688,16 @@
                             <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
                         <span class="p">)</span>
                     <span class="p">)</span>
+
+                    <span class="k">if</span> <span class="n">_LOG</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">REST_DEBUG</span><span class="p">):</span>
+                        <span class="n">_LOG</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+                            <span class="n">REST_DEBUG</span><span class="p">,</span>
+                            <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="n">method</span><span class="p">,</span>
+                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">endpoint</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">route</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">reason</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="n">error</span><span class="o">.</span><span class="n">stringify_http_message</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">),</span>
+                        <span class="p">)</span>
                     <span class="n">response_time</span> <span class="o">=</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">-</span> <span class="n">taken_time</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1_000</span>
 
                     <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_ratelimit</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">route</span><span class="p">))</span>
@@ -2622,22 +2705,23 @@
                     <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">http</span><span class="o">.</span><span class="n">HTTPStatus</span><span class="o">.</span><span class="n">NO_CONTENT</span><span class="p">:</span>
                         <span class="k">return</span> <span class="kc">None</span>
 
-                    <span class="k">if</span> <span class="n">unwrapping</span> <span class="o">!=</span> <span class="s2">&quot;read&quot;</span><span class="p">:</span>
-                        <span class="n">data</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span> <span class="o">=</span> <span class="k">await</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
-
                     <span class="k">if</span> <span class="mi">300</span> <span class="o">&gt;</span> <span class="n">response</span><span class="o">.</span><span class="n">status</span> <span class="o">&gt;=</span> <span class="mi">200</span><span class="p">:</span>
                         <span class="k">if</span> <span class="n">unwrapping</span> <span class="o">==</span> <span class="s2">&quot;read&quot;</span><span class="p">:</span>
-                            <span class="c1"># We want to read the bytes for the manifest response.</span>
+                            <span class="c1"># We need to read the bytes for the manifest response.</span>
                             <span class="k">return</span> <span class="k">await</span> <span class="n">response</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
 
                         <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">content_type</span> <span class="o">==</span> <span class="n">_APP_JSON</span><span class="p">:</span>
-                            <span class="k">if</span> <span class="n">_LOG</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
-                                <span class="n">_LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                                    <span class="s2">&quot;Method </span><span class="si">%s</span><span class="s2"> Route </span><span class="si">%s</span><span class="s2"> Status </span><span class="si">%i</span><span class="s2"> Time </span><span class="si">%.4f</span><span class="s2">ms&quot;</span><span class="p">,</span>
+                            <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+                            <span class="k">if</span> <span class="n">_LOG</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">REST_DEBUG</span><span class="p">):</span>
+                                <span class="n">_LOG</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+                                    <span class="n">REST_DEBUG</span><span class="p">,</span>
+                                    <span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> Time </span><span class="si">%.4f</span><span class="s2">ms</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
                                     <span class="n">method</span><span class="p">,</span>
-                                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">url</span><span class="o">.</span><span class="n">REST_EP</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">route</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                                    <span class="n">response</span><span class="o">.</span><span class="n">status</span><span class="p">,</span>
+                                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">endpoint</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">route</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">reason</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
                                     <span class="n">response_time</span><span class="p">,</span>
+                                    <span class="n">error</span><span class="o">.</span><span class="n">stringify_http_message</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">),</span>
                                 <span class="p">)</span>
 
                             <span class="c1"># Return the response.</span>
@@ -2646,6 +2730,7 @@
                                 <span class="k">return</span> <span class="n">data</span>
 
                             <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Response&quot;</span><span class="p">]</span>
+
                     <span class="k">if</span> <span class="p">(</span>
                         <span class="n">response</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="n">_RETRY_5XX</span>
                         <span class="ow">and</span> <span class="n">retries</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_retries</span>  <span class="c1"># noqa: W503</span>
@@ -2653,9 +2738,8 @@
                         <span class="n">backoff_</span> <span class="o">=</span> <span class="n">backoff</span><span class="o">.</span><span class="n">ExponentialBackOff</span><span class="p">(</span><span class="n">maximum</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
                         <span class="n">sleep_time</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">backoff_</span><span class="p">)</span>
                         <span class="n">_LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                            <span class="s2">&quot;Received: </span><span class="si">%i</span><span class="s2">, Message: </span><span class="si">%s</span><span class="s2">, Sleeping for </span><span class="si">%.2f</span><span class="s2"> seconds, Remaining retries: </span><span class="si">%i</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;Received: </span><span class="si">%i</span><span class="s2">, Sleeping for </span><span class="si">%.2f</span><span class="s2"> seconds, Remaining retries: </span><span class="si">%i</span><span class="s2">&quot;</span><span class="p">,</span>
                             <span class="n">response</span><span class="o">.</span><span class="n">status</span><span class="p">,</span>
-                            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Message&quot;</span><span class="p">],</span>
                             <span class="n">sleep_time</span><span class="p">,</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">_max_retries</span> <span class="o">-</span> <span class="n">retries</span><span class="p">,</span>
                         <span class="p">)</span>
@@ -2664,7 +2748,7 @@
                         <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">sleep_time</span><span class="p">)</span>
                         <span class="k">continue</span>
 
-                    <span class="k">raise</span> <span class="k">await</span> <span class="n">error</span><span class="o">.</span><span class="n">raise_error</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ErrorStatus&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span>
+                    <span class="k">raise</span> <span class="k">await</span> <span class="n">error</span><span class="o">.</span><span class="n">raise_error</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
             <span class="c1"># eol</span>
             <span class="k">except</span> <span class="n">error</span><span class="o">.</span><span class="n">HTTPError</span><span class="p">:</span>
                 <span class="k">raise</span>
@@ -2698,8 +2782,8 @@
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
     <span class="c1"># We don&#39;t want this to be super complicated.</span>
-    <span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
     <span class="nd">@staticmethod</span>
+    <span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">_handle_ratelimit</span><span class="p">(</span>
         <span class="n">response</span><span class="p">:</span> <span class="n">aiohttp</span><span class="o">.</span><span class="n">ClientResponse</span><span class="p">,</span>
         <span class="n">method</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -4212,6 +4296,8 @@ This is only needed if you're fetching OAuth2 tokens with this client.</li>
 <li><strong>client_id</strong> (<code>typing.Optional[int]</code>):
 An optional application client id,
 This is only needed if you're fetching OAuth2 tokens with this client.</li>
+<li><strong>enable_logging</strong> (<code>bool</code>):
+Whether to enable debugging responses or not.</li>
 </ul>
 </div>
 
@@ -4226,7 +4312,8 @@ This is only needed if you're fetching OAuth2 tokens with this client.</li>
     client_secret: Optional[str] = None,
     client_id: Optional[int] = None,
     *,
-    max_retries: int = 4
+    max_retries: int = 4,
+    enable_debugging: bool = False
 )</span>
     </div>
 
@@ -4240,6 +4327,7 @@ This is only needed if you're fetching OAuth2 tokens with this client.</li>
         <span class="n">client_id</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">max_retries</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+        <span class="n">enable_debugging</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">_Session</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span> <span class="o">=</span> <span class="n">_Arc</span><span class="p">()</span>
@@ -4248,6 +4336,9 @@ This is only needed if you're fetching OAuth2 tokens with this client.</li>
         <span class="bp">self</span><span class="o">.</span><span class="n">_token</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">token</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_max_retries</span> <span class="o">=</span> <span class="n">max_retries</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="n">enable_debugging</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">REST_DEBUG</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -4275,7 +4366,7 @@ This is only needed if you're fetching OAuth2 tokens with this client.</li>
 
         </details>
 
-            <div class="docstring"><p>Close the rest client.</p>
+            <div class="docstring"><p>Close this REST client session if it was acquired.</p>
 </div>
 
 
@@ -4300,6 +4391,68 @@ This is only needed if you're fetching OAuth2 tokens with this client.</li>
 
     
             <div class="docstring"><p>A mutable mapping storage for the user's needs.</p>
+
+<p>This mapping is useful for storing any kind of data that the user may need.</p>
+
+<h6 id="example">Example</h6>
+
+<p>```py
+import aiobungie</p>
+
+<p>client = <a href="../aiobungie.html#RESTClient">aiobungie.RESTClient</a>(…)</p>
+
+<p>async with client:
+    # Fetch auth tokens and store them
+    client.metadata["tokens"] = await client.fetch_access_token("code")</p>
+
+<h1 id="some-other-time">Some other time.</h1>
+
+<p>async with client:
+    # Retrieve the tokens
+    tokens: <a href="../aiobungie.html#OAuth2Response">aiobungie.OAuth2Response</a> = client.metadata["tokens"]</p>
+
+<pre><code># Use them to fetch your user.
+user = await client.fetch_current_user_memberships(tokens.access_token)
+</code></pre>
+</div>
+
+
+                            </div>
+                            <div id="RESTClient.enable_debugging" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTClient.enable_debugging">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@staticmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">enable_debugging</span><span class="signature">(file: Union[pathlib.Path, str, NoneType] = None, /) -&gt; None</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">enable_debugging</span><span class="p">(</span>
+        <span class="n">file</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">/</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Enables debugging for the REST client.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        file : `typing.Union[pathlib.Path, str]`</span>
+<span class="sd">            The file to write the debug logs to. If provided.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">REST_DEBUG</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">file</span><span class="p">,</span> <span class="n">filemode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Enables debugging for the REST client.</p>
+
+<h6 id="parameters">Parameters</h6>
+
+<ul>
+<li><strong>file</strong> (<code>typing.Union[pathlib.Path, str]</code>):
+The file to write the debug logs to. If provided.</li>
+</ul>
 </div>
 
 
@@ -7812,7 +7965,7 @@ Whether to pill this item to your valut or not. Defaults to <code>False</code>.<
     activity_type: Union[int, <a href="crate.html#fireteams.FireteamActivity">aiobungie.crate.fireteams.FireteamActivity</a>],
     *,
     platform: Union[int, <a href="crate.html#fireteams.FireteamPlatform">aiobungie.crate.fireteams.FireteamPlatform</a>] = &lt;FireteamPlatform.ANY: 0&gt;,
-    language: Union[<a href="crate.html#fireteams.FireteamLanguage">aiobungie.crate.fireteams.FireteamLanguage</a>, str] = ,
+    language: Union[<a href="crate.html#fireteams.FireteamLanguage">aiobungie.crate.fireteams.FireteamLanguage</a>, str] = &lt;FireteamLanguage.ALL: &gt;,
     date_range: Union[int, <a href="crate.html#fireteams.FireteamDate">aiobungie.crate.fireteams.FireteamDate</a>] = &lt;FireteamDate.ALL: 0&gt;,
     page: int = 0,
     slots_filter: int = 0
@@ -9856,7 +10009,7 @@ A datetime object can be used to collect the end of the application usage.</p>
                             <div id="RequestMethod.GET" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#RequestMethod.GET">#&nbsp;&nbsp</a>
 
-        <span class="name">GET</span><span class="default_value"> = GET</span>
+        <span class="name">GET</span><span class="default_value"> = &lt;<a href="#RequestMethod.GET">RequestMethod.GET</a>: GET&gt;</span>
     </div>
 
     
@@ -9868,7 +10021,7 @@ A datetime object can be used to collect the end of the application usage.</p>
                             <div id="RequestMethod.POST" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#RequestMethod.POST">#&nbsp;&nbsp</a>
 
-        <span class="name">POST</span><span class="default_value"> = POST</span>
+        <span class="name">POST</span><span class="default_value"> = &lt;<a href="#RequestMethod.POST">RequestMethod.POST</a>: POST&gt;</span>
     </div>
 
     
@@ -9880,7 +10033,7 @@ A datetime object can be used to collect the end of the application usage.</p>
                             <div id="RequestMethod.PUT" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#RequestMethod.PUT">#&nbsp;&nbsp</a>
 
-        <span class="name">PUT</span><span class="default_value"> = PUT</span>
+        <span class="name">PUT</span><span class="default_value"> = &lt;<a href="#RequestMethod.PUT">RequestMethod.PUT</a>: PUT&gt;</span>
     </div>
 
     
@@ -9892,7 +10045,7 @@ A datetime object can be used to collect the end of the application usage.</p>
                             <div id="RequestMethod.PATCH" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#RequestMethod.PATCH">#&nbsp;&nbsp</a>
 
-        <span class="name">PATCH</span><span class="default_value"> = PATCH</span>
+        <span class="name">PATCH</span><span class="default_value"> = &lt;<a href="#RequestMethod.PATCH">RequestMethod.PATCH</a>: PATCH&gt;</span>
     </div>
 
     
@@ -9904,7 +10057,7 @@ A datetime object can be used to collect the end of the application usage.</p>
                             <div id="RequestMethod.DELETE" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#RequestMethod.DELETE">#&nbsp;&nbsp</a>
 
-        <span class="name">DELETE</span><span class="default_value"> = DELETE</span>
+        <span class="name">DELETE</span><span class="default_value"> = &lt;<a href="#RequestMethod.DELETE">RequestMethod.DELETE</a>: DELETE&gt;</span>
     </div>
 
     
@@ -9916,9 +10069,9 @@ A datetime object can be used to collect the end of the application usage.</p>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>enum.Enum</dt>
-                                <dd id="RequestMethod.name" class="variable">name</dd>
-                <dd id="RequestMethod.value" class="variable">value</dd>
+                                    <div><dt><a href="internal/enums.html#Enum">aiobungie.internal.enums.Enum</a></dt>
+                                <dd id="RequestMethod.name" class="variable"><a href="internal/enums.html#Enum.name">name</a></dd>
+                <dd id="RequestMethod.value" class="variable"><a href="internal/enums.html#Enum.value">value</a></dd>
 
             </div>
             <div><dt>builtins.str</dt>
@@ -10476,6 +10629,37 @@ The hash of the item to plug.</li>
 
 
                             </div>
+                </section>
+                <section id="REST_DEBUG">
+                                <div class="attr variable"><a class="headerlink" href="#REST_DEBUG">#&nbsp;&nbsp</a>
+
+        <span class="name">REST_DEBUG</span><span class="annotation">: Final[int]</span><span class="default_value"> = 5</span>
+    </div>
+
+    
+            <div class="docstring"><p>The debug logging level for the <code><a href="#RESTClient">RESTClient</a></code> responses.</p>
+
+<p>You can enable this with the following code</p>
+
+<div class="pdoc-code codehilite"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">logging</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;<a href="">aiobungie.rest</a>&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">aiobungie</span><span class="o">.</span><span class="n">REST_DEBUG</span><span class="p">)</span>
+<span class="go">&lt;h1 id=&quot;or&quot;&gt;or&lt;/h1&gt;</span>
+</code></pre></div>
+
+<div class="pdoc-code codehilite"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">aiobungie</span><span class="o">.</span><span class="n">REST_DEBUG</span><span class="p">)</span>
+<span class="go">&lt;h1 id=&quot;or-2&quot;&gt;Or&lt;/h1&gt;</span>
+</code></pre></div>
+
+<div class="pdoc-code codehilite"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">aiobungie</span><span class="o">.</span><span class="n">RESTClient</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">enable_debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">&lt;h1 id=&quot;or-if-youre-using-aiobungiecient&quot;&gt;Or if you&#39;re using &lt;code&gt;<a href="../aiobungie.html#Cient">aiobungie.Cient</a>&lt;/code&gt;&lt;/h1&gt;</span>
+</code></pre></div>
+
+<div class="pdoc-code codehilite"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">aiobungie</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">enable_debugging</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="s2">&quot;rest_logs.txt&quot;</span><span class="p">)</span> <span class="c1"># optional file</span>
+</code></pre></div>
+</div>
+
+
                 </section>
     </main>
 <script>

@@ -219,6 +219,9 @@
             <li>
                     <a class="function" href="#raise_error">raise_error</a>
             </li>
+            <li>
+                    <a class="function" href="#stringify_http_message">stringify_http_message</a>
+            </li>
     </ul>
 
 
@@ -280,6 +283,7 @@
     <span class="s2">&quot;HTTPError&quot;</span><span class="p">,</span>
     <span class="s2">&quot;BadRequest&quot;</span><span class="p">,</span>
     <span class="s2">&quot;raise_error&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;stringify_http_message&quot;</span><span class="p">,</span>
 <span class="p">]</span>
 
 <span class="kn">import</span> <span class="nn">http</span>
@@ -470,12 +474,16 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">message</span>
 
 
-<span class="k">async</span> <span class="k">def</span> <span class="nf">raise_error</span><span class="p">(</span><span class="n">response</span><span class="p">:</span> <span class="n">aiohttp</span><span class="o">.</span><span class="n">ClientResponse</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AiobungieError</span><span class="p">:</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">raise_error</span><span class="p">(</span><span class="n">response</span><span class="p">:</span> <span class="n">aiohttp</span><span class="o">.</span><span class="n">ClientResponse</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AiobungieError</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Generates and raise exceptions on error responses.&quot;&quot;&quot;</span>
 
+    <span class="c1"># Not a JSON response, raise immendiately.</span>
+
+    <span class="c1"># Also Bungie sometimes can get funky and return HTML instead of JSON when making an authorized</span>
+    <span class="c1"># request with a dummy access token. I can&#39;t really do anything about this..</span>
     <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">content_type</span> <span class="o">!=</span> <span class="s2">&quot;application/json&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">HTTPError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Expected JSON content but got </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">content_type</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">real_url</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;Expected JSON content but got </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">content_type</span><span class="si">!s}</span><span class="s2">, </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">real_url</span><span class="si">!s}</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">http</span><span class="o">.</span><span class="n">HTTPStatus</span><span class="o">.</span><span class="n">UNSUPPORTED_MEDIA_TYPE</span><span class="p">,</span>
         <span class="p">)</span>
 
@@ -524,7 +532,7 @@
 
     <span class="k">elif</span> <span class="n">response</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">http</span><span class="o">.</span><span class="n">HTTPStatus</span><span class="o">.</span><span class="n">BAD_REQUEST</span><span class="p">:</span>
         <span class="c1"># Membership needs to be alone.</span>
-        <span class="k">if</span> <span class="n">msg</span> <span class="o">==</span> <span class="s2">&quot;InvalidParameters&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">error_status</span> <span class="o">==</span> <span class="s2">&quot;InvalidParameters&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">MembershipTypeError</span><span class="p">(</span>
                 <span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">,</span>
                 <span class="n">body</span><span class="o">=</span><span class="n">body</span><span class="p">,</span>
@@ -559,7 +567,7 @@
     <span class="c1"># Need to handle errors our selves :&gt;</span>
     <span class="k">elif</span> <span class="mi">500</span> <span class="o">&lt;=</span> <span class="n">status</span> <span class="o">&lt;</span> <span class="mi">600</span><span class="p">:</span>
         <span class="c1"># No API key or method requires OAuth2 most likely.</span>
-        <span class="k">if</span> <span class="n">msg</span> <span class="ow">in</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="n">error_status</span> <span class="ow">in</span> <span class="p">{</span>
             <span class="s2">&quot;ApiKeyMissingFromRequest&quot;</span><span class="p">,</span>
             <span class="s2">&quot;WebAuthRequired&quot;</span><span class="p">,</span>
             <span class="s2">&quot;ApiInvalidOrExpiredKey&quot;</span><span class="p">,</span>
@@ -578,7 +586,9 @@
             <span class="p">)</span>
 
         <span class="c1"># Anything contains not found.</span>
-        <span class="k">elif</span> <span class="n">msg</span> <span class="ow">and</span> <span class="s2">&quot;NotFound&quot;</span> <span class="ow">in</span> <span class="n">msg</span> <span class="ow">or</span> <span class="s2">&quot;UserCannotFindRequestedUser&quot;</span> <span class="o">==</span> <span class="n">msg</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="p">(</span>
+            <span class="s2">&quot;NotFound&quot;</span> <span class="ow">in</span> <span class="n">error_status</span> <span class="ow">or</span> <span class="n">error_status</span> <span class="o">==</span> <span class="s2">&quot;UserCannotFindRequestedUser&quot;</span>
+        <span class="p">):</span>
             <span class="k">return</span> <span class="n">NotFound</span><span class="p">(</span>
                 <span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">,</span>
                 <span class="n">error_code</span><span class="o">=</span><span class="n">error_code</span><span class="p">,</span>
@@ -616,6 +626,17 @@
             <span class="n">message_data</span><span class="o">=</span><span class="n">message_data</span><span class="p">,</span>
             <span class="n">http_status</span><span class="o">=</span><span class="n">status</span><span class="p">,</span>
         <span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">stringify_http_message</span><span class="p">(</span><span class="n">headers</span><span class="p">:</span> <span class="n">multidict</span><span class="o">.</span><span class="n">CIMultiDictProxy</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="s2">&quot;{ </span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>  <span class="c1"># noqa: W503</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="sa">f</span><span class="s1">&#39;   </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&#39;</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">key</span> <span class="o">!=</span> <span class="s2">&quot;Authorization&quot;</span> <span class="k">else</span> <span class="s2">&quot;HIDDEN_TOKEN&quot;</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">headers</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">}&quot;</span>  <span class="c1"># noqa: W503</span>
+    <span class="p">)</span>
 </pre></div>
 
         </details>
@@ -1939,19 +1960,22 @@ to make the request again with those fields.</p>
         
             <span class="def">async def</span>
             <span class="name">raise_error</span><span class="signature">(
-    response: aiohttp.client_reqrep.ClientResponse,
-    msg: str
+    response: aiohttp.client_reqrep.ClientResponse
 ) -&gt; <a href="#AiobungieError">aiobungie.error.AiobungieError</a></span>:
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span class="k">async</span> <span class="k">def</span> <span class="nf">raise_error</span><span class="p">(</span><span class="n">response</span><span class="p">:</span> <span class="n">aiohttp</span><span class="o">.</span><span class="n">ClientResponse</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AiobungieError</span><span class="p">:</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span class="k">async</span> <span class="k">def</span> <span class="nf">raise_error</span><span class="p">(</span><span class="n">response</span><span class="p">:</span> <span class="n">aiohttp</span><span class="o">.</span><span class="n">ClientResponse</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AiobungieError</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Generates and raise exceptions on error responses.&quot;&quot;&quot;</span>
 
+    <span class="c1"># Not a JSON response, raise immendiately.</span>
+
+    <span class="c1"># Also Bungie sometimes can get funky and return HTML instead of JSON when making an authorized</span>
+    <span class="c1"># request with a dummy access token. I can&#39;t really do anything about this..</span>
     <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">content_type</span> <span class="o">!=</span> <span class="s2">&quot;application/json&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">HTTPError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Expected JSON content but got </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">content_type</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">real_url</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;Expected JSON content but got </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">content_type</span><span class="si">!s}</span><span class="s2">, </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">real_url</span><span class="si">!s}</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">http</span><span class="o">.</span><span class="n">HTTPStatus</span><span class="o">.</span><span class="n">UNSUPPORTED_MEDIA_TYPE</span><span class="p">,</span>
         <span class="p">)</span>
 
@@ -2000,7 +2024,7 @@ to make the request again with those fields.</p>
 
     <span class="k">elif</span> <span class="n">response</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">http</span><span class="o">.</span><span class="n">HTTPStatus</span><span class="o">.</span><span class="n">BAD_REQUEST</span><span class="p">:</span>
         <span class="c1"># Membership needs to be alone.</span>
-        <span class="k">if</span> <span class="n">msg</span> <span class="o">==</span> <span class="s2">&quot;InvalidParameters&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">error_status</span> <span class="o">==</span> <span class="s2">&quot;InvalidParameters&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">MembershipTypeError</span><span class="p">(</span>
                 <span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">,</span>
                 <span class="n">body</span><span class="o">=</span><span class="n">body</span><span class="p">,</span>
@@ -2035,7 +2059,7 @@ to make the request again with those fields.</p>
     <span class="c1"># Need to handle errors our selves :&gt;</span>
     <span class="k">elif</span> <span class="mi">500</span> <span class="o">&lt;=</span> <span class="n">status</span> <span class="o">&lt;</span> <span class="mi">600</span><span class="p">:</span>
         <span class="c1"># No API key or method requires OAuth2 most likely.</span>
-        <span class="k">if</span> <span class="n">msg</span> <span class="ow">in</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="n">error_status</span> <span class="ow">in</span> <span class="p">{</span>
             <span class="s2">&quot;ApiKeyMissingFromRequest&quot;</span><span class="p">,</span>
             <span class="s2">&quot;WebAuthRequired&quot;</span><span class="p">,</span>
             <span class="s2">&quot;ApiInvalidOrExpiredKey&quot;</span><span class="p">,</span>
@@ -2054,7 +2078,9 @@ to make the request again with those fields.</p>
             <span class="p">)</span>
 
         <span class="c1"># Anything contains not found.</span>
-        <span class="k">elif</span> <span class="n">msg</span> <span class="ow">and</span> <span class="s2">&quot;NotFound&quot;</span> <span class="ow">in</span> <span class="n">msg</span> <span class="ow">or</span> <span class="s2">&quot;UserCannotFindRequestedUser&quot;</span> <span class="o">==</span> <span class="n">msg</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="p">(</span>
+            <span class="s2">&quot;NotFound&quot;</span> <span class="ow">in</span> <span class="n">error_status</span> <span class="ow">or</span> <span class="n">error_status</span> <span class="o">==</span> <span class="s2">&quot;UserCannotFindRequestedUser&quot;</span>
+        <span class="p">):</span>
             <span class="k">return</span> <span class="n">NotFound</span><span class="p">(</span>
                 <span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">,</span>
                 <span class="n">error_code</span><span class="o">=</span><span class="n">error_code</span><span class="p">,</span>
@@ -2099,6 +2125,32 @@ to make the request again with those fields.</p>
             <div class="docstring"><p>Generates and raise exceptions on error responses.</p>
 </div>
 
+
+                </section>
+                <section id="stringify_http_message">
+                            <div class="attr function"><a class="headerlink" href="#stringify_http_message">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">stringify_http_message</span><span class="signature">(headers: multidict._multidict.CIMultiDictProxy) -&gt; str</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="nf">stringify_http_message</span><span class="p">(</span><span class="n">headers</span><span class="p">:</span> <span class="n">multidict</span><span class="o">.</span><span class="n">CIMultiDictProxy</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="s2">&quot;{ </span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>  <span class="c1"># noqa: W503</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="sa">f</span><span class="s1">&#39;   </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&#39;</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">key</span> <span class="o">!=</span> <span class="s2">&quot;Authorization&quot;</span> <span class="k">else</span> <span class="s2">&quot;HIDDEN_TOKEN&quot;</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">headers</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">}&quot;</span>  <span class="c1"># noqa: W503</span>
+    <span class="p">)</span>
+</pre></div>
+
+        </details>
+
+    
 
                 </section>
     </main>

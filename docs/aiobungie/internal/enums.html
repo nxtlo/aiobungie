@@ -33,12 +33,24 @@
             <li>
                     <a class="class" href="#Enum">Enum</a>
                             <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#Enum.name">name</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Enum.value">value</a>
+                        </li>
                 </ul>
 
             </li>
             <li>
-                    <a class="class" href="#IntEnum">IntEnum</a>
+                    <a class="class" href="#Flag">Flag</a>
                             <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#Flag.name">name</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Flag.value">value</a>
+                        </li>
                 </ul>
 
             </li>
@@ -274,7 +286,13 @@
                                 <a class="variable" href="#GameMode.SUNDIAL">SUNDIAL</a>
                         </li>
                         <li>
-                                <a class="variable" href="#GameMode.TRIALSOFOSIRIS">TRIALSOFOSIRIS</a>
+                                <a class="variable" href="#GameMode.TRIALS_OF_OSIRIS">TRIALS_OF_OSIRIS</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.DARES">DARES</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.OFFENSIVE">OFFENSIVE</a>
                         </li>
                 </ul>
 
@@ -593,6 +611,9 @@
                         </li>
                         <li>
                                 <a class="variable" href="#ComponentType.STRING_VARIABLES">STRING_VARIABLES</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ComponentType.CRAFTABLES">CRAFTABLES</a>
                         </li>
                         <li>
                                 <a class="variable" href="#ComponentType.CHARACTERS">CHARACTERS</a>
@@ -1078,7 +1099,10 @@
                                 <a class="variable" href="#ItemState.MASTERWORKED">MASTERWORKED</a>
                         </li>
                         <li>
-                                <a class="variable" href="#ItemState.LOCKED_AND_MASTERWORKED">LOCKED_AND_MASTERWORKED</a>
+                                <a class="variable" href="#ItemState.CRAFTED">CRAFTED</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemState.HIGHLITED_OBJECTIVE">HIGHLITED_OBJECTIVE</a>
                         </li>
                 </ul>
 
@@ -1215,6 +1239,33 @@
                 </ul>
 
             </li>
+            <li>
+                    <a class="class" href="#TierType">TierType</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#TierType.UNKNOWN">UNKNOWN</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#TierType.CURRENCY">CURRENCY</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#TierType.BASIC">BASIC</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#TierType.COMMON">COMMON</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#TierType.RARE">RARE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#TierType.SUPERIOR">SUPERIOR</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#TierType.EXOTIC">EXOTIC</a>
+                        </li>
+                </ul>
+
+            </li>
     </ul>
 
 
@@ -1265,7 +1316,7 @@
 
 <span class="n">__all__</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
     <span class="s2">&quot;Enum&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;IntEnum&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Flag&quot;</span><span class="p">,</span>
     <span class="s2">&quot;GameMode&quot;</span><span class="p">,</span>
     <span class="s2">&quot;MembershipType&quot;</span><span class="p">,</span>
     <span class="s2">&quot;Class&quot;</span><span class="p">,</span>
@@ -1297,6 +1348,7 @@
     <span class="s2">&quot;PrivacySetting&quot;</span><span class="p">,</span>
     <span class="s2">&quot;ClosedReasons&quot;</span><span class="p">,</span>
     <span class="s2">&quot;ItemSubType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;TierType&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="kn">import</span> <span class="nn">enum</span> <span class="k">as</span> <span class="nn">__enum</span>
@@ -1304,11 +1356,28 @@
 
 <span class="n">_ITERABLE</span> <span class="o">=</span> <span class="p">(</span><span class="nb">set</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span>
 
+<span class="k">if</span> <span class="n">typing</span><span class="o">.</span><span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="n">_T</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;_T&quot;</span><span class="p">)</span>
+
 <span class="c1"># TODO = Use Flags for bitwised fields?</span>
 
 
-<span class="k">class</span> <span class="nc">IntEnum</span><span class="p">(</span><span class="n">__enum</span><span class="o">.</span><span class="n">IntEnum</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;An int only enum.&quot;&quot;&quot;</span>
+<span class="k">class</span> <span class="nc">Enum</span><span class="p">(</span><span class="n">__enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Builtin Python enum with extra handlings.&quot;&quot;&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>  <span class="c1"># type: ignore[override]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name_</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>  <span class="c1"># type: ignore[override]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value_</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name_</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name_</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_value_</span><span class="si">!s}</span><span class="s2">&gt;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">_ITERABLE</span><span class="p">):</span>
@@ -1317,18 +1386,29 @@
             <span class="p">)</span>
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
 
+<span class="k">class</span> <span class="nc">Flag</span><span class="p">(</span><span class="n">__enum</span><span class="o">.</span><span class="n">Flag</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Builtin Python enum flag with extra handlings.&quot;&quot;&quot;</span>
 
-<span class="k">class</span> <span class="nc">Enum</span><span class="p">(</span><span class="n">__enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;An enum that can be an int or a string.&quot;&quot;&quot;</span>
+    <span class="c1"># Needs to type this here for mypy</span>
+    <span class="n">_value_</span><span class="p">:</span> <span class="nb">int</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>  <span class="c1"># type: ignore[override]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_name_</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;UNKNOWN </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_value_</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name_</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>  <span class="c1"># type: ignore[override]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value_</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_value_</span><span class="si">!s}</span><span class="s2">&gt;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">_ITERABLE</span><span class="p">):</span>
@@ -1337,9 +1417,24 @@
             <span class="p">)</span>
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 
+    <span class="k">def</span> <span class="fm">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">Flag</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Flag</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value_</span> <span class="o">|</span> <span class="nb">int</span><span class="p">(</span><span class="n">other</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="fm">__xor__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">Flag</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Flag</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value_</span> <span class="o">^</span> <span class="nb">int</span><span class="p">(</span><span class="n">other</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="fm">__and__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">Flag</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Flag</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">other</span> <span class="o">&amp;</span> <span class="nb">int</span><span class="p">(</span><span class="n">other</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="fm">__invert__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Flag</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="o">~</span><span class="bp">self</span><span class="o">.</span><span class="n">_value_</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">Flag</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">&amp;</span> <span class="nb">int</span><span class="p">(</span><span class="n">other</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">Raid</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Raid</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An Enum for all available raids in Destiny 2.&quot;&quot;&quot;</span>
 
     <span class="n">DSC</span> <span class="o">=</span> <span class="mi">910380154</span>
@@ -1356,7 +1451,7 @@
 
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">Dungeon</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Dungeon</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An Enum for all available Dungeon/Like missions in Destiny 2.&quot;&quot;&quot;</span>
 
     <span class="n">NORMAL_PRESAGE</span> <span class="o">=</span> <span class="mi">2124066889</span>
@@ -1391,7 +1486,7 @@
 
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">Planet</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Planet</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An Enum for all available planets in Destiny 2.&quot;&quot;&quot;</span>
 
     <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1426,7 +1521,7 @@
 
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">Place</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Place</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An Enum for Destiny 2 Places and NOT Planets&quot;&quot;&quot;</span>
 
     <span class="n">ORBIT</span> <span class="o">=</span> <span class="mi">2961497387</span>
@@ -1436,7 +1531,7 @@
 
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">Vendor</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Vendor</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An Enum for all available vendors in Destiny 2.&quot;&quot;&quot;</span>
 
     <span class="n">ZAVALA</span> <span class="o">=</span> <span class="mi">69482069</span>
@@ -1465,7 +1560,7 @@
 
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">GameMode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">GameMode</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An Enum for all available gamemodes in Destiny 2.&quot;&quot;&quot;</span>
 
     <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1544,7 +1639,9 @@
     <span class="n">MOMENTUM</span> <span class="o">=</span> <span class="mi">81</span>
     <span class="n">DUNGEON</span> <span class="o">=</span> <span class="mi">82</span>
     <span class="n">SUNDIAL</span> <span class="o">=</span> <span class="mi">83</span>
-    <span class="n">TRIALSOFOSIRIS</span> <span class="o">=</span> <span class="mi">84</span>
+    <span class="n">TRIALS_OF_OSIRIS</span> <span class="o">=</span> <span class="mi">84</span>
+    <span class="n">DARES</span> <span class="o">=</span> <span class="mi">85</span>
+    <span class="n">OFFENSIVE</span> <span class="o">=</span> <span class="mi">86</span>
 
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
@@ -1616,6 +1713,7 @@
     <span class="n">METRICS</span> <span class="o">=</span> <span class="mi">1100</span>
     <span class="n">INVENTORIES</span> <span class="o">=</span> <span class="mi">102</span>
     <span class="n">STRING_VARIABLES</span> <span class="o">=</span> <span class="mi">1200</span>
+    <span class="n">CRAFTABLES</span> <span class="o">=</span> <span class="mi">1300</span>
 
     <span class="n">CHARACTERS</span> <span class="o">=</span> <span class="mi">200</span>
     <span class="n">CHARACTER_INVENTORY</span> <span class="o">=</span> <span class="mi">201</span>
@@ -1653,6 +1751,7 @@
         <span class="n">INVENTORIES</span><span class="p">,</span>
         <span class="n">STRING_VARIABLES</span><span class="p">,</span>
         <span class="n">TRANSITORY</span><span class="p">,</span>
+        <span class="n">CRAFTABLES</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;ALl components. The usage of this is `*ComponentType.ALL.value` to unpack the values.</span>
 
@@ -1661,7 +1760,7 @@
 
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">MembershipType</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">MembershipType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An Enum for Bungie membership types.&quot;&quot;&quot;</span>
 
     <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1675,7 +1774,7 @@
 
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">Class</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Class</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An Enum for Destiny character classes.&quot;&quot;&quot;</span>
 
     <span class="n">TITAN</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1685,7 +1784,7 @@
 
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">Gender</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Gender</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An Enum for Destiny Genders.&quot;&quot;&quot;</span>
 
     <span class="n">MALE</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1694,7 +1793,7 @@
 
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">Race</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Race</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An Enum for Destiny races.&quot;&quot;&quot;</span>
 
     <span class="n">HUMAN</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1704,7 +1803,7 @@
 
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">MilestoneType</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">MilestoneType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An Enum for Destiny 2 milestone types.&quot;&quot;&quot;</span>
 
     <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1716,7 +1815,7 @@
 
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">Stat</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Stat</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An Enum for Destiny 2 character stats.&quot;&quot;&quot;</span>
 
     <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1730,7 +1829,7 @@
 
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">WeaponType</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">WeaponType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Enums for The three Destiny Weapon Types&quot;&quot;&quot;</span>
 
     <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1740,7 +1839,7 @@
 
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">DamageType</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">DamageType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Enums for Destiny Damage types&quot;&quot;&quot;</span>
 
     <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1754,7 +1853,7 @@
 
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">ItemType</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">ItemType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Enums for Destiny2&#39;s item types.&quot;&quot;&quot;</span>
 
     <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1787,7 +1886,7 @@
 
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">ItemSubType</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">ItemSubType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An enum for Destiny 2 inventory items subtype.&quot;&quot;&quot;</span>
 
     <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1819,7 +1918,7 @@
 
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">ItemTier</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">ItemTier</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An enum for a Destiny 2 item tier.&quot;&quot;&quot;</span>
 
     <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1831,7 +1930,20 @@
 
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">AmmoType</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">TierType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;An enum for a Destiny 2 item tier type.&quot;&quot;&quot;</span>
+
+    <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">CURRENCY</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">BASIC</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">COMMON</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">RARE</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">SUPERIOR</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">EXOTIC</span> <span class="o">=</span> <span class="mi">6</span>
+
+
+<span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
+<span class="k">class</span> <span class="nc">AmmoType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;AN enum for Detyiny 2 ammo types.&quot;&quot;&quot;</span>
 
     <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1841,7 +1953,7 @@
 
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">GroupType</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">GroupType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An enums for the known bungie group types.&quot;&quot;&quot;</span>
 
     <span class="n">GENERAL</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1849,7 +1961,7 @@
 
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">CredentialType</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">CredentialType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;The types of the accounts system supports at bungie.&quot;&quot;&quot;</span>
 
     <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1868,7 +1980,7 @@
 
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">Presence</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Presence</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An enum for a bungie friend status.&quot;&quot;&quot;</span>
 
     <span class="n">OFFLINE_OR_UNKNOWN</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1876,7 +1988,7 @@
 
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">Relationship</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Relationship</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An enum for bungie friends relationship types.&quot;&quot;&quot;</span>
 
     <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1886,7 +1998,7 @@
 
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">ClanMemberType</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">ClanMemberType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An enum for bungie clan member types.&quot;&quot;&quot;</span>
 
     <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1898,7 +2010,7 @@
 
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">MembershipOption</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">MembershipOption</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A enum for GroupV2 membership options.&quot;&quot;&quot;</span>
 
     <span class="n">REVIEWD</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1907,7 +2019,7 @@
 
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">ItemBindStatus</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">ItemBindStatus</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An enum for Destiny 2 items bind status.&quot;&quot;&quot;</span>
 
     <span class="n">NOT_BOUND</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1917,7 +2029,7 @@
 
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">ItemLocation</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">ItemLocation</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An enum for Destiny 2 items location.&quot;&quot;&quot;</span>
 
     <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1928,7 +2040,7 @@
 
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">TransferStatus</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">TransferStatus</span><span class="p">(</span><span class="n">Flag</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An enum for items transfer statuses.&quot;&quot;&quot;</span>
 
     <span class="n">CAN_TRANSFER</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1942,18 +2054,21 @@
 
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">ItemState</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">ItemState</span><span class="p">(</span><span class="n">Flag</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An enum for Destiny 2 item states.&quot;&quot;&quot;</span>
 
     <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">LOCKED</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">TRACKED</span> <span class="o">=</span> <span class="mi">2</span>
     <span class="n">MASTERWORKED</span> <span class="o">=</span> <span class="mi">4</span>
-    <span class="n">LOCKED_AND_MASTERWORKED</span> <span class="o">=</span> <span class="n">LOCKED</span> <span class="o">+</span> <span class="n">MASTERWORKED</span>
+    <span class="n">CRAFTED</span> <span class="o">=</span> <span class="mi">8</span>
+    <span class="sd">&quot;&quot;&quot;If this bit is set, the item has been &#39;crafted&#39; by the player.&quot;&quot;&quot;</span>
+    <span class="n">HIGHLITED_OBJECTIVE</span> <span class="o">=</span> <span class="mi">16</span>
+    <span class="sd">&quot;&quot;&quot;If this bit is set, the item is a &#39;highlighted&#39; objective.&quot;&quot;&quot;</span>
 
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">PrivacySetting</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">PrivacySetting</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An enum for players&#39;s privacy settings.&quot;&quot;&quot;</span>
 
     <span class="n">OPEN</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1964,7 +2079,7 @@
 
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">ClosedReasons</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">ClosedReasons</span><span class="p">(</span><span class="n">Flag</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A Flags enumeration representing the reasons why a person can&#39;t join this user&#39;s fireteam.&quot;&quot;&quot;</span>
 
     <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1999,13 +2114,90 @@
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Enum</span><span class="p">(</span><span class="n">__enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;An enum that can be an int or a string.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Builtin Python enum with extra handlings.&quot;&quot;&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>  <span class="c1"># type: ignore[override]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name_</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">:</span>  <span class="c1"># type: ignore[override]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value_</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name_</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name_</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_value_</span><span class="si">!s}</span><span class="s2">&gt;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">_ITERABLE</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Can&#39;t overload </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">, Please use `.value` attribute.&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Builtin Python enum with extra handlings.</p>
+</div>
+
+
+                            <div id="Enum.name" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#Enum.name">#&nbsp;&nbsp</a>
+
+        <span class="name">name</span><span class="annotation">: str</span>
+    </div>
+
+    
+    
+
+                            </div>
+                            <div id="Enum.value" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#Enum.value">#&nbsp;&nbsp</a>
+
+        <span class="name">value</span><span class="annotation">: Any</span>
+    </div>
+
+    
+    
+
+                            </div>
+                </section>
+                <section id="Flag">
+                                <div class="attr class">
+        <a class="headerlink" href="#Flag">#&nbsp;&nbsp</a>
+
+        
+        <span class="def">class</span>
+        <span class="name">Flag</span><wbr>(<span class="base">enum.Flag</span>):
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Flag</span><span class="p">(</span><span class="n">__enum</span><span class="o">.</span><span class="n">Flag</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Builtin Python enum flag with extra handlings.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Needs to type this here for mypy</span>
+    <span class="n">_value_</span><span class="p">:</span> <span class="nb">int</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>  <span class="c1"># type: ignore[override]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_name_</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;UNKNOWN </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_value_</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name_</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>  <span class="c1"># type: ignore[override]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value_</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_value_</span><span class="si">!s}</span><span class="s2">&gt;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">_ITERABLE</span><span class="p">):</span>
@@ -2013,77 +2205,48 @@
                 <span class="sa">f</span><span class="s2">&quot;Can&#39;t overload </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">, Please use `.value` attribute.&quot;</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">Flag</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Flag</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value_</span> <span class="o">|</span> <span class="nb">int</span><span class="p">(</span><span class="n">other</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="fm">__xor__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">Flag</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Flag</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value_</span> <span class="o">^</span> <span class="nb">int</span><span class="p">(</span><span class="n">other</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="fm">__and__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">Flag</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Flag</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">other</span> <span class="o">&amp;</span> <span class="nb">int</span><span class="p">(</span><span class="n">other</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="fm">__invert__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Flag</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="o">~</span><span class="bp">self</span><span class="o">.</span><span class="n">_value_</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">Flag</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">&amp;</span> <span class="nb">int</span><span class="p">(</span><span class="n">other</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>An enum that can be an int or a string.</p>
+            <div class="docstring"><p>Builtin Python enum flag with extra handlings.</p>
 </div>
 
 
-                            <div class="inherited">
-                                <h5>Inherited Members</h5>
-                                <dl>
-                                    <div><dt>enum.Enum</dt>
-                                <dd id="Enum.name" class="variable"><a href="#Enum.name">name</a></dd>
-                <dd id="Enum.value" class="variable"><a href="#Enum.value">value</a></dd>
+                            <div id="Flag.name" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#Flag.name">#&nbsp;&nbsp</a>
 
-            </div>
-                                </dl>
-                            </div>
-                </section>
-                <section id="IntEnum">
-                                <div class="attr class">
-        <a class="headerlink" href="#IntEnum">#&nbsp;&nbsp</a>
-
-        
-        <span class="def">class</span>
-        <span class="name">IntEnum</span><wbr>(<span class="base">enum.IntEnum</span>):
+        <span class="name">name</span><span class="annotation">: str</span>
     </div>
 
-            <details>
-            <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span class="k">class</span> <span class="nc">IntEnum</span><span class="p">(</span><span class="n">__enum</span><span class="o">.</span><span class="n">IntEnum</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;An int only enum.&quot;&quot;&quot;</span>
+    
+    
 
-    <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">_ITERABLE</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Can&#39;t overload </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">, Please use `.value` attribute.&quot;</span><span class="p">,</span>
-            <span class="p">)</span>
-        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+                            </div>
+                            <div id="Flag.value" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#Flag.value">#&nbsp;&nbsp</a>
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
-</pre></div>
+        <span class="name">value</span><span class="annotation">: int</span>
+    </div>
 
-        </details>
+    
+    
 
-            <div class="docstring"><p>An int only enum.</p>
-</div>
-
-
-                            <div class="inherited">
-                                <h5>Inherited Members</h5>
-                                <dl>
-                                    <div><dt>enum.Enum</dt>
-                                <dd id="IntEnum.name" class="variable"><a href="#Enum.name">name</a></dd>
-                <dd id="IntEnum.value" class="variable"><a href="#Enum.value">value</a></dd>
-
-            </div>
-            <div><dt>builtins.int</dt>
-                                <dd id="IntEnum.conjugate" class="function">conjugate</dd>
-                <dd id="IntEnum.bit_length" class="function">bit_length</dd>
-                <dd id="IntEnum.to_bytes" class="function">to_bytes</dd>
-                <dd id="IntEnum.from_bytes" class="function">from_bytes</dd>
-                <dd id="IntEnum.as_integer_ratio" class="function">as_integer_ratio</dd>
-                <dd id="IntEnum.real" class="variable">real</dd>
-                <dd id="IntEnum.imag" class="variable">imag</dd>
-                <dd id="IntEnum.numerator" class="variable">numerator</dd>
-                <dd id="IntEnum.denominator" class="variable">denominator</dd>
-
-            </div>
-                                </dl>
                             </div>
                 </section>
                 <section id="GameMode">
@@ -2093,13 +2256,13 @@
                 <div class="decorator">@typing.final</div>
 
         <span class="def">class</span>
-        <span class="name">GameMode</span><wbr>(<span class="base"><a href="#IntEnum">IntEnum</a></span>):
+        <span class="name">GameMode</span><wbr>(<span class="base">builtins.int</span>, <span class="base"><a href="#Enum">Enum</a></span>):
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">GameMode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">GameMode</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An Enum for all available gamemodes in Destiny 2.&quot;&quot;&quot;</span>
 
     <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
@@ -2178,7 +2341,9 @@
     <span class="n">MOMENTUM</span> <span class="o">=</span> <span class="mi">81</span>
     <span class="n">DUNGEON</span> <span class="o">=</span> <span class="mi">82</span>
     <span class="n">SUNDIAL</span> <span class="o">=</span> <span class="mi">83</span>
-    <span class="n">TRIALSOFOSIRIS</span> <span class="o">=</span> <span class="mi">84</span>
+    <span class="n">TRIALS_OF_OSIRIS</span> <span class="o">=</span> <span class="mi">84</span>
+    <span class="n">DARES</span> <span class="o">=</span> <span class="mi">85</span>
+    <span class="n">OFFENSIVE</span> <span class="o">=</span> <span class="mi">86</span>
 </pre></div>
 
         </details>
@@ -2947,10 +3112,30 @@
     
 
                             </div>
-                            <div id="GameMode.TRIALSOFOSIRIS" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#GameMode.TRIALSOFOSIRIS">#&nbsp;&nbsp</a>
+                            <div id="GameMode.TRIALS_OF_OSIRIS" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#GameMode.TRIALS_OF_OSIRIS">#&nbsp;&nbsp</a>
 
-        <span class="name">TRIALSOFOSIRIS</span><span class="default_value"> = &lt;<a href="#GameMode.TRIALSOFOSIRIS">GameMode.TRIALSOFOSIRIS</a>: 84&gt;</span>
+        <span class="name">TRIALS_OF_OSIRIS</span><span class="default_value"> = &lt;<a href="#GameMode.TRIALS_OF_OSIRIS">GameMode.TRIALS_OF_OSIRIS</a>: 84&gt;</span>
+    </div>
+
+    
+    
+
+                            </div>
+                            <div id="GameMode.DARES" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#GameMode.DARES">#&nbsp;&nbsp</a>
+
+        <span class="name">DARES</span><span class="default_value"> = &lt;<a href="#GameMode.DARES">GameMode.DARES</a>: 85&gt;</span>
+    </div>
+
+    
+    
+
+                            </div>
+                            <div id="GameMode.OFFENSIVE" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#GameMode.OFFENSIVE">#&nbsp;&nbsp</a>
+
+        <span class="name">OFFENSIVE</span><span class="default_value"> = &lt;<a href="#GameMode.OFFENSIVE">GameMode.OFFENSIVE</a>: 86&gt;</span>
     </div>
 
     
@@ -2960,7 +3145,7 @@
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>enum.Enum</dt>
+                                    <div><dt><a href="#Enum">Enum</a></dt>
                                 <dd id="GameMode.name" class="variable"><a href="#Enum.name">name</a></dd>
                 <dd id="GameMode.value" class="variable"><a href="#Enum.value">value</a></dd>
 
@@ -2987,13 +3172,13 @@
                 <div class="decorator">@typing.final</div>
 
         <span class="def">class</span>
-        <span class="name">MembershipType</span><wbr>(<span class="base"><a href="#IntEnum">IntEnum</a></span>):
+        <span class="name">MembershipType</span><wbr>(<span class="base">builtins.int</span>, <span class="base"><a href="#Enum">Enum</a></span>):
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">MembershipType</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">MembershipType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An Enum for Bungie membership types.&quot;&quot;&quot;</span>
 
     <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
@@ -3095,7 +3280,7 @@
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>enum.Enum</dt>
+                                    <div><dt><a href="#Enum">Enum</a></dt>
                                 <dd id="MembershipType.name" class="variable"><a href="#Enum.name">name</a></dd>
                 <dd id="MembershipType.value" class="variable"><a href="#Enum.value">value</a></dd>
 
@@ -3122,13 +3307,13 @@
                 <div class="decorator">@typing.final</div>
 
         <span class="def">class</span>
-        <span class="name">Class</span><wbr>(<span class="base"><a href="#IntEnum">IntEnum</a></span>):
+        <span class="name">Class</span><wbr>(<span class="base">builtins.int</span>, <span class="base"><a href="#Enum">Enum</a></span>):
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">Class</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Class</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An Enum for Destiny character classes.&quot;&quot;&quot;</span>
 
     <span class="n">TITAN</span> <span class="o">=</span> <span class="mi">0</span>
@@ -3186,7 +3371,7 @@
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>enum.Enum</dt>
+                                    <div><dt><a href="#Enum">Enum</a></dt>
                                 <dd id="Class.name" class="variable"><a href="#Enum.name">name</a></dd>
                 <dd id="Class.value" class="variable"><a href="#Enum.value">value</a></dd>
 
@@ -3213,13 +3398,13 @@
                 <div class="decorator">@typing.final</div>
 
         <span class="def">class</span>
-        <span class="name">MilestoneType</span><wbr>(<span class="base"><a href="#IntEnum">IntEnum</a></span>):
+        <span class="name">MilestoneType</span><wbr>(<span class="base">builtins.int</span>, <span class="base"><a href="#Enum">Enum</a></span>):
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">MilestoneType</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">MilestoneType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An Enum for Destiny 2 milestone types.&quot;&quot;&quot;</span>
 
     <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="mi">0</span>
@@ -3299,7 +3484,7 @@
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>enum.Enum</dt>
+                                    <div><dt><a href="#Enum">Enum</a></dt>
                                 <dd id="MilestoneType.name" class="variable"><a href="#Enum.name">name</a></dd>
                 <dd id="MilestoneType.value" class="variable"><a href="#Enum.value">value</a></dd>
 
@@ -3326,13 +3511,13 @@
                 <div class="decorator">@typing.final</div>
 
         <span class="def">class</span>
-        <span class="name">Race</span><wbr>(<span class="base"><a href="#IntEnum">IntEnum</a></span>):
+        <span class="name">Race</span><wbr>(<span class="base">builtins.int</span>, <span class="base"><a href="#Enum">Enum</a></span>):
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">Race</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Race</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An Enum for Destiny races.&quot;&quot;&quot;</span>
 
     <span class="n">HUMAN</span> <span class="o">=</span> <span class="mi">0</span>
@@ -3390,7 +3575,7 @@
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>enum.Enum</dt>
+                                    <div><dt><a href="#Enum">Enum</a></dt>
                                 <dd id="Race.name" class="variable"><a href="#Enum.name">name</a></dd>
                 <dd id="Race.value" class="variable"><a href="#Enum.value">value</a></dd>
 
@@ -3417,13 +3602,13 @@
                 <div class="decorator">@typing.final</div>
 
         <span class="def">class</span>
-        <span class="name">Vendor</span><wbr>(<span class="base"><a href="#IntEnum">IntEnum</a></span>):
+        <span class="name">Vendor</span><wbr>(<span class="base">builtins.int</span>, <span class="base"><a href="#Enum">Enum</a></span>):
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">Vendor</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Vendor</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An Enum for all available vendors in Destiny 2.&quot;&quot;&quot;</span>
 
     <span class="n">ZAVALA</span> <span class="o">=</span> <span class="mi">69482069</span>
@@ -3650,7 +3835,7 @@
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>enum.Enum</dt>
+                                    <div><dt><a href="#Enum">Enum</a></dt>
                                 <dd id="Vendor.name" class="variable"><a href="#Enum.name">name</a></dd>
                 <dd id="Vendor.value" class="variable"><a href="#Enum.value">value</a></dd>
 
@@ -3677,13 +3862,13 @@
                 <div class="decorator">@typing.final</div>
 
         <span class="def">class</span>
-        <span class="name">Raid</span><wbr>(<span class="base"><a href="#IntEnum">IntEnum</a></span>):
+        <span class="name">Raid</span><wbr>(<span class="base">builtins.int</span>, <span class="base"><a href="#Enum">Enum</a></span>):
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">Raid</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Raid</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An Enum for all available raids in Destiny 2.&quot;&quot;&quot;</span>
 
     <span class="n">DSC</span> <span class="o">=</span> <span class="mi">910380154</span>
@@ -3756,7 +3941,7 @@
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>enum.Enum</dt>
+                                    <div><dt><a href="#Enum">Enum</a></dt>
                                 <dd id="Raid.name" class="variable"><a href="#Enum.name">name</a></dd>
                 <dd id="Raid.value" class="variable"><a href="#Enum.value">value</a></dd>
 
@@ -3783,13 +3968,13 @@
                 <div class="decorator">@typing.final</div>
 
         <span class="def">class</span>
-        <span class="name">Dungeon</span><wbr>(<span class="base"><a href="#IntEnum">IntEnum</a></span>):
+        <span class="name">Dungeon</span><wbr>(<span class="base">builtins.int</span>, <span class="base"><a href="#Enum">Enum</a></span>):
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">Dungeon</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Dungeon</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An Enum for all available Dungeon/Like missions in Destiny 2.&quot;&quot;&quot;</span>
 
     <span class="n">NORMAL_PRESAGE</span> <span class="o">=</span> <span class="mi">2124066889</span>
@@ -3952,7 +4137,7 @@
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>enum.Enum</dt>
+                                    <div><dt><a href="#Enum">Enum</a></dt>
                                 <dd id="Dungeon.name" class="variable"><a href="#Enum.name">name</a></dd>
                 <dd id="Dungeon.value" class="variable"><a href="#Enum.value">value</a></dd>
 
@@ -3979,13 +4164,13 @@
                 <div class="decorator">@typing.final</div>
 
         <span class="def">class</span>
-        <span class="name">Gender</span><wbr>(<span class="base"><a href="#IntEnum">IntEnum</a></span>):
+        <span class="name">Gender</span><wbr>(<span class="base">builtins.int</span>, <span class="base"><a href="#Enum">Enum</a></span>):
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">Gender</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Gender</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An Enum for Destiny Genders.&quot;&quot;&quot;</span>
 
     <span class="n">MALE</span> <span class="o">=</span> <span class="mi">0</span>
@@ -4032,7 +4217,7 @@
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>enum.Enum</dt>
+                                    <div><dt><a href="#Enum">Enum</a></dt>
                                 <dd id="Gender.name" class="variable"><a href="#Enum.name">name</a></dd>
                 <dd id="Gender.value" class="variable"><a href="#Enum.value">value</a></dd>
 
@@ -4133,6 +4318,7 @@
     <span class="n">METRICS</span> <span class="o">=</span> <span class="mi">1100</span>
     <span class="n">INVENTORIES</span> <span class="o">=</span> <span class="mi">102</span>
     <span class="n">STRING_VARIABLES</span> <span class="o">=</span> <span class="mi">1200</span>
+    <span class="n">CRAFTABLES</span> <span class="o">=</span> <span class="mi">1300</span>
 
     <span class="n">CHARACTERS</span> <span class="o">=</span> <span class="mi">200</span>
     <span class="n">CHARACTER_INVENTORY</span> <span class="o">=</span> <span class="mi">201</span>
@@ -4170,6 +4356,7 @@
         <span class="n">INVENTORIES</span><span class="p">,</span>
         <span class="n">STRING_VARIABLES</span><span class="p">,</span>
         <span class="n">TRANSITORY</span><span class="p">,</span>
+        <span class="n">CRAFTABLES</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;ALl components. The usage of this is `*ComponentType.ALL.value` to unpack the values.</span>
 
@@ -4186,7 +4373,7 @@
                             <div id="ComponentType.NONE" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ComponentType.NONE">#&nbsp;&nbsp</a>
 
-        <span class="name">NONE</span><span class="default_value"> = NONE</span>
+        <span class="name">NONE</span><span class="default_value"> = &lt;<a href="#ComponentType.NONE">ComponentType.NONE</a>: 0&gt;</span>
     </div>
 
     
@@ -4196,7 +4383,7 @@
                             <div id="ComponentType.PROFILE" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ComponentType.PROFILE">#&nbsp;&nbsp</a>
 
-        <span class="name">PROFILE</span><span class="default_value"> = PROFILE</span>
+        <span class="name">PROFILE</span><span class="default_value"> = &lt;<a href="#ComponentType.PROFILE">ComponentType.PROFILE</a>: 100&gt;</span>
     </div>
 
     
@@ -4206,7 +4393,7 @@
                             <div id="ComponentType.PROFILE_INVENTORIES" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ComponentType.PROFILE_INVENTORIES">#&nbsp;&nbsp</a>
 
-        <span class="name">PROFILE_INVENTORIES</span><span class="default_value"> = PROFILE_INVENTORIES</span>
+        <span class="name">PROFILE_INVENTORIES</span><span class="default_value"> = &lt;<a href="#ComponentType.PROFILE_INVENTORIES">ComponentType.PROFILE_INVENTORIES</a>: 102&gt;</span>
     </div>
 
     
@@ -4216,7 +4403,7 @@
                             <div id="ComponentType.PROFILE_CURRENCIES" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ComponentType.PROFILE_CURRENCIES">#&nbsp;&nbsp</a>
 
-        <span class="name">PROFILE_CURRENCIES</span><span class="default_value"> = PROFILE_CURRENCIES</span>
+        <span class="name">PROFILE_CURRENCIES</span><span class="default_value"> = &lt;<a href="#ComponentType.PROFILE_CURRENCIES">ComponentType.PROFILE_CURRENCIES</a>: 103&gt;</span>
     </div>
 
     
@@ -4226,7 +4413,7 @@
                             <div id="ComponentType.PROFILE_PROGRESSION" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ComponentType.PROFILE_PROGRESSION">#&nbsp;&nbsp</a>
 
-        <span class="name">PROFILE_PROGRESSION</span><span class="default_value"> = PROFILE_PROGRESSION</span>
+        <span class="name">PROFILE_PROGRESSION</span><span class="default_value"> = &lt;<a href="#ComponentType.PROFILE_PROGRESSION">ComponentType.PROFILE_PROGRESSION</a>: 104&gt;</span>
     </div>
 
     
@@ -4236,7 +4423,7 @@
                             <div id="ComponentType.ALL_PROFILES" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ComponentType.ALL_PROFILES">#&nbsp;&nbsp</a>
 
-        <span class="name">ALL_PROFILES</span><span class="default_value"> = ALL_PROFILES</span>
+        <span class="name">ALL_PROFILES</span><span class="default_value"> = &lt;<a href="#ComponentType.ALL_PROFILES">ComponentType.ALL_PROFILES</a>: (100, 102, 103, 104)&gt;</span>
     </div>
 
     
@@ -4250,7 +4437,7 @@
                             <div id="ComponentType.VENDORS" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ComponentType.VENDORS">#&nbsp;&nbsp</a>
 
-        <span class="name">VENDORS</span><span class="default_value"> = VENDORS</span>
+        <span class="name">VENDORS</span><span class="default_value"> = &lt;<a href="#ComponentType.VENDORS">ComponentType.VENDORS</a>: 400&gt;</span>
     </div>
 
     
@@ -4260,7 +4447,7 @@
                             <div id="ComponentType.VENDOR_SALES" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ComponentType.VENDOR_SALES">#&nbsp;&nbsp</a>
 
-        <span class="name">VENDOR_SALES</span><span class="default_value"> = VENDOR_SALES</span>
+        <span class="name">VENDOR_SALES</span><span class="default_value"> = &lt;<a href="#ComponentType.VENDOR_SALES">ComponentType.VENDOR_SALES</a>: 402&gt;</span>
     </div>
 
     
@@ -4270,7 +4457,7 @@
                             <div id="ComponentType.VENDOR_RECEIPTS" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ComponentType.VENDOR_RECEIPTS">#&nbsp;&nbsp</a>
 
-        <span class="name">VENDOR_RECEIPTS</span><span class="default_value"> = VENDOR_RECEIPTS</span>
+        <span class="name">VENDOR_RECEIPTS</span><span class="default_value"> = &lt;<a href="#ComponentType.VENDOR_RECEIPTS">ComponentType.VENDOR_RECEIPTS</a>: 101&gt;</span>
     </div>
 
     
@@ -4280,7 +4467,7 @@
                             <div id="ComponentType.ALL_VENDORS" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ComponentType.ALL_VENDORS">#&nbsp;&nbsp</a>
 
-        <span class="name">ALL_VENDORS</span><span class="default_value"> = ALL_VENDORS</span>
+        <span class="name">ALL_VENDORS</span><span class="default_value"> = &lt;<a href="#ComponentType.ALL_VENDORS">ComponentType.ALL_VENDORS</a>: (400, 101, 402)&gt;</span>
     </div>
 
     
@@ -4294,7 +4481,7 @@
                             <div id="ComponentType.ITEM_INSTANCES" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ComponentType.ITEM_INSTANCES">#&nbsp;&nbsp</a>
 
-        <span class="name">ITEM_INSTANCES</span><span class="default_value"> = ITEM_INSTANCES</span>
+        <span class="name">ITEM_INSTANCES</span><span class="default_value"> = &lt;<a href="#ComponentType.ITEM_INSTANCES">ComponentType.ITEM_INSTANCES</a>: 300&gt;</span>
     </div>
 
     
@@ -4304,7 +4491,7 @@
                             <div id="ComponentType.ITEM_OBJECTIVES" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ComponentType.ITEM_OBJECTIVES">#&nbsp;&nbsp</a>
 
-        <span class="name">ITEM_OBJECTIVES</span><span class="default_value"> = ITEM_OBJECTIVES</span>
+        <span class="name">ITEM_OBJECTIVES</span><span class="default_value"> = &lt;<a href="#ComponentType.ITEM_OBJECTIVES">ComponentType.ITEM_OBJECTIVES</a>: 301&gt;</span>
     </div>
 
     
@@ -4314,7 +4501,7 @@
                             <div id="ComponentType.ITEM_PERKS" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ComponentType.ITEM_PERKS">#&nbsp;&nbsp</a>
 
-        <span class="name">ITEM_PERKS</span><span class="default_value"> = ITEM_PERKS</span>
+        <span class="name">ITEM_PERKS</span><span class="default_value"> = &lt;<a href="#ComponentType.ITEM_PERKS">ComponentType.ITEM_PERKS</a>: 302&gt;</span>
     </div>
 
     
@@ -4324,7 +4511,7 @@
                             <div id="ComponentType.ITEM_RENDER_DATA" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ComponentType.ITEM_RENDER_DATA">#&nbsp;&nbsp</a>
 
-        <span class="name">ITEM_RENDER_DATA</span><span class="default_value"> = ITEM_RENDER_DATA</span>
+        <span class="name">ITEM_RENDER_DATA</span><span class="default_value"> = &lt;<a href="#ComponentType.ITEM_RENDER_DATA">ComponentType.ITEM_RENDER_DATA</a>: 303&gt;</span>
     </div>
 
     
@@ -4334,7 +4521,7 @@
                             <div id="ComponentType.ITEM_STATS" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ComponentType.ITEM_STATS">#&nbsp;&nbsp</a>
 
-        <span class="name">ITEM_STATS</span><span class="default_value"> = ITEM_STATS</span>
+        <span class="name">ITEM_STATS</span><span class="default_value"> = &lt;<a href="#ComponentType.ITEM_STATS">ComponentType.ITEM_STATS</a>: 304&gt;</span>
     </div>
 
     
@@ -4344,7 +4531,7 @@
                             <div id="ComponentType.ITEM_SOCKETS" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ComponentType.ITEM_SOCKETS">#&nbsp;&nbsp</a>
 
-        <span class="name">ITEM_SOCKETS</span><span class="default_value"> = ITEM_SOCKETS</span>
+        <span class="name">ITEM_SOCKETS</span><span class="default_value"> = &lt;<a href="#ComponentType.ITEM_SOCKETS">ComponentType.ITEM_SOCKETS</a>: 305&gt;</span>
     </div>
 
     
@@ -4354,7 +4541,7 @@
                             <div id="ComponentType.ITEM_TALENT_GRINDS" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ComponentType.ITEM_TALENT_GRINDS">#&nbsp;&nbsp</a>
 
-        <span class="name">ITEM_TALENT_GRINDS</span><span class="default_value"> = ITEM_TALENT_GRINDS</span>
+        <span class="name">ITEM_TALENT_GRINDS</span><span class="default_value"> = &lt;<a href="#ComponentType.ITEM_TALENT_GRINDS">ComponentType.ITEM_TALENT_GRINDS</a>: 306&gt;</span>
     </div>
 
     
@@ -4364,7 +4551,7 @@
                             <div id="ComponentType.ITEM_PLUG_STATES" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ComponentType.ITEM_PLUG_STATES">#&nbsp;&nbsp</a>
 
-        <span class="name">ITEM_PLUG_STATES</span><span class="default_value"> = ITEM_PLUG_STATES</span>
+        <span class="name">ITEM_PLUG_STATES</span><span class="default_value"> = &lt;<a href="#ComponentType.ITEM_PLUG_STATES">ComponentType.ITEM_PLUG_STATES</a>: 308&gt;</span>
     </div>
 
     
@@ -4374,7 +4561,7 @@
                             <div id="ComponentType.ITEM_PLUG_OBJECTIVES" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ComponentType.ITEM_PLUG_OBJECTIVES">#&nbsp;&nbsp</a>
 
-        <span class="name">ITEM_PLUG_OBJECTIVES</span><span class="default_value"> = ITEM_PLUG_OBJECTIVES</span>
+        <span class="name">ITEM_PLUG_OBJECTIVES</span><span class="default_value"> = &lt;<a href="#ComponentType.ITEM_PLUG_OBJECTIVES">ComponentType.ITEM_PLUG_OBJECTIVES</a>: 309&gt;</span>
     </div>
 
     
@@ -4384,7 +4571,7 @@
                             <div id="ComponentType.ITEM_REUSABLE_PLUGS" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ComponentType.ITEM_REUSABLE_PLUGS">#&nbsp;&nbsp</a>
 
-        <span class="name">ITEM_REUSABLE_PLUGS</span><span class="default_value"> = ITEM_REUSABLE_PLUGS</span>
+        <span class="name">ITEM_REUSABLE_PLUGS</span><span class="default_value"> = &lt;<a href="#ComponentType.ITEM_REUSABLE_PLUGS">ComponentType.ITEM_REUSABLE_PLUGS</a>: 310&gt;</span>
     </div>
 
     
@@ -4394,7 +4581,7 @@
                             <div id="ComponentType.ALL_ITEMS" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ComponentType.ALL_ITEMS">#&nbsp;&nbsp</a>
 
-        <span class="name">ALL_ITEMS</span><span class="default_value"> = ALL_ITEMS</span>
+        <span class="name">ALL_ITEMS</span><span class="default_value"> = &lt;<a href="#ComponentType.ALL_ITEMS">ComponentType.ALL_ITEMS</a>: (309, 308, 305, 300, 301, 302, 303, 304, 306, 310)&gt;</span>
     </div>
 
     
@@ -4408,7 +4595,7 @@
                             <div id="ComponentType.PLATFORM_SILVER" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ComponentType.PLATFORM_SILVER">#&nbsp;&nbsp</a>
 
-        <span class="name">PLATFORM_SILVER</span><span class="default_value"> = PLATFORM_SILVER</span>
+        <span class="name">PLATFORM_SILVER</span><span class="default_value"> = &lt;<a href="#ComponentType.PLATFORM_SILVER">ComponentType.PLATFORM_SILVER</a>: 105&gt;</span>
     </div>
 
     
@@ -4418,7 +4605,7 @@
                             <div id="ComponentType.KIOSKS" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ComponentType.KIOSKS">#&nbsp;&nbsp</a>
 
-        <span class="name">KIOSKS</span><span class="default_value"> = KIOSKS</span>
+        <span class="name">KIOSKS</span><span class="default_value"> = &lt;<a href="#ComponentType.KIOSKS">ComponentType.KIOSKS</a>: 500&gt;</span>
     </div>
 
     
@@ -4428,7 +4615,7 @@
                             <div id="ComponentType.CURRENCY_LOOKUPS" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ComponentType.CURRENCY_LOOKUPS">#&nbsp;&nbsp</a>
 
-        <span class="name">CURRENCY_LOOKUPS</span><span class="default_value"> = CURRENCY_LOOKUPS</span>
+        <span class="name">CURRENCY_LOOKUPS</span><span class="default_value"> = &lt;<a href="#ComponentType.CURRENCY_LOOKUPS">ComponentType.CURRENCY_LOOKUPS</a>: 600&gt;</span>
     </div>
 
     
@@ -4438,7 +4625,7 @@
                             <div id="ComponentType.PRESENTATION_NODES" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ComponentType.PRESENTATION_NODES">#&nbsp;&nbsp</a>
 
-        <span class="name">PRESENTATION_NODES</span><span class="default_value"> = PRESENTATION_NODES</span>
+        <span class="name">PRESENTATION_NODES</span><span class="default_value"> = &lt;<a href="#ComponentType.PRESENTATION_NODES">ComponentType.PRESENTATION_NODES</a>: 700&gt;</span>
     </div>
 
     
@@ -4448,7 +4635,7 @@
                             <div id="ComponentType.COLLECTIBLES" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ComponentType.COLLECTIBLES">#&nbsp;&nbsp</a>
 
-        <span class="name">COLLECTIBLES</span><span class="default_value"> = COLLECTIBLES</span>
+        <span class="name">COLLECTIBLES</span><span class="default_value"> = &lt;<a href="#ComponentType.COLLECTIBLES">ComponentType.COLLECTIBLES</a>: 800&gt;</span>
     </div>
 
     
@@ -4458,7 +4645,7 @@
                             <div id="ComponentType.RECORDS" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ComponentType.RECORDS">#&nbsp;&nbsp</a>
 
-        <span class="name">RECORDS</span><span class="default_value"> = RECORDS</span>
+        <span class="name">RECORDS</span><span class="default_value"> = &lt;<a href="#ComponentType.RECORDS">ComponentType.RECORDS</a>: 900&gt;</span>
     </div>
 
     
@@ -4468,7 +4655,7 @@
                             <div id="ComponentType.TRANSITORY" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ComponentType.TRANSITORY">#&nbsp;&nbsp</a>
 
-        <span class="name">TRANSITORY</span><span class="default_value"> = TRANSITORY</span>
+        <span class="name">TRANSITORY</span><span class="default_value"> = &lt;<a href="#ComponentType.TRANSITORY">ComponentType.TRANSITORY</a>: 1000&gt;</span>
     </div>
 
     
@@ -4478,7 +4665,7 @@
                             <div id="ComponentType.METRICS" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ComponentType.METRICS">#&nbsp;&nbsp</a>
 
-        <span class="name">METRICS</span><span class="default_value"> = METRICS</span>
+        <span class="name">METRICS</span><span class="default_value"> = &lt;<a href="#ComponentType.METRICS">ComponentType.METRICS</a>: 1100&gt;</span>
     </div>
 
     
@@ -4488,7 +4675,7 @@
                             <div id="ComponentType.INVENTORIES" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ComponentType.INVENTORIES">#&nbsp;&nbsp</a>
 
-        <span class="name">INVENTORIES</span><span class="default_value"> = PROFILE_INVENTORIES</span>
+        <span class="name">INVENTORIES</span><span class="default_value"> = &lt;<a href="#ComponentType.PROFILE_INVENTORIES">ComponentType.PROFILE_INVENTORIES</a>: 102&gt;</span>
     </div>
 
     
@@ -4498,7 +4685,17 @@
                             <div id="ComponentType.STRING_VARIABLES" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ComponentType.STRING_VARIABLES">#&nbsp;&nbsp</a>
 
-        <span class="name">STRING_VARIABLES</span><span class="default_value"> = STRING_VARIABLES</span>
+        <span class="name">STRING_VARIABLES</span><span class="default_value"> = &lt;<a href="#ComponentType.STRING_VARIABLES">ComponentType.STRING_VARIABLES</a>: 1200&gt;</span>
+    </div>
+
+    
+    
+
+                            </div>
+                            <div id="ComponentType.CRAFTABLES" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#ComponentType.CRAFTABLES">#&nbsp;&nbsp</a>
+
+        <span class="name">CRAFTABLES</span><span class="default_value"> = &lt;<a href="#ComponentType.CRAFTABLES">ComponentType.CRAFTABLES</a>: 1300&gt;</span>
     </div>
 
     
@@ -4508,7 +4705,7 @@
                             <div id="ComponentType.CHARACTERS" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ComponentType.CHARACTERS">#&nbsp;&nbsp</a>
 
-        <span class="name">CHARACTERS</span><span class="default_value"> = CHARACTERS</span>
+        <span class="name">CHARACTERS</span><span class="default_value"> = &lt;<a href="#ComponentType.CHARACTERS">ComponentType.CHARACTERS</a>: 200&gt;</span>
     </div>
 
     
@@ -4518,7 +4715,7 @@
                             <div id="ComponentType.CHARACTER_INVENTORY" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ComponentType.CHARACTER_INVENTORY">#&nbsp;&nbsp</a>
 
-        <span class="name">CHARACTER_INVENTORY</span><span class="default_value"> = CHARACTER_INVENTORY</span>
+        <span class="name">CHARACTER_INVENTORY</span><span class="default_value"> = &lt;<a href="#ComponentType.CHARACTER_INVENTORY">ComponentType.CHARACTER_INVENTORY</a>: 201&gt;</span>
     </div>
 
     
@@ -4528,7 +4725,7 @@
                             <div id="ComponentType.CHARECTER_PROGRESSION" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ComponentType.CHARECTER_PROGRESSION">#&nbsp;&nbsp</a>
 
-        <span class="name">CHARECTER_PROGRESSION</span><span class="default_value"> = CHARECTER_PROGRESSION</span>
+        <span class="name">CHARECTER_PROGRESSION</span><span class="default_value"> = &lt;<a href="#ComponentType.CHARECTER_PROGRESSION">ComponentType.CHARECTER_PROGRESSION</a>: 202&gt;</span>
     </div>
 
     
@@ -4538,7 +4735,7 @@
                             <div id="ComponentType.CHARACTER_RENDER_DATA" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ComponentType.CHARACTER_RENDER_DATA">#&nbsp;&nbsp</a>
 
-        <span class="name">CHARACTER_RENDER_DATA</span><span class="default_value"> = CHARACTER_RENDER_DATA</span>
+        <span class="name">CHARACTER_RENDER_DATA</span><span class="default_value"> = &lt;<a href="#ComponentType.CHARACTER_RENDER_DATA">ComponentType.CHARACTER_RENDER_DATA</a>: 203&gt;</span>
     </div>
 
     
@@ -4548,7 +4745,7 @@
                             <div id="ComponentType.CHARACTER_ACTIVITIES" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ComponentType.CHARACTER_ACTIVITIES">#&nbsp;&nbsp</a>
 
-        <span class="name">CHARACTER_ACTIVITIES</span><span class="default_value"> = CHARACTER_ACTIVITIES</span>
+        <span class="name">CHARACTER_ACTIVITIES</span><span class="default_value"> = &lt;<a href="#ComponentType.CHARACTER_ACTIVITIES">ComponentType.CHARACTER_ACTIVITIES</a>: 204&gt;</span>
     </div>
 
     
@@ -4558,7 +4755,7 @@
                             <div id="ComponentType.CHARACTER_EQUIPMENT" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ComponentType.CHARACTER_EQUIPMENT">#&nbsp;&nbsp</a>
 
-        <span class="name">CHARACTER_EQUIPMENT</span><span class="default_value"> = CHARACTER_EQUIPMENT</span>
+        <span class="name">CHARACTER_EQUIPMENT</span><span class="default_value"> = &lt;<a href="#ComponentType.CHARACTER_EQUIPMENT">ComponentType.CHARACTER_EQUIPMENT</a>: 205&gt;</span>
     </div>
 
     
@@ -4568,7 +4765,7 @@
                             <div id="ComponentType.ALL_CHARACTERS" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ComponentType.ALL_CHARACTERS">#&nbsp;&nbsp</a>
 
-        <span class="name">ALL_CHARACTERS</span><span class="default_value"> = ALL_CHARACTERS</span>
+        <span class="name">ALL_CHARACTERS</span><span class="default_value"> = &lt;<a href="#ComponentType.ALL_CHARACTERS">ComponentType.ALL_CHARACTERS</a>: (200, 201, 202, 203, 204, 205, 900)&gt;</span>
     </div>
 
     
@@ -4582,7 +4779,7 @@
                             <div id="ComponentType.ALL" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ComponentType.ALL">#&nbsp;&nbsp</a>
 
-        <span class="name">ALL</span><span class="default_value"> = ALL</span>
+        <span class="name">ALL</span><span class="default_value"> = &lt;<a href="#ComponentType.ALL">ComponentType.ALL</a>: (100, 102, 103, 104, 200, 201, 202, 203, 204, 205, 900, 400, 101, 402, 309, 308, 305, 300, 301, 302, 303, 304, 306, 310, 900, 600, 700, 800, 500, 1100, 105, 102, 1200, 1000, 1300)&gt;</span>
     </div>
 
     
@@ -4596,7 +4793,7 @@
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>enum.Enum</dt>
+                                    <div><dt><a href="#Enum">Enum</a></dt>
                                 <dd id="ComponentType.name" class="variable"><a href="#Enum.name">name</a></dd>
                 <dd id="ComponentType.value" class="variable"><a href="#Enum.value">value</a></dd>
 
@@ -4611,13 +4808,13 @@
                 <div class="decorator">@typing.final</div>
 
         <span class="def">class</span>
-        <span class="name">Planet</span><wbr>(<span class="base"><a href="#IntEnum">IntEnum</a></span>):
+        <span class="name">Planet</span><wbr>(<span class="base">builtins.int</span>, <span class="base"><a href="#Enum">Enum</a></span>):
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">Planet</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Planet</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An Enum for all available planets in Destiny 2.&quot;&quot;&quot;</span>
 
     <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="mi">0</span>
@@ -4780,7 +4977,7 @@
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>enum.Enum</dt>
+                                    <div><dt><a href="#Enum">Enum</a></dt>
                                 <dd id="Planet.name" class="variable"><a href="#Enum.name">name</a></dd>
                 <dd id="Planet.value" class="variable"><a href="#Enum.value">value</a></dd>
 
@@ -4807,13 +5004,13 @@
                 <div class="decorator">@typing.final</div>
 
         <span class="def">class</span>
-        <span class="name">Stat</span><wbr>(<span class="base"><a href="#IntEnum">IntEnum</a></span>):
+        <span class="name">Stat</span><wbr>(<span class="base">builtins.int</span>, <span class="base"><a href="#Enum">Enum</a></span>):
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">Stat</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Stat</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An Enum for Destiny 2 character stats.&quot;&quot;&quot;</span>
 
     <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
@@ -4915,7 +5112,7 @@
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>enum.Enum</dt>
+                                    <div><dt><a href="#Enum">Enum</a></dt>
                                 <dd id="Stat.name" class="variable"><a href="#Enum.name">name</a></dd>
                 <dd id="Stat.value" class="variable"><a href="#Enum.value">value</a></dd>
 
@@ -4942,13 +5139,13 @@
                 <div class="decorator">@typing.final</div>
 
         <span class="def">class</span>
-        <span class="name">WeaponType</span><wbr>(<span class="base"><a href="#IntEnum">IntEnum</a></span>):
+        <span class="name">WeaponType</span><wbr>(<span class="base">builtins.int</span>, <span class="base"><a href="#Enum">Enum</a></span>):
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">WeaponType</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">WeaponType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Enums for The three Destiny Weapon Types&quot;&quot;&quot;</span>
 
     <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
@@ -5006,7 +5203,7 @@
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>enum.Enum</dt>
+                                    <div><dt><a href="#Enum">Enum</a></dt>
                                 <dd id="WeaponType.name" class="variable"><a href="#Enum.name">name</a></dd>
                 <dd id="WeaponType.value" class="variable"><a href="#Enum.value">value</a></dd>
 
@@ -5033,13 +5230,13 @@
                 <div class="decorator">@typing.final</div>
 
         <span class="def">class</span>
-        <span class="name">DamageType</span><wbr>(<span class="base"><a href="#IntEnum">IntEnum</a></span>):
+        <span class="name">DamageType</span><wbr>(<span class="base">builtins.int</span>, <span class="base"><a href="#Enum">Enum</a></span>):
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">DamageType</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">DamageType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Enums for Destiny Damage types&quot;&quot;&quot;</span>
 
     <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
@@ -5133,7 +5330,7 @@
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>enum.Enum</dt>
+                                    <div><dt><a href="#Enum">Enum</a></dt>
                                 <dd id="DamageType.name" class="variable"><a href="#Enum.name">name</a></dd>
                 <dd id="DamageType.value" class="variable"><a href="#Enum.value">value</a></dd>
 
@@ -5160,13 +5357,13 @@
                 <div class="decorator">@typing.final</div>
 
         <span class="def">class</span>
-        <span class="name">ItemType</span><wbr>(<span class="base"><a href="#IntEnum">IntEnum</a></span>):
+        <span class="name">ItemType</span><wbr>(<span class="base">builtins.int</span>, <span class="base"><a href="#Enum">Enum</a></span>):
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">ItemType</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">ItemType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Enums for Destiny2&#39;s item types.&quot;&quot;&quot;</span>
 
     <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
@@ -5477,7 +5674,7 @@
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>enum.Enum</dt>
+                                    <div><dt><a href="#Enum">Enum</a></dt>
                                 <dd id="ItemType.name" class="variable"><a href="#Enum.name">name</a></dd>
                 <dd id="ItemType.value" class="variable"><a href="#Enum.value">value</a></dd>
 
@@ -5504,13 +5701,13 @@
                 <div class="decorator">@typing.final</div>
 
         <span class="def">class</span>
-        <span class="name">Place</span><wbr>(<span class="base"><a href="#IntEnum">IntEnum</a></span>):
+        <span class="name">Place</span><wbr>(<span class="base">builtins.int</span>, <span class="base"><a href="#Enum">Enum</a></span>):
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">Place</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Place</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An Enum for Destiny 2 Places and NOT Planets&quot;&quot;&quot;</span>
 
     <span class="n">ORBIT</span> <span class="o">=</span> <span class="mi">2961497387</span>
@@ -5568,7 +5765,7 @@
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>enum.Enum</dt>
+                                    <div><dt><a href="#Enum">Enum</a></dt>
                                 <dd id="Place.name" class="variable"><a href="#Enum.name">name</a></dd>
                 <dd id="Place.value" class="variable"><a href="#Enum.value">value</a></dd>
 
@@ -5595,13 +5792,13 @@
                 <div class="decorator">@typing.final</div>
 
         <span class="def">class</span>
-        <span class="name">ItemTier</span><wbr>(<span class="base"><a href="#IntEnum">IntEnum</a></span>):
+        <span class="name">ItemTier</span><wbr>(<span class="base">builtins.int</span>, <span class="base"><a href="#Enum">Enum</a></span>):
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">ItemTier</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">ItemTier</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An enum for a Destiny 2 item tier.&quot;&quot;&quot;</span>
 
     <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
@@ -5681,7 +5878,7 @@
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>enum.Enum</dt>
+                                    <div><dt><a href="#Enum">Enum</a></dt>
                                 <dd id="ItemTier.name" class="variable"><a href="#Enum.name">name</a></dd>
                 <dd id="ItemTier.value" class="variable"><a href="#Enum.value">value</a></dd>
 
@@ -5708,13 +5905,13 @@
                 <div class="decorator">@typing.final</div>
 
         <span class="def">class</span>
-        <span class="name">AmmoType</span><wbr>(<span class="base"><a href="#IntEnum">IntEnum</a></span>):
+        <span class="name">AmmoType</span><wbr>(<span class="base">builtins.int</span>, <span class="base"><a href="#Enum">Enum</a></span>):
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">AmmoType</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">AmmoType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;AN enum for Detyiny 2 ammo types.&quot;&quot;&quot;</span>
 
     <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
@@ -5772,7 +5969,7 @@
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>enum.Enum</dt>
+                                    <div><dt><a href="#Enum">Enum</a></dt>
                                 <dd id="AmmoType.name" class="variable"><a href="#Enum.name">name</a></dd>
                 <dd id="AmmoType.value" class="variable"><a href="#Enum.value">value</a></dd>
 
@@ -5799,13 +5996,13 @@
                 <div class="decorator">@typing.final</div>
 
         <span class="def">class</span>
-        <span class="name">GroupType</span><wbr>(<span class="base"><a href="#IntEnum">IntEnum</a></span>):
+        <span class="name">GroupType</span><wbr>(<span class="base">builtins.int</span>, <span class="base"><a href="#Enum">Enum</a></span>):
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">GroupType</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">GroupType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An enums for the known bungie group types.&quot;&quot;&quot;</span>
 
     <span class="n">GENERAL</span> <span class="o">=</span> <span class="mi">0</span>
@@ -5841,7 +6038,7 @@
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>enum.Enum</dt>
+                                    <div><dt><a href="#Enum">Enum</a></dt>
                                 <dd id="GroupType.name" class="variable"><a href="#Enum.name">name</a></dd>
                 <dd id="GroupType.value" class="variable"><a href="#Enum.value">value</a></dd>
 
@@ -5868,13 +6065,13 @@
                 <div class="decorator">@typing.final</div>
 
         <span class="def">class</span>
-        <span class="name">CredentialType</span><wbr>(<span class="base"><a href="#IntEnum">IntEnum</a></span>):
+        <span class="name">CredentialType</span><wbr>(<span class="base">builtins.int</span>, <span class="base"><a href="#Enum">Enum</a></span>):
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">CredentialType</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">CredentialType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;The types of the accounts system supports at bungie.&quot;&quot;&quot;</span>
 
     <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
@@ -6031,7 +6228,7 @@
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>enum.Enum</dt>
+                                    <div><dt><a href="#Enum">Enum</a></dt>
                                 <dd id="CredentialType.name" class="variable"><a href="#Enum.name">name</a></dd>
                 <dd id="CredentialType.value" class="variable"><a href="#Enum.value">value</a></dd>
 
@@ -6058,13 +6255,13 @@
                 <div class="decorator">@typing.final</div>
 
         <span class="def">class</span>
-        <span class="name">Presence</span><wbr>(<span class="base"><a href="#IntEnum">IntEnum</a></span>):
+        <span class="name">Presence</span><wbr>(<span class="base">builtins.int</span>, <span class="base"><a href="#Enum">Enum</a></span>):
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">Presence</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Presence</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An enum for a bungie friend status.&quot;&quot;&quot;</span>
 
     <span class="n">OFFLINE_OR_UNKNOWN</span> <span class="o">=</span> <span class="mi">0</span>
@@ -6100,7 +6297,7 @@
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>enum.Enum</dt>
+                                    <div><dt><a href="#Enum">Enum</a></dt>
                                 <dd id="Presence.name" class="variable"><a href="#Enum.name">name</a></dd>
                 <dd id="Presence.value" class="variable"><a href="#Enum.value">value</a></dd>
 
@@ -6127,13 +6324,13 @@
                 <div class="decorator">@typing.final</div>
 
         <span class="def">class</span>
-        <span class="name">Relationship</span><wbr>(<span class="base"><a href="#IntEnum">IntEnum</a></span>):
+        <span class="name">Relationship</span><wbr>(<span class="base">builtins.int</span>, <span class="base"><a href="#Enum">Enum</a></span>):
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">Relationship</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Relationship</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An enum for bungie friends relationship types.&quot;&quot;&quot;</span>
 
     <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="mi">0</span>
@@ -6191,7 +6388,7 @@
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>enum.Enum</dt>
+                                    <div><dt><a href="#Enum">Enum</a></dt>
                                 <dd id="Relationship.name" class="variable"><a href="#Enum.name">name</a></dd>
                 <dd id="Relationship.value" class="variable"><a href="#Enum.value">value</a></dd>
 
@@ -6218,13 +6415,13 @@
                 <div class="decorator">@typing.final</div>
 
         <span class="def">class</span>
-        <span class="name">ClanMemberType</span><wbr>(<span class="base"><a href="#IntEnum">IntEnum</a></span>):
+        <span class="name">ClanMemberType</span><wbr>(<span class="base">builtins.int</span>, <span class="base"><a href="#Enum">Enum</a></span>):
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">ClanMemberType</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">ClanMemberType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An enum for bungie clan member types.&quot;&quot;&quot;</span>
 
     <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
@@ -6304,7 +6501,7 @@
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>enum.Enum</dt>
+                                    <div><dt><a href="#Enum">Enum</a></dt>
                                 <dd id="ClanMemberType.name" class="variable"><a href="#Enum.name">name</a></dd>
                 <dd id="ClanMemberType.value" class="variable"><a href="#Enum.value">value</a></dd>
 
@@ -6331,13 +6528,13 @@
                 <div class="decorator">@typing.final</div>
 
         <span class="def">class</span>
-        <span class="name">MembershipOption</span><wbr>(<span class="base"><a href="#IntEnum">IntEnum</a></span>):
+        <span class="name">MembershipOption</span><wbr>(<span class="base">builtins.int</span>, <span class="base"><a href="#Enum">Enum</a></span>):
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">MembershipOption</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">MembershipOption</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A enum for GroupV2 membership options.&quot;&quot;&quot;</span>
 
     <span class="n">REVIEWD</span> <span class="o">=</span> <span class="mi">0</span>
@@ -6384,7 +6581,7 @@
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>enum.Enum</dt>
+                                    <div><dt><a href="#Enum">Enum</a></dt>
                                 <dd id="MembershipOption.name" class="variable"><a href="#Enum.name">name</a></dd>
                 <dd id="MembershipOption.value" class="variable"><a href="#Enum.value">value</a></dd>
 
@@ -6411,13 +6608,13 @@
                 <div class="decorator">@typing.final</div>
 
         <span class="def">class</span>
-        <span class="name">ItemBindStatus</span><wbr>(<span class="base"><a href="#IntEnum">IntEnum</a></span>):
+        <span class="name">ItemBindStatus</span><wbr>(<span class="base">builtins.int</span>, <span class="base"><a href="#Enum">Enum</a></span>):
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">ItemBindStatus</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">ItemBindStatus</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An enum for Destiny 2 items bind status.&quot;&quot;&quot;</span>
 
     <span class="n">NOT_BOUND</span> <span class="o">=</span> <span class="mi">0</span>
@@ -6475,7 +6672,7 @@
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>enum.Enum</dt>
+                                    <div><dt><a href="#Enum">Enum</a></dt>
                                 <dd id="ItemBindStatus.name" class="variable"><a href="#Enum.name">name</a></dd>
                 <dd id="ItemBindStatus.value" class="variable"><a href="#Enum.value">value</a></dd>
 
@@ -6502,13 +6699,13 @@
                 <div class="decorator">@typing.final</div>
 
         <span class="def">class</span>
-        <span class="name">ItemLocation</span><wbr>(<span class="base"><a href="#IntEnum">IntEnum</a></span>):
+        <span class="name">ItemLocation</span><wbr>(<span class="base">builtins.int</span>, <span class="base"><a href="#Enum">Enum</a></span>):
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">ItemLocation</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">ItemLocation</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An enum for Destiny 2 items location.&quot;&quot;&quot;</span>
 
     <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="mi">0</span>
@@ -6577,7 +6774,7 @@
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>enum.Enum</dt>
+                                    <div><dt><a href="#Enum">Enum</a></dt>
                                 <dd id="ItemLocation.name" class="variable"><a href="#Enum.name">name</a></dd>
                 <dd id="ItemLocation.value" class="variable"><a href="#Enum.value">value</a></dd>
 
@@ -6604,13 +6801,13 @@
                 <div class="decorator">@typing.final</div>
 
         <span class="def">class</span>
-        <span class="name">TransferStatus</span><wbr>(<span class="base"><a href="#IntEnum">IntEnum</a></span>):
+        <span class="name">TransferStatus</span><wbr>(<span class="base"><a href="#Flag">Flag</a></span>):
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">TransferStatus</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">TransferStatus</span><span class="p">(</span><span class="n">Flag</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An enum for items transfer statuses.&quot;&quot;&quot;</span>
 
     <span class="n">CAN_TRANSFER</span> <span class="o">=</span> <span class="mi">0</span>
@@ -6680,21 +6877,9 @@
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>enum.Enum</dt>
-                                <dd id="TransferStatus.name" class="variable"><a href="#Enum.name">name</a></dd>
-                <dd id="TransferStatus.value" class="variable"><a href="#Enum.value">value</a></dd>
-
-            </div>
-            <div><dt>builtins.int</dt>
-                                <dd id="TransferStatus.conjugate" class="function">conjugate</dd>
-                <dd id="TransferStatus.bit_length" class="function">bit_length</dd>
-                <dd id="TransferStatus.to_bytes" class="function">to_bytes</dd>
-                <dd id="TransferStatus.from_bytes" class="function">from_bytes</dd>
-                <dd id="TransferStatus.as_integer_ratio" class="function">as_integer_ratio</dd>
-                <dd id="TransferStatus.real" class="variable">real</dd>
-                <dd id="TransferStatus.imag" class="variable">imag</dd>
-                <dd id="TransferStatus.numerator" class="variable">numerator</dd>
-                <dd id="TransferStatus.denominator" class="variable">denominator</dd>
+                                    <div><dt><a href="#Flag">Flag</a></dt>
+                                <dd id="TransferStatus.name" class="variable"><a href="#Flag.name">name</a></dd>
+                <dd id="TransferStatus.value" class="variable"><a href="#Flag.value">value</a></dd>
 
             </div>
                                 </dl>
@@ -6707,20 +6892,23 @@
                 <div class="decorator">@typing.final</div>
 
         <span class="def">class</span>
-        <span class="name">ItemState</span><wbr>(<span class="base"><a href="#IntEnum">IntEnum</a></span>):
+        <span class="name">ItemState</span><wbr>(<span class="base"><a href="#Flag">Flag</a></span>):
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">ItemState</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">ItemState</span><span class="p">(</span><span class="n">Flag</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An enum for Destiny 2 item states.&quot;&quot;&quot;</span>
 
     <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">LOCKED</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">TRACKED</span> <span class="o">=</span> <span class="mi">2</span>
     <span class="n">MASTERWORKED</span> <span class="o">=</span> <span class="mi">4</span>
-    <span class="n">LOCKED_AND_MASTERWORKED</span> <span class="o">=</span> <span class="n">LOCKED</span> <span class="o">+</span> <span class="n">MASTERWORKED</span>
+    <span class="n">CRAFTED</span> <span class="o">=</span> <span class="mi">8</span>
+    <span class="sd">&quot;&quot;&quot;If this bit is set, the item has been &#39;crafted&#39; by the player.&quot;&quot;&quot;</span>
+    <span class="n">HIGHLITED_OBJECTIVE</span> <span class="o">=</span> <span class="mi">16</span>
+    <span class="sd">&quot;&quot;&quot;If this bit is set, the item is a &#39;highlighted&#39; objective.&quot;&quot;&quot;</span>
 </pre></div>
 
         </details>
@@ -6769,34 +6957,36 @@
     
 
                             </div>
-                            <div id="ItemState.LOCKED_AND_MASTERWORKED" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#ItemState.LOCKED_AND_MASTERWORKED">#&nbsp;&nbsp</a>
+                            <div id="ItemState.CRAFTED" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#ItemState.CRAFTED">#&nbsp;&nbsp</a>
 
-        <span class="name">LOCKED_AND_MASTERWORKED</span><span class="default_value"> = &lt;<a href="#ItemState.LOCKED_AND_MASTERWORKED">ItemState.LOCKED_AND_MASTERWORKED</a>: 5&gt;</span>
+        <span class="name">CRAFTED</span><span class="default_value"> = &lt;<a href="#ItemState.CRAFTED">ItemState.CRAFTED</a>: 8&gt;</span>
     </div>
 
     
+            <div class="docstring"><p>If this bit is set, the item has been 'crafted' by the player.</p>
+</div>
+
+
+                            </div>
+                            <div id="ItemState.HIGHLITED_OBJECTIVE" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#ItemState.HIGHLITED_OBJECTIVE">#&nbsp;&nbsp</a>
+
+        <span class="name">HIGHLITED_OBJECTIVE</span><span class="default_value"> = &lt;<a href="#ItemState.HIGHLITED_OBJECTIVE">ItemState.HIGHLITED_OBJECTIVE</a>: 16&gt;</span>
+    </div>
+
     
+            <div class="docstring"><p>If this bit is set, the item is a 'highlighted' objective.</p>
+</div>
+
 
                             </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>enum.Enum</dt>
-                                <dd id="ItemState.name" class="variable"><a href="#Enum.name">name</a></dd>
-                <dd id="ItemState.value" class="variable"><a href="#Enum.value">value</a></dd>
-
-            </div>
-            <div><dt>builtins.int</dt>
-                                <dd id="ItemState.conjugate" class="function">conjugate</dd>
-                <dd id="ItemState.bit_length" class="function">bit_length</dd>
-                <dd id="ItemState.to_bytes" class="function">to_bytes</dd>
-                <dd id="ItemState.from_bytes" class="function">from_bytes</dd>
-                <dd id="ItemState.as_integer_ratio" class="function">as_integer_ratio</dd>
-                <dd id="ItemState.real" class="variable">real</dd>
-                <dd id="ItemState.imag" class="variable">imag</dd>
-                <dd id="ItemState.numerator" class="variable">numerator</dd>
-                <dd id="ItemState.denominator" class="variable">denominator</dd>
+                                    <div><dt><a href="#Flag">Flag</a></dt>
+                                <dd id="ItemState.name" class="variable"><a href="#Flag.name">name</a></dd>
+                <dd id="ItemState.value" class="variable"><a href="#Flag.value">value</a></dd>
 
             </div>
                                 </dl>
@@ -6809,13 +6999,13 @@
                 <div class="decorator">@typing.final</div>
 
         <span class="def">class</span>
-        <span class="name">PrivacySetting</span><wbr>(<span class="base"><a href="#IntEnum">IntEnum</a></span>):
+        <span class="name">PrivacySetting</span><wbr>(<span class="base">builtins.int</span>, <span class="base"><a href="#Enum">Enum</a></span>):
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">PrivacySetting</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">PrivacySetting</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An enum for players&#39;s privacy settings.&quot;&quot;&quot;</span>
 
     <span class="n">OPEN</span> <span class="o">=</span> <span class="mi">0</span>
@@ -6884,7 +7074,7 @@
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>enum.Enum</dt>
+                                    <div><dt><a href="#Enum">Enum</a></dt>
                                 <dd id="PrivacySetting.name" class="variable"><a href="#Enum.name">name</a></dd>
                 <dd id="PrivacySetting.value" class="variable"><a href="#Enum.value">value</a></dd>
 
@@ -6911,13 +7101,13 @@
                 <div class="decorator">@typing.final</div>
 
         <span class="def">class</span>
-        <span class="name">ClosedReasons</span><wbr>(<span class="base"><a href="#IntEnum">IntEnum</a></span>):
+        <span class="name">ClosedReasons</span><wbr>(<span class="base"><a href="#Flag">Flag</a></span>):
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">ClosedReasons</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">ClosedReasons</span><span class="p">(</span><span class="n">Flag</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A Flags enumeration representing the reasons why a person can&#39;t join this user&#39;s fireteam.&quot;&quot;&quot;</span>
 
     <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
@@ -7026,21 +7216,9 @@ but for reasons that aren't under the control of this user</p>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>enum.Enum</dt>
-                                <dd id="ClosedReasons.name" class="variable"><a href="#Enum.name">name</a></dd>
-                <dd id="ClosedReasons.value" class="variable"><a href="#Enum.value">value</a></dd>
-
-            </div>
-            <div><dt>builtins.int</dt>
-                                <dd id="ClosedReasons.conjugate" class="function">conjugate</dd>
-                <dd id="ClosedReasons.bit_length" class="function">bit_length</dd>
-                <dd id="ClosedReasons.to_bytes" class="function">to_bytes</dd>
-                <dd id="ClosedReasons.from_bytes" class="function">from_bytes</dd>
-                <dd id="ClosedReasons.as_integer_ratio" class="function">as_integer_ratio</dd>
-                <dd id="ClosedReasons.real" class="variable">real</dd>
-                <dd id="ClosedReasons.imag" class="variable">imag</dd>
-                <dd id="ClosedReasons.numerator" class="variable">numerator</dd>
-                <dd id="ClosedReasons.denominator" class="variable">denominator</dd>
+                                    <div><dt><a href="#Flag">Flag</a></dt>
+                                <dd id="ClosedReasons.name" class="variable"><a href="#Flag.name">name</a></dd>
+                <dd id="ClosedReasons.value" class="variable"><a href="#Flag.value">value</a></dd>
 
             </div>
                                 </dl>
@@ -7053,13 +7231,13 @@ but for reasons that aren't under the control of this user</p>
                 <div class="decorator">@typing.final</div>
 
         <span class="def">class</span>
-        <span class="name">ItemSubType</span><wbr>(<span class="base"><a href="#IntEnum">IntEnum</a></span>):
+        <span class="name">ItemSubType</span><wbr>(<span class="base">builtins.int</span>, <span class="base"><a href="#Enum">Enum</a></span>):
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
-<span class="k">class</span> <span class="nc">ItemSubType</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">ItemSubType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An enum for Destiny 2 inventory items subtype.&quot;&quot;&quot;</span>
 
     <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
@@ -7359,7 +7537,7 @@ but for reasons that aren't under the control of this user</p>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt>enum.Enum</dt>
+                                    <div><dt><a href="#Enum">Enum</a></dt>
                                 <dd id="ItemSubType.name" class="variable"><a href="#Enum.name">name</a></dd>
                 <dd id="ItemSubType.value" class="variable"><a href="#Enum.value">value</a></dd>
 
@@ -7374,6 +7552,130 @@ but for reasons that aren't under the control of this user</p>
                 <dd id="ItemSubType.imag" class="variable">imag</dd>
                 <dd id="ItemSubType.numerator" class="variable">numerator</dd>
                 <dd id="ItemSubType.denominator" class="variable">denominator</dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="TierType">
+                                <div class="attr class">
+        <a class="headerlink" href="#TierType">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@typing.final</div>
+
+        <span class="def">class</span>
+        <span class="name">TierType</span><wbr>(<span class="base">builtins.int</span>, <span class="base"><a href="#Enum">Enum</a></span>):
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">final</span>
+<span class="k">class</span> <span class="nc">TierType</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;An enum for a Destiny 2 item tier type.&quot;&quot;&quot;</span>
+
+    <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">CURRENCY</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">BASIC</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">COMMON</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">RARE</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">SUPERIOR</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">EXOTIC</span> <span class="o">=</span> <span class="mi">6</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>An enum for a Destiny 2 item tier type.</p>
+</div>
+
+
+                            <div id="TierType.UNKNOWN" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#TierType.UNKNOWN">#&nbsp;&nbsp</a>
+
+        <span class="name">UNKNOWN</span><span class="default_value"> = &lt;<a href="#TierType.UNKNOWN">TierType.UNKNOWN</a>: 0&gt;</span>
+    </div>
+
+    
+    
+
+                            </div>
+                            <div id="TierType.CURRENCY" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#TierType.CURRENCY">#&nbsp;&nbsp</a>
+
+        <span class="name">CURRENCY</span><span class="default_value"> = &lt;<a href="#TierType.CURRENCY">TierType.CURRENCY</a>: 1&gt;</span>
+    </div>
+
+    
+    
+
+                            </div>
+                            <div id="TierType.BASIC" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#TierType.BASIC">#&nbsp;&nbsp</a>
+
+        <span class="name">BASIC</span><span class="default_value"> = &lt;<a href="#TierType.BASIC">TierType.BASIC</a>: 2&gt;</span>
+    </div>
+
+    
+    
+
+                            </div>
+                            <div id="TierType.COMMON" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#TierType.COMMON">#&nbsp;&nbsp</a>
+
+        <span class="name">COMMON</span><span class="default_value"> = &lt;<a href="#TierType.COMMON">TierType.COMMON</a>: 3&gt;</span>
+    </div>
+
+    
+    
+
+                            </div>
+                            <div id="TierType.RARE" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#TierType.RARE">#&nbsp;&nbsp</a>
+
+        <span class="name">RARE</span><span class="default_value"> = &lt;<a href="#TierType.RARE">TierType.RARE</a>: 4&gt;</span>
+    </div>
+
+    
+    
+
+                            </div>
+                            <div id="TierType.SUPERIOR" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#TierType.SUPERIOR">#&nbsp;&nbsp</a>
+
+        <span class="name">SUPERIOR</span><span class="default_value"> = &lt;<a href="#TierType.SUPERIOR">TierType.SUPERIOR</a>: 5&gt;</span>
+    </div>
+
+    
+    
+
+                            </div>
+                            <div id="TierType.EXOTIC" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#TierType.EXOTIC">#&nbsp;&nbsp</a>
+
+        <span class="name">EXOTIC</span><span class="default_value"> = &lt;<a href="#TierType.EXOTIC">TierType.EXOTIC</a>: 6&gt;</span>
+    </div>
+
+    
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="#Enum">Enum</a></dt>
+                                <dd id="TierType.name" class="variable"><a href="#Enum.name">name</a></dd>
+                <dd id="TierType.value" class="variable"><a href="#Enum.value">value</a></dd>
+
+            </div>
+            <div><dt>builtins.int</dt>
+                                <dd id="TierType.conjugate" class="function">conjugate</dd>
+                <dd id="TierType.bit_length" class="function">bit_length</dd>
+                <dd id="TierType.to_bytes" class="function">to_bytes</dd>
+                <dd id="TierType.from_bytes" class="function">from_bytes</dd>
+                <dd id="TierType.as_integer_ratio" class="function">as_integer_ratio</dd>
+                <dd id="TierType.real" class="variable">real</dd>
+                <dd id="TierType.imag" class="variable">imag</dd>
+                <dd id="TierType.numerator" class="variable">numerator</dd>
+                <dd id="TierType.denominator" class="variable">denominator</dd>
 
             </div>
                                 </dl>

@@ -206,10 +206,10 @@
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span> <span class="nn">logging</span>
-
 <span class="n">__all__</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Client&quot;</span><span class="p">,)</span>
 
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">typing</span>
 
 <span class="kn">from</span> <span class="nn">aiobungie</span> <span class="kn">import</span> <span class="n">rest</span> <span class="k">as</span> <span class="n">rest_</span>
@@ -238,13 +238,13 @@
 <span class="n">_LOG</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Final</span><span class="p">[</span><span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">]</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;aiobungie.client&quot;</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">Client</span><span class="p">(</span><span class="n">traits</span><span class="o">.</span><span class="n">ClientBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Standard Bungie API client.</span>
+<span class="k">class</span> <span class="nc">Client</span><span class="p">(</span><span class="n">traits</span><span class="o">.</span><span class="n">ClientApp</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Standard Bungie API client application.</span>
 
 <span class="sd">    This client deserialize the REST JSON responses using `aiobungie.internal.factory.Factory`</span>
 <span class="sd">    and returns `aiobungie.crate` Python object implementations of the responses.</span>
 
-<span class="sd">    Alternatively, You can also use `aiobungie.RESTClient` alone for low-level concepts.</span>
+<span class="sd">    A `aiobungie.RESTClient` REST client can also be used alone for low-level concepts.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    -----------</span>
@@ -290,11 +290,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_client_secret</span> <span class="o">=</span> <span class="n">client_secret</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_client_id</span> <span class="o">=</span> <span class="n">client_id</span>
 
-        <span class="k">if</span> <span class="n">rest_client</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_rest</span> <span class="o">=</span> <span class="n">rest_client</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_rest</span> <span class="o">=</span> <span class="n">rest_</span><span class="o">.</span><span class="n">RESTClient</span><span class="p">(</span>
-            <span class="n">token</span><span class="p">,</span> <span class="n">client_secret</span><span class="p">,</span> <span class="n">client_id</span><span class="p">,</span> <span class="n">max_retries</span><span class="o">=</span><span class="n">max_retries</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rest</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">rest_client</span>
+            <span class="k">if</span> <span class="n">rest_client</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="n">rest_</span><span class="o">.</span><span class="n">RESTClient</span><span class="p">(</span>
+                <span class="n">token</span><span class="p">,</span> <span class="n">client_secret</span><span class="p">,</span> <span class="n">client_id</span><span class="p">,</span> <span class="n">max_retries</span><span class="o">=</span><span class="n">max_retries</span>
+            <span class="p">)</span>
         <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_factory</span> <span class="o">=</span> <span class="n">factory_</span><span class="o">.</span><span class="n">Factory</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -309,7 +310,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">request</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Client</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span>
+        <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
@@ -1448,18 +1449,18 @@
 
         
         <span class="def">class</span>
-        <span class="name">Client</span><wbr>(<span class="base"><a href="traits.html#ClientBase">aiobungie.traits.ClientBase</a></span>):
+        <span class="name">Client</span><wbr>(<span class="base"><a href="traits.html#ClientApp">aiobungie.traits.ClientApp</a></span>):
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Client</span><span class="p">(</span><span class="n">traits</span><span class="o">.</span><span class="n">ClientBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Standard Bungie API client.</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Client</span><span class="p">(</span><span class="n">traits</span><span class="o">.</span><span class="n">ClientApp</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Standard Bungie API client application.</span>
 
 <span class="sd">    This client deserialize the REST JSON responses using `aiobungie.internal.factory.Factory`</span>
 <span class="sd">    and returns `aiobungie.crate` Python object implementations of the responses.</span>
 
-<span class="sd">    Alternatively, You can also use `aiobungie.RESTClient` alone for low-level concepts.</span>
+<span class="sd">    A `aiobungie.RESTClient` REST client can also be used alone for low-level concepts.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    -----------</span>
@@ -1505,11 +1506,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_client_secret</span> <span class="o">=</span> <span class="n">client_secret</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_client_id</span> <span class="o">=</span> <span class="n">client_id</span>
 
-        <span class="k">if</span> <span class="n">rest_client</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_rest</span> <span class="o">=</span> <span class="n">rest_client</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_rest</span> <span class="o">=</span> <span class="n">rest_</span><span class="o">.</span><span class="n">RESTClient</span><span class="p">(</span>
-            <span class="n">token</span><span class="p">,</span> <span class="n">client_secret</span><span class="p">,</span> <span class="n">client_id</span><span class="p">,</span> <span class="n">max_retries</span><span class="o">=</span><span class="n">max_retries</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rest</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">rest_client</span>
+            <span class="k">if</span> <span class="n">rest_client</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="n">rest_</span><span class="o">.</span><span class="n">RESTClient</span><span class="p">(</span>
+                <span class="n">token</span><span class="p">,</span> <span class="n">client_secret</span><span class="p">,</span> <span class="n">client_id</span><span class="p">,</span> <span class="n">max_retries</span><span class="o">=</span><span class="n">max_retries</span>
+            <span class="p">)</span>
         <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_factory</span> <span class="o">=</span> <span class="n">factory_</span><span class="o">.</span><span class="n">Factory</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -1524,7 +1526,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">request</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Client</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span>
+        <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
@@ -2656,12 +2658,12 @@
 
         </details>
 
-            <div class="docstring"><p>Standard Bungie API client.</p>
+            <div class="docstring"><p>Standard Bungie API client application.</p>
 
 <p>This client deserialize the REST JSON responses using <code><a href="internal/factory.html#Factory">aiobungie.internal.factory.Factory</a></code>
 and returns <code><a href="crate.html">aiobungie.crate</a></code> Python object implementations of the responses.</p>
 
-<p>Alternatively, You can also use <code><a href="../aiobungie.html#RESTClient">aiobungie.RESTClient</a></code> alone for low-level concepts.</p>
+<p>A <code><a href="../aiobungie.html#RESTClient">aiobungie.RESTClient</a></code> REST client can also be used alone for low-level concepts.</p>
 
 <h6 id="parameters">Parameters</h6>
 
@@ -2727,11 +2729,12 @@ client_id : <code>typing.Optional[int]</code>
         <span class="bp">self</span><span class="o">.</span><span class="n">_client_secret</span> <span class="o">=</span> <span class="n">client_secret</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_client_id</span> <span class="o">=</span> <span class="n">client_id</span>
 
-        <span class="k">if</span> <span class="n">rest_client</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_rest</span> <span class="o">=</span> <span class="n">rest_client</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_rest</span> <span class="o">=</span> <span class="n">rest_</span><span class="o">.</span><span class="n">RESTClient</span><span class="p">(</span>
-            <span class="n">token</span><span class="p">,</span> <span class="n">client_secret</span><span class="p">,</span> <span class="n">client_id</span><span class="p">,</span> <span class="n">max_retries</span><span class="o">=</span><span class="n">max_retries</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rest</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">rest_client</span>
+            <span class="k">if</span> <span class="n">rest_client</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="n">rest_</span><span class="o">.</span><span class="n">RESTClient</span><span class="p">(</span>
+                <span class="n">token</span><span class="p">,</span> <span class="n">client_secret</span><span class="p">,</span> <span class="n">client_id</span><span class="p">,</span> <span class="n">max_retries</span><span class="o">=</span><span class="n">max_retries</span>
+            <span class="p">)</span>
         <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_factory</span> <span class="o">=</span> <span class="n">factory_</span><span class="o">.</span><span class="n">Factory</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -2773,7 +2776,7 @@ client_id : <code>typing.Optional[int]</code>
     </div>
 
     
-            <div class="docstring"><p>A readonly <code>ClientBase</code> instance used for external requests.</p>
+            <div class="docstring"><p>A readonly <code>ClientApp</code> instance used for external requests.</p>
 </div>
 
 
@@ -2824,8 +2827,9 @@ client_id : <code>typing.Optional[int]</code>
 
         </details>
 
-            <div class="docstring"><p>Runs a Coro function until its complete.
-This is equivalent to asyncio.get_event_loop().run_until_complete(...)</p>
+            <div class="docstring"><p>Runs a Coro function until its complete.</p>
+
+<p>This is equivalent to <code>asyncio.get_event_loop().run_until_complete(...)</code></p>
 
 <h6 id="parameters">Parameters</h6>
 
@@ -4829,7 +4833,7 @@ An optional page to return. Default to 0.</li>
     activity_type: Union[int, <a href="crate.html#fireteams.FireteamActivity">aiobungie.crate.fireteams.FireteamActivity</a>],
     *,
     platform: Union[int, <a href="crate.html#fireteams.FireteamPlatform">aiobungie.crate.fireteams.FireteamPlatform</a>] = &lt;FireteamPlatform.ANY: 0&gt;,
-    language: Union[<a href="crate.html#fireteams.FireteamLanguage">aiobungie.crate.fireteams.FireteamLanguage</a>, str] = ,
+    language: Union[<a href="crate.html#fireteams.FireteamLanguage">aiobungie.crate.fireteams.FireteamLanguage</a>, str] = &lt;FireteamLanguage.ALL: &gt;,
     date_range: int = 0,
     page: int = 0,
     slots_filter: int = 0

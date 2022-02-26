@@ -1105,6 +1105,9 @@
                                 <a class="variable" href="#Component.character_collectibles">character_collectibles</a>
                         </li>
                         <li>
+                                <a class="variable" href="#Component.character_craftables">character_craftables</a>
+                        </li>
+                        <li>
                                 <a class="variable" href="#Component.transitory">transitory</a>
                         </li>
                         <li>
@@ -1246,13 +1249,7 @@
 
             </li>
             <li>
-                    <a class="class" href="#VendorsComponent">VendorsComponent</a>
-                            <ul class="memberlist">
-                        <li>
-                                <a class="function" href="#VendorsComponent.__init__">VendorsComponent</a>
-                        </li>
-                </ul>
-
+                    <a class="function" href="#VendorsComponent">VendorsComponent</a>
             </li>
             <li>
                     <a class="class" href="#UninstancedItemsComponent">UninstancedItemsComponent</a>
@@ -1280,6 +1277,27 @@
                         </li>
                         <li>
                                 <a class="variable" href="#StringVariableComponent.character_string_variables">character_string_variables</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#CraftablesComponent">CraftablesComponent</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#CraftablesComponent.__init__">CraftablesComponent</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#CraftablesComponent.net">net</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#CraftablesComponent.craftables">craftables</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#CraftablesComponent.crafting_root_node_hash">crafting_root_node_hash</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#CraftablesComponent.fetch_craftables">fetch_craftables</a>
                         </li>
                 </ul>
 
@@ -1598,6 +1616,12 @@
                         </li>
                         <li>
                                 <a class="variable" href="#ObjectiveEntity.stats">stats</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ObjectiveEntity.ui_label">ui_label</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ObjectiveEntity.ui_style">ui_style</a>
                         </li>
                 </ul>
 
@@ -1925,6 +1949,9 @@
                         </li>
                         <li>
                                 <a class="function" href="#Friend.remove_request">remove_request</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Friend.fetch_platform_friends">fetch_platform_friends</a>
                         </li>
                 </ul>
 
@@ -2360,6 +2387,12 @@
                         </li>
                         <li>
                                 <a class="variable" href="#Objective.progress">progress</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Objective.destination_hash">destination_hash</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Objective.activity_hash">activity_hash</a>
                         </li>
                         <li>
                                 <a class="function" href="#Objective.fetch_self">fetch_self</a>
@@ -3074,6 +3107,7 @@ for functional usage for the Bungie API objects.</p>
     <span class="s2">&quot;RecordsComponent&quot;</span><span class="p">,</span>
     <span class="s2">&quot;UninstancedItemsComponent&quot;</span><span class="p">,</span>
     <span class="s2">&quot;StringVariableComponent&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CraftablesComponent&quot;</span><span class="p">,</span>
     <span class="c1"># entity.py</span>
     <span class="s2">&quot;InventoryEntity&quot;</span><span class="p">,</span>
     <span class="s2">&quot;ActivityEntity&quot;</span><span class="p">,</span>
@@ -4858,9 +4892,10 @@ and the int version will be formatted as: <code>1</code></p>
     <span class="n">diffculity</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">Diffculity</span><span class="p">]</span>
     <span class="sd">&quot;&quot;&quot;Activity&#39;s diffculity tier.&quot;&quot;&quot;</span>
 
+    <span class="nd">@helpers</span><span class="o">.</span><span class="n">unimplemented</span><span class="p">(</span><span class="n">available_in</span><span class="o">=</span><span class="s2">&quot;0.2.7&quot;</span><span class="p">)</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_self</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">entity</span><span class="o">.</span><span class="n">ActivityEntity</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Fetch the definition of this activity.&quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+        <span class="o">...</span>
 </pre></div>
 
         </details>
@@ -5019,16 +5054,18 @@ and the int version will be formatted as: <code>1</code></p>
                             <div id="AvailableActivity.fetch_self" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#AvailableActivity.fetch_self">#&nbsp;&nbsp</a>
 
-        
-            <span class="def">async def</span>
+                <div class="decorator">@helpers.unimplemented(available_in=&#39;0.2.7&#39;)</div>
+
+            <span class="def">def</span>
             <span class="name">fetch_self</span><span class="signature">(self) -&gt; <a href="#entity.ActivityEntity">aiobungie.crate.entity.ActivityEntity</a></span>:
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_self</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">entity</span><span class="o">.</span><span class="n">ActivityEntity</span><span class="p">:</span>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="nd">@helpers</span><span class="o">.</span><span class="n">unimplemented</span><span class="p">(</span><span class="n">available_in</span><span class="o">=</span><span class="s2">&quot;0.2.7&quot;</span><span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_self</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">entity</span><span class="o">.</span><span class="n">ActivityEntity</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Fetch the definition of this activity.&quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+        <span class="o">...</span>
 </pre></div>
 
         </details>
@@ -8488,6 +8525,7 @@ An optional item limit to fetch. Default is the length of the equipment.</li>
             <span class="n">access_token</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">message</span>
         <span class="p">)</span>
 
+    <span class="nd">@helpers</span><span class="o">.</span><span class="n">unimplemented</span><span class="p">()</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_banned_members</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">ClanMember</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch members who has been banned from the clan.</span>
 
@@ -8499,8 +8537,9 @@ An optional item limit to fetch. Default is the length of the equipment.</li>
 <span class="sd">        `collections.Sequence[aiobungie.crate.clans.ClanMember]`</span>
 <span class="sd">            A sequence of clan members or are banned.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+        <span class="o">...</span>
 
+    <span class="nd">@helpers</span><span class="o">.</span><span class="n">unimplemented</span><span class="p">()</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_pending_members</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">ClanMember</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch members who are waiting to get accepted.</span>
 
@@ -8513,8 +8552,9 @@ An optional item limit to fetch. Default is the length of the equipment.</li>
 <span class="sd">            A sequence of clan members who are awaiting</span>
 <span class="sd">            to get accepted to the clan.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+        <span class="o">...</span>
 
+    <span class="nd">@helpers</span><span class="o">.</span><span class="n">unimplemented</span><span class="p">()</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_invited_members</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">ClanMember</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch members who has been invited.</span>
 
@@ -8526,7 +8566,7 @@ An optional item limit to fetch. Default is the length of the equipment.</li>
 <span class="sd">        `collections.Sequence[aiobungie.crate.clans.ClanMember]`</span>
 <span class="sd">            A sequence of members who have been invited.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+        <span class="o">...</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -9752,14 +9792,16 @@ A message to send with the request. Defaults to <code>UNDEFINED</code></li>
                             <div id="Clan.fetch_banned_members" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#Clan.fetch_banned_members">#&nbsp;&nbsp</a>
 
-        
-            <span class="def">async def</span>
+                <div class="decorator">@helpers.unimplemented()</div>
+
+            <span class="def">def</span>
             <span class="name">fetch_banned_members</span><span class="signature">(self) -&gt; collections.abc.Sequence[<a href="#clans.ClanMember">aiobungie.crate.clans.ClanMember</a>]</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_banned_members</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">ClanMember</span><span class="p">]:</span>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="nd">@helpers</span><span class="o">.</span><span class="n">unimplemented</span><span class="p">()</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_banned_members</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">ClanMember</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch members who has been banned from the clan.</span>
 
 <span class="sd">        .. warning::</span>
@@ -9770,7 +9812,7 @@ A message to send with the request. Defaults to <code>UNDEFINED</code></li>
 <span class="sd">        `collections.Sequence[aiobungie.crate.clans.ClanMember]`</span>
 <span class="sd">            A sequence of clan members or are banned.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+        <span class="o">...</span>
 </pre></div>
 
         </details>
@@ -9792,14 +9834,16 @@ This method is still not implemented.</p>
                             <div id="Clan.fetch_pending_members" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#Clan.fetch_pending_members">#&nbsp;&nbsp</a>
 
-        
-            <span class="def">async def</span>
+                <div class="decorator">@helpers.unimplemented()</div>
+
+            <span class="def">def</span>
             <span class="name">fetch_pending_members</span><span class="signature">(self) -&gt; collections.abc.Sequence[<a href="#clans.ClanMember">aiobungie.crate.clans.ClanMember</a>]</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_pending_members</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">ClanMember</span><span class="p">]:</span>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="nd">@helpers</span><span class="o">.</span><span class="n">unimplemented</span><span class="p">()</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_pending_members</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">ClanMember</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch members who are waiting to get accepted.</span>
 
 <span class="sd">        .. warning::</span>
@@ -9811,7 +9855,7 @@ This method is still not implemented.</p>
 <span class="sd">            A sequence of clan members who are awaiting</span>
 <span class="sd">            to get accepted to the clan.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+        <span class="o">...</span>
 </pre></div>
 
         </details>
@@ -9834,14 +9878,16 @@ to get accepted to the clan.</li>
                             <div id="Clan.fetch_invited_members" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#Clan.fetch_invited_members">#&nbsp;&nbsp</a>
 
-        
-            <span class="def">async def</span>
+                <div class="decorator">@helpers.unimplemented()</div>
+
+            <span class="def">def</span>
             <span class="name">fetch_invited_members</span><span class="signature">(self) -&gt; collections.abc.Sequence[<a href="#clans.ClanMember">aiobungie.crate.clans.ClanMember</a>]</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_invited_members</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">ClanMember</span><span class="p">]:</span>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="nd">@helpers</span><span class="o">.</span><span class="n">unimplemented</span><span class="p">()</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_invited_members</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">ClanMember</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch members who has been invited.</span>
 
 <span class="sd">        .. warning::</span>
@@ -9852,7 +9898,7 @@ to get accepted to the clan.</li>
 <span class="sd">        `collections.Sequence[aiobungie.crate.clans.ClanMember]`</span>
 <span class="sd">            A sequence of members who have been invited.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+        <span class="o">...</span>
 </pre></div>
 
         </details>
@@ -11280,9 +11326,7 @@ Default is `0`
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Concerete implementation of all Bungie components.</span>
 
-<span class="sd">    This includes all profile components that are available and not private.</span>
-
-<span class="sd">    Private components will return `None` unless an `access_token` was passed to the request</span>
+<span class="sd">    Components that requires auth will return `None` unless an `access_token` was passed to the request</span>
 <span class="sd">    `**options` parameters.</span>
 
 <span class="sd">    Example</span>
@@ -11306,16 +11350,7 @@ Default is `0`
 <span class="sd">    if items := profile.profile_inventories:</span>
 <span class="sd">        for item in items:</span>
 <span class="sd">            if item.hash == 1946491241:</span>
-<span class="sd">                # Fetch the item if it&#39;s a truth-teller.</span>
-<span class="sd">                my_item = await item.fetch_self()</span>
-<span class="sd">                print(my_item.name, my_item.banner, my_item.icon)</span>
-<span class="sd">                # Try to transfer the item.</span>
-<span class="sd">                if item.instance_id and item.transfer_status is aiobungie.TransferStatus.CAN_TRANSFER:</span>
-<span class="sd">                    try:</span>
-<span class="sd">                        await client.rest.transfer_item(...)</span>
-<span class="sd">                    except Exception as e:</span>
-<span class="sd">                        print(f&quot;Couldn&#39;t transfer the item {e}&quot;)</span>
-<span class="sd">                        return</span>
+<span class="sd">                print(await item.fetch_self())</span>
 <span class="sd">    ```</span>
 
 <span class="sd">    Included Components</span>
@@ -11395,6 +11430,14 @@ Default is `0`
 <span class="sd">    This will always be `None` unless `aiobungie.ComponentType.COLLECTIBLES`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="n">character_craftables</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">collections</span><span class="o">.</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">CraftablesComponent</span><span class="p">]]</span>
+    <span class="sd">&quot;&quot;&quot;A mapping from character IDs to its bound craftable component.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    * This will be available when `aiobungie.ComponentType.CRAFTABLES` is passed to the request component.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">transitory</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">fireteams</span><span class="o">.</span><span class="n">FireteamParty</span><span class="p">]</span>
     <span class="sd">&quot;&quot;&quot;Profile Transitory component.</span>
 
@@ -11472,9 +11515,7 @@ Default is `0`
 
             <div class="docstring"><p>Concerete implementation of all Bungie components.</p>
 
-<p>This includes all profile components that are available and not private.</p>
-
-<p>Private components will return <code>None</code> unless an <code>access_token</code> was passed to the request
+<p>Components that requires auth will return <code>None</code> unless an <code>access_token</code> was passed to the request
 <code>**options</code> parameters.</p>
 
 <h6 id="example">Example</h6>
@@ -11497,16 +11538,7 @@ Default is `0`
 <span class="k">if</span> <span class="n">items</span> <span class="o">:=</span> <span class="n">profile</span><span class="o">.</span><span class="n">profile_inventories</span><span class="p">:</span>
     <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">hash</span> <span class="o">==</span> <span class="mi">1946491241</span><span class="p">:</span>
-            <span class="c1"># Fetch the item if it&#39;s a truth-teller.</span>
-            <span class="n">my_item</span> <span class="o">=</span> <span class="k">await</span> <span class="n">item</span><span class="o">.</span><span class="n">fetch_self</span><span class="p">()</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">my_item</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">my_item</span><span class="o">.</span><span class="n">banner</span><span class="p">,</span> <span class="n">my_item</span><span class="o">.</span><span class="n">icon</span><span class="p">)</span>
-            <span class="c1"># Try to transfer the item.</span>
-            <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">instance_id</span> <span class="ow">and</span> <span class="n">item</span><span class="o">.</span><span class="n">transfer_status</span> <span class="ow">is</span> <span class="n">aiobungie</span><span class="o">.</span><span class="n">TransferStatus</span><span class="o">.</span><span class="n">CAN_TRANSFER</span><span class="p">:</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">transfer_item</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Couldn&#39;t transfer the item </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                    <span class="k">return</span>
+            <span class="nb">print</span><span class="p">(</span><span class="k">await</span> <span class="n">item</span><span class="o">.</span><span class="n">fetch_self</span><span class="p">())</span>
 </code></pre></div>
 
 <h6 id="included-components">Included Components</h6>
@@ -11523,7 +11555,7 @@ Default is `0`
         
             <span class="name">Component</span><span class="signature">(
     *,
-    metrics: Optional[collections.abc.Sequence[collections.abc.Mapping[int, tuple[bool, <a href="#records.Objective">aiobungie.crate.records.Objective</a>]]]],
+    metrics: Optional[collections.abc.Sequence[collections.abc.Mapping[int, tuple[bool, Optional[<a href="#records.Objective">aiobungie.crate.records.Objective</a>]]]]],
     root_node_hash: Optional[int],
     profile_string_variables: Optional[collections.abc.Mapping[int, int]],
     character_string_variables: Optional[collections.abc.Mapping[int, collections.abc.Mapping[int, int]]],
@@ -11540,6 +11572,7 @@ Default is `0`
     character_activities: Optional[collections.abc.Mapping[int, <a href="#activity.CharacterActivity">aiobungie.crate.activity.CharacterActivity</a>]],
     character_equipments: Optional[collections.abc.Mapping[int, collections.abc.Sequence[<a href="#profile.ProfileItemImpl">aiobungie.crate.profile.ProfileItemImpl</a>]]],
     character_collectibles: Optional[collections.abc.Mapping[int, <a href="#items.Collectible">aiobungie.crate.items.Collectible</a>]],
+    character_craftables: Optional[collections.abc.Mapping[int, <a href="#components.CraftablesComponent">aiobungie.crate.components.CraftablesComponent</a>]],
     transitory: Optional[<a href="#fireteams.FireteamParty">aiobungie.crate.fireteams.FireteamParty</a>],
     item_components: Optional[<a href="#components.ItemsComponent">aiobungie.crate.components.ItemsComponent</a>],
     profile_plugsets: Optional[collections.abc.Mapping[int, collections.abc.Sequence[<a href="#items.PlugItemState">aiobungie.crate.items.PlugItemState</a>]]],
@@ -11554,7 +11587,7 @@ Default is `0`
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">metrics</span><span class="p">,</span> <span class="n">root_node_hash</span><span class="p">,</span> <span class="n">profile_string_variables</span><span class="p">,</span> <span class="n">character_string_variables</span><span class="p">,</span> <span class="n">profile_records</span><span class="p">,</span> <span class="n">character_records</span><span class="p">,</span> <span class="n">profiles</span><span class="p">,</span> <span class="n">profile_progression</span><span class="p">,</span> <span class="n">profile_currencies</span><span class="p">,</span> <span class="n">profile_inventories</span><span class="p">,</span> <span class="n">characters</span><span class="p">,</span> <span class="n">character_inventories</span><span class="p">,</span> <span class="n">character_progressions</span><span class="p">,</span> <span class="n">character_render_data</span><span class="p">,</span> <span class="n">character_activities</span><span class="p">,</span> <span class="n">character_equipments</span><span class="p">,</span> <span class="n">character_collectibles</span><span class="p">,</span> <span class="n">transitory</span><span class="p">,</span> <span class="n">item_components</span><span class="p">,</span> <span class="n">profile_plugsets</span><span class="p">,</span> <span class="n">character_plugsets</span><span class="p">,</span> <span class="n">character_nodes</span><span class="p">,</span> <span class="n">platform_silver</span><span class="p">,</span> <span class="n">profile_nodes</span><span class="p">,</span> <span class="n">character_currency_lookups</span><span class="p">,</span> <span class="n">profile_collectibles</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">metrics</span><span class="p">,</span> <span class="n">root_node_hash</span><span class="p">,</span> <span class="n">profile_string_variables</span><span class="p">,</span> <span class="n">character_string_variables</span><span class="p">,</span> <span class="n">profile_records</span><span class="p">,</span> <span class="n">character_records</span><span class="p">,</span> <span class="n">profiles</span><span class="p">,</span> <span class="n">profile_progression</span><span class="p">,</span> <span class="n">profile_currencies</span><span class="p">,</span> <span class="n">profile_inventories</span><span class="p">,</span> <span class="n">characters</span><span class="p">,</span> <span class="n">character_inventories</span><span class="p">,</span> <span class="n">character_progressions</span><span class="p">,</span> <span class="n">character_render_data</span><span class="p">,</span> <span class="n">character_activities</span><span class="p">,</span> <span class="n">character_equipments</span><span class="p">,</span> <span class="n">character_collectibles</span><span class="p">,</span> <span class="n">character_craftables</span><span class="p">,</span> <span class="n">transitory</span><span class="p">,</span> <span class="n">item_components</span><span class="p">,</span> <span class="n">profile_plugsets</span><span class="p">,</span> <span class="n">character_plugsets</span><span class="p">,</span> <span class="n">character_nodes</span><span class="p">,</span> <span class="n">platform_silver</span><span class="p">,</span> <span class="n">profile_nodes</span><span class="p">,</span> <span class="n">character_currency_lookups</span><span class="p">,</span> <span class="n">profile_collectibles</span><span class="p">):</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span> <span class="o">=</span> <span class="n">metrics</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">root_node_hash</span> <span class="o">=</span> <span class="n">root_node_hash</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">profile_string_variables</span> <span class="o">=</span> <span class="n">profile_string_variables</span>
@@ -11572,6 +11605,7 @@ Default is `0`
     <span class="bp">self</span><span class="o">.</span><span class="n">character_activities</span> <span class="o">=</span> <span class="n">character_activities</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">character_equipments</span> <span class="o">=</span> <span class="n">character_equipments</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">character_collectibles</span> <span class="o">=</span> <span class="n">character_collectibles</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">character_craftables</span> <span class="o">=</span> <span class="n">character_craftables</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">transitory</span> <span class="o">=</span> <span class="n">transitory</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">item_components</span> <span class="o">=</span> <span class="n">item_components</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">profile_plugsets</span> <span class="o">=</span> <span class="n">profile_plugsets</span>
@@ -11703,6 +11737,24 @@ is passed to the request components.</p>
             <div class="docstring"><p>A mapping from each character ID to its collectibles component for this profile.</p>
 
 <p>This will always be <code>None</code> unless <code><a href="../aiobungie.html#ComponentType.COLLECTIBLES">aiobungie.ComponentType.COLLECTIBLES</a></code></p>
+</div>
+
+
+                            </div>
+                            <div id="Component.character_craftables" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#Component.character_craftables">#&nbsp;&nbsp</a>
+
+        <span class="name">character_craftables</span><span class="annotation">: Optional[collections.abc.Mapping[int, <a href="#components.CraftablesComponent">aiobungie.crate.components.CraftablesComponent</a>]]</span>
+    </div>
+
+    
+            <div class="docstring"><p>A mapping from character IDs to its bound craftable component.</p>
+
+<h6 id="notes">Notes</h6>
+
+<ul>
+<li>This will be available when <code><a href="../aiobungie.html#ComponentType.CRAFTABLES">aiobungie.ComponentType.CRAFTABLES</a></code> is passed to the request component.</li>
+</ul>
 </div>
 
 
@@ -11882,13 +11934,13 @@ is passed to the request components.</li>
                 <div class="decorator">@attrs.define(kw_only=True)</div>
 
         <span class="def">class</span>
-        <span class="name">CharacterComponent</span><wbr>(<span class="base"><a href="#RecordsComponent">aiobungie.crate.RecordsComponent</a></span>, <span class="base"><a href="#VendorsComponent">aiobungie.crate.VendorsComponent</a></span>):
+        <span class="name">CharacterComponent</span><wbr>(<span class="base"><a href="#RecordsComponent">aiobungie.crate.RecordsComponent</a></span>):
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@attrs</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">CharacterComponent</span><span class="p">(</span><span class="n">RecordsComponent</span><span class="p">,</span> <span class="n">VendorsComponent</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">CharacterComponent</span><span class="p">(</span><span class="n">RecordsComponent</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Represents a character-only Bungie component.</span>
 
 <span class="sd">    This includes all components that falls under the character object.</span>
@@ -12897,22 +12949,19 @@ otherwise will be <code>None</code>.</p>
                             </div>
                 </section>
                 <section id="VendorsComponent">
-                                <div class="attr class">
-        <a class="headerlink" href="#VendorsComponent">#&nbsp;&nbsp</a>
+                            <div class="attr function"><a class="headerlink" href="#VendorsComponent">#&nbsp;&nbsp</a>
 
-                <div class="decorator">@attrs.define(kw_only=True, slots=False)</div>
-
-        <span class="def">class</span>
-        <span class="name">VendorsComponent</span>:
+        
+            <span class="def">def</span>
+            <span class="name">VendorsComponent</span><span class="signature">() -&gt; None</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@attrs</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">slots</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@helpers</span><span class="o">.</span><span class="n">unimplemented</span><span class="p">()</span>
+<span class="nd">@attrs</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">VendorsComponent</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Represents vendors-only Bungie component.&quot;&quot;&quot;</span>
-
-    <span class="c1"># TODO: Impl this.</span>
 </pre></div>
 
         </details>
@@ -12921,26 +12970,6 @@ otherwise will be <code>None</code>.</p>
 </div>
 
 
-                            <div id="VendorsComponent.__init__" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#VendorsComponent.__init__">#&nbsp;&nbsp</a>
-
-        
-            <span class="name">VendorsComponent</span><span class="signature">()</span>
-    </div>
-
-            <details>
-            <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">):</span>
-    <span class="k">pass</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Method generated by attrs for class VendorsComponent.</p>
-</div>
-
-
-                            </div>
                 </section>
                 <section id="UninstancedItemsComponent">
                                 <div class="attr class">
@@ -13123,6 +13152,197 @@ is passed to the request components. otherwise attributes will be <code>None</co
 
                             </div>
                 </section>
+                <section id="CraftablesComponent">
+                                <div class="attr class">
+        <a class="headerlink" href="#CraftablesComponent">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@attrs.define(kw_only=True)</div>
+
+        <span class="def">class</span>
+        <span class="name">CraftablesComponent</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@attrs</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">CraftablesComponent</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Represents craftables-only Bungie component.&quot;&quot;&quot;</span>
+
+    <span class="n">net</span><span class="p">:</span> <span class="n">traits</span><span class="o">.</span><span class="n">Netrunner</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">eq</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">hash</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;A network state used for making external requests.&quot;&quot;&quot;</span>
+
+    <span class="n">craftables</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">items</span><span class="o">.</span><span class="n">CraftableItem</span><span class="p">]]</span>
+    <span class="sd">&quot;&quot;&quot;A mapping from craftable item IDs to a craftable item component.</span>
+
+<span class="sd">    Items may or may not be available but its hash will always be available.</span>
+<span class="sd">    You can use the hash to fetch those items using `fetch_craftables` method.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">crafting_root_node_hash</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="sd">&quot;&quot;&quot;The hash for the root presentation node definition of craftable item categories.&quot;&quot;&quot;</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_craftables</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">limit</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">collections</span><span class="o">.</span><span class="n">Collection</span><span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">InventoryEntity</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;Fetch the inventory definitions for the craftables.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        limit : `typing.Optional[int]`</span>
+<span class="sd">            The maximum number of items to fetch. If not provided, all items will be fetched.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `typing.Optional[collections.Sequence[entity.InventoryEntity]]`</span>
+<span class="sd">            If the craftables are available, a sequence of inventory entities. Otherwise `None`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">craftables</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">item_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">craftables</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">helpers</span><span class="o">.</span><span class="n">awaits</span><span class="p">(</span>
+            <span class="o">*</span><span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">fetch_inventory_item</span><span class="p">(</span><span class="n">item_id</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">item_id</span> <span class="ow">in</span> <span class="n">item_ids</span><span class="p">[:</span><span class="n">limit</span><span class="p">]</span>
+            <span class="p">],</span>
+        <span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Represents craftables-only Bungie component.</p>
+</div>
+
+
+                            <div id="CraftablesComponent.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#CraftablesComponent.__init__">#&nbsp;&nbsp</a>
+
+        
+            <span class="name">CraftablesComponent</span><span class="signature">(
+    *,
+    net: <a href="traits.html#Netrunner">aiobungie.traits.Netrunner</a>,
+    craftables: collections.abc.Mapping,
+    crafting_root_node_hash: int
+)</span>
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">net</span><span class="p">,</span> <span class="n">craftables</span><span class="p">,</span> <span class="n">crafting_root_node_hash</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">net</span> <span class="o">=</span> <span class="n">net</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">craftables</span> <span class="o">=</span> <span class="n">craftables</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">crafting_root_node_hash</span> <span class="o">=</span> <span class="n">crafting_root_node_hash</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Method generated by attrs for class CraftablesComponent.</p>
+</div>
+
+
+                            </div>
+                            <div id="CraftablesComponent.net" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#CraftablesComponent.net">#&nbsp;&nbsp</a>
+
+        <span class="name">net</span><span class="annotation">: <a href="traits.html#Netrunner">aiobungie.traits.Netrunner</a></span>
+    </div>
+
+    
+            <div class="docstring"><p>A network state used for making external requests.</p>
+</div>
+
+
+                            </div>
+                            <div id="CraftablesComponent.craftables" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#CraftablesComponent.craftables">#&nbsp;&nbsp</a>
+
+        <span class="name">craftables</span><span class="annotation">: collections.abc.Mapping[int, typing.Optional[<a href="#items.CraftableItem">aiobungie.crate.items.CraftableItem</a>]]</span>
+    </div>
+
+    
+            <div class="docstring"><p>A mapping from craftable item IDs to a craftable item component.</p>
+
+<p>Items may or may not be available but its hash will always be available.
+You can use the hash to fetch those items using <code><a href="#CraftablesComponent.fetch_craftables">fetch_craftables</a></code> method.</p>
+</div>
+
+
+                            </div>
+                            <div id="CraftablesComponent.crafting_root_node_hash" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#CraftablesComponent.crafting_root_node_hash">#&nbsp;&nbsp</a>
+
+        <span class="name">crafting_root_node_hash</span><span class="annotation">: int</span>
+    </div>
+
+    
+            <div class="docstring"><p>The hash for the root presentation node definition of craftable item categories.</p>
+</div>
+
+
+                            </div>
+                            <div id="CraftablesComponent.fetch_craftables" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#CraftablesComponent.fetch_craftables">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">async def</span>
+            <span class="name">fetch_craftables</span><span class="signature">(
+    self,
+    limit: Optional[int] = None
+) -&gt; Optional[collections.abc.Collection[<a href="#entity.InventoryEntity">aiobungie.crate.entity.InventoryEntity</a>]]</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_craftables</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">limit</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">collections</span><span class="o">.</span><span class="n">Collection</span><span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">InventoryEntity</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;Fetch the inventory definitions for the craftables.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        limit : `typing.Optional[int]`</span>
+<span class="sd">            The maximum number of items to fetch. If not provided, all items will be fetched.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `typing.Optional[collections.Sequence[entity.InventoryEntity]]`</span>
+<span class="sd">            If the craftables are available, a sequence of inventory entities. Otherwise `None`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">craftables</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">item_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">craftables</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">helpers</span><span class="o">.</span><span class="n">awaits</span><span class="p">(</span>
+            <span class="o">*</span><span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">fetch_inventory_item</span><span class="p">(</span><span class="n">item_id</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">item_id</span> <span class="ow">in</span> <span class="n">item_ids</span><span class="p">[:</span><span class="n">limit</span><span class="p">]</span>
+            <span class="p">],</span>
+        <span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Fetch the inventory definitions for the craftables.</p>
+
+<h6 id="parameters">Parameters</h6>
+
+<ul>
+<li><strong>limit</strong> (<code>typing.Optional[int]</code>):
+The maximum number of items to fetch. If not provided, all items will be fetched.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<ul>
+<li><strong><code>typing.Optional[collections.Sequence[entity.InventoryEntity]]</code></strong>: If the craftables are available, a sequence of inventory entities. Otherwise <code>None</code>.</li>
+</ul>
+</div>
+
+
+                            </div>
+                </section>
                 <section id="InventoryEntity">
                                 <div class="attr class">
         <a class="headerlink" href="#InventoryEntity">#&nbsp;&nbsp</a>
@@ -13218,8 +13438,8 @@ is passed to the request components. otherwise attributes will be <code>None</co
     <span class="n">ui_display_style</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
 
-    <span class="n">tier_type</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">hash</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="sd">&quot;&quot;&quot;Entity&#39;s tier type.&quot;&quot;&quot;</span>
+    <span class="n">tier_type</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">TierType</span><span class="p">]</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">hash</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;Entity&#39;s tier type. This can be Exotic, Rare, or Common etc.&quot;&quot;&quot;</span>
 
     <span class="n">tier</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">ItemTier</span><span class="p">]</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="sd">&quot;&quot;&quot;The item tier hash as an enum if exists.&quot;&quot;&quot;</span>
@@ -13335,7 +13555,7 @@ is passed to the request components. otherwise attributes will be <code>None</co
     background_colors: collections.abc.Mapping,
     screenshot: Union[<a href="undefined.html#UndefinedType">aiobungie.undefined.UndefinedType</a>, <a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>],
     ui_display_style: Union[<a href="undefined.html#UndefinedType">aiobungie.undefined.UndefinedType</a>, str],
-    tier_type: Optional[int],
+    tier_type: Optional[<a href="internal/enums.html#TierType">aiobungie.internal.enums.TierType</a>],
     tier: Optional[<a href="internal/enums.html#ItemTier">aiobungie.internal.enums.ItemTier</a>],
     tier_name: Union[<a href="undefined.html#UndefinedType">aiobungie.undefined.UndefinedType</a>, str],
     type_name: Union[<a href="undefined.html#UndefinedType">aiobungie.undefined.UndefinedType</a>, str],
@@ -13687,11 +13907,11 @@ a special ability that works sort of like damage type vulnerabilities.</p>
                             <div id="InventoryEntity.tier_type" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#InventoryEntity.tier_type">#&nbsp;&nbsp</a>
 
-        <span class="name">tier_type</span><span class="annotation">: Optional[int]</span>
+        <span class="name">tier_type</span><span class="annotation">: Optional[<a href="internal/enums.html#TierType">aiobungie.internal.enums.TierType</a>]</span>
     </div>
 
     
-            <div class="docstring"><p>Entity's tier type.</p>
+            <div class="docstring"><p>Entity's tier type. This can be Exotic, Rare, or Common etc.</p>
 </div>
 
 
@@ -14532,10 +14752,10 @@ along with information we can use to determine their gating and availability.</p
     <span class="n">mode_types</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">GameMode</span><span class="p">]]</span>
     <span class="sd">&quot;&quot;&quot;A sequence of the activity gamemode types.&quot;&quot;&quot;</span>
 
-    <span class="c1"># TODO: Implement a REST method for this.</span>
+    <span class="nd">@helpers</span><span class="o">.</span><span class="n">unimplemented</span><span class="p">(</span><span class="n">available_in</span><span class="o">=</span><span class="s2">&quot;0.2.7&quot;</span><span class="p">)</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_self</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ActivityEntity</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Fetch the definition of this activivy.&quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+        <span class="o">...</span>
 </pre></div>
 
         </details>
@@ -14640,16 +14860,18 @@ along with information we can use to determine their gating and availability.</p
                             <div id="PlaylistActivityEntity.fetch_self" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#PlaylistActivityEntity.fetch_self">#&nbsp;&nbsp</a>
 
-        
-            <span class="def">async def</span>
+                <div class="decorator">@helpers.unimplemented(available_in=&#39;0.2.7&#39;)</div>
+
+            <span class="def">def</span>
             <span class="name">fetch_self</span><span class="signature">(self) -&gt; <a href="#entity.ActivityEntity">aiobungie.crate.entity.ActivityEntity</a></span>:
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_self</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ActivityEntity</span><span class="p">:</span>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="nd">@helpers</span><span class="o">.</span><span class="n">unimplemented</span><span class="p">(</span><span class="n">available_in</span><span class="o">=</span><span class="s2">&quot;0.2.7&quot;</span><span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_self</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ActivityEntity</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Fetch the definition of this activivy.&quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+        <span class="o">...</span>
 </pre></div>
 
         </details>
@@ -14714,6 +14936,10 @@ along with information we can use to determine their gating and availability.</p
     <span class="n">perks</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
 
     <span class="n">stats</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
+
+    <span class="n">ui_label</span><span class="p">:</span> <span class="nb">str</span>
+
+    <span class="n">ui_style</span><span class="p">:</span> <span class="n">ObjectiveUIStyle</span>
 </pre></div>
 
         </details>
@@ -14753,13 +14979,15 @@ along with information we can use to determine their gating and availability.</p
     show_value_style: Union[int, <a href="#entity.ValueUIStyle">aiobungie.crate.entity.ValueUIStyle</a>],
     progress_description: str,
     perks: dict,
-    stats: dict
+    stats: dict,
+    ui_label: str,
+    ui_style: <a href="#entity.ObjectiveUIStyle">aiobungie.crate.entity.ObjectiveUIStyle</a>
 )</span>
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">net</span><span class="p">,</span> <span class="nb">hash</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">icon</span><span class="p">,</span> <span class="n">has_icon</span><span class="p">,</span> <span class="n">unlock_value_hash</span><span class="p">,</span> <span class="n">minimum_visibility</span><span class="p">,</span> <span class="n">completion_value</span><span class="p">,</span> <span class="n">scope</span><span class="p">,</span> <span class="n">location_hash</span><span class="p">,</span> <span class="n">allowed_negative_value</span><span class="p">,</span> <span class="n">allowed_value_change</span><span class="p">,</span> <span class="n">counting_downward</span><span class="p">,</span> <span class="n">display_only_objective</span><span class="p">,</span> <span class="n">value_style</span><span class="p">,</span> <span class="n">complete_value_style</span><span class="p">,</span> <span class="n">progress_value_style</span><span class="p">,</span> <span class="n">allow_over_completion</span><span class="p">,</span> <span class="n">show_value_style</span><span class="p">,</span> <span class="n">progress_description</span><span class="p">,</span> <span class="n">perks</span><span class="p">,</span> <span class="n">stats</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">net</span><span class="p">,</span> <span class="nb">hash</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">icon</span><span class="p">,</span> <span class="n">has_icon</span><span class="p">,</span> <span class="n">unlock_value_hash</span><span class="p">,</span> <span class="n">minimum_visibility</span><span class="p">,</span> <span class="n">completion_value</span><span class="p">,</span> <span class="n">scope</span><span class="p">,</span> <span class="n">location_hash</span><span class="p">,</span> <span class="n">allowed_negative_value</span><span class="p">,</span> <span class="n">allowed_value_change</span><span class="p">,</span> <span class="n">counting_downward</span><span class="p">,</span> <span class="n">display_only_objective</span><span class="p">,</span> <span class="n">value_style</span><span class="p">,</span> <span class="n">complete_value_style</span><span class="p">,</span> <span class="n">progress_value_style</span><span class="p">,</span> <span class="n">allow_over_completion</span><span class="p">,</span> <span class="n">show_value_style</span><span class="p">,</span> <span class="n">progress_description</span><span class="p">,</span> <span class="n">perks</span><span class="p">,</span> <span class="n">stats</span><span class="p">,</span> <span class="n">ui_label</span><span class="p">,</span> <span class="n">ui_style</span><span class="p">):</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">net</span> <span class="o">=</span> <span class="n">net</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">hash</span> <span class="o">=</span> <span class="nb">hash</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">index</span>
@@ -14784,6 +15012,8 @@ along with information we can use to determine their gating and availability.</p
     <span class="bp">self</span><span class="o">.</span><span class="n">progress_description</span> <span class="o">=</span> <span class="n">progress_description</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">perks</span> <span class="o">=</span> <span class="n">perks</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">stats</span> <span class="o">=</span> <span class="n">stats</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">ui_label</span> <span class="o">=</span> <span class="n">ui_label</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">ui_style</span> <span class="o">=</span> <span class="n">ui_style</span>
 </pre></div>
 
         </details>
@@ -14957,6 +15187,26 @@ along with information we can use to determine their gating and availability.</p
                                             <div class="attr variable"><a class="headerlink" href="#ObjectiveEntity.stats">#&nbsp;&nbsp</a>
 
         <span class="name">stats</span><span class="annotation">: dict[str, int]</span>
+    </div>
+
+    
+    
+
+                            </div>
+                            <div id="ObjectiveEntity.ui_label" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#ObjectiveEntity.ui_label">#&nbsp;&nbsp</a>
+
+        <span class="name">ui_label</span><span class="annotation">: str</span>
+    </div>
+
+    
+    
+
+                            </div>
+                            <div id="ObjectiveEntity.ui_style" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#ObjectiveEntity.ui_style">#&nbsp;&nbsp</a>
+
+        <span class="name">ui_style</span><span class="annotation">: <a href="#entity.ObjectiveUIStyle">aiobungie.crate.entity.ObjectiveUIStyle</a></span>
     </div>
 
     
@@ -16789,22 +17039,24 @@ along with information we can use to determine their gating and availability.</p
     <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
 
-    <span class="c1"># N/A ?</span>
-    <span class="c1"># async def fetch_platform_friends(self, access_token: str, /, platform: enums.MembershipType) -&gt; None:</span>
-    <span class="c1">#     &quot;&quot;&quot;Gets the platform friend of the requested type.</span>
+    <span class="nd">@helpers</span><span class="o">.</span><span class="n">unimplemented</span><span class="p">()</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_platform_friends</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="n">platform</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Gets the platform friend of the requested type.</span>
 
-    <span class="c1">#     Parameters</span>
-    <span class="c1">#     ----------</span>
-    <span class="c1">#     access_token : `str`</span>
-    <span class="c1">#         The bearer access token associated with the bungie account.</span>
-    <span class="c1">#     platform : `aiobungie.MembershipType`</span>
-    <span class="c1">#         The friend memebrship type.</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        access_token : `str`</span>
+<span class="sd">            The bearer access token associated with the bungie account.</span>
+<span class="sd">        platform : `aiobungie.MembershipType`</span>
+<span class="sd">            The friend memebrship type.</span>
 
-    <span class="c1">#     Raises</span>
-    <span class="c1">#     ------</span>
-    <span class="c1">#     `aiobungie.NotFound`</span>
-    <span class="c1">#         The requested friend was not found.</span>
-    <span class="c1">#     &quot;&quot;&quot;</span>
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        `aiobungie.NotFound`</span>
+<span class="sd">            The requested friend was not found.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
         </details>
@@ -17157,6 +17409,64 @@ The bearer access token associated with the bungie account.</li>
 
 <ul>
 <li><strong><code>None</code></strong>: None</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="Friend.fetch_platform_friends" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Friend.fetch_platform_friends">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@helpers.unimplemented()</div>
+
+            <span class="def">def</span>
+            <span class="name">fetch_platform_friends</span><span class="signature">(
+    self,
+    access_token: str,
+    /,
+    platform: <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>
+) -&gt; None</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="nd">@helpers</span><span class="o">.</span><span class="n">unimplemented</span><span class="p">()</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_platform_friends</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="n">platform</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Gets the platform friend of the requested type.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        access_token : `str`</span>
+<span class="sd">            The bearer access token associated with the bungie account.</span>
+<span class="sd">        platform : `aiobungie.MembershipType`</span>
+<span class="sd">            The friend memebrship type.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        `aiobungie.NotFound`</span>
+<span class="sd">            The requested friend was not found.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Gets the platform friend of the requested type.</p>
+
+<h6 id="parameters">Parameters</h6>
+
+<ul>
+<li><strong>access_token</strong> (<code>str</code>):
+The bearer access token associated with the bungie account.</li>
+<li><strong>platform</strong> (<code><a href="../aiobungie.html#MembershipType">aiobungie.MembershipType</a></code>):
+The friend memebrship type.</li>
+</ul>
+
+<h6 id="raises">Raises</h6>
+
+<ul>
+<li><strong><code><a href="../aiobungie.html#NotFound">aiobungie.NotFound</a></code></strong>: The requested friend was not found.</li>
 </ul>
 </div>
 
@@ -19568,8 +19878,17 @@ passed access_token.</li>
     <span class="n">completion_value</span><span class="p">:</span> <span class="nb">int</span>
     <span class="sd">&quot;&quot;&quot;An integer represents the objective completion value.&quot;&quot;&quot;</span>
 
-    <span class="n">progress</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="sd">&quot;&quot;&quot;An integer represents the objective progress.&quot;&quot;&quot;</span>
+    <span class="n">progress</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;If progress has been made, and the progress can be measured numerically,</span>
+<span class="sd">    this will be the value of that progress.&quot;&quot;&quot;</span>
+
+    <span class="n">destination_hash</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;The hash of the Destiny 2 objective destination. If it has one.&quot;&quot;&quot;</span>
+
+    <span class="n">activity_hash</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;If the Objective has an Activity associated with it,</span>
+<span class="sd">    this is the unique identifier of the Activity being referred to.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_self</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">entity</span><span class="o">.</span><span class="n">ObjectiveEntity</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Perform an HTTP request fetching this objective entity definition.</span>
@@ -19599,19 +19918,23 @@ passed access_token.</li>
     visible: bool,
     complete: bool,
     completion_value: int,
-    progress: int
+    progress: Optional[int],
+    destination_hash: Optional[int],
+    activity_hash: Optional[int]
 )</span>
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">net</span><span class="p">,</span> <span class="nb">hash</span><span class="p">,</span> <span class="n">visible</span><span class="p">,</span> <span class="n">complete</span><span class="p">,</span> <span class="n">completion_value</span><span class="p">,</span> <span class="n">progress</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">net</span><span class="p">,</span> <span class="nb">hash</span><span class="p">,</span> <span class="n">visible</span><span class="p">,</span> <span class="n">complete</span><span class="p">,</span> <span class="n">completion_value</span><span class="p">,</span> <span class="n">progress</span><span class="p">,</span> <span class="n">destination_hash</span><span class="p">,</span> <span class="n">activity_hash</span><span class="p">):</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">net</span> <span class="o">=</span> <span class="n">net</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">hash</span> <span class="o">=</span> <span class="nb">hash</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="n">visible</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">complete</span> <span class="o">=</span> <span class="n">complete</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">completion_value</span> <span class="o">=</span> <span class="n">completion_value</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">progress</span> <span class="o">=</span> <span class="n">progress</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">destination_hash</span> <span class="o">=</span> <span class="n">destination_hash</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">activity_hash</span> <span class="o">=</span> <span class="n">activity_hash</span>
 </pre></div>
 
         </details>
@@ -19682,11 +20005,37 @@ passed access_token.</li>
                             <div id="Objective.progress" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#Objective.progress">#&nbsp;&nbsp</a>
 
-        <span class="name">progress</span><span class="annotation">: int</span>
+        <span class="name">progress</span><span class="annotation">: Optional[int]</span>
     </div>
 
     
-            <div class="docstring"><p>An integer represents the objective progress.</p>
+            <div class="docstring"><p>If progress has been made, and the progress can be measured numerically,
+this will be the value of that progress.</p>
+</div>
+
+
+                            </div>
+                            <div id="Objective.destination_hash" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#Objective.destination_hash">#&nbsp;&nbsp</a>
+
+        <span class="name">destination_hash</span><span class="annotation">: Optional[int]</span>
+    </div>
+
+    
+            <div class="docstring"><p>The hash of the Destiny 2 objective destination. If it has one.</p>
+</div>
+
+
+                            </div>
+                            <div id="Objective.activity_hash" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#Objective.activity_hash">#&nbsp;&nbsp</a>
+
+        <span class="name">activity_hash</span><span class="annotation">: Optional[int]</span>
+    </div>
+
+    
+            <div class="docstring"><p>If the Objective has an Activity associated with it,
+this is the unique identifier of the Activity being referred to.</p>
 </div>
 
 

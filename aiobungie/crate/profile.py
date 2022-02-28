@@ -248,28 +248,28 @@ class Profile:
     """A list of the profile's character ids."""
 
     power_cap: int
-    """The profile's current seaspn power cap."""
+    """The profile's current season power cap."""
 
     async def _await_all_chars(
-        self, *components: enums.ComponentType, **options: str
+        self, components: list[enums.ComponentType], auth: typing.Optional[str] = None
     ) -> collections.Collection[components.CharacterComponent]:
         return await helpers.awaits(
             *[
                 self.net.request.fetch_character(
-                    self.id, self.type, char_id, *components, **options
+                    self.id, self.type, char_id, components, auth
                 )
                 for char_id in self.character_ids
             ]
         )
 
     async def collect_characters(
-        self, *components: enums.ComponentType, **options: str
+        self, components: list[enums.ComponentType], auth: typing.Optional[str] = None
     ) -> collections.Collection[components.CharacterComponent]:
         """Fetch this profile's characters.
 
         Parameters
         ----------
-        *components: `aiobungie.ComponentType`
+        components: `list[aiobungie.ComponentType]`
             Multiple arguments of character components to collect and return.
 
         Other Parameters
@@ -277,16 +277,13 @@ class Profile:
         auth : `typing.Optional[str]`
             A passed kwarg Bearer access_token to make the request with.
             This is optional and limited to components that only requires an Authorization token.
-        **options : `str`
-            if an `auth` kwarg passed to the options. This request will be authorized using the
-            passed access_token.
 
         Returns
         -------
         `collections.Collection[aiobungie.crate.CharacterComponent]`
             A collection of the characters component.
         """
-        return await self._await_all_chars(*components, **options)
+        return await self._await_all_chars(components, auth)
 
     def __str__(self) -> str:
         return self.name

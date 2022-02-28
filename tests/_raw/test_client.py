@@ -26,6 +26,7 @@ import inspect
 import logging
 import os
 import sys
+import typing
 
 import aiobungie
 
@@ -103,12 +104,12 @@ async def test_fetch_app():
 
 async def test_player():
     p = await client.fetch_player("Fate怒", 4275)
-    profile = await p[0].fetch_self_profile(aiobungie.ComponentType.PROFILE)
+    profile = await p[0].fetch_self_profile([aiobungie.ComponentType.PROFILE])
     assert isinstance(profile, aiobungie.crate.Component)
     assert isinstance(profile.profiles, aiobungie.crate.Profile)
 
-    components = aiobungie.ComponentType.ALL_CHARACTERS
-    profiles = profile.profiles.collect_characters(*components.value)
+    components = [aiobungie.ComponentType.ALL_CHARACTERS]
+    profiles = profile.profiles.collect_characters(components)
     for char in await profiles:
         assert isinstance(char, aiobungie.crate.CharacterComponent)
         assert (
@@ -127,7 +128,7 @@ async def test_fetch_character():
         MID,
         aiobungie.MembershipType.STEAM,
         CID,
-        *aiobungie.ComponentType.ALL.value,
+        [aiobungie.ComponentType.ALL],
     )
     assert isinstance(c, aiobungie.crate.CharacterComponent)
     assert c.activities
@@ -150,13 +151,13 @@ async def test_profile():
     pf = await client.fetch_profile(
         MID,
         aiobungie.MembershipType.STEAM,
-        *aiobungie.ComponentType.ALL.value,  # type: ignore
+        [aiobungie.ComponentType.ALL]
     )
     assert isinstance(pf, aiobungie.crate.Component)
 
     assert pf.profiles
     for pfile_char in await pf.profiles.collect_characters(
-        *aiobungie.ComponentType.ALL_CHARACTERS.value
+        [aiobungie.ComponentType.ALL_CHARACTERS]
     ):
         assert isinstance(pfile_char, aiobungie.crate.CharacterComponent)
         assert (
@@ -293,7 +294,7 @@ async def test_linked_profiles():
     for user in obj.profiles:
         assert isinstance(user, aiobungie.crate.DestinyMembership)
         transform_profile = await user.fetch_self_profile(
-            aiobungie.ComponentType.PROFILE
+            [aiobungie.ComponentType.PROFILE]
         )
         assert transform_profile.profiles
         assert isinstance(transform_profile, aiobungie.crate.Component)
@@ -413,14 +414,19 @@ async def test_clan_weekly_rewards():
     assert isinstance(r, aiobungie.crate.Milestone)
 
 async def main() -> None:
-    coros = []
+    coros: list[typing.Coroutine[None, None, None]] = []
     for n, coro in inspect.getmembers(
         sys.modules[__name__], inspect.iscoroutinefunction
     ):
         if n == "main" or not n.startswith("test_"):
             continue
         coros.append(coro())
-    await asyncio.gather(*coros)
+
+    try:
+        await asyncio.gather(*coros)
+    except Exception:
+        raise
+
     _LOG.info(
         "Asserted %i functions out of %i excluding main.",
         len(coros),

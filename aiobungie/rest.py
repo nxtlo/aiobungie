@@ -46,7 +46,6 @@ import platform
 import random
 import sqlite3
 import sys
-import time
 import typing
 import uuid
 import zipfile
@@ -63,8 +62,7 @@ from aiobungie import url
 from aiobungie.crate import fireteams
 from aiobungie.internal import _backoff as backoff
 from aiobungie.internal import enums
-from aiobungie.internal import helpers
-from aiobungie.internal import time as aiobungie_time
+from aiobungie.internal import time
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
@@ -119,6 +117,21 @@ You can enable this with the following code
 logging.addLevelName(REST_DEBUG, "REST_DEBUG")
 
 
+@typing.no_type_check
+def _collect_components(components: list[enums.ComponentType], /) -> str:
+    pending: list[str] = []
+
+    for component in components:
+        if isinstance(component.value, tuple):
+            pending.extend(str(c) for c in component.value)  # type: ignore
+        else:
+            if len(components) > 1:
+                pending.append(*list(map(str, component.value)))
+            else:
+                pending.append(str(component.value))
+    return ",".join(pending)
+
+
 class _Arc:
     __slots__ = ("_lock", "_bucket")
 
@@ -127,7 +140,9 @@ class _Arc:
         self._bucket = bucket
 
     async def __aenter__(self) -> None:
-        _LOG.debug(f"Lock acquired on bucket {self._bucket}")
+        _LOG.debug(
+            f"Lock acquired on bucket {self._bucket if self._bucket else 'UNKNOWN'}"
+        )
         await self.acquire()
 
     async def __aexit__(
@@ -401,7 +416,7 @@ class RESTClient(interfaces.RESTInterface):
         self._metadata: collections.MutableMapping[typing.Any, typing.Any] = {}
 
         if enable_debugging:
-            logging.basicConfig(level=logging.DEBUG)
+            logging.basicConfig(level=REST_DEBUG)
 
     @property
     def client_id(self) -> typing.Optional[int]:
@@ -589,8 +604,7 @@ class RESTClient(interfaces.RESTInterface):
         exception: typing.Optional[BaseException],
         exception_traceback: typing.Optional[types.TracebackType],
     ) -> None:
-        if self._session:
-            await self._session.close()
+        await self.close()
 
     # We don't want this to be super complicated.
     @staticmethod
@@ -639,25 +653,6 @@ class RESTClient(interfaces.RESTInterface):
                 retry_after=retry_after,
             )
 
-    @staticmethod
-    @typing.no_type_check
-    def _collect_components(
-        *components: enums.ComponentType,
-    ) -> typing.Union[str, type[str]]:
-        try:
-            if len(components) == 0:
-                raise ValueError("No profile components passed.", components)
-
-            # Need to get the int overload of the components to separate them.
-            elif len(components) > 1:
-                these = helpers.collect(*[int(k) for k in components])
-            else:
-                these = helpers.collect(int(*components))
-            # In case it's a tuple, i.e., ALL_X
-        except TypeError:
-            these = helpers.collect(*list(str(c.value) for c in components))
-        return these
-
     @typing.final
     def static_request(
         self,
@@ -687,7 +682,7 @@ class RESTClient(interfaces.RESTInterface):
 
         if not isinstance(self._client_id, int):
             raise TypeError(
-                f"Expected (str) for client id but got {type(self._client_id).__qualname__}"  # type: ignore
+                f"Expected (int) for client id but got {type(self._client_id).__qualname__}"  # type: ignore
             )
 
         if not isinstance(self._client_secret, str):
@@ -712,7 +707,7 @@ class RESTClient(interfaces.RESTInterface):
     async def refresh_access_token(self, refresh_token: str, /) -> OAuth2Response:
         if not isinstance(self._client_id, int):
             raise TypeError(
-                f"Expected (str) for client id but got {type(self._client_id).__qualname__}"  # type: ignore
+                f"Expected (int) for client id but got {type(self._client_id).__qualname__}"  # type: ignore
             )
 
         if not isinstance(self._client_secret, str):
@@ -812,16 +807,16 @@ class RESTClient(interfaces.RESTInterface):
         member_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
         character_id: int,
-        *components: enums.ComponentType,
-        **options: str,
+        components: list[enums.ComponentType],
+        auth: typing.Optional[str] = None,
     ) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        collector = self._collect_components(*components)
+        collector = _collect_components(components)
         return self._request(
             RequestMethod.GET,
             f"Destiny2/{int(membership_type)}/Profile/{member_id}/"
             f"Character/{character_id}/?components={collector}",
-            auth=options.get("auth"),
+            auth=auth,
         )
 
     def fetch_activities(
@@ -853,17 +848,17 @@ class RESTClient(interfaces.RESTInterface):
 
     def fetch_profile(
         self,
-        memberid: int,
+        membership_id: int,
         type: typedefs.IntAnd[enums.MembershipType],
-        *components: enums.ComponentType,
-        **options: str,
+        components: list[enums.ComponentType],
+        auth: typing.Optional[str] = None,
     ) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        collector = self._collect_components(*components)
+        collector = _collect_components(components)
         return self._request(
             RequestMethod.GET,
-            f"Destiny2/{int(type)}/Profile/{int(memberid)}/?components={collector}",
-            auth=options.get("auth", None),
+            f"Destiny2/{int(type)}/Profile/{membership_id}/?components={collector}",
+            auth=auth,
         )
 
     def fetch_entity(self, type: str, hash: int) -> ResponseSig[typedefs.JSONObject]:
@@ -1631,9 +1626,9 @@ class RESTClient(interfaces.RESTInterface):
         member_id: int,
         item_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
-        *components: enums.ComponentType,
+        components: list[enums.ComponentType],
     ) -> ResponseSig[typedefs.JSONObject]:
-        collector = self._collect_components(*components)
+        collector = _collect_components(components)
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
             RequestMethod.GET,
@@ -1727,18 +1722,18 @@ class RESTClient(interfaces.RESTInterface):
         membership_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
         /,
-        *components: enums.ComponentType,
-        **options: typing.Optional[int],
+        components: list[enums.ComponentType],
+        filter: typing.Optional[int] = None,
     ) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        components_ = self._collect_components(*components)
+        components_ = _collect_components(components)
         route = (
             f"Destiny2/{int(membership_type)}/Profile/{membership_id}"
             f"/Character/{character_id}/Vendors/?components={components_}"
         )
 
-        if "filter" in options:
-            route = route + f"&filter={options['filter']}"
+        if filter is not None:
+            route = route + f"&filter={filter}"
 
         return self._request(
             RequestMethod.GET,
@@ -1754,10 +1749,10 @@ class RESTClient(interfaces.RESTInterface):
         membership_type: typedefs.IntAnd[enums.MembershipType],
         vendor_hash: int,
         /,
-        *components: enums.ComponentType,
+        components: list[enums.ComponentType],
     ) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        components_ = self._collect_components(*components)
+        components_ = _collect_components(components)
         return self._request(
             RequestMethod.GET,
             (
@@ -1777,7 +1772,7 @@ class RESTClient(interfaces.RESTInterface):
         end: typing.Optional[datetime.datetime] = None,
     ) -> ResponseSig[typedefs.JSONObject]:
 
-        end_date, start_date = aiobungie_time.parse_date_range(end, start)
+        end_date, start_date = time.parse_date_range(end, start)
         return self._request(
             RequestMethod.GET,
             f"App/ApiUsage/{application_id}/?end={end_date}&start={start_date}",

@@ -347,8 +347,8 @@ class Client(traits.ClientApp):
         self,
         member_id: int,
         type: typedefs.IntAnd[enums.MembershipType],
-        *components: enums.ComponentType,
-        **options: str,
+        components: list[enums.ComponentType],
+        auth: typing.Optional[str] = None,
     ) -> components.Component:
         """
         Fetch a bungie profile passing components to the request.
@@ -366,11 +366,8 @@ class Client(traits.ClientApp):
         Other Parameters
         ----------------
         auth : `typing.Optional[str]`
-            A passed kwarg Bearer access_token to make the request with.
+            A Bearer access_token to make the request with.
             This is optional and limited to components that only requires an Authorization token.
-        **options : `str`
-            Other keyword arguments for the request to expect.
-            This is only here for the `auth` option which's a string kwarg.
 
         Returns
         --------
@@ -383,7 +380,7 @@ class Client(traits.ClientApp):
         `aiobungie.MembershipTypeError`
             The provided membership type was invalid.
         """
-        data = await self.rest.fetch_profile(member_id, type, *components, **options)
+        data = await self.rest.fetch_profile(member_id, type, components, auth)
         assert isinstance(data, dict)
         return self.factory.deserialize_components(data)
 
@@ -465,8 +462,8 @@ class Client(traits.ClientApp):
         member_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
         character_id: int,
-        *components: enums.ComponentType,
-        **options: str,
+        components: list[enums.ComponentType],
+        auth: typing.Optional[str] = None,
     ) -> components.CharacterComponent:
         """Fetch a Destiny 2 character.
 
@@ -478,33 +475,25 @@ class Client(traits.ClientApp):
             The Destiny character id to retrieve.
         membership_type: `aiobungie.internal.enums.MembershipType`
             The member's membership type.
-        *components: `aiobungie.ComponentType`
+        components: `list[aiobungie.ComponentType]`
             Multiple arguments of character components to collect and return.
 
         Other Parameters
         ----------------
         auth : `typing.Optional[str]`
-            A passed kwarg Bearer access_token to make the request with.
+            A Bearer access_token to make the request with.
             This is optional and limited to components that only requires an Authorization token.
-        **options : `str`
-            Other keyword arguments for the request to expect.
-            This is only here for the `auth` option which's a kwarg.
 
         Returns
         -------
         `aiobungie.crate.CharacterComponent`
             A Bungie character component.
 
-        Raises
-        ------
-        `aiobungie.error.CharacterError`
-            raised if the Character was not found.
-
         `aiobungie.MembershipTypeError`
             The provided membership type was invalid.
         """
         resp = await self.rest.fetch_character(
-            member_id, membership_type, character_id, *components, **options
+            member_id, membership_type, character_id, components, auth
         )
         assert isinstance(resp, dict)
         return self.factory.deserialize_character_component(resp)

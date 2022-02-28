@@ -29,7 +29,6 @@ __all__: tuple[str, ...] = (
     "just",
     "awaits",
     "get_or_make_loop",
-    "collect",
     "unimplemented",
 )
 
@@ -44,30 +43,12 @@ if typing.TYPE_CHECKING:
     T_co = typing.TypeVar("T_co", covariant=True)
     T = typing.TypeVar("T", bound=collections.Callable[..., typing.Any])
 
-ConsumerSigT = typing.TypeVar(
-    "ConsumerSigT", bound=collections.Callable[..., typing.Any]
-)
-
-
+# TODO: Remove this later.
 def just(lst: list[dict[str, T_co]], lookup: str) -> list[T_co]:
     """A helper function that takes a list of dicts and return a list of
     all keys found inside the dict
     """
     return list(map(lambda dct: dct[lookup], lst))
-
-
-def collect(
-    *args: typing.Any, consume: ConsumerSigT = str, separator: str = ", "  # type: ignore[assignment]
-) -> typing.Union[ConsumerSigT, str]:
-    """Consume passed argumnts and return them joining ', ' for each argument.
-
-    If only one argument was passed it will just return that argumnt.
-    """
-    if len(args) > 1:
-        if consume:
-            return separator.join(consume(arg) for arg in args)
-        return separator.join(arg for arg in args)
-    return args[0]  # type: ignore[no-any-return]
 
 
 class UnimplementedWarning(RuntimeWarning):
@@ -175,7 +156,7 @@ async def awaits(
     """
 
     if not aws:
-        raise RuntimeError("No awaiables passed.", aws)
+        raise RuntimeError("No awaitables passed.", aws)
 
     pending: list[asyncio.Future[T_co]] = []
 

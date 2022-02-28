@@ -6,6 +6,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.6a0...HEAD)
 
+## Major API changes
+
+- All methods that used to take `*components` now take a list of component types instead.
+- All components should be passed as is without unpacking nor using the `.value` attribute.
+
+- The `auth` parameter is now exposed as an actual parameter and not a kwarg.
+
+Example
+```py
+await client.fetch_profile(
+    ...,
+    components=[aiobungie.ComponentType.ALL_PROFILES, aiobungie.ComponentType.CHARACTERS, ...],
+    auth="..."
+)
+```
+
+## Added
+- Included all activities in `FireteamActivity`.
+
+## Changed
+- Parameter `memberid` in `fetch_profile` is now `membership_id`.
+- 
+
+## Fixed
+- `KeyError` was being thrown when deserializing `fireteam_activities`.
+
+
+## Removed
+- Method `helpers.collect`.
+- 
+
+
 ## [0.2.6a0](https://github.com/nxtlo/aiobungie/compare/0.2.5...0.2.6a0) 2022-02-26
 ## Added
 - `RESTClient` now takes an extra parameter `enable_debugging`, If set to `True` then

@@ -2054,7 +2054,9 @@ class Factory(interfaces.FactoryInterface):
 
         return friends.FriendRequestView(incoming=incoming, outgoing=outgoing)
 
-    def _set_fireteam_fields(self, payload: typedefs.JSONObject) -> fireteams.Fireteam:
+    def _set_fireteam_fields(
+        self, payload: typedefs.JSONObject, total_results: typing.Optional[int] = None
+    ) -> fireteams.Fireteam:
         activity_type = fireteams.FireteamActivity(payload["activityType"])
         return fireteams.Fireteam(
             id=int(payload["fireteamId"]),
@@ -2072,7 +2074,7 @@ class Factory(interfaces.FactoryInterface):
             locale=fireteams.FireteamLanguage(payload["locale"]),
             is_valid=payload["isValid"],
             last_modified=time.clean_date(payload["datePlayerModified"]),
-            total_results=int(payload["totalResults"]),
+            total_results=total_results or 0,
         )
 
     def deserialize_fireteams(
@@ -2084,7 +2086,11 @@ class Factory(interfaces.FactoryInterface):
         if not (result := payload["results"]):
             return None
         for elem in result:
-            fireteams_.append(self._set_fireteam_fields(elem))
+            fireteams_.append(
+                self._set_fireteam_fields(
+                    elem, total_results=int(payload["totalResults"])
+                )
+            )
         return fireteams_
 
     def deserialize_fireteam_destiny_users(

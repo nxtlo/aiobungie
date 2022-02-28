@@ -259,7 +259,7 @@ class ClanMember(user.DestinyMembership):
         )
 
     async def unban(self, access_token: str, /) -> None:
-        """Unbans this member from the clan.
+        """Unban this member from the clan.
 
         .. note::
             This request requires OAuth2: oauth2: `AdminGroups` scope.
@@ -317,13 +317,13 @@ class GroupMember:
     """Whether the member is online or not."""
 
     last_online: datetime
-    """An awre UTC datetime of the member's last online status."""
+    """Datetime of the member's last online apperation."""
 
     group_id: int
     """The group id of this member."""
 
     join_date: datetime
-    """An awre UTC datetime of the member's join date."""
+    """Datetime of the member's join date."""
 
     member: user.DestinyMembership
     """The member's destiny object that represents the group member."""
@@ -645,7 +645,7 @@ class Clan:
         language: typing.Union[fireteams.FireteamLanguage, str],
         filtered: bool = True,
         page: int = 0,
-    ) -> collections.Sequence[fireteams.AvalaibleFireteam]:
+    ) -> collections.Sequence[fireteams.AvailableFireteam]:
         """Fetch this clan's available fireteams.
 
         .. note::

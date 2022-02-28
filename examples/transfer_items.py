@@ -19,10 +19,11 @@ async def fetch_my_titan() -> aiobungie.crate.CharacterComponent:
         MEMBERSHIP_ID,
         MEMBERSHIP_TYPE,
         TITAN_ID,
-        # Titian character component
-        aiobungie.ComponentType.CHARACTERS,
-        # Titan's inventory component.
-        aiobungie.ComponentType.CHARACTER_INVENTORY,
+        # Titian character component and inventory component.
+        [
+            aiobungie.ComponentType.CHARACTERS,
+            aiobungie.ComponentType.CHARACTER_INVENTORY,
+        ],
     )
 
 

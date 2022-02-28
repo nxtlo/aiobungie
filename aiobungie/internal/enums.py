@@ -371,19 +371,13 @@ class ComponentType(Enum):
         PROFILE_CURRENCIES,
         PROFILE_PROGRESSION,
     )
-    """All profile components.
-
-    This cannot be overloaded `int(ALL_PROFILES)`. You should access it like this `*ALL_PROFILES.value`
-    """
+    """All profile components."""
 
     VENDORS = 400
     VENDOR_SALES = 402
     VENDOR_RECEIPTS = 101
     ALL_VENDORS = (VENDORS, VENDOR_RECEIPTS, VENDOR_SALES)
-    """All vendor components.
-
-    This cannot be overloaded `int(ALL_VENDORS)`. You should access it like this `*ALL_VENDORS.value`
-    """
+    """All vendor components."""
 
     # Items
     ITEM_INSTANCES = 300
@@ -409,10 +403,7 @@ class ComponentType(Enum):
         ITEM_TALENT_GRINDS,
         ITEM_REUSABLE_PLUGS,
     )
-    """All item components.
-
-    This cannot be overloaded `int(ALL_ITEMS)`. You should access it like this `*ALL_ITEMS.value`
-    """
+    """All item components."""
 
     PLATFORM_SILVER = 105
     KIOSKS = 500
@@ -442,10 +433,7 @@ class ComponentType(Enum):
         CHARACTER_EQUIPMENT,
         RECORDS,
     )
-    """All character components.
-
-    This cannot be overloaded `int(ALL_CHARACTERS)`. You should access it like this `*ALL_CHARACTERS.value`
-    """
+    """All character components."""
 
     ALL = (
         *ALL_PROFILES,  # type: ignore
@@ -464,10 +452,7 @@ class ComponentType(Enum):
         TRANSITORY,
         CRAFTABLES,
     )
-    """ALl components. The usage of this is `*ComponentType.ALL.value` to unpack the values.
-
-    This cannot be overloaded `int(ALL)`. You should access it like this `*ALL.value`
-    """
+    """ALl components included."""
 
 
 @typing.final

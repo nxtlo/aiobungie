@@ -62,7 +62,7 @@ class FactoryInterface(abc.ABC):
 
     @abc.abstractmethod
     def deserialize_user(self, data: typedefs.JSONObject) -> user.User:
-        """Deserialize a raw JSON results of fetched user memebrships and Bungie.net user its their id.
+        """Deserialize a raw JSON results of fetched user memberships and Bungie.net user its their id.
 
         Parameters
         ----------
@@ -94,7 +94,7 @@ class FactoryInterface(abc.ABC):
         """
 
     @abc.abstractmethod
-    def deseialize_searched_user(
+    def deserialize_searched_user(
         self, payload: typedefs.JSONObject
     ) -> user.SearchableDestinyUser:
         """Deserialize the results of user search details.
@@ -265,7 +265,7 @@ class FactoryInterface(abc.ABC):
         """
 
     @abc.abstractmethod
-    def deserialize_clan_convos(
+    def deserialize_clan_conversations(
         self, payload: typedefs.JSONArray
     ) -> collections.Sequence[clans.ClanConversation]:
         """Deserialize a JSON array of a clan conversations information.
@@ -401,7 +401,7 @@ class FactoryInterface(abc.ABC):
         """
 
     @abc.abstractmethod
-    def deserialize_character_customazition(
+    def deserialize_character_customization(
         self, payload: typedefs.JSONObject
     ) -> character.CustomizationOptions:
         """Deserialize a JSON payload of a character customization information found in character
@@ -431,7 +431,7 @@ class FactoryInterface(abc.ABC):
         ...
 
     @abc.abstractmethod
-    def deserialize_character_equipmnets(
+    def deserialize_character_equipments(
         self, payload: typedefs.JSONObject
     ) -> collections.Mapping[int, collections.Sequence[profile.ProfileItemImpl]]:
         ...
@@ -547,7 +547,7 @@ class FactoryInterface(abc.ABC):
         Returns
         -------
         `aiobungie.crate.ProfileItemImpl`
-            A concerete implementation of a profile component item.
+            Implementation of a Destiny 2 profile component item.
         """
 
     # Components
@@ -695,7 +695,7 @@ class FactoryInterface(abc.ABC):
     def deserialize_objective_entity(
         self, payload: typedefs.JSONObject, /
     ) -> entity.ObjectiveEntity:
-        """Deserialize a JSON payload of an objetive entity information.
+        """Deserialize a JSON payload of an objective entity information.
 
         Parameters
         ----------
@@ -705,7 +705,7 @@ class FactoryInterface(abc.ABC):
         Returns
         -------
         `aiobungie.crate.ObjectiveEntity`
-            An objetive entity.
+            An objective entity.
         """
 
     # Activities.
@@ -954,7 +954,7 @@ class FactoryInterface(abc.ABC):
     def deserialize_available_fireteams(
         self, data: typedefs.JSONObject, *, no_results: bool = False
     ) -> typing.Union[
-        fireteams.AvalaibleFireteam, collections.Sequence[fireteams.AvalaibleFireteam]
+        fireteams.AvailableFireteam, collections.Sequence[fireteams.AvailableFireteam]
     ]:
         """Deserialize a JSON payload of a sequence of/fireteam information.
 
@@ -967,7 +967,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `typing.Union[aiobungie.crate.fireteams.AvalaibleFireteam, collections.Sequence[aiobungie.crate.fireteams.AvalaibleFireteam]]` # noqa: E501
+        `typing.Union[aiobungie.crate.fireteams.AvailableFireteam, collections.Sequence[aiobungie.crate.fireteams.AvailableFireteam]]` # noqa: E501
             An available fireteam or a sequence of available fireteam.
         """
 

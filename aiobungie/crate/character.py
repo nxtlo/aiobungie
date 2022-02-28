@@ -104,7 +104,7 @@ class MinimalEquipments:
 
     This holds the items hash and collection of dyes.
 
-    This is specifacally used in CharacterRenderData profile component to render
+    This is specifically used in CharacterRenderData profile component to render
     3D character object.
     """
 

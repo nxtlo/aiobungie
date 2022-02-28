@@ -59,8 +59,8 @@ if typing.TYPE_CHECKING:
 
 
 @typing.final
-class Diffculity(int, enums.Enum):
-    """An enum for activities diffculities."""
+class Difficulty(int, enums.Enum):
+    """An enum for activities difficulties."""
 
     TRIVIAL = 0
     EASY = 1
@@ -108,7 +108,7 @@ class Challenges:
     net: traits.Netrunner = attrs.field(repr=False, hash=False, eq=False)
 
     objective_hash: int
-    """The challenge's objetive hash."""
+    """The challenge's objective hash."""
 
     dummy_rewards: collections.Sequence[Rewards]
     """A sequence of the challenge rewards as they're represented in the UI."""
@@ -142,7 +142,7 @@ class Matchmaking:
 class GuidedGame:
     """Represents information about a guided game activity."""
 
-    max_loby_size: int
+    max_lobby_size: int
     """The max amount of people that can be in the lobby."""
 
     min_lobby_size: int
@@ -163,14 +163,14 @@ class Location:
     hash: typing.Union[typedefs.IntAnd[enums.Place], typedefs.IntAnd[enums.Planet]]
     """Location hash."""
 
-    activition_source: str
+    activision_source: str
     """A hint that the UI uses to figure out how this location is activated by the player."""
 
     item_hash: typing.Optional[int]
-    """The items hash if poulated."""
+    """The items hash if populated."""
 
     objective_hash: typing.Optional[int]
-    """The objecitve hash if populated."""
+    """The objective hash if populated."""
 
     activity_hash: typing.Optional[int]
     """The activity hash if populated."""
@@ -227,19 +227,19 @@ class AvailableActivity:
     """Whether the character can join this activity or not."""
 
     is_completed: bool
-    """Whether the character completed this acvitivy before or not."""
+    """Whether the character completed this activity before or not."""
 
     is_visible: bool
     """Whether the activity is visible to this character or not."""
 
     display_level: typing.Optional[int]
-    """The activity's display leve."""
+    """The activity's display level."""
 
     recommended_light: typing.Optional[int]
     """The recommended light power to enter this activity."""
 
-    diffculity: typedefs.IntAnd[Diffculity]
-    """Activity's diffculity tier."""
+    difficulty: typedefs.IntAnd[Difficulty]
+    """Activity's difficulty tier."""
 
     @helpers.unimplemented(available_in="0.2.7")
     async def fetch_self(self) -> entity.ActivityEntity:
@@ -270,7 +270,7 @@ class ActivityValues:
     """The amount of opponents killed in this activity."""
 
     efficiency: float
-    """Activity's efficienty."""
+    """Activity's efficiently."""
 
     kd_ratio: float
     """Activity's kill/death ratio."""
@@ -343,13 +343,13 @@ class ExtendedValues:
     """Information about post activity extended player values data."""
 
     precision_kills: int
-    """Player preci kills."""
+    """Player precision kills."""
 
     grenade_kills: int
     """Player grenade kills."""
 
     melee_kills: int
-    """Player mele kills."""
+    """Player melee kills."""
 
     super_kills: int
     """Player super kills."""
@@ -416,7 +416,7 @@ class PostActivityPlayer:
     """The light level of the player's character."""
 
     emblem_hash: int
-    """The embelem hash of the player's character."""
+    """The emblem hash of the player's character."""
 
     values: ActivityValues
     """Player's information that occurred in this activity."""
@@ -484,7 +484,7 @@ class PostActivity:
         return self.is_solo & self.is_flawless
 
     @property
-    def refrence_id(self) -> int:
+    def reference_id(self) -> int:
         """An alias to the activity's hash"""
         return self.hash
 
@@ -539,7 +539,7 @@ class Activity:
         return self.is_solo & self.is_flawless
 
     @property
-    def refrence_id(self) -> int:
+    def reference_id(self) -> int:
         """An alias to the activity's hash"""
         return self.hash
 

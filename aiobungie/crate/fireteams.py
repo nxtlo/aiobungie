@@ -26,7 +26,7 @@ from __future__ import annotations
 
 __all__: tuple[str, ...] = (
     "Fireteam",
-    "AvalaibleFireteam",
+    "AvailableFireteam",
     "FireteamUser",
     "FireteamMember",
     "FireteamPartySettings",
@@ -90,6 +90,9 @@ class FireteamActivity(int, enums.Enum):
     S14_EXPUNGE = 30
     S15_ASTRAL_ALIGNMENT = 31
     S15_SHATTERED_RELAM = 32
+    SHATTERED_THRONE = 33
+    PROPHECY = 34
+    PIT_OF_HERESY = 35
     DOE = 36
     """Dares of Eternity."""
     DUNGEON_GOA = 37
@@ -328,7 +331,7 @@ class Fireteam:
 
 
 @attrs.define(kw_only=True)
-class AvalaibleFireteam(Fireteam):
+class AvailableFireteam(Fireteam):
     """Represents an available clan fireteam. This includes the members and alternative members."""
 
     members: typing.Optional[collections.Sequence[FireteamMember]]

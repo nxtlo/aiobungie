@@ -84,7 +84,7 @@ __all__: tuple[str, ...] = (
     "PlaylistActivityEntity",
     # fireteams.py
     "Fireteam",
-    "AvalaibleFireteam",
+    "AvailableFireteam",
     "FireteamUser",
     "FireteamMember",
     "FireteamPartySettings",

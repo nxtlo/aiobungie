@@ -154,6 +154,9 @@
                                 <a class="function" href="#Factory.deserialize_profile_records">deserialize_profile_records</a>
                         </li>
                         <li>
+                                <a class="function" href="#Factory.deserialize_craftables_component">deserialize_craftables_component</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#Factory.deserialize_components">deserialize_components</a>
                         </li>
                         <li>
@@ -461,8 +464,6 @@
     <span class="k">def</span> <span class="nf">set_themese_attrs</span><span class="p">(</span>
         <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONArray</span><span class="p">,</span> <span class="o">/</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Collection</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">UserThemes</span><span class="p">]:</span>
-        <span class="k">if</span> <span class="n">payload</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No themes found.&quot;</span><span class="p">)</span>
 
         <span class="n">theme_map</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">user</span><span class="o">.</span><span class="n">UserThemes</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">theme_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">just</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="s2">&quot;userThemeId&quot;</span><span class="p">)</span>
@@ -717,11 +718,7 @@
         <span class="k">if</span> <span class="n">raw_version</span> <span class="o">:=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;versionNumber&quot;</span><span class="p">):</span>
             <span class="n">version_number</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">raw_version</span><span class="p">)</span>
 
-        <span class="n">transfer_status</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;transferStatus&quot;</span><span class="p">]</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">transfer_status</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">TransferStatus</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;transferStatus&quot;</span><span class="p">])</span>
-        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="k">pass</span>
+        <span class="n">transfer_status</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">TransferStatus</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;transferStatus&quot;</span><span class="p">])</span>
 
         <span class="k">return</span> <span class="n">profile</span><span class="o">.</span><span class="n">ProfileItemImpl</span><span class="p">(</span>
             <span class="n">net</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_net</span><span class="p">,</span>
@@ -747,7 +744,9 @@
             <span class="n">visible</span><span class="o">=</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;visible&quot;</span><span class="p">],</span>
             <span class="n">complete</span><span class="o">=</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;complete&quot;</span><span class="p">],</span>
             <span class="n">completion_value</span><span class="o">=</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;completionValue&quot;</span><span class="p">],</span>
-            <span class="n">progress</span><span class="o">=</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;progress&quot;</span><span class="p">],</span>
+            <span class="n">progress</span><span class="o">=</span><span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;progress&quot;</span><span class="p">),</span>
+            <span class="n">destination_hash</span><span class="o">=</span><span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;destinationHash&quot;</span><span class="p">),</span>
+            <span class="n">activity_hash</span><span class="o">=</span><span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;activityHash&quot;</span><span class="p">),</span>
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">deserialize_records</span><span class="p">(</span>
@@ -760,10 +759,7 @@
         <span class="n">interval_objectives</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">records</span><span class="o">.</span><span class="n">Objective</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">record_state</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">records</span><span class="o">.</span><span class="n">RecordState</span><span class="p">]</span>
 
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">record_state</span> <span class="o">=</span> <span class="n">records</span><span class="o">.</span><span class="n">RecordState</span><span class="p">(</span><span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;state&quot;</span><span class="p">,</span> <span class="mi">999</span><span class="p">))</span>
-        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="n">record_state</span> <span class="o">=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;state&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">record_state</span> <span class="o">=</span> <span class="n">records</span><span class="o">.</span><span class="n">RecordState</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;state&quot;</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="n">raw_objs</span> <span class="o">:=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;objectives&quot;</span><span class="p">):</span>
             <span class="n">objectives</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">deserialize_objectives</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">raw_objs</span><span class="p">]</span>
@@ -772,9 +768,6 @@
             <span class="n">interval_objectives</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">deserialize_objectives</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">raw_interval_objs</span>
             <span class="p">]</span>
-
-        <span class="k">if</span> <span class="n">scores</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="n">scores</span>
 
         <span class="k">return</span> <span class="n">records</span><span class="o">.</span><span class="n">Record</span><span class="p">(</span>
             <span class="n">scores</span><span class="o">=</span><span class="n">scores</span><span class="p">,</span>
@@ -796,9 +789,6 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">records</span><span class="o">.</span><span class="n">CharacterRecord</span><span class="p">:</span>
 
         <span class="n">record</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deserialize_records</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="n">scores</span><span class="p">)</span>
-        <span class="c1"># This is always None but available to keep the Record</span>
-        <span class="c1"># Signature.</span>
-        <span class="k">assert</span> <span class="n">scores</span> <span class="ow">is</span> <span class="kc">None</span>
         <span class="k">return</span> <span class="n">records</span><span class="o">.</span><span class="n">CharacterRecord</span><span class="p">(</span>
             <span class="n">scores</span><span class="o">=</span><span class="n">scores</span><span class="p">,</span>
             <span class="n">categories_node_hash</span><span class="o">=</span><span class="n">record</span><span class="o">.</span><span class="n">categories_node_hash</span><span class="p">,</span>
@@ -1220,8 +1210,6 @@
     <span class="k">def</span> <span class="nf">deserialize_characters_records</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">,</span>
-        <span class="n">scores</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">records</span><span class="o">.</span><span class="n">RecordScores</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">record_hashes</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">records</span><span class="o">.</span><span class="n">CharacterRecord</span><span class="p">]:</span>
 
         <span class="k">return</span> <span class="p">{</span>
@@ -1249,6 +1237,54 @@
             <span class="p">)</span>
             <span class="k">for</span> <span class="n">record_id</span><span class="p">,</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">raw_profile_records</span><span class="p">[</span><span class="s2">&quot;records&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
         <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_deserialize_craftable_socket_plug</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">items</span><span class="o">.</span><span class="n">CraftableSocketPlug</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">items</span><span class="o">.</span><span class="n">CraftableSocketPlug</span><span class="p">(</span>
+            <span class="n">item_hash</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;plugItemHash&quot;</span><span class="p">]),</span>
+            <span class="n">failed_requirement_indexes</span><span class="o">=</span><span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;failedRequirementIndexes&quot;</span><span class="p">,</span> <span class="p">[]),</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_deserialize_craftable_socket</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">items</span><span class="o">.</span><span class="n">CraftableSocket</span><span class="p">:</span>
+
+        <span class="n">plugs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">items</span><span class="o">.</span><span class="n">CraftableSocketPlug</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">raw_plug</span> <span class="o">:=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;plug&quot;</span><span class="p">):</span>
+            <span class="n">plugs</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_deserialize_craftable_socket_plug</span><span class="p">(</span><span class="n">plug</span><span class="p">)</span> <span class="k">for</span> <span class="n">plug</span> <span class="ow">in</span> <span class="n">raw_plug</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">items</span><span class="o">.</span><span class="n">CraftableSocket</span><span class="p">(</span>
+            <span class="n">plug_set_hash</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;plugSetHash&quot;</span><span class="p">]),</span> <span class="n">plugs</span><span class="o">=</span><span class="n">plugs</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_deserialize_craftable_item</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">items</span><span class="o">.</span><span class="n">CraftableItem</span><span class="p">:</span>
+
+        <span class="k">return</span> <span class="n">items</span><span class="o">.</span><span class="n">CraftableItem</span><span class="p">(</span>
+            <span class="n">is_visible</span><span class="o">=</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;visible&quot;</span><span class="p">],</span>
+            <span class="n">failed_requirement_indexes</span><span class="o">=</span><span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;failedRequirementIndexes&quot;</span><span class="p">,</span> <span class="p">[]),</span>
+            <span class="n">sockets</span><span class="o">=</span><span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_deserialize_craftable_socket</span><span class="p">(</span><span class="n">socket</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">socket</span> <span class="ow">in</span> <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;sockets&quot;</span><span class="p">]</span>
+            <span class="p">],</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">deserialize_craftables_component</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">components</span><span class="o">.</span><span class="n">CraftablesComponent</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">components</span><span class="o">.</span><span class="n">CraftablesComponent</span><span class="p">(</span>
+            <span class="n">net</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_net</span><span class="p">,</span>
+            <span class="n">craftables</span><span class="o">=</span><span class="p">{</span>
+                <span class="nb">int</span><span class="p">(</span><span class="n">item_id</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deserialize_craftable_item</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">item_id</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;craftables&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="p">},</span>
+            <span class="n">crafting_root_node_hash</span><span class="o">=</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;craftingRootNodeHash&quot;</span><span class="p">],</span>
+        <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">deserialize_components</span><span class="p">(</span>  <span class="c1"># noqa: C901 Too complex.</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span>
@@ -1366,7 +1402,9 @@
 
         <span class="n">metrics</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span>
             <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span>
-                <span class="n">collections</span><span class="o">.</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">records</span><span class="o">.</span><span class="n">Objective</span><span class="p">]]</span>
+                <span class="n">collections</span><span class="o">.</span><span class="n">Mapping</span><span class="p">[</span>
+                    <span class="nb">int</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">records</span><span class="o">.</span><span class="n">Objective</span><span class="p">]]</span>
+                <span class="p">]</span>
             <span class="p">]</span>
         <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">root_node_hash</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -1376,7 +1414,9 @@
                 <span class="p">{</span>
                     <span class="nb">int</span><span class="p">(</span><span class="n">metrics_hash</span><span class="p">):</span> <span class="p">(</span>
                         <span class="n">data</span><span class="p">[</span><span class="s2">&quot;invisible&quot;</span><span class="p">],</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">deserialize_objectives</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;objectiveProgress&quot;</span><span class="p">]),</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">deserialize_objectives</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;objectiveProgress&quot;</span><span class="p">])</span>
+                        <span class="k">if</span> <span class="s2">&quot;objectiveProgress&quot;</span> <span class="ow">in</span> <span class="n">payload</span>
+                        <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
                     <span class="p">)</span>
                     <span class="k">for</span> <span class="n">metrics_hash</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">raw_metrics</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;metrics&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
                 <span class="p">}</span>
@@ -1472,6 +1512,17 @@
                     <span class="k">for</span> <span class="n">char_id</span><span class="p">,</span> <span class="n">currencie</span> <span class="ow">in</span> <span class="n">raw_char_lookups</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
                 <span class="p">}</span>
 
+        <span class="n">character_craftables</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span>
+            <span class="n">collections</span><span class="o">.</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">components</span><span class="o">.</span><span class="n">CraftablesComponent</span><span class="p">]</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">raw_character_craftables</span> <span class="o">:=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;characterCraftables&quot;</span><span class="p">):</span>
+
+            <span class="k">if</span> <span class="s2">&quot;data&quot;</span> <span class="ow">in</span> <span class="n">raw_character_craftables</span><span class="p">:</span>
+                <span class="n">character_craftables</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="nb">int</span><span class="p">(</span><span class="n">char_id</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">deserialize_craftables_component</span><span class="p">(</span><span class="n">craftable</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">char_id</span><span class="p">,</span> <span class="n">craftable</span> <span class="ow">in</span> <span class="n">raw_character_craftables</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="p">}</span>
+
         <span class="k">return</span> <span class="n">components</span><span class="o">.</span><span class="n">Component</span><span class="p">(</span>
             <span class="n">profiles</span><span class="o">=</span><span class="n">profile_</span><span class="p">,</span>
             <span class="n">profile_progression</span><span class="o">=</span><span class="n">profile_progression</span><span class="p">,</span>
@@ -1499,6 +1550,7 @@
             <span class="n">character_nodes</span><span class="o">=</span><span class="n">character_nodes</span><span class="p">,</span>
             <span class="n">platform_silver</span><span class="o">=</span><span class="n">platform_silver</span><span class="p">,</span>
             <span class="n">character_currency_lookups</span><span class="o">=</span><span class="n">character_currency_lookups</span><span class="p">,</span>
+            <span class="n">character_craftables</span><span class="o">=</span><span class="n">character_craftables</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">deserialize_items_component</span><span class="p">(</span>
@@ -1854,7 +1906,7 @@
         <span class="k">if</span> <span class="n">raw_emblem_obj_hash</span> <span class="o">:=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;emblemObjectiveHash&quot;</span><span class="p">):</span>
             <span class="n">emblem_objective_hash</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">raw_emblem_obj_hash</span><span class="p">)</span>
 
-        <span class="n">tier_type</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">tier_type</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">TierType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">tier</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">ItemTier</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">bucket_hash</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">recovery_hash</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -1867,7 +1919,7 @@
         <span class="n">stack_label</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">Undefined</span>
 
         <span class="k">if</span> <span class="n">inventory</span> <span class="o">:=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;inventory&quot;</span><span class="p">):</span>
-            <span class="n">tier_type</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">inventory</span><span class="p">[</span><span class="s2">&quot;tierType&quot;</span><span class="p">])</span>
+            <span class="n">tier_type</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">TierType</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">inventory</span><span class="p">[</span><span class="s2">&quot;tierType&quot;</span><span class="p">]))</span>
             <span class="n">tier</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">ItemTier</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">inventory</span><span class="p">[</span><span class="s2">&quot;tierTypeHash&quot;</span><span class="p">]))</span>
             <span class="n">bucket_hash</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">inventory</span><span class="p">[</span><span class="s2">&quot;bucketTypeHash&quot;</span><span class="p">])</span>
             <span class="n">recovery_hash</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">inventory</span><span class="p">[</span><span class="s2">&quot;recoveryBucketTypeHash&quot;</span><span class="p">])</span>
@@ -1964,8 +2016,14 @@
             <span class="n">allow_over_completion</span><span class="o">=</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;allowOvercompletion&quot;</span><span class="p">],</span>
             <span class="n">show_value_style</span><span class="o">=</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;showValueOnComplete&quot;</span><span class="p">],</span>
             <span class="n">display_only_objective</span><span class="o">=</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;isDisplayOnlyObjective&quot;</span><span class="p">],</span>
-            <span class="n">complete_value_style</span><span class="o">=</span><span class="n">entity</span><span class="o">.</span><span class="n">ValueUIStyle</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;completedValueStyle&quot;</span><span class="p">])),</span>
-            <span class="n">progress_value_style</span><span class="o">=</span><span class="n">entity</span><span class="o">.</span><span class="n">ValueUIStyle</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;inProgressValueStyle&quot;</span><span class="p">])),</span>
+            <span class="n">complete_value_style</span><span class="o">=</span><span class="n">entity</span><span class="o">.</span><span class="n">ValueUIStyle</span><span class="p">(</span>
+                <span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;completedValueStyle&quot;</span><span class="p">])</span>
+            <span class="p">),</span>
+            <span class="n">progress_value_style</span><span class="o">=</span><span class="n">entity</span><span class="o">.</span><span class="n">ValueUIStyle</span><span class="p">(</span>
+                <span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;inProgressValueStyle&quot;</span><span class="p">])</span>
+            <span class="p">),</span>
+            <span class="n">ui_label</span><span class="o">=</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;uiLabel&quot;</span><span class="p">],</span>
+            <span class="n">ui_style</span><span class="o">=</span><span class="n">entity</span><span class="o">.</span><span class="n">ObjectiveUIStyle</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;uiStyle&quot;</span><span class="p">])),</span>
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_deserialize_activity_values</span><span class="p">(</span>
@@ -2266,11 +2324,7 @@
         <span class="k">return</span> <span class="n">friends</span><span class="o">.</span><span class="n">FriendRequestView</span><span class="p">(</span><span class="n">incoming</span><span class="o">=</span><span class="n">incoming</span><span class="p">,</span> <span class="n">outgoing</span><span class="o">=</span><span class="n">outgoing</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_set_fireteam_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">fireteams</span><span class="o">.</span><span class="n">Fireteam</span><span class="p">:</span>
-        <span class="n">activity_type</span> <span class="o">=</span> <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;activityType&quot;</span><span class="p">]</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">activity_type</span> <span class="o">=</span> <span class="n">fireteams</span><span class="o">.</span><span class="n">FireteamActivity</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;activityType&quot;</span><span class="p">])</span>
-        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="k">pass</span>
+        <span class="n">activity_type</span> <span class="o">=</span> <span class="n">fireteams</span><span class="o">.</span><span class="n">FireteamActivity</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;activityType&quot;</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">fireteams</span><span class="o">.</span><span class="n">Fireteam</span><span class="p">(</span>
             <span class="nb">id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;fireteamId&quot;</span><span class="p">]),</span>
             <span class="n">group_id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;groupId&quot;</span><span class="p">]),</span>
@@ -2426,12 +2480,8 @@
     <span class="k">def</span> <span class="nf">_deserialize_fireteam_party_member</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">fireteams</span><span class="o">.</span><span class="n">FireteamPartyMember</span><span class="p">:</span>
-        <span class="n">status</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">])</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">status</span> <span class="o">=</span> <span class="n">fireteams</span><span class="o">.</span><span class="n">FireteamPartyMemberState</span><span class="p">(</span><span class="n">status</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="k">pass</span>
 
+        <span class="n">status</span> <span class="o">=</span> <span class="n">fireteams</span><span class="o">.</span><span class="n">FireteamPartyMemberState</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">])</span>
         <span class="n">displayname</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">Undefined</span>
         <span class="k">if</span> <span class="n">raw_name</span> <span class="o">:=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;displayName&quot;</span><span class="p">):</span>
             <span class="n">displayname</span> <span class="o">=</span> <span class="n">raw_name</span>
@@ -2465,11 +2515,7 @@
     <span class="k">def</span> <span class="nf">_deserialize_fireteam_party_settings</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">fireteams</span><span class="o">.</span><span class="n">FireteamPartySettings</span><span class="p">:</span>
-        <span class="n">closed_reasons</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;closedReasons&quot;</span><span class="p">])</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">closed_reasons</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">ClosedReasons</span><span class="p">(</span><span class="n">closed_reasons</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="k">pass</span>
+        <span class="n">closed_reasons</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">ClosedReasons</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;closedReasons&quot;</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">fireteams</span><span class="o">.</span><span class="n">FireteamPartySettings</span><span class="p">(</span>
             <span class="n">open_slots</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;openSlots&quot;</span><span class="p">]),</span>
             <span class="n">privacy_setting</span><span class="o">=</span><span class="n">enums</span><span class="o">.</span><span class="n">PrivacySetting</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;privacySetting&quot;</span><span class="p">])),</span>
@@ -2793,8 +2839,6 @@
     <span class="k">def</span> <span class="nf">set_themese_attrs</span><span class="p">(</span>
         <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONArray</span><span class="p">,</span> <span class="o">/</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Collection</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">UserThemes</span><span class="p">]:</span>
-        <span class="k">if</span> <span class="n">payload</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No themes found.&quot;</span><span class="p">)</span>
 
         <span class="n">theme_map</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">user</span><span class="o">.</span><span class="n">UserThemes</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">theme_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">just</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="s2">&quot;userThemeId&quot;</span><span class="p">)</span>
@@ -3049,11 +3093,7 @@
         <span class="k">if</span> <span class="n">raw_version</span> <span class="o">:=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;versionNumber&quot;</span><span class="p">):</span>
             <span class="n">version_number</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">raw_version</span><span class="p">)</span>
 
-        <span class="n">transfer_status</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;transferStatus&quot;</span><span class="p">]</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">transfer_status</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">TransferStatus</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;transferStatus&quot;</span><span class="p">])</span>
-        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="k">pass</span>
+        <span class="n">transfer_status</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">TransferStatus</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;transferStatus&quot;</span><span class="p">])</span>
 
         <span class="k">return</span> <span class="n">profile</span><span class="o">.</span><span class="n">ProfileItemImpl</span><span class="p">(</span>
             <span class="n">net</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_net</span><span class="p">,</span>
@@ -3079,7 +3119,9 @@
             <span class="n">visible</span><span class="o">=</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;visible&quot;</span><span class="p">],</span>
             <span class="n">complete</span><span class="o">=</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;complete&quot;</span><span class="p">],</span>
             <span class="n">completion_value</span><span class="o">=</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;completionValue&quot;</span><span class="p">],</span>
-            <span class="n">progress</span><span class="o">=</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;progress&quot;</span><span class="p">],</span>
+            <span class="n">progress</span><span class="o">=</span><span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;progress&quot;</span><span class="p">),</span>
+            <span class="n">destination_hash</span><span class="o">=</span><span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;destinationHash&quot;</span><span class="p">),</span>
+            <span class="n">activity_hash</span><span class="o">=</span><span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;activityHash&quot;</span><span class="p">),</span>
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">deserialize_records</span><span class="p">(</span>
@@ -3092,10 +3134,7 @@
         <span class="n">interval_objectives</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">records</span><span class="o">.</span><span class="n">Objective</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">record_state</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">records</span><span class="o">.</span><span class="n">RecordState</span><span class="p">]</span>
 
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">record_state</span> <span class="o">=</span> <span class="n">records</span><span class="o">.</span><span class="n">RecordState</span><span class="p">(</span><span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;state&quot;</span><span class="p">,</span> <span class="mi">999</span><span class="p">))</span>
-        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="n">record_state</span> <span class="o">=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;state&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">record_state</span> <span class="o">=</span> <span class="n">records</span><span class="o">.</span><span class="n">RecordState</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;state&quot;</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="n">raw_objs</span> <span class="o">:=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;objectives&quot;</span><span class="p">):</span>
             <span class="n">objectives</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">deserialize_objectives</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">raw_objs</span><span class="p">]</span>
@@ -3104,9 +3143,6 @@
             <span class="n">interval_objectives</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">deserialize_objectives</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">raw_interval_objs</span>
             <span class="p">]</span>
-
-        <span class="k">if</span> <span class="n">scores</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="n">scores</span>
 
         <span class="k">return</span> <span class="n">records</span><span class="o">.</span><span class="n">Record</span><span class="p">(</span>
             <span class="n">scores</span><span class="o">=</span><span class="n">scores</span><span class="p">,</span>
@@ -3128,9 +3164,6 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">records</span><span class="o">.</span><span class="n">CharacterRecord</span><span class="p">:</span>
 
         <span class="n">record</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deserialize_records</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="n">scores</span><span class="p">)</span>
-        <span class="c1"># This is always None but available to keep the Record</span>
-        <span class="c1"># Signature.</span>
-        <span class="k">assert</span> <span class="n">scores</span> <span class="ow">is</span> <span class="kc">None</span>
         <span class="k">return</span> <span class="n">records</span><span class="o">.</span><span class="n">CharacterRecord</span><span class="p">(</span>
             <span class="n">scores</span><span class="o">=</span><span class="n">scores</span><span class="p">,</span>
             <span class="n">categories_node_hash</span><span class="o">=</span><span class="n">record</span><span class="o">.</span><span class="n">categories_node_hash</span><span class="p">,</span>
@@ -3552,8 +3585,6 @@
     <span class="k">def</span> <span class="nf">deserialize_characters_records</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">,</span>
-        <span class="n">scores</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">records</span><span class="o">.</span><span class="n">RecordScores</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">record_hashes</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">records</span><span class="o">.</span><span class="n">CharacterRecord</span><span class="p">]:</span>
 
         <span class="k">return</span> <span class="p">{</span>
@@ -3581,6 +3612,54 @@
             <span class="p">)</span>
             <span class="k">for</span> <span class="n">record_id</span><span class="p">,</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">raw_profile_records</span><span class="p">[</span><span class="s2">&quot;records&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
         <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_deserialize_craftable_socket_plug</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">items</span><span class="o">.</span><span class="n">CraftableSocketPlug</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">items</span><span class="o">.</span><span class="n">CraftableSocketPlug</span><span class="p">(</span>
+            <span class="n">item_hash</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;plugItemHash&quot;</span><span class="p">]),</span>
+            <span class="n">failed_requirement_indexes</span><span class="o">=</span><span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;failedRequirementIndexes&quot;</span><span class="p">,</span> <span class="p">[]),</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_deserialize_craftable_socket</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">items</span><span class="o">.</span><span class="n">CraftableSocket</span><span class="p">:</span>
+
+        <span class="n">plugs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">items</span><span class="o">.</span><span class="n">CraftableSocketPlug</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">raw_plug</span> <span class="o">:=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;plug&quot;</span><span class="p">):</span>
+            <span class="n">plugs</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_deserialize_craftable_socket_plug</span><span class="p">(</span><span class="n">plug</span><span class="p">)</span> <span class="k">for</span> <span class="n">plug</span> <span class="ow">in</span> <span class="n">raw_plug</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">items</span><span class="o">.</span><span class="n">CraftableSocket</span><span class="p">(</span>
+            <span class="n">plug_set_hash</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;plugSetHash&quot;</span><span class="p">]),</span> <span class="n">plugs</span><span class="o">=</span><span class="n">plugs</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_deserialize_craftable_item</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">items</span><span class="o">.</span><span class="n">CraftableItem</span><span class="p">:</span>
+
+        <span class="k">return</span> <span class="n">items</span><span class="o">.</span><span class="n">CraftableItem</span><span class="p">(</span>
+            <span class="n">is_visible</span><span class="o">=</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;visible&quot;</span><span class="p">],</span>
+            <span class="n">failed_requirement_indexes</span><span class="o">=</span><span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;failedRequirementIndexes&quot;</span><span class="p">,</span> <span class="p">[]),</span>
+            <span class="n">sockets</span><span class="o">=</span><span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_deserialize_craftable_socket</span><span class="p">(</span><span class="n">socket</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">socket</span> <span class="ow">in</span> <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;sockets&quot;</span><span class="p">]</span>
+            <span class="p">],</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">deserialize_craftables_component</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">components</span><span class="o">.</span><span class="n">CraftablesComponent</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">components</span><span class="o">.</span><span class="n">CraftablesComponent</span><span class="p">(</span>
+            <span class="n">net</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_net</span><span class="p">,</span>
+            <span class="n">craftables</span><span class="o">=</span><span class="p">{</span>
+                <span class="nb">int</span><span class="p">(</span><span class="n">item_id</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deserialize_craftable_item</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">item_id</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;craftables&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="p">},</span>
+            <span class="n">crafting_root_node_hash</span><span class="o">=</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;craftingRootNodeHash&quot;</span><span class="p">],</span>
+        <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">deserialize_components</span><span class="p">(</span>  <span class="c1"># noqa: C901 Too complex.</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span>
@@ -3698,7 +3777,9 @@
 
         <span class="n">metrics</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span>
             <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span>
-                <span class="n">collections</span><span class="o">.</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">records</span><span class="o">.</span><span class="n">Objective</span><span class="p">]]</span>
+                <span class="n">collections</span><span class="o">.</span><span class="n">Mapping</span><span class="p">[</span>
+                    <span class="nb">int</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">records</span><span class="o">.</span><span class="n">Objective</span><span class="p">]]</span>
+                <span class="p">]</span>
             <span class="p">]</span>
         <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">root_node_hash</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -3708,7 +3789,9 @@
                 <span class="p">{</span>
                     <span class="nb">int</span><span class="p">(</span><span class="n">metrics_hash</span><span class="p">):</span> <span class="p">(</span>
                         <span class="n">data</span><span class="p">[</span><span class="s2">&quot;invisible&quot;</span><span class="p">],</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">deserialize_objectives</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;objectiveProgress&quot;</span><span class="p">]),</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">deserialize_objectives</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;objectiveProgress&quot;</span><span class="p">])</span>
+                        <span class="k">if</span> <span class="s2">&quot;objectiveProgress&quot;</span> <span class="ow">in</span> <span class="n">payload</span>
+                        <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
                     <span class="p">)</span>
                     <span class="k">for</span> <span class="n">metrics_hash</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">raw_metrics</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;metrics&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
                 <span class="p">}</span>
@@ -3804,6 +3887,17 @@
                     <span class="k">for</span> <span class="n">char_id</span><span class="p">,</span> <span class="n">currencie</span> <span class="ow">in</span> <span class="n">raw_char_lookups</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
                 <span class="p">}</span>
 
+        <span class="n">character_craftables</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span>
+            <span class="n">collections</span><span class="o">.</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">components</span><span class="o">.</span><span class="n">CraftablesComponent</span><span class="p">]</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">raw_character_craftables</span> <span class="o">:=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;characterCraftables&quot;</span><span class="p">):</span>
+
+            <span class="k">if</span> <span class="s2">&quot;data&quot;</span> <span class="ow">in</span> <span class="n">raw_character_craftables</span><span class="p">:</span>
+                <span class="n">character_craftables</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="nb">int</span><span class="p">(</span><span class="n">char_id</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">deserialize_craftables_component</span><span class="p">(</span><span class="n">craftable</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">char_id</span><span class="p">,</span> <span class="n">craftable</span> <span class="ow">in</span> <span class="n">raw_character_craftables</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="p">}</span>
+
         <span class="k">return</span> <span class="n">components</span><span class="o">.</span><span class="n">Component</span><span class="p">(</span>
             <span class="n">profiles</span><span class="o">=</span><span class="n">profile_</span><span class="p">,</span>
             <span class="n">profile_progression</span><span class="o">=</span><span class="n">profile_progression</span><span class="p">,</span>
@@ -3831,6 +3925,7 @@
             <span class="n">character_nodes</span><span class="o">=</span><span class="n">character_nodes</span><span class="p">,</span>
             <span class="n">platform_silver</span><span class="o">=</span><span class="n">platform_silver</span><span class="p">,</span>
             <span class="n">character_currency_lookups</span><span class="o">=</span><span class="n">character_currency_lookups</span><span class="p">,</span>
+            <span class="n">character_craftables</span><span class="o">=</span><span class="n">character_craftables</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">deserialize_items_component</span><span class="p">(</span>
@@ -4186,7 +4281,7 @@
         <span class="k">if</span> <span class="n">raw_emblem_obj_hash</span> <span class="o">:=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;emblemObjectiveHash&quot;</span><span class="p">):</span>
             <span class="n">emblem_objective_hash</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">raw_emblem_obj_hash</span><span class="p">)</span>
 
-        <span class="n">tier_type</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">tier_type</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">TierType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">tier</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">ItemTier</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">bucket_hash</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">recovery_hash</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -4199,7 +4294,7 @@
         <span class="n">stack_label</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">Undefined</span>
 
         <span class="k">if</span> <span class="n">inventory</span> <span class="o">:=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;inventory&quot;</span><span class="p">):</span>
-            <span class="n">tier_type</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">inventory</span><span class="p">[</span><span class="s2">&quot;tierType&quot;</span><span class="p">])</span>
+            <span class="n">tier_type</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">TierType</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">inventory</span><span class="p">[</span><span class="s2">&quot;tierType&quot;</span><span class="p">]))</span>
             <span class="n">tier</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">ItemTier</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">inventory</span><span class="p">[</span><span class="s2">&quot;tierTypeHash&quot;</span><span class="p">]))</span>
             <span class="n">bucket_hash</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">inventory</span><span class="p">[</span><span class="s2">&quot;bucketTypeHash&quot;</span><span class="p">])</span>
             <span class="n">recovery_hash</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">inventory</span><span class="p">[</span><span class="s2">&quot;recoveryBucketTypeHash&quot;</span><span class="p">])</span>
@@ -4296,8 +4391,14 @@
             <span class="n">allow_over_completion</span><span class="o">=</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;allowOvercompletion&quot;</span><span class="p">],</span>
             <span class="n">show_value_style</span><span class="o">=</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;showValueOnComplete&quot;</span><span class="p">],</span>
             <span class="n">display_only_objective</span><span class="o">=</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;isDisplayOnlyObjective&quot;</span><span class="p">],</span>
-            <span class="n">complete_value_style</span><span class="o">=</span><span class="n">entity</span><span class="o">.</span><span class="n">ValueUIStyle</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;completedValueStyle&quot;</span><span class="p">])),</span>
-            <span class="n">progress_value_style</span><span class="o">=</span><span class="n">entity</span><span class="o">.</span><span class="n">ValueUIStyle</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;inProgressValueStyle&quot;</span><span class="p">])),</span>
+            <span class="n">complete_value_style</span><span class="o">=</span><span class="n">entity</span><span class="o">.</span><span class="n">ValueUIStyle</span><span class="p">(</span>
+                <span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;completedValueStyle&quot;</span><span class="p">])</span>
+            <span class="p">),</span>
+            <span class="n">progress_value_style</span><span class="o">=</span><span class="n">entity</span><span class="o">.</span><span class="n">ValueUIStyle</span><span class="p">(</span>
+                <span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;inProgressValueStyle&quot;</span><span class="p">])</span>
+            <span class="p">),</span>
+            <span class="n">ui_label</span><span class="o">=</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;uiLabel&quot;</span><span class="p">],</span>
+            <span class="n">ui_style</span><span class="o">=</span><span class="n">entity</span><span class="o">.</span><span class="n">ObjectiveUIStyle</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;uiStyle&quot;</span><span class="p">])),</span>
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_deserialize_activity_values</span><span class="p">(</span>
@@ -4598,11 +4699,7 @@
         <span class="k">return</span> <span class="n">friends</span><span class="o">.</span><span class="n">FriendRequestView</span><span class="p">(</span><span class="n">incoming</span><span class="o">=</span><span class="n">incoming</span><span class="p">,</span> <span class="n">outgoing</span><span class="o">=</span><span class="n">outgoing</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_set_fireteam_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">fireteams</span><span class="o">.</span><span class="n">Fireteam</span><span class="p">:</span>
-        <span class="n">activity_type</span> <span class="o">=</span> <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;activityType&quot;</span><span class="p">]</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">activity_type</span> <span class="o">=</span> <span class="n">fireteams</span><span class="o">.</span><span class="n">FireteamActivity</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;activityType&quot;</span><span class="p">])</span>
-        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="k">pass</span>
+        <span class="n">activity_type</span> <span class="o">=</span> <span class="n">fireteams</span><span class="o">.</span><span class="n">FireteamActivity</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;activityType&quot;</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">fireteams</span><span class="o">.</span><span class="n">Fireteam</span><span class="p">(</span>
             <span class="nb">id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;fireteamId&quot;</span><span class="p">]),</span>
             <span class="n">group_id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;groupId&quot;</span><span class="p">]),</span>
@@ -4758,12 +4855,8 @@
     <span class="k">def</span> <span class="nf">_deserialize_fireteam_party_member</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">fireteams</span><span class="o">.</span><span class="n">FireteamPartyMember</span><span class="p">:</span>
-        <span class="n">status</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">])</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">status</span> <span class="o">=</span> <span class="n">fireteams</span><span class="o">.</span><span class="n">FireteamPartyMemberState</span><span class="p">(</span><span class="n">status</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="k">pass</span>
 
+        <span class="n">status</span> <span class="o">=</span> <span class="n">fireteams</span><span class="o">.</span><span class="n">FireteamPartyMemberState</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">])</span>
         <span class="n">displayname</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">Undefined</span>
         <span class="k">if</span> <span class="n">raw_name</span> <span class="o">:=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;displayName&quot;</span><span class="p">):</span>
             <span class="n">displayname</span> <span class="o">=</span> <span class="n">raw_name</span>
@@ -4797,11 +4890,7 @@
     <span class="k">def</span> <span class="nf">_deserialize_fireteam_party_settings</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">fireteams</span><span class="o">.</span><span class="n">FireteamPartySettings</span><span class="p">:</span>
-        <span class="n">closed_reasons</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;closedReasons&quot;</span><span class="p">])</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">closed_reasons</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">ClosedReasons</span><span class="p">(</span><span class="n">closed_reasons</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="k">pass</span>
+        <span class="n">closed_reasons</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">ClosedReasons</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;closedReasons&quot;</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">fireteams</span><span class="o">.</span><span class="n">FireteamPartySettings</span><span class="p">(</span>
             <span class="n">open_slots</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;openSlots&quot;</span><span class="p">]),</span>
             <span class="n">privacy_setting</span><span class="o">=</span><span class="n">enums</span><span class="o">.</span><span class="n">PrivacySetting</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;privacySetting&quot;</span><span class="p">])),</span>
@@ -5366,8 +5455,6 @@ The JSON payload.</li>
     <span class="k">def</span> <span class="nf">set_themese_attrs</span><span class="p">(</span>
         <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONArray</span><span class="p">,</span> <span class="o">/</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Collection</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">UserThemes</span><span class="p">]:</span>
-        <span class="k">if</span> <span class="n">payload</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No themes found.&quot;</span><span class="p">)</span>
 
         <span class="n">theme_map</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">user</span><span class="o">.</span><span class="n">UserThemes</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">theme_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">just</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="s2">&quot;userThemeId&quot;</span><span class="p">)</span>
@@ -5906,11 +5993,7 @@ The JSON payload.</li>
         <span class="k">if</span> <span class="n">raw_version</span> <span class="o">:=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;versionNumber&quot;</span><span class="p">):</span>
             <span class="n">version_number</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">raw_version</span><span class="p">)</span>
 
-        <span class="n">transfer_status</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;transferStatus&quot;</span><span class="p">]</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">transfer_status</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">TransferStatus</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;transferStatus&quot;</span><span class="p">])</span>
-        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="k">pass</span>
+        <span class="n">transfer_status</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">TransferStatus</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;transferStatus&quot;</span><span class="p">])</span>
 
         <span class="k">return</span> <span class="n">profile</span><span class="o">.</span><span class="n">ProfileItemImpl</span><span class="p">(</span>
             <span class="n">net</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_net</span><span class="p">,</span>
@@ -5967,7 +6050,9 @@ The JSON payload.</li>
             <span class="n">visible</span><span class="o">=</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;visible&quot;</span><span class="p">],</span>
             <span class="n">complete</span><span class="o">=</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;complete&quot;</span><span class="p">],</span>
             <span class="n">completion_value</span><span class="o">=</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;completionValue&quot;</span><span class="p">],</span>
-            <span class="n">progress</span><span class="o">=</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;progress&quot;</span><span class="p">],</span>
+            <span class="n">progress</span><span class="o">=</span><span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;progress&quot;</span><span class="p">),</span>
+            <span class="n">destination_hash</span><span class="o">=</span><span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;destinationHash&quot;</span><span class="p">),</span>
+            <span class="n">activity_hash</span><span class="o">=</span><span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;activityHash&quot;</span><span class="p">),</span>
         <span class="p">)</span>
 </pre></div>
 
@@ -6016,10 +6101,7 @@ The JSON payload.</li>
         <span class="n">interval_objectives</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">records</span><span class="o">.</span><span class="n">Objective</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">record_state</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">records</span><span class="o">.</span><span class="n">RecordState</span><span class="p">]</span>
 
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">record_state</span> <span class="o">=</span> <span class="n">records</span><span class="o">.</span><span class="n">RecordState</span><span class="p">(</span><span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;state&quot;</span><span class="p">,</span> <span class="mi">999</span><span class="p">))</span>
-        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="n">record_state</span> <span class="o">=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;state&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">record_state</span> <span class="o">=</span> <span class="n">records</span><span class="o">.</span><span class="n">RecordState</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;state&quot;</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="n">raw_objs</span> <span class="o">:=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;objectives&quot;</span><span class="p">):</span>
             <span class="n">objectives</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">deserialize_objectives</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">raw_objs</span><span class="p">]</span>
@@ -6028,9 +6110,6 @@ The JSON payload.</li>
             <span class="n">interval_objectives</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">deserialize_objectives</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">raw_interval_objs</span>
             <span class="p">]</span>
-
-        <span class="k">if</span> <span class="n">scores</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="n">scores</span>
 
         <span class="k">return</span> <span class="n">records</span><span class="o">.</span><span class="n">Record</span><span class="p">(</span>
             <span class="n">scores</span><span class="o">=</span><span class="n">scores</span><span class="p">,</span>
@@ -6094,9 +6173,6 @@ An int kwargs use to grab the node hashes while deserializing components.</li>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">records</span><span class="o">.</span><span class="n">CharacterRecord</span><span class="p">:</span>
 
         <span class="n">record</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deserialize_records</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="n">scores</span><span class="p">)</span>
-        <span class="c1"># This is always None but available to keep the Record</span>
-        <span class="c1"># Signature.</span>
-        <span class="k">assert</span> <span class="n">scores</span> <span class="ow">is</span> <span class="kc">None</span>
         <span class="k">return</span> <span class="n">records</span><span class="o">.</span><span class="n">CharacterRecord</span><span class="p">(</span>
             <span class="n">scores</span><span class="o">=</span><span class="n">scores</span><span class="p">,</span>
             <span class="n">categories_node_hash</span><span class="o">=</span><span class="n">record</span><span class="o">.</span><span class="n">categories_node_hash</span><span class="p">,</span>
@@ -6123,10 +6199,6 @@ has more fields which can only be found in a character record.</p>
 <ul>
 <li><strong>payload</strong> (<code><a href="helpers.html#JsonObject">aiobungie.internal.helpers.JsonObject</a></code>):
 The JSON object payload</li>
-<li><strong>scores</strong> (<code>typing.Optional[records.RecordScores]</code>):
-The records scores object.</li>
-<li><strong>record_hashes</strong> (<code>typing.Optional[list[int]]</code>):
-A list of record hashes that's included during deserializing the component.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
@@ -6800,9 +6872,7 @@ The JSON payload.</li>
             <span class="def">def</span>
             <span class="name">deserialize_characters_records</span><span class="signature">(
     self,
-    payload: dict,
-    scores: Optional[<a href="../crate.html#records.RecordScores">aiobungie.crate.records.RecordScores</a>] = None,
-    record_hashes: Optional[list[int]] = None
+    payload: dict
 ) -&gt; collections.abc.Mapping[int, <a href="../crate.html#records.CharacterRecord">aiobungie.crate.records.CharacterRecord</a>]</span>:
     </div>
 
@@ -6811,8 +6881,6 @@ The JSON payload.</li>
             <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">deserialize_characters_records</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">,</span>
-        <span class="n">scores</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">records</span><span class="o">.</span><span class="n">RecordScores</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">record_hashes</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">records</span><span class="o">.</span><span class="n">CharacterRecord</span><span class="p">]:</span>
 
         <span class="k">return</span> <span class="p">{</span>
@@ -6859,6 +6927,38 @@ The JSON payload.</li>
             <span class="p">)</span>
             <span class="k">for</span> <span class="n">record_id</span><span class="p">,</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">raw_profile_records</span><span class="p">[</span><span class="s2">&quot;records&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
         <span class="p">}</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="Factory.deserialize_craftables_component" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Factory.deserialize_craftables_component">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">deserialize_craftables_component</span><span class="signature">(
+    self,
+    payload: dict
+) -&gt; <a href="../crate.html#components.CraftablesComponent">aiobungie.crate.components.CraftablesComponent</a></span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">deserialize_craftables_component</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">components</span><span class="o">.</span><span class="n">CraftablesComponent</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">components</span><span class="o">.</span><span class="n">CraftablesComponent</span><span class="p">(</span>
+            <span class="n">net</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_net</span><span class="p">,</span>
+            <span class="n">craftables</span><span class="o">=</span><span class="p">{</span>
+                <span class="nb">int</span><span class="p">(</span><span class="n">item_id</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deserialize_craftable_item</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">item_id</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;craftables&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="p">},</span>
+            <span class="n">crafting_root_node_hash</span><span class="o">=</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;craftingRootNodeHash&quot;</span><span class="p">],</span>
+        <span class="p">)</span>
 </pre></div>
 
         </details>
@@ -6992,7 +7092,9 @@ The JSON payload.</li>
 
         <span class="n">metrics</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span>
             <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span>
-                <span class="n">collections</span><span class="o">.</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">records</span><span class="o">.</span><span class="n">Objective</span><span class="p">]]</span>
+                <span class="n">collections</span><span class="o">.</span><span class="n">Mapping</span><span class="p">[</span>
+                    <span class="nb">int</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">records</span><span class="o">.</span><span class="n">Objective</span><span class="p">]]</span>
+                <span class="p">]</span>
             <span class="p">]</span>
         <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">root_node_hash</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -7002,7 +7104,9 @@ The JSON payload.</li>
                 <span class="p">{</span>
                     <span class="nb">int</span><span class="p">(</span><span class="n">metrics_hash</span><span class="p">):</span> <span class="p">(</span>
                         <span class="n">data</span><span class="p">[</span><span class="s2">&quot;invisible&quot;</span><span class="p">],</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">deserialize_objectives</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;objectiveProgress&quot;</span><span class="p">]),</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">deserialize_objectives</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;objectiveProgress&quot;</span><span class="p">])</span>
+                        <span class="k">if</span> <span class="s2">&quot;objectiveProgress&quot;</span> <span class="ow">in</span> <span class="n">payload</span>
+                        <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
                     <span class="p">)</span>
                     <span class="k">for</span> <span class="n">metrics_hash</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">raw_metrics</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;metrics&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
                 <span class="p">}</span>
@@ -7098,6 +7202,17 @@ The JSON payload.</li>
                     <span class="k">for</span> <span class="n">char_id</span><span class="p">,</span> <span class="n">currencie</span> <span class="ow">in</span> <span class="n">raw_char_lookups</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
                 <span class="p">}</span>
 
+        <span class="n">character_craftables</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span>
+            <span class="n">collections</span><span class="o">.</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">components</span><span class="o">.</span><span class="n">CraftablesComponent</span><span class="p">]</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">raw_character_craftables</span> <span class="o">:=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;characterCraftables&quot;</span><span class="p">):</span>
+
+            <span class="k">if</span> <span class="s2">&quot;data&quot;</span> <span class="ow">in</span> <span class="n">raw_character_craftables</span><span class="p">:</span>
+                <span class="n">character_craftables</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="nb">int</span><span class="p">(</span><span class="n">char_id</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">deserialize_craftables_component</span><span class="p">(</span><span class="n">craftable</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">char_id</span><span class="p">,</span> <span class="n">craftable</span> <span class="ow">in</span> <span class="n">raw_character_craftables</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="p">}</span>
+
         <span class="k">return</span> <span class="n">components</span><span class="o">.</span><span class="n">Component</span><span class="p">(</span>
             <span class="n">profiles</span><span class="o">=</span><span class="n">profile_</span><span class="p">,</span>
             <span class="n">profile_progression</span><span class="o">=</span><span class="n">profile_progression</span><span class="p">,</span>
@@ -7125,6 +7240,7 @@ The JSON payload.</li>
             <span class="n">character_nodes</span><span class="o">=</span><span class="n">character_nodes</span><span class="p">,</span>
             <span class="n">platform_silver</span><span class="o">=</span><span class="n">platform_silver</span><span class="p">,</span>
             <span class="n">character_currency_lookups</span><span class="o">=</span><span class="n">character_currency_lookups</span><span class="p">,</span>
+            <span class="n">character_craftables</span><span class="o">=</span><span class="n">character_craftables</span><span class="p">,</span>
         <span class="p">)</span>
 </pre></div>
 
@@ -7542,7 +7658,7 @@ The JSON payload.</li>
         <span class="k">if</span> <span class="n">raw_emblem_obj_hash</span> <span class="o">:=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;emblemObjectiveHash&quot;</span><span class="p">):</span>
             <span class="n">emblem_objective_hash</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">raw_emblem_obj_hash</span><span class="p">)</span>
 
-        <span class="n">tier_type</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">tier_type</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">TierType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">tier</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">ItemTier</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">bucket_hash</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">recovery_hash</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -7555,7 +7671,7 @@ The JSON payload.</li>
         <span class="n">stack_label</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">Undefined</span>
 
         <span class="k">if</span> <span class="n">inventory</span> <span class="o">:=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;inventory&quot;</span><span class="p">):</span>
-            <span class="n">tier_type</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">inventory</span><span class="p">[</span><span class="s2">&quot;tierType&quot;</span><span class="p">])</span>
+            <span class="n">tier_type</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">TierType</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">inventory</span><span class="p">[</span><span class="s2">&quot;tierType&quot;</span><span class="p">]))</span>
             <span class="n">tier</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">ItemTier</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">inventory</span><span class="p">[</span><span class="s2">&quot;tierTypeHash&quot;</span><span class="p">]))</span>
             <span class="n">bucket_hash</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">inventory</span><span class="p">[</span><span class="s2">&quot;bucketTypeHash&quot;</span><span class="p">])</span>
             <span class="n">recovery_hash</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">inventory</span><span class="p">[</span><span class="s2">&quot;recoveryBucketTypeHash&quot;</span><span class="p">])</span>
@@ -7685,8 +7801,14 @@ The JSON payload.</li>
             <span class="n">allow_over_completion</span><span class="o">=</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;allowOvercompletion&quot;</span><span class="p">],</span>
             <span class="n">show_value_style</span><span class="o">=</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;showValueOnComplete&quot;</span><span class="p">],</span>
             <span class="n">display_only_objective</span><span class="o">=</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;isDisplayOnlyObjective&quot;</span><span class="p">],</span>
-            <span class="n">complete_value_style</span><span class="o">=</span><span class="n">entity</span><span class="o">.</span><span class="n">ValueUIStyle</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;completedValueStyle&quot;</span><span class="p">])),</span>
-            <span class="n">progress_value_style</span><span class="o">=</span><span class="n">entity</span><span class="o">.</span><span class="n">ValueUIStyle</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;inProgressValueStyle&quot;</span><span class="p">])),</span>
+            <span class="n">complete_value_style</span><span class="o">=</span><span class="n">entity</span><span class="o">.</span><span class="n">ValueUIStyle</span><span class="p">(</span>
+                <span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;completedValueStyle&quot;</span><span class="p">])</span>
+            <span class="p">),</span>
+            <span class="n">progress_value_style</span><span class="o">=</span><span class="n">entity</span><span class="o">.</span><span class="n">ValueUIStyle</span><span class="p">(</span>
+                <span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;inProgressValueStyle&quot;</span><span class="p">])</span>
+            <span class="p">),</span>
+            <span class="n">ui_label</span><span class="o">=</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;uiLabel&quot;</span><span class="p">],</span>
+            <span class="n">ui_style</span><span class="o">=</span><span class="n">entity</span><span class="o">.</span><span class="n">ObjectiveUIStyle</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;uiStyle&quot;</span><span class="p">])),</span>
         <span class="p">)</span>
 </pre></div>
 

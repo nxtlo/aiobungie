@@ -211,9 +211,9 @@
 <span class="sd">&quot;&quot;&quot;A Union type that&#39;s similar to to `typing.Optional[T]`&quot;&quot;&quot;</span>
 
 <span class="n">EnumSig</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">TypeVar</span><span class="p">(</span>
-    <span class="s2">&quot;EnumSig&quot;</span><span class="p">,</span> <span class="n">covariant</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">Enum</span><span class="p">,</span> <span class="n">enums</span><span class="o">.</span><span class="n">IntEnum</span><span class="p">]</span>
+    <span class="s2">&quot;EnumSig&quot;</span><span class="p">,</span> <span class="n">covariant</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">Enum</span><span class="p">,</span> <span class="n">enums</span><span class="o">.</span><span class="n">Flag</span><span class="p">]</span>
 <span class="p">)</span>
-<span class="sd">&quot;&quot;&quot;A type hint bound to `aiobungie.internal.enums.Enum` and `aiobungie.internal.enums.IntEnum`&quot;&quot;&quot;</span>
+<span class="sd">&quot;&quot;&quot;A type hint bound to `aiobungie.internal.enums.Enum` and `aiobungie.internal.enums.Flag`&quot;&quot;&quot;</span>
 
 <span class="n">IntAnd</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">EnumSig</span><span class="p">]</span>
 <span class="sd">&quot;&quot;&quot;A type hint for parameters that may receives an enum or an int.&quot;&quot;&quot;</span>
@@ -645,7 +645,7 @@ ascending or descending, according to their function values.</p>
     </div>
 
     
-            <div class="docstring"><p>A type hint bound to <code><a href="internal/enums.html#Enum">aiobungie.internal.enums.Enum</a></code> and <code><a href="internal/enums.html#IntEnum">aiobungie.internal.enums.IntEnum</a></code></p>
+            <div class="docstring"><p>A type hint bound to <code><a href="internal/enums.html#Enum">aiobungie.internal.enums.Enum</a></code> and <code><a href="internal/enums.html#Flag">aiobungie.internal.enums.Flag</a></code></p>
 </div>
 
 

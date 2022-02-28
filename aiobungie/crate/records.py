@@ -46,7 +46,7 @@ if typing.TYPE_CHECKING:
 
 
 @typing.final
-class RecordState(enums.IntEnum):
+class RecordState(enums.Flag):
     """An enum for records component states."""
 
     NONE = 0
@@ -57,7 +57,6 @@ class RecordState(enums.IntEnum):
     INVISIBLE = 16
     ENTITLEMENT_UNOWNED = 32
     CAN_EQUIP_TITLE = 64
-    UNDEFINED = 999
 
 
 @attrs.define(kw_only=True)
@@ -97,8 +96,17 @@ class Objective:
     completion_value: int
     """An integer represents the objective completion value."""
 
-    progress: int
-    """An integer represents the objective progress."""
+    progress: typing.Optional[int]
+    """If progress has been made, and the progress can be measured numerically,
+    this will be the value of that progress."""
+
+    destination_hash: typing.Optional[int]
+    """The hash of the Destiny 2 objective destination. If it has one."""
+
+    activity_hash: typing.Optional[int]
+    """If the Objective has an Activity associated with it,
+    this is the unique identifier of the Activity being referred to.
+    """
 
     async def fetch_self(self) -> entity.ObjectiveEntity:
         """Perform an HTTP request fetching this objective entity definition.

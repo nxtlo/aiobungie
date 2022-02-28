@@ -9956,8 +9956,6 @@ A datetime object can be used to collect the end of the application usage.</p>
     <span class="k">def</span> <span class="nf">deserialize_character_records</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">,</span>
-        <span class="n">scores</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">records</span><span class="o">.</span><span class="n">RecordScores</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">record_hashes</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">records</span><span class="o">.</span><span class="n">CharacterRecord</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Deserialize a JSON object of a profile character record component.</span>
 
@@ -9968,10 +9966,6 @@ A datetime object can be used to collect the end of the application usage.</p>
 <span class="sd">        ----------</span>
 <span class="sd">        payload : `aiobungie.internal.helpers.JsonObject`</span>
 <span class="sd">            The JSON object payload</span>
-<span class="sd">        scores: `typing.Optional[records.RecordScores]`</span>
-<span class="sd">            The records scores object.</span>
-<span class="sd">        record_hashes: `typing.Optional[list[int]]`</span>
-<span class="sd">            A list of record hashes that&#39;s included during deserializing the component.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -9983,8 +9977,6 @@ A datetime object can be used to collect the end of the application usage.</p>
     <span class="k">def</span> <span class="nf">deserialize_characters_records</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">,</span>
-        <span class="n">scores</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">records</span><span class="o">.</span><span class="n">RecordScores</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">record_hashes</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">records</span><span class="o">.</span><span class="n">CharacterRecord</span><span class="p">]:</span>
         <span class="o">...</span>
 
@@ -12049,12 +12041,7 @@ An int kwargs use to grab the node hashes while deserializing components.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_character_records</span><span class="signature">(
-    self,
-    payload: dict,
-    scores: Optional[<a href="crate.html#records.RecordScores">aiobungie.crate.records.RecordScores</a>] = None,
-    record_hashes: Optional[list[int]] = None
-) -&gt; <a href="crate.html#records.CharacterRecord">aiobungie.crate.records.CharacterRecord</a></span>:
+            <span class="name">deserialize_character_records</span><span class="signature">(self, payload: dict) -&gt; <a href="crate.html#records.CharacterRecord">aiobungie.crate.records.CharacterRecord</a></span>:
     </div>
 
             <details>
@@ -12063,8 +12050,6 @@ An int kwargs use to grab the node hashes while deserializing components.</li>
     <span class="k">def</span> <span class="nf">deserialize_character_records</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">,</span>
-        <span class="n">scores</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">records</span><span class="o">.</span><span class="n">RecordScores</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">record_hashes</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">records</span><span class="o">.</span><span class="n">CharacterRecord</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Deserialize a JSON object of a profile character record component.</span>
 
@@ -12075,10 +12060,6 @@ An int kwargs use to grab the node hashes while deserializing components.</li>
 <span class="sd">        ----------</span>
 <span class="sd">        payload : `aiobungie.internal.helpers.JsonObject`</span>
 <span class="sd">            The JSON object payload</span>
-<span class="sd">        scores: `typing.Optional[records.RecordScores]`</span>
-<span class="sd">            The records scores object.</span>
-<span class="sd">        record_hashes: `typing.Optional[list[int]]`</span>
-<span class="sd">            A list of record hashes that&#39;s included during deserializing the component.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -12099,10 +12080,6 @@ has more fields which can only be found in a character record.</p>
 <ul>
 <li><strong>payload</strong> (<code><a href="internal/helpers.html#JsonObject">aiobungie.internal.helpers.JsonObject</a></code>):
 The JSON object payload</li>
-<li><strong>scores</strong> (<code>typing.Optional[records.RecordScores]</code>):
-The records scores object.</li>
-<li><strong>record_hashes</strong> (<code>typing.Optional[list[int]]</code>):
-A list of record hashes that's included during deserializing the component.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
@@ -12122,9 +12099,7 @@ A list of record hashes that's included during deserializing the component.</li>
             <span class="def">def</span>
             <span class="name">deserialize_characters_records</span><span class="signature">(
     self,
-    payload: dict,
-    scores: Optional[<a href="crate.html#records.RecordScores">aiobungie.crate.records.RecordScores</a>] = None,
-    record_hashes: Optional[list[int]] = None
+    payload: dict
 ) -&gt; collections.abc.Mapping[int, <a href="crate.html#records.CharacterRecord">aiobungie.crate.records.CharacterRecord</a>]</span>:
     </div>
 
@@ -12134,8 +12109,6 @@ A list of record hashes that's included during deserializing the component.</li>
     <span class="k">def</span> <span class="nf">deserialize_characters_records</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">,</span>
-        <span class="n">scores</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">records</span><span class="o">.</span><span class="n">RecordScores</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">record_hashes</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">records</span><span class="o">.</span><span class="n">CharacterRecord</span><span class="p">]:</span>
         <span class="o">...</span>
 </pre></div>

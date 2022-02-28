@@ -442,10 +442,7 @@ class RESTClient(interfaces.RESTInterface):
     def enable_debugging(
         file: typing.Optional[typing.Union[pathlib.Path, str]] = None, /
     ) -> None:
-        logging.basicConfig(
-            level=REST_DEBUG,
-            filename=file,
-        )
+        logging.basicConfig(level=REST_DEBUG, filename=file, filemode="w")
 
     @typing.final
     async def _request(

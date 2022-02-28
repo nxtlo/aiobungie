@@ -4,8 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).All notable changes to this project will be documented in this file.
 
-## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.5...HEAD)
+## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.6a0...HEAD)
 
+## [0.2.6a0](https://github.com/nxtlo/aiobungie/compare/0.2.5...0.2.6a0) 2022-02-26
 ## Added
 - `RESTClient` now takes an extra parameter `enable_debugging`, If set to `True` then
 it will debug responses and log them.
@@ -13,6 +14,8 @@ it will debug responses and log them.
 - A better looking headers logging.
 - A unique trace logging level `rest.REST_DEBUG` which will be used as the main logging level
 for REST debugging.
+- `destination_hash` and `activity_hash` fields to `Objective`.
+- `Flag` enumeration.
 
 ## Changed
 - Implemented The Witch Queen API update changes
@@ -31,8 +34,12 @@ for REST debugging.
 - `traits.ClientBase` name changed to `ClientApp`.
 - Methods that used to raise `NotImplementedError` no only warns.
 - Improve `helpers.deprecated` method.
+- `CraftablesComponent.craftables` now return an optional `CraftableItem` if it returns null.
+- `MetricsComponent.metrics`'s objective now return `None` it returns null.
+- `Objective.progress` is not optional.
 
 ## Removed
+- `IntEnum` since now its independently used with builtin `int`.
 
 ## Fixed
 - enum field `GreenPips` wasn't incluede in `ValueUIStyle` which was raising `ValueError` [#123](https://github.com/nxtlo/aiobungie/pull/132)
@@ -49,7 +56,7 @@ These changes are considered part of `0.2.5`.
 - `factory.Factory` and `assets.Image` are now exported to top level.
 - Almost 95% of the API endpoints has been added.
 - `__int__` method to `UndefinedType` which returns a literal `0`
-
+- `KeyError`s was being raised during deserialization payloads.
 
 ### Changed
 - `DestinyUser` has been renamed to `DestinyMembership`.

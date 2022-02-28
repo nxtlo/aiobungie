@@ -55,7 +55,7 @@ if typing.TYPE_CHECKING:
 
 
 @typing.final
-class GatingScope(enums.IntEnum):
+class GatingScope(int, enums.Enum):
     """An enum represents restrictive type of gating that is being performed by an entity.
 
     This is useful as a shortcut to avoid a lot of lookups when determining whether the gating on an Entity
@@ -72,7 +72,7 @@ class GatingScope(enums.IntEnum):
 
 
 @typing.final
-class ValueUIStyle(enums.IntEnum):
+class ValueUIStyle(int, enums.Enum):
     AUTOMATIC = 0
     FRACTION = 1
     CHECK_BOX = 2
@@ -91,7 +91,7 @@ class ValueUIStyle(enums.IntEnum):
 
 
 @typing.final
-class ObjectiveUIStyle(enums.IntEnum):
+class ObjectiveUIStyle(int, enums.Enum):
     NONE = 0
     HIGHLIGHTED = 1
     CRAFTING_WEAPON_LEVEL = 2
@@ -180,7 +180,7 @@ class BaseEntity(Entity):
 
 @attrs.define(kw_only=True)
 class SearchableEntity:
-    """Represents an entity object returned from a seachable term."""
+    """Represents an entity object returned from a searchable term."""
 
     suggested_words: list[str]
     """A list of suggested words that might make for better search results, based on the text searched for."""

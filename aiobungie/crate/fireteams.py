@@ -52,7 +52,7 @@ if typing.TYPE_CHECKING:
 
 
 @typing.final
-class FireteamPlatform(enums.IntEnum):
+class FireteamPlatform(int, enums.Enum):
     """An enum for fireteam related to bungie fireteams.
     This is different from the normal `aiobungie.MembershipType`.
     """
@@ -65,7 +65,7 @@ class FireteamPlatform(enums.IntEnum):
 
 
 @typing.final
-class FireteamActivity(enums.IntEnum):
+class FireteamActivity(int, enums.Enum):
     """An enum for the fireteam activities."""
 
     ALL = 0
@@ -91,9 +91,12 @@ class FireteamActivity(enums.IntEnum):
     S15_ASTRAL_ALIGNMENT = 31
     S15_SHATTERED_RELAM = 32
     DOE = 36
-    """Dares of Eterinity."""
+    """Dares of Eternity."""
     DUNGEON_GOA = 37
     """Grasp of Avarice."""
+    CAMPAIGN = 39
+    WELLSPRING = 40
+    S16_BATTLEGROUNDS = 41
 
 
 @typing.final
@@ -120,7 +123,7 @@ class FireteamLanguage(str, enums.Enum):
 
 
 @typing.final
-class FireteamDate(enums.IntEnum):
+class FireteamDate(int, enums.Enum):
     """An enum for fireteam date ranges."""
 
     ALL = 0
@@ -131,22 +134,19 @@ class FireteamDate(enums.IntEnum):
 
 
 @typing.final
-class FireteamPartyMemberState(enums.IntEnum):
+class FireteamPartyMemberState(enums.Flag):
     """An enum flag represents a fireteam party member status."""
 
     NONE = 0
     """???"""
-    MEMBER = 1
+    MEMBER = 1 << 0
     """A stanard member in the fireteam."""
-    POSSE_MEMBER = 2
+    POSSE_MEMBER = 1 << 1
     """???"""
-    POSSE_AND_MEMBER = MEMBER + POSSE_MEMBER
+    GROUP_MEMBER = 1 << 2
     """???"""
-    GROUP_MEMBER = 4
-    """???"""
-    PARTY_LEADER = 8
+    PARTY_LEADER = 1 << 3
     """Fireteam party member leader."""
-    LEADER_AND_POSSE = PARTY_LEADER + POSSE_AND_MEMBER
 
 
 @attrs.define(kw_only=True)

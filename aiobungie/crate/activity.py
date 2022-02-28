@@ -59,7 +59,7 @@ if typing.TYPE_CHECKING:
 
 
 @typing.final
-class Difficulty(enums.IntEnum):
+class Difficulty(int, enums.Enum):
     """An enum for activities difficulties."""
 
     TRIVIAL = 0

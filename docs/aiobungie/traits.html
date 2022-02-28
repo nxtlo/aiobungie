@@ -31,19 +31,19 @@
         <h2>API Documentation</h2>
             <ul class="memberlist">
             <li>
-                    <a class="class" href="#ClientBase">ClientBase</a>
+                    <a class="class" href="#ClientApp">ClientApp</a>
                             <ul class="memberlist">
                         <li>
-                                <a class="function" href="#ClientBase.__init__">ClientBase</a>
+                                <a class="function" href="#ClientApp.__init__">ClientApp</a>
                         </li>
                         <li>
-                                <a class="function" href="#ClientBase.run">run</a>
+                                <a class="function" href="#ClientApp.run">run</a>
                         </li>
                         <li>
-                                <a class="variable" href="#ClientBase.rest">rest</a>
+                                <a class="variable" href="#ClientApp.rest">rest</a>
                         </li>
                         <li>
-                                <a class="variable" href="#ClientBase.metadata">metadata</a>
+                                <a class="variable" href="#ClientApp.metadata">metadata</a>
                         </li>
                 </ul>
 
@@ -112,7 +112,7 @@
                     <h1 class="modulename">
 <a href="./../aiobungie.html">aiobungie</a><wbr>.traits    </h1>
 
-                        <div class="docstring"><p>Interfaces used for the main clients implementations.</p>
+                        <div class="docstring"><p>Interfaces used for the core client implementations.</p>
 </div>
 
                         <details>
@@ -139,18 +139,18 @@
 <span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
 <span class="c1"># SOFTWARE.</span>
 
-<span class="sd">&quot;&quot;&quot;Interfaces used for the main clients implementations.&quot;&quot;&quot;</span>
+<span class="sd">&quot;&quot;&quot;Interfaces used for the core client implementations.&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;ClientBase&quot;</span><span class="p">,</span> <span class="s2">&quot;Netrunner&quot;</span><span class="p">,</span> <span class="s2">&quot;Serializable&quot;</span><span class="p">,</span> <span class="s2">&quot;RESTful&quot;</span><span class="p">)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;ClientApp&quot;</span><span class="p">,</span> <span class="s2">&quot;Netrunner&quot;</span><span class="p">,</span> <span class="s2">&quot;Serializable&quot;</span><span class="p">,</span> <span class="s2">&quot;RESTful&quot;</span><span class="p">)</span>
 
 <span class="kn">import</span> <span class="nn">typing</span>
 
 <span class="k">if</span> <span class="n">typing</span><span class="o">.</span><span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">collections.abc</span> <span class="k">as</span> <span class="nn">collections</span>
 
-    <span class="kn">from</span> <span class="nn">aiobungie</span> <span class="kn">import</span> <span class="n">client</span> <span class="k">as</span> <span class="n">base_client</span>
+    <span class="kn">from</span> <span class="nn">aiobungie</span> <span class="kn">import</span> <span class="n">client</span>
     <span class="kn">from</span> <span class="nn">aiobungie</span> <span class="kn">import</span> <span class="n">interfaces</span>
     <span class="kn">from</span> <span class="nn">aiobungie</span> <span class="kn">import</span> <span class="n">rest</span>
     <span class="kn">from</span> <span class="nn">aiobungie.internal</span> <span class="kn">import</span> <span class="n">factory</span> <span class="k">as</span> <span class="n">factory_</span>
@@ -158,26 +158,35 @@
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">runtime_checkable</span>
 <span class="k">class</span> <span class="nc">Netrunner</span><span class="p">(</span><span class="n">typing</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A supertype protocol represents a readonly `ClientBase`.</span>
+    <span class="sd">&quot;&quot;&quot;Core trait for types which it is possible for crates to run external requests.</span>
 
-<span class="sd">    Clients that implements this can make requests from outside the base client.</span>
-<span class="sd">    This is useually used within the `aiobungie.crate` implementations for easier access to the base client instance.</span>
+<span class="sd">    These requests are performed by a reference of your `aiobungie.Client` instance.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    ```py</span>
+<span class="sd">    import aiobungie</span>
+
+<span class="sd">    membership = aiobungie.crate.DestinyMembership(…)</span>
+<span class="sd">    # Access the base client that references this membership.</span>
+<span class="sd">    external_request = await membership.net.request.fetch_user(…)</span>
+<span class="sd">    ```</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">request</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">base_client</span><span class="o">.</span><span class="n">Client</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;A readonly `ClientBase` instance used for external requests.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">request</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">client</span><span class="o">.</span><span class="n">Client</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;A readonly `ClientApp` instance used for external requests.&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">runtime_checkable</span>
 <span class="k">class</span> <span class="nc">Serializable</span><span class="p">(</span><span class="n">typing</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A supertype protocol for deserializable clients.</span>
+    <span class="sd">&quot;&quot;&quot;Core trait for types which it is possible to deserialize incoming REST payloads</span>
+<span class="sd">    into a `aiobungie.crate` implementation using the `Serializable.factory` property.</span>
 
-<span class="sd">    Clients that implements this can deserialize JSON REST payloads into</span>
-<span class="sd">    a Python `aiobungie.crate` object using the client `aiobungie.internal.factory.Factory`.</span>
+<span class="sd">    Currently only `ClientBase` implement this trait</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
@@ -190,9 +199,10 @@
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">runtime_checkable</span>
 <span class="k">class</span> <span class="nc">RESTful</span><span class="p">(</span><span class="n">typing</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A RESTful only supertype protocol.</span>
+    <span class="sd">&quot;&quot;&quot;Core trait for types which it is possible to interact with the API directly which provides RESTful functionalities.</span>
 
-<span class="sd">    Clients with this are raw-only JSON REST clients. i.e., `aiobungie.rest.RESTClient`</span>
+<span class="sd">    Currently only `aiobungie.RESTClient` implement this trait,</span>
+<span class="sd">    `ClientBase` may access its RESTClient using `aiobungie.Client.rest` property.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
@@ -224,11 +234,34 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;A mutable mapping storage for the user&#39;s needs.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;A mutable mapping storage for the user&#39;s needs.</span>
+
+<span class="sd">        This mapping is useful for storing any kind of data that the user may need.</span>
+
+<span class="sd">        Example</span>
+<span class="sd">        -------</span>
+<span class="sd">        ```py</span>
+<span class="sd">        import aiobungie</span>
+
+<span class="sd">        client = aiobungie.RESTClient(…)</span>
+
+<span class="sd">        async with client:</span>
+<span class="sd">            # Fetch auth tokens and store them</span>
+<span class="sd">            client.metadata[&quot;tokens&quot;] = await client.fetch_access_token(&quot;code&quot;)</span>
+
+<span class="sd">        # Some other time.</span>
+<span class="sd">        async with client:</span>
+<span class="sd">            # Retrieve the tokens</span>
+<span class="sd">            tokens: aiobungie.OAuth2Response = client.metadata[&quot;tokens&quot;]</span>
+
+<span class="sd">            # Use them to fetch your user.</span>
+<span class="sd">            user = await client.fetch_current_user_memberships(tokens.access_token)</span>
+<span class="sd">        ```</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Close the rest client.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Close this REST client session if it was acquired.&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">static_request</span><span class="p">(</span>
@@ -264,10 +297,10 @@
 
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">runtime_checkable</span>
-<span class="k">class</span> <span class="nc">ClientBase</span><span class="p">(</span><span class="n">Netrunner</span><span class="p">,</span> <span class="n">Serializable</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A supertype that implements all protocols.</span>
+<span class="k">class</span> <span class="nc">ClientApp</span><span class="p">(</span><span class="n">Netrunner</span><span class="p">,</span> <span class="n">Serializable</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Core trait for the standard `aiobungie.Client` implementation.</span>
 
-<span class="sd">    This can also access its REST client via `ClientBase.rest`</span>
+<span class="sd">    This trait includes all previous trait implementations.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
@@ -276,7 +309,8 @@
         <span class="bp">self</span><span class="p">,</span> <span class="n">future</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Coroutine</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Runs a Coro function until its complete.</span>
-<span class="sd">        This is equivalent to asyncio.get_event_loop().run_until_complete(...)</span>
+
+<span class="sd">        This is equivalent to `asyncio.get_event_loop().run_until_complete(...)`</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -310,23 +344,23 @@
         </details>
 
             </section>
-                <section id="ClientBase">
+                <section id="ClientApp">
                                 <div class="attr class">
-        <a class="headerlink" href="#ClientBase">#&nbsp;&nbsp</a>
+        <a class="headerlink" href="#ClientApp">#&nbsp;&nbsp</a>
 
                 <div class="decorator">@typing.runtime_checkable</div>
 
         <span class="def">class</span>
-        <span class="name">ClientBase</span><wbr>(<span class="base"><a href="#Netrunner">Netrunner</a></span>, <span class="base"><a href="#Serializable">Serializable</a></span>, <span class="base">typing.Protocol</span>):
+        <span class="name">ClientApp</span><wbr>(<span class="base"><a href="#Netrunner">Netrunner</a></span>, <span class="base"><a href="#Serializable">Serializable</a></span>, <span class="base">typing.Protocol</span>):
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">runtime_checkable</span>
-<span class="k">class</span> <span class="nc">ClientBase</span><span class="p">(</span><span class="n">Netrunner</span><span class="p">,</span> <span class="n">Serializable</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A supertype that implements all protocols.</span>
+<span class="k">class</span> <span class="nc">ClientApp</span><span class="p">(</span><span class="n">Netrunner</span><span class="p">,</span> <span class="n">Serializable</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Core trait for the standard `aiobungie.Client` implementation.</span>
 
-<span class="sd">    This can also access its REST client via `ClientBase.rest`</span>
+<span class="sd">    This trait includes all previous trait implementations.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
@@ -335,7 +369,8 @@
         <span class="bp">self</span><span class="p">,</span> <span class="n">future</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Coroutine</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Runs a Coro function until its complete.</span>
-<span class="sd">        This is equivalent to asyncio.get_event_loop().run_until_complete(...)</span>
+
+<span class="sd">        This is equivalent to `asyncio.get_event_loop().run_until_complete(...)`</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -368,17 +403,17 @@
 
         </details>
 
-            <div class="docstring"><p>A supertype that implements all protocols.</p>
+            <div class="docstring"><p>Core trait for the standard <code><a href="../aiobungie.html#Client">aiobungie.Client</a></code> implementation.</p>
 
-<p>This can also access its REST client via <code><a href="#ClientBase.rest">ClientBase.rest</a></code></p>
+<p>This trait includes all previous trait implementations.</p>
 </div>
 
 
-                            <div id="ClientBase.__init__" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#ClientBase.__init__">#&nbsp;&nbsp</a>
+                            <div id="ClientApp.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#ClientApp.__init__">#&nbsp;&nbsp</a>
 
         
-            <span class="name">ClientBase</span><span class="signature">(*args, **kwargs)</span>
+            <span class="name">ClientApp</span><span class="signature">(*args, **kwargs)</span>
     </div>
 
             <details>
@@ -392,8 +427,8 @@
     
 
                             </div>
-                            <div id="ClientBase.run" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#ClientBase.run">#&nbsp;&nbsp</a>
+                            <div id="ClientApp.run" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#ClientApp.run">#&nbsp;&nbsp</a>
 
         
             <span class="def">def</span>
@@ -406,7 +441,8 @@
         <span class="bp">self</span><span class="p">,</span> <span class="n">future</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Coroutine</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Runs a Coro function until its complete.</span>
-<span class="sd">        This is equivalent to asyncio.get_event_loop().run_until_complete(...)</span>
+
+<span class="sd">        This is equivalent to `asyncio.get_event_loop().run_until_complete(...)`</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -429,8 +465,9 @@
 
         </details>
 
-            <div class="docstring"><p>Runs a Coro function until its complete.
-This is equivalent to asyncio.get_event_loop().run_until_complete(...)</p>
+            <div class="docstring"><p>Runs a Coro function until its complete.</p>
+
+<p>This is equivalent to <code>asyncio.get_event_loop().run_until_complete(...)</code></p>
 
 <h6 id="parameters">Parameters</h6>
 
@@ -453,8 +490,8 @@ Either to enable asyncio debug or not. Disabled by default.</li>
 
 
                             </div>
-                            <div id="ClientBase.rest" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#ClientBase.rest">#&nbsp;&nbsp</a>
+                            <div id="ClientApp.rest" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#ClientApp.rest">#&nbsp;&nbsp</a>
 
         <span class="name">rest</span><span class="annotation">: <a href="interfaces.html#rest.RESTInterface">aiobungie.interfaces.rest.RESTInterface</a></span>
     </div>
@@ -465,8 +502,8 @@ Either to enable asyncio debug or not. Disabled by default.</li>
 
 
                             </div>
-                            <div id="ClientBase.metadata" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#ClientBase.metadata">#&nbsp;&nbsp</a>
+                            <div id="ClientApp.metadata" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#ClientApp.metadata">#&nbsp;&nbsp</a>
 
         <span class="name">metadata</span><span class="annotation">: collections.abc.MutableMapping[typing.Any, typing.Any]</span>
     </div>
@@ -481,11 +518,11 @@ Either to enable asyncio debug or not. Disabled by default.</li>
                                 <h5>Inherited Members</h5>
                                 <dl>
                                     <div><dt><a href="#Netrunner">Netrunner</a></dt>
-                                <dd id="ClientBase.request" class="variable"><a href="#Netrunner.request">request</a></dd>
+                                <dd id="ClientApp.request" class="variable"><a href="#Netrunner.request">request</a></dd>
 
             </div>
             <div><dt><a href="#Serializable">Serializable</a></dt>
-                                <dd id="ClientBase.factory" class="variable"><a href="#Serializable.factory">factory</a></dd>
+                                <dd id="ClientApp.factory" class="variable"><a href="#Serializable.factory">factory</a></dd>
 
             </div>
                                 </dl>
@@ -505,26 +542,43 @@ Either to enable asyncio debug or not. Disabled by default.</li>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">runtime_checkable</span>
 <span class="k">class</span> <span class="nc">Netrunner</span><span class="p">(</span><span class="n">typing</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A supertype protocol represents a readonly `ClientBase`.</span>
+    <span class="sd">&quot;&quot;&quot;Core trait for types which it is possible for crates to run external requests.</span>
 
-<span class="sd">    Clients that implements this can make requests from outside the base client.</span>
-<span class="sd">    This is useually used within the `aiobungie.crate` implementations for easier access to the base client instance.</span>
+<span class="sd">    These requests are performed by a reference of your `aiobungie.Client` instance.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    ```py</span>
+<span class="sd">    import aiobungie</span>
+
+<span class="sd">    membership = aiobungie.crate.DestinyMembership(…)</span>
+<span class="sd">    # Access the base client that references this membership.</span>
+<span class="sd">    external_request = await membership.net.request.fetch_user(…)</span>
+<span class="sd">    ```</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">request</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">base_client</span><span class="o">.</span><span class="n">Client</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;A readonly `ClientBase` instance used for external requests.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">request</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">client</span><span class="o">.</span><span class="n">Client</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;A readonly `ClientApp` instance used for external requests.&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>A supertype protocol represents a readonly <code><a href="#ClientBase">ClientBase</a></code>.</p>
+            <div class="docstring"><p>Core trait for types which it is possible for crates to run external requests.</p>
 
-<p>Clients that implements this can make requests from outside the base client.
-This is useually used within the <code><a href="crate.html">aiobungie.crate</a></code> implementations for easier access to the base client instance.</p>
+<p>These requests are performed by a reference of your <code><a href="../aiobungie.html#Client">aiobungie.Client</a></code> instance.</p>
+
+<h6 id="example">Example</h6>
+
+<div class="pdoc-code codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">aiobungie</span>
+
+<span class="n">membership</span> <span class="o">=</span> <span class="n">aiobungie</span><span class="o">.</span><span class="n">crate</span><span class="o">.</span><span class="n">DestinyMembership</span><span class="p">(</span><span class="err">…</span><span class="p">)</span>
+<span class="c1"># Access the base client that references this membership.</span>
+<span class="n">external_request</span> <span class="o">=</span> <span class="k">await</span> <span class="n">membership</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">fetch_user</span><span class="p">(</span><span class="err">…</span><span class="p">)</span>
+</code></pre></div>
 </div>
 
 
@@ -553,7 +607,7 @@ This is useually used within the <code><a href="crate.html">aiobungie.crate</a><
     </div>
 
     
-            <div class="docstring"><p>A readonly <code><a href="#ClientBase">ClientBase</a></code> instance used for external requests.</p>
+            <div class="docstring"><p>A readonly <code><a href="#ClientApp">ClientApp</a></code> instance used for external requests.</p>
 </div>
 
 
@@ -573,10 +627,10 @@ This is useually used within the <code><a href="crate.html">aiobungie.crate</a><
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">runtime_checkable</span>
 <span class="k">class</span> <span class="nc">Serializable</span><span class="p">(</span><span class="n">typing</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A supertype protocol for deserializable clients.</span>
+    <span class="sd">&quot;&quot;&quot;Core trait for types which it is possible to deserialize incoming REST payloads</span>
+<span class="sd">    into a `aiobungie.crate` implementation using the `Serializable.factory` property.</span>
 
-<span class="sd">    Clients that implements this can deserialize JSON REST payloads into</span>
-<span class="sd">    a Python `aiobungie.crate` object using the client `aiobungie.internal.factory.Factory`.</span>
+<span class="sd">    Currently only `ClientBase` implement this trait</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
@@ -589,10 +643,10 @@ This is useually used within the <code><a href="crate.html">aiobungie.crate</a><
 
         </details>
 
-            <div class="docstring"><p>A supertype protocol for deserializable clients.</p>
+            <div class="docstring"><p>Core trait for types which it is possible to deserialize incoming REST payloads
+into a <code><a href="crate.html">aiobungie.crate</a></code> implementation using the <code><a href="#Serializable.factory">Serializable.factory</a></code> property.</p>
 
-<p>Clients that implements this can deserialize JSON REST payloads into
-a Python <code><a href="crate.html">aiobungie.crate</a></code> object using the client <code><a href="internal/factory.html#Factory">aiobungie.internal.factory.Factory</a></code>.</p>
+<p>Currently only <code>ClientBase</code> implement this trait</p>
 </div>
 
 
@@ -641,9 +695,10 @@ a Python <code><a href="crate.html">aiobungie.crate</a></code> object using the 
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">runtime_checkable</span>
 <span class="k">class</span> <span class="nc">RESTful</span><span class="p">(</span><span class="n">typing</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A RESTful only supertype protocol.</span>
+    <span class="sd">&quot;&quot;&quot;Core trait for types which it is possible to interact with the API directly which provides RESTful functionalities.</span>
 
-<span class="sd">    Clients with this are raw-only JSON REST clients. i.e., `aiobungie.rest.RESTClient`</span>
+<span class="sd">    Currently only `aiobungie.RESTClient` implement this trait,</span>
+<span class="sd">    `ClientBase` may access its RESTClient using `aiobungie.Client.rest` property.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
@@ -675,11 +730,34 @@ a Python <code><a href="crate.html">aiobungie.crate</a></code> object using the 
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;A mutable mapping storage for the user&#39;s needs.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;A mutable mapping storage for the user&#39;s needs.</span>
+
+<span class="sd">        This mapping is useful for storing any kind of data that the user may need.</span>
+
+<span class="sd">        Example</span>
+<span class="sd">        -------</span>
+<span class="sd">        ```py</span>
+<span class="sd">        import aiobungie</span>
+
+<span class="sd">        client = aiobungie.RESTClient(…)</span>
+
+<span class="sd">        async with client:</span>
+<span class="sd">            # Fetch auth tokens and store them</span>
+<span class="sd">            client.metadata[&quot;tokens&quot;] = await client.fetch_access_token(&quot;code&quot;)</span>
+
+<span class="sd">        # Some other time.</span>
+<span class="sd">        async with client:</span>
+<span class="sd">            # Retrieve the tokens</span>
+<span class="sd">            tokens: aiobungie.OAuth2Response = client.metadata[&quot;tokens&quot;]</span>
+
+<span class="sd">            # Use them to fetch your user.</span>
+<span class="sd">            user = await client.fetch_current_user_memberships(tokens.access_token)</span>
+<span class="sd">        ```</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Close the rest client.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Close this REST client session if it was acquired.&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">static_request</span><span class="p">(</span>
@@ -716,9 +794,10 @@ a Python <code><a href="crate.html">aiobungie.crate</a></code> object using the 
 
         </details>
 
-            <div class="docstring"><p>A RESTful only supertype protocol.</p>
+            <div class="docstring"><p>Core trait for types which it is possible to interact with the API directly which provides RESTful functionalities.</p>
 
-<p>Clients with this are raw-only JSON REST clients. i.e., <code><a href="rest.html#RESTClient">aiobungie.rest.RESTClient</a></code></p>
+<p>Currently only <code><a href="../aiobungie.html#RESTClient">aiobungie.RESTClient</a></code> implement this trait,
+<code>ClientBase</code> may access its RESTClient using <code><a href="../aiobungie.html#Client.rest">aiobungie.Client.rest</a></code> property.</p>
 </div>
 
 
@@ -814,6 +893,27 @@ Otherwise <code>None</code> will be returned.</li>
 
     
             <div class="docstring"><p>A mutable mapping storage for the user's needs.</p>
+
+<p>This mapping is useful for storing any kind of data that the user may need.</p>
+
+<h6 id="example">Example</h6>
+
+<div class="pdoc-code codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">aiobungie</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">aiobungie</span><span class="o">.</span><span class="n">RESTClient</span><span class="p">(</span><span class="err">…</span><span class="p">)</span>
+
+<span class="k">async</span> <span class="k">with</span> <span class="n">client</span><span class="p">:</span>
+    <span class="c1"># Fetch auth tokens and store them</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;tokens&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">fetch_access_token</span><span class="p">(</span><span class="s2">&quot;code&quot;</span><span class="p">)</span>
+
+<span class="c1"># Some other time.</span>
+<span class="k">async</span> <span class="k">with</span> <span class="n">client</span><span class="p">:</span>
+    <span class="c1"># Retrieve the tokens</span>
+    <span class="n">tokens</span><span class="p">:</span> <span class="n">aiobungie</span><span class="o">.</span><span class="n">OAuth2Response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;tokens&quot;</span><span class="p">]</span>
+
+    <span class="c1"># Use them to fetch your user.</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">fetch_current_user_memberships</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">access_token</span><span class="p">)</span>
+</code></pre></div>
 </div>
 
 
@@ -829,13 +929,13 @@ Otherwise <code>None</code> will be returned.</li>
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Close the rest client.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Close this REST client session if it was acquired.&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Close the rest client.</p>
+            <div class="docstring"><p>Close this REST client session if it was acquired.</p>
 </div>
 
 

@@ -48,6 +48,7 @@ from aiobungie.crate import user
 from aiobungie.internal import assets
 from aiobungie.internal import enums
 from aiobungie.internal import helpers
+from aiobungie.internal import iterators
 from aiobungie.internal import time
 
 if typing.TYPE_CHECKING:
@@ -320,8 +321,10 @@ class Factory(interfaces.FactoryInterface):
 
     def deserialize_clan_members(
         self, data: typedefs.JSONObject, /
-    ) -> collections.Sequence[clans.ClanMember]:
-        return [self.deserialize_clan_member(member) for member in data["results"]]
+    ) -> iterators.FlatIterator[clans.ClanMember]:
+        return iterators.FlatIterator(
+            [self.deserialize_clan_member(member) for member in data["results"]]
+        )
 
     def deserialize_group_member(
         self, payload: typedefs.JSONObject
@@ -1496,26 +1499,30 @@ class Factory(interfaces.FactoryInterface):
 
     def deserialize_inventory_results(
         self, payload: typedefs.JSONObject
-    ) -> collections.Sequence[entity.SearchableEntity]:
+    ) -> iterators.FlatIterator[entity.SearchableEntity]:
         suggested_words: list[str] = payload["suggestedWords"]
 
         def _check_unknown(s: str) -> undefined.UndefinedOr[str]:
             return s if not typedefs.is_unknown(s) else undefined.Undefined
 
-        return [
-            entity.SearchableEntity(
-                net=self._net,
-                hash=data["hash"],
-                entity_type=data["entityType"],
-                weight=data["weight"],
-                suggested_words=suggested_words,
-                name=data["displayProperties"]["name"],
-                has_icon=data["displayProperties"]["hasIcon"],
-                description=_check_unknown(data["displayProperties"]["description"]),
-                icon=assets.Image(data["displayProperties"]["icon"]),
-            )
-            for data in payload["results"]["results"]
-        ]
+        return iterators.FlatIterator(
+            [
+                entity.SearchableEntity(
+                    net=self._net,
+                    hash=data["hash"],
+                    entity_type=data["entityType"],
+                    weight=data["weight"],
+                    suggested_words=suggested_words,
+                    name=data["displayProperties"]["name"],
+                    has_icon=data["displayProperties"]["hasIcon"],
+                    description=_check_unknown(
+                        data["displayProperties"]["description"]
+                    ),
+                    icon=assets.Image(data["displayProperties"]["icon"]),
+                )
+                for data in payload["results"]["results"]
+            ]
+        )
 
     def _deserialize_inventory_item_objects(
         self, payload: typedefs.JSONObject
@@ -1815,10 +1822,13 @@ class Factory(interfaces.FactoryInterface):
 
     def deserialize_activities(
         self, payload: typedefs.JSONObject
-    ) -> collections.Sequence[activity.Activity]:
-        return [
-            self.deserialize_activity(activity_) for activity_ in payload["activities"]
-        ]
+    ) -> iterators.FlatIterator[activity.Activity]:
+        return iterators.FlatIterator(
+            [
+                self.deserialize_activity(activity_)
+                for activity_ in payload["activities"]
+            ]
+        )
 
     def deserialize_extended_weapon_values(
         self, payload: typedefs.JSONObject

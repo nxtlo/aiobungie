@@ -117,6 +117,8 @@ from aiobungie import typedefs
 from aiobungie import url
 from aiobungie.client import Client
 from aiobungie.error import *
+from aiobungie.internal.iterators import FlatIterator
+from aiobungie.internal import iterators
 from aiobungie.internal.assets import Image
 from aiobungie.internal.enums import *
 from aiobungie.internal.factory import Factory

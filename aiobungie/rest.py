@@ -154,7 +154,7 @@ class _Arc:
         self._lock.release()
 
     async def acquire(self) -> None:
-        _LOG.log(REST_DEBUG, f"Lock released for bucket {self._bucket}")
+        _LOG.debug(f"Lock released for bucket {self._bucket}")
         await self._lock.acquire()
 
 
@@ -190,17 +190,17 @@ class _Session:
                 connect=connect,
             ),
         )
-        _LOG.log(REST_DEBUG, "Acquired new session.")
+        _LOG.debug("Acquired new session.")
         return _Session(client_session=session)
 
     async def close(self) -> None:
         # Close the TCP connector and all sessions.
-        _LOG.log(REST_DEBUG, "Closing connections...")
+        _LOG.debug("Closing connections...")
         if self.client_session.connector is not None:
             # await self.client_session.connector.close()
             await self.client_session.connector.close()
             await asyncio.sleep(0.025)
-            _LOG.log(REST_DEBUG, "All connections has been closed.")
+            _LOG.debug("All connections has been closed.")
 
 
 class RequestMethod(str, enums.Enum):
@@ -382,8 +382,8 @@ class RESTClient(interfaces.RESTInterface):
     client_id : `typing.Optional[int]`
         An optional application client id,
         This is only needed if you're fetching OAuth2 tokens with this client.
-    enable_logging : `bool`
-        Whether to enable debugging responses or not.
+    enable_debugging : `bool`
+        Whether to enable debugging/logging responses or not.
     """
 
     __slots__ = (

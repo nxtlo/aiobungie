@@ -34,6 +34,9 @@ __all__: tuple[str, ...] = (
     "ItemPerk",
     "Collectible",
     "Currency",
+    "CraftableItem",
+    "CraftableSocket",
+    "CraftableSocketPlug",
 )
 
 import typing
@@ -48,7 +51,7 @@ if typing.TYPE_CHECKING:
     from aiobungie.internal import assets
 
 
-class ItemBreakerType(enums.IntEnum):
+class ItemBreakerType(int, enums.Enum):
     """An enum for Destiny2 item breaker types."""
 
     NONE = 0
@@ -64,7 +67,7 @@ class ItemBreakerType(enums.IntEnum):
     """An alias to SHIELD_PIERCING."""
 
 
-class ItemEnergyType(enums.IntEnum):
+class ItemEnergyType(int, enums.Enum):
     """An enum for Destiny 2 item energy types for Armor 2.0, Ghosts 2.0 and stasis subclasses."""
 
     ANY = 0
@@ -121,6 +124,41 @@ class ItemSocket:
     """If a plug is inserted but not enabled,
     this field will be available with indexes into the plug item definition.
     """
+
+
+@attrs.define(kw_only=True)
+class CraftableItem:
+    """Represents a craftable item found within the craftable component."""
+
+    is_visible: bool
+    """Whether or not the item is visible."""
+
+    failed_requirement_indexes: list[int]
+    """If the requirements are not met for crafting this item, these will index into the list of failure strings."""
+
+    sockets: collections.Sequence[CraftableSocket]
+    """A sequence of plug item states for the crafting sockets."""
+
+
+@attrs.define(kw_only=True)
+class CraftableSocket:
+    """Represents a Destiny 2 crafting socket."""
+
+    plug_set_hash: int
+
+    plugs: collections.Sequence[CraftableSocketPlug]
+    """A sequence of socket plugs bound to the craftable item."""
+
+
+@attrs.define(kw_only=True)
+class CraftableSocketPlug:
+    """Represents a craftable socket plug."""
+
+    item_hash: int
+    """The hash of the plug item."""
+
+    failed_requirement_indexes: list[int]
+    """Index into the unlock requirements to display failure descriptions."""
 
 
 @attrs.define(kw_only=True)

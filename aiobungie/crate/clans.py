@@ -42,6 +42,7 @@ from aiobungie import url
 from aiobungie.crate import fireteams
 from aiobungie.crate import user
 from aiobungie.internal import enums
+from aiobungie.internal import helpers
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
@@ -258,7 +259,7 @@ class ClanMember(user.DestinyMembership):
         )
 
     async def unban(self, access_token: str, /) -> None:
-        """Unbans this member from the clan.
+        """Unban this member from the clan.
 
         .. note::
             This request requires OAuth2: oauth2: `AdminGroups` scope.
@@ -316,13 +317,13 @@ class GroupMember:
     """Whether the member is online or not."""
 
     last_online: datetime
-    """An awre UTC datetime of the member's last online status."""
+    """Datetime of the member's last online apperation."""
 
     group_id: int
     """The group id of this member."""
 
     join_date: datetime
-    """An awre UTC datetime of the member's join date."""
+    """Datetime of the member's join date."""
 
     member: user.DestinyMembership
     """The member's destiny object that represents the group member."""
@@ -644,7 +645,7 @@ class Clan:
         language: typing.Union[fireteams.FireteamLanguage, str],
         filtered: bool = True,
         page: int = 0,
-    ) -> collections.Sequence[fireteams.AvalaibleFireteam]:
+    ) -> collections.Sequence[fireteams.AvailableFireteam]:
         """Fetch this clan's available fireteams.
 
         .. note::
@@ -810,6 +811,7 @@ class Clan:
             access_token, self.id, message=message
         )
 
+    @helpers.unimplemented()
     async def fetch_banned_members(self) -> collections.Sequence[ClanMember]:
         """Fetch members who has been banned from the clan.
 
@@ -821,8 +823,9 @@ class Clan:
         `collections.Sequence[aiobungie.crate.clans.ClanMember]`
             A sequence of clan members or are banned.
         """
-        raise NotImplementedError
+        ...
 
+    @helpers.unimplemented()
     async def fetch_pending_members(self) -> collections.Sequence[ClanMember]:
         """Fetch members who are waiting to get accepted.
 
@@ -835,8 +838,9 @@ class Clan:
             A sequence of clan members who are awaiting
             to get accepted to the clan.
         """
-        raise NotImplementedError
+        ...
 
+    @helpers.unimplemented()
     async def fetch_invited_members(self) -> collections.Sequence[ClanMember]:
         """Fetch members who has been invited.
 
@@ -848,7 +852,7 @@ class Clan:
         `collections.Sequence[aiobungie.crate.clans.ClanMember]`
             A sequence of members who have been invited.
         """
-        raise NotImplementedError
+        ...
 
     @property
     def url(self) -> str:

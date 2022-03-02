@@ -20,11 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Implementation of Bungie entity and definitions.
-
-This is still not fully implemented and you may experince bugs.
-This will include all Bungie Definitions.
-"""
+"""Implementation of Bungie entity and definitions."""
 
 from __future__ import annotations
 
@@ -37,6 +33,7 @@ __all__: tuple[str, ...] = (
     "PlaylistActivityEntity",
     "InventoryEntityObjects",
     "SearchableEntity",
+    "ObjectiveUIStyle",
 )
 
 import abc
@@ -45,6 +42,7 @@ import typing
 import attrs
 
 from aiobungie.internal import enums
+from aiobungie.internal import helpers
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
@@ -57,7 +55,7 @@ if typing.TYPE_CHECKING:
 
 
 @typing.final
-class GatingScope(enums.IntEnum):
+class GatingScope(int, enums.Enum):
     """An enum represents restrictive type of gating that is being performed by an entity.
 
     This is useful as a shortcut to avoid a lot of lookups when determining whether the gating on an Entity
@@ -74,7 +72,7 @@ class GatingScope(enums.IntEnum):
 
 
 @typing.final
-class ValueUIStyle(enums.IntEnum):
+class ValueUIStyle(int, enums.Enum):
     AUTOMATIC = 0
     FRACTION = 1
     CHECK_BOX = 2
@@ -89,14 +87,22 @@ class ValueUIStyle(enums.IntEnum):
     RED_PIPS = 11
     EXPLICIT_PERCENTAGE = 12
     RAW_FLOAT = 13
+    LEVEL_AND_REWARD = 14
+
+
+@typing.final
+class ObjectiveUIStyle(int, enums.Enum):
+    NONE = 0
+    HIGHLIGHTED = 1
+    CRAFTING_WEAPON_LEVEL = 2
+    CRAFTING_WEAPON_LEVEL_PROGRESS = 3
+    CRAFTING_WEAPON_TIMESTAMP = 4
+    CRAFTING_MEMENTOS = 5
+    CRAFTING_MEMENTO_TITLE = 6
 
 
 class Entity(abc.ABC):
-    """An interface of any Bungie Definition/Entity.
-
-    This is the main entity which all other entities should inherit from.
-    it holds core information that all bungie entities has.
-    """
+    """An interface of any Bungie Definition/Entity."""
 
     __slots__ = ()
 
@@ -144,11 +150,11 @@ class Entity(abc.ABC):
 
 @attrs.mutable(kw_only=True)
 class BaseEntity(Entity):
-    """Concerate Bungie entity implementation."""
+    """Base Bungie entity implementation.
 
-    # These are not attribs on purpose.
-    # We dont want to redefine them again in the actual entity
-    # implementation.
+    This is the core object which all other entities should inherit from.
+    it holds core information that all bungie entities has.
+    """
 
     net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
     """A network state used for making external requests."""
@@ -174,7 +180,7 @@ class BaseEntity(Entity):
 
 @attrs.define(kw_only=True)
 class SearchableEntity:
-    """Represents an entity object returned from a seachable term."""
+    """Represents an entity object returned from a searchable term."""
 
     suggested_words: list[str]
     """A list of suggested words that might make for better search results, based on the text searched for."""
@@ -379,8 +385,8 @@ class InventoryEntity(BaseEntity, Entity):
     ui_display_style: undefined.UndefinedOr[str] = attrs.field(repr=False)
     """"""
 
-    tier_type: typing.Optional[int] = attrs.field(repr=False, hash=False)
-    """Entity's tier type."""
+    tier_type: typing.Optional[enums.TierType] = attrs.field(repr=False, hash=False)
+    """Entity's tier type. This can be Exotic, Rare, or Common etc."""
 
     tier: typing.Optional[enums.ItemTier] = attrs.field(repr=False)
     """The item tier hash as an enum if exists."""
@@ -392,7 +398,7 @@ class InventoryEntity(BaseEntity, Entity):
     """Entity's type name. i.e., `Grenade Launcher`."""
 
     type_and_tier_name: undefined.UndefinedOr[str] = attrs.field(hash=False)
-    """Entity's tier and type name combined, i.e., `Legendery Grenade Launcher`."""
+    """Entity's tier and type name combined, i.e., `Legendary Grenade Launcher`."""
 
     bucket_hash: typing.Optional[int] = attrs.field(repr=False, hash=False)
     """The entity's bucket type hash, None if it doesn't have one."""
@@ -496,6 +502,10 @@ class ObjectiveEntity(BaseEntity, Entity):
 
     stats: dict[str, int]
 
+    ui_label: str
+
+    ui_style: ObjectiveUIStyle
+
 
 @attrs.define(kw_only=True, hash=True, weakref_slot=False)
 class ActivityEntity(BaseEntity, Entity):
@@ -522,8 +532,8 @@ class ActivityEntity(BaseEntity, Entity):
     type_hash: int
     """The activity's type hash. This bounds to activity types such as Strikes, Crucible, Raids, etc."""
 
-    tier: typedefs.IntAnd[activity.Diffculity]
-    """Activity's diffculity tier."""
+    tier: typedefs.IntAnd[activity.Difficulty]
+    """Activity's difficulty tier."""
 
     image: assets.MaybeImage
     """Activity's pgcr image."""
@@ -614,7 +624,7 @@ class PlaylistActivityEntity:
     mode_types: collections.Sequence[typedefs.IntAnd[enums.GameMode]]
     """A sequence of the activity gamemode types."""
 
-    # TODO: Implement a REST method for this.
+    @helpers.unimplemented(available_in="0.2.7")
     async def fetch_self(self) -> ActivityEntity:
-        """Fetch the definition of this activivy."""
-        raise NotImplementedError
+        """Fetch the definition of this activity."""
+        ...

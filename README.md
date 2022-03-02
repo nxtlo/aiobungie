@@ -29,6 +29,11 @@ PyPI stable release.
 $ pip install aiobungie
 ```
 
+Development
+```sh
+$ pip install git+https://github.com/nxtlo/aiobungie@master
+```
+
 ## Quick Example
 
 See [Examples for advance usage.](https://github.com/nxtlo/aiobungie/tree/master/examples)
@@ -36,41 +41,28 @@ See [Examples for advance usage.](https://github.com/nxtlo/aiobungie/tree/master
 ```python
 import aiobungie
 
-# crates in aiobungie are implementations
-# of Bungie's objects to provide
-# more functionality.
-
 client = aiobungie.Client('YOUR_API_KEY')
 
 async def main() -> None:
 
     # fetch a clan
-    clan: aiobungie.crate.Clan = await client.fetch_clan("Nuanceㅤ")
-    print(clan.name, clan.id)
+    clan = await client.fetch_clan("Nuanceㅤ")
 
-    # Clan owner.
-    if owner := clan.owner:
+    for member in await clan.fetch_members():
+        if member.unique_name == "Fate怒#4275":
 
-        # Fetch a profile.
-        profile: aiobungie.crate.Component = await client.fetch_profile(
-            owner.id,
-            owner.type,
-            # Return All profile components and character components.
-            aiobungie.ComponentType.CHARACTERS,
-            *aiobungie.ComponentType.ALL_PROFILES.value
-            # If a method requires OAuth2 you may wanna pass an auth token as a kwarg.
-            auth="access_token"
-        )
+            # Get the profile for this clan member.
+            profile = await member.fetch_self_profile(components=[aiobungie.ComponentType.CHARACTERS])
 
-        # A profile characters component as a mapping from each character id to a character object.
-        if owner_characters := profile.characters:
-            for character_id, character in owner_characters.items():
-                print(f"ID: {character_id}: Character {character}")
+            # Get the character component for the profile.
+            if characters := profile.characters:
+                for character in characters.values():
+                    print(character.class_type, character.light, character.gender)
 
-                # Check if warlock
-                if character.class_type is aiobungie.Class.WARLOCK:
-                    # Do something with the warlock
-                    ...
+                # Check some character stats.
+                for stat, stat_value in character.stats.items():
+                    if stat is aiobungie.Stat.MOBILITY and stat_value > 90:
+                        print(f"Zooming {stat_value} ⭐")
 
 # You can either run it using the client or just `asyncio.run(main())`
 client.run(main())
@@ -85,21 +77,19 @@ import aiobungie
 import asyncio
 
 async def main(access_token: str) -> None:
-    # Max retries is the maximum retries to backoff when you hit 5xx error codes.
-    # It defaults to 4 retries.
-    async with aiobungie.RESTClient("TOKEN", max_retries=5) as rest:
-        # Passing the player's name and code -> 'Fate怒#4275'
-        fetch_player = await rest.fetch_player('Fate怒', 4275)
-        print(*fetch_player) # A JSON array of dict object
-        for player in fetch_player: # Iterate through the array.
-            print(player['membershipId'], player['iconPath']) # The player id and icon path.
-            for k, v in player.items():
+    async with aiobungie.RESTClient("TOKEN") as rest_client:
+        response = await rest_client.fetch_clan_members(4389205)
+        raw_members_payload = response['results']
+
+        for member in raw_members_payload:
+            for k, v in member['destinyUserInfo'].items():
                 print(k, v)
 
-            # You can also send your own requests.
-            await rest.static_request("POST", "Need/OAuth2", headers={"A-HEADER": f"A-Value"}, auth=access_token)
-            # Defined methods.
-            await rest.send_friend_request(access_token, member_id=1234)
+            # aiobungie also exposes a method which lets you make your own requests.
+            await rest.static_request("POST", "Some/Endpoint", auth=access_token, json={...: ...})
+
+            # Methods only exposed through the rest client.
+            await rest.refresh_access_token('a token')
 
 asyncio.run(main("DB_ACCESS_TOKEN"))
 ```

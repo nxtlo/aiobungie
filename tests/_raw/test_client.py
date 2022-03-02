@@ -26,6 +26,7 @@ import inspect
 import logging
 import os
 import sys
+import typing
 
 import aiobungie
 
@@ -36,18 +37,14 @@ import aiobungie
 CID = 2305843009444904605
 MID = 4611686018484639825
 _LOG = logging.getLogger("test_client")
-logging.basicConfig(level=logging.DEBUG)
-
 
 def __build_client() -> aiobungie.Client:
     token = os.environ["CLIENT_TOKEN"]
-    rest = aiobungie.RESTClient(token, max_retries=1)
+    rest = aiobungie.RESTClient(token, max_retries=1, enable_debugging=True)
     client = aiobungie.Client(token, rest_client=rest, max_retries=1)
     return client
 
-
 client = __build_client()
-
 
 async def test_users():
     u = await client.fetch_bungie_user(20315338)
@@ -107,12 +104,12 @@ async def test_fetch_app():
 
 async def test_player():
     p = await client.fetch_player("Fate怒", 4275)
-    profile = await p[0].fetch_self_profile(aiobungie.ComponentType.PROFILE)
+    profile = await p[0].fetch_self_profile([aiobungie.ComponentType.PROFILE])
     assert isinstance(profile, aiobungie.crate.Component)
     assert isinstance(profile.profiles, aiobungie.crate.Profile)
 
-    components = aiobungie.ComponentType.ALL_CHARACTERS
-    profiles = profile.profiles.collect_characters(*components.value)
+    components = [aiobungie.ComponentType.ALL_CHARACTERS]
+    profiles = profile.profiles.collect_characters(components)
     for char in await profiles:
         assert isinstance(char, aiobungie.crate.CharacterComponent)
         assert (
@@ -131,7 +128,7 @@ async def test_fetch_character():
         MID,
         aiobungie.MembershipType.STEAM,
         CID,
-        *aiobungie.ComponentType.ALL.value,
+        [aiobungie.ComponentType.ALL],
     )
     assert isinstance(c, aiobungie.crate.CharacterComponent)
     assert c.activities
@@ -154,13 +151,13 @@ async def test_profile():
     pf = await client.fetch_profile(
         MID,
         aiobungie.MembershipType.STEAM,
-        *aiobungie.ComponentType.ALL.value,  # type: ignore
+        [aiobungie.ComponentType.ALL]
     )
     assert isinstance(pf, aiobungie.crate.Component)
 
     assert pf.profiles
     for pfile_char in await pf.profiles.collect_characters(
-        *aiobungie.ComponentType.ALL_CHARACTERS.value
+        [aiobungie.ComponentType.ALL_CHARACTERS]
     ):
         assert isinstance(pfile_char, aiobungie.crate.CharacterComponent)
         assert (
@@ -226,12 +223,23 @@ async def test_profile():
             assert isinstance(met_id, int)
             inv, obj = met_
             assert isinstance(inv, bool)
-            assert isinstance(obj, aiobungie.crate.Objective)
+
+            if obj is not None:
+                assert isinstance(obj, aiobungie.crate.Objective)
 
     if pf.transitory:
         assert isinstance(pf.transitory, aiobungie.crate.FireteamParty)
     if pf.item_components:
         assert isinstance(pf.item_components, aiobungie.crate.ItemsComponent)
+
+    if pf.character_craftables:
+        for craftable_item_hash, craftable_item in pf.character_craftables.items():
+            assert isinstance(craftable_item_hash, int)
+            for item in craftable_item.craftables.values():
+                if item:
+                    assert isinstance(item, aiobungie.crate.CraftableItem)
+        first = list(pf.character_craftables.values())[0]
+        assert await first.fetch_craftables()
 
 async def test_membership_types_from_id():
     u = await client.fetch_membership_from_id(MID)
@@ -286,7 +294,7 @@ async def test_linked_profiles():
     for user in obj.profiles:
         assert isinstance(user, aiobungie.crate.DestinyMembership)
         transform_profile = await user.fetch_self_profile(
-            aiobungie.ComponentType.PROFILE
+            [aiobungie.ComponentType.PROFILE]
         )
         assert transform_profile.profiles
         assert isinstance(transform_profile, aiobungie.crate.Component)
@@ -406,14 +414,19 @@ async def test_clan_weekly_rewards():
     assert isinstance(r, aiobungie.crate.Milestone)
 
 async def main() -> None:
-    coros = []
+    coros: list[typing.Coroutine[None, None, None]] = []
     for n, coro in inspect.getmembers(
         sys.modules[__name__], inspect.iscoroutinefunction
     ):
         if n == "main" or not n.startswith("test_"):
             continue
         coros.append(coro())
-    await asyncio.gather(*coros)
+
+    try:
+        await asyncio.gather(*coros)
+    except Exception:
+        raise
+
     _LOG.info(
         "Asserted %i functions out of %i excluding main.",
         len(coros),

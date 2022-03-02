@@ -25,7 +25,7 @@ from .user import *
 #   ArtifactTier
 #   ArtifactTierItem
 #   AvailableActivity
-#   AvalaibleFireteam
+#   AvailableFireteam
 #   BaseEntity
 #   BungieUser
 #   Challenges
@@ -42,6 +42,7 @@ from .user import *
 #   ClanMember
 #   Collectible
 #   Component
+#   CraftablesComponent
 #   Currency
 #   CustomizationOptions
 #   DestinyMembership

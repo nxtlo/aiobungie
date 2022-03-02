@@ -38,6 +38,7 @@ __all__: tuple[str, ...] = (
     "RecordsComponent",
     "UninstancedItemsComponent",
     "StringVariableComponent",
+    "CraftablesComponent",
 )
 
 import typing
@@ -45,12 +46,15 @@ import typing
 import attrs
 
 from aiobungie.internal import enums
+from aiobungie.internal import helpers
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
 
+    from aiobungie import traits
     from aiobungie.crate import activity
     from aiobungie.crate import character as character_
+    from aiobungie.crate import entity
     from aiobungie.crate import fireteams
     from aiobungie.crate import items
     from aiobungie.crate import profile
@@ -58,7 +62,7 @@ if typing.TYPE_CHECKING:
 
 
 @typing.final
-class ComponentPrivacy(enums.IntEnum):
+class ComponentPrivacy(int, enums.Enum):
     """An enum the provides privacy settings for profile components."""
 
     NONE = 0
@@ -112,6 +116,51 @@ class RecordsComponent:
     This will be available when `aiobungie.ComponentType.RECORDS`
     is passed to the request components. otherwise will be `None`.
     """
+
+
+@attrs.define(kw_only=True)
+class CraftablesComponent:
+    """Represents craftables-only Bungie component."""
+
+    net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
+    """A network state used for making external requests."""
+
+    craftables: collections.Mapping[int, typing.Optional[items.CraftableItem]]
+    """A mapping from craftable item IDs to a craftable item component.
+
+    Items may or may not be available but its hash will always be available.
+    You can use the hash to fetch those items using `fetch_craftables` method.
+    """
+
+    crafting_root_node_hash: int
+    """The hash for the root presentation node definition of craftable item categories."""
+
+    async def fetch_craftables(
+        self, limit: typing.Optional[int] = None
+    ) -> typing.Optional[collections.Collection[entity.InventoryEntity]]:
+        """Fetch the inventory definitions for the craftables.
+
+        Parameters
+        ----------
+        limit : `typing.Optional[int]`
+            The maximum number of items to fetch. If not provided, all items will be fetched.
+
+        Returns
+        -------
+        `typing.Optional[collections.Sequence[entity.InventoryEntity]]`
+            If the craftables are available, a sequence of inventory entities. Otherwise `None`.
+        """
+
+        if self.craftables is None:
+            return None
+
+        item_ids = list(self.craftables.keys())
+        return await helpers.awaits(
+            *[
+                self.net.request.fetch_inventory_item(item_id)
+                for item_id in item_ids[:limit]
+            ],
+        )
 
 
 @attrs.define(kw_only=True)
@@ -284,11 +333,10 @@ class ItemsComponent(UninstancedItemsComponent):
         )
 
 
-@attrs.define(kw_only=True, slots=False)
+@helpers.unimplemented()
+@attrs.define(kw_only=True)
 class VendorsComponent:
     """Represents vendors-only Bungie component."""
-
-    # TODO: Impl this.
 
 
 @attrs.define(kw_only=True, slots=False)
@@ -326,12 +374,14 @@ class MetricsComponent:
     """
 
     metrics: typing.Optional[
-        collections.Sequence[collections.Mapping[int, tuple[bool, records_.Objective]]]
+        collections.Sequence[
+            collections.Mapping[int, tuple[bool, typing.Optional[records_.Objective]]]
+        ]
     ]
     """A sequence of mappings from the metrics hash to a tuple contains two elements.
 
     * The first is always a `bool` determines whether the object is visible or not.
-    * The second is an `aiobungie.crate.Objective` of the metrics object.
+    * The second is an `aiobungie.crate.Objective` of the metrics object if it has one. Otherwise it will be `None`.
     """
 
     root_node_hash: typing.Optional[int]
@@ -339,7 +389,7 @@ class MetricsComponent:
 
 
 @attrs.define(kw_only=True)
-class CharacterComponent(RecordsComponent, VendorsComponent):
+class CharacterComponent(RecordsComponent):
     """Represents a character-only Bungie component.
 
     This includes all components that falls under the character object.
@@ -440,9 +490,7 @@ class Component(
 ):
     """Concerete implementation of all Bungie components.
 
-    This includes all profile components that are available and not private.
-
-    Private components will return `None` unless an `access_token` was passed to the request
+    Components that requires auth will return `None` unless an `access_token` was passed to the request
     `**options` parameters.
 
     Example
@@ -466,16 +514,7 @@ class Component(
     if items := profile.profile_inventories:
         for item in items:
             if item.hash == 1946491241:
-                # Fetch the item if it's a truth-teller.
-                my_item = await item.fetch_self()
-                print(my_item.name, my_item.banner, my_item.icon)
-                # Try to transfer the item.
-                if item.instance_id and item.transfer_status is aiobungie.TransferStatus.CAN_TRANSFER:
-                    try:
-                        await client.rest.transfer_item(...)
-                    except Exception as e:
-                        print(f"Couldn't transfer the item {e}")
-                        return
+                print(await item.fetch_self())
     ```
 
     Included Components
@@ -553,6 +592,14 @@ class Component(
     """A mapping from each character ID to its collectibles component for this profile.
 
     This will always be `None` unless `aiobungie.ComponentType.COLLECTIBLES`
+    """
+
+    character_craftables: typing.Optional[collections.Mapping[int, CraftablesComponent]]
+    """A mapping from character IDs to its bound craftable component.
+
+    Notes
+    -----
+    * This will be available when `aiobungie.ComponentType.CRAFTABLES` is passed to the request component.
     """
 
     transitory: typing.Optional[fireteams.FireteamParty]

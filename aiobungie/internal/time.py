@@ -31,11 +31,13 @@ __all__: list[str] = [
     "clean_date",
     "to_timestamp",
     "parse_date_range",
+    "monotonic",
 ]
 
 import calendar
 import datetime
 import math
+import time as _time
 import typing
 
 import dateutil.parser
@@ -84,3 +86,8 @@ def parse_date_range(
         start_date = f"{last_24_hrs.year}-{last_24_hrs.month}-{last_24_hrs.day}"
 
     return end_date, start_date
+
+
+def monotonic() -> float:
+    """Returns the monotonic time in seconds."""
+    return _time.monotonic()

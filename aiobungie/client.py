@@ -20,14 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Basic implementation of a Pythonic client that interacts with the API."""
+"""Standard aiobungie API client implementation."""
 
 from __future__ import annotations
 
-import logging
-
 __all__: tuple[str, ...] = ("Client",)
 
+import copy
+import logging
 import typing
 
 from aiobungie import rest as rest_
@@ -56,13 +56,13 @@ if typing.TYPE_CHECKING:
 _LOG: typing.Final[logging.Logger] = logging.getLogger("aiobungie.client")
 
 
-class Client(traits.ClientBase):
-    """Standard Bungie API client.
+class Client(traits.ClientApp):
+    """Standard Bungie API client application.
 
     This client deserialize the REST JSON responses using `aiobungie.internal.factory.Factory`
     and returns `aiobungie.crate` Python object implementations of the responses.
 
-    Alternatively, You can also use `aiobungie.RESTClient` alone for low-level concepts.
+    A `aiobungie.RESTClient` REST client can also be used alone for low-level concepts.
 
     Parameters
     -----------
@@ -84,6 +84,8 @@ class Client(traits.ClientBase):
     ```
     max_retries : `int`
         The max retries number to retry if the request hit a `5xx` status code.
+    max_ratelimit_retries : `int`
+        The max retries number to retry if the request hit a `429` status code. Defaults to `3`.
     client_secret : `typing.Optional[str]`
         An optional application client secret,
         This is only needed if you're fetching OAuth2 tokens with this client.
@@ -103,16 +105,22 @@ class Client(traits.ClientBase):
         *,
         rest_client: typing.Optional[interfaces.RESTInterface] = None,
         max_retries: int = 4,
+        max_ratelimit_retries: int = 3,
     ) -> None:
 
         self._client_secret = client_secret
         self._client_id = client_id
 
-        if rest_client is not None:
-            self._rest = rest_client
-
-        self._rest = rest_.RESTClient(
-            token, client_secret, client_id, max_retries=max_retries
+        self._rest = (
+            rest_client
+            if rest_client is not None
+            else rest_.RESTClient(
+                token,
+                client_secret,
+                client_id,
+                max_retries=max_retries,
+                max_ratelimit_retries=max_ratelimit_retries,
+            )
         )
 
         self._factory = factory_.Factory(self)
@@ -127,7 +135,7 @@ class Client(traits.ClientBase):
 
     @property
     def request(self) -> Client:
-        return self
+        return copy.copy(self)
 
     @property
     def metadata(self) -> collections.MutableMapping[typing.Any, typing.Any]:
@@ -143,23 +151,21 @@ class Client(traits.ClientBase):
                 loop.run_until_complete(future)
 
         except Exception as exc:
-            raise RuntimeError(f"Failed to run {future.__name__}") from exc
+            raise RuntimeError(f"Failed to run {future.__qualname__}") from exc
 
         except KeyboardInterrupt:
             _LOG.warn("Unexpected Keyboard interrupt. Exiting.")
             return
 
         finally:
-            # Session management.
-            loop.run_until_complete(self._rest.close())
-            _LOG.info("Client closed normally.")
+            if self._rest.is_alive:
+                # Clean up sessions.
+                loop.run_until_complete(self._rest.close())
 
     # * User methods.
 
     async def fetch_current_user_memberships(self, access_token: str, /) -> user.User:
         """Fetch and return a user object of the bungie net user associated with account.
-
-        This method is obly useful if you have authintacated users and their tokens.
 
         .. warning::
             This method requires OAuth2 scope and a Bearer access token.
@@ -222,7 +228,7 @@ class Client(traits.ClientBase):
         payload = await self.rest.search_users(name)
         assert isinstance(payload, dict)
         return [
-            self.factory.deseialize_searched_user(user)
+            self.factory.deserialize_searched_user(user)
             for user in payload["searchResults"]
         ]
 
@@ -253,7 +259,7 @@ class Client(traits.ClientBase):
         credential: `int`
             A valid SteamID64
         type: `aiobungie.CredentialType`
-            The crededntial type. This must not be changed
+            The credential type. This must not be changed
             Since its only credential that works "currently"
 
         Returns
@@ -282,7 +288,7 @@ class Client(traits.ClientBase):
         -----
         * This returns both BungieNet membership and a sequence of the player's DestinyMemberships
         Which includes Stadia, Xbox, Steam and PSN memberships if the player has them,
-        see `aiobungie.crate.user.DestinyMembership` for indetailed.
+        see `aiobungie.crate.user.DestinyMembership` for more details.
         * If you only want the bungie user. Consider using `Client.fetch_user` method.
 
         Parameters
@@ -341,11 +347,11 @@ class Client(traits.ClientBase):
         self,
         member_id: int,
         type: typedefs.IntAnd[enums.MembershipType],
-        *components: enums.ComponentType,
-        **options: str,
+        components: list[enums.ComponentType],
+        auth: typing.Optional[str] = None,
     ) -> components.Component:
         """
-        Fetche a bungie profile passing components to the request.
+        Fetch a bungie profile passing components to the request.
 
         Parameters
         ----------
@@ -360,11 +366,8 @@ class Client(traits.ClientBase):
         Other Parameters
         ----------------
         auth : `typing.Optional[str]`
-            A passed kwarg Bearer access_token to make the request with.
+            A Bearer access_token to make the request with.
             This is optional and limited to components that only requires an Authorization token.
-        **options : `str`
-            Other keyword arguments for the request to expect.
-            This is only here for the `auth` option which's a string kwarg.
 
         Returns
         --------
@@ -377,7 +380,7 @@ class Client(traits.ClientBase):
         `aiobungie.MembershipTypeError`
             The provided membership type was invalid.
         """
-        data = await self.rest.fetch_profile(member_id, type, *components, **options)
+        data = await self.rest.fetch_profile(member_id, type, components, auth)
         assert isinstance(data, dict)
         return self.factory.deserialize_components(data)
 
@@ -407,7 +410,7 @@ class Client(traits.ClientBase):
         ----------------
         all : `bool`
             If provided and set to `True`, All memberships regardless
-            of whether thry're obscured by overrides will be returned,
+            of whether they're obscured by overrides will be returned,
 
             If provided and set to `False`, Only available memberships will be returned.
             The default for this is `False`.
@@ -443,7 +446,7 @@ class Client(traits.ClientBase):
         --------
         `collections.Sequence[aiobungie.crate.DestinyMembership]`
             A sequence of the found Destiny 2 player memberships.
-            An empty sequene will be returned if no one found.
+            An empty sequence will be returned if no one found.
 
         Raises
         ------
@@ -459,8 +462,8 @@ class Client(traits.ClientBase):
         member_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
         character_id: int,
-        *components: enums.ComponentType,
-        **options: str,
+        components: list[enums.ComponentType],
+        auth: typing.Optional[str] = None,
     ) -> components.CharacterComponent:
         """Fetch a Destiny 2 character.
 
@@ -472,33 +475,25 @@ class Client(traits.ClientBase):
             The Destiny character id to retrieve.
         membership_type: `aiobungie.internal.enums.MembershipType`
             The member's membership type.
-        *components: `aiobungie.ComponentType`
+        components: `list[aiobungie.ComponentType]`
             Multiple arguments of character components to collect and return.
 
         Other Parameters
         ----------------
         auth : `typing.Optional[str]`
-            A passed kwarg Bearer access_token to make the request with.
+            A Bearer access_token to make the request with.
             This is optional and limited to components that only requires an Authorization token.
-        **options : `str`
-            Other keyword arguments for the request to expect.
-            This is only here for the `auth` option which's a kwarg.
 
         Returns
         -------
         `aiobungie.crate.CharacterComponent`
             A Bungie character component.
 
-        Raises
-        ------
-        `aiobungie.error.CharacterError`
-            raised if the Character was not found.
-
         `aiobungie.MembershipTypeError`
             The provided membership type was invalid.
         """
         resp = await self.rest.fetch_character(
-            member_id, membership_type, character_id, *components, **options
+            member_id, membership_type, character_id, components, auth
         )
         assert isinstance(resp, dict)
         return self.factory.deserialize_character_component(resp)
@@ -690,7 +685,7 @@ class Client(traits.ClientBase):
         """
         resp = await self.rest.fetch_clan_conversations(clan_id)
         assert isinstance(resp, list)
-        return self.factory.deserialize_clan_convos(resp)
+        return self.factory.deserialize_clan_conversations(resp)
 
     async def fetch_clan_admins(
         self, clan_id: int, /
@@ -736,7 +731,7 @@ class Client(traits.ClientBase):
 
         Other Parameters
         ----------------
-        filter : `builsins.int`
+        filter : `int`
             Filter apply to list of joined groups. This Default to `0`
         group_type : `aiobungie.GroupType`
             The group's type.
@@ -764,7 +759,7 @@ class Client(traits.ClientBase):
         filter: int = 0,
         group_type: typedefs.IntAnd[enums.GroupType] = enums.GroupType.CLAN,
     ) -> collections.Sequence[clans.GroupMember]:
-        """Fetch the potentional groups for a clan member.
+        """Fetch the potential groups for a clan member.
 
         Parameters
         ----------
@@ -775,7 +770,7 @@ class Client(traits.ClientBase):
 
         Other Parameters
         ----------------
-        filter : `builsins.int`
+        filter : `int`
             Filter apply to list of joined groups. This Default to `0`
         group_type : `aiobungie.typedefs.IntAnd[aiobungie.GroupType]`
             The group's type.
@@ -784,7 +779,7 @@ class Client(traits.ClientBase):
         Returns
         -------
         `collections.Sequence[aiobungie.crate.GroupMember]`
-            A sequence of joined potentional groups for the fetched member.
+            A sequence of joined potential groups for the fetched member.
         """
         resp = await self.rest.fetch_potential_groups_for_member(
             member_id, member_type, filter=filter, group_type=group_type
@@ -806,7 +801,7 @@ class Client(traits.ClientBase):
 
         Parameters
         ----------
-        clan_id : `builsins.int`
+        clan_id : `int`
             The clans id
 
         Other Parameters
@@ -932,7 +927,7 @@ class Client(traits.ClientBase):
         Returns
         -------
         `aiobungie.crate.ObjectiveEntity`
-            An objetive entity item.
+            An objective entity item.
         """
         resp = await self.rest.fetch_objective_entity(hash)
         assert isinstance(resp, dict)
@@ -1086,7 +1081,7 @@ class Client(traits.ClientBase):
 
     async def fetch_clan_fireteam(
         self, access_token: str, fireteam_id: int, group_id: int
-    ) -> fireteams.AvalaibleFireteam:
+    ) -> fireteams.AvailableFireteam:
         """Fetch a specific clan fireteam.
 
         .. note::
@@ -1103,7 +1098,7 @@ class Client(traits.ClientBase):
 
         Returns
         -------
-        `typing.Optional[aiobungie.crate.AvalaibleFireteam]`
+        `typing.Optional[aiobungie.crate.AvailableFireteam]`
             A sequence of available fireteams objects if exists. else `None` will be returned.
         """
         resp = await self.rest.fetch_clan_fireteam(access_token, fireteam_id, group_id)
@@ -1122,7 +1117,7 @@ class Client(traits.ClientBase):
         language: typing.Union[fireteams.FireteamLanguage, str],
         filtered: bool = True,
         page: int = 0,
-    ) -> collections.Sequence[fireteams.AvalaibleFireteam]:
+    ) -> collections.Sequence[fireteams.AvailableFireteam]:
         """A method that's similar to `fetch_fireteams` but requires OAuth2.
 
         .. note::
@@ -1153,7 +1148,7 @@ class Client(traits.ClientBase):
 
         Returns
         -------
-        `collections.Sequence[aiobungie.crate.AvalaibleFireteam]`
+        `collections.Sequence[aiobungie.crate.AvailableFireteam]`
             A sequence of available fireteams objects if exists. else `None` will be returned.
         """
         resp = await self.rest.fetch_my_clan_fireteams(

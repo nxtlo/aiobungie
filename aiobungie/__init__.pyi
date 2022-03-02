@@ -22,10 +22,11 @@ from ._info import __email__ as __email__
 from ._info import __license__ as __license__
 from ._info import __url__ as __url__
 from ._info import __version__ as __version__
-from .crate.activity import Diffculity as Diffculity
+from .crate.activity import Difficulty as Difficulty
 from .crate.components import ComponentFields as ComponentFields
 from .crate.components import ComponentPrivacy as ComponentPrivacy
 from .crate.entity import GatingScope as GatingScope
+from .crate.entity import ObjectiveUIStyle as ObjectiveUIStyle
 from .crate.entity import ValueUIStyle as ValueUIStyle
 from .crate.fireteams import FireteamActivity as FireteamActivity
 from .crate.fireteams import FireteamDate as FireteamDate

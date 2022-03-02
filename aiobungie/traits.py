@@ -20,18 +20,20 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Interfaces used for the main clients implementations."""
+"""Interfaces used for the core aiobungie implementations."""
 
 from __future__ import annotations
 
-__all__ = ("ClientBase", "Netrunner", "Serializable", "RESTful")
+import pathlib
+
+__all__ = ("ClientApp", "Netrunner", "Serializable", "RESTful")
 
 import typing
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
 
-    from aiobungie import client as base_client
+    from aiobungie import client
     from aiobungie import interfaces
     from aiobungie import rest
     from aiobungie.internal import factory as factory_
@@ -39,26 +41,35 @@ if typing.TYPE_CHECKING:
 
 @typing.runtime_checkable
 class Netrunner(typing.Protocol):
-    """A supertype protocol represents a readonly `ClientBase`.
+    """Core trait for types which it is possible for crates to run external requests.
 
-    Clients that implements this can make requests from outside the base client.
-    This is useually used within the `aiobungie.crate` implementations for easier access to the base client instance.
+    These requests are performed by a reference of your `aiobungie.Client` instance.
+
+    Example
+    -------
+    ```py
+    import aiobungie
+
+    membership = aiobungie.crate.DestinyMembership(…)
+    # Access the base client that references this membership.
+    external_request = await membership.net.request.fetch_user(…)
+    ```
     """
 
     __slots__ = ()
 
     @property
-    def request(self) -> base_client.Client:
-        """A readonly `ClientBase` instance used for external requests."""
+    def request(self) -> client.Client:
+        """A readonly `ClientApp` instance used for external requests."""
         raise NotImplementedError
 
 
 @typing.runtime_checkable
 class Serializable(typing.Protocol):
-    """A supertype protocol for deserializable clients.
+    """Core trait for types which it is possible to deserialize incoming REST payloads
+    into a `aiobungie.crate` implementation using the `Serializable.factory` property.
 
-    Clients that implements this can deserialize JSON REST payloads into
-    a Python `aiobungie.crate` object using the client `aiobungie.internal.factory.Factory`.
+    Currently only `ClientBase` implement this trait
     """
 
     __slots__ = ()
@@ -71,12 +82,52 @@ class Serializable(typing.Protocol):
 
 @typing.runtime_checkable
 class RESTful(typing.Protocol):
-    """A RESTful only supertype protocol.
+    """Core trait for types which it is possible to interact with the API directly
+    which provides RESTful functionalities.
 
-    Clients with this are raw-only JSON REST clients. i.e., `aiobungie.rest.RESTClient`
+    Currently only `aiobungie.RESTClient` implement this trait,
+    `ClientBase` may access its RESTClient using `aiobungie.Client.rest` property.
     """
 
     __slots__ = ()
+
+    @property
+    def client_id(self) -> typing.Optional[int]:
+        """Return the client id of this REST client if provided, Otherwise None."""
+        raise NotImplementedError
+
+    @property
+    def metadata(self) -> collections.MutableMapping[typing.Any, typing.Any]:
+        """A mutable mapping storage for the user's needs.
+
+        This mapping is useful for storing any kind of data that the user may need.
+
+        Example
+        -------
+        ```py
+        import aiobungie
+
+        client = aiobungie.RESTClient(…)
+
+        async with client:
+            # Fetch auth tokens and store them
+            client.metadata["tokens"] = await client.fetch_access_token("code")
+
+        # Some other time.
+        async with client:
+            # Retrieve the tokens
+            tokens: aiobungie.OAuth2Response = client.metadata["tokens"]
+
+            # Use them to fetch your user.
+            user = await client.fetch_current_user_memberships(tokens.access_token)
+        ```
+        """
+        raise NotImplementedError
+
+    @property
+    def is_alive(self) -> bool:
+        """Returns `True` if the REST client is alive and `False` otherwise."""
+        raise NotImplementedError
 
     def build_oauth2_url(
         self, client_id: typing.Optional[int] = None
@@ -85,31 +136,34 @@ class RESTful(typing.Protocol):
 
         Parameters
         ----------
-        client_id : `typing.Optional[int]`
+        client_id : `int | None`
             An optional client id to provide, If left `None` it will roll back to the id passed
             to the `RESTClient`, If both is `None` this method will return `None`.
 
         Returns
         -------
-        `typing.Optional[str]`
+        `str | None`
             If the client id was provided as a parameter or provided in `aiobungie.RESTClient`,
             A complete URL will be returned.
             Otherwise `None` will be returned.
         """
         raise NotImplementedError
 
-    @property
-    def client_id(self) -> typing.Optional[int]:
-        """Return the client id of this REST client if provided, Otherwise None"""
-        raise NotImplementedError
+    @staticmethod
+    def enable_debugging(
+        file: typing.Optional[typing.Union[pathlib.Path, str]] = None, /
+    ) -> None:
+        """Enables debugging for the REST client.
 
-    @property
-    def metadata(self) -> collections.MutableMapping[typing.Any, typing.Any]:
-        """A mutable mapping storage for the user's needs."""
+        Parameters
+        -----------
+        file : `pathlib.Path | str | None`
+            The file path to write the debug logs to. If provided.
+        """
         raise NotImplementedError
 
     async def close(self) -> None:
-        """Close the rest client."""
+        """Close this REST client session if it was acquired."""
         raise NotImplementedError
 
     async def static_request(
@@ -124,14 +178,14 @@ class RESTful(typing.Protocol):
 
         Parameters
         ----------
-        method : `typing.Union[aiobungie.rest.RequestMethod, str]`
+        method : `aiobungie.rest.RequestMethod | str`
             The request method, This may be `GET`, `POST`, `PUT`, etc.
         path: `str`
             The Bungie endpoint or path.
             A path must look something like this `Destiny2/3/Profile/46111239123/...`
-        auth : `typing.Optional[str]`
+        auth : `str | None`
             An optional bearer token for methods that requires OAuth2 Authorization header.
-        json : `typing.Optional[dict[str, typing.Any]]`
+        json : `dict[str, typing.Any] | None`
             An optional JSON data to include in the request.
         **kwargs: `typing.Any`
             Any other key words to pass to the request.
@@ -145,10 +199,10 @@ class RESTful(typing.Protocol):
 
 
 @typing.runtime_checkable
-class ClientBase(Netrunner, Serializable, typing.Protocol):
-    """A supertype that implements all protocols.
+class ClientApp(Netrunner, Serializable, typing.Protocol):
+    """Core trait for the standard `aiobungie.Client` implementation.
 
-    This can also access its REST client via `ClientBase.rest`
+    This trait includes all previous trait implementations.
     """
 
     __slots__ = ()
@@ -156,8 +210,9 @@ class ClientBase(Netrunner, Serializable, typing.Protocol):
     def run(
         self, future: collections.Coroutine[None, None, None], debug: bool = False
     ) -> None:
-        """Runs a Coro function until its complete.
-        This is equivalent to asyncio.get_event_loop().run_until_complete(...)
+        """Runs a coroutine function until its complete.
+
+        This is equivalent to `asyncio.get_event_loop().run_until_complete(...)`
 
         Parameters
         ----------
@@ -172,7 +227,7 @@ class ClientBase(Netrunner, Serializable, typing.Protocol):
         async def main() -> None:
             await fetch(...)
 
-        # Run the coro.
+        # Run the coroutine.
         client.run(main())
         ```
         """

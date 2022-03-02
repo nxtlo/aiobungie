@@ -152,7 +152,7 @@ class Factory(interfaces.FactoryInterface):
             primary_membership_id=primary_membership_id,
         )
 
-    def deseialize_searched_user(
+    def deserialize_searched_user(
         self, payload: typedefs.JSONObject
     ) -> user.SearchableDestinyUser:
         name: undefined.UndefinedOr[str] = undefined.Undefined
@@ -195,8 +195,6 @@ class Factory(interfaces.FactoryInterface):
     def set_themese_attrs(
         payload: typedefs.JSONArray, /
     ) -> typing.Collection[user.UserThemes]:
-        if payload is None:
-            raise ValueError("No themes found.")
 
         theme_map: dict[int, user.UserThemes] = {}
         theme_ids: list[int] = helpers.just(payload, "userThemeId")
@@ -341,7 +339,7 @@ class Factory(interfaces.FactoryInterface):
             group=self.deserialize_clan(payload["group"]),
         )
 
-    def deserialize_clan_convos(
+    def deserialize_clan_conversations(
         self, payload: typedefs.JSONArray
     ) -> collections.Sequence[clans.ClanConversation]:
         map = {}
@@ -451,11 +449,7 @@ class Factory(interfaces.FactoryInterface):
         if raw_version := payload.get("versionNumber"):
             version_number = int(raw_version)
 
-        transfer_status: int = payload["transferStatus"]
-        try:
-            transfer_status = enums.TransferStatus(payload["transferStatus"])
-        except ValueError:
-            pass
+        transfer_status = enums.TransferStatus(payload["transferStatus"])
 
         return profile.ProfileItemImpl(
             net=self._net,
@@ -481,7 +475,9 @@ class Factory(interfaces.FactoryInterface):
             visible=payload["visible"],
             complete=payload["complete"],
             completion_value=payload["completionValue"],
-            progress=payload["progress"],
+            progress=payload.get("progress"),
+            destination_hash=payload.get("destinationHash"),
+            activity_hash=payload.get("activityHash"),
         )
 
     def deserialize_records(
@@ -494,10 +490,7 @@ class Factory(interfaces.FactoryInterface):
         interval_objectives: typing.Optional[list[records.Objective]] = None
         record_state: typedefs.IntAnd[records.RecordState]
 
-        try:
-            record_state = records.RecordState(payload.get("state", 999))
-        except ValueError:
-            record_state = payload.get("state", 0)
+        record_state = records.RecordState(payload["state"])
 
         if raw_objs := payload.get("objectives"):
             objectives = [self.deserialize_objectives(obj) for obj in raw_objs]
@@ -506,9 +499,6 @@ class Factory(interfaces.FactoryInterface):
             interval_objectives = [
                 self.deserialize_objectives(obj) for obj in raw_interval_objs
             ]
-
-        if scores:
-            assert scores
 
         return records.Record(
             scores=scores,
@@ -530,9 +520,6 @@ class Factory(interfaces.FactoryInterface):
     ) -> records.CharacterRecord:
 
         record = self.deserialize_records(payload, scores)
-        # This is always None but available to keep the Record
-        # Signature.
-        assert scores is None
         return records.CharacterRecord(
             scores=scores,
             categories_node_hash=record.categories_node_hash,
@@ -551,7 +538,7 @@ class Factory(interfaces.FactoryInterface):
             channel_hash=payload["channelHash"], dye_hash=payload["dyeHash"]
         )
 
-    def deserialize_character_customazition(
+    def deserialize_character_customization(
         self, payload: typedefs.JSONObject
     ) -> character.CustomizationOptions:
         return character.CustomizationOptions(
@@ -585,7 +572,7 @@ class Factory(interfaces.FactoryInterface):
     ) -> character.RenderedData:
         return character.RenderedData(
             net=self._net,
-            customization=self.deserialize_character_customazition(
+            customization=self.deserialize_character_customization(
                 payload["customization"]
             ),
             custom_dyes=[
@@ -609,7 +596,7 @@ class Factory(interfaces.FactoryInterface):
             is_visible=payload["isVisible"],
             display_level=payload.get("displayLevel"),
             recommended_light=payload.get("recommendedLight"),
-            diffculity=activity.Diffculity(payload["difficultyTier"]),
+            difficulty=activity.Difficulty(payload["difficultyTier"]),
             can_join=payload["canJoin"],
             can_lead=payload["canLead"],
         )
@@ -873,7 +860,7 @@ class Factory(interfaces.FactoryInterface):
     ) -> character.Character:
         return self._set_character_attrs(payload)
 
-    def deserialize_character_equipmnets(
+    def deserialize_character_equipments(
         self, payload: typedefs.JSONObject
     ) -> collections.Mapping[int, collections.Sequence[profile.ProfileItemImpl]]:
         return {
@@ -954,8 +941,6 @@ class Factory(interfaces.FactoryInterface):
     def deserialize_characters_records(
         self,
         payload: typedefs.JSONObject,
-        scores: typing.Optional[records.RecordScores] = None,
-        record_hashes: typing.Optional[list[int]] = None,
     ) -> collections.Mapping[int, records.CharacterRecord]:
 
         return {
@@ -983,6 +968,54 @@ class Factory(interfaces.FactoryInterface):
             )
             for record_id, record in raw_profile_records["records"].items()
         }
+
+    def _deserialize_craftable_socket_plug(
+        self, payload: typedefs.JSONObject
+    ) -> items.CraftableSocketPlug:
+        return items.CraftableSocketPlug(
+            item_hash=int(payload["plugItemHash"]),
+            failed_requirement_indexes=payload.get("failedRequirementIndexes", []),
+        )
+
+    def _deserialize_craftable_socket(
+        self, payload: typedefs.JSONObject
+    ) -> items.CraftableSocket:
+
+        plugs: list[items.CraftableSocketPlug] = []
+        if raw_plug := payload.get("plug"):
+            plugs.extend(
+                self._deserialize_craftable_socket_plug(plug) for plug in raw_plug
+            )
+
+        return items.CraftableSocket(
+            plug_set_hash=int(payload["plugSetHash"]), plugs=plugs
+        )
+
+    def _deserialize_craftable_item(
+        self, payload: typedefs.JSONObject
+    ) -> items.CraftableItem:
+
+        return items.CraftableItem(
+            is_visible=payload["visible"],
+            failed_requirement_indexes=payload.get("failedRequirementIndexes", []),
+            sockets=[
+                self._deserialize_craftable_socket(socket)
+                for socket in payload["sockets"]
+            ],
+        )
+
+    def deserialize_craftables_component(
+        self, payload: typedefs.JSONObject
+    ) -> components.CraftablesComponent:
+        return components.CraftablesComponent(
+            net=self._net,
+            craftables={
+                int(item_id): self._deserialize_craftable_item(item)
+                for item_id, item in payload["craftables"].items()
+                if item is not None
+            },
+            crafting_root_node_hash=payload["craftingRootNodeHash"],
+        )
 
     def deserialize_components(  # noqa: C901 Too complex.
         self, payload: typedefs.JSONObject
@@ -1049,7 +1082,7 @@ class Factory(interfaces.FactoryInterface):
             collections.Mapping[int, collections.Sequence[profile.ProfileItemImpl]]
         ] = None
         if raw_character_equips := payload.get("characterEquipment"):
-            character_equipments = self.deserialize_character_equipmnets(
+            character_equipments = self.deserialize_character_equipments(
                 raw_character_equips
             )
 
@@ -1058,7 +1091,7 @@ class Factory(interfaces.FactoryInterface):
         ] = None
         if raw_character_inventories := payload.get("characterInventories"):
             if "data" in raw_character_inventories:
-                character_inventories = self.deserialize_character_equipmnets(
+                character_inventories = self.deserialize_character_equipments(
                     raw_character_inventories
                 )
 
@@ -1100,7 +1133,9 @@ class Factory(interfaces.FactoryInterface):
 
         metrics: typing.Optional[
             collections.Sequence[
-                collections.Mapping[int, tuple[bool, records.Objective]]
+                collections.Mapping[
+                    int, tuple[bool, typing.Optional[records.Objective]]
+                ]
             ]
         ] = None
         root_node_hash: typing.Optional[int] = None
@@ -1110,7 +1145,9 @@ class Factory(interfaces.FactoryInterface):
                 {
                     int(metrics_hash): (
                         data["invisible"],
-                        self.deserialize_objectives(data["objectiveProgress"]),
+                        self.deserialize_objectives(data["objectiveProgress"])
+                        if "objectiveProgress" in payload
+                        else None,
                     )
                     for metrics_hash, data in raw_metrics["data"]["metrics"].items()
                 }
@@ -1206,6 +1243,17 @@ class Factory(interfaces.FactoryInterface):
                     for char_id, currencie in raw_char_lookups["data"].items()
                 }
 
+        character_craftables: typing.Optional[
+            collections.Mapping[int, components.CraftablesComponent]
+        ] = None
+        if raw_character_craftables := payload.get("characterCraftables"):
+
+            if "data" in raw_character_craftables:
+                character_craftables = {
+                    int(char_id): self.deserialize_craftables_component(craftable)
+                    for char_id, craftable in raw_character_craftables["data"].items()
+                }
+
         return components.Component(
             profiles=profile_,
             profile_progression=profile_progression,
@@ -1233,6 +1281,7 @@ class Factory(interfaces.FactoryInterface):
             character_nodes=character_nodes,
             platform_silver=platform_silver,
             character_currency_lookups=character_currency_lookups,
+            character_craftables=character_craftables,
         )
 
     def deserialize_items_component(
@@ -1588,7 +1637,7 @@ class Factory(interfaces.FactoryInterface):
         if raw_emblem_obj_hash := payload.get("emblemObjectiveHash"):
             emblem_objective_hash = int(raw_emblem_obj_hash)
 
-        tier_type: typing.Optional[int] = None
+        tier_type: typing.Optional[enums.TierType] = None
         tier: typing.Optional[enums.ItemTier] = None
         bucket_hash: typing.Optional[int] = None
         recovery_hash: typing.Optional[int] = None
@@ -1601,7 +1650,7 @@ class Factory(interfaces.FactoryInterface):
         stack_label: undefined.UndefinedOr[str] = undefined.Undefined
 
         if inventory := payload.get("inventory"):
-            tier_type = int(inventory["tierType"])
+            tier_type = enums.TierType(int(inventory["tierType"]))
             tier = enums.ItemTier(int(inventory["tierTypeHash"]))
             bucket_hash = int(inventory["bucketTypeHash"])
             recovery_hash = int(inventory["recoveryBucketTypeHash"])
@@ -1685,12 +1734,12 @@ class Factory(interfaces.FactoryInterface):
             icon=props.icon,
             unlock_value_hash=payload["unlockValueHash"],
             completion_value=payload["completionValue"],
-            scope=entity.GatingScope(payload["scope"]),
+            scope=entity.GatingScope(int(payload["scope"])),
             location_hash=payload["locationHash"],
             allowed_negative_value=payload["allowNegativeValue"],
             allowed_value_change=payload["allowValueChangeWhenCompleted"],
             counting_downward=payload["isCountingDownward"],
-            value_style=entity.ValueUIStyle(payload["valueStyle"]),
+            value_style=entity.ValueUIStyle(int(payload["valueStyle"])),
             progress_description=payload["progressDescription"],
             perks=payload["perks"],
             stats=payload["stats"],
@@ -1698,8 +1747,14 @@ class Factory(interfaces.FactoryInterface):
             allow_over_completion=payload["allowOvercompletion"],
             show_value_style=payload["showValueOnComplete"],
             display_only_objective=payload["isDisplayOnlyObjective"],
-            complete_value_style=entity.ValueUIStyle(payload["completedValueStyle"]),
-            progress_value_style=entity.ValueUIStyle(payload["inProgressValueStyle"]),
+            complete_value_style=entity.ValueUIStyle(
+                int(payload["completedValueStyle"])
+            ),
+            progress_value_style=entity.ValueUIStyle(
+                int(payload["inProgressValueStyle"])
+            ),
+            ui_label=payload["uiLabel"],
+            ui_style=entity.ObjectiveUIStyle(int(payload["uiStyle"])),
         )
 
     def _deserialize_activity_values(
@@ -1999,12 +2054,10 @@ class Factory(interfaces.FactoryInterface):
 
         return friends.FriendRequestView(incoming=incoming, outgoing=outgoing)
 
-    def _set_fireteam_fields(self, payload: typedefs.JSONObject) -> fireteams.Fireteam:
-        activity_type = payload["activityType"]
-        try:
-            activity_type = fireteams.FireteamActivity(payload["activityType"])
-        except ValueError:
-            pass
+    def _set_fireteam_fields(
+        self, payload: typedefs.JSONObject, total_results: typing.Optional[int] = None
+    ) -> fireteams.Fireteam:
+        activity_type = fireteams.FireteamActivity(payload["activityType"])
         return fireteams.Fireteam(
             id=int(payload["fireteamId"]),
             group_id=int(payload["groupId"]),
@@ -2021,7 +2074,7 @@ class Factory(interfaces.FactoryInterface):
             locale=fireteams.FireteamLanguage(payload["locale"]),
             is_valid=payload["isValid"],
             last_modified=time.clean_date(payload["datePlayerModified"]),
-            total_results=payload.get("totlaResults", 0),
+            total_results=total_results or 0,
         )
 
     def deserialize_fireteams(
@@ -2033,7 +2086,11 @@ class Factory(interfaces.FactoryInterface):
         if not (result := payload["results"]):
             return None
         for elem in result:
-            fireteams_.append(self._set_fireteam_fields(elem))
+            fireteams_.append(
+                self._set_fireteam_fields(
+                    elem, total_results=int(payload["totalResults"])
+                )
+            )
         return fireteams_
 
     def deserialize_fireteam_destiny_users(
@@ -2097,9 +2154,9 @@ class Factory(interfaces.FactoryInterface):
         *,
         no_results: bool = False,
     ) -> typing.Union[
-        fireteams.AvalaibleFireteam, collections.Sequence[fireteams.AvalaibleFireteam]
+        fireteams.AvailableFireteam, collections.Sequence[fireteams.AvailableFireteam]
     ]:
-        fireteams_: list[fireteams.AvalaibleFireteam] = []
+        fireteams_: list[fireteams.AvailableFireteam] = []
 
         # This needs to be used outside the results
         # JSON key.
@@ -2110,7 +2167,7 @@ class Factory(interfaces.FactoryInterface):
 
             for fireteam in result:
                 found_fireteams = self._set_fireteam_fields(fireteam["Summary"])
-                fireteams_fields = fireteams.AvalaibleFireteam(
+                fireteams_fields = fireteams.AvailableFireteam(
                     id=found_fireteams.id,
                     group_id=found_fireteams.group_id,
                     platform=found_fireteams.platform,
@@ -2160,12 +2217,8 @@ class Factory(interfaces.FactoryInterface):
     def _deserialize_fireteam_party_member(
         self, payload: typedefs.JSONObject
     ) -> fireteams.FireteamPartyMember:
-        status = int(payload["status"])
-        try:
-            status = fireteams.FireteamPartyMemberState(status)
-        except ValueError:
-            pass
 
+        status = fireteams.FireteamPartyMemberState(payload["status"])
         displayname: undefined.UndefinedOr[str] = undefined.Undefined
         if raw_name := payload.get("displayName"):
             displayname = raw_name
@@ -2199,11 +2252,7 @@ class Factory(interfaces.FactoryInterface):
     def _deserialize_fireteam_party_settings(
         self, payload: typedefs.JSONObject
     ) -> fireteams.FireteamPartySettings:
-        closed_reasons: int = int(payload["closedReasons"])
-        try:
-            closed_reasons = enums.ClosedReasons(closed_reasons)
-        except ValueError:
-            pass
+        closed_reasons = enums.ClosedReasons(payload["closedReasons"])
         return fireteams.FireteamPartySettings(
             open_slots=int(payload["openSlots"]),
             privacy_setting=enums.PrivacySetting(int(payload["privacySetting"])),

@@ -29,60 +29,115 @@ __all__: tuple[str, ...] = (
     "just",
     "awaits",
     "get_or_make_loop",
-    "collect",
+    "unimplemented",
 )
 
 import asyncio
 import collections.abc as collections
+import functools
 import inspect
 import typing
 import warnings
 
-AT = typing.TypeVar("AT", covariant=True)
-JT = typing.TypeVar("JT")
+if typing.TYPE_CHECKING:
+    T_co = typing.TypeVar("T_co", covariant=True)
+    T = typing.TypeVar("T", bound=collections.Callable[..., typing.Any])
 
-ConsumerSigT = typing.TypeVar("ConsumerSigT", bound=typing.Callable[..., typing.Any])
-
-
-def just(lst: list[dict[str, JT]], lookup: str) -> list[JT]:
+# TODO: Remove this later.
+def just(lst: list[dict[str, T_co]], lookup: str) -> list[T_co]:
     """A helper function that takes a list of dicts and return a list of
     all keys found inside the dict
     """
     return list(map(lambda dct: dct[lookup], lst))
 
 
-def collect(
-    *args: typing.Any, consume: ConsumerSigT = str, separator: str = ", "  # type: ignore[assignment]
-) -> typing.Union[ConsumerSigT, str]:
-    """Consume passed argumnts and return them joining ', ' for each argument.
-
-    If only one argument was passed it will just return that argumnt.
-    """
-    if len(args) > 1:
-        if consume:
-            return separator.join(consume(arg) for arg in args)
-        return separator.join(arg for arg in args)
-    return args[0]  # type: ignore[no-any-return]
+class UnimplementedWarning(RuntimeWarning):
+    """A warning that is raised when a function or class is not implemented."""
 
 
-def deprecated(func: typing.Callable[..., typing.Any]) -> typing.Callable[..., None]:
+def deprecated(
+    since: str,
+    removed_in: typing.Optional[str] = None,
+    use_instead: typing.Optional[str] = None,
+) -> collections.Callable[[T], T]:
+    """A decorator that marks a function as deprecated.
+
+    Parameters
+    ----------
+    since : `str`
+        The version that the function was deprecated.
+    use_instead : `typing.Optional[str]`
+        If provided, This should be the alternaviate object name that should be used instead.
     """
-    functions with this decorator will not work or is not implemented yet.
+
+    def decorator(func: T) -> T:
+        @functools.wraps(func)
+        def wrapper(*args: typing.Any, **kwargs: typing.Any) -> typing.Any:
+
+            obj_type = "class" if inspect.isclass(func) else "function"
+            msg = f"Warning! {obj_type} {func.__module__}.{func.__name__} is deprecated since {since}."
+
+            if removed_in:
+                msg += f" Will be removed in {removed_in}."
+
+            if use_instead:
+                msg += f" Use {use_instead} instead."
+
+            warnings.warn(
+                msg,
+                stacklevel=2,
+                category=DeprecationWarning,
+            )
+            return func(*args, **kwargs)
+
+        return typing.cast("T", wrapper)
+
+    return decorator
+
+
+def unimplemented(
+    message: typing.Optional[str] = None, available_in: typing.Optional[str] = None
+) -> collections.Callable[[T], T]:
+    """A decorator that marks a function or classes as unimplemented.
+
+    Parameters
+    ----------
+    message : `typing.Optional[str]`
+        An optional message to be displayed when the function is called. Otherwise default message will be used.
+    available_in : `typing.Optional[str]`
+        If provided, This will be shown as what release this object be implemented.
     """
-    if inspect.isfunction(func):
-        warnings.warn(
-            f"function {func.__name__!r} is deprecated.",
-            stacklevel=2,
-            category=DeprecationWarning,
-        )
-    return lambda *args, **kwargs: func(*args, **kwargs)
+
+    def decorator(obj: T) -> T:
+        @functools.wraps(obj)
+        def wrapper(*args: typing.Any, **kwargs: typing.Any) -> typing.Any:
+
+            obj_type = "class" if inspect.isclass(obj) else "function"
+            msg = (
+                message
+                or f"Warning! {obj_type} {obj.__module__}.{obj.__name__} is not implemented yet."  # noqa: W503
+            )
+
+            if available_in:
+                msg += f" Will be implemented in {available_in}."
+
+            warnings.warn(
+                msg,
+                stacklevel=2,
+                category=UnimplementedWarning,
+            )
+            return obj(*args, **kwargs)
+
+        return typing.cast("T", wrapper)
+
+    return decorator
 
 
 async def awaits(
-    *aws: collections.Awaitable[JT],
+    *aws: collections.Awaitable[T_co],
     timeout: typing.Optional[float] = None,
     with_exception: bool = True,
-) -> typing.Union[collections.Collection[JT], collections.Sequence[JT]]:
+) -> typing.Union[collections.Collection[T_co], collections.Sequence[T_co]]:
     """Await all given awaitables concurrently.
 
     Parameters
@@ -101,12 +156,12 @@ async def awaits(
     """
 
     if not aws:
-        raise RuntimeError("No awaiables passed.", aws)
+        raise RuntimeError("No awaitables passed.", aws)
 
-    pending: list[asyncio.Future[JT]] = []
+    pending: list[asyncio.Future[T_co]] = []
 
     for future in aws:
-        pending.append(asyncio.create_task(future))
+        pending.append(asyncio.create_task(future))  # type: ignore
     try:
         gatherer = asyncio.gather(*pending, return_exceptions=with_exception)
         return await asyncio.wait_for(gatherer, timeout=timeout)

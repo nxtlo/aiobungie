@@ -72,6 +72,7 @@ __all__: tuple[str, ...] = (
     "RecordsComponent",
     "UninstancedItemsComponent",
     "StringVariableComponent",
+    "CraftablesComponent",
     # entity.py
     "InventoryEntity",
     "ActivityEntity",
@@ -83,7 +84,7 @@ __all__: tuple[str, ...] = (
     "PlaylistActivityEntity",
     # fireteams.py
     "Fireteam",
-    "AvalaibleFireteam",
+    "AvailableFireteam",
     "FireteamUser",
     "FireteamMember",
     "FireteamPartySettings",

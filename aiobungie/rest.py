@@ -32,6 +32,7 @@ __all__: tuple[str, ...] = (
     "RequestMethod",
     "OAuth2Response",
     "PlugSocketBuilder",
+    "REST_DEBUG",
 )
 
 import asyncio
@@ -45,7 +46,6 @@ import platform
 import random
 import sqlite3
 import sys
-import time
 import typing
 import uuid
 import zipfile
@@ -62,8 +62,7 @@ from aiobungie import url
 from aiobungie.crate import fireteams
 from aiobungie.internal import _backoff as backoff
 from aiobungie.internal import enums
-from aiobungie.internal import helpers
-from aiobungie.internal import time as aiobungie_time
+from aiobungie.internal import time
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
@@ -99,14 +98,51 @@ f"({info.__version__}), ({info.__url__}), "
 f"{platform.python_implementation()}/{platform.python_version()} {platform.system()} "
 f"{platform.architecture()[0]}, Aiohttp/{aiohttp.HttpVersion11}"  # type: ignore[UnknownMemberType]
 
+REST_DEBUG: typing.Final[int] = logging.DEBUG - 5
+"""The debug logging level for the `RESTClient` responses.
+
+You can enable this with the following code
+
+>>> import logging
+>>> logging.getLogger("aiobungie.rest").setLevel(aiobungie.REST_DEBUG)
+# or
+>>> logging.basicConfig(level=aiobungie.REST_DEBUG)
+# Or
+>>> client = aiobungie.RESTClient(..., enable_debug=True)
+# Or if you're using `aiobungie.Client`
+>>> client = aiobungie.Client(...)
+>>> client.rest.enable_debugging(file="rest_logs.txt") # optional file
+"""
+
+logging.addLevelName(REST_DEBUG, "REST_DEBUG")
+
+
+@typing.no_type_check
+def _collect_components(components: list[enums.ComponentType], /) -> str:
+    pending: list[str] = []
+
+    for component in components:
+        if isinstance(component.value, tuple):
+            pending.extend(str(c) for c in component.value)  # type: ignore
+        else:
+            if len(components) > 1:
+                pending.append(*list(map(str, component.value)))
+            else:
+                pending.append(str(component.value))
+    return ",".join(pending)
+
 
 class _Arc:
-    __slots__ = ("_lock",)
+    __slots__ = ("_lock", "_bucket")
 
-    def __init__(self) -> None:
+    def __init__(self, bucket: str) -> None:
         self._lock = asyncio.Lock()
+        self._bucket = bucket
 
     async def __aenter__(self) -> None:
+        _LOG.debug(
+            f"Lock acquired on bucket {self._bucket if self._bucket else 'UNKNOWN'}"
+        )
         await self.acquire()
 
     async def __aexit__(
@@ -118,12 +154,16 @@ class _Arc:
         self._lock.release()
 
     async def acquire(self) -> None:
+        _LOG.log(REST_DEBUG, f"Lock released for bucket {self._bucket}")
         await self._lock.acquire()
 
 
-@attrs.define(kw_only=True, repr=False)
 class _Session:
-    client_session: aiohttp.ClientSession
+
+    __slots__ = ("client_session",)
+
+    def __init__(self, client_session: aiohttp.ClientSession) -> None:
+        self.client_session = client_session
 
     @classmethod
     def acquire_session(
@@ -137,6 +177,7 @@ class _Session:
         socket_connect: typing.Optional[float] = None,
         **kwargs: typing.Any,
     ) -> _Session:
+        """Creates a new TCP connection client session."""
         session = aiohttp.ClientSession(
             connector=aiohttp.TCPConnector(verify_ssl=False, **kwargs),
             headers={_USER_AGENT_HEADERS: _USER_AGENT},
@@ -149,24 +190,17 @@ class _Session:
                 connect=connect,
             ),
         )
+        _LOG.log(REST_DEBUG, "Acquired new session.")
         return _Session(client_session=session)
 
-    async def __aenter__(self) -> _Session:
-        return self
-
-    async def __aexit__(
-        self,
-        exception_type: typing.Optional[type[BaseException]],
-        exception: typing.Optional[BaseException],
-        exception_traceback: typing.Optional[types.TracebackType],
-    ) -> None:
-        await self.close()
-
     async def close(self) -> None:
-        # Close the TCP connector.
-        if self.client_session.connector:
+        # Close the TCP connector and all sessions.
+        _LOG.log(REST_DEBUG, "Closing connections...")
+        if self.client_session.connector is not None:
+            # await self.client_session.connector.close()
             await self.client_session.connector.close()
-        await asyncio.sleep(0.025)
+            await asyncio.sleep(0.025)
+            _LOG.log(REST_DEBUG, "All connections has been closed.")
 
 
 class RequestMethod(str, enums.Enum):
@@ -304,6 +338,10 @@ class PlugSocketBuilder:
         return self._map
 
 
+class _Dyn(RuntimeError):
+    ...
+
+
 class RESTClient(interfaces.RESTInterface):
     """A RESTful client implementation for Bungie's API.
 
@@ -336,12 +374,16 @@ class RESTClient(interfaces.RESTInterface):
     ----------------
     max_retries : `int`
         The max retries number to retry if the request hit a `5xx` status code.
+    max_ratelimit_retries : `int`
+        The max retries number to retry if the request hit a `429` status code. Defaults to `3`.
     client_secret : `typing.Optional[str]`
         An optional application client secret,
         This is only needed if you're fetching OAuth2 tokens with this client.
     client_id : `typing.Optional[int]`
         An optional application client id,
         This is only needed if you're fetching OAuth2 tokens with this client.
+    enable_logging : `bool`
+        Whether to enable debugging responses or not.
     """
 
     __slots__ = (
@@ -351,7 +393,7 @@ class RESTClient(interfaces.RESTInterface):
         "_client_secret",
         "_client_id",
         "_metadata",
-        "_lock",
+        "_max_rate_limit_retries",
     )
 
     def __init__(
@@ -362,16 +404,38 @@ class RESTClient(interfaces.RESTInterface):
         client_id: typing.Optional[int] = None,
         *,
         max_retries: int = 4,
+        max_ratelimit_retries: int = 3,
+        enable_debugging: bool = False,
     ) -> None:
         self._session: typing.Optional[_Session] = None
-        self._lock = _Arc()
         self._client_secret = client_secret
         self._client_id = client_id
         self._token: str = token
         self._max_retries = max_retries
+        self._max_rate_limit_retries = max_ratelimit_retries
         self._metadata: collections.MutableMapping[typing.Any, typing.Any] = {}
 
-    def _acquire_session(self) -> _Session:
+        if enable_debugging:
+            logging.basicConfig(level=REST_DEBUG)
+
+    @property
+    def client_id(self) -> typing.Optional[int]:
+        return self._client_id
+
+    @property
+    def metadata(self) -> collections.MutableMapping[typing.Any, typing.Any]:
+        return self._metadata
+
+    @property
+    def is_alive(self) -> bool:
+        return self._session is not None
+
+    @typing.final
+    def _acquire(self) -> _Session:
+        """Acquire a AIOHTTP Client session for this REST client.
+
+        This is means to used internally by the client.
+        """
         asyncio.get_running_loop()
         if self._session is None:
             self._session = _Session.acquire_session(
@@ -386,16 +450,14 @@ class RESTClient(interfaces.RESTInterface):
     @typing.final
     async def close(self) -> None:
         if self._session is not None:
-            _LOG.info("Closing REST client.")
             await self._session.close()
+            self._session = None
 
-    @property
-    def client_id(self) -> typing.Optional[int]:
-        return self._client_id
-
-    @property
-    def metadata(self) -> collections.MutableMapping[typing.Any, typing.Any]:
-        return self._metadata
+    @staticmethod
+    def enable_debugging(
+        file: typing.Optional[typing.Union[pathlib.Path, str]] = None, /
+    ) -> None:
+        logging.basicConfig(level=REST_DEBUG, filename=file, filemode="w")
 
     @typing.final
     async def _request(
@@ -411,9 +473,11 @@ class RESTClient(interfaces.RESTInterface):
     ) -> typing.Any:
 
         retries: int = 0
+        session = self._acquire()
+        headers: dict[str, str]
+        kwargs["headers"] = headers = {}
+
         if self._token is not None:
-            headers: dict[str, str]
-            kwargs["headers"] = headers = {}
             headers["X-API-KEY"] = self._token
         else:
             raise ValueError("No API KEY was passed.")
@@ -434,41 +498,54 @@ class RESTClient(interfaces.RESTInterface):
         while True:
             try:
                 async with (stack := contextlib.AsyncExitStack()):
-                    await stack.enter_async_context(self._lock)
+                    await stack.enter_async_context(_Arc(f"{method}:{route}"))
 
                     # We make the request here.
                     taken_time = time.monotonic()
                     response = await stack.enter_async_context(
-                        self._acquire_session().client_session.request(
+                        session.client_session.request(
                             method=method,
                             url=f"{endpoint}/{route}",
                             json=json,
                             **kwargs,
                         )
                     )
+
+                    if _LOG.isEnabledFor(REST_DEBUG):
+                        _LOG.log(
+                            REST_DEBUG,
+                            "%s %s %s\n%s",
+                            method,
+                            f"{endpoint}/{route}",
+                            f"{response.status} {response.reason}",
+                            error.stringify_http_message(response.headers),
+                        )
                     response_time = (time.monotonic() - taken_time) * 1_000
 
-                    await self._handle_ratelimit(response, method, str(route))
+                    await self._handle_ratelimit(
+                        response, method, route, self._max_rate_limit_retries
+                    )
 
                     if response.status == http.HTTPStatus.NO_CONTENT:
                         return None
 
-                    if unwrapping != "read":
-                        data: typedefs.JSONObject = await response.json()
-
                     if 300 > response.status >= 200:
                         if unwrapping == "read":
-                            # We want to read the bytes for the manifest response.
+                            # We need to read the bytes for the manifest response.
                             return await response.read()
 
                         if response.content_type == _APP_JSON:
-                            if _LOG.isEnabledFor(logging.DEBUG):
-                                _LOG.debug(
-                                    "Method %s Route %s Status %i Time %.4fms",
+                            data = await response.json()
+
+                            if _LOG.isEnabledFor(REST_DEBUG):
+                                _LOG.log(
+                                    REST_DEBUG,
+                                    "%s %s %s Time %.4fms\n%s",
                                     method,
-                                    f"{url.REST_EP}/{route}",
-                                    response.status,
+                                    f"{endpoint}/{route}",
+                                    f"{response.status} {response.reason}",
                                     response_time,
+                                    error.stringify_http_message(response.headers),
                                 )
 
                             # Return the response.
@@ -477,6 +554,7 @@ class RESTClient(interfaces.RESTInterface):
                                 return data
 
                             return data["Response"]
+
                     if (
                         response.status in _RETRY_5XX
                         and retries < self._max_retries  # noqa: W503
@@ -484,9 +562,9 @@ class RESTClient(interfaces.RESTInterface):
                         backoff_ = backoff.ExponentialBackOff(maximum=6)
                         sleep_time = next(backoff_)
                         _LOG.warning(
-                            "Received: %i, Message: %s, Sleeping for %.2f seconds, Remaining retries: %i",
+                            "Got %i - %s. Sleeping for %.2f seconds. Remaining retries: %i",
                             response.status,
-                            data["Message"],
+                            response.reason,
                             sleep_time,
                             self._max_retries - retries,
                         )
@@ -495,10 +573,10 @@ class RESTClient(interfaces.RESTInterface):
                         await asyncio.sleep(sleep_time)
                         continue
 
-                    raise await error.raise_error(response, data.get("ErrorStatus", ""))
+                    raise await error.raise_error(response)
             # eol
-            except error.HTTPError:
-                raise
+            except _Dyn:
+                continue
 
     if not typing.TYPE_CHECKING:
 
@@ -517,6 +595,7 @@ class RESTClient(interfaces.RESTInterface):
             ...
 
     async def __aenter__(self) -> RESTClient:
+        self._acquire()
         return self
 
     async def __aexit__(
@@ -525,16 +604,16 @@ class RESTClient(interfaces.RESTInterface):
         exception: typing.Optional[BaseException],
         exception_traceback: typing.Optional[types.TracebackType],
     ) -> None:
-        if self._session:
-            await self._session.close()
+        await self.close()
 
     # We don't want this to be super complicated.
-    @typing.final
     @staticmethod
+    @typing.final
     async def _handle_ratelimit(
         response: aiohttp.ClientResponse,
         method: str,
         route: str,
+        max_ratelimit_retries: int = 3,
     ) -> None:
 
         if response.status != http.HTTPStatus.TOO_MANY_REQUESTS:
@@ -542,48 +621,37 @@ class RESTClient(interfaces.RESTInterface):
 
         if response.content_type != _APP_JSON:
             raise error.HTTPError(
-                f"Being ratelmited on non JSON request, {response.content_type}.",
+                f"Being ratelimited on non JSON request, {response.content_type}.",
                 http.HTTPStatus.TOO_MANY_REQUESTS,
             )
 
-        json = await response.json()
-        retry_after: float = json["ThrottleSeconds"]
-        if retry_after >= 0:
-            # Can't really do anything about this...
-            sleep_time = float((retry_after + random.randint(0, 3)))
+        count: int = 0
+        json: typedefs.JSONObject = await response.json()
+        retry_after = float(json["ThrottleSeconds"])
 
-            _LOG.warning(
-                "Ratelimited with method %s route %s. Sleeping for %f:,",
-                method,
-                route,
-                sleep_time,
+        while True:
+            if count == max_ratelimit_retries:
+                raise _Dyn
+
+            if retry_after <= 0:
+                # We sleep for a little bit to avoid funky behavior.
+                sleep_time = float(random.random() + 1) / 2
+
+                _LOG.warning(
+                    "We're being ratelimited with method %s route %s. Sleeping for %.2fs.",
+                    method,
+                    route,
+                    sleep_time,
+                )
+                count += 1
+                await asyncio.sleep(sleep_time)
+                continue
+
+            raise error.RateLimitedError(
+                body=json,
+                url=str(response.real_url),
+                retry_after=retry_after,
             )
-            await asyncio.sleep(sleep_time)
-
-        raise error.RateLimitedError(
-            body=json,
-            url=str(response.real_url),
-            retry_after=retry_after,
-        )
-
-    @staticmethod
-    @typing.no_type_check
-    def _collect_components(
-        *components: enums.ComponentType,
-    ) -> typing.Union[str, type[str]]:
-        try:
-            if len(components) == 0:
-                raise ValueError("No profile components passed.", components)
-
-            # Need to get the int overload of the components to separate them.
-            elif len(components) > 1:
-                these = helpers.collect(*[int(k) for k in components])
-            else:
-                these = helpers.collect(int(*components))
-            # In case it's a tuple, i.e., ALL_X
-        except TypeError:
-            these = helpers.collect(*list(str(c.value) for c in components))
-        return these
 
     @typing.final
     def static_request(
@@ -614,7 +682,7 @@ class RESTClient(interfaces.RESTInterface):
 
         if not isinstance(self._client_id, int):
             raise TypeError(
-                f"Expected (str) for client id but got {type(self._client_id).__qualname__}"  # type: ignore
+                f"Expected (int) for client id but got {type(self._client_id).__qualname__}"  # type: ignore
             )
 
         if not isinstance(self._client_secret, str):
@@ -639,7 +707,7 @@ class RESTClient(interfaces.RESTInterface):
     async def refresh_access_token(self, refresh_token: str, /) -> OAuth2Response:
         if not isinstance(self._client_id, int):
             raise TypeError(
-                f"Expected (str) for client id but got {type(self._client_id).__qualname__}"  # type: ignore
+                f"Expected (int) for client id but got {type(self._client_id).__qualname__}"  # type: ignore
             )
 
         if not isinstance(self._client_secret, str):
@@ -739,16 +807,16 @@ class RESTClient(interfaces.RESTInterface):
         member_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
         character_id: int,
-        *components: enums.ComponentType,
-        **options: str,
+        components: list[enums.ComponentType],
+        auth: typing.Optional[str] = None,
     ) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        collector = self._collect_components(*components)
+        collector = _collect_components(components)
         return self._request(
             RequestMethod.GET,
             f"Destiny2/{int(membership_type)}/Profile/{member_id}/"
             f"Character/{character_id}/?components={collector}",
-            auth=options.get("auth"),
+            auth=auth,
         )
 
     def fetch_activities(
@@ -780,17 +848,17 @@ class RESTClient(interfaces.RESTInterface):
 
     def fetch_profile(
         self,
-        memberid: int,
+        membership_id: int,
         type: typedefs.IntAnd[enums.MembershipType],
-        *components: enums.ComponentType,
-        **options: str,
+        components: list[enums.ComponentType],
+        auth: typing.Optional[str] = None,
     ) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        collector = self._collect_components(*components)
+        collector = _collect_components(components)
         return self._request(
             RequestMethod.GET,
-            f"Destiny2/{int(type)}/Profile/{int(memberid)}/?components={collector}",
-            auth=options.get("auth", None),
+            f"Destiny2/{int(type)}/Profile/{membership_id}/?components={collector}",
+            auth=auth,
         )
 
     def fetch_entity(self, type: str, hash: int) -> ResponseSig[typedefs.JSONObject]:
@@ -1558,9 +1626,9 @@ class RESTClient(interfaces.RESTInterface):
         member_id: int,
         item_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
-        *components: enums.ComponentType,
+        components: list[enums.ComponentType],
     ) -> ResponseSig[typedefs.JSONObject]:
-        collector = self._collect_components(*components)
+        collector = _collect_components(components)
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         return self._request(
             RequestMethod.GET,
@@ -1654,18 +1722,18 @@ class RESTClient(interfaces.RESTInterface):
         membership_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
         /,
-        *components: enums.ComponentType,
-        **options: typing.Optional[int],
+        components: list[enums.ComponentType],
+        filter: typing.Optional[int] = None,
     ) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        components_ = self._collect_components(*components)
+        components_ = _collect_components(components)
         route = (
             f"Destiny2/{int(membership_type)}/Profile/{membership_id}"
             f"/Character/{character_id}/Vendors/?components={components_}"
         )
 
-        if "filter" in options:
-            route = route + f"&filter={options['filter']}"
+        if filter is not None:
+            route = route + f"&filter={filter}"
 
         return self._request(
             RequestMethod.GET,
@@ -1681,10 +1749,10 @@ class RESTClient(interfaces.RESTInterface):
         membership_type: typedefs.IntAnd[enums.MembershipType],
         vendor_hash: int,
         /,
-        *components: enums.ComponentType,
+        components: list[enums.ComponentType],
     ) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        components_ = self._collect_components(*components)
+        components_ = _collect_components(components)
         return self._request(
             RequestMethod.GET,
             (
@@ -1704,7 +1772,7 @@ class RESTClient(interfaces.RESTInterface):
         end: typing.Optional[datetime.datetime] = None,
     ) -> ResponseSig[typedefs.JSONObject]:
 
-        end_date, start_date = aiobungie_time.parse_date_range(end, start)
+        end_date, start_date = time.parse_date_range(end, start)
         return self._request(
             RequestMethod.GET,
             f"App/ApiUsage/{application_id}/?end={end_date}&start={start_date}",

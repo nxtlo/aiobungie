@@ -125,10 +125,7 @@ def _collect_components(components: list[enums.ComponentType], /) -> str:
         if isinstance(component.value, tuple):
             pending.extend(str(c) for c in component.value)  # type: ignore
         else:
-            if len(components) > 1:
-                pending.append(*list(map(str, component.value)))
-            else:
-                pending.append(str(component.value))
+            pending.append(str(component.value))
     return ",".join(pending)
 
 

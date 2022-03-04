@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="pdoc 10.0.1"/>
+    <meta name="generator" content="pdoc 10.0.2"/>
     <title>aiobungie.interfaces API documentation</title>
 
     <style>/*! * Bootstrap Reboot v5.0.0 (https://getbootstrap.com/) * Copyright 2011-2021 The Bootstrap Authors * Copyright 2011-2021 Twitter, Inc. * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE) * Forked from Normalize.css, licensed MIT (https://github.com/necolas/normalize.css/blob/master/LICENSE.md) */*,::after,::before{box-sizing:border-box}@media (prefers-reduced-motion:no-preference){:root{scroll-behavior:smooth}}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";font-size:1rem;font-weight:400;line-height:1.5;color:#212529;background-color:#fff;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}hr{margin:1rem 0;color:inherit;background-color:currentColor;border:0;opacity:.25}hr:not([size]){height:1px}h1,h2,h3,h4,h5,h6{margin-top:0;margin-bottom:.5rem;font-weight:500;line-height:1.2}h1{font-size:calc(1.375rem + 1.5vw)}@media (min-width:1200px){h1{font-size:2.5rem}}h2{font-size:calc(1.325rem + .9vw)}@media (min-width:1200px){h2{font-size:2rem}}h3{font-size:calc(1.3rem + .6vw)}@media (min-width:1200px){h3{font-size:1.75rem}}h4{font-size:calc(1.275rem + .3vw)}@media (min-width:1200px){h4{font-size:1.5rem}}h5{font-size:1.25rem}h6{font-size:1rem}p{margin-top:0;margin-bottom:1rem}abbr[data-bs-original-title],abbr[title]{-webkit-text-decoration:underline dotted;text-decoration:underline dotted;cursor:help;-webkit-text-decoration-skip-ink:none;text-decoration-skip-ink:none}address{margin-bottom:1rem;font-style:normal;line-height:inherit}ol,ul{padding-left:2rem}dl,ol,ul{margin-top:0;margin-bottom:1rem}ol ol,ol ul,ul ol,ul ul{margin-bottom:0}dt{font-weight:700}dd{margin-bottom:.5rem;margin-left:0}blockquote{margin:0 0 1rem}b,strong{font-weight:bolder}small{font-size:.875em}mark{padding:.2em;background-color:#fcf8e3}sub,sup{position:relative;font-size:.75em;line-height:0;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}a{color:#0d6efd;text-decoration:underline}a:hover{color:#0a58ca}a:not([href]):not([class]),a:not([href]):not([class]):hover{color:inherit;text-decoration:none}code,kbd,pre,samp{font-family:SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:1em;direction:ltr;unicode-bidi:bidi-override}pre{display:block;margin-top:0;margin-bottom:1rem;overflow:auto;font-size:.875em}pre code{font-size:inherit;color:inherit;word-break:normal}code{font-size:.875em;color:#d63384;word-wrap:break-word}a>code{color:inherit}kbd{padding:.2rem .4rem;font-size:.875em;color:#fff;background-color:#212529;border-radius:.2rem}kbd kbd{padding:0;font-size:1em;font-weight:700}figure{margin:0 0 1rem}img,svg{vertical-align:middle}table{caption-side:bottom;border-collapse:collapse}caption{padding-top:.5rem;padding-bottom:.5rem;color:#6c757d;text-align:left}th{text-align:inherit;text-align:-webkit-match-parent}tbody,td,tfoot,th,thead,tr{border-color:inherit;border-style:solid;border-width:0}label{display:inline-block}button{border-radius:0}button:focus:not(:focus-visible){outline:0}button,input,optgroup,select,textarea{margin:0;font-family:inherit;font-size:inherit;line-height:inherit}button,select{text-transform:none}[role=button]{cursor:pointer}select{word-wrap:normal}select:disabled{opacity:1}[list]::-webkit-calendar-picker-indicator{display:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button}[type=button]:not(:disabled),[type=reset]:not(:disabled),[type=submit]:not(:disabled),button:not(:disabled){cursor:pointer}::-moz-focus-inner{padding:0;border-style:none}textarea{resize:vertical}fieldset{min-width:0;padding:0;margin:0;border:0}legend{float:left;width:100%;padding:0;margin-bottom:.5rem;font-size:calc(1.275rem + .3vw);line-height:inherit}@media (min-width:1200px){legend{font-size:1.5rem}}legend+*{clear:left}::-webkit-datetime-edit-day-field,::-webkit-datetime-edit-fields-wrapper,::-webkit-datetime-edit-hour-field,::-webkit-datetime-edit-minute,::-webkit-datetime-edit-month-field,::-webkit-datetime-edit-text,::-webkit-datetime-edit-year-field{padding:0}::-webkit-inner-spin-button{height:auto}[type=search]{outline-offset:-2px;-webkit-appearance:textfield}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-color-swatch-wrapper{padding:0}::file-selector-button{font:inherit}::-webkit-file-upload-button{font:inherit;-webkit-appearance:button}output{display:inline-block}iframe{border:0}summary{display:list-item;cursor:pointer}progress{vertical-align:baseline}[hidden]{display:none!important}</style>
@@ -349,7 +349,7 @@
                                 <a class="function" href="#FactoryInterface.deserialize_bungie_user">deserialize_bungie_user</a>
                         </li>
                         <li>
-                                <a class="function" href="#FactoryInterface.deseialize_searched_user">deseialize_searched_user</a>
+                                <a class="function" href="#FactoryInterface.deserialize_searched_user">deserialize_searched_user</a>
                         </li>
                         <li>
                                 <a class="function" href="#FactoryInterface.deserialize_partial_bungie_user">deserialize_partial_bungie_user</a>
@@ -379,7 +379,7 @@
                                 <a class="function" href="#FactoryInterface.deserialize_clan_members">deserialize_clan_members</a>
                         </li>
                         <li>
-                                <a class="function" href="#FactoryInterface.deserialize_clan_convos">deserialize_clan_convos</a>
+                                <a class="function" href="#FactoryInterface.deserialize_clan_conversations">deserialize_clan_conversations</a>
                         </li>
                         <li>
                                 <a class="function" href="#FactoryInterface.deserialize_clan_banners">deserialize_clan_banners</a>
@@ -403,7 +403,7 @@
                                 <a class="function" href="#FactoryInterface.deserialize_character_dye">deserialize_character_dye</a>
                         </li>
                         <li>
-                                <a class="function" href="#FactoryInterface.deserialize_character_customazition">deserialize_character_customazition</a>
+                                <a class="function" href="#FactoryInterface.deserialize_character_customization">deserialize_character_customization</a>
                         </li>
                         <li>
                                 <a class="function" href="#FactoryInterface.deserialize_characters">deserialize_characters</a>
@@ -412,7 +412,7 @@
                                 <a class="function" href="#FactoryInterface.deserialize_character">deserialize_character</a>
                         </li>
                         <li>
-                                <a class="function" href="#FactoryInterface.deserialize_character_equipmnets">deserialize_character_equipmnets</a>
+                                <a class="function" href="#FactoryInterface.deserialize_character_equipments">deserialize_character_equipments</a>
                         </li>
                         <li>
                                 <a class="function" href="#FactoryInterface.deserialize_characters_render_data">deserialize_characters_render_data</a>
@@ -684,7 +684,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        id: `builtins.int`</span>
+<span class="sd">        id: `int`</span>
 <span class="sd">            The user id.</span>
 
 <span class="sd">        Returns</span>
@@ -743,7 +743,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        credential: `builtins.int`</span>
+<span class="sd">        credential: `int`</span>
 <span class="sd">            A valid SteamID64</span>
 <span class="sd">        type: `aiobungie.typedefs.IntAnd[aiobungie.CredentialType]`</span>
 <span class="sd">            The crededntial type. This must not be changed</span>
@@ -766,7 +766,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        id : `builtins.int`</span>
+<span class="sd">        id : `int`</span>
 <span class="sd">            The user&#39;s id.</span>
 <span class="sd">        type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`</span>
 <span class="sd">            The user&#39;s membership type.</span>
@@ -785,31 +785,28 @@
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">fetch_profile</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">memberid</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">membership_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="nb">type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
-        <span class="o">*</span><span class="n">components</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">ComponentType</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">options</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">components</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">ComponentType</span><span class="p">],</span>
+        <span class="n">auth</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Fetche a bungie profile.</span>
+<span class="sd">        Fetch a bungie profile.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        memberid: `builtins.int`</span>
+<span class="sd">        membership_id: `int`</span>
 <span class="sd">            The member&#39;s id.</span>
 <span class="sd">        type: `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`</span>
 <span class="sd">            A valid membership type.</span>
-<span class="sd">        *components : `aiobungie.ComponentType`</span>
-<span class="sd">            Multiple arguments of profile components to collect and return.</span>
+<span class="sd">        components : `list[aiobungie.ComponentType]`</span>
+<span class="sd">            A list of profile components to collect and return.</span>
 
 <span class="sd">        Other Parameters</span>
 <span class="sd">        ----------------</span>
 <span class="sd">        auth : `typing.Optional[str]`</span>
-<span class="sd">            A passed kwarg Bearer access_token to make the request with.</span>
+<span class="sd">            A bearer access_token to make the request with.</span>
 <span class="sd">            This is optional and limited to components that only requires an Authorization token.</span>
-<span class="sd">        **options : `str`</span>
-<span class="sd">            Other keyword arguments for the request to expect.</span>
-<span class="sd">            This is only here for the `auth` option which&#39;s a kwarg.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        --------</span>
@@ -834,7 +831,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        -----------</span>
-<span class="sd">        name: `builtins.str`</span>
+<span class="sd">        name: `str`</span>
 <span class="sd">            The unique Bungie player name.</span>
 <span class="sd">        code : `int`</span>
 <span class="sd">            The unique Bungie display name code.</span>
@@ -850,7 +847,6 @@
 <span class="sd">        ------</span>
 <span class="sd">        `aiobungie.NotFound`</span>
 <span class="sd">            The player was not found.</span>
-
 <span class="sd">        `aiobungie.MembershipTypeError`</span>
 <span class="sd">            The provided membership type was invalid.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -861,30 +857,27 @@
         <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">membership_type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
         <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="o">*</span><span class="n">components</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">ComponentType</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">options</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">components</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">ComponentType</span><span class="p">],</span>
+        <span class="n">auth</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a Destiny 2 player&#39;s characters.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        member_id: `builtins.int`</span>
+<span class="sd">        member_id: `int`</span>
 <span class="sd">            A valid bungie member id.</span>
 <span class="sd">        membership_type: `aiobungie.typedefs.IntAnd[aiobungie.internal.enums.MembershipType]`</span>
 <span class="sd">            The member&#39;s membership type.</span>
 <span class="sd">        character_id : `int`</span>
 <span class="sd">            The character id to return.</span>
-<span class="sd">        *components: `aiobungie.ComponentType`</span>
-<span class="sd">            Multiple arguments of character components to collect and return.</span>
+<span class="sd">        components: `list[aiobungie.ComponentType]`</span>
+<span class="sd">            A list of character components to collect and return.</span>
 
 <span class="sd">        Other Parameters</span>
 <span class="sd">        ----------------</span>
 <span class="sd">        auth : `typing.Optional[str]`</span>
-<span class="sd">            A passed kwarg Bearer access_token to make the request with.</span>
+<span class="sd">            A bearer access_token to make the request with.</span>
 <span class="sd">            This is optional and limited to components that only requires an Authorization token.</span>
-<span class="sd">        **options : `str`</span>
-<span class="sd">            Other keyword arguments for the request to expect.</span>
-<span class="sd">            This is only here for the `auth` option which&#39;s a kwarg.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -893,9 +886,6 @@
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
-<span class="sd">        `aiobungie.error.CharacterError`</span>
-<span class="sd">            raised if the Character was not found.</span>
-
 <span class="sd">        `aiobungie.MembershipTypeError`</span>
 <span class="sd">            The provided membership type was invalid.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -917,9 +907,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        member_id: `builtins.int`</span>
+<span class="sd">        member_id: `int`</span>
 <span class="sd">            The user id that starts with `4611`.</span>
-<span class="sd">        character_id: `builtins.int`</span>
+<span class="sd">        character_id: `int`</span>
 <span class="sd">            The id of the character to retrieve.</span>
 <span class="sd">        mode: `aiobungie.typedefs.IntAnd[aiobungie.GameMode]`</span>
 <span class="sd">            This parameter filters the game mode, Nightfall, Strike, Iron Banner, etc.</span>
@@ -928,9 +918,9 @@
 <span class="sd">        ----------------</span>
 <span class="sd">        membership_type: `aiobungie.typedefs.IntAnd[aiobungie.internal.enums.MembershipType]`</span>
 <span class="sd">            The Member ship type, if nothing was passed than it will return all.</span>
-<span class="sd">        page: `builtins.int`</span>
+<span class="sd">        page: `int`</span>
 <span class="sd">            The page number. Default to `1`</span>
-<span class="sd">        limit: `builtins.int`</span>
+<span class="sd">        limit: `int`</span>
 <span class="sd">            Limit the returned result. Default to `1`</span>
 
 <span class="sd">        Returns</span>
@@ -1042,7 +1032,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        clan_id : `builtins.int`</span>
+<span class="sd">        clan_id : `int`</span>
 <span class="sd">            The clan&#39;s id.</span>
 
 <span class="sd">        Returns</span>
@@ -1057,7 +1047,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        clan_id : `builtins.int`</span>
+<span class="sd">        clan_id : `int`</span>
 <span class="sd">            The clan id.</span>
 
 <span class="sd">        Returns</span>
@@ -1085,7 +1075,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        member_id : `builtins.int`</span>
+<span class="sd">        member_id : `int`</span>
 <span class="sd">            The member&#39;s id</span>
 <span class="sd">        member_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`</span>
 <span class="sd">            The member&#39;s membership type.</span>
@@ -1118,7 +1108,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        member_id : `builtins.int`</span>
+<span class="sd">        member_id : `int`</span>
 <span class="sd">            The member&#39;s id</span>
 <span class="sd">        member_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`</span>
 <span class="sd">            The member&#39;s membership type.</span>
@@ -1179,9 +1169,9 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        type: `builtins.str`</span>
+<span class="sd">        type: `str`</span>
 <span class="sd">            Entity&#39;s type definition.</span>
-<span class="sd">        hash: `builtins.int`</span>
+<span class="sd">        hash: `int`</span>
 <span class="sd">            Entity&#39;s hash.</span>
 
 <span class="sd">        Returns</span>
@@ -1196,7 +1186,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        hash: `builtins.int`</span>
+<span class="sd">        hash: `int`</span>
 <span class="sd">            Entity&#39;s hash.</span>
 
 <span class="sd">        Returns</span>
@@ -1211,7 +1201,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        hash: `builtins.int`</span>
+<span class="sd">        hash: `int`</span>
 <span class="sd">            objective&#39;s hash.</span>
 
 <span class="sd">        Returns</span>
@@ -1226,7 +1216,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        -----------</span>
-<span class="sd">        appid: `builtins.int`</span>
+<span class="sd">        appid: `int`</span>
 <span class="sd">            The application id.</span>
 
 <span class="sd">        Returns</span>
@@ -1253,14 +1243,14 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        member_id : `builtins.int`</span>
+<span class="sd">        member_id : `int`</span>
 <span class="sd">            The ID of the membership. This must be a valid Bungie.Net or PSN or Xbox ID.</span>
 <span class="sd">        member_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`</span>
 <span class="sd">            The type for the membership whose linked Destiny account you want to return.</span>
 
 <span class="sd">        Other Parameters</span>
 <span class="sd">        ----------------</span>
-<span class="sd">        all : `builtins.bool`</span>
+<span class="sd">        all : `bool`</span>
 <span class="sd">            If provided and set to `True`, All memberships regardless</span>
 <span class="sd">            of whether thry&#39;re obscured by overrides will be returned,</span>
 
@@ -1301,7 +1291,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        milestone_hash : `builtins.int`</span>
+<span class="sd">        milestone_hash : `int`</span>
 <span class="sd">            The milestone hash.</span>
 
 <span class="sd">        Returns</span>
@@ -1322,7 +1312,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        access_token : `builtins.str`</span>
+<span class="sd">        access_token : `str`</span>
 <span class="sd">            The bearer access token associated with the bungie account.</span>
 
 <span class="sd">        Returns</span>
@@ -1349,11 +1339,11 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        access_token : `builtins.str`</span>
+<span class="sd">        access_token : `str`</span>
 <span class="sd">            The bearer access token associated with the bungie account.</span>
-<span class="sd">        item_id : `builtins.int`</span>
+<span class="sd">        item_id : `int`</span>
 <span class="sd">            The item id.</span>
-<span class="sd">        character_id : `builtins.int`</span>
+<span class="sd">        character_id : `int`</span>
 <span class="sd">            The character&#39;s id to equip the item to.</span>
 <span class="sd">        membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`</span>
 <span class="sd">            The membership type assocaiated with this player.</span>
@@ -1377,11 +1367,11 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        access_token : `builtins.str`</span>
+<span class="sd">        access_token : `str`</span>
 <span class="sd">            The bearer access token associated with the bungie account.</span>
-<span class="sd">        item_ids : `list[builtins.int]`</span>
+<span class="sd">        item_ids : `list[int]`</span>
 <span class="sd">            A list of item ids.</span>
-<span class="sd">        character_id : `builtins.int`</span>
+<span class="sd">        character_id : `int`</span>
 <span class="sd">            The character&#39;s id to equip the item to.</span>
 <span class="sd">        membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`</span>
 <span class="sd">            The membership type assocaiated with this player.</span>
@@ -1406,7 +1396,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        access_token : `builtins.str`</span>
+<span class="sd">        access_token : `str`</span>
 <span class="sd">            The bearer access token associated with the bungie account.</span>
 <span class="sd">        group_id: `int`</span>
 <span class="sd">            The group id.</span>
@@ -1439,7 +1429,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        access_token : `builtins.str`</span>
+<span class="sd">        access_token : `str`</span>
 <span class="sd">            The bearer access token associated with the bungie account.</span>
 <span class="sd">        group_id: `int`</span>
 <span class="sd">            The group id.</span>
@@ -1465,7 +1455,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        access_token : `builtins.str`</span>
+<span class="sd">        access_token : `str`</span>
 <span class="sd">            The bearer access token associated with the bungie account.</span>
 <span class="sd">        group_id: `int`</span>
 <span class="sd">            The group id.</span>
@@ -1504,7 +1494,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        access_token : `builtins.str`</span>
+<span class="sd">        access_token : `str`</span>
 <span class="sd">            The bearer access token associated with the bungie account.</span>
 <span class="sd">        group_id: `int`</span>
 <span class="sd">            The group id.</span>
@@ -2480,7 +2470,7 @@
         <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">item_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">membership_type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
-        <span class="o">*</span><span class="n">components</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">ComponentType</span><span class="p">,</span>
+        <span class="n">components</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">ComponentType</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch an instanced Destiny 2 item&#39;s details.</span>
 
@@ -2492,8 +2482,8 @@
 <span class="sd">            The instance id of the item.</span>
 <span class="sd">        membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`</span>
 <span class="sd">            The membership type of the Destiny 2 player.</span>
-<span class="sd">        *components : `aiobungie.ComponentType`</span>
-<span class="sd">            Multiple item components to retrieve.</span>
+<span class="sd">        components : `list[aiobungie.ComponentType]`</span>
+<span class="sd">            A list of components to retrieve.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -2618,8 +2608,8 @@
         <span class="n">membership_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">membership_type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
-        <span class="o">*</span><span class="n">components</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">ComponentType</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">options</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+        <span class="n">components</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">ComponentType</span><span class="p">],</span>
+        <span class="nb">filter</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Get currently available vendors from the list of vendors that can possibly have rotating inventory.</span>
 
@@ -2633,14 +2623,13 @@
 <span class="sd">            The Destiny membership id to return the vendor info for.</span>
 <span class="sd">        membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`</span>
 <span class="sd">            The Destiny membership type to return the vendor info for.</span>
-<span class="sd">        *components: `aiobungie.ComponentType`</span>
-<span class="sd">            Multiple arguments of vendor components to collect and return.</span>
+<span class="sd">        components: `list[aiobungie.ComponentType]`</span>
+<span class="sd">            A list of vendor components to collect and return.</span>
 
 <span class="sd">        Other Parameters</span>
 <span class="sd">        ----------------</span>
-<span class="sd">        **options : `int`</span>
-<span class="sd">            This optional kwarg expects a `filter` argumnt which filters the type</span>
-<span class="sd">            of items returned from the vendor. This can be left to `None`.</span>
+<span class="sd">        filter : `int`</span>
+<span class="sd">           Filters the type of items returned from the vendor. This can be left to `None`.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -2657,7 +2646,7 @@
         <span class="n">membership_type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
         <span class="n">vendor_hash</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
-        <span class="o">*</span><span class="n">components</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">ComponentType</span><span class="p">,</span>
+        <span class="n">components</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">ComponentType</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch details for a specific vendor.</span>
 
@@ -2673,8 +2662,8 @@
 <span class="sd">            The Destiny membership type to return the vendor info for.</span>
 <span class="sd">        vendor_hash : `int`</span>
 <span class="sd">            The vendor hash to return the details for.</span>
-<span class="sd">        *components: `aiobungie.ComponentType`</span>
-<span class="sd">            Multiple arguments of vendor components to collect and return.</span>
+<span class="sd">        components: `list[aiobungie.ComponentType]`</span>
+<span class="sd">            A list of vendor components to collect and return.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -3155,7 +3144,7 @@ An optional path to pass, The assumed path to connect to is './manifest.sqlite3'
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        id: `builtins.int`</span>
+<span class="sd">        id: `int`</span>
 <span class="sd">            The user id.</span>
 
 <span class="sd">        Returns</span>
@@ -3177,7 +3166,7 @@ An optional path to pass, The assumed path to connect to is './manifest.sqlite3'
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>id</strong> (<code>builtins.int</code>):
+<li><strong>id</strong> (<code>int</code>):
 The user id.</li>
 </ul>
 
@@ -3324,7 +3313,7 @@ The user name.</li>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        credential: `builtins.int`</span>
+<span class="sd">        credential: `int`</span>
 <span class="sd">            A valid SteamID64</span>
 <span class="sd">        type: `aiobungie.typedefs.IntAnd[aiobungie.CredentialType]`</span>
 <span class="sd">            The crededntial type. This must not be changed</span>
@@ -3347,7 +3336,7 @@ Cross Save aware.</p>
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>credential</strong> (<code>builtins.int</code>):
+<li><strong>credential</strong> (<code>int</code>):
 A valid SteamID64</li>
 <li><strong>type</strong> (<code><a href="typedefs.html#IntAnd">aiobungie.typedefs.IntAnd</a>[<a href="../aiobungie.html#CredentialType">aiobungie.CredentialType</a>]</code>):
 The crededntial type. This must not be changed
@@ -3390,7 +3379,7 @@ Since its only credential that works "currently"</li>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        id : `builtins.int`</span>
+<span class="sd">        id : `int`</span>
 <span class="sd">            The user&#39;s id.</span>
 <span class="sd">        type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`</span>
 <span class="sd">            The user&#39;s membership type.</span>
@@ -3414,7 +3403,7 @@ Since its only credential that works "currently"</li>
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>id</strong> (<code>builtins.int</code>):
+<li><strong>id</strong> (<code>int</code>):
 The user's id.</li>
 <li><strong>type</strong> (<code><a href="typedefs.html#IntAnd">aiobungie.typedefs.IntAnd</a>[<a href="../aiobungie.html#MembershipType">aiobungie.MembershipType</a>]</code>):
 The user's membership type.</li>
@@ -3443,10 +3432,10 @@ The user's membership type.</li>
             <span class="def">def</span>
             <span class="name">fetch_profile</span><span class="signature">(
     self,
-    memberid: int,
+    membership_id: int,
     type: Union[int, <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>],
-    *components: <a href="internal/enums.html#ComponentType">aiobungie.internal.enums.ComponentType</a>,
-    **options: str
+    components: list,
+    auth: Optional[str] = None
 ) -&gt; collections.abc.Coroutine[None, None, dict[str, typing.Any]]</span>:
     </div>
 
@@ -3455,31 +3444,28 @@ The user's membership type.</li>
             <div class="pdoc-code codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">fetch_profile</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">memberid</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">membership_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="nb">type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
-        <span class="o">*</span><span class="n">components</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">ComponentType</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">options</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">components</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">ComponentType</span><span class="p">],</span>
+        <span class="n">auth</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Fetche a bungie profile.</span>
+<span class="sd">        Fetch a bungie profile.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        memberid: `builtins.int`</span>
+<span class="sd">        membership_id: `int`</span>
 <span class="sd">            The member&#39;s id.</span>
 <span class="sd">        type: `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`</span>
 <span class="sd">            A valid membership type.</span>
-<span class="sd">        *components : `aiobungie.ComponentType`</span>
-<span class="sd">            Multiple arguments of profile components to collect and return.</span>
+<span class="sd">        components : `list[aiobungie.ComponentType]`</span>
+<span class="sd">            A list of profile components to collect and return.</span>
 
 <span class="sd">        Other Parameters</span>
 <span class="sd">        ----------------</span>
 <span class="sd">        auth : `typing.Optional[str]`</span>
-<span class="sd">            A passed kwarg Bearer access_token to make the request with.</span>
+<span class="sd">            A bearer access_token to make the request with.</span>
 <span class="sd">            This is optional and limited to components that only requires an Authorization token.</span>
-<span class="sd">        **options : `str`</span>
-<span class="sd">            Other keyword arguments for the request to expect.</span>
-<span class="sd">            This is only here for the `auth` option which&#39;s a kwarg.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        --------</span>
@@ -3495,28 +3481,25 @@ The user's membership type.</li>
 
         </details>
 
-            <div class="docstring"><p>Fetche a bungie profile.</p>
+            <div class="docstring"><p>Fetch a bungie profile.</p>
 
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>memberid</strong> (<code>builtins.int</code>):
+<li><strong>membership_id</strong> (<code>int</code>):
 The member's id.</li>
 <li><strong>type</strong> (<code><a href="typedefs.html#IntAnd">aiobungie.typedefs.IntAnd</a>[<a href="../aiobungie.html#MembershipType">aiobungie.MembershipType</a>]</code>):
 A valid membership type.</li>
-<li><strong>*components</strong> (<code><a href="../aiobungie.html#ComponentType">aiobungie.ComponentType</a></code>):
-Multiple arguments of profile components to collect and return.</li>
+<li><strong>components</strong> (<code>list[<a href="../aiobungie.html#ComponentType">aiobungie.ComponentType</a>]</code>):
+A list of profile components to collect and return.</li>
 </ul>
 
 <h6 id="other-parameters">Other Parameters</h6>
 
 <ul>
 <li><strong>auth</strong> (<code>typing.Optional[str]</code>):
-A passed kwarg Bearer access_token to make the request with.
+A bearer access_token to make the request with.
 This is optional and limited to components that only requires an Authorization token.</li>
-<li><strong>**options</strong> (<code>str</code>):
-Other keyword arguments for the request to expect.
-This is only here for the <code>auth</code> option which's a kwarg.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
@@ -3563,7 +3546,7 @@ This is only here for the <code>auth</code> option which's a kwarg.</li>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        -----------</span>
-<span class="sd">        name: `builtins.str`</span>
+<span class="sd">        name: `str`</span>
 <span class="sd">            The unique Bungie player name.</span>
 <span class="sd">        code : `int`</span>
 <span class="sd">            The unique Bungie display name code.</span>
@@ -3579,7 +3562,6 @@ This is only here for the <code>auth</code> option which's a kwarg.</li>
 <span class="sd">        ------</span>
 <span class="sd">        `aiobungie.NotFound`</span>
 <span class="sd">            The player was not found.</span>
-
 <span class="sd">        `aiobungie.MembershipTypeError`</span>
 <span class="sd">            The provided membership type was invalid.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -3592,7 +3574,7 @@ This is only here for the <code>auth</code> option which's a kwarg.</li>
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>name</strong> (<code>builtins.str</code>):
+<li><strong>name</strong> (<code>str</code>):
 The unique Bungie player name.</li>
 <li><strong>code</strong> (<code>int</code>):
 The unique Bungie display name code.</li>
@@ -3627,8 +3609,8 @@ The player's membership type, e,g. XBOX, STEAM, PSN</li>
     member_id: int,
     membership_type: Union[int, <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>],
     character_id: int,
-    *components: <a href="internal/enums.html#ComponentType">aiobungie.internal.enums.ComponentType</a>,
-    **options: str
+    components: list,
+    auth: Optional[str] = None
 ) -&gt; collections.abc.Coroutine[None, None, dict[str, typing.Any]]</span>:
     </div>
 
@@ -3640,30 +3622,27 @@ The player's membership type, e,g. XBOX, STEAM, PSN</li>
         <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">membership_type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
         <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="o">*</span><span class="n">components</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">ComponentType</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">options</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">components</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">ComponentType</span><span class="p">],</span>
+        <span class="n">auth</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch a Destiny 2 player&#39;s characters.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        member_id: `builtins.int`</span>
+<span class="sd">        member_id: `int`</span>
 <span class="sd">            A valid bungie member id.</span>
 <span class="sd">        membership_type: `aiobungie.typedefs.IntAnd[aiobungie.internal.enums.MembershipType]`</span>
 <span class="sd">            The member&#39;s membership type.</span>
 <span class="sd">        character_id : `int`</span>
 <span class="sd">            The character id to return.</span>
-<span class="sd">        *components: `aiobungie.ComponentType`</span>
-<span class="sd">            Multiple arguments of character components to collect and return.</span>
+<span class="sd">        components: `list[aiobungie.ComponentType]`</span>
+<span class="sd">            A list of character components to collect and return.</span>
 
 <span class="sd">        Other Parameters</span>
 <span class="sd">        ----------------</span>
 <span class="sd">        auth : `typing.Optional[str]`</span>
-<span class="sd">            A passed kwarg Bearer access_token to make the request with.</span>
+<span class="sd">            A bearer access_token to make the request with.</span>
 <span class="sd">            This is optional and limited to components that only requires an Authorization token.</span>
-<span class="sd">        **options : `str`</span>
-<span class="sd">            Other keyword arguments for the request to expect.</span>
-<span class="sd">            This is only here for the `auth` option which&#39;s a kwarg.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -3672,9 +3651,6 @@ The player's membership type, e,g. XBOX, STEAM, PSN</li>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
-<span class="sd">        `aiobungie.error.CharacterError`</span>
-<span class="sd">            raised if the Character was not found.</span>
-
 <span class="sd">        `aiobungie.MembershipTypeError`</span>
 <span class="sd">            The provided membership type was invalid.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -3687,25 +3663,22 @@ The player's membership type, e,g. XBOX, STEAM, PSN</li>
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>member_id</strong> (<code>builtins.int</code>):
+<li><strong>member_id</strong> (<code>int</code>):
 A valid bungie member id.</li>
 <li><strong>membership_type</strong> (<code><a href="typedefs.html#IntAnd">aiobungie.typedefs.IntAnd</a>[<a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>]</code>):
 The member's membership type.</li>
 <li><strong>character_id</strong> (<code>int</code>):
 The character id to return.</li>
-<li><strong>*components</strong> (<code><a href="../aiobungie.html#ComponentType">aiobungie.ComponentType</a></code>):
-Multiple arguments of character components to collect and return.</li>
+<li><strong>components</strong> (<code>list[<a href="../aiobungie.html#ComponentType">aiobungie.ComponentType</a>]</code>):
+A list of character components to collect and return.</li>
 </ul>
 
 <h6 id="other-parameters">Other Parameters</h6>
 
 <ul>
 <li><strong>auth</strong> (<code>typing.Optional[str]</code>):
-A passed kwarg Bearer access_token to make the request with.
+A bearer access_token to make the request with.
 This is optional and limited to components that only requires an Authorization token.</li>
-<li><strong>**options</strong> (<code>str</code>):
-Other keyword arguments for the request to expect.
-This is only here for the <code>auth</code> option which's a kwarg.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
@@ -3717,7 +3690,6 @@ This is only here for the <code>auth</code> option which's a kwarg.</li>
 <h6 id="raises">Raises</h6>
 
 <ul>
-<li><strong><code><a href="error.html#CharacterError">aiobungie.error.CharacterError</a></code></strong>: raised if the Character was not found.</li>
 <li><strong><code><a href="../aiobungie.html#MembershipTypeError">aiobungie.MembershipTypeError</a></code></strong>: The provided membership type was invalid.</li>
 </ul>
 </div>
@@ -3761,9 +3733,9 @@ This is only here for the <code>auth</code> option which's a kwarg.</li>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        member_id: `builtins.int`</span>
+<span class="sd">        member_id: `int`</span>
 <span class="sd">            The user id that starts with `4611`.</span>
-<span class="sd">        character_id: `builtins.int`</span>
+<span class="sd">        character_id: `int`</span>
 <span class="sd">            The id of the character to retrieve.</span>
 <span class="sd">        mode: `aiobungie.typedefs.IntAnd[aiobungie.GameMode]`</span>
 <span class="sd">            This parameter filters the game mode, Nightfall, Strike, Iron Banner, etc.</span>
@@ -3772,9 +3744,9 @@ This is only here for the <code>auth</code> option which's a kwarg.</li>
 <span class="sd">        ----------------</span>
 <span class="sd">        membership_type: `aiobungie.typedefs.IntAnd[aiobungie.internal.enums.MembershipType]`</span>
 <span class="sd">            The Member ship type, if nothing was passed than it will return all.</span>
-<span class="sd">        page: `builtins.int`</span>
+<span class="sd">        page: `int`</span>
 <span class="sd">            The page number. Default to `1`</span>
-<span class="sd">        limit: `builtins.int`</span>
+<span class="sd">        limit: `int`</span>
 <span class="sd">            Limit the returned result. Default to `1`</span>
 
 <span class="sd">        Returns</span>
@@ -3799,9 +3771,9 @@ This is only here for the <code>auth</code> option which's a kwarg.</li>
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>member_id</strong> (<code>builtins.int</code>):
+<li><strong>member_id</strong> (<code>int</code>):
 The user id that starts with <code>4611</code>.</li>
-<li><strong>character_id</strong> (<code>builtins.int</code>):
+<li><strong>character_id</strong> (<code>int</code>):
 The id of the character to retrieve.</li>
 <li><strong>mode</strong> (<code><a href="typedefs.html#IntAnd">aiobungie.typedefs.IntAnd</a>[<a href="../aiobungie.html#GameMode">aiobungie.GameMode</a>]</code>):
 This parameter filters the game mode, Nightfall, Strike, Iron Banner, etc.</li>
@@ -3812,9 +3784,9 @@ This parameter filters the game mode, Nightfall, Strike, Iron Banner, etc.</li>
 <ul>
 <li><strong>membership_type</strong> (<code><a href="typedefs.html#IntAnd">aiobungie.typedefs.IntAnd</a>[<a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>]</code>):
 The Member ship type, if nothing was passed than it will return all.</li>
-<li><strong>page</strong> (<code>builtins.int</code>):
+<li><strong>page</strong> (<code>int</code>):
 The page number. Default to <code>1</code></li>
-<li><strong>limit</strong> (<code>builtins.int</code>):
+<li><strong>limit</strong> (<code>int</code>):
 Limit the returned result. Default to <code>1</code></li>
 </ul>
 
@@ -4093,7 +4065,7 @@ The group type, Default is one.</li>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        clan_id : `builtins.int`</span>
+<span class="sd">        clan_id : `int`</span>
 <span class="sd">            The clan&#39;s id.</span>
 
 <span class="sd">        Returns</span>
@@ -4110,7 +4082,7 @@ The group type, Default is one.</li>
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>clan_id</strong> (<code>builtins.int</code>):
+<li><strong>clan_id</strong> (<code>int</code>):
 The clan's id.</li>
 </ul>
 
@@ -4144,7 +4116,7 @@ The clan's id.</li>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        clan_id : `builtins.int`</span>
+<span class="sd">        clan_id : `int`</span>
 <span class="sd">            The clan id.</span>
 
 <span class="sd">        Returns</span>
@@ -4166,7 +4138,7 @@ The clan's id.</li>
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>clan_id</strong> (<code>builtins.int</code>):
+<li><strong>clan_id</strong> (<code>int</code>):
 The clan id.</li>
 </ul>
 
@@ -4218,7 +4190,7 @@ The clan id.</li>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        member_id : `builtins.int`</span>
+<span class="sd">        member_id : `int`</span>
 <span class="sd">            The member&#39;s id</span>
 <span class="sd">        member_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`</span>
 <span class="sd">            The member&#39;s membership type.</span>
@@ -4245,7 +4217,7 @@ The clan id.</li>
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>member_id</strong> (<code>builtins.int</code>):
+<li><strong>member_id</strong> (<code>int</code>):
 The member's id</li>
 <li><strong>member_type</strong> (<code><a href="typedefs.html#IntAnd">aiobungie.typedefs.IntAnd</a>[<a href="../aiobungie.html#MembershipType">aiobungie.MembershipType</a>]</code>):
 The member's membership type.</li>
@@ -4303,7 +4275,7 @@ This is always set to <code><a href="../aiobungie.html#GroupType.CLAN">aiobungie
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        member_id : `builtins.int`</span>
+<span class="sd">        member_id : `int`</span>
 <span class="sd">            The member&#39;s id</span>
 <span class="sd">        member_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`</span>
 <span class="sd">            The member&#39;s membership type.</span>
@@ -4330,7 +4302,7 @@ This is always set to <code><a href="../aiobungie.html#GroupType.CLAN">aiobungie
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>member_id</strong> (<code>builtins.int</code>):
+<li><strong>member_id</strong> (<code>int</code>):
 The member's id</li>
 <li><strong>member_type</strong> (<code><a href="typedefs.html#IntAnd">aiobungie.typedefs.IntAnd</a>[<a href="../aiobungie.html#MembershipType">aiobungie.MembershipType</a>]</code>):
 The member's membership type.</li>
@@ -4468,9 +4440,9 @@ Which returns the first matched clan member by their name.</li>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        type: `builtins.str`</span>
+<span class="sd">        type: `str`</span>
 <span class="sd">            Entity&#39;s type definition.</span>
-<span class="sd">        hash: `builtins.int`</span>
+<span class="sd">        hash: `int`</span>
 <span class="sd">            Entity&#39;s hash.</span>
 
 <span class="sd">        Returns</span>
@@ -4487,9 +4459,9 @@ Which returns the first matched clan member by their name.</li>
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>type</strong> (<code>builtins.str</code>):
+<li><strong>type</strong> (<code>str</code>):
 Entity's type definition.</li>
-<li><strong>hash</strong> (<code>builtins.int</code>):
+<li><strong>hash</strong> (<code>int</code>):
 Entity's hash.</li>
 </ul>
 
@@ -4523,7 +4495,7 @@ Entity's hash.</li>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        hash: `builtins.int`</span>
+<span class="sd">        hash: `int`</span>
 <span class="sd">            Entity&#39;s hash.</span>
 
 <span class="sd">        Returns</span>
@@ -4540,7 +4512,7 @@ Entity's hash.</li>
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>hash</strong> (<code>builtins.int</code>):
+<li><strong>hash</strong> (<code>int</code>):
 Entity's hash.</li>
 </ul>
 
@@ -4574,7 +4546,7 @@ Entity's hash.</li>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        hash: `builtins.int`</span>
+<span class="sd">        hash: `int`</span>
 <span class="sd">            objective&#39;s hash.</span>
 
 <span class="sd">        Returns</span>
@@ -4591,7 +4563,7 @@ Entity's hash.</li>
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>hash</strong> (<code>builtins.int</code>):
+<li><strong>hash</strong> (<code>int</code>):
 objective's hash.</li>
 </ul>
 
@@ -4625,7 +4597,7 @@ objective's hash.</li>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        -----------</span>
-<span class="sd">        appid: `builtins.int`</span>
+<span class="sd">        appid: `int`</span>
 <span class="sd">            The application id.</span>
 
 <span class="sd">        Returns</span>
@@ -4642,7 +4614,7 @@ objective's hash.</li>
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>appid</strong> (<code>builtins.int</code>):
+<li><strong>appid</strong> (<code>int</code>):
 The application id.</li>
 </ul>
 
@@ -4691,14 +4663,14 @@ The application id.</li>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        member_id : `builtins.int`</span>
+<span class="sd">        member_id : `int`</span>
 <span class="sd">            The ID of the membership. This must be a valid Bungie.Net or PSN or Xbox ID.</span>
 <span class="sd">        member_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`</span>
 <span class="sd">            The type for the membership whose linked Destiny account you want to return.</span>
 
 <span class="sd">        Other Parameters</span>
 <span class="sd">        ----------------</span>
-<span class="sd">        all : `builtins.bool`</span>
+<span class="sd">        all : `bool`</span>
 <span class="sd">            If provided and set to `True`, All memberships regardless</span>
 <span class="sd">            of whether thry&#39;re obscured by overrides will be returned,</span>
 
@@ -4724,7 +4696,7 @@ It will only return linked accounts whose linkages you are allowed to view.</p>
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>member_id</strong> (<code>builtins.int</code>):
+<li><strong>member_id</strong> (<code>int</code>):
 The ID of the membership. This must be a valid Bungie.Net or PSN or Xbox ID.</li>
 <li><strong>member_type</strong> (<code><a href="typedefs.html#IntAnd">aiobungie.typedefs.IntAnd</a>[<a href="../aiobungie.html#MembershipType">aiobungie.MembershipType</a>]</code>):
 The type for the membership whose linked Destiny account you want to return.</li>
@@ -4733,7 +4705,7 @@ The type for the membership whose linked Destiny account you want to return.</li
 <h6 id="other-parameters">Other Parameters</h6>
 
 <ul>
-<li><p><strong>all</strong> (<code>builtins.bool</code>):
+<li><p><strong>all</strong> (<code>bool</code>):
 If provided and set to <code>True</code>, All memberships regardless
 of whether thry're obscured by overrides will be returned,</p>
 
@@ -4844,7 +4816,7 @@ The default for this is <code>False</code>.</p></li>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        milestone_hash : `builtins.int`</span>
+<span class="sd">        milestone_hash : `int`</span>
 <span class="sd">            The milestone hash.</span>
 
 <span class="sd">        Returns</span>
@@ -4861,7 +4833,7 @@ The default for this is <code>False</code>.</p></li>
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>milestone_hash</strong> (<code>builtins.int</code>):
+<li><strong>milestone_hash</strong> (<code>int</code>):
 The milestone hash.</li>
 </ul>
 
@@ -4901,7 +4873,7 @@ The milestone hash.</li>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        access_token : `builtins.str`</span>
+<span class="sd">        access_token : `str`</span>
 <span class="sd">            The bearer access token associated with the bungie account.</span>
 
 <span class="sd">        Returns</span>
@@ -4922,7 +4894,7 @@ This requires OAuth2 scope enabled and the valid Bearer <code>access_token</code
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>access_token</strong> (<code>builtins.str</code>):
+<li><strong>access_token</strong> (<code>str</code>):
 The bearer access token associated with the bungie account.</li>
 </ul>
 
@@ -4971,11 +4943,11 @@ The bearer access token associated with the bungie account.</li>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        access_token : `builtins.str`</span>
+<span class="sd">        access_token : `str`</span>
 <span class="sd">            The bearer access token associated with the bungie account.</span>
-<span class="sd">        item_id : `builtins.int`</span>
+<span class="sd">        item_id : `int`</span>
 <span class="sd">            The item id.</span>
-<span class="sd">        character_id : `builtins.int`</span>
+<span class="sd">        character_id : `int`</span>
 <span class="sd">            The character&#39;s id to equip the item to.</span>
 <span class="sd">        membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`</span>
 <span class="sd">            The membership type assocaiated with this player.</span>
@@ -4994,11 +4966,11 @@ in a social space, in orbit or offline.</p>
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>access_token</strong> (<code>builtins.str</code>):
+<li><strong>access_token</strong> (<code>str</code>):
 The bearer access token associated with the bungie account.</li>
-<li><strong>item_id</strong> (<code>builtins.int</code>):
+<li><strong>item_id</strong> (<code>int</code>):
 The item id.</li>
-<li><strong>character_id</strong> (<code>builtins.int</code>):
+<li><strong>character_id</strong> (<code>int</code>):
 The character's id to equip the item to.</li>
 <li><strong>membership_type</strong> (<code><a href="typedefs.html#IntAnd">aiobungie.typedefs.IntAnd</a>[<a href="../aiobungie.html#MembershipType">aiobungie.MembershipType</a>]</code>):
 The membership type assocaiated with this player.</li>
@@ -5043,11 +5015,11 @@ The membership type assocaiated with this player.</li>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        access_token : `builtins.str`</span>
+<span class="sd">        access_token : `str`</span>
 <span class="sd">            The bearer access token associated with the bungie account.</span>
-<span class="sd">        item_ids : `list[builtins.int]`</span>
+<span class="sd">        item_ids : `list[int]`</span>
 <span class="sd">            A list of item ids.</span>
-<span class="sd">        character_id : `builtins.int`</span>
+<span class="sd">        character_id : `int`</span>
 <span class="sd">            The character&#39;s id to equip the item to.</span>
 <span class="sd">        membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`</span>
 <span class="sd">            The membership type assocaiated with this player.</span>
@@ -5066,11 +5038,11 @@ in a social space, in orbit or offline.</p>
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>access_token</strong> (<code>builtins.str</code>):
+<li><strong>access_token</strong> (<code>str</code>):
 The bearer access token associated with the bungie account.</li>
-<li><strong>item_ids</strong> (<code>list[builtins.int]</code>):
+<li><strong>item_ids</strong> (<code>list[int]</code>):
 A list of item ids.</li>
-<li><strong>character_id</strong> (<code>builtins.int</code>):
+<li><strong>character_id</strong> (<code>int</code>):
 The character's id to equip the item to.</li>
 <li><strong>membership_type</strong> (<code><a href="typedefs.html#IntAnd">aiobungie.typedefs.IntAnd</a>[<a href="../aiobungie.html#MembershipType">aiobungie.MembershipType</a>]</code>):
 The membership type assocaiated with this player.</li>
@@ -5119,7 +5091,7 @@ The membership type assocaiated with this player.</li>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        access_token : `builtins.str`</span>
+<span class="sd">        access_token : `str`</span>
 <span class="sd">            The bearer access token associated with the bungie account.</span>
 <span class="sd">        group_id: `int`</span>
 <span class="sd">            The group id.</span>
@@ -5147,7 +5119,7 @@ This request requires OAuth2: oauth2: <code>AdminGroups</code> scope.</p>
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>access_token</strong> (<code>builtins.str</code>):
+<li><strong>access_token</strong> (<code>str</code>):
 The bearer access token associated with the bungie account.</li>
 <li><strong>group_id</strong> (<code>int</code>):
 The group id.</li>
@@ -5203,7 +5175,7 @@ An optional comment to this ban. Default is <code>UNDEFINED</code></li>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        access_token : `builtins.str`</span>
+<span class="sd">        access_token : `str`</span>
 <span class="sd">            The bearer access token associated with the bungie account.</span>
 <span class="sd">        group_id: `int`</span>
 <span class="sd">            The group id.</span>
@@ -5224,7 +5196,7 @@ This request requires OAuth2: oauth2: <code>AdminGroups</code> scope.</p>
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>access_token</strong> (<code>builtins.str</code>):
+<li><strong>access_token</strong> (<code>str</code>):
 The bearer access token associated with the bungie account.</li>
 <li><strong>group_id</strong> (<code>int</code>):
 The group id.</li>
@@ -5271,7 +5243,7 @@ The member's membership type.</li>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        access_token : `builtins.str`</span>
+<span class="sd">        access_token : `str`</span>
 <span class="sd">            The bearer access token associated with the bungie account.</span>
 <span class="sd">        group_id: `int`</span>
 <span class="sd">            The group id.</span>
@@ -5297,7 +5269,7 @@ This request requires OAuth2: oauth2: <code>AdminGroups</code> scope.</p>
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>access_token</strong> (<code>builtins.str</code>):
+<li><strong>access_token</strong> (<code>str</code>):
 The bearer access token associated with the bungie account.</li>
 <li><strong>group_id</strong> (<code>int</code>):
 The group id.</li>
@@ -5362,7 +5334,7 @@ The member's membership type.</li>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        access_token : `builtins.str`</span>
+<span class="sd">        access_token : `str`</span>
 <span class="sd">            The bearer access token associated with the bungie account.</span>
 <span class="sd">        group_id: `int`</span>
 <span class="sd">            The group id.</span>
@@ -5409,7 +5381,7 @@ The member's membership type.</li>
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>access_token</strong> (<code>builtins.str</code>):
+<li><strong>access_token</strong> (<code>str</code>):
 The bearer access token associated with the bungie account.</li>
 <li><strong>group_id</strong> (<code>int</code>):
 The group id.</li>
@@ -6548,11 +6520,11 @@ Whether to pill this item to your valut or not. Defaults to <code>False</code>.<
             <span class="def">def</span>
             <span class="name">fetch_fireteams</span><span class="signature">(
     self,
-    activity_type: Union[int, <a href="crate.html#fireteams.FireteamActivity">aiobungie.crate.fireteams.FireteamActivity</a>],
+    activity_type: Union[int, aiobungie.crate.fireteams.FireteamActivity],
     *,
-    platform: Union[int, <a href="crate.html#fireteams.FireteamPlatform">aiobungie.crate.fireteams.FireteamPlatform</a>],
-    language: Union[<a href="crate.html#fireteams.FireteamLanguage">aiobungie.crate.fireteams.FireteamLanguage</a>, str],
-    date_range: Union[int, <a href="crate.html#fireteams.FireteamDate">aiobungie.crate.fireteams.FireteamDate</a>] = 0,
+    platform: Union[int, aiobungie.crate.fireteams.FireteamPlatform],
+    language: Union[aiobungie.crate.fireteams.FireteamLanguage, str],
+    date_range: Union[int, aiobungie.crate.fireteams.FireteamDate] = 0,
     page: int = 0,
     slots_filter: int = 0
 ) -&gt; collections.abc.Coroutine[None, None, dict[str, typing.Any]]</span>:
@@ -6607,19 +6579,19 @@ Whether to pill this item to your valut or not. Defaults to <code>False</code>.<
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>activity_type</strong> (<code><a href="typedefs.html#IntAnd">aiobungie.typedefs.IntAnd</a>[<a href="crate.html#FireteamActivity">aiobungie.crate.FireteamActivity</a>]</code>):
+<li><strong>activity_type</strong> (<code><a href="typedefs.html#IntAnd">aiobungie.typedefs.IntAnd</a>[aiobungie.crate.FireteamActivity]</code>):
 The fireteam activity type.</li>
 </ul>
 
 <h6 id="other-parameters">Other Parameters</h6>
 
 <ul>
-<li><strong>platform</strong> (<code><a href="typedefs.html#IntAnd">aiobungie.typedefs.IntAnd</a>[<a href="crate.html#fireteams.FireteamPlatform">aiobungie.crate.fireteams.FireteamPlatform</a>]</code>):
+<li><strong>platform</strong> (<code><a href="typedefs.html#IntAnd">aiobungie.typedefs.IntAnd</a>[aiobungie.crate.fireteams.FireteamPlatform]</code>):
 If this is provided. Then the results will be filtered with the given platform.
-Defaults to <code><a href="crate.html#FireteamPlatform.ANY">aiobungie.crate.FireteamPlatform.ANY</a></code> which returns all platforms.</li>
-<li><strong>language</strong> (<code>typing.Union[<a href="crate.html#fireteams.FireteamLanguage">aiobungie.crate.fireteams.FireteamLanguage</a>, str]</code>):
+Defaults to <code>aiobungie.crate.FireteamPlatform.ANY</code> which returns all platforms.</li>
+<li><strong>language</strong> (<code>typing.Union[aiobungie.crate.fireteams.FireteamLanguage, str]</code>):
 A locale language to filter the used language in that fireteam.
-Defaults to <code><a href="crate.html#FireteamLanguage.ALL">aiobungie.crate.FireteamLanguage.ALL</a></code></li>
+Defaults to <code>aiobungie.crate.FireteamLanguage.ALL</code></li>
 <li><strong>date_range</strong> (<code><a href="typedefs.html#IntAnd">aiobungie.typedefs.IntAnd</a>[<a href="../aiobungie.html#FireteamDate">aiobungie.FireteamDate</a>]</code>):
 An integer to filter the date range of the returned fireteams. Defaults to <code><a href="../aiobungie.html#FireteamDate.ALL">aiobungie.FireteamDate.ALL</a></code>.</li>
 <li><strong>page</strong> (<code>int</code>):
@@ -6647,11 +6619,11 @@ Filter the returned fireteams based on available slots. Default is <code>0</code
     self,
     access_token: str,
     group_id: int,
-    activity_type: Union[int, <a href="crate.html#fireteams.FireteamActivity">aiobungie.crate.fireteams.FireteamActivity</a>],
+    activity_type: Union[int, aiobungie.crate.fireteams.FireteamActivity],
     *,
-    platform: Union[int, <a href="crate.html#fireteams.FireteamPlatform">aiobungie.crate.fireteams.FireteamPlatform</a>],
-    language: Union[<a href="crate.html#fireteams.FireteamLanguage">aiobungie.crate.fireteams.FireteamLanguage</a>, str],
-    date_range: Union[int, <a href="crate.html#fireteams.FireteamDate">aiobungie.crate.fireteams.FireteamDate</a>] = 0,
+    platform: Union[int, aiobungie.crate.fireteams.FireteamPlatform],
+    language: Union[aiobungie.crate.fireteams.FireteamLanguage, str],
+    date_range: Union[int, aiobungie.crate.fireteams.FireteamDate] = 0,
     page: int = 0,
     public_only: bool = False,
     slots_filter: int = 0
@@ -6726,19 +6698,19 @@ This method requires OAuth2: ReadGroups scope.</p>
 The bearer access token associated with the bungie account.</li>
 <li><strong>group_id</strong> (<code>int</code>):
 The group/clan id of the fireteam.</li>
-<li><strong>activity_type</strong> (<code><a href="typedefs.html#IntAnd">aiobungie.typedefs.IntAnd</a>[<a href="crate.html#FireteamActivity">aiobungie.crate.FireteamActivity</a>]</code>):
+<li><strong>activity_type</strong> (<code><a href="typedefs.html#IntAnd">aiobungie.typedefs.IntAnd</a>[aiobungie.crate.FireteamActivity]</code>):
 The fireteam activity type.</li>
 </ul>
 
 <h6 id="other-parameters">Other Parameters</h6>
 
 <ul>
-<li><strong>platform</strong> (<code><a href="typedefs.html#IntAnd">aiobungie.typedefs.IntAnd</a>[<a href="crate.html#fireteams.FireteamPlatform">aiobungie.crate.fireteams.FireteamPlatform</a>]</code>):
+<li><strong>platform</strong> (<code><a href="typedefs.html#IntAnd">aiobungie.typedefs.IntAnd</a>[aiobungie.crate.fireteams.FireteamPlatform]</code>):
 If this is provided. Then the results will be filtered with the given platform.
-Defaults to <code><a href="crate.html#FireteamPlatform.ANY">aiobungie.crate.FireteamPlatform.ANY</a></code> which returns all platforms.</li>
-<li><strong>language</strong> (<code>typing.Union[<a href="crate.html#fireteams.FireteamLanguage">aiobungie.crate.fireteams.FireteamLanguage</a>, str]</code>):
+Defaults to <code>aiobungie.crate.FireteamPlatform.ANY</code> which returns all platforms.</li>
+<li><strong>language</strong> (<code>typing.Union[aiobungie.crate.fireteams.FireteamLanguage, str]</code>):
 A locale language to filter the used language in that fireteam.
-Defaults to <code><a href="crate.html#FireteamLanguage.ALL">aiobungie.crate.FireteamLanguage.ALL</a></code></li>
+Defaults to <code>aiobungie.crate.FireteamLanguage.ALL</code></li>
 <li><strong>date_range</strong> (<code><a href="typedefs.html#IntAnd">aiobungie.typedefs.IntAnd</a>[<a href="../aiobungie.html#FireteamDate">aiobungie.FireteamDate</a>]</code>):
 An integer to filter the date range of the returned fireteams. Defaults to <code><a href="../aiobungie.html#FireteamDate.ALL">aiobungie.FireteamDate.ALL</a></code>.</li>
 <li><strong>page</strong> (<code>int</code>):
@@ -6838,8 +6810,8 @@ The fireteam id to fetch.</li>
     group_id: int,
     *,
     include_closed: bool = True,
-    platform: Union[int, <a href="crate.html#fireteams.FireteamPlatform">aiobungie.crate.fireteams.FireteamPlatform</a>],
-    language: Union[<a href="crate.html#fireteams.FireteamLanguage">aiobungie.crate.fireteams.FireteamLanguage</a>, str],
+    platform: Union[int, aiobungie.crate.fireteams.FireteamPlatform],
+    language: Union[aiobungie.crate.fireteams.FireteamLanguage, str],
     filtered: bool = True,
     page: int = 0
 ) -&gt; collections.abc.Coroutine[None, None, dict[str, typing.Any]]</span>:
@@ -6918,12 +6890,12 @@ The group/clan id to fetch.</li>
 If provided and set to <code>True</code>, It will also return closed fireteams.
 If provided and set to <code>False</code>, It will only return public fireteams.
 Default is <code>True</code>.</li>
-<li><strong>platform</strong> (<code><a href="typedefs.html#IntAnd">aiobungie.typedefs.IntAnd</a>[<a href="crate.html#fireteams.FireteamPlatform">aiobungie.crate.fireteams.FireteamPlatform</a>]</code>):
+<li><strong>platform</strong> (<code><a href="typedefs.html#IntAnd">aiobungie.typedefs.IntAnd</a>[aiobungie.crate.fireteams.FireteamPlatform]</code>):
 If this is provided. Then the results will be filtered with the given platform.
-Defaults to <code><a href="crate.html#FireteamPlatform.ANY">aiobungie.crate.FireteamPlatform.ANY</a></code> which returns all platforms.</li>
-<li><strong>language</strong> (<code>typing.Union[<a href="crate.html#fireteams.FireteamLanguage">aiobungie.crate.fireteams.FireteamLanguage</a>, str]</code>):
+Defaults to <code>aiobungie.crate.FireteamPlatform.ANY</code> which returns all platforms.</li>
+<li><strong>language</strong> (<code>typing.Union[aiobungie.crate.fireteams.FireteamLanguage, str]</code>):
 A locale language to filter the used language in that fireteam.
-Defaults to <code><a href="crate.html#FireteamLanguage.ALL">aiobungie.crate.FireteamLanguage.ALL</a></code></li>
+Defaults to <code>aiobungie.crate.FireteamLanguage.ALL</code></li>
 <li><strong>filtered</strong> (<code>bool</code>):
 If set to <code>True</code>, it will filter by clan. Otherwise not. Default is <code>True</code>.</li>
 <li><strong>page</strong> (<code>int</code>):
@@ -7269,7 +7241,7 @@ OAuth2: AdvancedWriteActions scope is required</p>
 Action token provided by the AwaGetActionToken API call.</li>
 <li><strong>instance_id</strong> (<code>int</code>):
 The item instance id that's plug inserted.</li>
-<li><strong>plug</strong> (<code>typing.Union[<a href="../aiobungie.html#PlugSocketbuilder">aiobungie.PlugSocketbuilder</a>, dict[str, int]]</code>):
+<li><strong>plug</strong> (<code>typing.Union[aiobungie.PlugSocketbuilder, dict[str, int]]</code>):
 Either a PlugSocketBuilder object or a raw dict contains key, value for the plug entries.</li>
 </ul>
 
@@ -7387,7 +7359,7 @@ OAuth2: MoveEquipDestinyItems scope is required</p>
 <ul>
 <li><strong>instance_id</strong> (<code>int</code>):
 The item instance id that's plug inserted.</li>
-<li><strong>plug</strong> (<code>typing.Union[<a href="../aiobungie.html#PlugSocketbuilder">aiobungie.PlugSocketbuilder</a>, dict[str, int]]</code>):
+<li><strong>plug</strong> (<code>typing.Union[aiobungie.PlugSocketbuilder, dict[str, int]]</code>):
 Either a PlugSocketBuilder object or a raw dict contains key, value for the plug entries.</li>
 </ul>
 
@@ -7932,7 +7904,7 @@ If True, the returned results will include streaming alerts. Default is False.</
     member_id: int,
     item_id: int,
     membership_type: Union[int, <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>],
-    *components: <a href="internal/enums.html#ComponentType">aiobungie.internal.enums.ComponentType</a>
+    components: list
 ) -&gt; collections.abc.Coroutine[None, None, dict[str, typing.Any]]</span>:
     </div>
 
@@ -7944,7 +7916,7 @@ If True, the returned results will include streaming alerts. Default is False.</
         <span class="n">member_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">item_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">membership_type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
-        <span class="o">*</span><span class="n">components</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">ComponentType</span><span class="p">,</span>
+        <span class="n">components</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">ComponentType</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch an instanced Destiny 2 item&#39;s details.</span>
 
@@ -7956,8 +7928,8 @@ If True, the returned results will include streaming alerts. Default is False.</
 <span class="sd">            The instance id of the item.</span>
 <span class="sd">        membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`</span>
 <span class="sd">            The membership type of the Destiny 2 player.</span>
-<span class="sd">        *components : `aiobungie.ComponentType`</span>
-<span class="sd">            Multiple item components to retrieve.</span>
+<span class="sd">        components : `list[aiobungie.ComponentType]`</span>
+<span class="sd">            A list of components to retrieve.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -7979,8 +7951,8 @@ The membership id of the Destiny 2 player.</li>
 The instance id of the item.</li>
 <li><strong>membership_type</strong> (<code><a href="typedefs.html#IntAnd">aiobungie.typedefs.IntAnd</a>[<a href="../aiobungie.html#MembershipType">aiobungie.MembershipType</a>]</code>):
 The membership type of the Destiny 2 player.</li>
-<li><strong>*components</strong> (<code><a href="../aiobungie.html#ComponentType">aiobungie.ComponentType</a></code>):
-Multiple item components to retrieve.</li>
+<li><strong>components</strong> (<code>list[<a href="../aiobungie.html#ComponentType">aiobungie.ComponentType</a>]</code>):
+A list of components to retrieve.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
@@ -8298,8 +8270,8 @@ Secret nonce received via the PUSH notification.</li>
     membership_id: int,
     membership_type: Union[int, <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>],
     /,
-    *components: <a href="internal/enums.html#ComponentType">aiobungie.internal.enums.ComponentType</a>,
-    **options: Optional[int]
+    components: list,
+    filter: Optional[int] = None
 ) -&gt; collections.abc.Coroutine[None, None, dict[str, typing.Any]]</span>:
     </div>
 
@@ -8313,8 +8285,8 @@ Secret nonce received via the PUSH notification.</li>
         <span class="n">membership_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">membership_type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
-        <span class="o">*</span><span class="n">components</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">ComponentType</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">options</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+        <span class="n">components</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">ComponentType</span><span class="p">],</span>
+        <span class="nb">filter</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Get currently available vendors from the list of vendors that can possibly have rotating inventory.</span>
 
@@ -8328,14 +8300,13 @@ Secret nonce received via the PUSH notification.</li>
 <span class="sd">            The Destiny membership id to return the vendor info for.</span>
 <span class="sd">        membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`</span>
 <span class="sd">            The Destiny membership type to return the vendor info for.</span>
-<span class="sd">        *components: `aiobungie.ComponentType`</span>
-<span class="sd">            Multiple arguments of vendor components to collect and return.</span>
+<span class="sd">        components: `list[aiobungie.ComponentType]`</span>
+<span class="sd">            A list of vendor components to collect and return.</span>
 
 <span class="sd">        Other Parameters</span>
 <span class="sd">        ----------------</span>
-<span class="sd">        **options : `int`</span>
-<span class="sd">            This optional kwarg expects a `filter` argumnt which filters the type</span>
-<span class="sd">            of items returned from the vendor. This can be left to `None`.</span>
+<span class="sd">        filter : `int`</span>
+<span class="sd">           Filters the type of items returned from the vendor. This can be left to `None`.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -8359,16 +8330,15 @@ The character ID to return the vendor info for.</li>
 The Destiny membership id to return the vendor info for.</li>
 <li><strong>membership_type</strong> (<code><a href="typedefs.html#IntAnd">aiobungie.typedefs.IntAnd</a>[<a href="../aiobungie.html#MembershipType">aiobungie.MembershipType</a>]</code>):
 The Destiny membership type to return the vendor info for.</li>
-<li><strong>*components</strong> (<code><a href="../aiobungie.html#ComponentType">aiobungie.ComponentType</a></code>):
-Multiple arguments of vendor components to collect and return.</li>
+<li><strong>components</strong> (<code>list[<a href="../aiobungie.html#ComponentType">aiobungie.ComponentType</a>]</code>):
+A list of vendor components to collect and return.</li>
 </ul>
 
 <h6 id="other-parameters">Other Parameters</h6>
 
 <ul>
-<li><strong>**options</strong> (<code>int</code>):
-This optional kwarg expects a <code>filter</code> argumnt which filters the type
-of items returned from the vendor. This can be left to <code>None</code>.</li>
+<li><strong>filter</strong> (<code>int</code>):
+Filters the type of items returned from the vendor. This can be left to <code>None</code>.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
@@ -8394,7 +8364,7 @@ of items returned from the vendor. This can be left to <code>None</code>.</li>
     membership_type: Union[int, <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>],
     vendor_hash: int,
     /,
-    *components: <a href="internal/enums.html#ComponentType">aiobungie.internal.enums.ComponentType</a>
+    components: list
 ) -&gt; collections.abc.Coroutine[None, None, dict[str, typing.Any]]</span>:
     </div>
 
@@ -8409,7 +8379,7 @@ of items returned from the vendor. This can be left to <code>None</code>.</li>
         <span class="n">membership_type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
         <span class="n">vendor_hash</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
-        <span class="o">*</span><span class="n">components</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">ComponentType</span><span class="p">,</span>
+        <span class="n">components</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">ComponentType</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Fetch details for a specific vendor.</span>
 
@@ -8425,8 +8395,8 @@ of items returned from the vendor. This can be left to <code>None</code>.</li>
 <span class="sd">            The Destiny membership type to return the vendor info for.</span>
 <span class="sd">        vendor_hash : `int`</span>
 <span class="sd">            The vendor hash to return the details for.</span>
-<span class="sd">        *components: `aiobungie.ComponentType`</span>
-<span class="sd">            Multiple arguments of vendor components to collect and return.</span>
+<span class="sd">        components: `list[aiobungie.ComponentType]`</span>
+<span class="sd">            A list of vendor components to collect and return.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -8452,8 +8422,8 @@ The Destiny membership id to return the vendor info for.</li>
 The Destiny membership type to return the vendor info for.</li>
 <li><strong>vendor_hash</strong> (<code>int</code>):
 The vendor hash to return the details for.</li>
-<li><strong>*components</strong> (<code><a href="../aiobungie.html#ComponentType">aiobungie.ComponentType</a></code>):
-Multiple arguments of vendor components to collect and return.</li>
+<li><strong>components</strong> (<code>list[<a href="../aiobungie.html#ComponentType">aiobungie.ComponentType</a>]</code>):
+A list of vendor components to collect and return.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
@@ -9377,9 +9347,11 @@ A datetime object can be used to collect the end of the application usage.</p>
                                 <h5>Inherited Members</h5>
                                 <dl>
                                     <div><dt><a href="traits.html#RESTful">aiobungie.traits.RESTful</a></dt>
-                                <dd id="RESTInterface.build_oauth2_url" class="function"><a href="traits.html#RESTful.build_oauth2_url">build_oauth2_url</a></dd>
-                <dd id="RESTInterface.client_id" class="variable"><a href="traits.html#RESTful.client_id">client_id</a></dd>
+                                <dd id="RESTInterface.client_id" class="variable"><a href="traits.html#RESTful.client_id">client_id</a></dd>
                 <dd id="RESTInterface.metadata" class="variable"><a href="traits.html#RESTful.metadata">metadata</a></dd>
+                <dd id="RESTInterface.is_alive" class="variable"><a href="traits.html#RESTful.is_alive">is_alive</a></dd>
+                <dd id="RESTInterface.build_oauth2_url" class="function"><a href="traits.html#RESTful.build_oauth2_url">build_oauth2_url</a></dd>
+                <dd id="RESTInterface.enable_debugging" class="function"><a href="traits.html#RESTful.enable_debugging">enable_debugging</a></dd>
                 <dd id="RESTInterface.close" class="function"><a href="traits.html#RESTful.close">close</a></dd>
                 <dd id="RESTInterface.static_request" class="function"><a href="traits.html#RESTful.static_request">static_request</a></dd>
 
@@ -9410,7 +9382,7 @@ A datetime object can be used to collect the end of the application usage.</p>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">deserialize_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Deserialize a raw JSON results of fetched user memebrships and Bungie.net user its their id.</span>
+        <span class="sd">&quot;&quot;&quot;Deserialize a raw JSON results of fetched user memberships and Bungie.net user its their id.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -9442,7 +9414,7 @@ A datetime object can be used to collect the end of the application usage.</p>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">deseialize_searched_user</span><span class="p">(</span>
+    <span class="k">def</span> <span class="nf">deserialize_searched_user</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">user</span><span class="o">.</span><span class="n">SearchableDestinyUser</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Deserialize the results of user search details.</span>
@@ -9598,7 +9570,7 @@ A datetime object can be used to collect the end of the application usage.</p>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">deserialize_clan_members</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">,</span> <span class="o">/</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanMember</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">iterators</span><span class="o">.</span><span class="n">FlatIterator</span><span class="p">[</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanMember</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Deserialize a JSON payload of a clan members information.</span>
 
 <span class="sd">        Parameters</span>
@@ -9608,12 +9580,12 @@ A datetime object can be used to collect the end of the application usage.</p>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `collections.Sequence[aiobungie.crate.ClanMember]`</span>
-<span class="sd">            A sequence of clan members of the deserialized payload.</span>
+<span class="sd">        `aiobungie.iterators.FlatIterator[aiobungie.crate.ClanMember]`</span>
+<span class="sd">            An iterator of clan members of the deserialized payload.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">deserialize_clan_convos</span><span class="p">(</span>
+    <span class="k">def</span> <span class="nf">deserialize_clan_conversations</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONArray</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanConversation</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Deserialize a JSON array of a clan conversations information.</span>
@@ -9749,7 +9721,7 @@ A datetime object can be used to collect the end of the application usage.</p>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">deserialize_character_customazition</span><span class="p">(</span>
+    <span class="k">def</span> <span class="nf">deserialize_character_customization</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">character</span><span class="o">.</span><span class="n">CustomizationOptions</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Deserialize a JSON payload of a character customization information found in character</span>
@@ -9779,7 +9751,7 @@ A datetime object can be used to collect the end of the application usage.</p>
         <span class="o">...</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">deserialize_character_equipmnets</span><span class="p">(</span>
+    <span class="k">def</span> <span class="nf">deserialize_character_equipments</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">profile</span><span class="o">.</span><span class="n">ProfileItemImpl</span><span class="p">]]:</span>
         <span class="o">...</span>
@@ -9895,7 +9867,7 @@ A datetime object can be used to collect the end of the application usage.</p>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `aiobungie.crate.ProfileItemImpl`</span>
-<span class="sd">            A concerete implementation of a profile component item.</span>
+<span class="sd">            Implementation of a Destiny 2 profile component item.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="c1"># Components</span>
@@ -10025,7 +9997,7 @@ A datetime object can be used to collect the end of the application usage.</p>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">deserialize_inventory_results</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">SearchableEntity</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">iterators</span><span class="o">.</span><span class="n">FlatIterator</span><span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">SearchableEntity</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Deserialize results of searched Destiny2 entities.</span>
 
 <span class="sd">        Parameters</span>
@@ -10035,15 +10007,15 @@ A datetime object can be used to collect the end of the application usage.</p>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `collections.Sequence[aiobungie.crate.SearchableEntity]`</span>
-<span class="sd">            A sequence of the found searched entities.</span>
+<span class="sd">        `aiobungie.iterators.FlatIterator[aiobungie.crate.SearchableEntity]`</span>
+<span class="sd">            An iterator over the found searched entities.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">deserialize_objective_entity</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">,</span> <span class="o">/</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">entity</span><span class="o">.</span><span class="n">ObjectiveEntity</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Deserialize a JSON payload of an objetive entity information.</span>
+        <span class="sd">&quot;&quot;&quot;Deserialize a JSON payload of an objective entity information.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -10053,7 +10025,7 @@ A datetime object can be used to collect the end of the application usage.</p>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `aiobungie.crate.ObjectiveEntity`</span>
-<span class="sd">            An objetive entity.</span>
+<span class="sd">            An objective entity.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="c1"># Activities.</span>
@@ -10078,7 +10050,7 @@ A datetime object can be used to collect the end of the application usage.</p>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">deserialize_activities</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">,</span> <span class="o">/</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">activity</span><span class="o">.</span><span class="n">Activity</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">iterators</span><span class="o">.</span><span class="n">FlatIterator</span><span class="p">[</span><span class="n">activity</span><span class="o">.</span><span class="n">Activity</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Deserialize a JSON payload of an array of activity history information.</span>
 
 <span class="sd">        Parameters</span>
@@ -10088,8 +10060,8 @@ A datetime object can be used to collect the end of the application usage.</p>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `collections.Sequence[aiobungie.crate.Activity]`</span>
-<span class="sd">            A sequence of activity objects of the deserialized payload.</span>
+<span class="sd">        `aiobungie.iterators.FlatIterator[aiobungie.crate.Activity]`</span>
+<span class="sd">            Am iterator over activity objects of the deserialized payload.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -10302,7 +10274,7 @@ A datetime object can be used to collect the end of the application usage.</p>
     <span class="k">def</span> <span class="nf">deserialize_available_fireteams</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">no_results</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span>
-        <span class="n">fireteams</span><span class="o">.</span><span class="n">AvalaibleFireteam</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">fireteams</span><span class="o">.</span><span class="n">AvalaibleFireteam</span><span class="p">]</span>
+        <span class="n">fireteams</span><span class="o">.</span><span class="n">AvailableFireteam</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">fireteams</span><span class="o">.</span><span class="n">AvailableFireteam</span><span class="p">]</span>
     <span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Deserialize a JSON payload of a sequence of/fireteam information.</span>
 
@@ -10315,7 +10287,7 @@ A datetime object can be used to collect the end of the application usage.</p>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `typing.Union[aiobungie.crate.fireteams.AvalaibleFireteam, collections.Sequence[aiobungie.crate.fireteams.AvalaibleFireteam]]` # noqa: E501</span>
+<span class="sd">        `typing.Union[aiobungie.crate.fireteams.AvailableFireteam, collections.Sequence[aiobungie.crate.fireteams.AvailableFireteam]]` # noqa: E501</span>
 <span class="sd">            An available fireteam or a sequence of available fireteam.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -10412,14 +10384,14 @@ A datetime object can be used to collect the end of the application usage.</p>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_user</span><span class="signature">(self, data: dict) -&gt; <a href="crate.html#user.User">aiobungie.crate.user.User</a></span>:
+            <span class="name">deserialize_user</span><span class="signature">(self, data: dict) -&gt; aiobungie.crate.user.User</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">deserialize_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">user</span><span class="o">.</span><span class="n">User</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Deserialize a raw JSON results of fetched user memebrships and Bungie.net user its their id.</span>
+        <span class="sd">&quot;&quot;&quot;Deserialize a raw JSON results of fetched user memberships and Bungie.net user its their id.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -10435,7 +10407,7 @@ A datetime object can be used to collect the end of the application usage.</p>
 
         </details>
 
-            <div class="docstring"><p>Deserialize a raw JSON results of fetched user memebrships and Bungie.net user its their id.</p>
+            <div class="docstring"><p>Deserialize a raw JSON results of fetched user memberships and Bungie.net user its their id.</p>
 
 <h6 id="parameters">Parameters</h6>
 
@@ -10459,7 +10431,7 @@ The JSON data/payload.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_bungie_user</span><span class="signature">(self, data: dict) -&gt; <a href="crate.html#user.BungieUser">aiobungie.crate.user.BungieUser</a></span>:
+            <span class="name">deserialize_bungie_user</span><span class="signature">(self, data: dict) -&gt; aiobungie.crate.user.BungieUser</span>:
     </div>
 
             <details>
@@ -10506,19 +10478,19 @@ The JSON data/payload.</li>
 
 
                             </div>
-                            <div id="FactoryInterface.deseialize_searched_user" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#FactoryInterface.deseialize_searched_user">#&nbsp;&nbsp</a>
+                            <div id="FactoryInterface.deserialize_searched_user" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#FactoryInterface.deserialize_searched_user">#&nbsp;&nbsp</a>
 
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deseialize_searched_user</span><span class="signature">(self, payload: dict) -&gt; <a href="crate.html#user.SearchableDestinyUser">aiobungie.crate.user.SearchableDestinyUser</a></span>:
+            <span class="name">deserialize_searched_user</span><span class="signature">(self, payload: dict) -&gt; aiobungie.crate.user.SearchableDestinyUser</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">deseialize_searched_user</span><span class="p">(</span>
+    <span class="k">def</span> <span class="nf">deserialize_searched_user</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">user</span><span class="o">.</span><span class="n">SearchableDestinyUser</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Deserialize the results of user search details.</span>
@@ -10561,7 +10533,7 @@ The JSON payload.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_partial_bungie_user</span><span class="signature">(self, payload: dict) -&gt; <a href="crate.html#user.PartialBungieUser">aiobungie.crate.user.PartialBungieUser</a></span>:
+            <span class="name">deserialize_partial_bungie_user</span><span class="signature">(self, payload: dict) -&gt; aiobungie.crate.user.PartialBungieUser</span>:
     </div>
 
             <details>
@@ -10616,7 +10588,7 @@ The JSON payload.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_destiny_membership</span><span class="signature">(self, payload: dict) -&gt; <a href="crate.html#user.DestinyMembership">aiobungie.crate.user.DestinyMembership</a></span>:
+            <span class="name">deserialize_destiny_membership</span><span class="signature">(self, payload: dict) -&gt; aiobungie.crate.user.DestinyMembership</span>:
     </div>
 
             <details>
@@ -10653,7 +10625,7 @@ The JSON payload.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code><a href="crate.html#user.DestinyMembership">aiobungie.crate.user.DestinyMembership</a></code></strong>: A Destiny 2 membership.</li>
+<li><strong><code>aiobungie.crate.user.DestinyMembership</code></strong>: A Destiny 2 membership.</li>
 </ul>
 </div>
 
@@ -10668,7 +10640,7 @@ The JSON payload.</li>
             <span class="name">deserialize_destiny_memberships</span><span class="signature">(
     self,
     data: list
-) -&gt; collections.abc.Sequence[<a href="crate.html#user.DestinyMembership">aiobungie.crate.user.DestinyMembership</a>]</span>:
+) -&gt; collections.abc.Sequence[aiobungie.crate.user.DestinyMembership]</span>:
     </div>
 
             <details>
@@ -10705,7 +10677,7 @@ The JSON payload.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code>collections.Sequence[<a href="crate.html#user.DestinyMembership">aiobungie.crate.user.DestinyMembership</a>]</code></strong>: A sequence of Destiny 2 memberships.</li>
+<li><strong><code>collections.Sequence[aiobungie.crate.user.DestinyMembership]</code></strong>: A sequence of Destiny 2 memberships.</li>
 </ul>
 </div>
 
@@ -10720,7 +10692,7 @@ The JSON payload.</li>
             <span class="name">deserialize_user_themes</span><span class="signature">(
     self,
     payload: list
-) -&gt; collections.abc.Sequence[<a href="crate.html#user.UserThemes">aiobungie.crate.user.UserThemes</a>]</span>:
+) -&gt; collections.abc.Sequence[aiobungie.crate.user.UserThemes]</span>:
     </div>
 
             <details>
@@ -10757,7 +10729,7 @@ The JSON payload.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code>collections.Sequence[<a href="crate.html#user.UserThemes">aiobungie.crate.user.UserThemes</a>]</code></strong>: A sequence of bungie user themes.</li>
+<li><strong><code>collections.Sequence[aiobungie.crate.user.UserThemes]</code></strong>: A sequence of bungie user themes.</li>
 </ul>
 </div>
 
@@ -10772,7 +10744,7 @@ The JSON payload.</li>
             <span class="name">deserialize_user_credentials</span><span class="signature">(
     self,
     payload: list
-) -&gt; collections.abc.Sequence[<a href="crate.html#user.UserCredentials">aiobungie.crate.user.UserCredentials</a>]</span>:
+) -&gt; collections.abc.Sequence[aiobungie.crate.user.UserCredentials]</span>:
     </div>
 
             <details>
@@ -10821,7 +10793,7 @@ The JSON payload.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_clan</span><span class="signature">(self, payload: dict) -&gt; <a href="crate.html#clans.Clan">aiobungie.crate.clans.Clan</a></span>:
+            <span class="name">deserialize_clan</span><span class="signature">(self, payload: dict) -&gt; aiobungie.crate.clans.Clan</span>:
     </div>
 
             <details>
@@ -10868,7 +10840,7 @@ The JSON payload.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_group_member</span><span class="signature">(self, payload: dict) -&gt; Optional[<a href="crate.html#clans.GroupMember">aiobungie.crate.clans.GroupMember</a>]</span>:
+            <span class="name">deserialize_group_member</span><span class="signature">(self, payload: dict) -&gt; Optional[aiobungie.crate.clans.GroupMember]</span>:
     </div>
 
             <details>
@@ -10917,7 +10889,7 @@ The JSON payload.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_clan_member</span><span class="signature">(self, data: dict, /) -&gt; <a href="crate.html#clans.ClanMember">aiobungie.crate.clans.ClanMember</a></span>:
+            <span class="name">deserialize_clan_member</span><span class="signature">(self, data: dict, /) -&gt; aiobungie.crate.clans.ClanMember</span>:
     </div>
 
             <details>
@@ -10968,7 +10940,7 @@ The JSON payload.</li>
     self,
     data: dict,
     /
-) -&gt; collections.abc.Sequence[<a href="crate.html#clans.ClanMember">aiobungie.crate.clans.ClanMember</a>]</span>:
+) -&gt; <a href="internal/iterators.html#FlatIterator">aiobungie.internal.iterators.FlatIterator</a>[aiobungie.crate.clans.ClanMember]</span>:
     </div>
 
             <details>
@@ -10976,7 +10948,7 @@ The JSON payload.</li>
             <div class="pdoc-code codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">deserialize_clan_members</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">,</span> <span class="o">/</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanMember</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">iterators</span><span class="o">.</span><span class="n">FlatIterator</span><span class="p">[</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanMember</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Deserialize a JSON payload of a clan members information.</span>
 
 <span class="sd">        Parameters</span>
@@ -10986,8 +10958,8 @@ The JSON payload.</li>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `collections.Sequence[aiobungie.crate.ClanMember]`</span>
-<span class="sd">            A sequence of clan members of the deserialized payload.</span>
+<span class="sd">        `aiobungie.iterators.FlatIterator[aiobungie.crate.ClanMember]`</span>
+<span class="sd">            An iterator of clan members of the deserialized payload.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
@@ -11005,28 +10977,28 @@ The JSON payload.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code>collections.Sequence[<a href="crate.html#ClanMember">aiobungie.crate.ClanMember</a>]</code></strong>: A sequence of clan members of the deserialized payload.</li>
+<li><strong><code>aiobungie.iterators.FlatIterator[<a href="crate.html#ClanMember">aiobungie.crate.ClanMember</a>]</code></strong>: An iterator of clan members of the deserialized payload.</li>
 </ul>
 </div>
 
 
                             </div>
-                            <div id="FactoryInterface.deserialize_clan_convos" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#FactoryInterface.deserialize_clan_convos">#&nbsp;&nbsp</a>
+                            <div id="FactoryInterface.deserialize_clan_conversations" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#FactoryInterface.deserialize_clan_conversations">#&nbsp;&nbsp</a>
 
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_clan_convos</span><span class="signature">(
+            <span class="name">deserialize_clan_conversations</span><span class="signature">(
     self,
     payload: list
-) -&gt; collections.abc.Sequence[<a href="crate.html#clans.ClanConversation">aiobungie.crate.clans.ClanConversation</a>]</span>:
+) -&gt; collections.abc.Sequence[aiobungie.crate.clans.ClanConversation]</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">deserialize_clan_convos</span><span class="p">(</span>
+    <span class="k">def</span> <span class="nf">deserialize_clan_conversations</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONArray</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">clans</span><span class="o">.</span><span class="n">ClanConversation</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Deserialize a JSON array of a clan conversations information.</span>
@@ -11072,7 +11044,7 @@ The JSON payload.</li>
             <span class="name">deserialize_clan_banners</span><span class="signature">(
     self,
     payload: dict
-) -&gt; collections.abc.Sequence[<a href="crate.html#clans.ClanBanner">aiobungie.crate.clans.ClanBanner</a>]</span>:
+) -&gt; collections.abc.Sequence[aiobungie.crate.clans.ClanBanner]</span>:
     </div>
 
             <details>
@@ -11121,7 +11093,7 @@ The JSON payload.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_app_owner</span><span class="signature">(self, payload: dict) -&gt; <a href="crate.html#application.ApplicationOwner">aiobungie.crate.application.ApplicationOwner</a></span>:
+            <span class="name">deserialize_app_owner</span><span class="signature">(self, payload: dict) -&gt; aiobungie.crate.application.ApplicationOwner</span>:
     </div>
 
             <details>
@@ -11158,7 +11130,7 @@ The JSON payload.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code><a href="crate.html#application.ApplicationOwner">aiobungie.crate.application.ApplicationOwner</a></code></strong>: An application owner.</li>
+<li><strong><code>aiobungie.crate.application.ApplicationOwner</code></strong>: An application owner.</li>
 </ul>
 </div>
 
@@ -11170,7 +11142,7 @@ The JSON payload.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_app</span><span class="signature">(self, payload: dict) -&gt; <a href="crate.html#application.Application">aiobungie.crate.application.Application</a></span>:
+            <span class="name">deserialize_app</span><span class="signature">(self, payload: dict) -&gt; aiobungie.crate.application.Application</span>:
     </div>
 
             <details>
@@ -11205,7 +11177,7 @@ The JSON payload.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code><a href="crate.html#application.Application">aiobungie.crate.application.Application</a></code></strong>: An application.</li>
+<li><strong><code>aiobungie.crate.application.Application</code></strong>: An application.</li>
 </ul>
 </div>
 
@@ -11217,7 +11189,7 @@ The JSON payload.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_character_component</span><span class="signature">(self, payload: dict) -&gt; <a href="crate.html#components.CharacterComponent">aiobungie.crate.components.CharacterComponent</a></span>:
+            <span class="name">deserialize_character_component</span><span class="signature">(self, payload: dict) -&gt; aiobungie.crate.components.CharacterComponent</span>:
     </div>
 
             <details>
@@ -11266,7 +11238,7 @@ The JSON payload.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_character_render_data</span><span class="signature">(self, payload: dict, /) -&gt; <a href="crate.html#character.RenderedData">aiobungie.crate.character.RenderedData</a></span>:
+            <span class="name">deserialize_character_render_data</span><span class="signature">(self, payload: dict, /) -&gt; aiobungie.crate.character.RenderedData</span>:
     </div>
 
             <details>
@@ -11315,7 +11287,7 @@ The JSON payload.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_character_minimal_equipments</span><span class="signature">(self, payload: dict) -&gt; <a href="crate.html#character.MinimalEquipments">aiobungie.crate.character.MinimalEquipments</a></span>:
+            <span class="name">deserialize_character_minimal_equipments</span><span class="signature">(self, payload: dict) -&gt; aiobungie.crate.character.MinimalEquipments</span>:
     </div>
 
             <details>
@@ -11352,7 +11324,7 @@ The JSON payload.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code><a href="crate.html#character.MinimalEquipments">aiobungie.crate.character.MinimalEquipments</a></code></strong>: A minimal equipment object.</li>
+<li><strong><code>aiobungie.crate.character.MinimalEquipments</code></strong>: A minimal equipment object.</li>
 </ul>
 </div>
 
@@ -11364,7 +11336,7 @@ The JSON payload.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_character_dye</span><span class="signature">(self, payload: dict) -&gt; <a href="crate.html#character.Dye">aiobungie.crate.character.Dye</a></span>:
+            <span class="name">deserialize_character_dye</span><span class="signature">(self, payload: dict) -&gt; aiobungie.crate.character.Dye</span>:
     </div>
 
             <details>
@@ -11399,28 +11371,28 @@ The JSON payload.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code><a href="crate.html#character.Dye">aiobungie.crate.character.Dye</a></code></strong>: Information about a character dye object.</li>
+<li><strong><code>aiobungie.crate.character.Dye</code></strong>: Information about a character dye object.</li>
 </ul>
 </div>
 
 
                             </div>
-                            <div id="FactoryInterface.deserialize_character_customazition" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#FactoryInterface.deserialize_character_customazition">#&nbsp;&nbsp</a>
+                            <div id="FactoryInterface.deserialize_character_customization" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#FactoryInterface.deserialize_character_customization">#&nbsp;&nbsp</a>
 
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_character_customazition</span><span class="signature">(
+            <span class="name">deserialize_character_customization</span><span class="signature">(
     self,
     payload: dict
-) -&gt; <a href="crate.html#character.CustomizationOptions">aiobungie.crate.character.CustomizationOptions</a></span>:
+) -&gt; aiobungie.crate.character.CustomizationOptions</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">deserialize_character_customazition</span><span class="p">(</span>
+    <span class="k">def</span> <span class="nf">deserialize_character_customization</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">character</span><span class="o">.</span><span class="n">CustomizationOptions</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Deserialize a JSON payload of a character customization information found in character</span>
@@ -11453,7 +11425,7 @@ The JSON payload.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code><a href="crate.html#character.CustomizationOptions">aiobungie.crate.character.CustomizationOptions</a></code></strong>: Information about a character customs object.</li>
+<li><strong><code>aiobungie.crate.character.CustomizationOptions</code></strong>: Information about a character customs object.</li>
 </ul>
 </div>
 
@@ -11468,7 +11440,7 @@ The JSON payload.</li>
             <span class="name">deserialize_characters</span><span class="signature">(
     self,
     payload: dict
-) -&gt; collections.abc.Mapping[int, <a href="crate.html#character.Character">aiobungie.crate.character.Character</a>]</span>:
+) -&gt; collections.abc.Mapping[int, aiobungie.crate.character.Character]</span>:
     </div>
 
             <details>
@@ -11491,7 +11463,7 @@ The JSON payload.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_character</span><span class="signature">(self, payload: dict) -&gt; <a href="crate.html#character.Character">aiobungie.crate.character.Character</a></span>:
+            <span class="name">deserialize_character</span><span class="signature">(self, payload: dict) -&gt; aiobungie.crate.character.Character</span>:
     </div>
 
             <details>
@@ -11508,22 +11480,22 @@ The JSON payload.</li>
     
 
                             </div>
-                            <div id="FactoryInterface.deserialize_character_equipmnets" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#FactoryInterface.deserialize_character_equipmnets">#&nbsp;&nbsp</a>
+                            <div id="FactoryInterface.deserialize_character_equipments" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#FactoryInterface.deserialize_character_equipments">#&nbsp;&nbsp</a>
 
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_character_equipmnets</span><span class="signature">(
+            <span class="name">deserialize_character_equipments</span><span class="signature">(
     self,
     payload: dict
-) -&gt; collections.abc.Mapping[int, collections.abc.Sequence[<a href="crate.html#profile.ProfileItemImpl">aiobungie.crate.profile.ProfileItemImpl</a>]]</span>:
+) -&gt; collections.abc.Mapping[int, collections.abc.Sequence[aiobungie.crate.profile.ProfileItemImpl]]</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">deserialize_character_equipmnets</span><span class="p">(</span>
+    <span class="k">def</span> <span class="nf">deserialize_character_equipments</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">profile</span><span class="o">.</span><span class="n">ProfileItemImpl</span><span class="p">]]:</span>
         <span class="o">...</span>
@@ -11543,7 +11515,7 @@ The JSON payload.</li>
             <span class="name">deserialize_characters_render_data</span><span class="signature">(
     self,
     payload: dict
-) -&gt; collections.abc.Mapping[int, <a href="crate.html#character.RenderedData">aiobungie.crate.character.RenderedData</a>]</span>:
+) -&gt; collections.abc.Mapping[int, aiobungie.crate.character.RenderedData]</span>:
     </div>
 
             <details>
@@ -11566,7 +11538,7 @@ The JSON payload.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_progressions</span><span class="signature">(self, payload: dict) -&gt; <a href="crate.html#progressions.Progression">aiobungie.crate.progressions.Progression</a></span>:
+            <span class="name">deserialize_progressions</span><span class="signature">(self, payload: dict) -&gt; aiobungie.crate.progressions.Progression</span>:
     </div>
 
             <details>
@@ -11592,7 +11564,7 @@ The JSON payload.</li>
             <span class="name">deserialize_character_progressions</span><span class="signature">(
     self,
     payload: dict
-) -&gt; <a href="crate.html#character.CharacterProgression">aiobungie.crate.character.CharacterProgression</a></span>:
+) -&gt; aiobungie.crate.character.CharacterProgression</span>:
     </div>
 
             <details>
@@ -11618,7 +11590,7 @@ The JSON payload.</li>
             <span class="name">deserialize_character_progressions_mapping</span><span class="signature">(
     self,
     payload: dict
-) -&gt; collections.abc.Mapping[int, <a href="crate.html#character.CharacterProgression">aiobungie.crate.character.CharacterProgression</a>]</span>:
+) -&gt; collections.abc.Mapping[int, aiobungie.crate.character.CharacterProgression]</span>:
     </div>
 
             <details>
@@ -11641,7 +11613,7 @@ The JSON payload.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_profile_progression</span><span class="signature">(self, payload: dict) -&gt; <a href="crate.html#profile.ProfileProgression">aiobungie.crate.profile.ProfileProgression</a></span>:
+            <span class="name">deserialize_profile_progression</span><span class="signature">(self, payload: dict) -&gt; aiobungie.crate.profile.ProfileProgression</span>:
     </div>
 
             <details>
@@ -11671,7 +11643,7 @@ The JSON payload.</li>
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>payload</strong> (<code><a href="internal/helpers.html#JsonObject">aiobungie.internal.helpers.JsonObject</a></code>):
+<li><strong>payload</strong> (<code>aiobungie.internal.helpers.JsonObject</code>):
 The JSON payload.</li>
 </ul>
 
@@ -11690,7 +11662,7 @@ The JSON payload.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_profile</span><span class="signature">(self, payload: dict, /) -&gt; Optional[<a href="crate.html#profile.Profile">aiobungie.crate.profile.Profile</a>]</span>:
+            <span class="name">deserialize_profile</span><span class="signature">(self, payload: dict, /) -&gt; Optional[aiobungie.crate.profile.Profile]</span>:
     </div>
 
             <details>
@@ -11743,7 +11715,7 @@ The JSON payload.</li>
     self,
     payload: dict,
     /
-) -&gt; Optional[collections.abc.Sequence[<a href="crate.html#profile.ProfileItemImpl">aiobungie.crate.profile.ProfileItemImpl</a>]]</span>:
+) -&gt; Optional[collections.abc.Sequence[aiobungie.crate.profile.ProfileItemImpl]]</span>:
     </div>
 
             <details>
@@ -11798,7 +11770,7 @@ The JSON payload.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_linked_profiles</span><span class="signature">(self, payload: dict) -&gt; <a href="crate.html#profile.LinkedProfile">aiobungie.crate.profile.LinkedProfile</a></span>:
+            <span class="name">deserialize_linked_profiles</span><span class="signature">(self, payload: dict) -&gt; aiobungie.crate.profile.LinkedProfile</span>:
     </div>
 
             <details>
@@ -11847,7 +11819,7 @@ The JSON payload.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_profile_item</span><span class="signature">(self, payload: dict) -&gt; <a href="crate.html#profile.ProfileItemImpl">aiobungie.crate.profile.ProfileItemImpl</a></span>:
+            <span class="name">deserialize_profile_item</span><span class="signature">(self, payload: dict) -&gt; aiobungie.crate.profile.ProfileItemImpl</span>:
     </div>
 
             <details>
@@ -11866,7 +11838,7 @@ The JSON payload.</li>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `aiobungie.crate.ProfileItemImpl`</span>
-<span class="sd">            A concerete implementation of a profile component item.</span>
+<span class="sd">            Implementation of a Destiny 2 profile component item.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
@@ -11884,7 +11856,7 @@ The JSON payload.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code><a href="crate.html#ProfileItemImpl">aiobungie.crate.ProfileItemImpl</a></code></strong>: A concerete implementation of a profile component item.</li>
+<li><strong><code><a href="crate.html#ProfileItemImpl">aiobungie.crate.ProfileItemImpl</a></code></strong>: Implementation of a Destiny 2 profile component item.</li>
 </ul>
 </div>
 
@@ -11896,7 +11868,7 @@ The JSON payload.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_components</span><span class="signature">(self, payload: dict) -&gt; <a href="crate.html#components.Component">aiobungie.crate.components.Component</a></span>:
+            <span class="name">deserialize_components</span><span class="signature">(self, payload: dict) -&gt; aiobungie.crate.components.Component</span>:
     </div>
 
             <details>
@@ -11927,7 +11899,7 @@ The JSON payload.</li>
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>payload</strong> (<code><a href="internal/helpers.html#JsonObject">aiobungie.internal.helpers.JsonObject</a></code>):
+<li><strong>payload</strong> (<code>aiobungie.internal.helpers.JsonObject</code>):
 The JSON payload.</li>
 </ul>
 
@@ -11947,7 +11919,7 @@ of the deserialized payload.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_items_component</span><span class="signature">(self, payload: dict) -&gt; <a href="crate.html#components.ItemsComponent">aiobungie.crate.components.ItemsComponent</a></span>:
+            <span class="name">deserialize_items_component</span><span class="signature">(self, payload: dict) -&gt; aiobungie.crate.components.ItemsComponent</span>:
     </div>
 
             <details>
@@ -11975,9 +11947,9 @@ of the deserialized payload.</li>
             <span class="name">deserialize_records</span><span class="signature">(
     self,
     payload: dict,
-    scores: Optional[<a href="crate.html#records.RecordScores">aiobungie.crate.records.RecordScores</a>] = None,
+    scores: Optional[aiobungie.crate.records.RecordScores] = None,
     **nodes: int
-) -&gt; <a href="crate.html#records.Record">aiobungie.crate.records.Record</a></span>:
+) -&gt; aiobungie.crate.records.Record</span>:
     </div>
 
             <details>
@@ -12016,7 +11988,7 @@ of the deserialized payload.</li>
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>payload</strong> (<code><a href="internal/helpers.html#JsonObject">aiobungie.internal.helpers.JsonObject</a></code>):
+<li><strong>payload</strong> (<code>aiobungie.internal.helpers.JsonObject</code>):
 The JSON object payload</li>
 <li><strong>scores</strong> (<code>typing.Optional[records.RecordScores]</code>):
 The records scores object.
@@ -12029,7 +12001,7 @@ An int kwargs use to grab the node hashes while deserializing components.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code><a href="../aiobungie.html#records.Record">aiobungie.records.Record</a></code></strong>: A standard implementation of a profile record component.</li>
+<li><strong><code>aiobungie.records.Record</code></strong>: A standard implementation of a profile record component.</li>
 </ul>
 </div>
 
@@ -12041,7 +12013,7 @@ An int kwargs use to grab the node hashes while deserializing components.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_character_records</span><span class="signature">(self, payload: dict) -&gt; <a href="crate.html#records.CharacterRecord">aiobungie.crate.records.CharacterRecord</a></span>:
+            <span class="name">deserialize_character_records</span><span class="signature">(self, payload: dict) -&gt; aiobungie.crate.records.CharacterRecord</span>:
     </div>
 
             <details>
@@ -12078,14 +12050,14 @@ has more fields which can only be found in a character record.</p>
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>payload</strong> (<code><a href="internal/helpers.html#JsonObject">aiobungie.internal.helpers.JsonObject</a></code>):
+<li><strong>payload</strong> (<code>aiobungie.internal.helpers.JsonObject</code>):
 The JSON object payload</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code><a href="../aiobungie.html#records.CharacterRecord">aiobungie.records.CharacterRecord</a></code></strong>: A standard implementation of a profile character record component.</li>
+<li><strong><code>aiobungie.records.CharacterRecord</code></strong>: A standard implementation of a profile character record component.</li>
 </ul>
 </div>
 
@@ -12100,7 +12072,7 @@ The JSON object payload</li>
             <span class="name">deserialize_characters_records</span><span class="signature">(
     self,
     payload: dict
-) -&gt; collections.abc.Mapping[int, <a href="crate.html#records.CharacterRecord">aiobungie.crate.records.CharacterRecord</a>]</span>:
+) -&gt; collections.abc.Mapping[int, aiobungie.crate.records.CharacterRecord]</span>:
     </div>
 
             <details>
@@ -12127,7 +12099,7 @@ The JSON object payload</li>
             <span class="name">deserialize_profile_records</span><span class="signature">(
     self,
     payload: dict
-) -&gt; collections.abc.Mapping[int, <a href="crate.html#records.Record">aiobungie.crate.records.Record</a>]</span>:
+) -&gt; collections.abc.Mapping[int, aiobungie.crate.records.Record]</span>:
     </div>
 
             <details>
@@ -12150,7 +12122,7 @@ The JSON object payload</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_objectives</span><span class="signature">(self, payload: dict) -&gt; <a href="crate.html#records.Objective">aiobungie.crate.records.Objective</a></span>:
+            <span class="name">deserialize_objectives</span><span class="signature">(self, payload: dict) -&gt; aiobungie.crate.records.Objective</span>:
     </div>
 
             <details>
@@ -12178,14 +12150,14 @@ The JSON object payload</li>
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>payload</strong> (<code><a href="internal/helpers.html#JsonObject">aiobungie.internal.helpers.JsonObject</a></code>):
+<li><strong>payload</strong> (<code>aiobungie.internal.helpers.JsonObject</code>):
 The JSON payload.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code><a href="crate.html#records.Objective">aiobungie.crate.records.Objective</a></code></strong>: A record objective object.</li>
+<li><strong><code>aiobungie.crate.records.Objective</code></strong>: A record objective object.</li>
 </ul>
 </div>
 
@@ -12197,7 +12169,7 @@ The JSON payload.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_inventory_entity</span><span class="signature">(self, payload: dict, /) -&gt; <a href="crate.html#entity.InventoryEntity">aiobungie.crate.entity.InventoryEntity</a></span>:
+            <span class="name">deserialize_inventory_entity</span><span class="signature">(self, payload: dict, /) -&gt; aiobungie.crate.entity.InventoryEntity</span>:
     </div>
 
             <details>
@@ -12253,7 +12225,7 @@ The JSON payload.</li>
             <span class="name">deserialize_inventory_results</span><span class="signature">(
     self,
     payload: dict
-) -&gt; collections.abc.Sequence[<a href="crate.html#entity.SearchableEntity">aiobungie.crate.entity.SearchableEntity</a>]</span>:
+) -&gt; <a href="internal/iterators.html#FlatIterator">aiobungie.internal.iterators.FlatIterator</a>[aiobungie.crate.entity.SearchableEntity]</span>:
     </div>
 
             <details>
@@ -12261,7 +12233,7 @@ The JSON payload.</li>
             <div class="pdoc-code codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">deserialize_inventory_results</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">SearchableEntity</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">iterators</span><span class="o">.</span><span class="n">FlatIterator</span><span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">SearchableEntity</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Deserialize results of searched Destiny2 entities.</span>
 
 <span class="sd">        Parameters</span>
@@ -12271,8 +12243,8 @@ The JSON payload.</li>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `collections.Sequence[aiobungie.crate.SearchableEntity]`</span>
-<span class="sd">            A sequence of the found searched entities.</span>
+<span class="sd">        `aiobungie.iterators.FlatIterator[aiobungie.crate.SearchableEntity]`</span>
+<span class="sd">            An iterator over the found searched entities.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
@@ -12290,7 +12262,7 @@ The JSON payload.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code>collections.Sequence[<a href="crate.html#SearchableEntity">aiobungie.crate.SearchableEntity</a>]</code></strong>: A sequence of the found searched entities.</li>
+<li><strong><code>aiobungie.iterators.FlatIterator[<a href="crate.html#SearchableEntity">aiobungie.crate.SearchableEntity</a>]</code></strong>: An iterator over the found searched entities.</li>
 </ul>
 </div>
 
@@ -12302,7 +12274,7 @@ The JSON payload.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_objective_entity</span><span class="signature">(self, payload: dict, /) -&gt; <a href="crate.html#entity.ObjectiveEntity">aiobungie.crate.entity.ObjectiveEntity</a></span>:
+            <span class="name">deserialize_objective_entity</span><span class="signature">(self, payload: dict, /) -&gt; aiobungie.crate.entity.ObjectiveEntity</span>:
     </div>
 
             <details>
@@ -12311,7 +12283,7 @@ The JSON payload.</li>
     <span class="k">def</span> <span class="nf">deserialize_objective_entity</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">,</span> <span class="o">/</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">entity</span><span class="o">.</span><span class="n">ObjectiveEntity</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Deserialize a JSON payload of an objetive entity information.</span>
+        <span class="sd">&quot;&quot;&quot;Deserialize a JSON payload of an objective entity information.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -12321,13 +12293,13 @@ The JSON payload.</li>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        `aiobungie.crate.ObjectiveEntity`</span>
-<span class="sd">            An objetive entity.</span>
+<span class="sd">            An objective entity.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Deserialize a JSON payload of an objetive entity information.</p>
+            <div class="docstring"><p>Deserialize a JSON payload of an objective entity information.</p>
 
 <h6 id="parameters">Parameters</h6>
 
@@ -12339,7 +12311,7 @@ The JSON payload.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code><a href="crate.html#ObjectiveEntity">aiobungie.crate.ObjectiveEntity</a></code></strong>: An objetive entity.</li>
+<li><strong><code><a href="crate.html#ObjectiveEntity">aiobungie.crate.ObjectiveEntity</a></code></strong>: An objective entity.</li>
 </ul>
 </div>
 
@@ -12351,7 +12323,7 @@ The JSON payload.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_activity</span><span class="signature">(self, payload: dict, /) -&gt; <a href="crate.html#activity.Activity">aiobungie.crate.activity.Activity</a></span>:
+            <span class="name">deserialize_activity</span><span class="signature">(self, payload: dict, /) -&gt; aiobungie.crate.activity.Activity</span>:
     </div>
 
             <details>
@@ -12404,7 +12376,7 @@ The JSON payload.</li>
     self,
     payload: dict,
     /
-) -&gt; collections.abc.Sequence[<a href="crate.html#activity.Activity">aiobungie.crate.activity.Activity</a>]</span>:
+) -&gt; <a href="internal/iterators.html#FlatIterator">aiobungie.internal.iterators.FlatIterator</a>[aiobungie.crate.activity.Activity]</span>:
     </div>
 
             <details>
@@ -12412,7 +12384,7 @@ The JSON payload.</li>
             <div class="pdoc-code codehilite"><pre><span></span>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">deserialize_activities</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">,</span> <span class="o">/</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">activity</span><span class="o">.</span><span class="n">Activity</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">iterators</span><span class="o">.</span><span class="n">FlatIterator</span><span class="p">[</span><span class="n">activity</span><span class="o">.</span><span class="n">Activity</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Deserialize a JSON payload of an array of activity history information.</span>
 
 <span class="sd">        Parameters</span>
@@ -12422,8 +12394,8 @@ The JSON payload.</li>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `collections.Sequence[aiobungie.crate.Activity]`</span>
-<span class="sd">            A sequence of activity objects of the deserialized payload.</span>
+<span class="sd">        `aiobungie.iterators.FlatIterator[aiobungie.crate.Activity]`</span>
+<span class="sd">            Am iterator over activity objects of the deserialized payload.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 
@@ -12441,7 +12413,7 @@ The JSON payload.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code>collections.Sequence[<a href="crate.html#Activity">aiobungie.crate.Activity</a>]</code></strong>: A sequence of activity objects of the deserialized payload.</li>
+<li><strong><code>aiobungie.iterators.FlatIterator[<a href="crate.html#Activity">aiobungie.crate.Activity</a>]</code></strong>: Am iterator over activity objects of the deserialized payload.</li>
 </ul>
 </div>
 
@@ -12453,7 +12425,7 @@ The JSON payload.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_post_activity</span><span class="signature">(self, payload: dict) -&gt; <a href="crate.html#activity.PostActivity">aiobungie.crate.activity.PostActivity</a></span>:
+            <span class="name">deserialize_post_activity</span><span class="signature">(self, payload: dict) -&gt; aiobungie.crate.activity.PostActivity</span>:
     </div>
 
             <details>
@@ -12502,7 +12474,7 @@ The JSON payload.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_available_activity</span><span class="signature">(self, payload: dict) -&gt; <a href="crate.html#activity.AvailableActivity">aiobungie.crate.activity.AvailableActivity</a></span>:
+            <span class="name">deserialize_available_activity</span><span class="signature">(self, payload: dict) -&gt; aiobungie.crate.activity.AvailableActivity</span>:
     </div>
 
             <details>
@@ -12555,7 +12527,7 @@ The JSON payload.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_character_activity</span><span class="signature">(self, payload: dict) -&gt; <a href="crate.html#activity.CharacterActivity">aiobungie.crate.activity.CharacterActivity</a></span>:
+            <span class="name">deserialize_character_activity</span><span class="signature">(self, payload: dict) -&gt; aiobungie.crate.activity.CharacterActivity</span>:
     </div>
 
             <details>
@@ -12604,7 +12576,7 @@ The JSON payload.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_extended_weapon_values</span><span class="signature">(self, payload: dict) -&gt; <a href="crate.html#activity.ExtendedWeaponValues">aiobungie.crate.activity.ExtendedWeaponValues</a></span>:
+            <span class="name">deserialize_extended_weapon_values</span><span class="signature">(self, payload: dict) -&gt; aiobungie.crate.activity.ExtendedWeaponValues</span>:
     </div>
 
             <details>
@@ -12653,7 +12625,7 @@ The JSON payload.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_public_milestone_content</span><span class="signature">(self, payload: dict) -&gt; <a href="crate.html#milestones.MilestoneContent">aiobungie.crate.milestones.MilestoneContent</a></span>:
+            <span class="name">deserialize_public_milestone_content</span><span class="signature">(self, payload: dict) -&gt; aiobungie.crate.milestones.MilestoneContent</span>:
     </div>
 
             <details>
@@ -12702,7 +12674,7 @@ The JSON payload.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_milestone</span><span class="signature">(self, payload: dict) -&gt; <a href="crate.html#milestones.Milestone">aiobungie.crate.milestones.Milestone</a></span>:
+            <span class="name">deserialize_milestone</span><span class="signature">(self, payload: dict) -&gt; aiobungie.crate.milestones.Milestone</span>:
     </div>
 
             <details>
@@ -12725,7 +12697,7 @@ The JSON payload.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_friend</span><span class="signature">(self, payload: dict, /) -&gt; <a href="crate.html#friends.Friend">aiobungie.crate.friends.Friend</a></span>:
+            <span class="name">deserialize_friend</span><span class="signature">(self, payload: dict, /) -&gt; aiobungie.crate.friends.Friend</span>:
     </div>
 
             <details>
@@ -12775,7 +12747,7 @@ The JSON payload.</li>
             <span class="name">deserialize_friends</span><span class="signature">(
     self,
     payload: dict
-) -&gt; collections.abc.Sequence[<a href="crate.html#friends.Friend">aiobungie.crate.friends.Friend</a>]</span>:
+) -&gt; collections.abc.Sequence[aiobungie.crate.friends.Friend]</span>:
     </div>
 
             <details>
@@ -12828,7 +12800,7 @@ The JSON payload.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_friend_requests</span><span class="signature">(self, payload: dict) -&gt; <a href="crate.html#friends.FriendRequestView">aiobungie.crate.friends.FriendRequestView</a></span>:
+            <span class="name">deserialize_friend_requests</span><span class="signature">(self, payload: dict) -&gt; aiobungie.crate.friends.FriendRequestView</span>:
     </div>
 
             <details>
@@ -12884,7 +12856,7 @@ The JSON payload.</li>
             <span class="name">deserialize_fireteams</span><span class="signature">(
     self,
     payload: dict
-) -&gt; Optional[collections.abc.Sequence[<a href="crate.html#fireteams.Fireteam">aiobungie.crate.fireteams.Fireteam</a>]]</span>:
+) -&gt; Optional[collections.abc.Sequence[aiobungie.crate.fireteams.Fireteam]]</span>:
     </div>
 
             <details>
@@ -12933,7 +12905,7 @@ The JSON payload.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_fireteam_destiny_users</span><span class="signature">(self, payload: dict) -&gt; <a href="crate.html#fireteams.FireteamUser">aiobungie.crate.fireteams.FireteamUser</a></span>:
+            <span class="name">deserialize_fireteam_destiny_users</span><span class="signature">(self, payload: dict) -&gt; aiobungie.crate.fireteams.FireteamUser</span>:
     </div>
 
             <details>
@@ -12987,7 +12959,7 @@ The JSON payload.</li>
     payload: dict,
     *,
     alternatives: bool = False
-) -&gt; Optional[collections.abc.Sequence[<a href="crate.html#fireteams.FireteamMember">aiobungie.crate.fireteams.FireteamMember</a>]]</span>:
+) -&gt; Optional[collections.abc.Sequence[aiobungie.crate.fireteams.FireteamMember]]</span>:
     </div>
 
             <details>
@@ -13047,7 +13019,7 @@ If not the it will just deserialize the <code>members</code> data.</li>
     data: dict,
     *,
     no_results: bool = False
-) -&gt; Union[<a href="crate.html#fireteams.AvalaibleFireteam">aiobungie.crate.fireteams.AvalaibleFireteam</a>, collections.abc.Sequence[<a href="crate.html#fireteams.AvalaibleFireteam">aiobungie.crate.fireteams.AvalaibleFireteam</a>]]</span>:
+) -&gt; Union[aiobungie.crate.fireteams.AvailableFireteam, collections.abc.Sequence[aiobungie.crate.fireteams.AvailableFireteam]]</span>:
     </div>
 
             <details>
@@ -13056,7 +13028,7 @@ If not the it will just deserialize the <code>members</code> data.</li>
     <span class="k">def</span> <span class="nf">deserialize_available_fireteams</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">no_results</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span>
-        <span class="n">fireteams</span><span class="o">.</span><span class="n">AvalaibleFireteam</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">fireteams</span><span class="o">.</span><span class="n">AvalaibleFireteam</span><span class="p">]</span>
+        <span class="n">fireteams</span><span class="o">.</span><span class="n">AvailableFireteam</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">fireteams</span><span class="o">.</span><span class="n">AvailableFireteam</span><span class="p">]</span>
     <span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Deserialize a JSON payload of a sequence of/fireteam information.</span>
 
@@ -13069,7 +13041,7 @@ If not the it will just deserialize the <code>members</code> data.</li>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `typing.Union[aiobungie.crate.fireteams.AvalaibleFireteam, collections.Sequence[aiobungie.crate.fireteams.AvalaibleFireteam]]` # noqa: E501</span>
+<span class="sd">        `typing.Union[aiobungie.crate.fireteams.AvailableFireteam, collections.Sequence[aiobungie.crate.fireteams.AvailableFireteam]]` # noqa: E501</span>
 <span class="sd">            An available fireteam or a sequence of available fireteam.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
@@ -13090,7 +13062,7 @@ Whether to deserialize the data from <code>results</code> in the payload or not.
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code>typing.Union[<a href="crate.html#fireteams.AvalaibleFireteam">aiobungie.crate.fireteams.AvalaibleFireteam</a>, collections.Sequence[<a href="crate.html#fireteams.AvalaibleFireteam">aiobungie.crate.fireteams.AvalaibleFireteam</a>]]</code> # noqa</strong> (E501):
+<li><strong><code>typing.Union[aiobungie.crate.fireteams.AvailableFireteam, collections.Sequence[aiobungie.crate.fireteams.AvailableFireteam]]</code> # noqa</strong> (E501):
 An available fireteam or a sequence of available fireteam.</li>
 </ul>
 </div>
@@ -13103,7 +13075,7 @@ An available fireteam or a sequence of available fireteam.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_fireteam_party</span><span class="signature">(self, payload: dict) -&gt; <a href="crate.html#fireteams.FireteamParty">aiobungie.crate.fireteams.FireteamParty</a></span>:
+            <span class="name">deserialize_fireteam_party</span><span class="signature">(self, payload: dict) -&gt; aiobungie.crate.fireteams.FireteamParty</span>:
     </div>
 
             <details>
@@ -13152,7 +13124,7 @@ The JSON payload.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_seasonal_artifact</span><span class="signature">(self, payload: dict) -&gt; <a href="crate.html#season.Artifact">aiobungie.crate.season.Artifact</a></span>:
+            <span class="name">deserialize_seasonal_artifact</span><span class="signature">(self, payload: dict) -&gt; aiobungie.crate.season.Artifact</span>:
     </div>
 
             <details>
@@ -13182,7 +13154,7 @@ The JSON payload.</li>
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>payload</strong> (<code><a href="internal/helpers.html#JsonObject">aiobungie.internal.helpers.JsonObject</a></code>):
+<li><strong>payload</strong> (<code>aiobungie.internal.helpers.JsonObject</code>):
 The JSON payload.</li>
 </ul>
 
@@ -13201,7 +13173,7 @@ The JSON payload.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_instanced_item</span><span class="signature">(self, payload: dict) -&gt; <a href="crate.html#items.ItemInstance">aiobungie.crate.items.ItemInstance</a></span>:
+            <span class="name">deserialize_instanced_item</span><span class="signature">(self, payload: dict) -&gt; aiobungie.crate.items.ItemInstance</span>:
     </div>
 
             <details>
@@ -13231,7 +13203,7 @@ The JSON payload.</li>
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>payload</strong> (<code><a href="internal/helpers.html#JsonObject">aiobungie.internal.helpers.JsonObject</a></code>):
+<li><strong>payload</strong> (<code>aiobungie.internal.helpers.JsonObject</code>):
 The JSON payload.</li>
 </ul>
 
@@ -13250,7 +13222,7 @@ The JSON payload.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_item_energy</span><span class="signature">(self, payload: dict) -&gt; <a href="crate.html#items.ItemEnergy">aiobungie.crate.items.ItemEnergy</a></span>:
+            <span class="name">deserialize_item_energy</span><span class="signature">(self, payload: dict) -&gt; aiobungie.crate.items.ItemEnergy</span>:
     </div>
 
             <details>
@@ -13271,7 +13243,7 @@ The JSON payload.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_item_perk</span><span class="signature">(self, payload: dict) -&gt; <a href="crate.html#items.ItemPerk">aiobungie.crate.items.ItemPerk</a></span>:
+            <span class="name">deserialize_item_perk</span><span class="signature">(self, payload: dict) -&gt; aiobungie.crate.items.ItemPerk</span>:
     </div>
 
             <details>
@@ -13292,7 +13264,7 @@ The JSON payload.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_item_socket</span><span class="signature">(self, payload: dict) -&gt; <a href="crate.html#items.ItemSocket">aiobungie.crate.items.ItemSocket</a></span>:
+            <span class="name">deserialize_item_socket</span><span class="signature">(self, payload: dict) -&gt; aiobungie.crate.items.ItemSocket</span>:
     </div>
 
             <details>
@@ -13313,7 +13285,7 @@ The JSON payload.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_item_stats_view</span><span class="signature">(self, payload: dict) -&gt; <a href="crate.html#items.ItemStatsView">aiobungie.crate.items.ItemStatsView</a></span>:
+            <span class="name">deserialize_item_stats_view</span><span class="signature">(self, payload: dict) -&gt; aiobungie.crate.items.ItemStatsView</span>:
     </div>
 
             <details>
@@ -13336,7 +13308,7 @@ The JSON payload.</li>
                 <div class="decorator">@abc.abstractmethod</div>
 
             <span class="def">def</span>
-            <span class="name">deserialize_plug_item_state</span><span class="signature">(self, payload: dict) -&gt; <a href="crate.html#items.PlugItemState">aiobungie.crate.items.PlugItemState</a></span>:
+            <span class="name">deserialize_plug_item_state</span><span class="signature">(self, payload: dict) -&gt; aiobungie.crate.items.PlugItemState</span>:
     </div>
 
             <details>

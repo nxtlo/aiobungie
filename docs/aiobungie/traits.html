@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="pdoc 10.0.1"/>
+    <meta name="generator" content="pdoc 10.0.2"/>
     <title>aiobungie.traits API documentation</title>
 
     <style>/*! * Bootstrap Reboot v5.0.0 (https://getbootstrap.com/) * Copyright 2011-2021 The Bootstrap Authors * Copyright 2011-2021 Twitter, Inc. * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE) * Forked from Normalize.css, licensed MIT (https://github.com/necolas/normalize.css/blob/master/LICENSE.md) */*,::after,::before{box-sizing:border-box}@media (prefers-reduced-motion:no-preference){:root{scroll-behavior:smooth}}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";font-size:1rem;font-weight:400;line-height:1.5;color:#212529;background-color:#fff;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}hr{margin:1rem 0;color:inherit;background-color:currentColor;border:0;opacity:.25}hr:not([size]){height:1px}h1,h2,h3,h4,h5,h6{margin-top:0;margin-bottom:.5rem;font-weight:500;line-height:1.2}h1{font-size:calc(1.375rem + 1.5vw)}@media (min-width:1200px){h1{font-size:2.5rem}}h2{font-size:calc(1.325rem + .9vw)}@media (min-width:1200px){h2{font-size:2rem}}h3{font-size:calc(1.3rem + .6vw)}@media (min-width:1200px){h3{font-size:1.75rem}}h4{font-size:calc(1.275rem + .3vw)}@media (min-width:1200px){h4{font-size:1.5rem}}h5{font-size:1.25rem}h6{font-size:1rem}p{margin-top:0;margin-bottom:1rem}abbr[data-bs-original-title],abbr[title]{-webkit-text-decoration:underline dotted;text-decoration:underline dotted;cursor:help;-webkit-text-decoration-skip-ink:none;text-decoration-skip-ink:none}address{margin-bottom:1rem;font-style:normal;line-height:inherit}ol,ul{padding-left:2rem}dl,ol,ul{margin-top:0;margin-bottom:1rem}ol ol,ol ul,ul ol,ul ul{margin-bottom:0}dt{font-weight:700}dd{margin-bottom:.5rem;margin-left:0}blockquote{margin:0 0 1rem}b,strong{font-weight:bolder}small{font-size:.875em}mark{padding:.2em;background-color:#fcf8e3}sub,sup{position:relative;font-size:.75em;line-height:0;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}a{color:#0d6efd;text-decoration:underline}a:hover{color:#0a58ca}a:not([href]):not([class]),a:not([href]):not([class]):hover{color:inherit;text-decoration:none}code,kbd,pre,samp{font-family:SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:1em;direction:ltr;unicode-bidi:bidi-override}pre{display:block;margin-top:0;margin-bottom:1rem;overflow:auto;font-size:.875em}pre code{font-size:inherit;color:inherit;word-break:normal}code{font-size:.875em;color:#d63384;word-wrap:break-word}a>code{color:inherit}kbd{padding:.2rem .4rem;font-size:.875em;color:#fff;background-color:#212529;border-radius:.2rem}kbd kbd{padding:0;font-size:1em;font-weight:700}figure{margin:0 0 1rem}img,svg{vertical-align:middle}table{caption-side:bottom;border-collapse:collapse}caption{padding-top:.5rem;padding-bottom:.5rem;color:#6c757d;text-align:left}th{text-align:inherit;text-align:-webkit-match-parent}tbody,td,tfoot,th,thead,tr{border-color:inherit;border-style:solid;border-width:0}label{display:inline-block}button{border-radius:0}button:focus:not(:focus-visible){outline:0}button,input,optgroup,select,textarea{margin:0;font-family:inherit;font-size:inherit;line-height:inherit}button,select{text-transform:none}[role=button]{cursor:pointer}select{word-wrap:normal}select:disabled{opacity:1}[list]::-webkit-calendar-picker-indicator{display:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button}[type=button]:not(:disabled),[type=reset]:not(:disabled),[type=submit]:not(:disabled),button:not(:disabled){cursor:pointer}::-moz-focus-inner{padding:0;border-style:none}textarea{resize:vertical}fieldset{min-width:0;padding:0;margin:0;border:0}legend{float:left;width:100%;padding:0;margin-bottom:.5rem;font-size:calc(1.275rem + .3vw);line-height:inherit}@media (min-width:1200px){legend{font-size:1.5rem}}legend+*{clear:left}::-webkit-datetime-edit-day-field,::-webkit-datetime-edit-fields-wrapper,::-webkit-datetime-edit-hour-field,::-webkit-datetime-edit-minute,::-webkit-datetime-edit-month-field,::-webkit-datetime-edit-text,::-webkit-datetime-edit-year-field{padding:0}::-webkit-inner-spin-button{height:auto}[type=search]{outline-offset:-2px;-webkit-appearance:textfield}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-color-swatch-wrapper{padding:0}::file-selector-button{font:inherit}::-webkit-file-upload-button{font:inherit;-webkit-appearance:button}output{display:inline-block}iframe{border:0}summary{display:list-item;cursor:pointer}progress{vertical-align:baseline}[hidden]{display:none!important}</style>
@@ -79,13 +79,19 @@
                                 <a class="function" href="#RESTful.__init__">RESTful</a>
                         </li>
                         <li>
-                                <a class="function" href="#RESTful.build_oauth2_url">build_oauth2_url</a>
-                        </li>
-                        <li>
                                 <a class="variable" href="#RESTful.client_id">client_id</a>
                         </li>
                         <li>
                                 <a class="variable" href="#RESTful.metadata">metadata</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#RESTful.is_alive">is_alive</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#RESTful.build_oauth2_url">build_oauth2_url</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#RESTful.enable_debugging">enable_debugging</a>
                         </li>
                         <li>
                                 <a class="function" href="#RESTful.close">close</a>
@@ -112,7 +118,7 @@
                     <h1 class="modulename">
 <a href="./../aiobungie.html">aiobungie</a><wbr>.traits    </h1>
 
-                        <div class="docstring"><p>Interfaces used for the core client implementations.</p>
+                        <div class="docstring"><p>Interfaces used for the core aiobungie implementations.</p>
 </div>
 
                         <details>
@@ -139,9 +145,11 @@
 <span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
 <span class="c1"># SOFTWARE.</span>
 
-<span class="sd">&quot;&quot;&quot;Interfaces used for the core client implementations.&quot;&quot;&quot;</span>
+<span class="sd">&quot;&quot;&quot;Interfaces used for the core aiobungie implementations.&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span> <span class="nn">pathlib</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;ClientApp&quot;</span><span class="p">,</span> <span class="s2">&quot;Netrunner&quot;</span><span class="p">,</span> <span class="s2">&quot;Serializable&quot;</span><span class="p">,</span> <span class="s2">&quot;RESTful&quot;</span><span class="p">)</span>
 
@@ -199,7 +207,8 @@
 
 <span class="nd">@typing</span><span class="o">.</span><span class="n">runtime_checkable</span>
 <span class="k">class</span> <span class="nc">RESTful</span><span class="p">(</span><span class="n">typing</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Core trait for types which it is possible to interact with the API directly which provides RESTful functionalities.</span>
+    <span class="sd">&quot;&quot;&quot;Core trait for types which it is possible to interact with the API directly</span>
+<span class="sd">    which provides RESTful functionalities.</span>
 
 <span class="sd">    Currently only `aiobungie.RESTClient` implement this trait,</span>
 <span class="sd">    `ClientBase` may access its RESTClient using `aiobungie.Client.rest` property.</span>
@@ -207,29 +216,9 @@
 
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">build_oauth2_url</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">client_id</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Builds an OAuth2 URL using the provided user REST/Base client secret/id.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        client_id : `typing.Optional[int]`</span>
-<span class="sd">            An optional client id to provide, If left `None` it will roll back to the id passed</span>
-<span class="sd">            to the `RESTClient`, If both is `None` this method will return `None`.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        `typing.Optional[str]`</span>
-<span class="sd">            If the client id was provided as a parameter or provided in `aiobungie.RESTClient`,</span>
-<span class="sd">            A complete URL will be returned.</span>
-<span class="sd">            Otherwise `None` will be returned.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">client_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Return the client id of this REST client if provided, Otherwise None&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Return the client id of this REST client if provided, Otherwise None.&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
     <span class="nd">@property</span>
@@ -260,6 +249,44 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_alive</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns `True` if the REST client is alive and `False` otherwise.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">build_oauth2_url</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">client_id</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Builds an OAuth2 URL using the provided user REST/Base client secret/id.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        client_id : `int | None`</span>
+<span class="sd">            An optional client id to provide, If left `None` it will roll back to the id passed</span>
+<span class="sd">            to the `RESTClient`, If both is `None` this method will return `None`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `str | None`</span>
+<span class="sd">            If the client id was provided as a parameter or provided in `aiobungie.RESTClient`,</span>
+<span class="sd">            A complete URL will be returned.</span>
+<span class="sd">            Otherwise `None` will be returned.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">enable_debugging</span><span class="p">(</span>
+        <span class="n">file</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">/</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Enables debugging for the REST client.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        file : `pathlib.Path | str | None`</span>
+<span class="sd">            The file path to write the debug logs to. If provided.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
     <span class="k">async</span> <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Close this REST client session if it was acquired.&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
@@ -276,14 +303,14 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        method : `typing.Union[aiobungie.rest.RequestMethod, str]`</span>
+<span class="sd">        method : `aiobungie.rest.RequestMethod | str`</span>
 <span class="sd">            The request method, This may be `GET`, `POST`, `PUT`, etc.</span>
 <span class="sd">        path: `str`</span>
 <span class="sd">            The Bungie endpoint or path.</span>
 <span class="sd">            A path must look something like this `Destiny2/3/Profile/46111239123/...`</span>
-<span class="sd">        auth : `typing.Optional[str]`</span>
+<span class="sd">        auth : `str | None`</span>
 <span class="sd">            An optional bearer token for methods that requires OAuth2 Authorization header.</span>
-<span class="sd">        json : `typing.Optional[dict[str, typing.Any]]`</span>
+<span class="sd">        json : `dict[str, typing.Any] | None`</span>
 <span class="sd">            An optional JSON data to include in the request.</span>
 <span class="sd">        **kwargs: `typing.Any`</span>
 <span class="sd">            Any other key words to pass to the request.</span>
@@ -308,7 +335,7 @@
     <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">future</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Coroutine</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Runs a Coro function until its complete.</span>
+        <span class="sd">&quot;&quot;&quot;Runs a coroutine function until its complete.</span>
 
 <span class="sd">        This is equivalent to `asyncio.get_event_loop().run_until_complete(...)`</span>
 
@@ -325,7 +352,7 @@
 <span class="sd">        async def main() -&gt; None:</span>
 <span class="sd">            await fetch(...)</span>
 
-<span class="sd">        # Run the coro.</span>
+<span class="sd">        # Run the coroutine.</span>
 <span class="sd">        client.run(main())</span>
 <span class="sd">        ```</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -368,7 +395,7 @@
     <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">future</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Coroutine</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Runs a Coro function until its complete.</span>
+        <span class="sd">&quot;&quot;&quot;Runs a coroutine function until its complete.</span>
 
 <span class="sd">        This is equivalent to `asyncio.get_event_loop().run_until_complete(...)`</span>
 
@@ -385,7 +412,7 @@
 <span class="sd">        async def main() -&gt; None:</span>
 <span class="sd">            await fetch(...)</span>
 
-<span class="sd">        # Run the coro.</span>
+<span class="sd">        # Run the coroutine.</span>
 <span class="sd">        client.run(main())</span>
 <span class="sd">        ```</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -440,7 +467,7 @@
             <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">future</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Coroutine</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Runs a Coro function until its complete.</span>
+        <span class="sd">&quot;&quot;&quot;Runs a coroutine function until its complete.</span>
 
 <span class="sd">        This is equivalent to `asyncio.get_event_loop().run_until_complete(...)`</span>
 
@@ -457,7 +484,7 @@
 <span class="sd">        async def main() -&gt; None:</span>
 <span class="sd">            await fetch(...)</span>
 
-<span class="sd">        # Run the coro.</span>
+<span class="sd">        # Run the coroutine.</span>
 <span class="sd">        client.run(main())</span>
 <span class="sd">        ```</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -465,7 +492,7 @@
 
         </details>
 
-            <div class="docstring"><p>Runs a Coro function until its complete.</p>
+            <div class="docstring"><p>Runs a coroutine function until its complete.</p>
 
 <p>This is equivalent to <code>asyncio.get_event_loop().run_until_complete(...)</code></p>
 
@@ -483,7 +510,7 @@ Either to enable asyncio debug or not. Disabled by default.</li>
 <div class="pdoc-code codehilite"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="k">await</span> <span class="n">fetch</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 
-<span class="c1"># Run the coro.</span>
+<span class="c1"># Run the coroutine.</span>
 <span class="n">client</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
 </code></pre></div>
 </div>
@@ -493,7 +520,7 @@ Either to enable asyncio debug or not. Disabled by default.</li>
                             <div id="ClientApp.rest" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ClientApp.rest">#&nbsp;&nbsp</a>
 
-        <span class="name">rest</span><span class="annotation">: <a href="interfaces.html#rest.RESTInterface">aiobungie.interfaces.rest.RESTInterface</a></span>
+        <span class="name">rest</span><span class="annotation">: aiobungie.interfaces.rest.RESTInterface</span>
     </div>
 
     
@@ -644,7 +671,7 @@ Either to enable asyncio debug or not. Disabled by default.</li>
         </details>
 
             <div class="docstring"><p>Core trait for types which it is possible to deserialize incoming REST payloads
-into a <code><a href="crate.html">aiobungie.crate</a></code> implementation using the <code><a href="#Serializable.factory">Serializable.factory</a></code> property.</p>
+into a <code>aiobungie.crate</code> implementation using the <code><a href="#Serializable.factory">Serializable.factory</a></code> property.</p>
 
 <p>Currently only <code>ClientBase</code> implement this trait</p>
 </div>
@@ -695,7 +722,8 @@ into a <code><a href="crate.html">aiobungie.crate</a></code> implementation usin
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@typing</span><span class="o">.</span><span class="n">runtime_checkable</span>
 <span class="k">class</span> <span class="nc">RESTful</span><span class="p">(</span><span class="n">typing</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Core trait for types which it is possible to interact with the API directly which provides RESTful functionalities.</span>
+    <span class="sd">&quot;&quot;&quot;Core trait for types which it is possible to interact with the API directly</span>
+<span class="sd">    which provides RESTful functionalities.</span>
 
 <span class="sd">    Currently only `aiobungie.RESTClient` implement this trait,</span>
 <span class="sd">    `ClientBase` may access its RESTClient using `aiobungie.Client.rest` property.</span>
@@ -703,29 +731,9 @@ into a <code><a href="crate.html">aiobungie.crate</a></code> implementation usin
 
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">build_oauth2_url</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">client_id</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Builds an OAuth2 URL using the provided user REST/Base client secret/id.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        client_id : `typing.Optional[int]`</span>
-<span class="sd">            An optional client id to provide, If left `None` it will roll back to the id passed</span>
-<span class="sd">            to the `RESTClient`, If both is `None` this method will return `None`.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        `typing.Optional[str]`</span>
-<span class="sd">            If the client id was provided as a parameter or provided in `aiobungie.RESTClient`,</span>
-<span class="sd">            A complete URL will be returned.</span>
-<span class="sd">            Otherwise `None` will be returned.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">client_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Return the client id of this REST client if provided, Otherwise None&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Return the client id of this REST client if provided, Otherwise None.&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
     <span class="nd">@property</span>
@@ -756,6 +764,44 @@ into a <code><a href="crate.html">aiobungie.crate</a></code> implementation usin
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_alive</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns `True` if the REST client is alive and `False` otherwise.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">build_oauth2_url</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">client_id</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Builds an OAuth2 URL using the provided user REST/Base client secret/id.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        client_id : `int | None`</span>
+<span class="sd">            An optional client id to provide, If left `None` it will roll back to the id passed</span>
+<span class="sd">            to the `RESTClient`, If both is `None` this method will return `None`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `str | None`</span>
+<span class="sd">            If the client id was provided as a parameter or provided in `aiobungie.RESTClient`,</span>
+<span class="sd">            A complete URL will be returned.</span>
+<span class="sd">            Otherwise `None` will be returned.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">enable_debugging</span><span class="p">(</span>
+        <span class="n">file</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">/</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Enables debugging for the REST client.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        file : `pathlib.Path | str | None`</span>
+<span class="sd">            The file path to write the debug logs to. If provided.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
     <span class="k">async</span> <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Close this REST client session if it was acquired.&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
@@ -772,14 +818,14 @@ into a <code><a href="crate.html">aiobungie.crate</a></code> implementation usin
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        method : `typing.Union[aiobungie.rest.RequestMethod, str]`</span>
+<span class="sd">        method : `aiobungie.rest.RequestMethod | str`</span>
 <span class="sd">            The request method, This may be `GET`, `POST`, `PUT`, etc.</span>
 <span class="sd">        path: `str`</span>
 <span class="sd">            The Bungie endpoint or path.</span>
 <span class="sd">            A path must look something like this `Destiny2/3/Profile/46111239123/...`</span>
-<span class="sd">        auth : `typing.Optional[str]`</span>
+<span class="sd">        auth : `str | None`</span>
 <span class="sd">            An optional bearer token for methods that requires OAuth2 Authorization header.</span>
-<span class="sd">        json : `typing.Optional[dict[str, typing.Any]]`</span>
+<span class="sd">        json : `dict[str, typing.Any] | None`</span>
 <span class="sd">            An optional JSON data to include in the request.</span>
 <span class="sd">        **kwargs: `typing.Any`</span>
 <span class="sd">            Any other key words to pass to the request.</span>
@@ -794,7 +840,8 @@ into a <code><a href="crate.html">aiobungie.crate</a></code> implementation usin
 
         </details>
 
-            <div class="docstring"><p>Core trait for types which it is possible to interact with the API directly which provides RESTful functionalities.</p>
+            <div class="docstring"><p>Core trait for types which it is possible to interact with the API directly
+which provides RESTful functionalities.</p>
 
 <p>Currently only <code><a href="../aiobungie.html#RESTClient">aiobungie.RESTClient</a></code> implement this trait,
 <code>ClientBase</code> may access its RESTClient using <code><a href="../aiobungie.html#Client.rest">aiobungie.Client.rest</a></code> property.</p>
@@ -819,60 +866,6 @@ into a <code><a href="crate.html">aiobungie.crate</a></code> implementation usin
     
 
                             </div>
-                            <div id="RESTful.build_oauth2_url" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#RESTful.build_oauth2_url">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">build_oauth2_url</span><span class="signature">(self, client_id: Optional[int] = None) -&gt; Optional[str]</span>:
-    </div>
-
-            <details>
-            <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">build_oauth2_url</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">client_id</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Builds an OAuth2 URL using the provided user REST/Base client secret/id.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        client_id : `typing.Optional[int]`</span>
-<span class="sd">            An optional client id to provide, If left `None` it will roll back to the id passed</span>
-<span class="sd">            to the `RESTClient`, If both is `None` this method will return `None`.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        `typing.Optional[str]`</span>
-<span class="sd">            If the client id was provided as a parameter or provided in `aiobungie.RESTClient`,</span>
-<span class="sd">            A complete URL will be returned.</span>
-<span class="sd">            Otherwise `None` will be returned.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Builds an OAuth2 URL using the provided user REST/Base client secret/id.</p>
-
-<h6 id="parameters">Parameters</h6>
-
-<ul>
-<li><strong>client_id</strong> (<code>typing.Optional[int]</code>):
-An optional client id to provide, If left <code>None</code> it will roll back to the id passed
-to the <code>RESTClient</code>, If both is <code>None</code> this method will return <code>None</code>.</li>
-</ul>
-
-<h6 id="returns">Returns</h6>
-
-<ul>
-<li><strong><code>typing.Optional[str]</code></strong>: If the client id was provided as a parameter or provided in <code><a href="../aiobungie.html#RESTClient">aiobungie.RESTClient</a></code>,
-A complete URL will be returned.
-Otherwise <code>None</code> will be returned.</li>
-</ul>
-</div>
-
-
-                            </div>
                             <div id="RESTful.client_id" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#RESTful.client_id">#&nbsp;&nbsp</a>
 
@@ -880,7 +873,7 @@ Otherwise <code>None</code> will be returned.</li>
     </div>
 
     
-            <div class="docstring"><p>Return the client id of this REST client if provided, Otherwise None</p>
+            <div class="docstring"><p>Return the client id of this REST client if provided, Otherwise None.</p>
 </div>
 
 
@@ -914,6 +907,111 @@ Otherwise <code>None</code> will be returned.</li>
     <span class="c1"># Use them to fetch your user.</span>
     <span class="n">user</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">fetch_current_user_memberships</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">access_token</span><span class="p">)</span>
 </code></pre></div>
+</div>
+
+
+                            </div>
+                            <div id="RESTful.is_alive" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#RESTful.is_alive">#&nbsp;&nbsp</a>
+
+        <span class="name">is_alive</span><span class="annotation">: bool</span>
+    </div>
+
+    
+            <div class="docstring"><p>Returns <code>True</code> if the REST client is alive and <code>False</code> otherwise.</p>
+</div>
+
+
+                            </div>
+                            <div id="RESTful.build_oauth2_url" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTful.build_oauth2_url">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">build_oauth2_url</span><span class="signature">(self, client_id: Optional[int] = None) -&gt; Optional[str]</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">build_oauth2_url</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">client_id</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Builds an OAuth2 URL using the provided user REST/Base client secret/id.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        client_id : `int | None`</span>
+<span class="sd">            An optional client id to provide, If left `None` it will roll back to the id passed</span>
+<span class="sd">            to the `RESTClient`, If both is `None` this method will return `None`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        `str | None`</span>
+<span class="sd">            If the client id was provided as a parameter or provided in `aiobungie.RESTClient`,</span>
+<span class="sd">            A complete URL will be returned.</span>
+<span class="sd">            Otherwise `None` will be returned.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Builds an OAuth2 URL using the provided user REST/Base client secret/id.</p>
+
+<h6 id="parameters">Parameters</h6>
+
+<ul>
+<li><strong>client_id</strong> (<code>int | None</code>):
+An optional client id to provide, If left <code>None</code> it will roll back to the id passed
+to the <code>RESTClient</code>, If both is <code>None</code> this method will return <code>None</code>.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<ul>
+<li><strong><code>str | None</code></strong>: If the client id was provided as a parameter or provided in <code><a href="../aiobungie.html#RESTClient">aiobungie.RESTClient</a></code>,
+A complete URL will be returned.
+Otherwise <code>None</code> will be returned.</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="RESTful.enable_debugging" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTful.enable_debugging">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@staticmethod</div>
+
+            <span class="def">def</span>
+            <span class="name">enable_debugging</span><span class="signature">(file: Union[pathlib.Path, str, NoneType] = None, /) -&gt; None</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">enable_debugging</span><span class="p">(</span>
+        <span class="n">file</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">/</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Enables debugging for the REST client.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        file : `pathlib.Path | str | None`</span>
+<span class="sd">            The file path to write the debug logs to. If provided.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Enables debugging for the REST client.</p>
+
+<h6 id="parameters">Parameters</h6>
+
+<ul>
+<li><strong>file</strong> (<code>pathlib.Path | str | None</code>):
+The file path to write the debug logs to. If provided.</li>
+</ul>
 </div>
 
 
@@ -969,14 +1067,14 @@ Otherwise <code>None</code> will be returned.</li>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        method : `typing.Union[aiobungie.rest.RequestMethod, str]`</span>
+<span class="sd">        method : `aiobungie.rest.RequestMethod | str`</span>
 <span class="sd">            The request method, This may be `GET`, `POST`, `PUT`, etc.</span>
 <span class="sd">        path: `str`</span>
 <span class="sd">            The Bungie endpoint or path.</span>
 <span class="sd">            A path must look something like this `Destiny2/3/Profile/46111239123/...`</span>
-<span class="sd">        auth : `typing.Optional[str]`</span>
+<span class="sd">        auth : `str | None`</span>
 <span class="sd">            An optional bearer token for methods that requires OAuth2 Authorization header.</span>
-<span class="sd">        json : `typing.Optional[dict[str, typing.Any]]`</span>
+<span class="sd">        json : `dict[str, typing.Any] | None`</span>
 <span class="sd">            An optional JSON data to include in the request.</span>
 <span class="sd">        **kwargs: `typing.Any`</span>
 <span class="sd">            Any other key words to pass to the request.</span>
@@ -996,14 +1094,14 @@ Otherwise <code>None</code> will be returned.</li>
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>method</strong> (<code>typing.Union[<a href="rest.html#RequestMethod">aiobungie.rest.RequestMethod</a>, str]</code>):
+<li><strong>method</strong> (<code><a href="rest.html#RequestMethod">aiobungie.rest.RequestMethod</a> | str</code>):
 The request method, This may be <code>GET</code>, <code>POST</code>, <code>PUT</code>, etc.</li>
 <li><strong>path</strong> (<code>str</code>):
 The Bungie endpoint or path.
 A path must look something like this <code>Destiny2/3/Profile/46111239123/...</code></li>
-<li><strong>auth</strong> (<code>typing.Optional[str]</code>):
+<li><strong>auth</strong> (<code>str | None</code>):
 An optional bearer token for methods that requires OAuth2 Authorization header.</li>
-<li><strong>json</strong> (<code>typing.Optional[dict[str, typing.Any]]</code>):
+<li><strong>json</strong> (<code>dict[str, typing.Any] | None</code>):
 An optional JSON data to include in the request.</li>
 <li><strong>**kwargs</strong> (<code>typing.Any</code>):
 Any other key words to pass to the request.</li>

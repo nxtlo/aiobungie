@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="pdoc 10.0.1"/>
+    <meta name="generator" content="pdoc 10.0.2"/>
     <title>aiobungie.internal.helpers API documentation</title>
 
     <style>/*! * Bootstrap Reboot v5.0.0 (https://getbootstrap.com/) * Copyright 2011-2021 The Bootstrap Authors * Copyright 2011-2021 Twitter, Inc. * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE) * Forked from Normalize.css, licensed MIT (https://github.com/necolas/normalize.css/blob/master/LICENSE.md) */*,::after,::before{box-sizing:border-box}@media (prefers-reduced-motion:no-preference){:root{scroll-behavior:smooth}}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";font-size:1rem;font-weight:400;line-height:1.5;color:#212529;background-color:#fff;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}hr{margin:1rem 0;color:inherit;background-color:currentColor;border:0;opacity:.25}hr:not([size]){height:1px}h1,h2,h3,h4,h5,h6{margin-top:0;margin-bottom:.5rem;font-weight:500;line-height:1.2}h1{font-size:calc(1.375rem + 1.5vw)}@media (min-width:1200px){h1{font-size:2.5rem}}h2{font-size:calc(1.325rem + .9vw)}@media (min-width:1200px){h2{font-size:2rem}}h3{font-size:calc(1.3rem + .6vw)}@media (min-width:1200px){h3{font-size:1.75rem}}h4{font-size:calc(1.275rem + .3vw)}@media (min-width:1200px){h4{font-size:1.5rem}}h5{font-size:1.25rem}h6{font-size:1rem}p{margin-top:0;margin-bottom:1rem}abbr[data-bs-original-title],abbr[title]{-webkit-text-decoration:underline dotted;text-decoration:underline dotted;cursor:help;-webkit-text-decoration-skip-ink:none;text-decoration-skip-ink:none}address{margin-bottom:1rem;font-style:normal;line-height:inherit}ol,ul{padding-left:2rem}dl,ol,ul{margin-top:0;margin-bottom:1rem}ol ol,ol ul,ul ol,ul ul{margin-bottom:0}dt{font-weight:700}dd{margin-bottom:.5rem;margin-left:0}blockquote{margin:0 0 1rem}b,strong{font-weight:bolder}small{font-size:.875em}mark{padding:.2em;background-color:#fcf8e3}sub,sup{position:relative;font-size:.75em;line-height:0;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}a{color:#0d6efd;text-decoration:underline}a:hover{color:#0a58ca}a:not([href]):not([class]),a:not([href]):not([class]):hover{color:inherit;text-decoration:none}code,kbd,pre,samp{font-family:SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:1em;direction:ltr;unicode-bidi:bidi-override}pre{display:block;margin-top:0;margin-bottom:1rem;overflow:auto;font-size:.875em}pre code{font-size:inherit;color:inherit;word-break:normal}code{font-size:.875em;color:#d63384;word-wrap:break-word}a>code{color:inherit}kbd{padding:.2rem .4rem;font-size:.875em;color:#fff;background-color:#212529;border-radius:.2rem}kbd kbd{padding:0;font-size:1em;font-weight:700}figure{margin:0 0 1rem}img,svg{vertical-align:middle}table{caption-side:bottom;border-collapse:collapse}caption{padding-top:.5rem;padding-bottom:.5rem;color:#6c757d;text-align:left}th{text-align:inherit;text-align:-webkit-match-parent}tbody,td,tfoot,th,thead,tr{border-color:inherit;border-style:solid;border-width:0}label{display:inline-block}button{border-radius:0}button:focus:not(:focus-visible){outline:0}button,input,optgroup,select,textarea{margin:0;font-family:inherit;font-size:inherit;line-height:inherit}button,select{text-transform:none}[role=button]{cursor:pointer}select{word-wrap:normal}select:disabled{opacity:1}[list]::-webkit-calendar-picker-indicator{display:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button}[type=button]:not(:disabled),[type=reset]:not(:disabled),[type=submit]:not(:disabled),button:not(:disabled){cursor:pointer}::-moz-focus-inner{padding:0;border-style:none}textarea{resize:vertical}fieldset{min-width:0;padding:0;margin:0;border:0}legend{float:left;width:100%;padding:0;margin-bottom:.5rem;font-size:calc(1.275rem + .3vw);line-height:inherit}@media (min-width:1200px){legend{font-size:1.5rem}}legend+*{clear:left}::-webkit-datetime-edit-day-field,::-webkit-datetime-edit-fields-wrapper,::-webkit-datetime-edit-hour-field,::-webkit-datetime-edit-minute,::-webkit-datetime-edit-month-field,::-webkit-datetime-edit-text,::-webkit-datetime-edit-year-field{padding:0}::-webkit-inner-spin-button{height:auto}[type=search]{outline-offset:-2px;-webkit-appearance:textfield}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-color-swatch-wrapper{padding:0}::file-selector-button{font:inherit}::-webkit-file-upload-button{font:inherit;-webkit-appearance:button}output{display:inline-block}iframe{border:0}summary{display:list-item;cursor:pointer}progress{vertical-align:baseline}[hidden]{display:none!important}</style>
@@ -41,9 +41,6 @@
             </li>
             <li>
                     <a class="function" href="#get_or_make_loop">get_or_make_loop</a>
-            </li>
-            <li>
-                    <a class="function" href="#collect">collect</a>
             </li>
             <li>
                     <a class="function" href="#unimplemented">unimplemented</a>
@@ -100,7 +97,6 @@
     <span class="s2">&quot;just&quot;</span><span class="p">,</span>
     <span class="s2">&quot;awaits&quot;</span><span class="p">,</span>
     <span class="s2">&quot;get_or_make_loop&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;collect&quot;</span><span class="p">,</span>
     <span class="s2">&quot;unimplemented&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 
@@ -115,11 +111,7 @@
     <span class="n">T_co</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T_co&quot;</span><span class="p">,</span> <span class="n">covariant</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">T</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">collections</span><span class="o">.</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">])</span>
 
-<span class="n">ConsumerSigT</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">TypeVar</span><span class="p">(</span>
-    <span class="s2">&quot;ConsumerSigT&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">collections</span><span class="o">.</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span>
-<span class="p">)</span>
-
-
+<span class="c1"># TODO: Remove this later.</span>
 <span class="k">def</span> <span class="nf">just</span><span class="p">(</span><span class="n">lst</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">T_co</span><span class="p">]],</span> <span class="n">lookup</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">T_co</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;A helper function that takes a list of dicts and return a list of</span>
 <span class="sd">    all keys found inside the dict</span>
@@ -127,26 +119,14 @@
     <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">dct</span><span class="p">:</span> <span class="n">dct</span><span class="p">[</span><span class="n">lookup</span><span class="p">],</span> <span class="n">lst</span><span class="p">))</span>
 
 
-<span class="k">def</span> <span class="nf">collect</span><span class="p">(</span>
-    <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">consume</span><span class="p">:</span> <span class="n">ConsumerSigT</span> <span class="o">=</span> <span class="nb">str</span><span class="p">,</span> <span class="n">separator</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span>  <span class="c1"># type: ignore[assignment]</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">ConsumerSigT</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Consume passed argumnts and return them joining &#39;, &#39; for each argument.</span>
-
-<span class="sd">    If only one argument was passed it will just return that argumnt.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">consume</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">separator</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">consume</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">separator</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">arg</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># type: ignore[no-any-return]</span>
-
-
 <span class="k">class</span> <span class="nc">UnimplementedWarning</span><span class="p">(</span><span class="ne">RuntimeWarning</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A warning that is raised when a function or class is not implemented.&quot;&quot;&quot;</span>
 
 
 <span class="k">def</span> <span class="nf">deprecated</span><span class="p">(</span>
-    <span class="n">since</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">use_instead</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">since</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">removed_in</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">use_instead</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="n">T</span><span class="p">],</span> <span class="n">T</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;A decorator that marks a function as deprecated.</span>
 
@@ -164,6 +144,10 @@
 
             <span class="n">obj_type</span> <span class="o">=</span> <span class="s2">&quot;class&quot;</span> <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">func</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;function&quot;</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Warning! </span><span class="si">{</span><span class="n">obj_type</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">func</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> is deprecated since </span><span class="si">{</span><span class="n">since</span><span class="si">}</span><span class="s2">.&quot;</span>
+
+            <span class="k">if</span> <span class="n">removed_in</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; Will be removed in </span><span class="si">{</span><span class="n">removed_in</span><span class="si">}</span><span class="s2">.&quot;</span>
+
             <span class="k">if</span> <span class="n">use_instead</span><span class="p">:</span>
                 <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; Use </span><span class="si">{</span><span class="n">use_instead</span><span class="si">}</span><span class="s2"> instead.&quot;</span>
 
@@ -240,7 +224,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">aws</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;No awaiables passed.&quot;</span><span class="p">,</span> <span class="n">aws</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;No awaitables passed.&quot;</span><span class="p">,</span> <span class="n">aws</span><span class="p">)</span>
 
     <span class="n">pending</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">[</span><span class="n">T_co</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -293,6 +277,7 @@
             <span class="def">def</span>
             <span class="name">deprecated</span><span class="signature">(
     since: str,
+    removed_in: Optional[str] = None,
     use_instead: Optional[str] = None
 ) -&gt; collections.abc.Callable[[~T], ~T]</span>:
     </div>
@@ -300,7 +285,9 @@
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="nf">deprecated</span><span class="p">(</span>
-    <span class="n">since</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">use_instead</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">since</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">removed_in</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">use_instead</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="n">T</span><span class="p">],</span> <span class="n">T</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;A decorator that marks a function as deprecated.</span>
 
@@ -318,6 +305,10 @@
 
             <span class="n">obj_type</span> <span class="o">=</span> <span class="s2">&quot;class&quot;</span> <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">func</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;function&quot;</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Warning! </span><span class="si">{</span><span class="n">obj_type</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">func</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> is deprecated since </span><span class="si">{</span><span class="n">since</span><span class="si">}</span><span class="s2">.&quot;</span>
+
+            <span class="k">if</span> <span class="n">removed_in</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; Will be removed in </span><span class="si">{</span><span class="n">removed_in</span><span class="si">}</span><span class="s2">.&quot;</span>
+
             <span class="k">if</span> <span class="n">use_instead</span><span class="p">:</span>
                 <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; Use </span><span class="si">{</span><span class="n">use_instead</span><span class="si">}</span><span class="s2"> instead.&quot;</span>
 
@@ -411,7 +402,7 @@ all keys found inside the dict</p>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">aws</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;No awaiables passed.&quot;</span><span class="p">,</span> <span class="n">aws</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;No awaitables passed.&quot;</span><span class="p">,</span> <span class="n">aws</span><span class="p">)</span>
 
     <span class="n">pending</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">[</span><span class="n">T_co</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -496,43 +487,6 @@ If <code>True</code> then exceptions will be returned.</li>
 <ul>
 <li><strong>asyncio.AbstractEventLoop</strong></li>
 </ul>
-</div>
-
-
-                </section>
-                <section id="collect">
-                            <div class="attr function"><a class="headerlink" href="#collect">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">collect</span><span class="signature">(
-    *args: Any,
-    consume: ~ConsumerSigT = &lt;class &#39;str&#39;&gt;,
-    separator: str = &#39;, &#39;
-) -&gt; Union[~ConsumerSigT, str]</span>:
-    </div>
-
-            <details>
-            <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="nf">collect</span><span class="p">(</span>
-    <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">consume</span><span class="p">:</span> <span class="n">ConsumerSigT</span> <span class="o">=</span> <span class="nb">str</span><span class="p">,</span> <span class="n">separator</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span>  <span class="c1"># type: ignore[assignment]</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">ConsumerSigT</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Consume passed argumnts and return them joining &#39;, &#39; for each argument.</span>
-
-<span class="sd">    If only one argument was passed it will just return that argumnt.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">consume</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">separator</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">consume</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">separator</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">arg</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># type: ignore[no-any-return]</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Consume passed argumnts and return them joining ', ' for each argument.</p>
-
-<p>If only one argument was passed it will just return that argumnt.</p>
 </div>
 
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="pdoc 10.0.1"/>
+    <meta name="generator" content="pdoc 10.0.2"/>
     <title>aiobungie.error API documentation</title>
 
     <style>/*! * Bootstrap Reboot v5.0.0 (https://getbootstrap.com/) * Copyright 2011-2021 The Bootstrap Authors * Copyright 2011-2021 Twitter, Inc. * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE) * Forked from Normalize.css, licensed MIT (https://github.com/necolas/normalize.css/blob/master/LICENSE.md) */*,::after,::before{box-sizing:border-box}@media (prefers-reduced-motion:no-preference){:root{scroll-behavior:smooth}}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";font-size:1rem;font-weight:400;line-height:1.5;color:#212529;background-color:#fff;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}hr{margin:1rem 0;color:inherit;background-color:currentColor;border:0;opacity:.25}hr:not([size]){height:1px}h1,h2,h3,h4,h5,h6{margin-top:0;margin-bottom:.5rem;font-weight:500;line-height:1.2}h1{font-size:calc(1.375rem + 1.5vw)}@media (min-width:1200px){h1{font-size:2.5rem}}h2{font-size:calc(1.325rem + .9vw)}@media (min-width:1200px){h2{font-size:2rem}}h3{font-size:calc(1.3rem + .6vw)}@media (min-width:1200px){h3{font-size:1.75rem}}h4{font-size:calc(1.275rem + .3vw)}@media (min-width:1200px){h4{font-size:1.5rem}}h5{font-size:1.25rem}h6{font-size:1rem}p{margin-top:0;margin-bottom:1rem}abbr[data-bs-original-title],abbr[title]{-webkit-text-decoration:underline dotted;text-decoration:underline dotted;cursor:help;-webkit-text-decoration-skip-ink:none;text-decoration-skip-ink:none}address{margin-bottom:1rem;font-style:normal;line-height:inherit}ol,ul{padding-left:2rem}dl,ol,ul{margin-top:0;margin-bottom:1rem}ol ol,ol ul,ul ol,ul ul{margin-bottom:0}dt{font-weight:700}dd{margin-bottom:.5rem;margin-left:0}blockquote{margin:0 0 1rem}b,strong{font-weight:bolder}small{font-size:.875em}mark{padding:.2em;background-color:#fcf8e3}sub,sup{position:relative;font-size:.75em;line-height:0;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}a{color:#0d6efd;text-decoration:underline}a:hover{color:#0a58ca}a:not([href]):not([class]),a:not([href]):not([class]):hover{color:inherit;text-decoration:none}code,kbd,pre,samp{font-family:SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:1em;direction:ltr;unicode-bidi:bidi-override}pre{display:block;margin-top:0;margin-bottom:1rem;overflow:auto;font-size:.875em}pre code{font-size:inherit;color:inherit;word-break:normal}code{font-size:.875em;color:#d63384;word-wrap:break-word}a>code{color:inherit}kbd{padding:.2rem .4rem;font-size:.875em;color:#fff;background-color:#212529;border-radius:.2rem}kbd kbd{padding:0;font-size:1em;font-weight:700}figure{margin:0 0 1rem}img,svg{vertical-align:middle}table{caption-side:bottom;border-collapse:collapse}caption{padding-top:.5rem;padding-bottom:.5rem;color:#6c757d;text-align:left}th{text-align:inherit;text-align:-webkit-match-parent}tbody,td,tfoot,th,thead,tr{border-color:inherit;border-style:solid;border-width:0}label{display:inline-block}button{border-radius:0}button:focus:not(:focus-visible){outline:0}button,input,optgroup,select,textarea{margin:0;font-family:inherit;font-size:inherit;line-height:inherit}button,select{text-transform:none}[role=button]{cursor:pointer}select{word-wrap:normal}select:disabled{opacity:1}[list]::-webkit-calendar-picker-indicator{display:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button}[type=button]:not(:disabled),[type=reset]:not(:disabled),[type=submit]:not(:disabled),button:not(:disabled){cursor:pointer}::-moz-focus-inner{padding:0;border-style:none}textarea{resize:vertical}fieldset{min-width:0;padding:0;margin:0;border:0}legend{float:left;width:100%;padding:0;margin-bottom:.5rem;font-size:calc(1.275rem + .3vw);line-height:inherit}@media (min-width:1200px){legend{font-size:1.5rem}}legend+*{clear:left}::-webkit-datetime-edit-day-field,::-webkit-datetime-edit-fields-wrapper,::-webkit-datetime-edit-hour-field,::-webkit-datetime-edit-minute,::-webkit-datetime-edit-month-field,::-webkit-datetime-edit-text,::-webkit-datetime-edit-year-field{padding:0}::-webkit-inner-spin-button{height:auto}[type=search]{outline-offset:-2px;-webkit-appearance:textfield}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-color-swatch-wrapper{padding:0}::file-selector-button{font:inherit}::-webkit-file-upload-button{font:inherit;-webkit-appearance:button}output{display:inline-block}iframe{border:0}summary{display:list-item;cursor:pointer}progress{vertical-align:baseline}[hidden]{display:none!important}</style>
@@ -40,13 +40,7 @@
 
             </li>
             <li>
-                    <a class="class" href="#CharacterError">CharacterError</a>
-                            <ul class="memberlist">
-                        <li>
-                                <a class="function" href="#CharacterError.__init__">CharacterError</a>
-                        </li>
-                </ul>
-
+                    <a class="function" href="#CharacterError">CharacterError</a>
             </li>
             <li>
                     <a class="class" href="#NotFound">NotFound</a>
@@ -291,6 +285,8 @@
 
 <span class="kn">import</span> <span class="nn">attrs</span>
 
+<span class="kn">from</span> <span class="nn">aiobungie.internal</span> <span class="kn">import</span> <span class="n">helpers</span>
+
 <span class="k">if</span> <span class="n">typing</span><span class="o">.</span><span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">aiohttp</span>
     <span class="kn">import</span> <span class="nn">multidict</span>
@@ -313,9 +309,14 @@
     <span class="sd">&quot;&quot;&quot;The response status.&quot;&quot;&quot;</span>
 
 
+<span class="nd">@helpers</span><span class="o">.</span><span class="n">deprecated</span><span class="p">(</span><span class="s2">&quot;o.2.5&quot;</span><span class="p">,</span> <span class="n">removed_in</span><span class="o">=</span><span class="s2">&quot;0.2.6&quot;</span><span class="p">)</span>
 <span class="nd">@attrs</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">auto_exc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">CharacterError</span><span class="p">(</span><span class="n">HTTPError</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Raised when a encountring making a character-based request.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Raised when a encountering making a character-based request.</span>
+
+<span class="sd">    .. warning::</span>
+<span class="sd">        This is deprecated since 0.2.5 and will be removed in 0.2.6.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
 
 <span class="nd">@attrs</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">auto_exc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -447,7 +448,7 @@
 
 <span class="nd">@attrs</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">auto_exc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">RateLimitedError</span><span class="p">(</span><span class="n">HTTPError</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Raiased when being hit with ratelimits.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Raised when being hit with ratelimits.&quot;&quot;&quot;</span>
 
     <span class="n">http_status</span><span class="p">:</span> <span class="n">http</span><span class="o">.</span><span class="n">HTTPStatus</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="n">http</span><span class="o">.</span><span class="n">HTTPStatus</span><span class="o">.</span><span class="n">TOO_MANY_REQUESTS</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="kc">False</span>
@@ -468,7 +469,7 @@
 
     <span class="nd">@message</span><span class="o">.</span><span class="n">default</span>  <span class="c1"># type: ignore</span>
     <span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;You&#39;re being ratelimited for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">retry_after</span><span class="si">}</span><span class="s2"> endpoint: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;You&#39;re ratelimited for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">retry_after</span><span class="si">}</span><span class="s2">, Endpoint: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2">. Slow down!&quot;</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">message</span>
@@ -477,9 +478,9 @@
 <span class="k">async</span> <span class="k">def</span> <span class="nf">raise_error</span><span class="p">(</span><span class="n">response</span><span class="p">:</span> <span class="n">aiohttp</span><span class="o">.</span><span class="n">ClientResponse</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AiobungieError</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Generates and raise exceptions on error responses.&quot;&quot;&quot;</span>
 
-    <span class="c1"># Not a JSON response, raise immendiately.</span>
+    <span class="c1"># Not a JSON response, raise immediately.</span>
 
-    <span class="c1"># Also Bungie sometimes can get funky and return HTML instead of JSON when making an authorized</span>
+    <span class="c1"># Also Bungie sometimes get funky and return HTML instead of JSON when making an authorized</span>
     <span class="c1"># request with a dummy access token. I can&#39;t really do anything about this..</span>
     <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">content_type</span> <span class="o">!=</span> <span class="s2">&quot;application/json&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">HTTPError</span><span class="p">(</span>
@@ -488,12 +489,13 @@
         <span class="p">)</span>
 
     <span class="n">body</span> <span class="o">=</span> <span class="k">await</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
-    <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Message&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-    <span class="n">error_status</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ErrorStatus&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Message&quot;</span><span class="p">,</span> <span class="s2">&quot;UNDEFINED_MESSAGE&quot;</span><span class="p">)</span>
+    <span class="n">error_status</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ErrorStatus&quot;</span><span class="p">,</span> <span class="s2">&quot;UNDEFINED_ERROR_STATUS&quot;</span><span class="p">)</span>
     <span class="n">message_data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;MessageData&quot;</span><span class="p">,</span> <span class="p">{})</span>
     <span class="n">throttle_seconds</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ThrottleSeconds&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
     <span class="n">error_code</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ErrorCode&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
+    <span class="c1"># Standard HTTP status.</span>
     <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">http</span><span class="o">.</span><span class="n">HTTPStatus</span><span class="o">.</span><span class="n">NOT_FOUND</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">NotFound</span><span class="p">(</span>
             <span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">,</span>
@@ -564,7 +566,7 @@
             <span class="n">http_status</span><span class="o">=</span><span class="n">status</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="c1"># Need to handle errors our selves :&gt;</span>
+    <span class="c1"># Need to self handle ~5xx errors</span>
     <span class="k">elif</span> <span class="mi">500</span> <span class="o">&lt;=</span> <span class="n">status</span> <span class="o">&lt;</span> <span class="mi">600</span><span class="p">:</span>
         <span class="c1"># No API key or method requires OAuth2 most likely.</span>
         <span class="k">if</span> <span class="n">error_status</span> <span class="ow">in</span> <span class="p">{</span>
@@ -697,65 +699,34 @@
                             </div>
                 </section>
                 <section id="CharacterError">
-                                <div class="attr class">
-        <a class="headerlink" href="#CharacterError">#&nbsp;&nbsp</a>
-
-                <div class="decorator">@attrs.define(auto_exc=True)</div>
-
-        <span class="def">class</span>
-        <span class="name">CharacterError</span><wbr>(<span class="base"><a href="#HTTPError">HTTPError</a></span>):
-    </div>
-
-            <details>
-            <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@attrs</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">auto_exc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">CharacterError</span><span class="p">(</span><span class="n">HTTPError</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Raised when a encountring making a character-based request.&quot;&quot;&quot;</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Raised when a encountring making a character-based request.</p>
-</div>
-
-
-                            <div id="CharacterError.__init__" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#CharacterError.__init__">#&nbsp;&nbsp</a>
+                            <div class="attr function"><a class="headerlink" href="#CharacterError">#&nbsp;&nbsp</a>
 
         
-            <span class="name">CharacterError</span><span class="signature">(message: str, http_status: http.HTTPStatus)</span>
+            <span class="def">def</span>
+            <span class="name">CharacterError</span><span class="signature">(message: str, http_status: http.HTTPStatus) -&gt; None</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">http_status</span><span class="p">):</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">http_status</span> <span class="o">=</span> <span class="n">http_status</span>
-    <span class="ne">BaseException</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">http_status</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@helpers</span><span class="o">.</span><span class="n">deprecated</span><span class="p">(</span><span class="s2">&quot;o.2.5&quot;</span><span class="p">,</span> <span class="n">removed_in</span><span class="o">=</span><span class="s2">&quot;0.2.6&quot;</span><span class="p">)</span>
+<span class="nd">@attrs</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">auto_exc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">CharacterError</span><span class="p">(</span><span class="n">HTTPError</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raised when a encountering making a character-based request.</span>
+
+<span class="sd">    .. warning::</span>
+<span class="sd">        This is deprecated since 0.2.5 and will be removed in 0.2.6.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Method generated by attrs for class CharacterError.</p>
+            <div class="docstring"><p>Raised when a encountering making a character-based request.</p>
+
+<p><em>Warning:</em>
+This is deprecated since 0.2.5 and will be removed in 0.2.6.</p>
 </div>
 
 
-                            </div>
-                            <div class="inherited">
-                                <h5>Inherited Members</h5>
-                                <dl>
-                                    <div><dt><a href="#HTTPError">HTTPError</a></dt>
-                                <dd id="CharacterError.message" class="variable"><a href="#HTTPError.message">message</a></dd>
-                <dd id="CharacterError.http_status" class="variable"><a href="#HTTPError.http_status">http_status</a></dd>
-
-            </div>
-            <div><dt>builtins.BaseException</dt>
-                                <dd id="CharacterError.with_traceback" class="function">with_traceback</dd>
-                <dd id="CharacterError.args" class="variable">args</dd>
-
-            </div>
-                                </dl>
-                            </div>
                 </section>
                 <section id="NotFound">
                                 <div class="attr class">
@@ -1525,7 +1496,7 @@ to make the request again with those fields.</p>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@attrs</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">auto_exc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">RateLimitedError</span><span class="p">(</span><span class="n">HTTPError</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Raiased when being hit with ratelimits.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Raised when being hit with ratelimits.&quot;&quot;&quot;</span>
 
     <span class="n">http_status</span><span class="p">:</span> <span class="n">http</span><span class="o">.</span><span class="n">HTTPStatus</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="n">http</span><span class="o">.</span><span class="n">HTTPStatus</span><span class="o">.</span><span class="n">TOO_MANY_REQUESTS</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="kc">False</span>
@@ -1546,7 +1517,7 @@ to make the request again with those fields.</p>
 
     <span class="nd">@message</span><span class="o">.</span><span class="n">default</span>  <span class="c1"># type: ignore</span>
     <span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;You&#39;re being ratelimited for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">retry_after</span><span class="si">}</span><span class="s2"> endpoint: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;You&#39;re ratelimited for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">retry_after</span><span class="si">}</span><span class="s2">, Endpoint: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2">. Slow down!&quot;</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">message</span>
@@ -1554,7 +1525,7 @@ to make the request again with those fields.</p>
 
         </details>
 
-            <div class="docstring"><p>Raiased when being hit with ratelimits.</p>
+            <div class="docstring"><p>Raised when being hit with ratelimits.</p>
 </div>
 
 
@@ -1969,9 +1940,9 @@ to make the request again with those fields.</p>
             <div class="pdoc-code codehilite"><pre><span></span><span class="k">async</span> <span class="k">def</span> <span class="nf">raise_error</span><span class="p">(</span><span class="n">response</span><span class="p">:</span> <span class="n">aiohttp</span><span class="o">.</span><span class="n">ClientResponse</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AiobungieError</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Generates and raise exceptions on error responses.&quot;&quot;&quot;</span>
 
-    <span class="c1"># Not a JSON response, raise immendiately.</span>
+    <span class="c1"># Not a JSON response, raise immediately.</span>
 
-    <span class="c1"># Also Bungie sometimes can get funky and return HTML instead of JSON when making an authorized</span>
+    <span class="c1"># Also Bungie sometimes get funky and return HTML instead of JSON when making an authorized</span>
     <span class="c1"># request with a dummy access token. I can&#39;t really do anything about this..</span>
     <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">content_type</span> <span class="o">!=</span> <span class="s2">&quot;application/json&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">HTTPError</span><span class="p">(</span>
@@ -1980,12 +1951,13 @@ to make the request again with those fields.</p>
         <span class="p">)</span>
 
     <span class="n">body</span> <span class="o">=</span> <span class="k">await</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
-    <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Message&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-    <span class="n">error_status</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ErrorStatus&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Message&quot;</span><span class="p">,</span> <span class="s2">&quot;UNDEFINED_MESSAGE&quot;</span><span class="p">)</span>
+    <span class="n">error_status</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ErrorStatus&quot;</span><span class="p">,</span> <span class="s2">&quot;UNDEFINED_ERROR_STATUS&quot;</span><span class="p">)</span>
     <span class="n">message_data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;MessageData&quot;</span><span class="p">,</span> <span class="p">{})</span>
     <span class="n">throttle_seconds</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ThrottleSeconds&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
     <span class="n">error_code</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ErrorCode&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
+    <span class="c1"># Standard HTTP status.</span>
     <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">http</span><span class="o">.</span><span class="n">HTTPStatus</span><span class="o">.</span><span class="n">NOT_FOUND</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">NotFound</span><span class="p">(</span>
             <span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">,</span>
@@ -2056,7 +2028,7 @@ to make the request again with those fields.</p>
             <span class="n">http_status</span><span class="o">=</span><span class="n">status</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="c1"># Need to handle errors our selves :&gt;</span>
+    <span class="c1"># Need to self handle ~5xx errors</span>
     <span class="k">elif</span> <span class="mi">500</span> <span class="o">&lt;=</span> <span class="n">status</span> <span class="o">&lt;</span> <span class="mi">600</span><span class="p">:</span>
         <span class="c1"># No API key or method requires OAuth2 most likely.</span>
         <span class="k">if</span> <span class="n">error_status</span> <span class="ow">in</span> <span class="p">{</span>

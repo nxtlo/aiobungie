@@ -96,6 +96,7 @@ class FireteamActivity(int, enums.Enum):
     DOE = 36
     """Dares of Eternity."""
     DUNGEON_GOA = 37
+    VOW_OF_THE_DISCPILE = 38
     """Grasp of Avarice."""
     CAMPAIGN = 39
     WELLSPRING = 40

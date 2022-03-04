@@ -337,7 +337,7 @@ async def test_fetch_activities():
     assert isinstance(post, aiobungie.crate.PostActivity)
     assert a.any(lambda act: act.is_flawless)
 
-    for act in a:
+    async for act in a:
         assert isinstance(act, aiobungie.crate.Activity)
         if act.hash == aiobungie.Raid.DSC.value:
             assert aiobungie.GameMode.RAID in act.modes
@@ -375,12 +375,10 @@ async def test_insert_plug_free():
         .collect()
     )
     try:
-        resp = await client.rest.insert_socket_plug_free("", 619, p, 1234, 3)
+        await client.rest.insert_socket_plug_free("", 619, p, 1234, 3)
     # This will always fail due to OAuth2
     except aiobungie.Unauthorized:
-        resp = None
         pass
-    del resp
 
 async def test_search_entities():
     e = await client.search_entities("Parallel", "DestinyInventoryItemDefinition")

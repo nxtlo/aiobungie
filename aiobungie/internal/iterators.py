@@ -23,7 +23,7 @@
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = ("FlatIterator",)
+__all__: tuple[str, ...] = ("FlatIterator", "into_iter")
 
 import collections.abc as collections
 import itertools
@@ -75,6 +75,11 @@ class FlatIterator(typing.Generic[Item]):
         print(item)
     # Hello
     # World
+
+    # Indexing is also supported.
+
+    print(iterator[0])
+    # Hello
     ```
 
     Parameters
@@ -133,7 +138,7 @@ class FlatIterator(typing.Generic[Item]):
         if casting is not None:
             return typing.cast(list[_B], list(map(casting, self._items)))
 
-        return list(self)
+        return list(self._items)
 
     def next(self) -> Item:
         """Returns the next item in the iterator.
@@ -446,21 +451,25 @@ class FlatIterator(typing.Generic[Item]):
         """
         return self.take(1).next()
 
-    def last(self) -> Item:
-        """Returns the last item in the iterator.
+    def reversed(self) -> FlatIterator[Item]:
+        """Returns a new iterator that yields the items in the iterator in reverse order.
 
         Example
         -------
         >>> iterator = FlatIterator([3, 1, 6, 7])
-        >>> iterator.last()
-        7
+        >>> async for item in iterator.reversed():
+                print(item)
+        # 7
+        # 6
+        # 1
+        # 3
 
         Raises
         ------
         `StopIteration`
             If no elements are left in the iterator.
         """
-        return self.collect()[::-1][0]
+        return FlatIterator(reversed(self.collect()))
 
     def count(self) -> int:
         count = 0
@@ -470,7 +479,7 @@ class FlatIterator(typing.Generic[Item]):
         return count
 
     def union(self, other: FlatIterator[Item]) -> FlatIterator[Item]:
-        """Returns an iterator that yields all items from both iterators.
+        """Returns a new iterator that yields all items from both iterators.
 
         Example
         -------
@@ -516,8 +525,40 @@ class FlatIterator(typing.Generic[Item]):
         for item in self:
             func(item)
 
+    def enumerate(self, *, start: int = 0) -> FlatIterator[tuple[int, Item]]:
+        """Returns a new iterator that yields tuples of the index and item.
+
+        Example
+        -------
+        >>> iterator = FlatIterator([1, 2, 3])
+        >>> async for index, item in iterator.enumerate():
+                print(index, item)
+
+        # 0, 1
+        # 1, 2
+        # 2, 3
+
+        Raises
+        ------
+        `StopIteration`
+            If no elements are left in the iterator.
+        """
+        return FlatIterator(enumerate(self, start=start))
+
     def _ok(self) -> typing.NoReturn:
-        raise StopIteration("No more items in the iterator.")
+        raise StopIteration("No more items in the iterator.") from None
+
+    def __getitem__(self, index: int) -> Item:
+        try:
+            return self.skip(index).first()
+        except IndexError:
+            self._ok()
+
+    # This is a never.
+    def __setitem__(self) -> typing.NoReturn:
+        raise TypeError(
+            f"{type(self).__name__} doesn't support item assignment."
+        ) from None
 
     def __repr__(self) -> str:
         return f'<{self.__class__.__name__}({", ".join([str(item) for item in self])})>'
@@ -542,24 +583,26 @@ class FlatIterator(typing.Generic[Item]):
 
     async def __anext__(self) -> Item:
         try:
-            return self.__next__()
+            item = next(self._items)
         except StopIteration as e:
             raise StopAsyncIteration from e
 
+        return item
+
 
 def into_iter(
-    iterable: typing.Iterable[Item],
+    iterable: collections.Iterable[Item],
 ) -> FlatIterator[Item]:
     """Converts an iterable into an flat iterator.
 
     Example
     -------
     >>> sequence = [1,2,3]
-    >>> async for item in aiobungie.iterators.into_iter(sequence):
+    >>> async for item in aiobungie.into_iter(sequence).reversed():
             print(item)
-    # 1
-    # 2
     # 3
+    # 2
+    # 1
 
     Parameters
     ----------

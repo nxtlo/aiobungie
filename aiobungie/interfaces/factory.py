@@ -23,6 +23,8 @@
 
 from __future__ import annotations
 
+from aiobungie.internal import iterators
+
 __all__: tuple[str, ...] = ("FactoryInterface",)
 
 import abc
@@ -250,7 +252,7 @@ class FactoryInterface(abc.ABC):
     @abc.abstractmethod
     def deserialize_clan_members(
         self, data: typedefs.JSONObject, /
-    ) -> collections.Sequence[clans.ClanMember]:
+    ) -> iterators.FlatIterator[clans.ClanMember]:
         """Deserialize a JSON payload of a clan members information.
 
         Parameters
@@ -260,8 +262,8 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `collections.Sequence[aiobungie.crate.ClanMember]`
-            A sequence of clan members of the deserialized payload.
+        `aiobungie.iterators.FlatIterator[aiobungie.crate.ClanMember]`
+            An iterator of clan members of the deserialized payload.
         """
 
     @abc.abstractmethod
@@ -677,7 +679,7 @@ class FactoryInterface(abc.ABC):
     @abc.abstractmethod
     def deserialize_inventory_results(
         self, payload: typedefs.JSONObject
-    ) -> collections.Sequence[entity.SearchableEntity]:
+    ) -> iterators.FlatIterator[entity.SearchableEntity]:
         """Deserialize results of searched Destiny2 entities.
 
         Parameters
@@ -687,8 +689,8 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `collections.Sequence[aiobungie.crate.SearchableEntity]`
-            A sequence of the found searched entities.
+        `aiobungie.iterators.FlatIterator[aiobungie.crate.SearchableEntity]`
+            An iterator over the found searched entities.
         """
 
     @abc.abstractmethod
@@ -730,7 +732,7 @@ class FactoryInterface(abc.ABC):
     @abc.abstractmethod
     def deserialize_activities(
         self, payload: typedefs.JSONObject, /
-    ) -> collections.Sequence[activity.Activity]:
+    ) -> iterators.FlatIterator[activity.Activity]:
         """Deserialize a JSON payload of an array of activity history information.
 
         Parameters
@@ -740,8 +742,8 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `collections.Sequence[aiobungie.crate.Activity]`
-            A sequence of activity objects of the deserialized payload.
+        `aiobungie.iterators.FlatIterator[aiobungie.crate.Activity]`
+            Am iterator over activity objects of the deserialized payload.
         """
 
     @abc.abstractmethod

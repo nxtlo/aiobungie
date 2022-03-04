@@ -43,6 +43,7 @@ from aiobungie.crate import fireteams
 from aiobungie.crate import user
 from aiobungie.internal import enums
 from aiobungie.internal import helpers
+from aiobungie.internal import iterators
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
@@ -736,7 +737,7 @@ class Clan:
         *,
         name: typing.Optional[str] = None,
         type: enums.MembershipType = enums.MembershipType.NONE,
-    ) -> collections.Sequence[ClanMember]:
+    ) -> iterators.FlatIterator[ClanMember]:
         """Fetch the members of the clan.
 
         Parameters

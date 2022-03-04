@@ -65,23 +65,19 @@ async def test_hard_types():
 async def test_clan_from_id():
     c = await client.fetch_clan_from_id(4389205)
     members = await c.fetch_members()
-    assert isinstance(members, list)
-    assert isinstance(members[0], aiobungie.crate.ClanMember)
-    for member in members:
+    async for member in members:
         assert isinstance(member, aiobungie.crate.ClanMember)
 
 async def test_clan():
     c = await client.fetch_clan("Nuanceㅤ ")
     members = await c.fetch_members()
-    assert isinstance(members, list)
-    assert isinstance(members[0], aiobungie.crate.ClanMember)
-    assert any(member.last_seen_name == "Hizxr" for member in members)
 
+    async for member in members.discard(lambda member: not member.is_online):
+        assert isinstance(member, aiobungie.crate.ClanMember)
 
 async def test_fetch_clan_members():
     ms = await client.fetch_clan_members(4389205, name="Fate")
     assert len(ms) == 1
-    assert isinstance(ms, list)
     for member in ms:
         assert isinstance(member, aiobungie.crate.ClanMember)
         assert isinstance(member.bungie, aiobungie.crate.PartialBungieUser)
@@ -250,7 +246,7 @@ async def test_membership_types_from_id():
 
 async def test_search_users():
     x = await client.search_users("Fate")
-    assert isinstance(x, list)
+    # assert isinstance(x, list)
     for u in x:
         assert isinstance(u, aiobungie.crate.SearchableDestinyUser)
         for membership in u.memberships:
@@ -337,13 +333,14 @@ async def test_fetch_fireteam():
 
 async def test_fetch_activities():
     a = await client.fetch_activities(MID, CID, aiobungie.GameMode.RAID)
-    assert any(_.is_flawless for _ in a)
-    for act in a:
+    post = await a.first().fetch_post()
+    assert isinstance(post, aiobungie.crate.PostActivity)
+    assert a.any(lambda act: act.is_flawless)
+
+    async for act in a:
         assert isinstance(act, aiobungie.crate.Activity)
         if act.hash == aiobungie.Raid.DSC.value:
             assert aiobungie.GameMode.RAID in act.modes
-    post = await a[0].fetch_post()
-    assert isinstance(post, aiobungie.crate.PostActivity)
 
 
 async def test_post_activity():
@@ -378,26 +375,23 @@ async def test_insert_plug_free():
         .collect()
     )
     try:
-        resp = await client.rest.insert_socket_plug_free("", 619, p, 1234, 3)
+        await client.rest.insert_socket_plug_free("", 619, p, 1234, 3)
     # This will always fail due to OAuth2
     except aiobungie.Unauthorized:
-        resp = None
         pass
-    del resp
 
 async def test_search_entities():
     e = await client.search_entities("Parallel", "DestinyInventoryItemDefinition")
+
+    acts = await client.search_entities("Scourge", "DestinyActivityDefinition")
+
+    assert acts.any(lambda act: act.name in "Scourge of the Past")
+
     for i in e:
         assert isinstance(i, aiobungie.crate.SearchableEntity)
         awts = await i.fetch_self_item()
         assert isinstance(awts, aiobungie.crate.InventoryEntity)
         assert awts.name == i.name
-    acts = await client.search_entities("Scourge", "DestinyActivityDefinition")
-    assert len(acts) > 1
-    assert any(act.name == "Scourge of the Past" for act in acts)
-
-    # This will always return None since its not an inventory item.
-    assert not await acts[0].fetch_self_item()
 
 async def test_unique_weapon_history():
     w = await client.fetch_unique_weapon_history(MID, CID, aiobungie.MembershipType.STEAM)

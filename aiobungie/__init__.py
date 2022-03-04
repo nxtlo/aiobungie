@@ -117,9 +117,11 @@ from aiobungie import typedefs
 from aiobungie import url
 from aiobungie.client import Client
 from aiobungie.error import *
+from aiobungie.internal import iterators
 from aiobungie.internal.assets import Image
 from aiobungie.internal.enums import *
 from aiobungie.internal.factory import Factory
+from aiobungie.internal.iterators import *
 from aiobungie.rest import *
 from aiobungie.undefined import Undefined
 from aiobungie.undefined import UndefinedOr

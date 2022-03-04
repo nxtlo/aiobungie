@@ -24,10 +24,36 @@ await client.fetch_profile(
 
 ## Added
 - Included all activities in `FireteamActivity`.
+- Standard `FlatIterator` and `into_iter` in `internal.iterators` and exported to the project's namespace.
+
+Example usage
+```py
+import aiobungie
+
+client = aiobungie.Client()
+
+friends = await client.fetch_friends(...)
+
+# This can either be used with `async for` or `for`
+
+async for friend in (
+    aiobungie.into_iter(friends) # Transform the sequence into a flat iterator.
+    .filter(lambda friend: friend.type is MembershipType.STEAM)  # Filter to only steam friends.
+    .take(5)  # Limit the results to 5 friends
+    .discard(lambda friend: friend.online_status is Presence.ONLINE)  # Drop friends that are not online.
+    .reversed()  # Reverse them.
+):
+    print(friend.unique_name)
+```
 
 ## Changed
 - Parameter `memberid` in `fetch_profile` is now `membership_id`.
-- 
+- Methods that now return a `FlatIterator` instead of a standard sequence.
+    - fetch_activities
+    - search_users
+    - fetch_clan_admins
+    - fetch_clan_members
+    - search_entities
 
 ## Fixed
 - `KeyError` was being thrown when deserializing `fireteam_activities`.
@@ -35,7 +61,6 @@ await client.fetch_profile(
 
 ## Removed
 - Method `helpers.collect`.
-- 
 
 
 ## [0.2.6a0](https://github.com/nxtlo/aiobungie/compare/0.2.5...0.2.6a0) 2022-02-26

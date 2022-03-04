@@ -37,6 +37,7 @@ from aiobungie.crate import user
 from aiobungie.internal import enums
 from aiobungie.internal import factory as factory_
 from aiobungie.internal import helpers
+from aiobungie.internal import iterators
 
 if typing.TYPE_CHECKING:
     import asyncio
@@ -212,7 +213,7 @@ class Client(traits.ClientApp):
 
     async def search_users(
         self, name: str, /
-    ) -> collections.Sequence[user.SearchableDestinyUser]:
+    ) -> iterators.FlatIterator[user.SearchableDestinyUser]:
         """Search for players and return all players that matches the same name.
 
         Parameters
@@ -222,15 +223,17 @@ class Client(traits.ClientApp):
 
         Returns
         -------
-        `collections.Sequence[aiobungie.crate.DestinyMembership]`
+        `aiobungie.iterators.FlatIterator[aiobungie.crate.DestinyMembership]`
             A sequence of destiny memberships.
         """
         payload = await self.rest.search_users(name)
         assert isinstance(payload, dict)
-        return [
-            self.factory.deserialize_searched_user(user)
-            for user in payload["searchResults"]
-        ]
+        return iterators.FlatIterator(
+            [
+                self.factory.deserialize_searched_user(user)
+                for user in payload["searchResults"]
+            ]
+        )
 
     async def fetch_user_themes(self) -> collections.Sequence[user.UserThemes]:
         """Fetch all available user themes.
@@ -542,7 +545,7 @@ class Client(traits.ClientApp):
         ] = enums.MembershipType.ALL,
         page: int = 0,
         limit: int = 250,
-    ) -> collections.Sequence[activity.Activity]:
+    ) -> iterators.FlatIterator[activity.Activity]:
         """Fetch a Destiny 2 activity for the specified character id.
 
         Parameters
@@ -565,9 +568,11 @@ class Client(traits.ClientApp):
 
         Returns
         -------
-        `collections.Sequence[aiobungie.crate.Activity]`
-            A sequence of the player's activities.
+        `aiobungie.iterators.FlatIterator[aiobungie.crate.Activity]`
+            An iterator of the player's activities.
 
+        Raises
+        ------
         `aiobungie.MembershipTypeError`
             The provided membership type was invalid.
         """
@@ -689,7 +694,7 @@ class Client(traits.ClientApp):
 
     async def fetch_clan_admins(
         self, clan_id: int, /
-    ) -> collections.Sequence[clans.ClanMember]:
+    ) -> iterators.FlatIterator[clans.ClanMember]:
         """Fetch the clan founder and admins.
 
         Parameters
@@ -699,8 +704,8 @@ class Client(traits.ClientApp):
 
         Returns
         -------
-        `collections.Sequence[aiobungie.crate.ClanMember]`
-            A sequence of the found clan admins and founder.
+        `aiobungie.iterators.FlatIterator[aiobungie.crate.ClanMember]`
+            An iterator over the found clan admins and founder.
 
         Raises
         ------
@@ -796,7 +801,7 @@ class Client(traits.ClientApp):
         *,
         name: typing.Optional[str] = None,
         type: typedefs.IntAnd[enums.MembershipType] = enums.MembershipType.NONE,
-    ) -> collections.Sequence[clans.ClanMember]:
+    ) -> iterators.FlatIterator[clans.ClanMember]:
         """Fetch Bungie clan members.
 
         Parameters
@@ -816,8 +821,8 @@ class Client(traits.ClientApp):
 
         Returns
         -------
-        `collections.Sequence[aiobungie.crate.ClanMember]`
-            A sequence of bungie clan members.
+        `aiobungie.iterators.FlatIterator[aiobungie.crate.ClanMember]`
+            An iterator over the bungie clan members.
 
         Raises
         ------
@@ -935,7 +940,7 @@ class Client(traits.ClientApp):
 
     async def search_entities(
         self, name: str, entity_type: str, *, page: int = 0
-    ) -> collections.Sequence[entity.SearchableEntity]:
+    ) -> iterators.FlatIterator[entity.SearchableEntity]:
         """Search for Destiny2 entities given a name and its type.
 
         Parameters
@@ -953,8 +958,8 @@ class Client(traits.ClientApp):
 
         Returns
         -------
-        `collections.Sequence[aiobungie.crate.SearchableEntity]`
-            A sequence of the found results matching the provided name.
+        `aiobungie.iterators.FlatIterator[aiobungie.crate.SearchableEntity]`
+            An iterator over the found results matching the provided name.
         """
         resp = await self.rest.search_entities(name, entity_type, page=page)
         assert isinstance(resp, dict)

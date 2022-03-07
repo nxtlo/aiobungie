@@ -117,7 +117,6 @@ You can enable this with the following code
 logging.addLevelName(REST_DEBUG, "REST_DEBUG")
 
 
-@typing.no_type_check
 def _collect_components(components: list[enums.ComponentType], /) -> str:
     pending: list[str] = []
 

@@ -118,7 +118,7 @@ class Entity(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def icon(self) -> assets.MaybeImage:
+    def icon(self) -> assets.Image:
         """An optional entity's icon if its filled."""
 
     @property
@@ -171,7 +171,7 @@ class BaseEntity(Entity):
     description: undefined.UndefinedOr[str]
     """Entity's description"""
 
-    icon: assets.MaybeImage
+    icon: assets.Image
     """Entity's icon."""
 
     has_icon: bool = attrs.field(repr=False)
@@ -514,7 +514,7 @@ class ActivityEntity(BaseEntity, Entity):
     This derives from `DestinyActivityDefinition` definition.
     """
 
-    release_icon: assets.MaybeImage
+    release_icon: assets.Image
     """The release icon of this activity if it has one."""
 
     release_time: int
@@ -535,7 +535,7 @@ class ActivityEntity(BaseEntity, Entity):
     tier: typedefs.IntAnd[activity.Difficulty]
     """Activity's difficulty tier."""
 
-    image: assets.MaybeImage
+    image: assets.Image
     """Activity's pgcr image."""
 
     rewards: typing.Optional[collections.Sequence[activity.Rewards]]

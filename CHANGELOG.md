@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.6a1...HEAD)
 
+## Added
+- Ability to read and save any resource that returns an `Image`.
+- Image mime types enum in assets.
+
+## Changed
+- Objects no longer type hinted with `MaybeImage` and now return `Image` instead.
+
+## Removed
+- MaybeImage type hint.
+
+## Fixed
+
 ## [0.2.6a1](https://github.com/nxtlo/aiobungie/compare/0.2.6a0...0.2.6a1) 2022-03-05
 
 ## Major API changes

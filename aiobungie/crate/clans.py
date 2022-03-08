@@ -161,10 +161,10 @@ class ClanBanner:
     id: int
     """The banner's id."""
 
-    foreground: assets.MaybeImage
+    foreground: assets.Image
     """The banner's foreground. This field can be `UNDEFINED` if not found."""
 
-    background: assets.MaybeImage
+    background: assets.Image
     """The banner's background. This field can be `UNDEFINED` if not found."""
 
     def __int__(self) -> int:
@@ -376,10 +376,10 @@ class Clan:
     is_public: bool
     """Clan's privacy status."""
 
-    banner: assets.MaybeImage
+    banner: assets.Image
     """Clan's banner"""
 
-    avatar: assets.MaybeImage
+    avatar: assets.Image
     """Clan's avatar"""
 
     about: str

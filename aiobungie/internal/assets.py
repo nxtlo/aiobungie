@@ -25,46 +25,190 @@
 
 from __future__ import annotations
 
-__all__: list[str] = ["Image", "MaybeImage"]
+import collections
 
+__all__: tuple[str, ...] = ("Image", "MimeType")
+
+import logging
+import pathlib
 import typing
 
-from aiobungie import undefined
+import aiohttp
+
 from aiobungie import url
+
+from . import enums
+
+_LOGGER: typing.Final[logging.Logger] = logging.getLogger("aiobungie.assets")
+
+
+class MimeType(str, enums.Enum):
+    """Image mime types enum."""
+
+    JPEG = "jpeg"
+    PNG = "png"
+    WEBP = "webp"
+    JPG = "jpg"
+    GIF = "gif"
+
+    def __str__(self) -> str:
+        return str(self.value)
 
 
 class Image:
+    """Representation of an image/avatar/picture at Bungie.
+
+    Example
+    -------
+    ```py
+    from aiobungie import Image
+    img = Image("img/destiny_content/pgcr/raid_eclipse.jpg")
+    print(img)
+    # https://www.bungie.net/img/destiny_content/pgcr/raid_eclipse.jpg
+
+    # Stream the image.
+    async for chunk in img:
+        # Byte chunks of the image.
+        print(chunk)
+
+    # Save the image to a file.
+    await img.save("file_name", "/my/path/to/save/to", "jpeg")
+    ```
+
+    Parameters
+    ----------
+    path : `str | None`
+        The path to the image. If `None`, the default missing image path will be used.
+    """
+
+    __slots__ = ("_path",)
+
     def __init__(self, path: typing.Optional[str] = None) -> None:
-        self.path = path
+        self._path = path
 
-    def __repr__(self) -> str:
-        return self.__str__()
-
-    def __str__(self) -> str:
-        return f"{url.BASE}/{self.path if self.path else self.missing_path()}"
-
-    @staticmethod
-    def missing_path() -> str:
-        return "img/misc/missing_icon_d2.png"
-
-    @staticmethod
-    def partial() -> str:
-        return f"<Image {undefined.Undefined}>"
-
+    @property
     def is_missing(self) -> bool:
-        return not self.path
+        return not self._path
 
     @property
     def url(self) -> str:
-        return str(self)
+        """The URL to the image."""
+        return self.create_url()
 
-    def typeof(self, mimtype: typing.Literal[".jpg", ".png", ".gif"]) -> bool:
-        if self.path is not None and self.path.endswith(mimtype):
-            return True
-        return False
+    @staticmethod
+    def missing_path() -> str:
+        """Returns the path to the missing Bungie image."""
+        return "img/misc/missing_icon_d2.png"
 
+    def create_url(self) -> str:
+        """Creates a full URL to the image path.
 
-MaybeImage = typing.Union[Image, str, None]
-"""A type hint for images that may or may not exists in the api.
-Images returned from the api as None will be replaced with `Image.partial`.
-"""
+        Returns
+        -------
+        str
+            The URL to the image.
+        """
+        return f"{url.BASE}/{self._path if self._path else self.missing_path()}"
+
+    async def save(
+        self,
+        file_name: str,
+        path: typing.Union[pathlib.Path, str],
+        /,
+        mime_type: typing.Optional[typing.Union[MimeType, str]] = None,
+    ) -> None:
+        """Saves the image to a file.
+
+        Parameters
+        ----------
+        file_name : `str`
+            A name for the file to save the image to.
+        path : `pathlib.Path | str`
+            A path tp save the image to.
+
+        Other Parameters
+        ----------------
+        mime_type : `MimeType | str`
+            Optional MIME type of the image.
+
+        Raises
+        ------
+        `FileNotFoundError`
+            If the path provided does not exist.
+        `RuntimeError`
+            If the image could not be saved.
+        `PermissionError`
+            If the path provided is not writable or does not have write permissions.
+        """
+        if isinstance(path, pathlib.Path) and not path.exists():
+            raise FileNotFoundError(f"File does not exist: {path!r}")
+
+        if self.is_missing:
+            return
+
+        mimetype = mime_type or MimeType.PNG
+        path = pathlib.Path(path)
+
+        try:
+            with open(path.name + f"{file_name}.{mimetype}", "wb") as file:
+                file.write(await self.read())
+
+                _LOGGER.info("Saved image to %s", file.name)
+
+        except Exception as err:
+            raise RuntimeError("Encountered an error while saving image.") from err
+
+    async def read(self) -> bytes:
+        """Reads the image URL from Bungie as bytes.
+
+        Returns
+        -------
+        `bytes`
+            An async iterable of the image bytes.
+        """
+        client_session = aiohttp.ClientSession()
+
+        try:
+            await client_session.__aenter__()
+            response = await client_session.get(self.create_url())
+
+            if 300 >= response.status >= 200:
+                reader = await response.read()
+
+        except Exception as exc:
+            raise RuntimeError(f"Failed to read image: {exc}") from None
+        finally:
+            await client_session.__aexit__(None, None, None)
+        return reader
+
+    async def iter(self) -> collections.AsyncGenerator[bytes, None]:
+        """Iterates over the image bytes.
+
+        Example
+        -------
+        import aiobungie
+
+        resource = aiobungie.Image("img/misc/missing_icon_d2.png")
+        async for chunk in resource.iter():
+            print(chunk)
+
+        Returns
+        -------
+        `collections.AsyncGenerator[bytes, None]`
+            An async iterable of the image bytes.
+        """
+
+        async for chunk in self:
+            yield chunk
+
+    def __repr__(self) -> str:
+        return f"Image(url={self.create_url()})"
+
+    def __str__(self) -> str:
+        return self.create_url()
+
+    def __aiter__(self) -> Image:
+        return self
+
+    async def __anext__(self) -> bytes:
+        return await self.read()

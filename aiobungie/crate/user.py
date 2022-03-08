@@ -86,9 +86,8 @@ class UserLike(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def icon(self) -> assets.MaybeImage:
+    def icon(self) -> assets.Image:
         """The user like's icon."""
-        return assets.Image.partial()
 
     @property
     @abc.abstractmethod
@@ -148,7 +147,7 @@ class PartialBungieUser:
     is_public: bool
     """The user's privacy."""
 
-    icon: assets.MaybeImage
+    icon: assets.Image
     """The user's icon."""
 
     async def fetch_self(self) -> BungieUser:
@@ -233,7 +232,7 @@ class BungieUser:
     locale: typing.Optional[str]
     """The user's locale."""
 
-    picture: assets.MaybeImage
+    picture: assets.Image
     """The user's profile picture."""
 
     code: typedefs.NoneOr[int]
@@ -275,7 +274,7 @@ class DestinyMembership(UserLike):
     types: collections.Sequence[enums.MembershipType]
     """A sequence of the member's membership types."""
 
-    icon: assets.MaybeImage
+    icon: assets.Image
     """The member's icon if it was present."""
 
     code: typedefs.NoneOr[int]

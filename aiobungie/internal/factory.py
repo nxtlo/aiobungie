@@ -1474,18 +1474,18 @@ class Factory(interfaces.FactoryInterface):
     def _set_entity_attrs(
         self, payload: typedefs.JSONObject, *, key: str = "displayProperties"
     ) -> entity.BaseEntity:
+
         name: undefined.UndefinedOr[str] = undefined.Undefined
         description: undefined.UndefinedOr[str] = undefined.Undefined
-        icon: assets.MaybeImage = assets.Image.partial()
 
         if properties := payload[key]:
             if (raw_name := properties["name"]) is not typedefs.Unknown:
                 name = raw_name
-            if (raw_description := properties["description"]) is not typedefs.Unknown:
+
+            if (
+                raw_description := properties["description"]
+            ) and not typedefs.is_unknown(raw_description):
                 description = raw_description
-            if raw_icon := properties.get("icon"):
-                icon = assets.Image(raw_icon)
-            has_icon = properties["hasIcon"]
 
         return entity.BaseEntity(
             net=self._net,
@@ -1493,8 +1493,8 @@ class Factory(interfaces.FactoryInterface):
             index=payload["index"],
             name=name,
             description=description,
-            has_icon=has_icon,
-            icon=icon,
+            has_icon=properties["hasIcon"],
+            icon=assets.Image(properties["icon"] if "icon" in properties else None),
         )
 
     def deserialize_inventory_results(
@@ -1973,12 +1973,8 @@ class Factory(interfaces.FactoryInterface):
             for k, v in banners.items():
                 banner_obj = clans.ClanBanner(
                     id=int(k),
-                    foreground=assets.Image(
-                        v.get("foregroundPath", assets.Image.partial())
-                    ),
-                    background=assets.Image(
-                        v.get("backgroundPath", assets.Image.partial())
-                    ),
+                    foreground=assets.Image(v["foregroundPath"]),
+                    background=assets.Image(v["backgroundPath"]),
                 )
                 banners_seq.append(banner_obj)
         return banners_seq

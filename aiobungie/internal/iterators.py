@@ -88,7 +88,7 @@ class FlatIterator(typing.Generic[Item]):
         The items to iterate over.
     """
 
-    __slots__ = "_items"
+    __slots__ = ("_items",)
 
     def __init__(self, items: collections.Iterable[Item]) -> None:
         self._items = iter(items)

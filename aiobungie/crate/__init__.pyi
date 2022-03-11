@@ -19,6 +19,8 @@ from .user import *
 #   ActivityEntity
 #   ActivityEntity
 #   ActivityValues
+#   AggregatedActivity
+#   AggregatedActivityValues
 #   Application
 #   ApplicationOwner
 #   Artifact

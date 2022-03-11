@@ -40,7 +40,7 @@ if typing.TYPE_CHECKING:
 
 
 class FlatIterator(typing.Generic[Item]):
-    """A not lazy, Flat, In-Memory iterator for _items based data.
+    """A Flat, In-Memory iterator for sequenced based data.
 
     This can either be used sync or asynchronously.
 

@@ -433,7 +433,7 @@ class FlatIterator(typing.Generic[Item]):
         `StopIteration`
             If no elements are left in the iterator.
         """
-        return FlatIterator(sorted(self, key=key, reverse=reverse))
+        return FlatIterator(sorted(self._items, key=key, reverse=reverse))
 
     def first(self) -> Item:
         """Returns the first item in the iterator.

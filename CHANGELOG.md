@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Added
 - Ability to read and save any resource that returns an `Image`.
 - Image mime types enum in assets.
+- fetch_aggregated_activity_stats method.
 
 ## Changed
 - Objects no longer type hinted with `MaybeImage` and now return `Image` instead.
@@ -17,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - MaybeImage type hint.
 
 ## Fixed
+- FlatIterator.sort wasn't sorting right.
 
 ## [0.2.6a1](https://github.com/nxtlo/aiobungie/compare/0.2.6a0...0.2.6a1) 2022-03-05
 

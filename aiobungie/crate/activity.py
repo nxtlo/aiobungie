@@ -352,8 +352,8 @@ class AggregatedActivityValues:
     special_actions: int
     """The amount of special actions the player has in this activity."""
 
-    beast_goals_hit: int
-    """The amount of beast goals hit the player has in this activity."""
+    best_goals_hit: int
+    """The amount of best goals hit the player has in this activity."""
 
     goals_hit: int
 
@@ -361,7 +361,7 @@ class AggregatedActivityValues:
 
     best_single_score: int
 
-    kd_ration: int
+    kd_ratio: float
 
     kd_assists: int
 

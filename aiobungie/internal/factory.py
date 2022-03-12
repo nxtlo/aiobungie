@@ -1940,6 +1940,60 @@ class Factory(interfaces.FactoryInterface):
             ],
         )
 
+    def _deserialize_aggregated_activity_values(
+        self, payload: typedefs.JSONObject
+    ) -> activity.AggregatedActivityValues:
+        # This ID is always the same for all aggregated values.
+        activity_id = int(payload["fastestCompletionMsForActivity"]["activityId"])
+
+        return activity.AggregatedActivityValues(
+            id=activity_id,
+            fastest_completion_time=(
+                int(payload["fastestCompletionMsForActivity"]["basic"]["value"]),
+                payload["fastestCompletionMsForActivity"]["basic"]["displayValue"],
+            ),
+            completions=int(payload["activityCompletions"]["basic"]["value"]),
+            kills=int(payload["activityKills"]["basic"]["value"]),
+            deaths=int(payload["activityDeaths"]["basic"]["value"]),
+            assists=int(payload["activityAssists"]["basic"]["value"]),
+            seconds_played=(
+                int(payload["activitySecondsPlayed"]["basic"]["value"]),
+                payload["activitySecondsPlayed"]["basic"]["displayValue"],
+            ),
+            wins=int(payload["activityWins"]["basic"]["value"]),
+            goals_missed=int(payload["activityGoalsMissed"]["basic"]["value"]),
+            special_actions=int(payload["activitySpecialActions"]["basic"]["value"]),
+            best_goals_hit=int(payload["activityBestGoalsHit"]["basic"]["value"]),
+            best_single_score=int(
+                payload["activityBestSingleGameScore"]["basic"]["value"]
+            ),
+            goals_hit=int(payload["activityGoalsHit"]["basic"]["value"]),
+            special_score=int(payload["activitySpecialScore"]["basic"]["value"]),
+            kd_assists=int(payload["activityKillsDeathsAssists"]["basic"]["value"]),
+            kd_ratio=float(
+                payload["activityKillsDeathsAssists"]["basic"]["displayValue"]
+            ),
+            precision_kills=int(payload["activityPrecisionKills"]["basic"]["value"]),
+        )
+
+    def deserialize_aggregated_activity(
+        self, payload: typedefs.JSONObject
+    ) -> activity.AggregatedActivity:
+        return activity.AggregatedActivity(
+            hash=int(payload["activityHash"]),
+            values=self._deserialize_aggregated_activity_values(payload["values"]),
+        )
+
+    def deserialize_aggregated_activities(
+        self, payload: typedefs.JSONObject
+    ) -> iterators.FlatIterator[activity.AggregatedActivity]:
+        return iterators.FlatIterator(
+            [
+                self.deserialize_aggregated_activity(activity)
+                for activity in payload["activities"]
+            ]
+        )
+
     def deserialize_linked_profiles(
         self, payload: typedefs.JSONObject
     ) -> profile.LinkedProfile:

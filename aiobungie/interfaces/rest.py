@@ -2178,6 +2178,101 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
+    def fetch_historical_stats(
+        self,
+        character_id: int,
+        membership_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+        day_start: datetime.datetime,
+        day_end: datetime.datetime,
+        groups: list[typedefs.IntAnd[enums.StatsGroupType]],
+        modes: collections.Sequence[typedefs.IntAnd[enums.GameMode]],
+        *,
+        period_type: enums.PeriodType = enums.PeriodType.ALL_TIME,
+    ) -> ResponseSig[typedefs.JSONObject]:
+        """Fetch historical stats for a specific membership character.
+
+        Parameters
+        ----------
+        character_id : `int`
+            The character ID to return the stats for.
+        membership_id : `int`
+            The Destiny membership id to return the stats for.
+        membership_type : `aiobungie.MembershipType | int`
+            The Destiny membership type to return the stats for.
+        day_start : `datetime.datetime`
+            The start of the day to return the stats for.
+        day_end : `datetime.datetime`
+            The end of the day to return the stats for.
+        groups : `list[aiobungie.StatsGroupType]`
+            A list of stats groups to return.
+        modes : `list[aiobungie.GameMode | int]`
+            A list of game modes to return.
+        period_type : `aiobungie.enums.PeriodType`
+            The period type to return the stats for.
+            This will return `ALL_TIME` by default if not modified.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.typedefs.JSONObject]`
+            A JSON object of the historical stats.
+        """
+
+    @abc.abstractmethod
+    def fetch_historical_stats_for_account(
+        self,
+        membership_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+        groups: list[typedefs.IntAnd[enums.StatsGroupType]],
+    ) -> ResponseSig[typedefs.JSONObject]:
+        """Fetch historical stats for an account's membership.
+
+        Parameters
+        ----------
+        membership_id : `int`
+            The Destiny membership id to return the stats for.
+        membership_type : `aiobungie.MembershipType | int`
+            The Destiny membership type to return the stats for.
+        groups : `list[aiobungie.StatsGroupType]`
+            A list of stats groups to return.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.typedefs.JSONObject]`
+            A JSON object of the historical stats for the account. This includes both the
+            character and account stats.
+        """
+
+    @abc.abstractmethod
+    def fetch_aggregated_activity_stats(
+        self,
+        character_id: int,
+        membership_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+        /,
+    ) -> ResponseSig[typedefs.JSONObject]:
+        """Fetch aggregated activity stats for a specific membership character.
+
+        Parameters
+        ----------
+        character_id : `int`
+            The character ID to return the stats for.
+        membership_id : `int`
+            The Destiny membership id to return the stats for.
+        membership_type : `aiobungie.MembershipType | int`
+            The Destiny membership type to return the stats for.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.typedefs.JSONObject]`
+            A JSON object of the aggregated activity stats.
+        """
+
+    @abc.abstractmethod
+    def fetch_historical_definition(self) -> ResponseSig[typedefs.JSONObject]:
+        ...
+
+    @abc.abstractmethod
     def fetch_content_type(self, type: str, /) -> ResponseSig[typedefs.JSONObject]:
         ...
 

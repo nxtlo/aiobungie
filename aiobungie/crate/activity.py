@@ -39,6 +39,8 @@ __all__: tuple[str, ...] = (
     "GuidedGame",
     "Location",
     "CharacterActivity",
+    "AggregatedActivity",
+    "AggregatedActivityValues",
 )
 
 import typing
@@ -312,6 +314,63 @@ class ActivityValues:
 
 
 @attrs.define(kw_only=True)
+class AggregatedActivityValues:
+    """Information found in an aggregated activity stats."""
+
+    id: int
+    """Activity's id."""
+
+    fastest_completion_time: tuple[int, str]
+    """A tuple that contains a representation of the fastest completion for that activity in different data types.
+
+    Order
+    -----
+    - `int`: The completion time in seconds.
+    - `str`: The completion time in a readable format. i.e., `0:18.500`
+    """
+
+    completions: int
+    """The amount of times the activity was completed."""
+
+    kills: int
+    """"The amount of kills the player has in this activity."""
+
+    deaths: int
+    """The amount of deaths the player has in this activity."""
+
+    seconds_played: tuple[int, str]
+    """A tuple that contains an int and a string representation of
+    the total time the player has spent in this activity.
+    """
+
+    wins: int
+    """The amount of wins the player has in this activity."""
+
+    goals_missed: int
+    """The amount of goals missed the player has in this activity."""
+
+    special_actions: int
+    """The amount of special actions the player has in this activity."""
+
+    best_goals_hit: int
+    """The amount of best goals hit the player has in this activity."""
+
+    goals_hit: int
+
+    special_score: int
+
+    best_single_score: int
+
+    kd_ratio: float
+
+    kd_assists: int
+
+    assists: int
+
+    precision_kills: int
+
+
+@attrs.define(kw_only=True)
 class ExtendedWeaponValues:
     """Information about post activity extended player's weapon values data."""
 
@@ -555,3 +614,14 @@ class Activity:
 
     def __int__(self) -> int:
         return self.instance_id
+
+
+@attrs.define(kw_only=True)
+class AggregatedActivity:
+    """Represents aggergated activity data."""
+
+    hash: int
+    """The activity hash."""
+
+    values: AggregatedActivityValues
+    """Aggregated activity values. This contains kills, deaths, etc."""

@@ -604,6 +604,39 @@ class Client(traits.ClientApp):
         assert isinstance(resp, dict)
         return self.factory.deserialize_post_activity(resp)
 
+    async def fetch_aggregated_activity_stats(
+        self,
+        character_id: int,
+        membership_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+    ) -> iterators.FlatIterator[activity.AggregatedActivity]:
+        """Fetch aggregated activity stats for a character.
+
+        Parameters
+        ----------
+        character_id: `int`
+            The id of the character to retrieve the activities for.
+        membership_id: `int`
+            The id of the user that started with `4611`.
+        membership_type: `aiobungie.internal.enums.MembershipType`
+            The Member ship type.
+
+        Returns
+        -------
+        `aiobungie.iterators.FlatIterator[aiobungie.crate.AggregatedActivity]`
+            An iterator of the player's activities.
+
+        Raises
+        ------
+        `aiobungie.MembershipTypeError`
+            The provided membership type was invalid.
+        """
+        resp = await self.rest.fetch_aggregated_activity_stats(
+            character_id, membership_id, membership_type
+        )
+        assert isinstance(resp, dict)
+        return self.factory.deserialize_aggregated_activities(resp)
+
     # * Destiny 2 Clans or GroupsV2.
 
     async def fetch_clan_from_id(

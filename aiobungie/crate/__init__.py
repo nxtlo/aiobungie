@@ -45,6 +45,8 @@ __all__: tuple[str, ...] = (
     "GuidedGame",
     "Location",
     "CharacterActivity",
+    "AggregatedActivity",
+    "AggregatedActivityValues",
     # application.py
     "Application",
     "ApplicationOwner",

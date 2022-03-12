@@ -2064,3 +2064,57 @@ class RESTClient(interfaces.RESTInterface):
             f"GroupV2/{group_id}/Members/IndividualInviteCancel/{int(membership_type)}/{membership_id}/",
             auth=access_token,
         )
+
+    def fetch_historical_definition(self) -> ResponseSig[typedefs.JSONObject]:
+        return self._request(RequestMethod.GET, "Destiny2/Stats/Definition/")
+
+    def fetch_historical_stats(
+        self,
+        character_id: int,
+        membership_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+        day_start: datetime.datetime,
+        day_end: datetime.datetime,
+        groups: list[typedefs.IntAnd[enums.StatsGroupType]],
+        modes: collections.Sequence[typedefs.IntAnd[enums.GameMode]],
+        *,
+        period_type: enums.PeriodType = enums.PeriodType.ALL_TIME,
+    ) -> ResponseSig[typedefs.JSONObject]:
+
+        end, start = time.parse_date_range(day_end, day_start)
+        return self._request(
+            RequestMethod.GET,
+            f"Destiny2/{int(membership_type)}/Account/{membership_id}/Character/{character_id}/Stats/",
+            json={
+                "dayend": end,
+                "daystart": start,
+                "groups": [str(int(group)) for group in groups],
+                "modes": [str(int(mode)) for mode in modes],
+                "periodType": int(period_type),
+            },
+        )
+
+    def fetch_historical_stats_for_account(
+        self,
+        membership_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+        groups: list[typedefs.IntAnd[enums.StatsGroupType]],
+    ) -> ResponseSig[typedefs.JSONObject]:
+        return self._request(
+            RequestMethod.GET,
+            f"Destiny2/{int(membership_type)}/Account/{membership_id}/Stats/",
+            json={"groups": [str(int(group)) for group in groups]},
+        )
+
+    def fetch_aggregated_activity_stats(
+        self,
+        character_id: int,
+        membership_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+        /,
+    ) -> ResponseSig[typedefs.JSONObject]:
+        return self._request(
+            RequestMethod.GET,
+            f"Destiny2/{int(membership_type)}/Account/{membership_id}/"
+            f"Character/{character_id}/Stats/AggregateActivityStats/",
+        )

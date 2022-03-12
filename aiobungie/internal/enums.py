@@ -793,3 +793,32 @@ class ClosedReasons(Flag):
     """The user's current activity/quest/other transitory game state is preventing joining."""
     OFFLINE = 32768
     """The user appears offline."""
+
+
+@typing.final
+class StatsGroupType(int, Enum):
+    """Bungie historical group stats type enum."""
+
+    NONE = 0
+    GENERAL = 1
+    WEAPONS = 2
+    MEDALS = 3
+    REVERSED_GROUPS = 100
+    """This is purely to serve as the dividing line between filterable and un-filterable groups.
+    Below this number is a group you can pass as a filter.
+    Above it are groups used in very specific circumstances and not relevant for filtering.
+    """
+    LEADERBOARDS = 101
+    ACTIVITY = 102
+    UNIQUE_WEAPON = 103
+    INTERNAL = 104
+
+
+@typing.final
+class PeriodType(int, Enum):
+    """Bungie historical group stats period type enum."""
+
+    NONE = 0
+    DAILY = 1
+    ALL_TIME = 2
+    ACTIVITY = 3

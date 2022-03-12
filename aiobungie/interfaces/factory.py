@@ -800,6 +800,40 @@ class FactoryInterface(abc.ABC):
         """
 
     @abc.abstractmethod
+    def deserialize_aggregated_activity(
+        self, payload: typedefs.JSONObject
+    ) -> activity.AggregatedActivity:
+        """Deserialize a JSON payload of an aggregated activity.
+
+        Parameters
+        ----------
+        payload : `aiobungie.typedefs.JSONObject`
+            The JSON payload.
+
+        Returns
+        -------
+        `aiobungie.crate.AggregatedActivity`
+            An aggregated activity object.
+        """
+
+    @abc.abstractmethod
+    def deserialize_aggregated_activities(
+        self, payload: typedefs.JSONObject
+    ) -> iterators.FlatIterator[activity.AggregatedActivity]:
+        """Deserialize a JSON payload of an array of aggregated activities.
+
+        Parameters
+        ----------
+        payload : `aiobungie.typedefs.JSONObject`
+            The JSON payload.
+
+        Returns
+        -------
+        `aiobungie.iterators.FlatIterator[aiobungie.crate.AggregatedActivity]`
+            An iterator over aggregated activities objects.
+        """
+
+    @abc.abstractmethod
     def deserialize_extended_weapon_values(
         self, payload: typedefs.JSONObject
     ) -> activity.ExtendedWeaponValues:

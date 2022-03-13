@@ -64,11 +64,16 @@ class RESTInterface(traits.RESTful, abc.ABC):
     __slots__ = ()
 
     @abc.abstractmethod
-    async def read_manifest_bytes(self) -> bytes:
-        """Read Bungie's manifest sqlite bytes respond.
+    async def read_manifest_bytes(self, language: str = "en", /) -> bytes:
+        """Read raw manifest SQLite database bytes response.
 
         This method can be used to write the bytes to zipped file
         and then extract it to get the manifest content.
+
+        Parameters
+        ----------
+        language : `str`
+            The manifest database language bytes to get.
 
         Returns
         -------
@@ -77,24 +82,39 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    async def fetch_manifest_path(self) -> str:
-        """Return a string of the Bungie sqlite manifest `.content` url.
+    async def fetch_manifest_path(self) -> typedefs.JSONObject:
+        """Fetch the manifest JSON paths.
 
         Returns
         -------
-        `str`
-            A url for the Bungie manifest content.
+        `typedefs.JSONObject`
+            The manifest JSON paths.
+        """
+
+    @abc.abstractmethod
+    async def download_json_manifest(self, language: str = "en") -> None:
+        """Download the Bungie manifest json file.
+
+        Parameters
+        ----------
+        language : `str`
+            The language to download the manifest in.
         """
 
     @abc.abstractmethod
     async def download_manifest(
-        self, language: str = "en", name: str = "manifest.sqlite3"
+        self,
+        language: str = "en",
+        name: str = "manifest.sqlite3",
+        *,
+        force: bool = False,
     ) -> None:
         """A helper method to download the manifest.
 
         Note
         ----
         This method downloads the sqlite database and not JSON.
+        Use `RESTInterface.download_json_manifest` for the JSON version.
 
         Parameters
         ----------
@@ -102,28 +122,44 @@ class RESTInterface(traits.RESTful, abc.ABC):
             The manifest language to download, Default is english.
         name : `str`
             The manifest database file name. Default is `manifest.sqlite3`
+        force : `bool`
+            Whether to force the download. Default is `False`. However if set to true the old
+            file will get removed and a new one will being to download.
 
         Returns
         --------
         `None`
         """
 
+    @abc.abstractmethod
+    async def fetch_manifest_version(self) -> str:
+        """Fetch the manifest version.
+
+        Returns
+        -------
+        `str`
+            The manifest version.
+        """
+
     @staticmethod
     @abc.abstractmethod
     def connect_manifest(
         path: typing.Optional[pathlib.Path] = None,
+        connection: type[sqlite3.Connection] = ...,  # type: ignore
     ) -> sqlite3.Connection:
-        """A friendly method to connect to the manifest database.
+        """A helper method to connect to the manifest database.
 
         Parameters
         ----------
         path : `typing.Optional[pathlib.Path]`
             An optional path to pass, The assumed path to connect to is './manifest.sqlite3'
+        connection : `type[sqlite3.Connection]`
+            An optional connection to pass, if not passed a new connection will be created.
 
         Returns
         -------
         `sqlite3.Connection`
-            An sqlite database connection.
+            An SQLite database connection.
         """
 
     @abc.abstractmethod

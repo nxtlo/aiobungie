@@ -62,6 +62,7 @@ from aiobungie import url
 from aiobungie.crate import fireteams
 from aiobungie.internal import _backoff as backoff
 from aiobungie.internal import enums
+from aiobungie.internal import helpers
 from aiobungie.internal import time
 
 if typing.TYPE_CHECKING:
@@ -87,6 +88,21 @@ if typing.TYPE_CHECKING:
     """
 
 _LOG: typing.Final[logging.Logger] = logging.getLogger("aiobungie.rest")
+_MANIFEST_LANGUAGES: typing.Final[set[str]] = {
+    "en",
+    "fr",
+    "es",
+    "es-mx",
+    "de",
+    "it",
+    "ja",
+    "pt-br",
+    "ru",
+    "pl",
+    "ko",
+    "zh-cht",
+    "zh-chs",
+}
 _APP_JSON: typing.Final[str] = "application/json"
 _RETRY_5XX: typing.Final[set[int]] = {500, 502, 503, 504}
 _AUTH_HEADER: typing.Final[str] = sys.intern("Authorization")
@@ -126,6 +142,44 @@ def _collect_components(components: list[enums.ComponentType], /) -> str:
         else:
             pending.append(str(component.value))
     return ",".join(pending)
+
+
+def _uuid() -> str:
+    return uuid.uuid4().hex
+
+
+def _ensure_manifest_language(language: str) -> None:
+    langs = "\n".join(_MANIFEST_LANGUAGES)
+    if language not in _MANIFEST_LANGUAGES:
+        raise ValueError(
+            f"{language} is not a valid manifest language, "
+            f"valid languages are: {langs}"
+        )
+
+
+def _write_json_bytes(data: bytes) -> None:
+    import json
+
+    with open("manifest.json", "wb") as file:
+        file.write(json.dumps(json.loads(data), indent=4).encode("utf-8"))
+
+
+def _write_sqlite_bytes(data: bytes, file_name: str = "manifest.sqlite3") -> None:
+    try:
+        with open(f"{_uuid()}.zip", "wb") as tmp:
+            tmp.write(data)
+
+        with zipfile.ZipFile(tmp.name) as zipped:
+            file = zipped.namelist()
+
+            if file:
+                zipped.extractall(".")
+
+            os.rename(file[0], file_name)
+            _LOG.debug("Finished downloading manifest.")
+
+    finally:
+        pathlib.Path(tmp.name).unlink(missing_ok=True)
 
 
 class _Arc:
@@ -671,7 +725,7 @@ class RESTClient(interfaces.RESTInterface):
         return url.OAUTH2_EP_BUILDER.format(
             oauth_endpoint=url.OAUTH_EP,
             client_id=client_id,
-            uuid=str(uuid.uuid4()),
+            uuid=_uuid(),
         )
 
     async def fetch_oauth2_tokens(self, code: str, /) -> OAuth2Response:
@@ -1028,59 +1082,77 @@ class RESTClient(interfaces.RESTInterface):
             auth=access_token,
         )
 
-    async def fetch_manifest_path(self, language: str = "en", /) -> str:
+    async def fetch_manifest_path(self) -> typedefs.JSONObject:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        if language not in (
-            langs := {
-                "en",
-                "fr",
-                "es",
-                "es-mx",
-                "de",
-                "it",
-                "ja",
-                "pt-br",
-                "ru",
-                "pl",
-                "ko",
-                "zh-cht",
-                "zh-chs",
-            }
-        ):
-            raise ValueError("Language must be in ", langs)
-        request = await self._request(RequestMethod.GET, "Destiny2/Manifest")
-        return str(request["mobileWorldContentPaths"][language])
+        path = await self._request(RequestMethod.GET, "Destiny2/Manifest")
+        return typing.cast(typedefs.JSONObject, path)
 
     async def read_manifest_bytes(self, language: str = "en", /) -> bytes:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        content = await self.fetch_manifest_path(language)
+        _ensure_manifest_language(language)
+
+        content = await self.fetch_manifest_path()
         resp = await self._request(
-            RequestMethod.GET, content, unwrapping="read", base=True
+            RequestMethod.GET,
+            content["mobileWorldContentPaths"][language],
+            unwrapping="read",
+            base=True,
         )
-        return bytes(resp)
+        return typing.cast(bytes, resp)
 
     async def download_manifest(
-        self, language: str = "en", name: str = "manifest.sqlite3"
+        self,
+        language: str = "en",
+        name: str = "manifest.sqlite3",
+        *,
+        force: bool = False,
     ) -> None:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        if os.path.exists("manifest.sqlite3"):
-            raise FileExistsError("Manifest file already exists.")
+        if os.path.exists(name):
+
+            if force:
+                _LOG.debug("Forcing manifest download.")
+                os.remove(name)
+
+                return await self.download_manifest(language, name, force=force)
+
+            else:
+                raise FileExistsError(
+                    "Manifest file already exists, "
+                    "If you want to force download, set the `force` parameter to `True`."
+                )
 
         _LOG.debug("Downloading manifest...")
-        try:
-            # TODO: Use tempfile instead?
-            with open("tmp-file.zip", "wb") as tmp:
-                tmp.write(await self.read_manifest_bytes(language))
+        data_bytes = await self.read_manifest_bytes(language)
+        await asyncio.get_running_loop().run_in_executor(
+            None, _write_sqlite_bytes, data_bytes, name
+        )
 
-            with zipfile.ZipFile(tmp.name) as zipped:
-                file = zipped.namelist()
-                zipped.extractall(".")
-                os.rename(file[0], name)
-                _LOG.debug("Finished downloading manifest.")
-        finally:
-            pathlib.Path(tmp.name).unlink(missing_ok=True)
+    async def download_json_manifest(self, language: str = "en") -> None:
+        _ensure_manifest_language(language)
+
+        _LOG.debug("Downloading manifest JSON...")
+
+        content = await self.fetch_manifest_path()
+        json_bytes = await self._request(
+            RequestMethod.GET,
+            content["jsonWorldContentPaths"][language],
+            unwrapping="read",
+            base=True,
+        )
+
+        await asyncio.get_running_loop().run_in_executor(
+            None, _write_json_bytes, json_bytes
+        )
+        _LOG.debug("Finished downloading manifest JSON.")
+
+    async def fetch_manifest_version(self) -> str:
+        return typing.cast(str, (await self.fetch_manifest_path())["version"])
 
     @staticmethod
+    @helpers.deprecated(
+        since="0.2.6a1", removed_in="0.2.6", use_instead="sqlite3.connect"
+    )
     def connect_manifest(
         path: typing.Optional[pathlib.Path] = None,
         connection: type[sqlite3.Connection] = sqlite3.Connection,

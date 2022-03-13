@@ -36,11 +36,12 @@ import aiobungie
 
 CID = 2305843009444904605
 MID = 4611686018484639825
+STEAM = aiobungie.MembershipType.STEAM
 _LOG = logging.getLogger("test_client")
 
 def __build_client() -> aiobungie.Client:
     token = os.environ["CLIENT_TOKEN"]
-    rest = aiobungie.RESTClient(token, max_retries=1, enable_debugging=True)
+    rest = aiobungie.RESTClient(token, max_retries=1, enable_debugging=False)
     client = aiobungie.Client(token, rest_client=rest, max_retries=1)
     return client
 
@@ -122,7 +123,7 @@ async def test_player():
 async def test_fetch_character():
     c = await client.fetch_character(
         MID,
-        aiobungie.MembershipType.STEAM,
+        STEAM,
         CID,
         [aiobungie.ComponentType.ALL],
     )
@@ -146,7 +147,7 @@ async def test_fetch_character():
 async def test_profile():
     pf = await client.fetch_profile(
         MID,
-        aiobungie.MembershipType.STEAM,
+        STEAM,
         [aiobungie.ComponentType.ALL]
     )
     assert isinstance(pf, aiobungie.crate.Component)
@@ -269,7 +270,7 @@ async def test_clan_admins():
     assert all(isinstance(admin, aiobungie.crate.ClanMember) for admin in ca)
 
 async def test_groups_for_member():
-    obj = await client.fetch_groups_for_member(4611686018475612431, aiobungie.MembershipType.STEAM)
+    obj = await client.fetch_groups_for_member(4611686018475612431, STEAM)
     assert obj
     up_to_date_clan_obj = await obj[0].fetch_self_clan()
     assert isinstance(up_to_date_clan_obj, aiobungie.crate.Clan)
@@ -277,7 +278,7 @@ async def test_groups_for_member():
 
 async def test_potential_groups_for_member():
     obj = await client.fetch_potential_groups_for_member(
-        MID, aiobungie.MembershipType.STEAM
+        MID, STEAM
     )
     assert not obj
 
@@ -394,7 +395,7 @@ async def test_search_entities():
         assert awts.name == i.name
 
 async def test_unique_weapon_history():
-    w = await client.fetch_unique_weapon_history(MID, CID, aiobungie.MembershipType.STEAM)
+    w = await client.fetch_unique_weapon_history(MID, CID, STEAM)
     for weapon in w:
         assert isinstance(weapon, aiobungie.crate.ExtendedWeaponValues)
 
@@ -406,6 +407,11 @@ async def test_client_metadata():
 async def test_clan_weekly_rewards():
     r = await client.fetch_clan_weekly_rewards(4389205)
     assert isinstance(r, aiobungie.crate.Milestone)
+
+async def test_aggregated_activity():
+    a = await client.fetch_aggregated_activity_stats(CID, MID, STEAM)
+    async for act in a.sort(key=lambda act: act.values.fastest_completion_time[1]):
+        assert isinstance(act, aiobungie.crate.AggregatedActivity)
 
 async def main() -> None:
     coros: list[typing.Coroutine[None, None, None]] = []

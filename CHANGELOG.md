@@ -10,9 +10,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Ability to read and save any resource that returns an `Image`.
 - Image mime types enum in assets.
 - fetch_aggregated_activity_stats method.
+- fetch_json_manifest method.
+- fetch_manifest_version method.
 
 ## Changed
 - Objects no longer type hinted with `MaybeImage` and now return `Image` instead.
+- Manifest methods that open files are non-blocking now.
+- connect_manifest is now deprecated and scheduled for removal in 0.2.6.
+- fetch_manifest_path now return all JSON object paths instead of the SQLite one.
+- download_manifest now takes a `force` parameter to force downloading the manifest.
 
 ## Removed
 - MaybeImage type hint.

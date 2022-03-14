@@ -25,10 +25,11 @@
 
 from __future__ import annotations
 
-import collections
-
 __all__: tuple[str, ...] = ("Image", "MimeType")
 
+import asyncio
+import collections.abc as collections
+import concurrent.futures
 import logging
 import pathlib
 import typing
@@ -38,6 +39,7 @@ import aiohttp
 from aiobungie import url
 
 from . import enums
+from . import helpers
 
 _LOGGER: typing.Final[logging.Logger] = logging.getLogger("aiobungie.assets")
 
@@ -53,6 +55,17 @@ class MimeType(str, enums.Enum):
 
     def __str__(self) -> str:
         return str(self.value)
+
+
+def _write(
+    path: pathlib.Path,
+    file_name: str,
+    mimetype: typing.Union[str, MimeType],
+    data: bytes,
+) -> None:
+
+    with open(path.name + f"{file_name}.{mimetype}", "wb") as file:
+        file.write(data)
 
 
 class Image:
@@ -149,22 +162,30 @@ class Image:
         mimetype = mime_type or MimeType.PNG
         path = pathlib.Path(path)
 
-        try:
-            with open(path.name + f"{file_name}.{mimetype}", "wb") as file:
-                file.write(await self.read())
+        loop = helpers.get_or_make_loop()
+        pool = concurrent.futures.ThreadPoolExecutor()
 
-                _LOGGER.info("Saved image to %s", file.name)
+        try:
+            with pool:
+                await loop.run_in_executor(
+                    pool, _write, path, file_name, mimetype, await self.read()
+                )
+                _LOGGER.info("Saved image to %s", file_name)
+
+        except asyncio.CancelledError:
+            pass
 
         except Exception as err:
+            pass
             raise RuntimeError("Encountered an error while saving image.") from err
 
     async def read(self) -> bytes:
-        """Reads the image URL from Bungie as bytes.
+        """Read this image bytes.
 
         Returns
         -------
         `bytes`
-            An async iterable of the image bytes.
+            The bytes of this image.
         """
         client_session = aiohttp.ClientSession()
 
@@ -182,7 +203,7 @@ class Image:
         return reader
 
     async def iter(self) -> collections.AsyncGenerator[bytes, None]:
-        """Iterates over the image bytes.
+        """Iterates over the image bytes lazily.
 
         Example
         -------
@@ -195,7 +216,7 @@ class Image:
         Returns
         -------
         `collections.AsyncGenerator[bytes, None]`
-            An async iterable of the image bytes.
+            An async generator of the image bytes.
         """
 
         async for chunk in self:
@@ -212,3 +233,6 @@ class Image:
 
     async def __anext__(self) -> bytes:
         return await self.read()
+
+    def __await__(self) -> collections.Generator[None, None, bytes]:
+        return self.__anext__().__await__()

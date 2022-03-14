@@ -176,7 +176,6 @@ class Image:
             pass
 
         except Exception as err:
-            pass
             raise RuntimeError("Encountered an error while saving image.") from err
 
     async def read(self) -> bytes:

@@ -32,10 +32,10 @@ client = aiobungie.Client("CLIENT_TOKEN")
 async def main():
     # Download the SQLite manifest.
     # The force parameter will force the download even if the file exists.
-    # await client.rest.download_manifest(force=True)
+    await client.rest.download_manifest(force=True)
 
     # Download the JSON manifest.
-    # await client.rest.download_json_manifest()
+    await client.rest.download_json_manifest()
 
     with open("manifest.json", "r") as f:
         manifest_json = json.loads(f.read())

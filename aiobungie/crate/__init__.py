@@ -80,7 +80,7 @@ __all__: tuple[str, ...] = (
     "ActivityEntity",
     "PlaylistActivityEntity",
     "ObjectiveEntity",
-    "BaseEntity",
+    "EntityBase",
     "SearchableEntity",
     "ActivityEntity",
     "PlaylistActivityEntity",

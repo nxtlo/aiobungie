@@ -28,7 +28,7 @@ __all__: tuple[str, ...] = (
     "InventoryEntity",
     "Entity",
     "ObjectiveEntity",
-    "BaseEntity",
+    "EntityBase",
     "ActivityEntity",
     "PlaylistActivityEntity",
     "InventoryEntityObjects",
@@ -101,7 +101,7 @@ class ObjectiveUIStyle(int, enums.Enum):
     CRAFTING_MEMENTO_TITLE = 6
 
 
-class Entity(abc.ABC):
+class EntityBase(abc.ABC):
     """An interface of any Bungie Definition/Entity."""
 
     __slots__ = ()
@@ -133,11 +133,6 @@ class Entity(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def index(self) -> int:
-        """The entity's index."""
-
-    @property
-    @abc.abstractmethod
     def hash(self) -> int:
         """Entity's hash."""
 
@@ -149,11 +144,12 @@ class Entity(abc.ABC):
 
 
 @attrs.mutable(kw_only=True)
-class BaseEntity(Entity):
-    """Base Bungie entity implementation.
+class Entity(EntityBase):
+    """Represents any entity in Destiny 2.
+    This can be item definition, activity definition, etc.
 
     This is the core object which all other entities should inherit from.
-    it holds core information that all bungie entities has.
+    It holds core information that all bungie entities has.
     """
 
     net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
@@ -179,7 +175,7 @@ class BaseEntity(Entity):
 
 
 @attrs.define(kw_only=True)
-class SearchableEntity:
+class SearchableEntity(EntityBase):
     """Represents an entity object returned from a searchable term."""
 
     suggested_words: list[str]
@@ -303,7 +299,7 @@ class InventoryEntityObjects:
 
 
 @attrs.define(kw_only=True)
-class InventoryEntity(BaseEntity, Entity):
+class InventoryEntity(Entity):
     """Represents a bungie inventory item entity.
 
     This derives from `DestinyInventoryItemDefinition` definition.
@@ -460,7 +456,7 @@ class InventoryEntity(BaseEntity, Entity):
 
 
 @attrs.define(kw_only=True, weakref_slot=False)
-class ObjectiveEntity(BaseEntity, Entity):
+class ObjectiveEntity(Entity):
     """Represents a bungie inventory item entity.
 
     This derives from `DestinyObjectiveDefinition` definition.
@@ -508,7 +504,7 @@ class ObjectiveEntity(BaseEntity, Entity):
 
 
 @attrs.define(kw_only=True, hash=True, weakref_slot=False)
-class ActivityEntity(BaseEntity, Entity):
+class ActivityEntity(Entity):
     """Represents a Bungie Activity definition and its entities.
 
     This derives from `DestinyActivityDefinition` definition.

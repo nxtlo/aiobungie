@@ -1473,7 +1473,7 @@ class Factory(interfaces.FactoryInterface):
 
     def _set_entity_attrs(
         self, payload: typedefs.JSONObject, *, key: str = "displayProperties"
-    ) -> entity.BaseEntity:
+    ) -> entity.Entity:
 
         name: undefined.UndefinedOr[str] = undefined.Undefined
         description: undefined.UndefinedOr[str] = undefined.Undefined
@@ -1487,7 +1487,7 @@ class Factory(interfaces.FactoryInterface):
             ) and not typedefs.is_unknown(raw_description):
                 description = raw_description
 
-        return entity.BaseEntity(
+        return entity.Entity(
             net=self._net,
             hash=payload["hash"],
             index=payload["index"],

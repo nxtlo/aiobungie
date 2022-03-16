@@ -3,14 +3,14 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="pdoc 10.0.2"/>
+    <meta name="generator" content="pdoc 10.0.3"/>
     <title>aiobungie.crate API documentation</title>
 
     <style>/*! * Bootstrap Reboot v5.0.0 (https://getbootstrap.com/) * Copyright 2011-2021 The Bootstrap Authors * Copyright 2011-2021 Twitter, Inc. * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE) * Forked from Normalize.css, licensed MIT (https://github.com/necolas/normalize.css/blob/master/LICENSE.md) */*,::after,::before{box-sizing:border-box}@media (prefers-reduced-motion:no-preference){:root{scroll-behavior:smooth}}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";font-size:1rem;font-weight:400;line-height:1.5;color:#212529;background-color:#fff;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}hr{margin:1rem 0;color:inherit;background-color:currentColor;border:0;opacity:.25}hr:not([size]){height:1px}h1,h2,h3,h4,h5,h6{margin-top:0;margin-bottom:.5rem;font-weight:500;line-height:1.2}h1{font-size:calc(1.375rem + 1.5vw)}@media (min-width:1200px){h1{font-size:2.5rem}}h2{font-size:calc(1.325rem + .9vw)}@media (min-width:1200px){h2{font-size:2rem}}h3{font-size:calc(1.3rem + .6vw)}@media (min-width:1200px){h3{font-size:1.75rem}}h4{font-size:calc(1.275rem + .3vw)}@media (min-width:1200px){h4{font-size:1.5rem}}h5{font-size:1.25rem}h6{font-size:1rem}p{margin-top:0;margin-bottom:1rem}abbr[data-bs-original-title],abbr[title]{-webkit-text-decoration:underline dotted;text-decoration:underline dotted;cursor:help;-webkit-text-decoration-skip-ink:none;text-decoration-skip-ink:none}address{margin-bottom:1rem;font-style:normal;line-height:inherit}ol,ul{padding-left:2rem}dl,ol,ul{margin-top:0;margin-bottom:1rem}ol ol,ol ul,ul ol,ul ul{margin-bottom:0}dt{font-weight:700}dd{margin-bottom:.5rem;margin-left:0}blockquote{margin:0 0 1rem}b,strong{font-weight:bolder}small{font-size:.875em}mark{padding:.2em;background-color:#fcf8e3}sub,sup{position:relative;font-size:.75em;line-height:0;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}a{color:#0d6efd;text-decoration:underline}a:hover{color:#0a58ca}a:not([href]):not([class]),a:not([href]):not([class]):hover{color:inherit;text-decoration:none}code,kbd,pre,samp{font-family:SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:1em;direction:ltr;unicode-bidi:bidi-override}pre{display:block;margin-top:0;margin-bottom:1rem;overflow:auto;font-size:.875em}pre code{font-size:inherit;color:inherit;word-break:normal}code{font-size:.875em;color:#d63384;word-wrap:break-word}a>code{color:inherit}kbd{padding:.2rem .4rem;font-size:.875em;color:#fff;background-color:#212529;border-radius:.2rem}kbd kbd{padding:0;font-size:1em;font-weight:700}figure{margin:0 0 1rem}img,svg{vertical-align:middle}table{caption-side:bottom;border-collapse:collapse}caption{padding-top:.5rem;padding-bottom:.5rem;color:#6c757d;text-align:left}th{text-align:inherit;text-align:-webkit-match-parent}tbody,td,tfoot,th,thead,tr{border-color:inherit;border-style:solid;border-width:0}label{display:inline-block}button{border-radius:0}button:focus:not(:focus-visible){outline:0}button,input,optgroup,select,textarea{margin:0;font-family:inherit;font-size:inherit;line-height:inherit}button,select{text-transform:none}[role=button]{cursor:pointer}select{word-wrap:normal}select:disabled{opacity:1}[list]::-webkit-calendar-picker-indicator{display:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button}[type=button]:not(:disabled),[type=reset]:not(:disabled),[type=submit]:not(:disabled),button:not(:disabled){cursor:pointer}::-moz-focus-inner{padding:0;border-style:none}textarea{resize:vertical}fieldset{min-width:0;padding:0;margin:0;border:0}legend{float:left;width:100%;padding:0;margin-bottom:.5rem;font-size:calc(1.275rem + .3vw);line-height:inherit}@media (min-width:1200px){legend{font-size:1.5rem}}legend+*{clear:left}::-webkit-datetime-edit-day-field,::-webkit-datetime-edit-fields-wrapper,::-webkit-datetime-edit-hour-field,::-webkit-datetime-edit-minute,::-webkit-datetime-edit-month-field,::-webkit-datetime-edit-text,::-webkit-datetime-edit-year-field{padding:0}::-webkit-inner-spin-button{height:auto}[type=search]{outline-offset:-2px;-webkit-appearance:textfield}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-color-swatch-wrapper{padding:0}::file-selector-button{font:inherit}::-webkit-file-upload-button{font:inherit;-webkit-appearance:button}output{display:inline-block}iframe{border:0}summary{display:list-item;cursor:pointer}progress{vertical-align:baseline}[hidden]{display:none!important}</style>
     <style>/*! syntax-highlighting.css */pre{line-height:125%;}td.linenos pre{color:#ff5555;background-color:#282a36;padding-left:5px;padding-right:5px;}span.linenos{color:#ff5555;background-color:#282a36;padding-left:5px;padding-right:5px;}td.linenos pre.special{color:#ff5555;background-color:#ffffc0;padding-left:5px;padding-right:5px;}span.linenos.special{color:#ff5555;background-color:#ffffc0;padding-left:5px;padding-right:5px;}.pdoc-code .hll{background-color:#282a36;}.pdoc-code{background:#282a36;color:#ff5555;}.pdoc-code .c{color:#6a7aaa;}.pdoc-code .err{color:#ff5555;background-color:#1e0010;}.pdoc-code .k{color:#ff79c6;}.pdoc-code .l{color:#ae81ff;}.pdoc-code .n{color:#f8f8f2;}.pdoc-code .o{color:#ff79c6;}.pdoc-code .p{color:#f8f8f2;}.pdoc-code .ch{color:#6a7aaa;}.pdoc-code .cm{color:#6a7aaa;}.pdoc-code .cp{color:#6a7aaa;}.pdoc-code .cpf{color:#6a7aaa;}.pdoc-code .c1{color:#6a7aaa;}.pdoc-code .cs{color:#6a7aaa;}.pdoc-code .gd{color:#6a7aaa;}.pdoc-code .ge{font-style:italic;}.pdoc-code .gi{color:#a6e22e;}.pdoc-code .go{color:#ff79c6;}.pdoc-code .gp{color:#f92672;font-weight:bold;}.pdoc-code .gs{font-weight:bold;}.pdoc-code .gu{color:#75715e;}.pdoc-code .kc{color:#ff79c6;}.pdoc-code .kd{color:#bd93f9;}.pdoc-code .kn{color:#ff79c6;}.pdoc-code .kp{color:#bd93f9;}.pdoc-code .kr{color:#ff79c6;}.pdoc-code .kt{color:#ff79c6;}.pdoc-code .ld{color:#e6db74;}.pdoc-code .m{color:#ae81ff;}.pdoc-code .s{color:#e6db74;}.pdoc-code .na{color:#a6e22e;}.pdoc-code .nb{color:#8be9fd;}.pdoc-code .nc{color:#8be9fd;}.pdoc-code .no{color:#ff79c6;}.pdoc-code .nd{color:#8be9fd;}.pdoc-code .ni{color:#ff79c6;}.pdoc-code .ne{color:#8be9fd;}.pdoc-code .nf{color:#50fa7b;}.pdoc-code .nl{color:#f8f8f2;}.pdoc-code .nn{color:#f8f8f2;}.pdoc-code .nx{color:#a6e22e;}.pdoc-code .py{color:#f8f8f2;}.pdoc-code .nt{color:#f92672;}.pdoc-code .nv{color:#f8f8f2;}.pdoc-code .ow{color:#ff79c6;}.pdoc-code .w{color:#f8f8f2;}.pdoc-code .mb{color:#ae81ff;}.pdoc-code .mf{color:#ae81ff;}.pdoc-code .mh{color:#ae81ff;}.pdoc-code .mi{color:#ae81ff;}.pdoc-code .mo{color:#ae81ff;}.pdoc-code .sa{color:#ff79c6;}.pdoc-code .sb{color:#e6db74;}.pdoc-code .sc{color:#e6db74;}.pdoc-code .dl{color:#e6db74;}.pdoc-code .sd{color:#6272a4;}.pdoc-code .s2{color:#e6db74;}.pdoc-code .se{color:#ae81ff;}.pdoc-code .sh{color:#e6db74;}.pdoc-code .si{color:#bd93f9;}.pdoc-code .sx{color:#e6db74;}.pdoc-code .sr{color:#e6db74;}.pdoc-code .s1{color:#e6db74;}.pdoc-code .ss{color:#e6db74;}.pdoc-code .bp{color:#bd93f9;}.pdoc-code .fm{color:#bd93f9;}.pdoc-code .vc{color:#bd93f9;}.pdoc-code .vg{color:#f8f8f2;}.pdoc-code .vi{color:#ffffff;}.pdoc-code .vm{color:#bd93f9;}.pdoc-code .il{color:#ae81ff;}.pdoc-code .nd{color:#50fa7b;}</style>
     <style>/*! theme.css */:root{--pdoc-background:#272935; }.pdoc{--text:white; --muted:#9d9d9d; --link:#bd93f9; --link-hover:white; --active:#555; --code:#232627; --accent:#232627; --accent2:#FFF; }</style>
     <style>/*! layout.css */html, body{width:100%;height:100%;}html, main{scroll-behavior:smooth;}body{background-color:var(--pdoc-background);}@media (max-width:769px){#navtoggle{cursor:pointer;position:absolute;width:50px;height:40px;top:1rem;right:1rem;border-color:var(--text);color:var(--text);display:flex;opacity:0.8;}#navtoggle:hover{opacity:1;}#togglestate + div{display:none;}#togglestate:checked + div{display:inherit;}main, header{padding:2rem 3vw;}header + main{margin-top:-3rem;}.git-button{display:none !important;}nav input[type="search"]{max-width:77%;}nav input[type="search"]:first-child{margin-top:-6px;}nav input[type="search"]:valid ~ *{display:none !important;}}@media (min-width:770px){:root{--sidebar-width:clamp(12.5rem, 28vw, 22rem);}nav{position:fixed;overflow:auto;height:100vh;width:var(--sidebar-width);}main, header{padding:3rem 2rem 3rem calc(var(--sidebar-width) + 3rem);width:calc(54rem + var(--sidebar-width));max-width:100%;}header + main{margin-top:-4rem;}#navtoggle{display:none;}}#togglestate{position:absolute;height:0;}nav.pdoc{--pad:1.75rem;--indent:1.5rem;background-color:var(--accent);border-right:1px solid var(--accent2);box-shadow:0 0 20px rgba(50, 50, 50, .2) inset;padding:0 0 0 var(--pad);overflow-wrap:anywhere;scrollbar-width:thin; scrollbar-color:var(--accent2) transparent }nav.pdoc::-webkit-scrollbar{width:.4rem; }nav.pdoc::-webkit-scrollbar-thumb{background-color:var(--accent2); }nav.pdoc > div{padding:var(--pad) 0;}nav.pdoc .module-list-button{display:inline-flex;align-items:center;color:var(--text);border-color:var(--muted);margin-bottom:1rem;}nav.pdoc .module-list-button:hover{border-color:var(--text);}nav.pdoc input[type=search]{display:block;outline-offset:0;width:calc(100% - var(--pad));}nav.pdoc .logo{max-width:calc(100% - var(--pad));max-height:35vh;display:block;margin:0 auto 1rem;transform:translate(calc(-.5 * var(--pad)), 0);}nav.pdoc ul{list-style:none;padding-left:0;}nav.pdoc li{display:block;margin:0;padding:.2rem 0 .2rem var(--indent);transition:all 100ms;}nav.pdoc > div > ul > li{padding-left:0;}nav.pdoc li:hover{background-color:var(--nav-hover);}nav.pdoc a, nav.pdoc a:hover{color:var(--text);}nav.pdoc a{display:block;}nav.pdoc > h2:first-of-type{margin-top:1.5rem;}nav.pdoc .class:before{content:"class ";color:var(--muted);}nav.pdoc .function:after{content:"()";color:var(--muted);}nav.pdoc footer:before{content:"";display:block;width:calc(100% - var(--pad));border-top:solid var(--accent2) 1px;margin-top:1.5rem;padding-top:.5rem;}nav.pdoc footer{font-size:small;}</style>
-    <style>/*! content.css */.pdoc{color:var(--text);box-sizing:border-box;line-height:1.5;background:none;}.pdoc .pdoc-button{display:inline-block;border:solid black 1px;border-radius:2px;font-size:.75rem;padding:calc(0.5em - 1px) 1em;transition:100ms all;}.pdoc .visually-hidden{position:absolute !important;width:1px !important;height:1px !important;padding:0 !important;margin:-1px !important;overflow:hidden !important;clip:rect(0, 0, 0, 0) !important;white-space:nowrap !important;border:0 !important;}.pdoc h1, .pdoc h2, .pdoc h3{font-weight:300;margin:.3em 0;padding:.2em 0;}.pdoc a{text-decoration:none;color:var(--link);}.pdoc a:hover{color:var(--link-hover);}.pdoc blockquote{margin-left:2rem;}.pdoc pre{border-top:1px solid var(--accent2);border-bottom:1px solid var(--accent2);margin-top:0;margin-bottom:1em;padding:.5rem 0 .5rem .5rem;overflow-x:auto;background-color:var(--code);}.pdoc code{color:var(--text);padding:.2em .4em;margin:0;font-size:85%;background-color:var(--code);border-radius:6px;}.pdoc a > code{color:inherit;}.pdoc pre > code{display:inline-block;font-size:inherit;background:none;border:none;padding:0;}.pdoc .modulename{margin-top:0;font-weight:bold;}.pdoc .modulename a{color:var(--link);transition:100ms all;}.pdoc .git-button{float:right;border:solid var(--link) 1px;}.pdoc .git-button:hover{background-color:var(--link);color:var(--pdoc-background);}.pdoc details{filter:opacity(1);}.pdoc details:not([open]){height:0;}.pdoc details > summary{position:absolute;top:-35px;right:0;font-size:.75rem;color:var(--muted);padding:0 .7em;user-select:none;cursor:pointer;}.pdoc details > summary:focus{outline:0;}.pdoc .docstring{margin-bottom:1.5rem;}.pdoc > section:first-of-type > .docstring{margin-bottom:2.5rem;}.pdoc .docstring .pdoc-code{margin-left:1em;margin-right:1em;}.pdoc h1:target,.pdoc h2:target,.pdoc h3:target,.pdoc h4:target,.pdoc h5:target,.pdoc h6:target{background-color:var(--active);box-shadow:-1rem 0 0 0 var(--active);}.pdoc div:target > .attr,.pdoc section:target > .attr,.pdoc dd:target > a{background-color:var(--active);}.pdoc .attr:hover{filter:contrast(0.95);}.pdoc .headerlink{position:absolute;width:0;margin-left:-1.5rem;line-height:1.4rem;font-size:1.5rem;font-weight:normal;transition:all 100ms ease-in-out;opacity:0;user-select:none;}.pdoc .attr > .headerlink{margin-left:-2.5rem;}.pdoc *:hover > .headerlink,.pdoc *:target > .attr > .headerlink{opacity:1;}.pdoc .attr{display:block;color:var(--text);margin:.5rem 0 .5rem;padding:.4rem 5rem .4rem 1rem;background-color:var(--accent);}.pdoc .classattr{margin-left:2rem;}.pdoc .name{color:var(--name);font-weight:bold;}.pdoc .def{color:var(--def);font-weight:bold;}.pdoc .signature{white-space:pre-wrap;}.pdoc .annotation{color:var(--annotation);}.pdoc .inherited{margin-left:2rem;}.pdoc .inherited dt{font-weight:700;}.pdoc .inherited dt, .pdoc .inherited dd{display:inline;margin-left:0;margin-bottom:.5rem;}.pdoc .inherited dd:not(:last-child):after{content:", ";}.pdoc .inherited .class:before{content:"class ";}.pdoc .inherited .function a:after{content:"()";}.pdoc .search-result .docstring{overflow:auto;max-height:25vh;}.pdoc .search-result.focused > .attr{background-color:var(--active);}.pdoc .attribution{margin-top:2rem;display:block;opacity:0.5;transition:all 200ms;filter:grayscale(100%);}.pdoc .attribution:hover{opacity:1;filter:grayscale(0%);}.pdoc .attribution img{margin-left:5px;height:35px;vertical-align:middle;width:70px;transition:all 200ms;}.pdoc table{display:block;width:max-content;max-width:100%;overflow:auto;margin-bottom:1rem;}.pdoc table th{font-weight:600;}.pdoc table th, .pdoc table td{padding:6px 13px;border:1px solid var(--accent2);}</style>
+    <style>/*! content.css */.pdoc{color:var(--text);box-sizing:border-box;line-height:1.5;background:none;}.pdoc .pdoc-button{display:inline-block;border:solid black 1px;border-radius:2px;font-size:.75rem;padding:calc(0.5em - 1px) 1em;transition:100ms all;}.pdoc .visually-hidden{position:absolute !important;width:1px !important;height:1px !important;padding:0 !important;margin:-1px !important;overflow:hidden !important;clip:rect(0, 0, 0, 0) !important;white-space:nowrap !important;border:0 !important;}.pdoc h1, .pdoc h2, .pdoc h3{font-weight:300;margin:.3em 0;padding:.2em 0;}.pdoc a{text-decoration:none;color:var(--link);}.pdoc a:hover{color:var(--link-hover);}.pdoc blockquote{margin-left:2rem;}.pdoc pre{border-top:1px solid var(--accent2);border-bottom:1px solid var(--accent2);margin-top:0;margin-bottom:1em;padding:.5rem 0 .5rem .5rem;overflow-x:auto;background-color:var(--code);}.pdoc code{color:var(--text);padding:.2em .4em;margin:0;font-size:85%;background-color:var(--code);border-radius:6px;}.pdoc a > code{color:inherit;}.pdoc pre > code{display:inline-block;font-size:inherit;background:none;border:none;padding:0;}.pdoc section{margin-bottom:1.5rem;}.pdoc .modulename{margin-top:0;font-weight:bold;}.pdoc .modulename a{color:var(--link);transition:100ms all;}.pdoc .git-button{float:right;border:solid var(--link) 1px;}.pdoc .git-button:hover{background-color:var(--link);color:var(--pdoc-background);}.pdoc details{filter:opacity(1);}.pdoc details:not([open]){height:0;}.pdoc details > summary{position:absolute;top:-35px;right:0;font-size:.75rem;color:var(--muted);padding:0 .7em;user-select:none;cursor:pointer;}.pdoc details > summary:focus{outline:0;}.pdoc .docstring{margin-bottom:1.5rem;}.pdoc > section:first-of-type > .docstring{margin-bottom:2.5rem;}.pdoc .docstring .pdoc-code{margin-left:1em;margin-right:1em;}.pdoc h1:target,.pdoc h2:target,.pdoc h3:target,.pdoc h4:target,.pdoc h5:target,.pdoc h6:target{background-color:var(--active);box-shadow:-1rem 0 0 0 var(--active);}.pdoc div:target > .attr,.pdoc section:target > .attr,.pdoc dd:target > a{background-color:var(--active);}.pdoc .attr:hover{filter:contrast(0.95);}.pdoc .headerlink{position:absolute;width:0;margin-left:-1.5rem;line-height:1.4rem;font-size:1.5rem;font-weight:normal;transition:all 100ms ease-in-out;opacity:0;user-select:none;}.pdoc .attr > .headerlink{margin-left:-2.5rem;}.pdoc *:hover > .headerlink,.pdoc *:target > .attr > .headerlink{opacity:1;}.pdoc .attr{display:block;color:var(--text);margin:.5rem 0 .5rem;padding:.4rem 5rem .4rem 1rem;background-color:var(--accent);}.pdoc .classattr{margin-left:2rem;}.pdoc .name{color:var(--name);font-weight:bold;}.pdoc .def{color:var(--def);font-weight:bold;}.pdoc .signature{white-space:pre-wrap;}.pdoc .annotation{color:var(--annotation);}.pdoc .inherited{margin-left:2rem;}.pdoc .inherited dt{font-weight:700;}.pdoc .inherited dt, .pdoc .inherited dd{display:inline;margin-left:0;margin-bottom:.5rem;}.pdoc .inherited dd:not(:last-child):after{content:", ";}.pdoc .inherited .class:before{content:"class ";}.pdoc .inherited .function a:after{content:"()";}.pdoc .search-result .docstring{overflow:auto;max-height:25vh;}.pdoc .search-result.focused > .attr{background-color:var(--active);}.pdoc .attribution{margin-top:2rem;display:block;opacity:0.5;transition:all 200ms;filter:grayscale(100%);}.pdoc .attribution:hover{opacity:1;filter:grayscale(0%);}.pdoc .attribution img{margin-left:5px;height:35px;vertical-align:middle;width:70px;transition:all 200ms;}.pdoc table{display:block;width:max-content;max-width:100%;overflow:auto;margin-bottom:1rem;}.pdoc table th{font-weight:600;}.pdoc table th, .pdoc table td{padding:6px 13px;border:1px solid var(--accent2);}</style>
     <style>/*! custom.css */*{font-family:SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}.pdoc .il{color:#ae81ff}nav.pdoc a.pdoc-button.module-list-button{display:none;}.pdoc .modulename a:hover{color:#ff79c6;}.pdoc .classattr{color:#FFF;}.pdoc p{color:#FFF;font-weight:300;}.pdoc li.code{color:#d63384;}.pdoc h2{color:#FFF;font-weight:0;margin:.3em 0;padding:.2em 0;content:"Module Content";}.pdoc h5{color:white;font-style:italic;}.pdoc .modulename{color:#FFF;font-weight:0;}nav.pdoc a.variable::before{content:"var ";color:#9d9d9d;font-style:italic;}nav.pdoc .function::before{content:"func ";color:#9d9d9d;font-style:italic;}nav.pdoc .function::after{content:"";color:#9d9d9d;}nav.pdoc .class::before{content:"class ";font-style:italic;}nav.pdoc .class::after{content:"";}nav.pdoc a.class{color:#8be9fd;}nav.pdoc a.class:hover{color:#fff;}nav.pdoc a::before{content:"module ";font-style:italic;color:#9d9d9d;}nav.pdoc a.function{color:#4dec75;}nav.pdoc a.variable{color:white;}nav.pdoc li a{color:#bd93f9;}.pdoc span.default_value{color:#e6db74;}.pdoc span.def{font-weight:normal;}.pdoc h6#attributes{color:#FFF;font-size:25px;}.pdoc h6#example{color:#FFF;font-size:29px;}.pdoc h6#notes{font-size:27px;color:orange;}.pdoc h6#returns{font-size:27px;color:white;}.pdoc h6#parameters{font-size:27px;color:white;}.pdoc h6#raises{font-size:27px;color:#FF6666;}.pdoc .kc{color:#bd93f9;}.pdoc li{color:white;}.pdoc .nd{color:#50fa7b;}.pdoc b,strong{color:#d63384;font-weight:normal;}.pdoc em{color:orange;font-size:23px;}.pdoc div.decorator{color:#50fa7b;}.pdoc span.name{color:#8be9fd;}.pdoc span.base{color:#8be9fd;}.pdoc .inherited dt,.pdoc .inherited dt::before{color:#8be9fd;}.pdoc .inherited dd,.pdoc .inherited dd{color:#FFF;}.pdoc .inherited dd:not(:last-child)::after{color:#fff;}.pdoc .inherited dd:not(:last-child)::after{color:#FFF;}.pdoc h1,.pdoc h2,.pdoc h3{font-weight:300;margin:0.3em 0;padding:0.2em 0;color:white;}nav.pdoc .module-list-button{display:inline-flex;align-items:center;margin-bottom:1rem;color:white;border-color:white;}nav.pdoc .module-list-button:hover{border-color:white;color:white;}</style></head>
 <body>
     <nav class="pdoc">
@@ -503,6 +503,81 @@
                         </li>
                         <li>
                                 <a class="variable" href="#CharacterActivity.available_activities">available_activities</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#AggregatedActivity">AggregatedActivity</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#AggregatedActivity.__init__">AggregatedActivity</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#AggregatedActivity.hash">hash</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#AggregatedActivity.values">values</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#AggregatedActivityValues">AggregatedActivityValues</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#AggregatedActivityValues.__init__">AggregatedActivityValues</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#AggregatedActivityValues.id">id</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#AggregatedActivityValues.fastest_completion_time">fastest_completion_time</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#AggregatedActivityValues.completions">completions</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#AggregatedActivityValues.kills">kills</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#AggregatedActivityValues.deaths">deaths</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#AggregatedActivityValues.seconds_played">seconds_played</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#AggregatedActivityValues.wins">wins</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#AggregatedActivityValues.goals_missed">goals_missed</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#AggregatedActivityValues.special_actions">special_actions</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#AggregatedActivityValues.best_goals_hit">best_goals_hit</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#AggregatedActivityValues.goals_hit">goals_hit</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#AggregatedActivityValues.special_score">special_score</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#AggregatedActivityValues.best_single_score">best_single_score</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#AggregatedActivityValues.kd_ratio">kd_ratio</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#AggregatedActivityValues.kd_assists">kd_assists</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#AggregatedActivityValues.assists">assists</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#AggregatedActivityValues.precision_kills">precision_kills</a>
                         </li>
                 </ul>
 
@@ -1627,31 +1702,28 @@
 
             </li>
             <li>
-                    <a class="class" href="#BaseEntity">BaseEntity</a>
+                    <a class="class" href="#EntityBase">EntityBase</a>
                             <ul class="memberlist">
                         <li>
-                                <a class="function" href="#BaseEntity.__init__">BaseEntity</a>
+                                <a class="variable" href="#EntityBase.net">net</a>
                         </li>
                         <li>
-                                <a class="variable" href="#BaseEntity.net">net</a>
+                                <a class="variable" href="#EntityBase.name">name</a>
                         </li>
                         <li>
-                                <a class="variable" href="#BaseEntity.hash">hash</a>
+                                <a class="variable" href="#EntityBase.icon">icon</a>
                         </li>
                         <li>
-                                <a class="variable" href="#BaseEntity.index">index</a>
+                                <a class="variable" href="#EntityBase.has_icon">has_icon</a>
                         </li>
                         <li>
-                                <a class="variable" href="#BaseEntity.name">name</a>
+                                <a class="variable" href="#EntityBase.description">description</a>
                         </li>
                         <li>
-                                <a class="variable" href="#BaseEntity.description">description</a>
+                                <a class="variable" href="#EntityBase.index">index</a>
                         </li>
                         <li>
-                                <a class="variable" href="#BaseEntity.icon">icon</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#BaseEntity.has_icon">has_icon</a>
+                                <a class="variable" href="#EntityBase.hash">hash</a>
                         </li>
                 </ul>
 
@@ -3080,6 +3152,8 @@ for functional usage for the Bungie API objects.</p>
     <span class="s2">&quot;GuidedGame&quot;</span><span class="p">,</span>
     <span class="s2">&quot;Location&quot;</span><span class="p">,</span>
     <span class="s2">&quot;CharacterActivity&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;AggregatedActivity&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;AggregatedActivityValues&quot;</span><span class="p">,</span>
     <span class="c1"># application.py</span>
     <span class="s2">&quot;Application&quot;</span><span class="p">,</span>
     <span class="s2">&quot;ApplicationOwner&quot;</span><span class="p">,</span>
@@ -3113,7 +3187,7 @@ for functional usage for the Bungie API objects.</p>
     <span class="s2">&quot;ActivityEntity&quot;</span><span class="p">,</span>
     <span class="s2">&quot;PlaylistActivityEntity&quot;</span><span class="p">,</span>
     <span class="s2">&quot;ObjectiveEntity&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;BaseEntity&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;EntityBase&quot;</span><span class="p">,</span>
     <span class="s2">&quot;SearchableEntity&quot;</span><span class="p">,</span>
     <span class="s2">&quot;ActivityEntity&quot;</span><span class="p">,</span>
     <span class="s2">&quot;PlaylistActivityEntity&quot;</span><span class="p">,</span>
@@ -5924,6 +5998,414 @@ Otherwise, take the total number of players in the activity and subtract this nu
 
                             </div>
                 </section>
+                <section id="AggregatedActivity">
+                                <div class="attr class">
+        <a class="headerlink" href="#AggregatedActivity">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@attrs.define(kw_only=True)</div>
+
+        <span class="def">class</span>
+        <span class="name">AggregatedActivity</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@attrs</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">AggregatedActivity</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Represents aggergated activity data.&quot;&quot;&quot;</span>
+
+    <span class="nb">hash</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="sd">&quot;&quot;&quot;The activity hash.&quot;&quot;&quot;</span>
+
+    <span class="n">values</span><span class="p">:</span> <span class="n">AggregatedActivityValues</span>
+    <span class="sd">&quot;&quot;&quot;Aggregated activity values. This contains kills, deaths, etc.&quot;&quot;&quot;</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Represents aggergated activity data.</p>
+</div>
+
+
+                            <div id="AggregatedActivity.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#AggregatedActivity.__init__">#&nbsp;&nbsp</a>
+
+        
+            <span class="name">AggregatedActivity</span><span class="signature">(
+    *,
+    hash: int,
+    values: <a href="#AggregatedActivityValues">aiobungie.crate.AggregatedActivityValues</a>
+)</span>
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="nb">hash</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">hash</span> <span class="o">=</span> <span class="nb">hash</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">values</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Method generated by attrs for class AggregatedActivity.</p>
+</div>
+
+
+                            </div>
+                            <div id="AggregatedActivity.hash" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#AggregatedActivity.hash">#&nbsp;&nbsp</a>
+
+        <span class="name">hash</span><span class="annotation">: int</span>
+    </div>
+
+    
+            <div class="docstring"><p>The activity hash.</p>
+</div>
+
+
+                            </div>
+                            <div id="AggregatedActivity.values" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#AggregatedActivity.values">#&nbsp;&nbsp</a>
+
+        <span class="name">values</span><span class="annotation">: <a href="#AggregatedActivityValues">aiobungie.crate.AggregatedActivityValues</a></span>
+    </div>
+
+    
+            <div class="docstring"><p>Aggregated activity values. This contains kills, deaths, etc.</p>
+</div>
+
+
+                            </div>
+                </section>
+                <section id="AggregatedActivityValues">
+                                <div class="attr class">
+        <a class="headerlink" href="#AggregatedActivityValues">#&nbsp;&nbsp</a>
+
+                <div class="decorator">@attrs.define(kw_only=True)</div>
+
+        <span class="def">class</span>
+        <span class="name">AggregatedActivityValues</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@attrs</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">AggregatedActivityValues</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Information found in an aggregated activity stats.&quot;&quot;&quot;</span>
+
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="sd">&quot;&quot;&quot;Activity&#39;s id.&quot;&quot;&quot;</span>
+
+    <span class="n">fastest_completion_time</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;A tuple that contains a representation of the fastest completion for that activity in different data types.</span>
+
+<span class="sd">    Order</span>
+<span class="sd">    -----</span>
+<span class="sd">    - `int`: The completion time in seconds.</span>
+<span class="sd">    - `str`: The completion time in a readable format. i.e., `0:18.500`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">completions</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="sd">&quot;&quot;&quot;The amount of times the activity was completed.&quot;&quot;&quot;</span>
+
+    <span class="n">kills</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="sd">&quot;&quot;&quot;&quot;The amount of kills the player has in this activity.&quot;&quot;&quot;</span>
+
+    <span class="n">deaths</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="sd">&quot;&quot;&quot;The amount of deaths the player has in this activity.&quot;&quot;&quot;</span>
+
+    <span class="n">seconds_played</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
+    <span class="sd">&quot;&quot;&quot;A tuple that contains an int and a string representation of</span>
+<span class="sd">    the total time the player has spent in this activity.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">wins</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="sd">&quot;&quot;&quot;The amount of wins the player has in this activity.&quot;&quot;&quot;</span>
+
+    <span class="n">goals_missed</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="sd">&quot;&quot;&quot;The amount of goals missed the player has in this activity.&quot;&quot;&quot;</span>
+
+    <span class="n">special_actions</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="sd">&quot;&quot;&quot;The amount of special actions the player has in this activity.&quot;&quot;&quot;</span>
+
+    <span class="n">best_goals_hit</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="sd">&quot;&quot;&quot;The amount of best goals hit the player has in this activity.&quot;&quot;&quot;</span>
+
+    <span class="n">goals_hit</span><span class="p">:</span> <span class="nb">int</span>
+
+    <span class="n">special_score</span><span class="p">:</span> <span class="nb">int</span>
+
+    <span class="n">best_single_score</span><span class="p">:</span> <span class="nb">int</span>
+
+    <span class="n">kd_ratio</span><span class="p">:</span> <span class="nb">float</span>
+
+    <span class="n">kd_assists</span><span class="p">:</span> <span class="nb">int</span>
+
+    <span class="n">assists</span><span class="p">:</span> <span class="nb">int</span>
+
+    <span class="n">precision_kills</span><span class="p">:</span> <span class="nb">int</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Information found in an aggregated activity stats.</p>
+</div>
+
+
+                            <div id="AggregatedActivityValues.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#AggregatedActivityValues.__init__">#&nbsp;&nbsp</a>
+
+        
+            <span class="name">AggregatedActivityValues</span><span class="signature">(
+    *,
+    id: int,
+    fastest_completion_time: tuple,
+    completions: int,
+    kills: int,
+    deaths: int,
+    seconds_played: tuple,
+    wins: int,
+    goals_missed: int,
+    special_actions: int,
+    best_goals_hit: int,
+    goals_hit: int,
+    special_score: int,
+    best_single_score: int,
+    kd_ratio: float,
+    kd_assists: int,
+    assists: int,
+    precision_kills: int
+)</span>
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">fastest_completion_time</span><span class="p">,</span> <span class="n">completions</span><span class="p">,</span> <span class="n">kills</span><span class="p">,</span> <span class="n">deaths</span><span class="p">,</span> <span class="n">seconds_played</span><span class="p">,</span> <span class="n">wins</span><span class="p">,</span> <span class="n">goals_missed</span><span class="p">,</span> <span class="n">special_actions</span><span class="p">,</span> <span class="n">best_goals_hit</span><span class="p">,</span> <span class="n">goals_hit</span><span class="p">,</span> <span class="n">special_score</span><span class="p">,</span> <span class="n">best_single_score</span><span class="p">,</span> <span class="n">kd_ratio</span><span class="p">,</span> <span class="n">kd_assists</span><span class="p">,</span> <span class="n">assists</span><span class="p">,</span> <span class="n">precision_kills</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="nb">id</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">fastest_completion_time</span> <span class="o">=</span> <span class="n">fastest_completion_time</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">completions</span> <span class="o">=</span> <span class="n">completions</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">kills</span> <span class="o">=</span> <span class="n">kills</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">deaths</span> <span class="o">=</span> <span class="n">deaths</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">seconds_played</span> <span class="o">=</span> <span class="n">seconds_played</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">wins</span> <span class="o">=</span> <span class="n">wins</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">goals_missed</span> <span class="o">=</span> <span class="n">goals_missed</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">special_actions</span> <span class="o">=</span> <span class="n">special_actions</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">best_goals_hit</span> <span class="o">=</span> <span class="n">best_goals_hit</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">goals_hit</span> <span class="o">=</span> <span class="n">goals_hit</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">special_score</span> <span class="o">=</span> <span class="n">special_score</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">best_single_score</span> <span class="o">=</span> <span class="n">best_single_score</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">kd_ratio</span> <span class="o">=</span> <span class="n">kd_ratio</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">kd_assists</span> <span class="o">=</span> <span class="n">kd_assists</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">assists</span> <span class="o">=</span> <span class="n">assists</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">precision_kills</span> <span class="o">=</span> <span class="n">precision_kills</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Method generated by attrs for class AggregatedActivityValues.</p>
+</div>
+
+
+                            </div>
+                            <div id="AggregatedActivityValues.id" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#AggregatedActivityValues.id">#&nbsp;&nbsp</a>
+
+        <span class="name">id</span><span class="annotation">: int</span>
+    </div>
+
+    
+            <div class="docstring"><p>Activity's id.</p>
+</div>
+
+
+                            </div>
+                            <div id="AggregatedActivityValues.fastest_completion_time" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#AggregatedActivityValues.fastest_completion_time">#&nbsp;&nbsp</a>
+
+        <span class="name">fastest_completion_time</span><span class="annotation">: tuple[int, str]</span>
+    </div>
+
+    
+            <div class="docstring"><p>A tuple that contains a representation of the fastest completion for that activity in different data types.</p>
+
+<h6 id="order">Order</h6>
+
+<ul>
+<li><code>int</code>: The completion time in seconds.</li>
+<li><code>str</code>: The completion time in a readable format. i.e., <code>0:18.500</code></li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="AggregatedActivityValues.completions" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#AggregatedActivityValues.completions">#&nbsp;&nbsp</a>
+
+        <span class="name">completions</span><span class="annotation">: int</span>
+    </div>
+
+    
+            <div class="docstring"><p>The amount of times the activity was completed.</p>
+</div>
+
+
+                            </div>
+                            <div id="AggregatedActivityValues.kills" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#AggregatedActivityValues.kills">#&nbsp;&nbsp</a>
+
+        <span class="name">kills</span><span class="annotation">: int</span>
+    </div>
+
+    
+            <div class="docstring"><p>"The amount of kills the player has in this activity.</p>
+</div>
+
+
+                            </div>
+                            <div id="AggregatedActivityValues.deaths" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#AggregatedActivityValues.deaths">#&nbsp;&nbsp</a>
+
+        <span class="name">deaths</span><span class="annotation">: int</span>
+    </div>
+
+    
+            <div class="docstring"><p>The amount of deaths the player has in this activity.</p>
+</div>
+
+
+                            </div>
+                            <div id="AggregatedActivityValues.seconds_played" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#AggregatedActivityValues.seconds_played">#&nbsp;&nbsp</a>
+
+        <span class="name">seconds_played</span><span class="annotation">: tuple[int, str]</span>
+    </div>
+
+    
+            <div class="docstring"><p>A tuple that contains an int and a string representation of
+the total time the player has spent in this activity.</p>
+</div>
+
+
+                            </div>
+                            <div id="AggregatedActivityValues.wins" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#AggregatedActivityValues.wins">#&nbsp;&nbsp</a>
+
+        <span class="name">wins</span><span class="annotation">: int</span>
+    </div>
+
+    
+            <div class="docstring"><p>The amount of wins the player has in this activity.</p>
+</div>
+
+
+                            </div>
+                            <div id="AggregatedActivityValues.goals_missed" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#AggregatedActivityValues.goals_missed">#&nbsp;&nbsp</a>
+
+        <span class="name">goals_missed</span><span class="annotation">: int</span>
+    </div>
+
+    
+            <div class="docstring"><p>The amount of goals missed the player has in this activity.</p>
+</div>
+
+
+                            </div>
+                            <div id="AggregatedActivityValues.special_actions" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#AggregatedActivityValues.special_actions">#&nbsp;&nbsp</a>
+
+        <span class="name">special_actions</span><span class="annotation">: int</span>
+    </div>
+
+    
+            <div class="docstring"><p>The amount of special actions the player has in this activity.</p>
+</div>
+
+
+                            </div>
+                            <div id="AggregatedActivityValues.best_goals_hit" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#AggregatedActivityValues.best_goals_hit">#&nbsp;&nbsp</a>
+
+        <span class="name">best_goals_hit</span><span class="annotation">: int</span>
+    </div>
+
+    
+            <div class="docstring"><p>The amount of best goals hit the player has in this activity.</p>
+</div>
+
+
+                            </div>
+                            <div id="AggregatedActivityValues.goals_hit" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#AggregatedActivityValues.goals_hit">#&nbsp;&nbsp</a>
+
+        <span class="name">goals_hit</span><span class="annotation">: int</span>
+    </div>
+
+    
+    
+
+                            </div>
+                            <div id="AggregatedActivityValues.special_score" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#AggregatedActivityValues.special_score">#&nbsp;&nbsp</a>
+
+        <span class="name">special_score</span><span class="annotation">: int</span>
+    </div>
+
+    
+    
+
+                            </div>
+                            <div id="AggregatedActivityValues.best_single_score" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#AggregatedActivityValues.best_single_score">#&nbsp;&nbsp</a>
+
+        <span class="name">best_single_score</span><span class="annotation">: int</span>
+    </div>
+
+    
+    
+
+                            </div>
+                            <div id="AggregatedActivityValues.kd_ratio" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#AggregatedActivityValues.kd_ratio">#&nbsp;&nbsp</a>
+
+        <span class="name">kd_ratio</span><span class="annotation">: float</span>
+    </div>
+
+    
+    
+
+                            </div>
+                            <div id="AggregatedActivityValues.kd_assists" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#AggregatedActivityValues.kd_assists">#&nbsp;&nbsp</a>
+
+        <span class="name">kd_assists</span><span class="annotation">: int</span>
+    </div>
+
+    
+    
+
+                            </div>
+                            <div id="AggregatedActivityValues.assists" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#AggregatedActivityValues.assists">#&nbsp;&nbsp</a>
+
+        <span class="name">assists</span><span class="annotation">: int</span>
+    </div>
+
+    
+    
+
+                            </div>
+                            <div id="AggregatedActivityValues.precision_kills" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#AggregatedActivityValues.precision_kills">#&nbsp;&nbsp</a>
+
+        <span class="name">precision_kills</span><span class="annotation">: int</span>
+    </div>
+
+    
+    
+
+                            </div>
+                </section>
                 <section id="Application">
                                 <div class="attr class">
         <a class="headerlink" href="#Application">#&nbsp;&nbsp</a>
@@ -6156,7 +6638,7 @@ Otherwise, take the total number of players in the activity and subtract this nu
     <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
     <span class="sd">&quot;&quot;&quot;The application owner&#39;s id.&quot;&quot;&quot;</span>
 
-    <span class="n">icon</span><span class="p">:</span> <span class="n">assets</span><span class="o">.</span><span class="n">MaybeImage</span>
+    <span class="n">icon</span><span class="p">:</span> <span class="n">assets</span><span class="o">.</span><span class="n">Image</span>
     <span class="sd">&quot;&quot;&quot;The application owner&#39;s icon.&quot;&quot;&quot;</span>
 
     <span class="n">is_public</span><span class="p">:</span> <span class="nb">bool</span>
@@ -6216,7 +6698,7 @@ Otherwise, take the total number of players in the activity and subtract this nu
     name: Union[<a href="undefined.html#UndefinedType">aiobungie.undefined.UndefinedType</a>, str],
     type: <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>,
     id: int,
-    icon: Union[<a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>, str, NoneType],
+    icon: <a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>,
     is_public: bool,
     code: Optional[int]
 )</span>
@@ -6292,7 +6774,7 @@ Otherwise, take the total number of players in the activity and subtract this nu
                             <div id="ApplicationOwner.icon" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ApplicationOwner.icon">#&nbsp;&nbsp</a>
 
-        <span class="name">icon</span><span class="annotation">: Union[<a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>, str, NoneType]</span>
+        <span class="name">icon</span><span class="annotation">: <a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a></span>
     </div>
 
     
@@ -8089,10 +8571,10 @@ An optional item limit to fetch. Default is the length of the equipment.</li>
     <span class="n">is_public</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="sd">&quot;&quot;&quot;Clan&#39;s privacy status.&quot;&quot;&quot;</span>
 
-    <span class="n">banner</span><span class="p">:</span> <span class="n">assets</span><span class="o">.</span><span class="n">MaybeImage</span>
+    <span class="n">banner</span><span class="p">:</span> <span class="n">assets</span><span class="o">.</span><span class="n">Image</span>
     <span class="sd">&quot;&quot;&quot;Clan&#39;s banner&quot;&quot;&quot;</span>
 
-    <span class="n">avatar</span><span class="p">:</span> <span class="n">assets</span><span class="o">.</span><span class="n">MaybeImage</span>
+    <span class="n">avatar</span><span class="p">:</span> <span class="n">assets</span><span class="o">.</span><span class="n">Image</span>
     <span class="sd">&quot;&quot;&quot;Clan&#39;s avatar&quot;&quot;&quot;</span>
 
     <span class="n">about</span><span class="p">:</span> <span class="nb">str</span>
@@ -8599,8 +9081,8 @@ An optional item limit to fetch. Default is the length of the equipment.</li>
     member_count: int,
     motto: str,
     is_public: bool,
-    banner: Union[<a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>, str, NoneType],
-    avatar: Union[<a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>, str, NoneType],
+    banner: <a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>,
+    avatar: <a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>,
     about: str,
     tags: list,
     theme: str,
@@ -8749,7 +9231,7 @@ An optional item limit to fetch. Default is the length of the equipment.</li>
                             <div id="Clan.banner" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#Clan.banner">#&nbsp;&nbsp</a>
 
-        <span class="name">banner</span><span class="annotation">: Union[<a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>, str, NoneType]</span>
+        <span class="name">banner</span><span class="annotation">: <a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a></span>
     </div>
 
     
@@ -8761,7 +9243,7 @@ An optional item limit to fetch. Default is the length of the equipment.</li>
                             <div id="Clan.avatar" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#Clan.avatar">#&nbsp;&nbsp</a>
 
-        <span class="name">avatar</span><span class="annotation">: Union[<a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>, str, NoneType]</span>
+        <span class="name">avatar</span><span class="annotation">: <a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a></span>
     </div>
 
     
@@ -10086,7 +10568,7 @@ This method is still not implemented.</p>
     name: Union[<a href="undefined.html#UndefinedType">aiobungie.undefined.UndefinedType</a>, str],
     type: <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>,
     types: collections.abc.Sequence,
-    icon: Union[<a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>, str, NoneType],
+    icon: <a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>,
     code: Optional[int],
     is_public: bool,
     crossave_override: Union[<a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>, int],
@@ -10979,10 +11461,10 @@ Default is `0`
     <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
     <span class="sd">&quot;&quot;&quot;The banner&#39;s id.&quot;&quot;&quot;</span>
 
-    <span class="n">foreground</span><span class="p">:</span> <span class="n">assets</span><span class="o">.</span><span class="n">MaybeImage</span>
+    <span class="n">foreground</span><span class="p">:</span> <span class="n">assets</span><span class="o">.</span><span class="n">Image</span>
     <span class="sd">&quot;&quot;&quot;The banner&#39;s foreground. This field can be `UNDEFINED` if not found.&quot;&quot;&quot;</span>
 
-    <span class="n">background</span><span class="p">:</span> <span class="n">assets</span><span class="o">.</span><span class="n">MaybeImage</span>
+    <span class="n">background</span><span class="p">:</span> <span class="n">assets</span><span class="o">.</span><span class="n">Image</span>
     <span class="sd">&quot;&quot;&quot;The banner&#39;s background. This field can be `UNDEFINED` if not found.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
@@ -11002,8 +11484,8 @@ Default is `0`
             <span class="name">ClanBanner</span><span class="signature">(
     *,
     id: int,
-    foreground: Union[<a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>, str, NoneType],
-    background: Union[<a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>, str, NoneType]
+    foreground: <a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>,
+    background: <a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>
 )</span>
     </div>
 
@@ -11037,7 +11519,7 @@ Default is `0`
                             <div id="ClanBanner.foreground" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ClanBanner.foreground">#&nbsp;&nbsp</a>
 
-        <span class="name">foreground</span><span class="annotation">: Union[<a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>, str, NoneType]</span>
+        <span class="name">foreground</span><span class="annotation">: <a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a></span>
     </div>
 
     
@@ -11049,7 +11531,7 @@ Default is `0`
                             <div id="ClanBanner.background" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ClanBanner.background">#&nbsp;&nbsp</a>
 
-        <span class="name">background</span><span class="annotation">: Union[<a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>, str, NoneType]</span>
+        <span class="name">background</span><span class="annotation">: <a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a></span>
     </div>
 
     
@@ -13350,13 +13832,13 @@ The maximum number of items to fetch. If not provided, all items will be fetched
                 <div class="decorator">@attrs.define(kw_only=True)</div>
 
         <span class="def">class</span>
-        <span class="name">InventoryEntity</span><wbr>(<span class="base"><a href="#BaseEntity">aiobungie.crate.BaseEntity</a></span>, <span class="base">aiobungie.crate.entity.Entity</span>):
+        <span class="name">InventoryEntity</span><wbr>(<span class="base">aiobungie.crate.entity.Entity</span>):
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@attrs</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">InventoryEntity</span><span class="p">(</span><span class="n">BaseEntity</span><span class="p">,</span> <span class="n">Entity</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">InventoryEntity</span><span class="p">(</span><span class="n">Entity</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Represents a bungie inventory item entity.</span>
 
 <span class="sd">    This derives from `DestinyInventoryItemDefinition` definition.</span>
@@ -13531,7 +14013,7 @@ The maximum number of items to fetch. If not provided, all items will be fetched
     index: int,
     name: Union[<a href="undefined.html#UndefinedType">aiobungie.undefined.UndefinedType</a>, str],
     description: Union[<a href="undefined.html#UndefinedType">aiobungie.undefined.UndefinedType</a>, str],
-    icon: Union[<a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>, str, NoneType],
+    icon: <a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>,
     has_icon: bool,
     type: <a href="internal/enums.html#ItemType">aiobungie.internal.enums.ItemType</a>,
     about: Union[<a href="undefined.html#UndefinedType">aiobungie.undefined.UndefinedType</a>, str],
@@ -14186,14 +14668,14 @@ this is the hash identifier for the DestinyInventoryBucketDefinition.</p>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt><a href="#BaseEntity">BaseEntity</a></dt>
-                                <dd id="InventoryEntity.net" class="variable"><a href="#BaseEntity.net">net</a></dd>
-                <dd id="InventoryEntity.hash" class="variable"><a href="#BaseEntity.hash">hash</a></dd>
-                <dd id="InventoryEntity.index" class="variable"><a href="#BaseEntity.index">index</a></dd>
-                <dd id="InventoryEntity.name" class="variable"><a href="#BaseEntity.name">name</a></dd>
-                <dd id="InventoryEntity.description" class="variable"><a href="#BaseEntity.description">description</a></dd>
-                <dd id="InventoryEntity.icon" class="variable"><a href="#BaseEntity.icon">icon</a></dd>
-                <dd id="InventoryEntity.has_icon" class="variable"><a href="#BaseEntity.has_icon">has_icon</a></dd>
+                                    <div><dt>aiobungie.crate.entity.Entity</dt>
+                                <dd id="InventoryEntity.net" class="variable">net</dd>
+                <dd id="InventoryEntity.hash" class="variable">hash</dd>
+                <dd id="InventoryEntity.index" class="variable">index</dd>
+                <dd id="InventoryEntity.name" class="variable">name</dd>
+                <dd id="InventoryEntity.description" class="variable">description</dd>
+                <dd id="InventoryEntity.icon" class="variable">icon</dd>
+                <dd id="InventoryEntity.has_icon" class="variable">has_icon</dd>
 
             </div>
                                 </dl>
@@ -14206,19 +14688,19 @@ this is the hash identifier for the DestinyInventoryBucketDefinition.</p>
                 <div class="decorator">@attrs.define(kw_only=True, hash=True, weakref_slot=False)</div>
 
         <span class="def">class</span>
-        <span class="name">ActivityEntity</span><wbr>(<span class="base"><a href="#BaseEntity">aiobungie.crate.BaseEntity</a></span>, <span class="base">aiobungie.crate.entity.Entity</span>):
+        <span class="name">ActivityEntity</span><wbr>(<span class="base">aiobungie.crate.entity.Entity</span>):
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@attrs</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">hash</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">weakref_slot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">ActivityEntity</span><span class="p">(</span><span class="n">BaseEntity</span><span class="p">,</span> <span class="n">Entity</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">ActivityEntity</span><span class="p">(</span><span class="n">Entity</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Represents a Bungie Activity definition and its entities.</span>
 
 <span class="sd">    This derives from `DestinyActivityDefinition` definition.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">release_icon</span><span class="p">:</span> <span class="n">assets</span><span class="o">.</span><span class="n">MaybeImage</span>
+    <span class="n">release_icon</span><span class="p">:</span> <span class="n">assets</span><span class="o">.</span><span class="n">Image</span>
     <span class="sd">&quot;&quot;&quot;The release icon of this activity if it has one.&quot;&quot;&quot;</span>
 
     <span class="n">release_time</span><span class="p">:</span> <span class="nb">int</span>
@@ -14239,7 +14721,7 @@ this is the hash identifier for the DestinyInventoryBucketDefinition.</p>
     <span class="n">tier</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">activity</span><span class="o">.</span><span class="n">Difficulty</span><span class="p">]</span>
     <span class="sd">&quot;&quot;&quot;Activity&#39;s difficulty tier.&quot;&quot;&quot;</span>
 
-    <span class="n">image</span><span class="p">:</span> <span class="n">assets</span><span class="o">.</span><span class="n">MaybeImage</span>
+    <span class="n">image</span><span class="p">:</span> <span class="n">assets</span><span class="o">.</span><span class="n">Image</span>
     <span class="sd">&quot;&quot;&quot;Activity&#39;s pgcr image.&quot;&quot;&quot;</span>
 
     <span class="n">rewards</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">activity</span><span class="o">.</span><span class="n">Rewards</span><span class="p">]]</span>
@@ -14325,16 +14807,16 @@ this is the hash identifier for the DestinyInventoryBucketDefinition.</p>
     index: int,
     name: Union[<a href="undefined.html#UndefinedType">aiobungie.undefined.UndefinedType</a>, str],
     description: Union[<a href="undefined.html#UndefinedType">aiobungie.undefined.UndefinedType</a>, str],
-    icon: Union[<a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>, str, NoneType],
+    icon: <a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>,
     has_icon: bool,
-    release_icon: Union[<a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>, str, NoneType],
+    release_icon: <a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>,
     release_time: int,
     unlock_hash: int,
     light_level: int,
     place: Union[int, <a href="internal/enums.html#Place">aiobungie.internal.enums.Place</a>],
     type_hash: int,
     tier: Union[int, aiobungie.crate.activity.Difficulty],
-    image: Union[<a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>, str, NoneType],
+    image: <a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>,
     rewards: Optional[collections.abc.Sequence[<a href="#Rewards">aiobungie.crate.Rewards</a>]],
     modifiers: Optional[collections.abc.Sequence[int]],
     challenges: Optional[collections.abc.Sequence[<a href="#Challenges">aiobungie.crate.Challenges</a>]],
@@ -14402,7 +14884,7 @@ this is the hash identifier for the DestinyInventoryBucketDefinition.</p>
                             <div id="ActivityEntity.release_icon" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ActivityEntity.release_icon">#&nbsp;&nbsp</a>
 
-        <span class="name">release_icon</span><span class="annotation">: Union[<a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>, str, NoneType]</span>
+        <span class="name">release_icon</span><span class="annotation">: <a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a></span>
     </div>
 
     
@@ -14486,7 +14968,7 @@ this is the hash identifier for the DestinyInventoryBucketDefinition.</p>
                             <div id="ActivityEntity.image" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#ActivityEntity.image">#&nbsp;&nbsp</a>
 
-        <span class="name">image</span><span class="annotation">: Union[<a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>, str, NoneType]</span>
+        <span class="name">image</span><span class="annotation">: <a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a></span>
     </div>
 
     
@@ -14705,14 +15187,14 @@ along with information we can use to determine their gating and availability.</p
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt><a href="#BaseEntity">BaseEntity</a></dt>
-                                <dd id="ActivityEntity.net" class="variable"><a href="#BaseEntity.net">net</a></dd>
-                <dd id="ActivityEntity.hash" class="variable"><a href="#BaseEntity.hash">hash</a></dd>
-                <dd id="ActivityEntity.index" class="variable"><a href="#BaseEntity.index">index</a></dd>
-                <dd id="ActivityEntity.name" class="variable"><a href="#BaseEntity.name">name</a></dd>
-                <dd id="ActivityEntity.description" class="variable"><a href="#BaseEntity.description">description</a></dd>
-                <dd id="ActivityEntity.icon" class="variable"><a href="#BaseEntity.icon">icon</a></dd>
-                <dd id="ActivityEntity.has_icon" class="variable"><a href="#BaseEntity.has_icon">has_icon</a></dd>
+                                    <div><dt>aiobungie.crate.entity.Entity</dt>
+                                <dd id="ActivityEntity.net" class="variable">net</dd>
+                <dd id="ActivityEntity.hash" class="variable">hash</dd>
+                <dd id="ActivityEntity.index" class="variable">index</dd>
+                <dd id="ActivityEntity.name" class="variable">name</dd>
+                <dd id="ActivityEntity.description" class="variable">description</dd>
+                <dd id="ActivityEntity.icon" class="variable">icon</dd>
+                <dd id="ActivityEntity.has_icon" class="variable">has_icon</dd>
 
             </div>
                                 </dl>
@@ -14889,13 +15371,13 @@ along with information we can use to determine their gating and availability.</p
                 <div class="decorator">@attrs.define(kw_only=True, weakref_slot=False)</div>
 
         <span class="def">class</span>
-        <span class="name">ObjectiveEntity</span><wbr>(<span class="base"><a href="#BaseEntity">aiobungie.crate.BaseEntity</a></span>, <span class="base">aiobungie.crate.entity.Entity</span>):
+        <span class="name">ObjectiveEntity</span><wbr>(<span class="base">aiobungie.crate.entity.Entity</span>):
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@attrs</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">weakref_slot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">ObjectiveEntity</span><span class="p">(</span><span class="n">BaseEntity</span><span class="p">,</span> <span class="n">Entity</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">ObjectiveEntity</span><span class="p">(</span><span class="n">Entity</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Represents a bungie inventory item entity.</span>
 
 <span class="sd">    This derives from `DestinyObjectiveDefinition` definition.</span>
@@ -14961,7 +15443,7 @@ along with information we can use to determine their gating and availability.</p
     index: int,
     name: Union[<a href="undefined.html#UndefinedType">aiobungie.undefined.UndefinedType</a>, str],
     description: Union[<a href="undefined.html#UndefinedType">aiobungie.undefined.UndefinedType</a>, str],
-    icon: Union[<a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>, str, NoneType],
+    icon: <a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>,
     has_icon: bool,
     unlock_value_hash: int,
     minimum_visibility: int,
@@ -15216,107 +15698,85 @@ along with information we can use to determine their gating and availability.</p
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt><a href="#BaseEntity">BaseEntity</a></dt>
-                                <dd id="ObjectiveEntity.net" class="variable"><a href="#BaseEntity.net">net</a></dd>
-                <dd id="ObjectiveEntity.hash" class="variable"><a href="#BaseEntity.hash">hash</a></dd>
-                <dd id="ObjectiveEntity.index" class="variable"><a href="#BaseEntity.index">index</a></dd>
-                <dd id="ObjectiveEntity.name" class="variable"><a href="#BaseEntity.name">name</a></dd>
-                <dd id="ObjectiveEntity.description" class="variable"><a href="#BaseEntity.description">description</a></dd>
-                <dd id="ObjectiveEntity.icon" class="variable"><a href="#BaseEntity.icon">icon</a></dd>
-                <dd id="ObjectiveEntity.has_icon" class="variable"><a href="#BaseEntity.has_icon">has_icon</a></dd>
+                                    <div><dt>aiobungie.crate.entity.Entity</dt>
+                                <dd id="ObjectiveEntity.net" class="variable">net</dd>
+                <dd id="ObjectiveEntity.hash" class="variable">hash</dd>
+                <dd id="ObjectiveEntity.index" class="variable">index</dd>
+                <dd id="ObjectiveEntity.name" class="variable">name</dd>
+                <dd id="ObjectiveEntity.description" class="variable">description</dd>
+                <dd id="ObjectiveEntity.icon" class="variable">icon</dd>
+                <dd id="ObjectiveEntity.has_icon" class="variable">has_icon</dd>
 
             </div>
                                 </dl>
                             </div>
                 </section>
-                <section id="BaseEntity">
+                <section id="EntityBase">
                                 <div class="attr class">
-        <a class="headerlink" href="#BaseEntity">#&nbsp;&nbsp</a>
-
-                <div class="decorator">@attrs.mutable(kw_only=True)</div>
-
-        <span class="def">class</span>
-        <span class="name">BaseEntity</span><wbr>(<span class="base">aiobungie.crate.entity.Entity</span>):
-    </div>
-
-            <details>
-            <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span class="nd">@attrs</span><span class="o">.</span><span class="n">mutable</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">BaseEntity</span><span class="p">(</span><span class="n">Entity</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Base Bungie entity implementation.</span>
-
-<span class="sd">    This is the core object which all other entities should inherit from.</span>
-<span class="sd">    it holds core information that all bungie entities has.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">net</span><span class="p">:</span> <span class="n">traits</span><span class="o">.</span><span class="n">Netrunner</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">eq</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">hash</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="sd">&quot;&quot;&quot;A network state used for making external requests.&quot;&quot;&quot;</span>
-
-    <span class="nb">hash</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="sd">&quot;&quot;&quot;Entity&#39;s hash.&quot;&quot;&quot;</span>
-
-    <span class="n">index</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="sd">&quot;&quot;&quot;The entity&#39;s index.&quot;&quot;&quot;</span>
-
-    <span class="n">name</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-    <span class="sd">&quot;&quot;&quot;Entity&#39;s name.&quot;&quot;&quot;</span>
-
-    <span class="n">description</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-    <span class="sd">&quot;&quot;&quot;Entity&#39;s description&quot;&quot;&quot;</span>
-
-    <span class="n">icon</span><span class="p">:</span> <span class="n">assets</span><span class="o">.</span><span class="n">MaybeImage</span>
-    <span class="sd">&quot;&quot;&quot;Entity&#39;s icon.&quot;&quot;&quot;</span>
-
-    <span class="n">has_icon</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="sd">&quot;&quot;&quot;A boolean that returns True if the entity has an icon.&quot;&quot;&quot;</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Base Bungie entity implementation.</p>
-
-<p>This is the core object which all other entities should inherit from.
-it holds core information that all bungie entities has.</p>
-</div>
-
-
-                            <div id="BaseEntity.__init__" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#BaseEntity.__init__">#&nbsp;&nbsp</a>
+        <a class="headerlink" href="#EntityBase">#&nbsp;&nbsp</a>
 
         
-            <span class="name">BaseEntity</span><span class="signature">(
-    *,
-    net: <a href="traits.html#Netrunner">aiobungie.traits.Netrunner</a>,
-    hash: int,
-    index: int,
-    name: Union[<a href="undefined.html#UndefinedType">aiobungie.undefined.UndefinedType</a>, str],
-    description: Union[<a href="undefined.html#UndefinedType">aiobungie.undefined.UndefinedType</a>, str],
-    icon: Union[<a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>, str, NoneType],
-    has_icon: bool
-)</span>
+        <span class="def">class</span>
+        <span class="name">EntityBase</span><wbr>(<span class="base">abc.ABC</span>):
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">net</span><span class="p">,</span> <span class="nb">hash</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">icon</span><span class="p">,</span> <span class="n">has_icon</span><span class="p">):</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">net</span> <span class="o">=</span> <span class="n">net</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">hash</span> <span class="o">=</span> <span class="nb">hash</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">index</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">description</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">icon</span> <span class="o">=</span> <span class="n">icon</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">has_icon</span> <span class="o">=</span> <span class="n">has_icon</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span class="k">class</span> <span class="nc">EntityBase</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;An interface of any Bungie Definition/Entity.&quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">net</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">traits</span><span class="o">.</span><span class="n">Netrunner</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;A network state used for making external requests.&quot;&quot;&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Entity&#39;s name. This can be `UNDEFINED` if not found.&quot;&quot;&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">icon</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">assets</span><span class="o">.</span><span class="n">Image</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;An optional entity&#39;s icon if its filled.&quot;&quot;&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">has_icon</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;A boolean that returns True if the entity has an icon.&quot;&quot;&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">description</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Entity&#39;s description&quot;&quot;&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;The entity&#39;s index.&quot;&quot;&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">hash</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Entity&#39;s hash.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hash</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Method generated by attrs for class BaseEntity.</p>
+            <div class="docstring"><p>An interface of any Bungie Definition/Entity.</p>
 </div>
 
 
-                            </div>
-                            <div id="BaseEntity.net" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#BaseEntity.net">#&nbsp;&nbsp</a>
+                            <div id="EntityBase.net" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#EntityBase.net">#&nbsp;&nbsp</a>
 
         <span class="name">net</span><span class="annotation">: <a href="traits.html#Netrunner">aiobungie.traits.Netrunner</a></span>
     </div>
@@ -15327,44 +15787,44 @@ it holds core information that all bungie entities has.</p>
 
 
                             </div>
-                            <div id="BaseEntity.hash" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#BaseEntity.hash">#&nbsp;&nbsp</a>
-
-        <span class="name">hash</span><span class="annotation">: int</span>
-    </div>
-
-    
-            <div class="docstring"><p>Entity's hash.</p>
-</div>
-
-
-                            </div>
-                            <div id="BaseEntity.index" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#BaseEntity.index">#&nbsp;&nbsp</a>
-
-        <span class="name">index</span><span class="annotation">: int</span>
-    </div>
-
-    
-            <div class="docstring"><p>The entity's index.</p>
-</div>
-
-
-                            </div>
-                            <div id="BaseEntity.name" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#BaseEntity.name">#&nbsp;&nbsp</a>
+                            <div id="EntityBase.name" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#EntityBase.name">#&nbsp;&nbsp</a>
 
         <span class="name">name</span><span class="annotation">: Union[<a href="undefined.html#UndefinedType">aiobungie.undefined.UndefinedType</a>, str]</span>
     </div>
 
     
-            <div class="docstring"><p>Entity's name.</p>
+            <div class="docstring"><p>Entity's name. This can be <code>UNDEFINED</code> if not found.</p>
 </div>
 
 
                             </div>
-                            <div id="BaseEntity.description" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#BaseEntity.description">#&nbsp;&nbsp</a>
+                            <div id="EntityBase.icon" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#EntityBase.icon">#&nbsp;&nbsp</a>
+
+        <span class="name">icon</span><span class="annotation">: <a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a></span>
+    </div>
+
+    
+            <div class="docstring"><p>An optional entity's icon if its filled.</p>
+</div>
+
+
+                            </div>
+                            <div id="EntityBase.has_icon" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#EntityBase.has_icon">#&nbsp;&nbsp</a>
+
+        <span class="name">has_icon</span><span class="annotation">: bool</span>
+    </div>
+
+    
+            <div class="docstring"><p>A boolean that returns True if the entity has an icon.</p>
+</div>
+
+
+                            </div>
+                            <div id="EntityBase.description" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#EntityBase.description">#&nbsp;&nbsp</a>
 
         <span class="name">description</span><span class="annotation">: Union[<a href="undefined.html#UndefinedType">aiobungie.undefined.UndefinedType</a>, str]</span>
     </div>
@@ -15375,26 +15835,26 @@ it holds core information that all bungie entities has.</p>
 
 
                             </div>
-                            <div id="BaseEntity.icon" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#BaseEntity.icon">#&nbsp;&nbsp</a>
+                            <div id="EntityBase.index" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#EntityBase.index">#&nbsp;&nbsp</a>
 
-        <span class="name">icon</span><span class="annotation">: Union[<a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>, str, NoneType]</span>
+        <span class="name">index</span><span class="annotation">: int</span>
     </div>
 
     
-            <div class="docstring"><p>Entity's icon.</p>
+            <div class="docstring"><p>The entity's index.</p>
 </div>
 
 
                             </div>
-                            <div id="BaseEntity.has_icon" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#BaseEntity.has_icon">#&nbsp;&nbsp</a>
+                            <div id="EntityBase.hash" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#EntityBase.hash">#&nbsp;&nbsp</a>
 
-        <span class="name">has_icon</span><span class="annotation">: bool</span>
+        <span class="name">hash</span><span class="annotation">: int</span>
     </div>
 
     
-            <div class="docstring"><p>A boolean that returns True if the entity has an icon.</p>
+            <div class="docstring"><p>Entity's hash.</p>
 </div>
 
 
@@ -16175,7 +16635,7 @@ it holds core information that all bungie entities has.</p>
     last_seen_name: str,
     type: <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>,
     types: collections.abc.Sequence,
-    icon: &#39;assets.MaybeImage&#39;,
+    icon: &#39;assets.Image&#39;,
     code: Optional[int],
     is_public: bool,
     crossave_override: Union[<a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>, int],
@@ -16311,7 +16771,7 @@ it holds core information that all bungie entities has.</p>
     types: collections.abc.Sequence,
     crossave_override: <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>,
     is_public: bool,
-    icon: &#39;assets.MaybeImage&#39;,
+    icon: &#39;assets.Image&#39;,
     destiny_user: <a href="#FireteamUser">aiobungie.crate.FireteamUser</a>,
     character_id: int,
     date_joined: datetime.datetime,
@@ -21390,7 +21850,7 @@ Also Cross-Save Aware.</p>
     <span class="n">locale</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="sd">&quot;&quot;&quot;The user&#39;s locale.&quot;&quot;&quot;</span>
 
-    <span class="n">picture</span><span class="p">:</span> <span class="n">assets</span><span class="o">.</span><span class="n">MaybeImage</span>
+    <span class="n">picture</span><span class="p">:</span> <span class="n">assets</span><span class="o">.</span><span class="n">Image</span>
     <span class="sd">&quot;&quot;&quot;The user&#39;s profile picture.&quot;&quot;&quot;</span>
 
     <span class="n">code</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">NoneOr</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
@@ -21440,7 +21900,7 @@ Also Cross-Save Aware.</p>
     stadia_name: Optional[str],
     status: Optional[str],
     locale: Optional[str],
-    picture: Union[<a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>, str, NoneType],
+    picture: <a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>,
     code: Optional[int]
 )</span>
     </div>
@@ -21696,7 +22156,7 @@ Also Cross-Save Aware.</p>
                             <div id="BungieUser.picture" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#BungieUser.picture">#&nbsp;&nbsp</a>
 
-        <span class="name">picture</span><span class="annotation">: Union[<a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>, str, NoneType]</span>
+        <span class="name">picture</span><span class="annotation">: <a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a></span>
     </div>
 
     
@@ -21776,7 +22236,7 @@ This can be None if the user hasn't logged in after season of the lost update.</
     <span class="n">is_public</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="sd">&quot;&quot;&quot;The user&#39;s privacy.&quot;&quot;&quot;</span>
 
-    <span class="n">icon</span><span class="p">:</span> <span class="n">assets</span><span class="o">.</span><span class="n">MaybeImage</span>
+    <span class="n">icon</span><span class="p">:</span> <span class="n">assets</span><span class="o">.</span><span class="n">Image</span>
     <span class="sd">&quot;&quot;&quot;The user&#39;s icon.&quot;&quot;&quot;</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_self</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BungieUser</span><span class="p">:</span>
@@ -21829,7 +22289,7 @@ by using <code><a href="#PartialBungieUser.fetch_self">PartialBungieUser.fetch_s
     types: collections.abc.Sequence,
     crossave_override: <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>,
     is_public: bool,
-    icon: Union[<a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>, str, NoneType]
+    icon: <a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>
 )</span>
     </div>
 
@@ -21940,7 +22400,7 @@ by using <code><a href="#PartialBungieUser.fetch_self">PartialBungieUser.fetch_s
                             <div id="PartialBungieUser.icon" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#PartialBungieUser.icon">#&nbsp;&nbsp</a>
 
-        <span class="name">icon</span><span class="annotation">: Union[<a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>, str, NoneType]</span>
+        <span class="name">icon</span><span class="annotation">: <a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a></span>
     </div>
 
     
@@ -22031,7 +22491,7 @@ by using <code><a href="#PartialBungieUser.fetch_self">PartialBungieUser.fetch_s
     <span class="n">types</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">]</span>
     <span class="sd">&quot;&quot;&quot;A sequence of the member&#39;s membership types.&quot;&quot;&quot;</span>
 
-    <span class="n">icon</span><span class="p">:</span> <span class="n">assets</span><span class="o">.</span><span class="n">MaybeImage</span>
+    <span class="n">icon</span><span class="p">:</span> <span class="n">assets</span><span class="o">.</span><span class="n">Image</span>
     <span class="sd">&quot;&quot;&quot;The member&#39;s icon if it was present.&quot;&quot;&quot;</span>
 
     <span class="n">code</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">NoneOr</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
@@ -22091,7 +22551,7 @@ by using <code><a href="#PartialBungieUser.fetch_self">PartialBungieUser.fetch_s
     last_seen_name: str,
     type: <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>,
     types: collections.abc.Sequence,
-    icon: Union[<a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>, str, NoneType],
+    icon: <a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>,
     code: Optional[int],
     is_public: bool,
     crossave_override: Union[<a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>, int]
@@ -22195,7 +22655,7 @@ by using <code><a href="#PartialBungieUser.fetch_self">PartialBungieUser.fetch_s
                             <div id="DestinyMembership.icon" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#DestinyMembership.icon">#&nbsp;&nbsp</a>
 
-        <span class="name">icon</span><span class="annotation">: Union[<a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a>, str, NoneType]</span>
+        <span class="name">icon</span><span class="annotation">: <a href="internal/assets.html#Image">aiobungie.internal.assets.Image</a></span>
     </div>
 
     

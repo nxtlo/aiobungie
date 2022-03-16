@@ -4,8 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).All notable changes to this project will be documented in this file.
 
-## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.6a1...HEAD)
+## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.6a2...HEAD)
 
+## [0.2.6a2](https://github.com/nxtlo/aiobungie/compare/0.2.6a1...0.2.6a2) 2022-03-17
 ## Added
 - Ability to read and save any resource that returns an `Image`.
 - Image mime types enum in assets.
@@ -19,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - connect_manifest is now deprecated and scheduled for removal in 0.2.6.
 - fetch_manifest_path now return all JSON object paths instead of the SQLite one.
 - download_manifest now takes a `force` parameter to force downloading the manifest.
+- ABC class `Entity` is renamed to `EntityBase` and `BaseEntity` is now `Entity`.
+- property `index` has been removed from `EntityBase` to allow `SearchableEntity` inherit from it.
 
 ## Removed
 - MaybeImage type hint.

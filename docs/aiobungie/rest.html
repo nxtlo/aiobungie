@@ -3,14 +3,14 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="pdoc 10.0.2"/>
+    <meta name="generator" content="pdoc 10.0.3"/>
     <title>aiobungie.rest API documentation</title>
 
     <style>/*! * Bootstrap Reboot v5.0.0 (https://getbootstrap.com/) * Copyright 2011-2021 The Bootstrap Authors * Copyright 2011-2021 Twitter, Inc. * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE) * Forked from Normalize.css, licensed MIT (https://github.com/necolas/normalize.css/blob/master/LICENSE.md) */*,::after,::before{box-sizing:border-box}@media (prefers-reduced-motion:no-preference){:root{scroll-behavior:smooth}}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";font-size:1rem;font-weight:400;line-height:1.5;color:#212529;background-color:#fff;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}hr{margin:1rem 0;color:inherit;background-color:currentColor;border:0;opacity:.25}hr:not([size]){height:1px}h1,h2,h3,h4,h5,h6{margin-top:0;margin-bottom:.5rem;font-weight:500;line-height:1.2}h1{font-size:calc(1.375rem + 1.5vw)}@media (min-width:1200px){h1{font-size:2.5rem}}h2{font-size:calc(1.325rem + .9vw)}@media (min-width:1200px){h2{font-size:2rem}}h3{font-size:calc(1.3rem + .6vw)}@media (min-width:1200px){h3{font-size:1.75rem}}h4{font-size:calc(1.275rem + .3vw)}@media (min-width:1200px){h4{font-size:1.5rem}}h5{font-size:1.25rem}h6{font-size:1rem}p{margin-top:0;margin-bottom:1rem}abbr[data-bs-original-title],abbr[title]{-webkit-text-decoration:underline dotted;text-decoration:underline dotted;cursor:help;-webkit-text-decoration-skip-ink:none;text-decoration-skip-ink:none}address{margin-bottom:1rem;font-style:normal;line-height:inherit}ol,ul{padding-left:2rem}dl,ol,ul{margin-top:0;margin-bottom:1rem}ol ol,ol ul,ul ol,ul ul{margin-bottom:0}dt{font-weight:700}dd{margin-bottom:.5rem;margin-left:0}blockquote{margin:0 0 1rem}b,strong{font-weight:bolder}small{font-size:.875em}mark{padding:.2em;background-color:#fcf8e3}sub,sup{position:relative;font-size:.75em;line-height:0;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}a{color:#0d6efd;text-decoration:underline}a:hover{color:#0a58ca}a:not([href]):not([class]),a:not([href]):not([class]):hover{color:inherit;text-decoration:none}code,kbd,pre,samp{font-family:SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:1em;direction:ltr;unicode-bidi:bidi-override}pre{display:block;margin-top:0;margin-bottom:1rem;overflow:auto;font-size:.875em}pre code{font-size:inherit;color:inherit;word-break:normal}code{font-size:.875em;color:#d63384;word-wrap:break-word}a>code{color:inherit}kbd{padding:.2rem .4rem;font-size:.875em;color:#fff;background-color:#212529;border-radius:.2rem}kbd kbd{padding:0;font-size:1em;font-weight:700}figure{margin:0 0 1rem}img,svg{vertical-align:middle}table{caption-side:bottom;border-collapse:collapse}caption{padding-top:.5rem;padding-bottom:.5rem;color:#6c757d;text-align:left}th{text-align:inherit;text-align:-webkit-match-parent}tbody,td,tfoot,th,thead,tr{border-color:inherit;border-style:solid;border-width:0}label{display:inline-block}button{border-radius:0}button:focus:not(:focus-visible){outline:0}button,input,optgroup,select,textarea{margin:0;font-family:inherit;font-size:inherit;line-height:inherit}button,select{text-transform:none}[role=button]{cursor:pointer}select{word-wrap:normal}select:disabled{opacity:1}[list]::-webkit-calendar-picker-indicator{display:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button}[type=button]:not(:disabled),[type=reset]:not(:disabled),[type=submit]:not(:disabled),button:not(:disabled){cursor:pointer}::-moz-focus-inner{padding:0;border-style:none}textarea{resize:vertical}fieldset{min-width:0;padding:0;margin:0;border:0}legend{float:left;width:100%;padding:0;margin-bottom:.5rem;font-size:calc(1.275rem + .3vw);line-height:inherit}@media (min-width:1200px){legend{font-size:1.5rem}}legend+*{clear:left}::-webkit-datetime-edit-day-field,::-webkit-datetime-edit-fields-wrapper,::-webkit-datetime-edit-hour-field,::-webkit-datetime-edit-minute,::-webkit-datetime-edit-month-field,::-webkit-datetime-edit-text,::-webkit-datetime-edit-year-field{padding:0}::-webkit-inner-spin-button{height:auto}[type=search]{outline-offset:-2px;-webkit-appearance:textfield}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-color-swatch-wrapper{padding:0}::file-selector-button{font:inherit}::-webkit-file-upload-button{font:inherit;-webkit-appearance:button}output{display:inline-block}iframe{border:0}summary{display:list-item;cursor:pointer}progress{vertical-align:baseline}[hidden]{display:none!important}</style>
     <style>/*! syntax-highlighting.css */pre{line-height:125%;}td.linenos pre{color:#ff5555;background-color:#282a36;padding-left:5px;padding-right:5px;}span.linenos{color:#ff5555;background-color:#282a36;padding-left:5px;padding-right:5px;}td.linenos pre.special{color:#ff5555;background-color:#ffffc0;padding-left:5px;padding-right:5px;}span.linenos.special{color:#ff5555;background-color:#ffffc0;padding-left:5px;padding-right:5px;}.pdoc-code .hll{background-color:#282a36;}.pdoc-code{background:#282a36;color:#ff5555;}.pdoc-code .c{color:#6a7aaa;}.pdoc-code .err{color:#ff5555;background-color:#1e0010;}.pdoc-code .k{color:#ff79c6;}.pdoc-code .l{color:#ae81ff;}.pdoc-code .n{color:#f8f8f2;}.pdoc-code .o{color:#ff79c6;}.pdoc-code .p{color:#f8f8f2;}.pdoc-code .ch{color:#6a7aaa;}.pdoc-code .cm{color:#6a7aaa;}.pdoc-code .cp{color:#6a7aaa;}.pdoc-code .cpf{color:#6a7aaa;}.pdoc-code .c1{color:#6a7aaa;}.pdoc-code .cs{color:#6a7aaa;}.pdoc-code .gd{color:#6a7aaa;}.pdoc-code .ge{font-style:italic;}.pdoc-code .gi{color:#a6e22e;}.pdoc-code .go{color:#ff79c6;}.pdoc-code .gp{color:#f92672;font-weight:bold;}.pdoc-code .gs{font-weight:bold;}.pdoc-code .gu{color:#75715e;}.pdoc-code .kc{color:#ff79c6;}.pdoc-code .kd{color:#bd93f9;}.pdoc-code .kn{color:#ff79c6;}.pdoc-code .kp{color:#bd93f9;}.pdoc-code .kr{color:#ff79c6;}.pdoc-code .kt{color:#ff79c6;}.pdoc-code .ld{color:#e6db74;}.pdoc-code .m{color:#ae81ff;}.pdoc-code .s{color:#e6db74;}.pdoc-code .na{color:#a6e22e;}.pdoc-code .nb{color:#8be9fd;}.pdoc-code .nc{color:#8be9fd;}.pdoc-code .no{color:#ff79c6;}.pdoc-code .nd{color:#8be9fd;}.pdoc-code .ni{color:#ff79c6;}.pdoc-code .ne{color:#8be9fd;}.pdoc-code .nf{color:#50fa7b;}.pdoc-code .nl{color:#f8f8f2;}.pdoc-code .nn{color:#f8f8f2;}.pdoc-code .nx{color:#a6e22e;}.pdoc-code .py{color:#f8f8f2;}.pdoc-code .nt{color:#f92672;}.pdoc-code .nv{color:#f8f8f2;}.pdoc-code .ow{color:#ff79c6;}.pdoc-code .w{color:#f8f8f2;}.pdoc-code .mb{color:#ae81ff;}.pdoc-code .mf{color:#ae81ff;}.pdoc-code .mh{color:#ae81ff;}.pdoc-code .mi{color:#ae81ff;}.pdoc-code .mo{color:#ae81ff;}.pdoc-code .sa{color:#ff79c6;}.pdoc-code .sb{color:#e6db74;}.pdoc-code .sc{color:#e6db74;}.pdoc-code .dl{color:#e6db74;}.pdoc-code .sd{color:#6272a4;}.pdoc-code .s2{color:#e6db74;}.pdoc-code .se{color:#ae81ff;}.pdoc-code .sh{color:#e6db74;}.pdoc-code .si{color:#bd93f9;}.pdoc-code .sx{color:#e6db74;}.pdoc-code .sr{color:#e6db74;}.pdoc-code .s1{color:#e6db74;}.pdoc-code .ss{color:#e6db74;}.pdoc-code .bp{color:#bd93f9;}.pdoc-code .fm{color:#bd93f9;}.pdoc-code .vc{color:#bd93f9;}.pdoc-code .vg{color:#f8f8f2;}.pdoc-code .vi{color:#ffffff;}.pdoc-code .vm{color:#bd93f9;}.pdoc-code .il{color:#ae81ff;}.pdoc-code .nd{color:#50fa7b;}</style>
     <style>/*! theme.css */:root{--pdoc-background:#272935; }.pdoc{--text:white; --muted:#9d9d9d; --link:#bd93f9; --link-hover:white; --active:#555; --code:#232627; --accent:#232627; --accent2:#FFF; }</style>
     <style>/*! layout.css */html, body{width:100%;height:100%;}html, main{scroll-behavior:smooth;}body{background-color:var(--pdoc-background);}@media (max-width:769px){#navtoggle{cursor:pointer;position:absolute;width:50px;height:40px;top:1rem;right:1rem;border-color:var(--text);color:var(--text);display:flex;opacity:0.8;}#navtoggle:hover{opacity:1;}#togglestate + div{display:none;}#togglestate:checked + div{display:inherit;}main, header{padding:2rem 3vw;}header + main{margin-top:-3rem;}.git-button{display:none !important;}nav input[type="search"]{max-width:77%;}nav input[type="search"]:first-child{margin-top:-6px;}nav input[type="search"]:valid ~ *{display:none !important;}}@media (min-width:770px){:root{--sidebar-width:clamp(12.5rem, 28vw, 22rem);}nav{position:fixed;overflow:auto;height:100vh;width:var(--sidebar-width);}main, header{padding:3rem 2rem 3rem calc(var(--sidebar-width) + 3rem);width:calc(54rem + var(--sidebar-width));max-width:100%;}header + main{margin-top:-4rem;}#navtoggle{display:none;}}#togglestate{position:absolute;height:0;}nav.pdoc{--pad:1.75rem;--indent:1.5rem;background-color:var(--accent);border-right:1px solid var(--accent2);box-shadow:0 0 20px rgba(50, 50, 50, .2) inset;padding:0 0 0 var(--pad);overflow-wrap:anywhere;scrollbar-width:thin; scrollbar-color:var(--accent2) transparent }nav.pdoc::-webkit-scrollbar{width:.4rem; }nav.pdoc::-webkit-scrollbar-thumb{background-color:var(--accent2); }nav.pdoc > div{padding:var(--pad) 0;}nav.pdoc .module-list-button{display:inline-flex;align-items:center;color:var(--text);border-color:var(--muted);margin-bottom:1rem;}nav.pdoc .module-list-button:hover{border-color:var(--text);}nav.pdoc input[type=search]{display:block;outline-offset:0;width:calc(100% - var(--pad));}nav.pdoc .logo{max-width:calc(100% - var(--pad));max-height:35vh;display:block;margin:0 auto 1rem;transform:translate(calc(-.5 * var(--pad)), 0);}nav.pdoc ul{list-style:none;padding-left:0;}nav.pdoc li{display:block;margin:0;padding:.2rem 0 .2rem var(--indent);transition:all 100ms;}nav.pdoc > div > ul > li{padding-left:0;}nav.pdoc li:hover{background-color:var(--nav-hover);}nav.pdoc a, nav.pdoc a:hover{color:var(--text);}nav.pdoc a{display:block;}nav.pdoc > h2:first-of-type{margin-top:1.5rem;}nav.pdoc .class:before{content:"class ";color:var(--muted);}nav.pdoc .function:after{content:"()";color:var(--muted);}nav.pdoc footer:before{content:"";display:block;width:calc(100% - var(--pad));border-top:solid var(--accent2) 1px;margin-top:1.5rem;padding-top:.5rem;}nav.pdoc footer{font-size:small;}</style>
-    <style>/*! content.css */.pdoc{color:var(--text);box-sizing:border-box;line-height:1.5;background:none;}.pdoc .pdoc-button{display:inline-block;border:solid black 1px;border-radius:2px;font-size:.75rem;padding:calc(0.5em - 1px) 1em;transition:100ms all;}.pdoc .visually-hidden{position:absolute !important;width:1px !important;height:1px !important;padding:0 !important;margin:-1px !important;overflow:hidden !important;clip:rect(0, 0, 0, 0) !important;white-space:nowrap !important;border:0 !important;}.pdoc h1, .pdoc h2, .pdoc h3{font-weight:300;margin:.3em 0;padding:.2em 0;}.pdoc a{text-decoration:none;color:var(--link);}.pdoc a:hover{color:var(--link-hover);}.pdoc blockquote{margin-left:2rem;}.pdoc pre{border-top:1px solid var(--accent2);border-bottom:1px solid var(--accent2);margin-top:0;margin-bottom:1em;padding:.5rem 0 .5rem .5rem;overflow-x:auto;background-color:var(--code);}.pdoc code{color:var(--text);padding:.2em .4em;margin:0;font-size:85%;background-color:var(--code);border-radius:6px;}.pdoc a > code{color:inherit;}.pdoc pre > code{display:inline-block;font-size:inherit;background:none;border:none;padding:0;}.pdoc .modulename{margin-top:0;font-weight:bold;}.pdoc .modulename a{color:var(--link);transition:100ms all;}.pdoc .git-button{float:right;border:solid var(--link) 1px;}.pdoc .git-button:hover{background-color:var(--link);color:var(--pdoc-background);}.pdoc details{filter:opacity(1);}.pdoc details:not([open]){height:0;}.pdoc details > summary{position:absolute;top:-35px;right:0;font-size:.75rem;color:var(--muted);padding:0 .7em;user-select:none;cursor:pointer;}.pdoc details > summary:focus{outline:0;}.pdoc .docstring{margin-bottom:1.5rem;}.pdoc > section:first-of-type > .docstring{margin-bottom:2.5rem;}.pdoc .docstring .pdoc-code{margin-left:1em;margin-right:1em;}.pdoc h1:target,.pdoc h2:target,.pdoc h3:target,.pdoc h4:target,.pdoc h5:target,.pdoc h6:target{background-color:var(--active);box-shadow:-1rem 0 0 0 var(--active);}.pdoc div:target > .attr,.pdoc section:target > .attr,.pdoc dd:target > a{background-color:var(--active);}.pdoc .attr:hover{filter:contrast(0.95);}.pdoc .headerlink{position:absolute;width:0;margin-left:-1.5rem;line-height:1.4rem;font-size:1.5rem;font-weight:normal;transition:all 100ms ease-in-out;opacity:0;user-select:none;}.pdoc .attr > .headerlink{margin-left:-2.5rem;}.pdoc *:hover > .headerlink,.pdoc *:target > .attr > .headerlink{opacity:1;}.pdoc .attr{display:block;color:var(--text);margin:.5rem 0 .5rem;padding:.4rem 5rem .4rem 1rem;background-color:var(--accent);}.pdoc .classattr{margin-left:2rem;}.pdoc .name{color:var(--name);font-weight:bold;}.pdoc .def{color:var(--def);font-weight:bold;}.pdoc .signature{white-space:pre-wrap;}.pdoc .annotation{color:var(--annotation);}.pdoc .inherited{margin-left:2rem;}.pdoc .inherited dt{font-weight:700;}.pdoc .inherited dt, .pdoc .inherited dd{display:inline;margin-left:0;margin-bottom:.5rem;}.pdoc .inherited dd:not(:last-child):after{content:", ";}.pdoc .inherited .class:before{content:"class ";}.pdoc .inherited .function a:after{content:"()";}.pdoc .search-result .docstring{overflow:auto;max-height:25vh;}.pdoc .search-result.focused > .attr{background-color:var(--active);}.pdoc .attribution{margin-top:2rem;display:block;opacity:0.5;transition:all 200ms;filter:grayscale(100%);}.pdoc .attribution:hover{opacity:1;filter:grayscale(0%);}.pdoc .attribution img{margin-left:5px;height:35px;vertical-align:middle;width:70px;transition:all 200ms;}.pdoc table{display:block;width:max-content;max-width:100%;overflow:auto;margin-bottom:1rem;}.pdoc table th{font-weight:600;}.pdoc table th, .pdoc table td{padding:6px 13px;border:1px solid var(--accent2);}</style>
+    <style>/*! content.css */.pdoc{color:var(--text);box-sizing:border-box;line-height:1.5;background:none;}.pdoc .pdoc-button{display:inline-block;border:solid black 1px;border-radius:2px;font-size:.75rem;padding:calc(0.5em - 1px) 1em;transition:100ms all;}.pdoc .visually-hidden{position:absolute !important;width:1px !important;height:1px !important;padding:0 !important;margin:-1px !important;overflow:hidden !important;clip:rect(0, 0, 0, 0) !important;white-space:nowrap !important;border:0 !important;}.pdoc h1, .pdoc h2, .pdoc h3{font-weight:300;margin:.3em 0;padding:.2em 0;}.pdoc a{text-decoration:none;color:var(--link);}.pdoc a:hover{color:var(--link-hover);}.pdoc blockquote{margin-left:2rem;}.pdoc pre{border-top:1px solid var(--accent2);border-bottom:1px solid var(--accent2);margin-top:0;margin-bottom:1em;padding:.5rem 0 .5rem .5rem;overflow-x:auto;background-color:var(--code);}.pdoc code{color:var(--text);padding:.2em .4em;margin:0;font-size:85%;background-color:var(--code);border-radius:6px;}.pdoc a > code{color:inherit;}.pdoc pre > code{display:inline-block;font-size:inherit;background:none;border:none;padding:0;}.pdoc section{margin-bottom:1.5rem;}.pdoc .modulename{margin-top:0;font-weight:bold;}.pdoc .modulename a{color:var(--link);transition:100ms all;}.pdoc .git-button{float:right;border:solid var(--link) 1px;}.pdoc .git-button:hover{background-color:var(--link);color:var(--pdoc-background);}.pdoc details{filter:opacity(1);}.pdoc details:not([open]){height:0;}.pdoc details > summary{position:absolute;top:-35px;right:0;font-size:.75rem;color:var(--muted);padding:0 .7em;user-select:none;cursor:pointer;}.pdoc details > summary:focus{outline:0;}.pdoc .docstring{margin-bottom:1.5rem;}.pdoc > section:first-of-type > .docstring{margin-bottom:2.5rem;}.pdoc .docstring .pdoc-code{margin-left:1em;margin-right:1em;}.pdoc h1:target,.pdoc h2:target,.pdoc h3:target,.pdoc h4:target,.pdoc h5:target,.pdoc h6:target{background-color:var(--active);box-shadow:-1rem 0 0 0 var(--active);}.pdoc div:target > .attr,.pdoc section:target > .attr,.pdoc dd:target > a{background-color:var(--active);}.pdoc .attr:hover{filter:contrast(0.95);}.pdoc .headerlink{position:absolute;width:0;margin-left:-1.5rem;line-height:1.4rem;font-size:1.5rem;font-weight:normal;transition:all 100ms ease-in-out;opacity:0;user-select:none;}.pdoc .attr > .headerlink{margin-left:-2.5rem;}.pdoc *:hover > .headerlink,.pdoc *:target > .attr > .headerlink{opacity:1;}.pdoc .attr{display:block;color:var(--text);margin:.5rem 0 .5rem;padding:.4rem 5rem .4rem 1rem;background-color:var(--accent);}.pdoc .classattr{margin-left:2rem;}.pdoc .name{color:var(--name);font-weight:bold;}.pdoc .def{color:var(--def);font-weight:bold;}.pdoc .signature{white-space:pre-wrap;}.pdoc .annotation{color:var(--annotation);}.pdoc .inherited{margin-left:2rem;}.pdoc .inherited dt{font-weight:700;}.pdoc .inherited dt, .pdoc .inherited dd{display:inline;margin-left:0;margin-bottom:.5rem;}.pdoc .inherited dd:not(:last-child):after{content:", ";}.pdoc .inherited .class:before{content:"class ";}.pdoc .inherited .function a:after{content:"()";}.pdoc .search-result .docstring{overflow:auto;max-height:25vh;}.pdoc .search-result.focused > .attr{background-color:var(--active);}.pdoc .attribution{margin-top:2rem;display:block;opacity:0.5;transition:all 200ms;filter:grayscale(100%);}.pdoc .attribution:hover{opacity:1;filter:grayscale(0%);}.pdoc .attribution img{margin-left:5px;height:35px;vertical-align:middle;width:70px;transition:all 200ms;}.pdoc table{display:block;width:max-content;max-width:100%;overflow:auto;margin-bottom:1rem;}.pdoc table th{font-weight:600;}.pdoc table th, .pdoc table td{padding:6px 13px;border:1px solid var(--accent2);}</style>
     <style>/*! custom.css */*{font-family:SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}.pdoc .il{color:#ae81ff}nav.pdoc a.pdoc-button.module-list-button{display:none;}.pdoc .modulename a:hover{color:#ff79c6;}.pdoc .classattr{color:#FFF;}.pdoc p{color:#FFF;font-weight:300;}.pdoc li.code{color:#d63384;}.pdoc h2{color:#FFF;font-weight:0;margin:.3em 0;padding:.2em 0;content:"Module Content";}.pdoc h5{color:white;font-style:italic;}.pdoc .modulename{color:#FFF;font-weight:0;}nav.pdoc a.variable::before{content:"var ";color:#9d9d9d;font-style:italic;}nav.pdoc .function::before{content:"func ";color:#9d9d9d;font-style:italic;}nav.pdoc .function::after{content:"";color:#9d9d9d;}nav.pdoc .class::before{content:"class ";font-style:italic;}nav.pdoc .class::after{content:"";}nav.pdoc a.class{color:#8be9fd;}nav.pdoc a.class:hover{color:#fff;}nav.pdoc a::before{content:"module ";font-style:italic;color:#9d9d9d;}nav.pdoc a.function{color:#4dec75;}nav.pdoc a.variable{color:white;}nav.pdoc li a{color:#bd93f9;}.pdoc span.default_value{color:#e6db74;}.pdoc span.def{font-weight:normal;}.pdoc h6#attributes{color:#FFF;font-size:25px;}.pdoc h6#example{color:#FFF;font-size:29px;}.pdoc h6#notes{font-size:27px;color:orange;}.pdoc h6#returns{font-size:27px;color:white;}.pdoc h6#parameters{font-size:27px;color:white;}.pdoc h6#raises{font-size:27px;color:#FF6666;}.pdoc .kc{color:#bd93f9;}.pdoc li{color:white;}.pdoc .nd{color:#50fa7b;}.pdoc b,strong{color:#d63384;font-weight:normal;}.pdoc em{color:orange;font-size:23px;}.pdoc div.decorator{color:#50fa7b;}.pdoc span.name{color:#8be9fd;}.pdoc span.base{color:#8be9fd;}.pdoc .inherited dt,.pdoc .inherited dt::before{color:#8be9fd;}.pdoc .inherited dd,.pdoc .inherited dd{color:#FFF;}.pdoc .inherited dd:not(:last-child)::after{color:#fff;}.pdoc .inherited dd:not(:last-child)::after{color:#FFF;}.pdoc h1,.pdoc h2,.pdoc h3{font-weight:300;margin:0.3em 0;padding:0.2em 0;color:white;}nav.pdoc .module-list-button{display:inline-flex;align-items:center;margin-bottom:1rem;color:white;border-color:white;}nav.pdoc .module-list-button:hover{border-color:white;color:white;}</style></head>
 <body>
     <nav class="pdoc">
@@ -149,6 +149,12 @@
                         </li>
                         <li>
                                 <a class="function" href="#RESTClient.download_manifest">download_manifest</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#RESTClient.download_json_manifest">download_json_manifest</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#RESTClient.fetch_manifest_version">fetch_manifest_version</a>
                         </li>
                         <li>
                                 <a class="function" href="#RESTClient.connect_manifest">connect_manifest</a>
@@ -363,6 +369,18 @@
                         <li>
                                 <a class="function" href="#RESTClient.cancel_group_member_invite">cancel_group_member_invite</a>
                         </li>
+                        <li>
+                                <a class="function" href="#RESTClient.fetch_historical_definition">fetch_historical_definition</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#RESTClient.fetch_historical_stats">fetch_historical_stats</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#RESTClient.fetch_historical_stats_for_account">fetch_historical_stats_for_account</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#RESTClient.fetch_aggregated_activity_stats">fetch_aggregated_activity_stats</a>
+                        </li>
                 </ul>
 
             </li>
@@ -528,6 +546,7 @@
 <span class="kn">from</span> <span class="nn">aiobungie.crate</span> <span class="kn">import</span> <span class="n">fireteams</span>
 <span class="kn">from</span> <span class="nn">aiobungie.internal</span> <span class="kn">import</span> <span class="n">_backoff</span> <span class="k">as</span> <span class="n">backoff</span>
 <span class="kn">from</span> <span class="nn">aiobungie.internal</span> <span class="kn">import</span> <span class="n">enums</span>
+<span class="kn">from</span> <span class="nn">aiobungie.internal</span> <span class="kn">import</span> <span class="n">helpers</span>
 <span class="kn">from</span> <span class="nn">aiobungie.internal</span> <span class="kn">import</span> <span class="n">time</span>
 
 <span class="k">if</span> <span class="n">typing</span><span class="o">.</span><span class="n">TYPE_CHECKING</span><span class="p">:</span>
@@ -553,6 +572,21 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <span class="n">_LOG</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Final</span><span class="p">[</span><span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">]</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;aiobungie.rest&quot;</span><span class="p">)</span>
+<span class="n">_MANIFEST_LANGUAGES</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Final</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;en&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;fr&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;es&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;es-mx&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;de&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;it&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ja&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;pt-br&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ru&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;pl&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ko&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;zh-cht&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;zh-chs&quot;</span><span class="p">,</span>
+<span class="p">}</span>
 <span class="n">_APP_JSON</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Final</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;application/json&quot;</span>
 <span class="n">_RETRY_5XX</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Final</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">500</span><span class="p">,</span> <span class="mi">502</span><span class="p">,</span> <span class="mi">503</span><span class="p">,</span> <span class="mi">504</span><span class="p">}</span>
 <span class="n">_AUTH_HEADER</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Final</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">intern</span><span class="p">(</span><span class="s2">&quot;Authorization&quot;</span><span class="p">)</span>
@@ -583,7 +617,6 @@
 <span class="n">logging</span><span class="o">.</span><span class="n">addLevelName</span><span class="p">(</span><span class="n">REST_DEBUG</span><span class="p">,</span> <span class="s2">&quot;REST_DEBUG&quot;</span><span class="p">)</span>
 
 
-<span class="nd">@typing</span><span class="o">.</span><span class="n">no_type_check</span>
 <span class="k">def</span> <span class="nf">_collect_components</span><span class="p">(</span><span class="n">components</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">ComponentType</span><span class="p">],</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="n">pending</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -593,6 +626,44 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">pending</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">component</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
     <span class="k">return</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pending</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_uuid</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span>
+
+
+<span class="k">def</span> <span class="nf">_ensure_manifest_language</span><span class="p">(</span><span class="n">language</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">langs</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_MANIFEST_LANGUAGES</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">language</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_MANIFEST_LANGUAGES</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">language</span><span class="si">}</span><span class="s2"> is not a valid manifest language, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;valid languages are: </span><span class="si">{</span><span class="n">langs</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_write_json_bytes</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">json</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;manifest.json&quot;</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">_write_sqlite_bytes</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;manifest.sqlite3&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_uuid</span><span class="p">()</span><span class="si">}</span><span class="s2">.zip&quot;</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tmp</span><span class="p">:</span>
+            <span class="n">tmp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">as</span> <span class="n">zipped</span><span class="p">:</span>
+            <span class="n">file</span> <span class="o">=</span> <span class="n">zipped</span><span class="o">.</span><span class="n">namelist</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">file</span><span class="p">:</span>
+                <span class="n">zipped</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+
+            <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">file</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">file_name</span><span class="p">)</span>
+            <span class="n">_LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Finished downloading manifest.&quot;</span><span class="p">)</span>
+
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">missing_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">_Arc</span><span class="p">:</span>
@@ -1138,7 +1209,7 @@
         <span class="k">return</span> <span class="n">url</span><span class="o">.</span><span class="n">OAUTH2_EP_BUILDER</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">oauth_endpoint</span><span class="o">=</span><span class="n">url</span><span class="o">.</span><span class="n">OAUTH_EP</span><span class="p">,</span>
             <span class="n">client_id</span><span class="o">=</span><span class="n">client_id</span><span class="p">,</span>
-            <span class="n">uuid</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()),</span>
+            <span class="n">uuid</span><span class="o">=</span><span class="n">_uuid</span><span class="p">(),</span>
         <span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_oauth2_tokens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OAuth2Response</span><span class="p">:</span>
@@ -1495,59 +1566,77 @@
             <span class="n">auth</span><span class="o">=</span><span class="n">access_token</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_manifest_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;en&quot;</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_manifest_path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">:</span>
         <span class="c1"># &lt;&lt;inherited docstring from aiobungie.interfaces.rest.RESTInterface&gt;&gt;.</span>
-        <span class="k">if</span> <span class="n">language</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span>
-            <span class="n">langs</span> <span class="o">:=</span> <span class="p">{</span>
-                <span class="s2">&quot;en&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;fr&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;es&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;es-mx&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;de&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;it&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;ja&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;pt-br&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;ru&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;pl&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;ko&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;zh-cht&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;zh-chs&quot;</span><span class="p">,</span>
-            <span class="p">}</span>
-        <span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Language must be in &quot;</span><span class="p">,</span> <span class="n">langs</span><span class="p">)</span>
-        <span class="n">request</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="n">RequestMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span> <span class="s2">&quot;Destiny2/Manifest&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">request</span><span class="p">[</span><span class="s2">&quot;mobileWorldContentPaths&quot;</span><span class="p">][</span><span class="n">language</span><span class="p">])</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="n">RequestMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span> <span class="s2">&quot;Destiny2/Manifest&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">typing</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">read_manifest_bytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;en&quot;</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
         <span class="c1"># &lt;&lt;inherited docstring from aiobungie.interfaces.rest.RESTInterface&gt;&gt;.</span>
-        <span class="n">content</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch_manifest_path</span><span class="p">(</span><span class="n">language</span><span class="p">)</span>
+        <span class="n">_ensure_manifest_language</span><span class="p">(</span><span class="n">language</span><span class="p">)</span>
+
+        <span class="n">content</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch_manifest_path</span><span class="p">()</span>
         <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span>
-            <span class="n">RequestMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">unwrapping</span><span class="o">=</span><span class="s2">&quot;read&quot;</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="kc">True</span>
+            <span class="n">RequestMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span>
+            <span class="n">content</span><span class="p">[</span><span class="s2">&quot;mobileWorldContentPaths&quot;</span><span class="p">][</span><span class="n">language</span><span class="p">],</span>
+            <span class="n">unwrapping</span><span class="o">=</span><span class="s2">&quot;read&quot;</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">typing</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="nb">bytes</span><span class="p">,</span> <span class="n">resp</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">download_manifest</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;en&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;manifest.sqlite3&quot;</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;en&quot;</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;manifest.sqlite3&quot;</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># &lt;&lt;inherited docstring from aiobungie.interfaces.rest.RESTInterface&gt;&gt;.</span>
-        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s2">&quot;manifest.sqlite3&quot;</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span><span class="s2">&quot;Manifest file already exists.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+
+            <span class="k">if</span> <span class="n">force</span><span class="p">:</span>
+                <span class="n">_LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Forcing manifest download.&quot;</span><span class="p">)</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+                <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">download_manifest</span><span class="p">(</span><span class="n">language</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span>
+                    <span class="s2">&quot;Manifest file already exists, &quot;</span>
+                    <span class="s2">&quot;If you want to force download, set the `force` parameter to `True`.&quot;</span>
+                <span class="p">)</span>
 
         <span class="n">_LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Downloading manifest...&quot;</span><span class="p">)</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="c1"># TODO: Use tempfile instead?</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;tmp-file.zip&quot;</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tmp</span><span class="p">:</span>
-                <span class="n">tmp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_manifest_bytes</span><span class="p">(</span><span class="n">language</span><span class="p">))</span>
+        <span class="n">data_bytes</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_manifest_bytes</span><span class="p">(</span><span class="n">language</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_running_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_in_executor</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">_write_sqlite_bytes</span><span class="p">,</span> <span class="n">data_bytes</span><span class="p">,</span> <span class="n">name</span>
+        <span class="p">)</span>
 
-            <span class="k">with</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">as</span> <span class="n">zipped</span><span class="p">:</span>
-                <span class="n">file</span> <span class="o">=</span> <span class="n">zipped</span><span class="o">.</span><span class="n">namelist</span><span class="p">()</span>
-                <span class="n">zipped</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">file</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">name</span><span class="p">)</span>
-                <span class="n">_LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Finished downloading manifest.&quot;</span><span class="p">)</span>
-        <span class="k">finally</span><span class="p">:</span>
-            <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">missing_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">download_json_manifest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;en&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">_ensure_manifest_language</span><span class="p">(</span><span class="n">language</span><span class="p">)</span>
+
+        <span class="n">_LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Downloading manifest JSON...&quot;</span><span class="p">)</span>
+
+        <span class="n">content</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch_manifest_path</span><span class="p">()</span>
+        <span class="n">json_bytes</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span>
+            <span class="n">RequestMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span>
+            <span class="n">content</span><span class="p">[</span><span class="s2">&quot;jsonWorldContentPaths&quot;</span><span class="p">][</span><span class="n">language</span><span class="p">],</span>
+            <span class="n">unwrapping</span><span class="o">=</span><span class="s2">&quot;read&quot;</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_running_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_in_executor</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">_write_json_bytes</span><span class="p">,</span> <span class="n">json_bytes</span>
+        <span class="p">)</span>
+        <span class="n">_LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Finished downloading manifest JSON.&quot;</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_manifest_version</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">typing</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="p">(</span><span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch_manifest_path</span><span class="p">())[</span><span class="s2">&quot;version&quot;</span><span class="p">])</span>
 
     <span class="nd">@staticmethod</span>
+    <span class="nd">@helpers</span><span class="o">.</span><span class="n">deprecated</span><span class="p">(</span>
+        <span class="n">since</span><span class="o">=</span><span class="s2">&quot;0.2.6a1&quot;</span><span class="p">,</span> <span class="n">removed_in</span><span class="o">=</span><span class="s2">&quot;0.2.6&quot;</span><span class="p">,</span> <span class="n">use_instead</span><span class="o">=</span><span class="s2">&quot;sqlite3.connect&quot;</span>
+    <span class="p">)</span>
     <span class="k">def</span> <span class="nf">connect_manifest</span><span class="p">(</span>
         <span class="n">path</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">connection</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">sqlite3</span><span class="o">.</span><span class="n">Connection</span><span class="p">]</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Connection</span><span class="p">,</span>
@@ -2530,6 +2619,60 @@
             <span class="n">RequestMethod</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span>
             <span class="sa">f</span><span class="s2">&quot;GroupV2/</span><span class="si">{</span><span class="n">group_id</span><span class="si">}</span><span class="s2">/Members/IndividualInviteCancel/</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">membership_type</span><span class="p">)</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">membership_id</span><span class="si">}</span><span class="s2">/&quot;</span><span class="p">,</span>
             <span class="n">auth</span><span class="o">=</span><span class="n">access_token</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">fetch_historical_definition</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="n">RequestMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span> <span class="s2">&quot;Destiny2/Stats/Definition/&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">fetch_historical_stats</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">membership_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">membership_type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
+        <span class="n">day_start</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span>
+        <span class="n">day_end</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span>
+        <span class="n">groups</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">StatsGroupType</span><span class="p">]],</span>
+        <span class="n">modes</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">GameMode</span><span class="p">]],</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">period_type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">PeriodType</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">PeriodType</span><span class="o">.</span><span class="n">ALL_TIME</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+
+        <span class="n">end</span><span class="p">,</span> <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">parse_date_range</span><span class="p">(</span><span class="n">day_end</span><span class="p">,</span> <span class="n">day_start</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span>
+            <span class="n">RequestMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;Destiny2/</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">membership_type</span><span class="p">)</span><span class="si">}</span><span class="s2">/Account/</span><span class="si">{</span><span class="n">membership_id</span><span class="si">}</span><span class="s2">/Character/</span><span class="si">{</span><span class="n">character_id</span><span class="si">}</span><span class="s2">/Stats/&quot;</span><span class="p">,</span>
+            <span class="n">json</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;dayend&quot;</span><span class="p">:</span> <span class="n">end</span><span class="p">,</span>
+                <span class="s2">&quot;daystart&quot;</span><span class="p">:</span> <span class="n">start</span><span class="p">,</span>
+                <span class="s2">&quot;groups&quot;</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">group</span><span class="p">))</span> <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">],</span>
+                <span class="s2">&quot;modes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">mode</span><span class="p">))</span> <span class="k">for</span> <span class="n">mode</span> <span class="ow">in</span> <span class="n">modes</span><span class="p">],</span>
+                <span class="s2">&quot;periodType&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">period_type</span><span class="p">),</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">fetch_historical_stats_for_account</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">membership_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">membership_type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
+        <span class="n">groups</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">StatsGroupType</span><span class="p">]],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span>
+            <span class="n">RequestMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;Destiny2/</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">membership_type</span><span class="p">)</span><span class="si">}</span><span class="s2">/Account/</span><span class="si">{</span><span class="n">membership_id</span><span class="si">}</span><span class="s2">/Stats/&quot;</span><span class="p">,</span>
+            <span class="n">json</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;groups&quot;</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">group</span><span class="p">))</span> <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">]},</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">fetch_aggregated_activity_stats</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">membership_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">membership_type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
+        <span class="o">/</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span>
+            <span class="n">RequestMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;Destiny2/</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">membership_type</span><span class="p">)</span><span class="si">}</span><span class="s2">/Account/</span><span class="si">{</span><span class="n">membership_id</span><span class="si">}</span><span class="s2">/&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Character/</span><span class="si">{</span><span class="n">character_id</span><span class="si">}</span><span class="s2">/Stats/AggregateActivityStats/&quot;</span><span class="p">,</span>
         <span class="p">)</span>
 </pre></div>
 
@@ -2880,7 +3023,7 @@
         <span class="k">return</span> <span class="n">url</span><span class="o">.</span><span class="n">OAUTH2_EP_BUILDER</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">oauth_endpoint</span><span class="o">=</span><span class="n">url</span><span class="o">.</span><span class="n">OAUTH_EP</span><span class="p">,</span>
             <span class="n">client_id</span><span class="o">=</span><span class="n">client_id</span><span class="p">,</span>
-            <span class="n">uuid</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()),</span>
+            <span class="n">uuid</span><span class="o">=</span><span class="n">_uuid</span><span class="p">(),</span>
         <span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_oauth2_tokens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OAuth2Response</span><span class="p">:</span>
@@ -3237,59 +3380,77 @@
             <span class="n">auth</span><span class="o">=</span><span class="n">access_token</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_manifest_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;en&quot;</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_manifest_path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">:</span>
         <span class="c1"># &lt;&lt;inherited docstring from aiobungie.interfaces.rest.RESTInterface&gt;&gt;.</span>
-        <span class="k">if</span> <span class="n">language</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span>
-            <span class="n">langs</span> <span class="o">:=</span> <span class="p">{</span>
-                <span class="s2">&quot;en&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;fr&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;es&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;es-mx&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;de&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;it&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;ja&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;pt-br&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;ru&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;pl&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;ko&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;zh-cht&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;zh-chs&quot;</span><span class="p">,</span>
-            <span class="p">}</span>
-        <span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Language must be in &quot;</span><span class="p">,</span> <span class="n">langs</span><span class="p">)</span>
-        <span class="n">request</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="n">RequestMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span> <span class="s2">&quot;Destiny2/Manifest&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">request</span><span class="p">[</span><span class="s2">&quot;mobileWorldContentPaths&quot;</span><span class="p">][</span><span class="n">language</span><span class="p">])</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="n">RequestMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span> <span class="s2">&quot;Destiny2/Manifest&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">typing</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">read_manifest_bytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;en&quot;</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
         <span class="c1"># &lt;&lt;inherited docstring from aiobungie.interfaces.rest.RESTInterface&gt;&gt;.</span>
-        <span class="n">content</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch_manifest_path</span><span class="p">(</span><span class="n">language</span><span class="p">)</span>
+        <span class="n">_ensure_manifest_language</span><span class="p">(</span><span class="n">language</span><span class="p">)</span>
+
+        <span class="n">content</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch_manifest_path</span><span class="p">()</span>
         <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span>
-            <span class="n">RequestMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">unwrapping</span><span class="o">=</span><span class="s2">&quot;read&quot;</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="kc">True</span>
+            <span class="n">RequestMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span>
+            <span class="n">content</span><span class="p">[</span><span class="s2">&quot;mobileWorldContentPaths&quot;</span><span class="p">][</span><span class="n">language</span><span class="p">],</span>
+            <span class="n">unwrapping</span><span class="o">=</span><span class="s2">&quot;read&quot;</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">typing</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="nb">bytes</span><span class="p">,</span> <span class="n">resp</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">download_manifest</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;en&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;manifest.sqlite3&quot;</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;en&quot;</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;manifest.sqlite3&quot;</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># &lt;&lt;inherited docstring from aiobungie.interfaces.rest.RESTInterface&gt;&gt;.</span>
-        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s2">&quot;manifest.sqlite3&quot;</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span><span class="s2">&quot;Manifest file already exists.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+
+            <span class="k">if</span> <span class="n">force</span><span class="p">:</span>
+                <span class="n">_LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Forcing manifest download.&quot;</span><span class="p">)</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+                <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">download_manifest</span><span class="p">(</span><span class="n">language</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span>
+                    <span class="s2">&quot;Manifest file already exists, &quot;</span>
+                    <span class="s2">&quot;If you want to force download, set the `force` parameter to `True`.&quot;</span>
+                <span class="p">)</span>
 
         <span class="n">_LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Downloading manifest...&quot;</span><span class="p">)</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="c1"># TODO: Use tempfile instead?</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;tmp-file.zip&quot;</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tmp</span><span class="p">:</span>
-                <span class="n">tmp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_manifest_bytes</span><span class="p">(</span><span class="n">language</span><span class="p">))</span>
+        <span class="n">data_bytes</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_manifest_bytes</span><span class="p">(</span><span class="n">language</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_running_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_in_executor</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">_write_sqlite_bytes</span><span class="p">,</span> <span class="n">data_bytes</span><span class="p">,</span> <span class="n">name</span>
+        <span class="p">)</span>
 
-            <span class="k">with</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">as</span> <span class="n">zipped</span><span class="p">:</span>
-                <span class="n">file</span> <span class="o">=</span> <span class="n">zipped</span><span class="o">.</span><span class="n">namelist</span><span class="p">()</span>
-                <span class="n">zipped</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">file</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">name</span><span class="p">)</span>
-                <span class="n">_LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Finished downloading manifest.&quot;</span><span class="p">)</span>
-        <span class="k">finally</span><span class="p">:</span>
-            <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">missing_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">download_json_manifest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;en&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">_ensure_manifest_language</span><span class="p">(</span><span class="n">language</span><span class="p">)</span>
+
+        <span class="n">_LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Downloading manifest JSON...&quot;</span><span class="p">)</span>
+
+        <span class="n">content</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch_manifest_path</span><span class="p">()</span>
+        <span class="n">json_bytes</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span>
+            <span class="n">RequestMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span>
+            <span class="n">content</span><span class="p">[</span><span class="s2">&quot;jsonWorldContentPaths&quot;</span><span class="p">][</span><span class="n">language</span><span class="p">],</span>
+            <span class="n">unwrapping</span><span class="o">=</span><span class="s2">&quot;read&quot;</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_running_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_in_executor</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">_write_json_bytes</span><span class="p">,</span> <span class="n">json_bytes</span>
+        <span class="p">)</span>
+        <span class="n">_LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Finished downloading manifest JSON.&quot;</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_manifest_version</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">typing</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="p">(</span><span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch_manifest_path</span><span class="p">())[</span><span class="s2">&quot;version&quot;</span><span class="p">])</span>
 
     <span class="nd">@staticmethod</span>
+    <span class="nd">@helpers</span><span class="o">.</span><span class="n">deprecated</span><span class="p">(</span>
+        <span class="n">since</span><span class="o">=</span><span class="s2">&quot;0.2.6a1&quot;</span><span class="p">,</span> <span class="n">removed_in</span><span class="o">=</span><span class="s2">&quot;0.2.6&quot;</span><span class="p">,</span> <span class="n">use_instead</span><span class="o">=</span><span class="s2">&quot;sqlite3.connect&quot;</span>
+    <span class="p">)</span>
     <span class="k">def</span> <span class="nf">connect_manifest</span><span class="p">(</span>
         <span class="n">path</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">connection</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">sqlite3</span><span class="o">.</span><span class="n">Connection</span><span class="p">]</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Connection</span><span class="p">,</span>
@@ -4273,6 +4434,60 @@
             <span class="sa">f</span><span class="s2">&quot;GroupV2/</span><span class="si">{</span><span class="n">group_id</span><span class="si">}</span><span class="s2">/Members/IndividualInviteCancel/</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">membership_type</span><span class="p">)</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">membership_id</span><span class="si">}</span><span class="s2">/&quot;</span><span class="p">,</span>
             <span class="n">auth</span><span class="o">=</span><span class="n">access_token</span><span class="p">,</span>
         <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">fetch_historical_definition</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="n">RequestMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span> <span class="s2">&quot;Destiny2/Stats/Definition/&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">fetch_historical_stats</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">membership_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">membership_type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
+        <span class="n">day_start</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span>
+        <span class="n">day_end</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span>
+        <span class="n">groups</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">StatsGroupType</span><span class="p">]],</span>
+        <span class="n">modes</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">GameMode</span><span class="p">]],</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">period_type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">PeriodType</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">PeriodType</span><span class="o">.</span><span class="n">ALL_TIME</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+
+        <span class="n">end</span><span class="p">,</span> <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">parse_date_range</span><span class="p">(</span><span class="n">day_end</span><span class="p">,</span> <span class="n">day_start</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span>
+            <span class="n">RequestMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;Destiny2/</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">membership_type</span><span class="p">)</span><span class="si">}</span><span class="s2">/Account/</span><span class="si">{</span><span class="n">membership_id</span><span class="si">}</span><span class="s2">/Character/</span><span class="si">{</span><span class="n">character_id</span><span class="si">}</span><span class="s2">/Stats/&quot;</span><span class="p">,</span>
+            <span class="n">json</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;dayend&quot;</span><span class="p">:</span> <span class="n">end</span><span class="p">,</span>
+                <span class="s2">&quot;daystart&quot;</span><span class="p">:</span> <span class="n">start</span><span class="p">,</span>
+                <span class="s2">&quot;groups&quot;</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">group</span><span class="p">))</span> <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">],</span>
+                <span class="s2">&quot;modes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">mode</span><span class="p">))</span> <span class="k">for</span> <span class="n">mode</span> <span class="ow">in</span> <span class="n">modes</span><span class="p">],</span>
+                <span class="s2">&quot;periodType&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">period_type</span><span class="p">),</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">fetch_historical_stats_for_account</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">membership_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">membership_type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
+        <span class="n">groups</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">StatsGroupType</span><span class="p">]],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span>
+            <span class="n">RequestMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;Destiny2/</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">membership_type</span><span class="p">)</span><span class="si">}</span><span class="s2">/Account/</span><span class="si">{</span><span class="n">membership_id</span><span class="si">}</span><span class="s2">/Stats/&quot;</span><span class="p">,</span>
+            <span class="n">json</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;groups&quot;</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">group</span><span class="p">))</span> <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">]},</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">fetch_aggregated_activity_stats</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">membership_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">membership_type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
+        <span class="o">/</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span>
+            <span class="n">RequestMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;Destiny2/</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">membership_type</span><span class="p">)</span><span class="si">}</span><span class="s2">/Account/</span><span class="si">{</span><span class="n">membership_id</span><span class="si">}</span><span class="s2">/&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Character/</span><span class="si">{</span><span class="n">character_id</span><span class="si">}</span><span class="s2">/Stats/AggregateActivityStats/&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
 </pre></div>
 
         </details>
@@ -4565,7 +4780,7 @@ Any other key words to pass to the request.</li>
         <span class="k">return</span> <span class="n">url</span><span class="o">.</span><span class="n">OAUTH2_EP_BUILDER</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">oauth_endpoint</span><span class="o">=</span><span class="n">url</span><span class="o">.</span><span class="n">OAUTH_EP</span><span class="p">,</span>
             <span class="n">client_id</span><span class="o">=</span><span class="n">client_id</span><span class="p">,</span>
-            <span class="n">uuid</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()),</span>
+            <span class="n">uuid</span><span class="o">=</span><span class="n">_uuid</span><span class="p">(),</span>
         <span class="p">)</span>
 </pre></div>
 
@@ -6238,43 +6453,25 @@ The membership type for the associated account.</li>
 
         
             <span class="def">async def</span>
-            <span class="name">fetch_manifest_path</span><span class="signature">(self, language: str = &#39;en&#39;, /) -&gt; str</span>:
+            <span class="name">fetch_manifest_path</span><span class="signature">(self) -&gt; dict[str, typing.Any]</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
-            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_manifest_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;en&quot;</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_manifest_path</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">:</span>
         <span class="c1"># &lt;&lt;inherited docstring from aiobungie.interfaces.rest.RESTInterface&gt;&gt;.</span>
-        <span class="k">if</span> <span class="n">language</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span>
-            <span class="n">langs</span> <span class="o">:=</span> <span class="p">{</span>
-                <span class="s2">&quot;en&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;fr&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;es&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;es-mx&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;de&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;it&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;ja&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;pt-br&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;ru&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;pl&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;ko&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;zh-cht&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;zh-chs&quot;</span><span class="p">,</span>
-            <span class="p">}</span>
-        <span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Language must be in &quot;</span><span class="p">,</span> <span class="n">langs</span><span class="p">)</span>
-        <span class="n">request</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="n">RequestMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span> <span class="s2">&quot;Destiny2/Manifest&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">request</span><span class="p">[</span><span class="s2">&quot;mobileWorldContentPaths&quot;</span><span class="p">][</span><span class="n">language</span><span class="p">])</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="n">RequestMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span> <span class="s2">&quot;Destiny2/Manifest&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">typing</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Return a string of the Bungie sqlite manifest <code>.content</code> url.</p>
+            <div class="docstring"><p>Fetch the manifest JSON paths.</p>
 
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code>str</code></strong>: A url for the Bungie manifest content.</li>
+<li><strong><code>typedefs.JSONObject</code></strong>: The manifest JSON paths.</li>
 </ul>
 </div>
 
@@ -6292,19 +6489,31 @@ The membership type for the associated account.</li>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">read_manifest_bytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;en&quot;</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
         <span class="c1"># &lt;&lt;inherited docstring from aiobungie.interfaces.rest.RESTInterface&gt;&gt;.</span>
-        <span class="n">content</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch_manifest_path</span><span class="p">(</span><span class="n">language</span><span class="p">)</span>
+        <span class="n">_ensure_manifest_language</span><span class="p">(</span><span class="n">language</span><span class="p">)</span>
+
+        <span class="n">content</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch_manifest_path</span><span class="p">()</span>
         <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span>
-            <span class="n">RequestMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">unwrapping</span><span class="o">=</span><span class="s2">&quot;read&quot;</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="kc">True</span>
+            <span class="n">RequestMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span>
+            <span class="n">content</span><span class="p">[</span><span class="s2">&quot;mobileWorldContentPaths&quot;</span><span class="p">][</span><span class="n">language</span><span class="p">],</span>
+            <span class="n">unwrapping</span><span class="o">=</span><span class="s2">&quot;read&quot;</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">typing</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="nb">bytes</span><span class="p">,</span> <span class="n">resp</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Read Bungie's manifest sqlite bytes respond.</p>
+            <div class="docstring"><p>Read raw manifest SQLite database bytes response.</p>
 
 <p>This method can be used to write the bytes to zipped file
 and then extract it to get the manifest content.</p>
+
+<h6 id="parameters">Parameters</h6>
+
+<ul>
+<li><strong>language</strong> (<code>str</code>):
+The manifest database language bytes to get.</li>
+</ul>
 
 <h6 id="returns">Returns</h6>
 
@@ -6320,31 +6529,44 @@ and then extract it to get the manifest content.</p>
 
         
             <span class="def">async def</span>
-            <span class="name">download_manifest</span><span class="signature">(self, language: str = &#39;en&#39;, name: str = &#39;manifest.sqlite3&#39;) -&gt; None</span>:
+            <span class="name">download_manifest</span><span class="signature">(
+    self,
+    language: str = &#39;en&#39;,
+    name: str = &#39;manifest.sqlite3&#39;,
+    *,
+    force: bool = False
+) -&gt; None</span>:
     </div>
 
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">download_manifest</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;en&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;manifest.sqlite3&quot;</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;en&quot;</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;manifest.sqlite3&quot;</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># &lt;&lt;inherited docstring from aiobungie.interfaces.rest.RESTInterface&gt;&gt;.</span>
-        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s2">&quot;manifest.sqlite3&quot;</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span><span class="s2">&quot;Manifest file already exists.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+
+            <span class="k">if</span> <span class="n">force</span><span class="p">:</span>
+                <span class="n">_LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Forcing manifest download.&quot;</span><span class="p">)</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+                <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">download_manifest</span><span class="p">(</span><span class="n">language</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span>
+                    <span class="s2">&quot;Manifest file already exists, &quot;</span>
+                    <span class="s2">&quot;If you want to force download, set the `force` parameter to `True`.&quot;</span>
+                <span class="p">)</span>
 
         <span class="n">_LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Downloading manifest...&quot;</span><span class="p">)</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="c1"># TODO: Use tempfile instead?</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;tmp-file.zip&quot;</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tmp</span><span class="p">:</span>
-                <span class="n">tmp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_manifest_bytes</span><span class="p">(</span><span class="n">language</span><span class="p">))</span>
-
-            <span class="k">with</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">as</span> <span class="n">zipped</span><span class="p">:</span>
-                <span class="n">file</span> <span class="o">=</span> <span class="n">zipped</span><span class="o">.</span><span class="n">namelist</span><span class="p">()</span>
-                <span class="n">zipped</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">file</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">name</span><span class="p">)</span>
-                <span class="n">_LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Finished downloading manifest.&quot;</span><span class="p">)</span>
-        <span class="k">finally</span><span class="p">:</span>
-            <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">missing_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">data_bytes</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_manifest_bytes</span><span class="p">(</span><span class="n">language</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_running_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_in_executor</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">_write_sqlite_bytes</span><span class="p">,</span> <span class="n">data_bytes</span><span class="p">,</span> <span class="n">name</span>
+        <span class="p">)</span>
 </pre></div>
 
         </details>
@@ -6353,7 +6575,8 @@ and then extract it to get the manifest content.</p>
 
 <h6 id="note">Note</h6>
 
-<p>This method downloads the sqlite database and not JSON.</p>
+<p>This method downloads the sqlite database and not JSON.
+Use <code>RESTInterface.download_json_manifest</code> for the JSON version.</p>
 
 <h6 id="parameters">Parameters</h6>
 
@@ -6362,6 +6585,9 @@ and then extract it to get the manifest content.</p>
 The manifest language to download, Default is english.</li>
 <li><strong>name</strong> (<code>str</code>):
 The manifest database file name. Default is <code>manifest.sqlite3</code></li>
+<li><strong>force</strong> (<code>bool</code>):
+Whether to force the download. Default is <code>False</code>. However if set to true the old
+file will get removed and a new one will being to download.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
@@ -6373,10 +6599,81 @@ The manifest database file name. Default is <code>manifest.sqlite3</code></li>
 
 
                             </div>
+                            <div id="RESTClient.download_json_manifest" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTClient.download_json_manifest">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">async def</span>
+            <span class="name">download_json_manifest</span><span class="signature">(self, language: str = &#39;en&#39;) -&gt; None</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">download_json_manifest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;en&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">_ensure_manifest_language</span><span class="p">(</span><span class="n">language</span><span class="p">)</span>
+
+        <span class="n">_LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Downloading manifest JSON...&quot;</span><span class="p">)</span>
+
+        <span class="n">content</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch_manifest_path</span><span class="p">()</span>
+        <span class="n">json_bytes</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span>
+            <span class="n">RequestMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span>
+            <span class="n">content</span><span class="p">[</span><span class="s2">&quot;jsonWorldContentPaths&quot;</span><span class="p">][</span><span class="n">language</span><span class="p">],</span>
+            <span class="n">unwrapping</span><span class="o">=</span><span class="s2">&quot;read&quot;</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_running_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_in_executor</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="n">_write_json_bytes</span><span class="p">,</span> <span class="n">json_bytes</span>
+        <span class="p">)</span>
+        <span class="n">_LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Finished downloading manifest JSON.&quot;</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Download the Bungie manifest json file.</p>
+
+<h6 id="parameters">Parameters</h6>
+
+<ul>
+<li><strong>language</strong> (<code>str</code>):
+The language to download the manifest in.</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="RESTClient.fetch_manifest_version" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTClient.fetch_manifest_version">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">async def</span>
+            <span class="name">fetch_manifest_version</span><span class="signature">(self) -&gt; str</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_manifest_version</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">typing</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="p">(</span><span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch_manifest_path</span><span class="p">())[</span><span class="s2">&quot;version&quot;</span><span class="p">])</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Fetch the manifest version.</p>
+
+<h6 id="returns">Returns</h6>
+
+<ul>
+<li><strong><code>str</code></strong>: The manifest version.</li>
+</ul>
+</div>
+
+
+                            </div>
                             <div id="RESTClient.connect_manifest" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#RESTClient.connect_manifest">#&nbsp;&nbsp</a>
 
                 <div class="decorator">@staticmethod</div>
+        <div class="decorator">@helpers.deprecated(since=&#39;0.2.6a1&#39;, removed_in=&#39;0.2.6&#39;, use_instead=&#39;sqlite3.connect&#39;)</div>
 
             <span class="def">def</span>
             <span class="name">connect_manifest</span><span class="signature">(
@@ -6388,6 +6685,9 @@ The manifest database file name. Default is <code>manifest.sqlite3</code></li>
             <details>
             <summary>View Source</summary>
             <div class="pdoc-code codehilite"><pre><span></span>    <span class="nd">@staticmethod</span>
+    <span class="nd">@helpers</span><span class="o">.</span><span class="n">deprecated</span><span class="p">(</span>
+        <span class="n">since</span><span class="o">=</span><span class="s2">&quot;0.2.6a1&quot;</span><span class="p">,</span> <span class="n">removed_in</span><span class="o">=</span><span class="s2">&quot;0.2.6&quot;</span><span class="p">,</span> <span class="n">use_instead</span><span class="o">=</span><span class="s2">&quot;sqlite3.connect&quot;</span>
+    <span class="p">)</span>
     <span class="k">def</span> <span class="nf">connect_manifest</span><span class="p">(</span>
         <span class="n">path</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">connection</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">sqlite3</span><span class="o">.</span><span class="n">Connection</span><span class="p">]</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Connection</span><span class="p">,</span>
@@ -6401,19 +6701,21 @@ The manifest database file name. Default is <code>manifest.sqlite3</code></li>
 
         </details>
 
-            <div class="docstring"><p>A friendly method to connect to the manifest database.</p>
+            <div class="docstring"><p>A helper method to connect to the manifest database.</p>
 
 <h6 id="parameters">Parameters</h6>
 
 <ul>
 <li><strong>path</strong> (<code>typing.Optional[pathlib.Path]</code>):
 An optional path to pass, The assumed path to connect to is './manifest.sqlite3'</li>
+<li><strong>connection</strong> (<code>type[sqlite3.Connection]</code>):
+An optional connection to pass, if not passed a new connection will be created.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code>sqlite3.Connection</code></strong>: An sqlite database connection.</li>
+<li><strong><code>sqlite3.Connection</code></strong>: An SQLite database connection.</li>
 </ul>
 </div>
 
@@ -9992,6 +10294,215 @@ A datetime object can be used to collect the end of the application usage.</p>
     
 
                             </div>
+                            <div id="RESTClient.fetch_historical_definition" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTClient.fetch_historical_definition">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">fetch_historical_definition</span><span class="signature">(self) -&gt; collections.abc.Coroutine[None, None, dict[str, typing.Any]]</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">fetch_historical_definition</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="n">RequestMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span> <span class="s2">&quot;Destiny2/Stats/Definition/&quot;</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="RESTClient.fetch_historical_stats" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTClient.fetch_historical_stats">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">fetch_historical_stats</span><span class="signature">(
+    self,
+    character_id: int,
+    membership_id: int,
+    membership_type: Union[int, <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>],
+    day_start: datetime.datetime,
+    day_end: datetime.datetime,
+    groups: list,
+    modes: collections.abc.Sequence,
+    *,
+    period_type: aiobungie.internal.enums.PeriodType = &lt;PeriodType.ALL_TIME: 2&gt;
+) -&gt; collections.abc.Coroutine[None, None, dict[str, typing.Any]]</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">fetch_historical_stats</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">membership_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">membership_type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
+        <span class="n">day_start</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span>
+        <span class="n">day_end</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span>
+        <span class="n">groups</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">StatsGroupType</span><span class="p">]],</span>
+        <span class="n">modes</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">GameMode</span><span class="p">]],</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">period_type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">PeriodType</span> <span class="o">=</span> <span class="n">enums</span><span class="o">.</span><span class="n">PeriodType</span><span class="o">.</span><span class="n">ALL_TIME</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+
+        <span class="n">end</span><span class="p">,</span> <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">parse_date_range</span><span class="p">(</span><span class="n">day_end</span><span class="p">,</span> <span class="n">day_start</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span>
+            <span class="n">RequestMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;Destiny2/</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">membership_type</span><span class="p">)</span><span class="si">}</span><span class="s2">/Account/</span><span class="si">{</span><span class="n">membership_id</span><span class="si">}</span><span class="s2">/Character/</span><span class="si">{</span><span class="n">character_id</span><span class="si">}</span><span class="s2">/Stats/&quot;</span><span class="p">,</span>
+            <span class="n">json</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;dayend&quot;</span><span class="p">:</span> <span class="n">end</span><span class="p">,</span>
+                <span class="s2">&quot;daystart&quot;</span><span class="p">:</span> <span class="n">start</span><span class="p">,</span>
+                <span class="s2">&quot;groups&quot;</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">group</span><span class="p">))</span> <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">],</span>
+                <span class="s2">&quot;modes&quot;</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">mode</span><span class="p">))</span> <span class="k">for</span> <span class="n">mode</span> <span class="ow">in</span> <span class="n">modes</span><span class="p">],</span>
+                <span class="s2">&quot;periodType&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">period_type</span><span class="p">),</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Fetch historical stats for a specific membership character.</p>
+
+<h6 id="parameters">Parameters</h6>
+
+<ul>
+<li><strong>character_id</strong> (<code>int</code>):
+The character ID to return the stats for.</li>
+<li><strong>membership_id</strong> (<code>int</code>):
+The Destiny membership id to return the stats for.</li>
+<li><strong>membership_type</strong> (<code><a href="../aiobungie.html#MembershipType">aiobungie.MembershipType</a> | int</code>):
+The Destiny membership type to return the stats for.</li>
+<li><strong>day_start</strong> (<code>datetime.datetime</code>):
+The start of the day to return the stats for.</li>
+<li><strong>day_end</strong> (<code>datetime.datetime</code>):
+The end of the day to return the stats for.</li>
+<li><strong>groups</strong> (<code>list[aiobungie.StatsGroupType]</code>):
+A list of stats groups to return.</li>
+<li><strong>modes</strong> (<code>list[<a href="../aiobungie.html#GameMode">aiobungie.GameMode</a> | int]</code>):
+A list of game modes to return.</li>
+<li><strong>period_type</strong> (<code>aiobungie.enums.PeriodType</code>):
+The period type to return the stats for.
+This will return <code>ALL_TIME</code> by default if not modified.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<ul>
+<li><strong><code>ResponseSig[<a href="typedefs.html#JSONObject">aiobungie.typedefs.JSONObject</a>]</code></strong>: A JSON object of the historical stats.</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="RESTClient.fetch_historical_stats_for_account" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTClient.fetch_historical_stats_for_account">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">fetch_historical_stats_for_account</span><span class="signature">(
+    self,
+    membership_id: int,
+    membership_type: Union[int, <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>],
+    groups: list
+) -&gt; collections.abc.Coroutine[None, None, dict[str, typing.Any]]</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">fetch_historical_stats_for_account</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">membership_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">membership_type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
+        <span class="n">groups</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">StatsGroupType</span><span class="p">]],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span>
+            <span class="n">RequestMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;Destiny2/</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">membership_type</span><span class="p">)</span><span class="si">}</span><span class="s2">/Account/</span><span class="si">{</span><span class="n">membership_id</span><span class="si">}</span><span class="s2">/Stats/&quot;</span><span class="p">,</span>
+            <span class="n">json</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;groups&quot;</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">group</span><span class="p">))</span> <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">]},</span>
+        <span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Fetch historical stats for an account's membership.</p>
+
+<h6 id="parameters">Parameters</h6>
+
+<ul>
+<li><strong>membership_id</strong> (<code>int</code>):
+The Destiny membership id to return the stats for.</li>
+<li><strong>membership_type</strong> (<code><a href="../aiobungie.html#MembershipType">aiobungie.MembershipType</a> | int</code>):
+The Destiny membership type to return the stats for.</li>
+<li><strong>groups</strong> (<code>list[aiobungie.StatsGroupType]</code>):
+A list of stats groups to return.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<ul>
+<li><strong><code>ResponseSig[<a href="typedefs.html#JSONObject">aiobungie.typedefs.JSONObject</a>]</code></strong>: A JSON object of the historical stats for the account. This includes both the
+character and account stats.</li>
+</ul>
+</div>
+
+
+                            </div>
+                            <div id="RESTClient.fetch_aggregated_activity_stats" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#RESTClient.fetch_aggregated_activity_stats">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">fetch_aggregated_activity_stats</span><span class="signature">(
+    self,
+    character_id: int,
+    membership_id: int,
+    membership_type: Union[int, <a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a>],
+    /
+) -&gt; collections.abc.Coroutine[None, None, dict[str, typing.Any]]</span>:
+    </div>
+
+            <details>
+            <summary>View Source</summary>
+            <div class="pdoc-code codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">fetch_aggregated_activity_stats</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">membership_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">membership_type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
+        <span class="o">/</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseSig</span><span class="p">[</span><span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span>
+            <span class="n">RequestMethod</span><span class="o">.</span><span class="n">GET</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;Destiny2/</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">membership_type</span><span class="p">)</span><span class="si">}</span><span class="s2">/Account/</span><span class="si">{</span><span class="n">membership_id</span><span class="si">}</span><span class="s2">/&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Character/</span><span class="si">{</span><span class="n">character_id</span><span class="si">}</span><span class="s2">/Stats/AggregateActivityStats/&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Fetch aggregated activity stats for a specific membership character.</p>
+
+<h6 id="parameters">Parameters</h6>
+
+<ul>
+<li><strong>character_id</strong> (<code>int</code>):
+The character ID to return the stats for.</li>
+<li><strong>membership_id</strong> (<code>int</code>):
+The Destiny membership id to return the stats for.</li>
+<li><strong>membership_type</strong> (<code><a href="../aiobungie.html#MembershipType">aiobungie.MembershipType</a> | int</code>):
+The Destiny membership type to return the stats for.</li>
+</ul>
+
+<h6 id="returns">Returns</h6>
+
+<ul>
+<li><strong><code>ResponseSig[<a href="typedefs.html#JSONObject">aiobungie.typedefs.JSONObject</a>]</code></strong>: A JSON object of the aggregated activity stats.</li>
+</ul>
+</div>
+
+
+                            </div>
                 </section>
                 <section id="RequestMethod">
                                 <div class="attr class">
@@ -10661,7 +11172,7 @@ The hash of the item to plug.</li>
 <p>You can enable this with the following code</p>
 
 <div class="pdoc-code codehilite"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">logging</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;aiobungie.rest&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">aiobungie</span><span class="o">.</span><span class="n">REST_DEBUG</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;<a href="">aiobungie.rest</a>&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">aiobungie</span><span class="o">.</span><span class="n">REST_DEBUG</span><span class="p">)</span>
 <span class="go">&lt;h1 id=&quot;or&quot;&gt;or&lt;/h1&gt;</span>
 </code></pre></div>
 

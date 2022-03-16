@@ -136,7 +136,6 @@ jobs:
 
   deploy:
     if: github.event_name == 'release'
-    needs: [test]
 
     runs-on: ubuntu-20.04
 

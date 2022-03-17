@@ -7,11 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.6a2...HEAD)
 
 ## Added
+- New `builders.py` contains results of received/sent objects to the API.
 
 ## Changed
 - `REST_DEBUG` level name to `TRACE`
 - `enable_logging` parameter now accepts `str | int | bool`.
 - Setting the level to `True` now will only log minimal information.
+- `PlugSocketBuilder` and `OAuth2Response` has been moved to `builders.py`
+and both objects are not exposed to the project namespace anymore. However `aiobungie.builders.*` is exposed.
 
 ## Removed
 

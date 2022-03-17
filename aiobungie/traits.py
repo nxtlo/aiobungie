@@ -149,14 +149,25 @@ class RESTful(typing.Protocol):
         """
         raise NotImplementedError
 
-    @staticmethod
     def enable_debugging(
-        file: typing.Optional[typing.Union[pathlib.Path, str]] = None, /
+        self,
+        level: typing.Union[typing.Literal["TRACE"], bool] = False,
+        file: typing.Optional[typing.Union[pathlib.Path, str]] = None,
+        /,
     ) -> None:
         """Enables debugging for the REST client.
 
+        Logging Levels
+        --------------
+        * `False`: This will disable logging.
+        * `True`: This will set the level to `DEBUG` and enable logging minimal information.
+        Like the response status, route, taken time and so on.
+        * `"TRACE"` | `aiobungie.TRACE`: This will log the response headers along with the minimal information.
+
         Parameters
         -----------
+        level : `str | bool | int`
+            The level of debugging to enable.
         file : `pathlib.Path | str | None`
             The file path to write the debug logs to. If provided.
         """

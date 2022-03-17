@@ -395,7 +395,9 @@ def stringify_http_message(headers: multidict.CIMultiDictProxy[str]) -> str:
     return (
         "{ \n"
         + "\n".join(  # noqa: W503
-            f"{f'   {key}'}: {value}" if key != "Authorization" else "HIDDEN_TOKEN"
+            f"{f'   {key}'}: {value}"
+            if key != "Authorization" or key != "X-API-KEY"
+            else "HIDDEN_TOKEN"
             for key, value in headers.items()
         )
         + "\n}"  # noqa: W503

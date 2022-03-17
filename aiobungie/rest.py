@@ -32,7 +32,7 @@ __all__: tuple[str, ...] = (
     "RequestMethod",
     "OAuth2Response",
     "PlugSocketBuilder",
-    "REST_DEBUG",
+    "TRACE",
 )
 
 import asyncio
@@ -114,23 +114,23 @@ f"({info.__version__}), ({info.__url__}), "
 f"{platform.python_implementation()}/{platform.python_version()} {platform.system()} "
 f"{platform.architecture()[0]}, Aiohttp/{aiohttp.HttpVersion11}"  # type: ignore[UnknownMemberType]
 
-REST_DEBUG: typing.Final[int] = logging.DEBUG - 5
-"""The debug logging level for the `RESTClient` responses.
+TRACE: typing.Final[int] = logging.DEBUG - 5
+"""The trace logging level for the `RESTClient` responses.
 
 You can enable this with the following code
 
 >>> import logging
->>> logging.getLogger("aiobungie.rest").setLevel(aiobungie.REST_DEBUG)
+>>> logging.getLogger("aiobungie.rest").setLevel(aiobungie.TRACE)
 # or
->>> logging.basicConfig(level=aiobungie.REST_DEBUG)
+>>> logging.basicConfig(level=aiobungie.TRACE)
 # Or
->>> client = aiobungie.RESTClient(..., enable_debug=True)
+>>> client = aiobungie.RESTClient(..., enable_debug="TRACE")
 # Or if you're using `aiobungie.Client`
 >>> client = aiobungie.Client(...)
->>> client.rest.enable_debugging(file="rest_logs.txt") # optional file
+>>> client.rest.enable_debugging(level=aiobungie.TRACE, file="rest_logs.txt") # optional file
 """
 
-logging.addLevelName(REST_DEBUG, "REST_DEBUG")
+logging.addLevelName(TRACE, "TRACE")
 
 
 def _collect_components(components: list[enums.ComponentType], /) -> str:
@@ -187,13 +187,11 @@ class _Arc:
 
     def __init__(self, bucket: str) -> None:
         self._lock = asyncio.Lock()
-        self._bucket = bucket
+        self._bucket = bucket if bucket else "UNKNOWN"
 
     async def __aenter__(self) -> None:
-        _LOG.debug(
-            f"Lock acquired on bucket {self._bucket if self._bucket else 'UNKNOWN'}"
-        )
         await self.acquire()
+        _LOG.debug(f"Lock acquired on bucket {self._bucket}")
 
     async def __aexit__(
         self,
@@ -204,8 +202,8 @@ class _Arc:
         self._lock.release()
 
     async def acquire(self) -> None:
-        _LOG.debug(f"Lock released for bucket {self._bucket}")
         await self._lock.acquire()
+        _LOG.debug(f"Lock released for bucket {self._bucket}")
 
 
 class _Session:
@@ -328,7 +326,9 @@ class PlugSocketBuilder:
     def __init__(self, map: typing.Optional[dict[str, int]] = None, /) -> None:
         self._map = map or {}
 
-    def set_socket_array(self, socket_type: typing.Literal[0, 1]) -> PlugSocketBuilder:
+    def set_socket_array(
+        self, socket_type: typing.Literal[0, 1], /
+    ) -> PlugSocketBuilder:
         """Set the array socket type.
 
         Parameters
@@ -345,7 +345,7 @@ class PlugSocketBuilder:
         self._map["socketArrayType"] = socket_type
         return self
 
-    def set_socket_index(self, index: int) -> PlugSocketBuilder:
+    def set_socket_index(self, index: int, /) -> PlugSocketBuilder:
         """Set the socket index into the array.
 
         Parameters
@@ -361,7 +361,7 @@ class PlugSocketBuilder:
         self._map["socketIndex"] = index
         return self
 
-    def set_plug_item(self, item_hash: int) -> PlugSocketBuilder:
+    def set_plug_item(self, item_hash: int, /) -> PlugSocketBuilder:
         """Set the socket index into the array.
 
         Parameters
@@ -432,8 +432,15 @@ class RESTClient(interfaces.RESTInterface):
     client_id : `typing.Optional[int]`
         An optional application client id,
         This is only needed if you're fetching OAuth2 tokens with this client.
-    enable_debugging : `bool`
-        Whether to enable debugging/logging responses or not.
+    enable_debugging : `bool | str`
+        Whether to enable logging responses or not.
+
+    Logging Levels
+    --------------
+    * `False`: This will disable logging.
+    * `True`: This will set the level to `DEBUG` and enable logging minimal information.
+    Like the response status, route, taken time and so on.
+    * `"TRACE" | aiobungie.TRACE`: This will log the response headers along with the minimal information.
     """
 
     __slots__ = (
@@ -455,7 +462,7 @@ class RESTClient(interfaces.RESTInterface):
         *,
         max_retries: int = 4,
         max_ratelimit_retries: int = 3,
-        enable_debugging: bool = False,
+        enable_debugging: typing.Union[typing.Literal["TRACE"], bool, int] = False,
     ) -> None:
         self._session: typing.Optional[_Session] = None
         self._client_secret = client_secret
@@ -465,8 +472,7 @@ class RESTClient(interfaces.RESTInterface):
         self._max_rate_limit_retries = max_ratelimit_retries
         self._metadata: collections.MutableMapping[typing.Any, typing.Any] = {}
 
-        if enable_debugging:
-            logging.basicConfig(level=REST_DEBUG)
+        self._set_debug_level(enable_debugging)
 
     @property
     def client_id(self) -> typing.Optional[int]:
@@ -504,10 +510,29 @@ class RESTClient(interfaces.RESTInterface):
             self._session = None
 
     @staticmethod
-    def enable_debugging(
-        file: typing.Optional[typing.Union[pathlib.Path, str]] = None, /
+    def _set_debug_level(
+        level: typing.Union[typing.Literal["TRACE"], bool, int] = False,
+        file: typing.Optional[typing.Union[pathlib.Path, str]] = None,
     ) -> None:
-        logging.basicConfig(level=REST_DEBUG, filename=file, filemode="w")
+
+        file_handler = logging.FileHandler(file, mode="w") if file else None
+        if level == "TRACE" or level == TRACE:
+            logging.basicConfig(
+                level=TRACE, handlers=[file_handler] if file_handler else None
+            )
+
+        elif level:
+            logging.basicConfig(
+                level=logging.DEBUG, handlers=[file_handler] if file_handler else None
+            )
+
+    def enable_debugging(
+        self,
+        level: typing.Union[typing.Literal["TRACE"], bool, int] = False,
+        file: typing.Optional[typing.Union[pathlib.Path, str]] = None,
+        /,
+    ) -> None:
+        self._set_debug_level(level, file)
 
     @typing.final
     async def _request(
@@ -560,17 +585,19 @@ class RESTClient(interfaces.RESTInterface):
                             **kwargs,
                         )
                     )
-
-                    if _LOG.isEnabledFor(REST_DEBUG):
-                        _LOG.log(
-                            REST_DEBUG,
-                            "%s %s %s\n%s",
-                            method,
-                            f"{endpoint}/{route}",
-                            f"{response.status} {response.reason}",
-                            error.stringify_http_message(response.headers),
-                        )
                     response_time = (time.monotonic() - taken_time) * 1_000
+
+                    _LOG.debug(
+                        "%s %s %s",
+                        method,
+                        f"{endpoint}/{route}",
+                        f"{response.status} {response.reason}",
+                    )
+
+                    if _LOG.isEnabledFor(TRACE):
+                        _LOG.log(
+                            TRACE, "%s", error.stringify_http_message(response.headers)
+                        )
 
                     await self._handle_ratelimit(
                         response, method, route, self._max_rate_limit_retries
@@ -587,14 +614,18 @@ class RESTClient(interfaces.RESTInterface):
                         if response.content_type == _APP_JSON:
                             data = await response.json()
 
-                            if _LOG.isEnabledFor(REST_DEBUG):
+                            _LOG.debug(
+                                "%s %s %s Time %.4fms",
+                                method,
+                                f"{endpoint}/{route}",
+                                f"{response.status} {response.reason}",
+                                response_time,
+                            )
+
+                            if _LOG.isEnabledFor(TRACE):
                                 _LOG.log(
-                                    REST_DEBUG,
-                                    "%s %s %s Time %.4fms\n%s",
-                                    method,
-                                    f"{endpoint}/{route}",
-                                    f"{response.status} {response.reason}",
-                                    response_time,
+                                    TRACE,
+                                    "%s",
                                     error.stringify_http_message(response.headers),
                                 )
 

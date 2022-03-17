@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.6a2...HEAD)
 
+## Added
+
+## Changed
+- `REST_DEBUG` level name to `TRACE`
+- `enable_logging` parameter now accepts `str | int | bool`.
+- Setting the level to `True` now will only log minimal information.
+
+## Removed
+
+## Fixed
+
 ## [0.2.6a2](https://github.com/nxtlo/aiobungie/compare/0.2.6a1...0.2.6a2) 2022-03-17
 ## Added
 - Ability to read and save any resource that returns an `Image`.

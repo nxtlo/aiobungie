@@ -179,31 +179,6 @@ def _write_sqlite_bytes(data: bytes, file_name: str = "manifest.sqlite3") -> Non
     finally:
         pathlib.Path(tmp.name).unlink(missing_ok=True)
 
-
-class _Arc:
-    __slots__ = ("_lock", "_bucket")
-
-    def __init__(self, bucket: str) -> None:
-        self._lock = asyncio.Lock()
-        self._bucket = bucket if bucket else "UNKNOWN"
-
-    async def __aenter__(self) -> None:
-        await self.acquire()
-        _LOG.debug(f"Lock acquired on bucket {self._bucket}")
-
-    async def __aexit__(
-        self,
-        exception_type: typing.Optional[type[BaseException]],
-        exception: typing.Optional[BaseException],
-        exception_traceback: typing.Optional[types.TracebackType],
-    ) -> None:
-        self._lock.release()
-
-    async def acquire(self) -> None:
-        await self._lock.acquire()
-        _LOG.debug(f"Lock released for bucket {self._bucket}")
-
-
 class _Session:
 
     __slots__ = ("client_session",)
@@ -322,6 +297,7 @@ class RESTClient(interfaces.RESTInterface):
     __slots__ = (
         "_token",
         "_session",
+        "_lock",
         "_max_retries",
         "_client_secret",
         "_client_id",
@@ -341,6 +317,7 @@ class RESTClient(interfaces.RESTInterface):
         enable_debugging: typing.Union[typing.Literal["TRACE"], bool, int] = False,
     ) -> None:
         self._session: typing.Optional[_Session] = None
+        self._lock: typing.Optional[asyncio.Lock] = None
         self._client_secret = client_secret
         self._client_id = client_id
         self._token: str = token
@@ -446,10 +423,13 @@ class RESTClient(interfaces.RESTInterface):
             headers["Content-Type"] = "application/x-www-form-urlencoded"
             endpoint = endpoint + url.TOKEN_EP
 
+        if self._lock is None:
+            self._lock = asyncio.Lock()
+
         while True:
             try:
                 async with (stack := contextlib.AsyncExitStack()):
-                    await stack.enter_async_context(_Arc(f"{method}:{route}"))
+                    await stack.enter_async_context(self._lock)
 
                     # We make the request here.
                     taken_time = time.monotonic()

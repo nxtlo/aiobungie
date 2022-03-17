@@ -30,8 +30,6 @@ from __future__ import annotations
 __all__: tuple[str, ...] = (
     "RESTClient",
     "RequestMethod",
-    "OAuth2Response",
-    "PlugSocketBuilder",
     "TRACE",
 )
 
@@ -51,9 +49,9 @@ import uuid
 import zipfile
 
 import aiohttp
-import attrs
 
 from aiobungie import _info as info  # type: ignore[private-usage]
+from aiobungie import builders
 from aiobungie import error
 from aiobungie import interfaces
 from aiobungie import typedefs
@@ -266,128 +264,6 @@ class RequestMethod(str, enums.Enum):
     """DELETE methods"""
 
 
-@attrs.mutable(kw_only=True, repr=False)
-class OAuth2Response:
-    """Represents a proxy object for returned information from an OAuth2 successful response."""
-
-    access_token: str
-    """The returned OAuth2 `access_token` field."""
-
-    refresh_token: str
-    """The returned OAuth2 `refresh_token` field."""
-
-    expires_in: int
-    """The returned OAuth2 `expires_in` field."""
-
-    token_type: str
-    """The returned OAuth2 `token_type` field. This is usually just `Bearer`"""
-
-    refresh_expires_in: int
-    """The returned OAuth2 `refresh_expires_in` field."""
-
-    membership_id: int
-    """The returned BungieNet membership id for the authorized user."""
-
-    @classmethod
-    def build_response(cls, payload: typedefs.JSONObject, /) -> OAuth2Response:
-        """Deserialize and builds the JSON object into this object."""
-        return OAuth2Response(
-            access_token=payload["access_token"],
-            refresh_token=payload["refresh_token"],
-            expires_in=int(payload["expires_in"]),
-            token_type=payload["token_type"],
-            refresh_expires_in=payload["refresh_expires_in"],
-            membership_id=int(payload["membership_id"]),
-        )
-
-
-class PlugSocketBuilder:
-    """A helper for building insert socket plugs.
-
-    Example
-    -------
-    ```py
-    import aiobungie
-
-    rest = aiobungie.RESTClient(...)
-    plug = (
-        aiobungie.PlugSocketBuilder()
-        .set_socket_array(0)
-        .set_socket_index(0)
-        .set_plug_item(3023847)
-        .collect()
-    )
-    await rest.insert_socket_plug_free(..., plug=plug)
-    ```
-    """
-
-    __slots__ = ("_map",)
-
-    def __init__(self, map: typing.Optional[dict[str, int]] = None, /) -> None:
-        self._map = map or {}
-
-    def set_socket_array(
-        self, socket_type: typing.Literal[0, 1], /
-    ) -> PlugSocketBuilder:
-        """Set the array socket type.
-
-        Parameters
-        ----------
-        socket_type : `typing.Literal[0, 1]`
-            Either 0, or 1. If set to 0 it will be the default,
-            Otherwise if 1 it will be Intrinsic.
-
-        Returns
-        -------
-        `Self`
-            The class itself to allow chained methods.
-        """
-        self._map["socketArrayType"] = socket_type
-        return self
-
-    def set_socket_index(self, index: int, /) -> PlugSocketBuilder:
-        """Set the socket index into the array.
-
-        Parameters
-        ----------
-        index : `int`
-            The socket index.
-
-        Returns
-        -------
-        `Self`
-            The class itself to allow chained methods.
-        """
-        self._map["socketIndex"] = index
-        return self
-
-    def set_plug_item(self, item_hash: int, /) -> PlugSocketBuilder:
-        """Set the socket index into the array.
-
-        Parameters
-        ----------
-        item_hash : `int`
-            The hash of the item to plug.
-
-        Returns
-        -------
-        `Self`
-            The class itself to allow chained methods.
-        """
-        self._map["plugItemHash"] = item_hash
-        return self
-
-    def collect(self) -> dict[str, int]:
-        """Collect the set values and return its map to be passed to the request.
-
-        Returns
-        -------
-        `dict[str, int]`
-            The built map.
-        """
-        return self._map
-
-
 class _Dyn(RuntimeError):
     ...
 
@@ -587,18 +463,6 @@ class RESTClient(interfaces.RESTInterface):
                     )
                     response_time = (time.monotonic() - taken_time) * 1_000
 
-                    _LOG.debug(
-                        "%s %s %s",
-                        method,
-                        f"{endpoint}/{route}",
-                        f"{response.status} {response.reason}",
-                    )
-
-                    if _LOG.isEnabledFor(TRACE):
-                        _LOG.log(
-                            TRACE, "%s", error.stringify_http_message(response.headers)
-                        )
-
                     await self._handle_ratelimit(
                         response, method, route, self._max_rate_limit_retries
                     )
@@ -759,7 +623,7 @@ class RESTClient(interfaces.RESTInterface):
             uuid=_uuid(),
         )
 
-    async def fetch_oauth2_tokens(self, code: str, /) -> OAuth2Response:
+    async def fetch_oauth2_tokens(self, code: str, /) -> builders.OAuth2Response:
 
         if not isinstance(self._client_id, int):
             raise TypeError(
@@ -783,9 +647,11 @@ class RESTClient(interfaces.RESTInterface):
         response = await self._request(
             RequestMethod.POST, "", headers=headers, data=data, oauth2=True
         )
-        return OAuth2Response.build_response(response)
+        return builders.OAuth2Response.build_response(response)
 
-    async def refresh_access_token(self, refresh_token: str, /) -> OAuth2Response:
+    async def refresh_access_token(
+        self, refresh_token: str, /
+    ) -> builders.OAuth2Response:
         if not isinstance(self._client_id, int):
             raise TypeError(
                 f"Expected (int) for client id but got {type(self._client_id).__qualname__}"  # type: ignore
@@ -805,7 +671,7 @@ class RESTClient(interfaces.RESTInterface):
         }
 
         response = await self._request(RequestMethod.POST, "", data=data, oauth2=True)
-        return OAuth2Response.build_response(response)
+        return builders.OAuth2Response.build_response(response)
 
     def fetch_bungie_user(self, id: int) -> ResponseSig[typedefs.JSONObject]:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
@@ -1024,12 +890,12 @@ class RESTClient(interfaces.RESTInterface):
         action_token: str,
         /,
         instance_id: int,
-        plug: typing.Union[PlugSocketBuilder, dict[str, int]],
+        plug: typing.Union[builders.PlugSocketBuilder, dict[str, int]],
         character_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
     ) -> ResponseSig[typedefs.JSONObject]:
 
-        if isinstance(plug, PlugSocketBuilder):
+        if isinstance(plug, builders.PlugSocketBuilder):
             plug = plug.collect()
 
         body = {
@@ -1048,12 +914,12 @@ class RESTClient(interfaces.RESTInterface):
         access_token: str,
         /,
         instance_id: int,
-        plug: typing.Union[PlugSocketBuilder, dict[str, int]],
+        plug: typing.Union[builders.PlugSocketBuilder, dict[str, int]],
         character_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
     ) -> ResponseSig[typedefs.JSONObject]:
 
-        if isinstance(plug, PlugSocketBuilder):
+        if isinstance(plug, builders.PlugSocketBuilder):
             plug = plug.collect()
 
         body = {

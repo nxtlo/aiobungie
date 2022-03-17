@@ -110,6 +110,7 @@ Or of you're building a Discord bot for an example or something simple. The base
 
 from __future__ import annotations
 
+from aiobungie import builders
 from aiobungie import crate
 from aiobungie import interfaces
 from aiobungie import traits

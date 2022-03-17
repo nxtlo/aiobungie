@@ -41,7 +41,7 @@ _LOG = logging.getLogger("test_client")
 
 def __build_client() -> aiobungie.Client:
     token = os.environ["CLIENT_TOKEN"]
-    rest = aiobungie.RESTClient(token, max_retries=1, enable_debugging=False)
+    rest = aiobungie.RESTClient(token, max_retries=1, enable_debugging=aiobungie.TRACE)
     client = aiobungie.Client(token, rest_client=rest, max_retries=1)
     return client
 
@@ -369,7 +369,7 @@ async def test_activity_flawless():
 
 async def test_insert_plug_free():
     p = (
-        aiobungie.PlugSocketBuilder()
+        aiobungie.builders.PlugSocketBuilder()
         .set_socket_array(0)
         .set_socket_index(0)
         .set_plug_item(3000)

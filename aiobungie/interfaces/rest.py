@@ -40,7 +40,7 @@ if typing.TYPE_CHECKING:
     import pathlib
     import sqlite3
 
-    from aiobungie import rest as _rest
+    from aiobungie import builders
     from aiobungie import typedefs
     from aiobungie.crate import fireteams
 
@@ -1608,7 +1608,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    async def fetch_oauth2_tokens(self, code: str, /) -> _rest.OAuth2Response:
+    async def fetch_oauth2_tokens(self, code: str, /) -> builders.OAuth2Response:
         """Makes a POST request and fetch the OAuth2 access_token and refresh token.
 
         Parameters
@@ -1618,7 +1618,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `aiobungie.rest.OAuth2Response`
+        `aiobungie.builders.OAuth2Response`
             An OAuth2 deserialized response.
 
         Raises
@@ -1628,7 +1628,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    async def refresh_access_token(self, refresh_token: str, /) -> _rest.OAuth2Response:
+    async def refresh_access_token(self, refresh_token: str, /) -> builders.OAuth2Response:
         """Refresh OAuth2 access token given its refresh token.
 
         Parameters
@@ -1638,7 +1638,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `aiobungie.rest.OAuth2Response`
+        `aiobungie.builders.OAuth2Response`
             An OAuth2 deserialized response.
         """
 
@@ -1675,7 +1675,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         action_token: str,
         /,
         instance_id: int,
-        plug: typing.Union[_rest.PlugSocketBuilder, dict[str, int]],
+        plug: typing.Union[builders.PlugSocketBuilder, dict[str, int]],
         character_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
     ) -> ResponseSig[typedefs.JSONObject]:
@@ -1690,7 +1690,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
             Action token provided by the AwaGetActionToken API call.
         instance_id : `int`
             The item instance id that's plug inserted.
-        plug : `typing.Union[aiobungie.PlugSocketbuilder, dict[str, int]]`
+        plug : `typing.Union[aiobungie.builders.PlugSocketBuilder, dict[str, int]]`
             Either a PlugSocketBuilder object or a raw dict contains key, value for the plug entries.
 
         Example
@@ -1727,7 +1727,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         access_token: str,
         /,
         instance_id: int,
-        plug: typing.Union[_rest.PlugSocketBuilder, dict[str, int]],
+        plug: typing.Union[builders.PlugSocketBuilder, dict[str, int]],
         character_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
     ) -> ResponseSig[typedefs.JSONObject]:
@@ -1740,7 +1740,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         ----------
         instance_id : `int`
             The item instance id that's plug inserted.
-        plug : `typing.Union[aiobungie.PlugSocketbuilder, dict[str, int]]`
+        plug : `typing.Union[aiobungie.builders.PlugSocketBuilder, dict[str, int]]`
             Either a PlugSocketBuilder object or a raw dict contains key, value for the plug entries.
 
         Example

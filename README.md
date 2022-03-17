@@ -52,7 +52,9 @@ async def main() -> None:
         if member.unique_name == "Fate怒#4275":
 
             # Get the profile for this clan member.
-            profile = await member.fetch_self_profile(components=[aiobungie.ComponentType.CHARACTERS])
+            profile = await member.fetch_self_profile(
+                components=[aiobungie.ComponentType.CHARACTERS]
+            )
 
             # Get the character component for the profile.
             if characters := profile.characters:

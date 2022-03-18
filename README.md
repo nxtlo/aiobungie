@@ -48,23 +48,25 @@ async def main() -> None:
     # fetch a clan
     clan = await client.fetch_clan("Nuanceㅤ")
 
-    for member in await clan.fetch_members():
-        if member.unique_name == "Fate怒#4275":
+    # Fetch the clan members.
+    members = await clan.fetch_members()
 
-            # Get the profile for this clan member.
-            profile = await member.fetch_self_profile(
-                components=[aiobungie.ComponentType.CHARACTERS]
-            )
+    # Filter the results.
+    for member in members.filter(lambda m: m.unique_name == "Fate怒#4275"):
+        # Get the profile for this clan member.
+        profile = await member.fetch_self_profile(
+            components=[aiobungie.ComponentType.CHARACTERS]
+        )
 
-            # Get the character component for the profile.
-            if characters := profile.characters:
-                for character in characters.values():
-                    print(character.class_type, character.light, character.gender)
+        # Get the character component for the profile.
+        if characters := profile.characters:
+            for character in characters.values():
+                print(character.class_type, character.light, character.gender)
 
-                # Check some character stats.
-                for stat, stat_value in character.stats.items():
-                    if stat is aiobungie.Stat.MOBILITY and stat_value > 90:
-                        print(f"Zooming {stat_value} ⭐")
+            # Check some character stats.
+            for stat, stat_value in character.stats.items():
+                if stat is aiobungie.Stat.MOBILITY and stat_value > 90:
+                    print(f"Zooming {stat_value} ⭐")
 
 # You can either run it using the client or just `asyncio.run(main())`
 client.run(main())

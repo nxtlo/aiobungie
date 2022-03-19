@@ -200,7 +200,7 @@ class _Session:
     ) -> _Session:
         """Creates a new TCP connection client session."""
         session = aiohttp.ClientSession(
-            connector=aiohttp.TCPConnector(verify_ssl=False, **kwargs),
+            connector=aiohttp.TCPConnector(ssl=False, **kwargs),
             headers={_USER_AGENT_HEADERS: _USER_AGENT},
             connector_owner=owner,
             raise_for_status=raise_status,

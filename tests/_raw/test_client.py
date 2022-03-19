@@ -41,7 +41,7 @@ _LOG = logging.getLogger("test_client")
 
 def __build_client() -> aiobungie.Client:
     token = os.environ["CLIENT_TOKEN"]
-    rest = aiobungie.RESTClient(token, max_retries=1, enable_debugging=aiobungie.TRACE)
+    rest = aiobungie.RESTClient(token, max_retries=1, enable_debugging=True)
     client = aiobungie.Client(token, rest_client=rest, max_retries=1)
     return client
 
@@ -218,11 +218,10 @@ async def test_profile():
     for met in pf.metrics:
         for met_id, met_ in met.items():
             assert isinstance(met_id, int)
-            inv, obj = met_
+            inv, _ = met_
             assert isinstance(inv, bool)
 
-            if obj is not None:
-                assert isinstance(obj, aiobungie.crate.Objective)
+            assert any(o is not None for o in met_)
 
     if pf.transitory:
         assert isinstance(pf.transitory, aiobungie.crate.FireteamParty)

@@ -19,6 +19,7 @@ and both objects are not exposed to the project namespace anymore. However `aiob
 ## Removed
 
 ## Fixed
+- Objective in metrics components was always returning `None`
 
 ## [0.2.6a2](https://github.com/nxtlo/aiobungie/compare/0.2.6a1...0.2.6a2) 2022-03-17
 ## Added

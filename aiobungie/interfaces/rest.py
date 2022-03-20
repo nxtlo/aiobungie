@@ -1628,7 +1628,9 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    async def refresh_access_token(self, refresh_token: str, /) -> builders.OAuth2Response:
+    async def refresh_access_token(
+        self, refresh_token: str, /
+    ) -> builders.OAuth2Response:
         """Refresh OAuth2 access token given its refresh token.
 
         Parameters

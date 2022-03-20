@@ -29,6 +29,7 @@ from __future__ import annotations
 
 __all__: tuple[str, ...] = (
     "RESTClient",
+    "RESTPool",
     "RequestMethod",
     "TRACE",
 )
@@ -84,6 +85,7 @@ if typing.TYPE_CHECKING:
     that's mostly going to be on of `aiobungie.typedefs.JSONObject`
     or `aiobungie.typedefs.JSONArray`
     """
+    _T_co = typing.TypeVar("_T_co", covariant=True)
 
 _LOG: typing.Final[logging.Logger] = logging.getLogger("aiobungie.rest")
 _MANIFEST_LANGUAGES: typing.Final[set[str]] = {
@@ -179,6 +181,7 @@ def _write_sqlite_bytes(data: bytes, file_name: str = "manifest.sqlite3") -> Non
     finally:
         pathlib.Path(tmp.name).unlink(missing_ok=True)
 
+
 class _Session:
 
     __slots__ = ("client_session",)
@@ -241,6 +244,125 @@ class RequestMethod(str, enums.Enum):
 
 class _Dyn(RuntimeError):
     ...
+
+
+class RESTPool:
+    """Pool of `RESTClient` instances.
+
+    This allows to create multiple instances of `RESTClient`s that can be acquired
+    which share the same connector and metadata.
+
+    Example
+    -------
+    ```py
+    import aiobungie
+
+    client_pool = aiobungie.RESTPool("token", client_id=1234, client_secret='secret')
+
+    # Using a context manager to acquire an instance
+    # of the pool and close the connection after finishing.
+
+    async with client_pool.acquire() as client:
+        await client.download_manifest()
+        return client.build_oauth2_url()
+
+    # Other people may acquire an instance from the pool.
+    async with client_pool.acquire() as client:
+        new_tokens = await client.refresh_access_token("token")
+
+        # Tokens now can be used from any pool.
+        client.metadata['tokens'] = new_tokens
+    ```
+
+    Parameters
+    ----------
+    token : `str`
+        A valid application token from Bungie's developer portal.
+
+    Other Parameters
+    ----------------
+    max_retries : `int`
+        The max retries number to retry if the request hit a `5xx` status code.
+    max_ratelimit_retries : `int`
+        The max retries number to retry if the request hit a `429` status code. Defaults to `3`.
+    client_secret : `typing.Optional[str]`
+        An optional application client secret,
+        This is only needed if you're fetching OAuth2 tokens with this client.
+    client_id : `typing.Optional[int]`
+        An optional application client id,
+        This is only needed if you're fetching OAuth2 tokens with this client.
+    enable_debugging : `bool | str`
+        Whether to enable logging responses or not.
+
+    Logging Levels
+    --------------
+    * `False`: This will disable logging.
+    * `True`: This will set the level to `DEBUG` and enable logging minimal information.
+    Like the response status, route, taken time and so on.
+    * `"TRACE" | aiobungie.TRACE`: This will log the response headers along with the minimal information.
+    """
+
+    __slots__ = (
+        "_token",
+        "_max_retries",
+        "_client_secret",
+        "_client_id",
+        "_max_rate_limit_retries",
+        "_metadata",
+        "_enable_debug",
+    )
+
+    # Looks like mypy doesn't like this.
+    if typing.TYPE_CHECKING:
+        _enable_debug: typing.Union[typing.Literal["TRACE"], bool, int]
+
+    def __init__(
+        self,
+        token: str,
+        /,
+        client_secret: typing.Optional[str] = None,
+        client_id: typing.Optional[int] = None,
+        *,
+        max_retries: int = 4,
+        max_rate_limit_retries: int = 3,
+        enable_debugging: typing.Union[typing.Literal["TRACE"], bool, int] = False,
+    ) -> None:
+        self._client_secret = client_secret
+        self._client_id = client_id
+        self._token: str = token
+        self._max_retries = max_retries
+        self._max_rate_limit_retries = max_rate_limit_retries
+        self._metadata: collections.MutableMapping[typing.Any, typing.Any] = {}
+        self._enable_debug = enable_debugging
+
+    @property
+    def client_id(self) -> typing.Optional[int]:
+        return self._client_id
+
+    @property
+    def metadata(self) -> collections.MutableMapping[typing.Any, typing.Any]:
+        """Metadata dictionary."""
+        return self._metadata
+
+    @typing.final
+    def acquire(self) -> RESTClient:
+        """Acquires a new `RESTClient` instance from this REST pool.
+
+        Returns
+        -------
+        `RESTClient`
+            An instance of a REST client.
+        """
+        instance = RESTClient(
+            self._token,
+            client_secret=self._client_secret,
+            client_id=self._client_id,
+            max_retries=self._max_retries,
+            max_ratelimit_retries=self._max_rate_limit_retries,
+            enable_debugging=self._enable_debug,
+        )
+        instance._metadata = self._metadata  # type: ignore
+        return instance
 
 
 class RESTClient(interfaces.RESTInterface):

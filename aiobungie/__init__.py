@@ -22,79 +22,82 @@
 
 """A Pythonic `async`/`await` wrapper for interacting with the Bungie API.
 
+Base client.
+
 Example
 -------
-A Basic aiobungie API client.
-
 ```py
 import aiobungie
 
-# crates in aiobungie are implementations
-# of Bungie's objects to provide
-# more functionality.
-# See aiobungie.crate to view all the implemented objects.
-
 client = aiobungie.Client('YOUR_API_KEY')
 
-# An example on how to search for Destiny 2 users/memberships and get their characters.
+# Search for Destiny2 users.
 async def main() -> None:
-    users = await client.search_users('Fate')
-    for user in users:
-        if user.code == 868:
-            print('Found the desired user!', user.name, user.bungie_id)
+    users = await client.search_users('Crit')
 
-            # Iterate through the user's memberships.
-            for membership in user.memberships:
-                if membership.type is aiobungie.MembershipType.STEAM:
-                    try:
-                        # Fetch the membership's profile and get characters component.
-                        my_profile = await membership.fetch_self_profile(aiobungie.ComponentType.CHARACTERS)
+    # Iterate over the users and take the first 5 results.
+    for user in users.take(5):
+        print(f'{user.name} ({user.code})')
 
-                    # Handle the error.
-                    except aiobungie.CharacterError as exc:
-                        print(f'Couldn't get {user.name}'s characters. Due to: {exc.message}')
-                        return
-
-                    else:
-                        # Will return a Mapping from the character's id to `aiobungie.crate.Character` object.
-                        for character_id, character in my_profile.characters.items():
-                            print(character_id, character)
+        # Iterate through the users memberships.
+        for membership in user.memberships:
+            print(membership.type, membership.id)
 
 client.run(main()) # or asyncio.run(main())
 ```
 
-A basic RESTful client.
+Single RESTClient instance.
 
-The difference between base client and the REST one are:
+The difference between base client and the REST clients:
 
-* No Hight-Level concepts. Just interact with the API.
-* All returned data are pure JSON objects from Bungie's API.
+* No Hight-Level concepts.
+* All returned data are pure JSON objects from the API.
 * No runtime assertions.
 
-Which lets you to implement your own logic, classes objects to get the desired results.
-
+Example
+-------
 ```py
 import aiobungie
 
 async def main() -> None:
     # Using `async with` context manager to close the session properly.
     async with aiobungie.RESTClient("TOKEN") as rest:
-        # Fetch the memberships of a Destiny 2 player.
         payload = await rest.fetch_player('Fate怒', 4275)
-        print(*payload)  # A JSON array of dict objects of our memberships.
 
         for membership in payload:
-            # Print the ID and icon path of each membership.
             print(membership['membershipId'], membership['iconPath'])
 
-            # Printing the icon URL.
-            icon_url = aiobungie.Image(membership['iconPath'])
-            print(icon_url)
-
-            for k, v in membership.items(): # key, value
-                print(k, v)
-
 import asyncio
+asyncio.run(main())
+```
+
+REST client pool.
+
+A REST client pool allows you to acquire multiple `RESTClient` instances that shares the same connection.
+
+Example
+-------
+```py
+import aiobungie
+import asyncio
+
+pool = aiobungie.RESTPool("token")
+
+async def func1() -> None:
+    async with pool.acquire() as instance:
+        tokens = await instance.fetch_oauth2_tokens('code')
+        pool.metadata['tokens'] = tokens
+
+# Other instance may access the tokens from pool since its shared.
+
+async def func2() -> None:
+    async with pool.acquire() as instance:
+        tokens = pool.metadata['tokens']
+        tokens = await instance.refresh_access_token(tokens.refresh_token)
+
+async def main() -> None:
+    await asyncio.gather(func1(), func2())
+
 asyncio.run(main())
 ```
 

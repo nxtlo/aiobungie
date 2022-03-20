@@ -51,51 +51,68 @@ async def main() -> None:
     # Fetch the clan members.
     members = await clan.fetch_members()
 
-    # Filter the results.
-    for member in members.filter(lambda m: m.unique_name == "Fate怒#4275"):
+    # Filter the results to return only steam members from the clan.
+    for member in members.filter(lambda m: m.type is aiobungie.MembershipType.STEAM):
         # Get the profile for this clan member.
         profile = await member.fetch_self_profile(
             components=[aiobungie.ComponentType.CHARACTERS]
         )
 
-        # Get the character component for the profile.
-        if characters := profile.characters:
-            for character in characters.values():
-                print(character.class_type, character.light, character.gender)
-
-            # Check some character stats.
-            for stat, stat_value in character.stats.items():
-                if stat is aiobungie.Stat.MOBILITY and stat_value > 90:
-                    print(f"Zooming {stat_value} ⭐")
+        print(profile.characters)
 
 # You can either run it using the client or just `asyncio.run(main())`
 client.run(main())
 ```
 
-## RESTful client
+## RESTful clients
 Alternatively, You can use `RESTClient` which's designed to only make HTTP requests and return JSON objects.
 
-### Quick Example
+### Example
 ```py
 import aiobungie
 import asyncio
 
 async def main(access_token: str) -> None:
+    # Single REST client.
     async with aiobungie.RESTClient("TOKEN") as rest_client:
         response = await rest_client.fetch_clan_members(4389205)
         raw_members_payload = response['results']
 
         for member in raw_members_payload:
-            for k, v in member['destinyUserInfo'].items():
-                print(k, v)
+            print(member)
 
-            # aiobungie also exposes a method which lets you make your own requests.
-            await rest.static_request("POST", "Some/Endpoint", auth=access_token, json={...: ...})
-
-            # Methods only exposed through the rest client.
-            await rest.refresh_access_token('a token')
+        # Methods only exposed through the REST API.
+        await rest.refresh_access_token('a token')
 
 asyncio.run(main("DB_ACCESS_TOKEN"))
+```
+
+## REST client pooling.
+
+A REST client pool allows you to acquire multiple `RESTClient`
+instances that shares the same connection.
+
+### Example
+```py
+import aiobungie
+import asyncio
+
+pool = aiobungie.RESTPool("token")
+
+async def func1() -> None:
+    async with pool.acquire() as instance:
+        tokens = await instance.fetch_oauth2_tokens('code')
+        pool.metadata['tokens'] = tokens
+
+async def func2() -> None:
+    async with pool.acquire() as instance:
+        tokens = pool.metadata['tokens']
+        await instance.refresh_access_token(tokens.refresh_token)
+
+async def main() -> None:
+    await asyncio.gather(func1(), func2())
+
+asyncio.run(main())
 ```
 
 ### Requirements

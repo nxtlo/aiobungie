@@ -16,6 +16,7 @@ def parse_url(url: str) -> str:
     parser = urllib.parse.urlparse(url)
     return parser.query.removeprefix("code=")
 
+client = aiobungie.RESTPool("CLIENT_TOKEN", "CLIENT_SECRET", 0000)  # client ID.
 
 # Home page where we will be redirected to login.
 @router.get("/")
@@ -24,12 +25,7 @@ async def home(_: aiohttp.web.Request) -> aiohttp.web.Response:
     # constructor.
 
     # Acquire a new RESTClient instance.
-    async with aiobungie.RESTClient(
-        "CLIENT_TOKEN",
-        "CLIENT_SECRET",
-        0000,  # Client ID here.
-        enable_debugging=True,  # Optional to debug responses.
-    ) as rest:
+    async with client.acquire() as rest:
         oauth_url = rest.build_oauth2_url()
 
         assert oauth_url is not None, "Make sure client id and secret are set!"
@@ -43,12 +39,7 @@ async def redirect(request: aiohttp.web.Request) -> aiohttp.web.Response:
     # Check if the code parameter is in the redirect URL.
     if code := parse_url(str(request.url)):
 
-        async with aiobungie.RESTClient(
-            "CLIENT_TOKEN",
-            "CLIENT_SECRET",
-            0000,  # Client ID here.
-            enable_debugging=True,  # Optional to debug responses.
-        ) as rest:
+        async with client.acquire() as rest:
             # Make the request and fetch the OAuth2 tokens.
 
             tokens = await rest.fetch_oauth2_tokens(code)
@@ -68,12 +59,7 @@ async def my_user(request: aiohttp.web.Request) -> aiohttp.web.Response:
     if access_token := request.app.get("token"):
 
         # Fetch our current Bungie.net user.
-        async with aiobungie.RESTClient(
-            "CLIENT_TOKEN",
-            "CLIENT_SECRET",
-            0000,  # Client ID here.
-            enable_debugging=True,  # Optional to debug responses.
-        ) as rest:
+        async with client.acquire() as rest:
             my_user = await rest.fetch_current_user_memberships(access_token)
 
             # Return a JSON response.

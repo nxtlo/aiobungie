@@ -24,6 +24,8 @@
 
 from __future__ import annotations
 
+import collections
+
 __all__: list[str] = [
     "AiobungieError",
     "CharacterError",
@@ -391,13 +393,13 @@ async def raise_error(response: aiohttp.ClientResponse) -> AiobungieError:
         )
 
 
-def stringify_http_message(headers: multidict.CIMultiDictProxy[str]) -> str:
+def stringify_http_message(headers: collections.Mapping[str, str]) -> str:
     return (
         "{ \n"
         + "\n".join(  # noqa: W503
             f"{f'   {key}'}: {value}"
-            if key != "Authorization" or key != "X-API-KEY"
-            else "HIDDEN_TOKEN"
+            if key not in ("Authorization", "X-API-KEY")
+            else f"   {key}: HIDDEN_TOKEN"
             for key, value in headers.items()
         )
         + "\n}"  # noqa: W503

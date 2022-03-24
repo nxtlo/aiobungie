@@ -85,7 +85,6 @@ if typing.TYPE_CHECKING:
     that's mostly going to be on of `aiobungie.typedefs.JSONObject`
     or `aiobungie.typedefs.JSONArray`
     """
-    _T_co = typing.TypeVar("_T_co", covariant=True)
 
 _LOG: typing.Final[logging.Logger] = logging.getLogger("aiobungie.rest")
 _MANIFEST_LANGUAGES: typing.Final[set[str]] = {
@@ -109,10 +108,10 @@ _AUTH_HEADER: typing.Final[str] = sys.intern("Authorization")
 _USER_AGENT_HEADERS: typing.Final[str] = sys.intern("User-Agent")
 _USER_AGENT: typing.Final[
     str
-] = f"AiobungieClient ({info.__about__}), ({info.__author__}), "
+] = (f"AiobungieClient ({info.__about__}), ({info.__author__}), "
 f"({info.__version__}), ({info.__url__}), "
 f"{platform.python_implementation()}/{platform.python_version()} {platform.system()} "
-f"{platform.architecture()[0]}, Aiohttp/{aiohttp.HttpVersion11}"  # type: ignore[UnknownMemberType]
+f"{platform.architecture()[0]}, AIOHTTP/{aiohttp.HttpVersion11}")  # type: ignore[UnknownMemberType]
 
 TRACE: typing.Final[int] = logging.DEBUG - 5
 """The trace logging level for the `RESTClient` responses.
@@ -204,7 +203,6 @@ class _Session:
         """Creates a new TCP connection client session."""
         session = aiohttp.ClientSession(
             connector=aiohttp.TCPConnector(ssl=False, **kwargs),
-            headers={_USER_AGENT_HEADERS: _USER_AGENT},
             connector_owner=owner,
             raise_for_status=raise_status,
             timeout=aiohttp.ClientTimeout(
@@ -514,23 +512,22 @@ class RESTClient(interfaces.RESTInterface):
         self,
         method: typing.Union[RequestMethod, str],
         route: str,
+        *,
         base: bool = False,
         oauth2: bool = False,
         auth: typing.Optional[str] = None,
         unwrapping: typing.Literal["json", "read"] = "json",
         json: typing.Optional[dict[str, typing.Any]] = None,
-        **kwargs: typing.Any,
+        headers: typing.Optional[dict[str, typing.Any]] = None,
+        data: typing.Optional[typing.Union[str, dict[str, typing.Any]]] = None,
     ) -> typing.Any:
 
         retries: int = 0
         session = self._acquire()
-        headers: dict[str, str]
-        kwargs["headers"] = headers = {}
+        headers = headers or {}
 
-        if self._token is not None:
-            headers["X-API-KEY"] = self._token
-        else:
-            raise ValueError("No API KEY was passed.")
+        headers.setdefault(_USER_AGENT_HEADERS, _USER_AGENT)
+        headers["X-API-KEY"] = self._token
 
         if auth is not None:
             headers[_AUTH_HEADER] = f"Bearer {auth}"
@@ -560,10 +557,19 @@ class RESTClient(interfaces.RESTInterface):
                             method=method,
                             url=f"{endpoint}/{route}",
                             json=json,
-                            **kwargs,
+                            headers=headers,
+                            data=data,
                         )
                     )
                     response_time = (time.monotonic() - taken_time) * 1_000
+
+                    _LOG.debug(
+                        "%s %s %s Time %.4fms",
+                        method,
+                        f"{endpoint}/{route}",
+                        f"{response.status} {response.reason}",
+                        response_time,
+                    )
 
                     await self._handle_ratelimit(
                         response, method, route, self._max_rate_limit_retries
@@ -578,7 +584,7 @@ class RESTClient(interfaces.RESTInterface):
                             return await response.read()
 
                         if response.content_type == _APP_JSON:
-                            data = await response.json()
+                            json_data = await response.json()
 
                             _LOG.debug(
                                 "%s %s %s Time %.4fms",
@@ -589,18 +595,20 @@ class RESTClient(interfaces.RESTInterface):
                             )
 
                             if _LOG.isEnabledFor(TRACE):
+                                headers.update(response.headers)
+
                                 _LOG.log(
                                     TRACE,
                                     "%s",
-                                    error.stringify_http_message(response.headers),
+                                    error.stringify_http_message(headers),
                                 )
 
                             # Return the response.
                             # oauth2 responses are not packed inside a Response object.
                             if oauth2:
-                                return data
+                                return json_data
 
-                            return data["Response"]
+                            return json_data["Response"]
 
                     if (
                         response.status in _RETRY_5XX
@@ -682,7 +690,7 @@ class RESTClient(interfaces.RESTInterface):
 
             if retry_after <= 0:
                 # We sleep for a little bit to avoid funky behavior.
-                sleep_time = float(random.random() + 1) / 2
+                sleep_time = float(random.random() + 0.93) / 2
 
                 _LOG.warning(
                     "We're being ratelimited with method %s route %s. Sleeping for %.2fs.",
@@ -705,11 +713,11 @@ class RESTClient(interfaces.RESTInterface):
         self,
         method: typing.Union[RequestMethod, str],
         path: str,
+        *,
         auth: typing.Optional[str] = None,
         json: typing.Optional[dict[str, typing.Any]] = None,
-        **kwargs: typing.Any,
     ) -> ResponseSig[typing.Any]:
-        return self._request(method, path, auth=auth, json=json, **kwargs)
+        return self._request(method, path, auth=auth, json=json)
 
     @typing.final
     def build_oauth2_url(

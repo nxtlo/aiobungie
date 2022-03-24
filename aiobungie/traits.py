@@ -69,7 +69,7 @@ class Serializable(typing.Protocol):
     """Core trait for types which it is possible to deserialize incoming REST payloads
     into a `aiobungie.crate` implementation using the `Serializable.factory` property.
 
-    Currently only `ClientBase` implement this trait
+    Currently only `ClientApp` implement this trait
     """
 
     __slots__ = ()
@@ -181,9 +181,9 @@ class RESTful(typing.Protocol):
         self,
         method: typing.Union[rest.RequestMethod, str],
         path: str,
+        *,
         auth: typing.Optional[str] = None,
         json: typing.Optional[dict[str, typing.Any]] = None,
-        **kwargs: typing.Any,
     ) -> typing.Any:
         """Perform an HTTP request given a valid Bungie endpoint.
 
@@ -198,8 +198,6 @@ class RESTful(typing.Protocol):
             An optional bearer token for methods that requires OAuth2 Authorization header.
         json : `dict[str, typing.Any] | None`
             An optional JSON data to include in the request.
-        **kwargs: `typing.Any`
-            Any other key words to pass to the request.
 
         Returns
         -------

@@ -146,9 +146,9 @@ class FlatIterator(typing.Generic[Item]):
         Example
         -------
         >>> iterator = FlatIterator[str](["1", "2", "3"])
-        item = await iterator.next()
+        item = iterator.next()
         assert item == "1"
-        item = await iterator.next()
+        item = iterator.next()
         assert item == "2"
 
         Raises
@@ -158,7 +158,7 @@ class FlatIterator(typing.Generic[Item]):
         """
         try:
             return self.__next__()
-        except StopAsyncIteration:
+        except StopIteration:
             self._ok()
 
     def map(
@@ -504,7 +504,7 @@ class FlatIterator(typing.Generic[Item]):
         `StopIteration`
             If no elements are left in the iterator.
         """
-        return FlatIterator(itertools.chain(self, other))
+        return FlatIterator(itertools.chain(self._items, other))
 
     def for_each(self, func: collections.Callable[[Item], typing.Any]) -> None:
         """Calls the function on each item in the iterator.
@@ -543,7 +543,7 @@ class FlatIterator(typing.Generic[Item]):
         `StopIteration`
             If no elements are left in the iterator.
         """
-        return FlatIterator(enumerate(self, start=start))
+        return FlatIterator(enumerate(self._items, start=start))
 
     def _ok(self) -> typing.NoReturn:
         raise StopIteration("No more items in the iterator.") from None

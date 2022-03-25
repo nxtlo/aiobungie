@@ -10,13 +10,13 @@ import aiobungie
 # Web router.
 router = aiohttp.web.RouteTableDef()
 
+client = aiobungie.RESTPool("CLIENT_TOKEN", "CLIENT_SECRET", 0000)  # client ID.
 
 def parse_url(url: str) -> str:
     """Parse the URL after we login and return the code parameter."""
     parser = urllib.parse.urlparse(url)
     return parser.query.removeprefix("code=")
 
-client = aiobungie.RESTPool("CLIENT_TOKEN", "CLIENT_SECRET", 0000)  # client ID.
 
 # Home page where we will be redirected to login.
 @router.get("/")
@@ -69,19 +69,24 @@ async def my_user(request: aiohttp.web.Request) -> aiohttp.web.Response:
         raise aiohttp.web.HTTPUnauthorized(text="No access token found, Unauthorized.")
 
 
-# The application itself.
-app = aiohttp.web.Application()
+def main() -> None:
 
-# Add the routes.
-app.add_routes(router)
+    # The application itself.
+    app = aiohttp.web.Application()
 
-# Bungie doesn't allow redirecting to http and requires https,
-# So we need to generate ssl certifications to allow our server
-# run on https.
-ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+    # Add the routes.
+    app.add_routes(router)
 
-# You should generate cert and private key files and place their path here.
-ctx.load_cert_chain("CERTIFICATE_FILE_PATH", "PRIVATE_KEY_FILE_PATH")
+    # Bungie doesn't allow redirecting to http and requires https,
+    # So we need to generate ssl certifications to allow our server
+    # run on https.
+    ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
 
-# Run the app.
-aiohttp.web.run_app(app, host="localhost", port=8000, ssl_context=ctx)
+    # You should generate cert and private key files and place their path here.
+    ctx.load_cert_chain("CERTIFICATE_FILE_PATH", "PRIVATE_KEY_FILE_PATH")
+
+    # Run the app.
+    aiohttp.web.run_app(app, host="localhost", port=8000, ssl_context=ctx)
+
+if __name__ == '__main__':
+    main()

@@ -69,5 +69,5 @@ async def main():
     up_to_date_levante_prize = await client.fetch_inventory_item(levante_prize.hash)
     print(up_to_date_levante_prize)
 
-
-client.run(main())
+if __name__ == '__main__':
+    client.run(main())

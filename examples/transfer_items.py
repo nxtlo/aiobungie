@@ -83,3 +83,6 @@ async def transfer() -> None:
                 except aiobungie.HTTPError as err:
                     print(f"Couldn't transfer item due to {err.message}.")
                     return
+
+if __name__ == '__main__':
+    client.run(transfer())

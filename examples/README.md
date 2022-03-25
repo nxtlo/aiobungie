@@ -4,8 +4,8 @@ The examples listed in each file demonstrate different use cases of the library.
 
 ## Running Examples
 To run an example you'll first need:
-    - This lib installed with its requirements.
-    - An API key from Bungie developer portal application.
+* This lib installed with its requirements.
+* An API key from Bungie developer portal application.
 
 Some example may require more information, Like the `user_oauth` example,
 This will require an SSL certificate to be able to run the authentication web server on HTTP.

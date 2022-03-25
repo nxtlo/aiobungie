@@ -46,7 +46,7 @@ async def fetch_my_equipments() -> None:
     # How to fetch your characters equipments.
     # This will fetch equipped weapons, ships, sparrows, emblems, etc.
 
-    my_membership: aiobungie.crate.DestinyMembership = client.metadata['fate']
+    my_membership: aiobungie.crate.DestinyMembership = client.metadata['membership']
 
     # Fetch the profile bound to this membership.
     my_profile = await my_membership.fetch_self_profile(components=[aiobungie.ComponentType.CHARACTER_EQUIPMENT])

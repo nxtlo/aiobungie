@@ -8,7 +8,7 @@ To run an example you'll first need:
 * An API key from Bungie developer portal application.
 
 Some example may require more information, Like the `user_oauth` example,
-This will require an SSL certificate to be able to run the authentication web server on HTTP.
+This will require an SSL certificate to be able to run the authentication web server on HTTPS.
 
 Also another example in `transfer_items` will require your actual characters IDs and used within your OAuth2 implementation flow.
 

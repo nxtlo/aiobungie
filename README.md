@@ -1,25 +1,5 @@
-<div align="center">
-    <h1>aiobungie</h1>
-    <p>An asynchronous statically typed API wrapper for the Bungie API written in Python.</p>
-    <a href="https://codeclimate.com/github/nxtlo/aiobungie/maintainability">
-    <img src="https://api.codeclimate.com/v1/badges/09e71a0374875d4594f4/maintainability"/>
-    </a>
-    <a href="https://github.com/nxtlo/aiobungie/issues">
-    <img src="https://img.shields.io/github/issues/nxtlo/aiobungie"/>
-    </a>
-    <a href="http://python.org">
-    <img src="https://img.shields.io/badge/python-3.9%20%7C%203.10-blue"/>
-    </a>
-    <a href="https://pypi.org/project/aiobungie/">
-    <img src="https://img.shields.io/pypi/v/aiobungie?color=green"/>
-    </a>
-    <a href="https://github.com/nxtlo/aiobungie/blob/master/LICENSE">
-    <img src="https://img.shields.io/pypi/l/aiobungie"/>
-    </a>
-    <a href="https://github.com/nxtlo/aiobungie/actions/workflows/ci.yml">
-    <img src="https://github.com/nxtlo/aiobungie/actions/workflows/ci.yml/badge.svg?branch=master">
-    </a>
-</div>
+# aiobungie
+A statically typed API wrapper for the Bungie's REST API written in Python3 and Asyncio.
 
 # Installing
 

@@ -106,12 +106,12 @@ _APP_JSON: typing.Final[str] = "application/json"
 _RETRY_5XX: typing.Final[set[int]] = {500, 502, 503, 504}
 _AUTH_HEADER: typing.Final[str] = sys.intern("Authorization")
 _USER_AGENT_HEADERS: typing.Final[str] = sys.intern("User-Agent")
-_USER_AGENT: typing.Final[
-    str
-] = (f"AiobungieClient ({info.__about__}), ({info.__author__}), "
-f"({info.__version__}), ({info.__url__}), "
-f"{platform.python_implementation()}/{platform.python_version()} {platform.system()} "
-f"{platform.architecture()[0]}, AIOHTTP/{aiohttp.HttpVersion11}")  # type: ignore[UnknownMemberType]
+_USER_AGENT: typing.Final[str] = (
+    f"AiobungieClient ({info.__about__}), ({info.__author__}), "
+    f"({info.__version__}), ({info.__url__}), "  # noqa: E128
+    f"{platform.python_implementation()}/{platform.python_version()} {platform.system()} "  # noqa: E128
+    f"{platform.architecture()[0]}, AIOHTTP/{aiohttp.HttpVersion11}"
+)  # noqa: E128
 
 TRACE: typing.Final[int] = logging.DEBUG - 5
 """The trace logging level for the `RESTClient` responses.

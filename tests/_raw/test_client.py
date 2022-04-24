@@ -45,6 +45,7 @@ def __build_client() -> aiobungie.Client:
     client = aiobungie.Client(token, rest_client=rest, max_retries=1)
     return client
 
+
 client = __build_client()
 
 async def test_users():
@@ -389,9 +390,6 @@ async def test_search_entities():
 
     for i in e:
         assert isinstance(i, aiobungie.crate.SearchableEntity)
-        awts = await i.fetch_self_item()
-        assert isinstance(awts, aiobungie.crate.InventoryEntity)
-        assert awts.name == i.name
 
 async def test_unique_weapon_history():
     w = await client.fetch_unique_weapon_history(MID, CID, STEAM)

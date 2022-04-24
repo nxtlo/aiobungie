@@ -499,15 +499,15 @@ class Component(
     import aiobungie
 
     # The components to get and return.
-    components = (
+    components = [
         aiobungie.ComponentType.PROFILE,
         aiobungie.ComponentType.CHARACTERS,
         aiobungie.ComponentType.PROFILE_INVENTORIES,
-    )
+    ]
     profile = await client.fetch_profile(
         id,
         aiobungie.MembershipType.STEAM,
-        *components,
+        components,
         # Assuming the component requires an auth token
         auth="Some Bearer access token"
     )

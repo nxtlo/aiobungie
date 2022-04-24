@@ -72,7 +72,7 @@ class Client(traits.ClientApp):
 
     Other Parameters
     ----------------
-    rest_client: `typing.Optional[aiobungie.interfaces.RESTInterface]`
+    rest_client: `aiobungie.interfaces.RESTInterface | None`
         An optional rest client instance you can pass.
         If set to `None` then the client will use the default instance.
 
@@ -83,14 +83,15 @@ class Client(traits.ClientApp):
     async with aiobungie.RESTClient(TOKEN, max_retries=2) as rest_client:
         client = aiobungie.Client(TOKEN, rest_client=rest_client)
     ```
+
     max_retries : `int`
         The max retries number to retry if the request hit a `5xx` status code.
     max_ratelimit_retries : `int`
         The max retries number to retry if the request hit a `429` status code. Defaults to `3`.
-    client_secret : `typing.Optional[str]`
+    client_secret : `str | None`
         An optional application client secret,
         This is only needed if you're fetching OAuth2 tokens with this client.
-    client_id : `typing.Optional[int]`
+    client_id : `int | None`
         An optional application client id,
         This is only needed if you're fetching OAuth2 tokens with this client.
     """
@@ -362,9 +363,8 @@ class Client(traits.ClientApp):
             The member's id.
         type: `aiobungie.MembershipType`
             A valid membership type.
-        *components : `aiobungie.ComponentType`
-            Multiple arguments of profile components to collect and return.
-            This either can be arguments of integers or `aiobungie.ComponentType`.
+        components : `list[aiobungie.ComponentType]`
+            List of profile components to collect and return.
 
         Other Parameters
         ----------------

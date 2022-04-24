@@ -41,7 +41,7 @@ def client_test(session: nox.Session) -> None:
     session.install("-r", "requirements.txt")
     session.install('.', "--upgrade")
     try:
-        path = pathlib.Path("./tests/_raw/test_client.py")
+        path = pathlib.Path("./tests/aiobungie/test_client.py")
         if path.exists() and path.is_file():
             shutil.copy(path, '.')
             session.run("python", 'test_client.py')

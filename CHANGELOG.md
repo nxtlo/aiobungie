@@ -141,6 +141,8 @@ for REST debugging.
 
 ## Fixed
 - enum field `GreenPips` wasn't incluede in `ValueUIStyle` which was raising `ValueError` [#123](https://github.com/nxtlo/aiobungie/pull/132)
+- Fix a bug where `ApplicationOwner__str__()` was raising `RecursionError`.
+
 - Fixes an error where `error.raise_error` wasn't being called when getting a non JSON response AKA `text/**`.
 See [#143](https://github.com/nxtlo/aiobungie/issues/143)
 

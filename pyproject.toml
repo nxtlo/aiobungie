@@ -35,8 +35,9 @@ attrs = "21.4.0"
 
 [tool.pytest.ini_options]
 xfail_strict = true
-norecursedirs = "docs *.egg-info .git .nox .pytest_cache .venv venv _*"
-adopts = ["--showlocals", "--ignore=tests/_raw"]
+norecursedirs = "docs *.egg-info .git .nox .pytest_cache .venv venv test_client test_rest"
+addopts = "--ignore=./tests/aiobungie/test_client.py"
+asyncio_mode="strict"
 
 [tool.isort]
 profile = "black"

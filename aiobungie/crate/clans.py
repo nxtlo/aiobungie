@@ -43,6 +43,7 @@ from aiobungie.crate import fireteams
 from aiobungie.crate import user
 from aiobungie.internal import enums
 from aiobungie.internal import helpers
+from aiobungie.internal import iterators
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
@@ -160,10 +161,10 @@ class ClanBanner:
     id: int
     """The banner's id."""
 
-    foreground: assets.MaybeImage
+    foreground: assets.Image
     """The banner's foreground. This field can be `UNDEFINED` if not found."""
 
-    background: assets.MaybeImage
+    background: assets.Image
     """The banner's background. This field can be `UNDEFINED` if not found."""
 
     def __int__(self) -> int:
@@ -257,7 +258,7 @@ class ClanMember(user.DestinyMembership):
         )
 
     async def unban(self, access_token: str, /) -> None:
-        """Unbans this member from the clan.
+        """Unban this member from the clan.
 
         .. note::
             This request requires OAuth2: oauth2: `AdminGroups` scope.
@@ -315,13 +316,13 @@ class GroupMember:
     """Whether the member is online or not."""
 
     last_online: datetime
-    """An awre UTC datetime of the member's last online status."""
+    """Datetime of the member's last online apperation."""
 
     group_id: int
     """The group id of this member."""
 
     join_date: datetime
-    """An awre UTC datetime of the member's join date."""
+    """Datetime of the member's join date."""
 
     member: user.DestinyMembership
     """The member's destiny object that represents the group member."""
@@ -371,10 +372,10 @@ class Clan:
     is_public: bool
     """Clan's privacy status."""
 
-    banner: assets.MaybeImage
+    banner: assets.Image
     """Clan's banner"""
 
-    avatar: assets.MaybeImage
+    avatar: assets.Image
     """Clan's avatar"""
 
     about: str
@@ -641,7 +642,7 @@ class Clan:
         language: typing.Union[fireteams.FireteamLanguage, str],
         filtered: bool = True,
         page: int = 0,
-    ) -> collections.Sequence[fireteams.AvalaibleFireteam]:
+    ) -> collections.Sequence[fireteams.AvailableFireteam]:
         """Fetch this clan's available fireteams.
 
         .. note::
@@ -730,7 +731,7 @@ class Clan:
         *,
         name: typing.Optional[str] = None,
         type: enums.MembershipType = enums.MembershipType.NONE,
-    ) -> collections.Sequence[ClanMember]:
+    ) -> iterators.FlatIterator[ClanMember]:
         """Fetch the members of the clan.
 
         Parameters

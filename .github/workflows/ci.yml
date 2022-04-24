@@ -21,9 +21,9 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v2.4.0
+    - uses: actions/checkout@v3
     - name: Checkout Repo
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3.1.2
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -46,10 +46,10 @@ jobs:
 
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
 
       - name: Setup Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3.1.2
         with:
           python-version: 3.9
 
@@ -66,10 +66,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
 
       - name: Setup python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3.1.2
         with:
           python-version: 3.9
       - name: Format
@@ -82,10 +82,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
 
       - name: Setup python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3.1.2
         with:
           python-version: 3.9
       - name: Linting
@@ -98,10 +98,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
 
       - name: Setup python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3.1.2
         with:
           python-version: 3.9
       - name: Type Check
@@ -116,10 +116,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
 
       - name: Setup python 3.9
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3.1.2
         with:
           python-version: 3.9
       - name: Build
@@ -128,7 +128,7 @@ jobs:
           nox -s pdoc
 
       - name: Upload docs
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: docs
           path: ./docs
@@ -136,13 +136,12 @@ jobs:
 
   deploy:
     if: github.event_name == 'release'
-    needs: [test]
 
     runs-on: ubuntu-20.04
 
     steps:
-      - uses: actions/checkout@v2.4.0
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v3.1.2
         with:
           python-version: 3.9
 

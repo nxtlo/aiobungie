@@ -40,7 +40,7 @@ if typing.TYPE_CHECKING:
     import pathlib
     import sqlite3
 
-    from aiobungie import rest as _rest
+    from aiobungie import builders
     from aiobungie import typedefs
     from aiobungie.crate import fireteams
 
@@ -64,11 +64,16 @@ class RESTInterface(traits.RESTful, abc.ABC):
     __slots__ = ()
 
     @abc.abstractmethod
-    async def read_manifest_bytes(self) -> bytes:
-        """Read Bungie's manifest sqlite bytes respond.
+    async def read_manifest_bytes(self, language: str = "en", /) -> bytes:
+        """Read raw manifest SQLite database bytes response.
 
         This method can be used to write the bytes to zipped file
         and then extract it to get the manifest content.
+
+        Parameters
+        ----------
+        language : `str`
+            The manifest database language bytes to get.
 
         Returns
         -------
@@ -77,24 +82,39 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    async def fetch_manifest_path(self) -> str:
-        """Return a string of the Bungie sqlite manifest `.content` url.
+    async def fetch_manifest_path(self) -> typedefs.JSONObject:
+        """Fetch the manifest JSON paths.
 
         Returns
         -------
-        `str`
-            A url for the Bungie manifest content.
+        `typedefs.JSONObject`
+            The manifest JSON paths.
+        """
+
+    @abc.abstractmethod
+    async def download_json_manifest(self, language: str = "en") -> None:
+        """Download the Bungie manifest json file.
+
+        Parameters
+        ----------
+        language : `str`
+            The language to download the manifest in.
         """
 
     @abc.abstractmethod
     async def download_manifest(
-        self, language: str = "en", name: str = "manifest.sqlite3"
+        self,
+        language: str = "en",
+        name: str = "manifest.sqlite3",
+        *,
+        force: bool = False,
     ) -> None:
         """A helper method to download the manifest.
 
         Note
         ----
         This method downloads the sqlite database and not JSON.
+        Use `RESTInterface.download_json_manifest` for the JSON version.
 
         Parameters
         ----------
@@ -102,28 +122,44 @@ class RESTInterface(traits.RESTful, abc.ABC):
             The manifest language to download, Default is english.
         name : `str`
             The manifest database file name. Default is `manifest.sqlite3`
+        force : `bool`
+            Whether to force the download. Default is `False`. However if set to true the old
+            file will get removed and a new one will being to download.
 
         Returns
         --------
         `None`
         """
 
+    @abc.abstractmethod
+    async def fetch_manifest_version(self) -> str:
+        """Fetch the manifest version.
+
+        Returns
+        -------
+        `str`
+            The manifest version.
+        """
+
     @staticmethod
     @abc.abstractmethod
     def connect_manifest(
         path: typing.Optional[pathlib.Path] = None,
+        connection: type[sqlite3.Connection] = ...,  # type: ignore
     ) -> sqlite3.Connection:
-        """A friendly method to connect to the manifest database.
+        """A helper method to connect to the manifest database.
 
         Parameters
         ----------
         path : `typing.Optional[pathlib.Path]`
             An optional path to pass, The assumed path to connect to is './manifest.sqlite3'
+        connection : `type[sqlite3.Connection]`
+            An optional connection to pass, if not passed a new connection will be created.
 
         Returns
         -------
         `sqlite3.Connection`
-            An sqlite database connection.
+            An SQLite database connection.
         """
 
     @abc.abstractmethod
@@ -132,7 +168,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Parameters
         ----------
-        id: `builtins.int`
+        id: `int`
             The user id.
 
         Returns
@@ -191,7 +227,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Parameters
         ----------
-        credential: `builtins.int`
+        credential: `int`
             A valid SteamID64
         type: `aiobungie.typedefs.IntAnd[aiobungie.CredentialType]`
             The crededntial type. This must not be changed
@@ -214,7 +250,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Parameters
         ----------
-        id : `builtins.int`
+        id : `int`
             The user's id.
         type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
             The user's membership type.
@@ -233,31 +269,28 @@ class RESTInterface(traits.RESTful, abc.ABC):
     @abc.abstractmethod
     def fetch_profile(
         self,
-        memberid: int,
+        membership_id: int,
         type: typedefs.IntAnd[enums.MembershipType],
-        *components: enums.ComponentType,
-        **options: str,
+        components: list[enums.ComponentType],
+        auth: typing.Optional[str] = None,
     ) -> ResponseSig[typedefs.JSONObject]:
         """
-        Fetche a bungie profile.
+        Fetch a bungie profile.
 
         Parameters
         ----------
-        memberid: `builtins.int`
+        membership_id: `int`
             The member's id.
         type: `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
             A valid membership type.
-        *components : `aiobungie.ComponentType`
-            Multiple arguments of profile components to collect and return.
+        components : `list[aiobungie.ComponentType]`
+            A list of profile components to collect and return.
 
         Other Parameters
         ----------------
         auth : `typing.Optional[str]`
-            A passed kwarg Bearer access_token to make the request with.
+            A bearer access_token to make the request with.
             This is optional and limited to components that only requires an Authorization token.
-        **options : `str`
-            Other keyword arguments for the request to expect.
-            This is only here for the `auth` option which's a kwarg.
 
         Returns
         --------
@@ -282,7 +315,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Parameters
         -----------
-        name: `builtins.str`
+        name: `str`
             The unique Bungie player name.
         code : `int`
             The unique Bungie display name code.
@@ -298,7 +331,6 @@ class RESTInterface(traits.RESTful, abc.ABC):
         ------
         `aiobungie.NotFound`
             The player was not found.
-
         `aiobungie.MembershipTypeError`
             The provided membership type was invalid.
         """
@@ -309,30 +341,27 @@ class RESTInterface(traits.RESTful, abc.ABC):
         member_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
         character_id: int,
-        *components: enums.ComponentType,
-        **options: str,
+        components: list[enums.ComponentType],
+        auth: typing.Optional[str] = None,
     ) -> ResponseSig[typedefs.JSONObject]:
         """Fetch a Destiny 2 player's characters.
 
         Parameters
         ----------
-        member_id: `builtins.int`
+        member_id: `int`
             A valid bungie member id.
         membership_type: `aiobungie.typedefs.IntAnd[aiobungie.internal.enums.MembershipType]`
             The member's membership type.
         character_id : `int`
             The character id to return.
-        *components: `aiobungie.ComponentType`
-            Multiple arguments of character components to collect and return.
+        components: `list[aiobungie.ComponentType]`
+            A list of character components to collect and return.
 
         Other Parameters
         ----------------
         auth : `typing.Optional[str]`
-            A passed kwarg Bearer access_token to make the request with.
+            A bearer access_token to make the request with.
             This is optional and limited to components that only requires an Authorization token.
-        **options : `str`
-            Other keyword arguments for the request to expect.
-            This is only here for the `auth` option which's a kwarg.
 
         Returns
         -------
@@ -341,9 +370,6 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Raises
         ------
-        `aiobungie.error.CharacterError`
-            raised if the Character was not found.
-
         `aiobungie.MembershipTypeError`
             The provided membership type was invalid.
         """
@@ -365,9 +391,9 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Parameters
         ----------
-        member_id: `builtins.int`
+        member_id: `int`
             The user id that starts with `4611`.
-        character_id: `builtins.int`
+        character_id: `int`
             The id of the character to retrieve.
         mode: `aiobungie.typedefs.IntAnd[aiobungie.GameMode]`
             This parameter filters the game mode, Nightfall, Strike, Iron Banner, etc.
@@ -376,9 +402,9 @@ class RESTInterface(traits.RESTful, abc.ABC):
         ----------------
         membership_type: `aiobungie.typedefs.IntAnd[aiobungie.internal.enums.MembershipType]`
             The Member ship type, if nothing was passed than it will return all.
-        page: `builtins.int`
+        page: `int`
             The page number. Default to `1`
-        limit: `builtins.int`
+        limit: `int`
             Limit the returned result. Default to `1`
 
         Returns
@@ -490,7 +516,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Parameters
         ----------
-        clan_id : `builtins.int`
+        clan_id : `int`
             The clan's id.
 
         Returns
@@ -505,7 +531,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Parameters
         ----------
-        clan_id : `builtins.int`
+        clan_id : `int`
             The clan id.
 
         Returns
@@ -533,7 +559,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Parameters
         ----------
-        member_id : `builtins.int`
+        member_id : `int`
             The member's id
         member_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
             The member's membership type.
@@ -566,7 +592,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Parameters
         ----------
-        member_id : `builtins.int`
+        member_id : `int`
             The member's id
         member_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
             The member's membership type.
@@ -627,9 +653,9 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Parameters
         ----------
-        type: `builtins.str`
+        type: `str`
             Entity's type definition.
-        hash: `builtins.int`
+        hash: `int`
             Entity's hash.
 
         Returns
@@ -644,7 +670,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Parameters
         ----------
-        hash: `builtins.int`
+        hash: `int`
             Entity's hash.
 
         Returns
@@ -659,7 +685,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Parameters
         ----------
-        hash: `builtins.int`
+        hash: `int`
             objective's hash.
 
         Returns
@@ -674,7 +700,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Parameters
         -----------
-        appid: `builtins.int`
+        appid: `int`
             The application id.
 
         Returns
@@ -701,14 +727,14 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Parameters
         ----------
-        member_id : `builtins.int`
+        member_id : `int`
             The ID of the membership. This must be a valid Bungie.Net or PSN or Xbox ID.
         member_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
             The type for the membership whose linked Destiny account you want to return.
 
         Other Parameters
         ----------------
-        all : `builtins.bool`
+        all : `bool`
             If provided and set to `True`, All memberships regardless
             of whether thry're obscured by overrides will be returned,
 
@@ -749,7 +775,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Parameters
         ----------
-        milestone_hash : `builtins.int`
+        milestone_hash : `int`
             The milestone hash.
 
         Returns
@@ -770,7 +796,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Parameters
         ----------
-        access_token : `builtins.str`
+        access_token : `str`
             The bearer access token associated with the bungie account.
 
         Returns
@@ -797,11 +823,11 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Parameters
         ----------
-        access_token : `builtins.str`
+        access_token : `str`
             The bearer access token associated with the bungie account.
-        item_id : `builtins.int`
+        item_id : `int`
             The item id.
-        character_id : `builtins.int`
+        character_id : `int`
             The character's id to equip the item to.
         membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
             The membership type assocaiated with this player.
@@ -825,11 +851,11 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Parameters
         ----------
-        access_token : `builtins.str`
+        access_token : `str`
             The bearer access token associated with the bungie account.
-        item_ids : `list[builtins.int]`
+        item_ids : `list[int]`
             A list of item ids.
-        character_id : `builtins.int`
+        character_id : `int`
             The character's id to equip the item to.
         membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
             The membership type assocaiated with this player.
@@ -854,7 +880,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Parameters
         ----------
-        access_token : `builtins.str`
+        access_token : `str`
             The bearer access token associated with the bungie account.
         group_id: `int`
             The group id.
@@ -887,7 +913,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Parameters
         ----------
-        access_token : `builtins.str`
+        access_token : `str`
             The bearer access token associated with the bungie account.
         group_id: `int`
             The group id.
@@ -913,7 +939,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Parameters
         ----------
-        access_token : `builtins.str`
+        access_token : `str`
             The bearer access token associated with the bungie account.
         group_id: `int`
             The group id.
@@ -952,7 +978,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Parameters
         ----------
-        access_token : `builtins.str`
+        access_token : `str`
             The bearer access token associated with the bungie account.
         group_id: `int`
             The group id.
@@ -1582,7 +1608,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    async def fetch_oauth2_tokens(self, code: str, /) -> _rest.OAuth2Response:
+    async def fetch_oauth2_tokens(self, code: str, /) -> builders.OAuth2Response:
         """Makes a POST request and fetch the OAuth2 access_token and refresh token.
 
         Parameters
@@ -1592,7 +1618,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `aiobungie.rest.OAuth2Response`
+        `aiobungie.builders.OAuth2Response`
             An OAuth2 deserialized response.
 
         Raises
@@ -1602,7 +1628,9 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    async def refresh_access_token(self, refresh_token: str, /) -> _rest.OAuth2Response:
+    async def refresh_access_token(
+        self, refresh_token: str, /
+    ) -> builders.OAuth2Response:
         """Refresh OAuth2 access token given its refresh token.
 
         Parameters
@@ -1612,7 +1640,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `aiobungie.rest.OAuth2Response`
+        `aiobungie.builders.OAuth2Response`
             An OAuth2 deserialized response.
         """
 
@@ -1649,7 +1677,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         action_token: str,
         /,
         instance_id: int,
-        plug: typing.Union[_rest.PlugSocketBuilder, dict[str, int]],
+        plug: typing.Union[builders.PlugSocketBuilder, dict[str, int]],
         character_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
     ) -> ResponseSig[typedefs.JSONObject]:
@@ -1664,7 +1692,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
             Action token provided by the AwaGetActionToken API call.
         instance_id : `int`
             The item instance id that's plug inserted.
-        plug : `typing.Union[aiobungie.PlugSocketbuilder, dict[str, int]]`
+        plug : `typing.Union[aiobungie.builders.PlugSocketBuilder, dict[str, int]]`
             Either a PlugSocketBuilder object or a raw dict contains key, value for the plug entries.
 
         Example
@@ -1701,7 +1729,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         access_token: str,
         /,
         instance_id: int,
-        plug: typing.Union[_rest.PlugSocketBuilder, dict[str, int]],
+        plug: typing.Union[builders.PlugSocketBuilder, dict[str, int]],
         character_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
     ) -> ResponseSig[typedefs.JSONObject]:
@@ -1714,7 +1742,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         ----------
         instance_id : `int`
             The item instance id that's plug inserted.
-        plug : `typing.Union[aiobungie.PlugSocketbuilder, dict[str, int]]`
+        plug : `typing.Union[aiobungie.builders.PlugSocketBuilder, dict[str, int]]`
             Either a PlugSocketBuilder object or a raw dict contains key, value for the plug entries.
 
         Example
@@ -1928,7 +1956,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         member_id: int,
         item_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
-        *components: enums.ComponentType,
+        components: list[enums.ComponentType],
     ) -> ResponseSig[typedefs.JSONObject]:
         """Fetch an instanced Destiny 2 item's details.
 
@@ -1940,8 +1968,8 @@ class RESTInterface(traits.RESTful, abc.ABC):
             The instance id of the item.
         membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
             The membership type of the Destiny 2 player.
-        *components : `aiobungie.ComponentType`
-            Multiple item components to retrieve.
+        components : `list[aiobungie.ComponentType]`
+            A list of components to retrieve.
 
         Returns
         -------
@@ -2066,8 +2094,8 @@ class RESTInterface(traits.RESTful, abc.ABC):
         membership_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
         /,
-        *components: enums.ComponentType,
-        **options: typing.Optional[int],
+        components: list[enums.ComponentType],
+        filter: typing.Optional[int] = None,
     ) -> ResponseSig[typedefs.JSONObject]:
         """Get currently available vendors from the list of vendors that can possibly have rotating inventory.
 
@@ -2081,14 +2109,13 @@ class RESTInterface(traits.RESTful, abc.ABC):
             The Destiny membership id to return the vendor info for.
         membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
             The Destiny membership type to return the vendor info for.
-        *components: `aiobungie.ComponentType`
-            Multiple arguments of vendor components to collect and return.
+        components: `list[aiobungie.ComponentType]`
+            A list of vendor components to collect and return.
 
         Other Parameters
         ----------------
-        **options : `int`
-            This optional kwarg expects a `filter` argumnt which filters the type
-            of items returned from the vendor. This can be left to `None`.
+        filter : `int`
+           Filters the type of items returned from the vendor. This can be left to `None`.
 
         Returns
         -------
@@ -2105,7 +2132,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         membership_type: typedefs.IntAnd[enums.MembershipType],
         vendor_hash: int,
         /,
-        *components: enums.ComponentType,
+        components: list[enums.ComponentType],
     ) -> ResponseSig[typedefs.JSONObject]:
         """Fetch details for a specific vendor.
 
@@ -2121,8 +2148,8 @@ class RESTInterface(traits.RESTful, abc.ABC):
             The Destiny membership type to return the vendor info for.
         vendor_hash : `int`
             The vendor hash to return the details for.
-        *components: `aiobungie.ComponentType`
-            Multiple arguments of vendor components to collect and return.
+        components: `list[aiobungie.ComponentType]`
+            A list of vendor components to collect and return.
 
         Returns
         -------
@@ -2187,6 +2214,101 @@ class RESTInterface(traits.RESTful, abc.ABC):
         `ResponseSig[aiobungie.typedefs.JSONObject]`
             A JSON object of the application usage details.
         """
+
+    @abc.abstractmethod
+    def fetch_historical_stats(
+        self,
+        character_id: int,
+        membership_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+        day_start: datetime.datetime,
+        day_end: datetime.datetime,
+        groups: list[typedefs.IntAnd[enums.StatsGroupType]],
+        modes: collections.Sequence[typedefs.IntAnd[enums.GameMode]],
+        *,
+        period_type: enums.PeriodType = enums.PeriodType.ALL_TIME,
+    ) -> ResponseSig[typedefs.JSONObject]:
+        """Fetch historical stats for a specific membership character.
+
+        Parameters
+        ----------
+        character_id : `int`
+            The character ID to return the stats for.
+        membership_id : `int`
+            The Destiny membership id to return the stats for.
+        membership_type : `aiobungie.MembershipType | int`
+            The Destiny membership type to return the stats for.
+        day_start : `datetime.datetime`
+            The start of the day to return the stats for.
+        day_end : `datetime.datetime`
+            The end of the day to return the stats for.
+        groups : `list[aiobungie.StatsGroupType]`
+            A list of stats groups to return.
+        modes : `list[aiobungie.GameMode | int]`
+            A list of game modes to return.
+        period_type : `aiobungie.enums.PeriodType`
+            The period type to return the stats for.
+            This will return `ALL_TIME` by default if not modified.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.typedefs.JSONObject]`
+            A JSON object of the historical stats.
+        """
+
+    @abc.abstractmethod
+    def fetch_historical_stats_for_account(
+        self,
+        membership_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+        groups: list[typedefs.IntAnd[enums.StatsGroupType]],
+    ) -> ResponseSig[typedefs.JSONObject]:
+        """Fetch historical stats for an account's membership.
+
+        Parameters
+        ----------
+        membership_id : `int`
+            The Destiny membership id to return the stats for.
+        membership_type : `aiobungie.MembershipType | int`
+            The Destiny membership type to return the stats for.
+        groups : `list[aiobungie.StatsGroupType]`
+            A list of stats groups to return.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.typedefs.JSONObject]`
+            A JSON object of the historical stats for the account. This includes both the
+            character and account stats.
+        """
+
+    @abc.abstractmethod
+    def fetch_aggregated_activity_stats(
+        self,
+        character_id: int,
+        membership_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+        /,
+    ) -> ResponseSig[typedefs.JSONObject]:
+        """Fetch aggregated activity stats for a specific membership character.
+
+        Parameters
+        ----------
+        character_id : `int`
+            The character ID to return the stats for.
+        membership_id : `int`
+            The Destiny membership id to return the stats for.
+        membership_type : `aiobungie.MembershipType | int`
+            The Destiny membership type to return the stats for.
+
+        Returns
+        -------
+        `ResponseSig[aiobungie.typedefs.JSONObject]`
+            A JSON object of the aggregated activity stats.
+        """
+
+    @abc.abstractmethod
+    def fetch_historical_definition(self) -> ResponseSig[typedefs.JSONObject]:
+        ...
 
     @abc.abstractmethod
     def fetch_content_type(self, type: str, /) -> ResponseSig[typedefs.JSONObject]:

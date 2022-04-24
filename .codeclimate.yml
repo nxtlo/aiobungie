@@ -18,11 +18,13 @@ checks:
   return-statements:
     enabled: false
   similar-code:
+    enabled: true
     config:
-      threshold:
+      threshold: #overriding will affect all languages
   identical-code:
+    enabled: true
     config:
-      threshold:
+      threshold: #overriding will affect all languages
 
 exclude_patterns:
   - "tests/**"

@@ -60,7 +60,7 @@ class ApplicationOwner(user.UserLike):
     id: int
     """The application owner's id."""
 
-    icon: assets.MaybeImage
+    icon: assets.Image
     """The application owner's icon."""
 
     is_public: bool

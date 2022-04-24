@@ -27,7 +27,7 @@ from __future__ import annotations
 
 __all__: tuple[str, ...] = (
     "Enum",
-    "IntEnum",
+    "Flag",
     "GameMode",
     "MembershipType",
     "Class",
@@ -67,11 +67,28 @@ import typing
 
 _ITERABLE = (set, list, tuple)
 
+if typing.TYPE_CHECKING:
+    _T = typing.TypeVar("_T")
+
 # TODO = Use Flags for bitwised fields?
 
 
-class IntEnum(__enum.IntEnum):
-    """An int only enum."""
+class Enum(__enum.Enum):
+    """Builtin Python enum with extra handlings."""
+
+    @property
+    def name(self) -> str:  # type: ignore[override]
+        return self._name_
+
+    @property
+    def value(self) -> typing.Any:  # type: ignore[override]
+        return self._value_
+
+    def __str__(self) -> str:
+        return self._name_
+
+    def __repr__(self) -> str:
+        return f"<{type(self).__name__}.{self._name_}: {self._value_!s}>"
 
     def __int__(self) -> int:
         if isinstance(self.value, _ITERABLE):
@@ -80,18 +97,29 @@ class IntEnum(__enum.IntEnum):
             )
         return int(self.value)
 
-    def __str__(self) -> str:
-        return self.name
 
+class Flag(__enum.Flag):
+    """Builtin Python enum flag with extra handlings."""
 
-class Enum(__enum.Enum):
-    """An enum that can be an int or a string."""
+    # Needs to type this here for mypy
+    _value_: int
+
+    @property
+    def name(self) -> str:  # type: ignore[override]
+        if self._name_ is None:
+            self._name_ = f"UNKNOWN {self._value_}"
+
+        return self._name_
+
+    @property
+    def value(self) -> int:  # type: ignore[override]
+        return self._value_
 
     def __str__(self) -> str:
         return self.name
 
     def __repr__(self) -> str:
-        return self.__str__()
+        return f"<{type(self).__name__}.{self.name}: {self._value_!s}>"
 
     def __int__(self) -> int:
         if isinstance(self.value, _ITERABLE):
@@ -100,9 +128,24 @@ class Enum(__enum.Enum):
             )
         return int(self.value)
 
+    def __or__(self, other: typing.Union[Flag, int]) -> Flag:
+        return self.__class__(self._value_ | int(other))
+
+    def __xor__(self, other: typing.Union[Flag, int]) -> Flag:
+        return self.__class__(self._value_ ^ int(other))
+
+    def __and__(self, other: typing.Union[Flag, int]) -> Flag:
+        return self.__class__(other & int(other))
+
+    def __invert__(self) -> Flag:
+        return self.__class__(~self._value_)
+
+    def __contains__(self, other: typing.Union[Flag, int]) -> bool:
+        return self.value & int(other) == int(other)
+
 
 @typing.final
-class Raid(IntEnum):
+class Raid(int, Enum):
     """An Enum for all available raids in Destiny 2."""
 
     DSC = 910380154
@@ -119,7 +162,7 @@ class Raid(IntEnum):
 
 
 @typing.final
-class Dungeon(IntEnum):
+class Dungeon(int, Enum):
     """An Enum for all available Dungeon/Like missions in Destiny 2."""
 
     NORMAL_PRESAGE = 2124066889
@@ -154,7 +197,7 @@ class Dungeon(IntEnum):
 
 
 @typing.final
-class Planet(IntEnum):
+class Planet(int, Enum):
     """An Enum for all available planets in Destiny 2."""
 
     UNKNOWN = 0
@@ -189,7 +232,7 @@ class Planet(IntEnum):
 
 
 @typing.final
-class Place(IntEnum):
+class Place(int, Enum):
     """An Enum for Destiny 2 Places and NOT Planets"""
 
     ORBIT = 2961497387
@@ -199,7 +242,7 @@ class Place(IntEnum):
 
 
 @typing.final
-class Vendor(IntEnum):
+class Vendor(int, Enum):
     """An Enum for all available vendors in Destiny 2."""
 
     ZAVALA = 69482069
@@ -228,7 +271,7 @@ class Vendor(IntEnum):
 
 
 @typing.final
-class GameMode(IntEnum):
+class GameMode(int, Enum):
     """An Enum for all available gamemodes in Destiny 2."""
 
     NONE = 0
@@ -328,19 +371,13 @@ class ComponentType(Enum):
         PROFILE_CURRENCIES,
         PROFILE_PROGRESSION,
     )
-    """All profile components.
-
-    This cannot be overloaded `int(ALL_PROFILES)`. You should access it like this `*ALL_PROFILES.value`
-    """
+    """All profile components."""
 
     VENDORS = 400
     VENDOR_SALES = 402
     VENDOR_RECEIPTS = 101
     ALL_VENDORS = (VENDORS, VENDOR_RECEIPTS, VENDOR_SALES)
-    """All vendor components.
-
-    This cannot be overloaded `int(ALL_VENDORS)`. You should access it like this `*ALL_VENDORS.value`
-    """
+    """All vendor components."""
 
     # Items
     ITEM_INSTANCES = 300
@@ -366,10 +403,7 @@ class ComponentType(Enum):
         ITEM_TALENT_GRINDS,
         ITEM_REUSABLE_PLUGS,
     )
-    """All item components.
-
-    This cannot be overloaded `int(ALL_ITEMS)`. You should access it like this `*ALL_ITEMS.value`
-    """
+    """All item components."""
 
     PLATFORM_SILVER = 105
     KIOSKS = 500
@@ -399,10 +433,7 @@ class ComponentType(Enum):
         CHARACTER_EQUIPMENT,
         RECORDS,
     )
-    """All character components.
-
-    This cannot be overloaded `int(ALL_CHARACTERS)`. You should access it like this `*ALL_CHARACTERS.value`
-    """
+    """All character components."""
 
     ALL = (
         *ALL_PROFILES,  # type: ignore
@@ -421,14 +452,11 @@ class ComponentType(Enum):
         TRANSITORY,
         CRAFTABLES,
     )
-    """ALl components. The usage of this is `*ComponentType.ALL.value` to unpack the values.
-
-    This cannot be overloaded `int(ALL)`. You should access it like this `*ALL.value`
-    """
+    """ALl components included."""
 
 
 @typing.final
-class MembershipType(IntEnum):
+class MembershipType(int, Enum):
     """An Enum for Bungie membership types."""
 
     NONE = 0
@@ -442,7 +470,7 @@ class MembershipType(IntEnum):
 
 
 @typing.final
-class Class(IntEnum):
+class Class(int, Enum):
     """An Enum for Destiny character classes."""
 
     TITAN = 0
@@ -452,7 +480,7 @@ class Class(IntEnum):
 
 
 @typing.final
-class Gender(IntEnum):
+class Gender(int, Enum):
     """An Enum for Destiny Genders."""
 
     MALE = 0
@@ -461,7 +489,7 @@ class Gender(IntEnum):
 
 
 @typing.final
-class Race(IntEnum):
+class Race(int, Enum):
     """An Enum for Destiny races."""
 
     HUMAN = 0
@@ -471,7 +499,7 @@ class Race(IntEnum):
 
 
 @typing.final
-class MilestoneType(IntEnum):
+class MilestoneType(int, Enum):
     """An Enum for Destiny 2 milestone types."""
 
     UNKNOWN = 0
@@ -483,7 +511,7 @@ class MilestoneType(IntEnum):
 
 
 @typing.final
-class Stat(IntEnum):
+class Stat(int, Enum):
     """An Enum for Destiny 2 character stats."""
 
     NONE = 0
@@ -497,7 +525,7 @@ class Stat(IntEnum):
 
 
 @typing.final
-class WeaponType(IntEnum):
+class WeaponType(int, Enum):
     """Enums for The three Destiny Weapon Types"""
 
     NONE = 0
@@ -507,7 +535,7 @@ class WeaponType(IntEnum):
 
 
 @typing.final
-class DamageType(IntEnum):
+class DamageType(int, Enum):
     """Enums for Destiny Damage types"""
 
     NONE = 0
@@ -521,7 +549,7 @@ class DamageType(IntEnum):
 
 
 @typing.final
-class ItemType(IntEnum):
+class ItemType(int, Enum):
     """Enums for Destiny2's item types."""
 
     NONE = 0
@@ -554,7 +582,7 @@ class ItemType(IntEnum):
 
 
 @typing.final
-class ItemSubType(IntEnum):
+class ItemSubType(int, Enum):
     """An enum for Destiny 2 inventory items subtype."""
 
     NONE = 0
@@ -586,7 +614,7 @@ class ItemSubType(IntEnum):
 
 
 @typing.final
-class ItemTier(IntEnum):
+class ItemTier(int, Enum):
     """An enum for a Destiny 2 item tier."""
 
     NONE = 0
@@ -598,7 +626,7 @@ class ItemTier(IntEnum):
 
 
 @typing.final
-class TierType(IntEnum):
+class TierType(int, Enum):
     """An enum for a Destiny 2 item tier type."""
 
     UNKNOWN = 0
@@ -611,7 +639,7 @@ class TierType(IntEnum):
 
 
 @typing.final
-class AmmoType(IntEnum):
+class AmmoType(int, Enum):
     """AN enum for Detyiny 2 ammo types."""
 
     NONE = 0
@@ -621,7 +649,7 @@ class AmmoType(IntEnum):
 
 
 @typing.final
-class GroupType(IntEnum):
+class GroupType(int, Enum):
     """An enums for the known bungie group types."""
 
     GENERAL = 0
@@ -629,7 +657,7 @@ class GroupType(IntEnum):
 
 
 @typing.final
-class CredentialType(IntEnum):
+class CredentialType(int, Enum):
     """The types of the accounts system supports at bungie."""
 
     NONE = 0
@@ -648,7 +676,7 @@ class CredentialType(IntEnum):
 
 
 @typing.final
-class Presence(IntEnum):
+class Presence(int, Enum):
     """An enum for a bungie friend status."""
 
     OFFLINE_OR_UNKNOWN = 0
@@ -656,7 +684,7 @@ class Presence(IntEnum):
 
 
 @typing.final
-class Relationship(IntEnum):
+class Relationship(int, Enum):
     """An enum for bungie friends relationship types."""
 
     UNKNOWN = 0
@@ -666,7 +694,7 @@ class Relationship(IntEnum):
 
 
 @typing.final
-class ClanMemberType(IntEnum):
+class ClanMemberType(int, Enum):
     """An enum for bungie clan member types."""
 
     NONE = 0
@@ -678,7 +706,7 @@ class ClanMemberType(IntEnum):
 
 
 @typing.final
-class MembershipOption(IntEnum):
+class MembershipOption(int, Enum):
     """A enum for GroupV2 membership options."""
 
     REVIEWD = 0
@@ -687,7 +715,7 @@ class MembershipOption(IntEnum):
 
 
 @typing.final
-class ItemBindStatus(IntEnum):
+class ItemBindStatus(int, Enum):
     """An enum for Destiny 2 items bind status."""
 
     NOT_BOUND = 0
@@ -697,7 +725,7 @@ class ItemBindStatus(IntEnum):
 
 
 @typing.final
-class ItemLocation(IntEnum):
+class ItemLocation(int, Enum):
     """An enum for Destiny 2 items location."""
 
     UNKNOWN = 0
@@ -708,7 +736,7 @@ class ItemLocation(IntEnum):
 
 
 @typing.final
-class TransferStatus(IntEnum):
+class TransferStatus(Flag):
     """An enum for items transfer statuses."""
 
     CAN_TRANSFER = 0
@@ -722,14 +750,13 @@ class TransferStatus(IntEnum):
 
 
 @typing.final
-class ItemState(IntEnum):
+class ItemState(Flag):
     """An enum for Destiny 2 item states."""
 
     NONE = 0
     LOCKED = 1
     TRACKED = 2
     MASTERWORKED = 4
-    LOCKED_AND_MASTERWORKED = LOCKED + MASTERWORKED
     CRAFTED = 8
     """If this bit is set, the item has been 'crafted' by the player."""
     HIGHLITED_OBJECTIVE = 16
@@ -737,7 +764,7 @@ class ItemState(IntEnum):
 
 
 @typing.final
-class PrivacySetting(IntEnum):
+class PrivacySetting(int, Enum):
     """An enum for players's privacy settings."""
 
     OPEN = 0
@@ -748,7 +775,7 @@ class PrivacySetting(IntEnum):
 
 
 @typing.final
-class ClosedReasons(IntEnum):
+class ClosedReasons(Flag):
     """A Flags enumeration representing the reasons why a person can't join this user's fireteam."""
 
     NONE = 0
@@ -766,3 +793,32 @@ class ClosedReasons(IntEnum):
     """The user's current activity/quest/other transitory game state is preventing joining."""
     OFFLINE = 32768
     """The user appears offline."""
+
+
+@typing.final
+class StatsGroupType(int, Enum):
+    """Bungie historical group stats type enum."""
+
+    NONE = 0
+    GENERAL = 1
+    WEAPONS = 2
+    MEDALS = 3
+    REVERSED_GROUPS = 100
+    """This is purely to serve as the dividing line between filterable and un-filterable groups.
+    Below this number is a group you can pass as a filter.
+    Above it are groups used in very specific circumstances and not relevant for filtering.
+    """
+    LEADERBOARDS = 101
+    ACTIVITY = 102
+    UNIQUE_WEAPON = 103
+    INTERNAL = 104
+
+
+@typing.final
+class PeriodType(int, Enum):
+    """Bungie historical group stats period type enum."""
+
+    NONE = 0
+    DAILY = 1
+    ALL_TIME = 2
+    ACTIVITY = 3

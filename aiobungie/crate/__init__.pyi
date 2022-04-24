@@ -19,14 +19,15 @@ from .user import *
 #   ActivityEntity
 #   ActivityEntity
 #   ActivityValues
+#   AggregatedActivity
+#   AggregatedActivityValues
 #   Application
 #   ApplicationOwner
 #   Artifact
 #   ArtifactTier
 #   ArtifactTierItem
 #   AvailableActivity
-#   AvalaibleFireteam
-#   BaseEntity
+#   AvailableFireteam
 #   BungieUser
 #   Challenges
 #   Character
@@ -47,6 +48,7 @@ from .user import *
 #   CustomizationOptions
 #   DestinyMembership
 #   Dye
+#   EntityBase
 #   ExtendedValues
 #   ExtendedWeaponValues
 #   Factions

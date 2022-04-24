@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "aiobungie"
-version = "0.2.5"
+version = "0.2.6a2"
 description = "A Python and Asyncio API for Bungie."
 authors = ["nxtlo <dhmony-99@hotmail.com>"]
 license = "MIT"
@@ -12,7 +12,7 @@ packages = [
     {include = "aiobungie/**/*.py"}
 ]
 classifiers = [
-    'Development Status :: 5 - Production/Stable',
+    'Development Status :: 3 - Alpha',
     "Framework :: AsyncIO",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",

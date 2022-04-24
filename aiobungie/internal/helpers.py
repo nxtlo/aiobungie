@@ -29,7 +29,6 @@ __all__: tuple[str, ...] = (
     "just",
     "awaits",
     "get_or_make_loop",
-    "collect",
     "unimplemented",
 )
 
@@ -44,9 +43,7 @@ if typing.TYPE_CHECKING:
     T_co = typing.TypeVar("T_co", covariant=True)
     T = typing.TypeVar("T", bound=collections.Callable[..., typing.Any])
 
-ConsumerSigT = typing.TypeVar("ConsumerSigT", bound=collections.Callable[..., typing.Any])
-
-
+# TODO: Remove this later.
 def just(lst: list[dict[str, T_co]], lookup: str) -> list[T_co]:
     """A helper function that takes a list of dicts and return a list of
     all keys found inside the dict
@@ -54,26 +51,14 @@ def just(lst: list[dict[str, T_co]], lookup: str) -> list[T_co]:
     return list(map(lambda dct: dct[lookup], lst))
 
 
-def collect(
-    *args: typing.Any, consume: ConsumerSigT = str, separator: str = ", "  # type: ignore[assignment]
-) -> typing.Union[ConsumerSigT, str]:
-    """Consume passed argumnts and return them joining ', ' for each argument.
-
-    If only one argument was passed it will just return that argumnt.
-    """
-    if len(args) > 1:
-        if consume:
-            return separator.join(consume(arg) for arg in args)
-        return separator.join(arg for arg in args)
-    return args[0]  # type: ignore[no-any-return]
-
-
 class UnimplementedWarning(RuntimeWarning):
     """A warning that is raised when a function or class is not implemented."""
 
 
 def deprecated(
-    since: str, use_instead: typing.Optional[str] = None
+    since: str,
+    removed_in: typing.Optional[str] = None,
+    use_instead: typing.Optional[str] = None,
 ) -> collections.Callable[[T], T]:
     """A decorator that marks a function as deprecated.
 
@@ -91,6 +76,10 @@ def deprecated(
 
             obj_type = "class" if inspect.isclass(func) else "function"
             msg = f"Warning! {obj_type} {func.__module__}.{func.__name__} is deprecated since {since}."
+
+            if removed_in:
+                msg += f" Will be removed in {removed_in}."
+
             if use_instead:
                 msg += f" Use {use_instead} instead."
 
@@ -167,7 +156,7 @@ async def awaits(
     """
 
     if not aws:
-        raise RuntimeError("No awaiables passed.", aws)
+        raise RuntimeError("No awaitables passed.", aws)
 
     pending: list[asyncio.Future[T_co]] = []
 

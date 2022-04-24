@@ -23,7 +23,6 @@ nav.pdoc a.pdoc-button.module-list-button {
 /* Docstrings */
 
 .pdoc p {
-    color: #FFF;
     font-weight: 300;
 }
 
@@ -123,6 +122,7 @@ nav.pdoc li a {
 
 .pdoc span.def {
     font-weight: normal;
+    color: #ff79c6;
 }
 
 /* 
@@ -292,3 +292,7 @@ nav.pdoc .module-list-button:hover {
     color: white;
 }
 
+
+.pdoc pdoc-alert pdoc-alert-warning .p {
+    color: black;
+}

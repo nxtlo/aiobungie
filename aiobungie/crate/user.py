@@ -86,9 +86,8 @@ class UserLike(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def icon(self) -> assets.MaybeImage:
+    def icon(self) -> assets.Image:
         """The user like's icon."""
-        return assets.Image.partial()
 
     @property
     @abc.abstractmethod
@@ -148,7 +147,7 @@ class PartialBungieUser:
     is_public: bool
     """The user's privacy."""
 
-    icon: assets.MaybeImage
+    icon: assets.Image
     """The user's icon."""
 
     async def fetch_self(self) -> BungieUser:
@@ -231,7 +230,7 @@ class BungieUser:
     locale: typing.Optional[str]
     """The user's locale."""
 
-    picture: assets.MaybeImage
+    picture: assets.Image
     """The user's profile picture."""
 
     code: typedefs.NoneOr[int]
@@ -273,7 +272,7 @@ class DestinyMembership(UserLike):
     types: collections.Sequence[enums.MembershipType]
     """A sequence of the member's membership types."""
 
-    icon: assets.MaybeImage
+    icon: assets.Image
     """The member's icon if it was present."""
 
     code: typedefs.NoneOr[int]
@@ -286,24 +285,21 @@ class DestinyMembership(UserLike):
     """The member's corssave override membership type."""
 
     async def fetch_self_profile(
-        self, *components: enums.ComponentType, **options: str
+        self, components: list[enums.ComponentType], auth: typing.Optional[str] = None
     ) -> components_.Component:
-        """Fetche this user's profile.
+        """Fetch this user's profile.
 
         Parameters
         ----------
-        *components : `aiobungie.ComponentType`
-            Multiple arguments of profile components to collect and return.
+        components : `list[aiobungie.ComponentType]`
+            A list of profile components to collect and return.
             This either can be arguments of integers or `aiobungie.ComponentType`.
 
         Other Parameters
         ----------------
         auth : `typing.Optional[str]`
-            A passed kwarg Bearer access_token to make the request with.
+            A Bearer access_token to make the request with.
             This is optional and limited to components that only requires an Authorization token.
-        **options : `str`
-            Other keyword arguments for the request to expect.
-            This is only here for the `auth` option which's a string kwarg.
 
         Returns
         --------
@@ -312,7 +308,7 @@ class DestinyMembership(UserLike):
             Only passed components will be available if they exists. Otherwise they will be `None`
         """
         return await self.net.request.fetch_profile(
-            self.id, self.type, *components, **options
+            self.id, self.type, components, auth
         )
 
 

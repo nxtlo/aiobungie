@@ -21,18 +21,10 @@
 # SOFTWARE.
 
 import nox
-import os
 
 @nox.session(reuse_venv=True)
 def pdoc(session: nox.Session) -> None:
-    while os.path.exists("./docs"):
-        try:
-            os.rmdir("./docs")
-            session.log("Docs path removed.")
-        except Exception:
-            # We don't have to worry about this anymore
-            break
     session.install("-r", "requirements.txt", "-r", "dev-requirements.txt", "pdoc")
     session.run(
-        "pdoc", "./aiobungie", "-t", "./templates", "-d", "numpy", "-o", "./docs"
+        "pdoc", "aiobungie", "-t", "templates", "-d", "numpy", "-o", "docs"
     )

@@ -62,7 +62,7 @@ if typing.TYPE_CHECKING:
 
 
 @typing.final
-class ComponentPrivacy(enums.IntEnum):
+class ComponentPrivacy(int, enums.Enum):
     """An enum the provides privacy settings for profile components."""
 
     NONE = 0
@@ -125,8 +125,12 @@ class CraftablesComponent:
     net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
     """A network state used for making external requests."""
 
-    craftables: collections.Mapping[int, items.CraftableItem]
-    """A mapping from craftable item IDs to a craftable item component."""
+    craftables: collections.Mapping[int, typing.Optional[items.CraftableItem]]
+    """A mapping from craftable item IDs to a craftable item component.
+
+    Items may or may not be available but its hash will always be available.
+    You can use the hash to fetch those items using `fetch_craftables` method.
+    """
 
     crafting_root_node_hash: int
     """The hash for the root presentation node definition of craftable item categories."""
@@ -370,12 +374,14 @@ class MetricsComponent:
     """
 
     metrics: typing.Optional[
-        collections.Sequence[collections.Mapping[int, tuple[bool, records_.Objective]]]
+        collections.Sequence[
+            collections.Mapping[int, tuple[bool, typing.Optional[records_.Objective]]]
+        ]
     ]
     """A sequence of mappings from the metrics hash to a tuple contains two elements.
 
     * The first is always a `bool` determines whether the object is visible or not.
-    * The second is an `aiobungie.crate.Objective` of the metrics object.
+    * The second is an `aiobungie.crate.Objective` of the metrics object if it has one. Otherwise it will be `None`.
     """
 
     root_node_hash: typing.Optional[int]
@@ -493,15 +499,15 @@ class Component(
     import aiobungie
 
     # The components to get and return.
-    components = (
+    components = [
         aiobungie.ComponentType.PROFILE,
         aiobungie.ComponentType.CHARACTERS,
         aiobungie.ComponentType.PROFILE_INVENTORIES,
-    )
+    ]
     profile = await client.fetch_profile(
         id,
         aiobungie.MembershipType.STEAM,
-        *components,
+        components,
         # Assuming the component requires an auth token
         auth="Some Bearer access token"
     )

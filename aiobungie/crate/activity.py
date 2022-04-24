@@ -39,6 +39,8 @@ __all__: tuple[str, ...] = (
     "GuidedGame",
     "Location",
     "CharacterActivity",
+    "AggregatedActivity",
+    "AggregatedActivityValues",
 )
 
 import typing
@@ -59,8 +61,8 @@ if typing.TYPE_CHECKING:
 
 
 @typing.final
-class Diffculity(enums.IntEnum):
-    """An enum for activities diffculities."""
+class Difficulty(int, enums.Enum):
+    """An enum for activities difficulties."""
 
     TRIVIAL = 0
     EASY = 1
@@ -108,7 +110,7 @@ class Challenges:
     net: traits.Netrunner = attrs.field(repr=False, hash=False, eq=False)
 
     objective_hash: int
-    """The challenge's objetive hash."""
+    """The challenge's objective hash."""
 
     dummy_rewards: collections.Sequence[Rewards]
     """A sequence of the challenge rewards as they're represented in the UI."""
@@ -142,7 +144,7 @@ class Matchmaking:
 class GuidedGame:
     """Represents information about a guided game activity."""
 
-    max_loby_size: int
+    max_lobby_size: int
     """The max amount of people that can be in the lobby."""
 
     min_lobby_size: int
@@ -163,14 +165,14 @@ class Location:
     hash: typing.Union[typedefs.IntAnd[enums.Place], typedefs.IntAnd[enums.Planet]]
     """Location hash."""
 
-    activition_source: str
+    activision_source: str
     """A hint that the UI uses to figure out how this location is activated by the player."""
 
     item_hash: typing.Optional[int]
-    """The items hash if poulated."""
+    """The items hash if populated."""
 
     objective_hash: typing.Optional[int]
-    """The objecitve hash if populated."""
+    """The objective hash if populated."""
 
     activity_hash: typing.Optional[int]
     """The activity hash if populated."""
@@ -227,19 +229,19 @@ class AvailableActivity:
     """Whether the character can join this activity or not."""
 
     is_completed: bool
-    """Whether the character completed this acvitivy before or not."""
+    """Whether the character completed this activity before or not."""
 
     is_visible: bool
     """Whether the activity is visible to this character or not."""
 
     display_level: typing.Optional[int]
-    """The activity's display leve."""
+    """The activity's display level."""
 
     recommended_light: typing.Optional[int]
     """The recommended light power to enter this activity."""
 
-    diffculity: typedefs.IntAnd[Diffculity]
-    """Activity's diffculity tier."""
+    difficulty: typedefs.IntAnd[Difficulty]
+    """Activity's difficulty tier."""
 
     @helpers.unimplemented(available_in="0.2.7")
     async def fetch_self(self) -> entity.ActivityEntity:
@@ -270,7 +272,7 @@ class ActivityValues:
     """The amount of opponents killed in this activity."""
 
     efficiency: float
-    """Activity's efficienty."""
+    """Activity's efficiently."""
 
     kd_ratio: float
     """Activity's kill/death ratio."""
@@ -312,6 +314,63 @@ class ActivityValues:
 
 
 @attrs.define(kw_only=True)
+class AggregatedActivityValues:
+    """Information found in an aggregated activity stats."""
+
+    id: int
+    """Activity's id."""
+
+    fastest_completion_time: tuple[int, str]
+    """A tuple that contains a representation of the fastest completion for that activity in different data types.
+
+    Order
+    -----
+    - `int`: The completion time in seconds.
+    - `str`: The completion time in a readable format. i.e., `0:18.500`
+    """
+
+    completions: int
+    """The amount of times the activity was completed."""
+
+    kills: int
+    """"The amount of kills the player has in this activity."""
+
+    deaths: int
+    """The amount of deaths the player has in this activity."""
+
+    seconds_played: tuple[int, str]
+    """A tuple that contains an int and a string representation of
+    the total time the player has spent in this activity.
+    """
+
+    wins: int
+    """The amount of wins the player has in this activity."""
+
+    goals_missed: int
+    """The amount of goals missed the player has in this activity."""
+
+    special_actions: int
+    """The amount of special actions the player has in this activity."""
+
+    best_goals_hit: int
+    """The amount of best goals hit the player has in this activity."""
+
+    goals_hit: int
+
+    special_score: int
+
+    best_single_score: int
+
+    kd_ratio: float
+
+    kd_assists: int
+
+    assists: int
+
+    precision_kills: int
+
+
+@attrs.define(kw_only=True)
 class ExtendedWeaponValues:
     """Information about post activity extended player's weapon values data."""
 
@@ -343,13 +402,13 @@ class ExtendedValues:
     """Information about post activity extended player values data."""
 
     precision_kills: int
-    """Player preci kills."""
+    """Player precision kills."""
 
     grenade_kills: int
     """Player grenade kills."""
 
     melee_kills: int
-    """Player mele kills."""
+    """Player melee kills."""
 
     super_kills: int
     """Player super kills."""
@@ -416,7 +475,7 @@ class PostActivityPlayer:
     """The light level of the player's character."""
 
     emblem_hash: int
-    """The embelem hash of the player's character."""
+    """The emblem hash of the player's character."""
 
     values: ActivityValues
     """Player's information that occurred in this activity."""
@@ -484,7 +543,7 @@ class PostActivity:
         return self.is_solo & self.is_flawless
 
     @property
-    def refrence_id(self) -> int:
+    def reference_id(self) -> int:
         """An alias to the activity's hash"""
         return self.hash
 
@@ -539,7 +598,7 @@ class Activity:
         return self.is_solo & self.is_flawless
 
     @property
-    def refrence_id(self) -> int:
+    def reference_id(self) -> int:
         """An alias to the activity's hash"""
         return self.hash
 
@@ -555,3 +614,14 @@ class Activity:
 
     def __int__(self) -> int:
         return self.instance_id
+
+
+@attrs.define(kw_only=True)
+class AggregatedActivity:
+    """Represents aggergated activity data."""
+
+    hash: int
+    """The activity hash."""
+
+    values: AggregatedActivityValues
+    """Aggregated activity values. This contains kills, deaths, etc."""

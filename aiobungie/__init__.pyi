@@ -1,5 +1,6 @@
 from typing import Any
 
+from aiobungie import builders as builders
 from aiobungie import crate as crate
 from aiobungie import interfaces as interfaces
 from aiobungie import traits as traits
@@ -7,9 +8,11 @@ from aiobungie import typedefs as typedefs
 from aiobungie import url as url
 from aiobungie.client import Client as Client
 from aiobungie.error import *
+from aiobungie.internal import iterators as iterators
 from aiobungie.internal.assets import Image as Image
 from aiobungie.internal.enums import *
 from aiobungie.internal.factory import Factory as Factory
+from aiobungie.internal.iterators import *
 from aiobungie.rest import *
 from aiobungie.undefined import Undefined as Undefined
 from aiobungie.undefined import UndefinedOr as UndefinedOr
@@ -22,7 +25,7 @@ from ._info import __email__ as __email__
 from ._info import __license__ as __license__
 from ._info import __url__ as __url__
 from ._info import __version__ as __version__
-from .crate.activity import Diffculity as Diffculity
+from .crate.activity import Difficulty as Difficulty
 from .crate.components import ComponentFields as ComponentFields
 from .crate.components import ComponentPrivacy as ComponentPrivacy
 from .crate.entity import GatingScope as GatingScope

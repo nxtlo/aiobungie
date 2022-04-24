@@ -20,9 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Interfaces used for the core client implementations."""
+"""Interfaces used for the core aiobungie implementations."""
 
 from __future__ import annotations
+
+import pathlib
 
 __all__ = ("ClientApp", "Netrunner", "Serializable", "RESTful")
 
@@ -67,7 +69,7 @@ class Serializable(typing.Protocol):
     """Core trait for types which it is possible to deserialize incoming REST payloads
     into a `aiobungie.crate` implementation using the `Serializable.factory` property.
 
-    Currently only `ClientBase` implement this trait
+    Currently only `ClientApp` implement this trait
     """
 
     __slots__ = ()
@@ -80,7 +82,8 @@ class Serializable(typing.Protocol):
 
 @typing.runtime_checkable
 class RESTful(typing.Protocol):
-    """Core trait for types which it is possible to interact with the API directly which provides RESTful functionalities.
+    """Core trait for types which it is possible to interact with the API directly
+    which provides RESTful functionalities.
 
     Currently only `aiobungie.RESTClient` implement this trait,
     `ClientBase` may access its RESTClient using `aiobungie.Client.rest` property.
@@ -88,29 +91,9 @@ class RESTful(typing.Protocol):
 
     __slots__ = ()
 
-    def build_oauth2_url(
-        self, client_id: typing.Optional[int] = None
-    ) -> typing.Optional[str]:
-        """Builds an OAuth2 URL using the provided user REST/Base client secret/id.
-
-        Parameters
-        ----------
-        client_id : `typing.Optional[int]`
-            An optional client id to provide, If left `None` it will roll back to the id passed
-            to the `RESTClient`, If both is `None` this method will return `None`.
-
-        Returns
-        -------
-        `typing.Optional[str]`
-            If the client id was provided as a parameter or provided in `aiobungie.RESTClient`,
-            A complete URL will be returned.
-            Otherwise `None` will be returned.
-        """
-        raise NotImplementedError
-
     @property
     def client_id(self) -> typing.Optional[int]:
-        """Return the client id of this REST client if provided, Otherwise None"""
+        """Return the client id of this REST client if provided, Otherwise None."""
         raise NotImplementedError
 
     @property
@@ -137,6 +120,56 @@ class RESTful(typing.Protocol):
 
             # Use them to fetch your user.
             user = await client.fetch_current_user_memberships(tokens.access_token)
+        ```
+        """
+        raise NotImplementedError
+
+    @property
+    def is_alive(self) -> bool:
+        """Returns `True` if the REST client is alive and `False` otherwise."""
+        raise NotImplementedError
+
+    def build_oauth2_url(
+        self, client_id: typing.Optional[int] = None
+    ) -> typing.Optional[str]:
+        """Builds an OAuth2 URL using the provided user REST/Base client secret/id.
+
+        Parameters
+        ----------
+        client_id : `int | None`
+            An optional client id to provide, If left `None` it will roll back to the id passed
+            to the `RESTClient`, If both is `None` this method will return `None`.
+
+        Returns
+        -------
+        `str | None`
+            If the client id was provided as a parameter or provided in `aiobungie.RESTClient`,
+            A complete URL will be returned.
+            Otherwise `None` will be returned.
+        """
+        raise NotImplementedError
+
+    def enable_debugging(
+        self,
+        level: typing.Union[typing.Literal["TRACE"], bool] = False,
+        file: typing.Optional[typing.Union[pathlib.Path, str]] = None,
+        /,
+    ) -> None:
+        """Enables debugging for the REST client.
+
+        Logging Levels
+        --------------
+        * `False`: This will disable logging.
+        * `True`: This will set the level to `DEBUG` and enable logging minimal information.
+        Like the response status, route, taken time and so on.
+        * `"TRACE"` | `aiobungie.TRACE`: This will log the response headers along with the minimal information.
+
+        Parameters
+        -----------
+        level : `str | bool | int`
+            The level of debugging to enable.
+        file : `pathlib.Path | str | None`
+            The file path to write the debug logs to. If provided.
         """
         raise NotImplementedError
 
@@ -148,25 +181,23 @@ class RESTful(typing.Protocol):
         self,
         method: typing.Union[rest.RequestMethod, str],
         path: str,
+        *,
         auth: typing.Optional[str] = None,
         json: typing.Optional[dict[str, typing.Any]] = None,
-        **kwargs: typing.Any,
     ) -> typing.Any:
         """Perform an HTTP request given a valid Bungie endpoint.
 
         Parameters
         ----------
-        method : `typing.Union[aiobungie.rest.RequestMethod, str]`
+        method : `aiobungie.rest.RequestMethod | str`
             The request method, This may be `GET`, `POST`, `PUT`, etc.
         path: `str`
             The Bungie endpoint or path.
             A path must look something like this `Destiny2/3/Profile/46111239123/...`
-        auth : `typing.Optional[str]`
+        auth : `str | None`
             An optional bearer token for methods that requires OAuth2 Authorization header.
-        json : `typing.Optional[dict[str, typing.Any]]`
+        json : `dict[str, typing.Any] | None`
             An optional JSON data to include in the request.
-        **kwargs: `typing.Any`
-            Any other key words to pass to the request.
 
         Returns
         -------
@@ -188,7 +219,7 @@ class ClientApp(Netrunner, Serializable, typing.Protocol):
     def run(
         self, future: collections.Coroutine[None, None, None], debug: bool = False
     ) -> None:
-        """Runs a Coro function until its complete.
+        """Runs a coroutine function until its complete.
 
         This is equivalent to `asyncio.get_event_loop().run_until_complete(...)`
 
@@ -205,7 +236,7 @@ class ClientApp(Netrunner, Serializable, typing.Protocol):
         async def main() -> None:
             await fetch(...)
 
-        # Run the coro.
+        # Run the coroutine.
         client.run(main())
         ```
         """

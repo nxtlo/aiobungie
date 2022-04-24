@@ -20,11 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Implementation of Bungie entity and definitions.
-
-This is still not fully implemented and you may experince bugs.
-This will include all Bungie Definitions.
-"""
+"""Implementation of Bungie entity and definitions."""
 
 from __future__ import annotations
 
@@ -32,7 +28,7 @@ __all__: tuple[str, ...] = (
     "InventoryEntity",
     "Entity",
     "ObjectiveEntity",
-    "BaseEntity",
+    "EntityBase",
     "ActivityEntity",
     "PlaylistActivityEntity",
     "InventoryEntityObjects",
@@ -59,7 +55,7 @@ if typing.TYPE_CHECKING:
 
 
 @typing.final
-class GatingScope(enums.IntEnum):
+class GatingScope(int, enums.Enum):
     """An enum represents restrictive type of gating that is being performed by an entity.
 
     This is useful as a shortcut to avoid a lot of lookups when determining whether the gating on an Entity
@@ -76,7 +72,7 @@ class GatingScope(enums.IntEnum):
 
 
 @typing.final
-class ValueUIStyle(enums.IntEnum):
+class ValueUIStyle(int, enums.Enum):
     AUTOMATIC = 0
     FRACTION = 1
     CHECK_BOX = 2
@@ -95,9 +91,9 @@ class ValueUIStyle(enums.IntEnum):
 
 
 @typing.final
-class ObjectiveUIStyle(enums.IntEnum):
+class ObjectiveUIStyle(int, enums.Enum):
     NONE = 0
-    HIGHLITED = 1
+    HIGHLIGHTED = 1
     CRAFTING_WEAPON_LEVEL = 2
     CRAFTING_WEAPON_LEVEL_PROGRESS = 3
     CRAFTING_WEAPON_TIMESTAMP = 4
@@ -105,12 +101,8 @@ class ObjectiveUIStyle(enums.IntEnum):
     CRAFTING_MEMENTO_TITLE = 6
 
 
-class Entity(abc.ABC):
-    """An interface of any Bungie Definition/Entity.
-
-    This is the main entity which all other entities should inherit from.
-    it holds core information that all bungie entities has.
-    """
+class EntityBase(abc.ABC):
+    """An interface of any Bungie Definition/Entity."""
 
     __slots__ = ()
 
@@ -126,7 +118,7 @@ class Entity(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def icon(self) -> assets.MaybeImage:
+    def icon(self) -> assets.Image:
         """An optional entity's icon if its filled."""
 
     @property
@@ -141,11 +133,6 @@ class Entity(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def index(self) -> int:
-        """The entity's index."""
-
-    @property
-    @abc.abstractmethod
     def hash(self) -> int:
         """Entity's hash."""
 
@@ -157,12 +144,13 @@ class Entity(abc.ABC):
 
 
 @attrs.mutable(kw_only=True)
-class BaseEntity(Entity):
-    """Concerate Bungie entity implementation."""
+class Entity(EntityBase):
+    """Represents any entity in Destiny 2.
+    This can be item definition, activity definition, etc.
 
-    # These are not attribs on purpose.
-    # We dont want to redefine them again in the actual entity
-    # implementation.
+    This is the core object which all other entities should inherit from.
+    It holds core information that all bungie entities has.
+    """
 
     net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
     """A network state used for making external requests."""
@@ -179,7 +167,7 @@ class BaseEntity(Entity):
     description: undefined.UndefinedOr[str]
     """Entity's description"""
 
-    icon: assets.MaybeImage
+    icon: assets.Image
     """Entity's icon."""
 
     has_icon: bool = attrs.field(repr=False)
@@ -187,8 +175,8 @@ class BaseEntity(Entity):
 
 
 @attrs.define(kw_only=True)
-class SearchableEntity:
-    """Represents an entity object returned from a seachable term."""
+class SearchableEntity(EntityBase):
+    """Represents an entity object returned from a searchable term."""
 
     suggested_words: list[str]
     """A list of suggested words that might make for better search results, based on the text searched for."""
@@ -311,7 +299,7 @@ class InventoryEntityObjects:
 
 
 @attrs.define(kw_only=True)
-class InventoryEntity(BaseEntity, Entity):
+class InventoryEntity(Entity):
     """Represents a bungie inventory item entity.
 
     This derives from `DestinyInventoryItemDefinition` definition.
@@ -406,7 +394,7 @@ class InventoryEntity(BaseEntity, Entity):
     """Entity's type name. i.e., `Grenade Launcher`."""
 
     type_and_tier_name: undefined.UndefinedOr[str] = attrs.field(hash=False)
-    """Entity's tier and type name combined, i.e., `Legendery Grenade Launcher`."""
+    """Entity's tier and type name combined, i.e., `Legendary Grenade Launcher`."""
 
     bucket_hash: typing.Optional[int] = attrs.field(repr=False, hash=False)
     """The entity's bucket type hash, None if it doesn't have one."""
@@ -468,7 +456,7 @@ class InventoryEntity(BaseEntity, Entity):
 
 
 @attrs.define(kw_only=True, weakref_slot=False)
-class ObjectiveEntity(BaseEntity, Entity):
+class ObjectiveEntity(Entity):
     """Represents a bungie inventory item entity.
 
     This derives from `DestinyObjectiveDefinition` definition.
@@ -516,13 +504,13 @@ class ObjectiveEntity(BaseEntity, Entity):
 
 
 @attrs.define(kw_only=True, hash=True, weakref_slot=False)
-class ActivityEntity(BaseEntity, Entity):
+class ActivityEntity(Entity):
     """Represents a Bungie Activity definition and its entities.
 
     This derives from `DestinyActivityDefinition` definition.
     """
 
-    release_icon: assets.MaybeImage
+    release_icon: assets.Image
     """The release icon of this activity if it has one."""
 
     release_time: int
@@ -540,10 +528,10 @@ class ActivityEntity(BaseEntity, Entity):
     type_hash: int
     """The activity's type hash. This bounds to activity types such as Strikes, Crucible, Raids, etc."""
 
-    tier: typedefs.IntAnd[activity.Diffculity]
-    """Activity's diffculity tier."""
+    tier: typedefs.IntAnd[activity.Difficulty]
+    """Activity's difficulty tier."""
 
-    image: assets.MaybeImage
+    image: assets.Image
     """Activity's pgcr image."""
 
     rewards: typing.Optional[collections.Sequence[activity.Rewards]]
@@ -634,5 +622,5 @@ class PlaylistActivityEntity:
 
     @helpers.unimplemented(available_in="0.2.7")
     async def fetch_self(self) -> ActivityEntity:
-        """Fetch the definition of this activivy."""
+        """Fetch the definition of this activity."""
         ...

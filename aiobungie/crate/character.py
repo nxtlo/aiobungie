@@ -54,8 +54,9 @@ if typing.TYPE_CHECKING:
     from aiobungie.crate import progressions as progressions_
     from aiobungie.crate import records
     from aiobungie.crate import season
+    from aiobungie.internal import assets
     from aiobungie.internal import enums
-    from aiobungie.internal.assets import Image
+    from aiobungie.internal import iterators
 
 
 @attrs.define(kw_only=True)
@@ -104,7 +105,7 @@ class MinimalEquipments:
 
     This holds the items hash and collection of dyes.
 
-    This is specifacally used in CharacterRenderData profile component to render
+    This is specifically used in CharacterRenderData profile component to render
     3D character object.
     """
 
@@ -210,10 +211,10 @@ class Character:
     race: enums.Race
     """Character's race"""
 
-    emblem: Image
+    emblem: assets.Image
     """Character's emblem"""
 
-    emblem_icon: Image
+    emblem_icon: assets.Image
     """Character's emblem icon"""
 
     emblem_hash: int
@@ -243,7 +244,7 @@ class Character:
         *,
         page: int = 0,
         limit: int = 250,
-    ) -> collections.Sequence[activity.Activity]:
+    ) -> iterators.FlatIterator[activity.Activity]:
         """Fetch Destiny 2 activities for this character.
 
         Parameters
@@ -260,8 +261,8 @@ class Character:
 
         Returns
         -------
-        `collections.Sequence[aiobungie.crate.Activity]`
-            A sequence of the character's activities.
+        `aiobungie.iterators.FlatIterator[aiobungie.crate.Activity]`
+            A iterator over the character's activities.
 
         Raises
         ------

@@ -26,6 +26,7 @@ import inspect
 import logging
 import os
 import sys
+import typing
 
 import aiobungie
 
@@ -34,19 +35,17 @@ import aiobungie
 
 CID = 2305843009444904605
 MID = 4611686018484639825
+STEAM = aiobungie.MembershipType.STEAM
 _LOG = logging.getLogger("test_client")
-logging.basicConfig(level=logging.DEBUG)
-
 
 def __build_client() -> aiobungie.Client:
     token = os.environ["CLIENT_TOKEN"]
-    rest = aiobungie.RESTClient(token, max_retries=1)
+    rest = aiobungie.RESTClient(token, max_retries=1, enable_debugging=True)
     client = aiobungie.Client(token, rest_client=rest, max_retries=1)
     return client
 
 
 client = __build_client()
-
 
 async def test_users():
     u = await client.fetch_bungie_user(20315338)
@@ -67,24 +66,20 @@ async def test_hard_types():
 async def test_clan_from_id():
     c = await client.fetch_clan_from_id(4389205)
     members = await c.fetch_members()
-    assert isinstance(members, list)
-    assert isinstance(members[0], aiobungie.crate.ClanMember)
-    for member in members:
+    async for member in members:
         assert isinstance(member, aiobungie.crate.ClanMember)
 
 
 async def test_clan():
     c = await client.fetch_clan("Nuanceㅤ ")
     members = await c.fetch_members()
-    assert isinstance(members, list)
-    assert isinstance(members[0], aiobungie.crate.ClanMember)
-    assert any(member.last_seen_name == "Hizxr" for member in members)
 
+    async for member in members.discard(lambda member: not member.is_online):
+        assert isinstance(member, aiobungie.crate.ClanMember)
 
 async def test_fetch_clan_members():
     ms = await client.fetch_clan_members(4389205, name="Fate")
     assert len(ms) == 1
-    assert isinstance(ms, list)
     for member in ms:
         assert isinstance(member, aiobungie.crate.ClanMember)
         assert isinstance(member.bungie, aiobungie.crate.PartialBungieUser)
@@ -107,12 +102,12 @@ async def test_fetch_app():
 
 async def test_player():
     p = await client.fetch_player("Fate怒", 4275)
-    profile = await p[0].fetch_self_profile(aiobungie.ComponentType.PROFILE)
+    profile = await p[0].fetch_self_profile([aiobungie.ComponentType.PROFILE])
     assert isinstance(profile, aiobungie.crate.Component)
     assert isinstance(profile.profiles, aiobungie.crate.Profile)
 
-    components = aiobungie.ComponentType.ALL_CHARACTERS
-    profiles = profile.profiles.collect_characters(*components.value)
+    components = [aiobungie.ComponentType.ALL_CHARACTERS]
+    profiles = profile.profiles.collect_characters(components)
     for char in await profiles:
         assert isinstance(char, aiobungie.crate.CharacterComponent)
         assert (
@@ -129,9 +124,9 @@ async def test_player():
 async def test_fetch_character():
     c = await client.fetch_character(
         MID,
-        aiobungie.MembershipType.STEAM,
+        STEAM,
         CID,
-        *aiobungie.ComponentType.ALL.value,
+        [aiobungie.ComponentType.ALL],
     )
     assert isinstance(c, aiobungie.crate.CharacterComponent)
     assert c.activities
@@ -153,14 +148,14 @@ async def test_fetch_character():
 async def test_profile():
     pf = await client.fetch_profile(
         MID,
-        aiobungie.MembershipType.STEAM,
-        *aiobungie.ComponentType.ALL.value,  # type: ignore
+        STEAM,
+        [aiobungie.ComponentType.ALL]
     )
     assert isinstance(pf, aiobungie.crate.Component)
 
     assert pf.profiles
     for pfile_char in await pf.profiles.collect_characters(
-        *aiobungie.ComponentType.ALL_CHARACTERS.value
+        [aiobungie.ComponentType.ALL_CHARACTERS]
     ):
         assert isinstance(pfile_char, aiobungie.crate.CharacterComponent)
         assert (
@@ -224,15 +219,24 @@ async def test_profile():
     for met in pf.metrics:
         for met_id, met_ in met.items():
             assert isinstance(met_id, int)
-            inv, obj = met_
+            inv, _ = met_
             assert isinstance(inv, bool)
-            assert isinstance(obj, aiobungie.crate.Objective)
+
+            assert any(o is not None for o in met_)
 
     if pf.transitory:
         assert isinstance(pf.transitory, aiobungie.crate.FireteamParty)
     if pf.item_components:
         assert isinstance(pf.item_components, aiobungie.crate.ItemsComponent)
 
+    if pf.character_craftables:
+        for craftable_item_hash, craftable_item in pf.character_craftables.items():
+            assert isinstance(craftable_item_hash, int)
+            for item in craftable_item.craftables.values():
+                if item:
+                    assert isinstance(item, aiobungie.crate.CraftableItem)
+        first = list(pf.character_craftables.values())[0]
+        assert await first.fetch_craftables()
 
 async def test_membership_types_from_id():
     u = await client.fetch_membership_from_id(MID)
@@ -244,7 +248,7 @@ async def test_membership_types_from_id():
 
 async def test_search_users():
     x = await client.search_users("Fate")
-    assert isinstance(x, list)
+    # assert isinstance(x, list)
     for u in x:
         assert isinstance(u, aiobungie.crate.SearchableDestinyUser)
         for membership in u.memberships:
@@ -269,9 +273,7 @@ async def test_clan_admins():
 
 
 async def test_groups_for_member():
-    obj = await client.fetch_groups_for_member(
-        4611686018475612431, aiobungie.MembershipType.STEAM
-    )
+    obj = await client.fetch_groups_for_member(4611686018475612431, STEAM)
     assert obj
     up_to_date_clan_obj = await obj[0].fetch_self_clan()
     assert isinstance(up_to_date_clan_obj, aiobungie.crate.Clan)
@@ -279,7 +281,7 @@ async def test_groups_for_member():
 
 async def test_potential_groups_for_member():
     obj = await client.fetch_potential_groups_for_member(
-        MID, aiobungie.MembershipType.STEAM
+        MID, STEAM
     )
     assert not obj
 
@@ -292,7 +294,7 @@ async def test_linked_profiles():
     for user in obj.profiles:
         assert isinstance(user, aiobungie.crate.DestinyMembership)
         transform_profile = await user.fetch_self_profile(
-            aiobungie.ComponentType.PROFILE
+            [aiobungie.ComponentType.PROFILE]
         )
         assert transform_profile.profiles
         assert isinstance(transform_profile, aiobungie.crate.Component)
@@ -335,13 +337,14 @@ async def test_fetch_fireteam():
 
 async def test_fetch_activities():
     a = await client.fetch_activities(MID, CID, aiobungie.GameMode.RAID)
-    assert any(_.is_flawless for _ in a)
-    for act in a:
+    post = await a.first().fetch_post()
+    assert isinstance(post, aiobungie.crate.PostActivity)
+    assert a.any(lambda act: act.is_flawless)
+
+    async for act in a:
         assert isinstance(act, aiobungie.crate.Activity)
         if act.hash == aiobungie.Raid.DSC.value:
             assert aiobungie.GameMode.RAID in act.modes
-    post = await a[0].fetch_post()
-    assert isinstance(post, aiobungie.crate.PostActivity)
 
 
 async def test_post_activity():
@@ -372,40 +375,32 @@ async def test_activity_flawless():
 
 async def test_insert_plug_free():
     p = (
-        aiobungie.PlugSocketBuilder()
+        aiobungie.builders.PlugSocketBuilder()
         .set_socket_array(0)
         .set_socket_index(0)
         .set_plug_item(3000)
         .collect()
     )
     try:
-        resp = await client.rest.insert_socket_plug_free("", 619, p, 1234, 3)
+        await client.rest.insert_socket_plug_free("", 619, p, 1234, 3)
     # This will always fail due to OAuth2
     except aiobungie.Unauthorized:
-        resp = None
         pass
-    del resp
 
 
 async def test_search_entities():
     e = await client.search_entities("Parallel", "DestinyInventoryItemDefinition")
+
+    acts = await client.search_entities("Scourge", "DestinyActivityDefinition")
+
+    assert acts.any(lambda act: act.name in "Scourge of the Past")
+
     for i in e:
         assert isinstance(i, aiobungie.crate.SearchableEntity)
-        awts = await i.fetch_self_item()
-        assert isinstance(awts, aiobungie.crate.InventoryEntity)
-        assert awts.name == i.name
-    acts = await client.search_entities("Scourge", "DestinyActivityDefinition")
-    assert len(acts) > 1
-    assert any(act.name == "Scourge of the Past" for act in acts)
-
-    # This will always return None since its not an inventory item.
-    assert not await acts[0].fetch_self_item()
 
 
 async def test_unique_weapon_history():
-    w = await client.fetch_unique_weapon_history(
-        MID, CID, aiobungie.MembershipType.STEAM
-    )
+    w = await client.fetch_unique_weapon_history(MID, CID, STEAM)
     for weapon in w:
         assert isinstance(weapon, aiobungie.crate.ExtendedWeaponValues)
 
@@ -420,16 +415,25 @@ async def test_clan_weekly_rewards():
     r = await client.fetch_clan_weekly_rewards(4389205)
     assert isinstance(r, aiobungie.crate.Milestone)
 
+async def test_aggregated_activity():
+    a = await client.fetch_aggregated_activity_stats(CID, MID, STEAM)
+    async for act in a.sort(key=lambda act: act.values.fastest_completion_time[1]):
+        assert isinstance(act, aiobungie.crate.AggregatedActivity)
 
 async def main() -> None:
-    coros = []
+    coros: list[typing.Coroutine[None, None, None]] = []
     for n, coro in inspect.getmembers(
         sys.modules[__name__], inspect.iscoroutinefunction
     ):
         if n == "main" or not n.startswith("test_"):
             continue
         coros.append(coro())
-    await asyncio.gather(*coros)
+
+    try:
+        await asyncio.gather(*coros)
+    except Exception:
+        raise
+
     _LOG.info(
         "Asserted %i functions out of %i excluding main.",
         len(coros),

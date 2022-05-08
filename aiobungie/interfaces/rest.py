@@ -42,20 +42,7 @@ if typing.TYPE_CHECKING:
 
     from aiobungie import builders
     from aiobungie import typedefs
-    from aiobungie.crate import fireteams
-
-    ResponseSigT = typing.TypeVar(
-        "ResponseSigT",
-        covariant=True,
-        bound=typing.Union[
-            typedefs.JSONArray,
-            typedefs.JSONObject,
-            int,
-            bool,
-            None,
-        ],
-    )
-    ResponseSig = collections.Coroutine[None, None, ResponseSigT]
+    from aiobungie.crates import fireteams
 
 
 class RESTInterface(traits.RESTful, abc.ABC):
@@ -163,7 +150,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def fetch_bungie_user(self, id: int) -> ResponseSig[typedefs.JSONObject]:
+    async def fetch_bungie_user(self, id: int) -> typedefs.JSONObject:
         """Fetch a Bungie user by their id.
 
         Parameters
@@ -173,7 +160,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object of users objects.
 
         Raises
@@ -183,7 +170,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def search_users(self, name: str, /) -> ResponseSig[typedefs.JSONObject]:
+    async def search_users(self, name: str, /) -> typedefs.JSONObject:
         """Search for users by their global name and return all users who share this name.
 
         Parameters
@@ -193,7 +180,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object of an array of the found users.
 
         Raises
@@ -204,22 +191,22 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def fetch_user_themes(self) -> ResponseSig[typedefs.JSONArray]:
+    async def fetch_user_themes(self) -> typedefs.JSONArray:
         """Fetch all available user themes.
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONArray]`
+        `aiobungie.typedefs.JSONArray`
             A JSON array of user themes.
         """
 
     @abc.abstractmethod
-    def fetch_hardlinked_credentials(
+    async def fetch_hardlinked_credentials(
         self,
         credential: int,
         type: typedefs.IntAnd[enums.CredentialType] = enums.CredentialType.STEAMID,
         /,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         """Gets any hard linked membership given a credential.
 
         Only works for credentials that are public just `aiobungie.CredentialType.STEAMID` right now.
@@ -235,17 +222,17 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object of the found user hard linked types.
         """
 
     @abc.abstractmethod
-    def fetch_membership_from_id(
+    async def fetch_membership_from_id(
         self,
         id: int,
         type: typedefs.IntAnd[enums.MembershipType] = enums.MembershipType.NONE,
         /,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         """Fetch Bungie user's memberships from their id.
 
         Parameters
@@ -257,7 +244,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object of the found user.
 
         Raises
@@ -267,13 +254,13 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def fetch_profile(
+    async def fetch_profile(
         self,
         membership_id: int,
         type: typedefs.IntAnd[enums.MembershipType],
         components: list[enums.ComponentType],
         auth: typing.Optional[str] = None,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         """
         Fetch a bungie profile.
 
@@ -294,7 +281,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         --------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object of the found profile.
 
         Raises
@@ -304,13 +291,13 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def fetch_player(
+    async def fetch_player(
         self,
         name: str,
         code: int,
         type: typedefs.IntAnd[enums.MembershipType] = enums.MembershipType.ALL,
         /,
-    ) -> ResponseSig[typedefs.JSONArray]:
+    ) -> typedefs.JSONArray:
         """Fetch a Destiny 2 Player.
 
         Parameters
@@ -324,7 +311,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         --------
-        `ResponseSig[aiobungie.typedefs.JSONArray]`
+        `aiobungie.typedefs.JSONArray`
             A JSON array of the found player's memberships.
 
         Raises
@@ -336,14 +323,14 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def fetch_character(
+    async def fetch_character(
         self,
         member_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
         character_id: int,
         components: list[enums.ComponentType],
         auth: typing.Optional[str] = None,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         """Fetch a Destiny 2 player's characters.
 
         Parameters
@@ -365,7 +352,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object of the requested character.
 
         Raises
@@ -375,7 +362,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def fetch_activities(
+    async def fetch_activities(
         self,
         member_id: int,
         character_id: int,
@@ -386,7 +373,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         *,
         page: int = 1,
         limit: int = 1,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         """Fetch a Destiny 2 activity for the specified user id and character.
 
         Parameters
@@ -409,7 +396,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object of the player's activities.
 
         Raises
@@ -422,9 +409,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def fetch_post_activity(
-        self, instance_id: int, /
-    ) -> ResponseSig[typedefs.JSONObject]:
+    async def fetch_post_activity(self, instance_id: int, /) -> typedefs.JSONObject:
         """Fetch a post activity details.
 
         Parameters
@@ -434,14 +419,14 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object of the post activity.
         """
 
     @abc.abstractmethod
-    def fetch_clan_from_id(
+    async def fetch_clan_from_id(
         self, id: int, /, access_token: typing.Optional[str] = None
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         """Fetch a Bungie Clan by its id.
 
         Parameters
@@ -455,12 +440,12 @@ class RESTInterface(traits.RESTful, abc.ABC):
             An optional access token to make the request with.
 
             If the token was bound to a member of the clan,
-            This field `aiobungie.crate.Clan.current_user_membership` will be available
+            This field `aiobungie.crates.Clan.current_user_membership` will be available
             and will return the membership of the user who made this request.
 
         Returns
         --------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object of the clan.
 
         Raises
@@ -470,14 +455,14 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def fetch_clan(
+    async def fetch_clan(
         self,
         name: str,
         /,
         access_token: typing.Optional[str] = None,
         *,
         type: typedefs.IntAnd[enums.GroupType] = enums.GroupType.CLAN,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         """Fetch a Clan by its name.
         This method will return the first clan found with given name name.
 
@@ -492,14 +477,14 @@ class RESTInterface(traits.RESTful, abc.ABC):
             An optional access token to make the request with.
 
             If the token was bound to a member of the clan,
-            This field `aiobungie.crate.Clan.current_user_membership` will be available
+            This field `aiobungie.crates.Clan.current_user_membership` will be available
             and will return the membership of the user who made this request.
         type : `aiobungie.typedefs.IntAnd[aiobungie.GroupType]`
             The group type, Default is one.
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object of the clan.
 
         Raises
@@ -509,9 +494,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def fetch_clan_conversations(
-        self, clan_id: int, /
-    ) -> ResponseSig[typedefs.JSONArray]:
+    async def fetch_clan_conversations(self, clan_id: int, /) -> typedefs.JSONArray:
         """Fetch a clan's conversations.
 
         Parameters
@@ -521,12 +504,12 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONArray]`
+        `aiobungie.typedefs.JSONArray`
             A JSON array of the conversations.
         """
 
     @abc.abstractmethod
-    def fetch_clan_admins(self, clan_id: int, /) -> ResponseSig[typedefs.JSONObject]:
+    async def fetch_clan_admins(self, clan_id: int, /) -> typedefs.JSONObject:
         """Fetch the admins and founder members of the clan.
 
         Parameters
@@ -536,7 +519,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object of the clan admins and founder members.
 
         Raises
@@ -546,7 +529,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def fetch_groups_for_member(
+    async def fetch_groups_for_member(
         self,
         member_id: int,
         member_type: typedefs.IntAnd[enums.MembershipType],
@@ -554,7 +537,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         *,
         filter: int = 0,
         group_type: typedefs.IntAnd[enums.GroupType] = enums.GroupType.CLAN,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         """Fetch the information about the groups for a member.
 
         Parameters
@@ -574,12 +557,12 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object of an array of the member's membership data and groups data.
         """
 
     @abc.abstractmethod
-    def fetch_potential_groups_for_member(
+    async def fetch_potential_groups_for_member(
         self,
         member_id: int,
         member_type: typedefs.IntAnd[enums.MembershipType],
@@ -587,7 +570,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         *,
         filter: int = 0,
         group_type: typedefs.IntAnd[enums.GroupType] = enums.GroupType.CLAN,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         """Get information about the groups that a given member has applied to or been invited to.
 
         Parameters
@@ -607,19 +590,19 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object of an array of the member's membership data and groups data.
         """
 
     @abc.abstractmethod
-    def fetch_clan_members(
+    async def fetch_clan_members(
         self,
         clan_id: int,
         /,
         *,
         name: typing.Optional[str] = None,
         type: typedefs.IntAnd[enums.MembershipType] = enums.MembershipType.NONE,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         """Fetch all Bungie Clan members.
 
         Parameters
@@ -638,7 +621,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object of an array of clan members.
 
         Raises
@@ -648,7 +631,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def fetch_entity(self, type: str, hash: int) -> ResponseSig[typedefs.JSONObject]:
+    async def fetch_entity(self, type: str, hash: int) -> typedefs.JSONObject:
         """Fetch a Destiny definition item given its type and hash.
 
         Parameters
@@ -660,12 +643,12 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object of the definition data.
         """
 
     @abc.abstractmethod
-    def fetch_inventory_item(self, hash: int, /) -> ResponseSig[typedefs.JSONObject]:
+    async def fetch_inventory_item(self, hash: int, /) -> typedefs.JSONObject:
         """Fetch a Destiny inventory item entity given a its hash.
 
         Parameters
@@ -675,12 +658,12 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object of the inventory item.
         """
 
     @abc.abstractmethod
-    def fetch_objective_entity(self, hash: int, /) -> ResponseSig[typedefs.JSONObject]:
+    async def fetch_objective_entity(self, hash: int, /) -> typedefs.JSONObject:
         """Fetch a Destiny objective entity given a its hash.
 
         Parameters
@@ -690,12 +673,12 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object of the objetive data.
         """
 
     @abc.abstractmethod
-    def fetch_application(self, appid: int, /) -> ResponseSig[typedefs.JSONObject]:
+    async def fetch_application(self, appid: int, /) -> typedefs.JSONObject:
         """Fetch a Bungie Application.
 
         Parameters
@@ -705,19 +688,19 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         --------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object of the application.
         """
 
     @abc.abstractmethod
-    def fetch_linked_profiles(
+    async def fetch_linked_profiles(
         self,
         member_id: int,
         member_type: typedefs.IntAnd[enums.MembershipType],
         /,
         *,
         all: bool = False,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         """Returns a summary information about all profiles linked to the requested member.
 
         The passed membership id/type maybe a Bungie.Net membership or a Destiny memberships.
@@ -743,34 +726,34 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
         A JSON object which contains an Array of profiles, an Array of profiles with errors and Bungie.Net membership
         """
 
     @abc.abstractmethod
-    def fetch_clan_banners(self) -> ResponseSig[typedefs.JSONObject]:
+    async def fetch_clan_banners(self) -> typedefs.JSONObject:
         """Fetch the values of the clan banners.
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object of the clan banners.
         """
 
     @abc.abstractmethod
-    def fetch_public_milestones(self) -> ResponseSig[typedefs.JSONObject]:
+    async def fetch_public_milestones(self) -> typedefs.JSONObject:
         """Fetch the available milestones.
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object of information about the milestones.
         """
 
     @abc.abstractmethod
-    def fetch_public_milestone_content(
+    async def fetch_public_milestone_content(
         self, milestone_hash: int, /
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         """Fetch the milestone content given its hash.
 
         Parameters
@@ -780,14 +763,14 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object of information related to the fetched milestone.
         """
 
     @abc.abstractmethod
-    def fetch_current_user_memberships(
+    async def fetch_current_user_memberships(
         self, access_token: str, /
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         """Fetch a bungie user's accounts with the signed in user.
         This GET method  requires a Bearer access token for the authorization.
 
@@ -801,19 +784,19 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object of the bungie net user and destiny memberships of this account.
         """
 
     @abc.abstractmethod
-    def equip_item(
+    async def equip_item(
         self,
         access_token: str,
         /,
         item_id: int,
         character_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
-    ) -> ResponseSig[None]:
+    ) -> None:
         """Equip an item to a character.
 
         .. note::
@@ -834,14 +817,14 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def equip_items(
+    async def equip_items(
         self,
         access_token: str,
         /,
         item_ids: list[int],
         character_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
-    ) -> ResponseSig[None]:
+    ) -> None:
         """Equip multiple items to a character.
 
         .. note::
@@ -862,7 +845,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def ban_clan_member(
+    async def ban_clan_member(
         self,
         access_token: str,
         /,
@@ -872,7 +855,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         *,
         length: int = 0,
         comment: undefined.UndefinedOr[str] = undefined.Undefined,
-    ) -> ResponseSig[None]:
+    ) -> None:
         """Bans a member from the clan.
 
         .. note::
@@ -898,14 +881,14 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def unban_clan_member(
+    async def unban_clan_member(
         self,
         access_token: str,
         /,
         group_id: int,
         membership_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
-    ) -> ResponseSig[None]:
+    ) -> None:
         """Unbans a member from the clan.
 
         .. note::
@@ -924,14 +907,14 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def kick_clan_member(
+    async def kick_clan_member(
         self,
         access_token: str,
         /,
         group_id: int,
         membership_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         """Kick a member from the clan.
 
         .. note::
@@ -950,12 +933,12 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object of the group that the member has been kicked from.
         """
 
     @abc.abstractmethod
-    def edit_clan_options(
+    async def edit_clan_options(
         self,
         access_token: str,
         /,
@@ -968,7 +951,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         ] = None,
         update_banner_permission_override: typedefs.NoneOr[bool] = None,
         join_level: typedefs.NoneOr[typedefs.IntAnd[enums.ClanMemberType]] = None,
-    ) -> ResponseSig[None]:
+    ) -> None:
         """Edit the clan options.
 
         Notes
@@ -1011,7 +994,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def edit_clan(
+    async def edit_clan(
         self,
         access_token: str,
         /,
@@ -1035,7 +1018,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         enable_invite_messaging_for_admins: typedefs.NoneOr[bool] = None,
         default_publicity: typedefs.NoneOr[typing.Literal[0, 1, 2]] = None,
         is_public_topic_admin: typedefs.NoneOr[bool] = None,
-    ) -> ResponseSig[None]:
+    ) -> None:
         """Edit a clan.
 
         Notes
@@ -1094,7 +1077,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def fetch_friends(self, access_token: str, /) -> ResponseSig[typedefs.JSONObject]:
+    async def fetch_friends(self, access_token: str, /) -> typedefs.JSONObject:
         """Fetch bungie friend list.
 
         .. note::
@@ -1107,14 +1090,12 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object of an array of the bungie friends's data.
         """
 
     @abc.abstractmethod
-    def fetch_friend_requests(
-        self, access_token: str, /
-    ) -> ResponseSig[typedefs.JSONObject]:
+    async def fetch_friend_requests(self, access_token: str, /) -> typedefs.JSONObject:
         """Fetch pending bungie friend requests queue.
 
         .. note::
@@ -1127,14 +1108,12 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object of incoming requests and outgoing requests.
         """
 
     @abc.abstractmethod
-    def accept_friend_request(
-        self, access_token: str, /, member_id: int
-    ) -> ResponseSig[None]:
+    async def accept_friend_request(self, access_token: str, /, member_id: int) -> None:
         """Accepts a friend relationship with the target user. The user must be on your incoming friend request list.
 
         .. note::
@@ -1149,9 +1128,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def send_friend_request(
-        self, access_token: str, /, member_id: int
-    ) -> ResponseSig[None]:
+    async def send_friend_request(self, access_token: str, /, member_id: int) -> None:
         """Requests a friend relationship with the target user.
 
         .. note::
@@ -1166,9 +1143,9 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def decline_friend_request(
+    async def decline_friend_request(
         self, access_token: str, /, member_id: int
-    ) -> ResponseSig[None]:
+    ) -> None:
         """Decline a friend request with the target user. The user must be in your incoming friend request list.
 
         .. note::
@@ -1183,7 +1160,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def remove_friend(self, access_token: str, /, member_id: int) -> ResponseSig[None]:
+    async def remove_friend(self, access_token: str, /, member_id: int) -> None:
         """Removes a friend from your friend list. The user must be in your friend list.
 
         .. note::
@@ -1198,9 +1175,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def remove_friend_request(
-        self, access_token: str, /, member_id: int
-    ) -> ResponseSig[None]:
+    async def remove_friend_request(self, access_token: str, /, member_id: int) -> None:
         """Removes a friend from your friend list requests. The user must be in your outgoing request list.
 
         .. note :
@@ -1215,13 +1190,13 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def approve_all_pending_group_users(
+    async def approve_all_pending_group_users(
         self,
         access_token: str,
         /,
         group_id: int,
         message: undefined.UndefinedOr[str] = undefined.Undefined,
-    ) -> ResponseSig[None]:
+    ) -> None:
         """Apporve all pending users for the given group id.
 
         .. note::
@@ -1241,14 +1216,14 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def deny_all_pending_group_users(
+    async def deny_all_pending_group_users(
         self,
         access_token: str,
         /,
         group_id: int,
         *,
         message: undefined.UndefinedOr[str] = undefined.Undefined,
-    ) -> ResponseSig[None]:
+    ) -> None:
         """Deny all pending users for the given group id.
 
         .. note::
@@ -1268,7 +1243,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def add_optional_conversation(
+    async def add_optional_conversation(
         self,
         access_token: str,
         /,
@@ -1276,7 +1251,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         *,
         name: undefined.UndefinedOr[str] = undefined.Undefined,
         security: typing.Literal[0, 1] = 0,
-    ) -> ResponseSig[None]:
+    ) -> None:
         """Add a new chat channel to a group.
 
         .. note::
@@ -1302,7 +1277,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def edit_optional_conversation(
+    async def edit_optional_conversation(
         self,
         access_token: str,
         /,
@@ -1312,7 +1287,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         name: undefined.UndefinedOr[str] = undefined.Undefined,
         security: typing.Literal[0, 1] = 0,
         enable_chat: bool = False,
-    ) -> ResponseSig[None]:
+    ) -> None:
         """Edit the settings of this chat channel.
 
         .. note::
@@ -1343,7 +1318,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def transfer_item(
+    async def transfer_item(
         self,
         access_token: str,
         /,
@@ -1354,7 +1329,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         *,
         stack_size: int = 1,
         vault: bool = False,
-    ) -> ResponseSig[None]:
+    ) -> None:
         """Transfer an item from / to your vault.
 
         Notes
@@ -1384,7 +1359,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def pull_item(
+    async def pull_item(
         self,
         access_token: str,
         /,
@@ -1395,7 +1370,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         *,
         stack_size: int = 1,
         vault: bool = False,
-    ) -> ResponseSig[None]:
+    ) -> None:
         """pull an item from the postmaster.
 
         Notes
@@ -1425,7 +1400,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def fetch_fireteams(
+    async def fetch_fireteams(
         self,
         activity_type: typedefs.IntAnd[fireteams.FireteamActivity],
         *,
@@ -1434,22 +1409,22 @@ class RESTInterface(traits.RESTful, abc.ABC):
         date_range: typedefs.IntAnd[fireteams.FireteamDate] = 0,
         page: int = 0,
         slots_filter: int = 0,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         """Fetch public Bungie fireteams with open slots.
 
         Parameters
         ----------
-        activity_type : `aiobungie.typedefs.IntAnd[aiobungie.crate.FireteamActivity]`
+        activity_type : `aiobungie.typedefs.IntAnd[aiobungie.crates.FireteamActivity]`
             The fireteam activity type.
 
         Other Parameters
         ----------------
-        platform : `aiobungie.typedefs.IntAnd[aiobungie.crate.fireteams.FireteamPlatform]`
+        platform : `aiobungie.typedefs.IntAnd[aiobungie.crates.fireteams.FireteamPlatform]`
             If this is provided. Then the results will be filtered with the given platform.
-            Defaults to `aiobungie.crate.FireteamPlatform.ANY` which returns all platforms.
-        language : `typing.Union[aiobungie.crate.fireteams.FireteamLanguage, str]`
+            Defaults to `aiobungie.crates.FireteamPlatform.ANY` which returns all platforms.
+        language : `typing.Union[aiobungie.crates.fireteams.FireteamLanguage, str]`
             A locale language to filter the used language in that fireteam.
-            Defaults to `aiobungie.crate.FireteamLanguage.ALL`
+            Defaults to `aiobungie.crates.FireteamLanguage.ALL`
         date_range : `aiobungie.typedefs.IntAnd[aiobungie.FireteamDate]`
             An integer to filter the date range of the returned fireteams. Defaults to `aiobungie.FireteamDate.ALL`.
         page : `int`
@@ -1459,12 +1434,12 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object of the fireteam details.
         """
 
     @abc.abstractmethod
-    def fetch_avaliable_clan_fireteams(
+    async def fetch_avaliable_clan_fireteams(
         self,
         access_token: str,
         group_id: int,
@@ -1476,7 +1451,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         page: int = 0,
         public_only: bool = False,
         slots_filter: int = 0,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         """Fetch a clan's fireteams with open slots.
 
         .. note::
@@ -1488,17 +1463,17 @@ class RESTInterface(traits.RESTful, abc.ABC):
             The bearer access token associated with the bungie account.
         group_id : `int`
             The group/clan id of the fireteam.
-        activity_type : `aiobungie.typedefs.IntAnd[aiobungie.crate.FireteamActivity]`
+        activity_type : `aiobungie.typedefs.IntAnd[aiobungie.crates.FireteamActivity]`
             The fireteam activity type.
 
         Other Parameters
         ----------------
-        platform : `aiobungie.typedefs.IntAnd[aiobungie.crate.fireteams.FireteamPlatform]`
+        platform : `aiobungie.typedefs.IntAnd[aiobungie.crates.fireteams.FireteamPlatform]`
             If this is provided. Then the results will be filtered with the given platform.
-            Defaults to `aiobungie.crate.FireteamPlatform.ANY` which returns all platforms.
-        language : `typing.Union[aiobungie.crate.fireteams.FireteamLanguage, str]`
+            Defaults to `aiobungie.crates.FireteamPlatform.ANY` which returns all platforms.
+        language : `typing.Union[aiobungie.crates.fireteams.FireteamLanguage, str]`
             A locale language to filter the used language in that fireteam.
-            Defaults to `aiobungie.crate.FireteamLanguage.ALL`
+            Defaults to `aiobungie.crates.FireteamLanguage.ALL`
         date_range : `aiobungie.typedefs.IntAnd[aiobungie.FireteamDate]`
             An integer to filter the date range of the returned fireteams. Defaults to `aiobungie.FireteamDate.ALL`.
         page : `int`
@@ -1510,14 +1485,14 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object of the fireteams detail.
         """
 
     @abc.abstractmethod
-    def fetch_clan_fireteam(
+    async def fetch_clan_fireteam(
         self, access_token: str, fireteam_id: int, group_id: int
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         """Fetch a specific clan fireteam.
 
         .. note::
@@ -1534,12 +1509,12 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object of the fireteam details.
         """
 
     @abc.abstractmethod
-    def fetch_my_clan_fireteams(
+    async def fetch_my_clan_fireteams(
         self,
         access_token: str,
         group_id: int,
@@ -1549,7 +1524,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         language: typing.Union[fireteams.FireteamLanguage, str],
         filtered: bool = True,
         page: int = 0,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         """Fetch a clan's fireteams with open slots.
 
         .. note::
@@ -1568,12 +1543,12 @@ class RESTInterface(traits.RESTful, abc.ABC):
             If provided and set to `True`, It will also return closed fireteams.
             If provided and set to `False`, It will only return public fireteams.
             Default is `True`.
-        platform : `aiobungie.typedefs.IntAnd[aiobungie.crate.fireteams.FireteamPlatform]`
+        platform : `aiobungie.typedefs.IntAnd[aiobungie.crates.fireteams.FireteamPlatform]`
             If this is provided. Then the results will be filtered with the given platform.
-            Defaults to `aiobungie.crate.FireteamPlatform.ANY` which returns all platforms.
-        language : `typing.Union[aiobungie.crate.fireteams.FireteamLanguage, str]`
+            Defaults to `aiobungie.crates.FireteamPlatform.ANY` which returns all platforms.
+        language : `typing.Union[aiobungie.crates.fireteams.FireteamLanguage, str]`
             A locale language to filter the used language in that fireteam.
-            Defaults to `aiobungie.crate.FireteamLanguage.ALL`
+            Defaults to `aiobungie.crates.FireteamLanguage.ALL`
         filtered : `bool`
             If set to `True`, it will filter by clan. Otherwise not. Default is `True`.
         page : `int`
@@ -1581,14 +1556,14 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object of the fireteams detail.
         """
 
     @abc.abstractmethod
-    def fetch_private_clan_fireteams(
+    async def fetch_private_clan_fireteams(
         self, access_token: str, group_id: int, /
-    ) -> ResponseSig[int]:
+    ) -> int:
         """Fetch the active count of the clan fireteams that are only private.
 
         .. note::
@@ -1603,7 +1578,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[int]`
+        `int`
             The active fireteams count. Max value returned is 25.
         """
 
@@ -1645,9 +1620,9 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def fetch_user_credentials(
+    async def fetch_user_credentials(
         self, access_token: str, membership_id: int, /
-    ) -> ResponseSig[typedefs.JSONArray]:
+    ) -> typedefs.JSONArray:
         """Fetch an array of credential types attached to the requested account.
 
         .. note::
@@ -1662,7 +1637,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONArray]`
+        `aiobungie.typedefs.JSONArray`
             A JSON array of the returned credentials.
 
         Raises
@@ -1672,7 +1647,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def insert_socket_plug(
+    async def insert_socket_plug(
         self,
         action_token: str,
         /,
@@ -1680,7 +1655,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         plug: typing.Union[builders.PlugSocketBuilder, dict[str, int]],
         character_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         """Insert a plug into a socketed item.
 
         .. note::
@@ -1714,7 +1689,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object contains the changed item details.
 
         Raises
@@ -1724,7 +1699,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def insert_socket_plug_free(
+    async def insert_socket_plug_free(
         self,
         access_token: str,
         /,
@@ -1732,7 +1707,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         plug: typing.Union[builders.PlugSocketBuilder, dict[str, int]],
         character_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         """Insert a plug into a socketed item. This doesn't require an Action token.
 
         .. note::
@@ -1764,7 +1739,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object contains the changed item details.
 
         Raises
@@ -1774,7 +1749,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def set_item_lock_state(
+    async def set_item_lock_state(
         self,
         access_token: str,
         state: bool,
@@ -1782,7 +1757,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         item_id: int,
         character_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
-    ) -> ResponseSig[int]:
+    ) -> int:
         """Set the Lock State for an instanced item.
 
         .. note::
@@ -1803,7 +1778,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[int]`
+        `int`
             An integer represents whether the request was successful or failed.
 
         Raises
@@ -1815,7 +1790,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def set_quest_track_state(
+    async def set_quest_track_state(
         self,
         access_token: str,
         state: bool,
@@ -1823,7 +1798,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         item_id: int,
         character_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
-    ) -> ResponseSig[int]:
+    ) -> int:
         """Set the Tracking State for an instanced Quest or Bounty.
 
         .. note::
@@ -1844,7 +1819,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[int]`
+        `int`
             An integer represents whether the request was successful or failed.
 
         Raises
@@ -1856,9 +1831,9 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    def search_entities(
+    async def search_entities(
         self, name: str, entity_type: str, *, page: int = 0
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         """Search for Destiny2 entities given a name and its type.
 
         Parameters
@@ -1875,17 +1850,17 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object contains details about the searched term.
         """
 
     @abc.abstractmethod
-    def fetch_unique_weapon_history(
+    async def fetch_unique_weapon_history(
         self,
         membership_id: int,
         character_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         """Fetch details about unique weapon usage for a character. Includes all exotics.
 
         Parameters
@@ -1899,44 +1874,44 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object contains details about the returned weapons.
         """
 
     @abc.abstractmethod
-    def fetch_available_locales(self) -> ResponseSig[typedefs.JSONObject]:
+    async def fetch_available_locales(self) -> typedefs.JSONObject:
         """Fetch available locales at Bungie.
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object contains a list of all available localization cultures.
         """
 
     @abc.abstractmethod
-    def fetch_common_settings(self) -> ResponseSig[typedefs.JSONObject]:
+    async def fetch_common_settings(self) -> typedefs.JSONObject:
         """Fetch the common settings used by Bungie's envirotment.
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             The common settings JSON object.
         """
 
     @abc.abstractmethod
-    def fetch_user_systems_overrides(self) -> ResponseSig[typedefs.JSONObject]:
+    async def fetch_user_systems_overrides(self) -> typedefs.JSONObject:
         """Fetch a user's specific system overrides.
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             The system overrides JSON object.
         """
 
     @abc.abstractmethod
-    def fetch_global_alerts(
+    async def fetch_global_alerts(
         self, *, include_streaming: bool = False
-    ) -> ResponseSig[typedefs.JSONArray]:
+    ) -> typedefs.JSONArray:
         """Fetch any active global alerts.
 
         Parameters
@@ -1946,18 +1921,18 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONArray]`
+        `aiobungie.typedefs.JSONArray`
             A JSON array of the global alerts objects.
         """
 
     @abc.abstractmethod
-    def fetch_item(
+    async def fetch_item(
         self,
         member_id: int,
         item_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
         components: list[enums.ComponentType],
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         """Fetch an instanced Destiny 2 item's details.
 
         Parameters
@@ -1973,14 +1948,12 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object response contains the fetched item with its components.
         """
 
     @abc.abstractmethod
-    def fetch_clan_weekly_rewards(
-        self, clan_id: int, /
-    ) -> ResponseSig[typedefs.JSONObject]:
+    async def fetch_clan_weekly_rewards(self, clan_id: int, /) -> typedefs.JSONObject:
         """Fetch the weekly reward state for a clan.
 
         Parameters
@@ -1990,12 +1963,12 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         ------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON response of the clan rewards state.
         """
 
     @abc.abstractmethod
-    def awainitialize_request(
+    async def awainitialize_request(
         self,
         access_token: str,
         type: typing.Literal[0, 1],
@@ -2004,7 +1977,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         *,
         affected_item_id: typing.Optional[int] = None,
         character_id: typing.Optional[int] = None,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         """Initialize a request to perform an advanced write action.
 
         .. warning::
@@ -2030,14 +2003,14 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object response.
         """
 
     @abc.abstractmethod
-    def awaget_action_token(
+    async def awaget_action_token(
         self, access_token: str, correlation_id: str, /
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         """Returns the action token if user approves the request.
 
         .. warning::
@@ -2052,18 +2025,18 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object response.
         """
 
     @abc.abstractmethod
-    def awa_provide_authorization_result(
+    async def awa_provide_authorization_result(
         self,
         access_token: str,
         selection: int,
         correlation_id: str,
         nonce: collections.MutableSequence[typing.Union[str, bytes]],
-    ) -> ResponseSig[int]:
+    ) -> int:
         """Provide the result of the user interaction. Called by the Bungie Destiny App to approve or reject a request.
 
         .. warning::
@@ -2082,12 +2055,12 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[int]`
+        `int`
             ...
         """
 
     @abc.abstractmethod
-    def fetch_vendors(
+    async def fetch_vendors(
         self,
         access_token: str,
         character_id: int,
@@ -2096,7 +2069,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         /,
         components: list[enums.ComponentType],
         filter: typing.Optional[int] = None,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         """Get currently available vendors from the list of vendors that can possibly have rotating inventory.
 
         Parameters
@@ -2119,12 +2092,12 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object of the vendor response.
         """
 
     @abc.abstractmethod
-    def fetch_vendor(
+    async def fetch_vendor(
         self,
         access_token: str,
         character_id: int,
@@ -2133,7 +2106,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         vendor_hash: int,
         /,
         components: list[enums.ComponentType],
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         """Fetch details for a specific vendor.
 
         Parameters
@@ -2153,22 +2126,22 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object of the vendor response.
         """
 
     @abc.abstractmethod
-    def fetch_bungie_applications(self) -> ResponseSig[typedefs.JSONArray]:
+    async def fetch_bungie_applications(self) -> typedefs.JSONArray:
         """Fetch details for applications created by Bungie.
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONArray]`
+        `aiobungie.typedefs.JSONArray`
             An array of Bungie created applications.
         """
 
     @abc.abstractmethod
-    def fetch_application_api_usage(
+    async def fetch_application_api_usage(
         self,
         access_token: str,
         application_id: int,
@@ -2176,7 +2149,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         *,
         start: typing.Optional[datetime.datetime] = None,
         end: typing.Optional[datetime.datetime] = None,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         """Fetch a Bungie application's API usage.
 
         Parameters
@@ -2211,12 +2184,12 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object of the application usage details.
         """
 
     @abc.abstractmethod
-    def fetch_historical_stats(
+    async def fetch_historical_stats(
         self,
         character_id: int,
         membership_id: int,
@@ -2227,7 +2200,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         modes: collections.Sequence[typedefs.IntAnd[enums.GameMode]],
         *,
         period_type: enums.PeriodType = enums.PeriodType.ALL_TIME,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         """Fetch historical stats for a specific membership character.
 
         Parameters
@@ -2252,17 +2225,17 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object of the historical stats.
         """
 
     @abc.abstractmethod
-    def fetch_historical_stats_for_account(
+    async def fetch_historical_stats_for_account(
         self,
         membership_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
         groups: list[typedefs.IntAnd[enums.StatsGroupType]],
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         """Fetch historical stats for an account's membership.
 
         Parameters
@@ -2276,19 +2249,19 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object of the historical stats for the account. This includes both the
             character and account stats.
         """
 
     @abc.abstractmethod
-    def fetch_aggregated_activity_stats(
+    async def fetch_aggregated_activity_stats(
         self,
         character_id: int,
         membership_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
         /,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         """Fetch aggregated activity stats for a specific membership character.
 
         Parameters
@@ -2302,32 +2275,32 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Returns
         -------
-        `ResponseSig[aiobungie.typedefs.JSONObject]`
+        `aiobungie.typedefs.JSONObject`
             A JSON object of the aggregated activity stats.
         """
 
     @abc.abstractmethod
-    def fetch_historical_definition(self) -> ResponseSig[typedefs.JSONObject]:
+    async def fetch_historical_definition(self) -> typedefs.JSONObject:
         ...
 
     @abc.abstractmethod
-    def fetch_content_type(self, type: str, /) -> ResponseSig[typedefs.JSONObject]:
+    async def fetch_content_type(self, type: str, /) -> typedefs.JSONObject:
         ...
 
     @abc.abstractmethod
-    def fetch_content_by_id(
+    async def fetch_content_by_id(
         self, id: int, locale: str, /, *, head: bool = False
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         ...
 
     @abc.abstractmethod
-    def fetch_content_by_tag_and_type(
+    async def fetch_content_by_tag_and_type(
         self, locale: str, tag: str, type: str, *, head: bool = False
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         ...
 
     @abc.abstractmethod
-    def search_content_with_text(
+    async def search_content_with_text(
         self,
         locale: str,
         /,
@@ -2337,28 +2310,28 @@ class RESTInterface(traits.RESTful, abc.ABC):
         *,
         page: undefined.UndefinedOr[int] = undefined.Undefined,
         source: undefined.UndefinedOr[str] = undefined.Undefined,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         ...
 
     @abc.abstractmethod
-    def search_content_by_tag_and_type(
+    async def search_content_by_tag_and_type(
         self,
         locale: str,
         tag: str,
         type: str,
         *,
         page: undefined.UndefinedOr[int] = undefined.Undefined,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         ...
 
     @abc.abstractmethod
-    def search_help_articles(
+    async def search_help_articles(
         self, text: str, size: str, /
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         ...
 
     @abc.abstractmethod
-    def fetch_topics_page(
+    async def fetch_topics_page(
         self,
         category_filter: int,
         group: int,
@@ -2368,11 +2341,11 @@ class RESTInterface(traits.RESTful, abc.ABC):
         page: undefined.UndefinedOr[int] = undefined.Undefined,
         locales: undefined.UndefinedOr[collections.Iterable[str]] = undefined.Undefined,
         tag_filter: undefined.UndefinedOr[str] = undefined.Undefined,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         ...
 
     @abc.abstractmethod
-    def fetch_core_topics_page(
+    async def fetch_core_topics_page(
         self,
         category_filter: int,
         date_filter: int,
@@ -2380,11 +2353,11 @@ class RESTInterface(traits.RESTful, abc.ABC):
         *,
         page: undefined.UndefinedOr[int] = undefined.Undefined,
         locales: undefined.UndefinedOr[collections.Iterable[str]] = undefined.Undefined,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         ...
 
     @abc.abstractmethod
-    def fetch_posts_threaded_page(
+    async def fetch_posts_threaded_page(
         self,
         parent_post: bool,
         page: int,
@@ -2394,11 +2367,11 @@ class RESTInterface(traits.RESTful, abc.ABC):
         root_thread_mode: bool,
         sort_mode: int,
         show_banned: typing.Optional[str] = None,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         ...
 
     @abc.abstractmethod
-    def fetch_posts_threaded_page_from_child(
+    async def fetch_posts_threaded_page_from_child(
         self,
         child_id: bool,
         page: int,
@@ -2407,88 +2380,88 @@ class RESTInterface(traits.RESTful, abc.ABC):
         root_thread_mode: bool,
         sort_mode: int,
         show_banned: typing.Optional[str] = None,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         ...
 
     @abc.abstractmethod
-    def fetch_post_and_parent(
+    async def fetch_post_and_parent(
         self, child_id: int, /, *, show_banned: typing.Optional[str] = None
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         ...
 
     @abc.abstractmethod
-    def fetch_posts_and_parent_awaiting(
+    async def fetch_posts_and_parent_awaiting(
         self, child_id: int, /, *, show_banned: typing.Optional[str] = None
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         ...
 
     @abc.abstractmethod
-    def fetch_topic_for_content(self, content_id: int, /) -> ResponseSig[int]:
+    async def fetch_topic_for_content(self, content_id: int, /) -> int:
         ...
 
     @abc.abstractmethod
-    def fetch_forum_tag_suggestions(
+    async def fetch_forum_tag_suggestions(
         self, partial_tag: str, /
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         ...
 
     @abc.abstractmethod
-    def fetch_poll(self, topic_id: int, /) -> ResponseSig[typedefs.JSONObject]:
+    async def fetch_poll(self, topic_id: int, /) -> typedefs.JSONObject:
         ...
 
     @abc.abstractmethod
-    def fetch_recuirement_thread_summaries(self) -> ResponseSig[typedefs.JSONArray]:
+    async def fetch_recuirement_thread_summaries(self) -> typedefs.JSONArray:
         ...
 
     @abc.abstractmethod
-    def fetch_recommended_groups(
+    async def fetch_recommended_groups(
         self,
         accecss_token: str,
         /,
         *,
         date_range: int = 0,
         group_type: typedefs.IntAnd[enums.GroupType] = enums.GroupType.CLAN,
-    ) -> ResponseSig[typedefs.JSONArray]:
+    ) -> typedefs.JSONArray:
         ...
 
     @abc.abstractmethod
-    def fetch_available_avatars(self) -> ResponseSig[dict[str, int]]:
+    async def fetch_available_avatars(self) -> collections.Mapping[str, int]:
         ...
 
     @abc.abstractmethod
-    def fetch_user_clan_invite_setting(
+    async def fetch_user_clan_invite_setting(
         self,
         access_token: str,
         /,
         membership_type: typedefs.IntAnd[enums.MembershipType],
-    ) -> ResponseSig[bool]:
+    ) -> bool:
         ...
 
     @abc.abstractmethod
-    def fetch_banned_group_members(
+    async def fetch_banned_group_members(
         self,
         access_token: str,
         group_id: int,
         /,
         *,
         page: int = 1,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         ...
 
     @abc.abstractmethod
-    def fetch_pending_group_memberships(
+    async def fetch_pending_group_memberships(
         self, access_token: str, group_id: int, /, *, current_page: int = 1
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         ...
 
     @abc.abstractmethod
-    def fetch_invited_group_memberships(
+    async def fetch_invited_group_memberships(
         self, access_token: str, group_id: int, /, *, current_page: int = 1
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         ...
 
     @abc.abstractmethod
-    def invite_member_to_group(
+    async def invite_member_to_group(
         self,
         access_token: str,
         /,
@@ -2497,16 +2470,16 @@ class RESTInterface(traits.RESTful, abc.ABC):
         membership_type: typedefs.IntAnd[enums.MembershipType],
         *,
         message: undefined.UndefinedOr[str] = undefined.Undefined,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         ...
 
     @abc.abstractmethod
-    def cancel_group_member_invite(
+    async def cancel_group_member_invite(
         self,
         access_token: str,
         /,
         group_id: int,
         membership_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         ...

@@ -1,7 +1,7 @@
 from typing import Any
 
 from aiobungie import builders as builders
-from aiobungie import crate as crate
+from aiobungie import crates as crates
 from aiobungie import interfaces as interfaces
 from aiobungie import traits as traits
 from aiobungie import typedefs as typedefs
@@ -25,16 +25,17 @@ from ._info import __email__ as __email__
 from ._info import __license__ as __license__
 from ._info import __url__ as __url__
 from ._info import __version__ as __version__
-from .crate.activity import Difficulty as Difficulty
-from .crate.components import ComponentFields as ComponentFields
-from .crate.components import ComponentPrivacy as ComponentPrivacy
-from .crate.entity import GatingScope as GatingScope
-from .crate.entity import ObjectiveUIStyle as ObjectiveUIStyle
-from .crate.entity import ValueUIStyle as ValueUIStyle
-from .crate.fireteams import FireteamActivity as FireteamActivity
-from .crate.fireteams import FireteamDate as FireteamDate
-from .crate.fireteams import FireteamLanguage as FireteamLanguage
-from .crate.fireteams import FireteamPlatform as FireteamPlatform
-from .crate.records import RecordState as RecordState
+from .crates.activity import Difficulty as Difficulty
+from .crates.components import ComponentFields as ComponentFields
+from .crates.components import ComponentPrivacy as ComponentPrivacy
+from .crates.entity import GatingScope as GatingScope
+from .crates.entity import ObjectiveUIStyle as ObjectiveUIStyle
+from .crates.entity import ValueUIStyle as ValueUIStyle
+from .crates.fireteams import FireteamActivity as FireteamActivity
+from .crates.fireteams import FireteamDate as FireteamDate
+from .crates.fireteams import FireteamLanguage as FireteamLanguage
+from .crates.fireteams import FireteamPlatform as FireteamPlatform
+from .crates.records import RecordState as RecordState
 
+crate = crates
 __all__: Any

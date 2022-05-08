@@ -37,8 +37,8 @@ import typing
 
 import attrs
 
-from aiobungie.crate import entity
-from aiobungie.crate import user
+from aiobungie.crates import entity
+from aiobungie.crates import user
 from aiobungie.internal import enums
 from aiobungie.internal import helpers
 
@@ -47,8 +47,8 @@ if typing.TYPE_CHECKING:
 
     from aiobungie import traits
     from aiobungie import typedefs
-    from aiobungie.crate import components
-    from aiobungie.crate import season
+    from aiobungie.crates import components
+    from aiobungie.crates import season
 
 
 class ProfileItem(abc.ABC):
@@ -119,7 +119,7 @@ class ProfileItem(abc.ABC):
 
         Returns
         -------
-        `aiobungie.crate.InventoryEntity`
+        `aiobungie.crates.InventoryEntity`
             An inventory item definition entity.
         """
         return await self.net.request.fetch_inventory_item(self.hash)
@@ -223,7 +223,7 @@ class Profile:
     """Represents a Bungie member profile-only component.
 
     This is only a `PROFILE` component and not the profile itself.
-    See `aiobungie.crate.Component` for other components.
+    See `aiobungie.crates.Component` for other components.
     """
 
     id: int
@@ -280,7 +280,7 @@ class Profile:
 
         Returns
         -------
-        `collections.Collection[aiobungie.crate.CharacterComponent]`
+        `collections.Collection[aiobungie.crates.CharacterComponent]`
             A collection of the characters component.
         """
         return await self._await_all_chars(components, auth)

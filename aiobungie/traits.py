@@ -41,7 +41,7 @@ if typing.TYPE_CHECKING:
 
 @typing.runtime_checkable
 class Netrunner(typing.Protocol):
-    """Core trait for types which it is possible for crates to run external requests.
+    """Types that can run external requests.
 
     These requests are performed by a reference of your `aiobungie.Client` instance.
 
@@ -66,10 +66,10 @@ class Netrunner(typing.Protocol):
 
 @typing.runtime_checkable
 class Serializable(typing.Protocol):
-    """Core trait for types which it is possible to deserialize incoming REST payloads
+    """Types which can deserialize REST payloads responses
     into a `aiobungie.crate` implementation using the `Serializable.factory` property.
 
-    Currently only `ClientApp` implement this trait
+    Only `ClientApp` implement this trait
     """
 
     __slots__ = ()
@@ -82,11 +82,11 @@ class Serializable(typing.Protocol):
 
 @typing.runtime_checkable
 class RESTful(typing.Protocol):
-    """Core trait for types which it is possible to interact with the API directly
+    """Types which it is possible to interact with the API directly
     which provides RESTful functionalities.
 
-    Currently only `aiobungie.RESTClient` implement this trait,
-    `ClientBase` may access its RESTClient using `aiobungie.Client.rest` property.
+    Only `aiobungie.RESTClient` implement this trait,
+    `ClientApp` may access its RESTClient using `ClientApp.rest` property.
     """
 
     __slots__ = ()
@@ -184,7 +184,7 @@ class RESTful(typing.Protocol):
         *,
         auth: typing.Optional[str] = None,
         json: typing.Optional[dict[str, typing.Any]] = None,
-    ) -> typing.Any:
+    ) -> rest.ResponseSig:
         """Perform an HTTP request given a valid Bungie endpoint.
 
         Parameters
@@ -201,8 +201,8 @@ class RESTful(typing.Protocol):
 
         Returns
         -------
-        `typing.Any`
-            Any object.
+        `aiobungie.rest.ResponseSig`
+            The response payload.
         """
         raise NotImplementedError
 
@@ -211,7 +211,7 @@ class RESTful(typing.Protocol):
 class ClientApp(Netrunner, Serializable, typing.Protocol):
     """Core trait for the standard `aiobungie.Client` implementation.
 
-    This trait includes all previous trait implementations.
+    This includes all aiobungie traits.
     """
 
     __slots__ = ()

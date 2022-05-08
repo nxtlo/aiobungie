@@ -19,7 +19,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Marshalling factory used to deserializing REST JSON payloads into an `aiobungie.crate`."""
+"""Marshalling factory used to deserializing REST JSON payloads into an `aiobungie.crates`."""
 
 from __future__ import annotations
 
@@ -30,21 +30,21 @@ import typing
 from aiobungie import interfaces
 from aiobungie import typedefs
 from aiobungie import undefined
-from aiobungie.crate import activity
-from aiobungie.crate import application
-from aiobungie.crate import character
-from aiobungie.crate import clans
-from aiobungie.crate import components
-from aiobungie.crate import entity
-from aiobungie.crate import fireteams
-from aiobungie.crate import friends
-from aiobungie.crate import items
-from aiobungie.crate import milestones
-from aiobungie.crate import profile
-from aiobungie.crate import progressions
-from aiobungie.crate import records
-from aiobungie.crate import season
-from aiobungie.crate import user
+from aiobungie.crates import activity
+from aiobungie.crates import application
+from aiobungie.crates import character
+from aiobungie.crates import clans
+from aiobungie.crates import components
+from aiobungie.crates import entity
+from aiobungie.crates import fireteams
+from aiobungie.crates import friends
+from aiobungie.crates import items
+from aiobungie.crates import milestones
+from aiobungie.crates import profile
+from aiobungie.crates import progressions
+from aiobungie.crates import records
+from aiobungie.crates import season
+from aiobungie.crates import user
 from aiobungie.internal import assets
 from aiobungie.internal import enums
 from aiobungie.internal import helpers
@@ -62,7 +62,7 @@ class Factory(interfaces.FactoryInterface):
     """The base deserialization factory class for all aiobungie objects.
 
     Highly inspired hikari entity factory used to deserialize JSON responses from the REST client and turning them
-    into a `aiobungie.crate` Python classes.
+    into a `aiobungie.crates` Python classes.
     """
 
     __slots__ = ("_net",)

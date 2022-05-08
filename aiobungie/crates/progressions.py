@@ -87,35 +87,35 @@ class Progression(BaseProgression):
     # net: traits.Netrunner = attrs.field(repr=False)
 
     hash: int
-    # <<inherited docstring from aiobungie.crate.specials.Progression>>.
+    # <<inherited docstring from aiobungie.crates.specials.Progression>>.
 
     level: int
-    # <<inherited docstring from aiobungie.crate.specials.Progression>>.
+    # <<inherited docstring from aiobungie.crates.specials.Progression>>.
 
     cap: int
-    # <<inherited docstring from aiobungie.crate.specials.Progression>>.
+    # <<inherited docstring from aiobungie.crates.specials.Progression>>.
 
     daily_limit: int
-    # <<inherited docstring from aiobungie.crate.specials.Progression>>.
+    # <<inherited docstring from aiobungie.crates.specials.Progression>>.
 
     weekly_limit: int
-    # <<inherited docstring from aiobungie.crate.specials.Progression>>.
+    # <<inherited docstring from aiobungie.crates.specials.Progression>>.
 
     current_progress: int
-    # <<inherited docstring from aiobungie.crate.specials.Progression>>.
+    # <<inherited docstring from aiobungie.crates.specials.Progression>>.
 
     daily_progress: int
-    # <<inherited docstring from aiobungie.crate.specials.Progression>>.
+    # <<inherited docstring from aiobungie.crates.specials.Progression>>.
 
     needed: int
-    # <<inherited docstring from aiobungie.crate.specials.Progression>>.
+    # <<inherited docstring from aiobungie.crates.specials.Progression>>.
 
     next_level: int
-    # <<inherited docstring from aiobungie.crate.specials.Progression>>.
+    # <<inherited docstring from aiobungie.crates.specials.Progression>>.
 
 
 @attrs.define(kw_only=True)
-class Factions(Progression, BaseProgression):
+class Factions(Progression):
     """Represent a Bungie progression faction found in a character progressions component."""
 
     faction_hash: int

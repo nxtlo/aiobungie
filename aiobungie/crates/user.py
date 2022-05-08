@@ -41,7 +41,7 @@ import typing
 import attrs
 
 from aiobungie import url
-from aiobungie.crate import components as components_
+from aiobungie.crates import components as components_
 from aiobungie.internal import assets
 from aiobungie.internal import enums
 
@@ -155,7 +155,7 @@ class PartialBungieUser:
 
         Returns
         -------
-        `aiobungie.crate.BungieUser`
+        `aiobungie.crates.BungieUser`
             A Bungie net user.
 
         Raises
@@ -303,7 +303,7 @@ class DestinyMembership(UserLike):
 
         Returns
         --------
-        `aiobungie.crate.Component`
+        `aiobungie.crates.Component`
             A Destiny 2 player profile with its components.
             Only passed components will be available if they exists. Otherwise they will be `None`
         """

@@ -43,7 +43,7 @@ if typing.TYPE_CHECKING:
     import collections.abc as colelctions
 
     from aiobungie import traits
-    from aiobungie.crate import progressions
+    from aiobungie.crates import progressions
 
 
 @attrs.define(kw_only=True)

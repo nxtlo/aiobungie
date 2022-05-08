@@ -25,16 +25,17 @@ client = aiobungie.Client('YOUR_API_KEY')
 
 async def main() -> None:
 
-    # fetch a clan
+    # Fetch a clan
     clan = await client.fetch_clan("Nuanceㅤ")
 
     # Fetch the clan members.
     members = await clan.fetch_members()
 
-    # Filter the results to return only steam members from the clan.
-    for member in members.filter(lambda m: m.type is aiobungie.MembershipType.STEAM):
+    # Take the first 2 members.
+    for member in members.take(2):
         # Get the profile for this clan member.
         profile = await member.fetch_self_profile(
+            # Passing profile components as a list.
             components=[aiobungie.ComponentType.CHARACTERS]
         )
 
@@ -52,7 +53,7 @@ Alternatively, You can use `RESTClient` which's designed to only make HTTP reque
 import aiobungie
 import asyncio
 
-async def main(access_token: str) -> None:
+async def main(token: str) -> None:
     # Single REST client.
     async with aiobungie.RESTClient("TOKEN") as rest_client:
         response = await rest_client.fetch_clan_members(4389205)
@@ -62,9 +63,9 @@ async def main(access_token: str) -> None:
             print(member)
 
         # Methods only exposed through the REST API.
-        await rest.refresh_access_token('a token')
+        await rest.refresh_access_token(token)
 
-asyncio.run(main("DB_ACCESS_TOKEN"))
+asyncio.run(main("some token"))
 ```
 
 ## REST client pooling.
@@ -80,17 +81,18 @@ import asyncio
 pool = aiobungie.RESTPool("token")
 
 async def func1() -> None:
-    async with pool.acquire() as instance:
-        tokens = await instance.fetch_oauth2_tokens('code')
+    async with pool.acquire() as client:
+        tokens = await client.fetch_oauth2_tokens('code')
         pool.metadata['tokens'] = tokens
 
 async def func2() -> None:
-    async with pool.acquire() as instance:
+    async with pool.acquire() as client:
         tokens = pool.metadata['tokens']
-        await instance.refresh_access_token(tokens.refresh_token)
+        await client.refresh_access_token(tokens.refresh_token)
 
 async def main() -> None:
-    await asyncio.gather(func1(), func2())
+    await func1()
+    await func2()
 
 asyncio.run(main())
 ```

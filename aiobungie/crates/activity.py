@@ -56,8 +56,8 @@ if typing.TYPE_CHECKING:
 
     from aiobungie import traits
     from aiobungie import typedefs
-    from aiobungie.crate import entity
-    from aiobungie.crate import user
+    from aiobungie.crates import entity
+    from aiobungie.crates import user
 
 
 @typing.final
@@ -97,7 +97,7 @@ class Rewards:
 
         Returns
         -------
-        `aiobungie.crate.InventoryEntity`
+        `aiobungie.crates.InventoryEntity`
             An inventory item entity of the associated hash.
         """
         return await self.net.request.fetch_inventory_item(self.hash)

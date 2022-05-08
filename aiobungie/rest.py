@@ -58,7 +58,7 @@ from aiobungie import interfaces
 from aiobungie import typedefs
 from aiobungie import undefined
 from aiobungie import url
-from aiobungie.crate import fireteams
+from aiobungie.crates import fireteams
 from aiobungie.internal import _backoff as backoff
 from aiobungie.internal import enums
 from aiobungie.internal import helpers
@@ -68,23 +68,10 @@ if typing.TYPE_CHECKING:
     import collections.abc as collections
     import types
 
-    ResponseSigT = typing.TypeVar(
-        "ResponseSigT",
-        covariant=True,
-        bound=typing.Union[
-            typedefs.JSONArray,
-            typedefs.JSONObject,
-            int,
-            None,
-        ],
-    )
-    """The signature of the response."""
-
-    ResponseSig = collections.Coroutine[None, None, ResponseSigT]
-    """A type hint for a general coro method that returns a type
-    that's mostly going to be on of `aiobungie.typedefs.JSONObject`
-    or `aiobungie.typedefs.JSONArray`
-    """
+ResponseSig = typing.Union[
+    typedefs.JSONObject, typedefs.JSONArray, bytes, int, bool, None
+]
+"""The signature of the response."""
 
 _LOG: typing.Final[logging.Logger] = logging.getLogger("aiobungie.rest")
 _MANIFEST_LANGUAGES: typing.Final[set[str]] = {
@@ -520,7 +507,7 @@ class RESTClient(interfaces.RESTInterface):
         json: typing.Optional[dict[str, typing.Any]] = None,
         headers: typing.Optional[dict[str, typing.Any]] = None,
         data: typing.Optional[typing.Union[str, dict[str, typing.Any]]] = None,
-    ) -> typing.Any:
+    ) -> ResponseSig:
 
         retries: int = 0
         session = self._acquire()
@@ -606,9 +593,9 @@ class RESTClient(interfaces.RESTInterface):
                             # Return the response.
                             # oauth2 responses are not packed inside a Response object.
                             if oauth2:
-                                return json_data
+                                return json_data  # type: ignore[no-any-return]
 
-                            return json_data["Response"]
+                            return json_data["Response"]  # type: ignore[no-any-return]
 
                     if (
                         response.status in _RETRY_5XX
@@ -709,15 +696,15 @@ class RESTClient(interfaces.RESTInterface):
             )
 
     @typing.final
-    def static_request(
+    async def static_request(
         self,
         method: typing.Union[RequestMethod, str],
         path: str,
         *,
         auth: typing.Optional[str] = None,
         json: typing.Optional[dict[str, typing.Any]] = None,
-    ) -> ResponseSig[typing.Any]:
-        return self._request(method, path, auth=auth, json=json)
+    ) -> ResponseSig:
+        return await self._request(method, path, auth=auth, json=json)
 
     @typing.final
     def build_oauth2_url(
@@ -757,6 +744,7 @@ class RESTClient(interfaces.RESTInterface):
         response = await self._request(
             RequestMethod.POST, "", headers=headers, data=data, oauth2=True
         )
+        assert isinstance(response, dict)
         return builders.OAuth2Response.build_response(response)
 
     async def refresh_access_token(
@@ -781,102 +769,129 @@ class RESTClient(interfaces.RESTInterface):
         }
 
         response = await self._request(RequestMethod.POST, "", data=data, oauth2=True)
+        assert isinstance(response, dict)
         return builders.OAuth2Response.build_response(response)
 
-    def fetch_bungie_user(self, id: int) -> ResponseSig[typedefs.JSONObject]:
+    async def fetch_bungie_user(self, id: int) -> typedefs.JSONObject:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(RequestMethod.GET, f"User/GetBungieNetUserById/{id}/")
+        resp = await self._request(
+            RequestMethod.GET, f"User/GetBungieNetUserById/{id}/"
+        )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_user_themes(self) -> ResponseSig[typedefs.JSONArray]:
+    async def fetch_user_themes(self) -> typedefs.JSONArray:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(RequestMethod.GET, "User/GetAvailableThemes/")
+        resp = await self._request(RequestMethod.GET, "User/GetAvailableThemes/")
+        assert isinstance(resp, list)
+        return resp
 
-    def fetch_membership_from_id(
+    async def fetch_membership_from_id(
         self,
         id: int,
         type: typedefs.IntAnd[enums.MembershipType] = enums.MembershipType.NONE,
         /,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(
+        resp = await self._request(
             RequestMethod.GET, f"User/GetMembershipsById/{id}/{int(type)}"
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_player(
+    async def fetch_player(
         self,
         name: str,
         code: int,
         type: typedefs.IntAnd[enums.MembershipType] = enums.MembershipType.ALL,
         /,
-    ) -> ResponseSig[typedefs.JSONArray]:
+    ) -> typedefs.JSONArray:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(
+        resp = await self._request(
             RequestMethod.POST,
             f"Destiny2/SearchDestinyPlayerByBungieName/{int(type)}",
             json={"displayName": name, "displayNameCode": code},
         )
+        assert isinstance(resp, list)
+        return resp
 
-    def search_users(self, name: str, /) -> ResponseSig[typedefs.JSONObject]:
+    async def search_users(self, name: str, /) -> typedefs.JSONObject:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(
+        resp = await self._request(
             RequestMethod.POST,
             "User/Search/GlobalName/0",
             json={"displayNamePrefix": name},
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_clan_from_id(
+    async def fetch_clan_from_id(
         self, id: int, /, access_token: typing.Optional[str] = None
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(RequestMethod.GET, f"GroupV2/{id}", auth=access_token)
+        resp = await self._request(
+            RequestMethod.GET, f"GroupV2/{id}", auth=access_token
+        )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_clan(
+    async def fetch_clan(
         self,
         name: str,
         /,
         access_token: typing.Optional[str] = None,
         *,
         type: typedefs.IntAnd[enums.GroupType] = enums.GroupType.CLAN,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(
+        resp = await self._request(
             RequestMethod.GET, f"GroupV2/Name/{name}/{int(type)}", auth=access_token
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_clan_admins(self, clan_id: int, /) -> ResponseSig[typedefs.JSONObject]:
+    async def fetch_clan_admins(self, clan_id: int, /) -> typedefs.JSONObject:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(RequestMethod.GET, f"GroupV2/{clan_id}/AdminsAndFounder/")
+        resp = await self._request(
+            RequestMethod.GET, f"GroupV2/{clan_id}/AdminsAndFounder/"
+        )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_clan_conversations(
-        self, clan_id: int, /
-    ) -> ResponseSig[typedefs.JSONArray]:
+    async def fetch_clan_conversations(self, clan_id: int, /) -> typedefs.JSONArray:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(
+        resp = await self._request(
             RequestMethod.GET, f"GroupV2/{clan_id}/OptionalConversations/"
         )
+        assert isinstance(resp, list)
+        return resp
 
-    def fetch_application(self, appid: int, /) -> ResponseSig[typedefs.JSONObject]:
+    async def fetch_application(self, appid: int, /) -> typedefs.JSONObject:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(RequestMethod.GET, f"App/Application/{appid}")
+        resp = await self._request(RequestMethod.GET, f"App/Application/{appid}")
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_character(
+    async def fetch_character(
         self,
         member_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
         character_id: int,
         components: list[enums.ComponentType],
         auth: typing.Optional[str] = None,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         collector = _collect_components(components)
-        return self._request(
+        response = await self._request(
             RequestMethod.GET,
             f"Destiny2/{int(membership_type)}/Profile/{member_id}/"
             f"Character/{character_id}/?components={collector}",
             auth=auth,
         )
+        assert isinstance(response, dict)
+        return response
 
-    def fetch_activities(
+    async def fetch_activities(
         self,
         member_id: int,
         character_id: int,
@@ -887,52 +902,64 @@ class RESTClient(interfaces.RESTInterface):
         *,
         page: int = 0,
         limit: int = 1,
-    ) -> ResponseSig[typing.Any]:
+    ) -> typedefs.JSONObject:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(
+        resp = await self._request(
             RequestMethod.GET,
             f"Destiny2/{int(membership_type)}/Account/"
             f"{member_id}/Character/{character_id}/Stats/Activities"
             f"/?mode={int(mode)}&count={limit}&page={page}",
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_vendor_sales(self) -> ResponseSig[typing.Any]:
+    async def fetch_vendor_sales(self) -> typedefs.JSONObject:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(
+        resp = await self._request(
             RequestMethod.GET,
             f"Destiny2/Vendors/?components={int(enums.ComponentType.VENDOR_SALES)}",
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_profile(
+    async def fetch_profile(
         self,
         membership_id: int,
         type: typedefs.IntAnd[enums.MembershipType],
         components: list[enums.ComponentType],
         auth: typing.Optional[str] = None,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         collector = _collect_components(components)
-        return self._request(
+        response = await self._request(
             RequestMethod.GET,
             f"Destiny2/{int(type)}/Profile/{membership_id}/?components={collector}",
             auth=auth,
         )
+        assert isinstance(response, dict)
+        return response
 
-    def fetch_entity(self, type: str, hash: int) -> ResponseSig[typedefs.JSONObject]:
+    async def fetch_entity(self, type: str, hash: int) -> typedefs.JSONObject:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(
+        response = await self._request(
             RequestMethod.GET, route=f"Destiny2/Manifest/{type}/{hash}"
         )
+        assert isinstance(response, dict)
+        return response
 
-    def fetch_inventory_item(self, hash: int, /) -> ResponseSig[typedefs.JSONObject]:
+    async def fetch_inventory_item(self, hash: int, /) -> typedefs.JSONObject:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self.fetch_entity("DestinyInventoryItemDefinition", hash)
+        resp = await self.fetch_entity("DestinyInventoryItemDefinition", hash)
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_objective_entity(self, hash: int, /) -> ResponseSig[typedefs.JSONObject]:
+    async def fetch_objective_entity(self, hash: int, /) -> typedefs.JSONObject:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self.fetch_entity("DestinyObjectiveDefinition", hash)
+        resp = await self.fetch_entity("DestinyObjectiveDefinition", hash)
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_groups_for_member(
+    async def fetch_groups_for_member(
         self,
         member_id: int,
         member_type: typedefs.IntAnd[enums.MembershipType],
@@ -940,13 +967,15 @@ class RESTClient(interfaces.RESTInterface):
         *,
         filter: int = 0,
         group_type: typedefs.IntAnd[enums.GroupType] = enums.GroupType.CLAN,
-    ) -> ResponseSig[typedefs.JSONObject]:
-        return self._request(
+    ) -> typedefs.JSONObject:
+        resp = await self._request(
             RequestMethod.GET,
             f"GroupV2/User/{int(member_type)}/{member_id}/{filter}/{int(group_type)}/",
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_potential_groups_for_member(
+    async def fetch_potential_groups_for_member(
         self,
         member_id: int,
         member_type: typedefs.IntAnd[enums.MembershipType],
@@ -954,48 +983,56 @@ class RESTClient(interfaces.RESTInterface):
         *,
         filter: int = 0,
         group_type: typedefs.IntAnd[enums.GroupType] = enums.GroupType.CLAN,
-    ) -> ResponseSig[typedefs.JSONObject]:
-        return self._request(
+    ) -> typedefs.JSONObject:
+        resp = await self._request(
             RequestMethod.GET,
             f"GroupV2/User/Potential/{int(member_type)}/{member_id}/{filter}/{int(group_type)}/",
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_clan_members(
+    async def fetch_clan_members(
         self,
         clan_id: int,
         /,
         *,
         name: typing.Optional[str] = None,
         type: typedefs.IntAnd[enums.MembershipType] = enums.MembershipType.NONE,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(
+        resp = await self._request(
             RequestMethod.GET,
             f"/GroupV2/{clan_id}/Members/?memberType={int(type)}&nameSearch={name if name else ''}&currentpage=1",
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_hardlinked_credentials(
+    async def fetch_hardlinked_credentials(
         self,
         credential: int,
         type: typedefs.IntAnd[enums.CredentialType] = enums.CredentialType.STEAMID,
         /,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(
+        resp = await self._request(
             RequestMethod.GET,
             f"User/GetMembershipFromHardLinkedCredential/{int(type)}/{credential}/",
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_user_credentials(
+    async def fetch_user_credentials(
         self, access_token: str, membership_id: int, /
-    ) -> ResponseSig[typedefs.JSONArray]:
-        return self._request(
+    ) -> typedefs.JSONArray:
+        resp = await self._request(
             RequestMethod.GET,
             f"User/GetCredentialTypesForTargetAccount/{membership_id}",
             auth=access_token,
         )
+        assert isinstance(resp, list)
+        return resp
 
-    def insert_socket_plug(
+    async def insert_socket_plug(
         self,
         action_token: str,
         /,
@@ -1003,7 +1040,7 @@ class RESTClient(interfaces.RESTInterface):
         plug: typing.Union[builders.PlugSocketBuilder, dict[str, int]],
         character_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
 
         if isinstance(plug, builders.PlugSocketBuilder):
             plug = plug.collect()
@@ -1015,11 +1052,13 @@ class RESTClient(interfaces.RESTInterface):
             "characterId": character_id,
             "membershipType": int(membership_type),
         }
-        return self._request(
+        resp = await self._request(
             RequestMethod.POST, "Destiny2/Actions/Items/InsertSocketPlug", json=body
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def insert_socket_plug_free(
+    async def insert_socket_plug_free(
         self,
         access_token: str,
         /,
@@ -1027,7 +1066,7 @@ class RESTClient(interfaces.RESTInterface):
         plug: typing.Union[builders.PlugSocketBuilder, dict[str, int]],
         character_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
 
         if isinstance(plug, builders.PlugSocketBuilder):
             plug = plug.collect()
@@ -1038,14 +1077,16 @@ class RESTClient(interfaces.RESTInterface):
             "characterId": character_id,
             "membershipType": int(membership_type),
         }
-        return self._request(
+        resp = await self._request(
             RequestMethod.POST,
             "Destiny2/Actions/Items/InsertSocketPlugFree",
             json=body,
             auth=access_token,
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def set_item_lock_state(
+    async def set_item_lock_state(
         self,
         access_token: str,
         state: bool,
@@ -1053,21 +1094,23 @@ class RESTClient(interfaces.RESTInterface):
         item_id: int,
         character_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
-    ) -> ResponseSig[int]:
+    ) -> int:
         body = {
             "state": state,
             "itemId": item_id,
             "characterId": character_id,
             "membership_type": int(membership_type),
         }
-        return self._request(
+        response = await self._request(
             RequestMethod.POST,
             "Destiny2/Actions/Items/SetLockState",
             json=body,
             auth=access_token,
         )
+        assert isinstance(response, int)
+        return response
 
-    def set_quest_track_state(
+    async def set_quest_track_state(
         self,
         access_token: str,
         state: bool,
@@ -1075,24 +1118,27 @@ class RESTClient(interfaces.RESTInterface):
         item_id: int,
         character_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
-    ) -> ResponseSig[int]:
+    ) -> int:
         body = {
             "state": state,
             "itemId": item_id,
             "characterId": character_id,
             "membership_type": int(membership_type),
         }
-        return self._request(
+        response = await self._request(
             RequestMethod.POST,
             "Destiny2/Actions/Items/SetTrackedState",
             json=body,
             auth=access_token,
         )
+        assert isinstance(response, int)
+        return response
 
     async def fetch_manifest_path(self) -> typedefs.JSONObject:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         path = await self._request(RequestMethod.GET, "Destiny2/Manifest")
-        return typing.cast(typedefs.JSONObject, path)
+        assert isinstance(path, dict)
+        return path
 
     async def read_manifest_bytes(self, language: str = "en", /) -> bytes:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
@@ -1105,7 +1151,8 @@ class RESTClient(interfaces.RESTInterface):
             unwrapping="read",
             base=True,
         )
-        return typing.cast(bytes, resp)
+        assert isinstance(resp, bytes)
+        return resp
 
     async def download_manifest(
         self,
@@ -1170,54 +1217,66 @@ class RESTClient(interfaces.RESTInterface):
             raise FileNotFoundError(f"Manifest in path {path.name} doesn't exists.")
         return connection(path.name)
 
-    def fetch_linked_profiles(
+    async def fetch_linked_profiles(
         self,
         member_id: int,
         member_type: typedefs.IntAnd[enums.MembershipType],
         /,
         *,
         all: bool = False,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(
+        resp = await self._request(
             RequestMethod.GET,
             f"Destiny2/{int(member_type)}/Profile/{member_id}/LinkedProfiles/?getAllMemberships={all}",
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_clan_banners(self) -> ResponseSig[typedefs.JSONObject]:
+    async def fetch_clan_banners(self) -> typedefs.JSONObject:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(RequestMethod.GET, "Destiny2/Clan/ClanBannerDictionary/")
+        resp = await self._request(
+            RequestMethod.GET, "Destiny2/Clan/ClanBannerDictionary/"
+        )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_public_milestones(self) -> ResponseSig[typedefs.JSONObject]:
+    async def fetch_public_milestones(self) -> typedefs.JSONObject:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(RequestMethod.GET, "Destiny2/Milestones/")
+        resp = await self._request(RequestMethod.GET, "Destiny2/Milestones/")
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_public_milestone_content(
+    async def fetch_public_milestone_content(
         self, milestone_hash: int, /
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(
+        resp = await self._request(
             RequestMethod.GET, f"Destiny2/Milestones/{milestone_hash}/Content/"
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_current_user_memberships(
+    async def fetch_current_user_memberships(
         self, access_token: str, /
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(
+        resp = await self._request(
             RequestMethod.GET,
             "User/GetMembershipsForCurrentUser/",
             auth=access_token,
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def equip_item(
+    async def equip_item(
         self,
         access_token: str,
         /,
         item_id: int,
         character_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
-    ) -> ResponseSig[None]:
+    ) -> None:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         payload = {
             "itemId": item_id,
@@ -1225,35 +1284,35 @@ class RESTClient(interfaces.RESTInterface):
             "membershipType": int(membership_type),
         }
 
-        return self._request(
+        await self._request(
             RequestMethod.POST,
             "Destiny2/Actions/Items/EquipItem/",
             json=payload,
             auth=access_token,
         )
 
-    def equip_items(
+    async def equip_items(
         self,
         access_token: str,
         /,
         item_ids: list[int],
         character_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
-    ) -> ResponseSig[None]:
+    ) -> None:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         payload = {
             "itemIds": item_ids,
             "characterId": character_id,
             "membershipType": int(membership_type),
         }
-        return self._request(
+        await self._request(
             RequestMethod.POST,
             "Destiny2/Actions/Items/EquipItems/",
             json=payload,
             auth=access_token,
         )
 
-    def ban_clan_member(
+    async def ban_clan_member(
         self,
         access_token: str,
         /,
@@ -1263,47 +1322,49 @@ class RESTClient(interfaces.RESTInterface):
         *,
         length: int = 0,
         comment: undefined.UndefinedOr[str] = undefined.Undefined,
-    ) -> ResponseSig[None]:
+    ) -> None:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         payload = {"comment": str(comment), "length": length}
-        return self._request(
+        await self._request(
             RequestMethod.POST,
             f"GroupV2/{group_id}/Members/{int(membership_type)}/{membership_id}/Ban/",
             json=payload,
             auth=access_token,
         )
 
-    def unban_clan_member(
+    async def unban_clan_member(
         self,
         access_token: str,
         /,
         group_id: int,
         membership_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
-    ) -> ResponseSig[None]:
+    ) -> None:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(
+        await self._request(
             RequestMethod.POST,
             f"GroupV2/{group_id}/Members/{int(membership_type)}/{membership_id}/Unban/",
             auth=access_token,
         )
 
-    def kick_clan_member(
+    async def kick_clan_member(
         self,
         access_token: str,
         /,
         group_id: int,
         membership_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(
+        resp = await self._request(
             RequestMethod.POST,
             f"GroupV2/{group_id}/Members/{int(membership_type)}/{membership_id}/Kick/",
             auth=access_token,
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def edit_clan(
+    async def edit_clan(
         self,
         access_token: str,
         /,
@@ -1327,7 +1388,7 @@ class RESTClient(interfaces.RESTInterface):
         enable_invite_messaging_for_admins: typedefs.NoneOr[bool] = None,
         default_publicity: typedefs.NoneOr[typing.Literal[0, 1, 2]] = None,
         is_public_topic_admin: typedefs.NoneOr[bool] = None,
-    ) -> ResponseSig[None]:
+    ) -> None:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         payload = {
             "name": name,
@@ -1349,14 +1410,14 @@ class RESTClient(interfaces.RESTInterface):
         if membership_option is not None:
             payload["membershipOption"] = int(membership_option)
 
-        return self._request(
+        await self._request(
             RequestMethod.POST,
             f"GroupV2/{group_id}/Edit",
             json=payload,
             auth=access_token,
         )
 
-    def edit_clan_options(
+    async def edit_clan_options(
         self,
         access_token: str,
         /,
@@ -1369,7 +1430,7 @@ class RESTClient(interfaces.RESTInterface):
         ] = None,
         update_banner_permission_override: typedefs.NoneOr[bool] = None,
         join_level: typedefs.NoneOr[typedefs.IntAnd[enums.ClanMemberType]] = None,
-    ) -> ResponseSig[None]:
+    ) -> None:
 
         payload = {
             "InvitePermissionOverride": invite_permissions_override,
@@ -1379,111 +1440,107 @@ class RESTClient(interfaces.RESTInterface):
             "JoinLevel": int(join_level) if join_level else None,
         }
 
-        return self._request(
+        await self._request(
             RequestMethod.POST,
             f"GroupV2/{group_id}/EditFounderOptions",
             json=payload,
             auth=access_token,
         )
 
-    def fetch_friends(self, access_token: str, /) -> ResponseSig[typedefs.JSONObject]:
+    async def fetch_friends(self, access_token: str, /) -> typedefs.JSONObject:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(
+        resp = await self._request(
             RequestMethod.GET,
             "Social/Friends/",
             auth=access_token,
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_friend_requests(
-        self, access_token: str, /
-    ) -> ResponseSig[typedefs.JSONObject]:
+    async def fetch_friend_requests(self, access_token: str, /) -> typedefs.JSONObject:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(
+        resp = await self._request(
             RequestMethod.GET,
             "Social/Friends/Requests",
             auth=access_token,
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def accept_friend_request(
-        self, access_token: str, /, member_id: int
-    ) -> ResponseSig[None]:
+    async def accept_friend_request(self, access_token: str, /, member_id: int) -> None:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(
+        await self._request(
             RequestMethod.POST,
             f"Social/Friends/Requests/Accept/{member_id}",
             auth=access_token,
         )
 
-    def send_friend_request(
-        self, access_token: str, /, member_id: int
-    ) -> ResponseSig[None]:
+    async def send_friend_request(self, access_token: str, /, member_id: int) -> None:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(
+        await self._request(
             RequestMethod.POST,
             f"Social/Friends/Add/{member_id}",
             auth=access_token,
         )
 
-    def decline_friend_request(
+    async def decline_friend_request(
         self, access_token: str, /, member_id: int
-    ) -> ResponseSig[None]:
+    ) -> None:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(
+        await self._request(
             RequestMethod.POST,
             f"Social/Friends/Requests/Decline/{member_id}",
             auth=access_token,
         )
 
-    def remove_friend(self, access_token: str, /, member_id: int) -> ResponseSig[None]:
+    async def remove_friend(self, access_token: str, /, member_id: int) -> None:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(
+        await self._request(
             RequestMethod.POST,
             f"Social/Friends/Remove/{member_id}",
             auth=access_token,
         )
 
-    def remove_friend_request(
-        self, access_token: str, /, member_id: int
-    ) -> ResponseSig[None]:
+    async def remove_friend_request(self, access_token: str, /, member_id: int) -> None:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>
-        return self._request(
+        await self._request(
             RequestMethod.POST,
             f"Social/Friends/Requests/Remove/{member_id}",
             auth=access_token,
         )
 
-    def approve_all_pending_group_users(
+    async def approve_all_pending_group_users(
         self,
         access_token: str,
         /,
         group_id: int,
         message: undefined.UndefinedOr[str] = undefined.Undefined,
-    ) -> ResponseSig[None]:
+    ) -> None:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>
-        return self._request(
+        await self._request(
             RequestMethod.POST,
             f"GroupV2/{group_id}/Members/ApproveAll",
             auth=access_token,
             json={"message": str(message)},
         )
 
-    def deny_all_pending_group_users(
+    async def deny_all_pending_group_users(
         self,
         access_token: str,
         /,
         group_id: int,
         *,
         message: undefined.UndefinedOr[str] = undefined.Undefined,
-    ) -> ResponseSig[None]:
+    ) -> None:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>
-        return self._request(
+        await self._request(
             RequestMethod.POST,
             f"GroupV2/{group_id}/Members/DenyAll",
             auth=access_token,
             json={"message": str(message)},
         )
 
-    def add_optional_conversation(
+    async def add_optional_conversation(
         self,
         access_token: str,
         /,
@@ -1491,17 +1548,17 @@ class RESTClient(interfaces.RESTInterface):
         *,
         name: undefined.UndefinedOr[str] = undefined.Undefined,
         security: typing.Literal[0, 1] = 0,
-    ) -> ResponseSig[None]:
+    ) -> None:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>
         payload = {"chatName": str(name), "chatSecurity": security}
-        return self._request(
+        await self._request(
             RequestMethod.POST,
             f"GroupV2/{group_id}/OptionalConversations/Add",
             json=payload,
             auth=access_token,
         )
 
-    def edit_optional_conversation(
+    async def edit_optional_conversation(
         self,
         access_token: str,
         /,
@@ -1511,21 +1568,21 @@ class RESTClient(interfaces.RESTInterface):
         name: undefined.UndefinedOr[str] = undefined.Undefined,
         security: typing.Literal[0, 1] = 0,
         enable_chat: bool = False,
-    ) -> ResponseSig[None]:
+    ) -> None:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>
         payload = {
             "chatEnabled": enable_chat,
             "chatName": str(name),
             "chatSecurity": security,
         }
-        return self._request(
+        await self._request(
             RequestMethod.POST,
             f"GroupV2/{group_id}/OptionalConversations/Edit/{conversation_id}",
             json=payload,
             auth=access_token,
         )
 
-    def transfer_item(
+    async def transfer_item(
         self,
         access_token: str,
         /,
@@ -1536,7 +1593,7 @@ class RESTClient(interfaces.RESTInterface):
         *,
         stack_size: int = 1,
         vault: bool = False,
-    ) -> ResponseSig[None]:
+    ) -> None:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>
         payload = {
             "characterId": character_id,
@@ -1546,14 +1603,14 @@ class RESTClient(interfaces.RESTInterface):
             "stackSize": stack_size,
             "transferToVault": vault,
         }
-        return self._request(
+        await self._request(
             RequestMethod.POST,
             "Destiny2/Actions/Items/TransferItem",
             json=payload,
             auth=access_token,
         )
 
-    def pull_item(
+    async def pull_item(
         self,
         access_token: str,
         /,
@@ -1564,7 +1621,7 @@ class RESTClient(interfaces.RESTInterface):
         *,
         stack_size: int = 1,
         vault: bool = False,
-    ) -> ResponseSig[None]:
+    ) -> None:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>
         payload = {
             "characterId": character_id,
@@ -1574,14 +1631,14 @@ class RESTClient(interfaces.RESTInterface):
             "stackSize": stack_size,
             "transferToVault": vault,
         }
-        return self._request(
+        await self._request(
             RequestMethod.POST,
             "Destiny2/Actions/Items/PullFromPostmaster",
             json=payload,
             auth=access_token,
         )
 
-    def fetch_fireteams(
+    async def fetch_fireteams(
         self,
         activity_type: typedefs.IntAnd[fireteams.FireteamActivity],
         *,
@@ -1596,14 +1653,16 @@ class RESTClient(interfaces.RESTInterface):
         ] = fireteams.FireteamDate.ALL,
         page: int = 0,
         slots_filter: int = 0,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(
+        resp = await self._request(
             RequestMethod.GET,
             f"Fireteam/Search/Available/{int(platform)}/{int(activity_type)}/{int(date_range)}/{slots_filter}/{page}/?langFilter={str(language)}",  # noqa: E501 Line too long
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_avaliable_clan_fireteams(
+    async def fetch_avaliable_clan_fireteams(
         self,
         access_token: str,
         group_id: int,
@@ -1617,26 +1676,30 @@ class RESTClient(interfaces.RESTInterface):
         page: int = 0,
         public_only: bool = False,
         slots_filter: int = 0,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(
+        resp = await self._request(
             RequestMethod.GET,
             f"Fireteam/Clan/{group_id}/Available/{int(platform)}/{int(activity_type)}/{int(date_range)}/{slots_filter}/{public_only}/{page}",  # noqa: E501
             json={"langFilter": str(language)},
             auth=access_token,
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_clan_fireteam(
+    async def fetch_clan_fireteam(
         self, access_token: str, fireteam_id: int, group_id: int
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(
+        resp = await self._request(
             RequestMethod.GET,
             f"Fireteam/Clan/{group_id}/Summary/{fireteam_id}",
             auth=access_token,
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_my_clan_fireteams(
+    async def fetch_my_clan_fireteams(
         self,
         access_token: str,
         group_id: int,
@@ -1646,99 +1709,119 @@ class RESTClient(interfaces.RESTInterface):
         language: typing.Union[fireteams.FireteamLanguage, str],
         filtered: bool = True,
         page: int = 0,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         payload = {"groupFilter": filtered, "langFilter": str(language)}
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(
+        resp = await self._request(
             RequestMethod.GET,
             f"Fireteam/Clan/{group_id}/My/{int(platform)}/{include_closed}/{page}",
             json=payload,
             auth=access_token,
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_private_clan_fireteams(
+    async def fetch_private_clan_fireteams(
         self, access_token: str, group_id: int, /
-    ) -> ResponseSig[int]:
+    ) -> int:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(
+        resp = await self._request(
             RequestMethod.GET,
             f"Fireteam/Clan/{group_id}/ActiveCount",
             auth=access_token,
         )
+        assert isinstance(resp, int)
+        return resp
 
-    def fetch_post_activity(
-        self, instance_id: int, /
-    ) -> ResponseSig[typedefs.JSONObject]:
+    async def fetch_post_activity(self, instance_id: int, /) -> typedefs.JSONObject:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(
+        resp = await self._request(
             RequestMethod.GET, f"Destiny2/Stats/PostGameCarnageReport/{instance_id}"
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def search_entities(
+    async def search_entities(
         self, name: str, entity_type: str, *, page: int = 0
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(
+        resp = await self._request(
             RequestMethod.GET,
             f"Destiny2/Armory/Search/{entity_type}/{name}/",
             json={"page": page},
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_unique_weapon_history(
+    async def fetch_unique_weapon_history(
         self,
         membership_id: int,
         character_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(
+        resp = await self._request(
             RequestMethod.GET,
             f"Destiny2/{int(membership_type)}/Account/{membership_id}/Character/{character_id}/Stats/UniqueWeapons/",
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_item(
+    async def fetch_item(
         self,
         member_id: int,
         item_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
         components: list[enums.ComponentType],
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         collector = _collect_components(components)
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(
+        resp = await self._request(
             RequestMethod.GET,
             f"Destiny2/{int(membership_type)}/Profile/{member_id}/Item/{item_id}/?components={collector}",
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_clan_weekly_rewards(
-        self, clan_id: int, /
-    ) -> ResponseSig[typedefs.JSONObject]:
+    async def fetch_clan_weekly_rewards(self, clan_id: int, /) -> typedefs.JSONObject:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(
+        resp = await self._request(
             RequestMethod.GET, f"Destiny2/Clan/{clan_id}/WeeklyRewardState/"
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_available_locales(self) -> ResponseSig[typedefs.JSONObject]:
+    async def fetch_available_locales(self) -> typedefs.JSONObject:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(RequestMethod.GET, "GetAvailableLocales")
+        resp = await self._request(
+            RequestMethod.GET, "Destiny2/Manifest/DestinyLocaleDefinition/"
+        )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_common_settings(self) -> ResponseSig[typedefs.JSONObject]:
+    async def fetch_common_settings(self) -> typedefs.JSONObject:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(RequestMethod.GET, "Settings")
+        resp = await self._request(RequestMethod.GET, "Settings")
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_user_systems_overrides(self) -> ResponseSig[typedefs.JSONObject]:
+    async def fetch_user_systems_overrides(self) -> typedefs.JSONObject:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(RequestMethod.GET, "UserSystemOverrides")
+        resp = await self._request(RequestMethod.GET, "UserSystemOverrides")
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_global_alerts(
+    async def fetch_global_alerts(
         self, *, include_streaming: bool = False
-    ) -> ResponseSig[typedefs.JSONArray]:
+    ) -> typedefs.JSONArray:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(
+        resp = await self._request(
             RequestMethod.GET, f"GlobalAlerts/?includestreaming={include_streaming}"
         )
+        assert isinstance(resp, list)
+        return resp
 
-    def awainitialize_request(
+    async def awainitialize_request(
         self,
         access_token: str,
         type: typing.Literal[0, 1],
@@ -1747,7 +1830,7 @@ class RESTClient(interfaces.RESTInterface):
         *,
         affected_item_id: typing.Optional[int] = None,
         character_id: typing.Optional[int] = None,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
 
         body = {"type": type, "membershipType": int(membership_type)}
@@ -1758,39 +1841,45 @@ class RESTClient(interfaces.RESTInterface):
         if character_id is not None:
             body["characterId"] = character_id
 
-        return self._request(
+        resp = await self._request(
             RequestMethod.POST, "Destiny2/Awa/Initialize", json=body, auth=access_token
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def awaget_action_token(
+    async def awaget_action_token(
         self, access_token: str, correlation_id: str, /
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        return self._request(
+        resp = await self._request(
             RequestMethod.POST,
             f"Destiny2/Awa/GetActionToken/{correlation_id}",
             auth=access_token,
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def awa_provide_authorization_result(
+    async def awa_provide_authorization_result(
         self,
         access_token: str,
         selection: int,
         correlation_id: str,
         nonce: collections.MutableSequence[typing.Union[str, bytes]],
-    ) -> ResponseSig[int]:
+    ) -> int:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
 
         body = {"selection": selection, "correlationId": correlation_id, "nonce": nonce}
 
-        return self._request(
+        resp = await self._request(
             RequestMethod.POST,
             "Destiny2/Awa/AwaProvideAuthorizationResult",
             json=body,
             auth=access_token,
         )
+        assert isinstance(resp, int)
+        return resp
 
-    def fetch_vendors(
+    async def fetch_vendors(
         self,
         access_token: str,
         character_id: int,
@@ -1799,7 +1888,7 @@ class RESTClient(interfaces.RESTInterface):
         /,
         components: list[enums.ComponentType],
         filter: typing.Optional[int] = None,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         components_ = _collect_components(components)
         route = (
@@ -1810,13 +1899,15 @@ class RESTClient(interfaces.RESTInterface):
         if filter is not None:
             route = route + f"&filter={filter}"
 
-        return self._request(
+        resp = await self._request(
             RequestMethod.GET,
             route,
             auth=access_token,
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_vendor(
+    async def fetch_vendor(
         self,
         access_token: str,
         character_id: int,
@@ -1825,10 +1916,10 @@ class RESTClient(interfaces.RESTInterface):
         vendor_hash: int,
         /,
         components: list[enums.ComponentType],
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         components_ = _collect_components(components)
-        return self._request(
+        resp = await self._request(
             RequestMethod.GET,
             (
                 f"Platform/Destiny2/{int(membership_type)}/Profile/{membership_id}"
@@ -1836,8 +1927,10 @@ class RESTClient(interfaces.RESTInterface):
             ),
             auth=access_token,
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_application_api_usage(
+    async def fetch_application_api_usage(
         self,
         access_token: str,
         application_id: int,
@@ -1845,40 +1938,50 @@ class RESTClient(interfaces.RESTInterface):
         *,
         start: typing.Optional[datetime.datetime] = None,
         end: typing.Optional[datetime.datetime] = None,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
 
         end_date, start_date = time.parse_date_range(end, start)
-        return self._request(
+        resp = await self._request(
             RequestMethod.GET,
             f"App/ApiUsage/{application_id}/?end={end_date}&start={start_date}",
             auth=access_token,
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_bungie_applications(self) -> ResponseSig[typedefs.JSONArray]:
-        return self._request(RequestMethod.GET, "App/FirstParty")
+    async def fetch_bungie_applications(self) -> typedefs.JSONArray:
+        resp = await self._request(RequestMethod.GET, "App/FirstParty")
+        assert isinstance(resp, list)
+        return resp
 
-    def fetch_content_type(self, type: str, /) -> ResponseSig[typedefs.JSONObject]:
-        return self._request(RequestMethod.GET, f"Content/GetContentType/{type}/")
+    async def fetch_content_type(self, type: str, /) -> typedefs.JSONObject:
+        resp = await self._request(RequestMethod.GET, f"Content/GetContentType/{type}/")
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_content_by_id(
+    async def fetch_content_by_id(
         self, id: int, locale: str, /, *, head: bool = False
-    ) -> ResponseSig[typedefs.JSONObject]:
-        return self._request(
+    ) -> typedefs.JSONObject:
+        resp = await self._request(
             RequestMethod.GET,
             f"Content/GetContentById/{id}/{locale}/",
             json={"head": head},
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_content_by_tag_and_type(
+    async def fetch_content_by_tag_and_type(
         self, locale: str, tag: str, type: str, *, head: bool = False
-    ) -> ResponseSig[typedefs.JSONObject]:
-        return self._request(
+    ) -> typedefs.JSONObject:
+        resp = await self._request(
             RequestMethod.GET,
             f"Content/GetContentByTagAndType/{tag}/{type}/{locale}/",
             json={"head": head},
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def search_content_with_text(
+    async def search_content_with_text(
         self,
         locale: str,
         /,
@@ -1888,7 +1991,7 @@ class RESTClient(interfaces.RESTInterface):
         *,
         page: undefined.UndefinedOr[int] = undefined.Undefined,
         source: undefined.UndefinedOr[str] = undefined.Undefined,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
 
         body: typedefs.JSONObject = {}
 
@@ -1905,32 +2008,40 @@ class RESTClient(interfaces.RESTInterface):
             body["source"] = source
         else:
             source = ""
-        return self._request(RequestMethod.GET, f"Content/Search/{locale}/", json=body)
+        resp = await self._request(
+            RequestMethod.GET, f"Content/Search/{locale}/", json=body
+        )
+        assert isinstance(resp, dict)
+        return resp
 
-    def search_content_by_tag_and_type(
+    async def search_content_by_tag_and_type(
         self,
         locale: str,
         tag: str,
         type: str,
         *,
         page: undefined.UndefinedOr[int] = undefined.Undefined,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         body: typedefs.JSONObject = {}
         body["currentpage"] = 1 if page is undefined.Undefined else page
-        return self._request(
+        resp = await self._request(
             RequestMethod.GET,
             f"Content/SearchContentByTagAndType/{tag}/{type}/{locale}/",
             json=body,
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def search_help_articles(
+    async def search_help_articles(
         self, text: str, size: str, /
-    ) -> ResponseSig[typedefs.JSONObject]:
-        return self._request(
+    ) -> typedefs.JSONObject:
+        resp = await self._request(
             RequestMethod.GET, f"Content/SearchHelpArticles/{text}/{size}/"
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_topics_page(
+    async def fetch_topics_page(
         self,
         category_filter: int,
         group: int,
@@ -1940,7 +2051,7 @@ class RESTClient(interfaces.RESTInterface):
         page: undefined.UndefinedOr[int] = undefined.Undefined,
         locales: undefined.UndefinedOr[collections.Iterable[str]] = undefined.Undefined,
         tag_filter: undefined.UndefinedOr[str] = undefined.Undefined,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
 
         body: typedefs.JSONObject = {}
         if locales is not undefined.Undefined:
@@ -1955,13 +2066,15 @@ class RESTClient(interfaces.RESTInterface):
 
         page = 0 if page is not undefined.Undefined else page
 
-        return self._request(
+        resp = await self._request(
             RequestMethod.GET,
             f"Forum/GetTopicsPaged/{page}/{0}/{group}/{sort!s}/{date_filter}/{category_filter}/",
             json=body,
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_core_topics_page(
+    async def fetch_core_topics_page(
         self,
         category_filter: int,
         date_filter: int,
@@ -1969,7 +2082,7 @@ class RESTClient(interfaces.RESTInterface):
         *,
         page: undefined.UndefinedOr[int] = undefined.Undefined,
         locales: undefined.UndefinedOr[collections.Iterable[str]] = undefined.Undefined,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
         body: typedefs.JSONObject = {}
 
         if locales is not undefined.Undefined:
@@ -1977,14 +2090,16 @@ class RESTClient(interfaces.RESTInterface):
         else:
             body["locales"] = ",".join([])
 
-        return self._request(
+        resp = await self._request(
             RequestMethod.GET,
             f"Forum/GetCoreTopicsPaged/{0 if page is undefined.Undefined else page}"
             f"/{sort!s}/{date_filter}/{category_filter}/",
             json=body,
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_posts_threaded_page(
+    async def fetch_posts_threaded_page(
         self,
         parent_post: bool,
         page: int,
@@ -1994,15 +2109,17 @@ class RESTClient(interfaces.RESTInterface):
         root_thread_mode: bool,
         sort_mode: int,
         show_banned: typing.Optional[str] = None,
-    ) -> ResponseSig[typedefs.JSONObject]:
-        return self._request(
+    ) -> typedefs.JSONObject:
+        resp = await self._request(
             RequestMethod.GET,
             f"Forum/GetPostsThreadedPaged/{parent_post}/{page}/"
             f"{page_size}/{reply_size}/{parent_post_id}/{root_thread_mode}/{sort_mode}/",
             json={"showbanned": show_banned},
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_posts_threaded_page_from_child(
+    async def fetch_posts_threaded_page_from_child(
         self,
         child_id: bool,
         page: int,
@@ -2011,109 +2128,135 @@ class RESTClient(interfaces.RESTInterface):
         root_thread_mode: bool,
         sort_mode: int,
         show_banned: typing.Optional[str] = None,
-    ) -> ResponseSig[typedefs.JSONObject]:
-        return self._request(
+    ) -> typedefs.JSONObject:
+        resp = await self._request(
             RequestMethod.GET,
             f"Forum/GetPostsThreadedPagedFromChild/{child_id}/"
             f"{page}/{page_size}/{reply_size}/{root_thread_mode}/{sort_mode}/",
             json={"showbanned": show_banned},
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_post_and_parent(
+    async def fetch_post_and_parent(
         self, child_id: int, /, *, show_banned: typing.Optional[str] = None
-    ) -> ResponseSig[typedefs.JSONObject]:
-        return self._request(
+    ) -> typedefs.JSONObject:
+        resp = await self._request(
             RequestMethod.GET,
             f"Forum/GetPostAndParent/{child_id}/",
             json={"showbanned": show_banned},
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_posts_and_parent_awaiting(
+    async def fetch_posts_and_parent_awaiting(
         self, child_id: int, /, *, show_banned: typing.Optional[str] = None
-    ) -> ResponseSig[typedefs.JSONObject]:
-        return self._request(
+    ) -> typedefs.JSONObject:
+        resp = await self._request(
             RequestMethod.GET,
             f"Forum/GetPostAndParentAwaitingApproval/{child_id}/",
             json={"showbanned": show_banned},
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_topic_for_content(self, content_id: int, /) -> ResponseSig[int]:
-        return self._request(
+    async def fetch_topic_for_content(self, content_id: int, /) -> int:
+        resp = await self._request(
             RequestMethod.GET, f"Forum/GetTopicForContent/{content_id}/"
         )
+        assert isinstance(resp, int)
+        return resp
 
-    def fetch_forum_tag_suggestions(
+    async def fetch_forum_tag_suggestions(
         self, partial_tag: str, /
-    ) -> ResponseSig[typedefs.JSONObject]:
-        return self._request(
+    ) -> typedefs.JSONObject:
+        resp = await self._request(
             RequestMethod.GET,
             "Forum/GetForumTagSuggestions/",
             json={"partialtag": partial_tag},
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_poll(self, topic_id: int, /) -> ResponseSig[typedefs.JSONObject]:
-        return self._request(RequestMethod.GET, f"Forum/Poll/{topic_id}/")
+    async def fetch_poll(self, topic_id: int, /) -> typedefs.JSONObject:
+        resp = await self._request(RequestMethod.GET, f"Forum/Poll/{topic_id}/")
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_recuirement_thread_summaries(self) -> ResponseSig[typedefs.JSONArray]:
-        return self._request(RequestMethod.POST, "Forum/Recruit/Summaries/")
+    async def fetch_recuirement_thread_summaries(self) -> typedefs.JSONArray:
+        resp = await self._request(RequestMethod.POST, "Forum/Recruit/Summaries/")
+        assert isinstance(resp, list)
+        return resp
 
-    def fetch_recommended_groups(
+    async def fetch_recommended_groups(
         self,
         accecss_token: str,
         /,
         *,
         date_range: int = 0,
         group_type: typedefs.IntAnd[enums.GroupType] = enums.GroupType.CLAN,
-    ) -> ResponseSig[typedefs.JSONArray]:
-        return self._request(
+    ) -> typedefs.JSONArray:
+        resp = await self._request(
             RequestMethod.POST,
             f"GroupV2/Recommended/{int(group_type)}/{date_range}/",
             auth=accecss_token,
         )
+        assert isinstance(resp, list)
+        return resp
 
-    def fetch_available_avatars(self) -> ResponseSig[dict[str, int]]:
-        return self._request(RequestMethod.GET, "GroupV2/GetAvailableAvatars/")
+    async def fetch_available_avatars(self) -> collections.Mapping[str, int]:
+        resp = await self._request(RequestMethod.GET, "GroupV2/GetAvailableAvatars/")
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_user_clan_invite_setting(
+    async def fetch_user_clan_invite_setting(
         self,
         access_token: str,
         /,
         membership_type: typedefs.IntAnd[enums.MembershipType],
-    ) -> ResponseSig[bool]:
-        return self._request(
+    ) -> bool:
+        resp = await self._request(
             RequestMethod.GET,
             f"GroupV2/GetUserClanInviteSetting/{int(membership_type)}/",
             auth=access_token,
         )
+        assert isinstance(resp, bool)
+        return resp
 
-    def fetch_banned_group_members(
+    async def fetch_banned_group_members(
         self, access_token: str, group_id: int, /, *, page: int = 1
-    ) -> ResponseSig[typedefs.JSONObject]:
-        return self._request(
+    ) -> typedefs.JSONObject:
+        resp = await self._request(
             RequestMethod.GET,
             f"GroupV2/{group_id}/Banned/?currentpage={page}",
             auth=access_token,
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_pending_group_memberships(
+    async def fetch_pending_group_memberships(
         self, access_token: str, group_id: int, /, *, current_page: int = 1
-    ) -> ResponseSig[typedefs.JSONObject]:
-        return self._request(
+    ) -> typedefs.JSONObject:
+        resp = await self._request(
             RequestMethod.GET,
             f"GroupV2/{group_id}/Members/Pending/?currentpage={current_page}",
             auth=access_token,
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_invited_group_memberships(
+    async def fetch_invited_group_memberships(
         self, access_token: str, group_id: int, /, *, current_page: int = 1
-    ) -> ResponseSig[typedefs.JSONObject]:
-        return self._request(
+    ) -> typedefs.JSONObject:
+        resp = await self._request(
             RequestMethod.GET,
             f"GroupV2/{group_id}/Members/InvitedIndividuals/?currentpage={current_page}",
             auth=access_token,
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def invite_member_to_group(
+    async def invite_member_to_group(
         self,
         access_token: str,
         /,
@@ -2122,32 +2265,38 @@ class RESTClient(interfaces.RESTInterface):
         membership_type: typedefs.IntAnd[enums.MembershipType],
         *,
         message: undefined.UndefinedOr[str] = undefined.Undefined,
-    ) -> ResponseSig[typedefs.JSONObject]:
-        return self._request(
+    ) -> typedefs.JSONObject:
+        resp = await self._request(
             RequestMethod.POST,
             f"GroupV2/{group_id}/Members/IndividualInvite/{int(membership_type)}/{membership_id}/",
             auth=access_token,
             json={"message": str(message)},
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def cancel_group_member_invite(
+    async def cancel_group_member_invite(
         self,
         access_token: str,
         /,
         group_id: int,
         membership_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
-    ) -> ResponseSig[typedefs.JSONObject]:
-        return self._request(
+    ) -> typedefs.JSONObject:
+        resp = await self._request(
             RequestMethod.POST,
             f"GroupV2/{group_id}/Members/IndividualInviteCancel/{int(membership_type)}/{membership_id}/",
             auth=access_token,
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_historical_definition(self) -> ResponseSig[typedefs.JSONObject]:
-        return self._request(RequestMethod.GET, "Destiny2/Stats/Definition/")
+    async def fetch_historical_definition(self) -> typedefs.JSONObject:
+        resp = await self._request(RequestMethod.GET, "Destiny2/Stats/Definition/")
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_historical_stats(
+    async def fetch_historical_stats(
         self,
         character_id: int,
         membership_id: int,
@@ -2158,10 +2307,10 @@ class RESTClient(interfaces.RESTInterface):
         modes: collections.Sequence[typedefs.IntAnd[enums.GameMode]],
         *,
         period_type: enums.PeriodType = enums.PeriodType.ALL_TIME,
-    ) -> ResponseSig[typedefs.JSONObject]:
+    ) -> typedefs.JSONObject:
 
         end, start = time.parse_date_range(day_end, day_start)
-        return self._request(
+        resp = await self._request(
             RequestMethod.GET,
             f"Destiny2/{int(membership_type)}/Account/{membership_id}/Character/{character_id}/Stats/",
             json={
@@ -2172,28 +2321,34 @@ class RESTClient(interfaces.RESTInterface):
                 "periodType": int(period_type),
             },
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_historical_stats_for_account(
+    async def fetch_historical_stats_for_account(
         self,
         membership_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
         groups: list[typedefs.IntAnd[enums.StatsGroupType]],
-    ) -> ResponseSig[typedefs.JSONObject]:
-        return self._request(
+    ) -> typedefs.JSONObject:
+        resp = await self._request(
             RequestMethod.GET,
             f"Destiny2/{int(membership_type)}/Account/{membership_id}/Stats/",
             json={"groups": [str(int(group)) for group in groups]},
         )
+        assert isinstance(resp, dict)
+        return resp
 
-    def fetch_aggregated_activity_stats(
+    async def fetch_aggregated_activity_stats(
         self,
         character_id: int,
         membership_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
         /,
-    ) -> ResponseSig[typedefs.JSONObject]:
-        return self._request(
+    ) -> typedefs.JSONObject:
+        resp = await self._request(
             RequestMethod.GET,
             f"Destiny2/{int(membership_type)}/Account/{membership_id}/"
             f"Character/{character_id}/Stats/AggregateActivityStats/",
         )
+        assert isinstance(resp, dict)
+        return resp

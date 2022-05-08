@@ -32,8 +32,8 @@ import typing
 
 from aiobungie import rest as rest_
 from aiobungie import traits
-from aiobungie.crate import fireteams
-from aiobungie.crate import user
+from aiobungie.crates import fireteams
+from aiobungie.crates import user
 from aiobungie.internal import enums
 from aiobungie.internal import factory as factory_
 from aiobungie.internal import helpers
@@ -45,14 +45,14 @@ if typing.TYPE_CHECKING:
 
     from aiobungie import interfaces
     from aiobungie import typedefs
-    from aiobungie.crate import activity
-    from aiobungie.crate import application
-    from aiobungie.crate import clans
-    from aiobungie.crate import components
-    from aiobungie.crate import entity
-    from aiobungie.crate import friends
-    from aiobungie.crate import milestones
-    from aiobungie.crate import profile
+    from aiobungie.crates import activity
+    from aiobungie.crates import application
+    from aiobungie.crates import clans
+    from aiobungie.crates import components
+    from aiobungie.crates import entity
+    from aiobungie.crates import friends
+    from aiobungie.crates import milestones
+    from aiobungie.crates import profile
 
 _LOG: typing.Final[logging.Logger] = logging.getLogger("aiobungie.client")
 
@@ -61,7 +61,7 @@ class Client(traits.ClientApp):
     """Standard Bungie API client application.
 
     This client deserialize the REST JSON responses using `aiobungie.internal.factory.Factory`
-    and returns `aiobungie.crate` Python object implementations of the responses.
+    and returns `aiobungie.crates` Python object implementations of the responses.
 
     A `aiobungie.RESTClient` REST client can also be used alone for low-level concepts.
 
@@ -179,11 +179,11 @@ class Client(traits.ClientApp):
 
         Returns
         -------
-        `aiobungie.crate.user.User`
+        `aiobungie.crates.user.User`
             A user object includes the Destiny memberships and Bungie.net user.
         """
         resp = await self.rest.fetch_current_user_memberships(access_token)
-        assert isinstance(resp, dict)
+
         return self.factory.deserialize_user(resp)
 
     async def fetch_bungie_user(self, id: int, /) -> user.BungieUser:
@@ -200,7 +200,7 @@ class Client(traits.ClientApp):
 
         Returns
         -------
-        `aiobungie.crate.user.BungieUser`
+        `aiobungie.crates.user.BungieUser`
             A Bungie user.
 
         Raises
@@ -209,7 +209,7 @@ class Client(traits.ClientApp):
             The user was not found.
         """
         payload = await self.rest.fetch_bungie_user(id)
-        assert isinstance(payload, dict)
+
         return self.factory.deserialize_bungie_user(payload)
 
     async def search_users(
@@ -224,11 +224,11 @@ class Client(traits.ClientApp):
 
         Returns
         -------
-        `aiobungie.iterators.FlatIterator[aiobungie.crate.DestinyMembership]`
+        `aiobungie.iterators.FlatIterator[aiobungie.crates.DestinyMembership]`
             A sequence of destiny memberships.
         """
         payload = await self.rest.search_users(name)
-        assert isinstance(payload, dict)
+
         return iterators.FlatIterator(
             [
                 self.factory.deserialize_searched_user(user)
@@ -241,11 +241,11 @@ class Client(traits.ClientApp):
 
         Returns
         -------
-        `collections.Sequence[aiobungie.crate.user.UserThemes]`
+        `collections.Sequence[aiobungie.crates.user.UserThemes]`
             A sequence of user themes.
         """
         data = await self.rest.fetch_user_themes()
-        assert isinstance(data, list)
+
         return self.factory.deserialize_user_themes(data)
 
     async def fetch_hard_types(
@@ -268,12 +268,12 @@ class Client(traits.ClientApp):
 
         Returns
         -------
-        `aiobungie.crate.user.HardLinkedMembership`
+        `aiobungie.crates.user.HardLinkedMembership`
             Information about the hard linked data.
         """
 
         payload = await self.rest.fetch_hardlinked_credentials(credential, type)
-        assert isinstance(payload, dict)
+
         return user.HardLinkedMembership(
             id=int(payload["membershipId"]),
             type=enums.MembershipType(payload["membershipType"]),
@@ -292,7 +292,7 @@ class Client(traits.ClientApp):
         -----
         * This returns both BungieNet membership and a sequence of the player's DestinyMemberships
         Which includes Stadia, Xbox, Steam and PSN memberships if the player has them,
-        see `aiobungie.crate.user.DestinyMembership` for more details.
+        see `aiobungie.crates.user.DestinyMembership` for more details.
         * If you only want the bungie user. Consider using `Client.fetch_user` method.
 
         Parameters
@@ -304,7 +304,7 @@ class Client(traits.ClientApp):
 
         Returns
         -------
-        `aiobungie.crate.User`
+        `aiobungie.crates.User`
             A Bungie user with their membership types.
 
         Raises
@@ -313,7 +313,7 @@ class Client(traits.ClientApp):
             The requested user was not found.
         """
         payload = await self.rest.fetch_membership_from_id(id, type)
-        assert isinstance(payload, dict)
+
         return self.factory.deserialize_user(payload)
 
     async def fetch_user_credentials(
@@ -333,7 +333,7 @@ class Client(traits.ClientApp):
 
         Returns
         -------
-        `collections.Sequence[aiobungie.crate.UserCredentials]`
+        `collections.Sequence[aiobungie.crates.UserCredentials]`
             A sequence of the attached user credentials.
 
         Raises
@@ -342,7 +342,7 @@ class Client(traits.ClientApp):
             The access token was wrong or no access token passed.
         """
         resp = await self.rest.fetch_user_credentials(access_token, membership_id)
-        assert isinstance(resp, list)
+
         return self.factory.deserialize_user_credentials(resp)
 
     # * Destiny 2.
@@ -374,7 +374,7 @@ class Client(traits.ClientApp):
 
         Returns
         --------
-        `aiobungie.crate.Component`
+        `aiobungie.crates.Component`
             A Destiny 2 player profile with its components.
             Only passed components will be available if they exists. Otherwise they will be `None`
 
@@ -384,7 +384,6 @@ class Client(traits.ClientApp):
             The provided membership type was invalid.
         """
         data = await self.rest.fetch_profile(member_id, type, components, auth)
-        assert isinstance(data, dict)
         return self.factory.deserialize_components(data)
 
     async def fetch_linked_profiles(
@@ -420,11 +419,11 @@ class Client(traits.ClientApp):
 
         Returns
         -------
-        `aiobungie.crate.profile.LinkedProfile`
+        `aiobungie.crates.profile.LinkedProfile`
             A linked profile object.
         """
         resp = await self.rest.fetch_linked_profiles(member_id, member_type, all=all)
-        assert isinstance(resp, dict)
+
         return self.factory.deserialize_linked_profiles(resp)
 
     async def fetch_player(
@@ -447,7 +446,7 @@ class Client(traits.ClientApp):
 
         Returns
         --------
-        `collections.Sequence[aiobungie.crate.DestinyMembership]`
+        `collections.Sequence[aiobungie.crates.DestinyMembership]`
             A sequence of the found Destiny 2 player memberships.
             An empty sequence will be returned if no one found.
 
@@ -457,7 +456,7 @@ class Client(traits.ClientApp):
             The provided membership type was invalid.
         """
         resp = await self.rest.fetch_player(name, code, type)
-        assert isinstance(resp, list)
+
         return self.factory.deserialize_destiny_memberships(resp)
 
     async def fetch_character(
@@ -489,7 +488,7 @@ class Client(traits.ClientApp):
 
         Returns
         -------
-        `aiobungie.crate.CharacterComponent`
+        `aiobungie.crates.CharacterComponent`
             A Bungie character component.
 
         `aiobungie.MembershipTypeError`
@@ -498,7 +497,7 @@ class Client(traits.ClientApp):
         resp = await self.rest.fetch_character(
             member_id, membership_type, character_id, components, auth
         )
-        assert isinstance(resp, dict)
+
         return self.factory.deserialize_character_component(resp)
 
     async def fetch_unique_weapon_history(
@@ -520,13 +519,13 @@ class Client(traits.ClientApp):
 
         Returns
         -------
-        `collections.Sequence[aiobungie.crate.ExtendedWeaponValues]`
+        `collections.Sequence[aiobungie.crates.ExtendedWeaponValues]`
             A sequence of the weapon's extended values.
         """
         resp = await self._rest.fetch_unique_weapon_history(
             membership_id, character_id, membership_type
         )
-        assert isinstance(resp, dict)
+
         return [
             self._factory.deserialize_extended_weapon_values(weapon)
             for weapon in resp["weapons"]
@@ -568,7 +567,7 @@ class Client(traits.ClientApp):
 
         Returns
         -------
-        `aiobungie.iterators.FlatIterator[aiobungie.crate.Activity]`
+        `aiobungie.iterators.FlatIterator[aiobungie.crates.Activity]`
             An iterator of the player's activities.
 
         Raises
@@ -584,7 +583,7 @@ class Client(traits.ClientApp):
             page=page,
             limit=limit,
         )
-        assert isinstance(resp, dict)
+
         return self.factory.deserialize_activities(resp)
 
     async def fetch_post_activity(self, instance_id: int, /) -> activity.PostActivity:
@@ -597,11 +596,11 @@ class Client(traits.ClientApp):
 
         Returns
         -------
-        `aiobungie.crate.PostActivity`
+        `aiobungie.crates.PostActivity`
            A post activity object.
         """
         resp = await self.rest.fetch_post_activity(instance_id)
-        assert isinstance(resp, dict)
+
         return self.factory.deserialize_post_activity(resp)
 
     async def fetch_aggregated_activity_stats(
@@ -623,7 +622,7 @@ class Client(traits.ClientApp):
 
         Returns
         -------
-        `aiobungie.iterators.FlatIterator[aiobungie.crate.AggregatedActivity]`
+        `aiobungie.iterators.FlatIterator[aiobungie.crates.AggregatedActivity]`
             An iterator of the player's activities.
 
         Raises
@@ -634,7 +633,7 @@ class Client(traits.ClientApp):
         resp = await self.rest.fetch_aggregated_activity_stats(
             character_id, membership_id, membership_type
         )
-        assert isinstance(resp, dict)
+
         return self.factory.deserialize_aggregated_activities(resp)
 
     # * Destiny 2 Clans or GroupsV2.
@@ -654,7 +653,7 @@ class Client(traits.ClientApp):
 
         Returns
         --------
-        `aiobungie.crate.Clan`
+        `aiobungie.crates.Clan`
             An Bungie clan.
 
         Raises
@@ -663,7 +662,7 @@ class Client(traits.ClientApp):
             The clan was not found.
         """
         resp = await self.rest.fetch_clan_from_id(id, access_token)
-        assert isinstance(resp, dict)
+
         return self.factory.deserialize_clan(resp)
 
     async def fetch_clan(
@@ -688,14 +687,14 @@ class Client(traits.ClientApp):
             An optional access token to make the request with.
 
             If the token was bound to a member of the clan,
-            This field `aiobungie.crate.Clan.current_user_membership` will be available
+            This field `aiobungie.crates.Clan.current_user_membership` will be available
             and will return the membership of the user who made this request.
         type : `aiobungie.GroupType`
             The group type, Default is aiobungie.GroupType.CLAN.
 
         Returns
         -------
-        `aiobungie.crate.Clan`
+        `aiobungie.crates.Clan`
             A Bungie clan.
 
         Raises
@@ -704,7 +703,7 @@ class Client(traits.ClientApp):
             The clan was not found.
         """
         resp = await self.rest.fetch_clan(name, access_token, type=type)
-        assert isinstance(resp, dict)
+
         return self.factory.deserialize_clan(resp)
 
     async def fetch_clan_conversations(
@@ -718,11 +717,11 @@ class Client(traits.ClientApp):
             The clan id.
 
         Returns
-        `collections.Sequence[aiobungie.crate.ClanConversation]`
+        `collections.Sequence[aiobungie.crates.ClanConversation]`
             A sequence of the clan chat channels.
         """
         resp = await self.rest.fetch_clan_conversations(clan_id)
-        assert isinstance(resp, list)
+
         return self.factory.deserialize_clan_conversations(resp)
 
     async def fetch_clan_admins(
@@ -737,7 +736,7 @@ class Client(traits.ClientApp):
 
         Returns
         -------
-        `aiobungie.iterators.FlatIterator[aiobungie.crate.ClanMember]`
+        `aiobungie.iterators.FlatIterator[aiobungie.crates.ClanMember]`
             An iterator over the found clan admins and founder.
 
         Raises
@@ -746,7 +745,7 @@ class Client(traits.ClientApp):
             The requested clan was not found.
         """
         resp = await self.rest.fetch_clan_admins(clan_id)
-        assert isinstance(resp, dict)
+
         return self.factory.deserialize_clan_members(resp)
 
     async def fetch_groups_for_member(
@@ -777,13 +776,13 @@ class Client(traits.ClientApp):
 
         Returns
         -------
-        `collections.Sequence[aiobungie.crate.GroupMember]`
+        `collections.Sequence[aiobungie.crates.GroupMember]`
             A sequence of joined groups for the fetched member.
         """
         resp = await self.rest.fetch_groups_for_member(
             member_id, member_type, filter=filter, group_type=group_type
         )
-        assert isinstance(resp, dict)
+
         return [
             self.factory.deserialize_group_member(group) for group in resp["results"]
         ]
@@ -816,13 +815,13 @@ class Client(traits.ClientApp):
 
         Returns
         -------
-        `collections.Sequence[aiobungie.crate.GroupMember]`
+        `collections.Sequence[aiobungie.crates.GroupMember]`
             A sequence of joined potential groups for the fetched member.
         """
         resp = await self.rest.fetch_potential_groups_for_member(
             member_id, member_type, filter=filter, group_type=group_type
         )
-        assert isinstance(resp, dict)
+
         return [
             self.factory.deserialize_group_member(group) for group in resp["results"]
         ]
@@ -854,7 +853,7 @@ class Client(traits.ClientApp):
 
         Returns
         -------
-        `aiobungie.iterators.FlatIterator[aiobungie.crate.ClanMember]`
+        `aiobungie.iterators.FlatIterator[aiobungie.crates.ClanMember]`
             An iterator over the bungie clan members.
 
         Raises
@@ -863,7 +862,7 @@ class Client(traits.ClientApp):
             The clan was not found.
         """
         resp = await self.rest.fetch_clan_members(clan_id, type=type, name=name)
-        assert isinstance(resp, dict)
+
         return self.factory.deserialize_clan_members(resp)
 
     async def fetch_clan_banners(self) -> collections.Sequence[clans.ClanBanner]:
@@ -871,11 +870,11 @@ class Client(traits.ClientApp):
 
         Returns
         -------
-        `collections.Sequence[aiobungie.crate.ClanBanner]`
+        `collections.Sequence[aiobungie.crates.ClanBanner]`
             A sequence of the clan banners.
         """
         resp = await self.rest.fetch_clan_banners()
-        assert isinstance(resp, dict)
+
         return self.factory.deserialize_clan_banners(resp)
 
     # This method is required to be here since it deserialize the clan.
@@ -905,7 +904,7 @@ class Client(traits.ClientApp):
 
         Returns
         -------
-        `aiobungie.crate.clan.Clan`
+        `aiobungie.crates.clan.Clan`
             The clan that the member was kicked from.
         """
         resp = await self.rest.kick_clan_member(
@@ -914,7 +913,7 @@ class Client(traits.ClientApp):
             membership_id=membership_id,
             membership_type=membership_type,
         )
-        assert isinstance(resp, dict)
+
         return self.factory.deserialize_clan(resp)
 
     async def fetch_clan_weekly_rewards(self, clan_id: int) -> milestones.Milestone:
@@ -927,12 +926,12 @@ class Client(traits.ClientApp):
 
         Returns
         -------
-        `aiobungie.crate.Milestone`
+        `aiobungie.crates.Milestone`
             A runtime status of the clan's milestone data.
         """
 
         resp = await self.rest.fetch_clan_weekly_rewards(clan_id)
-        assert isinstance(resp, dict)
+
         return self.factory.deserialize_milestone(resp)
 
     # * Destiny 2 Entities aka Definitions.
@@ -947,11 +946,11 @@ class Client(traits.ClientApp):
 
         Returns
         -------
-        `aiobungie.crate.InventoryEntity`
+        `aiobungie.crates.InventoryEntity`
             A bungie inventory item.
         """
         resp = await self.rest.fetch_inventory_item(hash)
-        assert isinstance(resp, dict)
+
         return self.factory.deserialize_inventory_entity(resp)
 
     async def fetch_objective_entity(self, hash: int, /) -> entity.ObjectiveEntity:
@@ -964,11 +963,11 @@ class Client(traits.ClientApp):
 
         Returns
         -------
-        `aiobungie.crate.ObjectiveEntity`
+        `aiobungie.crates.ObjectiveEntity`
             An objective entity item.
         """
         resp = await self.rest.fetch_objective_entity(hash)
-        assert isinstance(resp, dict)
+
         return self.factory.deserialize_objective_entity(resp)
 
     async def search_entities(
@@ -991,11 +990,11 @@ class Client(traits.ClientApp):
 
         Returns
         -------
-        `aiobungie.iterators.FlatIterator[aiobungie.crate.SearchableEntity]`
+        `aiobungie.iterators.FlatIterator[aiobungie.crates.SearchableEntity]`
             An iterator over the found results matching the provided name.
         """
         resp = await self.rest.search_entities(name, entity_type, page=page)
-        assert isinstance(resp, dict)
+
         return self.factory.deserialize_inventory_results(resp)
 
     # Fireteams
@@ -1018,17 +1017,17 @@ class Client(traits.ClientApp):
 
         Parameters
         ----------
-        activity_type : `aiobungie.typedefs.IntAnd[aiobungie.crate.FireteamActivity]`
+        activity_type : `aiobungie.typedefs.IntAnd[aiobungie.crates.FireteamActivity]`
             The fireteam activity type.
 
         Other Parameters
         ----------------
-        platform : `aiobungie.typedefs.IntAnd[aiobungie.crate.fireteams.FireteamPlatform]`
+        platform : `aiobungie.typedefs.IntAnd[aiobungie.crates.fireteams.FireteamPlatform]`
             If this is provided. Then the results will be filtered with the given platform.
-            Defaults to `aiobungie.crate.FireteamPlatform.ANY` which returns all platforms.
-        language : `typing.Union[aiobungie.crate.fireteams.FireteamLanguage, str]`
+            Defaults to `aiobungie.crates.FireteamPlatform.ANY` which returns all platforms.
+        language : `typing.Union[aiobungie.crates.fireteams.FireteamLanguage, str]`
             A locale language to filter the used language in that fireteam.
-            Defaults to `aiobungie.crate.FireteamLanguage.ALL`
+            Defaults to `aiobungie.crates.FireteamLanguage.ALL`
         date_range : `int`
             An integer to filter the date range of the returned fireteams. Defaults to `aiobungie.FireteamDate.ALL`.
         page : `int`
@@ -1039,7 +1038,7 @@ class Client(traits.ClientApp):
         Returns
         -------
         `typing.Optional[collections.Sequence[fireteams.Fireteam]]`
-            A sequence of `aiobungie.crate.Fireteam` or `None`.
+            A sequence of `aiobungie.crates.Fireteam` or `None`.
         """
 
         resp = await self.rest.fetch_fireteams(
@@ -1050,7 +1049,7 @@ class Client(traits.ClientApp):
             page=page,
             slots_filter=slots_filter,
         )
-        assert isinstance(resp, dict)
+
         return self.factory.deserialize_fireteams(resp)
 
     async def fetch_avaliable_clan_fireteams(
@@ -1077,17 +1076,17 @@ class Client(traits.ClientApp):
             The bearer access token associated with the bungie account.
         group_id : `int`
             The group/clan id of the fireteam.
-        activity_type : `aiobungie.typedefs.IntAnd[aiobungie.crate.FireteamActivity]`
+        activity_type : `aiobungie.typedefs.IntAnd[aiobungie.crates.FireteamActivity]`
             The fireteam activity type.
 
         Other Parameters
         ----------------
-        platform : `aiobungie.typedefs.IntAnd[aiobungie.crate.fireteams.FireteamPlatform]`
+        platform : `aiobungie.typedefs.IntAnd[aiobungie.crates.fireteams.FireteamPlatform]`
             If this is provided. Then the results will be filtered with the given platform.
-            Defaults to `aiobungie.crate.FireteamPlatform.ANY` which returns all platforms.
-        language : `typing.Union[aiobungie.crate.fireteams.FireteamLanguage, str]`
+            Defaults to `aiobungie.crates.FireteamPlatform.ANY` which returns all platforms.
+        language : `typing.Union[aiobungie.crates.fireteams.FireteamLanguage, str]`
             A locale language to filter the used language in that fireteam.
-            Defaults to `aiobungie.crate.FireteamLanguage.ALL`
+            Defaults to `aiobungie.crates.FireteamLanguage.ALL`
         date_range : `int`
             An integer to filter the date range of the returned fireteams. Defaults to `0`.
         page : `int`
@@ -1099,7 +1098,7 @@ class Client(traits.ClientApp):
 
         Returns
         -------
-        `typing.Optional[collections.Sequence[aiobungie.crate.Fireteam]]`
+        `typing.Optional[collections.Sequence[aiobungie.crates.Fireteam]]`
             A sequence of  fireteams found in the clan.
             `None` will be returned if nothing was found.
         """
@@ -1114,7 +1113,7 @@ class Client(traits.ClientApp):
             public_only=public_only,
             slots_filter=slots_filter,
         )
-        assert isinstance(resp, dict)
+
         return self.factory.deserialize_fireteams(resp)
 
     async def fetch_clan_fireteam(
@@ -1136,11 +1135,11 @@ class Client(traits.ClientApp):
 
         Returns
         -------
-        `typing.Optional[aiobungie.crate.AvailableFireteam]`
+        `typing.Optional[aiobungie.crates.AvailableFireteam]`
             A sequence of available fireteams objects if exists. else `None` will be returned.
         """
         resp = await self.rest.fetch_clan_fireteam(access_token, fireteam_id, group_id)
-        assert isinstance(resp, dict)
+
         return self.factory.deserialize_available_fireteams(
             resp, no_results=True
         )  # type: ignore[return-value]
@@ -1173,12 +1172,12 @@ class Client(traits.ClientApp):
         include_closed : bool
             If provided and set to True, It will also return closed fireteams.
             If provided and set to False, It will only return public fireteams. Default is True.
-        platform : aiobungie.typedefs.IntAnd[aiobungie.crate.fireteams.FireteamPlatform]
+        platform : aiobungie.typedefs.IntAnd[aiobungie.crates.fireteams.FireteamPlatform]
             If this is provided. Then the results will be filtered with the given platform.
-            Defaults to aiobungie.crate.FireteamPlatform.ANY which returns all platforms.
-        language : typing.Union[aiobungie.crate.fireteams.FireteamLanguage, str]
+            Defaults to aiobungie.crates.FireteamPlatform.ANY which returns all platforms.
+        language : typing.Union[aiobungie.crates.fireteams.FireteamLanguage, str]
             A locale language to filter the used language in that fireteam.
-            Defaults to aiobungie.crate.FireteamLanguage.ALL
+            Defaults to aiobungie.crates.FireteamLanguage.ALL
         filtered : bool
             If set to True, it will filter by clan. Otherwise not. Default is True.
         page : int
@@ -1186,7 +1185,7 @@ class Client(traits.ClientApp):
 
         Returns
         -------
-        `collections.Sequence[aiobungie.crate.AvailableFireteam]`
+        `collections.Sequence[aiobungie.crates.AvailableFireteam]`
             A sequence of available fireteams objects if exists. else `None` will be returned.
         """
         resp = await self.rest.fetch_my_clan_fireteams(
@@ -1198,7 +1197,7 @@ class Client(traits.ClientApp):
             filtered=filtered,
             page=page,
         )
-        assert isinstance(resp, dict)
+
         return self.factory.deserialize_available_fireteams(resp)  # type: ignore[return-value]
 
     # Friends and social.
@@ -1218,12 +1217,12 @@ class Client(traits.ClientApp):
 
         Returns
         -------
-        `collections.Sequence[aiobungie.crate.Friend]`
+        `collections.Sequence[aiobungie.crates.Friend]`
             A sequence of the friends associated with that access token.
         """
 
         resp = await self.rest.fetch_friends(access_token)
-        assert isinstance(resp, dict)
+
         return self.factory.deserialize_friends(resp)
 
     async def fetch_friend_requests(
@@ -1241,12 +1240,12 @@ class Client(traits.ClientApp):
 
         Returns
         -------
-        `aiobungie.crate.FriendRequestView`
+        `aiobungie.crates.FriendRequestView`
             A friend requests view of that associated access token.
         """
 
         resp = await self.rest.fetch_friend_requests(access_token)
-        assert isinstance(resp, dict)
+
         return self.factory.deserialize_friend_requests(resp)
 
     # Applications and Developer portal.
@@ -1261,11 +1260,11 @@ class Client(traits.ClientApp):
 
         Returns
         --------
-        `aiobungie.crate.Application`
+        `aiobungie.crates.Application`
             A Bungie application.
         """
         resp = await self.rest.fetch_application(appid)
-        assert isinstance(resp, dict)
+
         return self.factory.deserialize_app(resp)
 
     # Milestones
@@ -1282,9 +1281,9 @@ class Client(traits.ClientApp):
 
         Returns
         -------
-        `aiobungie.crate.milestones.MilestoneContent`
+        `aiobungie.crates.milestones.MilestoneContent`
             A milestone content object.
         """
         resp = await self.rest.fetch_public_milestone_content(milestone_hash)
-        assert isinstance(resp, dict)
+
         return self.factory.deserialize_public_milestone_content(resp)

@@ -40,7 +40,7 @@ import typing
 import attrs
 
 from aiobungie import url
-from aiobungie.crate import user
+from aiobungie.crates import user
 from aiobungie.internal import enums
 
 if typing.TYPE_CHECKING:
@@ -101,6 +101,7 @@ class FireteamActivity(int, enums.Enum):
     CAMPAIGN = 39
     WELLSPRING = 40
     S16_BATTLEGROUNDS = 41
+    GUARDIAN_GAMES = 42
 
 
 @typing.final

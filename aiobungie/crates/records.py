@@ -42,7 +42,7 @@ from aiobungie.internal import enums
 if typing.TYPE_CHECKING:
     from aiobungie import traits
     from aiobungie import typedefs
-    from aiobungie.crate import entity
+    from aiobungie.crates import entity
 
 
 @typing.final
@@ -113,7 +113,7 @@ class Objective:
 
         Returns
         -------
-        `aiobungie.crate.ObjectiveEntity`
+        `aiobungie.crates.ObjectiveEntity`
             An objective entity definition.
         """
         return await self.net.request.fetch_objective_entity(self.hash)

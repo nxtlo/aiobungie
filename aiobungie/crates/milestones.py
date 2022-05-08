@@ -48,8 +48,8 @@ if typing.TYPE_CHECKING:
     from aiobungie import traits
     from aiobungie import typedefs
     from aiobungie import undefined
-    from aiobungie.crate import entity
-    from aiobungie.crate import records
+    from aiobungie.crates import entity
+    from aiobungie.crates import records
 
 
 @attrs.define(kw_only=True)
@@ -154,7 +154,7 @@ class QuestStatus:
 
         Returns
         -------
-        `aiobungie.crate.InventoryEntity`
+        `aiobungie.crates.InventoryEntity`
             The fetched inventory item definition/entity.
         """
         return await self.net.request.fetch_inventory_item(self.quest_hash)
@@ -164,7 +164,7 @@ class QuestStatus:
 
         Returns
         -------
-        `aiobungie.crate.InventoryEntity`
+        `aiobungie.crates.InventoryEntity`
             The fetched inventory item definition/entity.
         """
         return await self.net.request.fetch_inventory_item(self.step_hash)

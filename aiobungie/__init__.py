@@ -52,7 +52,7 @@ The difference between base client and the REST clients:
 
 * No Hight-Level concepts.
 * All returned data are pure JSON objects from the API.
-* No runtime assertions.
+* No object creation.
 
 Example
 -------
@@ -114,7 +114,7 @@ Or of you're building a Discord bot for an example or something simple. The base
 from __future__ import annotations
 
 from aiobungie import builders
-from aiobungie import crate
+from aiobungie import crates
 from aiobungie import interfaces
 from aiobungie import traits
 from aiobungie import typedefs
@@ -139,25 +139,28 @@ from ._info import __license__
 from ._info import __url__
 from ._info import __version__
 
+# Alias for crate for backwards compatibility.
+crate = crates
+
 # Activity enums
-from .crate.activity import Difficulty
+from .crates.activity import Difficulty
 
 # Components enums
-from .crate.components import ComponentFields
-from .crate.components import ComponentPrivacy
+from .crates.components import ComponentFields
+from .crates.components import ComponentPrivacy
 
 # Entity enums
-from .crate.entity import GatingScope
-from .crate.entity import ObjectiveUIStyle
-from .crate.entity import ValueUIStyle
+from .crates.entity import GatingScope
+from .crates.entity import ObjectiveUIStyle
+from .crates.entity import ValueUIStyle
 
 # Fireteam enums.
-from .crate.fireteams import FireteamActivity
-from .crate.fireteams import FireteamDate
-from .crate.fireteams import FireteamLanguage
-from .crate.fireteams import FireteamPlatform
+from .crates.fireteams import FireteamActivity
+from .crates.fireteams import FireteamDate
+from .crates.fireteams import FireteamLanguage
+from .crates.fireteams import FireteamPlatform
 
 # Records enums
-from .crate.records import RecordState
+from .crates.records import RecordState
 
 __all__ = [mod for mod in dir() if not mod.startswith("_")]  # type: ignore

@@ -35,21 +35,21 @@ if typing.TYPE_CHECKING:
 
     from aiobungie import traits
     from aiobungie import typedefs
-    from aiobungie.crate import activity
-    from aiobungie.crate import application
-    from aiobungie.crate import character
-    from aiobungie.crate import clans
-    from aiobungie.crate import components
-    from aiobungie.crate import entity
-    from aiobungie.crate import fireteams
-    from aiobungie.crate import friends
-    from aiobungie.crate import items
-    from aiobungie.crate import milestones
-    from aiobungie.crate import profile
-    from aiobungie.crate import progressions
-    from aiobungie.crate import records
-    from aiobungie.crate import season
-    from aiobungie.crate import user
+    from aiobungie.crates import activity
+    from aiobungie.crates import application
+    from aiobungie.crates import character
+    from aiobungie.crates import clans
+    from aiobungie.crates import components
+    from aiobungie.crates import entity
+    from aiobungie.crates import fireteams
+    from aiobungie.crates import friends
+    from aiobungie.crates import items
+    from aiobungie.crates import milestones
+    from aiobungie.crates import profile
+    from aiobungie.crates import progressions
+    from aiobungie.crates import records
+    from aiobungie.crates import season
+    from aiobungie.crates import user
 
 
 class FactoryInterface(abc.ABC):
@@ -73,7 +73,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.crate.User`
+        `aiobungie.crates.User`
             A user object.
         """
 
@@ -91,7 +91,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.crate.BungieUser`
+        `aiobungie.crates.BungieUser`
             A Bungie user.
         """
 
@@ -108,7 +108,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.crate.SearchableDestinyUser`
+        `aiobungie.crates.SearchableDestinyUser`
             The searched for Destiny 2 membership.
         """
 
@@ -128,7 +128,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.crate.PartialBungieUser`
+        `aiobungie.crates.PartialBungieUser`
             A partial bungie user.
         """
 
@@ -145,7 +145,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.crate.user.DestinyMembership`
+        `aiobungie.crates.user.DestinyMembership`
             A Destiny 2 membership.
         """
 
@@ -162,7 +162,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `collections.Sequence[aiobungie.crate.user.DestinyMembership]`
+        `collections.Sequence[aiobungie.crates.user.DestinyMembership]`
             A sequence of Destiny 2 memberships.
         """
 
@@ -179,7 +179,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `collections.Sequence[aiobungie.crate.user.UserThemes]`
+        `collections.Sequence[aiobungie.crates.user.UserThemes]`
             A sequence of bungie user themes.
         """
 
@@ -196,7 +196,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `collections.Sequence[aiobungie.crate.UserCredentials]`
+        `collections.Sequence[aiobungie.crates.UserCredentials]`
             A sequence of user's credentials.
         """
 
@@ -213,7 +213,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.crate.Clan`
+        `aiobungie.crates.Clan`
             A clan owner.
         """
 
@@ -230,7 +230,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.typedefs.NoneOr[aiobungie.crate.GroupMember]`
+        `aiobungie.typedefs.NoneOr[aiobungie.crates.GroupMember]`
             A group member. This can return `None` if nothing was found.
         """
 
@@ -245,7 +245,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.crate.ClanMember`
+        `aiobungie.crates.ClanMember`
             A clan member.
         """
 
@@ -262,7 +262,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.iterators.FlatIterator[aiobungie.crate.ClanMember]`
+        `aiobungie.iterators.FlatIterator[aiobungie.crates.ClanMember]`
             An iterator of clan members of the deserialized payload.
         """
 
@@ -279,7 +279,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `collections.Sequence[aiobungie.crate.ClanConversation]`
+        `collections.Sequence[aiobungie.crates.ClanConversation]`
             A sequence of clan conversations of the deserialized payload.
         """
 
@@ -296,7 +296,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `collections.Sequence[aiobungie.crate.ClanBanner]`
+        `collections.Sequence[aiobungie.crates.ClanBanner]`
             A sequence of clan banners of the deserialized payload.
         """
 
@@ -315,7 +315,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.crate.application.ApplicationOwner`
+        `aiobungie.crates.application.ApplicationOwner`
             An application owner.
         """
 
@@ -330,7 +330,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.crate.application.Application`
+        `aiobungie.crates.application.Application`
             An application.
         """
 
@@ -349,7 +349,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.crate.CharacterComponent`
+        `aiobungie.crates.CharacterComponent`
             A character component.
         """
 
@@ -366,7 +366,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.crate.RenderedData`
+        `aiobungie.crates.RenderedData`
             A character rendered data profile component.
         """
 
@@ -383,7 +383,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.crate.character.MinimalEquipments`
+        `aiobungie.crates.character.MinimalEquipments`
             A minimal equipment object.
         """
 
@@ -398,7 +398,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.crate.character.Dye`
+        `aiobungie.crates.character.Dye`
             Information about a character dye object.
         """
 
@@ -416,7 +416,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.crate.character.CustomizationOptions`
+        `aiobungie.crates.character.CustomizationOptions`
             Information about a character customs object.
         """
 
@@ -477,7 +477,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.crate.ProfileProgression`
+        `aiobungie.crates.ProfileProgression`
             A profile progression component.
         """
 
@@ -494,7 +494,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `typing.Optional[aiobungie.crate.Profile]`
+        `typing.Optional[aiobungie.crates.Profile]`
             A profile.
         """
 
@@ -514,7 +514,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `typing.Optional[collections.Sequence[aiobungie.crate.ProfileItemImpl]]`
+        `typing.Optional[collections.Sequence[aiobungie.crates.ProfileItemImpl]]`
             A profile component object that contains items of the deserialized payload.
         """
 
@@ -531,7 +531,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.crate.LinkedProfile`
+        `aiobungie.crates.LinkedProfile`
             A hard linked profile.
         """
 
@@ -548,7 +548,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.crate.ProfileItemImpl`
+        `aiobungie.crates.ProfileItemImpl`
             Implementation of a Destiny 2 profile component item.
         """
 
@@ -567,7 +567,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.crate.Component`
+        `aiobungie.crates.Component`
             A component implementation that includes all other components
             of the deserialized payload.
         """
@@ -595,7 +595,7 @@ class FactoryInterface(abc.ABC):
             The JSON object payload
         scores: `typing.Optional[records.RecordScores]`
             The records scores object.
-            This exists only to keep the signature of `aiobungie.crate.CharacterRecord` with the record object.
+            This exists only to keep the signature of `aiobungie.crates.CharacterRecord` with the record object.
             As it will always be `None` in that object.
         **nodes: `int`
             An int kwargs use to grab the node hashes while deserializing components.
@@ -651,7 +651,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.crate.records.Objective`
+        `aiobungie.crates.records.Objective`
             A record objective object.
         """
 
@@ -672,7 +672,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.crate.InventoryEntity`
+        `aiobungie.crates.InventoryEntity`
             An entity item.
         """
 
@@ -689,7 +689,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.iterators.FlatIterator[aiobungie.crate.SearchableEntity]`
+        `aiobungie.iterators.FlatIterator[aiobungie.crates.SearchableEntity]`
             An iterator over the found searched entities.
         """
 
@@ -706,7 +706,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.crate.ObjectiveEntity`
+        `aiobungie.crates.ObjectiveEntity`
             An objective entity.
         """
 
@@ -725,7 +725,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.crate.Activity`
+        `aiobungie.crates.Activity`
             An activity.
         """
 
@@ -742,7 +742,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.iterators.FlatIterator[aiobungie.crate.Activity]`
+        `aiobungie.iterators.FlatIterator[aiobungie.crates.Activity]`
             Am iterator over activity objects of the deserialized payload.
         """
 
@@ -759,7 +759,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.crate.PostActivity`
+        `aiobungie.crates.PostActivity`
             A post activity object.
         """
 
@@ -769,7 +769,7 @@ class FactoryInterface(abc.ABC):
     ) -> activity.AvailableActivity:
         """Deserialize a JSON payload of an available activities.
 
-        This method is used to deserialize an array of `aiobungie.crate.CharacterActivity.available_activities`.
+        This method is used to deserialize an array of `aiobungie.crates.CharacterActivity.available_activities`.
 
         Parameters
         ----------
@@ -778,7 +778,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.crate.AvailableActivity`
+        `aiobungie.crates.AvailableActivity`
             An available activity object.
         """
 
@@ -795,7 +795,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.crate.CharacterActivity`
+        `aiobungie.crates.CharacterActivity`
             A character activities component object.
         """
 
@@ -812,7 +812,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.crate.AggregatedActivity`
+        `aiobungie.crates.AggregatedActivity`
             An aggregated activity object.
         """
 
@@ -829,7 +829,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.iterators.FlatIterator[aiobungie.crate.AggregatedActivity]`
+        `aiobungie.iterators.FlatIterator[aiobungie.crates.AggregatedActivity]`
             An iterator over aggregated activities objects.
         """
 
@@ -846,7 +846,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.crate.ExtendedWeaponValues`
+        `aiobungie.crates.ExtendedWeaponValues`
             Information about an extended weapon values.
         """
 
@@ -865,7 +865,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.crate.MilestoneContent`
+        `aiobungie.crates.MilestoneContent`
             A milestone content.
         """
 
@@ -888,7 +888,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.crate.Friend`
+        `aiobungie.crates.Friend`
             A friend.
         """
 
@@ -907,7 +907,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `collections.Sequence[aiobungie.crate.Friend]`
+        `collections.Sequence[aiobungie.crates.Friend]`
             A sequence of friends.
         """
 
@@ -926,7 +926,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `collections.Sequence[aiobungie.crate.FriendRequestView]`
+        `collections.Sequence[aiobungie.crates.FriendRequestView]`
             A sequence of incoming and outgoing friends.
         """
 
@@ -945,7 +945,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `collections.Sequence[aiobungie.crate.Fireteam]`
+        `collections.Sequence[aiobungie.crates.Fireteam]`
             A sequence of fireteam.
         """
 
@@ -962,7 +962,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.crate.FireteamUser`
+        `aiobungie.crates.FireteamUser`
             A fireteam user.
         """
 
@@ -982,7 +982,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `typing.Optional[collections.Sequence[aiobungie.crate.FireteamUser]]`
+        `typing.Optional[collections.Sequence[aiobungie.crates.FireteamUser]]`
             An optional sequence of the fireteam members.
         """
 
@@ -1003,7 +1003,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `typing.Union[aiobungie.crate.fireteams.AvailableFireteam, collections.Sequence[aiobungie.crate.fireteams.AvailableFireteam]]` # noqa: E501
+        `typing.Union[aiobungie.crates.fireteams.AvailableFireteam, collections.Sequence[aiobungie.crates.fireteams.AvailableFireteam]]` # noqa: E501
             An available fireteam or a sequence of available fireteam.
         """
 
@@ -1020,7 +1020,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.crate.FireteamParty`
+        `aiobungie.crates.FireteamParty`
             A fireteam party object of the current fireteam.
         """
 
@@ -1039,7 +1039,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.crate.Artifact`
+        `aiobungie.crates.Artifact`
             A seasonal artifact.
         """
 
@@ -1058,7 +1058,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.crate.ItemInstance`
+        `aiobungie.crates.ItemInstance`
             An instanced item object.
         """
 

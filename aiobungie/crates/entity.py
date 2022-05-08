@@ -50,7 +50,7 @@ if typing.TYPE_CHECKING:
     from aiobungie import traits
     from aiobungie import typedefs
     from aiobungie import undefined
-    from aiobungie.crate import activity
+    from aiobungie.crates import activity
     from aiobungie.internal import assets
 
 

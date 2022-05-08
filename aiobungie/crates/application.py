@@ -33,7 +33,7 @@ import attrs
 
 from aiobungie import undefined
 from aiobungie import url
-from aiobungie.crate import user
+from aiobungie.crates import user
 from aiobungie.internal import enums
 
 if typing.TYPE_CHECKING:
@@ -76,7 +76,7 @@ class ApplicationOwner(user.UserLike):
 
         Returns
         -------
-        `aiobungie.crate.BungieUser`
+        `aiobungie.crates.BungieUser`
             A Bungie net user.
 
         Raises

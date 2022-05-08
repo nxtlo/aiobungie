@@ -48,12 +48,12 @@ if typing.TYPE_CHECKING:
 
     from aiobungie import traits
     from aiobungie import typedefs
-    from aiobungie.crate import activity
-    from aiobungie.crate import entity
-    from aiobungie.crate import milestones as milestones_
-    from aiobungie.crate import progressions as progressions_
-    from aiobungie.crate import records
-    from aiobungie.crate import season
+    from aiobungie.crates import activity
+    from aiobungie.crates import entity
+    from aiobungie.crates import milestones as milestones_
+    from aiobungie.crates import progressions as progressions_
+    from aiobungie.crates import records
+    from aiobungie.crates import season
     from aiobungie.internal import assets
     from aiobungie.internal import enums
     from aiobungie.internal import iterators
@@ -151,7 +151,7 @@ class RenderedData:
 
         Returns
         -------
-        `collections.Collection[aiobungie.crate.InventoryEntity]`
+        `collections.Collection[aiobungie.crates.InventoryEntity]`
             A collection of the fetched item definitions.
         """
         return await helpers.awaits(
@@ -261,7 +261,7 @@ class Character:
 
         Returns
         -------
-        `aiobungie.iterators.FlatIterator[aiobungie.crate.Activity]`
+        `aiobungie.iterators.FlatIterator[aiobungie.crates.Activity]`
             A iterator over the character's activities.
 
         Raises

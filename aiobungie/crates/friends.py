@@ -38,7 +38,7 @@ if typing.TYPE_CHECKING:
     from aiobungie import traits
     from aiobungie import typedefs
     from aiobungie import undefined
-    from aiobungie.crate import user as user_
+    from aiobungie.crates import user as user_
     from aiobungie.internal import enums
 
 

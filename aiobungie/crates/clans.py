@@ -39,8 +39,8 @@ import attrs
 
 from aiobungie import undefined
 from aiobungie import url
-from aiobungie.crate import fireteams
-from aiobungie.crate import user
+from aiobungie.crates import fireteams
+from aiobungie.crates import user
 from aiobungie.internal import enums
 from aiobungie.internal import helpers
 from aiobungie.internal import iterators
@@ -51,7 +51,7 @@ if typing.TYPE_CHECKING:
 
     from aiobungie import traits
     from aiobungie import typedefs
-    from aiobungie.crate import progressions as progressions_
+    from aiobungie.crates import progressions as progressions_
     from aiobungie.internal import assets
 
 
@@ -200,7 +200,7 @@ class ClanMember(user.DestinyMembership):
     """The clan member's bungie partial net user if set. `None` if not found.
 
     .. note:: This only returns a partial bungie net user.
-    You can fetch the fully implemented user using `aiobungie.crate.PartialBungieUser.fetch_self()` method.
+    You can fetch the fully implemented user using `aiobungie.crates.PartialBungieUser.fetch_self()` method.
     """
 
     @property
@@ -288,7 +288,7 @@ class ClanMember(user.DestinyMembership):
 
         Returns
         -------
-        `aiobungie.crate.clan.Clan`
+        `aiobungie.crates.clan.Clan`
             The clan that represents the kicked member.
         """
         return await self.net.request.kick_clan_member(
@@ -597,17 +597,17 @@ class Clan:
         ----------
         access_token : `str`
             The bearer access token associated with the bungie account.
-        activity_type : `aiobungie.typedefs.IntAnd[aiobungie.crate.FireteamActivity]`
+        activity_type : `aiobungie.typedefs.IntAnd[aiobungie.crates.FireteamActivity]`
             The fireteam activity type.
 
         Other Parameters
         ----------------
-        platform : `aiobungie.typedefs.IntAnd[aiobungie.crate.fireteams.FireteamPlatform]`
+        platform : `aiobungie.typedefs.IntAnd[aiobungie.crates.fireteams.FireteamPlatform]`
             If this is provided. Then the results will be filtered with the given platform.
-            Defaults to `aiobungie.crate.FireteamPlatform.ANY` which returns all platforms.
-        language : `typing.Union[aiobungie.crate.fireteams.FireteamLanguage, str]`
+            Defaults to `aiobungie.crates.FireteamPlatform.ANY` which returns all platforms.
+        language : `typing.Union[aiobungie.crates.fireteams.FireteamLanguage, str]`
             A locale language to filter the used language in that fireteam.
-            Defaults to `aiobungie.crate.FireteamLanguage.ALL`
+            Defaults to `aiobungie.crates.FireteamLanguage.ALL`
         date_range : `aiobungie.typedefs.IntAnd[aiobungie.FireteamDate]`
             An integer to filter the date range of the returned fireteams. Defaults to `aiobungie.FireteamDate.ALL`.
         page : `int`
@@ -658,12 +658,12 @@ class Clan:
         include_closed : bool
             If provided and set to True, It will also return closed fireteams.
             If provided and set to False, It will only return public fireteams. Default is True.
-        platform : aiobungie.typedefs.IntAnd[aiobungie.crate.fireteams.FireteamPlatform]
+        platform : aiobungie.typedefs.IntAnd[aiobungie.crates.fireteams.FireteamPlatform]
             If this is provided. Then the results will be filtered with the given platform.
-            Defaults to aiobungie.crate.FireteamPlatform.ANY which returns all platforms.
-        language : typing.Union[aiobungie.crate.fireteams.FireteamLanguage, str]
+            Defaults to aiobungie.crates.FireteamPlatform.ANY which returns all platforms.
+        language : typing.Union[aiobungie.crates.fireteams.FireteamLanguage, str]
             A locale language to filter the used language in that fireteam.
-            Defaults to aiobungie.crate.FireteamLanguage.ALL
+            Defaults to aiobungie.crates.FireteamLanguage.ALL
         filtered : bool
             If set to True, it will filter by clan. Otherwise not. Default is True.
         page : int
@@ -671,7 +671,7 @@ class Clan:
 
         Returns
         -------
-        `typing.Optional[collections.Sequence[aiobungie.crate.AvalaibleFireteam]]`
+        `typing.Optional[collections.Sequence[aiobungie.crates.AvalaibleFireteam]]`
             A sequence of available fireteams objects if exists. else `None` will be returned.
         """
         return await self.net.request.fetch_my_clan_fireteams(
@@ -688,7 +688,7 @@ class Clan:
         """Fetch the conversations/chat channels of this clan.
 
         Returns
-        `collections.Sequence[aiobungie.crate.ClanConversation]`
+        `collections.Sequence[aiobungie.crates.ClanConversation]`
             A sequence of the clan chat channels.
         """
         return await self.net.request.fetch_clan_conversations(self.id)
@@ -815,7 +815,7 @@ class Clan:
 
         Returns
         --------
-        `collections.Sequence[aiobungie.crate.clans.ClanMember]`
+        `collections.Sequence[aiobungie.crates.clans.ClanMember]`
             A sequence of clan members or are banned.
         """
         ...
@@ -829,7 +829,7 @@ class Clan:
 
         Returns
         --------
-        `collections.Sequence[aiobungie.crate.clans.ClanMember]`
+        `collections.Sequence[aiobungie.crates.clans.ClanMember]`
             A sequence of clan members who are awaiting
             to get accepted to the clan.
         """
@@ -844,7 +844,7 @@ class Clan:
 
         Returns
         --------
-        `collections.Sequence[aiobungie.crate.clans.ClanMember]`
+        `collections.Sequence[aiobungie.crates.clans.ClanMember]`
             A sequence of members who have been invited.
         """
         ...

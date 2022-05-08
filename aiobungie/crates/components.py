@@ -52,13 +52,13 @@ if typing.TYPE_CHECKING:
     import collections.abc as collections
 
     from aiobungie import traits
-    from aiobungie.crate import activity
-    from aiobungie.crate import character as character_
-    from aiobungie.crate import entity
-    from aiobungie.crate import fireteams
-    from aiobungie.crate import items
-    from aiobungie.crate import profile
-    from aiobungie.crate import records as records_
+    from aiobungie.crates import activity
+    from aiobungie.crates import character as character_
+    from aiobungie.crates import entity
+    from aiobungie.crates import fireteams
+    from aiobungie.crates import items
+    from aiobungie.crates import profile
+    from aiobungie.crates import records as records_
 
 
 @typing.final
@@ -381,7 +381,7 @@ class MetricsComponent:
     """A sequence of mappings from the metrics hash to a tuple contains two elements.
 
     * The first is always a `bool` determines whether the object is visible or not.
-    * The second is an `aiobungie.crate.Objective` of the metrics object if it has one. Otherwise it will be `None`.
+    * The second is an `aiobungie.crates.Objective` of the metrics object if it has one. Otherwise it will be `None`.
     """
 
     root_node_hash: typing.Optional[int]
@@ -523,7 +523,7 @@ class Component(
     """
 
     characters: typing.Optional[collections.Mapping[int, character_.Character]]
-    """A mapping from character's id to`aiobungie.crate.Character`
+    """A mapping from character's id to`aiobungie.crates.Character`
     of the associated character within the character component.
 
     This will be available when `aiobungie.ComponentType.CHARACTERS` is passed to the request.

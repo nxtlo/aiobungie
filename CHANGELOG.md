@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Setting the level to `True` now will only log minimal information.
 - `PlugSocketBuilder` and `OAuth2Response` has been moved to `builders.py`
 and both objects are not exposed to the project namespace anymore. However `aiobungie.builders.*` is exposed.
+- `aiobungie.crate` is renamed to `crates` + Added an alias for `crate` for backward versions.
+- `RESTnterface` and `RESTClient` is now completly `async def` + typesafe.
 
 ## Removed
 

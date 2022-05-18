@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.6a3...HEAD)
 
+## Added
+
+## Changed
+- Optimized object deserialization proccess.
+- `helpers.awaits` now returns `Sequence` instead of `Collection`.
+
+## Removed
+- `helpers.just` function.
+- Useless ABCs.
+
 
 ## [0.2.6a3](https://github.com/nxtlo/aiobungie/compare/0.2.6a2...0.2.6a3) 2022-05-8
 ## Added

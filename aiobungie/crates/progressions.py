@@ -26,91 +26,47 @@ from __future__ import annotations
 
 __all__: tuple[str, ...] = ("Progression", "Factions")
 
-import abc
-
 import attrs
 
 
-class BaseProgression(abc.ABC):
-    """An interface for standard Bungie progressions objects."""
-
-    @property
-    @abc.abstractmethod
-    def hash(self) -> int:
-        """The progression's hash."""
-
-    @property
-    @abc.abstractmethod
-    def level(self) -> int:
-        """The level of the progression."""
-
-    @property
-    @abc.abstractmethod
-    def cap(self) -> int:
-        """The cap number of this progression."""
-
-    @property
-    @abc.abstractmethod
-    def next_level(self) -> int:
-        """The progression's next level at."""
-
-    @property
-    @abc.abstractmethod
-    def needed(self) -> int:
-        """The needed progress to earn the next level."""
-
-    @property
-    @abc.abstractmethod
-    def current_progress(self) -> int:
-        """The current progress of this progression."""
-
-    @property
-    @abc.abstractmethod
-    def daily_limit(self) -> int:
-        """The limit of the daily earned progress."""
-
-    @property
-    @abc.abstractmethod
-    def daily_progress(self) -> int:
-        """The number of the daily progress."""
-
-    @property
-    @abc.abstractmethod
-    def weekly_limit(self) -> int:
-        """The limit of the weekly earned progress."""
-
-
 @attrs.define(kw_only=True)
-class Progression(BaseProgression):
+class Progression:
     """The base progression class that all progression objects must inherit from."""
 
     # net: traits.Netrunner = attrs.field(repr=False)
 
     hash: int
-    # <<inherited docstring from aiobungie.crates.specials.Progression>>.
+    """The progression's hash."""
 
     level: int
-    # <<inherited docstring from aiobungie.crates.specials.Progression>>.
+    """The level of the progression."""
 
     cap: int
+    """The cap number of this progression."""
     # <<inherited docstring from aiobungie.crates.specials.Progression>>.
 
     daily_limit: int
+    """The limit of the daily earned progress."""
     # <<inherited docstring from aiobungie.crates.specials.Progression>>.
 
     weekly_limit: int
+    """The limit of the weekly earned progress."""
     # <<inherited docstring from aiobungie.crates.specials.Progression>>.
 
     current_progress: int
+    """The current progress of this progression."""
     # <<inherited docstring from aiobungie.crates.specials.Progression>>.
 
     daily_progress: int
+    """The number of the daily progress."""
     # <<inherited docstring from aiobungie.crates.specials.Progression>>.
 
     needed: int
+    """The needed progress to earn the next level."""
     # <<inherited docstring from aiobungie.crates.specials.Progression>>.
 
     next_level: int
+    """The progression's next level at."""
     # <<inherited docstring from aiobungie.crates.specials.Progression>>.
 
 

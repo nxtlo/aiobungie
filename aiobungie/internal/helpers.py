@@ -26,7 +26,6 @@ from __future__ import annotations
 
 __all__: tuple[str, ...] = (
     "deprecated",
-    "just",
     "awaits",
     "get_or_make_loop",
     "unimplemented",
@@ -42,13 +41,6 @@ import warnings
 if typing.TYPE_CHECKING:
     T_co = typing.TypeVar("T_co", covariant=True)
     T = typing.TypeVar("T", bound=collections.Callable[..., typing.Any])
-
-# TODO: Remove this later.
-def just(lst: list[dict[str, T_co]], lookup: str) -> list[T_co]:
-    """A helper function that takes a list of dicts and return a list of
-    all keys found inside the dict
-    """
-    return list(map(lambda dct: dct[lookup], lst))
 
 
 class UnimplementedWarning(RuntimeWarning):
@@ -137,12 +129,12 @@ async def awaits(
     *aws: collections.Awaitable[T_co],
     timeout: typing.Optional[float] = None,
     with_exception: bool = True,
-) -> typing.Union[collections.Collection[T_co], collections.Sequence[T_co]]:
+) -> collections.Sequence[T_co]:
     """Await all given awaitables concurrently.
 
     Parameters
     ----------
-    aws : `collections.Awaitable[JT]`
+    *aws : `collections.Awaitable[JT]`
         Multiple awaitables to await.
     timeout : `typing.Optional[float]`
         An optional timeout.
@@ -151,14 +143,14 @@ async def awaits(
 
     Returns
     -------
-    `typing.Union[collections.Collection[JT], collections.Collection[JT]]`
-        A collection or sequence of the awaited coros objects.
+    `collections.Sequence[T_co]`
+        A sequence of the results of the awaited coros.
     """
 
     if not aws:
         raise RuntimeError("No awaitables passed.", aws)
 
-    pending: list[asyncio.Future[T_co]] = []
+    pending: list[asyncio.Task[T_co]] = []
 
     for future in aws:
         pending.append(asyncio.create_task(future))  # type: ignore

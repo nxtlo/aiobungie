@@ -31,7 +31,6 @@ __all__: tuple[str, ...] = (
     "ProfileItemImpl",
 )
 
-import abc
 import datetime
 import typing
 
@@ -49,83 +48,6 @@ if typing.TYPE_CHECKING:
     from aiobungie import typedefs
     from aiobungie.crates import components
     from aiobungie.crates import season
-
-
-class ProfileItem(abc.ABC):
-    """An interface for items information found in a profile component.
-
-    Those fields may be found in a `ProfileInventories`, etc.
-    """
-
-    __slots__ = ()
-
-    @property
-    @abc.abstractmethod
-    def net(self) -> traits.Netrunner:
-        """A network state used for making external requests."""
-
-    @property
-    @abc.abstractmethod
-    def hash(self) -> int:
-        """The item type hash."""
-
-    @property
-    @abc.abstractmethod
-    def quantity(self) -> int:
-        """The item quantity."""
-
-    @property
-    @abc.abstractmethod
-    def bind_status(self) -> enums.ItemBindStatus:
-        """The item binding status."""
-
-    @property
-    @abc.abstractmethod
-    def location(self) -> enums.ItemLocation:
-        """The item location."""
-
-    @property
-    @abc.abstractmethod
-    def bucket(self) -> int:
-        """The item bucket hash."""
-
-    @property
-    @abc.abstractmethod
-    def transfer_status(self) -> typedefs.IntAnd[enums.TransferStatus]:
-        """The item's transfer status."""
-
-    @property
-    @abc.abstractmethod
-    def lockable(self) -> bool:
-        """Whether the item can be locked or not."""
-
-    @property
-    @abc.abstractmethod
-    def state(self) -> enums.ItemState:
-        """The item's state."""
-
-    @property
-    @abc.abstractmethod
-    def dismantel_permissions(self) -> int:
-        """The item's dismantel permission."""
-
-    @property
-    @abc.abstractmethod
-    def is_wrapper(self) -> bool:
-        """Whether the item is a wrapper or not."""
-
-    async def fetch_self(self) -> entity.InventoryEntity:
-        """Fetch this profile item.
-
-        Returns
-        -------
-        `aiobungie.crates.InventoryEntity`
-            An inventory item definition entity.
-        """
-        return await self.net.request.fetch_inventory_item(self.hash)
-
-    def __int__(self) -> int:
-        return self.hash
 
 
 @attrs.define(kw_only=True)
@@ -161,7 +83,7 @@ class ProfileProgression:
 
 
 @attrs.mutable(kw_only=True)
-class ProfileItemImpl(ProfileItem):
+class ProfileItemImpl:
     """Concrete implementation of any profile component item.
 
     This also can be a character equipment i.e. Weapons, Armor, Ships, etc.
@@ -217,6 +139,19 @@ class ProfileItemImpl(ProfileItem):
             and self.instance_id is not None  # noqa: W503
         )
 
+    async def fetch_self(self) -> entity.InventoryEntity:
+        """Fetch this profile item.
+
+        Returns
+        -------
+        `aiobungie.crates.InventoryEntity`
+            An inventory item definition entity.
+        """
+        return await self.net.request.fetch_inventory_item(self.hash)
+
+    def __int__(self) -> int:
+        return self.hash
+
 
 @attrs.define(kw_only=True)
 class Profile:
@@ -252,7 +187,7 @@ class Profile:
 
     async def _await_all_chars(
         self, components: list[enums.ComponentType], auth: typing.Optional[str] = None
-    ) -> collections.Collection[components.CharacterComponent]:
+    ) -> collections.Sequence[components.CharacterComponent]:
         return await helpers.awaits(
             *[
                 self.net.request.fetch_character(
@@ -264,7 +199,7 @@ class Profile:
 
     async def collect_characters(
         self, components: list[enums.ComponentType], auth: typing.Optional[str] = None
-    ) -> collections.Collection[components.CharacterComponent]:
+    ) -> collections.Sequence[components.CharacterComponent]:
         """Fetch this profile's characters.
 
         Parameters
@@ -280,8 +215,8 @@ class Profile:
 
         Returns
         -------
-        `collections.Collection[aiobungie.crates.CharacterComponent]`
-            A collection of the characters component.
+        `collections.Sequence[aiobungie.crates.CharacterComponent]`
+            A sequence of the characters components.
         """
         return await self._await_all_chars(components, auth)
 

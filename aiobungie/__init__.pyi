@@ -1,4 +1,4 @@
-from typing import Any
+from _typeshed import Incomplete
 
 from aiobungie import builders as builders
 from aiobungie import crates as crates
@@ -38,4 +38,4 @@ from .crates.fireteams import FireteamPlatform as FireteamPlatform
 from .crates.records import RecordState as RecordState
 
 crate = crates
-__all__: Any
+__all__: Incomplete

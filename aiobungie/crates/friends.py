@@ -152,12 +152,6 @@ class Friend:
         """
         await self.net.request.rest.remove_friend_request(access_token, self.id)
 
-    def __str__(self) -> str:
-        return self.unique_name
-
-    def __int__(self) -> int:
-        return self.id
-
     @helpers.unimplemented()
     async def fetch_platform_friends(
         self, access_token: str, /, platform: enums.MembershipType
@@ -176,3 +170,9 @@ class Friend:
         `aiobungie.NotFound`
             The requested friend was not found.
         """
+
+    def __str__(self) -> str:
+        return self.unique_name
+
+    def __int__(self) -> int:
+        return self.id

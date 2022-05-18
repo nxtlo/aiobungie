@@ -744,8 +744,8 @@ class Clan:
 
         Returns
         --------
-        `collections.Sequence[ClanMember]`
-            A sequence of the clan members found in this clan.
+        `aiobungie.FlatIterator[ClanMember]`
+            An iterator over the clan members found in this clan.
 
         Raises
         ------

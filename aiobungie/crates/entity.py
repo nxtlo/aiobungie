@@ -205,20 +205,24 @@ class SearchableEntity(EntityBase):
     weight: float
     """The ranking value for sorting that we calculated using our relevance formula."""
 
-    async def fetch_self_item(self) -> typing.Optional[InventoryEntity]:
+    async def fetch_self_item(self) -> InventoryEntity:
         """Fetch an item definition of this partial entity.
-
-        Note
-        ----
-        This will return `None` if the entity type is not `DestinyInventoryItemDefinition`.
 
         Returns
         -------
-        `typing.Optional[InventoryEntity]`
+        `InventoryEntity`
             An inventory item entity or `None` if its not.
+
+        Raises
+        ------
+        `TypeError`
+            If the entity type is not `DestinyInventoryItemDefinition`.
         """
         if self.entity_type != "DestinyInventoryItemDefinition":
-            return None
+            raise TypeError(
+                f"Entity type is not `DestinyInventoryItemDefinition`: {self.entity_type}."
+            )
+
         return await self.net.request.fetch_inventory_item(self.hash)
 
 
@@ -522,7 +526,7 @@ class ActivityEntity(Entity):
     light_level: int
     """Activity's light level."""
 
-    place: typing.Union[typedefs.IntAnd[enums.Place], typedefs.IntAnd[enums.Place]]
+    place: typedefs.IntAnd[enums.Place]
     """The place of this activity."""
 
     type_hash: int

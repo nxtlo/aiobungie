@@ -88,8 +88,7 @@ class ApplicationOwner(user.UserLike):
 
     @property
     def last_seen_name(self) -> str:
-        # This is always undefined since an application
-        # dev doesn't have this field.
+        """The last seen name of the application owner. This will always returns `UNDEFINED`."""
         return str(undefined.Undefined)
 
     @property

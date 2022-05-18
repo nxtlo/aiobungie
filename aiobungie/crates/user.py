@@ -55,7 +55,7 @@ if typing.TYPE_CHECKING:
 
 
 class UserLike(abc.ABC):
-    """An ABC that's used for all userlike objects."""
+    """An interface for Bungie users implementation."""
 
     __slots__ = ()
 
@@ -174,7 +174,7 @@ class PartialBungieUser:
 
 @attrs.define(kw_only=True)
 class BungieUser:
-    """Represents a Bungie user."""
+    """Represents a user at Bungie.net."""
 
     id: int
     """The user's id"""
@@ -252,7 +252,7 @@ class BungieUser:
 
 @attrs.define(kw_only=True)
 class DestinyMembership(UserLike):
-    """Represents a Bungie user's Destiny2 membership."""
+    """Represents a Bungie user's Destiny 2 membership."""
 
     net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
     """A network state used for making external requests."""
@@ -314,7 +314,7 @@ class DestinyMembership(UserLike):
 
 @attrs.define(kw_only=True)
 class SearchableDestinyUser:
-    """Representation of the result of the searched users details."""
+    """Represents the results of the searched users details."""
 
     name: undefined.UndefinedOr[str]
     """The user's global display name."""
@@ -378,7 +378,7 @@ class UserCredentials:
 
 @attrs.define(kw_only=True)
 class UserThemes:
-    """Represents a Bungie User theme."""
+    """Represents a Bungie user theme."""
 
     id: int
     """The theme id."""
@@ -395,10 +395,7 @@ class UserThemes:
 
 @attrs.define(kw_only=True)
 class User:
-    """Concrete representtion of a Bungie user.
-
-    This includes both Bungie net and Destiny memberships information.
-    """
+    """Represents a user with both Destiny memberships and Bungie.net profile."""
 
     bungie: BungieUser
     """The user's bungie net user."""

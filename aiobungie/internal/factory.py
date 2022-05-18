@@ -47,7 +47,6 @@ from aiobungie.crates import season
 from aiobungie.crates import user
 from aiobungie.internal import assets
 from aiobungie.internal import enums
-from aiobungie.internal import helpers
 from aiobungie.internal import iterators
 from aiobungie.internal import time
 
@@ -196,21 +195,18 @@ class Factory(interfaces.FactoryInterface):
     def set_themese_attrs(
         payload: typedefs.JSONArray, /
     ) -> typing.Collection[user.UserThemes]:
-
-        theme_map: dict[int, user.UserThemes] = {}
-        theme_ids: list[int] = helpers.just(payload, "userThemeId")
-        theme_names: list[typedefs.NoneOr[str]] = helpers.just(payload, "userThemeName")
-        theme_descriptions: list[typedefs.NoneOr[str]] = helpers.just(
-            payload, "userThemeDescription"
-        )
-
-        for t_id, t_name, t_desc in zip(theme_ids, theme_names, theme_descriptions):
-            theme_map[t_id] = user.UserThemes(
-                id=int(t_id),
-                name=t_name or undefined.Undefined,
-                description=t_desc or undefined.Undefined,
+        return [
+            user.UserThemes(
+                id=int(entry["userThemeId"]),
+                name=entry["userThemeName"]
+                if "userThemeName" in entry
+                else undefined.Undefined,
+                description=entry["userThemeDescription"]
+                if "userThemeDescription" in entry
+                else undefined.Undefined,
             )
-        return theme_map.values()
+            for entry in payload
+        ]
 
     def deserialize_user_themes(
         self, payload: typedefs.JSONArray
@@ -342,30 +338,26 @@ class Factory(interfaces.FactoryInterface):
             group=self.deserialize_clan(payload["group"]),
         )
 
+    def _deserialize_clan_conversation(
+        self, payload: typedefs.JSONObject
+    ) -> clans.ClanConversation:
+        return clans.ClanConversation(
+            net=self._net,
+            id=int(payload["conversationId"]),
+            group_id=int(payload["groupId"]),
+            name=(
+                payload["chatName"]
+                if not typedefs.is_unknown(payload["chatName"])
+                else undefined.Undefined
+            ),
+            chat_enabled=payload["chatEnabled"],
+            security=payload["chatSecurity"],
+        )
+
     def deserialize_clan_conversations(
         self, payload: typedefs.JSONArray
     ) -> collections.Sequence[clans.ClanConversation]:
-        map = {}
-        vec: list[clans.ClanConversation] = []
-        if payload:
-            for convo in payload:
-                for k, v in convo.items():
-                    map[k] = v
-
-                name: undefined.UndefinedOr[str] = undefined.Undefined
-                if (raw_name := map["chatName"]) and not typedefs.is_unknown(raw_name):
-                    name = raw_name
-
-                convo_obj = clans.ClanConversation(
-                    net=self._net,
-                    group_id=int(map["groupId"]),
-                    id=int(map["conversationId"]),
-                    chat_enabled=map["chatEnabled"],
-                    name=name,
-                    security=map["chatSecurity"],
-                )
-                vec.append(convo_obj)
-        return vec
+        return [self._deserialize_clan_conversation(conv) for conv in payload]
 
     def deserialize_app_owner(
         self, payload: typedefs.JSONObject

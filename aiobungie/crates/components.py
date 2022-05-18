@@ -137,7 +137,7 @@ class CraftablesComponent:
 
     async def fetch_craftables(
         self, limit: typing.Optional[int] = None
-    ) -> typing.Optional[collections.Collection[entity.InventoryEntity]]:
+    ) -> typing.Optional[collections.Sequence[entity.InventoryEntity]]:
         """Fetch the inventory definitions for the craftables.
 
         Parameters

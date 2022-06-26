@@ -26,7 +26,7 @@ from __future__ import annotations
 
 import pathlib
 
-__all__ = ("ClientApp", "Netrunner", "Serializable", "RESTful")
+__all__ = ("ClientApp", "Netrunner", "Serializable", "RESTful", "Debug")
 
 import typing
 
@@ -81,7 +81,35 @@ class Serializable(typing.Protocol):
 
 
 @typing.runtime_checkable
-class RESTful(typing.Protocol):
+class Debug(typing.Protocol):
+    """Objects that are able to enable debugging REST calls."""
+
+    def enable_debugging(
+        self,
+        level: typing.Union[typing.Literal["TRACE"], bool] = False,
+        file: typing.Optional[typing.Union[pathlib.Path, str]] = None,
+        /,
+    ) -> None:
+        """Enables debugging for the REST calls.
+
+        Logging Levels
+        --------------
+        * `False`: This will disable logging.
+        * `True`: This will set the level to `DEBUG` and enable logging minimal information.
+        * `"TRACE"` | `aiobungie.TRACE`: This will log the response headers along with the minimal information.
+
+        Parameters
+        -----------
+        level : `str | bool | int`
+            The level of debugging to enable.
+        file : `pathlib.Path | str | None`
+            The file path to write the debug logs to. If provided.
+        """
+        raise NotImplementedError
+
+
+@typing.runtime_checkable
+class RESTful(Debug, typing.Protocol):
     """Types which it is possible to interact with the API directly
     which provides RESTful functionalities.
 
@@ -146,30 +174,6 @@ class RESTful(typing.Protocol):
             If the client id was provided as a parameter or provided in `aiobungie.RESTClient`,
             A complete URL will be returned.
             Otherwise `None` will be returned.
-        """
-        raise NotImplementedError
-
-    def enable_debugging(
-        self,
-        level: typing.Union[typing.Literal["TRACE"], bool] = False,
-        file: typing.Optional[typing.Union[pathlib.Path, str]] = None,
-        /,
-    ) -> None:
-        """Enables debugging for the REST client.
-
-        Logging Levels
-        --------------
-        * `False`: This will disable logging.
-        * `True`: This will set the level to `DEBUG` and enable logging minimal information.
-        Like the response status, route, taken time and so on.
-        * `"TRACE"` | `aiobungie.TRACE`: This will log the response headers along with the minimal information.
-
-        Parameters
-        -----------
-        level : `str | bool | int`
-            The level of debugging to enable.
-        file : `pathlib.Path | str | None`
-            The file path to write the debug logs to. If provided.
         """
         raise NotImplementedError
 

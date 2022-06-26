@@ -62,39 +62,7 @@ async def main(token: str) -> None:
         for member in raw_members_payload:
             print(member)
 
-        # Methods only exposed through the REST API.
-        await rest.refresh_access_token(token)
-
 asyncio.run(main("some token"))
-```
-
-## REST client pooling.
-
-A REST client pool allows you to acquire multiple `RESTClient`
-instances that shares the same connection.
-
-### Example
-```py
-import aiobungie
-import asyncio
-
-pool = aiobungie.RESTPool("token")
-
-async def func1() -> None:
-    async with pool.acquire() as client:
-        tokens = await client.fetch_oauth2_tokens('code')
-        pool.metadata['tokens'] = tokens
-
-async def func2() -> None:
-    async with pool.acquire() as client:
-        tokens = pool.metadata['tokens']
-        await client.refresh_access_token(tokens.refresh_token)
-
-async def main() -> None:
-    await func1()
-    await func2()
-
-asyncio.run(main())
 ```
 
 ### Requirements

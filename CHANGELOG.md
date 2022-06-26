@@ -7,10 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.6a3...HEAD)
 
 ## Added
+- `Debug` trait.
+- Seson 17 new activities.
+- Internal methods names has changed.
 
 ## Changed
 - Optimized object deserialization proccess.
 - `helpers.awaits` now returns `Sequence` instead of `Collection`.
+- `RESPool` No longer sets the metadata after acquiring new instance everytime. The pool's `metadata` must be used now.
 
 ## Removed
 - `helpers.just` function.

@@ -102,7 +102,9 @@ class FireteamActivity(int, enums.Enum):
     WELLSPRING = 40
     S16_BATTLEGROUNDS = 41
     GUARDIAN_GAMES = 42
-
+    DUNGEON_DUALITY = 43
+    S17_CONTAINMENT = 44
+    S17_SEVER = 45
 
 @typing.final
 class FireteamLanguage(str, enums.Enum):

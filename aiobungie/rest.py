@@ -176,7 +176,7 @@ class _Session:
         self.client_session = client_session
 
     @classmethod
-    def acquire_session(
+    def create(
         cls,
         *,
         owner: bool = False,
@@ -199,17 +199,16 @@ class _Session:
                 connect=connect,
             ),
         )
-        _LOG.debug("Acquired new session.")
+        _LOG.debug("New session created.")
         return _Session(client_session=session)
 
     async def close(self) -> None:
         # Close the TCP connector and all sessions.
-        _LOG.debug("Closing connections...")
+        _LOG.debug("Closing session...")
         if self.client_session.connector is not None:
-            # await self.client_session.connector.close()
             await self.client_session.connector.close()
             await asyncio.sleep(0.025)
-            _LOG.debug("All connections has been closed.")
+            _LOG.debug("Session closed.")
 
 
 class RequestMethod(str, enums.Enum):
@@ -251,10 +250,8 @@ class RESTPool:
         await client.download_manifest()
         return client.build_oauth2_url()
 
-    # Other people may acquire an instance from the pool.
     async with client_pool.acquire() as client:
         new_tokens = await client.refresh_access_token("token")
-
         # Tokens now can be used from any pool.
         client.metadata['tokens'] = new_tokens
     ```
@@ -326,7 +323,7 @@ class RESTPool:
 
     @property
     def metadata(self) -> collections.MutableMapping[typing.Any, typing.Any]:
-        """Metadata dictionary."""
+        """Pool's Metadata. This is different from client instance metadata."""
         return self._metadata
 
     @typing.final
@@ -346,7 +343,6 @@ class RESTPool:
             max_ratelimit_retries=self._max_rate_limit_retries,
             enable_debugging=self._enable_debug,
         )
-        instance._metadata = self._metadata  # type: ignore
         return instance
 
 
@@ -397,7 +393,6 @@ class RESTClient(interfaces.RESTInterface):
     --------------
     * `False`: This will disable logging.
     * `True`: This will set the level to `DEBUG` and enable logging minimal information.
-    Like the response status, route, taken time and so on.
     * `"TRACE" | aiobungie.TRACE`: This will log the response headers along with the minimal information.
     """
 
@@ -447,14 +442,50 @@ class RESTClient(interfaces.RESTInterface):
         return self._session is not None
 
     @typing.final
-    def _acquire(self) -> _Session:
-        """Acquire a AIOHTTP Client session for this REST client.
+    async def close(self) -> None:
+        if self._session is not None:
+            await self._session.close()
+            self._session = None
 
-        This is means to used internally by the client.
-        """
+    @typing.final
+    def enable_debugging(
+        self,
+        level: typing.Union[typing.Literal["TRACE"], bool, int] = False,
+        file: typing.Optional[typing.Union[pathlib.Path, str]] = None,
+        /,
+    ) -> None:
+        self._set_debug_level(level, file)
+
+    @typing.final
+    async def static_request(
+        self,
+        method: typing.Union[RequestMethod, str],
+        path: str,
+        *,
+        auth: typing.Optional[str] = None,
+        json: typing.Optional[dict[str, typing.Any]] = None,
+    ) -> ResponseSig:
+        return await self._request(method, path, auth=auth, json=json)
+
+    @typing.final
+    def build_oauth2_url(
+        self, client_id: typing.Optional[int] = None
+    ) -> typing.Optional[str]:
+        client_id = client_id or self._client_id
+        if client_id is None:
+            return None
+
+        return url.OAUTH2_EP_BUILDER.format(
+            oauth_endpoint=url.OAUTH_EP,
+            client_id=client_id,
+            uuid=_uuid(),
+        )
+
+    def _open(self) -> _Session:
+        """Open a new client session. This is called internally with contextmanager usage."""
         asyncio.get_running_loop()
         if self._session is None:
-            self._session = _Session.acquire_session(
+            self._session = _Session.create(
                 owner=False,
                 raise_status=False,
                 connect=None,
@@ -462,12 +493,6 @@ class RESTClient(interfaces.RESTInterface):
                 socket_connect=None,
             )
         return self._session
-
-    @typing.final
-    async def close(self) -> None:
-        if self._session is not None:
-            await self._session.close()
-            self._session = None
 
     @staticmethod
     def _set_debug_level(
@@ -486,15 +511,6 @@ class RESTClient(interfaces.RESTInterface):
                 level=logging.DEBUG, handlers=[file_handler] if file_handler else None
             )
 
-    def enable_debugging(
-        self,
-        level: typing.Union[typing.Literal["TRACE"], bool, int] = False,
-        file: typing.Optional[typing.Union[pathlib.Path, str]] = None,
-        /,
-    ) -> None:
-        self._set_debug_level(level, file)
-
-    @typing.final
     async def _request(
         self,
         method: typing.Union[RequestMethod, str],
@@ -510,7 +526,7 @@ class RESTClient(interfaces.RESTInterface):
     ) -> ResponseSig:
 
         retries: int = 0
-        session = self._acquire()
+        session = self._open()
         headers = headers or {}
 
         headers.setdefault(_USER_AGENT_HEADERS, _USER_AGENT)
@@ -637,7 +653,7 @@ class RESTClient(interfaces.RESTInterface):
             ...
 
     async def __aenter__(self) -> RESTClient:
-        self._acquire()
+        self._open()
         return self
 
     async def __aexit__(
@@ -694,31 +710,6 @@ class RESTClient(interfaces.RESTInterface):
                 url=str(response.real_url),
                 retry_after=retry_after,
             )
-
-    @typing.final
-    async def static_request(
-        self,
-        method: typing.Union[RequestMethod, str],
-        path: str,
-        *,
-        auth: typing.Optional[str] = None,
-        json: typing.Optional[dict[str, typing.Any]] = None,
-    ) -> ResponseSig:
-        return await self._request(method, path, auth=auth, json=json)
-
-    @typing.final
-    def build_oauth2_url(
-        self, client_id: typing.Optional[int] = None
-    ) -> typing.Optional[str]:
-        client_id = client_id or self._client_id
-        if client_id is None:
-            return None
-
-        return url.OAUTH2_EP_BUILDER.format(
-            oauth_endpoint=url.OAUTH_EP,
-            client_id=client_id,
-            uuid=_uuid(),
-        )
 
     async def fetch_oauth2_tokens(self, code: str, /) -> builders.OAuth2Response:
 

@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Removed
 - `helpers.just` function.
 - Useless ABCs.
+- Guardian Games fireteam activity.
 
 
 ## [0.2.6a3](https://github.com/nxtlo/aiobungie/compare/0.2.6a2...0.2.6a3) 2022-05-8

@@ -124,14 +124,14 @@ class Factory(interfaces.FactoryInterface):
             id=int(payload["membershipId"]),
             name=name,
             code=payload.get("bungieGlobalDisplayNameCode", None),
-            last_seen_name=payload.get("LastSeenDisplayName", payload["displayName"]),
+            last_seen_name=payload.get("LastSeenDisplayName", payload.get("displayName", name)),
             type=enums.MembershipType(payload["membershipType"]),
             is_public=payload["isPublic"],
             crossave_override=enums.MembershipType(payload["crossSaveOverride"]),
             icon=assets.Image(payload.get("iconPath", "")),
             types=[
                 enums.MembershipType(type_)
-                for type_ in payload["applicableMembershipTypes"]
+                for type_ in payload.get("applicableMembershipTypes", {0:0})
             ],
         )
 
@@ -1882,13 +1882,13 @@ class Factory(interfaces.FactoryInterface):
             destiny_user=self.deserialize_destiny_membership(
                 payload["player"]["destinyUserInfo"]
             ),
-            character_class=payload["player"]["characterClass"],
-            character_level=int(payload["player"]["characterLevel"]),
-            race_hash=int(payload["player"]["raceHash"]),
-            gender_hash=int(payload["player"]["genderHash"]),
-            light_level=int(payload["player"]["lightLevel"]),
-            emblem_hash=int(payload["player"]["emblemHash"]),
-            class_hash=payload["player"]["classHash"],
+            character_class=payload["player"].get("characterClass"),
+            character_level=payload["player"].get("characterLevel"),
+            race_hash=int(payload["player"].get("raceHash")),
+            gender_hash=int(payload["player"].get("genderHash")),
+            light_level=int(payload["player"].get("lightLevel")),
+            emblem_hash=int(payload["player"].get("emblemHash")),
+            class_hash=payload["player"].get("classHash"),
             values=self._deserialize_activity_values(payload["values"]),
             extended_values=self._deserialize_extended_values(payload["extended"]),
         )

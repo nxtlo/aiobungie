@@ -21,7 +21,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import asyncio
 import inspect
 import logging
 import os
@@ -320,13 +319,13 @@ async def test_static_request():
 
 
 async def test_fetch_fireteam():
-    f = await client.fetch_fireteams(aiobungie.FireteamActivity.ALL)
+    f = await client.fetch_fireteams(aiobungie.FireteamActivity.NIGHTFALL)
     if f:
         assert isinstance(f[0].url, str)
 
     f2 = await client.fetch_fireteams(
-        aiobungie.FireteamActivity.ALL or 4,
-        platform=aiobungie.FireteamPlatform.ANY or 4,
+        aiobungie.FireteamActivity.ANY,
+        platform=aiobungie.FireteamPlatform.ANY,
         language=aiobungie.FireteamLanguage.ENGLISH,
         date_range=1,
     )
@@ -421,16 +420,20 @@ async def test_aggregated_activity():
         assert isinstance(act, aiobungie.crate.AggregatedActivity)
 
 async def main() -> None:
+    from aiobungie.internal import helpers
+
     coros: list[typing.Coroutine[None, None, None]] = []
+
     for n, coro in inspect.getmembers(
         sys.modules[__name__], inspect.iscoroutinefunction
     ):
         if n == "main" or not n.startswith("test_"):
             continue
+
         coros.append(coro())
 
     try:
-        await asyncio.gather(*coros)
+        await helpers.awaits(*coros)
     except Exception:
         raise
 

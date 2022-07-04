@@ -131,9 +131,8 @@ class Factory(interfaces.FactoryInterface):
             icon=assets.Image(payload.get("iconPath", "")),
             types=[
                 enums.MembershipType(type_)
-                for type_ in payload["applicableMembershipTypes"]
-                if "applicableMembershipTypes" in payload
-            ],
+                for type_ in payload.get("applicableMembershipTypes", [])
+            ]
         )
 
     def deserialize_destiny_memberships(
@@ -1820,7 +1819,7 @@ class Factory(interfaces.FactoryInterface):
         return iterators.FlatIterator(
             [
                 self.deserialize_activity(activity_)
-                for activity_ in payload["activities"]
+                for activity_ in payload.get("activities", [])
             ]
         )
 

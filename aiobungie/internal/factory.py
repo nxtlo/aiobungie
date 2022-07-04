@@ -1877,27 +1877,27 @@ class Factory(interfaces.FactoryInterface):
         self, payload: typedefs.JSONObject
     ) -> activity.PostActivityPlayer:
         player = payload["player"]
-        
+
         class_hash: typedefs.NoneOr[int] = None
         if (class_hash := player.get("classHash")) is not None:
             class_hash = class_hash
-            
+
         race_hash: typedefs.NoneOr[int] = None
         if (race_hash := player.get("raceHash")) is not None:
             race_hash = race_hash
-            
+
         gender_hash: typedefs.NoneOr[int] = None
         if (gender_hash := player.get("genderHash")) is not None:
             gender_hash = gender_hash
-            
+
         character_class: typedefs.NoneOr[str] = None
         if (character_class := player.get("characterClass")) is not None:
             character_class = character_class
-        
+
         character_level: typedefs.NoneOr[int] = None
         if (character_level := player.get("characterLevel")) is not None:
             character_level = character_level
-        
+
         return activity.PostActivityPlayer(
             standing=int(payload["standing"]),
             score=int(payload["score"]["basic"]["value"]),

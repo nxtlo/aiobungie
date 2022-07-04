@@ -456,19 +456,19 @@ class PostActivityPlayer:
     character_id: int
     """The id of the character the player finished this activity with."""
 
-    character_class: str
+    character_class: typedefs.NoneOr[str]
     """A string of the character class the player finished this activity with."""
 
-    class_hash: int
+    class_hash: typedefs.NoneOr[int]
     """The hash of the player's character class."""
 
-    race_hash: int
+    race_hash: typedefs.NoneOr[int]
     """The hash of the player's character race."""
 
-    gender_hash: int
+    gender_hash: typedefs.NoneOr[int]
     """The hash of the player's character gender."""
 
-    character_level: int
+    character_level: typedefs.NoneOr[int]
     """The player's character's level."""
 
     light_level: int

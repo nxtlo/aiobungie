@@ -124,14 +124,15 @@ class Factory(interfaces.FactoryInterface):
             id=int(payload["membershipId"]),
             name=name,
             code=payload.get("bungieGlobalDisplayNameCode", None),
-            last_seen_name=payload.get("LastSeenDisplayName", payload.get("displayName", name)),
+            last_seen_name=payload.get("LastSeenDisplayName") or payload.get("displayName") or "",
             type=enums.MembershipType(payload["membershipType"]),
             is_public=payload["isPublic"],
             crossave_override=enums.MembershipType(payload["crossSaveOverride"]),
             icon=assets.Image(payload.get("iconPath", "")),
             types=[
                 enums.MembershipType(type_)
-                for type_ in payload.get("applicableMembershipTypes", {0:0})
+                for type_ in payload["applicableMembershipTypes"]
+                if "applicableMembershipTypes" in payload
             ],
         )
 
@@ -1875,6 +1876,28 @@ class Factory(interfaces.FactoryInterface):
     def _deserialize_post_activity_player(
         self, payload: typedefs.JSONObject
     ) -> activity.PostActivityPlayer:
+        player = payload["player"]
+        
+        class_hash: typedefs.NoneOr[int] = None
+        if (class_hash := player.get("classHash")) is not None:
+            class_hash = class_hash
+            
+        race_hash: typedefs.NoneOr[int] = None
+        if (race_hash := player.get("raceHash")) is not None:
+            race_hash = race_hash
+            
+        gender_hash: typedefs.NoneOr[int] = None
+        if (gender_hash := player.get("genderHash")) is not None:
+            gender_hash = gender_hash
+            
+        character_class: typedefs.NoneOr[str] = None
+        if (character_class := player.get("characterClass")) is not None:
+            character_class = character_class
+        
+        character_level: typedefs.NoneOr[int] = None
+        if (character_level := player.get("characterLevel")) is not None:
+            character_level = character_level
+        
         return activity.PostActivityPlayer(
             standing=int(payload["standing"]),
             score=int(payload["score"]["basic"]["value"]),
@@ -1882,13 +1905,13 @@ class Factory(interfaces.FactoryInterface):
             destiny_user=self.deserialize_destiny_membership(
                 payload["player"]["destinyUserInfo"]
             ),
-            character_class=payload["player"].get("characterClass"),
-            character_level=payload["player"].get("characterLevel"),
-            race_hash=int(payload["player"].get("raceHash")),
-            gender_hash=int(payload["player"].get("genderHash")),
-            light_level=int(payload["player"].get("lightLevel")),
-            emblem_hash=int(payload["player"].get("emblemHash")),
-            class_hash=payload["player"].get("classHash"),
+            character_class=character_class,
+            character_level=character_level,
+            race_hash=race_hash,
+            gender_hash=gender_hash,
+            light_level=int(player["lightLevel"]),
+            emblem_hash=int(player["emblemHash"]),
+            class_hash=class_hash,
             values=self._deserialize_activity_values(payload["values"]),
             extended_values=self._deserialize_extended_values(payload["extended"]),
         )

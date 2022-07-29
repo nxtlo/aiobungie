@@ -133,8 +133,7 @@ class Factory(interfaces.FactoryInterface):
             icon=assets.Image(payload.get("iconPath", "")),
             types=[
                 enums.MembershipType(type_)
-                for type_ in payload["applicableMembershipTypes"]
-                if "applicableMembershipTypes" in payload
+                for type_ in payload.get("applicableMembershipTypes", [])
             ],
         )
 
@@ -1907,15 +1906,15 @@ class Factory(interfaces.FactoryInterface):
             score=int(payload["score"]["basic"]["value"]),
             character_id=payload["characterId"],
             destiny_user=self.deserialize_destiny_membership(
-                payload["player"]["destinyUserInfo"]
+                player["destinyUserInfo"]
             ),
             character_class=character_class,
             character_level=character_level,
             race_hash=race_hash,
             gender_hash=gender_hash,
             class_hash=class_hash,
-            light_level=int(payload["player"]["lightLevel"]),
-            emblem_hash=int(payload["player"]["emblemHash"]),
+            light_level=int(player["lightLevel"]),
+            emblem_hash=int(player["emblemHash"]),
             values=self._deserialize_activity_values(payload["values"]),
             extended_values=self._deserialize_extended_values(payload["extended"]),
         )

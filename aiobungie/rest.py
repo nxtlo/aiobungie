@@ -43,7 +43,6 @@ import os
 import pathlib
 import platform
 import random
-import sqlite3
 import sys
 import typing
 import uuid
@@ -61,7 +60,6 @@ from aiobungie import url
 from aiobungie.crates import fireteams
 from aiobungie.internal import _backoff as backoff
 from aiobungie.internal import enums
-from aiobungie.internal import helpers
 from aiobungie.internal import time
 
 if typing.TYPE_CHECKING:
@@ -1193,20 +1191,6 @@ class RESTClient(interfaces.RESTInterface):
 
     async def fetch_manifest_version(self) -> str:
         return typing.cast(str, (await self.fetch_manifest_path())["version"])
-
-    @staticmethod
-    @helpers.deprecated(
-        since="0.2.6a1", removed_in="0.2.6", use_instead="sqlite3.connect"
-    )
-    def connect_manifest(
-        path: typing.Optional[pathlib.Path] = None,
-        connection: type[sqlite3.Connection] = sqlite3.Connection,
-    ) -> sqlite3.Connection:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        path = path or pathlib.Path("./manifest.sqlite3")
-        if not path.exists():
-            raise FileNotFoundError(f"Manifest in path {path.name} doesn't exists.")
-        return connection(path.name)
 
     async def fetch_linked_profiles(
         self,

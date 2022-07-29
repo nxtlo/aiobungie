@@ -37,8 +37,6 @@ from aiobungie import undefined
 from aiobungie.internal import enums
 
 if typing.TYPE_CHECKING:
-    import pathlib
-    import sqlite3
 
     from aiobungie import builders
     from aiobungie import typedefs
@@ -126,27 +124,6 @@ class RESTInterface(traits.RESTful, abc.ABC):
         -------
         `str`
             The manifest version.
-        """
-
-    @staticmethod
-    @abc.abstractmethod
-    def connect_manifest(
-        path: typing.Optional[pathlib.Path] = None,
-        connection: type[sqlite3.Connection] = ...,  # type: ignore
-    ) -> sqlite3.Connection:
-        """A helper method to connect to the manifest database.
-
-        Parameters
-        ----------
-        path : `typing.Optional[pathlib.Path]`
-            An optional path to pass, The assumed path to connect to is './manifest.sqlite3'
-        connection : `type[sqlite3.Connection]`
-            An optional connection to pass, if not passed a new connection will be created.
-
-        Returns
-        -------
-        `sqlite3.Connection`
-            An SQLite database connection.
         """
 
     @abc.abstractmethod

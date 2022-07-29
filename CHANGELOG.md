@@ -10,17 +10,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Debug` trait.
 - Seson 17 new activities.
 - Internal methods names has changed.
+- Rift, Lostsector, Zonecontrol and Iron Banner Rift enum gamemode fields.
 
 ## Changed
 - Optimized object deserialization proccess.
 - `helpers.awaits` now returns `Sequence` instead of `Collection`.
 - `RESPool` No longer sets the metadata after acquiring new instance everytime. The pool's `metadata` must be used now.
+- Some of `PostActivityPlayer` fields changed to optional due to Bungie not including them in payloads.
+- `_deserialize_post_activity` is now exposed in the interface for self use.
 
 ## Removed
 - `helpers.just` function.
 - Useless ABCs.
 - Guardian Games fireteam activity.
 
+## Fixed
+- Thanks to @xhl6666, A bug has been Fixed (#193) where using `fetch_post_activity` raised `KeyError` in some cases.
 
 ## [0.2.6a3](https://github.com/nxtlo/aiobungie/compare/0.2.6a2...0.2.6a3) 2022-05-8
 ## Added

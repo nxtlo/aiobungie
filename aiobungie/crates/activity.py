@@ -56,6 +56,7 @@ if typing.TYPE_CHECKING:
 
     from aiobungie import traits
     from aiobungie import typedefs
+    from aiobungie import undefined
     from aiobungie.crates import entity
     from aiobungie.crates import user
 
@@ -456,19 +457,19 @@ class PostActivityPlayer:
     character_id: int
     """The id of the character the player finished this activity with."""
 
-    character_class: str
+    character_class: undefined.UndefinedOr[str]
     """A string of the character class the player finished this activity with."""
 
-    class_hash: int
+    class_hash: typing.Optional[int]
     """The hash of the player's character class."""
 
-    race_hash: int
+    race_hash: typing.Optional[int]
     """The hash of the player's character race."""
 
-    gender_hash: int
+    gender_hash: typing.Optional[int]
     """The hash of the player's character gender."""
 
-    character_level: int
+    character_level: typing.Optional[int]
     """The player's character's level."""
 
     light_level: int

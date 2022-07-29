@@ -353,6 +353,10 @@ class GameMode(int, Enum):
     TRIALS_OF_OSIRIS = 84
     DARES = 85
     OFFENSIVE = 86
+    LOSTSECTOR = 87
+    RIFT = 88
+    ZONECONTROL = 89
+    IRONBANNERRIFT = 90
 
 
 @typing.final

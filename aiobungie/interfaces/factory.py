@@ -850,6 +850,23 @@ class FactoryInterface(abc.ABC):
             Information about an extended weapon values.
         """
 
+    @abc.abstractmethod
+    def deserialize_post_activity_player(
+        self, payload: typedefs.JSONObject, /
+    ) -> activity.PostActivityPlayer:
+        """Deserialize a JSON payload of a post activity player information.
+
+        Parameters
+        ----------
+        payload : `aiobungie.typedefs.JSONObject`
+            The JSON payload.
+
+        Returns
+        -------
+        `aiobungie.crates.PostActivityPlayer`
+            A post activity player object.
+        """
+
     # Milestones.
 
     @abc.abstractmethod

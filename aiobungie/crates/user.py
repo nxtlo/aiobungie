@@ -264,7 +264,7 @@ class DestinyMembership(UserLike):
     """The member's name."""
 
     last_seen_name: str
-    """The member's last seen display name. You may use this field if `DestinyMembership.name` is `Undefined`."""
+    """The member's last seen display name. This sometimes can be an empty string."""
 
     type: enums.MembershipType
     """The member's membership type."""

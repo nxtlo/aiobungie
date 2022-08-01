@@ -25,21 +25,19 @@ client = aiobungie.Client('YOUR_API_KEY')
 
 async def main() -> None:
 
-    # Fetch a clan
-    clan = await client.fetch_clan("Nuanceㅤ")
+    # Fetch a charatcer with all its components.
+    # This includes Equimpents, Inventory, Records, etc.
+    my_warlock = await client.fetch_character(
+        membership_id,
+        aiobungie.MembershipType.STEAM,
+        character_id,
+        components=[aiobungie.Component.ALL_CHARACTERS]
+    )
 
-    # Fetch the clan members.
-    members = await clan.fetch_members()
-
-    # Take the first 2 members.
-    for member in members.take(2):
-        # Get the profile for this clan member.
-        profile = await member.fetch_self_profile(
-            # Passing profile components as a list.
-            components=[aiobungie.ComponentType.CHARACTERS]
-        )
-
-        print(profile.characters)
+    for activity in my_warlock.activities:
+        # Check if activity is a raid.
+        if activity.current_mode and activity.current_mode is aiobungie.GameMode.RAID:
+            print(activity.avaliable_activities) # All raids for this character.
 
 # You can either run it using the client or just `asyncio.run(main())`
 client.run(main())
@@ -55,8 +53,8 @@ import asyncio
 
 async def main(token: str) -> None:
     # Single REST client.
-    async with aiobungie.RESTClient("TOKEN") as rest_client:
-        response = await rest_client.fetch_clan_members(4389205)
+    async with aiobungie.RESTClient("TOKEN") as rest:
+        response = await rest.fetch_clan_members(4389205)
         raw_members_payload = response['results']
 
         for member in raw_members_payload:

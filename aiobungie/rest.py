@@ -238,20 +238,24 @@ class RESTPool:
     -------
     ```py
     import aiobungie
+    import asyncio
 
     client_pool = aiobungie.RESTPool("token", client_id=1234, client_secret='secret')
 
     # Using a context manager to acquire an instance
     # of the pool and close the connection after finishing.
 
-    async with client_pool.acquire() as client:
-        await client.download_manifest()
-        return client.build_oauth2_url()
+    async def first() -> str:
+        async with client_pool.acquire() as client:
+            return client.build_oauth2_url()
 
-    async with client_pool.acquire() as client:
-        new_tokens = await client.refresh_access_token("token")
-        # Tokens now can be used from any pool.
-        client.metadata['tokens'] = new_tokens
+    async def second() -> None:
+        async with client_pool.acquire() as client:
+            new_tokens = await client.refresh_access_token("token")
+            client.metadata['tokens'] = new_tokens
+
+    # Client instances are independent from first and second.
+    await asyncio.gather(first(), second())
     ```
 
     Parameters

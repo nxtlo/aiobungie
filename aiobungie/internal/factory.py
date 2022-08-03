@@ -1905,9 +1905,7 @@ class Factory(interfaces.FactoryInterface):
             standing=int(payload["standing"]),
             score=int(payload["score"]["basic"]["value"]),
             character_id=payload["characterId"],
-            destiny_user=self.deserialize_destiny_membership(
-                player["destinyUserInfo"]
-            ),
+            destiny_user=self.deserialize_destiny_membership(player["destinyUserInfo"]),
             character_class=character_class,
             character_level=character_level,
             race_hash=race_hash,

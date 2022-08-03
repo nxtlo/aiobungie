@@ -29,6 +29,8 @@ import collections.abc as collections
 import itertools
 import typing
 
+from . import helpers as _helpers
+
 Item = typing.TypeVar("Item")
 """A type hint for the item type of the iterator."""
 
@@ -42,44 +44,32 @@ if typing.TYPE_CHECKING:
 class FlatIterator(typing.Generic[Item]):
     """A Flat, In-Memory iterator for sequenced based data.
 
-    This can either be used sync or asynchronously.
-
     Example
     -------
     ```py
     iterator = FlatIterator([1, 2, 3])
 
-    # Limit the results to 2.
-    async for item in iterator.take(2):
-        print(item)
-    # 1
-    # 2
-
-    # Filter the results.
-    async for item in iterator.filter(lambda item: item > 1):
-        print(item)
-        print(iterator.count())
-    # 2
-    # 3
-    # 3
-
     # Map the results.
-    async for item in iterator.map(lambda item: item * 2):
+    for item in iterator.map(lambda item: item * 2):
         print(item)
     # 2
     # 4
 
-    # This also works synchronously.
-    iterator = FlatIterator(["Hello", "World", "!"])
-    for item in iterator.discard(lambda item: "!" in item):
-        print(item)
-    # Hello
-    # World
-
     # Indexing is also supported.
-
     print(iterator[0])
-    # Hello
+    # 1
+
+    # Normal iteration.
+    for item in iterator:
+        print(item)
+    # 1
+    # 2
+    # 3
+
+    # Union two iterators.
+    iterator2 = FlatIterator([4, 5, 6])
+    final = iterator | iterator2
+    # <FlatIterator([1, 2, 3, 4, 5, 6])>
     ```
 
     Parameters
@@ -99,6 +89,11 @@ class FlatIterator(typing.Generic[Item]):
 
     @typing.overload
     def collect(self, casting: _B) -> list[_B]:
+        ...
+
+    def collect(
+        self, casting: typing.Optional[_B] = None
+    ) -> typing.Union[list[Item], list[_B]]:
         """Collects all items in the iterator into a list and cast them into an object if provided.
 
         Example
@@ -117,24 +112,6 @@ class FlatIterator(typing.Generic[Item]):
         `StopIteration`
             If no elements are left in the iterator.
         """
-        ...
-
-    def collect(
-        self, casting: typing.Optional[_B] = None
-    ) -> typing.Union[list[Item], list[_B]]:
-        """Collects all items in the iterator into a list.
-
-        Example
-        -------
-        >>> iterator = FlatIterator([1, 2, 3])
-        >>> iterator.collect()
-        [1, 2, 3]
-
-        Raises
-        ------
-        `StopIteration`
-            If no elements are left in the iterator.
-        """
         if casting is not None:
             return typing.cast(list[_B], list(map(casting, self._items)))
 
@@ -145,11 +122,13 @@ class FlatIterator(typing.Generic[Item]):
 
         Example
         -------
-        >>> iterator = FlatIterator[str](["1", "2", "3"])
+        ```py
+        iterator = FlatIterator(["1", "2", "3"])
         item = iterator.next()
         assert item == "1"
         item = iterator.next()
         assert item == "2"
+        ```
 
         Raises
         ------
@@ -168,15 +147,21 @@ class FlatIterator(typing.Generic[Item]):
 
         Example
         -------
-        >>> iterator = FlatIterator[str](["1", "2", "3"]).map(lambda value: int(value))
-        <FlatIterator([1, 2, 3])>
-        >>> async for item in iterator:
-                assert isinstance(item, int)
+        ```py
+        iterator = FlatIterator(["1", "2", "3"]).map(lambda value: int(value))
+        print(iterator)
+        # <FlatIterator([1, 2, 3])>
+        ```
 
         Parameters
         ----------
-        predicate: `collections.Callable[[Item], Item]`
+        predicate: `collections.Callable[[Item], OtherItem]`
             The function to map each item in the iterator to its predicated value.
+
+        Returns
+        -------
+        `FlatIterator[OtherItem]`
+            The mapped iterator.
 
         Raises
         ------
@@ -191,10 +176,11 @@ class FlatIterator(typing.Generic[Item]):
 
         Example
         -------
-        >>> iterator = FlatIterator([GameMode.RAID, GameMode.STRIKE, GameMode.GAMBIT])
-        >>> async for mode in iterator.take(2):
-                assert mode in [GameMode.RAID, GameMode.STRIKE]
-        <FlatIterator([GameMode.RAID, GameMode.STRIKE])>
+        ```py
+        iterator = FlatIterator([GameMode.RAID, GameMode.STRIKE, GameMode.GAMBIT])
+        print(iterator.take(2))
+        # <FlatIterator([GameMode.RAID, GameMode.STRIKE])>
+        ```
 
         Parameters
         ----------
@@ -216,14 +202,9 @@ class FlatIterator(typing.Generic[Item]):
         Example
         -------
         ```py
-        iterator = FlatIterator([MembershipType.STEAM, MembershipType.XBOX, MembershipType.STADIA])
-
-        async for platform in (
-            iterator
-            .take_while(lambda platform: platform is not MembershipType.XBOX)
-        ):
-                print(platform)
-        # <FlatIterator([MembershipType.STEAM])>
+        iterator = FlatIterator([STEAM, XBOX, STADIA])
+        print(iterator.take_while(lambda platform: platform is not XBOX))
+        # <FlatIterator([STEAM])>
         ```
 
         Parameters
@@ -246,15 +227,8 @@ class FlatIterator(typing.Generic[Item]):
         Example
         -------
         ```py
-        iterator = FlatIterator(
-            [DestinyMembership(name="Fate"), DestinyMembership(name="Jim"), DestinyMembership(name="Bob")]
-        )
-
-        async for membership in (
-            iterator
-            .drop_while(lambda membership: membership.name is not "Jim")
-        ):
-                print(membership)
+        iterator = FlatIterator([DestinyMembership(name="Jim"), DestinyMembership(name="Bob")])
+        print(iterator.drop_while(lambda membership: membership.name is not "Jim"))
         # <FlatIterator([DestinyMembership(name="Bob")])>
         ```
 
@@ -278,17 +252,9 @@ class FlatIterator(typing.Generic[Item]):
         Example
         -------
         ```py
-        activities = FlatIterator(
-            [Activity(mode=GameMode.RAID), Activity(mode=GameMode.DUNGEON), Activity(mode=GameMode.STRIKE)]
-            # Assuming Raid is solo, Strike is flawless.
-        )
-
-        async for activity in (
-            activities
-            .filter(lambda activity: activity.is_solo or activity.is_flawless)
-        ):
-                print(member)
-        # <FlatIterator([Activity(mode=GameMode.RAID), Activity(mode=GameMode.STRIKE)])>
+        names = FlatIterator(["Jim", "Bob", "Mike", "Jess"])
+        print(names.filter(lambda n: n != "Jim"))
+        # <FlatIterator(["Bob", "Mike", "Jess"])>
         ```
         """
         return FlatIterator(filter(predicate, self._items))
@@ -299,12 +265,10 @@ class FlatIterator(typing.Generic[Item]):
         Example
         -------
         ```py
-        iterator = FlatIterator([MembershipType.STEAM, MembershipType.XBOX, MembershipType.STADIA])
-
-        async for platform in iterator.skip(1):
-                print(platform)
-        # Skip the first item in the iterator.
-        # <FlatIterator([MembershipType.XBOX, MembershipType.STADIA])>
+        iterator = FlatIterator([STEAM, XBOX, STADIA])
+        print(iterator.skip(1))
+        # <FlatIterator([XBOX, STADIA])>
+        ```
         """
         return FlatIterator(itertools.islice(self._items, n, None))
 
@@ -315,11 +279,11 @@ class FlatIterator(typing.Generic[Item]):
 
         Example
         -------
-        >>> iterator = FlatIterator([MembershipType.STEAM, MembershipType.XBOX, MembershipType.STADIA])
-        >>> async for _ in iterator.discard(lambda platform: platform is not MembershipType.STEAM):
-                # Drops all memberships that are not steam.
-                print(iterator)
-        <FlatIterator([MembershipType.XBOX, MembershipType.STADIA])>
+        ```py
+        iterator = FlatIterator(['A', 'B', 'C'])
+        print(iterator.discard(lambda x: x == 'B'))
+        # <FlatIterator(['A', 'C'])>
+        ```
 
         Parameters
         ----------
@@ -340,11 +304,13 @@ class FlatIterator(typing.Generic[Item]):
 
         Example
         -------
-        >>> iterator = FlatIterator([1, 2, 3])
-        >>> other = FlatIterator([4, 5, 6])
-        >>> async for item, other_item in iterator.zip(other):
-                assert item == other_item
-        <FlatIterator([(1, 4), (2, 5), (3, 6)])>
+        ```py
+        iterator = FlatIterator([1, 3, 5])
+        other = FlatIterator([2, 4, 6])
+        for item, other_item in iterator.zip(other):
+            print(item, other_item)
+        # <FlatIterator([(1, 2), (3, 4), (5, 6)])>
+        ```
 
         Parameters
         ----------
@@ -363,11 +329,13 @@ class FlatIterator(typing.Generic[Item]):
 
         Example
         -------
-        >>> iterator = FlatIterator([1, 2, 3])
-        >>> while iterator.all(lambda item: isinstance(item, int)):
-                print("Still all integers")
-                continue
-            # Still all integers
+        ```py
+        iterator = FlatIterator([1, 2, 3])
+        while iterator.all(lambda item: isinstance(item, int)):
+            print("Still all integers")
+            continue
+        # Still all integers
+        ```
 
         Parameters
         ----------
@@ -386,10 +354,12 @@ class FlatIterator(typing.Generic[Item]):
 
         Example
         -------
-        >>> iterator = FlatIterator([1, 2, 3])
-        >>> if iterator.any(lambda item: isinstance(item, int)):
-                print("At least one item is an int.")
+        ```py
+        iterator = FlatIterator([1, 2, 3])
+        if iterator.any(lambda item: isinstance(item, int)):
+            print("At least one item is an int.")
         # At least one item is an int.
+        ```
 
         Parameters
         ----------
@@ -413,13 +383,11 @@ class FlatIterator(typing.Generic[Item]):
 
         Example
         -------
-        >>> iterator = FlatIterator([3, 1, 6, 7])
-        >>> async for item in iterator.sort(key=lambda item: item < 3):
-                print(item)
-        # 1
-        # 3
-        # 6
-        # 7
+        ```py
+        iterator = FlatIterator([3, 1, 6, 7])
+        print(iterator.sort(key=lambda item: item))
+        # <FlatIterator([1, 3, 6, 7])>
+        ```
 
         Parameters
         ----------
@@ -440,9 +408,11 @@ class FlatIterator(typing.Generic[Item]):
 
         Example
         -------
-        >>> iterator = FlatIterator([3, 1, 6, 7])
-        >>> iterator.first()
+        ```py
+        iterator = FlatIterator([3, 1, 6, 7])
+        print(iterator.first())
         3
+        ```
 
         Raises
         ------
@@ -456,13 +426,11 @@ class FlatIterator(typing.Generic[Item]):
 
         Example
         -------
-        >>> iterator = FlatIterator([3, 1, 6, 7])
-        >>> async for item in iterator.reversed():
-                print(item)
-        # 7
-        # 6
-        # 1
-        # 3
+        ```py
+        iterator = FlatIterator([3, 1, 6, 7])
+        print(iterator.reversed())
+        # <FlatIterator([7, 6, 1, 3])>
+        ```
 
         Raises
         ------
@@ -472,6 +440,16 @@ class FlatIterator(typing.Generic[Item]):
         return FlatIterator(reversed(self.collect()))
 
     def count(self) -> int:
+        """Returns the number of items in the iterator.
+
+        Example
+        -------
+        ```py
+        iterator = FlatIterator([3, 1, 6, 7])
+        print(iterator.count())
+        4
+        ```
+        """
         count = 0
         for _ in self:
             count += 1
@@ -483,16 +461,12 @@ class FlatIterator(typing.Generic[Item]):
 
         Example
         -------
-        >>> iterator = FlatIterator([1, 2, 3])
-        >>> other = FlatIterator([4, 5, 6])
-        >>> async for item in iterator.union(other):
-                print(item)
-        # 1
-        # 2
-        # 3
-        # 4
-        # 5
-        # 6
+        ```py
+        iterator = FlatIterator([1, 2, 3])
+        other = FlatIterator([4, 5, 6])
+        print(iterator.union(other))
+        # <FlatIterator([1, 2, 3, 4, 5, 6])>
+        ```
 
         Parameters
         ----------
@@ -511,11 +485,13 @@ class FlatIterator(typing.Generic[Item]):
 
         Example
         -------
-        >>> iterator = FlatIterator([1, 2, 3])
-        >>> iterator.for_each(lambda item: print(item))
+        ```py
+        iterator = FlatIterator([1, 2, 3])
+        iterator.for_each(lambda item: print(item))
         # 1
         # 2
         # 3
+        ```
 
         Parameters
         ----------
@@ -525,18 +501,44 @@ class FlatIterator(typing.Generic[Item]):
         for item in self:
             func(item)
 
+    async def async_for_each(
+        self, func: collections.Callable[[Item], collections.Coroutine[None, None, None]]
+    ) -> None:
+        """Calls the async function on each item in the iterator concurrently.
+
+        Example
+        -------
+        ```py
+        async def signup(username: str) -> None:
+            async with aiohttp.request('POST', '...') as r:
+                # Actual logic.
+                ...
+
+        async def main():
+            users = aiobungie.into_iter(["user_danny", "user_jojo"])
+            await users.async_for_each(lambda username: signup(username))
+        ```
+
+        Parameters
+        ----------
+        func: `collections.Callable[[Item], collections.Coroutine[None, None, None]]`
+            The async function to call on each item in the iterator.
+        """
+        await _helpers.awaits(*(func(item) for item in self))
+
     def enumerate(self, *, start: int = 0) -> FlatIterator[tuple[int, Item]]:
         """Returns a new iterator that yields tuples of the index and item.
 
         Example
         -------
-        >>> iterator = FlatIterator([1, 2, 3])
-        >>> async for index, item in iterator.enumerate():
-                print(index, item)
-
-        # 0, 1
-        # 1, 2
-        # 2, 3
+        ```py
+        iterator = FlatIterator([1, 2, 3])
+        for index, item in iterator.enumerate():
+            print(index, item)
+        # 0 1
+        # 1 2
+        # 2 3
+        ```
 
         Raises
         ------
@@ -554,6 +556,9 @@ class FlatIterator(typing.Generic[Item]):
         except IndexError:
             self._ok()
 
+    def __or__(self, other: FlatIterator[Item]) -> FlatIterator[Item]:
+        return self.union(other)
+
     # This is a never.
     def __setitem__(self) -> typing.NoReturn:
         raise TypeError(
@@ -566,11 +571,7 @@ class FlatIterator(typing.Generic[Item]):
     def __len__(self) -> int:
         return self.count()
 
-    # We support both sync and async iter.
     def __iter__(self) -> FlatIterator[Item]:
-        return self
-
-    def __aiter__(self) -> FlatIterator[Item]:
         return self
 
     def __next__(self) -> Item:
@@ -581,28 +582,21 @@ class FlatIterator(typing.Generic[Item]):
 
         return item
 
-    async def __anext__(self) -> Item:
-        try:
-            item = next(self._items)
-        except StopIteration as e:
-            raise StopAsyncIteration from e
-
-        return item
-
-
 def into_iter(
     iterable: collections.Iterable[Item],
 ) -> FlatIterator[Item]:
-    """Converts an iterable into an flat iterator.
+    """Transform an iterable into an flat iterator.
 
     Example
     -------
-    >>> sequence = [1,2,3]
-    >>> async for item in aiobungie.into_iter(sequence).reversed():
-            print(item)
+    ```py
+    sequence = [1,2,3]
+    for item in aiobungie.into_iter(sequence).reversed():
+        print(item)
     # 3
     # 2
     # 1
+    ```
 
     Parameters
     ----------

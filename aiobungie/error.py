@@ -28,7 +28,6 @@ import collections
 
 __all__: list[str] = [
     "AiobungieError",
-    "CharacterError",
     "NotFound",
     "HTTPException",
     "MembershipTypeError",
@@ -47,8 +46,6 @@ import http
 import typing
 
 import attrs
-
-from aiobungie.internal import helpers
 
 if typing.TYPE_CHECKING:
     import aiohttp
@@ -70,16 +67,6 @@ class HTTPError(AiobungieError):
 
     http_status: http.HTTPStatus
     """The response status."""
-
-
-@helpers.deprecated("o.2.5", removed_in="0.2.6")
-@attrs.define(auto_exc=True)
-class CharacterError(HTTPError):
-    """Raised when a encountering making a character-based request.
-
-    .. warning::
-        This is deprecated since 0.2.5 and will be removed in 0.2.6.
-    """
 
 
 @attrs.define(auto_exc=True, kw_only=True)

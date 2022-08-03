@@ -296,3 +296,19 @@ nav.pdoc .module-list-button:hover {
 .pdoc pdoc-alert pdoc-alert-warning .p {
     color: black;
 }
+
+.pdoc-code {
+    color: white;
+}
+
+.pdoc .pdoc-alert-warning {
+    color: black;
+    background-color: #d5a142;
+    border-color: black;
+}
+
+.pdoc .pdoc-alert-note {
+    color: black;
+    background-color: #6aa3f9;
+    border-color: black;
+}

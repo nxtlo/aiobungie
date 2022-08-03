@@ -76,14 +76,6 @@ class Client(traits.ClientApp):
         An optional rest client instance you can pass.
         If set to `None` then the client will use the default instance.
 
-    Example
-    -------
-    ```py
-    TOKEN = "SOME_TOKEN"
-    async with aiobungie.RESTClient(TOKEN, max_retries=2) as rest_client:
-        client = aiobungie.Client(TOKEN, rest_client=rest_client)
-    ```
-
     max_retries : `int`
         The max retries number to retry if the request hit a `5xx` status code.
     max_ratelimit_retries : `int`

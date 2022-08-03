@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.6...HEAD)
 
+## Added
+- Special method `__or__` to `FlatIterator` which allows to union two iterators togather as `x = iterator1 | iterator2`
+- New method FlatIterator. `async_for_each`, whichs equavilant to `for_each` but takes an async function instead.
+
+## Removed
+- `CharacterError` exception. This was supposed to be removed with `0.2.6`.
+
+## Fixed
+- Docs colors.
+
 ## [0.2.6](https://github.com/nxtlo/aiobungie/compare/0.2.5...0.2.6)
 
 ## Added

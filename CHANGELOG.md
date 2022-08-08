@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Added
 - Special method `__or__` to `FlatIterator` which allows to union two iterators togather as `x = iterator1 | iterator2`
 - New method FlatIterator. `async_for_each`, whichs equavilant to `for_each` but takes an async function instead.
+- Allow to customize where to download the manifest file.
+
+Example:
+```py
+await client.download_manifest(name='Destiny', path='G:/Files') # -> G:/Files/Destiny.sqlite3
+```
+
 
 ## Removed
 - `CharacterError` exception. This was supposed to be removed with `0.2.6`.

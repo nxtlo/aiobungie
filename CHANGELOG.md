@@ -16,7 +16,6 @@ Example:
 await client.download_manifest(name='Destiny', path='G:/Files') # -> G:/Files/Destiny.sqlite3
 ```
 
-
 ## Removed
 - `CharacterError` exception. This was supposed to be removed with `0.2.6`.
 

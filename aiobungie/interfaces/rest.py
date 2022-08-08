@@ -25,6 +25,7 @@
 from __future__ import annotations
 
 import datetime
+import pathlib
 
 __all__: list[str] = ["RESTInterface"]
 
@@ -77,20 +78,30 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    async def download_json_manifest(self, language: str = "en") -> None:
+    async def download_json_manifest(
+        self,
+        file_name: str = "manifest",
+        path: typing.Union[str, pathlib.Path] = ".",
+        language: str = "en",
+    ) -> None:
         """Download the Bungie manifest json file.
 
         Parameters
         ----------
-        language : `str`
-            The language to download the manifest in.
+        file_name: `str`
+            The file name to save the manifest json file. Default is `manifest`.
+        path: `str` | `pathlib.Path`
+            The path to save the manifest json file. Default is the current directory. Example `"D:/"`
+        language: `str`
+            The manifest database language bytes to get. Default is English.
         """
 
     @abc.abstractmethod
     async def download_manifest(
         self,
         language: str = "en",
-        name: str = "manifest.sqlite3",
+        name: str = "manifest",
+        path: typing.Union[str, pathlib.Path] = ".",
         *,
         force: bool = False,
     ) -> None:
@@ -105,8 +116,10 @@ class RESTInterface(traits.RESTful, abc.ABC):
         ----------
         language : `str`
             The manifest language to download, Default is english.
+        path: `str` | `pathlib.Path`
+            The path to save the manifest sqlite database. Example `"D:/"`, Default is the current directory.
         name : `str`
-            The manifest database file name. Default is `manifest.sqlite3`
+            The manifest database file name. Default is `manifest`
         force : `bool`
             Whether to force the download. Default is `False`. However if set to true the old
             file will get removed and a new one will being to download.
@@ -114,6 +127,13 @@ class RESTInterface(traits.RESTful, abc.ABC):
         Returns
         --------
         `None`
+
+        Raises
+        ------
+        `FileNotFoundError`
+            If the manifest file exists and `force` is `False`.
+        `ValueError`
+            If the provided language was not recognized.
         """
 
     @abc.abstractmethod

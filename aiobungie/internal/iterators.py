@@ -502,7 +502,8 @@ class FlatIterator(typing.Generic[Item]):
             func(item)
 
     async def async_for_each(
-        self, func: collections.Callable[[Item], collections.Coroutine[None, None, None]]
+        self,
+        func: collections.Callable[[Item], collections.Coroutine[None, None, None]],
     ) -> None:
         """Calls the async function on each item in the iterator concurrently.
 

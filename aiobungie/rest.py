@@ -41,7 +41,6 @@ import http
 import logging
 import os
 import pathlib
-import platform
 import random
 import sys
 import typing
@@ -91,12 +90,9 @@ _APP_JSON: typing.Final[str] = "application/json"
 _RETRY_5XX: typing.Final[set[int]] = {500, 502, 503, 504}
 _AUTH_HEADER: typing.Final[str] = sys.intern("Authorization")
 _USER_AGENT_HEADERS: typing.Final[str] = sys.intern("User-Agent")
-_USER_AGENT: typing.Final[str] = (
-    f"AiobungieClient ({info.__about__}), ({info.__author__}), "
-    f"({info.__version__}), ({info.__url__}), "  # noqa: E128
-    f"{platform.python_implementation()}/{platform.python_version()} {platform.system()} "  # noqa: E128
-    f"{platform.architecture()[0]}, AIOHTTP/{aiohttp.HttpVersion11}"
-)  # noqa: E128
+_USER_AGENT: typing.Final[
+    str
+] = f"AiobungieClient ({info.__author__}), ({info.__version__}), ({info.__url__})"
 
 TRACE: typing.Final[int] = logging.DEBUG - 5
 """The trace logging level for the `RESTClient` responses.
@@ -141,14 +137,30 @@ def _ensure_manifest_language(language: str) -> None:
         )
 
 
-def _write_json_bytes(data: bytes) -> None:
+def _get_path(
+    file_name: str, path: typing.Union[str, pathlib.Path], sql: bool = False
+) -> pathlib.Path:
+    if sql:
+        return pathlib.Path(path).joinpath(file_name + ".sqlite3")
+    return pathlib.Path(path).joinpath(file_name + ".json")
+
+
+def _write_json_bytes(
+    data: bytes,
+    file_name: str = "manifest",
+    path: typing.Union[pathlib.Path, str] = "./",
+) -> None:
     import json
 
-    with open("manifest.json", "wb") as file:
+    with open(_get_path(file_name, path), "wb") as file:
         file.write(json.dumps(json.loads(data), indent=4).encode("utf-8"))
 
 
-def _write_sqlite_bytes(data: bytes, file_name: str = "manifest.sqlite3") -> None:
+def _write_sqlite_bytes(
+    data: bytes,
+    path: typing.Union[pathlib.Path, str] = "./",
+    file_name: str = "manifest",
+) -> None:
     try:
         with open(f"{_uuid()}.zip", "wb") as tmp:
             tmp.write(data)
@@ -159,8 +171,8 @@ def _write_sqlite_bytes(data: bytes, file_name: str = "manifest.sqlite3") -> Non
             if file:
                 zipped.extractall(".")
 
-            os.rename(file[0], file_name)
-            _LOG.debug("Finished downloading manifest.")
+                os.rename(file[0], _get_path(file_name, path, sql=True))
+                _LOG.debug("Finished downloading manifest.")
 
     finally:
         pathlib.Path(tmp.name).unlink(missing_ok=True)
@@ -1150,35 +1162,44 @@ class RESTClient(interfaces.RESTInterface):
     async def download_manifest(
         self,
         language: str = "en",
-        name: str = "manifest.sqlite3",
+        name: str = "manifest",
+        path: typing.Union[pathlib.Path, str] = ".",
         *,
         force: bool = False,
     ) -> None:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-        if os.path.exists(name):
+        complete_path = _get_path(name, path, sql=True)
 
+        if complete_path.exists() and force:
             if force:
-                _LOG.debug("Forcing manifest download.")
-                os.remove(name)
+                _LOG.info(
+                    f"Found manifest in {complete_path!s}. Forcing to Re-Download."
+                )
+                complete_path.unlink(missing_ok=True)
 
-                return await self.download_manifest(language, name, force=force)
+                return await self.download_manifest(language, name, path, force=force)
 
             else:
                 raise FileExistsError(
                     "Manifest file already exists, "
-                    "If you want to force download, set the `force` parameter to `True`."
+                    "To force download, set the `force` parameter to `True`."
                 )
 
-        _LOG.debug("Downloading manifest...")
+        _LOG.info(f"Downloading manifest. Location: {complete_path!s}")
         data_bytes = await self.read_manifest_bytes(language)
         await asyncio.get_running_loop().run_in_executor(
-            None, _write_sqlite_bytes, data_bytes, name
+            None, _write_sqlite_bytes, data_bytes, path, name
         )
 
-    async def download_json_manifest(self, language: str = "en") -> None:
+    async def download_json_manifest(
+        self,
+        file_name: str = "manifest",
+        path: typing.Union[str, pathlib.Path] = ".",
+        language: str = "en",
+    ) -> None:
         _ensure_manifest_language(language)
 
-        _LOG.debug("Downloading manifest JSON...")
+        _LOG.info(f"Downloading manifest JSON to {_get_path(file_name, path)!r}...")
 
         content = await self.fetch_manifest_path()
         json_bytes = await self._request(
@@ -1189,9 +1210,9 @@ class RESTClient(interfaces.RESTInterface):
         )
 
         await asyncio.get_running_loop().run_in_executor(
-            None, _write_json_bytes, json_bytes
+            None, _write_json_bytes, json_bytes, file_name, path
         )
-        _LOG.debug("Finished downloading manifest JSON.")
+        _LOG.info("Finished downloading manifest JSON.")
 
     async def fetch_manifest_version(self) -> str:
         return typing.cast(str, (await self.fetch_manifest_path())["version"])

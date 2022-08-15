@@ -27,19 +27,20 @@ async def main() -> None:
 
     # Fetch a charatcer with all its components.
     # This includes Equimpents, Inventory, Records, etc.
-    my_warlock = await client.fetch_character(
-        membership_id,
-        aiobungie.MembershipType.STEAM,
-        character_id,
-        components=[aiobungie.Component.ALL_CHARACTERS]
-    )
+    async with client.rest:
+        my_warlock = await client.fetch_character(
+            membership_id,
+            aiobungie.MembershipType.STEAM,
+            character_id,
+            components=[aiobungie.Component.ALL_CHARACTERS]
+        )
 
-    for activity in my_warlock.activities:
-        # Check if activity is a raid.
-        if activity.current_mode and activity.current_mode is aiobungie.GameMode.RAID:
-            print(activity.avaliable_activities) # All raids for this character.
+        for activity in my_warlock.activities:
+            # Check if activity is a raid.
+            if activity.current_mode and activity.current_mode is aiobungie.GameMode.RAID:
+                print(activity.avaliable_activities) # All raids for this character.
 
-# You can either run it using the client or just `asyncio.run(main())`
+# You can either run it using the client or just asyncio.run(main())
 client.run(main())
 ```
 

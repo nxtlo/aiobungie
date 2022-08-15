@@ -6,6 +6,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.6...HEAD)
 
+## Breaking Changes
+- Base `Client` users now will need to open the REST client before making any requests.
+
+The old way.
+```py
+import aiobungie
+
+# Here the client will initialize the TCP connector even though
+# we're still not planning on making  any request which's not performant.
+client = aiobungie.Client('...')
+results = await client.fetch('...')
+```
+
+The new way
+```py
+client = aiobungie.Client('...')
+
+# Open the REST connection and use the client normally.
+async with client.rest:
+    users = await client.search_users('...')
+    return users[0]
+
+# Another way of doing that manually
+# This must be called within an event loop
+client.rest.open()
+
+# Do stuff with the client...
+
+# Close.
+await client.rest.close()
+```
+
 ## Added
 - Special method `__or__` to `FlatIterator` which allows to union two iterators togather as `x = iterator1 | iterator2`
 - New method FlatIterator. `async_for_each`, whichs equavilant to `for_each` but takes an async function instead.
@@ -15,6 +47,9 @@ Example:
 ```py
 await client.download_manifest(name='Destiny', path='G:/Files') # -> G:/Files/Destiny.sqlite3
 ```
+
+## Changed
+- `FlatIterator` no longer support async iteration.
 
 ## Removed
 - `CharacterError` exception. This was supposed to be removed with `0.2.6`.

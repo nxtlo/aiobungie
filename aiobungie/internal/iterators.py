@@ -583,6 +583,7 @@ class FlatIterator(typing.Generic[Item]):
 
         return item
 
+
 def into_iter(
     iterable: collections.Iterable[Item],
 ) -> FlatIterator[Item]:

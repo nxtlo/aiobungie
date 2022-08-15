@@ -177,8 +177,28 @@ class RESTful(Debug, typing.Protocol):
         """
         raise NotImplementedError
 
+    def open(self) -> None:
+        """Prepare and opens the REST client connection.
+
+        This method is automatically called when using `async with` contextmanager.
+
+        Raises
+        ------
+        `RuntimeError`
+            If the client is already open.
+        """
+        raise NotImplementedError
+
     async def close(self) -> None:
-        """Close this REST client session if it was acquired."""
+        """Close this REST client session if it was acquired.
+
+        This method is automatically called when using `async with` contextmanager.
+
+        Raises
+        ------
+        `RuntimeError`
+            If the client is already closed.
+        """
         raise NotImplementedError
 
     async def static_request(

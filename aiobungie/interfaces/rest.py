@@ -39,6 +39,8 @@ from aiobungie.internal import enums
 
 if typing.TYPE_CHECKING:
 
+    import types
+
     from aiobungie import builders
     from aiobungie import typedefs
     from aiobungie.crates import fireteams
@@ -48,6 +50,19 @@ class RESTInterface(traits.RESTful, abc.ABC):
     """An API interface for the rest only client implementation."""
 
     __slots__ = ()
+
+    if typing.TYPE_CHECKING:
+
+        async def __aenter__(self) -> RESTInterface:
+            ...
+
+        async def __aexit__(
+            self,
+            exception_type: typing.Optional[type[BaseException]],
+            exception: typing.Optional[BaseException],
+            exception_traceback: typing.Optional[types.TracebackType],
+        ) -> None:
+            ...
 
     @abc.abstractmethod
     async def read_manifest_bytes(self, language: str = "en", /) -> bytes:

@@ -65,7 +65,7 @@ async def test_hard_types():
 async def test_clan_from_id():
     c = await client.fetch_clan_from_id(4389205)
     members = await c.fetch_members()
-    async for member in members:
+    for member in members:
         assert isinstance(member, aiobungie.crate.ClanMember)
 
 
@@ -73,7 +73,7 @@ async def test_clan():
     c = await client.fetch_clan("Nuanceㅤ ")
     members = await c.fetch_members()
 
-    async for member in members.discard(lambda member: not member.is_online):
+    for member in members.discard(lambda member: not member.is_online):
         assert isinstance(member, aiobungie.crate.ClanMember)
 
 async def test_fetch_clan_members():
@@ -340,7 +340,7 @@ async def test_fetch_activities():
     assert isinstance(post, aiobungie.crate.PostActivity)
     assert a.any(lambda act: act.is_flawless)
 
-    async for act in a:
+    for act in a:
         assert isinstance(act, aiobungie.crate.Activity)
         if act.hash == aiobungie.Raid.DSC.value:
             assert aiobungie.GameMode.RAID in act.modes
@@ -416,14 +416,13 @@ async def test_clan_weekly_rewards():
 
 async def test_aggregated_activity():
     a = await client.fetch_aggregated_activity_stats(CID, MID, STEAM)
-    async for act in a.sort(key=lambda act: act.values.fastest_completion_time[1]):
+    for act in a.sort(key=lambda act: act.values.fastest_completion_time[1]):
         assert isinstance(act, aiobungie.crate.AggregatedActivity)
 
 async def main() -> None:
     from aiobungie.internal import helpers
 
     coros: list[typing.Coroutine[None, None, None]] = []
-
     for n, coro in inspect.getmembers(
         sys.modules[__name__], inspect.iscoroutinefunction
     ):
@@ -432,10 +431,8 @@ async def main() -> None:
 
         coros.append(coro())
 
-    try:
+    async with client.rest:
         await helpers.awaits(*coros)
-    except Exception:
-        raise
 
     _LOG.info(
         "Asserted %i functions out of %i excluding main.",

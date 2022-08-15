@@ -91,6 +91,9 @@
                                 <a class="function" href="#RESTful.build_oauth2_url">build_oauth2_url</a>
                         </li>
                         <li>
+                                <a class="function" href="#RESTful.open">open</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#RESTful.close">close</a>
                         </li>
                         <li>
@@ -313,83 +316,103 @@
 </span><span id="L-177"><a href="#L-177"><span class="linenos">177</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="L-178"><a href="#L-178"><span class="linenos">178</span></a>        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 </span><span id="L-179"><a href="#L-179"><span class="linenos">179</span></a>
-</span><span id="L-180"><a href="#L-180"><span class="linenos">180</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="L-181"><a href="#L-181"><span class="linenos">181</span></a>        <span class="sd">&quot;&quot;&quot;Close this REST client session if it was acquired.&quot;&quot;&quot;</span>
-</span><span id="L-182"><a href="#L-182"><span class="linenos">182</span></a>        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-</span><span id="L-183"><a href="#L-183"><span class="linenos">183</span></a>
-</span><span id="L-184"><a href="#L-184"><span class="linenos">184</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">static_request</span><span class="p">(</span>
-</span><span id="L-185"><a href="#L-185"><span class="linenos">185</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="L-186"><a href="#L-186"><span class="linenos">186</span></a>        <span class="n">method</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">rest</span><span class="o">.</span><span class="n">RequestMethod</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
-</span><span id="L-187"><a href="#L-187"><span class="linenos">187</span></a>        <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span id="L-188"><a href="#L-188"><span class="linenos">188</span></a>        <span class="o">*</span><span class="p">,</span>
-</span><span id="L-189"><a href="#L-189"><span class="linenos">189</span></a>        <span class="n">auth</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="L-190"><a href="#L-190"><span class="linenos">190</span></a>        <span class="n">json</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="L-191"><a href="#L-191"><span class="linenos">191</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">rest</span><span class="o">.</span><span class="n">ResponseSig</span><span class="p">:</span>
-</span><span id="L-192"><a href="#L-192"><span class="linenos">192</span></a>        <span class="sd">&quot;&quot;&quot;Perform an HTTP request given a valid Bungie endpoint.</span>
-</span><span id="L-193"><a href="#L-193"><span class="linenos">193</span></a>
-</span><span id="L-194"><a href="#L-194"><span class="linenos">194</span></a><span class="sd">        Parameters</span>
-</span><span id="L-195"><a href="#L-195"><span class="linenos">195</span></a><span class="sd">        ----------</span>
-</span><span id="L-196"><a href="#L-196"><span class="linenos">196</span></a><span class="sd">        method : `aiobungie.rest.RequestMethod | str`</span>
-</span><span id="L-197"><a href="#L-197"><span class="linenos">197</span></a><span class="sd">            The request method, This may be `GET`, `POST`, `PUT`, etc.</span>
-</span><span id="L-198"><a href="#L-198"><span class="linenos">198</span></a><span class="sd">        path: `str`</span>
-</span><span id="L-199"><a href="#L-199"><span class="linenos">199</span></a><span class="sd">            The Bungie endpoint or path.</span>
-</span><span id="L-200"><a href="#L-200"><span class="linenos">200</span></a><span class="sd">            A path must look something like this `Destiny2/3/Profile/46111239123/...`</span>
-</span><span id="L-201"><a href="#L-201"><span class="linenos">201</span></a><span class="sd">        auth : `str | None`</span>
-</span><span id="L-202"><a href="#L-202"><span class="linenos">202</span></a><span class="sd">            An optional bearer token for methods that requires OAuth2 Authorization header.</span>
-</span><span id="L-203"><a href="#L-203"><span class="linenos">203</span></a><span class="sd">        json : `dict[str, typing.Any] | None`</span>
-</span><span id="L-204"><a href="#L-204"><span class="linenos">204</span></a><span class="sd">            An optional JSON data to include in the request.</span>
-</span><span id="L-205"><a href="#L-205"><span class="linenos">205</span></a>
-</span><span id="L-206"><a href="#L-206"><span class="linenos">206</span></a><span class="sd">        Returns</span>
-</span><span id="L-207"><a href="#L-207"><span class="linenos">207</span></a><span class="sd">        -------</span>
-</span><span id="L-208"><a href="#L-208"><span class="linenos">208</span></a><span class="sd">        `aiobungie.rest.ResponseSig`</span>
-</span><span id="L-209"><a href="#L-209"><span class="linenos">209</span></a><span class="sd">            The response payload.</span>
-</span><span id="L-210"><a href="#L-210"><span class="linenos">210</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-211"><a href="#L-211"><span class="linenos">211</span></a>        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-</span><span id="L-212"><a href="#L-212"><span class="linenos">212</span></a>
+</span><span id="L-180"><a href="#L-180"><span class="linenos">180</span></a>    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-181"><a href="#L-181"><span class="linenos">181</span></a>        <span class="sd">&quot;&quot;&quot;Prepare and opens the REST client connection.</span>
+</span><span id="L-182"><a href="#L-182"><span class="linenos">182</span></a>
+</span><span id="L-183"><a href="#L-183"><span class="linenos">183</span></a><span class="sd">        This method is automatically called when using `async with` contextmanager.</span>
+</span><span id="L-184"><a href="#L-184"><span class="linenos">184</span></a>
+</span><span id="L-185"><a href="#L-185"><span class="linenos">185</span></a><span class="sd">        Raises</span>
+</span><span id="L-186"><a href="#L-186"><span class="linenos">186</span></a><span class="sd">        ------</span>
+</span><span id="L-187"><a href="#L-187"><span class="linenos">187</span></a><span class="sd">        `RuntimeError`</span>
+</span><span id="L-188"><a href="#L-188"><span class="linenos">188</span></a><span class="sd">            If the client is already open.</span>
+</span><span id="L-189"><a href="#L-189"><span class="linenos">189</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-190"><a href="#L-190"><span class="linenos">190</span></a>        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+</span><span id="L-191"><a href="#L-191"><span class="linenos">191</span></a>
+</span><span id="L-192"><a href="#L-192"><span class="linenos">192</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-193"><a href="#L-193"><span class="linenos">193</span></a>        <span class="sd">&quot;&quot;&quot;Close this REST client session if it was acquired.</span>
+</span><span id="L-194"><a href="#L-194"><span class="linenos">194</span></a>
+</span><span id="L-195"><a href="#L-195"><span class="linenos">195</span></a><span class="sd">        This method is automatically called when using `async with` contextmanager.</span>
+</span><span id="L-196"><a href="#L-196"><span class="linenos">196</span></a>
+</span><span id="L-197"><a href="#L-197"><span class="linenos">197</span></a><span class="sd">        Raises</span>
+</span><span id="L-198"><a href="#L-198"><span class="linenos">198</span></a><span class="sd">        ------</span>
+</span><span id="L-199"><a href="#L-199"><span class="linenos">199</span></a><span class="sd">        `RuntimeError`</span>
+</span><span id="L-200"><a href="#L-200"><span class="linenos">200</span></a><span class="sd">            If the client is already closed.</span>
+</span><span id="L-201"><a href="#L-201"><span class="linenos">201</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-202"><a href="#L-202"><span class="linenos">202</span></a>        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+</span><span id="L-203"><a href="#L-203"><span class="linenos">203</span></a>
+</span><span id="L-204"><a href="#L-204"><span class="linenos">204</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">static_request</span><span class="p">(</span>
+</span><span id="L-205"><a href="#L-205"><span class="linenos">205</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="L-206"><a href="#L-206"><span class="linenos">206</span></a>        <span class="n">method</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">rest</span><span class="o">.</span><span class="n">RequestMethod</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+</span><span id="L-207"><a href="#L-207"><span class="linenos">207</span></a>        <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span id="L-208"><a href="#L-208"><span class="linenos">208</span></a>        <span class="o">*</span><span class="p">,</span>
+</span><span id="L-209"><a href="#L-209"><span class="linenos">209</span></a>        <span class="n">auth</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="L-210"><a href="#L-210"><span class="linenos">210</span></a>        <span class="n">json</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="L-211"><a href="#L-211"><span class="linenos">211</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">rest</span><span class="o">.</span><span class="n">ResponseSig</span><span class="p">:</span>
+</span><span id="L-212"><a href="#L-212"><span class="linenos">212</span></a>        <span class="sd">&quot;&quot;&quot;Perform an HTTP request given a valid Bungie endpoint.</span>
 </span><span id="L-213"><a href="#L-213"><span class="linenos">213</span></a>
-</span><span id="L-214"><a href="#L-214"><span class="linenos">214</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">runtime_checkable</span>
-</span><span id="L-215"><a href="#L-215"><span class="linenos">215</span></a><span class="k">class</span> <span class="nc">ClientApp</span><span class="p">(</span><span class="n">Netrunner</span><span class="p">,</span> <span class="n">Serializable</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
-</span><span id="L-216"><a href="#L-216"><span class="linenos">216</span></a>    <span class="sd">&quot;&quot;&quot;Core trait for the standard `aiobungie.Client` implementation.</span>
-</span><span id="L-217"><a href="#L-217"><span class="linenos">217</span></a>
-</span><span id="L-218"><a href="#L-218"><span class="linenos">218</span></a><span class="sd">    This includes all aiobungie traits.</span>
-</span><span id="L-219"><a href="#L-219"><span class="linenos">219</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-220"><a href="#L-220"><span class="linenos">220</span></a>
-</span><span id="L-221"><a href="#L-221"><span class="linenos">221</span></a>    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
-</span><span id="L-222"><a href="#L-222"><span class="linenos">222</span></a>
-</span><span id="L-223"><a href="#L-223"><span class="linenos">223</span></a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
-</span><span id="L-224"><a href="#L-224"><span class="linenos">224</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">future</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Coroutine</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span id="L-225"><a href="#L-225"><span class="linenos">225</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="L-226"><a href="#L-226"><span class="linenos">226</span></a>        <span class="sd">&quot;&quot;&quot;Runs a coroutine function until its complete.</span>
-</span><span id="L-227"><a href="#L-227"><span class="linenos">227</span></a>
-</span><span id="L-228"><a href="#L-228"><span class="linenos">228</span></a><span class="sd">        This is equivalent to `asyncio.get_event_loop().run_until_complete(...)`</span>
-</span><span id="L-229"><a href="#L-229"><span class="linenos">229</span></a>
-</span><span id="L-230"><a href="#L-230"><span class="linenos">230</span></a><span class="sd">        Parameters</span>
-</span><span id="L-231"><a href="#L-231"><span class="linenos">231</span></a><span class="sd">        ----------</span>
-</span><span id="L-232"><a href="#L-232"><span class="linenos">232</span></a><span class="sd">        future: `collections.Coroutine[None, None, None]`</span>
-</span><span id="L-233"><a href="#L-233"><span class="linenos">233</span></a><span class="sd">            A coroutine object.</span>
-</span><span id="L-234"><a href="#L-234"><span class="linenos">234</span></a><span class="sd">        debug : `bool`</span>
-</span><span id="L-235"><a href="#L-235"><span class="linenos">235</span></a><span class="sd">            Either to enable asyncio debug or not. Disabled by default.</span>
-</span><span id="L-236"><a href="#L-236"><span class="linenos">236</span></a>
-</span><span id="L-237"><a href="#L-237"><span class="linenos">237</span></a><span class="sd">        Example</span>
-</span><span id="L-238"><a href="#L-238"><span class="linenos">238</span></a><span class="sd">        -------</span>
-</span><span id="L-239"><a href="#L-239"><span class="linenos">239</span></a><span class="sd">        ```py</span>
-</span><span id="L-240"><a href="#L-240"><span class="linenos">240</span></a><span class="sd">        async def main() -&gt; None:</span>
-</span><span id="L-241"><a href="#L-241"><span class="linenos">241</span></a><span class="sd">            await fetch(...)</span>
+</span><span id="L-214"><a href="#L-214"><span class="linenos">214</span></a><span class="sd">        Parameters</span>
+</span><span id="L-215"><a href="#L-215"><span class="linenos">215</span></a><span class="sd">        ----------</span>
+</span><span id="L-216"><a href="#L-216"><span class="linenos">216</span></a><span class="sd">        method : `aiobungie.rest.RequestMethod | str`</span>
+</span><span id="L-217"><a href="#L-217"><span class="linenos">217</span></a><span class="sd">            The request method, This may be `GET`, `POST`, `PUT`, etc.</span>
+</span><span id="L-218"><a href="#L-218"><span class="linenos">218</span></a><span class="sd">        path: `str`</span>
+</span><span id="L-219"><a href="#L-219"><span class="linenos">219</span></a><span class="sd">            The Bungie endpoint or path.</span>
+</span><span id="L-220"><a href="#L-220"><span class="linenos">220</span></a><span class="sd">            A path must look something like this `Destiny2/3/Profile/46111239123/...`</span>
+</span><span id="L-221"><a href="#L-221"><span class="linenos">221</span></a><span class="sd">        auth : `str | None`</span>
+</span><span id="L-222"><a href="#L-222"><span class="linenos">222</span></a><span class="sd">            An optional bearer token for methods that requires OAuth2 Authorization header.</span>
+</span><span id="L-223"><a href="#L-223"><span class="linenos">223</span></a><span class="sd">        json : `dict[str, typing.Any] | None`</span>
+</span><span id="L-224"><a href="#L-224"><span class="linenos">224</span></a><span class="sd">            An optional JSON data to include in the request.</span>
+</span><span id="L-225"><a href="#L-225"><span class="linenos">225</span></a>
+</span><span id="L-226"><a href="#L-226"><span class="linenos">226</span></a><span class="sd">        Returns</span>
+</span><span id="L-227"><a href="#L-227"><span class="linenos">227</span></a><span class="sd">        -------</span>
+</span><span id="L-228"><a href="#L-228"><span class="linenos">228</span></a><span class="sd">        `aiobungie.rest.ResponseSig`</span>
+</span><span id="L-229"><a href="#L-229"><span class="linenos">229</span></a><span class="sd">            The response payload.</span>
+</span><span id="L-230"><a href="#L-230"><span class="linenos">230</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-231"><a href="#L-231"><span class="linenos">231</span></a>        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+</span><span id="L-232"><a href="#L-232"><span class="linenos">232</span></a>
+</span><span id="L-233"><a href="#L-233"><span class="linenos">233</span></a>
+</span><span id="L-234"><a href="#L-234"><span class="linenos">234</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">runtime_checkable</span>
+</span><span id="L-235"><a href="#L-235"><span class="linenos">235</span></a><span class="k">class</span> <span class="nc">ClientApp</span><span class="p">(</span><span class="n">Netrunner</span><span class="p">,</span> <span class="n">Serializable</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
+</span><span id="L-236"><a href="#L-236"><span class="linenos">236</span></a>    <span class="sd">&quot;&quot;&quot;Core trait for the standard `aiobungie.Client` implementation.</span>
+</span><span id="L-237"><a href="#L-237"><span class="linenos">237</span></a>
+</span><span id="L-238"><a href="#L-238"><span class="linenos">238</span></a><span class="sd">    This includes all aiobungie traits.</span>
+</span><span id="L-239"><a href="#L-239"><span class="linenos">239</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-240"><a href="#L-240"><span class="linenos">240</span></a>
+</span><span id="L-241"><a href="#L-241"><span class="linenos">241</span></a>    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
 </span><span id="L-242"><a href="#L-242"><span class="linenos">242</span></a>
-</span><span id="L-243"><a href="#L-243"><span class="linenos">243</span></a><span class="sd">        # Run the coroutine.</span>
-</span><span id="L-244"><a href="#L-244"><span class="linenos">244</span></a><span class="sd">        client.run(main())</span>
-</span><span id="L-245"><a href="#L-245"><span class="linenos">245</span></a><span class="sd">        ```</span>
-</span><span id="L-246"><a href="#L-246"><span class="linenos">246</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-243"><a href="#L-243"><span class="linenos">243</span></a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
+</span><span id="L-244"><a href="#L-244"><span class="linenos">244</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">future</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Coroutine</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="L-245"><a href="#L-245"><span class="linenos">245</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-246"><a href="#L-246"><span class="linenos">246</span></a>        <span class="sd">&quot;&quot;&quot;Runs a coroutine function until its complete.</span>
 </span><span id="L-247"><a href="#L-247"><span class="linenos">247</span></a>
-</span><span id="L-248"><a href="#L-248"><span class="linenos">248</span></a>    <span class="nd">@property</span>
-</span><span id="L-249"><a href="#L-249"><span class="linenos">249</span></a>    <span class="k">def</span> <span class="nf">rest</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">interfaces</span><span class="o">.</span><span class="n">RESTInterface</span><span class="p">:</span>
-</span><span id="L-250"><a href="#L-250"><span class="linenos">250</span></a>        <span class="sd">&quot;&quot;&quot;Returns the REST client for the this client.&quot;&quot;&quot;</span>
-</span><span id="L-251"><a href="#L-251"><span class="linenos">251</span></a>        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-</span><span id="L-252"><a href="#L-252"><span class="linenos">252</span></a>
-</span><span id="L-253"><a href="#L-253"><span class="linenos">253</span></a>    <span class="nd">@property</span>
-</span><span id="L-254"><a href="#L-254"><span class="linenos">254</span></a>    <span class="k">def</span> <span class="nf">metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
-</span><span id="L-255"><a href="#L-255"><span class="linenos">255</span></a>        <span class="sd">&quot;&quot;&quot;A mutable mapping storage for the user&#39;s needs.&quot;&quot;&quot;</span>
-</span><span id="L-256"><a href="#L-256"><span class="linenos">256</span></a>        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+</span><span id="L-248"><a href="#L-248"><span class="linenos">248</span></a><span class="sd">        This is equivalent to `asyncio.get_event_loop().run_until_complete(...)`</span>
+</span><span id="L-249"><a href="#L-249"><span class="linenos">249</span></a>
+</span><span id="L-250"><a href="#L-250"><span class="linenos">250</span></a><span class="sd">        Parameters</span>
+</span><span id="L-251"><a href="#L-251"><span class="linenos">251</span></a><span class="sd">        ----------</span>
+</span><span id="L-252"><a href="#L-252"><span class="linenos">252</span></a><span class="sd">        future: `collections.Coroutine[None, None, None]`</span>
+</span><span id="L-253"><a href="#L-253"><span class="linenos">253</span></a><span class="sd">            A coroutine object.</span>
+</span><span id="L-254"><a href="#L-254"><span class="linenos">254</span></a><span class="sd">        debug : `bool`</span>
+</span><span id="L-255"><a href="#L-255"><span class="linenos">255</span></a><span class="sd">            Either to enable asyncio debug or not. Disabled by default.</span>
+</span><span id="L-256"><a href="#L-256"><span class="linenos">256</span></a>
+</span><span id="L-257"><a href="#L-257"><span class="linenos">257</span></a><span class="sd">        Example</span>
+</span><span id="L-258"><a href="#L-258"><span class="linenos">258</span></a><span class="sd">        -------</span>
+</span><span id="L-259"><a href="#L-259"><span class="linenos">259</span></a><span class="sd">        ```py</span>
+</span><span id="L-260"><a href="#L-260"><span class="linenos">260</span></a><span class="sd">        async def main() -&gt; None:</span>
+</span><span id="L-261"><a href="#L-261"><span class="linenos">261</span></a><span class="sd">            await fetch(...)</span>
+</span><span id="L-262"><a href="#L-262"><span class="linenos">262</span></a>
+</span><span id="L-263"><a href="#L-263"><span class="linenos">263</span></a><span class="sd">        # Run the coroutine.</span>
+</span><span id="L-264"><a href="#L-264"><span class="linenos">264</span></a><span class="sd">        client.run(main())</span>
+</span><span id="L-265"><a href="#L-265"><span class="linenos">265</span></a><span class="sd">        ```</span>
+</span><span id="L-266"><a href="#L-266"><span class="linenos">266</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-267"><a href="#L-267"><span class="linenos">267</span></a>
+</span><span id="L-268"><a href="#L-268"><span class="linenos">268</span></a>    <span class="nd">@property</span>
+</span><span id="L-269"><a href="#L-269"><span class="linenos">269</span></a>    <span class="k">def</span> <span class="nf">rest</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">interfaces</span><span class="o">.</span><span class="n">RESTInterface</span><span class="p">:</span>
+</span><span id="L-270"><a href="#L-270"><span class="linenos">270</span></a>        <span class="sd">&quot;&quot;&quot;Returns the REST client for the this client.&quot;&quot;&quot;</span>
+</span><span id="L-271"><a href="#L-271"><span class="linenos">271</span></a>        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+</span><span id="L-272"><a href="#L-272"><span class="linenos">272</span></a>
+</span><span id="L-273"><a href="#L-273"><span class="linenos">273</span></a>    <span class="nd">@property</span>
+</span><span id="L-274"><a href="#L-274"><span class="linenos">274</span></a>    <span class="k">def</span> <span class="nf">metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
+</span><span id="L-275"><a href="#L-275"><span class="linenos">275</span></a>        <span class="sd">&quot;&quot;&quot;A mutable mapping storage for the user&#39;s needs.&quot;&quot;&quot;</span>
+</span><span id="L-276"><a href="#L-276"><span class="linenos">276</span></a>        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 </span></pre></div>
 
 
@@ -406,49 +429,49 @@
 
     </div>
     <a class="headerlink" href="#ClientApp"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="ClientApp-215"><a href="#ClientApp-215"><span class="linenos">215</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">runtime_checkable</span>
-</span><span id="ClientApp-216"><a href="#ClientApp-216"><span class="linenos">216</span></a><span class="k">class</span> <span class="nc">ClientApp</span><span class="p">(</span><span class="n">Netrunner</span><span class="p">,</span> <span class="n">Serializable</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
-</span><span id="ClientApp-217"><a href="#ClientApp-217"><span class="linenos">217</span></a>    <span class="sd">&quot;&quot;&quot;Core trait for the standard `aiobungie.Client` implementation.</span>
-</span><span id="ClientApp-218"><a href="#ClientApp-218"><span class="linenos">218</span></a>
-</span><span id="ClientApp-219"><a href="#ClientApp-219"><span class="linenos">219</span></a><span class="sd">    This includes all aiobungie traits.</span>
-</span><span id="ClientApp-220"><a href="#ClientApp-220"><span class="linenos">220</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="ClientApp-221"><a href="#ClientApp-221"><span class="linenos">221</span></a>
-</span><span id="ClientApp-222"><a href="#ClientApp-222"><span class="linenos">222</span></a>    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
-</span><span id="ClientApp-223"><a href="#ClientApp-223"><span class="linenos">223</span></a>
-</span><span id="ClientApp-224"><a href="#ClientApp-224"><span class="linenos">224</span></a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
-</span><span id="ClientApp-225"><a href="#ClientApp-225"><span class="linenos">225</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">future</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Coroutine</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span id="ClientApp-226"><a href="#ClientApp-226"><span class="linenos">226</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="ClientApp-227"><a href="#ClientApp-227"><span class="linenos">227</span></a>        <span class="sd">&quot;&quot;&quot;Runs a coroutine function until its complete.</span>
-</span><span id="ClientApp-228"><a href="#ClientApp-228"><span class="linenos">228</span></a>
-</span><span id="ClientApp-229"><a href="#ClientApp-229"><span class="linenos">229</span></a><span class="sd">        This is equivalent to `asyncio.get_event_loop().run_until_complete(...)`</span>
-</span><span id="ClientApp-230"><a href="#ClientApp-230"><span class="linenos">230</span></a>
-</span><span id="ClientApp-231"><a href="#ClientApp-231"><span class="linenos">231</span></a><span class="sd">        Parameters</span>
-</span><span id="ClientApp-232"><a href="#ClientApp-232"><span class="linenos">232</span></a><span class="sd">        ----------</span>
-</span><span id="ClientApp-233"><a href="#ClientApp-233"><span class="linenos">233</span></a><span class="sd">        future: `collections.Coroutine[None, None, None]`</span>
-</span><span id="ClientApp-234"><a href="#ClientApp-234"><span class="linenos">234</span></a><span class="sd">            A coroutine object.</span>
-</span><span id="ClientApp-235"><a href="#ClientApp-235"><span class="linenos">235</span></a><span class="sd">        debug : `bool`</span>
-</span><span id="ClientApp-236"><a href="#ClientApp-236"><span class="linenos">236</span></a><span class="sd">            Either to enable asyncio debug or not. Disabled by default.</span>
-</span><span id="ClientApp-237"><a href="#ClientApp-237"><span class="linenos">237</span></a>
-</span><span id="ClientApp-238"><a href="#ClientApp-238"><span class="linenos">238</span></a><span class="sd">        Example</span>
-</span><span id="ClientApp-239"><a href="#ClientApp-239"><span class="linenos">239</span></a><span class="sd">        -------</span>
-</span><span id="ClientApp-240"><a href="#ClientApp-240"><span class="linenos">240</span></a><span class="sd">        ```py</span>
-</span><span id="ClientApp-241"><a href="#ClientApp-241"><span class="linenos">241</span></a><span class="sd">        async def main() -&gt; None:</span>
-</span><span id="ClientApp-242"><a href="#ClientApp-242"><span class="linenos">242</span></a><span class="sd">            await fetch(...)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="ClientApp-235"><a href="#ClientApp-235"><span class="linenos">235</span></a><span class="nd">@typing</span><span class="o">.</span><span class="n">runtime_checkable</span>
+</span><span id="ClientApp-236"><a href="#ClientApp-236"><span class="linenos">236</span></a><span class="k">class</span> <span class="nc">ClientApp</span><span class="p">(</span><span class="n">Netrunner</span><span class="p">,</span> <span class="n">Serializable</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Protocol</span><span class="p">):</span>
+</span><span id="ClientApp-237"><a href="#ClientApp-237"><span class="linenos">237</span></a>    <span class="sd">&quot;&quot;&quot;Core trait for the standard `aiobungie.Client` implementation.</span>
+</span><span id="ClientApp-238"><a href="#ClientApp-238"><span class="linenos">238</span></a>
+</span><span id="ClientApp-239"><a href="#ClientApp-239"><span class="linenos">239</span></a><span class="sd">    This includes all aiobungie traits.</span>
+</span><span id="ClientApp-240"><a href="#ClientApp-240"><span class="linenos">240</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="ClientApp-241"><a href="#ClientApp-241"><span class="linenos">241</span></a>
+</span><span id="ClientApp-242"><a href="#ClientApp-242"><span class="linenos">242</span></a>    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
 </span><span id="ClientApp-243"><a href="#ClientApp-243"><span class="linenos">243</span></a>
-</span><span id="ClientApp-244"><a href="#ClientApp-244"><span class="linenos">244</span></a><span class="sd">        # Run the coroutine.</span>
-</span><span id="ClientApp-245"><a href="#ClientApp-245"><span class="linenos">245</span></a><span class="sd">        client.run(main())</span>
-</span><span id="ClientApp-246"><a href="#ClientApp-246"><span class="linenos">246</span></a><span class="sd">        ```</span>
-</span><span id="ClientApp-247"><a href="#ClientApp-247"><span class="linenos">247</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="ClientApp-244"><a href="#ClientApp-244"><span class="linenos">244</span></a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
+</span><span id="ClientApp-245"><a href="#ClientApp-245"><span class="linenos">245</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">future</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Coroutine</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="ClientApp-246"><a href="#ClientApp-246"><span class="linenos">246</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="ClientApp-247"><a href="#ClientApp-247"><span class="linenos">247</span></a>        <span class="sd">&quot;&quot;&quot;Runs a coroutine function until its complete.</span>
 </span><span id="ClientApp-248"><a href="#ClientApp-248"><span class="linenos">248</span></a>
-</span><span id="ClientApp-249"><a href="#ClientApp-249"><span class="linenos">249</span></a>    <span class="nd">@property</span>
-</span><span id="ClientApp-250"><a href="#ClientApp-250"><span class="linenos">250</span></a>    <span class="k">def</span> <span class="nf">rest</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">interfaces</span><span class="o">.</span><span class="n">RESTInterface</span><span class="p">:</span>
-</span><span id="ClientApp-251"><a href="#ClientApp-251"><span class="linenos">251</span></a>        <span class="sd">&quot;&quot;&quot;Returns the REST client for the this client.&quot;&quot;&quot;</span>
-</span><span id="ClientApp-252"><a href="#ClientApp-252"><span class="linenos">252</span></a>        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-</span><span id="ClientApp-253"><a href="#ClientApp-253"><span class="linenos">253</span></a>
-</span><span id="ClientApp-254"><a href="#ClientApp-254"><span class="linenos">254</span></a>    <span class="nd">@property</span>
-</span><span id="ClientApp-255"><a href="#ClientApp-255"><span class="linenos">255</span></a>    <span class="k">def</span> <span class="nf">metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
-</span><span id="ClientApp-256"><a href="#ClientApp-256"><span class="linenos">256</span></a>        <span class="sd">&quot;&quot;&quot;A mutable mapping storage for the user&#39;s needs.&quot;&quot;&quot;</span>
-</span><span id="ClientApp-257"><a href="#ClientApp-257"><span class="linenos">257</span></a>        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+</span><span id="ClientApp-249"><a href="#ClientApp-249"><span class="linenos">249</span></a><span class="sd">        This is equivalent to `asyncio.get_event_loop().run_until_complete(...)`</span>
+</span><span id="ClientApp-250"><a href="#ClientApp-250"><span class="linenos">250</span></a>
+</span><span id="ClientApp-251"><a href="#ClientApp-251"><span class="linenos">251</span></a><span class="sd">        Parameters</span>
+</span><span id="ClientApp-252"><a href="#ClientApp-252"><span class="linenos">252</span></a><span class="sd">        ----------</span>
+</span><span id="ClientApp-253"><a href="#ClientApp-253"><span class="linenos">253</span></a><span class="sd">        future: `collections.Coroutine[None, None, None]`</span>
+</span><span id="ClientApp-254"><a href="#ClientApp-254"><span class="linenos">254</span></a><span class="sd">            A coroutine object.</span>
+</span><span id="ClientApp-255"><a href="#ClientApp-255"><span class="linenos">255</span></a><span class="sd">        debug : `bool`</span>
+</span><span id="ClientApp-256"><a href="#ClientApp-256"><span class="linenos">256</span></a><span class="sd">            Either to enable asyncio debug or not. Disabled by default.</span>
+</span><span id="ClientApp-257"><a href="#ClientApp-257"><span class="linenos">257</span></a>
+</span><span id="ClientApp-258"><a href="#ClientApp-258"><span class="linenos">258</span></a><span class="sd">        Example</span>
+</span><span id="ClientApp-259"><a href="#ClientApp-259"><span class="linenos">259</span></a><span class="sd">        -------</span>
+</span><span id="ClientApp-260"><a href="#ClientApp-260"><span class="linenos">260</span></a><span class="sd">        ```py</span>
+</span><span id="ClientApp-261"><a href="#ClientApp-261"><span class="linenos">261</span></a><span class="sd">        async def main() -&gt; None:</span>
+</span><span id="ClientApp-262"><a href="#ClientApp-262"><span class="linenos">262</span></a><span class="sd">            await fetch(...)</span>
+</span><span id="ClientApp-263"><a href="#ClientApp-263"><span class="linenos">263</span></a>
+</span><span id="ClientApp-264"><a href="#ClientApp-264"><span class="linenos">264</span></a><span class="sd">        # Run the coroutine.</span>
+</span><span id="ClientApp-265"><a href="#ClientApp-265"><span class="linenos">265</span></a><span class="sd">        client.run(main())</span>
+</span><span id="ClientApp-266"><a href="#ClientApp-266"><span class="linenos">266</span></a><span class="sd">        ```</span>
+</span><span id="ClientApp-267"><a href="#ClientApp-267"><span class="linenos">267</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="ClientApp-268"><a href="#ClientApp-268"><span class="linenos">268</span></a>
+</span><span id="ClientApp-269"><a href="#ClientApp-269"><span class="linenos">269</span></a>    <span class="nd">@property</span>
+</span><span id="ClientApp-270"><a href="#ClientApp-270"><span class="linenos">270</span></a>    <span class="k">def</span> <span class="nf">rest</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">interfaces</span><span class="o">.</span><span class="n">RESTInterface</span><span class="p">:</span>
+</span><span id="ClientApp-271"><a href="#ClientApp-271"><span class="linenos">271</span></a>        <span class="sd">&quot;&quot;&quot;Returns the REST client for the this client.&quot;&quot;&quot;</span>
+</span><span id="ClientApp-272"><a href="#ClientApp-272"><span class="linenos">272</span></a>        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+</span><span id="ClientApp-273"><a href="#ClientApp-273"><span class="linenos">273</span></a>
+</span><span id="ClientApp-274"><a href="#ClientApp-274"><span class="linenos">274</span></a>    <span class="nd">@property</span>
+</span><span id="ClientApp-275"><a href="#ClientApp-275"><span class="linenos">275</span></a>    <span class="k">def</span> <span class="nf">metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
+</span><span id="ClientApp-276"><a href="#ClientApp-276"><span class="linenos">276</span></a>        <span class="sd">&quot;&quot;&quot;A mutable mapping storage for the user&#39;s needs.&quot;&quot;&quot;</span>
+</span><span id="ClientApp-277"><a href="#ClientApp-277"><span class="linenos">277</span></a>        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 </span></pre></div>
 
 
@@ -512,30 +535,30 @@
 
     </div>
     <a class="headerlink" href="#ClientApp.run"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="ClientApp.run-224"><a href="#ClientApp.run-224"><span class="linenos">224</span></a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
-</span><span id="ClientApp.run-225"><a href="#ClientApp.run-225"><span class="linenos">225</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">future</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Coroutine</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span id="ClientApp.run-226"><a href="#ClientApp.run-226"><span class="linenos">226</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="ClientApp.run-227"><a href="#ClientApp.run-227"><span class="linenos">227</span></a>        <span class="sd">&quot;&quot;&quot;Runs a coroutine function until its complete.</span>
-</span><span id="ClientApp.run-228"><a href="#ClientApp.run-228"><span class="linenos">228</span></a>
-</span><span id="ClientApp.run-229"><a href="#ClientApp.run-229"><span class="linenos">229</span></a><span class="sd">        This is equivalent to `asyncio.get_event_loop().run_until_complete(...)`</span>
-</span><span id="ClientApp.run-230"><a href="#ClientApp.run-230"><span class="linenos">230</span></a>
-</span><span id="ClientApp.run-231"><a href="#ClientApp.run-231"><span class="linenos">231</span></a><span class="sd">        Parameters</span>
-</span><span id="ClientApp.run-232"><a href="#ClientApp.run-232"><span class="linenos">232</span></a><span class="sd">        ----------</span>
-</span><span id="ClientApp.run-233"><a href="#ClientApp.run-233"><span class="linenos">233</span></a><span class="sd">        future: `collections.Coroutine[None, None, None]`</span>
-</span><span id="ClientApp.run-234"><a href="#ClientApp.run-234"><span class="linenos">234</span></a><span class="sd">            A coroutine object.</span>
-</span><span id="ClientApp.run-235"><a href="#ClientApp.run-235"><span class="linenos">235</span></a><span class="sd">        debug : `bool`</span>
-</span><span id="ClientApp.run-236"><a href="#ClientApp.run-236"><span class="linenos">236</span></a><span class="sd">            Either to enable asyncio debug or not. Disabled by default.</span>
-</span><span id="ClientApp.run-237"><a href="#ClientApp.run-237"><span class="linenos">237</span></a>
-</span><span id="ClientApp.run-238"><a href="#ClientApp.run-238"><span class="linenos">238</span></a><span class="sd">        Example</span>
-</span><span id="ClientApp.run-239"><a href="#ClientApp.run-239"><span class="linenos">239</span></a><span class="sd">        -------</span>
-</span><span id="ClientApp.run-240"><a href="#ClientApp.run-240"><span class="linenos">240</span></a><span class="sd">        ```py</span>
-</span><span id="ClientApp.run-241"><a href="#ClientApp.run-241"><span class="linenos">241</span></a><span class="sd">        async def main() -&gt; None:</span>
-</span><span id="ClientApp.run-242"><a href="#ClientApp.run-242"><span class="linenos">242</span></a><span class="sd">            await fetch(...)</span>
-</span><span id="ClientApp.run-243"><a href="#ClientApp.run-243"><span class="linenos">243</span></a>
-</span><span id="ClientApp.run-244"><a href="#ClientApp.run-244"><span class="linenos">244</span></a><span class="sd">        # Run the coroutine.</span>
-</span><span id="ClientApp.run-245"><a href="#ClientApp.run-245"><span class="linenos">245</span></a><span class="sd">        client.run(main())</span>
-</span><span id="ClientApp.run-246"><a href="#ClientApp.run-246"><span class="linenos">246</span></a><span class="sd">        ```</span>
-</span><span id="ClientApp.run-247"><a href="#ClientApp.run-247"><span class="linenos">247</span></a><span class="sd">        &quot;&quot;&quot;</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="ClientApp.run-244"><a href="#ClientApp.run-244"><span class="linenos">244</span></a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
+</span><span id="ClientApp.run-245"><a href="#ClientApp.run-245"><span class="linenos">245</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">future</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Coroutine</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="ClientApp.run-246"><a href="#ClientApp.run-246"><span class="linenos">246</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="ClientApp.run-247"><a href="#ClientApp.run-247"><span class="linenos">247</span></a>        <span class="sd">&quot;&quot;&quot;Runs a coroutine function until its complete.</span>
+</span><span id="ClientApp.run-248"><a href="#ClientApp.run-248"><span class="linenos">248</span></a>
+</span><span id="ClientApp.run-249"><a href="#ClientApp.run-249"><span class="linenos">249</span></a><span class="sd">        This is equivalent to `asyncio.get_event_loop().run_until_complete(...)`</span>
+</span><span id="ClientApp.run-250"><a href="#ClientApp.run-250"><span class="linenos">250</span></a>
+</span><span id="ClientApp.run-251"><a href="#ClientApp.run-251"><span class="linenos">251</span></a><span class="sd">        Parameters</span>
+</span><span id="ClientApp.run-252"><a href="#ClientApp.run-252"><span class="linenos">252</span></a><span class="sd">        ----------</span>
+</span><span id="ClientApp.run-253"><a href="#ClientApp.run-253"><span class="linenos">253</span></a><span class="sd">        future: `collections.Coroutine[None, None, None]`</span>
+</span><span id="ClientApp.run-254"><a href="#ClientApp.run-254"><span class="linenos">254</span></a><span class="sd">            A coroutine object.</span>
+</span><span id="ClientApp.run-255"><a href="#ClientApp.run-255"><span class="linenos">255</span></a><span class="sd">        debug : `bool`</span>
+</span><span id="ClientApp.run-256"><a href="#ClientApp.run-256"><span class="linenos">256</span></a><span class="sd">            Either to enable asyncio debug or not. Disabled by default.</span>
+</span><span id="ClientApp.run-257"><a href="#ClientApp.run-257"><span class="linenos">257</span></a>
+</span><span id="ClientApp.run-258"><a href="#ClientApp.run-258"><span class="linenos">258</span></a><span class="sd">        Example</span>
+</span><span id="ClientApp.run-259"><a href="#ClientApp.run-259"><span class="linenos">259</span></a><span class="sd">        -------</span>
+</span><span id="ClientApp.run-260"><a href="#ClientApp.run-260"><span class="linenos">260</span></a><span class="sd">        ```py</span>
+</span><span id="ClientApp.run-261"><a href="#ClientApp.run-261"><span class="linenos">261</span></a><span class="sd">        async def main() -&gt; None:</span>
+</span><span id="ClientApp.run-262"><a href="#ClientApp.run-262"><span class="linenos">262</span></a><span class="sd">            await fetch(...)</span>
+</span><span id="ClientApp.run-263"><a href="#ClientApp.run-263"><span class="linenos">263</span></a>
+</span><span id="ClientApp.run-264"><a href="#ClientApp.run-264"><span class="linenos">264</span></a><span class="sd">        # Run the coroutine.</span>
+</span><span id="ClientApp.run-265"><a href="#ClientApp.run-265"><span class="linenos">265</span></a><span class="sd">        client.run(main())</span>
+</span><span id="ClientApp.run-266"><a href="#ClientApp.run-266"><span class="linenos">266</span></a><span class="sd">        ```</span>
+</span><span id="ClientApp.run-267"><a href="#ClientApp.run-267"><span class="linenos">267</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span></pre></div>
 
 
@@ -888,38 +911,58 @@ into a <code>aiobungie.crate</code> implementation using the <code><a href="#Ser
 </span><span id="RESTful-178"><a href="#RESTful-178"><span class="linenos">178</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="RESTful-179"><a href="#RESTful-179"><span class="linenos">179</span></a>        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 </span><span id="RESTful-180"><a href="#RESTful-180"><span class="linenos">180</span></a>
-</span><span id="RESTful-181"><a href="#RESTful-181"><span class="linenos">181</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="RESTful-182"><a href="#RESTful-182"><span class="linenos">182</span></a>        <span class="sd">&quot;&quot;&quot;Close this REST client session if it was acquired.&quot;&quot;&quot;</span>
-</span><span id="RESTful-183"><a href="#RESTful-183"><span class="linenos">183</span></a>        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-</span><span id="RESTful-184"><a href="#RESTful-184"><span class="linenos">184</span></a>
-</span><span id="RESTful-185"><a href="#RESTful-185"><span class="linenos">185</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">static_request</span><span class="p">(</span>
-</span><span id="RESTful-186"><a href="#RESTful-186"><span class="linenos">186</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="RESTful-187"><a href="#RESTful-187"><span class="linenos">187</span></a>        <span class="n">method</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">rest</span><span class="o">.</span><span class="n">RequestMethod</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
-</span><span id="RESTful-188"><a href="#RESTful-188"><span class="linenos">188</span></a>        <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span id="RESTful-189"><a href="#RESTful-189"><span class="linenos">189</span></a>        <span class="o">*</span><span class="p">,</span>
-</span><span id="RESTful-190"><a href="#RESTful-190"><span class="linenos">190</span></a>        <span class="n">auth</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="RESTful-191"><a href="#RESTful-191"><span class="linenos">191</span></a>        <span class="n">json</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="RESTful-192"><a href="#RESTful-192"><span class="linenos">192</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">rest</span><span class="o">.</span><span class="n">ResponseSig</span><span class="p">:</span>
-</span><span id="RESTful-193"><a href="#RESTful-193"><span class="linenos">193</span></a>        <span class="sd">&quot;&quot;&quot;Perform an HTTP request given a valid Bungie endpoint.</span>
-</span><span id="RESTful-194"><a href="#RESTful-194"><span class="linenos">194</span></a>
-</span><span id="RESTful-195"><a href="#RESTful-195"><span class="linenos">195</span></a><span class="sd">        Parameters</span>
-</span><span id="RESTful-196"><a href="#RESTful-196"><span class="linenos">196</span></a><span class="sd">        ----------</span>
-</span><span id="RESTful-197"><a href="#RESTful-197"><span class="linenos">197</span></a><span class="sd">        method : `aiobungie.rest.RequestMethod | str`</span>
-</span><span id="RESTful-198"><a href="#RESTful-198"><span class="linenos">198</span></a><span class="sd">            The request method, This may be `GET`, `POST`, `PUT`, etc.</span>
-</span><span id="RESTful-199"><a href="#RESTful-199"><span class="linenos">199</span></a><span class="sd">        path: `str`</span>
-</span><span id="RESTful-200"><a href="#RESTful-200"><span class="linenos">200</span></a><span class="sd">            The Bungie endpoint or path.</span>
-</span><span id="RESTful-201"><a href="#RESTful-201"><span class="linenos">201</span></a><span class="sd">            A path must look something like this `Destiny2/3/Profile/46111239123/...`</span>
-</span><span id="RESTful-202"><a href="#RESTful-202"><span class="linenos">202</span></a><span class="sd">        auth : `str | None`</span>
-</span><span id="RESTful-203"><a href="#RESTful-203"><span class="linenos">203</span></a><span class="sd">            An optional bearer token for methods that requires OAuth2 Authorization header.</span>
-</span><span id="RESTful-204"><a href="#RESTful-204"><span class="linenos">204</span></a><span class="sd">        json : `dict[str, typing.Any] | None`</span>
-</span><span id="RESTful-205"><a href="#RESTful-205"><span class="linenos">205</span></a><span class="sd">            An optional JSON data to include in the request.</span>
-</span><span id="RESTful-206"><a href="#RESTful-206"><span class="linenos">206</span></a>
-</span><span id="RESTful-207"><a href="#RESTful-207"><span class="linenos">207</span></a><span class="sd">        Returns</span>
-</span><span id="RESTful-208"><a href="#RESTful-208"><span class="linenos">208</span></a><span class="sd">        -------</span>
-</span><span id="RESTful-209"><a href="#RESTful-209"><span class="linenos">209</span></a><span class="sd">        `aiobungie.rest.ResponseSig`</span>
-</span><span id="RESTful-210"><a href="#RESTful-210"><span class="linenos">210</span></a><span class="sd">            The response payload.</span>
-</span><span id="RESTful-211"><a href="#RESTful-211"><span class="linenos">211</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="RESTful-212"><a href="#RESTful-212"><span class="linenos">212</span></a>        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+</span><span id="RESTful-181"><a href="#RESTful-181"><span class="linenos">181</span></a>    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="RESTful-182"><a href="#RESTful-182"><span class="linenos">182</span></a>        <span class="sd">&quot;&quot;&quot;Prepare and opens the REST client connection.</span>
+</span><span id="RESTful-183"><a href="#RESTful-183"><span class="linenos">183</span></a>
+</span><span id="RESTful-184"><a href="#RESTful-184"><span class="linenos">184</span></a><span class="sd">        This method is automatically called when using `async with` contextmanager.</span>
+</span><span id="RESTful-185"><a href="#RESTful-185"><span class="linenos">185</span></a>
+</span><span id="RESTful-186"><a href="#RESTful-186"><span class="linenos">186</span></a><span class="sd">        Raises</span>
+</span><span id="RESTful-187"><a href="#RESTful-187"><span class="linenos">187</span></a><span class="sd">        ------</span>
+</span><span id="RESTful-188"><a href="#RESTful-188"><span class="linenos">188</span></a><span class="sd">        `RuntimeError`</span>
+</span><span id="RESTful-189"><a href="#RESTful-189"><span class="linenos">189</span></a><span class="sd">            If the client is already open.</span>
+</span><span id="RESTful-190"><a href="#RESTful-190"><span class="linenos">190</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="RESTful-191"><a href="#RESTful-191"><span class="linenos">191</span></a>        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+</span><span id="RESTful-192"><a href="#RESTful-192"><span class="linenos">192</span></a>
+</span><span id="RESTful-193"><a href="#RESTful-193"><span class="linenos">193</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="RESTful-194"><a href="#RESTful-194"><span class="linenos">194</span></a>        <span class="sd">&quot;&quot;&quot;Close this REST client session if it was acquired.</span>
+</span><span id="RESTful-195"><a href="#RESTful-195"><span class="linenos">195</span></a>
+</span><span id="RESTful-196"><a href="#RESTful-196"><span class="linenos">196</span></a><span class="sd">        This method is automatically called when using `async with` contextmanager.</span>
+</span><span id="RESTful-197"><a href="#RESTful-197"><span class="linenos">197</span></a>
+</span><span id="RESTful-198"><a href="#RESTful-198"><span class="linenos">198</span></a><span class="sd">        Raises</span>
+</span><span id="RESTful-199"><a href="#RESTful-199"><span class="linenos">199</span></a><span class="sd">        ------</span>
+</span><span id="RESTful-200"><a href="#RESTful-200"><span class="linenos">200</span></a><span class="sd">        `RuntimeError`</span>
+</span><span id="RESTful-201"><a href="#RESTful-201"><span class="linenos">201</span></a><span class="sd">            If the client is already closed.</span>
+</span><span id="RESTful-202"><a href="#RESTful-202"><span class="linenos">202</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="RESTful-203"><a href="#RESTful-203"><span class="linenos">203</span></a>        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+</span><span id="RESTful-204"><a href="#RESTful-204"><span class="linenos">204</span></a>
+</span><span id="RESTful-205"><a href="#RESTful-205"><span class="linenos">205</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">static_request</span><span class="p">(</span>
+</span><span id="RESTful-206"><a href="#RESTful-206"><span class="linenos">206</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="RESTful-207"><a href="#RESTful-207"><span class="linenos">207</span></a>        <span class="n">method</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">rest</span><span class="o">.</span><span class="n">RequestMethod</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+</span><span id="RESTful-208"><a href="#RESTful-208"><span class="linenos">208</span></a>        <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span id="RESTful-209"><a href="#RESTful-209"><span class="linenos">209</span></a>        <span class="o">*</span><span class="p">,</span>
+</span><span id="RESTful-210"><a href="#RESTful-210"><span class="linenos">210</span></a>        <span class="n">auth</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="RESTful-211"><a href="#RESTful-211"><span class="linenos">211</span></a>        <span class="n">json</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="RESTful-212"><a href="#RESTful-212"><span class="linenos">212</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">rest</span><span class="o">.</span><span class="n">ResponseSig</span><span class="p">:</span>
+</span><span id="RESTful-213"><a href="#RESTful-213"><span class="linenos">213</span></a>        <span class="sd">&quot;&quot;&quot;Perform an HTTP request given a valid Bungie endpoint.</span>
+</span><span id="RESTful-214"><a href="#RESTful-214"><span class="linenos">214</span></a>
+</span><span id="RESTful-215"><a href="#RESTful-215"><span class="linenos">215</span></a><span class="sd">        Parameters</span>
+</span><span id="RESTful-216"><a href="#RESTful-216"><span class="linenos">216</span></a><span class="sd">        ----------</span>
+</span><span id="RESTful-217"><a href="#RESTful-217"><span class="linenos">217</span></a><span class="sd">        method : `aiobungie.rest.RequestMethod | str`</span>
+</span><span id="RESTful-218"><a href="#RESTful-218"><span class="linenos">218</span></a><span class="sd">            The request method, This may be `GET`, `POST`, `PUT`, etc.</span>
+</span><span id="RESTful-219"><a href="#RESTful-219"><span class="linenos">219</span></a><span class="sd">        path: `str`</span>
+</span><span id="RESTful-220"><a href="#RESTful-220"><span class="linenos">220</span></a><span class="sd">            The Bungie endpoint or path.</span>
+</span><span id="RESTful-221"><a href="#RESTful-221"><span class="linenos">221</span></a><span class="sd">            A path must look something like this `Destiny2/3/Profile/46111239123/...`</span>
+</span><span id="RESTful-222"><a href="#RESTful-222"><span class="linenos">222</span></a><span class="sd">        auth : `str | None`</span>
+</span><span id="RESTful-223"><a href="#RESTful-223"><span class="linenos">223</span></a><span class="sd">            An optional bearer token for methods that requires OAuth2 Authorization header.</span>
+</span><span id="RESTful-224"><a href="#RESTful-224"><span class="linenos">224</span></a><span class="sd">        json : `dict[str, typing.Any] | None`</span>
+</span><span id="RESTful-225"><a href="#RESTful-225"><span class="linenos">225</span></a><span class="sd">            An optional JSON data to include in the request.</span>
+</span><span id="RESTful-226"><a href="#RESTful-226"><span class="linenos">226</span></a>
+</span><span id="RESTful-227"><a href="#RESTful-227"><span class="linenos">227</span></a><span class="sd">        Returns</span>
+</span><span id="RESTful-228"><a href="#RESTful-228"><span class="linenos">228</span></a><span class="sd">        -------</span>
+</span><span id="RESTful-229"><a href="#RESTful-229"><span class="linenos">229</span></a><span class="sd">        `aiobungie.rest.ResponseSig`</span>
+</span><span id="RESTful-230"><a href="#RESTful-230"><span class="linenos">230</span></a><span class="sd">            The response payload.</span>
+</span><span id="RESTful-231"><a href="#RESTful-231"><span class="linenos">231</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="RESTful-232"><a href="#RESTful-232"><span class="linenos">232</span></a>        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 </span></pre></div>
 
 
@@ -1088,6 +1131,44 @@ Otherwise <code>None</code> will be returned.</li>
 
 
                             </div>
+                            <div id="RESTful.open" class="classattr">
+                                        <input id="RESTful.open-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">open</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="kc">None</span>:</span></span>
+
+                <label class="view-source-button" for="RESTful.open-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#RESTful.open"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="RESTful.open-181"><a href="#RESTful.open-181"><span class="linenos">181</span></a>    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="RESTful.open-182"><a href="#RESTful.open-182"><span class="linenos">182</span></a>        <span class="sd">&quot;&quot;&quot;Prepare and opens the REST client connection.</span>
+</span><span id="RESTful.open-183"><a href="#RESTful.open-183"><span class="linenos">183</span></a>
+</span><span id="RESTful.open-184"><a href="#RESTful.open-184"><span class="linenos">184</span></a><span class="sd">        This method is automatically called when using `async with` contextmanager.</span>
+</span><span id="RESTful.open-185"><a href="#RESTful.open-185"><span class="linenos">185</span></a>
+</span><span id="RESTful.open-186"><a href="#RESTful.open-186"><span class="linenos">186</span></a><span class="sd">        Raises</span>
+</span><span id="RESTful.open-187"><a href="#RESTful.open-187"><span class="linenos">187</span></a><span class="sd">        ------</span>
+</span><span id="RESTful.open-188"><a href="#RESTful.open-188"><span class="linenos">188</span></a><span class="sd">        `RuntimeError`</span>
+</span><span id="RESTful.open-189"><a href="#RESTful.open-189"><span class="linenos">189</span></a><span class="sd">            If the client is already open.</span>
+</span><span id="RESTful.open-190"><a href="#RESTful.open-190"><span class="linenos">190</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="RESTful.open-191"><a href="#RESTful.open-191"><span class="linenos">191</span></a>        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Prepare and opens the REST client connection.</p>
+
+<p>This method is automatically called when using <code>async with</code> contextmanager.</p>
+
+<h6 id="raises">Raises</h6>
+
+<ul>
+<li><strong><code>RuntimeError</code></strong>: If the client is already open.</li>
+</ul>
+</div>
+
+
+                            </div>
                             <div id="RESTful.close" class="classattr">
                                         <input id="RESTful.close-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
@@ -1099,13 +1180,29 @@ Otherwise <code>None</code> will be returned.</li>
 
     </div>
     <a class="headerlink" href="#RESTful.close"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="RESTful.close-181"><a href="#RESTful.close-181"><span class="linenos">181</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="RESTful.close-182"><a href="#RESTful.close-182"><span class="linenos">182</span></a>        <span class="sd">&quot;&quot;&quot;Close this REST client session if it was acquired.&quot;&quot;&quot;</span>
-</span><span id="RESTful.close-183"><a href="#RESTful.close-183"><span class="linenos">183</span></a>        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="RESTful.close-193"><a href="#RESTful.close-193"><span class="linenos">193</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="RESTful.close-194"><a href="#RESTful.close-194"><span class="linenos">194</span></a>        <span class="sd">&quot;&quot;&quot;Close this REST client session if it was acquired.</span>
+</span><span id="RESTful.close-195"><a href="#RESTful.close-195"><span class="linenos">195</span></a>
+</span><span id="RESTful.close-196"><a href="#RESTful.close-196"><span class="linenos">196</span></a><span class="sd">        This method is automatically called when using `async with` contextmanager.</span>
+</span><span id="RESTful.close-197"><a href="#RESTful.close-197"><span class="linenos">197</span></a>
+</span><span id="RESTful.close-198"><a href="#RESTful.close-198"><span class="linenos">198</span></a><span class="sd">        Raises</span>
+</span><span id="RESTful.close-199"><a href="#RESTful.close-199"><span class="linenos">199</span></a><span class="sd">        ------</span>
+</span><span id="RESTful.close-200"><a href="#RESTful.close-200"><span class="linenos">200</span></a><span class="sd">        `RuntimeError`</span>
+</span><span id="RESTful.close-201"><a href="#RESTful.close-201"><span class="linenos">201</span></a><span class="sd">            If the client is already closed.</span>
+</span><span id="RESTful.close-202"><a href="#RESTful.close-202"><span class="linenos">202</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="RESTful.close-203"><a href="#RESTful.close-203"><span class="linenos">203</span></a>        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 </span></pre></div>
 
 
             <div class="docstring"><p>Close this REST client session if it was acquired.</p>
+
+<p>This method is automatically called when using <code>async with</code> contextmanager.</p>
+
+<h6 id="raises">Raises</h6>
+
+<ul>
+<li><strong><code>RuntimeError</code></strong>: If the client is already closed.</li>
+</ul>
 </div>
 
 
@@ -1121,34 +1218,34 @@ Otherwise <code>None</code> will be returned.</li>
 
     </div>
     <a class="headerlink" href="#RESTful.static_request"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="RESTful.static_request-185"><a href="#RESTful.static_request-185"><span class="linenos">185</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">static_request</span><span class="p">(</span>
-</span><span id="RESTful.static_request-186"><a href="#RESTful.static_request-186"><span class="linenos">186</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="RESTful.static_request-187"><a href="#RESTful.static_request-187"><span class="linenos">187</span></a>        <span class="n">method</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">rest</span><span class="o">.</span><span class="n">RequestMethod</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
-</span><span id="RESTful.static_request-188"><a href="#RESTful.static_request-188"><span class="linenos">188</span></a>        <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span id="RESTful.static_request-189"><a href="#RESTful.static_request-189"><span class="linenos">189</span></a>        <span class="o">*</span><span class="p">,</span>
-</span><span id="RESTful.static_request-190"><a href="#RESTful.static_request-190"><span class="linenos">190</span></a>        <span class="n">auth</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="RESTful.static_request-191"><a href="#RESTful.static_request-191"><span class="linenos">191</span></a>        <span class="n">json</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span id="RESTful.static_request-192"><a href="#RESTful.static_request-192"><span class="linenos">192</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">rest</span><span class="o">.</span><span class="n">ResponseSig</span><span class="p">:</span>
-</span><span id="RESTful.static_request-193"><a href="#RESTful.static_request-193"><span class="linenos">193</span></a>        <span class="sd">&quot;&quot;&quot;Perform an HTTP request given a valid Bungie endpoint.</span>
-</span><span id="RESTful.static_request-194"><a href="#RESTful.static_request-194"><span class="linenos">194</span></a>
-</span><span id="RESTful.static_request-195"><a href="#RESTful.static_request-195"><span class="linenos">195</span></a><span class="sd">        Parameters</span>
-</span><span id="RESTful.static_request-196"><a href="#RESTful.static_request-196"><span class="linenos">196</span></a><span class="sd">        ----------</span>
-</span><span id="RESTful.static_request-197"><a href="#RESTful.static_request-197"><span class="linenos">197</span></a><span class="sd">        method : `aiobungie.rest.RequestMethod | str`</span>
-</span><span id="RESTful.static_request-198"><a href="#RESTful.static_request-198"><span class="linenos">198</span></a><span class="sd">            The request method, This may be `GET`, `POST`, `PUT`, etc.</span>
-</span><span id="RESTful.static_request-199"><a href="#RESTful.static_request-199"><span class="linenos">199</span></a><span class="sd">        path: `str`</span>
-</span><span id="RESTful.static_request-200"><a href="#RESTful.static_request-200"><span class="linenos">200</span></a><span class="sd">            The Bungie endpoint or path.</span>
-</span><span id="RESTful.static_request-201"><a href="#RESTful.static_request-201"><span class="linenos">201</span></a><span class="sd">            A path must look something like this `Destiny2/3/Profile/46111239123/...`</span>
-</span><span id="RESTful.static_request-202"><a href="#RESTful.static_request-202"><span class="linenos">202</span></a><span class="sd">        auth : `str | None`</span>
-</span><span id="RESTful.static_request-203"><a href="#RESTful.static_request-203"><span class="linenos">203</span></a><span class="sd">            An optional bearer token for methods that requires OAuth2 Authorization header.</span>
-</span><span id="RESTful.static_request-204"><a href="#RESTful.static_request-204"><span class="linenos">204</span></a><span class="sd">        json : `dict[str, typing.Any] | None`</span>
-</span><span id="RESTful.static_request-205"><a href="#RESTful.static_request-205"><span class="linenos">205</span></a><span class="sd">            An optional JSON data to include in the request.</span>
-</span><span id="RESTful.static_request-206"><a href="#RESTful.static_request-206"><span class="linenos">206</span></a>
-</span><span id="RESTful.static_request-207"><a href="#RESTful.static_request-207"><span class="linenos">207</span></a><span class="sd">        Returns</span>
-</span><span id="RESTful.static_request-208"><a href="#RESTful.static_request-208"><span class="linenos">208</span></a><span class="sd">        -------</span>
-</span><span id="RESTful.static_request-209"><a href="#RESTful.static_request-209"><span class="linenos">209</span></a><span class="sd">        `aiobungie.rest.ResponseSig`</span>
-</span><span id="RESTful.static_request-210"><a href="#RESTful.static_request-210"><span class="linenos">210</span></a><span class="sd">            The response payload.</span>
-</span><span id="RESTful.static_request-211"><a href="#RESTful.static_request-211"><span class="linenos">211</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="RESTful.static_request-212"><a href="#RESTful.static_request-212"><span class="linenos">212</span></a>        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="RESTful.static_request-205"><a href="#RESTful.static_request-205"><span class="linenos">205</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">static_request</span><span class="p">(</span>
+</span><span id="RESTful.static_request-206"><a href="#RESTful.static_request-206"><span class="linenos">206</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="RESTful.static_request-207"><a href="#RESTful.static_request-207"><span class="linenos">207</span></a>        <span class="n">method</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">rest</span><span class="o">.</span><span class="n">RequestMethod</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+</span><span id="RESTful.static_request-208"><a href="#RESTful.static_request-208"><span class="linenos">208</span></a>        <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span id="RESTful.static_request-209"><a href="#RESTful.static_request-209"><span class="linenos">209</span></a>        <span class="o">*</span><span class="p">,</span>
+</span><span id="RESTful.static_request-210"><a href="#RESTful.static_request-210"><span class="linenos">210</span></a>        <span class="n">auth</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="RESTful.static_request-211"><a href="#RESTful.static_request-211"><span class="linenos">211</span></a>        <span class="n">json</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="RESTful.static_request-212"><a href="#RESTful.static_request-212"><span class="linenos">212</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">rest</span><span class="o">.</span><span class="n">ResponseSig</span><span class="p">:</span>
+</span><span id="RESTful.static_request-213"><a href="#RESTful.static_request-213"><span class="linenos">213</span></a>        <span class="sd">&quot;&quot;&quot;Perform an HTTP request given a valid Bungie endpoint.</span>
+</span><span id="RESTful.static_request-214"><a href="#RESTful.static_request-214"><span class="linenos">214</span></a>
+</span><span id="RESTful.static_request-215"><a href="#RESTful.static_request-215"><span class="linenos">215</span></a><span class="sd">        Parameters</span>
+</span><span id="RESTful.static_request-216"><a href="#RESTful.static_request-216"><span class="linenos">216</span></a><span class="sd">        ----------</span>
+</span><span id="RESTful.static_request-217"><a href="#RESTful.static_request-217"><span class="linenos">217</span></a><span class="sd">        method : `aiobungie.rest.RequestMethod | str`</span>
+</span><span id="RESTful.static_request-218"><a href="#RESTful.static_request-218"><span class="linenos">218</span></a><span class="sd">            The request method, This may be `GET`, `POST`, `PUT`, etc.</span>
+</span><span id="RESTful.static_request-219"><a href="#RESTful.static_request-219"><span class="linenos">219</span></a><span class="sd">        path: `str`</span>
+</span><span id="RESTful.static_request-220"><a href="#RESTful.static_request-220"><span class="linenos">220</span></a><span class="sd">            The Bungie endpoint or path.</span>
+</span><span id="RESTful.static_request-221"><a href="#RESTful.static_request-221"><span class="linenos">221</span></a><span class="sd">            A path must look something like this `Destiny2/3/Profile/46111239123/...`</span>
+</span><span id="RESTful.static_request-222"><a href="#RESTful.static_request-222"><span class="linenos">222</span></a><span class="sd">        auth : `str | None`</span>
+</span><span id="RESTful.static_request-223"><a href="#RESTful.static_request-223"><span class="linenos">223</span></a><span class="sd">            An optional bearer token for methods that requires OAuth2 Authorization header.</span>
+</span><span id="RESTful.static_request-224"><a href="#RESTful.static_request-224"><span class="linenos">224</span></a><span class="sd">        json : `dict[str, typing.Any] | None`</span>
+</span><span id="RESTful.static_request-225"><a href="#RESTful.static_request-225"><span class="linenos">225</span></a><span class="sd">            An optional JSON data to include in the request.</span>
+</span><span id="RESTful.static_request-226"><a href="#RESTful.static_request-226"><span class="linenos">226</span></a>
+</span><span id="RESTful.static_request-227"><a href="#RESTful.static_request-227"><span class="linenos">227</span></a><span class="sd">        Returns</span>
+</span><span id="RESTful.static_request-228"><a href="#RESTful.static_request-228"><span class="linenos">228</span></a><span class="sd">        -------</span>
+</span><span id="RESTful.static_request-229"><a href="#RESTful.static_request-229"><span class="linenos">229</span></a><span class="sd">        `aiobungie.rest.ResponseSig`</span>
+</span><span id="RESTful.static_request-230"><a href="#RESTful.static_request-230"><span class="linenos">230</span></a><span class="sd">            The response payload.</span>
+</span><span id="RESTful.static_request-231"><a href="#RESTful.static_request-231"><span class="linenos">231</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="RESTful.static_request-232"><a href="#RESTful.static_request-232"><span class="linenos">232</span></a>        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 </span></pre></div>
 
 

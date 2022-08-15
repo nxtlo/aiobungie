@@ -244,7 +244,7 @@ class RESTPool:
     """Pool of `RESTClient` instances.
 
     This allows to create multiple instances of `RESTClient`s that can be acquired
-    which share the same connector and metadata.
+    which share the same config and metadata.
 
     Example
     -------
@@ -457,9 +457,23 @@ class RESTClient(interfaces.RESTInterface):
 
     @typing.final
     async def close(self) -> None:
-        if self._session is not None:
-            await self._session.close()
-            self._session = None
+        session = self._get_session()
+        await session.close()
+        self._session = None
+
+    @typing.final
+    def open(self) -> None:
+        """Open a new client session. This is called internally with contextmanager usage."""
+        if self.is_alive:
+            raise RuntimeError("Cannot open a new session while it's already open.")
+
+        self._session = _Session.create(
+            owner=False,
+            raise_status=False,
+            connect=None,
+            socket_read=None,
+            socket_connect=None,
+        )
 
     @typing.final
     def enable_debugging(
@@ -495,19 +509,6 @@ class RESTClient(interfaces.RESTInterface):
             uuid=_uuid(),
         )
 
-    def _open(self) -> _Session:
-        """Open a new client session. This is called internally with contextmanager usage."""
-        asyncio.get_running_loop()
-        if self._session is None:
-            self._session = _Session.create(
-                owner=False,
-                raise_status=False,
-                connect=None,
-                socket_read=None,
-                socket_connect=None,
-            )
-        return self._session
-
     @staticmethod
     def _set_debug_level(
         level: typing.Union[typing.Literal["TRACE"], bool, int] = False,
@@ -525,6 +526,14 @@ class RESTClient(interfaces.RESTInterface):
                 level=logging.DEBUG, handlers=[file_handler] if file_handler else None
             )
 
+    def _get_session(self) -> _Session:
+        if self._session:
+            return self._session
+
+        raise RuntimeError(
+            "Cannot return a session while its close. Make sure you use `async with` before making requests."
+        )
+
     async def _request(
         self,
         method: typing.Union[RequestMethod, str],
@@ -540,7 +549,7 @@ class RESTClient(interfaces.RESTInterface):
     ) -> ResponseSig:
 
         retries: int = 0
-        session = self._open()
+        session = self._get_session()
         headers = headers or {}
 
         headers.setdefault(_USER_AGENT_HEADERS, _USER_AGENT)
@@ -612,7 +621,7 @@ class RESTClient(interfaces.RESTInterface):
                             )
 
                             if _LOG.isEnabledFor(TRACE):
-                                headers.update(response.headers)
+                                headers.update(response.headers)  # type: ignore
 
                                 _LOG.log(
                                     TRACE,
@@ -667,7 +676,7 @@ class RESTClient(interfaces.RESTInterface):
             ...
 
     async def __aenter__(self) -> RESTClient:
-        self._open()
+        self.open()
         return self
 
     async def __aexit__(

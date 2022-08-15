@@ -65,6 +65,19 @@ class Client(traits.ClientApp):
 
     A `aiobungie.RESTClient` REST client can also be used alone for low-level concepts.
 
+    Example
+    -------
+    ```py
+    import aiobungie
+
+    client = aiobungie.Client('...')
+
+    async def main():
+        async with client.rest:
+            user = await client.fetch_current_user_memberships('...')
+            print(user)
+    ```
+
     Parameters
     -----------
     token: `str`
@@ -150,11 +163,6 @@ class Client(traits.ClientApp):
         except KeyboardInterrupt:
             _LOG.warn("Unexpected Keyboard interrupt. Exiting.")
             return
-
-        finally:
-            if self._rest.is_alive:
-                # Clean up sessions.
-                loop.run_until_complete(self._rest.close())
 
     # * User methods.
 

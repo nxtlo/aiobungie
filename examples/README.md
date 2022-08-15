@@ -13,14 +13,14 @@ This will require an SSL certificate to be able to run the authentication web se
 Also another example in `transfer_items` will require your actual characters IDs and used within your OAuth2 implementation flow.
 
 After setting up everything in the chosen example simply run:
-```py
+```
 python example_file.py
 ```
 
 ## Examples List
-```
-1: hello_world => A very basic client that fetch our player memberships, find the Steam one, and then print information about it and its character equipments.
-2: manifest => Manifest usage example for both SQLite and JSON formats.
+```s
+1: hello_world => A simple example on how to use aiobungie client.
+2: manifest => Manifest usage example for both SQLite and JSON database.
 3: transfer_items => Transfer your items from a character to another.
 4: user_oauth2 => Full implementation on OAuth2 workflow.
 ```

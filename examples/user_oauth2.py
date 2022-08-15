@@ -43,9 +43,10 @@ async def redirect(request: aiohttp.web.Request) -> aiohttp.web.Response:
             # Make the request and fetch the OAuth2 tokens.
 
             tokens = await rest.fetch_oauth2_tokens(code)
-            request.app["token"] = tokens.access_token
+            # Store the access token in the pool metadata.
+            client.metadata["token"] = tokens.access_token
 
-            # Redirect to "/me" route with the access token in headers.
+            # Redirect to "/me" route with the access token.
             raise aiohttp.web.HTTPFound(location="/me", reason="OAuth2 success")
     else:
         # Otherwise return 404 and couldn't authenticate.
@@ -55,8 +56,8 @@ async def redirect(request: aiohttp.web.Request) -> aiohttp.web.Response:
 # Our own authenticated user route.
 @router.get("/me")
 async def my_user(request: aiohttp.web.Request) -> aiohttp.web.Response:
-    # Check our storage if it has the tokens stored.
-    if access_token := request.app.get("token"):
+    # Check our pool storage if it has the tokens stored.
+    if access_token := client.metadata.get("token"):
 
         # Fetch our current Bungie.net user.
         async with client.acquire() as rest:
@@ -87,6 +88,7 @@ def main() -> None:
 
     # Run the app.
     aiohttp.web.run_app(app, host="localhost", port=8000, ssl_context=ctx)
+
 
 if __name__ == '__main__':
     main()

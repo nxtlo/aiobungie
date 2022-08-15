@@ -24,27 +24,30 @@ Lookups the current manifest version.
 import json
 import sqlite3
 import random
+import asyncio
 
 import aiobungie
 
-client = aiobungie.Client("CLIENT_TOKEN")
+client = aiobungie.RESTClient("...")
 
 async def main():
-    # Download the SQLite manifest.
-    # The force parameter will force the download even if the file exists.
-    await client.rest.download_manifest(force=True)
 
-    # Download the JSON manifest.
-    await client.rest.download_json_manifest()
+    async with client:
+        # Download the SQLite manifest.
+        # The force parameter will force the download even if the file exists.
+        await client.download_manifest(force=True)
 
-    with open("manifest.json", "r") as f:
-        manifest_json = json.loads(f.read())
-        random_item = random.choice(list(manifest_json['DestinyInventoryItemDefinition'].values()))
-        print(random_item)
+        # Download the JSON manifest.
+        await client.download_json_manifest()
 
-    # The manifest version.
-    manifest_version = await client.rest.fetch_manifest_version()
-    print(manifest_version)
+        with open("manifest.json", "r") as f:
+            manifest_json = json.loads(f.read())
+            random_item = random.choice(list(manifest_json['DestinyInventoryItemDefinition'].values()))
+            print(random_item)
+
+        # The manifest version.
+        manifest_version = await client.fetch_manifest_version()
+        print(manifest_version)
 
     # Connect to the manifest database.
     # The default path is `manifest.sqlite3`.
@@ -54,20 +57,7 @@ async def main():
     levante_prize_json = manifest.cursor().execute(
         "SELECT json FROM DestinyInventoryItemDefinition WHERE id = -757221402"
     ).fetchone()
-
-    # Load the JSON string to a JSON object.
-    loaded_json: aiobungie.typedefs.JSONObject = json.loads(levante_prize_json[0])
-
-    # Deserialize the JSON object into an inventory item.
-    levante_prize = client.factory.deserialize_inventory_entity(loaded_json)
-
-    print(
-        repr(levante_prize)
-    )  # InventoryEntity(hash=3537745894, index=10835, name='The Levante Prize', description=UNDEFINED, type=<Item.EMBLEM: 14>, type_and_tier_name='Legendary Emblem')
-
-    # Perform an HTTP request fetching this entity.
-    up_to_date_levante_prize = await client.fetch_inventory_item(levante_prize.hash)
-    print(up_to_date_levante_prize)
+    print(levante_prize_json[0])
 
 if __name__ == '__main__':
-    client.run(main())
+    asyncio.run(main())

@@ -629,113 +629,115 @@
 </span><span id="L-502"><a href="#L-502"><span class="linenos">502</span></a>            <span class="n">func</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
 </span><span id="L-503"><a href="#L-503"><span class="linenos">503</span></a>
 </span><span id="L-504"><a href="#L-504"><span class="linenos">504</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">async_for_each</span><span class="p">(</span>
-</span><span id="L-505"><a href="#L-505"><span class="linenos">505</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="n">Item</span><span class="p">],</span> <span class="n">collections</span><span class="o">.</span><span class="n">Coroutine</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]]</span>
-</span><span id="L-506"><a href="#L-506"><span class="linenos">506</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="L-507"><a href="#L-507"><span class="linenos">507</span></a>        <span class="sd">&quot;&quot;&quot;Calls the async function on each item in the iterator concurrently.</span>
-</span><span id="L-508"><a href="#L-508"><span class="linenos">508</span></a>
-</span><span id="L-509"><a href="#L-509"><span class="linenos">509</span></a><span class="sd">        Example</span>
-</span><span id="L-510"><a href="#L-510"><span class="linenos">510</span></a><span class="sd">        -------</span>
-</span><span id="L-511"><a href="#L-511"><span class="linenos">511</span></a><span class="sd">        ```py</span>
-</span><span id="L-512"><a href="#L-512"><span class="linenos">512</span></a><span class="sd">        async def signup(username: str) -&gt; None:</span>
-</span><span id="L-513"><a href="#L-513"><span class="linenos">513</span></a><span class="sd">            async with aiohttp.request(&#39;POST&#39;, &#39;...&#39;) as r:</span>
-</span><span id="L-514"><a href="#L-514"><span class="linenos">514</span></a><span class="sd">                # Actual logic.</span>
-</span><span id="L-515"><a href="#L-515"><span class="linenos">515</span></a><span class="sd">                ...</span>
-</span><span id="L-516"><a href="#L-516"><span class="linenos">516</span></a>
-</span><span id="L-517"><a href="#L-517"><span class="linenos">517</span></a><span class="sd">        async def main():</span>
-</span><span id="L-518"><a href="#L-518"><span class="linenos">518</span></a><span class="sd">            users = aiobungie.into_iter([&quot;user_danny&quot;, &quot;user_jojo&quot;])</span>
-</span><span id="L-519"><a href="#L-519"><span class="linenos">519</span></a><span class="sd">            await users.async_for_each(lambda username: signup(username))</span>
-</span><span id="L-520"><a href="#L-520"><span class="linenos">520</span></a><span class="sd">        ```</span>
-</span><span id="L-521"><a href="#L-521"><span class="linenos">521</span></a>
-</span><span id="L-522"><a href="#L-522"><span class="linenos">522</span></a><span class="sd">        Parameters</span>
-</span><span id="L-523"><a href="#L-523"><span class="linenos">523</span></a><span class="sd">        ----------</span>
-</span><span id="L-524"><a href="#L-524"><span class="linenos">524</span></a><span class="sd">        func: `collections.Callable[[Item], collections.Coroutine[None, None, None]]`</span>
-</span><span id="L-525"><a href="#L-525"><span class="linenos">525</span></a><span class="sd">            The async function to call on each item in the iterator.</span>
-</span><span id="L-526"><a href="#L-526"><span class="linenos">526</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-527"><a href="#L-527"><span class="linenos">527</span></a>        <span class="k">await</span> <span class="n">_helpers</span><span class="o">.</span><span class="n">awaits</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">func</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">))</span>
-</span><span id="L-528"><a href="#L-528"><span class="linenos">528</span></a>
-</span><span id="L-529"><a href="#L-529"><span class="linenos">529</span></a>    <span class="k">def</span> <span class="nf">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FlatIterator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Item</span><span class="p">]]:</span>
-</span><span id="L-530"><a href="#L-530"><span class="linenos">530</span></a>        <span class="sd">&quot;&quot;&quot;Returns a new iterator that yields tuples of the index and item.</span>
-</span><span id="L-531"><a href="#L-531"><span class="linenos">531</span></a>
-</span><span id="L-532"><a href="#L-532"><span class="linenos">532</span></a><span class="sd">        Example</span>
-</span><span id="L-533"><a href="#L-533"><span class="linenos">533</span></a><span class="sd">        -------</span>
-</span><span id="L-534"><a href="#L-534"><span class="linenos">534</span></a><span class="sd">        ```py</span>
-</span><span id="L-535"><a href="#L-535"><span class="linenos">535</span></a><span class="sd">        iterator = FlatIterator([1, 2, 3])</span>
-</span><span id="L-536"><a href="#L-536"><span class="linenos">536</span></a><span class="sd">        for index, item in iterator.enumerate():</span>
-</span><span id="L-537"><a href="#L-537"><span class="linenos">537</span></a><span class="sd">            print(index, item)</span>
-</span><span id="L-538"><a href="#L-538"><span class="linenos">538</span></a><span class="sd">        # 0 1</span>
-</span><span id="L-539"><a href="#L-539"><span class="linenos">539</span></a><span class="sd">        # 1 2</span>
-</span><span id="L-540"><a href="#L-540"><span class="linenos">540</span></a><span class="sd">        # 2 3</span>
-</span><span id="L-541"><a href="#L-541"><span class="linenos">541</span></a><span class="sd">        ```</span>
-</span><span id="L-542"><a href="#L-542"><span class="linenos">542</span></a>
-</span><span id="L-543"><a href="#L-543"><span class="linenos">543</span></a><span class="sd">        Raises</span>
-</span><span id="L-544"><a href="#L-544"><span class="linenos">544</span></a><span class="sd">        ------</span>
-</span><span id="L-545"><a href="#L-545"><span class="linenos">545</span></a><span class="sd">        `StopIteration`</span>
-</span><span id="L-546"><a href="#L-546"><span class="linenos">546</span></a><span class="sd">            If no elements are left in the iterator.</span>
-</span><span id="L-547"><a href="#L-547"><span class="linenos">547</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-548"><a href="#L-548"><span class="linenos">548</span></a>        <span class="k">return</span> <span class="n">FlatIterator</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">))</span>
-</span><span id="L-549"><a href="#L-549"><span class="linenos">549</span></a>
-</span><span id="L-550"><a href="#L-550"><span class="linenos">550</span></a>    <span class="k">def</span> <span class="nf">_ok</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">NoReturn</span><span class="p">:</span>
-</span><span id="L-551"><a href="#L-551"><span class="linenos">551</span></a>        <span class="k">raise</span> <span class="ne">StopIteration</span><span class="p">(</span><span class="s2">&quot;No more items in the iterator.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
-</span><span id="L-552"><a href="#L-552"><span class="linenos">552</span></a>
-</span><span id="L-553"><a href="#L-553"><span class="linenos">553</span></a>    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Item</span><span class="p">:</span>
-</span><span id="L-554"><a href="#L-554"><span class="linenos">554</span></a>        <span class="k">try</span><span class="p">:</span>
-</span><span id="L-555"><a href="#L-555"><span class="linenos">555</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
-</span><span id="L-556"><a href="#L-556"><span class="linenos">556</span></a>        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
-</span><span id="L-557"><a href="#L-557"><span class="linenos">557</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_ok</span><span class="p">()</span>
-</span><span id="L-558"><a href="#L-558"><span class="linenos">558</span></a>
-</span><span id="L-559"><a href="#L-559"><span class="linenos">559</span></a>    <span class="k">def</span> <span class="fm">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">FlatIterator</span><span class="p">[</span><span class="n">Item</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">FlatIterator</span><span class="p">[</span><span class="n">Item</span><span class="p">]:</span>
-</span><span id="L-560"><a href="#L-560"><span class="linenos">560</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
-</span><span id="L-561"><a href="#L-561"><span class="linenos">561</span></a>
-</span><span id="L-562"><a href="#L-562"><span class="linenos">562</span></a>    <span class="c1"># This is a never.</span>
-</span><span id="L-563"><a href="#L-563"><span class="linenos">563</span></a>    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">NoReturn</span><span class="p">:</span>
-</span><span id="L-564"><a href="#L-564"><span class="linenos">564</span></a>        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-</span><span id="L-565"><a href="#L-565"><span class="linenos">565</span></a>            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> doesn&#39;t support item assignment.&quot;</span>
-</span><span id="L-566"><a href="#L-566"><span class="linenos">566</span></a>        <span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
-</span><span id="L-567"><a href="#L-567"><span class="linenos">567</span></a>
-</span><span id="L-568"><a href="#L-568"><span class="linenos">568</span></a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="L-569"><a href="#L-569"><span class="linenos">569</span></a>        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&lt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">(</span><span class="si">{</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">])</span><span class="si">}</span><span class="s1">)&gt;&#39;</span>
-</span><span id="L-570"><a href="#L-570"><span class="linenos">570</span></a>
-</span><span id="L-571"><a href="#L-571"><span class="linenos">571</span></a>    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="L-572"><a href="#L-572"><span class="linenos">572</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
-</span><span id="L-573"><a href="#L-573"><span class="linenos">573</span></a>
-</span><span id="L-574"><a href="#L-574"><span class="linenos">574</span></a>    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FlatIterator</span><span class="p">[</span><span class="n">Item</span><span class="p">]:</span>
-</span><span id="L-575"><a href="#L-575"><span class="linenos">575</span></a>        <span class="k">return</span> <span class="bp">self</span>
-</span><span id="L-576"><a href="#L-576"><span class="linenos">576</span></a>
-</span><span id="L-577"><a href="#L-577"><span class="linenos">577</span></a>    <span class="k">def</span> <span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Item</span><span class="p">:</span>
-</span><span id="L-578"><a href="#L-578"><span class="linenos">578</span></a>        <span class="k">try</span><span class="p">:</span>
-</span><span id="L-579"><a href="#L-579"><span class="linenos">579</span></a>            <span class="n">item</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">)</span>
-</span><span id="L-580"><a href="#L-580"><span class="linenos">580</span></a>        <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
-</span><span id="L-581"><a href="#L-581"><span class="linenos">581</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_ok</span><span class="p">()</span>
-</span><span id="L-582"><a href="#L-582"><span class="linenos">582</span></a>
-</span><span id="L-583"><a href="#L-583"><span class="linenos">583</span></a>        <span class="k">return</span> <span class="n">item</span>
-</span><span id="L-584"><a href="#L-584"><span class="linenos">584</span></a>
-</span><span id="L-585"><a href="#L-585"><span class="linenos">585</span></a><span class="k">def</span> <span class="nf">into_iter</span><span class="p">(</span>
-</span><span id="L-586"><a href="#L-586"><span class="linenos">586</span></a>    <span class="n">iterable</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="n">Item</span><span class="p">],</span>
-</span><span id="L-587"><a href="#L-587"><span class="linenos">587</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FlatIterator</span><span class="p">[</span><span class="n">Item</span><span class="p">]:</span>
-</span><span id="L-588"><a href="#L-588"><span class="linenos">588</span></a>    <span class="sd">&quot;&quot;&quot;Transform an iterable into an flat iterator.</span>
-</span><span id="L-589"><a href="#L-589"><span class="linenos">589</span></a>
-</span><span id="L-590"><a href="#L-590"><span class="linenos">590</span></a><span class="sd">    Example</span>
-</span><span id="L-591"><a href="#L-591"><span class="linenos">591</span></a><span class="sd">    -------</span>
-</span><span id="L-592"><a href="#L-592"><span class="linenos">592</span></a><span class="sd">    ```py</span>
-</span><span id="L-593"><a href="#L-593"><span class="linenos">593</span></a><span class="sd">    sequence = [1,2,3]</span>
-</span><span id="L-594"><a href="#L-594"><span class="linenos">594</span></a><span class="sd">    for item in aiobungie.into_iter(sequence).reversed():</span>
-</span><span id="L-595"><a href="#L-595"><span class="linenos">595</span></a><span class="sd">        print(item)</span>
-</span><span id="L-596"><a href="#L-596"><span class="linenos">596</span></a><span class="sd">    # 3</span>
-</span><span id="L-597"><a href="#L-597"><span class="linenos">597</span></a><span class="sd">    # 2</span>
-</span><span id="L-598"><a href="#L-598"><span class="linenos">598</span></a><span class="sd">    # 1</span>
-</span><span id="L-599"><a href="#L-599"><span class="linenos">599</span></a><span class="sd">    ```</span>
-</span><span id="L-600"><a href="#L-600"><span class="linenos">600</span></a>
-</span><span id="L-601"><a href="#L-601"><span class="linenos">601</span></a><span class="sd">    Parameters</span>
-</span><span id="L-602"><a href="#L-602"><span class="linenos">602</span></a><span class="sd">    ----------</span>
-</span><span id="L-603"><a href="#L-603"><span class="linenos">603</span></a><span class="sd">    iterable: `typing.Iterable[Item]`</span>
-</span><span id="L-604"><a href="#L-604"><span class="linenos">604</span></a><span class="sd">        The iterable to convert.</span>
-</span><span id="L-605"><a href="#L-605"><span class="linenos">605</span></a>
-</span><span id="L-606"><a href="#L-606"><span class="linenos">606</span></a><span class="sd">    Raises</span>
-</span><span id="L-607"><a href="#L-607"><span class="linenos">607</span></a><span class="sd">    ------</span>
-</span><span id="L-608"><a href="#L-608"><span class="linenos">608</span></a><span class="sd">    `StopIteration`</span>
-</span><span id="L-609"><a href="#L-609"><span class="linenos">609</span></a><span class="sd">        If no elements are left in the iterator.</span>
-</span><span id="L-610"><a href="#L-610"><span class="linenos">610</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-611"><a href="#L-611"><span class="linenos">611</span></a>    <span class="k">return</span> <span class="n">FlatIterator</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
+</span><span id="L-505"><a href="#L-505"><span class="linenos">505</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="L-506"><a href="#L-506"><span class="linenos">506</span></a>        <span class="n">func</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="n">Item</span><span class="p">],</span> <span class="n">collections</span><span class="o">.</span><span class="n">Coroutine</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]],</span>
+</span><span id="L-507"><a href="#L-507"><span class="linenos">507</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-508"><a href="#L-508"><span class="linenos">508</span></a>        <span class="sd">&quot;&quot;&quot;Calls the async function on each item in the iterator concurrently.</span>
+</span><span id="L-509"><a href="#L-509"><span class="linenos">509</span></a>
+</span><span id="L-510"><a href="#L-510"><span class="linenos">510</span></a><span class="sd">        Example</span>
+</span><span id="L-511"><a href="#L-511"><span class="linenos">511</span></a><span class="sd">        -------</span>
+</span><span id="L-512"><a href="#L-512"><span class="linenos">512</span></a><span class="sd">        ```py</span>
+</span><span id="L-513"><a href="#L-513"><span class="linenos">513</span></a><span class="sd">        async def signup(username: str) -&gt; None:</span>
+</span><span id="L-514"><a href="#L-514"><span class="linenos">514</span></a><span class="sd">            async with aiohttp.request(&#39;POST&#39;, &#39;...&#39;) as r:</span>
+</span><span id="L-515"><a href="#L-515"><span class="linenos">515</span></a><span class="sd">                # Actual logic.</span>
+</span><span id="L-516"><a href="#L-516"><span class="linenos">516</span></a><span class="sd">                ...</span>
+</span><span id="L-517"><a href="#L-517"><span class="linenos">517</span></a>
+</span><span id="L-518"><a href="#L-518"><span class="linenos">518</span></a><span class="sd">        async def main():</span>
+</span><span id="L-519"><a href="#L-519"><span class="linenos">519</span></a><span class="sd">            users = aiobungie.into_iter([&quot;user_danny&quot;, &quot;user_jojo&quot;])</span>
+</span><span id="L-520"><a href="#L-520"><span class="linenos">520</span></a><span class="sd">            await users.async_for_each(lambda username: signup(username))</span>
+</span><span id="L-521"><a href="#L-521"><span class="linenos">521</span></a><span class="sd">        ```</span>
+</span><span id="L-522"><a href="#L-522"><span class="linenos">522</span></a>
+</span><span id="L-523"><a href="#L-523"><span class="linenos">523</span></a><span class="sd">        Parameters</span>
+</span><span id="L-524"><a href="#L-524"><span class="linenos">524</span></a><span class="sd">        ----------</span>
+</span><span id="L-525"><a href="#L-525"><span class="linenos">525</span></a><span class="sd">        func: `collections.Callable[[Item], collections.Coroutine[None, None, None]]`</span>
+</span><span id="L-526"><a href="#L-526"><span class="linenos">526</span></a><span class="sd">            The async function to call on each item in the iterator.</span>
+</span><span id="L-527"><a href="#L-527"><span class="linenos">527</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-528"><a href="#L-528"><span class="linenos">528</span></a>        <span class="k">await</span> <span class="n">_helpers</span><span class="o">.</span><span class="n">awaits</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">func</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">))</span>
+</span><span id="L-529"><a href="#L-529"><span class="linenos">529</span></a>
+</span><span id="L-530"><a href="#L-530"><span class="linenos">530</span></a>    <span class="k">def</span> <span class="nf">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FlatIterator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Item</span><span class="p">]]:</span>
+</span><span id="L-531"><a href="#L-531"><span class="linenos">531</span></a>        <span class="sd">&quot;&quot;&quot;Returns a new iterator that yields tuples of the index and item.</span>
+</span><span id="L-532"><a href="#L-532"><span class="linenos">532</span></a>
+</span><span id="L-533"><a href="#L-533"><span class="linenos">533</span></a><span class="sd">        Example</span>
+</span><span id="L-534"><a href="#L-534"><span class="linenos">534</span></a><span class="sd">        -------</span>
+</span><span id="L-535"><a href="#L-535"><span class="linenos">535</span></a><span class="sd">        ```py</span>
+</span><span id="L-536"><a href="#L-536"><span class="linenos">536</span></a><span class="sd">        iterator = FlatIterator([1, 2, 3])</span>
+</span><span id="L-537"><a href="#L-537"><span class="linenos">537</span></a><span class="sd">        for index, item in iterator.enumerate():</span>
+</span><span id="L-538"><a href="#L-538"><span class="linenos">538</span></a><span class="sd">            print(index, item)</span>
+</span><span id="L-539"><a href="#L-539"><span class="linenos">539</span></a><span class="sd">        # 0 1</span>
+</span><span id="L-540"><a href="#L-540"><span class="linenos">540</span></a><span class="sd">        # 1 2</span>
+</span><span id="L-541"><a href="#L-541"><span class="linenos">541</span></a><span class="sd">        # 2 3</span>
+</span><span id="L-542"><a href="#L-542"><span class="linenos">542</span></a><span class="sd">        ```</span>
+</span><span id="L-543"><a href="#L-543"><span class="linenos">543</span></a>
+</span><span id="L-544"><a href="#L-544"><span class="linenos">544</span></a><span class="sd">        Raises</span>
+</span><span id="L-545"><a href="#L-545"><span class="linenos">545</span></a><span class="sd">        ------</span>
+</span><span id="L-546"><a href="#L-546"><span class="linenos">546</span></a><span class="sd">        `StopIteration`</span>
+</span><span id="L-547"><a href="#L-547"><span class="linenos">547</span></a><span class="sd">            If no elements are left in the iterator.</span>
+</span><span id="L-548"><a href="#L-548"><span class="linenos">548</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-549"><a href="#L-549"><span class="linenos">549</span></a>        <span class="k">return</span> <span class="n">FlatIterator</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">))</span>
+</span><span id="L-550"><a href="#L-550"><span class="linenos">550</span></a>
+</span><span id="L-551"><a href="#L-551"><span class="linenos">551</span></a>    <span class="k">def</span> <span class="nf">_ok</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">NoReturn</span><span class="p">:</span>
+</span><span id="L-552"><a href="#L-552"><span class="linenos">552</span></a>        <span class="k">raise</span> <span class="ne">StopIteration</span><span class="p">(</span><span class="s2">&quot;No more items in the iterator.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+</span><span id="L-553"><a href="#L-553"><span class="linenos">553</span></a>
+</span><span id="L-554"><a href="#L-554"><span class="linenos">554</span></a>    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Item</span><span class="p">:</span>
+</span><span id="L-555"><a href="#L-555"><span class="linenos">555</span></a>        <span class="k">try</span><span class="p">:</span>
+</span><span id="L-556"><a href="#L-556"><span class="linenos">556</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+</span><span id="L-557"><a href="#L-557"><span class="linenos">557</span></a>        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+</span><span id="L-558"><a href="#L-558"><span class="linenos">558</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_ok</span><span class="p">()</span>
+</span><span id="L-559"><a href="#L-559"><span class="linenos">559</span></a>
+</span><span id="L-560"><a href="#L-560"><span class="linenos">560</span></a>    <span class="k">def</span> <span class="fm">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">FlatIterator</span><span class="p">[</span><span class="n">Item</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">FlatIterator</span><span class="p">[</span><span class="n">Item</span><span class="p">]:</span>
+</span><span id="L-561"><a href="#L-561"><span class="linenos">561</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+</span><span id="L-562"><a href="#L-562"><span class="linenos">562</span></a>
+</span><span id="L-563"><a href="#L-563"><span class="linenos">563</span></a>    <span class="c1"># This is a never.</span>
+</span><span id="L-564"><a href="#L-564"><span class="linenos">564</span></a>    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">NoReturn</span><span class="p">:</span>
+</span><span id="L-565"><a href="#L-565"><span class="linenos">565</span></a>        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+</span><span id="L-566"><a href="#L-566"><span class="linenos">566</span></a>            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> doesn&#39;t support item assignment.&quot;</span>
+</span><span id="L-567"><a href="#L-567"><span class="linenos">567</span></a>        <span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+</span><span id="L-568"><a href="#L-568"><span class="linenos">568</span></a>
+</span><span id="L-569"><a href="#L-569"><span class="linenos">569</span></a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="L-570"><a href="#L-570"><span class="linenos">570</span></a>        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&lt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">(</span><span class="si">{</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">])</span><span class="si">}</span><span class="s1">)&gt;&#39;</span>
+</span><span id="L-571"><a href="#L-571"><span class="linenos">571</span></a>
+</span><span id="L-572"><a href="#L-572"><span class="linenos">572</span></a>    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="L-573"><a href="#L-573"><span class="linenos">573</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+</span><span id="L-574"><a href="#L-574"><span class="linenos">574</span></a>
+</span><span id="L-575"><a href="#L-575"><span class="linenos">575</span></a>    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FlatIterator</span><span class="p">[</span><span class="n">Item</span><span class="p">]:</span>
+</span><span id="L-576"><a href="#L-576"><span class="linenos">576</span></a>        <span class="k">return</span> <span class="bp">self</span>
+</span><span id="L-577"><a href="#L-577"><span class="linenos">577</span></a>
+</span><span id="L-578"><a href="#L-578"><span class="linenos">578</span></a>    <span class="k">def</span> <span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Item</span><span class="p">:</span>
+</span><span id="L-579"><a href="#L-579"><span class="linenos">579</span></a>        <span class="k">try</span><span class="p">:</span>
+</span><span id="L-580"><a href="#L-580"><span class="linenos">580</span></a>            <span class="n">item</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">)</span>
+</span><span id="L-581"><a href="#L-581"><span class="linenos">581</span></a>        <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+</span><span id="L-582"><a href="#L-582"><span class="linenos">582</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_ok</span><span class="p">()</span>
+</span><span id="L-583"><a href="#L-583"><span class="linenos">583</span></a>
+</span><span id="L-584"><a href="#L-584"><span class="linenos">584</span></a>        <span class="k">return</span> <span class="n">item</span>
+</span><span id="L-585"><a href="#L-585"><span class="linenos">585</span></a>
+</span><span id="L-586"><a href="#L-586"><span class="linenos">586</span></a>
+</span><span id="L-587"><a href="#L-587"><span class="linenos">587</span></a><span class="k">def</span> <span class="nf">into_iter</span><span class="p">(</span>
+</span><span id="L-588"><a href="#L-588"><span class="linenos">588</span></a>    <span class="n">iterable</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="n">Item</span><span class="p">],</span>
+</span><span id="L-589"><a href="#L-589"><span class="linenos">589</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FlatIterator</span><span class="p">[</span><span class="n">Item</span><span class="p">]:</span>
+</span><span id="L-590"><a href="#L-590"><span class="linenos">590</span></a>    <span class="sd">&quot;&quot;&quot;Transform an iterable into an flat iterator.</span>
+</span><span id="L-591"><a href="#L-591"><span class="linenos">591</span></a>
+</span><span id="L-592"><a href="#L-592"><span class="linenos">592</span></a><span class="sd">    Example</span>
+</span><span id="L-593"><a href="#L-593"><span class="linenos">593</span></a><span class="sd">    -------</span>
+</span><span id="L-594"><a href="#L-594"><span class="linenos">594</span></a><span class="sd">    ```py</span>
+</span><span id="L-595"><a href="#L-595"><span class="linenos">595</span></a><span class="sd">    sequence = [1,2,3]</span>
+</span><span id="L-596"><a href="#L-596"><span class="linenos">596</span></a><span class="sd">    for item in aiobungie.into_iter(sequence).reversed():</span>
+</span><span id="L-597"><a href="#L-597"><span class="linenos">597</span></a><span class="sd">        print(item)</span>
+</span><span id="L-598"><a href="#L-598"><span class="linenos">598</span></a><span class="sd">    # 3</span>
+</span><span id="L-599"><a href="#L-599"><span class="linenos">599</span></a><span class="sd">    # 2</span>
+</span><span id="L-600"><a href="#L-600"><span class="linenos">600</span></a><span class="sd">    # 1</span>
+</span><span id="L-601"><a href="#L-601"><span class="linenos">601</span></a><span class="sd">    ```</span>
+</span><span id="L-602"><a href="#L-602"><span class="linenos">602</span></a>
+</span><span id="L-603"><a href="#L-603"><span class="linenos">603</span></a><span class="sd">    Parameters</span>
+</span><span id="L-604"><a href="#L-604"><span class="linenos">604</span></a><span class="sd">    ----------</span>
+</span><span id="L-605"><a href="#L-605"><span class="linenos">605</span></a><span class="sd">    iterable: `typing.Iterable[Item]`</span>
+</span><span id="L-606"><a href="#L-606"><span class="linenos">606</span></a><span class="sd">        The iterable to convert.</span>
+</span><span id="L-607"><a href="#L-607"><span class="linenos">607</span></a>
+</span><span id="L-608"><a href="#L-608"><span class="linenos">608</span></a><span class="sd">    Raises</span>
+</span><span id="L-609"><a href="#L-609"><span class="linenos">609</span></a><span class="sd">    ------</span>
+</span><span id="L-610"><a href="#L-610"><span class="linenos">610</span></a><span class="sd">    `StopIteration`</span>
+</span><span id="L-611"><a href="#L-611"><span class="linenos">611</span></a><span class="sd">        If no elements are left in the iterator.</span>
+</span><span id="L-612"><a href="#L-612"><span class="linenos">612</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-613"><a href="#L-613"><span class="linenos">613</span></a>    <span class="k">return</span> <span class="n">FlatIterator</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -1212,85 +1214,86 @@
 </span><span id="FlatIterator-503"><a href="#FlatIterator-503"><span class="linenos">503</span></a>            <span class="n">func</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
 </span><span id="FlatIterator-504"><a href="#FlatIterator-504"><span class="linenos">504</span></a>
 </span><span id="FlatIterator-505"><a href="#FlatIterator-505"><span class="linenos">505</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">async_for_each</span><span class="p">(</span>
-</span><span id="FlatIterator-506"><a href="#FlatIterator-506"><span class="linenos">506</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="n">Item</span><span class="p">],</span> <span class="n">collections</span><span class="o">.</span><span class="n">Coroutine</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]]</span>
-</span><span id="FlatIterator-507"><a href="#FlatIterator-507"><span class="linenos">507</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="FlatIterator-508"><a href="#FlatIterator-508"><span class="linenos">508</span></a>        <span class="sd">&quot;&quot;&quot;Calls the async function on each item in the iterator concurrently.</span>
-</span><span id="FlatIterator-509"><a href="#FlatIterator-509"><span class="linenos">509</span></a>
-</span><span id="FlatIterator-510"><a href="#FlatIterator-510"><span class="linenos">510</span></a><span class="sd">        Example</span>
-</span><span id="FlatIterator-511"><a href="#FlatIterator-511"><span class="linenos">511</span></a><span class="sd">        -------</span>
-</span><span id="FlatIterator-512"><a href="#FlatIterator-512"><span class="linenos">512</span></a><span class="sd">        ```py</span>
-</span><span id="FlatIterator-513"><a href="#FlatIterator-513"><span class="linenos">513</span></a><span class="sd">        async def signup(username: str) -&gt; None:</span>
-</span><span id="FlatIterator-514"><a href="#FlatIterator-514"><span class="linenos">514</span></a><span class="sd">            async with aiohttp.request(&#39;POST&#39;, &#39;...&#39;) as r:</span>
-</span><span id="FlatIterator-515"><a href="#FlatIterator-515"><span class="linenos">515</span></a><span class="sd">                # Actual logic.</span>
-</span><span id="FlatIterator-516"><a href="#FlatIterator-516"><span class="linenos">516</span></a><span class="sd">                ...</span>
-</span><span id="FlatIterator-517"><a href="#FlatIterator-517"><span class="linenos">517</span></a>
-</span><span id="FlatIterator-518"><a href="#FlatIterator-518"><span class="linenos">518</span></a><span class="sd">        async def main():</span>
-</span><span id="FlatIterator-519"><a href="#FlatIterator-519"><span class="linenos">519</span></a><span class="sd">            users = aiobungie.into_iter([&quot;user_danny&quot;, &quot;user_jojo&quot;])</span>
-</span><span id="FlatIterator-520"><a href="#FlatIterator-520"><span class="linenos">520</span></a><span class="sd">            await users.async_for_each(lambda username: signup(username))</span>
-</span><span id="FlatIterator-521"><a href="#FlatIterator-521"><span class="linenos">521</span></a><span class="sd">        ```</span>
-</span><span id="FlatIterator-522"><a href="#FlatIterator-522"><span class="linenos">522</span></a>
-</span><span id="FlatIterator-523"><a href="#FlatIterator-523"><span class="linenos">523</span></a><span class="sd">        Parameters</span>
-</span><span id="FlatIterator-524"><a href="#FlatIterator-524"><span class="linenos">524</span></a><span class="sd">        ----------</span>
-</span><span id="FlatIterator-525"><a href="#FlatIterator-525"><span class="linenos">525</span></a><span class="sd">        func: `collections.Callable[[Item], collections.Coroutine[None, None, None]]`</span>
-</span><span id="FlatIterator-526"><a href="#FlatIterator-526"><span class="linenos">526</span></a><span class="sd">            The async function to call on each item in the iterator.</span>
-</span><span id="FlatIterator-527"><a href="#FlatIterator-527"><span class="linenos">527</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="FlatIterator-528"><a href="#FlatIterator-528"><span class="linenos">528</span></a>        <span class="k">await</span> <span class="n">_helpers</span><span class="o">.</span><span class="n">awaits</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">func</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">))</span>
-</span><span id="FlatIterator-529"><a href="#FlatIterator-529"><span class="linenos">529</span></a>
-</span><span id="FlatIterator-530"><a href="#FlatIterator-530"><span class="linenos">530</span></a>    <span class="k">def</span> <span class="nf">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FlatIterator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Item</span><span class="p">]]:</span>
-</span><span id="FlatIterator-531"><a href="#FlatIterator-531"><span class="linenos">531</span></a>        <span class="sd">&quot;&quot;&quot;Returns a new iterator that yields tuples of the index and item.</span>
-</span><span id="FlatIterator-532"><a href="#FlatIterator-532"><span class="linenos">532</span></a>
-</span><span id="FlatIterator-533"><a href="#FlatIterator-533"><span class="linenos">533</span></a><span class="sd">        Example</span>
-</span><span id="FlatIterator-534"><a href="#FlatIterator-534"><span class="linenos">534</span></a><span class="sd">        -------</span>
-</span><span id="FlatIterator-535"><a href="#FlatIterator-535"><span class="linenos">535</span></a><span class="sd">        ```py</span>
-</span><span id="FlatIterator-536"><a href="#FlatIterator-536"><span class="linenos">536</span></a><span class="sd">        iterator = FlatIterator([1, 2, 3])</span>
-</span><span id="FlatIterator-537"><a href="#FlatIterator-537"><span class="linenos">537</span></a><span class="sd">        for index, item in iterator.enumerate():</span>
-</span><span id="FlatIterator-538"><a href="#FlatIterator-538"><span class="linenos">538</span></a><span class="sd">            print(index, item)</span>
-</span><span id="FlatIterator-539"><a href="#FlatIterator-539"><span class="linenos">539</span></a><span class="sd">        # 0 1</span>
-</span><span id="FlatIterator-540"><a href="#FlatIterator-540"><span class="linenos">540</span></a><span class="sd">        # 1 2</span>
-</span><span id="FlatIterator-541"><a href="#FlatIterator-541"><span class="linenos">541</span></a><span class="sd">        # 2 3</span>
-</span><span id="FlatIterator-542"><a href="#FlatIterator-542"><span class="linenos">542</span></a><span class="sd">        ```</span>
-</span><span id="FlatIterator-543"><a href="#FlatIterator-543"><span class="linenos">543</span></a>
-</span><span id="FlatIterator-544"><a href="#FlatIterator-544"><span class="linenos">544</span></a><span class="sd">        Raises</span>
-</span><span id="FlatIterator-545"><a href="#FlatIterator-545"><span class="linenos">545</span></a><span class="sd">        ------</span>
-</span><span id="FlatIterator-546"><a href="#FlatIterator-546"><span class="linenos">546</span></a><span class="sd">        `StopIteration`</span>
-</span><span id="FlatIterator-547"><a href="#FlatIterator-547"><span class="linenos">547</span></a><span class="sd">            If no elements are left in the iterator.</span>
-</span><span id="FlatIterator-548"><a href="#FlatIterator-548"><span class="linenos">548</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="FlatIterator-549"><a href="#FlatIterator-549"><span class="linenos">549</span></a>        <span class="k">return</span> <span class="n">FlatIterator</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">))</span>
-</span><span id="FlatIterator-550"><a href="#FlatIterator-550"><span class="linenos">550</span></a>
-</span><span id="FlatIterator-551"><a href="#FlatIterator-551"><span class="linenos">551</span></a>    <span class="k">def</span> <span class="nf">_ok</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">NoReturn</span><span class="p">:</span>
-</span><span id="FlatIterator-552"><a href="#FlatIterator-552"><span class="linenos">552</span></a>        <span class="k">raise</span> <span class="ne">StopIteration</span><span class="p">(</span><span class="s2">&quot;No more items in the iterator.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
-</span><span id="FlatIterator-553"><a href="#FlatIterator-553"><span class="linenos">553</span></a>
-</span><span id="FlatIterator-554"><a href="#FlatIterator-554"><span class="linenos">554</span></a>    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Item</span><span class="p">:</span>
-</span><span id="FlatIterator-555"><a href="#FlatIterator-555"><span class="linenos">555</span></a>        <span class="k">try</span><span class="p">:</span>
-</span><span id="FlatIterator-556"><a href="#FlatIterator-556"><span class="linenos">556</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
-</span><span id="FlatIterator-557"><a href="#FlatIterator-557"><span class="linenos">557</span></a>        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
-</span><span id="FlatIterator-558"><a href="#FlatIterator-558"><span class="linenos">558</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_ok</span><span class="p">()</span>
-</span><span id="FlatIterator-559"><a href="#FlatIterator-559"><span class="linenos">559</span></a>
-</span><span id="FlatIterator-560"><a href="#FlatIterator-560"><span class="linenos">560</span></a>    <span class="k">def</span> <span class="fm">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">FlatIterator</span><span class="p">[</span><span class="n">Item</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">FlatIterator</span><span class="p">[</span><span class="n">Item</span><span class="p">]:</span>
-</span><span id="FlatIterator-561"><a href="#FlatIterator-561"><span class="linenos">561</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
-</span><span id="FlatIterator-562"><a href="#FlatIterator-562"><span class="linenos">562</span></a>
-</span><span id="FlatIterator-563"><a href="#FlatIterator-563"><span class="linenos">563</span></a>    <span class="c1"># This is a never.</span>
-</span><span id="FlatIterator-564"><a href="#FlatIterator-564"><span class="linenos">564</span></a>    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">NoReturn</span><span class="p">:</span>
-</span><span id="FlatIterator-565"><a href="#FlatIterator-565"><span class="linenos">565</span></a>        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-</span><span id="FlatIterator-566"><a href="#FlatIterator-566"><span class="linenos">566</span></a>            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> doesn&#39;t support item assignment.&quot;</span>
-</span><span id="FlatIterator-567"><a href="#FlatIterator-567"><span class="linenos">567</span></a>        <span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
-</span><span id="FlatIterator-568"><a href="#FlatIterator-568"><span class="linenos">568</span></a>
-</span><span id="FlatIterator-569"><a href="#FlatIterator-569"><span class="linenos">569</span></a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="FlatIterator-570"><a href="#FlatIterator-570"><span class="linenos">570</span></a>        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&lt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">(</span><span class="si">{</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">])</span><span class="si">}</span><span class="s1">)&gt;&#39;</span>
-</span><span id="FlatIterator-571"><a href="#FlatIterator-571"><span class="linenos">571</span></a>
-</span><span id="FlatIterator-572"><a href="#FlatIterator-572"><span class="linenos">572</span></a>    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="FlatIterator-573"><a href="#FlatIterator-573"><span class="linenos">573</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
-</span><span id="FlatIterator-574"><a href="#FlatIterator-574"><span class="linenos">574</span></a>
-</span><span id="FlatIterator-575"><a href="#FlatIterator-575"><span class="linenos">575</span></a>    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FlatIterator</span><span class="p">[</span><span class="n">Item</span><span class="p">]:</span>
-</span><span id="FlatIterator-576"><a href="#FlatIterator-576"><span class="linenos">576</span></a>        <span class="k">return</span> <span class="bp">self</span>
-</span><span id="FlatIterator-577"><a href="#FlatIterator-577"><span class="linenos">577</span></a>
-</span><span id="FlatIterator-578"><a href="#FlatIterator-578"><span class="linenos">578</span></a>    <span class="k">def</span> <span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Item</span><span class="p">:</span>
-</span><span id="FlatIterator-579"><a href="#FlatIterator-579"><span class="linenos">579</span></a>        <span class="k">try</span><span class="p">:</span>
-</span><span id="FlatIterator-580"><a href="#FlatIterator-580"><span class="linenos">580</span></a>            <span class="n">item</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">)</span>
-</span><span id="FlatIterator-581"><a href="#FlatIterator-581"><span class="linenos">581</span></a>        <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
-</span><span id="FlatIterator-582"><a href="#FlatIterator-582"><span class="linenos">582</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_ok</span><span class="p">()</span>
-</span><span id="FlatIterator-583"><a href="#FlatIterator-583"><span class="linenos">583</span></a>
-</span><span id="FlatIterator-584"><a href="#FlatIterator-584"><span class="linenos">584</span></a>        <span class="k">return</span> <span class="n">item</span>
+</span><span id="FlatIterator-506"><a href="#FlatIterator-506"><span class="linenos">506</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="FlatIterator-507"><a href="#FlatIterator-507"><span class="linenos">507</span></a>        <span class="n">func</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="n">Item</span><span class="p">],</span> <span class="n">collections</span><span class="o">.</span><span class="n">Coroutine</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]],</span>
+</span><span id="FlatIterator-508"><a href="#FlatIterator-508"><span class="linenos">508</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="FlatIterator-509"><a href="#FlatIterator-509"><span class="linenos">509</span></a>        <span class="sd">&quot;&quot;&quot;Calls the async function on each item in the iterator concurrently.</span>
+</span><span id="FlatIterator-510"><a href="#FlatIterator-510"><span class="linenos">510</span></a>
+</span><span id="FlatIterator-511"><a href="#FlatIterator-511"><span class="linenos">511</span></a><span class="sd">        Example</span>
+</span><span id="FlatIterator-512"><a href="#FlatIterator-512"><span class="linenos">512</span></a><span class="sd">        -------</span>
+</span><span id="FlatIterator-513"><a href="#FlatIterator-513"><span class="linenos">513</span></a><span class="sd">        ```py</span>
+</span><span id="FlatIterator-514"><a href="#FlatIterator-514"><span class="linenos">514</span></a><span class="sd">        async def signup(username: str) -&gt; None:</span>
+</span><span id="FlatIterator-515"><a href="#FlatIterator-515"><span class="linenos">515</span></a><span class="sd">            async with aiohttp.request(&#39;POST&#39;, &#39;...&#39;) as r:</span>
+</span><span id="FlatIterator-516"><a href="#FlatIterator-516"><span class="linenos">516</span></a><span class="sd">                # Actual logic.</span>
+</span><span id="FlatIterator-517"><a href="#FlatIterator-517"><span class="linenos">517</span></a><span class="sd">                ...</span>
+</span><span id="FlatIterator-518"><a href="#FlatIterator-518"><span class="linenos">518</span></a>
+</span><span id="FlatIterator-519"><a href="#FlatIterator-519"><span class="linenos">519</span></a><span class="sd">        async def main():</span>
+</span><span id="FlatIterator-520"><a href="#FlatIterator-520"><span class="linenos">520</span></a><span class="sd">            users = aiobungie.into_iter([&quot;user_danny&quot;, &quot;user_jojo&quot;])</span>
+</span><span id="FlatIterator-521"><a href="#FlatIterator-521"><span class="linenos">521</span></a><span class="sd">            await users.async_for_each(lambda username: signup(username))</span>
+</span><span id="FlatIterator-522"><a href="#FlatIterator-522"><span class="linenos">522</span></a><span class="sd">        ```</span>
+</span><span id="FlatIterator-523"><a href="#FlatIterator-523"><span class="linenos">523</span></a>
+</span><span id="FlatIterator-524"><a href="#FlatIterator-524"><span class="linenos">524</span></a><span class="sd">        Parameters</span>
+</span><span id="FlatIterator-525"><a href="#FlatIterator-525"><span class="linenos">525</span></a><span class="sd">        ----------</span>
+</span><span id="FlatIterator-526"><a href="#FlatIterator-526"><span class="linenos">526</span></a><span class="sd">        func: `collections.Callable[[Item], collections.Coroutine[None, None, None]]`</span>
+</span><span id="FlatIterator-527"><a href="#FlatIterator-527"><span class="linenos">527</span></a><span class="sd">            The async function to call on each item in the iterator.</span>
+</span><span id="FlatIterator-528"><a href="#FlatIterator-528"><span class="linenos">528</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="FlatIterator-529"><a href="#FlatIterator-529"><span class="linenos">529</span></a>        <span class="k">await</span> <span class="n">_helpers</span><span class="o">.</span><span class="n">awaits</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">func</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">))</span>
+</span><span id="FlatIterator-530"><a href="#FlatIterator-530"><span class="linenos">530</span></a>
+</span><span id="FlatIterator-531"><a href="#FlatIterator-531"><span class="linenos">531</span></a>    <span class="k">def</span> <span class="nf">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FlatIterator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Item</span><span class="p">]]:</span>
+</span><span id="FlatIterator-532"><a href="#FlatIterator-532"><span class="linenos">532</span></a>        <span class="sd">&quot;&quot;&quot;Returns a new iterator that yields tuples of the index and item.</span>
+</span><span id="FlatIterator-533"><a href="#FlatIterator-533"><span class="linenos">533</span></a>
+</span><span id="FlatIterator-534"><a href="#FlatIterator-534"><span class="linenos">534</span></a><span class="sd">        Example</span>
+</span><span id="FlatIterator-535"><a href="#FlatIterator-535"><span class="linenos">535</span></a><span class="sd">        -------</span>
+</span><span id="FlatIterator-536"><a href="#FlatIterator-536"><span class="linenos">536</span></a><span class="sd">        ```py</span>
+</span><span id="FlatIterator-537"><a href="#FlatIterator-537"><span class="linenos">537</span></a><span class="sd">        iterator = FlatIterator([1, 2, 3])</span>
+</span><span id="FlatIterator-538"><a href="#FlatIterator-538"><span class="linenos">538</span></a><span class="sd">        for index, item in iterator.enumerate():</span>
+</span><span id="FlatIterator-539"><a href="#FlatIterator-539"><span class="linenos">539</span></a><span class="sd">            print(index, item)</span>
+</span><span id="FlatIterator-540"><a href="#FlatIterator-540"><span class="linenos">540</span></a><span class="sd">        # 0 1</span>
+</span><span id="FlatIterator-541"><a href="#FlatIterator-541"><span class="linenos">541</span></a><span class="sd">        # 1 2</span>
+</span><span id="FlatIterator-542"><a href="#FlatIterator-542"><span class="linenos">542</span></a><span class="sd">        # 2 3</span>
+</span><span id="FlatIterator-543"><a href="#FlatIterator-543"><span class="linenos">543</span></a><span class="sd">        ```</span>
+</span><span id="FlatIterator-544"><a href="#FlatIterator-544"><span class="linenos">544</span></a>
+</span><span id="FlatIterator-545"><a href="#FlatIterator-545"><span class="linenos">545</span></a><span class="sd">        Raises</span>
+</span><span id="FlatIterator-546"><a href="#FlatIterator-546"><span class="linenos">546</span></a><span class="sd">        ------</span>
+</span><span id="FlatIterator-547"><a href="#FlatIterator-547"><span class="linenos">547</span></a><span class="sd">        `StopIteration`</span>
+</span><span id="FlatIterator-548"><a href="#FlatIterator-548"><span class="linenos">548</span></a><span class="sd">            If no elements are left in the iterator.</span>
+</span><span id="FlatIterator-549"><a href="#FlatIterator-549"><span class="linenos">549</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="FlatIterator-550"><a href="#FlatIterator-550"><span class="linenos">550</span></a>        <span class="k">return</span> <span class="n">FlatIterator</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">))</span>
+</span><span id="FlatIterator-551"><a href="#FlatIterator-551"><span class="linenos">551</span></a>
+</span><span id="FlatIterator-552"><a href="#FlatIterator-552"><span class="linenos">552</span></a>    <span class="k">def</span> <span class="nf">_ok</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">NoReturn</span><span class="p">:</span>
+</span><span id="FlatIterator-553"><a href="#FlatIterator-553"><span class="linenos">553</span></a>        <span class="k">raise</span> <span class="ne">StopIteration</span><span class="p">(</span><span class="s2">&quot;No more items in the iterator.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+</span><span id="FlatIterator-554"><a href="#FlatIterator-554"><span class="linenos">554</span></a>
+</span><span id="FlatIterator-555"><a href="#FlatIterator-555"><span class="linenos">555</span></a>    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Item</span><span class="p">:</span>
+</span><span id="FlatIterator-556"><a href="#FlatIterator-556"><span class="linenos">556</span></a>        <span class="k">try</span><span class="p">:</span>
+</span><span id="FlatIterator-557"><a href="#FlatIterator-557"><span class="linenos">557</span></a>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+</span><span id="FlatIterator-558"><a href="#FlatIterator-558"><span class="linenos">558</span></a>        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+</span><span id="FlatIterator-559"><a href="#FlatIterator-559"><span class="linenos">559</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_ok</span><span class="p">()</span>
+</span><span id="FlatIterator-560"><a href="#FlatIterator-560"><span class="linenos">560</span></a>
+</span><span id="FlatIterator-561"><a href="#FlatIterator-561"><span class="linenos">561</span></a>    <span class="k">def</span> <span class="fm">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">FlatIterator</span><span class="p">[</span><span class="n">Item</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">FlatIterator</span><span class="p">[</span><span class="n">Item</span><span class="p">]:</span>
+</span><span id="FlatIterator-562"><a href="#FlatIterator-562"><span class="linenos">562</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+</span><span id="FlatIterator-563"><a href="#FlatIterator-563"><span class="linenos">563</span></a>
+</span><span id="FlatIterator-564"><a href="#FlatIterator-564"><span class="linenos">564</span></a>    <span class="c1"># This is a never.</span>
+</span><span id="FlatIterator-565"><a href="#FlatIterator-565"><span class="linenos">565</span></a>    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">NoReturn</span><span class="p">:</span>
+</span><span id="FlatIterator-566"><a href="#FlatIterator-566"><span class="linenos">566</span></a>        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+</span><span id="FlatIterator-567"><a href="#FlatIterator-567"><span class="linenos">567</span></a>            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> doesn&#39;t support item assignment.&quot;</span>
+</span><span id="FlatIterator-568"><a href="#FlatIterator-568"><span class="linenos">568</span></a>        <span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+</span><span id="FlatIterator-569"><a href="#FlatIterator-569"><span class="linenos">569</span></a>
+</span><span id="FlatIterator-570"><a href="#FlatIterator-570"><span class="linenos">570</span></a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="FlatIterator-571"><a href="#FlatIterator-571"><span class="linenos">571</span></a>        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&lt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">(</span><span class="si">{</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">])</span><span class="si">}</span><span class="s1">)&gt;&#39;</span>
+</span><span id="FlatIterator-572"><a href="#FlatIterator-572"><span class="linenos">572</span></a>
+</span><span id="FlatIterator-573"><a href="#FlatIterator-573"><span class="linenos">573</span></a>    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="FlatIterator-574"><a href="#FlatIterator-574"><span class="linenos">574</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+</span><span id="FlatIterator-575"><a href="#FlatIterator-575"><span class="linenos">575</span></a>
+</span><span id="FlatIterator-576"><a href="#FlatIterator-576"><span class="linenos">576</span></a>    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FlatIterator</span><span class="p">[</span><span class="n">Item</span><span class="p">]:</span>
+</span><span id="FlatIterator-577"><a href="#FlatIterator-577"><span class="linenos">577</span></a>        <span class="k">return</span> <span class="bp">self</span>
+</span><span id="FlatIterator-578"><a href="#FlatIterator-578"><span class="linenos">578</span></a>
+</span><span id="FlatIterator-579"><a href="#FlatIterator-579"><span class="linenos">579</span></a>    <span class="k">def</span> <span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Item</span><span class="p">:</span>
+</span><span id="FlatIterator-580"><a href="#FlatIterator-580"><span class="linenos">580</span></a>        <span class="k">try</span><span class="p">:</span>
+</span><span id="FlatIterator-581"><a href="#FlatIterator-581"><span class="linenos">581</span></a>            <span class="n">item</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">)</span>
+</span><span id="FlatIterator-582"><a href="#FlatIterator-582"><span class="linenos">582</span></a>        <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+</span><span id="FlatIterator-583"><a href="#FlatIterator-583"><span class="linenos">583</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_ok</span><span class="p">()</span>
+</span><span id="FlatIterator-584"><a href="#FlatIterator-584"><span class="linenos">584</span></a>
+</span><span id="FlatIterator-585"><a href="#FlatIterator-585"><span class="linenos">585</span></a>        <span class="k">return</span> <span class="n">item</span>
 </span></pre></div>
 
 
@@ -2409,29 +2412,30 @@ The function to call on each item in the iterator.</li>
     </div>
     <a class="headerlink" href="#FlatIterator.async_for_each"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="FlatIterator.async_for_each-505"><a href="#FlatIterator.async_for_each-505"><span class="linenos">505</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">async_for_each</span><span class="p">(</span>
-</span><span id="FlatIterator.async_for_each-506"><a href="#FlatIterator.async_for_each-506"><span class="linenos">506</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="n">Item</span><span class="p">],</span> <span class="n">collections</span><span class="o">.</span><span class="n">Coroutine</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]]</span>
-</span><span id="FlatIterator.async_for_each-507"><a href="#FlatIterator.async_for_each-507"><span class="linenos">507</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="FlatIterator.async_for_each-508"><a href="#FlatIterator.async_for_each-508"><span class="linenos">508</span></a>        <span class="sd">&quot;&quot;&quot;Calls the async function on each item in the iterator concurrently.</span>
-</span><span id="FlatIterator.async_for_each-509"><a href="#FlatIterator.async_for_each-509"><span class="linenos">509</span></a>
-</span><span id="FlatIterator.async_for_each-510"><a href="#FlatIterator.async_for_each-510"><span class="linenos">510</span></a><span class="sd">        Example</span>
-</span><span id="FlatIterator.async_for_each-511"><a href="#FlatIterator.async_for_each-511"><span class="linenos">511</span></a><span class="sd">        -------</span>
-</span><span id="FlatIterator.async_for_each-512"><a href="#FlatIterator.async_for_each-512"><span class="linenos">512</span></a><span class="sd">        ```py</span>
-</span><span id="FlatIterator.async_for_each-513"><a href="#FlatIterator.async_for_each-513"><span class="linenos">513</span></a><span class="sd">        async def signup(username: str) -&gt; None:</span>
-</span><span id="FlatIterator.async_for_each-514"><a href="#FlatIterator.async_for_each-514"><span class="linenos">514</span></a><span class="sd">            async with aiohttp.request(&#39;POST&#39;, &#39;...&#39;) as r:</span>
-</span><span id="FlatIterator.async_for_each-515"><a href="#FlatIterator.async_for_each-515"><span class="linenos">515</span></a><span class="sd">                # Actual logic.</span>
-</span><span id="FlatIterator.async_for_each-516"><a href="#FlatIterator.async_for_each-516"><span class="linenos">516</span></a><span class="sd">                ...</span>
-</span><span id="FlatIterator.async_for_each-517"><a href="#FlatIterator.async_for_each-517"><span class="linenos">517</span></a>
-</span><span id="FlatIterator.async_for_each-518"><a href="#FlatIterator.async_for_each-518"><span class="linenos">518</span></a><span class="sd">        async def main():</span>
-</span><span id="FlatIterator.async_for_each-519"><a href="#FlatIterator.async_for_each-519"><span class="linenos">519</span></a><span class="sd">            users = aiobungie.into_iter([&quot;user_danny&quot;, &quot;user_jojo&quot;])</span>
-</span><span id="FlatIterator.async_for_each-520"><a href="#FlatIterator.async_for_each-520"><span class="linenos">520</span></a><span class="sd">            await users.async_for_each(lambda username: signup(username))</span>
-</span><span id="FlatIterator.async_for_each-521"><a href="#FlatIterator.async_for_each-521"><span class="linenos">521</span></a><span class="sd">        ```</span>
-</span><span id="FlatIterator.async_for_each-522"><a href="#FlatIterator.async_for_each-522"><span class="linenos">522</span></a>
-</span><span id="FlatIterator.async_for_each-523"><a href="#FlatIterator.async_for_each-523"><span class="linenos">523</span></a><span class="sd">        Parameters</span>
-</span><span id="FlatIterator.async_for_each-524"><a href="#FlatIterator.async_for_each-524"><span class="linenos">524</span></a><span class="sd">        ----------</span>
-</span><span id="FlatIterator.async_for_each-525"><a href="#FlatIterator.async_for_each-525"><span class="linenos">525</span></a><span class="sd">        func: `collections.Callable[[Item], collections.Coroutine[None, None, None]]`</span>
-</span><span id="FlatIterator.async_for_each-526"><a href="#FlatIterator.async_for_each-526"><span class="linenos">526</span></a><span class="sd">            The async function to call on each item in the iterator.</span>
-</span><span id="FlatIterator.async_for_each-527"><a href="#FlatIterator.async_for_each-527"><span class="linenos">527</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="FlatIterator.async_for_each-528"><a href="#FlatIterator.async_for_each-528"><span class="linenos">528</span></a>        <span class="k">await</span> <span class="n">_helpers</span><span class="o">.</span><span class="n">awaits</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">func</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">))</span>
+</span><span id="FlatIterator.async_for_each-506"><a href="#FlatIterator.async_for_each-506"><span class="linenos">506</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="FlatIterator.async_for_each-507"><a href="#FlatIterator.async_for_each-507"><span class="linenos">507</span></a>        <span class="n">func</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="n">Item</span><span class="p">],</span> <span class="n">collections</span><span class="o">.</span><span class="n">Coroutine</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]],</span>
+</span><span id="FlatIterator.async_for_each-508"><a href="#FlatIterator.async_for_each-508"><span class="linenos">508</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="FlatIterator.async_for_each-509"><a href="#FlatIterator.async_for_each-509"><span class="linenos">509</span></a>        <span class="sd">&quot;&quot;&quot;Calls the async function on each item in the iterator concurrently.</span>
+</span><span id="FlatIterator.async_for_each-510"><a href="#FlatIterator.async_for_each-510"><span class="linenos">510</span></a>
+</span><span id="FlatIterator.async_for_each-511"><a href="#FlatIterator.async_for_each-511"><span class="linenos">511</span></a><span class="sd">        Example</span>
+</span><span id="FlatIterator.async_for_each-512"><a href="#FlatIterator.async_for_each-512"><span class="linenos">512</span></a><span class="sd">        -------</span>
+</span><span id="FlatIterator.async_for_each-513"><a href="#FlatIterator.async_for_each-513"><span class="linenos">513</span></a><span class="sd">        ```py</span>
+</span><span id="FlatIterator.async_for_each-514"><a href="#FlatIterator.async_for_each-514"><span class="linenos">514</span></a><span class="sd">        async def signup(username: str) -&gt; None:</span>
+</span><span id="FlatIterator.async_for_each-515"><a href="#FlatIterator.async_for_each-515"><span class="linenos">515</span></a><span class="sd">            async with aiohttp.request(&#39;POST&#39;, &#39;...&#39;) as r:</span>
+</span><span id="FlatIterator.async_for_each-516"><a href="#FlatIterator.async_for_each-516"><span class="linenos">516</span></a><span class="sd">                # Actual logic.</span>
+</span><span id="FlatIterator.async_for_each-517"><a href="#FlatIterator.async_for_each-517"><span class="linenos">517</span></a><span class="sd">                ...</span>
+</span><span id="FlatIterator.async_for_each-518"><a href="#FlatIterator.async_for_each-518"><span class="linenos">518</span></a>
+</span><span id="FlatIterator.async_for_each-519"><a href="#FlatIterator.async_for_each-519"><span class="linenos">519</span></a><span class="sd">        async def main():</span>
+</span><span id="FlatIterator.async_for_each-520"><a href="#FlatIterator.async_for_each-520"><span class="linenos">520</span></a><span class="sd">            users = aiobungie.into_iter([&quot;user_danny&quot;, &quot;user_jojo&quot;])</span>
+</span><span id="FlatIterator.async_for_each-521"><a href="#FlatIterator.async_for_each-521"><span class="linenos">521</span></a><span class="sd">            await users.async_for_each(lambda username: signup(username))</span>
+</span><span id="FlatIterator.async_for_each-522"><a href="#FlatIterator.async_for_each-522"><span class="linenos">522</span></a><span class="sd">        ```</span>
+</span><span id="FlatIterator.async_for_each-523"><a href="#FlatIterator.async_for_each-523"><span class="linenos">523</span></a>
+</span><span id="FlatIterator.async_for_each-524"><a href="#FlatIterator.async_for_each-524"><span class="linenos">524</span></a><span class="sd">        Parameters</span>
+</span><span id="FlatIterator.async_for_each-525"><a href="#FlatIterator.async_for_each-525"><span class="linenos">525</span></a><span class="sd">        ----------</span>
+</span><span id="FlatIterator.async_for_each-526"><a href="#FlatIterator.async_for_each-526"><span class="linenos">526</span></a><span class="sd">        func: `collections.Callable[[Item], collections.Coroutine[None, None, None]]`</span>
+</span><span id="FlatIterator.async_for_each-527"><a href="#FlatIterator.async_for_each-527"><span class="linenos">527</span></a><span class="sd">            The async function to call on each item in the iterator.</span>
+</span><span id="FlatIterator.async_for_each-528"><a href="#FlatIterator.async_for_each-528"><span class="linenos">528</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="FlatIterator.async_for_each-529"><a href="#FlatIterator.async_for_each-529"><span class="linenos">529</span></a>        <span class="k">await</span> <span class="n">_helpers</span><span class="o">.</span><span class="n">awaits</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">func</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">))</span>
 </span></pre></div>
 
 
@@ -2470,26 +2474,26 @@ The async function to call on each item in the iterator.</li>
 
     </div>
     <a class="headerlink" href="#FlatIterator.enumerate"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FlatIterator.enumerate-530"><a href="#FlatIterator.enumerate-530"><span class="linenos">530</span></a>    <span class="k">def</span> <span class="nf">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FlatIterator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Item</span><span class="p">]]:</span>
-</span><span id="FlatIterator.enumerate-531"><a href="#FlatIterator.enumerate-531"><span class="linenos">531</span></a>        <span class="sd">&quot;&quot;&quot;Returns a new iterator that yields tuples of the index and item.</span>
-</span><span id="FlatIterator.enumerate-532"><a href="#FlatIterator.enumerate-532"><span class="linenos">532</span></a>
-</span><span id="FlatIterator.enumerate-533"><a href="#FlatIterator.enumerate-533"><span class="linenos">533</span></a><span class="sd">        Example</span>
-</span><span id="FlatIterator.enumerate-534"><a href="#FlatIterator.enumerate-534"><span class="linenos">534</span></a><span class="sd">        -------</span>
-</span><span id="FlatIterator.enumerate-535"><a href="#FlatIterator.enumerate-535"><span class="linenos">535</span></a><span class="sd">        ```py</span>
-</span><span id="FlatIterator.enumerate-536"><a href="#FlatIterator.enumerate-536"><span class="linenos">536</span></a><span class="sd">        iterator = FlatIterator([1, 2, 3])</span>
-</span><span id="FlatIterator.enumerate-537"><a href="#FlatIterator.enumerate-537"><span class="linenos">537</span></a><span class="sd">        for index, item in iterator.enumerate():</span>
-</span><span id="FlatIterator.enumerate-538"><a href="#FlatIterator.enumerate-538"><span class="linenos">538</span></a><span class="sd">            print(index, item)</span>
-</span><span id="FlatIterator.enumerate-539"><a href="#FlatIterator.enumerate-539"><span class="linenos">539</span></a><span class="sd">        # 0 1</span>
-</span><span id="FlatIterator.enumerate-540"><a href="#FlatIterator.enumerate-540"><span class="linenos">540</span></a><span class="sd">        # 1 2</span>
-</span><span id="FlatIterator.enumerate-541"><a href="#FlatIterator.enumerate-541"><span class="linenos">541</span></a><span class="sd">        # 2 3</span>
-</span><span id="FlatIterator.enumerate-542"><a href="#FlatIterator.enumerate-542"><span class="linenos">542</span></a><span class="sd">        ```</span>
-</span><span id="FlatIterator.enumerate-543"><a href="#FlatIterator.enumerate-543"><span class="linenos">543</span></a>
-</span><span id="FlatIterator.enumerate-544"><a href="#FlatIterator.enumerate-544"><span class="linenos">544</span></a><span class="sd">        Raises</span>
-</span><span id="FlatIterator.enumerate-545"><a href="#FlatIterator.enumerate-545"><span class="linenos">545</span></a><span class="sd">        ------</span>
-</span><span id="FlatIterator.enumerate-546"><a href="#FlatIterator.enumerate-546"><span class="linenos">546</span></a><span class="sd">        `StopIteration`</span>
-</span><span id="FlatIterator.enumerate-547"><a href="#FlatIterator.enumerate-547"><span class="linenos">547</span></a><span class="sd">            If no elements are left in the iterator.</span>
-</span><span id="FlatIterator.enumerate-548"><a href="#FlatIterator.enumerate-548"><span class="linenos">548</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="FlatIterator.enumerate-549"><a href="#FlatIterator.enumerate-549"><span class="linenos">549</span></a>        <span class="k">return</span> <span class="n">FlatIterator</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">))</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FlatIterator.enumerate-531"><a href="#FlatIterator.enumerate-531"><span class="linenos">531</span></a>    <span class="k">def</span> <span class="nf">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FlatIterator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Item</span><span class="p">]]:</span>
+</span><span id="FlatIterator.enumerate-532"><a href="#FlatIterator.enumerate-532"><span class="linenos">532</span></a>        <span class="sd">&quot;&quot;&quot;Returns a new iterator that yields tuples of the index and item.</span>
+</span><span id="FlatIterator.enumerate-533"><a href="#FlatIterator.enumerate-533"><span class="linenos">533</span></a>
+</span><span id="FlatIterator.enumerate-534"><a href="#FlatIterator.enumerate-534"><span class="linenos">534</span></a><span class="sd">        Example</span>
+</span><span id="FlatIterator.enumerate-535"><a href="#FlatIterator.enumerate-535"><span class="linenos">535</span></a><span class="sd">        -------</span>
+</span><span id="FlatIterator.enumerate-536"><a href="#FlatIterator.enumerate-536"><span class="linenos">536</span></a><span class="sd">        ```py</span>
+</span><span id="FlatIterator.enumerate-537"><a href="#FlatIterator.enumerate-537"><span class="linenos">537</span></a><span class="sd">        iterator = FlatIterator([1, 2, 3])</span>
+</span><span id="FlatIterator.enumerate-538"><a href="#FlatIterator.enumerate-538"><span class="linenos">538</span></a><span class="sd">        for index, item in iterator.enumerate():</span>
+</span><span id="FlatIterator.enumerate-539"><a href="#FlatIterator.enumerate-539"><span class="linenos">539</span></a><span class="sd">            print(index, item)</span>
+</span><span id="FlatIterator.enumerate-540"><a href="#FlatIterator.enumerate-540"><span class="linenos">540</span></a><span class="sd">        # 0 1</span>
+</span><span id="FlatIterator.enumerate-541"><a href="#FlatIterator.enumerate-541"><span class="linenos">541</span></a><span class="sd">        # 1 2</span>
+</span><span id="FlatIterator.enumerate-542"><a href="#FlatIterator.enumerate-542"><span class="linenos">542</span></a><span class="sd">        # 2 3</span>
+</span><span id="FlatIterator.enumerate-543"><a href="#FlatIterator.enumerate-543"><span class="linenos">543</span></a><span class="sd">        ```</span>
+</span><span id="FlatIterator.enumerate-544"><a href="#FlatIterator.enumerate-544"><span class="linenos">544</span></a>
+</span><span id="FlatIterator.enumerate-545"><a href="#FlatIterator.enumerate-545"><span class="linenos">545</span></a><span class="sd">        Raises</span>
+</span><span id="FlatIterator.enumerate-546"><a href="#FlatIterator.enumerate-546"><span class="linenos">546</span></a><span class="sd">        ------</span>
+</span><span id="FlatIterator.enumerate-547"><a href="#FlatIterator.enumerate-547"><span class="linenos">547</span></a><span class="sd">        `StopIteration`</span>
+</span><span id="FlatIterator.enumerate-548"><a href="#FlatIterator.enumerate-548"><span class="linenos">548</span></a><span class="sd">            If no elements are left in the iterator.</span>
+</span><span id="FlatIterator.enumerate-549"><a href="#FlatIterator.enumerate-549"><span class="linenos">549</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="FlatIterator.enumerate-550"><a href="#FlatIterator.enumerate-550"><span class="linenos">550</span></a>        <span class="k">return</span> <span class="n">FlatIterator</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">))</span>
 </span></pre></div>
 
 
@@ -2526,33 +2530,33 @@ The async function to call on each item in the iterator.</li>
 
     </div>
     <a class="headerlink" href="#into_iter"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="into_iter-586"><a href="#into_iter-586"><span class="linenos">586</span></a><span class="k">def</span> <span class="nf">into_iter</span><span class="p">(</span>
-</span><span id="into_iter-587"><a href="#into_iter-587"><span class="linenos">587</span></a>    <span class="n">iterable</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="n">Item</span><span class="p">],</span>
-</span><span id="into_iter-588"><a href="#into_iter-588"><span class="linenos">588</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FlatIterator</span><span class="p">[</span><span class="n">Item</span><span class="p">]:</span>
-</span><span id="into_iter-589"><a href="#into_iter-589"><span class="linenos">589</span></a>    <span class="sd">&quot;&quot;&quot;Transform an iterable into an flat iterator.</span>
-</span><span id="into_iter-590"><a href="#into_iter-590"><span class="linenos">590</span></a>
-</span><span id="into_iter-591"><a href="#into_iter-591"><span class="linenos">591</span></a><span class="sd">    Example</span>
-</span><span id="into_iter-592"><a href="#into_iter-592"><span class="linenos">592</span></a><span class="sd">    -------</span>
-</span><span id="into_iter-593"><a href="#into_iter-593"><span class="linenos">593</span></a><span class="sd">    ```py</span>
-</span><span id="into_iter-594"><a href="#into_iter-594"><span class="linenos">594</span></a><span class="sd">    sequence = [1,2,3]</span>
-</span><span id="into_iter-595"><a href="#into_iter-595"><span class="linenos">595</span></a><span class="sd">    for item in aiobungie.into_iter(sequence).reversed():</span>
-</span><span id="into_iter-596"><a href="#into_iter-596"><span class="linenos">596</span></a><span class="sd">        print(item)</span>
-</span><span id="into_iter-597"><a href="#into_iter-597"><span class="linenos">597</span></a><span class="sd">    # 3</span>
-</span><span id="into_iter-598"><a href="#into_iter-598"><span class="linenos">598</span></a><span class="sd">    # 2</span>
-</span><span id="into_iter-599"><a href="#into_iter-599"><span class="linenos">599</span></a><span class="sd">    # 1</span>
-</span><span id="into_iter-600"><a href="#into_iter-600"><span class="linenos">600</span></a><span class="sd">    ```</span>
-</span><span id="into_iter-601"><a href="#into_iter-601"><span class="linenos">601</span></a>
-</span><span id="into_iter-602"><a href="#into_iter-602"><span class="linenos">602</span></a><span class="sd">    Parameters</span>
-</span><span id="into_iter-603"><a href="#into_iter-603"><span class="linenos">603</span></a><span class="sd">    ----------</span>
-</span><span id="into_iter-604"><a href="#into_iter-604"><span class="linenos">604</span></a><span class="sd">    iterable: `typing.Iterable[Item]`</span>
-</span><span id="into_iter-605"><a href="#into_iter-605"><span class="linenos">605</span></a><span class="sd">        The iterable to convert.</span>
-</span><span id="into_iter-606"><a href="#into_iter-606"><span class="linenos">606</span></a>
-</span><span id="into_iter-607"><a href="#into_iter-607"><span class="linenos">607</span></a><span class="sd">    Raises</span>
-</span><span id="into_iter-608"><a href="#into_iter-608"><span class="linenos">608</span></a><span class="sd">    ------</span>
-</span><span id="into_iter-609"><a href="#into_iter-609"><span class="linenos">609</span></a><span class="sd">    `StopIteration`</span>
-</span><span id="into_iter-610"><a href="#into_iter-610"><span class="linenos">610</span></a><span class="sd">        If no elements are left in the iterator.</span>
-</span><span id="into_iter-611"><a href="#into_iter-611"><span class="linenos">611</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="into_iter-612"><a href="#into_iter-612"><span class="linenos">612</span></a>    <span class="k">return</span> <span class="n">FlatIterator</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="into_iter-588"><a href="#into_iter-588"><span class="linenos">588</span></a><span class="k">def</span> <span class="nf">into_iter</span><span class="p">(</span>
+</span><span id="into_iter-589"><a href="#into_iter-589"><span class="linenos">589</span></a>    <span class="n">iterable</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Iterable</span><span class="p">[</span><span class="n">Item</span><span class="p">],</span>
+</span><span id="into_iter-590"><a href="#into_iter-590"><span class="linenos">590</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FlatIterator</span><span class="p">[</span><span class="n">Item</span><span class="p">]:</span>
+</span><span id="into_iter-591"><a href="#into_iter-591"><span class="linenos">591</span></a>    <span class="sd">&quot;&quot;&quot;Transform an iterable into an flat iterator.</span>
+</span><span id="into_iter-592"><a href="#into_iter-592"><span class="linenos">592</span></a>
+</span><span id="into_iter-593"><a href="#into_iter-593"><span class="linenos">593</span></a><span class="sd">    Example</span>
+</span><span id="into_iter-594"><a href="#into_iter-594"><span class="linenos">594</span></a><span class="sd">    -------</span>
+</span><span id="into_iter-595"><a href="#into_iter-595"><span class="linenos">595</span></a><span class="sd">    ```py</span>
+</span><span id="into_iter-596"><a href="#into_iter-596"><span class="linenos">596</span></a><span class="sd">    sequence = [1,2,3]</span>
+</span><span id="into_iter-597"><a href="#into_iter-597"><span class="linenos">597</span></a><span class="sd">    for item in aiobungie.into_iter(sequence).reversed():</span>
+</span><span id="into_iter-598"><a href="#into_iter-598"><span class="linenos">598</span></a><span class="sd">        print(item)</span>
+</span><span id="into_iter-599"><a href="#into_iter-599"><span class="linenos">599</span></a><span class="sd">    # 3</span>
+</span><span id="into_iter-600"><a href="#into_iter-600"><span class="linenos">600</span></a><span class="sd">    # 2</span>
+</span><span id="into_iter-601"><a href="#into_iter-601"><span class="linenos">601</span></a><span class="sd">    # 1</span>
+</span><span id="into_iter-602"><a href="#into_iter-602"><span class="linenos">602</span></a><span class="sd">    ```</span>
+</span><span id="into_iter-603"><a href="#into_iter-603"><span class="linenos">603</span></a>
+</span><span id="into_iter-604"><a href="#into_iter-604"><span class="linenos">604</span></a><span class="sd">    Parameters</span>
+</span><span id="into_iter-605"><a href="#into_iter-605"><span class="linenos">605</span></a><span class="sd">    ----------</span>
+</span><span id="into_iter-606"><a href="#into_iter-606"><span class="linenos">606</span></a><span class="sd">    iterable: `typing.Iterable[Item]`</span>
+</span><span id="into_iter-607"><a href="#into_iter-607"><span class="linenos">607</span></a><span class="sd">        The iterable to convert.</span>
+</span><span id="into_iter-608"><a href="#into_iter-608"><span class="linenos">608</span></a>
+</span><span id="into_iter-609"><a href="#into_iter-609"><span class="linenos">609</span></a><span class="sd">    Raises</span>
+</span><span id="into_iter-610"><a href="#into_iter-610"><span class="linenos">610</span></a><span class="sd">    ------</span>
+</span><span id="into_iter-611"><a href="#into_iter-611"><span class="linenos">611</span></a><span class="sd">    `StopIteration`</span>
+</span><span id="into_iter-612"><a href="#into_iter-612"><span class="linenos">612</span></a><span class="sd">        If no elements are left in the iterator.</span>
+</span><span id="into_iter-613"><a href="#into_iter-613"><span class="linenos">613</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="into_iter-614"><a href="#into_iter-614"><span class="linenos">614</span></a>    <span class="k">return</span> <span class="n">FlatIterator</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
 </span></pre></div>
 
 

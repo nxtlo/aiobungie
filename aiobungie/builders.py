@@ -23,11 +23,14 @@
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = ("OAuth2Response", "PlugSocketBuilder")
+__all__: tuple[str, ...] = ("OAuth2Response", "PlugSocketBuilder", "OAuthURL")
 
 import typing
+import uuid
 
 import attrs
+
+from aiobungie import url
 
 if typing.TYPE_CHECKING:
     from aiobungie import typedefs
@@ -66,6 +69,41 @@ class OAuth2Response:
             refresh_expires_in=payload["refresh_expires_in"],
             membership_id=int(payload["membership_id"]),
         )
+
+
+@attrs.define(kw_only=True)
+class OAuthURL:
+    """The result of calling `aiobungie.RESTClient.build_oauth2_url`.
+
+    Example
+    -------
+    ```py
+    url = aiobungie.builders.OAuthURL(client_id=1234)
+    print(url.compile()) # Full URL to make an OAuth2 request.
+    print(url.state)  # The UUID state to be used in the OAuth2 request.
+    ```
+    """
+
+    state: uuid.UUID = attrs.field(factory=uuid.uuid4)
+    """The state parameter for the URL."""
+
+    client_id: int
+    """The client id for that's making the request."""
+
+    @property
+    def url(self) -> str:
+        """An alias for `OAuthURL.compile`."""
+        return self.compile()
+
+    def compile(self) -> str:
+        """Compiles the URL to finallize the result of the URL."""
+        return (
+            url.OAUTH_EP
+            + f"?client_id={self.client_id}&response_type=code&state={self.state}"  # noqa: W503
+        )
+
+    def __str__(self) -> str:
+        return self.compile()
 
 
 class PlugSocketBuilder:

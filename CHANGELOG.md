@@ -38,6 +38,9 @@ client.rest.open()
 await client.rest.close()
 ```
 
+- `build_oauth2_url` now returns `builders.OAuthURL` object instead of a string URL, This is intentionally changed to seperate
+the state field from the URL. A fully generated URL can still be acquired via `.compile()` method or `.url` property.
+
 ## Added
 - Special method `__or__` to `FlatIterator` which allows to union two iterators togather as `x = iterator1 | iterator2`
 - New method FlatIterator. `async_for_each`, whichs equavilant to `for_each` but takes an async function instead.

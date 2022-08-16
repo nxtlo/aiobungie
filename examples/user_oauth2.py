@@ -29,7 +29,7 @@ async def home(_: aiohttp.web.Request) -> aiohttp.web.Response:
         oauth_url = rest.build_oauth2_url()
 
         assert oauth_url is not None, "Make sure client id and secret are set!"
-        raise aiohttp.web.HTTPFound(location=oauth_url)
+        raise aiohttp.web.HTTPFound(location=oauth_url.url)
 
 
 # After logging in we will be redirected from our Bungie app to this location.

@@ -498,16 +498,12 @@ class RESTClient(interfaces.RESTInterface):
     @typing.final
     def build_oauth2_url(
         self, client_id: typing.Optional[int] = None
-    ) -> typing.Optional[str]:
+    ) -> typing.Optional[builders.OAuthURL]:
         client_id = client_id or self._client_id
         if client_id is None:
             return None
 
-        return url.OAUTH2_EP_BUILDER.format(
-            oauth_endpoint=url.OAUTH_EP,
-            client_id=client_id,
-            uuid=_uuid(),
-        )
+        return builders.OAuthURL(client_id=client_id)
 
     @staticmethod
     def _set_debug_level(

@@ -33,6 +33,7 @@ import typing
 if typing.TYPE_CHECKING:
     import collections.abc as collections
 
+    from aiobungie import builders
     from aiobungie import client
     from aiobungie import interfaces
     from aiobungie import rest
@@ -159,8 +160,10 @@ class RESTful(Debug, typing.Protocol):
 
     def build_oauth2_url(
         self, client_id: typing.Optional[int] = None
-    ) -> typing.Optional[str]:
+    ) -> typing.Optional[builders.OAuthURL]:
         """Builds an OAuth2 URL using the provided user REST/Base client secret/id.
+
+        You can't get the complete string URL by using `.compile()` method.
 
         Parameters
         ----------
@@ -170,9 +173,9 @@ class RESTful(Debug, typing.Protocol):
 
         Returns
         -------
-        `str | None`
+        `aiobungie.builders.OAuthURL | None`
             If the client id was provided as a parameter or provided in `aiobungie.RESTClient`,
-            A complete URL will be returned.
+            A complete OAuthURL object will be returned.
             Otherwise `None` will be returned.
         """
         raise NotImplementedError

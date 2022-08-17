@@ -46,22 +46,25 @@ client.run(main())
 
 ## RESTful clients
 Alternatively, You can use `RESTClient` which's designed to only make HTTP requests and return JSON objects.
+and to interact with the manifest.
 
 ### Example
 ```py
 import aiobungie
 import asyncio
 
-async def main(token: str) -> None:
-    # Single REST client.
-    async with aiobungie.RESTClient("TOKEN") as rest:
-        response = await rest.fetch_clan_members(4389205)
-        raw_members_payload = response['results']
+# Single REST client connection.
+client = aiobungie.RESTClient("...")
 
-        for member in raw_members_payload:
-            print(member)
+async def main() -> None:
+    async with client:
+        # SQLite manifest.
+        await client.download_manifest()
 
-asyncio.run(main("some token"))
+        # OAuth2 API.
+        tokens = await client.fetch_oauth2_tokens('code')
+
+asyncio.run(main())
 ```
 
 ### Requirements

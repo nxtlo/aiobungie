@@ -469,7 +469,7 @@ class MembershipType(int, Enum):
     STEAM = 3
     BLIZZARD = 4
     STADIA = 5
-    EGS = 6
+    EPIC_GAMES_STORE = 6
     DEMON = 10
     BUNGIE = 254
     ALL = -1

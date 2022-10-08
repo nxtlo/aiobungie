@@ -45,7 +45,6 @@ if typing.TYPE_CHECKING:
     import collections.abc as collections
 
     from aiobungie import traits
-    from aiobungie import typedefs
     from aiobungie.crates import components
     from aiobungie.crates import season
 
@@ -107,7 +106,7 @@ class ProfileItemImpl:
     bucket: int
     """The item bucket hash."""
 
-    transfer_status: typedefs.IntAnd[enums.TransferStatus]
+    transfer_status: enums.TransferStatus
     """The item's transfer status."""
 
     lockable: bool
@@ -185,18 +184,6 @@ class Profile:
     power_cap: int
     """The profile's current season power cap."""
 
-    async def _await_all_chars(
-        self, components: list[enums.ComponentType], auth: typing.Optional[str] = None
-    ) -> collections.Sequence[components.CharacterComponent]:
-        return await helpers.awaits(
-            *[
-                self.net.request.fetch_character(
-                    self.id, self.type, char_id, components, auth
-                )
-                for char_id in self.character_ids
-            ]
-        )
-
     async def collect_characters(
         self, components: list[enums.ComponentType], auth: typing.Optional[str] = None
     ) -> collections.Sequence[components.CharacterComponent]:
@@ -205,12 +192,12 @@ class Profile:
         Parameters
         ----------
         components: `list[aiobungie.ComponentType]`
-            Multiple arguments of character components to collect and return.
+            A sequence of character components to collect and return.
 
         Other Parameters
         ----------------
         auth : `typing.Optional[str]`
-            A passed kwarg Bearer access_token to make the request with.
+            A Bearer access_token to make the request with.
             This is optional and limited to components that only requires an Authorization token.
 
         Returns
@@ -218,7 +205,14 @@ class Profile:
         `collections.Sequence[aiobungie.crates.CharacterComponent]`
             A sequence of the characters components.
         """
-        return await self._await_all_chars(components, auth)
+        return await helpers.awaits(
+            *[
+                self.net.request.fetch_character(
+                    self.id, self.type, char_id, components, auth
+                )
+                for char_id in self.character_ids
+            ]
+        )
 
     def __str__(self) -> str:
         return self.name

@@ -193,10 +193,9 @@ class Factory(interfaces.FactoryInterface):
             for creds in payload
         ]
 
-    @staticmethod
-    def set_themese_attrs(
-        payload: typedefs.JSONArray, /
-    ) -> typing.Collection[user.UserThemes]:
+    def deserialize_user_themes(
+        self, payload: typedefs.JSONArray
+    ) -> collections.Sequence[user.UserThemes]:
         return [
             user.UserThemes(
                 id=int(entry["userThemeId"]),
@@ -209,11 +208,6 @@ class Factory(interfaces.FactoryInterface):
             )
             for entry in payload
         ]
-
-    def deserialize_user_themes(
-        self, payload: typedefs.JSONArray
-    ) -> collections.Sequence[user.UserThemes]:
-        return list(self.set_themese_attrs(payload))
 
     def deserialize_clan(self, payload: typedefs.JSONObject) -> clans.Clan:
 
@@ -319,8 +313,8 @@ class Factory(interfaces.FactoryInterface):
 
     def deserialize_clan_members(
         self, data: typedefs.JSONObject, /
-    ) -> iterators.FlatIterator[clans.ClanMember]:
-        return iterators.FlatIterator(
+    ) -> iterators.Iterator[clans.ClanMember]:
+        return iterators.Iterator(
             [self.deserialize_clan_member(member) for member in data["results"]]
         )
 
@@ -1494,13 +1488,13 @@ class Factory(interfaces.FactoryInterface):
 
     def deserialize_inventory_results(
         self, payload: typedefs.JSONObject
-    ) -> iterators.FlatIterator[entity.SearchableEntity]:
+    ) -> iterators.Iterator[entity.SearchableEntity]:
         suggested_words: list[str] = payload["suggestedWords"]
 
         def _check_unknown(s: str) -> undefined.UndefinedOr[str]:
             return s if not typedefs.is_unknown(s) else undefined.Undefined
 
-        return iterators.FlatIterator(
+        return iterators.Iterator(
             [
                 entity.SearchableEntity(
                     net=self._net,
@@ -1817,8 +1811,8 @@ class Factory(interfaces.FactoryInterface):
 
     def deserialize_activities(
         self, payload: typedefs.JSONObject
-    ) -> iterators.FlatIterator[activity.Activity]:
-        return iterators.FlatIterator(
+    ) -> iterators.Iterator[activity.Activity]:
+        return iterators.Iterator(
             [
                 self.deserialize_activity(activity_)
                 for activity_ in payload["activities"]
@@ -2003,8 +1997,8 @@ class Factory(interfaces.FactoryInterface):
 
     def deserialize_aggregated_activities(
         self, payload: typedefs.JSONObject
-    ) -> iterators.FlatIterator[activity.AggregatedActivity]:
-        return iterators.FlatIterator(
+    ) -> iterators.Iterator[activity.AggregatedActivity]:
+        return iterators.Iterator(
             [
                 self.deserialize_aggregated_activity(activity)
                 for activity in payload["activities"]

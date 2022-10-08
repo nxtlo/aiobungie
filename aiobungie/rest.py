@@ -195,11 +195,10 @@ class _Session:
         connect: typing.Optional[float] = None,
         socket_read: typing.Optional[float] = None,
         socket_connect: typing.Optional[float] = None,
-        **kwargs: typing.Any,
     ) -> _Session:
         """Creates a new TCP connection client session."""
         session = aiohttp.ClientSession(
-            connector=aiohttp.TCPConnector(ssl=False, **kwargs),
+            connector=aiohttp.TCPConnector(ssl=False),
             connector_owner=owner,
             raise_for_status=raise_status,
             timeout=aiohttp.ClientTimeout(
@@ -217,7 +216,6 @@ class _Session:
         _LOG.debug("Closing session...")
         if self.client_session.connector is not None:
             await self.client_session.connector.close()
-            await asyncio.sleep(0.025)
             _LOG.debug("Session closed.")
 
 
@@ -467,13 +465,7 @@ class RESTClient(interfaces.RESTInterface):
         if self.is_alive:
             raise RuntimeError("Cannot open a new session while it's already open.")
 
-        self._session = _Session.create(
-            owner=False,
-            raise_status=False,
-            connect=None,
-            socket_read=None,
-            socket_connect=None,
-        )
+        self._session = _Session.create(owner=False, raise_status=False)
 
     @typing.final
     def enable_debugging(

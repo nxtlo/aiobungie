@@ -244,7 +244,7 @@ class Character:
         *,
         page: int = 0,
         limit: int = 250,
-    ) -> iterators.FlatIterator[activity.Activity]:
+    ) -> iterators.Iterator[activity.Activity]:
         """Fetch Destiny 2 activities for this character.
 
         Parameters
@@ -261,7 +261,7 @@ class Character:
 
         Returns
         -------
-        `aiobungie.iterators.FlatIterator[aiobungie.crates.Activity]`
+        `aiobungie.iterators.Iterator[aiobungie.crates.Activity]`
             A iterator over the character's activities.
 
         Raises

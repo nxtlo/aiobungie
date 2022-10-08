@@ -357,7 +357,7 @@ class UserCredentials:
     Those credentials should be the linked profiles such as Twitch, Steam, Blizzard, etc.
     """
 
-    type: typedefs.IntAnd[enums.CredentialType]
+    type: enums.CredentialType
     """The credential type."""
 
     display_name: str

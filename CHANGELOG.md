@@ -4,7 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).All notable changes to this project will be documented in this file.
 
-## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.6...HEAD)
+## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.7...HEAD)
+
+## [0.2.7](https://github.com/nxtlo/aiobungie/compare/0.2.6...0.2.7) 10-08-2022
 
 ## Breaking Changes
 - Base `Client` users now will need to open the REST client before making any requests.
@@ -48,11 +50,17 @@ the state field from the URL. A fully generated URL can still be acquired via `.
 
 Example:
 ```py
-await client.download_manifest(name='Destiny', path='G:/Files') # -> G:/Files/Destiny.sqlite3
+await client.download_manifest(name='Destiny', path='G:/Files' or pathlib.Path("Path/**/**")) # -> G:/Files/Destiny.sqlite3
 ```
+
+## Added
+- Enum fields `EPIC_GAMES_STORE` and `DEMON`. [#214](https://github.com/nxtlo/aiobungie/pull/214)
 
 ## Changed
 - `FlatIterator` no longer support async iteration.
+- Removed method `FlatIterator.discard` in favor of `FlatIterator.filter` mathod.
+- `FlatIterator` class renamed to `Iterator`.
+- Enum flags now uses bitwise `<<` for its fields instead of `=` numbers assign.
 
 ## Removed
 - `CharacterError` exception. This was supposed to be removed with `0.2.6`.

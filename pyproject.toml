@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "aiobungie"
-version = "0.2.6"
+version = "0.2.7"
 description = "A Python and Asyncio API for Bungie."
 authors = ["nxtlo <dhmony-99@hotmail.com>"]
 license = "MIT"

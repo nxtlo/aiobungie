@@ -23,7 +23,7 @@
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = ("FlatIterator", "into_iter")
+__all__: tuple[str, ...] = ("Iterator", "into_iter")
 
 import collections.abc as collections
 import itertools
@@ -41,13 +41,13 @@ if typing.TYPE_CHECKING:
     _B = typing.TypeVar("_B", bound=collections.Callable[..., typing.Any])
 
 
-class FlatIterator(typing.Generic[Item]):
+class Iterator(typing.Generic[Item]):
     """A Flat, In-Memory iterator for sequenced based data.
 
     Example
     -------
     ```py
-    iterator = FlatIterator([1, 2, 3])
+    iterator = Iterator([1, 2, 3])
 
     # Map the results.
     for item in iterator.map(lambda item: item * 2):
@@ -67,9 +67,9 @@ class FlatIterator(typing.Generic[Item]):
     # 3
 
     # Union two iterators.
-    iterator2 = FlatIterator([4, 5, 6])
+    iterator2 = Iterator([4, 5, 6])
     final = iterator | iterator2
-    # <FlatIterator([1, 2, 3, 4, 5, 6])>
+    # <Iterator([1, 2, 3, 4, 5, 6])>
     ```
 
     Parameters
@@ -98,7 +98,7 @@ class FlatIterator(typing.Generic[Item]):
 
         Example
         -------
-        >>> iterator = FlatIterator([1, 2, 3])
+        >>> iterator = Iterator([1, 2, 3])
         >>> iterator.collect(casting=str)
         ["1", "2", "3"]
 
@@ -123,7 +123,7 @@ class FlatIterator(typing.Generic[Item]):
         Example
         -------
         ```py
-        iterator = FlatIterator(["1", "2", "3"])
+        iterator = Iterator(["1", "2", "3"])
         item = iterator.next()
         assert item == "1"
         item = iterator.next()
@@ -142,15 +142,15 @@ class FlatIterator(typing.Generic[Item]):
 
     def map(
         self, predicate: collections.Callable[[Item], OtherItem]
-    ) -> FlatIterator[OtherItem]:
+    ) -> Iterator[OtherItem]:
         """Maps each item in the iterator to its predicated value.
 
         Example
         -------
         ```py
-        iterator = FlatIterator(["1", "2", "3"]).map(lambda value: int(value))
+        iterator = Iterator(["1", "2", "3"]).map(lambda value: int(value))
         print(iterator)
-        # <FlatIterator([1, 2, 3])>
+        # <Iterator([1, 2, 3])>
         ```
 
         Parameters
@@ -160,7 +160,7 @@ class FlatIterator(typing.Generic[Item]):
 
         Returns
         -------
-        `FlatIterator[OtherItem]`
+        `Iterator[OtherItem]`
             The mapped iterator.
 
         Raises
@@ -168,18 +168,18 @@ class FlatIterator(typing.Generic[Item]):
         `StopIteration`
             If no elements are left in the iterator.
         """
-        return FlatIterator(map(predicate, self._items))
+        return Iterator(map(predicate, self._items))
 
-    def take(self, n: int) -> FlatIterator[Item]:
+    def take(self, n: int) -> Iterator[Item]:
         """Take the first number of items until the number of items are yielded or
         the end of the iterator is reached.
 
         Example
         -------
         ```py
-        iterator = FlatIterator([GameMode.RAID, GameMode.STRIKE, GameMode.GAMBIT])
+        iterator = Iterator([GameMode.RAID, GameMode.STRIKE, GameMode.GAMBIT])
         print(iterator.take(2))
-        # <FlatIterator([GameMode.RAID, GameMode.STRIKE])>
+        # <Iterator([GameMode.RAID, GameMode.STRIKE])>
         ```
 
         Parameters
@@ -192,19 +192,19 @@ class FlatIterator(typing.Generic[Item]):
         `StopIteration`
             If no elements are left in the iterator.
         """
-        return FlatIterator(itertools.islice(self._items, n))
+        return Iterator(itertools.islice(self._items, n))
 
     def take_while(
         self, predicate: collections.Callable[[Item], bool]
-    ) -> FlatIterator[Item]:
+    ) -> Iterator[Item]:
         """Yields items from the iterator while predicate returns `True`.
 
         Example
         -------
         ```py
-        iterator = FlatIterator([STEAM, XBOX, STADIA])
+        iterator = Iterator([STEAM, XBOX, STADIA])
         print(iterator.take_while(lambda platform: platform is not XBOX))
-        # <FlatIterator([STEAM])>
+        # <Iterator([STEAM])>
         ```
 
         Parameters
@@ -217,19 +217,19 @@ class FlatIterator(typing.Generic[Item]):
         `StopIteration`
             If no elements are left in the iterator.
         """
-        return FlatIterator(itertools.takewhile(predicate, self._items))
+        return Iterator(itertools.takewhile(predicate, self._items))
 
     def drop_while(
         self, predicate: collections.Callable[[Item], bool]
-    ) -> FlatIterator[Item]:
+    ) -> Iterator[Item]:
         """Yields items from the iterator while predicate returns `False`.
 
         Example
         -------
         ```py
-        iterator = FlatIterator([DestinyMembership(name="Jim"), DestinyMembership(name="Bob")])
+        iterator = Iterator([DestinyMembership(name="Jim"), DestinyMembership(name="Bob")])
         print(iterator.drop_while(lambda membership: membership.name is not "Jim"))
-        # <FlatIterator([DestinyMembership(name="Bob")])>
+        # <Iterator([DestinyMembership(name="Bob")])>
         ```
 
         Parameters
@@ -242,79 +242,50 @@ class FlatIterator(typing.Generic[Item]):
         `StopIteration`
             If no elements are left in the iterator.
         """
-        return FlatIterator(itertools.dropwhile(predicate, self._items))
+        return Iterator(itertools.dropwhile(predicate, self._items))
 
-    def filter(
-        self, predicate: collections.Callable[[Item], bool]
-    ) -> FlatIterator[Item]:
+    def filter(self, predicate: collections.Callable[[Item], bool]) -> Iterator[Item]:
         """Filters the iterator to only yield items that match the predicate.
 
         Example
         -------
         ```py
-        names = FlatIterator(["Jim", "Bob", "Mike", "Jess"])
+        names = Iterator(["Jim", "Bob", "Mike", "Jess"])
         print(names.filter(lambda n: n != "Jim"))
-        # <FlatIterator(["Bob", "Mike", "Jess"])>
+        # <Iterator(["Bob", "Mike", "Jess"])>
         ```
         """
-        return FlatIterator(filter(predicate, self._items))
+        return Iterator(filter(predicate, self._items))
 
-    def skip(self, n: int) -> FlatIterator[Item]:
+    def skip(self, n: int) -> Iterator[Item]:
         """Skips the first number of items in the iterator.
 
         Example
         -------
         ```py
-        iterator = FlatIterator([STEAM, XBOX, STADIA])
+        iterator = Iterator([STEAM, XBOX, STADIA])
         print(iterator.skip(1))
-        # <FlatIterator([XBOX, STADIA])>
+        # <Iterator([XBOX, STADIA])>
         ```
         """
-        return FlatIterator(itertools.islice(self._items, n, None))
+        return Iterator(itertools.islice(self._items, n, None))
 
-    def discard(
-        self, predicate: collections.Callable[[Item], bool]
-    ) -> FlatIterator[Item]:
-        """Discards all elements in the iterator for which the predicate function returns true.
-
-        Example
-        -------
-        ```py
-        iterator = FlatIterator(['A', 'B', 'C'])
-        print(iterator.discard(lambda x: x == 'B'))
-        # <FlatIterator(['A', 'C'])>
-        ```
-
-        Parameters
-        ----------
-        predicate: `collections.Callable[[Item], bool]`
-            The function to test each item in the iterator.
-
-        Raises
-        ------
-        `StopIteration`
-            If no elements are left in the iterator.
-        """
-        return FlatIterator(filter(lambda x: not predicate(x), self._items))
-
-    def zip(
-        self, other: FlatIterator[OtherItem]
-    ) -> FlatIterator[tuple[Item, OtherItem]]:
+    def zip(self, other: Iterator[OtherItem]) -> Iterator[tuple[Item, OtherItem]]:
         """Zips the iterator with another iterable.
 
         Example
         -------
         ```py
-        iterator = FlatIterator([1, 3, 5])
-        other = FlatIterator([2, 4, 6])
+        iterator = Iterator([1, 3, 5])
+        other = Iterator([2, 4, 6])
         for item, other_item in iterator.zip(other):
             print(item, other_item)
-        # <FlatIterator([(1, 2), (3, 4), (5, 6)])>
+        # <Iterator([(1, 2), (3, 4), (5, 6)])>
         ```
 
         Parameters
         ----------
-        other: `FlatIterator[OtherItem]`
+        other: `Iterator[OtherItem]`
             The iterable to zip with.
 
         Raises
@@ -322,7 +293,7 @@ class FlatIterator(typing.Generic[Item]):
         `StopIteration`
             If no elements are left in the iterator.
         """
-        return FlatIterator(zip(self._items, other))
+        return Iterator(zip(self._items, other))
 
     def all(self, predicate: collections.Callable[[Item], bool]) -> bool:
         """`True` if all items in the iterator match the predicate.
@@ -330,7 +301,7 @@ class FlatIterator(typing.Generic[Item]):
         Example
         -------
         ```py
-        iterator = FlatIterator([1, 2, 3])
+        iterator = Iterator([1, 2, 3])
         while iterator.all(lambda item: isinstance(item, int)):
             print("Still all integers")
             continue
@@ -355,7 +326,7 @@ class FlatIterator(typing.Generic[Item]):
         Example
         -------
         ```py
-        iterator = FlatIterator([1, 2, 3])
+        iterator = Iterator([1, 2, 3])
         if iterator.any(lambda item: isinstance(item, int)):
             print("At least one item is an int.")
         # At least one item is an int.
@@ -378,15 +349,15 @@ class FlatIterator(typing.Generic[Item]):
         *,
         key: collections.Callable[[Item], typeshed.SupportsRichComparison],
         reverse: bool = False,
-    ) -> FlatIterator[Item]:
+    ) -> Iterator[Item]:
         """Sorts the iterator.
 
         Example
         -------
         ```py
-        iterator = FlatIterator([3, 1, 6, 7])
+        iterator = Iterator([3, 1, 6, 7])
         print(iterator.sort(key=lambda item: item))
-        # <FlatIterator([1, 3, 6, 7])>
+        # <Iterator([1, 3, 6, 7])>
         ```
 
         Parameters
@@ -401,7 +372,7 @@ class FlatIterator(typing.Generic[Item]):
         `StopIteration`
             If no elements are left in the iterator.
         """
-        return FlatIterator(sorted(self._items, key=key, reverse=reverse))
+        return Iterator(sorted(self._items, key=key, reverse=reverse))
 
     def first(self) -> Item:
         """Returns the first item in the iterator.
@@ -409,7 +380,7 @@ class FlatIterator(typing.Generic[Item]):
         Example
         -------
         ```py
-        iterator = FlatIterator([3, 1, 6, 7])
+        iterator = Iterator([3, 1, 6, 7])
         print(iterator.first())
         3
         ```
@@ -421,15 +392,15 @@ class FlatIterator(typing.Generic[Item]):
         """
         return self.take(1).next()
 
-    def reversed(self) -> FlatIterator[Item]:
+    def reversed(self) -> Iterator[Item]:
         """Returns a new iterator that yields the items in the iterator in reverse order.
 
         Example
         -------
         ```py
-        iterator = FlatIterator([3, 1, 6, 7])
+        iterator = Iterator([3, 1, 6, 7])
         print(iterator.reversed())
-        # <FlatIterator([7, 6, 1, 3])>
+        # <Iterator([7, 6, 1, 3])>
         ```
 
         Raises
@@ -437,7 +408,7 @@ class FlatIterator(typing.Generic[Item]):
         `StopIteration`
             If no elements are left in the iterator.
         """
-        return FlatIterator(reversed(self.collect()))
+        return Iterator(reversed(self.collect()))
 
     def count(self) -> int:
         """Returns the number of items in the iterator.
@@ -445,7 +416,7 @@ class FlatIterator(typing.Generic[Item]):
         Example
         -------
         ```py
-        iterator = FlatIterator([3, 1, 6, 7])
+        iterator = Iterator([3, 1, 6, 7])
         print(iterator.count())
         4
         ```
@@ -456,21 +427,21 @@ class FlatIterator(typing.Generic[Item]):
 
         return count
 
-    def union(self, other: FlatIterator[Item]) -> FlatIterator[Item]:
+    def union(self, other: Iterator[Item]) -> Iterator[Item]:
         """Returns a new iterator that yields all items from both iterators.
 
         Example
         -------
         ```py
-        iterator = FlatIterator([1, 2, 3])
-        other = FlatIterator([4, 5, 6])
+        iterator = Iterator([1, 2, 3])
+        other = Iterator([4, 5, 6])
         print(iterator.union(other))
-        # <FlatIterator([1, 2, 3, 4, 5, 6])>
+        # <Iterator([1, 2, 3, 4, 5, 6])>
         ```
 
         Parameters
         ----------
-        other: `FlatIterator[Item]`
+        other: `Iterator[Item]`
             The iterable to union with.
 
         Raises
@@ -478,7 +449,7 @@ class FlatIterator(typing.Generic[Item]):
         `StopIteration`
             If no elements are left in the iterator.
         """
-        return FlatIterator(itertools.chain(self._items, other))
+        return Iterator(itertools.chain(self._items, other))
 
     def for_each(self, func: collections.Callable[[Item], typing.Any]) -> None:
         """Calls the function on each item in the iterator.
@@ -486,7 +457,7 @@ class FlatIterator(typing.Generic[Item]):
         Example
         -------
         ```py
-        iterator = FlatIterator([1, 2, 3])
+        iterator = Iterator([1, 2, 3])
         iterator.for_each(lambda item: print(item))
         # 1
         # 2
@@ -527,13 +498,13 @@ class FlatIterator(typing.Generic[Item]):
         """
         await _helpers.awaits(*(func(item) for item in self))
 
-    def enumerate(self, *, start: int = 0) -> FlatIterator[tuple[int, Item]]:
+    def enumerate(self, *, start: int = 0) -> Iterator[tuple[int, Item]]:
         """Returns a new iterator that yields tuples of the index and item.
 
         Example
         -------
         ```py
-        iterator = FlatIterator([1, 2, 3])
+        iterator = Iterator([1, 2, 3])
         for index, item in iterator.enumerate():
             print(index, item)
         # 0 1
@@ -546,7 +517,7 @@ class FlatIterator(typing.Generic[Item]):
         `StopIteration`
             If no elements are left in the iterator.
         """
-        return FlatIterator(enumerate(self._items, start=start))
+        return Iterator(enumerate(self._items, start=start))
 
     def _ok(self) -> typing.NoReturn:
         raise StopIteration("No more items in the iterator.") from None
@@ -557,7 +528,7 @@ class FlatIterator(typing.Generic[Item]):
         except IndexError:
             self._ok()
 
-    def __or__(self, other: FlatIterator[Item]) -> FlatIterator[Item]:
+    def __or__(self, other: Iterator[Item]) -> Iterator[Item]:
         return self.union(other)
 
     # This is a never.
@@ -572,7 +543,7 @@ class FlatIterator(typing.Generic[Item]):
     def __len__(self) -> int:
         return self.count()
 
-    def __iter__(self) -> FlatIterator[Item]:
+    def __iter__(self) -> Iterator[Item]:
         return self
 
     def __next__(self) -> Item:
@@ -586,7 +557,7 @@ class FlatIterator(typing.Generic[Item]):
 
 def into_iter(
     iterable: collections.Iterable[Item],
-) -> FlatIterator[Item]:
+) -> Iterator[Item]:
     """Transform an iterable into an flat iterator.
 
     Example
@@ -610,4 +581,4 @@ def into_iter(
     `StopIteration`
         If no elements are left in the iterator.
     """
-    return FlatIterator(iterable)
+    return Iterator(iterable)

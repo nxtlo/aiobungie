@@ -731,7 +731,7 @@ class Clan:
         *,
         name: typing.Optional[str] = None,
         type: enums.MembershipType = enums.MembershipType.NONE,
-    ) -> iterators.FlatIterator[ClanMember]:
+    ) -> iterators.Iterator[ClanMember]:
         """Fetch the members of the clan.
 
         Parameters
@@ -744,7 +744,7 @@ class Clan:
 
         Returns
         --------
-        `aiobungie.FlatIterator[ClanMember]`
+        `aiobungie.Iterator[ClanMember]`
             An iterator over the clan members found in this clan.
 
         Raises

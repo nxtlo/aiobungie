@@ -252,7 +252,7 @@ class FactoryInterface(abc.ABC):
     @abc.abstractmethod
     def deserialize_clan_members(
         self, data: typedefs.JSONObject, /
-    ) -> iterators.FlatIterator[clans.ClanMember]:
+    ) -> iterators.Iterator[clans.ClanMember]:
         """Deserialize a JSON payload of a clan members information.
 
         Parameters
@@ -262,7 +262,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.iterators.FlatIterator[aiobungie.crates.ClanMember]`
+        `aiobungie.iterators.Iterator[aiobungie.crates.ClanMember]`
             An iterator of clan members of the deserialized payload.
         """
 
@@ -679,7 +679,7 @@ class FactoryInterface(abc.ABC):
     @abc.abstractmethod
     def deserialize_inventory_results(
         self, payload: typedefs.JSONObject
-    ) -> iterators.FlatIterator[entity.SearchableEntity]:
+    ) -> iterators.Iterator[entity.SearchableEntity]:
         """Deserialize results of searched Destiny2 entities.
 
         Parameters
@@ -689,7 +689,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.iterators.FlatIterator[aiobungie.crates.SearchableEntity]`
+        `aiobungie.iterators.Iterator[aiobungie.crates.SearchableEntity]`
             An iterator over the found searched entities.
         """
 
@@ -732,7 +732,7 @@ class FactoryInterface(abc.ABC):
     @abc.abstractmethod
     def deserialize_activities(
         self, payload: typedefs.JSONObject, /
-    ) -> iterators.FlatIterator[activity.Activity]:
+    ) -> iterators.Iterator[activity.Activity]:
         """Deserialize a JSON payload of an array of activity history information.
 
         Parameters
@@ -742,7 +742,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.iterators.FlatIterator[aiobungie.crates.Activity]`
+        `aiobungie.iterators.Iterator[aiobungie.crates.Activity]`
             Am iterator over activity objects of the deserialized payload.
         """
 
@@ -819,7 +819,7 @@ class FactoryInterface(abc.ABC):
     @abc.abstractmethod
     def deserialize_aggregated_activities(
         self, payload: typedefs.JSONObject
-    ) -> iterators.FlatIterator[activity.AggregatedActivity]:
+    ) -> iterators.Iterator[activity.AggregatedActivity]:
         """Deserialize a JSON payload of an array of aggregated activities.
 
         Parameters
@@ -829,7 +829,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.iterators.FlatIterator[aiobungie.crates.AggregatedActivity]`
+        `aiobungie.iterators.Iterator[aiobungie.crates.AggregatedActivity]`
             An iterator over aggregated activities objects.
         """
 

@@ -41,7 +41,6 @@ from aiobungie.internal import enums
 
 if typing.TYPE_CHECKING:
     from aiobungie import traits
-    from aiobungie import typedefs
     from aiobungie.crates import entity
 
 
@@ -50,13 +49,13 @@ class RecordState(enums.Flag):
     """An enum for records component states."""
 
     NONE = 0
-    REDEEMED = 1
-    UNAVAILABLE = 2
-    OBJECTIVE_NOT_COMPLETED = 4
-    OBSCURED = 8
-    INVISIBLE = 16
-    ENTITLEMENT_UNOWNED = 32
-    CAN_EQUIP_TITLE = 64
+    REDEEMED = 1 << 0
+    UNAVAILABLE = 1 << 1
+    OBJECTIVE_NOT_COMPLETED = 1 << 2
+    OBSCURED = 1 << 3
+    INVISIBLE = 1 << 4
+    ENTITLEMENT_UNOWNED = 1 << 5
+    CAN_EQUIP_TITLE = 1 << 6
 
 
 @attrs.define(kw_only=True)
@@ -155,7 +154,7 @@ class Record:
     This will be `UNDEFINED` if not found.
     """
 
-    state: typedefs.IntAnd[RecordState]
+    state: RecordState
     """Record's state. This will be an int if the state is a sum of multiple states."""
 
     objectives: typing.Optional[list[Objective]]

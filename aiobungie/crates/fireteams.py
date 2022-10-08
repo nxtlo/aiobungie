@@ -47,7 +47,6 @@ if typing.TYPE_CHECKING:
     import collections.abc as collections
     import datetime
 
-    from aiobungie import typedefs
     from aiobungie import undefined
 
 
@@ -168,7 +167,7 @@ class FireteamPartyMember:
     display_name: undefined.UndefinedOr[str]
     """Party member's display name. `UNDEFINED` if not set."""
 
-    status: typedefs.IntAnd[FireteamPartyMemberState]
+    status: FireteamPartyMemberState
     """A Flags Enumeration value indicating the states that the player is in relevant to being on a fireteam."""
 
     def __str__(self) -> str:
@@ -211,7 +210,7 @@ class FireteamPartySettings:
     privacy_setting: enums.PrivacySetting
     """Fireteam leader's fireteam privacy setting."""
 
-    closed_reasons: typedefs.IntAnd[enums.ClosedReasons]
+    closed_reasons: enums.ClosedReasons
     """Reasons why a person can't join this person's fireteam."""
 
 

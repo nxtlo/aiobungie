@@ -39,8 +39,8 @@ _LOG = logging.getLogger("test_client")
 
 def __build_client() -> aiobungie.Client:
     token = os.environ["CLIENT_TOKEN"]
-    rest = aiobungie.RESTClient(token, max_retries=1, enable_debugging=True)
-    client = aiobungie.Client(token, rest_client=rest, max_retries=1)
+    rest = aiobungie.RESTClient(token, max_retries=0, enable_debugging=True)
+    client = aiobungie.Client(token, rest_client=rest, max_retries=0)
     return client
 
 
@@ -73,7 +73,7 @@ async def test_clan():
     c = await client.fetch_clan("Nuanceㅤ ")
     members = await c.fetch_members()
 
-    for member in members.discard(lambda member: not member.is_online):
+    for member in members.filter(lambda member: not member.is_online):
         assert isinstance(member, aiobungie.crate.ClanMember)
 
 async def test_fetch_clan_members():

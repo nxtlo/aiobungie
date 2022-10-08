@@ -474,7 +474,7 @@ class ObjectiveEntity(Entity):
 
     completion_value: int
 
-    scope: typedefs.IntAnd[GatingScope]
+    scope: GatingScope
 
     location_hash: int
 
@@ -486,15 +486,15 @@ class ObjectiveEntity(Entity):
 
     display_only_objective: bool
 
-    value_style: typedefs.IntAnd[ValueUIStyle]
+    value_style: ValueUIStyle
 
-    complete_value_style: typedefs.IntAnd[ValueUIStyle]
+    complete_value_style: ValueUIStyle
 
-    progress_value_style: typedefs.IntAnd[ValueUIStyle]
+    progress_value_style: ValueUIStyle
 
     allow_over_completion: bool
 
-    show_value_style: typedefs.IntAnd[ValueUIStyle]
+    show_value_style: ValueUIStyle
 
     progress_description: str
 
@@ -526,13 +526,13 @@ class ActivityEntity(Entity):
     light_level: int
     """Activity's light level."""
 
-    place: typedefs.IntAnd[enums.Place]
+    place: enums.Place
     """The place of this activity."""
 
     type_hash: int
     """The activity's type hash. This bounds to activity types such as Strikes, Crucible, Raids, etc."""
 
-    tier: typedefs.IntAnd[activity.Difficulty]
+    tier: activity.Difficulty
     """Activity's difficulty tier."""
 
     image: assets.Image
@@ -567,20 +567,16 @@ class ActivityEntity(Entity):
     guided_game: typing.Optional[activity.GuidedGame]
     """Information about activity's guided game mode, If exists otherwise `None`."""
 
-    mode: typing.Optional[typedefs.IntAnd[enums.GameMode]]
+    mode: typing.Optional[enums.GameMode]
     """If this activity had an activity mode directly defined on it, this will be the hash of that mode."""
 
     mode_hash: typing.Optional[int]
     """If the activity had an activity mode directly defined on it, this will be the enum value of that mode."""
 
-    mode_hashes: collections.Sequence[typedefs.IntAnd[enums.GameMode]] = attrs.field(
-        repr=False
-    )
+    mode_hashes: collections.Sequence[enums.GameMode] = attrs.field(repr=False)
     """The hash identifiers for Activity Modes relevant to this entry."""
 
-    mode_types: collections.Sequence[typedefs.IntAnd[enums.GameMode]] = attrs.field(
-        repr=False
-    )
+    mode_types: collections.Sequence[enums.GameMode] = attrs.field(repr=False)
     """A sequence of the activity gamemode types."""
 
     loadouts: collections.Sequence[int]
@@ -615,16 +611,16 @@ class PlaylistActivityEntity:
     mode_hash: typing.Optional[int]
     """If this activity had an activity mode directly defined on it, this will be the hash of that mode."""
 
-    mode: typing.Optional[typedefs.IntAnd[enums.GameMode]]
+    mode: typing.Optional[enums.GameMode]
     """If the activity had an activity mode directly defined on it, this will be the enum value of that mode."""
 
     mode_hashes: collections.Sequence[int]
     """The hash identifiers for Activity Modes relevant to this entry."""
 
-    mode_types: collections.Sequence[typedefs.IntAnd[enums.GameMode]]
+    mode_types: collections.Sequence[enums.GameMode]
     """A sequence of the activity gamemode types."""
 
-    @helpers.unimplemented(available_in="0.2.7")
+    @helpers.unimplemented()
     async def fetch_self(self) -> ActivityEntity:
         """Fetch the definition of this activity."""
         ...

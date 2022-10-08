@@ -55,7 +55,6 @@ if typing.TYPE_CHECKING:
     import datetime
 
     from aiobungie import traits
-    from aiobungie import typedefs
     from aiobungie import undefined
     from aiobungie.crates import entity
     from aiobungie.crates import user
@@ -163,7 +162,7 @@ class GuidedGame:
 class Location:
     """Represents information about an activity location."""
 
-    hash: typing.Union[typedefs.IntAnd[enums.Place], typedefs.IntAnd[enums.Planet]]
+    hash: typing.Union[enums.Place, enums.Planet]
     """Location hash."""
 
     activision_source: str
@@ -192,12 +191,10 @@ class CharacterActivity:
     current_mode_hash: int
     """The current activity mode hash that the player is now playing."""
 
-    current_mode: typing.Optional[typedefs.IntAnd[enums.GameMode]]
+    current_mode: typing.Optional[enums.GameMode]
     """The current activity mode presented an an enum."""
 
-    current_mode_types: typing.Optional[
-        collections.Sequence[typedefs.IntAnd[enums.GameMode]]
-    ]
+    current_mode_types: typing.Optional[collections.Sequence[enums.GameMode]]
     """A sequence of the current activity game-mode types presented as an enum."""
 
     current_mode_hashes: typing.Optional[collections.Sequence[int]]
@@ -241,10 +238,10 @@ class AvailableActivity:
     recommended_light: typing.Optional[int]
     """The recommended light power to enter this activity."""
 
-    difficulty: typedefs.IntAnd[Difficulty]
+    difficulty: Difficulty
     """Activity's difficulty tier."""
 
-    @helpers.unimplemented(available_in="0.2.7")
+    @helpers.unimplemented()
     async def fetch_self(self) -> entity.ActivityEntity:
         """Fetch the definition of this activity."""
         ...

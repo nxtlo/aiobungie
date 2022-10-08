@@ -40,15 +40,12 @@ def client_test(session: nox.Session) -> None:
 
     session.install("-r", "requirements.txt")
     session.install('.', "--upgrade")
+    path = pathlib.Path("./tests/aiobungie/test_client.py")
     try:
-        path = pathlib.Path("./tests/aiobungie/test_client.py")
         if path.exists() and path.is_file():
             shutil.copy(path, '.')
             session.run("python", 'test_client.py')
         os.remove("./test_client.py")
     finally:
-        try:
-            os.remove("./test_client.py")
-        except FileNotFoundError:
-            pass
+        pathlib.Path("./test_client.py").unlink(missing_ok=True)
         session.run("pip", "uninstall", "aiobungie", "--yes", "-v", "--retries", "3")

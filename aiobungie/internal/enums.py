@@ -67,11 +67,6 @@ import typing
 
 _ITERABLE = (set, list, tuple)
 
-if typing.TYPE_CHECKING:
-    _T = typing.TypeVar("_T")
-
-# TODO = Use Flags for bitwised fields?
-
 
 class Enum(__enum.Enum):
     """Builtin Python enum with extra handlings."""
@@ -747,11 +742,11 @@ class TransferStatus(Flag):
 
     CAN_TRANSFER = 0
     """The item can be transferred."""
-    IS_EQUIPPED = 1
+    IS_EQUIPPED = 1 << 0
     """You can't transfer since the item is equipped."""
-    NOT_TRASNFERRABLE = 2
+    NOT_TRASNFERRABLE = 1 << 1
     """This item can not be transferred."""
-    COULD_BE_TRANSFERRED = 4
+    COULD_BE_TRANSFERRED = 1 << 2
     """You can trasnfer the item. But the place you're trying to put it at has no space for it."""
 
 
@@ -760,12 +755,12 @@ class ItemState(Flag):
     """An enum for Destiny 2 item states."""
 
     NONE = 0
-    LOCKED = 1
-    TRACKED = 2
-    MASTERWORKED = 4
-    CRAFTED = 8
+    LOCKED = 1 << 0
+    TRACKED = 1 << 1
+    MASTERWORKED = 1 << 2
+    CRAFTED = 1 << 3
     """If this bit is set, the item has been 'crafted' by the player."""
-    HIGHLITED_OBJECTIVE = 16
+    HIGHLITED_OBJECTIVE = 1 << 4
     """If this bit is set, the item is a 'highlighted' objective."""
 
 
@@ -785,17 +780,17 @@ class ClosedReasons(Flag):
     """A Flags enumeration representing the reasons why a person can't join this user's fireteam."""
 
     NONE = 0
-    MATCHMAKING = 1
-    LOADING = 2
-    SOLO = 4
+    MATCHMAKING = 1 << 0
+    LOADING = 1 << 1
+    SOLO = 1 << 2
     """The activity is required to be played solo."""
-    INTERNAL_REASONS = 8
+    INTERNAL_REASONS = 1 << 3
     """
     The user can't be joined for one of a variety of internal reasons.
     Basically, the game can't let you join at this time,
     but for reasons that aren't under the control of this user
     """
-    DISALLOWED_BY_GAME_STATE = 16
+    DISALLOWED_BY_GAME_STATE = 1 << 4
     """The user's current activity/quest/other transitory game state is preventing joining."""
     OFFLINE = 32768
     """The user appears offline."""

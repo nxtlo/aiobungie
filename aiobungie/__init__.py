@@ -33,15 +33,16 @@ client = aiobungie.Client('YOUR_API_KEY')
 
 # Search for Destiny2 users.
 async def main() -> None:
-    users = await client.search_users('Crit')
+    async with client.rest:
+        users = await client.search_users('Crit')
 
-    # Iterate over the users and take the first 5 results.
-    for user in users.take(5):
-        print(f'{user.name} ({user.code})')
+        # Iterate over the users and take the first 5 results.
+        for user in users.take(5):
+            print(f'{user.name} ({user.code})')
 
-        # Iterate through the users memberships.
-        for membership in user.memberships:
-            print(membership.type, membership.id)
+            # Iterate through the users memberships.
+            for membership in user.memberships:
+                print(membership.type, membership.id)
 
 client.run(main()) # or asyncio.run(main())
 ```

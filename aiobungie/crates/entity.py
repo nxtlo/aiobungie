@@ -623,4 +623,4 @@ class PlaylistActivityEntity:
     @helpers.unimplemented()
     async def fetch_self(self) -> ActivityEntity:
         """Fetch the definition of this activity."""
-        ...
+        return NotImplemented

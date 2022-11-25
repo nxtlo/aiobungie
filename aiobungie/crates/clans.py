@@ -818,7 +818,7 @@ class Clan:
         `collections.Sequence[aiobungie.crates.clans.ClanMember]`
             A sequence of clan members or are banned.
         """
-        ...
+        return NotImplemented
 
     @helpers.unimplemented()
     async def fetch_pending_members(self) -> collections.Sequence[ClanMember]:
@@ -833,7 +833,7 @@ class Clan:
             A sequence of clan members who are awaiting
             to get accepted to the clan.
         """
-        ...
+        return NotImplemented
 
     @helpers.unimplemented()
     async def fetch_invited_members(self) -> collections.Sequence[ClanMember]:
@@ -847,7 +847,7 @@ class Clan:
         `collections.Sequence[aiobungie.crates.clans.ClanMember]`
             A sequence of members who have been invited.
         """
-        ...
+        return NotImplemented
 
     @property
     def url(self) -> str:

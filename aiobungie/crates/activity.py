@@ -244,7 +244,7 @@ class AvailableActivity:
     @helpers.unimplemented()
     async def fetch_self(self) -> entity.ActivityEntity:
         """Fetch the definition of this activity."""
-        ...
+        return NotImplemented
 
 
 @attrs.define(kw_only=True)

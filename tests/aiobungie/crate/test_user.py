@@ -52,23 +52,23 @@ class TestUserThemes:
     @pytest.fixture()
     def mod(self):
         return crate.user.UserThemes(
-            id=1122, name="d2_1", description=aiobungie.Undefined
+            id=1122, name="d2_1", description=aiobungie.UNDEFINED
         )
 
     @pytest.fixture()
     def list_objs(self):
         return [
             crate.user.UserThemes(
-                id=1, name=aiobungie.Undefined, description=aiobungie.Undefined
+                id=1, name=aiobungie.UNDEFINED, description=aiobungie.UNDEFINED
             ),
             crate.user.UserThemes(id=239, name="theme name", description="D2_11"),
-            crate.user.UserThemes(id=22, name="Ok", description=aiobungie.Undefined),
+            crate.user.UserThemes(id=22, name="Ok", description=aiobungie.UNDEFINED),
         ]
 
     def test_model_meta(self, mod):
         assert isinstance(mod, crate.user.UserThemes)
         assert mod is not None
-        assert mod.description is aiobungie.Undefined
+        assert mod.description is aiobungie.UNDEFINED
 
     def test_list_of_objs(self, list_objs):
         assert isinstance(list_objs, list)
@@ -86,7 +86,7 @@ class TestBungieUser:
     def model(self):
         return crate.user.BungieUser(
             id=205432,
-            name=aiobungie.Undefined,
+            name=aiobungie.UNDEFINED,
             created_at=datetime.utcnow(),
             is_deleted=True,
             about=None,
@@ -108,7 +108,7 @@ class TestBungieUser:
         )
 
     def test_str_op(self, model):
-        assert str(model) is str(aiobungie.Undefined)
+        assert str(model) is str(aiobungie.UNDEFINED)
 
     def test_int_op(self, model):
         assert int(model) == 205432

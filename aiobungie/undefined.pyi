@@ -26,7 +26,7 @@ import typing as __typing
 
 _T = __typing.TypeVar("_T")
 
-__all__: tuple[str, ...] = ("UndefinedType", "Undefined", "UndefinedOr")
+__all__: tuple[str, ...] = ("UndefinedType", "UNDEFINED", "UndefinedOr")
 
 class UndefinedType:
     def __bool__(self) -> __typing.Literal[False]: ...
@@ -35,6 +35,6 @@ class UndefinedType:
     def __str__(self) -> str: ...
     def __new__(cls) -> UndefinedType: ...
 
-Undefined: __typing.Final[UndefinedType]
+UNDEFINED: __typing.Final[UndefinedType]
 
 UndefinedOr = __typing.Union[UndefinedType, _T]

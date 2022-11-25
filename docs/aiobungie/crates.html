@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="pdoc 12.2.0"/>
+    <meta name="generator" content="pdoc 12.3.0"/>
     <title>aiobungie.crates API documentation</title>
 
     <style>/*! * Bootstrap Reboot v5.0.0 (https://getbootstrap.com/) * Copyright 2011-2021 The Bootstrap Authors * Copyright 2011-2021 Twitter, Inc. * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE) * Forked from Normalize.css, licensed MIT (https://github.com/necolas/normalize.css/blob/master/LICENSE.md) */*,::after,::before{box-sizing:border-box}@media (prefers-reduced-motion:no-preference){:root{scroll-behavior:smooth}}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";font-size:1rem;font-weight:400;line-height:1.5;color:#212529;background-color:#fff;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}hr{margin:1rem 0;color:inherit;background-color:currentColor;border:0;opacity:.25}hr:not([size]){height:1px}h1,h2,h3,h4,h5,h6{margin-top:0;margin-bottom:.5rem;font-weight:500;line-height:1.2}h1{font-size:calc(1.375rem + 1.5vw)}@media (min-width:1200px){h1{font-size:2.5rem}}h2{font-size:calc(1.325rem + .9vw)}@media (min-width:1200px){h2{font-size:2rem}}h3{font-size:calc(1.3rem + .6vw)}@media (min-width:1200px){h3{font-size:1.75rem}}h4{font-size:calc(1.275rem + .3vw)}@media (min-width:1200px){h4{font-size:1.5rem}}h5{font-size:1.25rem}h6{font-size:1rem}p{margin-top:0;margin-bottom:1rem}abbr[data-bs-original-title],abbr[title]{-webkit-text-decoration:underline dotted;text-decoration:underline dotted;cursor:help;-webkit-text-decoration-skip-ink:none;text-decoration-skip-ink:none}address{margin-bottom:1rem;font-style:normal;line-height:inherit}ol,ul{padding-left:2rem}dl,ol,ul{margin-top:0;margin-bottom:1rem}ol ol,ol ul,ul ol,ul ul{margin-bottom:0}dt{font-weight:700}dd{margin-bottom:.5rem;margin-left:0}blockquote{margin:0 0 1rem}b,strong{font-weight:bolder}small{font-size:.875em}mark{padding:.2em;background-color:#fcf8e3}sub,sup{position:relative;font-size:.75em;line-height:0;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}a{color:#0d6efd;text-decoration:underline}a:hover{color:#0a58ca}a:not([href]):not([class]),a:not([href]):not([class]):hover{color:inherit;text-decoration:none}code,kbd,pre,samp{font-family:SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:1em;direction:ltr;unicode-bidi:bidi-override}pre{display:block;margin-top:0;margin-bottom:1rem;overflow:auto;font-size:.875em}pre code{font-size:inherit;color:inherit;word-break:normal}code{font-size:.875em;color:#d63384;word-wrap:break-word}a>code{color:inherit}kbd{padding:.2rem .4rem;font-size:.875em;color:#fff;background-color:#212529;border-radius:.2rem}kbd kbd{padding:0;font-size:1em;font-weight:700}figure{margin:0 0 1rem}img,svg{vertical-align:middle}table{caption-side:bottom;border-collapse:collapse}caption{padding-top:.5rem;padding-bottom:.5rem;color:#6c757d;text-align:left}th{text-align:inherit;text-align:-webkit-match-parent}tbody,td,tfoot,th,thead,tr{border-color:inherit;border-style:solid;border-width:0}label{display:inline-block}button{border-radius:0}button:focus:not(:focus-visible){outline:0}button,input,optgroup,select,textarea{margin:0;font-family:inherit;font-size:inherit;line-height:inherit}button,select{text-transform:none}[role=button]{cursor:pointer}select{word-wrap:normal}select:disabled{opacity:1}[list]::-webkit-calendar-picker-indicator{display:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button}[type=button]:not(:disabled),[type=reset]:not(:disabled),[type=submit]:not(:disabled),button:not(:disabled){cursor:pointer}::-moz-focus-inner{padding:0;border-style:none}textarea{resize:vertical}fieldset{min-width:0;padding:0;margin:0;border:0}legend{float:left;width:100%;padding:0;margin-bottom:.5rem;font-size:calc(1.275rem + .3vw);line-height:inherit}@media (min-width:1200px){legend{font-size:1.5rem}}legend+*{clear:left}::-webkit-datetime-edit-day-field,::-webkit-datetime-edit-fields-wrapper,::-webkit-datetime-edit-hour-field,::-webkit-datetime-edit-minute,::-webkit-datetime-edit-month-field,::-webkit-datetime-edit-text,::-webkit-datetime-edit-year-field{padding:0}::-webkit-inner-spin-button{height:auto}[type=search]{outline-offset:-2px;-webkit-appearance:textfield}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-color-swatch-wrapper{padding:0}::file-selector-button{font:inherit}::-webkit-file-upload-button{font:inherit;-webkit-appearance:button}output{display:inline-block}iframe{border:0}summary{display:list-item;cursor:pointer}progress{vertical-align:baseline}[hidden]{display:none!important}</style>
@@ -4714,7 +4714,7 @@ and the int version will be formatted as: <code>1</code></p>
 </span><span id="AvailableActivity-245"><a href="#AvailableActivity-245"><span class="linenos">245</span></a>    <span class="nd">@helpers</span><span class="o">.</span><span class="n">unimplemented</span><span class="p">()</span>
 </span><span id="AvailableActivity-246"><a href="#AvailableActivity-246"><span class="linenos">246</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_self</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">entity</span><span class="o">.</span><span class="n">ActivityEntity</span><span class="p">:</span>
 </span><span id="AvailableActivity-247"><a href="#AvailableActivity-247"><span class="linenos">247</span></a>        <span class="sd">&quot;&quot;&quot;Fetch the definition of this activity.&quot;&quot;&quot;</span>
-</span><span id="AvailableActivity-248"><a href="#AvailableActivity-248"><span class="linenos">248</span></a>        <span class="o">...</span>
+</span><span id="AvailableActivity-248"><a href="#AvailableActivity-248"><span class="linenos">248</span></a>        <span class="k">return</span> <span class="bp">NotImplemented</span>
 </span></pre></div>
 
 
@@ -4882,7 +4882,7 @@ and the int version will be formatted as: <code>1</code></p>
             <div class="pdoc-code codehilite"><pre><span></span><span id="AvailableActivity.fetch_self-245"><a href="#AvailableActivity.fetch_self-245"><span class="linenos">245</span></a>    <span class="nd">@helpers</span><span class="o">.</span><span class="n">unimplemented</span><span class="p">()</span>
 </span><span id="AvailableActivity.fetch_self-246"><a href="#AvailableActivity.fetch_self-246"><span class="linenos">246</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_self</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">entity</span><span class="o">.</span><span class="n">ActivityEntity</span><span class="p">:</span>
 </span><span id="AvailableActivity.fetch_self-247"><a href="#AvailableActivity.fetch_self-247"><span class="linenos">247</span></a>        <span class="sd">&quot;&quot;&quot;Fetch the definition of this activity.&quot;&quot;&quot;</span>
-</span><span id="AvailableActivity.fetch_self-248"><a href="#AvailableActivity.fetch_self-248"><span class="linenos">248</span></a>        <span class="o">...</span>
+</span><span id="AvailableActivity.fetch_self-248"><a href="#AvailableActivity.fetch_self-248"><span class="linenos">248</span></a>        <span class="k">return</span> <span class="bp">NotImplemented</span>
 </span></pre></div>
 
 
@@ -6286,7 +6286,7 @@ the total time the player has spent in this activity.</p>
 </span><span id="ApplicationOwner-90"><a href="#ApplicationOwner-90"><span class="linenos">90</span></a>    <span class="nd">@property</span>
 </span><span id="ApplicationOwner-91"><a href="#ApplicationOwner-91"><span class="linenos">91</span></a>    <span class="k">def</span> <span class="nf">last_seen_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 </span><span id="ApplicationOwner-92"><a href="#ApplicationOwner-92"><span class="linenos">92</span></a>        <span class="sd">&quot;&quot;&quot;The last seen name of the application owner. This will always returns `UNDEFINED`.&quot;&quot;&quot;</span>
-</span><span id="ApplicationOwner-93"><a href="#ApplicationOwner-93"><span class="linenos">93</span></a>        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">undefined</span><span class="o">.</span><span class="n">Undefined</span><span class="p">)</span>
+</span><span id="ApplicationOwner-93"><a href="#ApplicationOwner-93"><span class="linenos">93</span></a>        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">undefined</span><span class="o">.</span><span class="n">UNDEFINED</span><span class="p">)</span>
 </span><span id="ApplicationOwner-94"><a href="#ApplicationOwner-94"><span class="linenos">94</span></a>
 </span><span id="ApplicationOwner-95"><a href="#ApplicationOwner-95"><span class="linenos">95</span></a>    <span class="nd">@property</span>
 </span><span id="ApplicationOwner-96"><a href="#ApplicationOwner-96"><span class="linenos">96</span></a>    <span class="k">def</span> <span class="nf">link</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -8318,7 +8318,7 @@ An optional item limit to fetch. Default is the length of the equipment.</li>
 </span><span id="Clan-699"><a href="#Clan-699"><span class="linenos">699</span></a>        <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 </span><span id="Clan-700"><a href="#Clan-700"><span class="linenos">700</span></a>        <span class="o">/</span><span class="p">,</span>
 </span><span id="Clan-701"><a href="#Clan-701"><span class="linenos">701</span></a>        <span class="o">*</span><span class="p">,</span>
-</span><span id="Clan-702"><a href="#Clan-702"><span class="linenos">702</span></a>        <span class="n">name</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">Undefined</span><span class="p">,</span>
+</span><span id="Clan-702"><a href="#Clan-702"><span class="linenos">702</span></a>        <span class="n">name</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UNDEFINED</span><span class="p">,</span>
 </span><span id="Clan-703"><a href="#Clan-703"><span class="linenos">703</span></a>        <span class="n">security</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Literal</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
 </span><span id="Clan-704"><a href="#Clan-704"><span class="linenos">704</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="Clan-705"><a href="#Clan-705"><span class="linenos">705</span></a>        <span class="sd">&quot;&quot;&quot;Add a new chat channel to a group.</span>
@@ -8379,7 +8379,7 @@ An optional item limit to fetch. Default is the length of the equipment.</li>
 </span><span id="Clan-760"><a href="#Clan-760"><span class="linenos">760</span></a>        <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 </span><span id="Clan-761"><a href="#Clan-761"><span class="linenos">761</span></a>        <span class="o">/</span><span class="p">,</span>
 </span><span id="Clan-762"><a href="#Clan-762"><span class="linenos">762</span></a>        <span class="o">*</span><span class="p">,</span>
-</span><span id="Clan-763"><a href="#Clan-763"><span class="linenos">763</span></a>        <span class="n">message</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">Undefined</span><span class="p">,</span>
+</span><span id="Clan-763"><a href="#Clan-763"><span class="linenos">763</span></a>        <span class="n">message</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UNDEFINED</span><span class="p">,</span>
 </span><span id="Clan-764"><a href="#Clan-764"><span class="linenos">764</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="Clan-765"><a href="#Clan-765"><span class="linenos">765</span></a>        <span class="sd">&quot;&quot;&quot;Approve all pending users for this clan.</span>
 </span><span id="Clan-766"><a href="#Clan-766"><span class="linenos">766</span></a>
@@ -8405,7 +8405,7 @@ An optional item limit to fetch. Default is the length of the equipment.</li>
 </span><span id="Clan-786"><a href="#Clan-786"><span class="linenos">786</span></a>        <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 </span><span id="Clan-787"><a href="#Clan-787"><span class="linenos">787</span></a>        <span class="o">/</span><span class="p">,</span>
 </span><span id="Clan-788"><a href="#Clan-788"><span class="linenos">788</span></a>        <span class="o">*</span><span class="p">,</span>
-</span><span id="Clan-789"><a href="#Clan-789"><span class="linenos">789</span></a>        <span class="n">message</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">Undefined</span><span class="p">,</span>
+</span><span id="Clan-789"><a href="#Clan-789"><span class="linenos">789</span></a>        <span class="n">message</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UNDEFINED</span><span class="p">,</span>
 </span><span id="Clan-790"><a href="#Clan-790"><span class="linenos">790</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="Clan-791"><a href="#Clan-791"><span class="linenos">791</span></a>        <span class="sd">&quot;&quot;&quot;Deny all pending users for this clan.</span>
 </span><span id="Clan-792"><a href="#Clan-792"><span class="linenos">792</span></a>
@@ -8438,7 +8438,7 @@ An optional item limit to fetch. Default is the length of the equipment.</li>
 </span><span id="Clan-819"><a href="#Clan-819"><span class="linenos">819</span></a><span class="sd">        `collections.Sequence[aiobungie.crates.clans.ClanMember]`</span>
 </span><span id="Clan-820"><a href="#Clan-820"><span class="linenos">820</span></a><span class="sd">            A sequence of clan members or are banned.</span>
 </span><span id="Clan-821"><a href="#Clan-821"><span class="linenos">821</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Clan-822"><a href="#Clan-822"><span class="linenos">822</span></a>        <span class="o">...</span>
+</span><span id="Clan-822"><a href="#Clan-822"><span class="linenos">822</span></a>        <span class="k">return</span> <span class="bp">NotImplemented</span>
 </span><span id="Clan-823"><a href="#Clan-823"><span class="linenos">823</span></a>
 </span><span id="Clan-824"><a href="#Clan-824"><span class="linenos">824</span></a>    <span class="nd">@helpers</span><span class="o">.</span><span class="n">unimplemented</span><span class="p">()</span>
 </span><span id="Clan-825"><a href="#Clan-825"><span class="linenos">825</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_pending_members</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">ClanMember</span><span class="p">]:</span>
@@ -8453,7 +8453,7 @@ An optional item limit to fetch. Default is the length of the equipment.</li>
 </span><span id="Clan-834"><a href="#Clan-834"><span class="linenos">834</span></a><span class="sd">            A sequence of clan members who are awaiting</span>
 </span><span id="Clan-835"><a href="#Clan-835"><span class="linenos">835</span></a><span class="sd">            to get accepted to the clan.</span>
 </span><span id="Clan-836"><a href="#Clan-836"><span class="linenos">836</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Clan-837"><a href="#Clan-837"><span class="linenos">837</span></a>        <span class="o">...</span>
+</span><span id="Clan-837"><a href="#Clan-837"><span class="linenos">837</span></a>        <span class="k">return</span> <span class="bp">NotImplemented</span>
 </span><span id="Clan-838"><a href="#Clan-838"><span class="linenos">838</span></a>
 </span><span id="Clan-839"><a href="#Clan-839"><span class="linenos">839</span></a>    <span class="nd">@helpers</span><span class="o">.</span><span class="n">unimplemented</span><span class="p">()</span>
 </span><span id="Clan-840"><a href="#Clan-840"><span class="linenos">840</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_invited_members</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">ClanMember</span><span class="p">]:</span>
@@ -8467,7 +8467,7 @@ An optional item limit to fetch. Default is the length of the equipment.</li>
 </span><span id="Clan-848"><a href="#Clan-848"><span class="linenos">848</span></a><span class="sd">        `collections.Sequence[aiobungie.crates.clans.ClanMember]`</span>
 </span><span id="Clan-849"><a href="#Clan-849"><span class="linenos">849</span></a><span class="sd">            A sequence of members who have been invited.</span>
 </span><span id="Clan-850"><a href="#Clan-850"><span class="linenos">850</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Clan-851"><a href="#Clan-851"><span class="linenos">851</span></a>        <span class="o">...</span>
+</span><span id="Clan-851"><a href="#Clan-851"><span class="linenos">851</span></a>        <span class="k">return</span> <span class="bp">NotImplemented</span>
 </span><span id="Clan-852"><a href="#Clan-852"><span class="linenos">852</span></a>
 </span><span id="Clan-853"><a href="#Clan-853"><span class="linenos">853</span></a>    <span class="nd">@property</span>
 </span><span id="Clan-854"><a href="#Clan-854"><span class="linenos">854</span></a>    <span class="k">def</span> <span class="nf">url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -8878,7 +8878,7 @@ True means admins have this power, false means they don't
 Default is False for clans, True for groups.</li>
 <li><strong>join_level</strong> (<code><a href="../aiobungie.html#ClanMemberType">aiobungie.ClanMemberType</a></code>):
 Level to join a member at when accepting an invite, application, or joining an open clan.
-Default is <code>aiobungie.ClanMemberType.BEGINNER</code></li>
+Default is <code><a href="../aiobungie.html#ClanMemberType.BEGINNER">aiobungie.ClanMemberType.BEGINNER</a></code></li>
 </ul>
 </div>
 
@@ -9158,7 +9158,7 @@ Defaults to <code>aiobungie.crates.FireteamPlatform.ANY</code> which returns all
 A locale language to filter the used language in that fireteam.
 Defaults to <code>aiobungie.crates.FireteamLanguage.ALL</code></li>
 <li><strong>date_range</strong> (<code><a href="typedefs.html#IntAnd">aiobungie.typedefs.IntAnd</a>[<a href="../aiobungie.html#FireteamDate">aiobungie.FireteamDate</a>]</code>):
-An integer to filter the date range of the returned fireteams. Defaults to <code>aiobungie.FireteamDate.ALL</code>.</li>
+An integer to filter the date range of the returned fireteams. Defaults to <code><a href="../aiobungie.html#FireteamDate.ALL">aiobungie.FireteamDate.ALL</a></code>.</li>
 <li><strong>page</strong> (<code>int</code>):
 The page number. By default its <code>0</code> which returns all available activities.</li>
 <li><strong>public_only</strong> (<code>bool</code>):
@@ -9323,7 +9323,7 @@ The page number. By default its 0 which returns all available activities.</li>
 </span><span id="Clan.add_optional_conversation-699"><a href="#Clan.add_optional_conversation-699"><span class="linenos">699</span></a>        <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 </span><span id="Clan.add_optional_conversation-700"><a href="#Clan.add_optional_conversation-700"><span class="linenos">700</span></a>        <span class="o">/</span><span class="p">,</span>
 </span><span id="Clan.add_optional_conversation-701"><a href="#Clan.add_optional_conversation-701"><span class="linenos">701</span></a>        <span class="o">*</span><span class="p">,</span>
-</span><span id="Clan.add_optional_conversation-702"><a href="#Clan.add_optional_conversation-702"><span class="linenos">702</span></a>        <span class="n">name</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">Undefined</span><span class="p">,</span>
+</span><span id="Clan.add_optional_conversation-702"><a href="#Clan.add_optional_conversation-702"><span class="linenos">702</span></a>        <span class="n">name</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UNDEFINED</span><span class="p">,</span>
 </span><span id="Clan.add_optional_conversation-703"><a href="#Clan.add_optional_conversation-703"><span class="linenos">703</span></a>        <span class="n">security</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Literal</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
 </span><span id="Clan.add_optional_conversation-704"><a href="#Clan.add_optional_conversation-704"><span class="linenos">704</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="Clan.add_optional_conversation-705"><a href="#Clan.add_optional_conversation-705"><span class="linenos">705</span></a>        <span class="sd">&quot;&quot;&quot;Add a new chat channel to a group.</span>
@@ -9433,7 +9433,7 @@ Default is `0`
 If provided, Only players matching this name will be returned.</li>
 <li><strong>type</strong> (<code><a href="../aiobungie.html#MembershipType">aiobungie.MembershipType</a></code>):
 Filters the membership types of the players to return.
-Default is <code>aiobungie.MembershipType.NONE</code> which returns all membership types.</li>
+Default is <code><a href="../aiobungie.html#MembershipType.NONE">aiobungie.MembershipType.NONE</a></code> which returns all membership types.</li>
 </ul>
 
 <h6 id="returns">Returns</h6>
@@ -9467,7 +9467,7 @@ Default is <code>aiobungie.MembershipType.NONE</code> which returns all membersh
 </span><span id="Clan.approve_pending_members-760"><a href="#Clan.approve_pending_members-760"><span class="linenos">760</span></a>        <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 </span><span id="Clan.approve_pending_members-761"><a href="#Clan.approve_pending_members-761"><span class="linenos">761</span></a>        <span class="o">/</span><span class="p">,</span>
 </span><span id="Clan.approve_pending_members-762"><a href="#Clan.approve_pending_members-762"><span class="linenos">762</span></a>        <span class="o">*</span><span class="p">,</span>
-</span><span id="Clan.approve_pending_members-763"><a href="#Clan.approve_pending_members-763"><span class="linenos">763</span></a>        <span class="n">message</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">Undefined</span><span class="p">,</span>
+</span><span id="Clan.approve_pending_members-763"><a href="#Clan.approve_pending_members-763"><span class="linenos">763</span></a>        <span class="n">message</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UNDEFINED</span><span class="p">,</span>
 </span><span id="Clan.approve_pending_members-764"><a href="#Clan.approve_pending_members-764"><span class="linenos">764</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="Clan.approve_pending_members-765"><a href="#Clan.approve_pending_members-765"><span class="linenos">765</span></a>        <span class="sd">&quot;&quot;&quot;Approve all pending users for this clan.</span>
 </span><span id="Clan.approve_pending_members-766"><a href="#Clan.approve_pending_members-766"><span class="linenos">766</span></a>
@@ -9531,7 +9531,7 @@ A message to send with the request. Defaults to <code>UNDEFINED</code></li>
 </span><span id="Clan.deny_pending_members-786"><a href="#Clan.deny_pending_members-786"><span class="linenos">786</span></a>        <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 </span><span id="Clan.deny_pending_members-787"><a href="#Clan.deny_pending_members-787"><span class="linenos">787</span></a>        <span class="o">/</span><span class="p">,</span>
 </span><span id="Clan.deny_pending_members-788"><a href="#Clan.deny_pending_members-788"><span class="linenos">788</span></a>        <span class="o">*</span><span class="p">,</span>
-</span><span id="Clan.deny_pending_members-789"><a href="#Clan.deny_pending_members-789"><span class="linenos">789</span></a>        <span class="n">message</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">Undefined</span><span class="p">,</span>
+</span><span id="Clan.deny_pending_members-789"><a href="#Clan.deny_pending_members-789"><span class="linenos">789</span></a>        <span class="n">message</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UNDEFINED</span><span class="p">,</span>
 </span><span id="Clan.deny_pending_members-790"><a href="#Clan.deny_pending_members-790"><span class="linenos">790</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="Clan.deny_pending_members-791"><a href="#Clan.deny_pending_members-791"><span class="linenos">791</span></a>        <span class="sd">&quot;&quot;&quot;Deny all pending users for this clan.</span>
 </span><span id="Clan.deny_pending_members-792"><a href="#Clan.deny_pending_members-792"><span class="linenos">792</span></a>
@@ -9603,7 +9603,7 @@ A message to send with the request. Defaults to <code>UNDEFINED</code></li>
 </span><span id="Clan.fetch_banned_members-819"><a href="#Clan.fetch_banned_members-819"><span class="linenos">819</span></a><span class="sd">        `collections.Sequence[aiobungie.crates.clans.ClanMember]`</span>
 </span><span id="Clan.fetch_banned_members-820"><a href="#Clan.fetch_banned_members-820"><span class="linenos">820</span></a><span class="sd">            A sequence of clan members or are banned.</span>
 </span><span id="Clan.fetch_banned_members-821"><a href="#Clan.fetch_banned_members-821"><span class="linenos">821</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Clan.fetch_banned_members-822"><a href="#Clan.fetch_banned_members-822"><span class="linenos">822</span></a>        <span class="o">...</span>
+</span><span id="Clan.fetch_banned_members-822"><a href="#Clan.fetch_banned_members-822"><span class="linenos">822</span></a>        <span class="k">return</span> <span class="bp">NotImplemented</span>
 </span></pre></div>
 
 
@@ -9649,7 +9649,7 @@ A message to send with the request. Defaults to <code>UNDEFINED</code></li>
 </span><span id="Clan.fetch_pending_members-834"><a href="#Clan.fetch_pending_members-834"><span class="linenos">834</span></a><span class="sd">            A sequence of clan members who are awaiting</span>
 </span><span id="Clan.fetch_pending_members-835"><a href="#Clan.fetch_pending_members-835"><span class="linenos">835</span></a><span class="sd">            to get accepted to the clan.</span>
 </span><span id="Clan.fetch_pending_members-836"><a href="#Clan.fetch_pending_members-836"><span class="linenos">836</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Clan.fetch_pending_members-837"><a href="#Clan.fetch_pending_members-837"><span class="linenos">837</span></a>        <span class="o">...</span>
+</span><span id="Clan.fetch_pending_members-837"><a href="#Clan.fetch_pending_members-837"><span class="linenos">837</span></a>        <span class="k">return</span> <span class="bp">NotImplemented</span>
 </span></pre></div>
 
 
@@ -9695,7 +9695,7 @@ to get accepted to the clan.</li>
 </span><span id="Clan.fetch_invited_members-848"><a href="#Clan.fetch_invited_members-848"><span class="linenos">848</span></a><span class="sd">        `collections.Sequence[aiobungie.crates.clans.ClanMember]`</span>
 </span><span id="Clan.fetch_invited_members-849"><a href="#Clan.fetch_invited_members-849"><span class="linenos">849</span></a><span class="sd">            A sequence of members who have been invited.</span>
 </span><span id="Clan.fetch_invited_members-850"><a href="#Clan.fetch_invited_members-850"><span class="linenos">850</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Clan.fetch_invited_members-851"><a href="#Clan.fetch_invited_members-851"><span class="linenos">851</span></a>        <span class="o">...</span>
+</span><span id="Clan.fetch_invited_members-851"><a href="#Clan.fetch_invited_members-851"><span class="linenos">851</span></a>        <span class="k">return</span> <span class="bp">NotImplemented</span>
 </span></pre></div>
 
 
@@ -9786,7 +9786,7 @@ to get accepted to the clan.</li>
 </span><span id="ClanMember-229"><a href="#ClanMember-229"><span class="linenos">229</span></a>        <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 </span><span id="ClanMember-230"><a href="#ClanMember-230"><span class="linenos">230</span></a>        <span class="o">/</span><span class="p">,</span>
 </span><span id="ClanMember-231"><a href="#ClanMember-231"><span class="linenos">231</span></a>        <span class="o">*</span><span class="p">,</span>
-</span><span id="ClanMember-232"><a href="#ClanMember-232"><span class="linenos">232</span></a>        <span class="n">comment</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">Undefined</span><span class="p">,</span>
+</span><span id="ClanMember-232"><a href="#ClanMember-232"><span class="linenos">232</span></a>        <span class="n">comment</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UNDEFINED</span><span class="p">,</span>
 </span><span id="ClanMember-233"><a href="#ClanMember-233"><span class="linenos">233</span></a>        <span class="n">length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
 </span><span id="ClanMember-234"><a href="#ClanMember-234"><span class="linenos">234</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="ClanMember-235"><a href="#ClanMember-235"><span class="linenos">235</span></a>        <span class="sd">&quot;&quot;&quot;Ban this member from the clan.</span>
@@ -10085,7 +10085,7 @@ to get accepted to the clan.</li>
 </span><span id="ClanMember.ban-229"><a href="#ClanMember.ban-229"><span class="linenos">229</span></a>        <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 </span><span id="ClanMember.ban-230"><a href="#ClanMember.ban-230"><span class="linenos">230</span></a>        <span class="o">/</span><span class="p">,</span>
 </span><span id="ClanMember.ban-231"><a href="#ClanMember.ban-231"><span class="linenos">231</span></a>        <span class="o">*</span><span class="p">,</span>
-</span><span id="ClanMember.ban-232"><a href="#ClanMember.ban-232"><span class="linenos">232</span></a>        <span class="n">comment</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">Undefined</span><span class="p">,</span>
+</span><span id="ClanMember.ban-232"><a href="#ClanMember.ban-232"><span class="linenos">232</span></a>        <span class="n">comment</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UNDEFINED</span><span class="p">,</span>
 </span><span id="ClanMember.ban-233"><a href="#ClanMember.ban-233"><span class="linenos">233</span></a>        <span class="n">length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
 </span><span id="ClanMember.ban-234"><a href="#ClanMember.ban-234"><span class="linenos">234</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="ClanMember.ban-235"><a href="#ClanMember.ban-235"><span class="linenos">235</span></a>        <span class="sd">&quot;&quot;&quot;Ban this member from the clan.</span>
@@ -10478,7 +10478,7 @@ The bearer access token associated with the bungie account.</li>
 </span><span id="ClanConversation-111"><a href="#ClanConversation-111"><span class="linenos">111</span></a>        <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 </span><span id="ClanConversation-112"><a href="#ClanConversation-112"><span class="linenos">112</span></a>        <span class="o">/</span><span class="p">,</span>
 </span><span id="ClanConversation-113"><a href="#ClanConversation-113"><span class="linenos">113</span></a>        <span class="o">*</span><span class="p">,</span>
-</span><span id="ClanConversation-114"><a href="#ClanConversation-114"><span class="linenos">114</span></a>        <span class="n">name</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">Undefined</span><span class="p">,</span>
+</span><span id="ClanConversation-114"><a href="#ClanConversation-114"><span class="linenos">114</span></a>        <span class="n">name</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UNDEFINED</span><span class="p">,</span>
 </span><span id="ClanConversation-115"><a href="#ClanConversation-115"><span class="linenos">115</span></a>        <span class="n">security</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Literal</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
 </span><span id="ClanConversation-116"><a href="#ClanConversation-116"><span class="linenos">116</span></a>        <span class="n">enable_chat</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 </span><span id="ClanConversation-117"><a href="#ClanConversation-117"><span class="linenos">117</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -10646,7 +10646,7 @@ The bearer access token associated with the bungie account.</li>
 </span><span id="ClanConversation.edit-111"><a href="#ClanConversation.edit-111"><span class="linenos">111</span></a>        <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 </span><span id="ClanConversation.edit-112"><a href="#ClanConversation.edit-112"><span class="linenos">112</span></a>        <span class="o">/</span><span class="p">,</span>
 </span><span id="ClanConversation.edit-113"><a href="#ClanConversation.edit-113"><span class="linenos">113</span></a>        <span class="o">*</span><span class="p">,</span>
-</span><span id="ClanConversation.edit-114"><a href="#ClanConversation.edit-114"><span class="linenos">114</span></a>        <span class="n">name</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">Undefined</span><span class="p">,</span>
+</span><span id="ClanConversation.edit-114"><a href="#ClanConversation.edit-114"><span class="linenos">114</span></a>        <span class="n">name</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UNDEFINED</span><span class="p">,</span>
 </span><span id="ClanConversation.edit-115"><a href="#ClanConversation.edit-115"><span class="linenos">115</span></a>        <span class="n">security</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Literal</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
 </span><span id="ClanConversation.edit-116"><a href="#ClanConversation.edit-116"><span class="linenos">116</span></a>        <span class="n">enable_chat</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 </span><span id="ClanConversation.edit-117"><a href="#ClanConversation.edit-117"><span class="linenos">117</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -11271,13 +11271,13 @@ Default is `0`
 
 <span class="c1"># The components to get and return.</span>
 <span class="n">components</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="n">aiobungie</span><span class="o">.</span><span class="n">ComponentType</span><span class="o">.</span><span class="n">PROFILE</span><span class="p">,</span>
-    <span class="n">aiobungie</span><span class="o">.</span><span class="n">ComponentType</span><span class="o">.</span><span class="n">CHARACTERS</span><span class="p">,</span>
-    <span class="n">aiobungie</span><span class="o">.</span><span class="n">ComponentType</span><span class="o">.</span><span class="n">PROFILE_INVENTORIES</span><span class="p">,</span>
+    <span class="n"><a href="../aiobungie.html#ComponentType.PROFILE">aiobungie.ComponentType.PROFILE</a></span><span class="p">,</span>
+    <span class="n"><a href="../aiobungie.html#ComponentType.CHARACTERS">aiobungie.ComponentType.CHARACTERS</a></span><span class="p">,</span>
+    <span class="n"><a href="../aiobungie.html#ComponentType.PROFILE_INVENTORIES">aiobungie.ComponentType.PROFILE_INVENTORIES</a></span><span class="p">,</span>
 <span class="p">]</span>
 <span class="n">profile</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">fetch_profile</span><span class="p">(</span>
     <span class="nb">id</span><span class="p">,</span>
-    <span class="n">aiobungie</span><span class="o">.</span><span class="n">MembershipType</span><span class="o">.</span><span class="n">STEAM</span><span class="p">,</span>
+    <span class="n"><a href="../aiobungie.html#MembershipType.STEAM">aiobungie.MembershipType.STEAM</a></span><span class="p">,</span>
     <span class="n">components</span><span class="p">,</span>
     <span class="c1"># Assuming the component requires an auth token</span>
     <span class="n">auth</span><span class="o">=</span><span class="s2">&quot;Some Bearer access token&quot;</span>
@@ -11354,7 +11354,7 @@ Default is `0`
             <div class="docstring"><p>A mapping from character's id to<code><a href="#Character">aiobungie.crates.Character</a></code>
 of the associated character within the character component.</p>
 
-<p>This will be available when <code>aiobungie.ComponentType.CHARACTERS</code> is passed to the request.
+<p>This will be available when <code><a href="../aiobungie.html#ComponentType.CHARACTERS">aiobungie.ComponentType.CHARACTERS</a></code> is passed to the request.
 otherwise will be <code>None</code>.</p>
 </div>
 
@@ -11376,7 +11376,7 @@ otherwise will be <code>None</code>.</p>
 
 <ul>
 <li>This will always be <code>None</code> unless <code>auth="access_token"</code> is passed to the request.</li>
-<li>This will always be <code>None</code> unless <code>aiobungie.ComponentType.CHARACTER_INVENTORY</code>
+<li>This will always be <code>None</code> unless <code><a href="../aiobungie.html#ComponentType.CHARACTER_INVENTORY">aiobungie.ComponentType.CHARACTER_INVENTORY</a></code>
 is passed to the request components.</li>
 </ul>
 </div>
@@ -11446,7 +11446,7 @@ is passed to the request components.</p>
     
             <div class="docstring"><p>A mapping from character's id to a sequence of their character equipment component.</p>
 
-<p>This will always be <code>None</code> unless <code>aiobungie.ComponentType.CHARACTER_EQUIPMENT</code>
+<p>This will always be <code>None</code> unless <code><a href="../aiobungie.html#ComponentType.CHARACTER_EQUIPMENT">aiobungie.ComponentType.CHARACTER_EQUIPMENT</a></code>
 is passed to the request components.</p>
 </div>
 
@@ -11462,7 +11462,7 @@ is passed to the request components.</p>
     
             <div class="docstring"><p>A mapping from each character ID to its collectibles component for this profile.</p>
 
-<p>This will always be <code>None</code> unless <code>aiobungie.ComponentType.COLLECTIBLES</code></p>
+<p>This will always be <code>None</code> unless <code><a href="../aiobungie.html#ComponentType.COLLECTIBLES">aiobungie.ComponentType.COLLECTIBLES</a></code></p>
 </div>
 
 
@@ -11480,7 +11480,7 @@ is passed to the request components.</p>
 <h6 id="notes">Notes</h6>
 
 <ul>
-<li>This will be available when <code>aiobungie.ComponentType.CRAFTABLES</code> is passed to the request component.</li>
+<li>This will be available when <code><a href="../aiobungie.html#ComponentType.CRAFTABLES">aiobungie.ComponentType.CRAFTABLES</a></code> is passed to the request component.</li>
 </ul>
 </div>
 
@@ -11499,7 +11499,7 @@ is passed to the request components.</p>
 <p>This component is used to show minimal information about the player's current fireteam party along
 with the its members and the activity.</p>
 
-<p>This will always be <code>None</code> unless <code>aiobungie.ComponentType.TRANSITORY</code>
+<p>This will always be <code>None</code> unless <code><a href="../aiobungie.html#ComponentType.TRANSITORY">aiobungie.ComponentType.TRANSITORY</a></code>
 is passed to the request components.</p>
 </div>
 
@@ -11556,7 +11556,7 @@ the plug set to a sequence of plug objects bound to that character.</p>
             <div class="docstring"><p>A mapping from each character ID to a mapping of the node hash
 to a sequence of presentation nodes component.</p>
 
-<p>This will always be <code>None</code> unless <code>aiobungie.ComponentType.PRESENTATION_NODES</code>
+<p>This will always be <code>None</code> unless <code><a href="../aiobungie.html#ComponentType.PRESENTATION_NODES">aiobungie.ComponentType.PRESENTATION_NODES</a></code>
 is passed to the request components.</p>
 </div>
 
@@ -11576,7 +11576,7 @@ is passed to the request components.</p>
 
 <ul>
 <li>This will always be <code>None</code> unless <code>auth="access_token"</code> is passed to the request.</li>
-<li>This will always be <code>None</code> unless <code>aiobungie.ComponentType.PLATFORM_SILVER</code>
+<li>This will always be <code>None</code> unless <code><a href="../aiobungie.html#ComponentType.PLATFORM_SILVER">aiobungie.ComponentType.PLATFORM_SILVER</a></code>
 is passed to the request components.</li>
 </ul>
 </div>
@@ -11593,7 +11593,7 @@ is passed to the request components.</li>
     
             <div class="docstring"><p>A mapping from the profile presentation node hash to a node object.</p>
 
-<p>This will always be <code>None</code> unless <code>aiobungie.ComponentType.PRESENTATION_NODES</code>
+<p>This will always be <code>None</code> unless <code><a href="../aiobungie.html#ComponentType.PRESENTATION_NODES">aiobungie.ComponentType.PRESENTATION_NODES</a></code>
 is passed to the request components.</p>
 </div>
 
@@ -11613,7 +11613,7 @@ is passed to the request components.</p>
 
 <ul>
 <li>This will always be <code>None</code> unless <code>auth="access_token"</code> is passed to the request.</li>
-<li>This will always be <code>None</code> unless <code>aiobungie.ComponentType.CURRENCY_LOOKUPS</code>
+<li>This will always be <code>None</code> unless <code><a href="../aiobungie.html#ComponentType.CURRENCY_LOOKUPS">aiobungie.ComponentType.CURRENCY_LOOKUPS</a></code>
 is passed to the request components.</li>
 </ul>
 </div>
@@ -11630,7 +11630,7 @@ is passed to the request components.</li>
     
             <div class="docstring"><p>Represents this profile's collectibles component.</p>
 
-<p>This will always be <code>None</code> unless <code>aiobungie.ComponentType.COLLECTIBLES</code></p>
+<p>This will always be <code>None</code> unless <code><a href="../aiobungie.html#ComponentType.COLLECTIBLES">aiobungie.ComponentType.COLLECTIBLES</a></code></p>
 </div>
 
 
@@ -11833,7 +11833,7 @@ is passed to the request components.</li>
     
             <div class="docstring"><p>The character component.</p>
 
-<p>This will be available when <code>aiobungie.ComponentType.CHARACTERS</code> is passed to the request.
+<p>This will be available when <code><a href="../aiobungie.html#ComponentType.CHARACTERS">aiobungie.ComponentType.CHARACTERS</a></code> is passed to the request.
 otherwise will be <code>None</code>.</p>
 </div>
 
@@ -11855,7 +11855,7 @@ otherwise will be <code>None</code>.</p>
 
 <ul>
 <li>This will always be <code>None</code> unless <code>auth="access_token"</code> is passed to the request.</li>
-<li>This will always be <code>None</code> unless <code>aiobungie.ComponentType.CHARACTER_INVENTORY</code>
+<li>This will always be <code>None</code> unless <code><a href="../aiobungie.html#ComponentType.CHARACTER_INVENTORY">aiobungie.ComponentType.CHARACTER_INVENTORY</a></code>
 is passed to the request components.</li>
 </ul>
 </div>
@@ -11925,7 +11925,7 @@ is passed to the request components.</p>
     
             <div class="docstring"><p>A sequence of the character equipment component.</p>
 
-<p>This will always be <code>None</code> unless <code>aiobungie.ComponentType.CHARACTER_EQUIPMENT</code>
+<p>This will always be <code>None</code> unless <code><a href="../aiobungie.html#ComponentType.CHARACTER_EQUIPMENT">aiobungie.ComponentType.CHARACTER_EQUIPMENT</a></code>
 is passed to the request components.</p>
 </div>
 
@@ -11954,7 +11954,7 @@ is passed to the request components.</p>
     
             <div class="docstring"><p>A mapping from the presentation node hash to a node object.</p>
 
-<p>This will always be <code>None</code> unless <code>aiobungie.ComponentType.PRESENTATION_NODES</code>
+<p>This will always be <code>None</code> unless <code><a href="../aiobungie.html#ComponentType.PRESENTATION_NODES">aiobungie.ComponentType.PRESENTATION_NODES</a></code>
 is passed to the request components.</p>
 </div>
 
@@ -11974,7 +11974,7 @@ is passed to the request components.</p>
 
 <ul>
 <li>This will always be <code>None</code> unless <code>auth="access_token"</code> is passed to the request.</li>
-<li>This will always be <code>None</code> unless <code>aiobungie.ComponentType.CURRENCY_LOOKUPS</code>
+<li>This will always be <code>None</code> unless <code><a href="../aiobungie.html#ComponentType.CURRENCY_LOOKUPS">aiobungie.ComponentType.CURRENCY_LOOKUPS</a></code>
 is passed to the request components.</li>
 </ul>
 </div>
@@ -11991,7 +11991,7 @@ is passed to the request components.</li>
     
             <div class="docstring"><p>The character's collectibles component.</p>
 
-<p>This will always be <code>None</code> unless <code>aiobungie.ComponentType.COLLECTIBLES</code></p>
+<p>This will always be <code>None</code> unless <code><a href="../aiobungie.html#ComponentType.COLLECTIBLES">aiobungie.ComponentType.COLLECTIBLES</a></code></p>
 </div>
 
 
@@ -12118,7 +12118,7 @@ is passed to the request components.</li>
     
             <div class="docstring"><p>The profile component.</p>
 
-<p>This will be available when <code>aiobungie.ComponentType.PROFILE</code> is passed to the request components.
+<p>This will be available when <code><a href="../aiobungie.html#ComponentType.PROFILE">aiobungie.ComponentType.PROFILE</a></code> is passed to the request components.
 otherwise will be <code>None</code>.</p>
 </div>
 
@@ -12134,7 +12134,7 @@ otherwise will be <code>None</code>.</p>
     
             <div class="docstring"><p>The profile progression component.</p>
 
-<p>This will be available when <code>aiobungie.ComponentType.PROFILE_PROGRESSION</code>
+<p>This will be available when <code><a href="../aiobungie.html#ComponentType.PROFILE_PROGRESSION">aiobungie.ComponentType.PROFILE_PROGRESSION</a></code>
 is passed to the request components.
 otherwise will be <code>None</code>.</p>
 </div>
@@ -12155,7 +12155,7 @@ otherwise will be <code>None</code>.</p>
 
 <ul>
 <li>This will always be <code>None</code> unless <code>auth="access_token"</code> is passed to the request.</li>
-<li>This will always be <code>None</code> unless <code>aiobungie.ComponentType.PROFILE_CURRENCIES</code>
+<li>This will always be <code>None</code> unless <code><a href="../aiobungie.html#ComponentType.PROFILE_CURRENCIES">aiobungie.ComponentType.PROFILE_CURRENCIES</a></code>
 is passed to the request components.</li>
 </ul>
 </div>
@@ -12176,7 +12176,7 @@ is passed to the request components.</li>
 
 <ul>
 <li>This will always be <code>None</code> unless <code>auth="access_token"</code> is passed to the request.</li>
-<li>This will always be <code>None</code> unless <code>aiobungie.ComponentType.PROFILE_INVENTORIES</code>
+<li>This will always be <code>None</code> unless <code><a href="../aiobungie.html#ComponentType.PROFILE_INVENTORIES">aiobungie.ComponentType.PROFILE_INVENTORIES</a></code>
 is passed to the request components.</li>
 </ul>
 </div>
@@ -12292,7 +12292,7 @@ is passed to the request components.</li>
 <h6 id="notes">Notes</h6>
 
 <ul>
-<li>This will be available when <code>aiobungie.ComponentType.RECORDS</code>
+<li>This will be available when <code><a href="../aiobungie.html#ComponentType.RECORDS">aiobungie.ComponentType.RECORDS</a></code>
 is passed to the request components. otherwise will be <code>None</code>.</li>
 <li>This will always be <code>None</code> if it's a character component.</li>
 </ul>
@@ -12310,7 +12310,7 @@ is passed to the request components. otherwise will be <code>None</code>.</li>
     
             <div class="docstring"><p>A mapping from character record ids to a character record component.</p>
 
-<p>This will be available when <code>aiobungie.ComponentType.RECORDS</code>
+<p>This will be available when <code><a href="../aiobungie.html#ComponentType.RECORDS">aiobungie.ComponentType.RECORDS</a></code>
 is passed to the request components. otherwise will be <code>None</code>.</p>
 </div>
 
@@ -12441,8 +12441,8 @@ is passed to the request components. otherwise will be <code>None</code>.</p>
 
 <h6 id="note">Note</h6>
 
-<p>Some fields will always be <code>None</code> until either <code>aiobungie.ComponentType.CHARACTER_INVENTORY</code>
-or <code>aiobungie.ComponentType.CHARACTER_EQUIPMENT</code> is passed to the request.</p>
+<p>Some fields will always be <code>None</code> until either <code><a href="../aiobungie.html#ComponentType.CHARACTER_INVENTORY">aiobungie.ComponentType.CHARACTER_INVENTORY</a></code>
+or <code><a href="../aiobungie.html#ComponentType.CHARACTER_EQUIPMENT">aiobungie.ComponentType.CHARACTER_EQUIPMENT</a></code> is passed to the request.</p>
 </div>
 
 
@@ -12484,7 +12484,7 @@ or <code>aiobungie.ComponentType.CHARACTER_EQUIPMENT</code> is passed to the req
     
             <div class="docstring"><p>A sequence from the item instance id to an item object bound to this instance.</p>
 
-<p>This will be available when <code>aiobungie.ComponentType.ITEM_INSTANCES</code> is passed to the request.
+<p>This will be available when <code><a href="../aiobungie.html#ComponentType.ITEM_INSTANCES">aiobungie.ComponentType.ITEM_INSTANCES</a></code> is passed to the request.
 otherwise will be <code>None</code>.</p>
 </div>
 
@@ -12505,7 +12505,7 @@ otherwise will be <code>None</code>.</p>
 <li>Second one is dict that holds int key that mapps to int value of the art regions.</li>
 </ul>
 
-<p>This will be available when <code>aiobungie.ComponentType.ITEM_RENDER_DATA</code> is passed to the request.
+<p>This will be available when <code><a href="../aiobungie.html#ComponentType.ITEM_RENDER_DATA">aiobungie.ComponentType.ITEM_RENDER_DATA</a></code> is passed to the request.
 otherwise will be <code>None</code>.</p>
 </div>
 
@@ -12521,7 +12521,7 @@ otherwise will be <code>None</code>.</p>
     
             <div class="docstring"><p>A mapping of the item instance id to a view of its stats.</p>
 
-<p>This will be available when <code>aiobungie.ComponentType.ITEM_STATS</code> is passed to the request.
+<p>This will be available when <code><a href="../aiobungie.html#ComponentType.ITEM_STATS">aiobungie.ComponentType.ITEM_STATS</a></code> is passed to the request.
 otherwise will be <code>None</code>.</p>
 </div>
 
@@ -12537,7 +12537,7 @@ otherwise will be <code>None</code>.</p>
     
             <div class="docstring"><p>A mapping from the item instance id to a sequence of inserted sockets into it.</p>
 
-<p>This will be available when <code>aiobungie.ComponentType.ITEM_SOCKETS</code> is passed to the request.
+<p>This will be available when <code><a href="../aiobungie.html#ComponentType.ITEM_SOCKETS">aiobungie.ComponentType.ITEM_SOCKETS</a></code> is passed to the request.
 otherwise will be <code>None</code>.</p>
 </div>
 
@@ -12554,7 +12554,7 @@ otherwise will be <code>None</code>.</p>
             <div class="docstring"><p>If the item supports reusable plugs,
 this is the mapping from the item instance id to a sequence of plugs that are allowed to be used for the socket.</p>
 
-<p>This will be available when <code>aiobungie.ComponentType.ITEM_SOCKETS</code> is passed to the request.
+<p>This will be available when <code><a href="../aiobungie.html#ComponentType.ITEM_SOCKETS">aiobungie.ComponentType.ITEM_SOCKETS</a></code> is passed to the request.
 otherwise will be <code>None</code>.</p>
 </div>
 
@@ -12571,7 +12571,7 @@ otherwise will be <code>None</code>.</p>
             <div class="docstring"><p>A mapping from the item instance id to a mapping of the plug hash to
 a collections of the plug objectives being returned.</p>
 
-<p>This will be available when <code>aiobungie.ComponentType.ITEM_OBJECTIVES</code> is passed to the request.
+<p>This will be available when <code><a href="../aiobungie.html#ComponentType.ITEM_OBJECTIVES">aiobungie.ComponentType.ITEM_OBJECTIVES</a></code> is passed to the request.
 otherwise will be <code>None</code>.</p>
 </div>
 
@@ -12587,7 +12587,7 @@ otherwise will be <code>None</code>.</p>
     
             <div class="docstring"><p>A sequence of the plug states.</p>
 
-<p>This will be available when <code>aiobungie.ComponentType.ITEM_SOCKETS</code> is passed to the request.
+<p>This will be available when <code><a href="../aiobungie.html#ComponentType.ITEM_SOCKETS">aiobungie.ComponentType.ITEM_SOCKETS</a></code> is passed to the request.
 otherwise will be <code>None</code>.</p>
 </div>
 
@@ -12807,7 +12807,7 @@ otherwise will be <code>None</code>.</p>
 
             <div class="docstring"><p>Represents the profile string variable component.</p>
 
-<p>This component will be available when <code>aiobungie.ComponentType.STRING_VARIABLES</code>
+<p>This component will be available when <code><a href="../aiobungie.html#ComponentType.STRING_VARIABLES">aiobungie.ComponentType.STRING_VARIABLES</a></code>
 is passed to the request components. otherwise attributes will be <code>None</code>.</p>
 
 <h6 id="included-components">Included Components</h6>
@@ -14307,7 +14307,7 @@ along with information we can use to determine their gating and availability.</p
 </span><span id="PlaylistActivityEntity-624"><a href="#PlaylistActivityEntity-624"><span class="linenos">624</span></a>    <span class="nd">@helpers</span><span class="o">.</span><span class="n">unimplemented</span><span class="p">()</span>
 </span><span id="PlaylistActivityEntity-625"><a href="#PlaylistActivityEntity-625"><span class="linenos">625</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_self</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ActivityEntity</span><span class="p">:</span>
 </span><span id="PlaylistActivityEntity-626"><a href="#PlaylistActivityEntity-626"><span class="linenos">626</span></a>        <span class="sd">&quot;&quot;&quot;Fetch the definition of this activity.&quot;&quot;&quot;</span>
-</span><span id="PlaylistActivityEntity-627"><a href="#PlaylistActivityEntity-627"><span class="linenos">627</span></a>        <span class="o">...</span>
+</span><span id="PlaylistActivityEntity-627"><a href="#PlaylistActivityEntity-627"><span class="linenos">627</span></a>        <span class="k">return</span> <span class="bp">NotImplemented</span>
 </span></pre></div>
 
 
@@ -14421,7 +14421,7 @@ along with information we can use to determine their gating and availability.</p
             <div class="pdoc-code codehilite"><pre><span></span><span id="PlaylistActivityEntity.fetch_self-624"><a href="#PlaylistActivityEntity.fetch_self-624"><span class="linenos">624</span></a>    <span class="nd">@helpers</span><span class="o">.</span><span class="n">unimplemented</span><span class="p">()</span>
 </span><span id="PlaylistActivityEntity.fetch_self-625"><a href="#PlaylistActivityEntity.fetch_self-625"><span class="linenos">625</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_self</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ActivityEntity</span><span class="p">:</span>
 </span><span id="PlaylistActivityEntity.fetch_self-626"><a href="#PlaylistActivityEntity.fetch_self-626"><span class="linenos">626</span></a>        <span class="sd">&quot;&quot;&quot;Fetch the definition of this activity.&quot;&quot;&quot;</span>
-</span><span id="PlaylistActivityEntity.fetch_self-627"><a href="#PlaylistActivityEntity.fetch_self-627"><span class="linenos">627</span></a>        <span class="o">...</span>
+</span><span id="PlaylistActivityEntity.fetch_self-627"><a href="#PlaylistActivityEntity.fetch_self-627"><span class="linenos">627</span></a>        <span class="k">return</span> <span class="bp">NotImplemented</span>
 </span></pre></div>
 
 
@@ -14728,7 +14728,7 @@ along with information we can use to determine their gating and availability.</p
 </span><span id="SearchableEntity-195"><a href="#SearchableEntity-195"><span class="linenos">195</span></a>    <span class="sd">&quot;&quot;&quot;Entity&#39;s name.&quot;&quot;&quot;</span>
 </span><span id="SearchableEntity-196"><a href="#SearchableEntity-196"><span class="linenos">196</span></a>
 </span><span id="SearchableEntity-197"><a href="#SearchableEntity-197"><span class="linenos">197</span></a>    <span class="n">description</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-</span><span id="SearchableEntity-198"><a href="#SearchableEntity-198"><span class="linenos">198</span></a>    <span class="sd">&quot;&quot;&quot;Entity&#39;s description. Undefined if not set.&quot;&quot;&quot;</span>
+</span><span id="SearchableEntity-198"><a href="#SearchableEntity-198"><span class="linenos">198</span></a>    <span class="sd">&quot;&quot;&quot;Entity&#39;s description. UNDEFINED if not set.&quot;&quot;&quot;</span>
 </span><span id="SearchableEntity-199"><a href="#SearchableEntity-199"><span class="linenos">199</span></a>
 </span><span id="SearchableEntity-200"><a href="#SearchableEntity-200"><span class="linenos">200</span></a>    <span class="n">icon</span><span class="p">:</span> <span class="n">assets</span><span class="o">.</span><span class="n">Image</span>
 </span><span id="SearchableEntity-201"><a href="#SearchableEntity-201"><span class="linenos">201</span></a>    <span class="sd">&quot;&quot;&quot;Entity&#39;s icon.&quot;&quot;&quot;</span>
@@ -14866,7 +14866,7 @@ along with information we can use to determine their gating and availability.</p
     </div>
     <a class="headerlink" href="#SearchableEntity.description"></a>
     
-            <div class="docstring"><p>Entity's description. Undefined if not set.</p>
+            <div class="docstring"><p>Entity's description. UNDEFINED if not set.</p>
 </div>
 
 
@@ -16175,7 +16175,7 @@ along with information we can use to determine their gating and availability.</p
 </span><span id="Friend-68"><a href="#Friend-68"><span class="linenos"> 68</span></a>    <span class="sd">&quot;&quot;&quot;The friend&#39;s last seen membership type.&quot;&quot;&quot;</span>
 </span><span id="Friend-69"><a href="#Friend-69"><span class="linenos"> 69</span></a>
 </span><span id="Friend-70"><a href="#Friend-70"><span class="linenos"> 70</span></a>    <span class="n">name</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-</span><span id="Friend-71"><a href="#Friend-71"><span class="linenos"> 71</span></a>    <span class="sd">&quot;&quot;&quot;The friend&#39;s last seen global display name. This field could be Undefined if the player hasn&#39;t logged in yet.&quot;&quot;&quot;</span>
+</span><span id="Friend-71"><a href="#Friend-71"><span class="linenos"> 71</span></a>    <span class="sd">&quot;&quot;&quot;The friend&#39;s last seen global display name. This field could be UNDEFINED if the player hasn&#39;t logged in yet.&quot;&quot;&quot;</span>
 </span><span id="Friend-72"><a href="#Friend-72"><span class="linenos"> 72</span></a>
 </span><span id="Friend-73"><a href="#Friend-73"><span class="linenos"> 73</span></a>    <span class="n">code</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">NoneOr</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
 </span><span id="Friend-74"><a href="#Friend-74"><span class="linenos"> 74</span></a>    <span class="sd">&quot;&quot;&quot;The friend&#39;s last seen global code. This field could be None if the player hasn&#39;t logged in yet.&quot;&quot;&quot;</span>
@@ -16366,7 +16366,7 @@ along with information we can use to determine their gating and availability.</p
     </div>
     <a class="headerlink" href="#Friend.name"></a>
     
-            <div class="docstring"><p>The friend's last seen global display name. This field could be Undefined if the player hasn't logged in yet.</p>
+            <div class="docstring"><p>The friend's last seen global display name. This field could be UNDEFINED if the player hasn't logged in yet.</p>
 </div>
 
 
@@ -22615,7 +22615,7 @@ this field will be available with indexes into the plug item definition.</p>
                 }
 
                 let heading;
-                switch (result.doc.type) {
+                switch (result.doc.kind) {
                     case "function":
                         if (doc.fullname.endsWith(".__init__")) {
                             heading = `<span class="name">${doc.fullname.replace(/\.__init__$/, "")}</span>${doc.signature}`;
@@ -22642,7 +22642,7 @@ this field will be available with indexes into the plug item definition.</p>
                 }
                 html += `
                         <section class="search-result">
-                        <a href="${url}" class="attr ${doc.type}">${heading}</a>
+                        <a href="${url}" class="attr ${doc.kind}">${heading}</a>
                         <div class="docstring">${doc.doc}</div>
                         </section>
                     `;

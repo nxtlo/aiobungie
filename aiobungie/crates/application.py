@@ -89,7 +89,7 @@ class ApplicationOwner(user.UserLike):
     @property
     def last_seen_name(self) -> str:
         """The last seen name of the application owner. This will always returns `UNDEFINED`."""
-        return str(undefined.Undefined)
+        return str(undefined.UNDEFINED)
 
     @property
     def link(self) -> str:

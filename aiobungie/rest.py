@@ -1318,7 +1318,7 @@ class RESTClient(interfaces.RESTInterface):
         membership_type: typedefs.IntAnd[enums.MembershipType],
         *,
         length: int = 0,
-        comment: undefined.UndefinedOr[str] = undefined.Undefined,
+        comment: undefined.UndefinedOr[str] = undefined.UNDEFINED,
     ) -> None:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         payload = {"comment": str(comment), "length": length}
@@ -1511,7 +1511,7 @@ class RESTClient(interfaces.RESTInterface):
         access_token: str,
         /,
         group_id: int,
-        message: undefined.UndefinedOr[str] = undefined.Undefined,
+        message: undefined.UndefinedOr[str] = undefined.UNDEFINED,
     ) -> None:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>
         await self._request(
@@ -1527,7 +1527,7 @@ class RESTClient(interfaces.RESTInterface):
         /,
         group_id: int,
         *,
-        message: undefined.UndefinedOr[str] = undefined.Undefined,
+        message: undefined.UndefinedOr[str] = undefined.UNDEFINED,
     ) -> None:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>
         await self._request(
@@ -1543,7 +1543,7 @@ class RESTClient(interfaces.RESTInterface):
         /,
         group_id: int,
         *,
-        name: undefined.UndefinedOr[str] = undefined.Undefined,
+        name: undefined.UndefinedOr[str] = undefined.UNDEFINED,
         security: typing.Literal[0, 1] = 0,
     ) -> None:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>
@@ -1562,7 +1562,7 @@ class RESTClient(interfaces.RESTInterface):
         group_id: int,
         conversation_id: int,
         *,
-        name: undefined.UndefinedOr[str] = undefined.Undefined,
+        name: undefined.UndefinedOr[str] = undefined.UNDEFINED,
         security: typing.Literal[0, 1] = 0,
         enable_chat: bool = False,
     ) -> None:
@@ -1986,8 +1986,8 @@ class RESTClient(interfaces.RESTInterface):
         search_text: str,
         tag: str,
         *,
-        page: undefined.UndefinedOr[int] = undefined.Undefined,
-        source: undefined.UndefinedOr[str] = undefined.Undefined,
+        page: undefined.UndefinedOr[int] = undefined.UNDEFINED,
+        source: undefined.UndefinedOr[str] = undefined.UNDEFINED,
     ) -> typedefs.JSONObject:
 
         body: typedefs.JSONObject = {}
@@ -1996,12 +1996,12 @@ class RESTClient(interfaces.RESTInterface):
         body["searchtext"] = search_text
         body["tag"] = tag
 
-        if page is not undefined.Undefined:
+        if page is not undefined.UNDEFINED:
             body["currentpage"] = page
         else:
             body["currentpage"] = 1
 
-        if source is not undefined.Undefined:
+        if source is not undefined.UNDEFINED:
             body["source"] = source
         else:
             source = ""
@@ -2017,10 +2017,10 @@ class RESTClient(interfaces.RESTInterface):
         tag: str,
         type: str,
         *,
-        page: undefined.UndefinedOr[int] = undefined.Undefined,
+        page: undefined.UndefinedOr[int] = undefined.UNDEFINED,
     ) -> typedefs.JSONObject:
         body: typedefs.JSONObject = {}
-        body["currentpage"] = 1 if page is undefined.Undefined else page
+        body["currentpage"] = 1 if page is undefined.UNDEFINED else page
         resp = await self._request(
             RequestMethod.GET,
             f"Content/SearchContentByTagAndType/{tag}/{type}/{locale}/",
@@ -2045,23 +2045,23 @@ class RESTClient(interfaces.RESTInterface):
         date_filter: int,
         sort: typing.Union[str, bytes],
         *,
-        page: undefined.UndefinedOr[int] = undefined.Undefined,
-        locales: undefined.UndefinedOr[collections.Iterable[str]] = undefined.Undefined,
-        tag_filter: undefined.UndefinedOr[str] = undefined.Undefined,
+        page: undefined.UndefinedOr[int] = undefined.UNDEFINED,
+        locales: undefined.UndefinedOr[collections.Iterable[str]] = undefined.UNDEFINED,
+        tag_filter: undefined.UndefinedOr[str] = undefined.UNDEFINED,
     ) -> typedefs.JSONObject:
 
         body: typedefs.JSONObject = {}
-        if locales is not undefined.Undefined:
+        if locales is not undefined.UNDEFINED:
             body["locales"] = ",".join(str(locales))
         else:
             body["locales"] = ",".join([])
 
-        if tag_filter is not undefined.Undefined:
+        if tag_filter is not undefined.UNDEFINED:
             body["tagstring"] = tag_filter
         else:
             body["tagstring"] = ""
 
-        page = 0 if page is not undefined.Undefined else page
+        page = 0 if page is not undefined.UNDEFINED else page
 
         resp = await self._request(
             RequestMethod.GET,
@@ -2077,19 +2077,19 @@ class RESTClient(interfaces.RESTInterface):
         date_filter: int,
         sort: typing.Union[str, bytes],
         *,
-        page: undefined.UndefinedOr[int] = undefined.Undefined,
-        locales: undefined.UndefinedOr[collections.Iterable[str]] = undefined.Undefined,
+        page: undefined.UndefinedOr[int] = undefined.UNDEFINED,
+        locales: undefined.UndefinedOr[collections.Iterable[str]] = undefined.UNDEFINED,
     ) -> typedefs.JSONObject:
         body: typedefs.JSONObject = {}
 
-        if locales is not undefined.Undefined:
+        if locales is not undefined.UNDEFINED:
             body["locales"] = ",".join(str(locales))
         else:
             body["locales"] = ",".join([])
 
         resp = await self._request(
             RequestMethod.GET,
-            f"Forum/GetCoreTopicsPaged/{0 if page is undefined.Undefined else page}"
+            f"Forum/GetCoreTopicsPaged/{0 if page is undefined.UNDEFINED else page}"
             f"/{sort!s}/{date_filter}/{category_filter}/",
             json=body,
         )
@@ -2261,7 +2261,7 @@ class RESTClient(interfaces.RESTInterface):
         membership_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
         *,
-        message: undefined.UndefinedOr[str] = undefined.Undefined,
+        message: undefined.UndefinedOr[str] = undefined.UNDEFINED,
     ) -> typedefs.JSONObject:
         resp = await self._request(
             RequestMethod.POST,

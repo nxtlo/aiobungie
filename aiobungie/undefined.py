@@ -53,8 +53,8 @@ class UndefinedType:
         return cls.__instance
 
 
-Undefined: typing.Final[UndefinedType] = UndefinedType()
+UNDEFINED: typing.Final[UndefinedType] = UndefinedType()
 """An undefined type for attribs that may be undefined and not None."""
 
 UndefinedOr = typing.Union[UndefinedType, _T]
-"""A union version of the Undefined type which can be undefined or any other type."""
+"""A union version of the UNDEFINED type which can be undefined or any other type."""

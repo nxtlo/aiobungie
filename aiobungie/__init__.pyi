@@ -14,7 +14,7 @@ from aiobungie.internal.enums import *
 from aiobungie.internal.factory import Factory as Factory
 from aiobungie.internal.iterators import *
 from aiobungie.rest import *
-from aiobungie.undefined import Undefined as Undefined
+from aiobungie.undefined import UNDEFINED as UNDEFINED
 from aiobungie.undefined import UndefinedOr as UndefinedOr
 from aiobungie.undefined import UndefinedType as UndefinedType
 

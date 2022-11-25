@@ -110,7 +110,7 @@ class ClanConversation:
         access_token: str,
         /,
         *,
-        name: undefined.UndefinedOr[str] = undefined.Undefined,
+        name: undefined.UndefinedOr[str] = undefined.UNDEFINED,
         security: typing.Literal[0, 1] = 0,
         enable_chat: bool = False,
     ) -> None:
@@ -228,7 +228,7 @@ class ClanMember(user.DestinyMembership):
         access_token: str,
         /,
         *,
-        comment: undefined.UndefinedOr[str] = undefined.Undefined,
+        comment: undefined.UndefinedOr[str] = undefined.UNDEFINED,
         length: int = 0,
     ) -> None:
         """Ban this member from the clan.
@@ -698,7 +698,7 @@ class Clan:
         access_token: str,
         /,
         *,
-        name: undefined.UndefinedOr[str] = undefined.Undefined,
+        name: undefined.UndefinedOr[str] = undefined.UNDEFINED,
         security: typing.Literal[0, 1] = 0,
     ) -> None:
         """Add a new chat channel to a group.
@@ -759,7 +759,7 @@ class Clan:
         access_token: str,
         /,
         *,
-        message: undefined.UndefinedOr[str] = undefined.Undefined,
+        message: undefined.UndefinedOr[str] = undefined.UNDEFINED,
     ) -> None:
         """Approve all pending users for this clan.
 
@@ -785,7 +785,7 @@ class Clan:
         access_token: str,
         /,
         *,
-        message: undefined.UndefinedOr[str] = undefined.Undefined,
+        message: undefined.UndefinedOr[str] = undefined.UNDEFINED,
     ) -> None:
         """Deny all pending users for this clan.
 

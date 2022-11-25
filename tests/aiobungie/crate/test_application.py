@@ -98,7 +98,7 @@ class TestApplication:
             created_at=datetime(2017, 4, 8),
             published_at=datetime.utcnow(),
             link="this.io",
-            scope=aiobungie.Undefined,
+            scope=aiobungie.UNDEFINED,
             status=1,
             owner=owner,
         )
@@ -110,7 +110,7 @@ class TestApplication:
         assert str(app) == "aiobungie"
 
     def test_app_scope(self, app: crate.Application) -> None:
-        assert app.scope is aiobungie.Undefined
+        assert app.scope is aiobungie.UNDEFINED
 
     def test_app_owner(self, app: crate.Application) -> None:
         assert app.owner.id == 411098

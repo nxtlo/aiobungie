@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="pdoc 12.2.0"/>
+    <meta name="generator" content="pdoc 12.3.0"/>
     <title>aiobungie.internal.enums API documentation</title>
 
     <style>/*! * Bootstrap Reboot v5.0.0 (https://getbootstrap.com/) * Copyright 2011-2021 The Bootstrap Authors * Copyright 2011-2021 Twitter, Inc. * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE) * Forked from Normalize.css, licensed MIT (https://github.com/necolas/normalize.css/blob/master/LICENSE.md) */*,::after,::before{box-sizing:border-box}@media (prefers-reduced-motion:no-preference){:root{scroll-behavior:smooth}}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";font-size:1rem;font-weight:400;line-height:1.5;color:#212529;background-color:#fff;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}hr{margin:1rem 0;color:inherit;background-color:currentColor;border:0;opacity:.25}hr:not([size]){height:1px}h1,h2,h3,h4,h5,h6{margin-top:0;margin-bottom:.5rem;font-weight:500;line-height:1.2}h1{font-size:calc(1.375rem + 1.5vw)}@media (min-width:1200px){h1{font-size:2.5rem}}h2{font-size:calc(1.325rem + .9vw)}@media (min-width:1200px){h2{font-size:2rem}}h3{font-size:calc(1.3rem + .6vw)}@media (min-width:1200px){h3{font-size:1.75rem}}h4{font-size:calc(1.275rem + .3vw)}@media (min-width:1200px){h4{font-size:1.5rem}}h5{font-size:1.25rem}h6{font-size:1rem}p{margin-top:0;margin-bottom:1rem}abbr[data-bs-original-title],abbr[title]{-webkit-text-decoration:underline dotted;text-decoration:underline dotted;cursor:help;-webkit-text-decoration-skip-ink:none;text-decoration-skip-ink:none}address{margin-bottom:1rem;font-style:normal;line-height:inherit}ol,ul{padding-left:2rem}dl,ol,ul{margin-top:0;margin-bottom:1rem}ol ol,ol ul,ul ol,ul ul{margin-bottom:0}dt{font-weight:700}dd{margin-bottom:.5rem;margin-left:0}blockquote{margin:0 0 1rem}b,strong{font-weight:bolder}small{font-size:.875em}mark{padding:.2em;background-color:#fcf8e3}sub,sup{position:relative;font-size:.75em;line-height:0;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}a{color:#0d6efd;text-decoration:underline}a:hover{color:#0a58ca}a:not([href]):not([class]),a:not([href]):not([class]):hover{color:inherit;text-decoration:none}code,kbd,pre,samp{font-family:SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:1em;direction:ltr;unicode-bidi:bidi-override}pre{display:block;margin-top:0;margin-bottom:1rem;overflow:auto;font-size:.875em}pre code{font-size:inherit;color:inherit;word-break:normal}code{font-size:.875em;color:#d63384;word-wrap:break-word}a>code{color:inherit}kbd{padding:.2rem .4rem;font-size:.875em;color:#fff;background-color:#212529;border-radius:.2rem}kbd kbd{padding:0;font-size:1em;font-weight:700}figure{margin:0 0 1rem}img,svg{vertical-align:middle}table{caption-side:bottom;border-collapse:collapse}caption{padding-top:.5rem;padding-bottom:.5rem;color:#6c757d;text-align:left}th{text-align:inherit;text-align:-webkit-match-parent}tbody,td,tfoot,th,thead,tr{border-color:inherit;border-style:solid;border-width:0}label{display:inline-block}button{border-radius:0}button:focus:not(:focus-visible){outline:0}button,input,optgroup,select,textarea{margin:0;font-family:inherit;font-size:inherit;line-height:inherit}button,select{text-transform:none}[role=button]{cursor:pointer}select{word-wrap:normal}select:disabled{opacity:1}[list]::-webkit-calendar-picker-indicator{display:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button}[type=button]:not(:disabled),[type=reset]:not(:disabled),[type=submit]:not(:disabled),button:not(:disabled){cursor:pointer}::-moz-focus-inner{padding:0;border-style:none}textarea{resize:vertical}fieldset{min-width:0;padding:0;margin:0;border:0}legend{float:left;width:100%;padding:0;margin-bottom:.5rem;font-size:calc(1.275rem + .3vw);line-height:inherit}@media (min-width:1200px){legend{font-size:1.5rem}}legend+*{clear:left}::-webkit-datetime-edit-day-field,::-webkit-datetime-edit-fields-wrapper,::-webkit-datetime-edit-hour-field,::-webkit-datetime-edit-minute,::-webkit-datetime-edit-month-field,::-webkit-datetime-edit-text,::-webkit-datetime-edit-year-field{padding:0}::-webkit-inner-spin-button{height:auto}[type=search]{outline-offset:-2px;-webkit-appearance:textfield}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-color-swatch-wrapper{padding:0}::file-selector-button{font:inherit}::-webkit-file-upload-button{font:inherit;-webkit-appearance:button}output{display:inline-block}iframe{border:0}summary{display:list-item;cursor:pointer}progress{vertical-align:baseline}[hidden]{display:none!important}</style>
@@ -57,30 +57,351 @@
             <li>
                     <a class="class" href="#GameMode">GameMode</a>
                             <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#GameMode.NONE">NONE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.STORY">STORY</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.STRIKE">STRIKE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.RAID">RAID</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.ALLPVP">ALLPVP</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.PATROL">PATROL</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.ALLPVE">ALLPVE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.RESERVED9">RESERVED9</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.CONTROL">CONTROL</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.RESERVED11">RESERVED11</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.CLASH">CLASH</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.RESERVED13">RESERVED13</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.CRIMSONDOUBLES">CRIMSONDOUBLES</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.NIGHTFALL">NIGHTFALL</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.HEROICNIGHTFALL">HEROICNIGHTFALL</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.ALLSTRIKES">ALLSTRIKES</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.IRONBANNER">IRONBANNER</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.RESERVED20">RESERVED20</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.RESERVED21">RESERVED21</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.RESERVED22">RESERVED22</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.RESERVED24">RESERVED24</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.ALLMAYHEM">ALLMAYHEM</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.RESERVED26">RESERVED26</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.RESERVED27">RESERVED27</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.RESERVED28">RESERVED28</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.RESERVED29">RESERVED29</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.RESERVED30">RESERVED30</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.SUPREMACY">SUPREMACY</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.PRIVATEMATCHESALL">PRIVATEMATCHESALL</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.SURVIVAL">SURVIVAL</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.COUNTDOWN">COUNTDOWN</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.TRIALSOFTHENINE">TRIALSOFTHENINE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.SOCIAL">SOCIAL</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.TRIALSCOUNTDOWN">TRIALSCOUNTDOWN</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.TRIALSSURVIVAL">TRIALSSURVIVAL</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.IRONBANNERCONTROL">IRONBANNERCONTROL</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.IRONBANNERCLASH">IRONBANNERCLASH</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.IRONBANNERSUPREMACY">IRONBANNERSUPREMACY</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.SCOREDNIGHTFALL">SCOREDNIGHTFALL</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.SCOREDHEROICNIGHTFALL">SCOREDHEROICNIGHTFALL</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.RUMBLE">RUMBLE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.ALLDOUBLES">ALLDOUBLES</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.DOUBLES">DOUBLES</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.PRIVATEMATCHESCLASH">PRIVATEMATCHESCLASH</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.PRIVATEMATCHESCONTROL">PRIVATEMATCHESCONTROL</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.PRIVATEMATCHESSUPREMACY">PRIVATEMATCHESSUPREMACY</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.PRIVATEMATCHESCOUNTDOWN">PRIVATEMATCHESCOUNTDOWN</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.PRIVATEMATCHESSURVIVAL">PRIVATEMATCHESSURVIVAL</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.PRIVATEMATCHESMAYHEM">PRIVATEMATCHESMAYHEM</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.PRIVATEMATCHESRUMBLE">PRIVATEMATCHESRUMBLE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.HEROICADVENTURE">HEROICADVENTURE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.SHOWDOWN">SHOWDOWN</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.LOCKDOWN">LOCKDOWN</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.SCORCHED">SCORCHED</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.SCORCHEDTEAM">SCORCHEDTEAM</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.GAMBIT">GAMBIT</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.ALLPVECOMPETITIVE">ALLPVECOMPETITIVE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.BREAKTHROUGH">BREAKTHROUGH</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.BLACKARMORYRUN">BLACKARMORYRUN</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.SALVAGE">SALVAGE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.IRONBANNERSALVAGE">IRONBANNERSALVAGE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.PVPCOMPETITIVE">PVPCOMPETITIVE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.PVPQUICKPLAY">PVPQUICKPLAY</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.CLASHQUICKPLAY">CLASHQUICKPLAY</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.CLASHCOMPETITIVE">CLASHCOMPETITIVE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.CONTROLQUICKPLAY">CONTROLQUICKPLAY</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.CONTROLCOMPETITIVE">CONTROLCOMPETITIVE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.GAMBITPRIME">GAMBITPRIME</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.RECKONING">RECKONING</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.MENAGERIE">MENAGERIE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.VEXOFFENSIVE">VEXOFFENSIVE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.NIGHTMAREHUNT">NIGHTMAREHUNT</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.ELIMINATION">ELIMINATION</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.MOMENTUM">MOMENTUM</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.DUNGEON">DUNGEON</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.SUNDIAL">SUNDIAL</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.TRIALS_OF_OSIRIS">TRIALS_OF_OSIRIS</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.DARES">DARES</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.OFFENSIVE">OFFENSIVE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.LOSTSECTOR">LOSTSECTOR</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.RIFT">RIFT</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.ZONECONTROL">ZONECONTROL</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GameMode.IRONBANNERRIFT">IRONBANNERRIFT</a>
+                        </li>
                 </ul>
 
             </li>
             <li>
                     <a class="class" href="#MembershipType">MembershipType</a>
                             <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#MembershipType.NONE">NONE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MembershipType.XBOX">XBOX</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MembershipType.PSN">PSN</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MembershipType.STEAM">STEAM</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MembershipType.BLIZZARD">BLIZZARD</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MembershipType.STADIA">STADIA</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MembershipType.EPIC_GAMES_STORE">EPIC_GAMES_STORE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MembershipType.DEMON">DEMON</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MembershipType.BUNGIE">BUNGIE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MembershipType.ALL">ALL</a>
+                        </li>
                 </ul>
 
             </li>
             <li>
                     <a class="class" href="#Class">Class</a>
                             <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#Class.TITAN">TITAN</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Class.HUNTER">HUNTER</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Class.WARLOCK">WARLOCK</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Class.UNKNOWN">UNKNOWN</a>
+                        </li>
                 </ul>
 
             </li>
             <li>
                     <a class="class" href="#MilestoneType">MilestoneType</a>
                             <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#MilestoneType.UNKNOWN">UNKNOWN</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MilestoneType.TUTORIAL">TUTORIAL</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MilestoneType.ONETIME">ONETIME</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MilestoneType.WEEKLY">WEEKLY</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MilestoneType.DAILY">DAILY</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MilestoneType.SPECIAL">SPECIAL</a>
+                        </li>
                 </ul>
 
             </li>
             <li>
                     <a class="class" href="#Race">Race</a>
                             <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#Race.HUMAN">HUMAN</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Race.AWOKEN">AWOKEN</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Race.EXO">EXO</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Race.UNKNOWN">UNKNOWN</a>
+                        </li>
                 </ul>
 
             </li>
@@ -88,19 +409,58 @@
                     <a class="class" href="#Vendor">Vendor</a>
                             <ul class="memberlist">
                         <li>
+                                <a class="variable" href="#Vendor.ZAVALA">ZAVALA</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Vendor.XUR">XUR</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Vendor.BANSHE">BANSHE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Vendor.SPIDER">SPIDER</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Vendor.SHAXX">SHAXX</a>
+                        </li>
+                        <li>
                                 <a class="variable" href="#Vendor.KADI">KADI</a>
                         </li>
                         <li>
                                 <a class="variable" href="#Vendor.YUNA">YUNA</a>
                         </li>
                         <li>
+                                <a class="variable" href="#Vendor.EVERVERSE">EVERVERSE</a>
+                        </li>
+                        <li>
                                 <a class="variable" href="#Vendor.AMANDA">AMANDA</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Vendor.CROW">CROW</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Vendor.HAWTHORNE">HAWTHORNE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Vendor.ADA1">ADA1</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Vendor.DRIFTER">DRIFTER</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Vendor.IKORA">IKORA</a>
                         </li>
                         <li>
                                 <a class="variable" href="#Vendor.SAINT">SAINT</a>
                         </li>
                         <li>
+                                <a class="variable" href="#Vendor.ERIS_MORN">ERIS_MORN</a>
+                        </li>
+                        <li>
                                 <a class="variable" href="#Vendor.SHAW_HAWN">SHAW_HAWN</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Vendor.VARIKS">VARIKS</a>
                         </li>
                 </ul>
 
@@ -162,6 +522,15 @@
             <li>
                     <a class="class" href="#Gender">Gender</a>
                             <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#Gender.MALE">MALE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Gender.FEMALE">FEMALE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Gender.UNKNOWN">UNKNOWN</a>
+                        </li>
                 </ul>
 
             </li>
@@ -169,13 +538,118 @@
                     <a class="class" href="#ComponentType">ComponentType</a>
                             <ul class="memberlist">
                         <li>
+                                <a class="variable" href="#ComponentType.NONE">NONE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ComponentType.PROFILE">PROFILE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ComponentType.PROFILE_INVENTORIES">PROFILE_INVENTORIES</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ComponentType.PROFILE_CURRENCIES">PROFILE_CURRENCIES</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ComponentType.PROFILE_PROGRESSION">PROFILE_PROGRESSION</a>
+                        </li>
+                        <li>
                                 <a class="variable" href="#ComponentType.ALL_PROFILES">ALL_PROFILES</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ComponentType.VENDORS">VENDORS</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ComponentType.VENDOR_SALES">VENDOR_SALES</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ComponentType.VENDOR_RECEIPTS">VENDOR_RECEIPTS</a>
                         </li>
                         <li>
                                 <a class="variable" href="#ComponentType.ALL_VENDORS">ALL_VENDORS</a>
                         </li>
                         <li>
+                                <a class="variable" href="#ComponentType.ITEM_INSTANCES">ITEM_INSTANCES</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ComponentType.ITEM_OBJECTIVES">ITEM_OBJECTIVES</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ComponentType.ITEM_PERKS">ITEM_PERKS</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ComponentType.ITEM_RENDER_DATA">ITEM_RENDER_DATA</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ComponentType.ITEM_STATS">ITEM_STATS</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ComponentType.ITEM_SOCKETS">ITEM_SOCKETS</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ComponentType.ITEM_TALENT_GRINDS">ITEM_TALENT_GRINDS</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ComponentType.ITEM_PLUG_STATES">ITEM_PLUG_STATES</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ComponentType.ITEM_PLUG_OBJECTIVES">ITEM_PLUG_OBJECTIVES</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ComponentType.ITEM_REUSABLE_PLUGS">ITEM_REUSABLE_PLUGS</a>
+                        </li>
+                        <li>
                                 <a class="variable" href="#ComponentType.ALL_ITEMS">ALL_ITEMS</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ComponentType.PLATFORM_SILVER">PLATFORM_SILVER</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ComponentType.KIOSKS">KIOSKS</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ComponentType.CURRENCY_LOOKUPS">CURRENCY_LOOKUPS</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ComponentType.PRESENTATION_NODES">PRESENTATION_NODES</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ComponentType.COLLECTIBLES">COLLECTIBLES</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ComponentType.RECORDS">RECORDS</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ComponentType.TRANSITORY">TRANSITORY</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ComponentType.METRICS">METRICS</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ComponentType.INVENTORIES">INVENTORIES</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ComponentType.STRING_VARIABLES">STRING_VARIABLES</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ComponentType.CRAFTABLES">CRAFTABLES</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ComponentType.CHARACTERS">CHARACTERS</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ComponentType.CHARACTER_INVENTORY">CHARACTER_INVENTORY</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ComponentType.CHARECTER_PROGRESSION">CHARECTER_PROGRESSION</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ComponentType.CHARACTER_RENDER_DATA">CHARACTER_RENDER_DATA</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ComponentType.CHARACTER_ACTIVITIES">CHARACTER_ACTIVITIES</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ComponentType.CHARACTER_EQUIPMENT">CHARACTER_EQUIPMENT</a>
                         </li>
                         <li>
                                 <a class="variable" href="#ComponentType.ALL_CHARACTERS">ALL_CHARACTERS</a>
@@ -225,12 +699,48 @@
             <li>
                     <a class="class" href="#Stat">Stat</a>
                             <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#Stat.NONE">NONE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Stat.MOBILITY">MOBILITY</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Stat.RESILIENCE">RESILIENCE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Stat.RECOVERY">RECOVERY</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Stat.DISCIPLINE">DISCIPLINE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Stat.INTELLECT">INTELLECT</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Stat.STRENGTH">STRENGTH</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Stat.LIGHT_POWER">LIGHT_POWER</a>
+                        </li>
                 </ul>
 
             </li>
             <li>
                     <a class="class" href="#WeaponType">WeaponType</a>
                             <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#WeaponType.NONE">NONE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#WeaponType.KINETIC">KINETIC</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#WeaponType.ENERGY">ENERGY</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#WeaponType.POWER">POWER</a>
+                        </li>
                 </ul>
 
             </li>
@@ -238,7 +748,25 @@
                     <a class="class" href="#DamageType">DamageType</a>
                             <ul class="memberlist">
                         <li>
+                                <a class="variable" href="#DamageType.NONE">NONE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#DamageType.KINETIC">KINETIC</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#DamageType.ARC">ARC</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#DamageType.SOLAR">SOLAR</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#DamageType.VOID">VOID</a>
+                        </li>
+                        <li>
                                 <a class="variable" href="#DamageType.RAID">RAID</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#DamageType.STASIS">STASIS</a>
                         </li>
                 </ul>
 
@@ -246,72 +774,312 @@
             <li>
                     <a class="class" href="#ItemType">ItemType</a>
                             <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#ItemType.NONE">NONE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemType.CURRENCY">CURRENCY</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemType.ARMOR">ARMOR</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemType.WEAPON">WEAPON</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemType.MESSAGE">MESSAGE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemType.ENGRAM">ENGRAM</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemType.CONSUMABLE">CONSUMABLE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemType.EXCHANGEMATERIAL">EXCHANGEMATERIAL</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemType.MISSIONREWARD">MISSIONREWARD</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemType.QUESTSTEP">QUESTSTEP</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemType.QUESTSTEPCOMPLETE">QUESTSTEPCOMPLETE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemType.EMBLEM">EMBLEM</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemType.QUEST">QUEST</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemType.SUBCLASS">SUBCLASS</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemType.CLANBANNER">CLANBANNER</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemType.AURA">AURA</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemType.MOD">MOD</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemType.DUMMY">DUMMY</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemType.SHIP">SHIP</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemType.VEHICLE">VEHICLE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemType.EMOTE">EMOTE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemType.GHOST">GHOST</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemType.PACKAGE">PACKAGE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemType.BOUNTY">BOUNTY</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemType.WRAPPER">WRAPPER</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemType.SEASONALARTIFACT">SEASONALARTIFACT</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemType.FINISHER">FINISHER</a>
+                        </li>
                 </ul>
 
             </li>
             <li>
                     <a class="class" href="#Place">Place</a>
                             <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#Place.ORBIT">ORBIT</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Place.SOCIAL">SOCIAL</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Place.LIGHT_HOUSE">LIGHT_HOUSE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Place.EXPLORE">EXPLORE</a>
+                        </li>
                 </ul>
 
             </li>
             <li>
                     <a class="class" href="#ItemTier">ItemTier</a>
                             <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#ItemTier.NONE">NONE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemTier.BASIC">BASIC</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemTier.COMMON">COMMON</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemTier.RARE">RARE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemTier.LEGENDERY">LEGENDERY</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemTier.EXOTIC">EXOTIC</a>
+                        </li>
                 </ul>
 
             </li>
             <li>
                     <a class="class" href="#AmmoType">AmmoType</a>
                             <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#AmmoType.NONE">NONE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#AmmoType.PRIMARY">PRIMARY</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#AmmoType.SPECIAL">SPECIAL</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#AmmoType.HEAVY">HEAVY</a>
+                        </li>
                 </ul>
 
             </li>
             <li>
                     <a class="class" href="#GroupType">GroupType</a>
                             <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#GroupType.GENERAL">GENERAL</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#GroupType.CLAN">CLAN</a>
+                        </li>
                 </ul>
 
             </li>
             <li>
                     <a class="class" href="#CredentialType">CredentialType</a>
                             <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#CredentialType.NONE">NONE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#CredentialType.XUID">XUID</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#CredentialType.PSNID">PSNID</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#CredentialType.WILD">WILD</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#CredentialType.FAKE">FAKE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#CredentialType.FACEBOOK">FACEBOOK</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#CredentialType.GOOGLE">GOOGLE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#CredentialType.WINDOWS">WINDOWS</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#CredentialType.DEMONID">DEMONID</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#CredentialType.STEAMID">STEAMID</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#CredentialType.BATTLENETID">BATTLENETID</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#CredentialType.STADIAID">STADIAID</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#CredentialType.TWITCHID">TWITCHID</a>
+                        </li>
                 </ul>
 
             </li>
             <li>
                     <a class="class" href="#Presence">Presence</a>
                             <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#Presence.OFFLINE_OR_UNKNOWN">OFFLINE_OR_UNKNOWN</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Presence.ONLINE">ONLINE</a>
+                        </li>
                 </ul>
 
             </li>
             <li>
                     <a class="class" href="#Relationship">Relationship</a>
                             <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#Relationship.UNKNOWN">UNKNOWN</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Relationship.FRIEND">FRIEND</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Relationship.INCOMING_REQUEST">INCOMING_REQUEST</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Relationship.OUTGOING_REQUEST">OUTGOING_REQUEST</a>
+                        </li>
                 </ul>
 
             </li>
             <li>
                     <a class="class" href="#ClanMemberType">ClanMemberType</a>
                             <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#ClanMemberType.NONE">NONE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ClanMemberType.BEGINNER">BEGINNER</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ClanMemberType.MEMBER">MEMBER</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ClanMemberType.ADMIN">ADMIN</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ClanMemberType.ACTING_FOUNDER">ACTING_FOUNDER</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ClanMemberType.FOUNDER">FOUNDER</a>
+                        </li>
                 </ul>
 
             </li>
             <li>
                     <a class="class" href="#MembershipOption">MembershipOption</a>
                             <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#MembershipOption.REVIEWD">REVIEWD</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MembershipOption.OPEN">OPEN</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MembershipOption.CLOSED">CLOSED</a>
+                        </li>
                 </ul>
 
             </li>
             <li>
                     <a class="class" href="#ItemBindStatus">ItemBindStatus</a>
                             <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#ItemBindStatus.NOT_BOUND">NOT_BOUND</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemBindStatus.BOUND_TO_CHARACTER">BOUND_TO_CHARACTER</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemBindStatus.BOUND_TO_ACCOUNT">BOUND_TO_ACCOUNT</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemBindStatus.BOUNT_TO_GUILD">BOUNT_TO_GUILD</a>
+                        </li>
                 </ul>
 
             </li>
             <li>
                     <a class="class" href="#ItemLocation">ItemLocation</a>
                             <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#ItemLocation.UNKNOWN">UNKNOWN</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemLocation.INVENTORY">INVENTORY</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemLocation.VAULT">VAULT</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemLocation.VENDOR">VENDOR</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemLocation.POSTMASTER">POSTMASTER</a>
+                        </li>
                 </ul>
 
             </li>
@@ -337,6 +1105,18 @@
                     <a class="class" href="#ItemState">ItemState</a>
                             <ul class="memberlist">
                         <li>
+                                <a class="variable" href="#ItemState.NONE">NONE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemState.LOCKED">LOCKED</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemState.TRACKED">TRACKED</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemState.MASTERWORKED">MASTERWORKED</a>
+                        </li>
+                        <li>
                                 <a class="variable" href="#ItemState.CRAFTED">CRAFTED</a>
                         </li>
                         <li>
@@ -348,12 +1128,36 @@
             <li>
                     <a class="class" href="#PrivacySetting">PrivacySetting</a>
                             <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#PrivacySetting.OPEN">OPEN</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#PrivacySetting.CLAN_AND_FRIENDS">CLAN_AND_FRIENDS</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#PrivacySetting.FRIENDS_ONLY">FRIENDS_ONLY</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#PrivacySetting.INVITE_ONLY">INVITE_ONLY</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#PrivacySetting.CLOSED">CLOSED</a>
+                        </li>
                 </ul>
 
             </li>
             <li>
                     <a class="class" href="#ClosedReasons">ClosedReasons</a>
                             <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#ClosedReasons.NONE">NONE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ClosedReasons.MATCHMAKING">MATCHMAKING</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ClosedReasons.LOADING">LOADING</a>
+                        </li>
                         <li>
                                 <a class="variable" href="#ClosedReasons.SOLO">SOLO</a>
                         </li>
@@ -372,12 +1176,111 @@
             <li>
                     <a class="class" href="#ItemSubType">ItemSubType</a>
                             <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#ItemSubType.NONE">NONE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemSubType.AUTORIFLE">AUTORIFLE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemSubType.SHOTGUN">SHOTGUN</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemSubType.MACHINEGUN">MACHINEGUN</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemSubType.HANDCANNON">HANDCANNON</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemSubType.ROCKETLAUNCHER">ROCKETLAUNCHER</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemSubType.FUSIONRIFLE">FUSIONRIFLE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemSubType.SNIPERRIFLE">SNIPERRIFLE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemSubType.PULSERIFLE">PULSERIFLE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemSubType.SCOUTRIFLE">SCOUTRIFLE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemSubType.SIDEARM">SIDEARM</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemSubType.SWORD">SWORD</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemSubType.MASK">MASK</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemSubType.SHADER">SHADER</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemSubType.ORNAMENT">ORNAMENT</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemSubType.FUSIONRIFLELINE">FUSIONRIFLELINE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemSubType.GRENADELAUNCHER">GRENADELAUNCHER</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemSubType.SUBMACHINEGUN">SUBMACHINEGUN</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemSubType.TRACERIFLE">TRACERIFLE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemSubType.HELMETARMOR">HELMETARMOR</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemSubType.GAUNTLETSARMOR">GAUNTLETSARMOR</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemSubType.CHESTARMOR">CHESTARMOR</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemSubType.LEGARMOR">LEGARMOR</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemSubType.CLASSARMOR">CLASSARMOR</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemSubType.BOW">BOW</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ItemSubType.DUMMYREPEATABLEBOUNTY">DUMMYREPEATABLEBOUNTY</a>
+                        </li>
                 </ul>
 
             </li>
             <li>
                     <a class="class" href="#TierType">TierType</a>
                             <ul class="memberlist">
+                        <li>
+                                <a class="variable" href="#TierType.UNKNOWN">UNKNOWN</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#TierType.CURRENCY">CURRENCY</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#TierType.BASIC">BASIC</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#TierType.COMMON">COMMON</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#TierType.RARE">RARE</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#TierType.SUPERIOR">SUPERIOR</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#TierType.EXOTIC">EXOTIC</a>
+                        </li>
                 </ul>
 
             </li>
@@ -1496,6 +2399,919 @@
 </div>
 
 
+                            <div id="GameMode.NONE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">NONE</span><span class="default_value"> = &lt;<a href="#GameMode.NONE">GameMode.NONE</a>: 0&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.NONE"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.STORY" class="classattr">
+                                <div class="attr variable">
+            <span class="name">STORY</span><span class="default_value"> = &lt;<a href="#GameMode.STORY">GameMode.STORY</a>: 2&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.STORY"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.STRIKE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">STRIKE</span><span class="default_value"> = &lt;<a href="#GameMode.STRIKE">GameMode.STRIKE</a>: 3&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.STRIKE"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.RAID" class="classattr">
+                                <div class="attr variable">
+            <span class="name">RAID</span><span class="default_value"> = &lt;<a href="#GameMode.RAID">GameMode.RAID</a>: 4&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.RAID"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.ALLPVP" class="classattr">
+                                <div class="attr variable">
+            <span class="name">ALLPVP</span><span class="default_value"> = &lt;<a href="#GameMode.ALLPVP">GameMode.ALLPVP</a>: 5&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.ALLPVP"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.PATROL" class="classattr">
+                                <div class="attr variable">
+            <span class="name">PATROL</span><span class="default_value"> = &lt;<a href="#GameMode.PATROL">GameMode.PATROL</a>: 6&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.PATROL"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.ALLPVE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">ALLPVE</span><span class="default_value"> = &lt;<a href="#GameMode.ALLPVE">GameMode.ALLPVE</a>: 7&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.ALLPVE"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.RESERVED9" class="classattr">
+                                <div class="attr variable">
+            <span class="name">RESERVED9</span><span class="default_value"> = &lt;<a href="#GameMode.RESERVED9">GameMode.RESERVED9</a>: 9&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.RESERVED9"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.CONTROL" class="classattr">
+                                <div class="attr variable">
+            <span class="name">CONTROL</span><span class="default_value"> = &lt;<a href="#GameMode.CONTROL">GameMode.CONTROL</a>: 10&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.CONTROL"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.RESERVED11" class="classattr">
+                                <div class="attr variable">
+            <span class="name">RESERVED11</span><span class="default_value"> = &lt;<a href="#GameMode.RESERVED11">GameMode.RESERVED11</a>: 11&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.RESERVED11"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.CLASH" class="classattr">
+                                <div class="attr variable">
+            <span class="name">CLASH</span><span class="default_value"> = &lt;<a href="#GameMode.CLASH">GameMode.CLASH</a>: 12&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.CLASH"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.RESERVED13" class="classattr">
+                                <div class="attr variable">
+            <span class="name">RESERVED13</span><span class="default_value"> = &lt;<a href="#GameMode.RESERVED13">GameMode.RESERVED13</a>: 13&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.RESERVED13"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.CRIMSONDOUBLES" class="classattr">
+                                <div class="attr variable">
+            <span class="name">CRIMSONDOUBLES</span><span class="default_value"> = &lt;<a href="#GameMode.CRIMSONDOUBLES">GameMode.CRIMSONDOUBLES</a>: 15&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.CRIMSONDOUBLES"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.NIGHTFALL" class="classattr">
+                                <div class="attr variable">
+            <span class="name">NIGHTFALL</span><span class="default_value"> = &lt;<a href="#GameMode.NIGHTFALL">GameMode.NIGHTFALL</a>: 16&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.NIGHTFALL"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.HEROICNIGHTFALL" class="classattr">
+                                <div class="attr variable">
+            <span class="name">HEROICNIGHTFALL</span><span class="default_value"> = &lt;<a href="#GameMode.HEROICNIGHTFALL">GameMode.HEROICNIGHTFALL</a>: 17&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.HEROICNIGHTFALL"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.ALLSTRIKES" class="classattr">
+                                <div class="attr variable">
+            <span class="name">ALLSTRIKES</span><span class="default_value"> = &lt;<a href="#GameMode.ALLSTRIKES">GameMode.ALLSTRIKES</a>: 18&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.ALLSTRIKES"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.IRONBANNER" class="classattr">
+                                <div class="attr variable">
+            <span class="name">IRONBANNER</span><span class="default_value"> = &lt;<a href="#GameMode.IRONBANNER">GameMode.IRONBANNER</a>: 19&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.IRONBANNER"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.RESERVED20" class="classattr">
+                                <div class="attr variable">
+            <span class="name">RESERVED20</span><span class="default_value"> = &lt;<a href="#GameMode.RESERVED20">GameMode.RESERVED20</a>: 20&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.RESERVED20"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.RESERVED21" class="classattr">
+                                <div class="attr variable">
+            <span class="name">RESERVED21</span><span class="default_value"> = &lt;<a href="#GameMode.RESERVED21">GameMode.RESERVED21</a>: 21&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.RESERVED21"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.RESERVED22" class="classattr">
+                                <div class="attr variable">
+            <span class="name">RESERVED22</span><span class="default_value"> = &lt;<a href="#GameMode.RESERVED22">GameMode.RESERVED22</a>: 22&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.RESERVED22"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.RESERVED24" class="classattr">
+                                <div class="attr variable">
+            <span class="name">RESERVED24</span><span class="default_value"> = &lt;<a href="#GameMode.RESERVED24">GameMode.RESERVED24</a>: 24&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.RESERVED24"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.ALLMAYHEM" class="classattr">
+                                <div class="attr variable">
+            <span class="name">ALLMAYHEM</span><span class="default_value"> = &lt;<a href="#GameMode.ALLMAYHEM">GameMode.ALLMAYHEM</a>: 25&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.ALLMAYHEM"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.RESERVED26" class="classattr">
+                                <div class="attr variable">
+            <span class="name">RESERVED26</span><span class="default_value"> = &lt;<a href="#GameMode.RESERVED26">GameMode.RESERVED26</a>: 26&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.RESERVED26"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.RESERVED27" class="classattr">
+                                <div class="attr variable">
+            <span class="name">RESERVED27</span><span class="default_value"> = &lt;<a href="#GameMode.RESERVED27">GameMode.RESERVED27</a>: 27&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.RESERVED27"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.RESERVED28" class="classattr">
+                                <div class="attr variable">
+            <span class="name">RESERVED28</span><span class="default_value"> = &lt;<a href="#GameMode.RESERVED28">GameMode.RESERVED28</a>: 28&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.RESERVED28"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.RESERVED29" class="classattr">
+                                <div class="attr variable">
+            <span class="name">RESERVED29</span><span class="default_value"> = &lt;<a href="#GameMode.RESERVED29">GameMode.RESERVED29</a>: 29&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.RESERVED29"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.RESERVED30" class="classattr">
+                                <div class="attr variable">
+            <span class="name">RESERVED30</span><span class="default_value"> = &lt;<a href="#GameMode.RESERVED30">GameMode.RESERVED30</a>: 30&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.RESERVED30"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.SUPREMACY" class="classattr">
+                                <div class="attr variable">
+            <span class="name">SUPREMACY</span><span class="default_value"> = &lt;<a href="#GameMode.SUPREMACY">GameMode.SUPREMACY</a>: 31&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.SUPREMACY"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.PRIVATEMATCHESALL" class="classattr">
+                                <div class="attr variable">
+            <span class="name">PRIVATEMATCHESALL</span><span class="default_value"> = &lt;<a href="#GameMode.PRIVATEMATCHESALL">GameMode.PRIVATEMATCHESALL</a>: 32&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.PRIVATEMATCHESALL"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.SURVIVAL" class="classattr">
+                                <div class="attr variable">
+            <span class="name">SURVIVAL</span><span class="default_value"> = &lt;<a href="#GameMode.SURVIVAL">GameMode.SURVIVAL</a>: 37&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.SURVIVAL"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.COUNTDOWN" class="classattr">
+                                <div class="attr variable">
+            <span class="name">COUNTDOWN</span><span class="default_value"> = &lt;<a href="#GameMode.COUNTDOWN">GameMode.COUNTDOWN</a>: 38&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.COUNTDOWN"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.TRIALSOFTHENINE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">TRIALSOFTHENINE</span><span class="default_value"> = &lt;<a href="#GameMode.TRIALSOFTHENINE">GameMode.TRIALSOFTHENINE</a>: 39&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.TRIALSOFTHENINE"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.SOCIAL" class="classattr">
+                                <div class="attr variable">
+            <span class="name">SOCIAL</span><span class="default_value"> = &lt;<a href="#GameMode.SOCIAL">GameMode.SOCIAL</a>: 40&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.SOCIAL"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.TRIALSCOUNTDOWN" class="classattr">
+                                <div class="attr variable">
+            <span class="name">TRIALSCOUNTDOWN</span><span class="default_value"> = &lt;<a href="#GameMode.TRIALSCOUNTDOWN">GameMode.TRIALSCOUNTDOWN</a>: 41&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.TRIALSCOUNTDOWN"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.TRIALSSURVIVAL" class="classattr">
+                                <div class="attr variable">
+            <span class="name">TRIALSSURVIVAL</span><span class="default_value"> = &lt;<a href="#GameMode.TRIALSSURVIVAL">GameMode.TRIALSSURVIVAL</a>: 42&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.TRIALSSURVIVAL"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.IRONBANNERCONTROL" class="classattr">
+                                <div class="attr variable">
+            <span class="name">IRONBANNERCONTROL</span><span class="default_value"> = &lt;<a href="#GameMode.IRONBANNERCONTROL">GameMode.IRONBANNERCONTROL</a>: 43&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.IRONBANNERCONTROL"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.IRONBANNERCLASH" class="classattr">
+                                <div class="attr variable">
+            <span class="name">IRONBANNERCLASH</span><span class="default_value"> = &lt;<a href="#GameMode.IRONBANNERCLASH">GameMode.IRONBANNERCLASH</a>: 44&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.IRONBANNERCLASH"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.IRONBANNERSUPREMACY" class="classattr">
+                                <div class="attr variable">
+            <span class="name">IRONBANNERSUPREMACY</span><span class="default_value"> = &lt;<a href="#GameMode.IRONBANNERSUPREMACY">GameMode.IRONBANNERSUPREMACY</a>: 45&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.IRONBANNERSUPREMACY"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.SCOREDNIGHTFALL" class="classattr">
+                                <div class="attr variable">
+            <span class="name">SCOREDNIGHTFALL</span><span class="default_value"> = &lt;<a href="#GameMode.SCOREDNIGHTFALL">GameMode.SCOREDNIGHTFALL</a>: 46&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.SCOREDNIGHTFALL"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.SCOREDHEROICNIGHTFALL" class="classattr">
+                                <div class="attr variable">
+            <span class="name">SCOREDHEROICNIGHTFALL</span><span class="default_value"> = &lt;<a href="#GameMode.SCOREDHEROICNIGHTFALL">GameMode.SCOREDHEROICNIGHTFALL</a>: 47&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.SCOREDHEROICNIGHTFALL"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.RUMBLE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">RUMBLE</span><span class="default_value"> = &lt;<a href="#GameMode.RUMBLE">GameMode.RUMBLE</a>: 48&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.RUMBLE"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.ALLDOUBLES" class="classattr">
+                                <div class="attr variable">
+            <span class="name">ALLDOUBLES</span><span class="default_value"> = &lt;<a href="#GameMode.ALLDOUBLES">GameMode.ALLDOUBLES</a>: 49&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.ALLDOUBLES"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.DOUBLES" class="classattr">
+                                <div class="attr variable">
+            <span class="name">DOUBLES</span><span class="default_value"> = &lt;<a href="#GameMode.DOUBLES">GameMode.DOUBLES</a>: 50&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.DOUBLES"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.PRIVATEMATCHESCLASH" class="classattr">
+                                <div class="attr variable">
+            <span class="name">PRIVATEMATCHESCLASH</span><span class="default_value"> = &lt;<a href="#GameMode.PRIVATEMATCHESCLASH">GameMode.PRIVATEMATCHESCLASH</a>: 51&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.PRIVATEMATCHESCLASH"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.PRIVATEMATCHESCONTROL" class="classattr">
+                                <div class="attr variable">
+            <span class="name">PRIVATEMATCHESCONTROL</span><span class="default_value"> = &lt;<a href="#GameMode.PRIVATEMATCHESCONTROL">GameMode.PRIVATEMATCHESCONTROL</a>: 52&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.PRIVATEMATCHESCONTROL"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.PRIVATEMATCHESSUPREMACY" class="classattr">
+                                <div class="attr variable">
+            <span class="name">PRIVATEMATCHESSUPREMACY</span><span class="default_value"> = &lt;<a href="#GameMode.PRIVATEMATCHESSUPREMACY">GameMode.PRIVATEMATCHESSUPREMACY</a>: 53&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.PRIVATEMATCHESSUPREMACY"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.PRIVATEMATCHESCOUNTDOWN" class="classattr">
+                                <div class="attr variable">
+            <span class="name">PRIVATEMATCHESCOUNTDOWN</span><span class="default_value"> = &lt;<a href="#GameMode.PRIVATEMATCHESCOUNTDOWN">GameMode.PRIVATEMATCHESCOUNTDOWN</a>: 54&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.PRIVATEMATCHESCOUNTDOWN"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.PRIVATEMATCHESSURVIVAL" class="classattr">
+                                <div class="attr variable">
+            <span class="name">PRIVATEMATCHESSURVIVAL</span><span class="default_value"> = &lt;<a href="#GameMode.PRIVATEMATCHESSURVIVAL">GameMode.PRIVATEMATCHESSURVIVAL</a>: 55&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.PRIVATEMATCHESSURVIVAL"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.PRIVATEMATCHESMAYHEM" class="classattr">
+                                <div class="attr variable">
+            <span class="name">PRIVATEMATCHESMAYHEM</span><span class="default_value"> = &lt;<a href="#GameMode.PRIVATEMATCHESMAYHEM">GameMode.PRIVATEMATCHESMAYHEM</a>: 56&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.PRIVATEMATCHESMAYHEM"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.PRIVATEMATCHESRUMBLE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">PRIVATEMATCHESRUMBLE</span><span class="default_value"> = &lt;<a href="#GameMode.PRIVATEMATCHESRUMBLE">GameMode.PRIVATEMATCHESRUMBLE</a>: 57&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.PRIVATEMATCHESRUMBLE"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.HEROICADVENTURE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">HEROICADVENTURE</span><span class="default_value"> = &lt;<a href="#GameMode.HEROICADVENTURE">GameMode.HEROICADVENTURE</a>: 58&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.HEROICADVENTURE"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.SHOWDOWN" class="classattr">
+                                <div class="attr variable">
+            <span class="name">SHOWDOWN</span><span class="default_value"> = &lt;<a href="#GameMode.SHOWDOWN">GameMode.SHOWDOWN</a>: 59&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.SHOWDOWN"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.LOCKDOWN" class="classattr">
+                                <div class="attr variable">
+            <span class="name">LOCKDOWN</span><span class="default_value"> = &lt;<a href="#GameMode.LOCKDOWN">GameMode.LOCKDOWN</a>: 60&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.LOCKDOWN"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.SCORCHED" class="classattr">
+                                <div class="attr variable">
+            <span class="name">SCORCHED</span><span class="default_value"> = &lt;<a href="#GameMode.SCORCHED">GameMode.SCORCHED</a>: 61&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.SCORCHED"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.SCORCHEDTEAM" class="classattr">
+                                <div class="attr variable">
+            <span class="name">SCORCHEDTEAM</span><span class="default_value"> = &lt;<a href="#GameMode.SCORCHEDTEAM">GameMode.SCORCHEDTEAM</a>: 62&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.SCORCHEDTEAM"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.GAMBIT" class="classattr">
+                                <div class="attr variable">
+            <span class="name">GAMBIT</span><span class="default_value"> = &lt;<a href="#GameMode.GAMBIT">GameMode.GAMBIT</a>: 63&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.GAMBIT"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.ALLPVECOMPETITIVE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">ALLPVECOMPETITIVE</span><span class="default_value"> = &lt;<a href="#GameMode.ALLPVECOMPETITIVE">GameMode.ALLPVECOMPETITIVE</a>: 64&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.ALLPVECOMPETITIVE"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.BREAKTHROUGH" class="classattr">
+                                <div class="attr variable">
+            <span class="name">BREAKTHROUGH</span><span class="default_value"> = &lt;<a href="#GameMode.BREAKTHROUGH">GameMode.BREAKTHROUGH</a>: 65&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.BREAKTHROUGH"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.BLACKARMORYRUN" class="classattr">
+                                <div class="attr variable">
+            <span class="name">BLACKARMORYRUN</span><span class="default_value"> = &lt;<a href="#GameMode.BLACKARMORYRUN">GameMode.BLACKARMORYRUN</a>: 66&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.BLACKARMORYRUN"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.SALVAGE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">SALVAGE</span><span class="default_value"> = &lt;<a href="#GameMode.SALVAGE">GameMode.SALVAGE</a>: 67&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.SALVAGE"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.IRONBANNERSALVAGE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">IRONBANNERSALVAGE</span><span class="default_value"> = &lt;<a href="#GameMode.IRONBANNERSALVAGE">GameMode.IRONBANNERSALVAGE</a>: 68&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.IRONBANNERSALVAGE"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.PVPCOMPETITIVE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">PVPCOMPETITIVE</span><span class="default_value"> = &lt;<a href="#GameMode.PVPCOMPETITIVE">GameMode.PVPCOMPETITIVE</a>: 69&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.PVPCOMPETITIVE"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.PVPQUICKPLAY" class="classattr">
+                                <div class="attr variable">
+            <span class="name">PVPQUICKPLAY</span><span class="default_value"> = &lt;<a href="#GameMode.PVPQUICKPLAY">GameMode.PVPQUICKPLAY</a>: 70&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.PVPQUICKPLAY"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.CLASHQUICKPLAY" class="classattr">
+                                <div class="attr variable">
+            <span class="name">CLASHQUICKPLAY</span><span class="default_value"> = &lt;<a href="#GameMode.CLASHQUICKPLAY">GameMode.CLASHQUICKPLAY</a>: 71&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.CLASHQUICKPLAY"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.CLASHCOMPETITIVE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">CLASHCOMPETITIVE</span><span class="default_value"> = &lt;<a href="#GameMode.CLASHCOMPETITIVE">GameMode.CLASHCOMPETITIVE</a>: 72&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.CLASHCOMPETITIVE"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.CONTROLQUICKPLAY" class="classattr">
+                                <div class="attr variable">
+            <span class="name">CONTROLQUICKPLAY</span><span class="default_value"> = &lt;<a href="#GameMode.CONTROLQUICKPLAY">GameMode.CONTROLQUICKPLAY</a>: 73&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.CONTROLQUICKPLAY"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.CONTROLCOMPETITIVE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">CONTROLCOMPETITIVE</span><span class="default_value"> = &lt;<a href="#GameMode.CONTROLCOMPETITIVE">GameMode.CONTROLCOMPETITIVE</a>: 74&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.CONTROLCOMPETITIVE"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.GAMBITPRIME" class="classattr">
+                                <div class="attr variable">
+            <span class="name">GAMBITPRIME</span><span class="default_value"> = &lt;<a href="#GameMode.GAMBITPRIME">GameMode.GAMBITPRIME</a>: 75&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.GAMBITPRIME"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.RECKONING" class="classattr">
+                                <div class="attr variable">
+            <span class="name">RECKONING</span><span class="default_value"> = &lt;<a href="#GameMode.RECKONING">GameMode.RECKONING</a>: 76&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.RECKONING"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.MENAGERIE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">MENAGERIE</span><span class="default_value"> = &lt;<a href="#GameMode.MENAGERIE">GameMode.MENAGERIE</a>: 77&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.MENAGERIE"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.VEXOFFENSIVE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">VEXOFFENSIVE</span><span class="default_value"> = &lt;<a href="#GameMode.VEXOFFENSIVE">GameMode.VEXOFFENSIVE</a>: 78&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.VEXOFFENSIVE"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.NIGHTMAREHUNT" class="classattr">
+                                <div class="attr variable">
+            <span class="name">NIGHTMAREHUNT</span><span class="default_value"> = &lt;<a href="#GameMode.NIGHTMAREHUNT">GameMode.NIGHTMAREHUNT</a>: 79&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.NIGHTMAREHUNT"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.ELIMINATION" class="classattr">
+                                <div class="attr variable">
+            <span class="name">ELIMINATION</span><span class="default_value"> = &lt;<a href="#GameMode.ELIMINATION">GameMode.ELIMINATION</a>: 80&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.ELIMINATION"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.MOMENTUM" class="classattr">
+                                <div class="attr variable">
+            <span class="name">MOMENTUM</span><span class="default_value"> = &lt;<a href="#GameMode.MOMENTUM">GameMode.MOMENTUM</a>: 81&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.MOMENTUM"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.DUNGEON" class="classattr">
+                                <div class="attr variable">
+            <span class="name">DUNGEON</span><span class="default_value"> = &lt;<a href="#GameMode.DUNGEON">GameMode.DUNGEON</a>: 82&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.DUNGEON"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.SUNDIAL" class="classattr">
+                                <div class="attr variable">
+            <span class="name">SUNDIAL</span><span class="default_value"> = &lt;<a href="#GameMode.SUNDIAL">GameMode.SUNDIAL</a>: 83&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.SUNDIAL"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.TRIALS_OF_OSIRIS" class="classattr">
+                                <div class="attr variable">
+            <span class="name">TRIALS_OF_OSIRIS</span><span class="default_value"> = &lt;<a href="#GameMode.TRIALS_OF_OSIRIS">GameMode.TRIALS_OF_OSIRIS</a>: 84&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.TRIALS_OF_OSIRIS"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.DARES" class="classattr">
+                                <div class="attr variable">
+            <span class="name">DARES</span><span class="default_value"> = &lt;<a href="#GameMode.DARES">GameMode.DARES</a>: 85&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.DARES"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.OFFENSIVE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">OFFENSIVE</span><span class="default_value"> = &lt;<a href="#GameMode.OFFENSIVE">GameMode.OFFENSIVE</a>: 86&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.OFFENSIVE"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.LOSTSECTOR" class="classattr">
+                                <div class="attr variable">
+            <span class="name">LOSTSECTOR</span><span class="default_value"> = &lt;<a href="#GameMode.LOSTSECTOR">GameMode.LOSTSECTOR</a>: 87&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.LOSTSECTOR"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.RIFT" class="classattr">
+                                <div class="attr variable">
+            <span class="name">RIFT</span><span class="default_value"> = &lt;<a href="#GameMode.RIFT">GameMode.RIFT</a>: 88&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.RIFT"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.ZONECONTROL" class="classattr">
+                                <div class="attr variable">
+            <span class="name">ZONECONTROL</span><span class="default_value"> = &lt;<a href="#GameMode.ZONECONTROL">GameMode.ZONECONTROL</a>: 89&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.ZONECONTROL"></a>
+    
+    
+
+                            </div>
+                            <div id="GameMode.IRONBANNERRIFT" class="classattr">
+                                <div class="attr variable">
+            <span class="name">IRONBANNERRIFT</span><span class="default_value"> = &lt;<a href="#GameMode.IRONBANNERRIFT">GameMode.IRONBANNERRIFT</a>: 90&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GameMode.IRONBANNERRIFT"></a>
+    
+    
+
+                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
@@ -1553,6 +3369,116 @@
 </div>
 
 
+                            <div id="MembershipType.NONE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">NONE</span><span class="default_value"> = &lt;<a href="#MembershipType.NONE">MembershipType.NONE</a>: 0&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#MembershipType.NONE"></a>
+    
+    
+
+                            </div>
+                            <div id="MembershipType.XBOX" class="classattr">
+                                <div class="attr variable">
+            <span class="name">XBOX</span><span class="default_value"> = &lt;<a href="#MembershipType.XBOX">MembershipType.XBOX</a>: 1&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#MembershipType.XBOX"></a>
+    
+    
+
+                            </div>
+                            <div id="MembershipType.PSN" class="classattr">
+                                <div class="attr variable">
+            <span class="name">PSN</span><span class="default_value"> = &lt;<a href="#MembershipType.PSN">MembershipType.PSN</a>: 2&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#MembershipType.PSN"></a>
+    
+    
+
+                            </div>
+                            <div id="MembershipType.STEAM" class="classattr">
+                                <div class="attr variable">
+            <span class="name">STEAM</span><span class="default_value"> = &lt;<a href="#MembershipType.STEAM">MembershipType.STEAM</a>: 3&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#MembershipType.STEAM"></a>
+    
+    
+
+                            </div>
+                            <div id="MembershipType.BLIZZARD" class="classattr">
+                                <div class="attr variable">
+            <span class="name">BLIZZARD</span><span class="default_value"> = &lt;<a href="#MembershipType.BLIZZARD">MembershipType.BLIZZARD</a>: 4&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#MembershipType.BLIZZARD"></a>
+    
+    
+
+                            </div>
+                            <div id="MembershipType.STADIA" class="classattr">
+                                <div class="attr variable">
+            <span class="name">STADIA</span><span class="default_value"> = &lt;<a href="#MembershipType.STADIA">MembershipType.STADIA</a>: 5&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#MembershipType.STADIA"></a>
+    
+    
+
+                            </div>
+                            <div id="MembershipType.EPIC_GAMES_STORE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">EPIC_GAMES_STORE</span><span class="default_value"> = &lt;<a href="#MembershipType.EPIC_GAMES_STORE">MembershipType.EPIC_GAMES_STORE</a>: 6&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#MembershipType.EPIC_GAMES_STORE"></a>
+    
+    
+
+                            </div>
+                            <div id="MembershipType.DEMON" class="classattr">
+                                <div class="attr variable">
+            <span class="name">DEMON</span><span class="default_value"> = &lt;<a href="#MembershipType.DEMON">MembershipType.DEMON</a>: 10&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#MembershipType.DEMON"></a>
+    
+    
+
+                            </div>
+                            <div id="MembershipType.BUNGIE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">BUNGIE</span><span class="default_value"> = &lt;<a href="#MembershipType.BUNGIE">MembershipType.BUNGIE</a>: 254&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#MembershipType.BUNGIE"></a>
+    
+    
+
+                            </div>
+                            <div id="MembershipType.ALL" class="classattr">
+                                <div class="attr variable">
+            <span class="name">ALL</span><span class="default_value"> = &lt;<a href="#MembershipType.ALL">MembershipType.ALL</a>: -1&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#MembershipType.ALL"></a>
+    
+    
+
+                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
@@ -1604,6 +3530,50 @@
 </div>
 
 
+                            <div id="Class.TITAN" class="classattr">
+                                <div class="attr variable">
+            <span class="name">TITAN</span><span class="default_value"> = &lt;<a href="#Class.TITAN">Class.TITAN</a>: 0&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Class.TITAN"></a>
+    
+    
+
+                            </div>
+                            <div id="Class.HUNTER" class="classattr">
+                                <div class="attr variable">
+            <span class="name">HUNTER</span><span class="default_value"> = &lt;<a href="#Class.HUNTER">Class.HUNTER</a>: 1&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Class.HUNTER"></a>
+    
+    
+
+                            </div>
+                            <div id="Class.WARLOCK" class="classattr">
+                                <div class="attr variable">
+            <span class="name">WARLOCK</span><span class="default_value"> = &lt;<a href="#Class.WARLOCK">Class.WARLOCK</a>: 2&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Class.WARLOCK"></a>
+    
+    
+
+                            </div>
+                            <div id="Class.UNKNOWN" class="classattr">
+                                <div class="attr variable">
+            <span class="name">UNKNOWN</span><span class="default_value"> = &lt;<a href="#Class.UNKNOWN">Class.UNKNOWN</a>: 3&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Class.UNKNOWN"></a>
+    
+    
+
+                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
@@ -1657,6 +3627,72 @@
 </div>
 
 
+                            <div id="MilestoneType.UNKNOWN" class="classattr">
+                                <div class="attr variable">
+            <span class="name">UNKNOWN</span><span class="default_value"> = &lt;<a href="#MilestoneType.UNKNOWN">MilestoneType.UNKNOWN</a>: 0&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#MilestoneType.UNKNOWN"></a>
+    
+    
+
+                            </div>
+                            <div id="MilestoneType.TUTORIAL" class="classattr">
+                                <div class="attr variable">
+            <span class="name">TUTORIAL</span><span class="default_value"> = &lt;<a href="#MilestoneType.TUTORIAL">MilestoneType.TUTORIAL</a>: 1&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#MilestoneType.TUTORIAL"></a>
+    
+    
+
+                            </div>
+                            <div id="MilestoneType.ONETIME" class="classattr">
+                                <div class="attr variable">
+            <span class="name">ONETIME</span><span class="default_value"> = &lt;<a href="#MilestoneType.ONETIME">MilestoneType.ONETIME</a>: 2&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#MilestoneType.ONETIME"></a>
+    
+    
+
+                            </div>
+                            <div id="MilestoneType.WEEKLY" class="classattr">
+                                <div class="attr variable">
+            <span class="name">WEEKLY</span><span class="default_value"> = &lt;<a href="#MilestoneType.WEEKLY">MilestoneType.WEEKLY</a>: 3&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#MilestoneType.WEEKLY"></a>
+    
+    
+
+                            </div>
+                            <div id="MilestoneType.DAILY" class="classattr">
+                                <div class="attr variable">
+            <span class="name">DAILY</span><span class="default_value"> = &lt;<a href="#MilestoneType.DAILY">MilestoneType.DAILY</a>: 4&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#MilestoneType.DAILY"></a>
+    
+    
+
+                            </div>
+                            <div id="MilestoneType.SPECIAL" class="classattr">
+                                <div class="attr variable">
+            <span class="name">SPECIAL</span><span class="default_value"> = &lt;<a href="#MilestoneType.SPECIAL">MilestoneType.SPECIAL</a>: 5&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#MilestoneType.SPECIAL"></a>
+    
+    
+
+                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
@@ -1708,6 +3744,50 @@
 </div>
 
 
+                            <div id="Race.HUMAN" class="classattr">
+                                <div class="attr variable">
+            <span class="name">HUMAN</span><span class="default_value"> = &lt;<a href="#Race.HUMAN">Race.HUMAN</a>: 0&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Race.HUMAN"></a>
+    
+    
+
+                            </div>
+                            <div id="Race.AWOKEN" class="classattr">
+                                <div class="attr variable">
+            <span class="name">AWOKEN</span><span class="default_value"> = &lt;<a href="#Race.AWOKEN">Race.AWOKEN</a>: 1&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Race.AWOKEN"></a>
+    
+    
+
+                            </div>
+                            <div id="Race.EXO" class="classattr">
+                                <div class="attr variable">
+            <span class="name">EXO</span><span class="default_value"> = &lt;<a href="#Race.EXO">Race.EXO</a>: 2&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Race.EXO"></a>
+    
+    
+
+                            </div>
+                            <div id="Race.UNKNOWN" class="classattr">
+                                <div class="attr variable">
+            <span class="name">UNKNOWN</span><span class="default_value"> = &lt;<a href="#Race.UNKNOWN">Race.UNKNOWN</a>: 3&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Race.UNKNOWN"></a>
+    
+    
+
+                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
@@ -1778,6 +3858,61 @@
 </div>
 
 
+                            <div id="Vendor.ZAVALA" class="classattr">
+                                <div class="attr variable">
+            <span class="name">ZAVALA</span><span class="default_value"> = &lt;<a href="#Vendor.ZAVALA">Vendor.ZAVALA</a>: 69482069&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Vendor.ZAVALA"></a>
+    
+    
+
+                            </div>
+                            <div id="Vendor.XUR" class="classattr">
+                                <div class="attr variable">
+            <span class="name">XUR</span><span class="default_value"> = &lt;<a href="#Vendor.XUR">Vendor.XUR</a>: 2190858386&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Vendor.XUR"></a>
+    
+    
+
+                            </div>
+                            <div id="Vendor.BANSHE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">BANSHE</span><span class="default_value"> = &lt;<a href="#Vendor.BANSHE">Vendor.BANSHE</a>: 672118013&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Vendor.BANSHE"></a>
+    
+    
+
+                            </div>
+                            <div id="Vendor.SPIDER" class="classattr">
+                                <div class="attr variable">
+            <span class="name">SPIDER</span><span class="default_value"> = &lt;<a href="#Vendor.SPIDER">Vendor.SPIDER</a>: 863940356&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Vendor.SPIDER"></a>
+    
+    
+
+                            </div>
+                            <div id="Vendor.SHAXX" class="classattr">
+                                <div class="attr variable">
+            <span class="name">SHAXX</span><span class="default_value"> = &lt;<a href="#Vendor.SHAXX">Vendor.SHAXX</a>: 3603221665&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Vendor.SHAXX"></a>
+    
+    
+
+                            </div>
                             <div id="Vendor.KADI" class="classattr">
                                 <div class="attr variable">
             <span class="name">KADI</span><span class="default_value"> = &lt;<a href="#Vendor.KADI">Vendor.KADI</a>: 529635856&gt;</span>
@@ -1804,6 +3939,17 @@
 
 
                             </div>
+                            <div id="Vendor.EVERVERSE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">EVERVERSE</span><span class="default_value"> = &lt;<a href="#Vendor.EVERVERSE">Vendor.EVERVERSE</a>: 3361454721&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Vendor.EVERVERSE"></a>
+    
+    
+
+                            </div>
                             <div id="Vendor.AMANDA" class="classattr">
                                 <div class="attr variable">
             <span class="name">AMANDA</span><span class="default_value"> = &lt;<a href="#Vendor.AMANDA">Vendor.AMANDA</a>: 460529231&gt;</span>
@@ -1815,6 +3961,61 @@
             <div class="docstring"><p>Amanda holiday</p>
 </div>
 
+
+                            </div>
+                            <div id="Vendor.CROW" class="classattr">
+                                <div class="attr variable">
+            <span class="name">CROW</span><span class="default_value"> = &lt;<a href="#Vendor.CROW">Vendor.CROW</a>: 3611983588&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Vendor.CROW"></a>
+    
+    
+
+                            </div>
+                            <div id="Vendor.HAWTHORNE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">HAWTHORNE</span><span class="default_value"> = &lt;<a href="#Vendor.HAWTHORNE">Vendor.HAWTHORNE</a>: 3347378076&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Vendor.HAWTHORNE"></a>
+    
+    
+
+                            </div>
+                            <div id="Vendor.ADA1" class="classattr">
+                                <div class="attr variable">
+            <span class="name">ADA1</span><span class="default_value"> = &lt;<a href="#Vendor.ADA1">Vendor.ADA1</a>: 350061650&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Vendor.ADA1"></a>
+    
+    
+
+                            </div>
+                            <div id="Vendor.DRIFTER" class="classattr">
+                                <div class="attr variable">
+            <span class="name">DRIFTER</span><span class="default_value"> = &lt;<a href="#Vendor.DRIFTER">Vendor.DRIFTER</a>: 248695599&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Vendor.DRIFTER"></a>
+    
+    
+
+                            </div>
+                            <div id="Vendor.IKORA" class="classattr">
+                                <div class="attr variable">
+            <span class="name">IKORA</span><span class="default_value"> = &lt;<a href="#Vendor.IKORA">Vendor.IKORA</a>: 1976548992&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Vendor.IKORA"></a>
+    
+    
 
                             </div>
                             <div id="Vendor.SAINT" class="classattr">
@@ -1830,6 +4031,17 @@
 
 
                             </div>
+                            <div id="Vendor.ERIS_MORN" class="classattr">
+                                <div class="attr variable">
+            <span class="name">ERIS_MORN</span><span class="default_value"> = &lt;<a href="#Vendor.ERIS_MORN">Vendor.ERIS_MORN</a>: 1616085565&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Vendor.ERIS_MORN"></a>
+    
+    
+
+                            </div>
                             <div id="Vendor.SHAW_HAWN" class="classattr">
                                 <div class="attr variable">
             <span class="name">SHAW_HAWN</span><span class="default_value"> = &lt;<a href="#Vendor.SHAW_HAWN">Vendor.SHAW_HAWN</a>: 1816541247&gt;</span>
@@ -1841,6 +4053,17 @@
             <div class="docstring"><p>COSMODROME Guy</p>
 </div>
 
+
+                            </div>
+                            <div id="Vendor.VARIKS" class="classattr">
+                                <div class="attr variable">
+            <span class="name">VARIKS</span><span class="default_value"> = &lt;<a href="#Vendor.VARIKS">Vendor.VARIKS</a>: 2531198101&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Vendor.VARIKS"></a>
+    
+    
 
                             </div>
                             <div class="inherited">
@@ -2209,6 +4432,39 @@
 </div>
 
 
+                            <div id="Gender.MALE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">MALE</span><span class="default_value"> = &lt;<a href="#Gender.MALE">Gender.MALE</a>: 0&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Gender.MALE"></a>
+    
+    
+
+                            </div>
+                            <div id="Gender.FEMALE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">FEMALE</span><span class="default_value"> = &lt;<a href="#Gender.FEMALE">Gender.FEMALE</a>: 1&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Gender.FEMALE"></a>
+    
+    
+
+                            </div>
+                            <div id="Gender.UNKNOWN" class="classattr">
+                                <div class="attr variable">
+            <span class="name">UNKNOWN</span><span class="default_value"> = &lt;<a href="#Gender.UNKNOWN">Gender.UNKNOWN</a>: 2&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Gender.UNKNOWN"></a>
+    
+    
+
+                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
@@ -2350,6 +4606,61 @@
 </div>
 
 
+                            <div id="ComponentType.NONE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">NONE</span><span class="default_value"> = &lt;<a href="#ComponentType.NONE">ComponentType.NONE</a>: 0&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ComponentType.NONE"></a>
+    
+    
+
+                            </div>
+                            <div id="ComponentType.PROFILE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">PROFILE</span><span class="default_value"> = &lt;<a href="#ComponentType.PROFILE">ComponentType.PROFILE</a>: 100&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ComponentType.PROFILE"></a>
+    
+    
+
+                            </div>
+                            <div id="ComponentType.PROFILE_INVENTORIES" class="classattr">
+                                <div class="attr variable">
+            <span class="name">PROFILE_INVENTORIES</span><span class="default_value"> = &lt;<a href="#ComponentType.PROFILE_INVENTORIES">ComponentType.PROFILE_INVENTORIES</a>: 102&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ComponentType.PROFILE_INVENTORIES"></a>
+    
+    
+
+                            </div>
+                            <div id="ComponentType.PROFILE_CURRENCIES" class="classattr">
+                                <div class="attr variable">
+            <span class="name">PROFILE_CURRENCIES</span><span class="default_value"> = &lt;<a href="#ComponentType.PROFILE_CURRENCIES">ComponentType.PROFILE_CURRENCIES</a>: 103&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ComponentType.PROFILE_CURRENCIES"></a>
+    
+    
+
+                            </div>
+                            <div id="ComponentType.PROFILE_PROGRESSION" class="classattr">
+                                <div class="attr variable">
+            <span class="name">PROFILE_PROGRESSION</span><span class="default_value"> = &lt;<a href="#ComponentType.PROFILE_PROGRESSION">ComponentType.PROFILE_PROGRESSION</a>: 104&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ComponentType.PROFILE_PROGRESSION"></a>
+    
+    
+
+                            </div>
                             <div id="ComponentType.ALL_PROFILES" class="classattr">
                                 <div class="attr variable">
             <span class="name">ALL_PROFILES</span><span class="default_value"> = &lt;<a href="#ComponentType.ALL_PROFILES">ComponentType.ALL_PROFILES</a>: (100, 102, 103, 104)&gt;</span>
@@ -2361,6 +4672,39 @@
             <div class="docstring"><p>All profile components.</p>
 </div>
 
+
+                            </div>
+                            <div id="ComponentType.VENDORS" class="classattr">
+                                <div class="attr variable">
+            <span class="name">VENDORS</span><span class="default_value"> = &lt;<a href="#ComponentType.VENDORS">ComponentType.VENDORS</a>: 400&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ComponentType.VENDORS"></a>
+    
+    
+
+                            </div>
+                            <div id="ComponentType.VENDOR_SALES" class="classattr">
+                                <div class="attr variable">
+            <span class="name">VENDOR_SALES</span><span class="default_value"> = &lt;<a href="#ComponentType.VENDOR_SALES">ComponentType.VENDOR_SALES</a>: 402&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ComponentType.VENDOR_SALES"></a>
+    
+    
+
+                            </div>
+                            <div id="ComponentType.VENDOR_RECEIPTS" class="classattr">
+                                <div class="attr variable">
+            <span class="name">VENDOR_RECEIPTS</span><span class="default_value"> = &lt;<a href="#ComponentType.VENDOR_RECEIPTS">ComponentType.VENDOR_RECEIPTS</a>: 101&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ComponentType.VENDOR_RECEIPTS"></a>
+    
+    
 
                             </div>
                             <div id="ComponentType.ALL_VENDORS" class="classattr">
@@ -2376,6 +4720,116 @@
 
 
                             </div>
+                            <div id="ComponentType.ITEM_INSTANCES" class="classattr">
+                                <div class="attr variable">
+            <span class="name">ITEM_INSTANCES</span><span class="default_value"> = &lt;<a href="#ComponentType.ITEM_INSTANCES">ComponentType.ITEM_INSTANCES</a>: 300&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ComponentType.ITEM_INSTANCES"></a>
+    
+    
+
+                            </div>
+                            <div id="ComponentType.ITEM_OBJECTIVES" class="classattr">
+                                <div class="attr variable">
+            <span class="name">ITEM_OBJECTIVES</span><span class="default_value"> = &lt;<a href="#ComponentType.ITEM_OBJECTIVES">ComponentType.ITEM_OBJECTIVES</a>: 301&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ComponentType.ITEM_OBJECTIVES"></a>
+    
+    
+
+                            </div>
+                            <div id="ComponentType.ITEM_PERKS" class="classattr">
+                                <div class="attr variable">
+            <span class="name">ITEM_PERKS</span><span class="default_value"> = &lt;<a href="#ComponentType.ITEM_PERKS">ComponentType.ITEM_PERKS</a>: 302&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ComponentType.ITEM_PERKS"></a>
+    
+    
+
+                            </div>
+                            <div id="ComponentType.ITEM_RENDER_DATA" class="classattr">
+                                <div class="attr variable">
+            <span class="name">ITEM_RENDER_DATA</span><span class="default_value"> = &lt;<a href="#ComponentType.ITEM_RENDER_DATA">ComponentType.ITEM_RENDER_DATA</a>: 303&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ComponentType.ITEM_RENDER_DATA"></a>
+    
+    
+
+                            </div>
+                            <div id="ComponentType.ITEM_STATS" class="classattr">
+                                <div class="attr variable">
+            <span class="name">ITEM_STATS</span><span class="default_value"> = &lt;<a href="#ComponentType.ITEM_STATS">ComponentType.ITEM_STATS</a>: 304&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ComponentType.ITEM_STATS"></a>
+    
+    
+
+                            </div>
+                            <div id="ComponentType.ITEM_SOCKETS" class="classattr">
+                                <div class="attr variable">
+            <span class="name">ITEM_SOCKETS</span><span class="default_value"> = &lt;<a href="#ComponentType.ITEM_SOCKETS">ComponentType.ITEM_SOCKETS</a>: 305&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ComponentType.ITEM_SOCKETS"></a>
+    
+    
+
+                            </div>
+                            <div id="ComponentType.ITEM_TALENT_GRINDS" class="classattr">
+                                <div class="attr variable">
+            <span class="name">ITEM_TALENT_GRINDS</span><span class="default_value"> = &lt;<a href="#ComponentType.ITEM_TALENT_GRINDS">ComponentType.ITEM_TALENT_GRINDS</a>: 306&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ComponentType.ITEM_TALENT_GRINDS"></a>
+    
+    
+
+                            </div>
+                            <div id="ComponentType.ITEM_PLUG_STATES" class="classattr">
+                                <div class="attr variable">
+            <span class="name">ITEM_PLUG_STATES</span><span class="default_value"> = &lt;<a href="#ComponentType.ITEM_PLUG_STATES">ComponentType.ITEM_PLUG_STATES</a>: 308&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ComponentType.ITEM_PLUG_STATES"></a>
+    
+    
+
+                            </div>
+                            <div id="ComponentType.ITEM_PLUG_OBJECTIVES" class="classattr">
+                                <div class="attr variable">
+            <span class="name">ITEM_PLUG_OBJECTIVES</span><span class="default_value"> = &lt;<a href="#ComponentType.ITEM_PLUG_OBJECTIVES">ComponentType.ITEM_PLUG_OBJECTIVES</a>: 309&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ComponentType.ITEM_PLUG_OBJECTIVES"></a>
+    
+    
+
+                            </div>
+                            <div id="ComponentType.ITEM_REUSABLE_PLUGS" class="classattr">
+                                <div class="attr variable">
+            <span class="name">ITEM_REUSABLE_PLUGS</span><span class="default_value"> = &lt;<a href="#ComponentType.ITEM_REUSABLE_PLUGS">ComponentType.ITEM_REUSABLE_PLUGS</a>: 310&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ComponentType.ITEM_REUSABLE_PLUGS"></a>
+    
+    
+
+                            </div>
                             <div id="ComponentType.ALL_ITEMS" class="classattr">
                                 <div class="attr variable">
             <span class="name">ALL_ITEMS</span><span class="default_value"> = &lt;<a href="#ComponentType.ALL_ITEMS">ComponentType.ALL_ITEMS</a>: (309, 308, 305, 300, 301, 302, 303, 304, 306, 310)&gt;</span>
@@ -2387,6 +4841,193 @@
             <div class="docstring"><p>All item components.</p>
 </div>
 
+
+                            </div>
+                            <div id="ComponentType.PLATFORM_SILVER" class="classattr">
+                                <div class="attr variable">
+            <span class="name">PLATFORM_SILVER</span><span class="default_value"> = &lt;<a href="#ComponentType.PLATFORM_SILVER">ComponentType.PLATFORM_SILVER</a>: 105&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ComponentType.PLATFORM_SILVER"></a>
+    
+    
+
+                            </div>
+                            <div id="ComponentType.KIOSKS" class="classattr">
+                                <div class="attr variable">
+            <span class="name">KIOSKS</span><span class="default_value"> = &lt;<a href="#ComponentType.KIOSKS">ComponentType.KIOSKS</a>: 500&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ComponentType.KIOSKS"></a>
+    
+    
+
+                            </div>
+                            <div id="ComponentType.CURRENCY_LOOKUPS" class="classattr">
+                                <div class="attr variable">
+            <span class="name">CURRENCY_LOOKUPS</span><span class="default_value"> = &lt;<a href="#ComponentType.CURRENCY_LOOKUPS">ComponentType.CURRENCY_LOOKUPS</a>: 600&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ComponentType.CURRENCY_LOOKUPS"></a>
+    
+    
+
+                            </div>
+                            <div id="ComponentType.PRESENTATION_NODES" class="classattr">
+                                <div class="attr variable">
+            <span class="name">PRESENTATION_NODES</span><span class="default_value"> = &lt;<a href="#ComponentType.PRESENTATION_NODES">ComponentType.PRESENTATION_NODES</a>: 700&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ComponentType.PRESENTATION_NODES"></a>
+    
+    
+
+                            </div>
+                            <div id="ComponentType.COLLECTIBLES" class="classattr">
+                                <div class="attr variable">
+            <span class="name">COLLECTIBLES</span><span class="default_value"> = &lt;<a href="#ComponentType.COLLECTIBLES">ComponentType.COLLECTIBLES</a>: 800&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ComponentType.COLLECTIBLES"></a>
+    
+    
+
+                            </div>
+                            <div id="ComponentType.RECORDS" class="classattr">
+                                <div class="attr variable">
+            <span class="name">RECORDS</span><span class="default_value"> = &lt;<a href="#ComponentType.RECORDS">ComponentType.RECORDS</a>: 900&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ComponentType.RECORDS"></a>
+    
+    
+
+                            </div>
+                            <div id="ComponentType.TRANSITORY" class="classattr">
+                                <div class="attr variable">
+            <span class="name">TRANSITORY</span><span class="default_value"> = &lt;<a href="#ComponentType.TRANSITORY">ComponentType.TRANSITORY</a>: 1000&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ComponentType.TRANSITORY"></a>
+    
+    
+
+                            </div>
+                            <div id="ComponentType.METRICS" class="classattr">
+                                <div class="attr variable">
+            <span class="name">METRICS</span><span class="default_value"> = &lt;<a href="#ComponentType.METRICS">ComponentType.METRICS</a>: 1100&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ComponentType.METRICS"></a>
+    
+    
+
+                            </div>
+                            <div id="ComponentType.INVENTORIES" class="classattr">
+                                <div class="attr variable">
+            <span class="name">INVENTORIES</span><span class="default_value"> = &lt;<a href="#ComponentType.PROFILE_INVENTORIES">ComponentType.PROFILE_INVENTORIES</a>: 102&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ComponentType.INVENTORIES"></a>
+    
+    
+
+                            </div>
+                            <div id="ComponentType.STRING_VARIABLES" class="classattr">
+                                <div class="attr variable">
+            <span class="name">STRING_VARIABLES</span><span class="default_value"> = &lt;<a href="#ComponentType.STRING_VARIABLES">ComponentType.STRING_VARIABLES</a>: 1200&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ComponentType.STRING_VARIABLES"></a>
+    
+    
+
+                            </div>
+                            <div id="ComponentType.CRAFTABLES" class="classattr">
+                                <div class="attr variable">
+            <span class="name">CRAFTABLES</span><span class="default_value"> = &lt;<a href="#ComponentType.CRAFTABLES">ComponentType.CRAFTABLES</a>: 1300&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ComponentType.CRAFTABLES"></a>
+    
+    
+
+                            </div>
+                            <div id="ComponentType.CHARACTERS" class="classattr">
+                                <div class="attr variable">
+            <span class="name">CHARACTERS</span><span class="default_value"> = &lt;<a href="#ComponentType.CHARACTERS">ComponentType.CHARACTERS</a>: 200&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ComponentType.CHARACTERS"></a>
+    
+    
+
+                            </div>
+                            <div id="ComponentType.CHARACTER_INVENTORY" class="classattr">
+                                <div class="attr variable">
+            <span class="name">CHARACTER_INVENTORY</span><span class="default_value"> = &lt;<a href="#ComponentType.CHARACTER_INVENTORY">ComponentType.CHARACTER_INVENTORY</a>: 201&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ComponentType.CHARACTER_INVENTORY"></a>
+    
+    
+
+                            </div>
+                            <div id="ComponentType.CHARECTER_PROGRESSION" class="classattr">
+                                <div class="attr variable">
+            <span class="name">CHARECTER_PROGRESSION</span><span class="default_value"> = &lt;<a href="#ComponentType.CHARECTER_PROGRESSION">ComponentType.CHARECTER_PROGRESSION</a>: 202&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ComponentType.CHARECTER_PROGRESSION"></a>
+    
+    
+
+                            </div>
+                            <div id="ComponentType.CHARACTER_RENDER_DATA" class="classattr">
+                                <div class="attr variable">
+            <span class="name">CHARACTER_RENDER_DATA</span><span class="default_value"> = &lt;<a href="#ComponentType.CHARACTER_RENDER_DATA">ComponentType.CHARACTER_RENDER_DATA</a>: 203&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ComponentType.CHARACTER_RENDER_DATA"></a>
+    
+    
+
+                            </div>
+                            <div id="ComponentType.CHARACTER_ACTIVITIES" class="classattr">
+                                <div class="attr variable">
+            <span class="name">CHARACTER_ACTIVITIES</span><span class="default_value"> = &lt;<a href="#ComponentType.CHARACTER_ACTIVITIES">ComponentType.CHARACTER_ACTIVITIES</a>: 204&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ComponentType.CHARACTER_ACTIVITIES"></a>
+    
+    
+
+                            </div>
+                            <div id="ComponentType.CHARACTER_EQUIPMENT" class="classattr">
+                                <div class="attr variable">
+            <span class="name">CHARACTER_EQUIPMENT</span><span class="default_value"> = &lt;<a href="#ComponentType.CHARACTER_EQUIPMENT">ComponentType.CHARACTER_EQUIPMENT</a>: 205&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ComponentType.CHARACTER_EQUIPMENT"></a>
+    
+    
 
                             </div>
                             <div id="ComponentType.ALL_CHARACTERS" class="classattr">
@@ -2663,6 +5304,94 @@
 </div>
 
 
+                            <div id="Stat.NONE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">NONE</span><span class="default_value"> = &lt;<a href="#Stat.NONE">Stat.NONE</a>: 0&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Stat.NONE"></a>
+    
+    
+
+                            </div>
+                            <div id="Stat.MOBILITY" class="classattr">
+                                <div class="attr variable">
+            <span class="name">MOBILITY</span><span class="default_value"> = &lt;<a href="#Stat.MOBILITY">Stat.MOBILITY</a>: 2996146975&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Stat.MOBILITY"></a>
+    
+    
+
+                            </div>
+                            <div id="Stat.RESILIENCE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">RESILIENCE</span><span class="default_value"> = &lt;<a href="#Stat.RESILIENCE">Stat.RESILIENCE</a>: 392767087&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Stat.RESILIENCE"></a>
+    
+    
+
+                            </div>
+                            <div id="Stat.RECOVERY" class="classattr">
+                                <div class="attr variable">
+            <span class="name">RECOVERY</span><span class="default_value"> = &lt;<a href="#Stat.RECOVERY">Stat.RECOVERY</a>: 1943323491&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Stat.RECOVERY"></a>
+    
+    
+
+                            </div>
+                            <div id="Stat.DISCIPLINE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">DISCIPLINE</span><span class="default_value"> = &lt;<a href="#Stat.DISCIPLINE">Stat.DISCIPLINE</a>: 1735777505&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Stat.DISCIPLINE"></a>
+    
+    
+
+                            </div>
+                            <div id="Stat.INTELLECT" class="classattr">
+                                <div class="attr variable">
+            <span class="name">INTELLECT</span><span class="default_value"> = &lt;<a href="#Stat.INTELLECT">Stat.INTELLECT</a>: 144602215&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Stat.INTELLECT"></a>
+    
+    
+
+                            </div>
+                            <div id="Stat.STRENGTH" class="classattr">
+                                <div class="attr variable">
+            <span class="name">STRENGTH</span><span class="default_value"> = &lt;<a href="#Stat.STRENGTH">Stat.STRENGTH</a>: 4244567218&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Stat.STRENGTH"></a>
+    
+    
+
+                            </div>
+                            <div id="Stat.LIGHT_POWER" class="classattr">
+                                <div class="attr variable">
+            <span class="name">LIGHT_POWER</span><span class="default_value"> = &lt;<a href="#Stat.LIGHT_POWER">Stat.LIGHT_POWER</a>: 1935470627&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Stat.LIGHT_POWER"></a>
+    
+    
+
+                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
@@ -2714,6 +5443,50 @@
 </div>
 
 
+                            <div id="WeaponType.NONE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">NONE</span><span class="default_value"> = &lt;<a href="#WeaponType.NONE">WeaponType.NONE</a>: 0&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#WeaponType.NONE"></a>
+    
+    
+
+                            </div>
+                            <div id="WeaponType.KINETIC" class="classattr">
+                                <div class="attr variable">
+            <span class="name">KINETIC</span><span class="default_value"> = &lt;<a href="#WeaponType.KINETIC">WeaponType.KINETIC</a>: 1498876634&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#WeaponType.KINETIC"></a>
+    
+    
+
+                            </div>
+                            <div id="WeaponType.ENERGY" class="classattr">
+                                <div class="attr variable">
+            <span class="name">ENERGY</span><span class="default_value"> = &lt;<a href="#WeaponType.ENERGY">WeaponType.ENERGY</a>: 2465295065&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#WeaponType.ENERGY"></a>
+    
+    
+
+                            </div>
+                            <div id="WeaponType.POWER" class="classattr">
+                                <div class="attr variable">
+            <span class="name">POWER</span><span class="default_value"> = &lt;<a href="#WeaponType.POWER">WeaponType.POWER</a>: 953998645&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#WeaponType.POWER"></a>
+    
+    
+
+                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
@@ -2769,6 +5542,61 @@
 </div>
 
 
+                            <div id="DamageType.NONE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">NONE</span><span class="default_value"> = &lt;<a href="#DamageType.NONE">DamageType.NONE</a>: 0&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#DamageType.NONE"></a>
+    
+    
+
+                            </div>
+                            <div id="DamageType.KINETIC" class="classattr">
+                                <div class="attr variable">
+            <span class="name">KINETIC</span><span class="default_value"> = &lt;<a href="#DamageType.KINETIC">DamageType.KINETIC</a>: 1&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#DamageType.KINETIC"></a>
+    
+    
+
+                            </div>
+                            <div id="DamageType.ARC" class="classattr">
+                                <div class="attr variable">
+            <span class="name">ARC</span><span class="default_value"> = &lt;<a href="#DamageType.ARC">DamageType.ARC</a>: 2&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#DamageType.ARC"></a>
+    
+    
+
+                            </div>
+                            <div id="DamageType.SOLAR" class="classattr">
+                                <div class="attr variable">
+            <span class="name">SOLAR</span><span class="default_value"> = &lt;<a href="#DamageType.SOLAR">DamageType.SOLAR</a>: 3&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#DamageType.SOLAR"></a>
+    
+    
+
+                            </div>
+                            <div id="DamageType.VOID" class="classattr">
+                                <div class="attr variable">
+            <span class="name">VOID</span><span class="default_value"> = &lt;<a href="#DamageType.VOID">DamageType.VOID</a>: 4&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#DamageType.VOID"></a>
+    
+    
+
+                            </div>
                             <div id="DamageType.RAID" class="classattr">
                                 <div class="attr variable">
             <span class="name">RAID</span><span class="default_value"> = &lt;<a href="#DamageType.RAID">DamageType.RAID</a>: 5&gt;</span>
@@ -2780,6 +5608,17 @@
             <div class="docstring"><p>This is a special damage type reserved for some raid activity encounters.</p>
 </div>
 
+
+                            </div>
+                            <div id="DamageType.STASIS" class="classattr">
+                                <div class="attr variable">
+            <span class="name">STASIS</span><span class="default_value"> = &lt;<a href="#DamageType.STASIS">DamageType.STASIS</a>: 6&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#DamageType.STASIS"></a>
+    
+    
 
                             </div>
                             <div class="inherited">
@@ -2856,6 +5695,303 @@
 </div>
 
 
+                            <div id="ItemType.NONE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">NONE</span><span class="default_value"> = &lt;<a href="#ItemType.NONE">ItemType.NONE</a>: 0&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemType.NONE"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemType.CURRENCY" class="classattr">
+                                <div class="attr variable">
+            <span class="name">CURRENCY</span><span class="default_value"> = &lt;<a href="#ItemType.CURRENCY">ItemType.CURRENCY</a>: 1&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemType.CURRENCY"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemType.ARMOR" class="classattr">
+                                <div class="attr variable">
+            <span class="name">ARMOR</span><span class="default_value"> = &lt;<a href="#ItemType.ARMOR">ItemType.ARMOR</a>: 2&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemType.ARMOR"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemType.WEAPON" class="classattr">
+                                <div class="attr variable">
+            <span class="name">WEAPON</span><span class="default_value"> = &lt;<a href="#ItemType.WEAPON">ItemType.WEAPON</a>: 3&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemType.WEAPON"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemType.MESSAGE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">MESSAGE</span><span class="default_value"> = &lt;<a href="#ItemType.MESSAGE">ItemType.MESSAGE</a>: 7&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemType.MESSAGE"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemType.ENGRAM" class="classattr">
+                                <div class="attr variable">
+            <span class="name">ENGRAM</span><span class="default_value"> = &lt;<a href="#ItemType.ENGRAM">ItemType.ENGRAM</a>: 8&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemType.ENGRAM"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemType.CONSUMABLE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">CONSUMABLE</span><span class="default_value"> = &lt;<a href="#ItemType.CONSUMABLE">ItemType.CONSUMABLE</a>: 9&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemType.CONSUMABLE"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemType.EXCHANGEMATERIAL" class="classattr">
+                                <div class="attr variable">
+            <span class="name">EXCHANGEMATERIAL</span><span class="default_value"> = &lt;<a href="#ItemType.EXCHANGEMATERIAL">ItemType.EXCHANGEMATERIAL</a>: 10&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemType.EXCHANGEMATERIAL"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemType.MISSIONREWARD" class="classattr">
+                                <div class="attr variable">
+            <span class="name">MISSIONREWARD</span><span class="default_value"> = &lt;<a href="#ItemType.MISSIONREWARD">ItemType.MISSIONREWARD</a>: 11&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemType.MISSIONREWARD"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemType.QUESTSTEP" class="classattr">
+                                <div class="attr variable">
+            <span class="name">QUESTSTEP</span><span class="default_value"> = &lt;<a href="#ItemType.QUESTSTEP">ItemType.QUESTSTEP</a>: 12&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemType.QUESTSTEP"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemType.QUESTSTEPCOMPLETE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">QUESTSTEPCOMPLETE</span><span class="default_value"> = &lt;<a href="#ItemType.QUESTSTEPCOMPLETE">ItemType.QUESTSTEPCOMPLETE</a>: 13&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemType.QUESTSTEPCOMPLETE"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemType.EMBLEM" class="classattr">
+                                <div class="attr variable">
+            <span class="name">EMBLEM</span><span class="default_value"> = &lt;<a href="#ItemType.EMBLEM">ItemType.EMBLEM</a>: 14&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemType.EMBLEM"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemType.QUEST" class="classattr">
+                                <div class="attr variable">
+            <span class="name">QUEST</span><span class="default_value"> = &lt;<a href="#ItemType.QUEST">ItemType.QUEST</a>: 15&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemType.QUEST"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemType.SUBCLASS" class="classattr">
+                                <div class="attr variable">
+            <span class="name">SUBCLASS</span><span class="default_value"> = &lt;<a href="#ItemType.SUBCLASS">ItemType.SUBCLASS</a>: 16&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemType.SUBCLASS"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemType.CLANBANNER" class="classattr">
+                                <div class="attr variable">
+            <span class="name">CLANBANNER</span><span class="default_value"> = &lt;<a href="#ItemType.CLANBANNER">ItemType.CLANBANNER</a>: 17&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemType.CLANBANNER"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemType.AURA" class="classattr">
+                                <div class="attr variable">
+            <span class="name">AURA</span><span class="default_value"> = &lt;<a href="#ItemType.AURA">ItemType.AURA</a>: 18&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemType.AURA"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemType.MOD" class="classattr">
+                                <div class="attr variable">
+            <span class="name">MOD</span><span class="default_value"> = &lt;<a href="#ItemType.MOD">ItemType.MOD</a>: 19&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemType.MOD"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemType.DUMMY" class="classattr">
+                                <div class="attr variable">
+            <span class="name">DUMMY</span><span class="default_value"> = &lt;<a href="#ItemType.DUMMY">ItemType.DUMMY</a>: 20&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemType.DUMMY"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemType.SHIP" class="classattr">
+                                <div class="attr variable">
+            <span class="name">SHIP</span><span class="default_value"> = &lt;<a href="#ItemType.SHIP">ItemType.SHIP</a>: 21&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemType.SHIP"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemType.VEHICLE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">VEHICLE</span><span class="default_value"> = &lt;<a href="#ItemType.VEHICLE">ItemType.VEHICLE</a>: 22&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemType.VEHICLE"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemType.EMOTE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">EMOTE</span><span class="default_value"> = &lt;<a href="#ItemType.EMOTE">ItemType.EMOTE</a>: 23&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemType.EMOTE"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemType.GHOST" class="classattr">
+                                <div class="attr variable">
+            <span class="name">GHOST</span><span class="default_value"> = &lt;<a href="#ItemType.GHOST">ItemType.GHOST</a>: 24&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemType.GHOST"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemType.PACKAGE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">PACKAGE</span><span class="default_value"> = &lt;<a href="#ItemType.PACKAGE">ItemType.PACKAGE</a>: 25&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemType.PACKAGE"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemType.BOUNTY" class="classattr">
+                                <div class="attr variable">
+            <span class="name">BOUNTY</span><span class="default_value"> = &lt;<a href="#ItemType.BOUNTY">ItemType.BOUNTY</a>: 26&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemType.BOUNTY"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemType.WRAPPER" class="classattr">
+                                <div class="attr variable">
+            <span class="name">WRAPPER</span><span class="default_value"> = &lt;<a href="#ItemType.WRAPPER">ItemType.WRAPPER</a>: 27&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemType.WRAPPER"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemType.SEASONALARTIFACT" class="classattr">
+                                <div class="attr variable">
+            <span class="name">SEASONALARTIFACT</span><span class="default_value"> = &lt;<a href="#ItemType.SEASONALARTIFACT">ItemType.SEASONALARTIFACT</a>: 28&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemType.SEASONALARTIFACT"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemType.FINISHER" class="classattr">
+                                <div class="attr variable">
+            <span class="name">FINISHER</span><span class="default_value"> = &lt;<a href="#ItemType.FINISHER">ItemType.FINISHER</a>: 29&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemType.FINISHER"></a>
+    
+    
+
+                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
@@ -2907,6 +6043,50 @@
 </div>
 
 
+                            <div id="Place.ORBIT" class="classattr">
+                                <div class="attr variable">
+            <span class="name">ORBIT</span><span class="default_value"> = &lt;<a href="#Place.ORBIT">Place.ORBIT</a>: 2961497387&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Place.ORBIT"></a>
+    
+    
+
+                            </div>
+                            <div id="Place.SOCIAL" class="classattr">
+                                <div class="attr variable">
+            <span class="name">SOCIAL</span><span class="default_value"> = &lt;<a href="#Place.SOCIAL">Place.SOCIAL</a>: 4151112093&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Place.SOCIAL"></a>
+    
+    
+
+                            </div>
+                            <div id="Place.LIGHT_HOUSE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">LIGHT_HOUSE</span><span class="default_value"> = &lt;<a href="#Place.LIGHT_HOUSE">Place.LIGHT_HOUSE</a>: 4276116472&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Place.LIGHT_HOUSE"></a>
+    
+    
+
+                            </div>
+                            <div id="Place.EXPLORE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">EXPLORE</span><span class="default_value"> = &lt;<a href="#Place.EXPLORE">Place.EXPLORE</a>: 3497767639&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Place.EXPLORE"></a>
+    
+    
+
+                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
@@ -2960,6 +6140,72 @@
 </div>
 
 
+                            <div id="ItemTier.NONE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">NONE</span><span class="default_value"> = &lt;<a href="#ItemTier.NONE">ItemTier.NONE</a>: 0&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemTier.NONE"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemTier.BASIC" class="classattr">
+                                <div class="attr variable">
+            <span class="name">BASIC</span><span class="default_value"> = &lt;<a href="#ItemTier.BASIC">ItemTier.BASIC</a>: 3340296461&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemTier.BASIC"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemTier.COMMON" class="classattr">
+                                <div class="attr variable">
+            <span class="name">COMMON</span><span class="default_value"> = &lt;<a href="#ItemTier.COMMON">ItemTier.COMMON</a>: 2395677314&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemTier.COMMON"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemTier.RARE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">RARE</span><span class="default_value"> = &lt;<a href="#ItemTier.RARE">ItemTier.RARE</a>: 2127292149&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemTier.RARE"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemTier.LEGENDERY" class="classattr">
+                                <div class="attr variable">
+            <span class="name">LEGENDERY</span><span class="default_value"> = &lt;<a href="#ItemTier.LEGENDERY">ItemTier.LEGENDERY</a>: 4008398120&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemTier.LEGENDERY"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemTier.EXOTIC" class="classattr">
+                                <div class="attr variable">
+            <span class="name">EXOTIC</span><span class="default_value"> = &lt;<a href="#ItemTier.EXOTIC">ItemTier.EXOTIC</a>: 2759499571&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemTier.EXOTIC"></a>
+    
+    
+
+                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
@@ -3011,6 +6257,50 @@
 </div>
 
 
+                            <div id="AmmoType.NONE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">NONE</span><span class="default_value"> = &lt;<a href="#AmmoType.NONE">AmmoType.NONE</a>: 0&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#AmmoType.NONE"></a>
+    
+    
+
+                            </div>
+                            <div id="AmmoType.PRIMARY" class="classattr">
+                                <div class="attr variable">
+            <span class="name">PRIMARY</span><span class="default_value"> = &lt;<a href="#AmmoType.PRIMARY">AmmoType.PRIMARY</a>: 1&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#AmmoType.PRIMARY"></a>
+    
+    
+
+                            </div>
+                            <div id="AmmoType.SPECIAL" class="classattr">
+                                <div class="attr variable">
+            <span class="name">SPECIAL</span><span class="default_value"> = &lt;<a href="#AmmoType.SPECIAL">AmmoType.SPECIAL</a>: 2&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#AmmoType.SPECIAL"></a>
+    
+    
+
+                            </div>
+                            <div id="AmmoType.HEAVY" class="classattr">
+                                <div class="attr variable">
+            <span class="name">HEAVY</span><span class="default_value"> = &lt;<a href="#AmmoType.HEAVY">AmmoType.HEAVY</a>: 3&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#AmmoType.HEAVY"></a>
+    
+    
+
+                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
@@ -3060,6 +6350,28 @@
 </div>
 
 
+                            <div id="GroupType.GENERAL" class="classattr">
+                                <div class="attr variable">
+            <span class="name">GENERAL</span><span class="default_value"> = &lt;<a href="#GroupType.GENERAL">GroupType.GENERAL</a>: 0&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GroupType.GENERAL"></a>
+    
+    
+
+                            </div>
+                            <div id="GroupType.CLAN" class="classattr">
+                                <div class="attr variable">
+            <span class="name">CLAN</span><span class="default_value"> = &lt;<a href="#GroupType.CLAN">GroupType.CLAN</a>: 1&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#GroupType.CLAN"></a>
+    
+    
+
+                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
@@ -3120,6 +6432,149 @@
 </div>
 
 
+                            <div id="CredentialType.NONE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">NONE</span><span class="default_value"> = &lt;<a href="#CredentialType.NONE">CredentialType.NONE</a>: 0&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#CredentialType.NONE"></a>
+    
+    
+
+                            </div>
+                            <div id="CredentialType.XUID" class="classattr">
+                                <div class="attr variable">
+            <span class="name">XUID</span><span class="default_value"> = &lt;<a href="#CredentialType.XUID">CredentialType.XUID</a>: 1&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#CredentialType.XUID"></a>
+    
+    
+
+                            </div>
+                            <div id="CredentialType.PSNID" class="classattr">
+                                <div class="attr variable">
+            <span class="name">PSNID</span><span class="default_value"> = &lt;<a href="#CredentialType.PSNID">CredentialType.PSNID</a>: 2&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#CredentialType.PSNID"></a>
+    
+    
+
+                            </div>
+                            <div id="CredentialType.WILD" class="classattr">
+                                <div class="attr variable">
+            <span class="name">WILD</span><span class="default_value"> = &lt;<a href="#CredentialType.WILD">CredentialType.WILD</a>: 3&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#CredentialType.WILD"></a>
+    
+    
+
+                            </div>
+                            <div id="CredentialType.FAKE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">FAKE</span><span class="default_value"> = &lt;<a href="#CredentialType.FAKE">CredentialType.FAKE</a>: 4&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#CredentialType.FAKE"></a>
+    
+    
+
+                            </div>
+                            <div id="CredentialType.FACEBOOK" class="classattr">
+                                <div class="attr variable">
+            <span class="name">FACEBOOK</span><span class="default_value"> = &lt;<a href="#CredentialType.FACEBOOK">CredentialType.FACEBOOK</a>: 5&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#CredentialType.FACEBOOK"></a>
+    
+    
+
+                            </div>
+                            <div id="CredentialType.GOOGLE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">GOOGLE</span><span class="default_value"> = &lt;<a href="#CredentialType.GOOGLE">CredentialType.GOOGLE</a>: 8&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#CredentialType.GOOGLE"></a>
+    
+    
+
+                            </div>
+                            <div id="CredentialType.WINDOWS" class="classattr">
+                                <div class="attr variable">
+            <span class="name">WINDOWS</span><span class="default_value"> = &lt;<a href="#CredentialType.WINDOWS">CredentialType.WINDOWS</a>: 9&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#CredentialType.WINDOWS"></a>
+    
+    
+
+                            </div>
+                            <div id="CredentialType.DEMONID" class="classattr">
+                                <div class="attr variable">
+            <span class="name">DEMONID</span><span class="default_value"> = &lt;<a href="#CredentialType.DEMONID">CredentialType.DEMONID</a>: 10&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#CredentialType.DEMONID"></a>
+    
+    
+
+                            </div>
+                            <div id="CredentialType.STEAMID" class="classattr">
+                                <div class="attr variable">
+            <span class="name">STEAMID</span><span class="default_value"> = &lt;<a href="#CredentialType.STEAMID">CredentialType.STEAMID</a>: 12&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#CredentialType.STEAMID"></a>
+    
+    
+
+                            </div>
+                            <div id="CredentialType.BATTLENETID" class="classattr">
+                                <div class="attr variable">
+            <span class="name">BATTLENETID</span><span class="default_value"> = &lt;<a href="#CredentialType.BATTLENETID">CredentialType.BATTLENETID</a>: 14&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#CredentialType.BATTLENETID"></a>
+    
+    
+
+                            </div>
+                            <div id="CredentialType.STADIAID" class="classattr">
+                                <div class="attr variable">
+            <span class="name">STADIAID</span><span class="default_value"> = &lt;<a href="#CredentialType.STADIAID">CredentialType.STADIAID</a>: 16&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#CredentialType.STADIAID"></a>
+    
+    
+
+                            </div>
+                            <div id="CredentialType.TWITCHID" class="classattr">
+                                <div class="attr variable">
+            <span class="name">TWITCHID</span><span class="default_value"> = &lt;<a href="#CredentialType.TWITCHID">CredentialType.TWITCHID</a>: 18&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#CredentialType.TWITCHID"></a>
+    
+    
+
+                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
@@ -3169,6 +6624,28 @@
 </div>
 
 
+                            <div id="Presence.OFFLINE_OR_UNKNOWN" class="classattr">
+                                <div class="attr variable">
+            <span class="name">OFFLINE_OR_UNKNOWN</span><span class="default_value"> = &lt;<a href="#Presence.OFFLINE_OR_UNKNOWN">Presence.OFFLINE_OR_UNKNOWN</a>: 0&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Presence.OFFLINE_OR_UNKNOWN"></a>
+    
+    
+
+                            </div>
+                            <div id="Presence.ONLINE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">ONLINE</span><span class="default_value"> = &lt;<a href="#Presence.ONLINE">Presence.ONLINE</a>: 1&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Presence.ONLINE"></a>
+    
+    
+
+                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
@@ -3220,6 +6697,50 @@
 </div>
 
 
+                            <div id="Relationship.UNKNOWN" class="classattr">
+                                <div class="attr variable">
+            <span class="name">UNKNOWN</span><span class="default_value"> = &lt;<a href="#Relationship.UNKNOWN">Relationship.UNKNOWN</a>: 0&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Relationship.UNKNOWN"></a>
+    
+    
+
+                            </div>
+                            <div id="Relationship.FRIEND" class="classattr">
+                                <div class="attr variable">
+            <span class="name">FRIEND</span><span class="default_value"> = &lt;<a href="#Relationship.FRIEND">Relationship.FRIEND</a>: 1&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Relationship.FRIEND"></a>
+    
+    
+
+                            </div>
+                            <div id="Relationship.INCOMING_REQUEST" class="classattr">
+                                <div class="attr variable">
+            <span class="name">INCOMING_REQUEST</span><span class="default_value"> = &lt;<a href="#Relationship.INCOMING_REQUEST">Relationship.INCOMING_REQUEST</a>: 2&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Relationship.INCOMING_REQUEST"></a>
+    
+    
+
+                            </div>
+                            <div id="Relationship.OUTGOING_REQUEST" class="classattr">
+                                <div class="attr variable">
+            <span class="name">OUTGOING_REQUEST</span><span class="default_value"> = &lt;<a href="#Relationship.OUTGOING_REQUEST">Relationship.OUTGOING_REQUEST</a>: 3&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Relationship.OUTGOING_REQUEST"></a>
+    
+    
+
+                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
@@ -3273,6 +6794,72 @@
 </div>
 
 
+                            <div id="ClanMemberType.NONE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">NONE</span><span class="default_value"> = &lt;<a href="#ClanMemberType.NONE">ClanMemberType.NONE</a>: 0&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ClanMemberType.NONE"></a>
+    
+    
+
+                            </div>
+                            <div id="ClanMemberType.BEGINNER" class="classattr">
+                                <div class="attr variable">
+            <span class="name">BEGINNER</span><span class="default_value"> = &lt;<a href="#ClanMemberType.BEGINNER">ClanMemberType.BEGINNER</a>: 1&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ClanMemberType.BEGINNER"></a>
+    
+    
+
+                            </div>
+                            <div id="ClanMemberType.MEMBER" class="classattr">
+                                <div class="attr variable">
+            <span class="name">MEMBER</span><span class="default_value"> = &lt;<a href="#ClanMemberType.MEMBER">ClanMemberType.MEMBER</a>: 2&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ClanMemberType.MEMBER"></a>
+    
+    
+
+                            </div>
+                            <div id="ClanMemberType.ADMIN" class="classattr">
+                                <div class="attr variable">
+            <span class="name">ADMIN</span><span class="default_value"> = &lt;<a href="#ClanMemberType.ADMIN">ClanMemberType.ADMIN</a>: 3&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ClanMemberType.ADMIN"></a>
+    
+    
+
+                            </div>
+                            <div id="ClanMemberType.ACTING_FOUNDER" class="classattr">
+                                <div class="attr variable">
+            <span class="name">ACTING_FOUNDER</span><span class="default_value"> = &lt;<a href="#ClanMemberType.ACTING_FOUNDER">ClanMemberType.ACTING_FOUNDER</a>: 4&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ClanMemberType.ACTING_FOUNDER"></a>
+    
+    
+
+                            </div>
+                            <div id="ClanMemberType.FOUNDER" class="classattr">
+                                <div class="attr variable">
+            <span class="name">FOUNDER</span><span class="default_value"> = &lt;<a href="#ClanMemberType.FOUNDER">ClanMemberType.FOUNDER</a>: 5&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ClanMemberType.FOUNDER"></a>
+    
+    
+
+                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
@@ -3323,6 +6910,39 @@
 </div>
 
 
+                            <div id="MembershipOption.REVIEWD" class="classattr">
+                                <div class="attr variable">
+            <span class="name">REVIEWD</span><span class="default_value"> = &lt;<a href="#MembershipOption.REVIEWD">MembershipOption.REVIEWD</a>: 0&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#MembershipOption.REVIEWD"></a>
+    
+    
+
+                            </div>
+                            <div id="MembershipOption.OPEN" class="classattr">
+                                <div class="attr variable">
+            <span class="name">OPEN</span><span class="default_value"> = &lt;<a href="#MembershipOption.OPEN">MembershipOption.OPEN</a>: 1&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#MembershipOption.OPEN"></a>
+    
+    
+
+                            </div>
+                            <div id="MembershipOption.CLOSED" class="classattr">
+                                <div class="attr variable">
+            <span class="name">CLOSED</span><span class="default_value"> = &lt;<a href="#MembershipOption.CLOSED">MembershipOption.CLOSED</a>: 2&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#MembershipOption.CLOSED"></a>
+    
+    
+
+                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
@@ -3374,6 +6994,50 @@
 </div>
 
 
+                            <div id="ItemBindStatus.NOT_BOUND" class="classattr">
+                                <div class="attr variable">
+            <span class="name">NOT_BOUND</span><span class="default_value"> = &lt;<a href="#ItemBindStatus.NOT_BOUND">ItemBindStatus.NOT_BOUND</a>: 0&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemBindStatus.NOT_BOUND"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemBindStatus.BOUND_TO_CHARACTER" class="classattr">
+                                <div class="attr variable">
+            <span class="name">BOUND_TO_CHARACTER</span><span class="default_value"> = &lt;<a href="#ItemBindStatus.BOUND_TO_CHARACTER">ItemBindStatus.BOUND_TO_CHARACTER</a>: 1&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemBindStatus.BOUND_TO_CHARACTER"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemBindStatus.BOUND_TO_ACCOUNT" class="classattr">
+                                <div class="attr variable">
+            <span class="name">BOUND_TO_ACCOUNT</span><span class="default_value"> = &lt;<a href="#ItemBindStatus.BOUND_TO_ACCOUNT">ItemBindStatus.BOUND_TO_ACCOUNT</a>: 2&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemBindStatus.BOUND_TO_ACCOUNT"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemBindStatus.BOUNT_TO_GUILD" class="classattr">
+                                <div class="attr variable">
+            <span class="name">BOUNT_TO_GUILD</span><span class="default_value"> = &lt;<a href="#ItemBindStatus.BOUNT_TO_GUILD">ItemBindStatus.BOUNT_TO_GUILD</a>: 3&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemBindStatus.BOUNT_TO_GUILD"></a>
+    
+    
+
+                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
@@ -3426,6 +7090,61 @@
 </div>
 
 
+                            <div id="ItemLocation.UNKNOWN" class="classattr">
+                                <div class="attr variable">
+            <span class="name">UNKNOWN</span><span class="default_value"> = &lt;<a href="#ItemLocation.UNKNOWN">ItemLocation.UNKNOWN</a>: 0&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemLocation.UNKNOWN"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemLocation.INVENTORY" class="classattr">
+                                <div class="attr variable">
+            <span class="name">INVENTORY</span><span class="default_value"> = &lt;<a href="#ItemLocation.INVENTORY">ItemLocation.INVENTORY</a>: 1&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemLocation.INVENTORY"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemLocation.VAULT" class="classattr">
+                                <div class="attr variable">
+            <span class="name">VAULT</span><span class="default_value"> = &lt;<a href="#ItemLocation.VAULT">ItemLocation.VAULT</a>: 2&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemLocation.VAULT"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemLocation.VENDOR" class="classattr">
+                                <div class="attr variable">
+            <span class="name">VENDOR</span><span class="default_value"> = &lt;<a href="#ItemLocation.VENDOR">ItemLocation.VENDOR</a>: 3&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemLocation.VENDOR"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemLocation.POSTMASTER" class="classattr">
+                                <div class="attr variable">
+            <span class="name">POSTMASTER</span><span class="default_value"> = &lt;<a href="#ItemLocation.POSTMASTER">ItemLocation.POSTMASTER</a>: 4&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemLocation.POSTMASTER"></a>
+    
+    
+
+                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
@@ -3575,6 +7294,50 @@
 </div>
 
 
+                            <div id="ItemState.NONE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">NONE</span><span class="default_value"> = &lt;<a href="#ItemState.NONE">ItemState.NONE</a>: 0&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemState.NONE"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemState.LOCKED" class="classattr">
+                                <div class="attr variable">
+            <span class="name">LOCKED</span><span class="default_value"> = &lt;<a href="#ItemState.LOCKED">ItemState.LOCKED</a>: 1&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemState.LOCKED"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemState.TRACKED" class="classattr">
+                                <div class="attr variable">
+            <span class="name">TRACKED</span><span class="default_value"> = &lt;<a href="#ItemState.TRACKED">ItemState.TRACKED</a>: 2&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemState.TRACKED"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemState.MASTERWORKED" class="classattr">
+                                <div class="attr variable">
+            <span class="name">MASTERWORKED</span><span class="default_value"> = &lt;<a href="#ItemState.MASTERWORKED">ItemState.MASTERWORKED</a>: 4&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemState.MASTERWORKED"></a>
+    
+    
+
+                            </div>
                             <div id="ItemState.CRAFTED" class="classattr">
                                 <div class="attr variable">
             <span class="name">CRAFTED</span><span class="default_value"> = &lt;<a href="#ItemState.CRAFTED">ItemState.CRAFTED</a>: 8&gt;</span>
@@ -3640,6 +7403,61 @@
 </div>
 
 
+                            <div id="PrivacySetting.OPEN" class="classattr">
+                                <div class="attr variable">
+            <span class="name">OPEN</span><span class="default_value"> = &lt;<a href="#PrivacySetting.OPEN">PrivacySetting.OPEN</a>: 0&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#PrivacySetting.OPEN"></a>
+    
+    
+
+                            </div>
+                            <div id="PrivacySetting.CLAN_AND_FRIENDS" class="classattr">
+                                <div class="attr variable">
+            <span class="name">CLAN_AND_FRIENDS</span><span class="default_value"> = &lt;<a href="#PrivacySetting.CLAN_AND_FRIENDS">PrivacySetting.CLAN_AND_FRIENDS</a>: 1&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#PrivacySetting.CLAN_AND_FRIENDS"></a>
+    
+    
+
+                            </div>
+                            <div id="PrivacySetting.FRIENDS_ONLY" class="classattr">
+                                <div class="attr variable">
+            <span class="name">FRIENDS_ONLY</span><span class="default_value"> = &lt;<a href="#PrivacySetting.FRIENDS_ONLY">PrivacySetting.FRIENDS_ONLY</a>: 2&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#PrivacySetting.FRIENDS_ONLY"></a>
+    
+    
+
+                            </div>
+                            <div id="PrivacySetting.INVITE_ONLY" class="classattr">
+                                <div class="attr variable">
+            <span class="name">INVITE_ONLY</span><span class="default_value"> = &lt;<a href="#PrivacySetting.INVITE_ONLY">PrivacySetting.INVITE_ONLY</a>: 3&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#PrivacySetting.INVITE_ONLY"></a>
+    
+    
+
+                            </div>
+                            <div id="PrivacySetting.CLOSED" class="classattr">
+                                <div class="attr variable">
+            <span class="name">CLOSED</span><span class="default_value"> = &lt;<a href="#PrivacySetting.CLOSED">PrivacySetting.CLOSED</a>: 4&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#PrivacySetting.CLOSED"></a>
+    
+    
+
+                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
@@ -3702,6 +7520,39 @@
 </div>
 
 
+                            <div id="ClosedReasons.NONE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">NONE</span><span class="default_value"> = &lt;<a href="#ClosedReasons.NONE">ClosedReasons.NONE</a>: 0&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ClosedReasons.NONE"></a>
+    
+    
+
+                            </div>
+                            <div id="ClosedReasons.MATCHMAKING" class="classattr">
+                                <div class="attr variable">
+            <span class="name">MATCHMAKING</span><span class="default_value"> = &lt;<a href="#ClosedReasons.MATCHMAKING">ClosedReasons.MATCHMAKING</a>: 1&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ClosedReasons.MATCHMAKING"></a>
+    
+    
+
+                            </div>
+                            <div id="ClosedReasons.LOADING" class="classattr">
+                                <div class="attr variable">
+            <span class="name">LOADING</span><span class="default_value"> = &lt;<a href="#ClosedReasons.LOADING">ClosedReasons.LOADING</a>: 2&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ClosedReasons.LOADING"></a>
+    
+    
+
+                            </div>
                             <div id="ClosedReasons.SOLO" class="classattr">
                                 <div class="attr variable">
             <span class="name">SOLO</span><span class="default_value"> = &lt;<a href="#ClosedReasons.SOLO">ClosedReasons.SOLO</a>: 4&gt;</span>
@@ -3816,6 +7667,292 @@ but for reasons that aren't under the control of this user</p>
 </div>
 
 
+                            <div id="ItemSubType.NONE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">NONE</span><span class="default_value"> = &lt;<a href="#ItemSubType.NONE">ItemSubType.NONE</a>: 0&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemSubType.NONE"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemSubType.AUTORIFLE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">AUTORIFLE</span><span class="default_value"> = &lt;<a href="#ItemSubType.AUTORIFLE">ItemSubType.AUTORIFLE</a>: 6&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemSubType.AUTORIFLE"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemSubType.SHOTGUN" class="classattr">
+                                <div class="attr variable">
+            <span class="name">SHOTGUN</span><span class="default_value"> = &lt;<a href="#ItemSubType.SHOTGUN">ItemSubType.SHOTGUN</a>: 7&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemSubType.SHOTGUN"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemSubType.MACHINEGUN" class="classattr">
+                                <div class="attr variable">
+            <span class="name">MACHINEGUN</span><span class="default_value"> = &lt;<a href="#ItemSubType.MACHINEGUN">ItemSubType.MACHINEGUN</a>: 8&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemSubType.MACHINEGUN"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemSubType.HANDCANNON" class="classattr">
+                                <div class="attr variable">
+            <span class="name">HANDCANNON</span><span class="default_value"> = &lt;<a href="#ItemSubType.HANDCANNON">ItemSubType.HANDCANNON</a>: 9&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemSubType.HANDCANNON"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemSubType.ROCKETLAUNCHER" class="classattr">
+                                <div class="attr variable">
+            <span class="name">ROCKETLAUNCHER</span><span class="default_value"> = &lt;<a href="#ItemSubType.ROCKETLAUNCHER">ItemSubType.ROCKETLAUNCHER</a>: 10&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemSubType.ROCKETLAUNCHER"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemSubType.FUSIONRIFLE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">FUSIONRIFLE</span><span class="default_value"> = &lt;<a href="#ItemSubType.FUSIONRIFLE">ItemSubType.FUSIONRIFLE</a>: 11&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemSubType.FUSIONRIFLE"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemSubType.SNIPERRIFLE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">SNIPERRIFLE</span><span class="default_value"> = &lt;<a href="#ItemSubType.SNIPERRIFLE">ItemSubType.SNIPERRIFLE</a>: 12&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemSubType.SNIPERRIFLE"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemSubType.PULSERIFLE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">PULSERIFLE</span><span class="default_value"> = &lt;<a href="#ItemSubType.PULSERIFLE">ItemSubType.PULSERIFLE</a>: 13&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemSubType.PULSERIFLE"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemSubType.SCOUTRIFLE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">SCOUTRIFLE</span><span class="default_value"> = &lt;<a href="#ItemSubType.SCOUTRIFLE">ItemSubType.SCOUTRIFLE</a>: 14&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemSubType.SCOUTRIFLE"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemSubType.SIDEARM" class="classattr">
+                                <div class="attr variable">
+            <span class="name">SIDEARM</span><span class="default_value"> = &lt;<a href="#ItemSubType.SIDEARM">ItemSubType.SIDEARM</a>: 17&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemSubType.SIDEARM"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemSubType.SWORD" class="classattr">
+                                <div class="attr variable">
+            <span class="name">SWORD</span><span class="default_value"> = &lt;<a href="#ItemSubType.SWORD">ItemSubType.SWORD</a>: 18&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemSubType.SWORD"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemSubType.MASK" class="classattr">
+                                <div class="attr variable">
+            <span class="name">MASK</span><span class="default_value"> = &lt;<a href="#ItemSubType.MASK">ItemSubType.MASK</a>: 19&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemSubType.MASK"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemSubType.SHADER" class="classattr">
+                                <div class="attr variable">
+            <span class="name">SHADER</span><span class="default_value"> = &lt;<a href="#ItemSubType.SHADER">ItemSubType.SHADER</a>: 20&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemSubType.SHADER"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemSubType.ORNAMENT" class="classattr">
+                                <div class="attr variable">
+            <span class="name">ORNAMENT</span><span class="default_value"> = &lt;<a href="#ItemSubType.ORNAMENT">ItemSubType.ORNAMENT</a>: 21&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemSubType.ORNAMENT"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemSubType.FUSIONRIFLELINE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">FUSIONRIFLELINE</span><span class="default_value"> = &lt;<a href="#ItemSubType.FUSIONRIFLELINE">ItemSubType.FUSIONRIFLELINE</a>: 22&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemSubType.FUSIONRIFLELINE"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemSubType.GRENADELAUNCHER" class="classattr">
+                                <div class="attr variable">
+            <span class="name">GRENADELAUNCHER</span><span class="default_value"> = &lt;<a href="#ItemSubType.GRENADELAUNCHER">ItemSubType.GRENADELAUNCHER</a>: 23&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemSubType.GRENADELAUNCHER"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemSubType.SUBMACHINEGUN" class="classattr">
+                                <div class="attr variable">
+            <span class="name">SUBMACHINEGUN</span><span class="default_value"> = &lt;<a href="#ItemSubType.SUBMACHINEGUN">ItemSubType.SUBMACHINEGUN</a>: 24&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemSubType.SUBMACHINEGUN"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemSubType.TRACERIFLE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">TRACERIFLE</span><span class="default_value"> = &lt;<a href="#ItemSubType.TRACERIFLE">ItemSubType.TRACERIFLE</a>: 25&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemSubType.TRACERIFLE"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemSubType.HELMETARMOR" class="classattr">
+                                <div class="attr variable">
+            <span class="name">HELMETARMOR</span><span class="default_value"> = &lt;<a href="#ItemSubType.HELMETARMOR">ItemSubType.HELMETARMOR</a>: 26&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemSubType.HELMETARMOR"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemSubType.GAUNTLETSARMOR" class="classattr">
+                                <div class="attr variable">
+            <span class="name">GAUNTLETSARMOR</span><span class="default_value"> = &lt;<a href="#ItemSubType.GAUNTLETSARMOR">ItemSubType.GAUNTLETSARMOR</a>: 27&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemSubType.GAUNTLETSARMOR"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemSubType.CHESTARMOR" class="classattr">
+                                <div class="attr variable">
+            <span class="name">CHESTARMOR</span><span class="default_value"> = &lt;<a href="#ItemSubType.CHESTARMOR">ItemSubType.CHESTARMOR</a>: 28&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemSubType.CHESTARMOR"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemSubType.LEGARMOR" class="classattr">
+                                <div class="attr variable">
+            <span class="name">LEGARMOR</span><span class="default_value"> = &lt;<a href="#ItemSubType.LEGARMOR">ItemSubType.LEGARMOR</a>: 29&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemSubType.LEGARMOR"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemSubType.CLASSARMOR" class="classattr">
+                                <div class="attr variable">
+            <span class="name">CLASSARMOR</span><span class="default_value"> = &lt;<a href="#ItemSubType.CLASSARMOR">ItemSubType.CLASSARMOR</a>: 30&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemSubType.CLASSARMOR"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemSubType.BOW" class="classattr">
+                                <div class="attr variable">
+            <span class="name">BOW</span><span class="default_value"> = &lt;<a href="#ItemSubType.BOW">ItemSubType.BOW</a>: 31&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemSubType.BOW"></a>
+    
+    
+
+                            </div>
+                            <div id="ItemSubType.DUMMYREPEATABLEBOUNTY" class="classattr">
+                                <div class="attr variable">
+            <span class="name">DUMMYREPEATABLEBOUNTY</span><span class="default_value"> = &lt;<a href="#ItemSubType.DUMMYREPEATABLEBOUNTY">ItemSubType.DUMMYREPEATABLEBOUNTY</a>: 32&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ItemSubType.DUMMYREPEATABLEBOUNTY"></a>
+    
+    
+
+                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
@@ -3870,6 +8007,83 @@ but for reasons that aren't under the control of this user</p>
 </div>
 
 
+                            <div id="TierType.UNKNOWN" class="classattr">
+                                <div class="attr variable">
+            <span class="name">UNKNOWN</span><span class="default_value"> = &lt;<a href="#TierType.UNKNOWN">TierType.UNKNOWN</a>: 0&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#TierType.UNKNOWN"></a>
+    
+    
+
+                            </div>
+                            <div id="TierType.CURRENCY" class="classattr">
+                                <div class="attr variable">
+            <span class="name">CURRENCY</span><span class="default_value"> = &lt;<a href="#TierType.CURRENCY">TierType.CURRENCY</a>: 1&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#TierType.CURRENCY"></a>
+    
+    
+
+                            </div>
+                            <div id="TierType.BASIC" class="classattr">
+                                <div class="attr variable">
+            <span class="name">BASIC</span><span class="default_value"> = &lt;<a href="#TierType.BASIC">TierType.BASIC</a>: 2&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#TierType.BASIC"></a>
+    
+    
+
+                            </div>
+                            <div id="TierType.COMMON" class="classattr">
+                                <div class="attr variable">
+            <span class="name">COMMON</span><span class="default_value"> = &lt;<a href="#TierType.COMMON">TierType.COMMON</a>: 3&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#TierType.COMMON"></a>
+    
+    
+
+                            </div>
+                            <div id="TierType.RARE" class="classattr">
+                                <div class="attr variable">
+            <span class="name">RARE</span><span class="default_value"> = &lt;<a href="#TierType.RARE">TierType.RARE</a>: 4&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#TierType.RARE"></a>
+    
+    
+
+                            </div>
+                            <div id="TierType.SUPERIOR" class="classattr">
+                                <div class="attr variable">
+            <span class="name">SUPERIOR</span><span class="default_value"> = &lt;<a href="#TierType.SUPERIOR">TierType.SUPERIOR</a>: 5&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#TierType.SUPERIOR"></a>
+    
+    
+
+                            </div>
+                            <div id="TierType.EXOTIC" class="classattr">
+                                <div class="attr variable">
+            <span class="name">EXOTIC</span><span class="default_value"> = &lt;<a href="#TierType.EXOTIC">TierType.EXOTIC</a>: 6&gt;</span>
+
+        
+    </div>
+    <a class="headerlink" href="#TierType.EXOTIC"></a>
+    
+    
+
+                            </div>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
@@ -3995,7 +8209,7 @@ but for reasons that aren't under the control of this user</p>
                 }
 
                 let heading;
-                switch (result.doc.type) {
+                switch (result.doc.kind) {
                     case "function":
                         if (doc.fullname.endsWith(".__init__")) {
                             heading = `<span class="name">${doc.fullname.replace(/\.__init__$/, "")}</span>${doc.signature}`;
@@ -4022,7 +8236,7 @@ but for reasons that aren't under the control of this user</p>
                 }
                 html += `
                         <section class="search-result">
-                        <a href="${url}" class="attr ${doc.type}">${heading}</a>
+                        <a href="${url}" class="attr ${doc.kind}">${heading}</a>
                         <div class="docstring">${doc.doc}</div>
                         </section>
                     `;

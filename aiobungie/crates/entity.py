@@ -194,7 +194,7 @@ class SearchableEntity(EntityBase):
     """Entity's name."""
 
     description: undefined.UndefinedOr[str]
-    """Entity's description. Undefined if not set."""
+    """Entity's description. UNDEFINED if not set."""
 
     icon: assets.Image
     """Entity's icon."""

@@ -866,7 +866,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         membership_type: typedefs.IntAnd[enums.MembershipType],
         *,
         length: int = 0,
-        comment: undefined.UndefinedOr[str] = undefined.Undefined,
+        comment: undefined.UndefinedOr[str] = undefined.UNDEFINED,
     ) -> None:
         """Bans a member from the clan.
 
@@ -1207,7 +1207,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         access_token: str,
         /,
         group_id: int,
-        message: undefined.UndefinedOr[str] = undefined.Undefined,
+        message: undefined.UndefinedOr[str] = undefined.UNDEFINED,
     ) -> None:
         """Apporve all pending users for the given group id.
 
@@ -1234,7 +1234,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         /,
         group_id: int,
         *,
-        message: undefined.UndefinedOr[str] = undefined.Undefined,
+        message: undefined.UndefinedOr[str] = undefined.UNDEFINED,
     ) -> None:
         """Deny all pending users for the given group id.
 
@@ -1261,7 +1261,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         /,
         group_id: int,
         *,
-        name: undefined.UndefinedOr[str] = undefined.Undefined,
+        name: undefined.UndefinedOr[str] = undefined.UNDEFINED,
         security: typing.Literal[0, 1] = 0,
     ) -> None:
         """Add a new chat channel to a group.
@@ -1296,7 +1296,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         group_id: int,
         conversation_id: int,
         *,
-        name: undefined.UndefinedOr[str] = undefined.Undefined,
+        name: undefined.UndefinedOr[str] = undefined.UNDEFINED,
         security: typing.Literal[0, 1] = 0,
         enable_chat: bool = False,
     ) -> None:
@@ -2320,8 +2320,8 @@ class RESTInterface(traits.RESTful, abc.ABC):
         search_text: str,
         tag: str,
         *,
-        page: undefined.UndefinedOr[int] = undefined.Undefined,
-        source: undefined.UndefinedOr[str] = undefined.Undefined,
+        page: undefined.UndefinedOr[int] = undefined.UNDEFINED,
+        source: undefined.UndefinedOr[str] = undefined.UNDEFINED,
     ) -> typedefs.JSONObject:
         ...
 
@@ -2332,7 +2332,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         tag: str,
         type: str,
         *,
-        page: undefined.UndefinedOr[int] = undefined.Undefined,
+        page: undefined.UndefinedOr[int] = undefined.UNDEFINED,
     ) -> typedefs.JSONObject:
         ...
 
@@ -2350,9 +2350,9 @@ class RESTInterface(traits.RESTful, abc.ABC):
         date_filter: int,
         sort: typing.Union[str, bytes],
         *,
-        page: undefined.UndefinedOr[int] = undefined.Undefined,
-        locales: undefined.UndefinedOr[collections.Iterable[str]] = undefined.Undefined,
-        tag_filter: undefined.UndefinedOr[str] = undefined.Undefined,
+        page: undefined.UndefinedOr[int] = undefined.UNDEFINED,
+        locales: undefined.UndefinedOr[collections.Iterable[str]] = undefined.UNDEFINED,
+        tag_filter: undefined.UndefinedOr[str] = undefined.UNDEFINED,
     ) -> typedefs.JSONObject:
         ...
 
@@ -2363,8 +2363,8 @@ class RESTInterface(traits.RESTful, abc.ABC):
         date_filter: int,
         sort: typing.Union[str, bytes],
         *,
-        page: undefined.UndefinedOr[int] = undefined.Undefined,
-        locales: undefined.UndefinedOr[collections.Iterable[str]] = undefined.Undefined,
+        page: undefined.UndefinedOr[int] = undefined.UNDEFINED,
+        locales: undefined.UndefinedOr[collections.Iterable[str]] = undefined.UNDEFINED,
     ) -> typedefs.JSONObject:
         ...
 
@@ -2481,7 +2481,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         membership_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
         *,
-        message: undefined.UndefinedOr[str] = undefined.Undefined,
+        message: undefined.UndefinedOr[str] = undefined.UNDEFINED,
     ) -> typedefs.JSONObject:
         ...
 

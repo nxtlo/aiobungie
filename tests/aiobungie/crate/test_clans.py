@@ -152,7 +152,7 @@ class TestClanMember:
         assert str(obj) == "thom#None"
 
     def test_clan_member___str__when_name_is_Undeined(self, obj: crate.ClanMember):
-        obj.name = aiobungie.Undefined
+        obj.name = aiobungie.UNDEFINED
         assert str(obj) == "UNDEFINED#5432"
 
     def test_is_admin_property(self, obj: crate.ClanMember):
@@ -181,7 +181,7 @@ class TestClanMember:
             obj.group_id,
             obj.id,
             obj.type,
-            comment=aiobungie.Undefined,
+            comment=aiobungie.UNDEFINED,
             length=0,
         )
 
@@ -451,7 +451,7 @@ class TestClan:
 
         await obj.deny_pending_members("token")
         obj.net.request.rest.deny_all_pending_group_users.assert_awaited_once_with(
-            "token", obj.id, message=aiobungie.Undefined
+            "token", obj.id, message=aiobungie.UNDEFINED
         )
 
     @pytest.mark.asyncio()

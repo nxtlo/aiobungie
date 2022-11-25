@@ -73,7 +73,7 @@ class Factory(interfaces.FactoryInterface):
         return user.BungieUser(
             id=int(data["membershipId"]),
             created_at=time.clean_date(data["firstAccess"]),
-            name=data.get("cachedBungieGlobalDisplayName", undefined.Undefined),
+            name=data.get("cachedBungieGlobalDisplayName", undefined.UNDEFINED),
             is_deleted=data["isDeleted"],
             about=data["about"],
             updated_at=time.clean_date(data["lastUpdate"]),
@@ -102,7 +102,7 @@ class Factory(interfaces.FactoryInterface):
                 enums.MembershipType(type_)
                 for type_ in payload.get("applicableMembershipTypes", [])
             ],
-            name=payload.get("displayName", undefined.Undefined),
+            name=payload.get("displayName", undefined.UNDEFINED),
             id=int(payload["membershipId"]),
             crossave_override=enums.MembershipType(payload["crossSaveOverride"]),
             is_public=payload["isPublic"],
@@ -113,7 +113,7 @@ class Factory(interfaces.FactoryInterface):
     def deserialize_destiny_membership(
         self, payload: typedefs.JSONObject
     ) -> user.DestinyMembership:
-        name: undefined.UndefinedOr[str] = undefined.Undefined
+        name: undefined.UndefinedOr[str] = undefined.UNDEFINED
         if (
             raw_name := payload.get("bungieGlobalDisplayName", "")
         ) and not typedefs.is_unknown(raw_name):
@@ -157,7 +157,7 @@ class Factory(interfaces.FactoryInterface):
     def deserialize_searched_user(
         self, payload: typedefs.JSONObject
     ) -> user.SearchableDestinyUser:
-        name: undefined.UndefinedOr[str] = undefined.Undefined
+        name: undefined.UndefinedOr[str] = undefined.UNDEFINED
         if (raw_name := payload["bungieGlobalDisplayName"]) and not typedefs.is_unknown(
             raw_name
         ):
@@ -188,7 +188,7 @@ class Factory(interfaces.FactoryInterface):
                 type=enums.CredentialType(int(creds["credentialType"])),
                 display_name=creds["credentialDisplayName"],
                 is_public=creds["isPublic"],
-                self_as_string=creds.get("credentialAsString", undefined.Undefined),
+                self_as_string=creds.get("credentialAsString", undefined.UNDEFINED),
             )
             for creds in payload
         ]
@@ -201,10 +201,10 @@ class Factory(interfaces.FactoryInterface):
                 id=int(entry["userThemeId"]),
                 name=entry["userThemeName"]
                 if "userThemeName" in entry
-                else undefined.Undefined,
+                else undefined.UNDEFINED,
                 description=entry["userThemeDescription"]
                 if "userThemeDescription" in entry
-                else undefined.Undefined,
+                else undefined.UNDEFINED,
             )
             for entry in payload
         ]
@@ -344,7 +344,7 @@ class Factory(interfaces.FactoryInterface):
             name=(
                 payload["chatName"]
                 if not typedefs.is_unknown(payload["chatName"])
-                else undefined.Undefined
+                else undefined.UNDEFINED
             ),
             chat_enabled=payload["chatEnabled"],
             security=payload["chatSecurity"],
@@ -360,7 +360,7 @@ class Factory(interfaces.FactoryInterface):
     ) -> application.ApplicationOwner:
         return application.ApplicationOwner(
             net=self._net,
-            name=payload.get("bungieGlobalDisplayName", undefined.Undefined),
+            name=payload.get("bungieGlobalDisplayName", undefined.UNDEFINED),
             id=int(payload["membershipId"]),
             type=enums.MembershipType(payload["membershipType"]),
             icon=assets.Image(str(payload["iconPath"])),
@@ -378,7 +378,7 @@ class Factory(interfaces.FactoryInterface):
             created_at=time.clean_date(str(payload["creationDate"])),
             published_at=time.clean_date(str(payload["firstPublished"])),
             owner=self.deserialize_app_owner(payload["team"][0]["user"]),  # type: ignore
-            scope=payload.get("scope", undefined.Undefined),
+            scope=payload.get("scope", undefined.UNDEFINED),
         )
 
     def _set_character_attrs(self, payload: typedefs.JSONObject) -> character.Character:
@@ -493,8 +493,8 @@ class Factory(interfaces.FactoryInterface):
 
         return records.Record(
             scores=scores,
-            categories_node_hash=nodes.get("categories_hash", undefined.Undefined),
-            seals_node_hash=nodes.get("seals_hash", undefined.Undefined),
+            categories_node_hash=nodes.get("categories_hash", undefined.UNDEFINED),
+            seals_node_hash=nodes.get("seals_hash", undefined.UNDEFINED),
             state=record_state,
             objectives=objectives,
             interval_objectives=interval_objectives,
@@ -1464,8 +1464,8 @@ class Factory(interfaces.FactoryInterface):
         self, payload: typedefs.JSONObject, *, key: str = "displayProperties"
     ) -> entity.Entity:
 
-        name: undefined.UndefinedOr[str] = undefined.Undefined
-        description: undefined.UndefinedOr[str] = undefined.Undefined
+        name: undefined.UndefinedOr[str] = undefined.UNDEFINED
+        description: undefined.UndefinedOr[str] = undefined.UNDEFINED
 
         if properties := payload[key]:
             if (raw_name := properties["name"]) is not typedefs.Unknown:
@@ -1492,7 +1492,7 @@ class Factory(interfaces.FactoryInterface):
         suggested_words: list[str] = payload["suggestedWords"]
 
         def _check_unknown(s: str) -> undefined.UndefinedOr[str]:
-            return s if not typedefs.is_unknown(s) else undefined.Undefined
+            return s if not typedefs.is_unknown(s) else undefined.UNDEFINED
 
         return iterators.Iterator(
             [
@@ -1551,19 +1551,19 @@ class Factory(interfaces.FactoryInterface):
         if raw_collectible_hash := payload.get("collectibleHash"):
             collectible_hash = int(raw_collectible_hash)
 
-        secondary_icon: undefined.UndefinedOr[assets.Image] = undefined.Undefined
+        secondary_icon: undefined.UndefinedOr[assets.Image] = undefined.UNDEFINED
         if raw_second_icon := payload.get("secondaryIcon"):
             secondary_icon = assets.Image(raw_second_icon)
 
-        secondary_overlay: undefined.UndefinedOr[assets.Image] = undefined.Undefined
+        secondary_overlay: undefined.UndefinedOr[assets.Image] = undefined.UNDEFINED
         if raw_second_overlay := payload.get("secondaryOverlay"):
             secondary_overlay = assets.Image(raw_second_overlay)
 
-        secondary_special: undefined.UndefinedOr[assets.Image] = undefined.Undefined
+        secondary_special: undefined.UndefinedOr[assets.Image] = undefined.UNDEFINED
         if raw_second_special := payload.get("secondarySpecial"):
             secondary_special = assets.Image(raw_second_special)
 
-        screenshot: undefined.UndefinedOr[assets.Image] = undefined.Undefined
+        screenshot: undefined.UndefinedOr[assets.Image] = undefined.UNDEFINED
         if raw_screenshot := payload.get("screenshot"):
             screenshot = assets.Image(raw_screenshot)
 
@@ -1575,31 +1575,31 @@ class Factory(interfaces.FactoryInterface):
         if raw_watermark_shelved := payload.get("iconWatermarkShelved"):
             watermark_shelved = assets.Image(raw_watermark_shelved)
 
-        about: undefined.UndefinedOr[str] = undefined.Undefined
+        about: undefined.UndefinedOr[str] = undefined.UNDEFINED
         if (raw_about := payload.get("flavorText")) and not typedefs.is_unknown(
             raw_about
         ):
             about = raw_about
 
-        ui_item_style: undefined.UndefinedOr[str] = undefined.Undefined
+        ui_item_style: undefined.UndefinedOr[str] = undefined.UNDEFINED
         if (
             raw_ui_style := payload.get("uiItemDisplayStyle")
         ) and not typedefs.is_unknown(raw_ui_style):
             ui_item_style = raw_ui_style
 
-        tier_and_name: undefined.UndefinedOr[str] = undefined.Undefined
+        tier_and_name: undefined.UndefinedOr[str] = undefined.UNDEFINED
         if (
             raw_tier_and_name := payload.get("itemTypeAndTierDisplayName")
         ) and not typedefs.is_unknown(raw_tier_and_name):
             tier_and_name = raw_tier_and_name
 
-        type_name: undefined.UndefinedOr[str] = undefined.Undefined
+        type_name: undefined.UndefinedOr[str] = undefined.UNDEFINED
         if (
             raw_type_name := payload.get("itemTypeDisplayName")
         ) and not typedefs.is_unknown(raw_type_name):
             type_name = raw_type_name
 
-        display_source: undefined.UndefinedOr[str] = undefined.Undefined
+        display_source: undefined.UndefinedOr[str] = undefined.UNDEFINED
         if (
             raw_display_source := payload.get("displaySource")
         ) and not typedefs.is_unknown(raw_display_source):
@@ -1637,13 +1637,13 @@ class Factory(interfaces.FactoryInterface):
         tier: typing.Optional[enums.ItemTier] = None
         bucket_hash: typing.Optional[int] = None
         recovery_hash: typing.Optional[int] = None
-        tier_name: undefined.UndefinedOr[str] = undefined.Undefined
+        tier_name: undefined.UndefinedOr[str] = undefined.UNDEFINED
         isinstance_item: bool = False
-        expire_tool_tip: undefined.UndefinedOr[str] = undefined.Undefined
-        expire_in_orbit_message: undefined.UndefinedOr[str] = undefined.Undefined
+        expire_tool_tip: undefined.UndefinedOr[str] = undefined.UNDEFINED
+        expire_in_orbit_message: undefined.UndefinedOr[str] = undefined.UNDEFINED
         suppress_expiration: bool = False
         max_stack_size: typing.Optional[int] = None
-        stack_label: undefined.UndefinedOr[str] = undefined.Undefined
+        stack_label: undefined.UndefinedOr[str] = undefined.UNDEFINED
 
         if inventory := payload.get("inventory"):
             tier_type = enums.TierType(int(inventory["tierType"]))
@@ -1885,7 +1885,7 @@ class Factory(interfaces.FactoryInterface):
         if (gender_hash := player.get("genderHash")) is not None:
             gender_hash = gender_hash
 
-        character_class: undefined.UndefinedOr[str] = undefined.Undefined
+        character_class: undefined.UndefinedOr[str] = undefined.UNDEFINED
         if (
             character_class := player.get("characterClass")
         ) and not typedefs.is_unknown(character_class):
@@ -2050,7 +2050,7 @@ class Factory(interfaces.FactoryInterface):
         items_categoris: typedefs.NoneOr[milestones.MilestoneItems] = None
         if raw_categories := payload.get("itemCategories"):
             for item in raw_categories:
-                title = undefined.Undefined
+                title = undefined.UNDEFINED
                 if raw_title := item.get("title"):
                     if raw_title != typedefs.Unknown:
                         title = raw_title
@@ -2059,11 +2059,11 @@ class Factory(interfaces.FactoryInterface):
 
                 items_categoris = milestones.MilestoneItems(title=title, hashes=hashes)
 
-        about = undefined.Undefined
+        about = undefined.UNDEFINED
         if (raw_about := payload["about"]) != typedefs.Unknown:
             about = raw_about
 
-        status = undefined.Undefined
+        status = undefined.UNDEFINED
         if (raw_status := payload["status"]) != typedefs.Unknown:
             status = raw_status
 
@@ -2071,7 +2071,7 @@ class Factory(interfaces.FactoryInterface):
         if raw_tips := payload.get("tips"):
             for raw_tip in raw_tips:
                 if raw_tip == typedefs.Unknown:
-                    raw_tip = undefined.Undefined
+                    raw_tip = undefined.UNDEFINED
                 tips.append(raw_tip)
 
         return milestones.MilestoneContent(
@@ -2079,7 +2079,7 @@ class Factory(interfaces.FactoryInterface):
         )
 
     def deserialize_friend(self, payload: typedefs.JSONObject, /) -> friends.Friend:
-        name = undefined.Undefined
+        name = undefined.UNDEFINED
         if (raw_name := payload["bungieGlobalDisplayName"]) != typedefs.Unknown:
             name = raw_name
 
@@ -2290,7 +2290,7 @@ class Factory(interfaces.FactoryInterface):
     ) -> fireteams.FireteamPartyMember:
 
         status = fireteams.FireteamPartyMemberState(payload["status"])
-        displayname: undefined.UndefinedOr[str] = undefined.Undefined
+        displayname: undefined.UndefinedOr[str] = undefined.UNDEFINED
         if raw_name := payload.get("displayName"):
             displayname = raw_name
 

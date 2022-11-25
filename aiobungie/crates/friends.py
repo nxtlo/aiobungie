@@ -67,7 +67,7 @@ class Friend:
     """The friend's last seen membership type."""
 
     name: undefined.UndefinedOr[str]
-    """The friend's last seen global display name. This field could be Undefined if the player hasn't logged in yet."""
+    """The friend's last seen global display name. This field could be UNDEFINED if the player hasn't logged in yet."""
 
     code: typedefs.NoneOr[int]
     """The friend's last seen global code. This field could be None if the player hasn't logged in yet."""

@@ -128,7 +128,7 @@ from aiobungie.internal.enums import *
 from aiobungie.internal.factory import Factory
 from aiobungie.internal.iterators import *
 from aiobungie.rest import *
-from aiobungie.undefined import Undefined
+from aiobungie.undefined import UNDEFINED
 from aiobungie.undefined import UndefinedOr
 from aiobungie.undefined import UndefinedType
 

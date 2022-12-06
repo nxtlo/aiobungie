@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Changed
 * You can no longer pass `rest_client` instance to `Client` object.
+* `Friend` object methods has been removed since they can be performed using the `RESTClient`, Including
+    - `accept` -> `rest.accept_friend_request`
+    - `decline` -> `rest.decline_friend_request`
+    - `remove` -> `rest.remove_friend`
+    - `remove_request` -> `rest.remove_friend_request`
 
 ## [0.2.7](https://github.com/nxtlo/aiobungie/compare/0.2.6...0.2.7) 10-08-2022
 

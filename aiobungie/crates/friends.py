@@ -30,8 +30,6 @@ import typing
 
 import attrs
 
-from aiobungie.internal import helpers
-
 if typing.TYPE_CHECKING:
     import collections.abc as collections
 
@@ -88,88 +86,6 @@ class Friend:
     def unique_name(self) -> str:
         """Friend's global unique display name."""
         return f"{self.name}#{self.code}"
-
-    async def accept(self, access_token: str, /) -> None:
-        """Accepts this friend's request.
-
-        Parameters
-        ----------
-        access_token : `str`
-            The bearer access token associated with the bungie account.
-
-        Raises
-        ------
-        `aiobungie.NotFound`
-            This user was not found in your pending requests.
-        """
-        await self.net.request.rest.accept_friend_request(access_token, self.id)
-
-    async def decline(self, access_token: str, /) -> None:
-        """Decline this friend request.
-
-        Parameters
-        ----------
-        access_token : `str`
-            The bearer access token associated with the bungie account.
-
-        Raises
-        ------
-        `aiobungie.NotFound`
-            This user is not found in your pending requests.
-        """
-        await self.net.request.rest.decline_friend_request(access_token, self.id)
-
-    async def remove(self, access_token: str, /) -> None:
-        """Removed an existing friend from your friend list.
-
-        Parameters
-        ----------
-        access_token : `str`
-            The bearer access token associated with the bungie account.
-
-        Raises
-        ------
-        `aiobungie.NotFound`
-            This friend was is found in your friend list.
-        """
-        await self.net.request.rest.remove_friend(access_token, self.id)
-
-    async def remove_request(self, access_token: str, /) -> None:
-        """Removed an existing friend request.
-
-        .. note::
-            The friend request must be on your friend request list.
-
-        Parameters
-        ----------
-        access_token : `str`
-            The bearer access token associated with the bungie account.
-
-        Returns
-        -------
-        `None`
-            None
-        """
-        await self.net.request.rest.remove_friend_request(access_token, self.id)
-
-    @helpers.unimplemented()
-    async def fetch_platform_friends(
-        self, access_token: str, /, platform: enums.MembershipType
-    ) -> None:
-        """Gets the platform friend of the requested type.
-
-        Parameters
-        ----------
-        access_token : `str`
-            The bearer access token associated with the bungie account.
-        platform : `aiobungie.MembershipType`
-            The friend memebrship type.
-
-        Raises
-        ------
-        `aiobungie.NotFound`
-            The requested friend was not found.
-        """
 
     def __str__(self) -> str:
         return self.unique_name

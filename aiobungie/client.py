@@ -26,7 +26,6 @@ from __future__ import annotations
 
 __all__: tuple[str, ...] = ("Client",)
 
-import copy
 import logging
 import typing
 
@@ -85,10 +84,6 @@ class Client(traits.ClientApp):
 
     Other Parameters
     ----------------
-    rest_client: `aiobungie.interfaces.RESTInterface | None`
-        An optional rest client instance you can pass.
-        If set to `None` then the client will use the default instance.
-
     max_retries : `int`
         The max retries number to retry if the request hit a `5xx` status code.
     max_ratelimit_retries : `int`
@@ -101,7 +96,7 @@ class Client(traits.ClientApp):
         This is only needed if you're fetching OAuth2 tokens with this client.
     """
 
-    __slots__ = ("_rest", "_factory", "_client_secret", "_client_id")
+    __slots__ = ("_rest", "_factory")
 
     def __init__(
         self,
@@ -110,24 +105,16 @@ class Client(traits.ClientApp):
         client_secret: typing.Optional[str] = None,
         client_id: typing.Optional[int] = None,
         *,
-        rest_client: typing.Optional[interfaces.RESTInterface] = None,
         max_retries: int = 4,
         max_ratelimit_retries: int = 3,
     ) -> None:
 
-        self._client_secret = client_secret
-        self._client_id = client_id
-
-        self._rest = (
-            rest_client
-            if rest_client is not None
-            else rest_.RESTClient(
-                token,
-                client_secret,
-                client_id,
-                max_retries=max_retries,
-                max_ratelimit_retries=max_ratelimit_retries,
-            )
+        self._rest = rest_.RESTClient(
+            token,
+            client_secret,
+            client_id,
+            max_retries=max_retries,
+            max_ratelimit_retries=max_ratelimit_retries,
         )
 
         self._factory = factory_.Factory(self)
@@ -142,7 +129,7 @@ class Client(traits.ClientApp):
 
     @property
     def request(self) -> Client:
-        return copy.copy(self)
+        return self
 
     @property
     def metadata(self) -> collections.MutableMapping[typing.Any, typing.Any]:

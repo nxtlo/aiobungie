@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.7...HEAD)
 
+## Changed
+* You can no longer pass `rest_client` instance to `Client` object.
+
 ## [0.2.7](https://github.com/nxtlo/aiobungie/compare/0.2.6...0.2.7) 10-08-2022
 
 ## Breaking Changes

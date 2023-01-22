@@ -1821,21 +1821,6 @@
                         <li>
                                 <a class="variable" href="#Friend.unique_name">unique_name</a>
                         </li>
-                        <li>
-                                <a class="function" href="#Friend.accept">accept</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#Friend.decline">decline</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#Friend.remove">remove</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#Friend.remove_request">remove_request</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#Friend.fetch_platform_friends">fetch_platform_friends</a>
-                        </li>
                 </ul>
 
             </li>
@@ -16161,129 +16146,47 @@ along with information we can use to determine their gating and availability.</p
 
     </div>
     <a class="headerlink" href="#Friend"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Friend-57"><a href="#Friend-57"><span class="linenos"> 57</span></a><span class="nd">@attrs</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="Friend-58"><a href="#Friend-58"><span class="linenos"> 58</span></a><span class="k">class</span> <span class="nc">Friend</span><span class="p">:</span>
-</span><span id="Friend-59"><a href="#Friend-59"><span class="linenos"> 59</span></a>    <span class="sd">&quot;&quot;&quot;Represents a bungie friend in your account.&quot;&quot;&quot;</span>
-</span><span id="Friend-60"><a href="#Friend-60"><span class="linenos"> 60</span></a>
-</span><span id="Friend-61"><a href="#Friend-61"><span class="linenos"> 61</span></a>    <span class="n">net</span><span class="p">:</span> <span class="n">traits</span><span class="o">.</span><span class="n">Netrunner</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">eq</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">hash</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</span><span id="Friend-62"><a href="#Friend-62"><span class="linenos"> 62</span></a>    <span class="sd">&quot;&quot;&quot;A network state we use to make external requests.&quot;&quot;&quot;</span>
-</span><span id="Friend-63"><a href="#Friend-63"><span class="linenos"> 63</span></a>
-</span><span id="Friend-64"><a href="#Friend-64"><span class="linenos"> 64</span></a>    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
-</span><span id="Friend-65"><a href="#Friend-65"><span class="linenos"> 65</span></a>    <span class="sd">&quot;&quot;&quot;The friend&#39;s last seen at id.&quot;&quot;&quot;</span>
-</span><span id="Friend-66"><a href="#Friend-66"><span class="linenos"> 66</span></a>
-</span><span id="Friend-67"><a href="#Friend-67"><span class="linenos"> 67</span></a>    <span class="nb">type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span>
-</span><span id="Friend-68"><a href="#Friend-68"><span class="linenos"> 68</span></a>    <span class="sd">&quot;&quot;&quot;The friend&#39;s last seen membership type.&quot;&quot;&quot;</span>
-</span><span id="Friend-69"><a href="#Friend-69"><span class="linenos"> 69</span></a>
-</span><span id="Friend-70"><a href="#Friend-70"><span class="linenos"> 70</span></a>    <span class="n">name</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-</span><span id="Friend-71"><a href="#Friend-71"><span class="linenos"> 71</span></a>    <span class="sd">&quot;&quot;&quot;The friend&#39;s last seen global display name. This field could be UNDEFINED if the player hasn&#39;t logged in yet.&quot;&quot;&quot;</span>
-</span><span id="Friend-72"><a href="#Friend-72"><span class="linenos"> 72</span></a>
-</span><span id="Friend-73"><a href="#Friend-73"><span class="linenos"> 73</span></a>    <span class="n">code</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">NoneOr</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
-</span><span id="Friend-74"><a href="#Friend-74"><span class="linenos"> 74</span></a>    <span class="sd">&quot;&quot;&quot;The friend&#39;s last seen global code. This field could be None if the player hasn&#39;t logged in yet.&quot;&quot;&quot;</span>
-</span><span id="Friend-75"><a href="#Friend-75"><span class="linenos"> 75</span></a>
-</span><span id="Friend-76"><a href="#Friend-76"><span class="linenos"> 76</span></a>    <span class="n">online_status</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">Presence</span>
-</span><span id="Friend-77"><a href="#Friend-77"><span class="linenos"> 77</span></a>    <span class="sd">&quot;&quot;&quot;The friend&#39;s online status.&quot;&quot;&quot;</span>
-</span><span id="Friend-78"><a href="#Friend-78"><span class="linenos"> 78</span></a>
-</span><span id="Friend-79"><a href="#Friend-79"><span class="linenos"> 79</span></a>    <span class="n">online_title</span><span class="p">:</span> <span class="nb">int</span>
-</span><span id="Friend-80"><a href="#Friend-80"><span class="linenos"> 80</span></a>    <span class="sd">&quot;&quot;&quot;The friend&#39;s online title.&quot;&quot;&quot;</span>
-</span><span id="Friend-81"><a href="#Friend-81"><span class="linenos"> 81</span></a>
-</span><span id="Friend-82"><a href="#Friend-82"><span class="linenos"> 82</span></a>    <span class="n">relationship</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">Relationship</span>
-</span><span id="Friend-83"><a href="#Friend-83"><span class="linenos"> 83</span></a>    <span class="sd">&quot;&quot;&quot;The friend&#39;s relationship type.&quot;&quot;&quot;</span>
-</span><span id="Friend-84"><a href="#Friend-84"><span class="linenos"> 84</span></a>
-</span><span id="Friend-85"><a href="#Friend-85"><span class="linenos"> 85</span></a>    <span class="n">user</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">NoneOr</span><span class="p">[</span><span class="n">user_</span><span class="o">.</span><span class="n">BungieUser</span><span class="p">]</span>
-</span><span id="Friend-86"><a href="#Friend-86"><span class="linenos"> 86</span></a>    <span class="sd">&quot;&quot;&quot;The friend&#39;s bungie user account. This field is optional and can be None in some states.&quot;&quot;&quot;</span>
-</span><span id="Friend-87"><a href="#Friend-87"><span class="linenos"> 87</span></a>
-</span><span id="Friend-88"><a href="#Friend-88"><span class="linenos"> 88</span></a>    <span class="nd">@property</span>
-</span><span id="Friend-89"><a href="#Friend-89"><span class="linenos"> 89</span></a>    <span class="k">def</span> <span class="nf">unique_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="Friend-90"><a href="#Friend-90"><span class="linenos"> 90</span></a>        <span class="sd">&quot;&quot;&quot;Friend&#39;s global unique display name.&quot;&quot;&quot;</span>
-</span><span id="Friend-91"><a href="#Friend-91"><span class="linenos"> 91</span></a>        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">#</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">code</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span id="Friend-92"><a href="#Friend-92"><span class="linenos"> 92</span></a>
-</span><span id="Friend-93"><a href="#Friend-93"><span class="linenos"> 93</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">accept</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Friend-94"><a href="#Friend-94"><span class="linenos"> 94</span></a>        <span class="sd">&quot;&quot;&quot;Accepts this friend&#39;s request.</span>
-</span><span id="Friend-95"><a href="#Friend-95"><span class="linenos"> 95</span></a>
-</span><span id="Friend-96"><a href="#Friend-96"><span class="linenos"> 96</span></a><span class="sd">        Parameters</span>
-</span><span id="Friend-97"><a href="#Friend-97"><span class="linenos"> 97</span></a><span class="sd">        ----------</span>
-</span><span id="Friend-98"><a href="#Friend-98"><span class="linenos"> 98</span></a><span class="sd">        access_token : `str`</span>
-</span><span id="Friend-99"><a href="#Friend-99"><span class="linenos"> 99</span></a><span class="sd">            The bearer access token associated with the bungie account.</span>
-</span><span id="Friend-100"><a href="#Friend-100"><span class="linenos">100</span></a>
-</span><span id="Friend-101"><a href="#Friend-101"><span class="linenos">101</span></a><span class="sd">        Raises</span>
-</span><span id="Friend-102"><a href="#Friend-102"><span class="linenos">102</span></a><span class="sd">        ------</span>
-</span><span id="Friend-103"><a href="#Friend-103"><span class="linenos">103</span></a><span class="sd">        `aiobungie.NotFound`</span>
-</span><span id="Friend-104"><a href="#Friend-104"><span class="linenos">104</span></a><span class="sd">            This user was not found in your pending requests.</span>
-</span><span id="Friend-105"><a href="#Friend-105"><span class="linenos">105</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Friend-106"><a href="#Friend-106"><span class="linenos">106</span></a>        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">accept_friend_request</span><span class="p">(</span><span class="n">access_token</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-</span><span id="Friend-107"><a href="#Friend-107"><span class="linenos">107</span></a>
-</span><span id="Friend-108"><a href="#Friend-108"><span class="linenos">108</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">decline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Friend-109"><a href="#Friend-109"><span class="linenos">109</span></a>        <span class="sd">&quot;&quot;&quot;Decline this friend request.</span>
-</span><span id="Friend-110"><a href="#Friend-110"><span class="linenos">110</span></a>
-</span><span id="Friend-111"><a href="#Friend-111"><span class="linenos">111</span></a><span class="sd">        Parameters</span>
-</span><span id="Friend-112"><a href="#Friend-112"><span class="linenos">112</span></a><span class="sd">        ----------</span>
-</span><span id="Friend-113"><a href="#Friend-113"><span class="linenos">113</span></a><span class="sd">        access_token : `str`</span>
-</span><span id="Friend-114"><a href="#Friend-114"><span class="linenos">114</span></a><span class="sd">            The bearer access token associated with the bungie account.</span>
-</span><span id="Friend-115"><a href="#Friend-115"><span class="linenos">115</span></a>
-</span><span id="Friend-116"><a href="#Friend-116"><span class="linenos">116</span></a><span class="sd">        Raises</span>
-</span><span id="Friend-117"><a href="#Friend-117"><span class="linenos">117</span></a><span class="sd">        ------</span>
-</span><span id="Friend-118"><a href="#Friend-118"><span class="linenos">118</span></a><span class="sd">        `aiobungie.NotFound`</span>
-</span><span id="Friend-119"><a href="#Friend-119"><span class="linenos">119</span></a><span class="sd">            This user is not found in your pending requests.</span>
-</span><span id="Friend-120"><a href="#Friend-120"><span class="linenos">120</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Friend-121"><a href="#Friend-121"><span class="linenos">121</span></a>        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">decline_friend_request</span><span class="p">(</span><span class="n">access_token</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-</span><span id="Friend-122"><a href="#Friend-122"><span class="linenos">122</span></a>
-</span><span id="Friend-123"><a href="#Friend-123"><span class="linenos">123</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Friend-124"><a href="#Friend-124"><span class="linenos">124</span></a>        <span class="sd">&quot;&quot;&quot;Removed an existing friend from your friend list.</span>
-</span><span id="Friend-125"><a href="#Friend-125"><span class="linenos">125</span></a>
-</span><span id="Friend-126"><a href="#Friend-126"><span class="linenos">126</span></a><span class="sd">        Parameters</span>
-</span><span id="Friend-127"><a href="#Friend-127"><span class="linenos">127</span></a><span class="sd">        ----------</span>
-</span><span id="Friend-128"><a href="#Friend-128"><span class="linenos">128</span></a><span class="sd">        access_token : `str`</span>
-</span><span id="Friend-129"><a href="#Friend-129"><span class="linenos">129</span></a><span class="sd">            The bearer access token associated with the bungie account.</span>
-</span><span id="Friend-130"><a href="#Friend-130"><span class="linenos">130</span></a>
-</span><span id="Friend-131"><a href="#Friend-131"><span class="linenos">131</span></a><span class="sd">        Raises</span>
-</span><span id="Friend-132"><a href="#Friend-132"><span class="linenos">132</span></a><span class="sd">        ------</span>
-</span><span id="Friend-133"><a href="#Friend-133"><span class="linenos">133</span></a><span class="sd">        `aiobungie.NotFound`</span>
-</span><span id="Friend-134"><a href="#Friend-134"><span class="linenos">134</span></a><span class="sd">            This friend was is found in your friend list.</span>
-</span><span id="Friend-135"><a href="#Friend-135"><span class="linenos">135</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Friend-136"><a href="#Friend-136"><span class="linenos">136</span></a>        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">remove_friend</span><span class="p">(</span><span class="n">access_token</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-</span><span id="Friend-137"><a href="#Friend-137"><span class="linenos">137</span></a>
-</span><span id="Friend-138"><a href="#Friend-138"><span class="linenos">138</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">remove_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Friend-139"><a href="#Friend-139"><span class="linenos">139</span></a>        <span class="sd">&quot;&quot;&quot;Removed an existing friend request.</span>
-</span><span id="Friend-140"><a href="#Friend-140"><span class="linenos">140</span></a>
-</span><span id="Friend-141"><a href="#Friend-141"><span class="linenos">141</span></a><span class="sd">        .. note::</span>
-</span><span id="Friend-142"><a href="#Friend-142"><span class="linenos">142</span></a><span class="sd">            The friend request must be on your friend request list.</span>
-</span><span id="Friend-143"><a href="#Friend-143"><span class="linenos">143</span></a>
-</span><span id="Friend-144"><a href="#Friend-144"><span class="linenos">144</span></a><span class="sd">        Parameters</span>
-</span><span id="Friend-145"><a href="#Friend-145"><span class="linenos">145</span></a><span class="sd">        ----------</span>
-</span><span id="Friend-146"><a href="#Friend-146"><span class="linenos">146</span></a><span class="sd">        access_token : `str`</span>
-</span><span id="Friend-147"><a href="#Friend-147"><span class="linenos">147</span></a><span class="sd">            The bearer access token associated with the bungie account.</span>
-</span><span id="Friend-148"><a href="#Friend-148"><span class="linenos">148</span></a>
-</span><span id="Friend-149"><a href="#Friend-149"><span class="linenos">149</span></a><span class="sd">        Returns</span>
-</span><span id="Friend-150"><a href="#Friend-150"><span class="linenos">150</span></a><span class="sd">        -------</span>
-</span><span id="Friend-151"><a href="#Friend-151"><span class="linenos">151</span></a><span class="sd">        `None`</span>
-</span><span id="Friend-152"><a href="#Friend-152"><span class="linenos">152</span></a><span class="sd">            None</span>
-</span><span id="Friend-153"><a href="#Friend-153"><span class="linenos">153</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Friend-154"><a href="#Friend-154"><span class="linenos">154</span></a>        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">remove_friend_request</span><span class="p">(</span><span class="n">access_token</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-</span><span id="Friend-155"><a href="#Friend-155"><span class="linenos">155</span></a>
-</span><span id="Friend-156"><a href="#Friend-156"><span class="linenos">156</span></a>    <span class="nd">@helpers</span><span class="o">.</span><span class="n">unimplemented</span><span class="p">()</span>
-</span><span id="Friend-157"><a href="#Friend-157"><span class="linenos">157</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_platform_friends</span><span class="p">(</span>
-</span><span id="Friend-158"><a href="#Friend-158"><span class="linenos">158</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="n">platform</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span>
-</span><span id="Friend-159"><a href="#Friend-159"><span class="linenos">159</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Friend-160"><a href="#Friend-160"><span class="linenos">160</span></a>        <span class="sd">&quot;&quot;&quot;Gets the platform friend of the requested type.</span>
-</span><span id="Friend-161"><a href="#Friend-161"><span class="linenos">161</span></a>
-</span><span id="Friend-162"><a href="#Friend-162"><span class="linenos">162</span></a><span class="sd">        Parameters</span>
-</span><span id="Friend-163"><a href="#Friend-163"><span class="linenos">163</span></a><span class="sd">        ----------</span>
-</span><span id="Friend-164"><a href="#Friend-164"><span class="linenos">164</span></a><span class="sd">        access_token : `str`</span>
-</span><span id="Friend-165"><a href="#Friend-165"><span class="linenos">165</span></a><span class="sd">            The bearer access token associated with the bungie account.</span>
-</span><span id="Friend-166"><a href="#Friend-166"><span class="linenos">166</span></a><span class="sd">        platform : `aiobungie.MembershipType`</span>
-</span><span id="Friend-167"><a href="#Friend-167"><span class="linenos">167</span></a><span class="sd">            The friend memebrship type.</span>
-</span><span id="Friend-168"><a href="#Friend-168"><span class="linenos">168</span></a>
-</span><span id="Friend-169"><a href="#Friend-169"><span class="linenos">169</span></a><span class="sd">        Raises</span>
-</span><span id="Friend-170"><a href="#Friend-170"><span class="linenos">170</span></a><span class="sd">        ------</span>
-</span><span id="Friend-171"><a href="#Friend-171"><span class="linenos">171</span></a><span class="sd">        `aiobungie.NotFound`</span>
-</span><span id="Friend-172"><a href="#Friend-172"><span class="linenos">172</span></a><span class="sd">            The requested friend was not found.</span>
-</span><span id="Friend-173"><a href="#Friend-173"><span class="linenos">173</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Friend-174"><a href="#Friend-174"><span class="linenos">174</span></a>
-</span><span id="Friend-175"><a href="#Friend-175"><span class="linenos">175</span></a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="Friend-176"><a href="#Friend-176"><span class="linenos">176</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_name</span>
-</span><span id="Friend-177"><a href="#Friend-177"><span class="linenos">177</span></a>
-</span><span id="Friend-178"><a href="#Friend-178"><span class="linenos">178</span></a>    <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-</span><span id="Friend-179"><a href="#Friend-179"><span class="linenos">179</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Friend-55"><a href="#Friend-55"><span class="linenos">55</span></a><span class="nd">@attrs</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="Friend-56"><a href="#Friend-56"><span class="linenos">56</span></a><span class="k">class</span> <span class="nc">Friend</span><span class="p">:</span>
+</span><span id="Friend-57"><a href="#Friend-57"><span class="linenos">57</span></a>    <span class="sd">&quot;&quot;&quot;Represents a bungie friend in your account.&quot;&quot;&quot;</span>
+</span><span id="Friend-58"><a href="#Friend-58"><span class="linenos">58</span></a>
+</span><span id="Friend-59"><a href="#Friend-59"><span class="linenos">59</span></a>    <span class="n">net</span><span class="p">:</span> <span class="n">traits</span><span class="o">.</span><span class="n">Netrunner</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">eq</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">hash</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span id="Friend-60"><a href="#Friend-60"><span class="linenos">60</span></a>    <span class="sd">&quot;&quot;&quot;A network state we use to make external requests.&quot;&quot;&quot;</span>
+</span><span id="Friend-61"><a href="#Friend-61"><span class="linenos">61</span></a>
+</span><span id="Friend-62"><a href="#Friend-62"><span class="linenos">62</span></a>    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
+</span><span id="Friend-63"><a href="#Friend-63"><span class="linenos">63</span></a>    <span class="sd">&quot;&quot;&quot;The friend&#39;s last seen at id.&quot;&quot;&quot;</span>
+</span><span id="Friend-64"><a href="#Friend-64"><span class="linenos">64</span></a>
+</span><span id="Friend-65"><a href="#Friend-65"><span class="linenos">65</span></a>    <span class="nb">type</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span>
+</span><span id="Friend-66"><a href="#Friend-66"><span class="linenos">66</span></a>    <span class="sd">&quot;&quot;&quot;The friend&#39;s last seen membership type.&quot;&quot;&quot;</span>
+</span><span id="Friend-67"><a href="#Friend-67"><span class="linenos">67</span></a>
+</span><span id="Friend-68"><a href="#Friend-68"><span class="linenos">68</span></a>    <span class="n">name</span><span class="p">:</span> <span class="n">undefined</span><span class="o">.</span><span class="n">UndefinedOr</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+</span><span id="Friend-69"><a href="#Friend-69"><span class="linenos">69</span></a>    <span class="sd">&quot;&quot;&quot;The friend&#39;s last seen global display name. This field could be UNDEFINED if the player hasn&#39;t logged in yet.&quot;&quot;&quot;</span>
+</span><span id="Friend-70"><a href="#Friend-70"><span class="linenos">70</span></a>
+</span><span id="Friend-71"><a href="#Friend-71"><span class="linenos">71</span></a>    <span class="n">code</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">NoneOr</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+</span><span id="Friend-72"><a href="#Friend-72"><span class="linenos">72</span></a>    <span class="sd">&quot;&quot;&quot;The friend&#39;s last seen global code. This field could be None if the player hasn&#39;t logged in yet.&quot;&quot;&quot;</span>
+</span><span id="Friend-73"><a href="#Friend-73"><span class="linenos">73</span></a>
+</span><span id="Friend-74"><a href="#Friend-74"><span class="linenos">74</span></a>    <span class="n">online_status</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">Presence</span>
+</span><span id="Friend-75"><a href="#Friend-75"><span class="linenos">75</span></a>    <span class="sd">&quot;&quot;&quot;The friend&#39;s online status.&quot;&quot;&quot;</span>
+</span><span id="Friend-76"><a href="#Friend-76"><span class="linenos">76</span></a>
+</span><span id="Friend-77"><a href="#Friend-77"><span class="linenos">77</span></a>    <span class="n">online_title</span><span class="p">:</span> <span class="nb">int</span>
+</span><span id="Friend-78"><a href="#Friend-78"><span class="linenos">78</span></a>    <span class="sd">&quot;&quot;&quot;The friend&#39;s online title.&quot;&quot;&quot;</span>
+</span><span id="Friend-79"><a href="#Friend-79"><span class="linenos">79</span></a>
+</span><span id="Friend-80"><a href="#Friend-80"><span class="linenos">80</span></a>    <span class="n">relationship</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">Relationship</span>
+</span><span id="Friend-81"><a href="#Friend-81"><span class="linenos">81</span></a>    <span class="sd">&quot;&quot;&quot;The friend&#39;s relationship type.&quot;&quot;&quot;</span>
+</span><span id="Friend-82"><a href="#Friend-82"><span class="linenos">82</span></a>
+</span><span id="Friend-83"><a href="#Friend-83"><span class="linenos">83</span></a>    <span class="n">user</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">NoneOr</span><span class="p">[</span><span class="n">user_</span><span class="o">.</span><span class="n">BungieUser</span><span class="p">]</span>
+</span><span id="Friend-84"><a href="#Friend-84"><span class="linenos">84</span></a>    <span class="sd">&quot;&quot;&quot;The friend&#39;s bungie user account. This field is optional and can be None in some states.&quot;&quot;&quot;</span>
+</span><span id="Friend-85"><a href="#Friend-85"><span class="linenos">85</span></a>
+</span><span id="Friend-86"><a href="#Friend-86"><span class="linenos">86</span></a>    <span class="nd">@property</span>
+</span><span id="Friend-87"><a href="#Friend-87"><span class="linenos">87</span></a>    <span class="k">def</span> <span class="nf">unique_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="Friend-88"><a href="#Friend-88"><span class="linenos">88</span></a>        <span class="sd">&quot;&quot;&quot;Friend&#39;s global unique display name.&quot;&quot;&quot;</span>
+</span><span id="Friend-89"><a href="#Friend-89"><span class="linenos">89</span></a>        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">#</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">code</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="Friend-90"><a href="#Friend-90"><span class="linenos">90</span></a>
+</span><span id="Friend-91"><a href="#Friend-91"><span class="linenos">91</span></a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="Friend-92"><a href="#Friend-92"><span class="linenos">92</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_name</span>
+</span><span id="Friend-93"><a href="#Friend-93"><span class="linenos">93</span></a>
+</span><span id="Friend-94"><a href="#Friend-94"><span class="linenos">94</span></a>    <span class="k">def</span> <span class="fm">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="Friend-95"><a href="#Friend-95"><span class="linenos">95</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
 </span></pre></div>
 
 
@@ -16449,252 +16352,6 @@ along with information we can use to determine their gating and availability.</p
 
 
                             </div>
-                            <div id="Friend.accept" class="classattr">
-                                        <input id="Friend.accept-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">async def</span>
-        <span class="name">accept</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span>, </span><span class="param"><span class="o">/</span></span><span class="return-annotation">) -> <span class="kc">None</span>:</span></span>
-
-                <label class="view-source-button" for="Friend.accept-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#Friend.accept"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Friend.accept-93"><a href="#Friend.accept-93"><span class="linenos"> 93</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">accept</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Friend.accept-94"><a href="#Friend.accept-94"><span class="linenos"> 94</span></a>        <span class="sd">&quot;&quot;&quot;Accepts this friend&#39;s request.</span>
-</span><span id="Friend.accept-95"><a href="#Friend.accept-95"><span class="linenos"> 95</span></a>
-</span><span id="Friend.accept-96"><a href="#Friend.accept-96"><span class="linenos"> 96</span></a><span class="sd">        Parameters</span>
-</span><span id="Friend.accept-97"><a href="#Friend.accept-97"><span class="linenos"> 97</span></a><span class="sd">        ----------</span>
-</span><span id="Friend.accept-98"><a href="#Friend.accept-98"><span class="linenos"> 98</span></a><span class="sd">        access_token : `str`</span>
-</span><span id="Friend.accept-99"><a href="#Friend.accept-99"><span class="linenos"> 99</span></a><span class="sd">            The bearer access token associated with the bungie account.</span>
-</span><span id="Friend.accept-100"><a href="#Friend.accept-100"><span class="linenos">100</span></a>
-</span><span id="Friend.accept-101"><a href="#Friend.accept-101"><span class="linenos">101</span></a><span class="sd">        Raises</span>
-</span><span id="Friend.accept-102"><a href="#Friend.accept-102"><span class="linenos">102</span></a><span class="sd">        ------</span>
-</span><span id="Friend.accept-103"><a href="#Friend.accept-103"><span class="linenos">103</span></a><span class="sd">        `aiobungie.NotFound`</span>
-</span><span id="Friend.accept-104"><a href="#Friend.accept-104"><span class="linenos">104</span></a><span class="sd">            This user was not found in your pending requests.</span>
-</span><span id="Friend.accept-105"><a href="#Friend.accept-105"><span class="linenos">105</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Friend.accept-106"><a href="#Friend.accept-106"><span class="linenos">106</span></a>        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">accept_friend_request</span><span class="p">(</span><span class="n">access_token</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Accepts this friend's request.</p>
-
-<h6 id="parameters">Parameters</h6>
-
-<ul>
-<li><strong>access_token</strong> (<code>str</code>):
-The bearer access token associated with the bungie account.</li>
-</ul>
-
-<h6 id="raises">Raises</h6>
-
-<ul>
-<li><strong><code><a href="../aiobungie.html#NotFound">aiobungie.NotFound</a></code></strong>: This user was not found in your pending requests.</li>
-</ul>
-</div>
-
-
-                            </div>
-                            <div id="Friend.decline" class="classattr">
-                                        <input id="Friend.decline-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">async def</span>
-        <span class="name">decline</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span>, </span><span class="param"><span class="o">/</span></span><span class="return-annotation">) -> <span class="kc">None</span>:</span></span>
-
-                <label class="view-source-button" for="Friend.decline-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#Friend.decline"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Friend.decline-108"><a href="#Friend.decline-108"><span class="linenos">108</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">decline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Friend.decline-109"><a href="#Friend.decline-109"><span class="linenos">109</span></a>        <span class="sd">&quot;&quot;&quot;Decline this friend request.</span>
-</span><span id="Friend.decline-110"><a href="#Friend.decline-110"><span class="linenos">110</span></a>
-</span><span id="Friend.decline-111"><a href="#Friend.decline-111"><span class="linenos">111</span></a><span class="sd">        Parameters</span>
-</span><span id="Friend.decline-112"><a href="#Friend.decline-112"><span class="linenos">112</span></a><span class="sd">        ----------</span>
-</span><span id="Friend.decline-113"><a href="#Friend.decline-113"><span class="linenos">113</span></a><span class="sd">        access_token : `str`</span>
-</span><span id="Friend.decline-114"><a href="#Friend.decline-114"><span class="linenos">114</span></a><span class="sd">            The bearer access token associated with the bungie account.</span>
-</span><span id="Friend.decline-115"><a href="#Friend.decline-115"><span class="linenos">115</span></a>
-</span><span id="Friend.decline-116"><a href="#Friend.decline-116"><span class="linenos">116</span></a><span class="sd">        Raises</span>
-</span><span id="Friend.decline-117"><a href="#Friend.decline-117"><span class="linenos">117</span></a><span class="sd">        ------</span>
-</span><span id="Friend.decline-118"><a href="#Friend.decline-118"><span class="linenos">118</span></a><span class="sd">        `aiobungie.NotFound`</span>
-</span><span id="Friend.decline-119"><a href="#Friend.decline-119"><span class="linenos">119</span></a><span class="sd">            This user is not found in your pending requests.</span>
-</span><span id="Friend.decline-120"><a href="#Friend.decline-120"><span class="linenos">120</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Friend.decline-121"><a href="#Friend.decline-121"><span class="linenos">121</span></a>        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">decline_friend_request</span><span class="p">(</span><span class="n">access_token</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Decline this friend request.</p>
-
-<h6 id="parameters">Parameters</h6>
-
-<ul>
-<li><strong>access_token</strong> (<code>str</code>):
-The bearer access token associated with the bungie account.</li>
-</ul>
-
-<h6 id="raises">Raises</h6>
-
-<ul>
-<li><strong><code><a href="../aiobungie.html#NotFound">aiobungie.NotFound</a></code></strong>: This user is not found in your pending requests.</li>
-</ul>
-</div>
-
-
-                            </div>
-                            <div id="Friend.remove" class="classattr">
-                                        <input id="Friend.remove-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">async def</span>
-        <span class="name">remove</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span>, </span><span class="param"><span class="o">/</span></span><span class="return-annotation">) -> <span class="kc">None</span>:</span></span>
-
-                <label class="view-source-button" for="Friend.remove-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#Friend.remove"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Friend.remove-123"><a href="#Friend.remove-123"><span class="linenos">123</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Friend.remove-124"><a href="#Friend.remove-124"><span class="linenos">124</span></a>        <span class="sd">&quot;&quot;&quot;Removed an existing friend from your friend list.</span>
-</span><span id="Friend.remove-125"><a href="#Friend.remove-125"><span class="linenos">125</span></a>
-</span><span id="Friend.remove-126"><a href="#Friend.remove-126"><span class="linenos">126</span></a><span class="sd">        Parameters</span>
-</span><span id="Friend.remove-127"><a href="#Friend.remove-127"><span class="linenos">127</span></a><span class="sd">        ----------</span>
-</span><span id="Friend.remove-128"><a href="#Friend.remove-128"><span class="linenos">128</span></a><span class="sd">        access_token : `str`</span>
-</span><span id="Friend.remove-129"><a href="#Friend.remove-129"><span class="linenos">129</span></a><span class="sd">            The bearer access token associated with the bungie account.</span>
-</span><span id="Friend.remove-130"><a href="#Friend.remove-130"><span class="linenos">130</span></a>
-</span><span id="Friend.remove-131"><a href="#Friend.remove-131"><span class="linenos">131</span></a><span class="sd">        Raises</span>
-</span><span id="Friend.remove-132"><a href="#Friend.remove-132"><span class="linenos">132</span></a><span class="sd">        ------</span>
-</span><span id="Friend.remove-133"><a href="#Friend.remove-133"><span class="linenos">133</span></a><span class="sd">        `aiobungie.NotFound`</span>
-</span><span id="Friend.remove-134"><a href="#Friend.remove-134"><span class="linenos">134</span></a><span class="sd">            This friend was is found in your friend list.</span>
-</span><span id="Friend.remove-135"><a href="#Friend.remove-135"><span class="linenos">135</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Friend.remove-136"><a href="#Friend.remove-136"><span class="linenos">136</span></a>        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">remove_friend</span><span class="p">(</span><span class="n">access_token</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Removed an existing friend from your friend list.</p>
-
-<h6 id="parameters">Parameters</h6>
-
-<ul>
-<li><strong>access_token</strong> (<code>str</code>):
-The bearer access token associated with the bungie account.</li>
-</ul>
-
-<h6 id="raises">Raises</h6>
-
-<ul>
-<li><strong><code><a href="../aiobungie.html#NotFound">aiobungie.NotFound</a></code></strong>: This friend was is found in your friend list.</li>
-</ul>
-</div>
-
-
-                            </div>
-                            <div id="Friend.remove_request" class="classattr">
-                                        <input id="Friend.remove_request-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">async def</span>
-        <span class="name">remove_request</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span>, </span><span class="param"><span class="o">/</span></span><span class="return-annotation">) -> <span class="kc">None</span>:</span></span>
-
-                <label class="view-source-button" for="Friend.remove_request-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#Friend.remove_request"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Friend.remove_request-138"><a href="#Friend.remove_request-138"><span class="linenos">138</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">remove_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Friend.remove_request-139"><a href="#Friend.remove_request-139"><span class="linenos">139</span></a>        <span class="sd">&quot;&quot;&quot;Removed an existing friend request.</span>
-</span><span id="Friend.remove_request-140"><a href="#Friend.remove_request-140"><span class="linenos">140</span></a>
-</span><span id="Friend.remove_request-141"><a href="#Friend.remove_request-141"><span class="linenos">141</span></a><span class="sd">        .. note::</span>
-</span><span id="Friend.remove_request-142"><a href="#Friend.remove_request-142"><span class="linenos">142</span></a><span class="sd">            The friend request must be on your friend request list.</span>
-</span><span id="Friend.remove_request-143"><a href="#Friend.remove_request-143"><span class="linenos">143</span></a>
-</span><span id="Friend.remove_request-144"><a href="#Friend.remove_request-144"><span class="linenos">144</span></a><span class="sd">        Parameters</span>
-</span><span id="Friend.remove_request-145"><a href="#Friend.remove_request-145"><span class="linenos">145</span></a><span class="sd">        ----------</span>
-</span><span id="Friend.remove_request-146"><a href="#Friend.remove_request-146"><span class="linenos">146</span></a><span class="sd">        access_token : `str`</span>
-</span><span id="Friend.remove_request-147"><a href="#Friend.remove_request-147"><span class="linenos">147</span></a><span class="sd">            The bearer access token associated with the bungie account.</span>
-</span><span id="Friend.remove_request-148"><a href="#Friend.remove_request-148"><span class="linenos">148</span></a>
-</span><span id="Friend.remove_request-149"><a href="#Friend.remove_request-149"><span class="linenos">149</span></a><span class="sd">        Returns</span>
-</span><span id="Friend.remove_request-150"><a href="#Friend.remove_request-150"><span class="linenos">150</span></a><span class="sd">        -------</span>
-</span><span id="Friend.remove_request-151"><a href="#Friend.remove_request-151"><span class="linenos">151</span></a><span class="sd">        `None`</span>
-</span><span id="Friend.remove_request-152"><a href="#Friend.remove_request-152"><span class="linenos">152</span></a><span class="sd">            None</span>
-</span><span id="Friend.remove_request-153"><a href="#Friend.remove_request-153"><span class="linenos">153</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Friend.remove_request-154"><a href="#Friend.remove_request-154"><span class="linenos">154</span></a>        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">rest</span><span class="o">.</span><span class="n">remove_friend_request</span><span class="p">(</span><span class="n">access_token</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Removed an existing friend request.</p>
-
-<div class="pdoc-alert pdoc-alert-note">
-
-<p>The friend request must be on your friend request list.</p>
-
-</div>
-
-<h6 id="parameters">Parameters</h6>
-
-<ul>
-<li><strong>access_token</strong> (<code>str</code>):
-The bearer access token associated with the bungie account.</li>
-</ul>
-
-<h6 id="returns">Returns</h6>
-
-<ul>
-<li><strong><code>None</code></strong>: None</li>
-</ul>
-</div>
-
-
-                            </div>
-                            <div id="Friend.fetch_platform_friends" class="classattr">
-                                        <input id="Friend.fetch_platform_friends-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-                    <div class="decorator">@helpers.unimplemented()</div>
-
-        <span class="def">def</span>
-        <span class="name">fetch_platform_friends</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span>,</span><span class="param">	<span class="o">/</span>,</span><span class="param">	<span class="n">platform</span><span class="p">:</span> <span class="n"><a href="internal/enums.html#MembershipType">aiobungie.internal.enums.MembershipType</a></span></span><span class="return-annotation">) -> <span class="kc">None</span>:</span></span>
-
-                <label class="view-source-button" for="Friend.fetch_platform_friends-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#Friend.fetch_platform_friends"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Friend.fetch_platform_friends-156"><a href="#Friend.fetch_platform_friends-156"><span class="linenos">156</span></a>    <span class="nd">@helpers</span><span class="o">.</span><span class="n">unimplemented</span><span class="p">()</span>
-</span><span id="Friend.fetch_platform_friends-157"><a href="#Friend.fetch_platform_friends-157"><span class="linenos">157</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_platform_friends</span><span class="p">(</span>
-</span><span id="Friend.fetch_platform_friends-158"><a href="#Friend.fetch_platform_friends-158"><span class="linenos">158</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="n">platform</span><span class="p">:</span> <span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span>
-</span><span id="Friend.fetch_platform_friends-159"><a href="#Friend.fetch_platform_friends-159"><span class="linenos">159</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="Friend.fetch_platform_friends-160"><a href="#Friend.fetch_platform_friends-160"><span class="linenos">160</span></a>        <span class="sd">&quot;&quot;&quot;Gets the platform friend of the requested type.</span>
-</span><span id="Friend.fetch_platform_friends-161"><a href="#Friend.fetch_platform_friends-161"><span class="linenos">161</span></a>
-</span><span id="Friend.fetch_platform_friends-162"><a href="#Friend.fetch_platform_friends-162"><span class="linenos">162</span></a><span class="sd">        Parameters</span>
-</span><span id="Friend.fetch_platform_friends-163"><a href="#Friend.fetch_platform_friends-163"><span class="linenos">163</span></a><span class="sd">        ----------</span>
-</span><span id="Friend.fetch_platform_friends-164"><a href="#Friend.fetch_platform_friends-164"><span class="linenos">164</span></a><span class="sd">        access_token : `str`</span>
-</span><span id="Friend.fetch_platform_friends-165"><a href="#Friend.fetch_platform_friends-165"><span class="linenos">165</span></a><span class="sd">            The bearer access token associated with the bungie account.</span>
-</span><span id="Friend.fetch_platform_friends-166"><a href="#Friend.fetch_platform_friends-166"><span class="linenos">166</span></a><span class="sd">        platform : `aiobungie.MembershipType`</span>
-</span><span id="Friend.fetch_platform_friends-167"><a href="#Friend.fetch_platform_friends-167"><span class="linenos">167</span></a><span class="sd">            The friend memebrship type.</span>
-</span><span id="Friend.fetch_platform_friends-168"><a href="#Friend.fetch_platform_friends-168"><span class="linenos">168</span></a>
-</span><span id="Friend.fetch_platform_friends-169"><a href="#Friend.fetch_platform_friends-169"><span class="linenos">169</span></a><span class="sd">        Raises</span>
-</span><span id="Friend.fetch_platform_friends-170"><a href="#Friend.fetch_platform_friends-170"><span class="linenos">170</span></a><span class="sd">        ------</span>
-</span><span id="Friend.fetch_platform_friends-171"><a href="#Friend.fetch_platform_friends-171"><span class="linenos">171</span></a><span class="sd">        `aiobungie.NotFound`</span>
-</span><span id="Friend.fetch_platform_friends-172"><a href="#Friend.fetch_platform_friends-172"><span class="linenos">172</span></a><span class="sd">            The requested friend was not found.</span>
-</span><span id="Friend.fetch_platform_friends-173"><a href="#Friend.fetch_platform_friends-173"><span class="linenos">173</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Gets the platform friend of the requested type.</p>
-
-<h6 id="parameters">Parameters</h6>
-
-<ul>
-<li><strong>access_token</strong> (<code>str</code>):
-The bearer access token associated with the bungie account.</li>
-<li><strong>platform</strong> (<code><a href="../aiobungie.html#MembershipType">aiobungie.MembershipType</a></code>):
-The friend memebrship type.</li>
-</ul>
-
-<h6 id="raises">Raises</h6>
-
-<ul>
-<li><strong><code><a href="../aiobungie.html#NotFound">aiobungie.NotFound</a></code></strong>: The requested friend was not found.</li>
-</ul>
-</div>
-
-
-                            </div>
                 </section>
                 <section id="FriendRequestView">
                             <input id="FriendRequestView-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
@@ -16708,15 +16365,15 @@ The friend memebrship type.</li>
 
     </div>
     <a class="headerlink" href="#FriendRequestView"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FriendRequestView-46"><a href="#FriendRequestView-46"><span class="linenos">46</span></a><span class="nd">@attrs</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="FriendRequestView-47"><a href="#FriendRequestView-47"><span class="linenos">47</span></a><span class="k">class</span> <span class="nc">FriendRequestView</span><span class="p">:</span>
-</span><span id="FriendRequestView-48"><a href="#FriendRequestView-48"><span class="linenos">48</span></a>    <span class="sd">&quot;&quot;&quot;A view of the pending friend requests queue.&quot;&quot;&quot;</span>
-</span><span id="FriendRequestView-49"><a href="#FriendRequestView-49"><span class="linenos">49</span></a>
-</span><span id="FriendRequestView-50"><a href="#FriendRequestView-50"><span class="linenos">50</span></a>    <span class="n">incoming</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Friend</span><span class="p">]</span>
-</span><span id="FriendRequestView-51"><a href="#FriendRequestView-51"><span class="linenos">51</span></a>    <span class="sd">&quot;&quot;&quot;The incoming friend request view.&quot;&quot;&quot;</span>
-</span><span id="FriendRequestView-52"><a href="#FriendRequestView-52"><span class="linenos">52</span></a>
-</span><span id="FriendRequestView-53"><a href="#FriendRequestView-53"><span class="linenos">53</span></a>    <span class="n">outgoing</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Friend</span><span class="p">]</span>
-</span><span id="FriendRequestView-54"><a href="#FriendRequestView-54"><span class="linenos">54</span></a>    <span class="sd">&quot;&quot;&quot;The outgoing friend request view.&quot;&quot;&quot;</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FriendRequestView-44"><a href="#FriendRequestView-44"><span class="linenos">44</span></a><span class="nd">@attrs</span><span class="o">.</span><span class="n">define</span><span class="p">(</span><span class="n">kw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="FriendRequestView-45"><a href="#FriendRequestView-45"><span class="linenos">45</span></a><span class="k">class</span> <span class="nc">FriendRequestView</span><span class="p">:</span>
+</span><span id="FriendRequestView-46"><a href="#FriendRequestView-46"><span class="linenos">46</span></a>    <span class="sd">&quot;&quot;&quot;A view of the pending friend requests queue.&quot;&quot;&quot;</span>
+</span><span id="FriendRequestView-47"><a href="#FriendRequestView-47"><span class="linenos">47</span></a>
+</span><span id="FriendRequestView-48"><a href="#FriendRequestView-48"><span class="linenos">48</span></a>    <span class="n">incoming</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Friend</span><span class="p">]</span>
+</span><span id="FriendRequestView-49"><a href="#FriendRequestView-49"><span class="linenos">49</span></a>    <span class="sd">&quot;&quot;&quot;The incoming friend request view.&quot;&quot;&quot;</span>
+</span><span id="FriendRequestView-50"><a href="#FriendRequestView-50"><span class="linenos">50</span></a>
+</span><span id="FriendRequestView-51"><a href="#FriendRequestView-51"><span class="linenos">51</span></a>    <span class="n">outgoing</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Friend</span><span class="p">]</span>
+</span><span id="FriendRequestView-52"><a href="#FriendRequestView-52"><span class="linenos">52</span></a>    <span class="sd">&quot;&quot;&quot;The outgoing friend request view.&quot;&quot;&quot;</span>
 </span></pre></div>
 
 

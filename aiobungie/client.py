@@ -86,8 +86,6 @@ class Client(traits.ClientApp):
     ----------------
     max_retries : `int`
         The max retries number to retry if the request hit a `5xx` status code.
-    max_ratelimit_retries : `int`
-        The max retries number to retry if the request hit a `429` status code. Defaults to `3`.
     client_secret : `str | None`
         An optional application client secret,
         This is only needed if you're fetching OAuth2 tokens with this client.
@@ -106,7 +104,6 @@ class Client(traits.ClientApp):
         client_id: typing.Optional[int] = None,
         *,
         max_retries: int = 4,
-        max_ratelimit_retries: int = 3,
     ) -> None:
 
         self._rest = rest_.RESTClient(
@@ -114,7 +111,6 @@ class Client(traits.ClientApp):
             client_secret,
             client_id,
             max_retries=max_retries,
-            max_ratelimit_retries=max_ratelimit_retries,
         )
 
         self._factory = factory_.Factory(self)

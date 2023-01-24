@@ -2,11 +2,16 @@
 count = true
 
 ignore = 
-    E402, # Module import level.
-    w503, # Line breaks before operators.
-    W504, # Line breaks.
-    E302, # Blank Lines are too close.
-    E704, # Multiple statements in one line.
+    # Module import level.
+    E402,
+    # Line breaks before operators.
+    W503,
+    # Line breaks.
+    W504,
+    # Blank Lines are too close.
+    E302,
+    # Multiple statements in one line.
+    E704,
 
 per-file-ignores =
     # This is only for __init__.py stubs when importing * from and never used.

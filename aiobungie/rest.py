@@ -49,10 +49,10 @@ import zipfile
 
 import aiohttp
 
-from aiobungie import _info as info  # type: ignore[private-usage]
 from aiobungie import builders
 from aiobungie import error
 from aiobungie import interfaces
+from aiobungie import metadata
 from aiobungie import typedefs
 from aiobungie import undefined
 from aiobungie import url
@@ -92,7 +92,7 @@ _AUTH_HEADER: typing.Final[str] = sys.intern("Authorization")
 _USER_AGENT_HEADERS: typing.Final[str] = sys.intern("User-Agent")
 _USER_AGENT: typing.Final[
     str
-] = f"AiobungieClient ({info.__author__}), ({info.__version__}), ({info.__url__})"
+] = f"AiobungieClient (Author: {metadata.__author__}), (Version: {metadata.__version__}), (URL: {metadata.__url__})"
 
 TRACE: typing.Final[int] = logging.DEBUG - 5
 """The trace logging level for the `RESTClient` responses.
@@ -152,7 +152,7 @@ def _write_json_bytes(
 ) -> None:
     import json
 
-    with open(_get_path(file_name, path), "wb") as file:
+    with _get_path(file_name, path).open("wb") as file:
         file.write(json.dumps(json.loads(data), indent=4).encode("utf-8"))
 
 
@@ -192,9 +192,6 @@ class _Session:
         owner: bool = False,
         raise_status: bool = False,
         total_timeout: typing.Optional[float] = 30,
-        connect: typing.Optional[float] = None,
-        socket_read: typing.Optional[float] = None,
-        socket_connect: typing.Optional[float] = None,
     ) -> _Session:
         """Creates a new TCP connection client session."""
         session = aiohttp.ClientSession(
@@ -203,9 +200,6 @@ class _Session:
             raise_for_status=raise_status,
             timeout=aiohttp.ClientTimeout(
                 total=total_timeout,
-                sock_read=socket_read,
-                sock_connect=socket_connect,
-                connect=connect,
             ),
         )
         _LOG.debug("New session created.")
@@ -465,7 +459,7 @@ class RESTClient(interfaces.RESTInterface):
         if self.is_alive:
             raise RuntimeError("Cannot open a new session while it's already open.")
 
-        self._session = _Session.create(owner=False, raise_status=False)
+        self._session = _Session.create()
 
     @typing.final
     def enable_debugging(

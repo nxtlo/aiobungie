@@ -31,7 +31,7 @@ classifiers = [
 python = "^3.9"
 python-dateutil = "2.8.2"
 aiohttp = "3.8.3"
-attrs = "22.1.0"
+attrs = "22.2.0"
 
 [tool.pytest.ini_options]
 xfail_strict = true

@@ -132,13 +132,13 @@ from aiobungie.undefined import UNDEFINED
 from aiobungie.undefined import UndefinedOr
 from aiobungie.undefined import UndefinedType
 
-from ._info import __about__
-from ._info import __author__
-from ._info import __docs__
-from ._info import __email__
-from ._info import __license__
-from ._info import __url__
-from ._info import __version__
+from .metadata import __about__
+from .metadata import __author__
+from .metadata import __docs__
+from .metadata import __email__
+from .metadata import __license__
+from .metadata import __url__
+from .metadata import __version__
 
 # Alias for crate for backwards compatibility.
 crate = crates

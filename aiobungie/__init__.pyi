@@ -18,13 +18,6 @@ from aiobungie.undefined import UNDEFINED as UNDEFINED
 from aiobungie.undefined import UndefinedOr as UndefinedOr
 from aiobungie.undefined import UndefinedType as UndefinedType
 
-from ._info import __about__ as __about__
-from ._info import __author__ as __author__
-from ._info import __docs__ as __docs__
-from ._info import __email__ as __email__
-from ._info import __license__ as __license__
-from ._info import __url__ as __url__
-from ._info import __version__ as __version__
 from .crates.activity import Difficulty as Difficulty
 from .crates.components import ComponentFields as ComponentFields
 from .crates.components import ComponentPrivacy as ComponentPrivacy
@@ -36,6 +29,13 @@ from .crates.fireteams import FireteamDate as FireteamDate
 from .crates.fireteams import FireteamLanguage as FireteamLanguage
 from .crates.fireteams import FireteamPlatform as FireteamPlatform
 from .crates.records import RecordState as RecordState
+from .metadata import __about__ as __about__
+from .metadata import __author__ as __author__
+from .metadata import __docs__ as __docs__
+from .metadata import __email__ as __email__
+from .metadata import __license__ as __license__
+from .metadata import __url__ as __url__
+from .metadata import __version__ as __version__
 
 crate = crates
 __all__: Incomplete

@@ -47,20 +47,37 @@ import typing
 
 import attrs
 
+from aiobungie.internal import enums
+
 if typing.TYPE_CHECKING:
     import aiohttp
     import multidict
     from aiohttp import typedefs
 
+_MEMBERSHIP_LOOKUP: dict[str, enums.MembershipType] = {
+    "TigerSteam": enums.MembershipType.STEAM,
+    "TigerXbox": enums.MembershipType.XBOX,
+    "TigerPsn": enums.MembershipType.PSN,
+    "TigerBlizzard": enums.MembershipType.BLIZZARD,
+    "TigerEgs": enums.MembershipType.EPIC_GAMES_STORE,
+    "BungieNext": enums.MembershipType.BUNGIE,
+    "TigerStadia": enums.MembershipType.STADIA,
+    "TigerDemon": enums.MembershipType.DEMON,
+}
+
+_DETERMINE_MSHIP: collections.Callable[
+    [str], enums.MembershipType
+] = lambda mship: _MEMBERSHIP_LOOKUP[mship]
+
 
 @attrs.define(auto_exc=True)
 class AiobungieError(RuntimeError):
-    """Base exception class that all other errors inherit from."""
+    """Base class that all other exceptions inherit from."""
 
 
 @attrs.define(auto_exc=True)
 class HTTPError(AiobungieError):
-    """Exception base used for HTTP request errors."""
+    """Base HTTP request errors exception."""
 
     message: str
     """The error message."""
@@ -71,7 +88,7 @@ class HTTPError(AiobungieError):
 
 @attrs.define(auto_exc=True, kw_only=True)
 class HTTPException(HTTPError):
-    """Exception base internally used for an HTTP request response errors."""
+    """An in-depth HTTP exception that's raised with more information."""
 
     error_code: int
     """The returned Bungie error status code."""
@@ -127,7 +144,7 @@ class Forbidden(HTTPException):
 
 @attrs.define(auto_exc=True)
 class NotFound(HTTPException):
-    """Raised when an unknown request was not found."""
+    """Raised when an unknown resource was not found."""
 
     http_status: http.HTTPStatus = attrs.field(
         default=http.HTTPStatus.NOT_FOUND, init=False
@@ -136,7 +153,7 @@ class NotFound(HTTPException):
 
 @attrs.define(auto_exc=True)
 class Unauthorized(HTTPException):
-    """Unauthorized access."""
+    """An exception that's raised when trying to make unauthorized call to a resource and it returns 404."""
 
     http_status: http.HTTPStatus = attrs.field(
         default=http.HTTPStatus.UNAUTHORIZED, init=False
@@ -145,7 +162,7 @@ class Unauthorized(HTTPException):
 
 @attrs.define(auto_exc=True)
 class BadRequest(HTTPError):
-    """Bad requests exceptions."""
+    """An exception raised when requesting a resource with the provided data is wrong."""
 
     url: typing.Optional[typedefs.StrOrURL]
     """The URL/endpoint caused this error."""
@@ -156,7 +173,9 @@ class BadRequest(HTTPError):
     headers: multidict.CIMultiDictProxy[str]
     """The response headers."""
 
-    http_status: http.HTTPStatus = attrs.field(default=http.HTTPStatus.BAD_REQUEST)
+    http_status: http.HTTPStatus = attrs.field(
+        default=http.HTTPStatus.BAD_REQUEST, init=False
+    )
 
 
 @attrs.define(auto_exc=True)
@@ -165,21 +184,55 @@ class MembershipTypeError(BadRequest):
 
     Those fields are useful since it returns the correct membership and id which can be used
     to make the request again with those fields.
+
+    Example
+    -------
+    ```py
+    try:
+        profile = await client.fetch_profile(
+            member_id=1,
+            type=aiobungie.MembershipType.STADIA,
+            components=[]
+        )
+
+    # Membership type is wrong!
+    except aiobungie.MembershipTypeError as err:
+        correct_membersip = err.into_membership()
+        profile_id = err.membership_id
+
+        # Recall the method.
+        profile = await client.fetch_profile(
+            member_id=profile_id,
+            type=correct_membership,
+            components=[]
+        )
+    ```
     """
 
-    membership_type: str = attrs.field(default="")
+    membership_type: str
     """The errored membership type passed to the request."""
 
-    membership_id: int = attrs.field(default=0)
+    membership_id: int
     """The errored user's membership id."""
 
-    required_membership: str = attrs.field(default="")
+    required_membership: str
     """The required correct membership for errored user."""
+
+    def into_membership(
+        self, value: typing.Optional[str] = None
+    ) -> enums.MembershipType:
+        """Turn the required membership from `str` into `aiobungie.Membership` type.
+
+        If value parameter is not provided it will fall back to the required membership.
+        """
+        if value is None:
+            return _DETERMINE_MSHIP(self.required_membership)
+        return _DETERMINE_MSHIP(value)
 
     def __str__(self) -> str:
         return (
-            f"Expected membership: {self.required_membership}, "
-            f"But got {self.membership_type} for id {self.membership_id}"
+            f"Expected membership: {self.into_membership().name.replace('_', '').title()}, "
+            f"But got {self.into_membership(self.membership_type)} for id {self.membership_id}"
         )
 
     def __int__(self) -> int:
@@ -193,12 +246,12 @@ class InternalServerError(HTTPException):
 
 @attrs.define(auto_exc=True)
 class ResponseError(HTTPException):
-    """Standard HTTP responses exception."""
+    """Exception for other HTTP response errors."""
 
 
 @attrs.define(auto_exc=True)
 class RateLimitedError(HTTPError):
-    """Raised when being hit with ratelimits."""
+    """Raised when too many request status code is returned."""
 
     http_status: http.HTTPStatus = attrs.field(
         default=http.HTTPStatus.TOO_MANY_REQUESTS, init=False

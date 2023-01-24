@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `decline` -> `rest.decline_friend_request`
     - `remove` -> `rest.remove_friend`
     - `remove_request` -> `rest.remove_friend_request`
+- Parameter `max_ratelimit_retries` removed from client impls.
 
 ## [0.2.7](https://github.com/nxtlo/aiobungie/compare/0.2.6...0.2.7) 10-08-2022
 

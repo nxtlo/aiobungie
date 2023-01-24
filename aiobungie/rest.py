@@ -41,7 +41,6 @@ import http
 import logging
 import os
 import pathlib
-import random
 import sys
 import typing
 import uuid
@@ -228,10 +227,6 @@ class RequestMethod(str, enums.Enum):
     """DELETE methods"""
 
 
-class _Dyn(RuntimeError):
-    ...
-
-
 class RESTPool:
     """Pool of `RESTClient` instances.
 
@@ -271,8 +266,6 @@ class RESTPool:
     ----------------
     max_retries : `int`
         The max retries number to retry if the request hit a `5xx` status code.
-    max_ratelimit_retries : `int`
-        The max retries number to retry if the request hit a `429` status code. Defaults to `3`.
     client_secret : `typing.Optional[str]`
         An optional application client secret,
         This is only needed if you're fetching OAuth2 tokens with this client.
@@ -295,7 +288,6 @@ class RESTPool:
         "_max_retries",
         "_client_secret",
         "_client_id",
-        "_max_rate_limit_retries",
         "_metadata",
         "_enable_debug",
     )
@@ -312,14 +304,12 @@ class RESTPool:
         client_id: typing.Optional[int] = None,
         *,
         max_retries: int = 4,
-        max_rate_limit_retries: int = 3,
         enable_debugging: typing.Union[typing.Literal["TRACE"], bool, int] = False,
     ) -> None:
         self._client_secret = client_secret
         self._client_id = client_id
         self._token: str = token
         self._max_retries = max_retries
-        self._max_rate_limit_retries = max_rate_limit_retries
         self._metadata: collections.MutableMapping[typing.Any, typing.Any] = {}
         self._enable_debug = enable_debugging
 
@@ -346,7 +336,6 @@ class RESTPool:
             client_secret=self._client_secret,
             client_id=self._client_id,
             max_retries=self._max_retries,
-            max_ratelimit_retries=self._max_rate_limit_retries,
             enable_debugging=self._enable_debug,
         )
         return instance
@@ -384,8 +373,6 @@ class RESTClient(interfaces.RESTInterface):
     ----------------
     max_retries : `int`
         The max retries number to retry if the request hit a `5xx` status code.
-    max_ratelimit_retries : `int`
-        The max retries number to retry if the request hit a `429` status code. Defaults to `3`.
     client_secret : `typing.Optional[str]`
         An optional application client secret,
         This is only needed if you're fetching OAuth2 tokens with this client.
@@ -410,7 +397,6 @@ class RESTClient(interfaces.RESTInterface):
         "_client_secret",
         "_client_id",
         "_metadata",
-        "_max_rate_limit_retries",
     )
 
     def __init__(
@@ -421,7 +407,6 @@ class RESTClient(interfaces.RESTInterface):
         client_id: typing.Optional[int] = None,
         *,
         max_retries: int = 4,
-        max_ratelimit_retries: int = 3,
         enable_debugging: typing.Union[typing.Literal["TRACE"], bool, int] = False,
     ) -> None:
         self._session: typing.Optional[_Session] = None
@@ -430,7 +415,6 @@ class RESTClient(interfaces.RESTInterface):
         self._client_id = client_id
         self._token: str = token
         self._max_retries = max_retries
-        self._max_rate_limit_retries = max_ratelimit_retries
         self._metadata: collections.MutableMapping[typing.Any, typing.Any] = {}
 
         self._set_debug_level(enable_debugging)
@@ -554,92 +538,87 @@ class RESTClient(interfaces.RESTInterface):
             self._lock = asyncio.Lock()
 
         while True:
-            try:
-                async with (stack := contextlib.AsyncExitStack()):
-                    await stack.enter_async_context(self._lock)
+            async with (stack := contextlib.AsyncExitStack()):
+                await stack.enter_async_context(self._lock)
 
-                    # We make the request here.
-                    taken_time = time.monotonic()
-                    response = await stack.enter_async_context(
-                        session.client_session.request(
-                            method=method,
-                            url=f"{endpoint}/{route}",
-                            json=json,
-                            headers=headers,
-                            data=data,
+                # We make the request here.
+                taken_time = time.monotonic()
+                response = await stack.enter_async_context(
+                    session.client_session.request(
+                        method=method,
+                        url=f"{endpoint}/{route}",
+                        json=json,
+                        headers=headers,
+                        data=data,
+                    )
+                )
+                response_time = (time.monotonic() - taken_time) * 1_000
+
+                _LOG.debug(
+                    "%s %s %s Time %.4fms",
+                    method,
+                    f"{endpoint}/{route}",
+                    f"{response.status} {response.reason}",
+                    response_time,
+                )
+
+                await self._handle_ratelimit(response, method, route)
+
+                if response.status == http.HTTPStatus.NO_CONTENT:
+                    return None
+
+                if 300 > response.status >= 200:
+                    if unwrapping == "read":
+                        # We need to read the bytes for the manifest response.
+                        return await response.read()
+
+                    if response.content_type == _APP_JSON:
+                        json_data = await response.json()
+
+                        _LOG.debug(
+                            "%s %s %s Time %.4fms",
+                            method,
+                            f"{endpoint}/{route}",
+                            f"{response.status} {response.reason}",
+                            response_time,
                         )
-                    )
-                    response_time = (time.monotonic() - taken_time) * 1_000
 
-                    _LOG.debug(
-                        "%s %s %s Time %.4fms",
-                        method,
-                        f"{endpoint}/{route}",
-                        f"{response.status} {response.reason}",
-                        response_time,
-                    )
+                        if _LOG.isEnabledFor(TRACE):
+                            cloned = headers.copy()
+                            cloned.update(response.headers)  # type: ignore
 
-                    await self._handle_ratelimit(
-                        response, method, route, self._max_rate_limit_retries
-                    )
-
-                    if response.status == http.HTTPStatus.NO_CONTENT:
-                        return None
-
-                    if 300 > response.status >= 200:
-                        if unwrapping == "read":
-                            # We need to read the bytes for the manifest response.
-                            return await response.read()
-
-                        if response.content_type == _APP_JSON:
-                            json_data = await response.json()
-
-                            _LOG.debug(
-                                "%s %s %s Time %.4fms",
-                                method,
-                                f"{endpoint}/{route}",
-                                f"{response.status} {response.reason}",
-                                response_time,
+                            _LOG.log(
+                                TRACE,
+                                "%s",
+                                error.stringify_http_message(cloned),
                             )
 
-                            if _LOG.isEnabledFor(TRACE):
-                                headers.update(response.headers)  # type: ignore
+                        # Return the response.
+                        # oauth2 responses are not packed inside a Response object.
+                        if oauth2:
+                            return json_data  # type: ignore[no-any-return]
 
-                                _LOG.log(
-                                    TRACE,
-                                    "%s",
-                                    error.stringify_http_message(headers),
-                                )
+                        return json_data["Response"]  # type: ignore[no-any-return]
 
-                            # Return the response.
-                            # oauth2 responses are not packed inside a Response object.
-                            if oauth2:
-                                return json_data  # type: ignore[no-any-return]
+                if (
+                    response.status in _RETRY_5XX
+                    and retries < self._max_retries  # noqa: W503
+                ):
+                    backoff_ = backoff.ExponentialBackOff(maximum=6)
+                    sleep_time = next(backoff_)
+                    _LOG.warning(
+                        "Got %i - %s. Sleeping for %.2f seconds. Remaining retries: %i",
+                        response.status,
+                        response.reason,
+                        sleep_time,
+                        self._max_retries - retries,
+                    )
 
-                            return json_data["Response"]  # type: ignore[no-any-return]
+                    retries += 1
+                    await asyncio.sleep(sleep_time)
+                    continue
 
-                    if (
-                        response.status in _RETRY_5XX
-                        and retries < self._max_retries  # noqa: W503
-                    ):
-                        backoff_ = backoff.ExponentialBackOff(maximum=6)
-                        sleep_time = next(backoff_)
-                        _LOG.warning(
-                            "Got %i - %s. Sleeping for %.2f seconds. Remaining retries: %i",
-                            response.status,
-                            response.reason,
-                            sleep_time,
-                            self._max_retries - retries,
-                        )
-
-                        retries += 1
-                        await asyncio.sleep(sleep_time)
-                        continue
-
-                    raise await error.raise_error(response)
-            # eol
-            except _Dyn:
-                continue
+                raise await error.raise_error(response)
 
     if not typing.TYPE_CHECKING:
 
@@ -670,13 +649,12 @@ class RESTClient(interfaces.RESTInterface):
         await self.close()
 
     # We don't want this to be super complicated.
-    @staticmethod
     @typing.final
     async def _handle_ratelimit(
+        self,
         response: aiohttp.ClientResponse,
         method: str,
         route: str,
-        max_ratelimit_retries: int = 3,
     ) -> None:
 
         if response.status != http.HTTPStatus.TOO_MANY_REQUESTS:
@@ -688,44 +666,35 @@ class RESTClient(interfaces.RESTInterface):
                 http.HTTPStatus.TOO_MANY_REQUESTS,
             )
 
-        count: int = 0
         json: typedefs.JSONObject = await response.json()
-        retry_after = float(json["ThrottleSeconds"])
+        retry_after = float(json.get("ThrottleSeconds", 15.0)) + 0.1
+        max_calls: int = 0
 
         while True:
-            if count == max_ratelimit_retries:
-                raise _Dyn
-
-            if retry_after <= 0:
-                # We sleep for a little bit to avoid funky behavior.
-                sleep_time = float(random.random() + 0.93) / 2
-
-                _LOG.warning(
-                    "We're being ratelimited with method %s route %s. Sleeping for %.2fs.",
-                    method,
-                    route,
-                    sleep_time,
+            if max_calls == 10:
+                # Max retries by default. We raise an error here.
+                raise error.RateLimitedError(
+                    body=json,
+                    url=str(response.real_url),
+                    retry_after=retry_after,
                 )
-                count += 1
-                await asyncio.sleep(sleep_time)
-                continue
 
-            raise error.RateLimitedError(
-                body=json,
-                url=str(response.real_url),
-                retry_after=retry_after,
+            # We sleep for a little bit to avoid funky behavior.
+            _LOG.warning(
+                "We're being ratelimited, Method %s Route %s. Sleeping for %.2fs.",
+                method,
+                route,
+                retry_after,
             )
+            await asyncio.sleep(retry_after)
+            max_calls += 1
+            continue
 
     async def fetch_oauth2_tokens(self, code: str, /) -> builders.OAuth2Response:
-
-        if not isinstance(self._client_id, int):
+        if not isinstance(self._client_secret, (str, int)):
             raise TypeError(
-                f"Expected (int) for client id but got {type(self._client_id).__qualname__}"  # type: ignore
-            )
-
-        if not isinstance(self._client_secret, str):
-            raise TypeError(
-                f"Expected (str) for client secret but got {type(self._client_secret).__qualname__}"  # type: ignore
+                "Expected (str, int) for client secret "
+                f"but got {type(self._client_secret).__name__}"  # type: ignore
             )
 
         headers = {
@@ -746,14 +715,9 @@ class RESTClient(interfaces.RESTInterface):
     async def refresh_access_token(
         self, refresh_token: str, /
     ) -> builders.OAuth2Response:
-        if not isinstance(self._client_id, int):
+        if not isinstance(self._client_secret, (int, str)):
             raise TypeError(
-                f"Expected (int) for client id but got {type(self._client_id).__qualname__}"  # type: ignore
-            )
-
-        if not isinstance(self._client_secret, str):
-            raise TypeError(
-                f"Expected (str) for client secret but got {type(self._client_secret).__qualname__}"  # type: ignore
+                f"Expected (str, int) for client secret but got {type(self._client_secret).__name__}"  # type: ignore
             )
 
         data = {

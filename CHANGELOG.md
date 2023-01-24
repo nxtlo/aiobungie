@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.7...HEAD)
 
+
+## [0.2.8](https://github.com/nxtlo/aiobungie/compare/0.2.7...0.2.8) 1-24-2023
+
 ## Changed
 * You can no longer pass `rest_client` instance to `Client` object.
 * `Friend` object methods has been removed since they can be performed using the `RESTClient`, Including
@@ -13,6 +16,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `decline` -> `rest.decline_friend_request`
     - `remove` -> `rest.remove_friend`
     - `remove_request` -> `rest.remove_friend_request`
+- The `_info.py` package is renamed to `metadata.py`.
+- Updated requirements versions.
+
+## Added
+- New method added to `MembershipTypeError` exception `into_membership` which converts the membership from str to `MembershipType` enum.
+
+## Removed
 - Parameter `max_ratelimit_retries` removed from client impls.
 
 ## [0.2.7](https://github.com/nxtlo/aiobungie/compare/0.2.6...0.2.7) 10-08-2022

@@ -35,7 +35,7 @@ import aiobungie
 client = aiobungie.RESTClient("...")
 
 
-async def json_manifest() -> None:
+async def sqlite_manifest() -> None:
     # Download the SQLite manifest.
     # The force parameter will force the download even if the file exists.
     await client.download_manifest(force=True)
@@ -45,7 +45,7 @@ async def json_manifest() -> None:
     print(manifest_version)
 
 
-async def sqlite_manifest() -> None:
+async def json_manifest() -> None:
     # Download the JSON manifest.
     await client.download_json_manifest()
 

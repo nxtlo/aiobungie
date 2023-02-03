@@ -21,43 +21,61 @@ Same as download_manifest but it will download the JSON manifest instead of SQLi
 Lookups the current manifest version.
 """
 
-import json
-import sqlite3
-import random
 import asyncio
+import json
+import random
+import sqlite3
 
 import aiobungie
 
+# The reason we're using REST client here is because we're working with raw data directly.
+# So we don't need the Base client impl.
+
+# NOTE: Interacting with manifest doesn't requires a token. So we can leave this as an empty string.
 client = aiobungie.RESTClient("...")
 
-async def main():
 
-    async with client:
-        # Download the SQLite manifest.
-        # The force parameter will force the download even if the file exists.
-        await client.download_manifest(force=True)
+async def json_manifest() -> None:
+    # Download the SQLite manifest.
+    # The force parameter will force the download even if the file exists.
+    await client.download_manifest(force=True)
 
-        # Download the JSON manifest.
-        await client.download_json_manifest()
+    # The manifest version.
+    manifest_version = await client.fetch_manifest_version()
+    print(manifest_version)
 
-        with open("manifest.json", "r") as f:
-            manifest_json = json.loads(f.read())
-            random_item = random.choice(list(manifest_json['DestinyInventoryItemDefinition'].values()))
-            print(random_item)
 
-        # The manifest version.
-        manifest_version = await client.fetch_manifest_version()
-        print(manifest_version)
+async def sqlite_manifest() -> None:
+    # Download the JSON manifest.
+    await client.download_json_manifest()
+
+    with open("manifest.json", "r") as f:
+        manifest_json = json.loads(f.read())
+        random_item = random.choice(
+            list(manifest_json["DestinyInventoryItemDefinition"].values())
+        )
+        print(random_item)
 
     # Connect to the manifest database.
     # The default path is `manifest.sqlite3`.
     manifest = sqlite3.connect("manifest.sqlite3")
 
     # Select an inventory item from the manifest and return the object if it matches the given id.
-    levante_prize_json = manifest.cursor().execute(
-        "SELECT json FROM DestinyInventoryItemDefinition WHERE id = -757221402"
-    ).fetchone()
+    levante_prize_json = (
+        manifest.cursor()
+        .execute(
+            "SELECT json FROM DestinyInventoryItemDefinition WHERE id = -757221402"
+        )
+        .fetchone()
+    )
     print(levante_prize_json[0])
 
-if __name__ == '__main__':
+
+async def main():
+    async with client:
+        await json_manifest()
+        await sqlite_manifest()
+
+
+if __name__ == "__main__":
     asyncio.run(main())

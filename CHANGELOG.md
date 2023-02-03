@@ -4,8 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).All notable changes to this project will be documented in this file.
 
-## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.7...HEAD)
+## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.8...HEAD)
 
+## Changed
+* All arguments in the client constructors now required to be passed as a kwarg besides the token.
+* Refactor examples code.
+
+## Added
+* Added more examples.
 
 ## [0.2.8](https://github.com/nxtlo/aiobungie/compare/0.2.7...0.2.8) 1-24-2023
 

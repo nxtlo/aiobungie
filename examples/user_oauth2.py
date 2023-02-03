@@ -10,7 +10,10 @@ import aiobungie
 # Web router.
 router = aiohttp.web.RouteTableDef()
 
-client = aiobungie.RESTPool("CLIENT_TOKEN", "CLIENT_SECRET", 0000)  # client ID.
+client = aiobungie.RESTPool(
+    "CLIENT_TOKEN", client_secret="CLIENT_SECRET", client_id=0000
+)  # client ID.
+
 
 def parse_url(url: str) -> str:
     """Parse the URL after we login and return the code parameter."""
@@ -63,8 +66,8 @@ async def my_user(request: aiohttp.web.Request) -> aiohttp.web.Response:
         async with client.acquire() as rest:
             my_user = await rest.fetch_current_user_memberships(access_token)
 
-            # Return a JSON response.
-            return aiohttp.web.json_response(my_user)
+        # Return a JSON response.
+        return aiohttp.web.json_response(my_user)
     else:
         # Otherwise return unauthorized if no access token found.
         raise aiohttp.web.HTTPUnauthorized(text="No access token found, Unauthorized.")
@@ -90,5 +93,5 @@ def main() -> None:
     aiohttp.web.run_app(app, host="localhost", port=8000, ssl_context=ctx)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -177,41 +177,6 @@ def _write_sqlite_bytes(
         pathlib.Path(tmp.name).unlink(missing_ok=True)
 
 
-class _Session:
-
-    __slots__ = ("client_session",)
-
-    def __init__(self, client_session: aiohttp.ClientSession) -> None:
-        self.client_session = client_session
-
-    @classmethod
-    def create(
-        cls,
-        *,
-        owner: bool = False,
-        raise_status: bool = False,
-        total_timeout: typing.Optional[float] = 30,
-    ) -> _Session:
-        """Creates a new TCP connection client session."""
-        session = aiohttp.ClientSession(
-            connector=aiohttp.TCPConnector(ssl=False),
-            connector_owner=owner,
-            raise_for_status=raise_status,
-            timeout=aiohttp.ClientTimeout(
-                total=total_timeout,
-            ),
-        )
-        _LOG.debug("New session created.")
-        return _Session(client_session=session)
-
-    async def close(self) -> None:
-        # Close the TCP connector and all sessions.
-        _LOG.debug("Closing session...")
-        if self.client_session.connector is not None:
-            await self.client_session.connector.close()
-            _LOG.debug("Session closed.")
-
-
 class RequestMethod(str, enums.Enum):
     """HTTP request methods enum."""
 
@@ -290,6 +255,7 @@ class RESTPool:
         "_client_id",
         "_metadata",
         "_enable_debug",
+        "_client_session",
     )
 
     # Looks like mypy doesn't like this.
@@ -300,9 +266,10 @@ class RESTPool:
         self,
         token: str,
         /,
+        *,
         client_secret: typing.Optional[str] = None,
         client_id: typing.Optional[int] = None,
-        *,
+        client_session: typing.Optional[aiohttp.ClientSession] = None,
         max_retries: int = 4,
         enable_debugging: typing.Union[typing.Literal["TRACE"], bool, int] = False,
     ) -> None:
@@ -312,6 +279,7 @@ class RESTPool:
         self._max_retries = max_retries
         self._metadata: collections.MutableMapping[typing.Any, typing.Any] = {}
         self._enable_debug = enable_debugging
+        self._client_session = client_session
 
     @property
     def client_id(self) -> typing.Optional[int]:
@@ -331,14 +299,14 @@ class RESTPool:
         `RESTClient`
             An instance of a REST client.
         """
-        instance = RESTClient(
+        return RESTClient(
             self._token,
             client_secret=self._client_secret,
             client_id=self._client_id,
             max_retries=self._max_retries,
             enable_debugging=self._enable_debug,
+            client_session=self._client_session,
         )
-        return instance
 
 
 class RESTClient(interfaces.RESTInterface):
@@ -403,13 +371,14 @@ class RESTClient(interfaces.RESTInterface):
         self,
         token: str,
         /,
+        *,
         client_secret: typing.Optional[str] = None,
         client_id: typing.Optional[int] = None,
-        *,
+        client_session: typing.Optional[aiohttp.ClientSession] = None,
         max_retries: int = 4,
         enable_debugging: typing.Union[typing.Literal["TRACE"], bool, int] = False,
     ) -> None:
-        self._session: typing.Optional[_Session] = None
+        self._session: typing.Optional[aiohttp.ClientSession] = client_session
         self._lock: typing.Optional[asyncio.Lock] = None
         self._client_secret = client_secret
         self._client_id = client_id
@@ -433,17 +402,23 @@ class RESTClient(interfaces.RESTInterface):
 
     @typing.final
     async def close(self) -> None:
-        session = self._get_session()
-        await session.close()
+        if self._session is None:
+            raise RuntimeError("REST client is not running.")
+
+        await self._session.close()
         self._session = None
 
     @typing.final
     def open(self) -> None:
         """Open a new client session. This is called internally with contextmanager usage."""
-        if self.is_alive:
-            raise RuntimeError("Cannot open a new session while it's already open.")
+        if self._session:
+            raise RuntimeError("Cannot open REST client when it's already open.")
 
-        self._session = _Session.create()
+        self._session = aiohttp.ClientSession(
+            connector=aiohttp.TCPConnector(ssl=False),
+            raise_for_status=False,
+            timeout=aiohttp.ClientTimeout(total=30.0),
+        )
 
     @typing.final
     def enable_debugging(
@@ -492,14 +467,6 @@ class RESTClient(interfaces.RESTInterface):
                 level=logging.DEBUG, handlers=[file_handler] if file_handler else None
             )
 
-    def _get_session(self) -> _Session:
-        if self._session:
-            return self._session
-
-        raise RuntimeError(
-            "Cannot return a session while its close. Make sure you use `async with` before making requests."
-        )
-
     async def _request(
         self,
         method: typing.Union[RequestMethod, str],
@@ -514,8 +481,10 @@ class RESTClient(interfaces.RESTInterface):
         data: typing.Optional[typing.Union[str, dict[str, typing.Any]]] = None,
     ) -> ResponseSig:
 
+        # This is not None when opening the client.
+        assert self._session is not None
+
         retries: int = 0
-        session = self._get_session()
         headers = headers or {}
 
         headers.setdefault(_USER_AGENT_HEADERS, _USER_AGENT)
@@ -544,7 +513,7 @@ class RESTClient(interfaces.RESTInterface):
                 # We make the request here.
                 taken_time = time.monotonic()
                 response = await stack.enter_async_context(
-                    session.client_session.request(
+                    self._session.request(
                         method=method,
                         url=f"{endpoint}/{route}",
                         json=json,

@@ -10,7 +10,7 @@ To run an example you'll first need:
 Some example may require more information, Like the `user_oauth` example,
 This will require an SSL certificate to be able to run the authentication web server on HTTPS.
 
-Also another example in `transfer_items` will require your actual characters IDs and used within your OAuth2 implementation flow.
+Also some other examples will require your actual characters/membership IDs.
 
 After setting up everything in the chosen example simply run:
 ```
@@ -23,6 +23,8 @@ python example_file.py
 2: manifest => Manifest usage example for both SQLite and JSON database.
 3: transfer_items => Transfer your items from a character to another.
 4: user_oauth2 => Full implementation on OAuth2 workflow.
+5: request => Example on how to use aiobungie Factory only with requests in non-async code.
+6: error_handling => Using aiobungie exceptions to handle errors.
 ```
 
 ### Contributing

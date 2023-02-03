@@ -44,18 +44,6 @@ async def sqlite_manifest() -> None:
     manifest_version = await client.fetch_manifest_version()
     print(manifest_version)
 
-
-async def json_manifest() -> None:
-    # Download the JSON manifest.
-    await client.download_json_manifest()
-
-    with open("manifest.json", "r") as f:
-        manifest_json = json.loads(f.read())
-        random_item = random.choice(
-            list(manifest_json["DestinyInventoryItemDefinition"].values())
-        )
-        print(random_item)
-
     # Connect to the manifest database.
     # The default path is `manifest.sqlite3`.
     manifest = sqlite3.connect("manifest.sqlite3")
@@ -69,6 +57,18 @@ async def json_manifest() -> None:
         .fetchone()
     )
     print(levante_prize_json[0])
+
+
+async def json_manifest() -> None:
+    # Download the JSON manifest.
+    await client.download_json_manifest()
+
+    with open("manifest.json", "r") as f:
+        manifest_json = json.loads(f.read())
+        random_item = random.choice(
+            list(manifest_json["DestinyInventoryItemDefinition"].values())
+        )
+        print(random_item)
 
 
 async def main():

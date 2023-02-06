@@ -35,7 +35,7 @@ import aiobungie
 client = aiobungie.RESTClient("...")
 
 
-async def json_manifest() -> None:
+async def sqlite_manifest() -> None:
     # Download the SQLite manifest.
     # The force parameter will force the download even if the file exists.
     await client.download_manifest(force=True)
@@ -43,18 +43,6 @@ async def json_manifest() -> None:
     # The manifest version.
     manifest_version = await client.fetch_manifest_version()
     print(manifest_version)
-
-
-async def sqlite_manifest() -> None:
-    # Download the JSON manifest.
-    await client.download_json_manifest()
-
-    with open("manifest.json", "r") as f:
-        manifest_json = json.loads(f.read())
-        random_item = random.choice(
-            list(manifest_json["DestinyInventoryItemDefinition"].values())
-        )
-        print(random_item)
 
     # Connect to the manifest database.
     # The default path is `manifest.sqlite3`.
@@ -69,6 +57,18 @@ async def sqlite_manifest() -> None:
         .fetchone()
     )
     print(levante_prize_json[0])
+
+
+async def json_manifest() -> None:
+    # Download the JSON manifest.
+    await client.download_json_manifest()
+
+    with open("manifest.json", "r") as f:
+        manifest_json = json.loads(f.read())
+        random_item = random.choice(
+            list(manifest_json["DestinyInventoryItemDefinition"].values())
+        )
+        print(random_item)
 
 
 async def main():

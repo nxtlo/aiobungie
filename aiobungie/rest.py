@@ -1846,7 +1846,7 @@ class RESTClient(interfaces.RESTInterface):
         resp = await self._request(
             RequestMethod.GET,
             (
-                f"Platform/Destiny2/{int(membership_type)}/Profile/{membership_id}"
+                f"Destiny2/{int(membership_type)}/Profile/{membership_id}"
                 f"/Character/{character_id}/Vendors/{vendor_hash}/?components={components_}"
             ),
             auth=access_token,

@@ -143,7 +143,6 @@ class Factory(interfaces.FactoryInterface):
         return [self.deserialize_destiny_membership(membership) for membership in data]
 
     def deserialize_user(self, data: typedefs.JSONObject) -> user.User:
-
         primary_membership_id: typing.Optional[int] = None
         if raw_primary_id := data.get("primaryMembershipId"):
             primary_membership_id = int(raw_primary_id)
@@ -210,7 +209,6 @@ class Factory(interfaces.FactoryInterface):
         ]
 
     def deserialize_clan(self, payload: typedefs.JSONObject) -> clans.Clan:
-
         # This is kinda redundant
         data = payload
 
@@ -431,7 +429,6 @@ class Factory(interfaces.FactoryInterface):
     def deserialize_profile_item(
         self, payload: typedefs.JSONObject
     ) -> profile.ProfileItemImpl:
-
         instance_id: typing.Optional[int] = None
         if raw_instance_id := payload.get("itemInstanceId"):
             instance_id = int(raw_instance_id)
@@ -509,7 +506,6 @@ class Factory(interfaces.FactoryInterface):
         scores: typing.Optional[records.RecordScores] = None,
         record_hashes: typing.Optional[list[int]] = None,
     ) -> records.CharacterRecord:
-
         record = self.deserialize_records(payload, scores)
         return records.CharacterRecord(
             scores=scores,
@@ -708,7 +704,6 @@ class Factory(interfaces.FactoryInterface):
     def _deserialize_milestone_activity(
         self, payload: typedefs.JSONObject
     ) -> milestones.MilestoneActivity:
-
         phases: typing.Optional[
             collections.Sequence[milestones.MilestoneActivityPhase]
         ] = None
@@ -933,7 +928,6 @@ class Factory(interfaces.FactoryInterface):
         self,
         payload: typedefs.JSONObject,
     ) -> collections.Mapping[int, records.CharacterRecord]:
-
         return {
             int(rec_id): self.deserialize_character_records(
                 rec, record_hashes=payload.get("featuredRecordHashes")
@@ -971,7 +965,6 @@ class Factory(interfaces.FactoryInterface):
     def _deserialize_craftable_socket(
         self, payload: typedefs.JSONObject
     ) -> items.CraftableSocket:
-
         plugs: list[items.CraftableSocketPlug] = []
         if raw_plug := payload.get("plug"):
             plugs.extend(
@@ -985,7 +978,6 @@ class Factory(interfaces.FactoryInterface):
     def _deserialize_craftable_item(
         self, payload: typedefs.JSONObject
     ) -> items.CraftableItem:
-
         return items.CraftableItem(
             is_visible=payload["visible"],
             failed_requirement_indexes=payload.get("failedRequirementIndexes", []),
@@ -1011,7 +1003,6 @@ class Factory(interfaces.FactoryInterface):
     def deserialize_components(  # noqa: C901 Too complex.
         self, payload: typedefs.JSONObject
     ) -> components.Component:
-
         profile_: typing.Optional[profile.Profile] = None
         if raw_profile := payload.get("profile"):
             profile_ = self.deserialize_profile(raw_profile)
@@ -1239,7 +1230,6 @@ class Factory(interfaces.FactoryInterface):
             collections.Mapping[int, components.CraftablesComponent]
         ] = None
         if raw_character_craftables := payload.get("characterCraftables"):
-
             if "data" in raw_character_craftables:
                 character_craftables = {
                     int(char_id): self.deserialize_craftables_component(craftable)
@@ -1387,7 +1377,6 @@ class Factory(interfaces.FactoryInterface):
     def deserialize_character_component(  # type: ignore[call-arg]
         self, payload: typedefs.JSONObject
     ) -> components.CharacterComponent:
-
         character_: typing.Optional[character.Character] = None
         if raw_singuler_character := payload.get("character"):
             character_ = self.deserialize_character(raw_singuler_character["data"])
@@ -1463,7 +1452,6 @@ class Factory(interfaces.FactoryInterface):
     def _set_entity_attrs(
         self, payload: typedefs.JSONObject, *, key: str = "displayProperties"
     ) -> entity.Entity:
-
         name: undefined.UndefinedOr[str] = undefined.UNDEFINED
         description: undefined.UndefinedOr[str] = undefined.UNDEFINED
 
@@ -1543,7 +1531,6 @@ class Factory(interfaces.FactoryInterface):
     def deserialize_inventory_entity(  # noqa: C901 Too complex.
         self, payload: typedefs.JSONObject, /
     ) -> entity.InventoryEntity:
-
         props = self._set_entity_attrs(payload)
         objects = self._deserialize_inventory_item_objects(payload)
 
@@ -1822,7 +1809,6 @@ class Factory(interfaces.FactoryInterface):
     def deserialize_extended_weapon_values(
         self, payload: typedefs.JSONObject
     ) -> activity.ExtendedWeaponValues:
-
         assists: typing.Optional[int] = None
         if raw_assists := payload["values"].get("uniqueWeaponAssists"):
             assists = raw_assists["basic"]["value"]
@@ -2235,7 +2221,6 @@ class Factory(interfaces.FactoryInterface):
             payload = data
 
         if result := payload.get("results"):
-
             for fireteam in result:
                 found_fireteams = self._set_fireteam_fields(fireteam["Summary"])
                 fireteams_fields = fireteams.AvailableFireteam(
@@ -2288,7 +2273,6 @@ class Factory(interfaces.FactoryInterface):
     def _deserialize_fireteam_party_member(
         self, payload: typedefs.JSONObject
     ) -> fireteams.FireteamPartyMember:
-
         status = fireteams.FireteamPartyMemberState(payload["status"])
         displayname: undefined.UndefinedOr[str] = undefined.UNDEFINED
         if raw_name := payload.get("displayName"):

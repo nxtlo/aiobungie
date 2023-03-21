@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Added
 * Added more examples.
+* Lightfall loadouts methods to the `RESTClient`.
+* `CHARACTER_LOADOUTS` components type enum field.
 
 ## [0.2.8](https://github.com/nxtlo/aiobungie/compare/0.2.7...0.2.8) 1-24-2023
 

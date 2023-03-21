@@ -105,7 +105,6 @@ class Client(traits.ClientApp):
         client_id: typing.Optional[int] = None,
         max_retries: int = 4,
     ) -> None:
-
         self._rest = rest_.RESTClient(
             token,
             client_secret=client_secret,

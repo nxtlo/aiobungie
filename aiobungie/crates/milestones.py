@@ -172,7 +172,6 @@ class QuestStatus:
 
 @attrs.define(kw_only=True)
 class MilestoneQuest:
-
     item_hash: int
 
     status: QuestStatus

@@ -455,7 +455,6 @@ class RESTClient(interfaces.RESTInterface):
         level: typing.Union[typing.Literal["TRACE"], bool, int] = False,
         file: typing.Optional[typing.Union[pathlib.Path, str]] = None,
     ) -> None:
-
         file_handler = logging.FileHandler(file, mode="w") if file else None
         if level == "TRACE" or level == TRACE:
             logging.basicConfig(
@@ -480,7 +479,6 @@ class RESTClient(interfaces.RESTInterface):
         headers: typing.Optional[dict[str, typing.Any]] = None,
         data: typing.Optional[typing.Union[str, dict[str, typing.Any]]] = None,
     ) -> ResponseSig:
-
         # This is not None when opening the client.
         assert self._session is not None
 
@@ -625,7 +623,6 @@ class RESTClient(interfaces.RESTInterface):
         method: str,
         route: str,
     ) -> None:
-
         if response.status != http.HTTPStatus.TOO_MANY_REQUESTS:
             return
 
@@ -970,7 +967,6 @@ class RESTClient(interfaces.RESTInterface):
         character_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
     ) -> typedefs.JSONObject:
-
         if isinstance(plug, builders.PlugSocketBuilder):
             plug = plug.collect()
 
@@ -996,7 +992,6 @@ class RESTClient(interfaces.RESTInterface):
         character_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
     ) -> typedefs.JSONObject:
-
         if isinstance(plug, builders.PlugSocketBuilder):
             plug = plug.collect()
 
@@ -1355,7 +1350,6 @@ class RESTClient(interfaces.RESTInterface):
         update_banner_permission_override: typedefs.NoneOr[bool] = None,
         join_level: typedefs.NoneOr[typedefs.IntAnd[enums.ClanMemberType]] = None,
     ) -> None:
-
         payload = {
             "InvitePermissionOverride": invite_permissions_override,
             "UpdateCulturePermissionOverride": update_culture_permissionOverride,
@@ -1863,7 +1857,6 @@ class RESTClient(interfaces.RESTInterface):
         start: typing.Optional[datetime.datetime] = None,
         end: typing.Optional[datetime.datetime] = None,
     ) -> typedefs.JSONObject:
-
         end_date, start_date = time.parse_date_range(end, start)
         resp = await self._request(
             RequestMethod.GET,
@@ -1916,7 +1909,6 @@ class RESTClient(interfaces.RESTInterface):
         page: undefined.UndefinedOr[int] = undefined.UNDEFINED,
         source: undefined.UndefinedOr[str] = undefined.UNDEFINED,
     ) -> typedefs.JSONObject:
-
         body: typedefs.JSONObject = {}
 
         body["ctype"] = content_type
@@ -1976,7 +1968,6 @@ class RESTClient(interfaces.RESTInterface):
         locales: undefined.UndefinedOr[collections.Iterable[str]] = undefined.UNDEFINED,
         tag_filter: undefined.UndefinedOr[str] = undefined.UNDEFINED,
     ) -> typedefs.JSONObject:
-
         body: typedefs.JSONObject = {}
         if locales is not undefined.UNDEFINED:
             body["locales"] = ",".join(str(locales))
@@ -2232,7 +2223,6 @@ class RESTClient(interfaces.RESTInterface):
         *,
         period_type: enums.PeriodType = enums.PeriodType.ALL_TIME,
     ) -> typedefs.JSONObject:
-
         end, start = time.parse_date_range(day_end, day_start)
         resp = await self._request(
             RequestMethod.GET,
@@ -2276,3 +2266,97 @@ class RESTClient(interfaces.RESTInterface):
         )
         assert isinstance(resp, dict)
         return resp
+
+    async def equip_loadout(
+        self,
+        access_token: str,
+        /,
+        loadout_index: int,
+        character_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+    ) -> None:
+        response = await self._request(
+            RequestMethod.POST,
+            "Destiny2/Actions/Loadouts/EquipLoadout/",
+            json={
+                "loadoutIndex": loadout_index,
+                "characterId": character_id,
+                "membership_type": int(membership_type),
+            },
+            auth=access_token,
+        )
+        assert isinstance(response, int)
+
+    async def snapshot_loadout(
+        self,
+        access_token: str,
+        /,
+        loadout_index: int,
+        character_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+        *,
+        color_hash: typing.Optional[int] = None,
+        icon_hash: typing.Optional[int] = None,
+        name_hash: typing.Optional[int] = None,
+    ) -> None:
+        response = await self._request(
+            RequestMethod.POST,
+            "Destiny2/Actions/Loadouts/SnapshotLoadout/",
+            auth=access_token,
+            json={
+                "colorHash": color_hash,
+                "iconHash": icon_hash,
+                "nameHash": name_hash,
+                "loadoutIndex": loadout_index,
+                "characterId": character_id,
+                "membershipType": int(membership_type),
+            },
+        )
+        assert isinstance(response, int)
+
+    async def update_loadout(
+        self,
+        access_token: str,
+        /,
+        loadout_index: int,
+        character_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+        *,
+        color_hash: typing.Optional[int] = None,
+        icon_hash: typing.Optional[int] = None,
+        name_hash: typing.Optional[int] = None,
+    ) -> None:
+        response = await self._request(
+            RequestMethod.POST,
+            "Destiny2/Actions/Loadouts/UpdateLoadoutIdentifiers/",
+            auth=access_token,
+            json={
+                "colorHash": color_hash,
+                "iconHash": icon_hash,
+                "nameHash": name_hash,
+                "loadoutIndex": loadout_index,
+                "characterId": character_id,
+                "membershipType": int(membership_type),
+            },
+        )
+        assert isinstance(response, int)
+
+    async def clear_loadout(
+        self,
+        access_token: str,
+        /,
+        loadout_index: int,
+        character_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+    ) -> None:
+        response = await self._request(
+            RequestMethod.POST,
+            "Destiny2/Actions/Loadouts/ClearLoadout/",
+            json={
+                "loadoutIndex": loadout_index,
+                "characterId": character_id,
+                "membership_type": int(membership_type),
+            },
+            auth=access_token,
+        )
+        assert isinstance(response, int)

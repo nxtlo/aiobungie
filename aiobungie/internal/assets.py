@@ -63,7 +63,6 @@ def _write(
     mimetype: typing.Union[str, MimeType],
     data: bytes,
 ) -> None:
-
     with open(path.name + f"{file_name}.{mimetype}", "wb") as file:
         file.write(data)
 

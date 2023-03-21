@@ -48,7 +48,6 @@ if typing.TYPE_CHECKING:
 
 @attrs.define(kw_only=True)
 class ArtifactTierItem:
-
     hash: int
 
     is_active: bool
@@ -56,7 +55,6 @@ class ArtifactTierItem:
 
 @attrs.define(kw_only=True)
 class ArtifactTier:
-
     hash: int
 
     is_unlocked: bool

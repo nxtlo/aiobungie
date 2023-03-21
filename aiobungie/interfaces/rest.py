@@ -38,7 +38,6 @@ from aiobungie import undefined
 from aiobungie.internal import enums
 
 if typing.TYPE_CHECKING:
-
     import types
 
     from aiobungie import builders
@@ -2495,3 +2494,134 @@ class RESTInterface(traits.RESTful, abc.ABC):
         membership_type: typedefs.IntAnd[enums.MembershipType],
     ) -> typedefs.JSONObject:
         ...
+
+    @abc.abstractmethod
+    async def equip_loadout(
+        self,
+        access_token: str,
+        /,
+        loadout_index: int,
+        character_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+    ) -> None:
+        """Equip a loadout. Youe character must be in a Social space, Orbit or Offline
+        while performing this operation.
+
+        .. note::
+            This operation requires `MoveEquipDestinyItems` OAuth2 scope.
+
+        Parameters
+        ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+        loadout_index : `int`
+            The index of the loadout to use.
+        character_id : `int`
+            The character ID to equip the loadout to.
+        membership_type : `aiobungie.MembershipType | int`
+            The membership type of the account.
+        """
+
+    @abc.abstractmethod
+    async def snapshot_loadout(
+        self,
+        access_token: str,
+        /,
+        loadout_index: int,
+        character_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+        *,
+        color_hash: typing.Optional[int] = None,
+        icon_hash: typing.Optional[int] = None,
+        name_hash: typing.Optional[int] = None,
+    ) -> None:
+        """Snapshot a loadout with the currently equipped items.
+
+        .. note::
+            This operation requires `MoveEquipDestinyItems` OAuth2 scope.
+
+        Parameters
+        ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+        loadout_index : `int`
+            The index of the loadout to use.
+        character_id : `int`
+            The character ID to equip the loadout to.
+        membership_type : `aiobungie.MembershipType | int`
+            The membership type of the account.
+
+        Other Parameters
+        ----------------
+        color_hash : `int | None`
+            ...
+        icon_hash: `int | None`
+            ...
+        name_hash: `int | None`
+            ...
+        """
+
+    @abc.abstractmethod
+    async def update_loadout(
+        self,
+        access_token: str,
+        /,
+        loadout_index: int,
+        character_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+        *,
+        color_hash: typing.Optional[int] = None,
+        icon_hash: typing.Optional[int] = None,
+        name_hash: typing.Optional[int] = None,
+    ) -> None:
+        """Update the loadout. Color, Icon and Name.
+
+        .. note::
+            This operation requires `MoveEquipDestinyItems` OAuth2 scope.
+
+        Parameters
+        ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+        loadout_index : `int`
+            The index of the loadout to use.
+        character_id : `int`
+            The character ID to equip the loadout to.
+        membership_type : `aiobungie.MembershipType | int`
+            The membership type of the account.
+
+        Other Parameters
+        ----------------
+        color_hash : `int | None`
+            The new color hash of the loadout to update.
+        icon_hash: `int | None`
+            The new icon hash of the loadout to update.
+        name_hash: `int | None`
+            The new name hash of the loadout to update.
+        """
+
+    @abc.abstractmethod
+    async def clear_loadout(
+        self,
+        access_token: str,
+        /,
+        loadout_index: int,
+        character_id: int,
+        membership_type: typedefs.IntAnd[enums.MembershipType],
+    ) -> None:
+        """Clear the identifiers and items of a loadout.
+
+        .. note::
+            This operation requires `MoveEquipDestinyItems` OAuth2 scope.
+
+        Parameters
+        ----------
+        access_token : `str`
+            The bearer access token associated with the bungie account.
+        loadout_index : `int`
+            The index of the loadout to use.
+        character_id : `int`
+            The character ID to equip the loadout to.
+        membership_type : `aiobungie.MembershipType | int`
+            The membership type of the account.
+        """

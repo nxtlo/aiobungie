@@ -65,7 +65,6 @@ def deprecated(
     def decorator(func: T) -> T:
         @functools.wraps(func)
         def wrapper(*args: typing.Any, **kwargs: typing.Any) -> typing.Any:
-
             obj_type = "class" if inspect.isclass(func) else "function"
             msg = f"Warning! {obj_type} {func.__module__}.{func.__name__} is deprecated since {since}."
 
@@ -103,7 +102,6 @@ def unimplemented(
     def decorator(obj: T) -> T:
         @functools.wraps(obj)
         def wrapper(*args: typing.Any, **kwargs: typing.Any) -> typing.Any:
-
             obj_type = "class" if inspect.isclass(obj) else "function"
             msg = (
                 message

@@ -422,6 +422,7 @@ class ComponentType(Enum):
     CHARACTER_RENDER_DATA = 203
     CHARACTER_ACTIVITIES = 204
     CHARACTER_EQUIPMENT = 205
+    CHARACTER_LOADOUTS = 206
 
     ALL_CHARACTERS = (
         CHARACTERS,
@@ -430,6 +431,7 @@ class ComponentType(Enum):
         CHARACTER_RENDER_DATA,
         CHARACTER_ACTIVITIES,
         CHARACTER_EQUIPMENT,
+        CHARACTER_LOADOUTS,
         RECORDS,
     )
     """All character components."""

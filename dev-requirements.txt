@@ -1,5 +1,5 @@
 black~=23.7
-mypy~=1.4
+mypy~=1.5
 pdoc~=14.0.0
 nox~=2023.4.22
 isort~=5.12.0

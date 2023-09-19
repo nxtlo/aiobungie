@@ -1023,7 +1023,7 @@ class RESTClient(interfaces.RESTInterface):
             "state": state,
             "itemId": item_id,
             "characterId": character_id,
-            "membership_type": int(membership_type),
+            "membershipType": int(membership_type),
         }
         response = await self._request(
             RequestMethod.POST,

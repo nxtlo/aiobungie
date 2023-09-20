@@ -387,6 +387,20 @@ async def test_insert_plug_free():
         pass
 
 
+async def test_set_item_lock_state():
+    try:
+        await client.rest.set_item_lock_state(
+            "my-token",
+            True,
+            123,
+            123,
+            1
+        )
+    # This will fail due to OAuth2
+    except aiobungie.Unauthorized:
+        pass
+
+
 async def test_search_entities():
     e = await client.search_entities("Parallel", "DestinyInventoryItemDefinition")
 

@@ -1208,7 +1208,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         group_id: int,
         message: undefined.UndefinedOr[str] = undefined.UNDEFINED,
     ) -> None:
-        """Apporve all pending users for the given group id.
+        """Approve all pending users for the given group id.
 
         .. note::
             This request requires OAuth2: AdminGroups scope.
@@ -1366,7 +1366,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         stack_size : `int`
             The item stack size.
         valut : `bool`
-            Whether to trasnfer this item to your valut or not. Defaults to `False`.
+            Whether to transfer this item to your valut or not. Defaults to `False`.
         """
 
     @abc.abstractmethod

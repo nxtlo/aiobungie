@@ -749,7 +749,7 @@ class TransferStatus(Flag):
     NOT_TRASNFERRABLE = 1 << 1
     """This item can not be transferred."""
     COULD_BE_TRANSFERRED = 1 << 2
-    """You can trasnfer the item. But the place you're trying to put it at has no space for it."""
+    """You can transfer the item. But the place you're trying to put it at has no space for it."""
 
 
 @typing.final

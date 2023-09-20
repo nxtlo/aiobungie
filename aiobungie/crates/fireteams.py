@@ -145,7 +145,7 @@ class FireteamPartyMemberState(enums.Flag):
     NONE = 0
     """???"""
     MEMBER = 1 << 0
-    """A stanard member in the fireteam."""
+    """A standard member in the fireteam."""
     POSSE_MEMBER = 1 << 1
     """???"""
     GROUP_MEMBER = 1 << 2

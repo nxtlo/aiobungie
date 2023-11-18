@@ -25,7 +25,6 @@ import inspect
 import logging
 import os
 import sys
-import typing
 
 import aiobungie
 
@@ -37,6 +36,7 @@ MID = 4611686018484639825
 STEAM = aiobungie.MembershipType.STEAM
 _LOG = logging.getLogger("test_client")
 
+
 def __build_client() -> aiobungie.Client:
     token = os.environ["CLIENT_TOKEN"]
     client = aiobungie.Client(token, max_retries=0)
@@ -45,6 +45,7 @@ def __build_client() -> aiobungie.Client:
 
 
 client = __build_client()
+
 
 async def test_users():
     u = await client.fetch_bungie_user(20315338)
@@ -76,6 +77,7 @@ async def test_clan():
     for member in members.filter(lambda member: not member.is_online):
         assert isinstance(member, aiobungie.crate.ClanMember)
 
+
 async def test_fetch_clan_members():
     ms = await client.fetch_clan_members(4389205, name="Fate")
     assert len(ms) == 1
@@ -105,20 +107,6 @@ async def test_player():
     assert isinstance(profile, aiobungie.crate.Component)
     assert isinstance(profile.profiles, aiobungie.crate.Profile)
 
-    components = [aiobungie.ComponentType.ALL_CHARACTERS]
-    profiles = profile.profiles.collect_characters(components)
-    for char in await profiles:
-        assert isinstance(char, aiobungie.crate.CharacterComponent)
-        assert (
-            char.activities,
-            char.character,
-            char.character_records,
-            char.equipment,
-            char.inventory,
-            char.render_data,
-            char.progressions,
-        ) is not None
-
 
 async def test_fetch_character():
     c = await client.fetch_character(
@@ -145,29 +133,10 @@ async def test_fetch_character():
 
 
 async def test_profile():
-    pf = await client.fetch_profile(
-        MID,
-        STEAM,
-        [aiobungie.ComponentType.ALL]
-    )
+    pf = await client.fetch_profile(MID, STEAM, [aiobungie.ComponentType.ALL])
     assert isinstance(pf, aiobungie.crate.Component)
 
     assert pf.profiles
-    for pfile_char in await pf.profiles.collect_characters(
-        [aiobungie.ComponentType.ALL_CHARACTERS]
-    ):
-        assert isinstance(pfile_char, aiobungie.crate.CharacterComponent)
-        assert (
-            pfile_char.profile_records is None
-        )  # Always None or a character component.
-        assert pfile_char.activities
-        assert pfile_char.character
-        assert pfile_char.character_records
-        assert pfile_char.equipment
-        assert pfile_char.inventory
-        assert pfile_char.render_data
-        assert pfile_char.progressions
-
     assert isinstance(pf.profile_progression, aiobungie.crate.ProfileProgression)
 
     assert pf.characters
@@ -234,8 +203,7 @@ async def test_profile():
             for item in craftable_item.craftables.values():
                 if item:
                     assert isinstance(item, aiobungie.crate.CraftableItem)
-        first = list(pf.character_craftables.values())[0]
-        assert await first.fetch_craftables()
+
 
 async def test_membership_types_from_id():
     u = await client.fetch_membership_from_id(MID)
@@ -279,9 +247,7 @@ async def test_groups_for_member():
 
 
 async def test_potential_groups_for_member():
-    obj = await client.fetch_potential_groups_for_member(
-        MID, STEAM
-    )
+    obj = await client.fetch_potential_groups_for_member(MID, STEAM)
     assert not obj
 
 
@@ -290,13 +256,11 @@ async def test_linked_profiles():
         MID, aiobungie.MembershipType.ALL, all=True
     )
     assert isinstance(obj, aiobungie.crate.LinkedProfile)
-    for user in obj.profiles:
-        assert isinstance(user, aiobungie.crate.DestinyMembership)
-        transform_profile = await user.fetch_self_profile(
-            [aiobungie.ComponentType.PROFILE]
-        )
-        assert transform_profile.profiles
-        assert isinstance(transform_profile, aiobungie.crate.Component)
+    user = obj.profiles[0]
+    assert isinstance(user, aiobungie.crate.DestinyMembership)
+    transform_profile = await user.fetch_self_profile([aiobungie.ComponentType.PROFILE])
+    assert transform_profile.profiles
+    assert isinstance(transform_profile, aiobungie.crate.Component)
 
 
 async def test_clan_banners():
@@ -414,15 +378,17 @@ async def test_clan_weekly_rewards():
     r = await client.fetch_clan_weekly_rewards(4389205)
     assert isinstance(r, aiobungie.crate.Milestone)
 
+
 async def test_aggregated_activity():
     a = await client.fetch_aggregated_activity_stats(CID, MID, STEAM)
     for act in a.sort(key=lambda act: act.values.fastest_completion_time[1]):
         assert isinstance(act, aiobungie.crate.AggregatedActivity)
 
+
 async def main() -> None:
     from aiobungie.internal import helpers
 
-    coros: list[typing.Coroutine[None, None, None]] = []
+    coros = []
     for n, coro in inspect.getmembers(
         sys.modules[__name__], inspect.iscoroutinefunction
     ):

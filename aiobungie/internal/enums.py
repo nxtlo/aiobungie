@@ -65,8 +65,6 @@ __all__: tuple[str, ...] = (
 import enum as __enum
 import typing
 
-_ITERABLE = (set, list, tuple)
-
 
 class Enum(__enum.Enum):
     """Builtin Python enum with extra handlings."""
@@ -86,10 +84,6 @@ class Enum(__enum.Enum):
         return f"<{type(self).__name__}.{self._name_}: {self._value_!s}>"
 
     def __int__(self) -> int:
-        if isinstance(self.value, _ITERABLE):
-            raise TypeError(
-                f"Can't overload {self.value} in {type(self).__name__}, Please use `.value` attribute.",
-            )
         return int(self.value)
 
 
@@ -117,10 +111,6 @@ class Flag(__enum.Flag):
         return f"<{type(self).__name__}.{self.name}: {self._value_!s}>"
 
     def __int__(self) -> int:
-        if isinstance(self.value, _ITERABLE):
-            raise TypeError(
-                f"Can't overload {self.value} in {type(self).__name__}, Please use `.value` attribute.",
-            )
         return int(self.value)
 
     def __or__(self, other: typing.Union[Flag, int]) -> Flag:

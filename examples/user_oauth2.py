@@ -11,8 +11,8 @@ import aiobungie
 router = aiohttp.web.RouteTableDef()
 
 client = aiobungie.RESTPool(
-    "CLIENT_TOKEN", client_secret="CLIENT_SECRET", client_id=0000
-)  # client ID.
+    "CLIENT_TOKEN", client_secret="CLIENT_SECRET", client_id=0000  # client ID.
+)
 
 
 def parse_url(url: str) -> str:
@@ -41,7 +41,6 @@ async def home(_: aiohttp.web.Request) -> aiohttp.web.Response:
 async def redirect(request: aiohttp.web.Request) -> aiohttp.web.Response:
     # Check if the code parameter is in the redirect URL.
     if code := parse_url(str(request.url)):
-
         async with client.acquire() as rest:
             # Make the request and fetch the OAuth2 tokens.
 
@@ -49,19 +48,18 @@ async def redirect(request: aiohttp.web.Request) -> aiohttp.web.Response:
             # Store the access token in the pool metadata.
             client.metadata["token"] = tokens.access_token
 
-            # Redirect to "/me" route with the access token.
-            raise aiohttp.web.HTTPFound(location="/me", reason="OAuth2 success")
+        # Redirect to "/me" route with the access token.
+        raise aiohttp.web.HTTPFound(location="/me", reason="OAuth2 success")
     else:
         # Otherwise return 404 and couldn't authenticate.
-        raise aiohttp.web.HTTPNotFound(text="Code not found and couldn't authinticate.")
+        raise aiohttp.web.HTTPNotFound(text="Code not found and couldn't authenticate.")
 
 
 # Our own authenticated user route.
 @router.get("/me")
-async def my_user(request: aiohttp.web.Request) -> aiohttp.web.Response:
+async def my_user(_request: aiohttp.web.Request) -> aiohttp.web.Response:
     # Check our pool storage if it has the tokens stored.
     if access_token := client.metadata.get("token"):
-
         # Fetch our current Bungie.net user.
         async with client.acquire() as rest:
             my_user = await rest.fetch_current_user_memberships(access_token)
@@ -74,7 +72,6 @@ async def my_user(request: aiohttp.web.Request) -> aiohttp.web.Response:
 
 
 def main() -> None:
-
     # The application itself.
     app = aiohttp.web.Application()
 

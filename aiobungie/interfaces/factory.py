@@ -482,9 +482,7 @@ class FactoryInterface(abc.ABC):
         """
 
     @abc.abstractmethod
-    def deserialize_profile(
-        self, payload: typedefs.JSONObject, /
-    ) -> typing.Optional[profile.Profile]:
+    def deserialize_profile(self, payload: typedefs.JSONObject, /) -> profile.Profile:
         """Deserialize a JSON payload of Bungie.net profile information.
 
         Parameters
@@ -494,14 +492,14 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `typing.Optional[aiobungie.crates.Profile]`
-            A profile.
+        `aiobungie.crates.Profile`
+            A profile object of the deserialized payload.
         """
 
     @abc.abstractmethod
     def deserialize_profile_items(
         self, payload: typedefs.JSONObject, /
-    ) -> typing.Optional[collections.Sequence[profile.ProfileItemImpl]]:
+    ) -> collections.Sequence[profile.ProfileItemImpl]:
         """Deserialize a JSON payload of profile items component information.
 
         This may deserialize `profileInventories` or `profileCurrencies` or any
@@ -514,7 +512,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `typing.Optional[collections.Sequence[aiobungie.crates.ProfileItemImpl]]`
+        `collections.Sequence[aiobungie.crates.ProfileItemImpl]`
             A profile component object that contains items of the deserialized payload.
         """
 
@@ -986,7 +984,7 @@ class FactoryInterface(abc.ABC):
     @abc.abstractmethod
     def deserialize_fireteam_members(
         self, payload: typedefs.JSONObject, *, alternatives: bool = False
-    ) -> typing.Optional[collections.Sequence[fireteams.FireteamMember]]:
+    ) -> collections.Sequence[fireteams.FireteamMember]:
         """Deserialize a JSON sequence of Bungie fireteam members information.
 
         Parameters
@@ -999,8 +997,8 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `typing.Optional[collections.Sequence[aiobungie.crates.FireteamUser]]`
-            An optional sequence of the fireteam members.
+        `collections.Sequence[aiobungie.crates.FireteamUser]`
+            A sequence of the fireteam members.
         """
 
     @abc.abstractmethod

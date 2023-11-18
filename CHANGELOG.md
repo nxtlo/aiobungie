@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Changed
 * All arguments in the client constructors now required to be passed as a kwarg besides the token.
 * Refactor examples code.
+* All `Factory` methods that used to return `Option[T]` now returns `T` directly.
+* `Enum.__int__` and `Flag.__int__` doesn't check the instance of the type.
 
 ## Added
 * Added more examples.

@@ -60,7 +60,7 @@ if typing.TYPE_CHECKING:
 class Factory(interfaces.FactoryInterface):
     """The base deserialization factory class for all aiobungie objects.
 
-    Highly inspired hikari entity factory used to deserialize JSON responses from the REST client and turning them
+    This entity factory is used to deserialize JSON responses from the REST client and turning them
     into a `aiobungie.crates` Python classes.
     """
 
@@ -400,13 +400,8 @@ class Factory(interfaces.FactoryInterface):
             stats={enums.Stat(int(k)): v for k, v in payload["stats"].items()},
         )
 
-    def deserialize_profile(
-        self, payload: typedefs.JSONObject, /
-    ) -> typing.Optional[profile.Profile]:
-        if (raw_profile := payload.get("data")) is None:
-            return None
-
-        payload = raw_profile
+    def deserialize_profile(self, payload: typedefs.JSONObject, /) -> profile.Profile:
+        payload = payload["data"]
         id = int(payload["userInfo"]["membershipId"])
         name = payload["userInfo"]["displayName"]
         is_public = payload["userInfo"]["isPublic"]
@@ -2175,7 +2170,7 @@ class Factory(interfaces.FactoryInterface):
 
     def deserialize_fireteam_members(
         self, payload: typedefs.JSONObject, *, alternatives: bool = False
-    ) -> typing.Optional[collections.Sequence[fireteams.FireteamMember]]:
+    ) -> collections.Sequence[fireteams.FireteamMember]:
         members_: list[fireteams.FireteamMember] = []
         if members := payload.get("Members" if not alternatives else "Alternates"):
             for member in members:
@@ -2201,8 +2196,6 @@ class Factory(interfaces.FactoryInterface):
                     type=bungie_fields.type,
                 )
                 members_.append(members_fields)
-        else:
-            return None
         return members_
 
     def deserialize_available_fireteams(
@@ -2217,11 +2210,11 @@ class Factory(interfaces.FactoryInterface):
 
         # This needs to be used outside the results
         # JSON key.
-        if no_results is True:
-            payload = data
+        if no_results:
+            payload = data.copy()
 
-        if result := payload.get("results"):
-            for fireteam in result:
+        if (results := payload.get("results")) is not None:
+            for fireteam in results:
                 found_fireteams = self._set_fireteam_fields(fireteam["Summary"])
                 fireteams_fields = fireteams.AvailableFireteam(
                     id=found_fireteams.id,
@@ -2245,9 +2238,10 @@ class Factory(interfaces.FactoryInterface):
                         payload, alternatives=True
                     ),
                 )
-            fireteams_.append(fireteams_fields)
             if no_results:
                 return fireteams_fields
+            else:
+                fireteams_.append(fireteams_fields)
         return fireteams_
 
     def deserialize_fireteam_party(

@@ -123,10 +123,10 @@ def unimplemented(
     return decorator
 
 
+# Source [https://github.com/hikari-py/hikari/blob/master/hikari/internal/aio.py]
 async def awaits(
     *aws: collections.Awaitable[T_co],
     timeout: typing.Optional[float] = None,
-    with_exception: bool = True,
 ) -> collections.Sequence[T_co]:
     """Await all given awaitables concurrently.
 
@@ -146,23 +146,33 @@ async def awaits(
     """
 
     if not aws:
-        raise RuntimeError("No awaitables passed.", aws)
+        # Just pass if nothing was passed.
+        pass
 
-    pending: list[asyncio.Task[T_co]] = []
+    fs = tuple(map(asyncio.ensure_future, aws))
+    gatherer = asyncio.gather(*fs)
 
-    for future in aws:
-        pending.append(asyncio.create_task(future))  # type: ignore
     try:
-        gatherer = asyncio.gather(*pending, return_exceptions=with_exception)
         return await asyncio.wait_for(gatherer, timeout=timeout)
-
+    except asyncio.TimeoutError:
+        raise asyncio.TimeoutError("all_of gatherer timed out") from None
     except asyncio.CancelledError:
-        raise asyncio.CancelledError("Gathered Futures were cancelled.") from None
-
+        raise asyncio.CancelledError("all_of gatherer cancelled") from None
     finally:
-        for fs in pending:
-            if not fs.done() and not fs.cancelled():
-                fs.cancel()
+        for f in fs:
+            if not f.done() and not f.cancelled():
+                f.cancel()
+                # Asyncio gathering futures complain if not awaited after cancellation
+                try:
+                    await f
+                except asyncio.CancelledError:
+                    pass
+
+        gatherer.cancel()
+        try:
+            await gatherer
+        except asyncio.CancelledError:
+            pass
 
 
 # Source [https://github.com/hikari-py/hikari/blob/master/hikari/internal/aio.py]

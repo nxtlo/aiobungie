@@ -59,7 +59,7 @@ jobs:
         run: |
           pip install nox
           pip install .
-          nox -s client_test
+          nox -s client
 
   format:
     runs-on: ubuntu-latest

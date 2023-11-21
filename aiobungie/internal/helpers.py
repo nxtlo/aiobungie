@@ -29,16 +29,21 @@ __all__: tuple[str, ...] = (
     "awaits",
     "get_or_make_loop",
     "unimplemented",
+    "loads",
+    "dumps",
 )
 
 import asyncio
 import collections.abc as collections
 import functools
 import inspect
+import json as _json
 import typing
 import warnings
 
 if typing.TYPE_CHECKING:
+    from aiobungie import typedefs
+
     T_co = typing.TypeVar("T_co", covariant=True)
     T = typing.TypeVar("T", bound=collections.Callable[..., typing.Any])
 
@@ -149,30 +154,22 @@ async def awaits(
         # Just pass if nothing was passed.
         pass
 
-    fs = tuple(map(asyncio.ensure_future, aws))
-    gatherer = asyncio.gather(*fs)
+    tasks: list[asyncio.Task[T_co]] = []
 
+    for future in aws:
+        tasks.append(asyncio.ensure_future(future))
     try:
+        gatherer = asyncio.gather(*tasks)
         return await asyncio.wait_for(gatherer, timeout=timeout)
-    except asyncio.TimeoutError:
-        raise asyncio.TimeoutError("all_of gatherer timed out") from None
-    except asyncio.CancelledError:
-        raise asyncio.CancelledError("all_of gatherer cancelled") from None
-    finally:
-        for f in fs:
-            if not f.done() and not f.cancelled():
-                f.cancel()
-                # Asyncio gathering futures complain if not awaited after cancellation
-                try:
-                    await f
-                except asyncio.CancelledError:
-                    pass
 
+    except asyncio.CancelledError:
+        raise asyncio.CancelledError("Gathered Futures were cancelled.") from None
+
+    finally:
+        for task in tasks:
+            if not task.done() and not task.cancelled():
+                task.cancel()
         gatherer.cancel()
-        try:
-            await gatherer
-        except asyncio.CancelledError:
-            pass
 
 
 # Source [https://github.com/hikari-py/hikari/blob/master/hikari/internal/aio.py]
@@ -197,3 +194,43 @@ def get_or_make_loop() -> asyncio.AbstractEventLoop:
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     return loop
+
+
+def dumps(
+    obj: typedefs.JSONArray | typedefs.JSONObject,
+) -> bytes:
+    default_dumps: collections.Callable[
+        [typedefs.JSONArray | typedefs.JSONObject], bytes
+    ] = lambda x: _json.dumps(x).encode("UTF-8")
+
+    try:
+        import orjson
+
+        default_dumps = orjson.dumps
+    except ModuleNotFoundError:
+        try:
+            import ujson
+
+            default_dumps = lambda x: ujson.dumps(x).encode("UTF-8")  # noqa: E731
+        except ModuleNotFoundError:
+            pass
+
+    return default_dumps(obj)  # type: ignore[no-any-return]
+
+
+def loads(obj: str | bytes) -> typedefs.JSONArray | typedefs.JSONObject:
+    default_loads = _json.loads
+    try:
+        import orjson
+
+        default_loads = orjson.loads
+
+    except ModuleNotFoundError:
+        try:
+            import ujson
+
+            default_loads = ujson.loads
+        except ModuleNotFoundError:
+            pass
+
+    return default_loads(obj)  # type: ignore[no-any-return]

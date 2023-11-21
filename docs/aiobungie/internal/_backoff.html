@@ -135,9 +135,9 @@
 </span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a><span class="sd">    Raises</span>
 </span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a><span class="sd">    ------</span>
 </span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a><span class="sd">    ValueError</span>
-</span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a><span class="sd">        If an `builtins.int` that&#39;s too big to be represented as a</span>
-</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a><span class="sd">        `builtins.float` or a non-finite value is passed in place of a field</span>
-</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a><span class="sd">        that&#39;s annotated as `builtins.float`.</span>
+</span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a><span class="sd">        If an `int` that&#39;s too big to be represented as a</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a><span class="sd">        `float` or a non-finite value is passed in place of a field</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a><span class="sd">        that&#39;s annotated as `float`.</span>
 </span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a>
 </span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a>    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span>
@@ -207,17 +207,15 @@
 </span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a>            <span class="c1"># If this happened then we can be sure that we&#39;ve passed maximum.</span>
 </span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a>            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">maximum</span>
 </span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a>
-</span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a>        <span class="k">return</span> <span class="p">(</span>
-</span><span id="L-132"><a href="#L-132"><span class="linenos">132</span></a>            <span class="n">value</span> <span class="o">+</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">jitter_multiplier</span>
-</span><span id="L-133"><a href="#L-133"><span class="linenos">133</span></a>        <span class="p">)</span>  <span class="c1"># nosec  # noqa S311 rng for cryptography</span>
-</span><span id="L-134"><a href="#L-134"><span class="linenos">134</span></a>
-</span><span id="L-135"><a href="#L-135"><span class="linenos">135</span></a>    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ExponentialBackOff</span><span class="p">:</span>
-</span><span id="L-136"><a href="#L-136"><span class="linenos">136</span></a>        <span class="sd">&quot;&quot;&quot;Return this object, as it is an iterator.&quot;&quot;&quot;</span>
-</span><span id="L-137"><a href="#L-137"><span class="linenos">137</span></a>        <span class="k">return</span> <span class="bp">self</span>
-</span><span id="L-138"><a href="#L-138"><span class="linenos">138</span></a>
-</span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="L-140"><a href="#L-140"><span class="linenos">140</span></a>        <span class="sd">&quot;&quot;&quot;Reset the exponential back-off.&quot;&quot;&quot;</span>
-</span><span id="L-141"><a href="#L-141"><span class="linenos">141</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">increment</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a>        <span class="k">return</span> <span class="n">value</span> <span class="o">+</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">jitter_multiplier</span>  <span class="c1"># nosec  # noqa S311 rng for cryptography</span>
+</span><span id="L-132"><a href="#L-132"><span class="linenos">132</span></a>
+</span><span id="L-133"><a href="#L-133"><span class="linenos">133</span></a>    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ExponentialBackOff</span><span class="p">:</span>
+</span><span id="L-134"><a href="#L-134"><span class="linenos">134</span></a>        <span class="sd">&quot;&quot;&quot;Return this object, as it is an iterator.&quot;&quot;&quot;</span>
+</span><span id="L-135"><a href="#L-135"><span class="linenos">135</span></a>        <span class="k">return</span> <span class="bp">self</span>
+</span><span id="L-136"><a href="#L-136"><span class="linenos">136</span></a>
+</span><span id="L-137"><a href="#L-137"><span class="linenos">137</span></a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-138"><a href="#L-138"><span class="linenos">138</span></a>        <span class="sd">&quot;&quot;&quot;Reset the exponential back-off.&quot;&quot;&quot;</span>
+</span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">increment</span> <span class="o">=</span> <span class="mi">0</span>
 </span></pre></div>
 
 
@@ -258,9 +256,9 @@
 </span><span id="ExponentialBackOff-57"><a href="#ExponentialBackOff-57"><span class="linenos"> 57</span></a><span class="sd">    Raises</span>
 </span><span id="ExponentialBackOff-58"><a href="#ExponentialBackOff-58"><span class="linenos"> 58</span></a><span class="sd">    ------</span>
 </span><span id="ExponentialBackOff-59"><a href="#ExponentialBackOff-59"><span class="linenos"> 59</span></a><span class="sd">    ValueError</span>
-</span><span id="ExponentialBackOff-60"><a href="#ExponentialBackOff-60"><span class="linenos"> 60</span></a><span class="sd">        If an `builtins.int` that&#39;s too big to be represented as a</span>
-</span><span id="ExponentialBackOff-61"><a href="#ExponentialBackOff-61"><span class="linenos"> 61</span></a><span class="sd">        `builtins.float` or a non-finite value is passed in place of a field</span>
-</span><span id="ExponentialBackOff-62"><a href="#ExponentialBackOff-62"><span class="linenos"> 62</span></a><span class="sd">        that&#39;s annotated as `builtins.float`.</span>
+</span><span id="ExponentialBackOff-60"><a href="#ExponentialBackOff-60"><span class="linenos"> 60</span></a><span class="sd">        If an `int` that&#39;s too big to be represented as a</span>
+</span><span id="ExponentialBackOff-61"><a href="#ExponentialBackOff-61"><span class="linenos"> 61</span></a><span class="sd">        `float` or a non-finite value is passed in place of a field</span>
+</span><span id="ExponentialBackOff-62"><a href="#ExponentialBackOff-62"><span class="linenos"> 62</span></a><span class="sd">        that&#39;s annotated as `float`.</span>
 </span><span id="ExponentialBackOff-63"><a href="#ExponentialBackOff-63"><span class="linenos"> 63</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span><span id="ExponentialBackOff-64"><a href="#ExponentialBackOff-64"><span class="linenos"> 64</span></a>
 </span><span id="ExponentialBackOff-65"><a href="#ExponentialBackOff-65"><span class="linenos"> 65</span></a>    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span>
@@ -330,17 +328,15 @@
 </span><span id="ExponentialBackOff-129"><a href="#ExponentialBackOff-129"><span class="linenos">129</span></a>            <span class="c1"># If this happened then we can be sure that we&#39;ve passed maximum.</span>
 </span><span id="ExponentialBackOff-130"><a href="#ExponentialBackOff-130"><span class="linenos">130</span></a>            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">maximum</span>
 </span><span id="ExponentialBackOff-131"><a href="#ExponentialBackOff-131"><span class="linenos">131</span></a>
-</span><span id="ExponentialBackOff-132"><a href="#ExponentialBackOff-132"><span class="linenos">132</span></a>        <span class="k">return</span> <span class="p">(</span>
-</span><span id="ExponentialBackOff-133"><a href="#ExponentialBackOff-133"><span class="linenos">133</span></a>            <span class="n">value</span> <span class="o">+</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">jitter_multiplier</span>
-</span><span id="ExponentialBackOff-134"><a href="#ExponentialBackOff-134"><span class="linenos">134</span></a>        <span class="p">)</span>  <span class="c1"># nosec  # noqa S311 rng for cryptography</span>
-</span><span id="ExponentialBackOff-135"><a href="#ExponentialBackOff-135"><span class="linenos">135</span></a>
-</span><span id="ExponentialBackOff-136"><a href="#ExponentialBackOff-136"><span class="linenos">136</span></a>    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ExponentialBackOff</span><span class="p">:</span>
-</span><span id="ExponentialBackOff-137"><a href="#ExponentialBackOff-137"><span class="linenos">137</span></a>        <span class="sd">&quot;&quot;&quot;Return this object, as it is an iterator.&quot;&quot;&quot;</span>
-</span><span id="ExponentialBackOff-138"><a href="#ExponentialBackOff-138"><span class="linenos">138</span></a>        <span class="k">return</span> <span class="bp">self</span>
-</span><span id="ExponentialBackOff-139"><a href="#ExponentialBackOff-139"><span class="linenos">139</span></a>
-</span><span id="ExponentialBackOff-140"><a href="#ExponentialBackOff-140"><span class="linenos">140</span></a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="ExponentialBackOff-141"><a href="#ExponentialBackOff-141"><span class="linenos">141</span></a>        <span class="sd">&quot;&quot;&quot;Reset the exponential back-off.&quot;&quot;&quot;</span>
-</span><span id="ExponentialBackOff-142"><a href="#ExponentialBackOff-142"><span class="linenos">142</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">increment</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="ExponentialBackOff-132"><a href="#ExponentialBackOff-132"><span class="linenos">132</span></a>        <span class="k">return</span> <span class="n">value</span> <span class="o">+</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">jitter_multiplier</span>  <span class="c1"># nosec  # noqa S311 rng for cryptography</span>
+</span><span id="ExponentialBackOff-133"><a href="#ExponentialBackOff-133"><span class="linenos">133</span></a>
+</span><span id="ExponentialBackOff-134"><a href="#ExponentialBackOff-134"><span class="linenos">134</span></a>    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ExponentialBackOff</span><span class="p">:</span>
+</span><span id="ExponentialBackOff-135"><a href="#ExponentialBackOff-135"><span class="linenos">135</span></a>        <span class="sd">&quot;&quot;&quot;Return this object, as it is an iterator.&quot;&quot;&quot;</span>
+</span><span id="ExponentialBackOff-136"><a href="#ExponentialBackOff-136"><span class="linenos">136</span></a>        <span class="k">return</span> <span class="bp">self</span>
+</span><span id="ExponentialBackOff-137"><a href="#ExponentialBackOff-137"><span class="linenos">137</span></a>
+</span><span id="ExponentialBackOff-138"><a href="#ExponentialBackOff-138"><span class="linenos">138</span></a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="ExponentialBackOff-139"><a href="#ExponentialBackOff-139"><span class="linenos">139</span></a>        <span class="sd">&quot;&quot;&quot;Reset the exponential back-off.&quot;&quot;&quot;</span>
+</span><span id="ExponentialBackOff-140"><a href="#ExponentialBackOff-140"><span class="linenos">140</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">increment</span> <span class="o">=</span> <span class="mi">0</span>
 </span></pre></div>
 
 
@@ -370,9 +366,9 @@ The initial increment to start at. Defaults to <code>0</code>.</li>
 <h6 id="raises">Raises</h6>
 
 <ul>
-<li><strong>ValueError</strong>: If an <code>builtins.int</code> that's too big to be represented as a
-<code>builtins.float</code> or a non-finite value is passed in place of a field
-that's annotated as <code>builtins.float</code>.</li>
+<li><strong>ValueError</strong>: If an <code>int</code> that's too big to be represented as a
+<code>float</code> or a non-finite value is passed in place of a field
+that's annotated as <code>float</code>.</li>
 </ul>
 </div>
 
@@ -487,9 +483,9 @@ This defaults to <code>1.0</code>. Set to <code>0.0</code> to disable jitter.</p
 
     </div>
     <a class="headerlink" href="#ExponentialBackOff.reset"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="ExponentialBackOff.reset-140"><a href="#ExponentialBackOff.reset-140"><span class="linenos">140</span></a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="ExponentialBackOff.reset-141"><a href="#ExponentialBackOff.reset-141"><span class="linenos">141</span></a>        <span class="sd">&quot;&quot;&quot;Reset the exponential back-off.&quot;&quot;&quot;</span>
-</span><span id="ExponentialBackOff.reset-142"><a href="#ExponentialBackOff.reset-142"><span class="linenos">142</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">increment</span> <span class="o">=</span> <span class="mi">0</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="ExponentialBackOff.reset-138"><a href="#ExponentialBackOff.reset-138"><span class="linenos">138</span></a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="ExponentialBackOff.reset-139"><a href="#ExponentialBackOff.reset-139"><span class="linenos">139</span></a>        <span class="sd">&quot;&quot;&quot;Reset the exponential back-off.&quot;&quot;&quot;</span>
+</span><span id="ExponentialBackOff.reset-140"><a href="#ExponentialBackOff.reset-140"><span class="linenos">140</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">increment</span> <span class="o">=</span> <span class="mi">0</span>
 </span></pre></div>
 
 

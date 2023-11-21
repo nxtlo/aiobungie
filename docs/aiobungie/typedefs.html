@@ -51,6 +51,12 @@
             <li>
                     <a class="function" href="#is_unknown">is_unknown</a>
             </li>
+            <li>
+                    <a class="variable" href="#Loads">Loads</a>
+            </li>
+            <li>
+                    <a class="variable" href="#Dumps">Dumps</a>
+            </li>
     </ul>
 
 
@@ -108,43 +114,52 @@
 </span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>    <span class="s2">&quot;EnumSig&quot;</span><span class="p">,</span>
 </span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>    <span class="s2">&quot;IntAnd&quot;</span><span class="p">,</span>
 </span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>    <span class="s2">&quot;is_unknown&quot;</span><span class="p">,</span>
-</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a><span class="p">)</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>
-</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a><span class="kn">import</span> <span class="nn">typing</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>    <span class="s2">&quot;Loads&quot;</span><span class="p">,</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>    <span class="s2">&quot;Dumps&quot;</span><span class="p">,</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a><span class="p">)</span>
 </span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>
-</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a><span class="kn">from</span> <span class="nn">aiobungie.internal</span> <span class="kn">import</span> <span class="n">enums</span>
-</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>
-</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a><span class="n">JSONObject</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span>  <span class="c1"># type: ignore[misc]</span>
-</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a><span class="sd">&quot;&quot;&quot;A JSON like dict of string key and any value.</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a><span class="kn">import</span> <span class="nn">collections.abc</span> <span class="k">as</span> <span class="nn">collections</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a><span class="kn">import</span> <span class="nn">typing</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>
+</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a><span class="kn">from</span> <span class="nn">aiobungie.internal</span> <span class="kn">import</span> <span class="n">enums</span>
 </span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>
-</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a><span class="sd">i.e., `{&quot;Key&quot;: 1, &quot;Key2&quot;: &quot;Value&quot;}`</span>
-</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a><span class="n">JSONObject</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span>  <span class="c1"># type: ignore[misc]</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a><span class="sd">&quot;&quot;&quot;A JSON like dict of string key and any value.</span>
 </span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>
-</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a><span class="n">JSONArray</span> <span class="o">=</span> <span class="nb">list</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span>  <span class="c1"># type: ignore[misc]</span>
-</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a><span class="sd">&quot;&quot;&quot;A JSON like list of any data type.</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a><span class="sd">i.e., `{&quot;Key&quot;: 1, &quot;Key2&quot;: &quot;Value&quot;}`</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>
-</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a><span class="sd">i.e., `[{&quot;Key&quot;: 1}, {&quot;Key2&quot;: &quot;Value&quot;}]`</span>
-</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a><span class="n">JSONArray</span> <span class="o">=</span> <span class="nb">list</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span>  <span class="c1"># type: ignore[misc]</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a><span class="sd">&quot;&quot;&quot;A JSON like list of any data type.</span>
 </span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>
-</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a><span class="n">Unknown</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Final</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a><span class="sd">&quot;&quot;&quot;Some Bungie strings return empty so we undefine them if so.&quot;&quot;&quot;</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a><span class="sd">i.e., `[{&quot;Key&quot;: 1}, {&quot;Key2&quot;: &quot;Value&quot;}]`</span>
+</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>
-</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a><span class="n">T</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="n">covariant</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a>
-</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a><span class="n">NoneOr</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">T</span><span class="p">]</span>
-</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a><span class="sd">&quot;&quot;&quot;A Union type that&#39;s similar to to `typing.Optional[T]`&quot;&quot;&quot;</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a><span class="n">Unknown</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a><span class="sd">&quot;&quot;&quot;Some Bungie strings return empty so we undefine them if so.&quot;&quot;&quot;</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>
+</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a><span class="n">T</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="n">covariant</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a>
-</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a><span class="n">EnumSig</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">TypeVar</span><span class="p">(</span>
-</span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a>    <span class="s2">&quot;EnumSig&quot;</span><span class="p">,</span> <span class="n">covariant</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">Enum</span><span class="p">,</span> <span class="n">enums</span><span class="o">.</span><span class="n">Flag</span><span class="p">]</span>
-</span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a><span class="p">)</span>
-</span><span id="L-64"><a href="#L-64"><span class="linenos">64</span></a><span class="sd">&quot;&quot;&quot;A type hint bound to `aiobungie.internal.enums.Enum` and `aiobungie.internal.enums.Flag`&quot;&quot;&quot;</span>
-</span><span id="L-65"><a href="#L-65"><span class="linenos">65</span></a>
-</span><span id="L-66"><a href="#L-66"><span class="linenos">66</span></a><span class="n">IntAnd</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">EnumSig</span><span class="p">]</span>
-</span><span id="L-67"><a href="#L-67"><span class="linenos">67</span></a><span class="sd">&quot;&quot;&quot;A type hint for parameters that may receives an enum or an int.&quot;&quot;&quot;</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a><span class="n">NoneOr</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">T</span><span class="p">]</span>
+</span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a><span class="sd">&quot;&quot;&quot;A Union type that&#39;s similar to to `typing.Optional[T]`&quot;&quot;&quot;</span>
+</span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a>
+</span><span id="L-64"><a href="#L-64"><span class="linenos">64</span></a><span class="n">EnumSig</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">TypeVar</span><span class="p">(</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos">65</span></a>    <span class="s2">&quot;EnumSig&quot;</span><span class="p">,</span> <span class="n">covariant</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">Enum</span><span class="p">,</span> <span class="n">enums</span><span class="o">.</span><span class="n">Flag</span><span class="p">]</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos">66</span></a><span class="p">)</span>
+</span><span id="L-67"><a href="#L-67"><span class="linenos">67</span></a><span class="sd">&quot;&quot;&quot;A type hint bound to `aiobungie.internal.enums.Enum` and `aiobungie.internal.enums.Flag`&quot;&quot;&quot;</span>
 </span><span id="L-68"><a href="#L-68"><span class="linenos">68</span></a>
-</span><span id="L-69"><a href="#L-69"><span class="linenos">69</span></a>
-</span><span id="L-70"><a href="#L-70"><span class="linenos">70</span></a><span class="k">def</span> <span class="nf">is_unknown</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="L-71"><a href="#L-71"><span class="linenos">71</span></a>    <span class="k">return</span> <span class="n">string</span> <span class="o">==</span> <span class="n">Unknown</span>
+</span><span id="L-69"><a href="#L-69"><span class="linenos">69</span></a><span class="n">IntAnd</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">EnumSig</span><span class="p">]</span>
+</span><span id="L-70"><a href="#L-70"><span class="linenos">70</span></a><span class="sd">&quot;&quot;&quot;A type hint for parameters that may receives an enum or an int.&quot;&quot;&quot;</span>
+</span><span id="L-71"><a href="#L-71"><span class="linenos">71</span></a>
+</span><span id="L-72"><a href="#L-72"><span class="linenos">72</span></a><span class="n">Loads</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">bytes</span><span class="p">],</span> <span class="n">JSONArray</span> <span class="o">|</span> <span class="n">JSONObject</span><span class="p">]</span>
+</span><span id="L-73"><a href="#L-73"><span class="linenos">73</span></a><span class="sd">&quot;&quot;&quot;A function that takes a `str` and decode it into a Python object.&quot;&quot;&quot;</span>
+</span><span id="L-74"><a href="#L-74"><span class="linenos">74</span></a>
+</span><span id="L-75"><a href="#L-75"><span class="linenos">75</span></a><span class="n">Dumps</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">Callable</span><span class="p">[[</span><span class="n">JSONObject</span> <span class="o">|</span> <span class="n">JSONArray</span><span class="p">],</span> <span class="nb">bytes</span><span class="p">]</span>
+</span><span id="L-76"><a href="#L-76"><span class="linenos">76</span></a><span class="sd">&quot;&quot;&quot;A function that takes an JSON object and encode it into bytes.&quot;&quot;&quot;</span>
+</span><span id="L-77"><a href="#L-77"><span class="linenos">77</span></a>
+</span><span id="L-78"><a href="#L-78"><span class="linenos">78</span></a>
+</span><span id="L-79"><a href="#L-79"><span class="linenos">79</span></a><span class="k">def</span> <span class="nf">is_unknown</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="L-80"><a href="#L-80"><span class="linenos">80</span></a>    <span class="k">return</span> <span class="n">string</span> <span class="o">==</span> <span class="n">Unknown</span>
 </span></pre></div>
 
 
@@ -183,7 +198,7 @@
                 </section>
                 <section id="Unknown">
                     <div class="attr variable">
-            <span class="name">Unknown</span><span class="annotation">: Final[Literal[&#39;&#39;]]</span>        =
+            <span class="name">Unknown</span><span class="annotation">: Literal[&#39;&#39;]</span>        =
 <span class="default_value">&#39;&#39;</span>
 
         
@@ -248,12 +263,40 @@
 
     </div>
     <a class="headerlink" href="#is_unknown"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="is_unknown-71"><a href="#is_unknown-71"><span class="linenos">71</span></a><span class="k">def</span> <span class="nf">is_unknown</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-</span><span id="is_unknown-72"><a href="#is_unknown-72"><span class="linenos">72</span></a>    <span class="k">return</span> <span class="n">string</span> <span class="o">==</span> <span class="n">Unknown</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="is_unknown-80"><a href="#is_unknown-80"><span class="linenos">80</span></a><span class="k">def</span> <span class="nf">is_unknown</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span id="is_unknown-81"><a href="#is_unknown-81"><span class="linenos">81</span></a>    <span class="k">return</span> <span class="n">string</span> <span class="o">==</span> <span class="n">Unknown</span>
 </span></pre></div>
 
 
     
+
+                </section>
+                <section id="Loads">
+                    <div class="attr variable">
+            <span class="name">Loads</span>        =
+<span class="default_value">collections.abc.Callable[[str | bytes], list[typing.Any] | dict[str, typing.Any]]</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Loads"></a>
+    
+            <div class="docstring"><p>A function that takes a <code>str</code> and decode it into a Python object.</p>
+</div>
+
+
+                </section>
+                <section id="Dumps">
+                    <div class="attr variable">
+            <span class="name">Dumps</span>        =
+<span class="default_value">collections.abc.Callable[[dict[str, typing.Any] | list[typing.Any]], bytes]</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Dumps"></a>
+    
+            <div class="docstring"><p>A function that takes an JSON object and encode it into bytes.</p>
+</div>
+
 
                 </section>
     </main>

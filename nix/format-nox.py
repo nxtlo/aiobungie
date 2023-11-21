@@ -31,17 +31,16 @@ WORDS: list[str] = ["crate"]
 def format(session: nox.Session) -> None:
     session.install("-r", "dev-requirements.txt")
     session.run("python", "-m", "isort", "aiobungie")
-    session.run("python", "-m", "black", "aiobungie")
-    session.run("python", "-m", "black", "aiobungie", "--check")
+    session.run("python", "-m", "ruff", "format", "aiobungie")
 
 
 @nox.session(reuse_venv=True)
 def spell(session: nox.Session) -> None:
-    session.install("codespell")
+    session.install("-r", "dev-requirements.txt")
     session.run(
         "codespell",
         "aiobungie",
-        "--write-changes",
+        "--w",
         "-L",
         " ,".join(word for word in WORDS),
     )

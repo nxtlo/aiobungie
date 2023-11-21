@@ -22,32 +22,18 @@
 
 """Time helper functions."""
 
-
 from __future__ import annotations
 
 __all__: list[str] = [
-    "format_played",
     "from_timestamp",
     "clean_date",
-    "to_timestamp",
     "parse_date_range",
     "monotonic",
 ]
 
-import calendar
 import datetime
-import math
 import time as _time
 import typing
-
-import dateutil.parser
-
-
-def format_played(mins: int, /, *, suffix: bool = False) -> str:
-    """Converts A memberships's total played time from minutes to a readable string."""
-    hrs = math.floor(mins // 60)
-    seconds = math.floor(mins % 60)
-    return f"{hrs} hours{' and' if suffix else ''} {seconds} seconds."
 
 
 def from_timestamp(timer: typing.Union[int, float], /) -> datetime.datetime:
@@ -57,14 +43,7 @@ def from_timestamp(timer: typing.Union[int, float], /) -> datetime.datetime:
 
 def clean_date(iso_date: str, /) -> datetime.datetime:
     """Parse a Bungie ISO format string date to a Python `datetime.datetime` object."""
-    parsed = dateutil.parser.parse(iso_date)
-    ts = to_timestamp(parsed)  # had to do it in two ways...
-    return from_timestamp(ts)
-
-
-def to_timestamp(date: datetime.datetime, /) -> int:
-    """Converts `datetime.datetime` to timestamp."""
-    return calendar.timegm(date.timetuple())
+    return datetime.datetime.fromisoformat(iso_date)
 
 
 def parse_date_range(

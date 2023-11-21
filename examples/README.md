@@ -18,13 +18,14 @@ python example_file.py
 ```
 
 ## Examples List
-```s
+```c#
 1: hello_world => A simple example on how to use aiobungie client.
 2: manifest => Manifest usage example for both SQLite and JSON database.
 3: transfer_items => Transfer your items from a character to another.
 4: user_oauth2 => Full implementation on OAuth2 workflow.
 5: request => Example on how to use aiobungie Factory only with requests in non-async code.
 6: error_handling => Using aiobungie exceptions to handle errors.
+7: caching => Using aiobungie client metadata to store objects to avoid making HTTP requests multiple times.
 ```
 
 ### Contributing

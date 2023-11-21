@@ -43,31 +43,24 @@ class Progression:
 
     cap: int
     """The cap number of this progression."""
-    # <<inherited docstring from aiobungie.crates.specials.Progression>>.
 
     daily_limit: int
     """The limit of the daily earned progress."""
-    # <<inherited docstring from aiobungie.crates.specials.Progression>>.
 
     weekly_limit: int
     """The limit of the weekly earned progress."""
-    # <<inherited docstring from aiobungie.crates.specials.Progression>>.
 
     current_progress: int
     """The current progress of this progression."""
-    # <<inherited docstring from aiobungie.crates.specials.Progression>>.
 
     daily_progress: int
     """The number of the daily progress."""
-    # <<inherited docstring from aiobungie.crates.specials.Progression>>.
 
     needed: int
     """The needed progress to earn the next level."""
-    # <<inherited docstring from aiobungie.crates.specials.Progression>>.
 
     next_level: int
     """The progression's next level at."""
-    # <<inherited docstring from aiobungie.crates.specials.Progression>>.
 
 
 @attrs.define(kw_only=True)

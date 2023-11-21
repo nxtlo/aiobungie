@@ -53,9 +53,6 @@ if typing.TYPE_CHECKING:
 class LinkedProfile:
     """Represents a membership linked profile information summary."""
 
-    net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
-    """A network state used for making external requests."""
-
     profiles: collections.Sequence[user.DestinyMembership]
     """A sequence of destiny memberships for this profile."""
 
@@ -115,8 +112,8 @@ class ProfileItemImpl:
     state: enums.ItemState
     """The item's state."""
 
-    dismantel_permissions: int
-    """The item's dismantel permission."""
+    dismantle_permissions: int
+    """The item's dismantle permission."""
 
     is_wrapper: bool
     """Whether the item is a wrapper or not."""

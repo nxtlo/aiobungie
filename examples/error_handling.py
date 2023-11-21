@@ -26,7 +26,7 @@ async def main() -> None:
         # It can be handled easily with this exception.
         except aiobungie.MembershipTypeError as err:
             # If this gets raised. The API will return the required membership which can
-            # be used to re-make the request. You can call the `into_membershio` method to like this.
+            # be used to re-make the request. You can call the `into_membership` method to like this.
             component = await fetch_character_component(
                 membership=err.into_membership()
             )

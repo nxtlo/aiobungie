@@ -8,20 +8,17 @@ build/
 .env
 *.venv*/
 *venv*/
-# For python 3.10 testings.
-.venv_10*/
 
 # VS code configs.
 .vscode/
 
 # pipelines and workflow.
 .nox/
-
-# aiobungie stuff.
-dropped/
+*.pem
 
 # Cache
 .cache/
 __pycache__/
 .mypy_cache/
 .pytest_cache/
+.ruff_cache/

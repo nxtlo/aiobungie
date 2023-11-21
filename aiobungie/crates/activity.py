@@ -422,7 +422,7 @@ class ExtendedValues:
 class PostActivityTeam:
     """Represents a post activity team information.
 
-    Teams will be available in PvP gamemodes, e.g., Gambit, Crucible, Iron Banner. etc.
+    Teams will be available in PvP Game Modes, e.g., Gambit, Crucible, Iron Banner. etc.
     """
 
     id: int
@@ -508,7 +508,7 @@ class PostActivity:
     """The activity mode or type."""
 
     modes: collections.Sequence[enums.GameMode]
-    """A sequence of the activity's gamemodes."""
+    """A sequence of the activity's Game Modes."""
 
     is_private: bool
     """Whether this activity is private or not."""
@@ -569,7 +569,7 @@ class Activity:
     """The activity mode or type."""
 
     modes: collections.Sequence[enums.GameMode]
-    """Sequence of the activity's gamemodes."""
+    """Sequence of the activity's Game Modes."""
 
     is_private: bool
     """Whether this activity is private or not."""
@@ -616,7 +616,7 @@ class Activity:
 
 @attrs.define(kw_only=True)
 class AggregatedActivity:
-    """Represents aggergated activity data."""
+    """Represents aggregated activity data."""
 
     hash: int
     """The activity hash."""

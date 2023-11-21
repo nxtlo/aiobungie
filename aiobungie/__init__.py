@@ -20,97 +20,97 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""A Pythonic `async`/`await` wrapper for interacting with the Bungie API.
+"""A statically typed, asynchronous API wrapper for building clients for Bungie's API in Python.
 
-Base client.
+Getting Started
+---------------
 
-Example
--------
+This is the basic client you probably want you start with.
+
 ```py
 import aiobungie
 
-client = aiobungie.Client('YOUR_API_KEY')
+client = aiobungie.Client('YOUR_API_KEY', client_secret='KEY', client_id=0)
 
-# Search for Destiny2 users.
 async def main() -> None:
     async with client.rest:
+        # Search for Destiny 2 memberships.
         users = await client.search_users('Crit')
 
         # Iterate over the users and take the first 5 results.
         for user in users.take(5):
-            print(f'{user.name} ({user.code})')
+            # Print the user name and their code.
+            print(f'{user.name} {user.code}')
 
-            # Iterate through the users memberships.
-            for membership in user.memberships:
-                print(membership.type, membership.id)
-
+# aiobungie provides an internal function to run async functions.
+# It's equivalent to asyncio.run()
 client.run(main()) # or asyncio.run(main())
 ```
 
-Single RESTClient instance.
+RESTClient
+----------
 
-The difference between base client and the REST clients:
+aiobungie provides a second way to use Bungie's API,
 
-* No Hight-Level concepts.
-* All returned data are pure JSON objects from the API.
-* No object creation.
+a single `RESTClient` allows you to make requests and return JSON objects immediately.
 
-Example
--------
+This bypasses the need to deserialize and create objects. It also exposes all `OAuth2` and `manifest` methods.
+This can be faster for `REST` apis.
+
+This is considered the core client since `aiobungie.Client` is built on top of it.
+Using the `.rest` property allows direct access to the raw REST client instance.
+
+
 ```py
 import aiobungie
+import asyncio
+
+client = aiobungie.RESTClient("TOKEN")
 
 async def main() -> None:
-    # Using `async with` context manager to close the session properly.
-    async with aiobungie.RESTClient("TOKEN") as rest:
+    async with client as rest:
         payload = await rest.fetch_player('Fate怒', 4275)
 
         for membership in payload:
-            print(membership['membershipId'], membership['iconPath'])
+            print(membership['membershipId'])
 
-import asyncio
 asyncio.run(main())
 ```
 
-REST client pool.
+RESTPool
+--------
 
-A REST client pool allows you to acquire multiple `RESTClient` instances that shares the same connection.
+A REST client pool allows you to acquire multiple `RESTClient` that share the same state.
 
-Example
--------
+This is useful when you want to spawn an instance for each client which shared the same state.
+
 ```py
 import aiobungie
 import asyncio
 
 pool = aiobungie.RESTPool("token")
 
-async def func1() -> None:
+async def set() -> None:
+    # Set your ID to access it from other places.
+    pool.metadata['my_id'] = 4401
     async with pool.acquire() as instance:
-        tokens = await instance.fetch_oauth2_tokens('code')
-        pool.metadata['tokens'] = tokens
+        ...
 
-# Other instance may access the tokens from pool since its shared.
+async def fetch() -> None:
+    my_id: int = pool.metadata['my_id']
+    async with pool.acquire() as instance: # A different client instance.
+        my_user = instance.fetch_bungie_user(my_id)
 
-async def func2() -> None:
-    async with pool.acquire() as instance:
-        tokens = pool.metadata['tokens']
-        tokens = await instance.refresh_access_token(tokens.refresh_token)
-
-async def main() -> None:
-    await asyncio.gather(func1(), func2())
-
-asyncio.run(main())
+await asyncio.gather(set(), fetch())
 ```
 
-Should you use the base client or the REST client?
-This returns to you. For an example if you're building a website.
-
-You can use python as a REST API in the backend with the RESTClient since all returned object are JSON objects.
-Which gives you the freedom to deserialize it and implement your own logic in the front-end.
-
-Or of you're building a Discord bot for an example or something simple. The base client is the way to go.
+## When should you use which client?
+* Use `Client` when you want to build a Chat Bot, Discord Bot, access data as Python classes.
+* Use `RESTClient` when you want one TCP session for all clients, access data as JSON payloads.
+* Use `RESTPool` when you're serving a large amount of connections and want to spawn a session for each,
+access data as JSON payloads.
+Note that setting up multiple TCP connections can be expensive.
 """
-
 
 from __future__ import annotations
 

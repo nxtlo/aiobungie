@@ -9,14 +9,14 @@ import aiobungie
 
 
 # This is a dummy client since the factory requires a client owner.
-class DummyClient(aiobungie.traits.ClientApp):
+class DummyClient(aiobungie.traits.Netrunner):
     ...
 
 
 factory = aiobungie.Factory(DummyClient())
 CLAN_TYPE = int(aiobungie.GroupType.CLAN)
 CLAN_NAME = "Redeem"  # You can use your clan name.
-TOKEN = "YOUR_TOKEN"  # This should be stored somewhere safed.
+TOKEN = "YOUR_TOKEN"  # This should be stored somewhere safe.
 
 
 def main():
@@ -36,7 +36,7 @@ def main():
         # NOTE: An attempt to use any methods will most likely raise an error since
         # The dummy client doesn't implement anything.
     else:
-        print(f"Encounterd an error! {response.status_code}; {response.json()}")
+        print(f"Encountered an error! {response.status_code}; {response.json()}")
 
 
 if __name__ == "__main__":

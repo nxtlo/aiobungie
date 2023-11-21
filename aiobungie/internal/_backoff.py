@@ -56,9 +56,9 @@ class ExponentialBackOff:
     Raises
     ------
     ValueError
-        If an `builtins.int` that's too big to be represented as a
-        `builtins.float` or a non-finite value is passed in place of a field
-        that's annotated as `builtins.float`.
+        If an `int` that's too big to be represented as a
+        `float` or a non-finite value is passed in place of a field
+        that's annotated as `float`.
     """
 
     __slots__ = (
@@ -128,9 +128,7 @@ class ExponentialBackOff:
             # If this happened then we can be sure that we've passed maximum.
             value = self.maximum
 
-        return (
-            value + random.random() * self.jitter_multiplier
-        )  # nosec  # noqa S311 rng for cryptography
+        return value + random.random() * self.jitter_multiplier  # nosec  # noqa S311 rng for cryptography
 
     def __iter__(self) -> ExponentialBackOff:
         """Return this object, as it is an iterator."""

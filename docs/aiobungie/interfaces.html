@@ -190,7 +190,7 @@
                                 <a class="function" href="#RESTInterface.fetch_fireteams">fetch_fireteams</a>
                         </li>
                         <li>
-                                <a class="function" href="#RESTInterface.fetch_avaliable_clan_fireteams">fetch_avaliable_clan_fireteams</a>
+                                <a class="function" href="#RESTInterface.fetch_available_clan_fireteams">fetch_available_clan_fireteams</a>
                         </li>
                         <li>
                                 <a class="function" href="#RESTInterface.fetch_clan_fireteam">fetch_clan_fireteam</a>
@@ -325,7 +325,7 @@
                                 <a class="function" href="#RESTInterface.fetch_poll">fetch_poll</a>
                         </li>
                         <li>
-                                <a class="function" href="#RESTInterface.fetch_recuirement_thread_summaries">fetch_recuirement_thread_summaries</a>
+                                <a class="function" href="#RESTInterface.fetch_recruitment_thread_summaries">fetch_recruitment_thread_summaries</a>
                         </li>
                         <li>
                                 <a class="function" href="#RESTInterface.fetch_recommended_groups">fetch_recommended_groups</a>
@@ -830,7 +830,7 @@
 </span><span id="RESTInterface-229"><a href="#RESTInterface-229"><span class="linenos"> 229</span></a><span class="sd">        credential: `int`</span>
 </span><span id="RESTInterface-230"><a href="#RESTInterface-230"><span class="linenos"> 230</span></a><span class="sd">            A valid SteamID64</span>
 </span><span id="RESTInterface-231"><a href="#RESTInterface-231"><span class="linenos"> 231</span></a><span class="sd">        type: `aiobungie.typedefs.IntAnd[aiobungie.CredentialType]`</span>
-</span><span id="RESTInterface-232"><a href="#RESTInterface-232"><span class="linenos"> 232</span></a><span class="sd">            The crededntial type. This must not be changed</span>
+</span><span id="RESTInterface-232"><a href="#RESTInterface-232"><span class="linenos"> 232</span></a><span class="sd">            The credential type. This must not be changed</span>
 </span><span id="RESTInterface-233"><a href="#RESTInterface-233"><span class="linenos"> 233</span></a><span class="sd">            Since its only credential that works &quot;currently&quot;</span>
 </span><span id="RESTInterface-234"><a href="#RESTInterface-234"><span class="linenos"> 234</span></a>
 </span><span id="RESTInterface-235"><a href="#RESTInterface-235"><span class="linenos"> 235</span></a><span class="sd">        Returns</span>
@@ -1162,7 +1162,7 @@
 </span><span id="RESTInterface-561"><a href="#RESTInterface-561"><span class="linenos"> 561</span></a>
 </span><span id="RESTInterface-562"><a href="#RESTInterface-562"><span class="linenos"> 562</span></a><span class="sd">        Other Parameters</span>
 </span><span id="RESTInterface-563"><a href="#RESTInterface-563"><span class="linenos"> 563</span></a><span class="sd">        ----------------</span>
-</span><span id="RESTInterface-564"><a href="#RESTInterface-564"><span class="linenos"> 564</span></a><span class="sd">        filter : `builsins.int`</span>
+</span><span id="RESTInterface-564"><a href="#RESTInterface-564"><span class="linenos"> 564</span></a><span class="sd">        filter : `int`</span>
 </span><span id="RESTInterface-565"><a href="#RESTInterface-565"><span class="linenos"> 565</span></a><span class="sd">            Filter apply to list of joined groups. This Default to `0`</span>
 </span><span id="RESTInterface-566"><a href="#RESTInterface-566"><span class="linenos"> 566</span></a><span class="sd">        group_type : `aiobungie.typedefs.IntAnd[aiobungie.GroupType]`</span>
 </span><span id="RESTInterface-567"><a href="#RESTInterface-567"><span class="linenos"> 567</span></a><span class="sd">            The group&#39;s type.</span>
@@ -1195,7 +1195,7 @@
 </span><span id="RESTInterface-594"><a href="#RESTInterface-594"><span class="linenos"> 594</span></a>
 </span><span id="RESTInterface-595"><a href="#RESTInterface-595"><span class="linenos"> 595</span></a><span class="sd">        Other Parameters</span>
 </span><span id="RESTInterface-596"><a href="#RESTInterface-596"><span class="linenos"> 596</span></a><span class="sd">        ----------------</span>
-</span><span id="RESTInterface-597"><a href="#RESTInterface-597"><span class="linenos"> 597</span></a><span class="sd">        filter : `builsins.int`</span>
+</span><span id="RESTInterface-597"><a href="#RESTInterface-597"><span class="linenos"> 597</span></a><span class="sd">        filter : `int`</span>
 </span><span id="RESTInterface-598"><a href="#RESTInterface-598"><span class="linenos"> 598</span></a><span class="sd">            Filter apply to list of joined groups. This Default to `0`</span>
 </span><span id="RESTInterface-599"><a href="#RESTInterface-599"><span class="linenos"> 599</span></a><span class="sd">        group_type : `aiobungie.typedefs.IntAnd[aiobungie.GroupType]`</span>
 </span><span id="RESTInterface-600"><a href="#RESTInterface-600"><span class="linenos"> 600</span></a><span class="sd">            The group&#39;s type.</span>
@@ -1220,7 +1220,7 @@
 </span><span id="RESTInterface-619"><a href="#RESTInterface-619"><span class="linenos"> 619</span></a>
 </span><span id="RESTInterface-620"><a href="#RESTInterface-620"><span class="linenos"> 620</span></a><span class="sd">        Parameters</span>
 </span><span id="RESTInterface-621"><a href="#RESTInterface-621"><span class="linenos"> 621</span></a><span class="sd">        ----------</span>
-</span><span id="RESTInterface-622"><a href="#RESTInterface-622"><span class="linenos"> 622</span></a><span class="sd">        clan_id : `builsins.int`</span>
+</span><span id="RESTInterface-622"><a href="#RESTInterface-622"><span class="linenos"> 622</span></a><span class="sd">        clan_id : `int`</span>
 </span><span id="RESTInterface-623"><a href="#RESTInterface-623"><span class="linenos"> 623</span></a><span class="sd">            The clans id</span>
 </span><span id="RESTInterface-624"><a href="#RESTInterface-624"><span class="linenos"> 624</span></a>
 </span><span id="RESTInterface-625"><a href="#RESTInterface-625"><span class="linenos"> 625</span></a><span class="sd">        Other Parameters</span>
@@ -1287,7 +1287,7 @@
 </span><span id="RESTInterface-686"><a href="#RESTInterface-686"><span class="linenos"> 686</span></a><span class="sd">        Returns</span>
 </span><span id="RESTInterface-687"><a href="#RESTInterface-687"><span class="linenos"> 687</span></a><span class="sd">        -------</span>
 </span><span id="RESTInterface-688"><a href="#RESTInterface-688"><span class="linenos"> 688</span></a><span class="sd">        `aiobungie.typedefs.JSONObject`</span>
-</span><span id="RESTInterface-689"><a href="#RESTInterface-689"><span class="linenos"> 689</span></a><span class="sd">            A JSON object of the objetive data.</span>
+</span><span id="RESTInterface-689"><a href="#RESTInterface-689"><span class="linenos"> 689</span></a><span class="sd">            A JSON object of the objective data.</span>
 </span><span id="RESTInterface-690"><a href="#RESTInterface-690"><span class="linenos"> 690</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="RESTInterface-691"><a href="#RESTInterface-691"><span class="linenos"> 691</span></a>
 </span><span id="RESTInterface-692"><a href="#RESTInterface-692"><span class="linenos"> 692</span></a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -1332,7 +1332,7 @@
 </span><span id="RESTInterface-731"><a href="#RESTInterface-731"><span class="linenos"> 731</span></a><span class="sd">        ----------------</span>
 </span><span id="RESTInterface-732"><a href="#RESTInterface-732"><span class="linenos"> 732</span></a><span class="sd">        all : `bool`</span>
 </span><span id="RESTInterface-733"><a href="#RESTInterface-733"><span class="linenos"> 733</span></a><span class="sd">            If provided and set to `True`, All memberships regardless</span>
-</span><span id="RESTInterface-734"><a href="#RESTInterface-734"><span class="linenos"> 734</span></a><span class="sd">            of whether thry&#39;re obscured by overrides will be returned,</span>
+</span><span id="RESTInterface-734"><a href="#RESTInterface-734"><span class="linenos"> 734</span></a><span class="sd">            of whether they&#39;re obscured by overrides will be returned,</span>
 </span><span id="RESTInterface-735"><a href="#RESTInterface-735"><span class="linenos"> 735</span></a>
 </span><span id="RESTInterface-736"><a href="#RESTInterface-736"><span class="linenos"> 736</span></a><span class="sd">            If provided and set to `False`, Only available memberships will be returned.</span>
 </span><span id="RESTInterface-737"><a href="#RESTInterface-737"><span class="linenos"> 737</span></a><span class="sd">            The default for this is `False`.</span>
@@ -1426,7 +1426,7 @@
 </span><span id="RESTInterface-825"><a href="#RESTInterface-825"><span class="linenos"> 825</span></a><span class="sd">        character_id : `int`</span>
 </span><span id="RESTInterface-826"><a href="#RESTInterface-826"><span class="linenos"> 826</span></a><span class="sd">            The character&#39;s id to equip the item to.</span>
 </span><span id="RESTInterface-827"><a href="#RESTInterface-827"><span class="linenos"> 827</span></a><span class="sd">        membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`</span>
-</span><span id="RESTInterface-828"><a href="#RESTInterface-828"><span class="linenos"> 828</span></a><span class="sd">            The membership type assocaiated with this player.</span>
+</span><span id="RESTInterface-828"><a href="#RESTInterface-828"><span class="linenos"> 828</span></a><span class="sd">            The membership type associated with this player.</span>
 </span><span id="RESTInterface-829"><a href="#RESTInterface-829"><span class="linenos"> 829</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="RESTInterface-830"><a href="#RESTInterface-830"><span class="linenos"> 830</span></a>
 </span><span id="RESTInterface-831"><a href="#RESTInterface-831"><span class="linenos"> 831</span></a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -1454,7 +1454,7 @@
 </span><span id="RESTInterface-853"><a href="#RESTInterface-853"><span class="linenos"> 853</span></a><span class="sd">        character_id : `int`</span>
 </span><span id="RESTInterface-854"><a href="#RESTInterface-854"><span class="linenos"> 854</span></a><span class="sd">            The character&#39;s id to equip the item to.</span>
 </span><span id="RESTInterface-855"><a href="#RESTInterface-855"><span class="linenos"> 855</span></a><span class="sd">        membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`</span>
-</span><span id="RESTInterface-856"><a href="#RESTInterface-856"><span class="linenos"> 856</span></a><span class="sd">            The membership type assocaiated with this player.</span>
+</span><span id="RESTInterface-856"><a href="#RESTInterface-856"><span class="linenos"> 856</span></a><span class="sd">            The membership type associated with this player.</span>
 </span><span id="RESTInterface-857"><a href="#RESTInterface-857"><span class="linenos"> 857</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="RESTInterface-858"><a href="#RESTInterface-858"><span class="linenos"> 858</span></a>
 </span><span id="RESTInterface-859"><a href="#RESTInterface-859"><span class="linenos"> 859</span></a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -1502,7 +1502,7 @@
 </span><span id="RESTInterface-901"><a href="#RESTInterface-901"><span class="linenos"> 901</span></a>        <span class="n">membership_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
 </span><span id="RESTInterface-902"><a href="#RESTInterface-902"><span class="linenos"> 902</span></a>        <span class="n">membership_type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
 </span><span id="RESTInterface-903"><a href="#RESTInterface-903"><span class="linenos"> 903</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="RESTInterface-904"><a href="#RESTInterface-904"><span class="linenos"> 904</span></a>        <span class="sd">&quot;&quot;&quot;Unbans a member from the clan.</span>
+</span><span id="RESTInterface-904"><a href="#RESTInterface-904"><span class="linenos"> 904</span></a>        <span class="sd">&quot;&quot;&quot;Unban a member from the clan.</span>
 </span><span id="RESTInterface-905"><a href="#RESTInterface-905"><span class="linenos"> 905</span></a>
 </span><span id="RESTInterface-906"><a href="#RESTInterface-906"><span class="linenos"> 906</span></a><span class="sd">        .. note::</span>
 </span><span id="RESTInterface-907"><a href="#RESTInterface-907"><span class="linenos"> 907</span></a><span class="sd">            This request requires OAuth2: oauth2: `AdminGroups` scope.</span>
@@ -1967,8 +1967,8 @@
 </span><span id="RESTInterface-1366"><a href="#RESTInterface-1366"><span class="linenos">1366</span></a><span class="sd">        ----------------</span>
 </span><span id="RESTInterface-1367"><a href="#RESTInterface-1367"><span class="linenos">1367</span></a><span class="sd">        stack_size : `int`</span>
 </span><span id="RESTInterface-1368"><a href="#RESTInterface-1368"><span class="linenos">1368</span></a><span class="sd">            The item stack size.</span>
-</span><span id="RESTInterface-1369"><a href="#RESTInterface-1369"><span class="linenos">1369</span></a><span class="sd">        valut : `bool`</span>
-</span><span id="RESTInterface-1370"><a href="#RESTInterface-1370"><span class="linenos">1370</span></a><span class="sd">            Whether to transfer this item to your valut or not. Defaults to `False`.</span>
+</span><span id="RESTInterface-1369"><a href="#RESTInterface-1369"><span class="linenos">1369</span></a><span class="sd">        vault : `bool`</span>
+</span><span id="RESTInterface-1370"><a href="#RESTInterface-1370"><span class="linenos">1370</span></a><span class="sd">            Whether to transfer this item to your vault or not. Defaults to `False`.</span>
 </span><span id="RESTInterface-1371"><a href="#RESTInterface-1371"><span class="linenos">1371</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="RESTInterface-1372"><a href="#RESTInterface-1372"><span class="linenos">1372</span></a>
 </span><span id="RESTInterface-1373"><a href="#RESTInterface-1373"><span class="linenos">1373</span></a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -2008,8 +2008,8 @@
 </span><span id="RESTInterface-1407"><a href="#RESTInterface-1407"><span class="linenos">1407</span></a><span class="sd">        ----------------</span>
 </span><span id="RESTInterface-1408"><a href="#RESTInterface-1408"><span class="linenos">1408</span></a><span class="sd">        stack_size : `int`</span>
 </span><span id="RESTInterface-1409"><a href="#RESTInterface-1409"><span class="linenos">1409</span></a><span class="sd">            The item stack size.</span>
-</span><span id="RESTInterface-1410"><a href="#RESTInterface-1410"><span class="linenos">1410</span></a><span class="sd">        valut : `bool`</span>
-</span><span id="RESTInterface-1411"><a href="#RESTInterface-1411"><span class="linenos">1411</span></a><span class="sd">            Whether to pill this item to your valut or not. Defaults to `False`.</span>
+</span><span id="RESTInterface-1410"><a href="#RESTInterface-1410"><span class="linenos">1410</span></a><span class="sd">        vault : `bool`</span>
+</span><span id="RESTInterface-1411"><a href="#RESTInterface-1411"><span class="linenos">1411</span></a><span class="sd">            Whether to pill this item to your vault or not. Defaults to `False`.</span>
 </span><span id="RESTInterface-1412"><a href="#RESTInterface-1412"><span class="linenos">1412</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="RESTInterface-1413"><a href="#RESTInterface-1413"><span class="linenos">1413</span></a>
 </span><span id="RESTInterface-1414"><a href="#RESTInterface-1414"><span class="linenos">1414</span></a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -2052,7 +2052,7 @@
 </span><span id="RESTInterface-1451"><a href="#RESTInterface-1451"><span class="linenos">1451</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="RESTInterface-1452"><a href="#RESTInterface-1452"><span class="linenos">1452</span></a>
 </span><span id="RESTInterface-1453"><a href="#RESTInterface-1453"><span class="linenos">1453</span></a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-</span><span id="RESTInterface-1454"><a href="#RESTInterface-1454"><span class="linenos">1454</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_avaliable_clan_fireteams</span><span class="p">(</span>
+</span><span id="RESTInterface-1454"><a href="#RESTInterface-1454"><span class="linenos">1454</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_available_clan_fireteams</span><span class="p">(</span>
 </span><span id="RESTInterface-1455"><a href="#RESTInterface-1455"><span class="linenos">1455</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="RESTInterface-1456"><a href="#RESTInterface-1456"><span class="linenos">1456</span></a>        <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 </span><span id="RESTInterface-1457"><a href="#RESTInterface-1457"><span class="linenos">1457</span></a>        <span class="n">group_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -3023,7 +3023,7 @@
 </span><span id="RESTInterface-2422"><a href="#RESTInterface-2422"><span class="linenos">2422</span></a>        <span class="o">...</span>
 </span><span id="RESTInterface-2423"><a href="#RESTInterface-2423"><span class="linenos">2423</span></a>
 </span><span id="RESTInterface-2424"><a href="#RESTInterface-2424"><span class="linenos">2424</span></a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-</span><span id="RESTInterface-2425"><a href="#RESTInterface-2425"><span class="linenos">2425</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_recuirement_thread_summaries</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONArray</span><span class="p">:</span>
+</span><span id="RESTInterface-2425"><a href="#RESTInterface-2425"><span class="linenos">2425</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_recruitment_thread_summaries</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONArray</span><span class="p">:</span>
 </span><span id="RESTInterface-2426"><a href="#RESTInterface-2426"><span class="linenos">2426</span></a>        <span class="o">...</span>
 </span><span id="RESTInterface-2427"><a href="#RESTInterface-2427"><span class="linenos">2427</span></a>
 </span><span id="RESTInterface-2428"><a href="#RESTInterface-2428"><span class="linenos">2428</span></a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -3106,7 +3106,7 @@
 </span><span id="RESTInterface-2505"><a href="#RESTInterface-2505"><span class="linenos">2505</span></a>        <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
 </span><span id="RESTInterface-2506"><a href="#RESTInterface-2506"><span class="linenos">2506</span></a>        <span class="n">membership_type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
 </span><span id="RESTInterface-2507"><a href="#RESTInterface-2507"><span class="linenos">2507</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="RESTInterface-2508"><a href="#RESTInterface-2508"><span class="linenos">2508</span></a>        <span class="sd">&quot;&quot;&quot;Equip a loadout. Youe character must be in a Social space, Orbit or Offline</span>
+</span><span id="RESTInterface-2508"><a href="#RESTInterface-2508"><span class="linenos">2508</span></a>        <span class="sd">&quot;&quot;&quot;Equip a loadout. Your character must be in a Social space, Orbit or Offline</span>
 </span><span id="RESTInterface-2509"><a href="#RESTInterface-2509"><span class="linenos">2509</span></a><span class="sd">        while performing this operation.</span>
 </span><span id="RESTInterface-2510"><a href="#RESTInterface-2510"><span class="linenos">2510</span></a>
 </span><span id="RESTInterface-2511"><a href="#RESTInterface-2511"><span class="linenos">2511</span></a><span class="sd">        .. note::</span>
@@ -3678,7 +3678,7 @@ The user name.</li>
 </span><span id="RESTInterface.fetch_hardlinked_credentials-229"><a href="#RESTInterface.fetch_hardlinked_credentials-229"><span class="linenos">229</span></a><span class="sd">        credential: `int`</span>
 </span><span id="RESTInterface.fetch_hardlinked_credentials-230"><a href="#RESTInterface.fetch_hardlinked_credentials-230"><span class="linenos">230</span></a><span class="sd">            A valid SteamID64</span>
 </span><span id="RESTInterface.fetch_hardlinked_credentials-231"><a href="#RESTInterface.fetch_hardlinked_credentials-231"><span class="linenos">231</span></a><span class="sd">        type: `aiobungie.typedefs.IntAnd[aiobungie.CredentialType]`</span>
-</span><span id="RESTInterface.fetch_hardlinked_credentials-232"><a href="#RESTInterface.fetch_hardlinked_credentials-232"><span class="linenos">232</span></a><span class="sd">            The crededntial type. This must not be changed</span>
+</span><span id="RESTInterface.fetch_hardlinked_credentials-232"><a href="#RESTInterface.fetch_hardlinked_credentials-232"><span class="linenos">232</span></a><span class="sd">            The credential type. This must not be changed</span>
 </span><span id="RESTInterface.fetch_hardlinked_credentials-233"><a href="#RESTInterface.fetch_hardlinked_credentials-233"><span class="linenos">233</span></a><span class="sd">            Since its only credential that works &quot;currently&quot;</span>
 </span><span id="RESTInterface.fetch_hardlinked_credentials-234"><a href="#RESTInterface.fetch_hardlinked_credentials-234"><span class="linenos">234</span></a>
 </span><span id="RESTInterface.fetch_hardlinked_credentials-235"><a href="#RESTInterface.fetch_hardlinked_credentials-235"><span class="linenos">235</span></a><span class="sd">        Returns</span>
@@ -3700,7 +3700,7 @@ Cross Save aware.</p>
 <li><strong>credential</strong> (<code>int</code>):
 A valid SteamID64</li>
 <li><strong>type</strong> (<code><a href="typedefs.html#IntAnd">aiobungie.typedefs.IntAnd</a>[<a href="../aiobungie.html#CredentialType">aiobungie.CredentialType</a>]</code>):
-The crededntial type. This must not be changed
+The credential type. This must not be changed
 Since its only credential that works "currently"</li>
 </ul>
 
@@ -4490,7 +4490,7 @@ The clan id.</li>
 </span><span id="RESTInterface.fetch_groups_for_member-561"><a href="#RESTInterface.fetch_groups_for_member-561"><span class="linenos">561</span></a>
 </span><span id="RESTInterface.fetch_groups_for_member-562"><a href="#RESTInterface.fetch_groups_for_member-562"><span class="linenos">562</span></a><span class="sd">        Other Parameters</span>
 </span><span id="RESTInterface.fetch_groups_for_member-563"><a href="#RESTInterface.fetch_groups_for_member-563"><span class="linenos">563</span></a><span class="sd">        ----------------</span>
-</span><span id="RESTInterface.fetch_groups_for_member-564"><a href="#RESTInterface.fetch_groups_for_member-564"><span class="linenos">564</span></a><span class="sd">        filter : `builsins.int`</span>
+</span><span id="RESTInterface.fetch_groups_for_member-564"><a href="#RESTInterface.fetch_groups_for_member-564"><span class="linenos">564</span></a><span class="sd">        filter : `int`</span>
 </span><span id="RESTInterface.fetch_groups_for_member-565"><a href="#RESTInterface.fetch_groups_for_member-565"><span class="linenos">565</span></a><span class="sd">            Filter apply to list of joined groups. This Default to `0`</span>
 </span><span id="RESTInterface.fetch_groups_for_member-566"><a href="#RESTInterface.fetch_groups_for_member-566"><span class="linenos">566</span></a><span class="sd">        group_type : `aiobungie.typedefs.IntAnd[aiobungie.GroupType]`</span>
 </span><span id="RESTInterface.fetch_groups_for_member-567"><a href="#RESTInterface.fetch_groups_for_member-567"><span class="linenos">567</span></a><span class="sd">            The group&#39;s type.</span>
@@ -4518,7 +4518,7 @@ The member's membership type.</li>
 <h6 id="other-parameters">Other Parameters</h6>
 
 <ul>
-<li><strong>filter</strong> (<code>builsins.int</code>):
+<li><strong>filter</strong> (<code>int</code>):
 Filter apply to list of joined groups. This Default to <code>0</code></li>
 <li><strong>group_type</strong> (<code><a href="typedefs.html#IntAnd">aiobungie.typedefs.IntAnd</a>[<a href="../aiobungie.html#GroupType">aiobungie.GroupType</a>]</code>):
 The group's type.
@@ -4567,7 +4567,7 @@ This is always set to <code><a href="../aiobungie.html#GroupType.CLAN">aiobungie
 </span><span id="RESTInterface.fetch_potential_groups_for_member-594"><a href="#RESTInterface.fetch_potential_groups_for_member-594"><span class="linenos">594</span></a>
 </span><span id="RESTInterface.fetch_potential_groups_for_member-595"><a href="#RESTInterface.fetch_potential_groups_for_member-595"><span class="linenos">595</span></a><span class="sd">        Other Parameters</span>
 </span><span id="RESTInterface.fetch_potential_groups_for_member-596"><a href="#RESTInterface.fetch_potential_groups_for_member-596"><span class="linenos">596</span></a><span class="sd">        ----------------</span>
-</span><span id="RESTInterface.fetch_potential_groups_for_member-597"><a href="#RESTInterface.fetch_potential_groups_for_member-597"><span class="linenos">597</span></a><span class="sd">        filter : `builsins.int`</span>
+</span><span id="RESTInterface.fetch_potential_groups_for_member-597"><a href="#RESTInterface.fetch_potential_groups_for_member-597"><span class="linenos">597</span></a><span class="sd">        filter : `int`</span>
 </span><span id="RESTInterface.fetch_potential_groups_for_member-598"><a href="#RESTInterface.fetch_potential_groups_for_member-598"><span class="linenos">598</span></a><span class="sd">            Filter apply to list of joined groups. This Default to `0`</span>
 </span><span id="RESTInterface.fetch_potential_groups_for_member-599"><a href="#RESTInterface.fetch_potential_groups_for_member-599"><span class="linenos">599</span></a><span class="sd">        group_type : `aiobungie.typedefs.IntAnd[aiobungie.GroupType]`</span>
 </span><span id="RESTInterface.fetch_potential_groups_for_member-600"><a href="#RESTInterface.fetch_potential_groups_for_member-600"><span class="linenos">600</span></a><span class="sd">            The group&#39;s type.</span>
@@ -4595,7 +4595,7 @@ The member's membership type.</li>
 <h6 id="other-parameters">Other Parameters</h6>
 
 <ul>
-<li><strong>filter</strong> (<code>builsins.int</code>):
+<li><strong>filter</strong> (<code>int</code>):
 Filter apply to list of joined groups. This Default to <code>0</code></li>
 <li><strong>group_type</strong> (<code><a href="typedefs.html#IntAnd">aiobungie.typedefs.IntAnd</a>[<a href="../aiobungie.html#GroupType">aiobungie.GroupType</a>]</code>):
 The group's type.
@@ -4636,7 +4636,7 @@ This is always set to <code><a href="../aiobungie.html#GroupType.CLAN">aiobungie
 </span><span id="RESTInterface.fetch_clan_members-619"><a href="#RESTInterface.fetch_clan_members-619"><span class="linenos">619</span></a>
 </span><span id="RESTInterface.fetch_clan_members-620"><a href="#RESTInterface.fetch_clan_members-620"><span class="linenos">620</span></a><span class="sd">        Parameters</span>
 </span><span id="RESTInterface.fetch_clan_members-621"><a href="#RESTInterface.fetch_clan_members-621"><span class="linenos">621</span></a><span class="sd">        ----------</span>
-</span><span id="RESTInterface.fetch_clan_members-622"><a href="#RESTInterface.fetch_clan_members-622"><span class="linenos">622</span></a><span class="sd">        clan_id : `builsins.int`</span>
+</span><span id="RESTInterface.fetch_clan_members-622"><a href="#RESTInterface.fetch_clan_members-622"><span class="linenos">622</span></a><span class="sd">        clan_id : `int`</span>
 </span><span id="RESTInterface.fetch_clan_members-623"><a href="#RESTInterface.fetch_clan_members-623"><span class="linenos">623</span></a><span class="sd">            The clans id</span>
 </span><span id="RESTInterface.fetch_clan_members-624"><a href="#RESTInterface.fetch_clan_members-624"><span class="linenos">624</span></a>
 </span><span id="RESTInterface.fetch_clan_members-625"><a href="#RESTInterface.fetch_clan_members-625"><span class="linenos">625</span></a><span class="sd">        Other Parameters</span>
@@ -4666,7 +4666,7 @@ This is always set to <code><a href="../aiobungie.html#GroupType.CLAN">aiobungie
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>clan_id</strong> (<code>builsins.int</code>):
+<li><strong>clan_id</strong> (<code>int</code>):
 The clans id</li>
 </ul>
 
@@ -4818,7 +4818,7 @@ Entity's hash.</li>
 </span><span id="RESTInterface.fetch_objective_entity-686"><a href="#RESTInterface.fetch_objective_entity-686"><span class="linenos">686</span></a><span class="sd">        Returns</span>
 </span><span id="RESTInterface.fetch_objective_entity-687"><a href="#RESTInterface.fetch_objective_entity-687"><span class="linenos">687</span></a><span class="sd">        -------</span>
 </span><span id="RESTInterface.fetch_objective_entity-688"><a href="#RESTInterface.fetch_objective_entity-688"><span class="linenos">688</span></a><span class="sd">        `aiobungie.typedefs.JSONObject`</span>
-</span><span id="RESTInterface.fetch_objective_entity-689"><a href="#RESTInterface.fetch_objective_entity-689"><span class="linenos">689</span></a><span class="sd">            A JSON object of the objetive data.</span>
+</span><span id="RESTInterface.fetch_objective_entity-689"><a href="#RESTInterface.fetch_objective_entity-689"><span class="linenos">689</span></a><span class="sd">            A JSON object of the objective data.</span>
 </span><span id="RESTInterface.fetch_objective_entity-690"><a href="#RESTInterface.fetch_objective_entity-690"><span class="linenos">690</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span></pre></div>
 
@@ -4835,7 +4835,7 @@ objective's hash.</li>
 <h6 id="returns">Returns</h6>
 
 <ul>
-<li><strong><code><a href="typedefs.html#JSONObject">aiobungie.typedefs.JSONObject</a></code></strong>: A JSON object of the objetive data.</li>
+<li><strong><code><a href="typedefs.html#JSONObject">aiobungie.typedefs.JSONObject</a></code></strong>: A JSON object of the objective data.</li>
 </ul>
 </div>
 
@@ -4927,7 +4927,7 @@ The application id.</li>
 </span><span id="RESTInterface.fetch_linked_profiles-731"><a href="#RESTInterface.fetch_linked_profiles-731"><span class="linenos">731</span></a><span class="sd">        ----------------</span>
 </span><span id="RESTInterface.fetch_linked_profiles-732"><a href="#RESTInterface.fetch_linked_profiles-732"><span class="linenos">732</span></a><span class="sd">        all : `bool`</span>
 </span><span id="RESTInterface.fetch_linked_profiles-733"><a href="#RESTInterface.fetch_linked_profiles-733"><span class="linenos">733</span></a><span class="sd">            If provided and set to `True`, All memberships regardless</span>
-</span><span id="RESTInterface.fetch_linked_profiles-734"><a href="#RESTInterface.fetch_linked_profiles-734"><span class="linenos">734</span></a><span class="sd">            of whether thry&#39;re obscured by overrides will be returned,</span>
+</span><span id="RESTInterface.fetch_linked_profiles-734"><a href="#RESTInterface.fetch_linked_profiles-734"><span class="linenos">734</span></a><span class="sd">            of whether they&#39;re obscured by overrides will be returned,</span>
 </span><span id="RESTInterface.fetch_linked_profiles-735"><a href="#RESTInterface.fetch_linked_profiles-735"><span class="linenos">735</span></a>
 </span><span id="RESTInterface.fetch_linked_profiles-736"><a href="#RESTInterface.fetch_linked_profiles-736"><span class="linenos">736</span></a><span class="sd">            If provided and set to `False`, Only available memberships will be returned.</span>
 </span><span id="RESTInterface.fetch_linked_profiles-737"><a href="#RESTInterface.fetch_linked_profiles-737"><span class="linenos">737</span></a><span class="sd">            The default for this is `False`.</span>
@@ -4964,7 +4964,7 @@ The type for the membership whose linked Destiny account you want to return.</li
 <ul>
 <li><p><strong>all</strong> (<code>bool</code>):
 If provided and set to <code>True</code>, All memberships regardless
-of whether thry're obscured by overrides will be returned,</p>
+of whether they're obscured by overrides will be returned,</p>
 
 <p>If provided and set to <code>False</code>, Only available memberships will be returned.
 The default for this is <code>False</code>.</p></li>
@@ -5196,7 +5196,7 @@ The bearer access token associated with the bungie account.</li>
 </span><span id="RESTInterface.equip_item-825"><a href="#RESTInterface.equip_item-825"><span class="linenos">825</span></a><span class="sd">        character_id : `int`</span>
 </span><span id="RESTInterface.equip_item-826"><a href="#RESTInterface.equip_item-826"><span class="linenos">826</span></a><span class="sd">            The character&#39;s id to equip the item to.</span>
 </span><span id="RESTInterface.equip_item-827"><a href="#RESTInterface.equip_item-827"><span class="linenos">827</span></a><span class="sd">        membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`</span>
-</span><span id="RESTInterface.equip_item-828"><a href="#RESTInterface.equip_item-828"><span class="linenos">828</span></a><span class="sd">            The membership type assocaiated with this player.</span>
+</span><span id="RESTInterface.equip_item-828"><a href="#RESTInterface.equip_item-828"><span class="linenos">828</span></a><span class="sd">            The membership type associated with this player.</span>
 </span><span id="RESTInterface.equip_item-829"><a href="#RESTInterface.equip_item-829"><span class="linenos">829</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span></pre></div>
 
@@ -5221,7 +5221,7 @@ The item id.</li>
 <li><strong>character_id</strong> (<code>int</code>):
 The character's id to equip the item to.</li>
 <li><strong>membership_type</strong> (<code><a href="typedefs.html#IntAnd">aiobungie.typedefs.IntAnd</a>[<a href="../aiobungie.html#MembershipType">aiobungie.MembershipType</a>]</code>):
-The membership type assocaiated with this player.</li>
+The membership type associated with this player.</li>
 </ul>
 </div>
 
@@ -5264,7 +5264,7 @@ The membership type assocaiated with this player.</li>
 </span><span id="RESTInterface.equip_items-853"><a href="#RESTInterface.equip_items-853"><span class="linenos">853</span></a><span class="sd">        character_id : `int`</span>
 </span><span id="RESTInterface.equip_items-854"><a href="#RESTInterface.equip_items-854"><span class="linenos">854</span></a><span class="sd">            The character&#39;s id to equip the item to.</span>
 </span><span id="RESTInterface.equip_items-855"><a href="#RESTInterface.equip_items-855"><span class="linenos">855</span></a><span class="sd">        membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`</span>
-</span><span id="RESTInterface.equip_items-856"><a href="#RESTInterface.equip_items-856"><span class="linenos">856</span></a><span class="sd">            The membership type assocaiated with this player.</span>
+</span><span id="RESTInterface.equip_items-856"><a href="#RESTInterface.equip_items-856"><span class="linenos">856</span></a><span class="sd">            The membership type associated with this player.</span>
 </span><span id="RESTInterface.equip_items-857"><a href="#RESTInterface.equip_items-857"><span class="linenos">857</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span></pre></div>
 
@@ -5289,7 +5289,7 @@ A list of item ids.</li>
 <li><strong>character_id</strong> (<code>int</code>):
 The character's id to equip the item to.</li>
 <li><strong>membership_type</strong> (<code><a href="typedefs.html#IntAnd">aiobungie.typedefs.IntAnd</a>[<a href="../aiobungie.html#MembershipType">aiobungie.MembershipType</a>]</code>):
-The membership type assocaiated with this player.</li>
+The membership type associated with this player.</li>
 </ul>
 </div>
 
@@ -5399,7 +5399,7 @@ An optional comment to this ban. Default is <code>UNDEFINED</code></li>
 </span><span id="RESTInterface.unban_clan_member-901"><a href="#RESTInterface.unban_clan_member-901"><span class="linenos">901</span></a>        <span class="n">membership_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
 </span><span id="RESTInterface.unban_clan_member-902"><a href="#RESTInterface.unban_clan_member-902"><span class="linenos">902</span></a>        <span class="n">membership_type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
 </span><span id="RESTInterface.unban_clan_member-903"><a href="#RESTInterface.unban_clan_member-903"><span class="linenos">903</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="RESTInterface.unban_clan_member-904"><a href="#RESTInterface.unban_clan_member-904"><span class="linenos">904</span></a>        <span class="sd">&quot;&quot;&quot;Unbans a member from the clan.</span>
+</span><span id="RESTInterface.unban_clan_member-904"><a href="#RESTInterface.unban_clan_member-904"><span class="linenos">904</span></a>        <span class="sd">&quot;&quot;&quot;Unban a member from the clan.</span>
 </span><span id="RESTInterface.unban_clan_member-905"><a href="#RESTInterface.unban_clan_member-905"><span class="linenos">905</span></a>
 </span><span id="RESTInterface.unban_clan_member-906"><a href="#RESTInterface.unban_clan_member-906"><span class="linenos">906</span></a><span class="sd">        .. note::</span>
 </span><span id="RESTInterface.unban_clan_member-907"><a href="#RESTInterface.unban_clan_member-907"><span class="linenos">907</span></a><span class="sd">            This request requires OAuth2: oauth2: `AdminGroups` scope.</span>
@@ -5418,7 +5418,7 @@ An optional comment to this ban. Default is <code>UNDEFINED</code></li>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Unbans a member from the clan.</p>
+            <div class="docstring"><p>Unban a member from the clan.</p>
 
 <div class="pdoc-alert pdoc-alert-note">
 
@@ -6511,8 +6511,8 @@ Default is `0`
 </span><span id="RESTInterface.transfer_item-1366"><a href="#RESTInterface.transfer_item-1366"><span class="linenos">1366</span></a><span class="sd">        ----------------</span>
 </span><span id="RESTInterface.transfer_item-1367"><a href="#RESTInterface.transfer_item-1367"><span class="linenos">1367</span></a><span class="sd">        stack_size : `int`</span>
 </span><span id="RESTInterface.transfer_item-1368"><a href="#RESTInterface.transfer_item-1368"><span class="linenos">1368</span></a><span class="sd">            The item stack size.</span>
-</span><span id="RESTInterface.transfer_item-1369"><a href="#RESTInterface.transfer_item-1369"><span class="linenos">1369</span></a><span class="sd">        valut : `bool`</span>
-</span><span id="RESTInterface.transfer_item-1370"><a href="#RESTInterface.transfer_item-1370"><span class="linenos">1370</span></a><span class="sd">            Whether to transfer this item to your valut or not. Defaults to `False`.</span>
+</span><span id="RESTInterface.transfer_item-1369"><a href="#RESTInterface.transfer_item-1369"><span class="linenos">1369</span></a><span class="sd">        vault : `bool`</span>
+</span><span id="RESTInterface.transfer_item-1370"><a href="#RESTInterface.transfer_item-1370"><span class="linenos">1370</span></a><span class="sd">            Whether to transfer this item to your vault or not. Defaults to `False`.</span>
 </span><span id="RESTInterface.transfer_item-1371"><a href="#RESTInterface.transfer_item-1371"><span class="linenos">1371</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span></pre></div>
 
@@ -6546,8 +6546,8 @@ The user membership type.</li>
 <ul>
 <li><strong>stack_size</strong> (<code>int</code>):
 The item stack size.</li>
-<li><strong>valut</strong> (<code>bool</code>):
-Whether to transfer this item to your valut or not. Defaults to <code>False</code>.</li>
+<li><strong>vault</strong> (<code>bool</code>):
+Whether to transfer this item to your vault or not. Defaults to <code>False</code>.</li>
 </ul>
 </div>
 
@@ -6602,8 +6602,8 @@ Whether to transfer this item to your valut or not. Defaults to <code>False</cod
 </span><span id="RESTInterface.pull_item-1407"><a href="#RESTInterface.pull_item-1407"><span class="linenos">1407</span></a><span class="sd">        ----------------</span>
 </span><span id="RESTInterface.pull_item-1408"><a href="#RESTInterface.pull_item-1408"><span class="linenos">1408</span></a><span class="sd">        stack_size : `int`</span>
 </span><span id="RESTInterface.pull_item-1409"><a href="#RESTInterface.pull_item-1409"><span class="linenos">1409</span></a><span class="sd">            The item stack size.</span>
-</span><span id="RESTInterface.pull_item-1410"><a href="#RESTInterface.pull_item-1410"><span class="linenos">1410</span></a><span class="sd">        valut : `bool`</span>
-</span><span id="RESTInterface.pull_item-1411"><a href="#RESTInterface.pull_item-1411"><span class="linenos">1411</span></a><span class="sd">            Whether to pill this item to your valut or not. Defaults to `False`.</span>
+</span><span id="RESTInterface.pull_item-1410"><a href="#RESTInterface.pull_item-1410"><span class="linenos">1410</span></a><span class="sd">        vault : `bool`</span>
+</span><span id="RESTInterface.pull_item-1411"><a href="#RESTInterface.pull_item-1411"><span class="linenos">1411</span></a><span class="sd">            Whether to pill this item to your vault or not. Defaults to `False`.</span>
 </span><span id="RESTInterface.pull_item-1412"><a href="#RESTInterface.pull_item-1412"><span class="linenos">1412</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span></pre></div>
 
@@ -6637,8 +6637,8 @@ The user membership type.</li>
 <ul>
 <li><strong>stack_size</strong> (<code>int</code>):
 The item stack size.</li>
-<li><strong>valut</strong> (<code>bool</code>):
-Whether to pill this item to your valut or not. Defaults to <code>False</code>.</li>
+<li><strong>vault</strong> (<code>bool</code>):
+Whether to pill this item to your vault or not. Defaults to <code>False</code>.</li>
 </ul>
 </div>
 
@@ -6732,68 +6732,68 @@ Filter the returned fireteams based on available slots. Default is <code>0</code
 
 
                             </div>
-                            <div id="RESTInterface.fetch_avaliable_clan_fireteams" class="classattr">
-                                        <input id="RESTInterface.fetch_avaliable_clan_fireteams-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="RESTInterface.fetch_available_clan_fireteams" class="classattr">
+                                        <input id="RESTInterface.fetch_available_clan_fireteams-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
                     <div class="decorator">@abc.abstractmethod</div>
 
         <span class="def">async def</span>
-        <span class="name">fetch_avaliable_clan_fireteams</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span>,</span><span class="param">	<span class="n">group_id</span><span class="p">:</span> <span class="nb">int</span>,</span><span class="param">	<span class="n">activity_type</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">aiobungie</span><span class="o">.</span><span class="n">crates</span><span class="o">.</span><span class="n">fireteams</span><span class="o">.</span><span class="n">FireteamActivity</span><span class="p">]</span>,</span><span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">platform</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">aiobungie</span><span class="o">.</span><span class="n">crates</span><span class="o">.</span><span class="n">fireteams</span><span class="o">.</span><span class="n">FireteamPlatform</span><span class="p">]</span>,</span><span class="param">	<span class="n">language</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">aiobungie</span><span class="o">.</span><span class="n">crates</span><span class="o">.</span><span class="n">fireteams</span><span class="o">.</span><span class="n">FireteamLanguage</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>,</span><span class="param">	<span class="n">date_range</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">aiobungie</span><span class="o">.</span><span class="n">crates</span><span class="o">.</span><span class="n">fireteams</span><span class="o">.</span><span class="n">FireteamDate</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">public_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">slots_filter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span></span><span class="return-annotation">) -> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span>:</span></span>
+        <span class="name">fetch_available_clan_fireteams</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span>,</span><span class="param">	<span class="n">group_id</span><span class="p">:</span> <span class="nb">int</span>,</span><span class="param">	<span class="n">activity_type</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">aiobungie</span><span class="o">.</span><span class="n">crates</span><span class="o">.</span><span class="n">fireteams</span><span class="o">.</span><span class="n">FireteamActivity</span><span class="p">]</span>,</span><span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">platform</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">aiobungie</span><span class="o">.</span><span class="n">crates</span><span class="o">.</span><span class="n">fireteams</span><span class="o">.</span><span class="n">FireteamPlatform</span><span class="p">]</span>,</span><span class="param">	<span class="n">language</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">aiobungie</span><span class="o">.</span><span class="n">crates</span><span class="o">.</span><span class="n">fireteams</span><span class="o">.</span><span class="n">FireteamLanguage</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>,</span><span class="param">	<span class="n">date_range</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">aiobungie</span><span class="o">.</span><span class="n">crates</span><span class="o">.</span><span class="n">fireteams</span><span class="o">.</span><span class="n">FireteamDate</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">public_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">slots_filter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span></span><span class="return-annotation">) -> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span>:</span></span>
 
-                <label class="view-source-button" for="RESTInterface.fetch_avaliable_clan_fireteams-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="RESTInterface.fetch_available_clan_fireteams-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#RESTInterface.fetch_avaliable_clan_fireteams"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1453"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1453"><span class="linenos">1453</span></a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1454"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1454"><span class="linenos">1454</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_avaliable_clan_fireteams</span><span class="p">(</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1455"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1455"><span class="linenos">1455</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1456"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1456"><span class="linenos">1456</span></a>        <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1457"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1457"><span class="linenos">1457</span></a>        <span class="n">group_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1458"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1458"><span class="linenos">1458</span></a>        <span class="n">activity_type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">fireteams</span><span class="o">.</span><span class="n">FireteamActivity</span><span class="p">],</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1459"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1459"><span class="linenos">1459</span></a>        <span class="o">*</span><span class="p">,</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1460"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1460"><span class="linenos">1460</span></a>        <span class="n">platform</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">fireteams</span><span class="o">.</span><span class="n">FireteamPlatform</span><span class="p">],</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1461"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1461"><span class="linenos">1461</span></a>        <span class="n">language</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">fireteams</span><span class="o">.</span><span class="n">FireteamLanguage</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1462"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1462"><span class="linenos">1462</span></a>        <span class="n">date_range</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">fireteams</span><span class="o">.</span><span class="n">FireteamDate</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1463"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1463"><span class="linenos">1463</span></a>        <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1464"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1464"><span class="linenos">1464</span></a>        <span class="n">public_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1465"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1465"><span class="linenos">1465</span></a>        <span class="n">slots_filter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1466"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1466"><span class="linenos">1466</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">:</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1467"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1467"><span class="linenos">1467</span></a>        <span class="sd">&quot;&quot;&quot;Fetch a clan&#39;s fireteams with open slots.</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1468"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1468"><span class="linenos">1468</span></a>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1469"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1469"><span class="linenos">1469</span></a><span class="sd">        .. note::</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1470"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1470"><span class="linenos">1470</span></a><span class="sd">            This method requires OAuth2: ReadGroups scope.</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1471"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1471"><span class="linenos">1471</span></a>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1472"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1472"><span class="linenos">1472</span></a><span class="sd">        Parameters</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1473"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1473"><span class="linenos">1473</span></a><span class="sd">        ----------</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1474"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1474"><span class="linenos">1474</span></a><span class="sd">        access_token : `str`</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1475"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1475"><span class="linenos">1475</span></a><span class="sd">            The bearer access token associated with the bungie account.</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1476"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1476"><span class="linenos">1476</span></a><span class="sd">        group_id : `int`</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1477"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1477"><span class="linenos">1477</span></a><span class="sd">            The group/clan id of the fireteam.</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1478"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1478"><span class="linenos">1478</span></a><span class="sd">        activity_type : `aiobungie.typedefs.IntAnd[aiobungie.crates.FireteamActivity]`</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1479"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1479"><span class="linenos">1479</span></a><span class="sd">            The fireteam activity type.</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1480"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1480"><span class="linenos">1480</span></a>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1481"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1481"><span class="linenos">1481</span></a><span class="sd">        Other Parameters</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1482"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1482"><span class="linenos">1482</span></a><span class="sd">        ----------------</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1483"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1483"><span class="linenos">1483</span></a><span class="sd">        platform : `aiobungie.typedefs.IntAnd[aiobungie.crates.fireteams.FireteamPlatform]`</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1484"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1484"><span class="linenos">1484</span></a><span class="sd">            If this is provided. Then the results will be filtered with the given platform.</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1485"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1485"><span class="linenos">1485</span></a><span class="sd">            Defaults to `aiobungie.crates.FireteamPlatform.ANY` which returns all platforms.</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1486"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1486"><span class="linenos">1486</span></a><span class="sd">        language : `typing.Union[aiobungie.crates.fireteams.FireteamLanguage, str]`</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1487"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1487"><span class="linenos">1487</span></a><span class="sd">            A locale language to filter the used language in that fireteam.</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1488"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1488"><span class="linenos">1488</span></a><span class="sd">            Defaults to `aiobungie.crates.FireteamLanguage.ALL`</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1489"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1489"><span class="linenos">1489</span></a><span class="sd">        date_range : `aiobungie.typedefs.IntAnd[aiobungie.FireteamDate]`</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1490"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1490"><span class="linenos">1490</span></a><span class="sd">            An integer to filter the date range of the returned fireteams. Defaults to `aiobungie.FireteamDate.ALL`.</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1491"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1491"><span class="linenos">1491</span></a><span class="sd">        page : `int`</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1492"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1492"><span class="linenos">1492</span></a><span class="sd">            The page number. By default its `0` which returns all available activities.</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1493"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1493"><span class="linenos">1493</span></a><span class="sd">        public_only: `bool`</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1494"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1494"><span class="linenos">1494</span></a><span class="sd">            If set to True, Then only public fireteams will be returned.</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1495"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1495"><span class="linenos">1495</span></a><span class="sd">        slots_filter : `int`</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1496"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1496"><span class="linenos">1496</span></a><span class="sd">            Filter the returned fireteams based on available slots. Default is `0`</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1497"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1497"><span class="linenos">1497</span></a>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1498"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1498"><span class="linenos">1498</span></a><span class="sd">        Returns</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1499"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1499"><span class="linenos">1499</span></a><span class="sd">        -------</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1500"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1500"><span class="linenos">1500</span></a><span class="sd">        `aiobungie.typedefs.JSONObject`</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1501"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1501"><span class="linenos">1501</span></a><span class="sd">            A JSON object of the fireteams detail.</span>
-</span><span id="RESTInterface.fetch_avaliable_clan_fireteams-1502"><a href="#RESTInterface.fetch_avaliable_clan_fireteams-1502"><span class="linenos">1502</span></a><span class="sd">        &quot;&quot;&quot;</span>
+    <a class="headerlink" href="#RESTInterface.fetch_available_clan_fireteams"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="RESTInterface.fetch_available_clan_fireteams-1453"><a href="#RESTInterface.fetch_available_clan_fireteams-1453"><span class="linenos">1453</span></a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1454"><a href="#RESTInterface.fetch_available_clan_fireteams-1454"><span class="linenos">1454</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_available_clan_fireteams</span><span class="p">(</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1455"><a href="#RESTInterface.fetch_available_clan_fireteams-1455"><span class="linenos">1455</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1456"><a href="#RESTInterface.fetch_available_clan_fireteams-1456"><span class="linenos">1456</span></a>        <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1457"><a href="#RESTInterface.fetch_available_clan_fireteams-1457"><span class="linenos">1457</span></a>        <span class="n">group_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1458"><a href="#RESTInterface.fetch_available_clan_fireteams-1458"><span class="linenos">1458</span></a>        <span class="n">activity_type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">fireteams</span><span class="o">.</span><span class="n">FireteamActivity</span><span class="p">],</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1459"><a href="#RESTInterface.fetch_available_clan_fireteams-1459"><span class="linenos">1459</span></a>        <span class="o">*</span><span class="p">,</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1460"><a href="#RESTInterface.fetch_available_clan_fireteams-1460"><span class="linenos">1460</span></a>        <span class="n">platform</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">fireteams</span><span class="o">.</span><span class="n">FireteamPlatform</span><span class="p">],</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1461"><a href="#RESTInterface.fetch_available_clan_fireteams-1461"><span class="linenos">1461</span></a>        <span class="n">language</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">fireteams</span><span class="o">.</span><span class="n">FireteamLanguage</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1462"><a href="#RESTInterface.fetch_available_clan_fireteams-1462"><span class="linenos">1462</span></a>        <span class="n">date_range</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">fireteams</span><span class="o">.</span><span class="n">FireteamDate</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1463"><a href="#RESTInterface.fetch_available_clan_fireteams-1463"><span class="linenos">1463</span></a>        <span class="n">page</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1464"><a href="#RESTInterface.fetch_available_clan_fireteams-1464"><span class="linenos">1464</span></a>        <span class="n">public_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1465"><a href="#RESTInterface.fetch_available_clan_fireteams-1465"><span class="linenos">1465</span></a>        <span class="n">slots_filter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1466"><a href="#RESTInterface.fetch_available_clan_fireteams-1466"><span class="linenos">1466</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONObject</span><span class="p">:</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1467"><a href="#RESTInterface.fetch_available_clan_fireteams-1467"><span class="linenos">1467</span></a>        <span class="sd">&quot;&quot;&quot;Fetch a clan&#39;s fireteams with open slots.</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1468"><a href="#RESTInterface.fetch_available_clan_fireteams-1468"><span class="linenos">1468</span></a>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1469"><a href="#RESTInterface.fetch_available_clan_fireteams-1469"><span class="linenos">1469</span></a><span class="sd">        .. note::</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1470"><a href="#RESTInterface.fetch_available_clan_fireteams-1470"><span class="linenos">1470</span></a><span class="sd">            This method requires OAuth2: ReadGroups scope.</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1471"><a href="#RESTInterface.fetch_available_clan_fireteams-1471"><span class="linenos">1471</span></a>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1472"><a href="#RESTInterface.fetch_available_clan_fireteams-1472"><span class="linenos">1472</span></a><span class="sd">        Parameters</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1473"><a href="#RESTInterface.fetch_available_clan_fireteams-1473"><span class="linenos">1473</span></a><span class="sd">        ----------</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1474"><a href="#RESTInterface.fetch_available_clan_fireteams-1474"><span class="linenos">1474</span></a><span class="sd">        access_token : `str`</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1475"><a href="#RESTInterface.fetch_available_clan_fireteams-1475"><span class="linenos">1475</span></a><span class="sd">            The bearer access token associated with the bungie account.</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1476"><a href="#RESTInterface.fetch_available_clan_fireteams-1476"><span class="linenos">1476</span></a><span class="sd">        group_id : `int`</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1477"><a href="#RESTInterface.fetch_available_clan_fireteams-1477"><span class="linenos">1477</span></a><span class="sd">            The group/clan id of the fireteam.</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1478"><a href="#RESTInterface.fetch_available_clan_fireteams-1478"><span class="linenos">1478</span></a><span class="sd">        activity_type : `aiobungie.typedefs.IntAnd[aiobungie.crates.FireteamActivity]`</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1479"><a href="#RESTInterface.fetch_available_clan_fireteams-1479"><span class="linenos">1479</span></a><span class="sd">            The fireteam activity type.</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1480"><a href="#RESTInterface.fetch_available_clan_fireteams-1480"><span class="linenos">1480</span></a>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1481"><a href="#RESTInterface.fetch_available_clan_fireteams-1481"><span class="linenos">1481</span></a><span class="sd">        Other Parameters</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1482"><a href="#RESTInterface.fetch_available_clan_fireteams-1482"><span class="linenos">1482</span></a><span class="sd">        ----------------</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1483"><a href="#RESTInterface.fetch_available_clan_fireteams-1483"><span class="linenos">1483</span></a><span class="sd">        platform : `aiobungie.typedefs.IntAnd[aiobungie.crates.fireteams.FireteamPlatform]`</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1484"><a href="#RESTInterface.fetch_available_clan_fireteams-1484"><span class="linenos">1484</span></a><span class="sd">            If this is provided. Then the results will be filtered with the given platform.</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1485"><a href="#RESTInterface.fetch_available_clan_fireteams-1485"><span class="linenos">1485</span></a><span class="sd">            Defaults to `aiobungie.crates.FireteamPlatform.ANY` which returns all platforms.</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1486"><a href="#RESTInterface.fetch_available_clan_fireteams-1486"><span class="linenos">1486</span></a><span class="sd">        language : `typing.Union[aiobungie.crates.fireteams.FireteamLanguage, str]`</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1487"><a href="#RESTInterface.fetch_available_clan_fireteams-1487"><span class="linenos">1487</span></a><span class="sd">            A locale language to filter the used language in that fireteam.</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1488"><a href="#RESTInterface.fetch_available_clan_fireteams-1488"><span class="linenos">1488</span></a><span class="sd">            Defaults to `aiobungie.crates.FireteamLanguage.ALL`</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1489"><a href="#RESTInterface.fetch_available_clan_fireteams-1489"><span class="linenos">1489</span></a><span class="sd">        date_range : `aiobungie.typedefs.IntAnd[aiobungie.FireteamDate]`</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1490"><a href="#RESTInterface.fetch_available_clan_fireteams-1490"><span class="linenos">1490</span></a><span class="sd">            An integer to filter the date range of the returned fireteams. Defaults to `aiobungie.FireteamDate.ALL`.</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1491"><a href="#RESTInterface.fetch_available_clan_fireteams-1491"><span class="linenos">1491</span></a><span class="sd">        page : `int`</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1492"><a href="#RESTInterface.fetch_available_clan_fireteams-1492"><span class="linenos">1492</span></a><span class="sd">            The page number. By default its `0` which returns all available activities.</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1493"><a href="#RESTInterface.fetch_available_clan_fireteams-1493"><span class="linenos">1493</span></a><span class="sd">        public_only: `bool`</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1494"><a href="#RESTInterface.fetch_available_clan_fireteams-1494"><span class="linenos">1494</span></a><span class="sd">            If set to True, Then only public fireteams will be returned.</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1495"><a href="#RESTInterface.fetch_available_clan_fireteams-1495"><span class="linenos">1495</span></a><span class="sd">        slots_filter : `int`</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1496"><a href="#RESTInterface.fetch_available_clan_fireteams-1496"><span class="linenos">1496</span></a><span class="sd">            Filter the returned fireteams based on available slots. Default is `0`</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1497"><a href="#RESTInterface.fetch_available_clan_fireteams-1497"><span class="linenos">1497</span></a>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1498"><a href="#RESTInterface.fetch_available_clan_fireteams-1498"><span class="linenos">1498</span></a><span class="sd">        Returns</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1499"><a href="#RESTInterface.fetch_available_clan_fireteams-1499"><span class="linenos">1499</span></a><span class="sd">        -------</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1500"><a href="#RESTInterface.fetch_available_clan_fireteams-1500"><span class="linenos">1500</span></a><span class="sd">        `aiobungie.typedefs.JSONObject`</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1501"><a href="#RESTInterface.fetch_available_clan_fireteams-1501"><span class="linenos">1501</span></a><span class="sd">            A JSON object of the fireteams detail.</span>
+</span><span id="RESTInterface.fetch_available_clan_fireteams-1502"><a href="#RESTInterface.fetch_available_clan_fireteams-1502"><span class="linenos">1502</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span></pre></div>
 
 
@@ -9222,21 +9222,21 @@ The Destiny membership type to return the stats for.</li>
     
 
                             </div>
-                            <div id="RESTInterface.fetch_recuirement_thread_summaries" class="classattr">
-                                        <input id="RESTInterface.fetch_recuirement_thread_summaries-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="RESTInterface.fetch_recruitment_thread_summaries" class="classattr">
+                                        <input id="RESTInterface.fetch_recruitment_thread_summaries-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
                     <div class="decorator">@abc.abstractmethod</div>
 
         <span class="def">async def</span>
-        <span class="name">fetch_recuirement_thread_summaries</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="nb">list</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span>:</span></span>
+        <span class="name">fetch_recruitment_thread_summaries</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="nb">list</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]</span>:</span></span>
 
-                <label class="view-source-button" for="RESTInterface.fetch_recuirement_thread_summaries-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="RESTInterface.fetch_recruitment_thread_summaries-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#RESTInterface.fetch_recuirement_thread_summaries"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="RESTInterface.fetch_recuirement_thread_summaries-2424"><a href="#RESTInterface.fetch_recuirement_thread_summaries-2424"><span class="linenos">2424</span></a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-</span><span id="RESTInterface.fetch_recuirement_thread_summaries-2425"><a href="#RESTInterface.fetch_recuirement_thread_summaries-2425"><span class="linenos">2425</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_recuirement_thread_summaries</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONArray</span><span class="p">:</span>
-</span><span id="RESTInterface.fetch_recuirement_thread_summaries-2426"><a href="#RESTInterface.fetch_recuirement_thread_summaries-2426"><span class="linenos">2426</span></a>        <span class="o">...</span>
+    <a class="headerlink" href="#RESTInterface.fetch_recruitment_thread_summaries"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="RESTInterface.fetch_recruitment_thread_summaries-2424"><a href="#RESTInterface.fetch_recruitment_thread_summaries-2424"><span class="linenos">2424</span></a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+</span><span id="RESTInterface.fetch_recruitment_thread_summaries-2425"><a href="#RESTInterface.fetch_recruitment_thread_summaries-2425"><span class="linenos">2425</span></a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_recruitment_thread_summaries</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">JSONArray</span><span class="p">:</span>
+</span><span id="RESTInterface.fetch_recruitment_thread_summaries-2426"><a href="#RESTInterface.fetch_recruitment_thread_summaries-2426"><span class="linenos">2426</span></a>        <span class="o">...</span>
 </span></pre></div>
 
 
@@ -9471,7 +9471,7 @@ The Destiny membership type to return the stats for.</li>
 </span><span id="RESTInterface.equip_loadout-2505"><a href="#RESTInterface.equip_loadout-2505"><span class="linenos">2505</span></a>        <span class="n">character_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
 </span><span id="RESTInterface.equip_loadout-2506"><a href="#RESTInterface.equip_loadout-2506"><span class="linenos">2506</span></a>        <span class="n">membership_type</span><span class="p">:</span> <span class="n">typedefs</span><span class="o">.</span><span class="n">IntAnd</span><span class="p">[</span><span class="n">enums</span><span class="o">.</span><span class="n">MembershipType</span><span class="p">],</span>
 </span><span id="RESTInterface.equip_loadout-2507"><a href="#RESTInterface.equip_loadout-2507"><span class="linenos">2507</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="RESTInterface.equip_loadout-2508"><a href="#RESTInterface.equip_loadout-2508"><span class="linenos">2508</span></a>        <span class="sd">&quot;&quot;&quot;Equip a loadout. Youe character must be in a Social space, Orbit or Offline</span>
+</span><span id="RESTInterface.equip_loadout-2508"><a href="#RESTInterface.equip_loadout-2508"><span class="linenos">2508</span></a>        <span class="sd">&quot;&quot;&quot;Equip a loadout. Your character must be in a Social space, Orbit or Offline</span>
 </span><span id="RESTInterface.equip_loadout-2509"><a href="#RESTInterface.equip_loadout-2509"><span class="linenos">2509</span></a><span class="sd">        while performing this operation.</span>
 </span><span id="RESTInterface.equip_loadout-2510"><a href="#RESTInterface.equip_loadout-2510"><span class="linenos">2510</span></a>
 </span><span id="RESTInterface.equip_loadout-2511"><a href="#RESTInterface.equip_loadout-2511"><span class="linenos">2511</span></a><span class="sd">        .. note::</span>
@@ -9491,7 +9491,7 @@ The Destiny membership type to return the stats for.</li>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Equip a loadout. Youe character must be in a Social space, Orbit or Offline
+            <div class="docstring"><p>Equip a loadout. Your character must be in a Social space, Orbit or Offline
 while performing this operation.</p>
 
 <div class="pdoc-alert pdoc-alert-note">

@@ -238,7 +238,7 @@ class ClanMember(user.DestinyMembership):
 
         Parameters
         ----------
-        access_token : `builtins.str`
+        access_token : `str`
             The bearer access token associated with the bungie account.
 
         Other Parameters
@@ -265,7 +265,7 @@ class ClanMember(user.DestinyMembership):
 
         Parameters
         ----------
-        access_token : `builtins.str`
+        access_token : `str`
             The bearer access token associated with the bungie account.
         """
         await self.net.request.rest.unban_clan_member(
@@ -283,7 +283,7 @@ class ClanMember(user.DestinyMembership):
 
         Parameters
         ----------
-        access_token : `builtins.str`
+        access_token : `str`
             The bearer access token associated with the bungie account.
 
         Returns
@@ -316,7 +316,7 @@ class GroupMember:
     """Whether the member is online or not."""
 
     last_online: datetime
-    """Datetime of the member's last online apperation."""
+    """Datetime of the member's last online date."""
 
     group_id: int
     """The group id of this member."""
@@ -331,7 +331,7 @@ class GroupMember:
     """The member's group/clan object that represents the group member."""
 
     async def fetch_self_clan(self) -> Clan:
-        """Fetch an up-todate clan/group object of the current group.
+        """Fetch an up-to-date clan/group object of the current group.
 
         Returns
         -------
@@ -436,7 +436,7 @@ class Clan:
 
         Parameters
         ----------
-        access_token : `builtins.str`
+        access_token : `str`
             The bearer access token associated with the bungie account.
 
         Other Parameters
@@ -574,7 +574,7 @@ class Clan:
             is_public_topic_admin=is_public_topic_admin,
         )
 
-    async def fetch_avaliable_fireteams(
+    async def fetch_available_fireteams(
         self,
         access_token: str,
         activity_type: typedefs.IntAnd[fireteams.FireteamActivity],
@@ -617,7 +617,7 @@ class Clan:
         slots_filter : `int`
             Filter the returned fireteams based on available slots. Default is `0`
         """
-        fireteams_ = await self.net.request.fetch_avaliable_clan_fireteams(
+        fireteams_ = await self.net.request.fetch_available_clan_fireteams(
             access_token,
             self.id,
             activity_type,

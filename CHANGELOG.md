@@ -4,18 +4,40 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).All notable changes to this project will be documented in this file.
 
-## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.8...HEAD)
+## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.9...HEAD)
 
-## Changed
-* All arguments in the client constructors now required to be passed as a kwarg besides the token.
-* Refactor examples code.
-* All `Factory` methods that used to return `Option[T]` now returns `T` directly.
-* `Enum.__int__` and `Flag.__int__` doesn't check the instance of the type.
 
-## Added
+## [0.2.9](https://github.com/nxtlo/aiobungie/compare/0.2.8...0.2.9) 2023-11-18
+
+## Performance Improvements.
+* Optimized converting ISO8661 date strings to datetime, dateutil package has been dropped and the converting process has been implemented directly using stdlib datetime.
+* `orjson` and `ujson` are a faster replacement for the JSON lib, If were found installed, They will be used as the default JSON encode/decoder.
+* `ruff` is now used as the default formatter. This is rather an internal change and shouldn't affect users.
+
+### Added
 * Added more examples.
 * Lightfall loadouts methods to the `RESTClient`.
 * `CHARACTER_LOADOUTS` components type enum field.
+
+### Changed
+* Python 3.10 and above is now supported, 3.9.0 is no longer supported.
+* All arguments in the client constructors now required to be passed as a kwarg besides the token.
+* Refactor examples code.
+* `Factory` methods that used to return `Optional[T]` now returns just `T`.
+* `Enum.__int__` and `Flag.__int__` doesn't check the instance of the type anymore.
+* `iterators.into_iter` function renamed to `iterators.iter`.
+* Use new `str | None` union instead of `Optional[str, None]`
+* Improved documentations on objects.
+* Some object field names has been typo fixed.
+* Method `fetch_available_fireteams` typo name fixed.
+* `Character.total_played_time` now returns the total time in seconds instead of string.
+
+### Removed
+* The `net` field has been removed from some objects.
+* The `UNDEFINED` object, Fields now return `T or None` instead.
+
+### Fixed
+* Fixed multiple bugged `Factory` methods.
 
 ## [0.2.8](https://github.com/nxtlo/aiobungie/compare/0.2.7...0.2.8) 1-24-2023
 

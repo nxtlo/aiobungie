@@ -18,7 +18,7 @@ async def fetch_me() -> None:
 
             # A player cant have multiple memberships, Check if the membership is steam.
             if membership.type is aiobungie.MembershipType.STEAM:
-                print(f"Found steam membership! {membership}")
+                print(f"Found steam membership! {membership!s}")
 
 
 if __name__ == "__main__":

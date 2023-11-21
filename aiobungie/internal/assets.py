@@ -22,7 +22,6 @@
 
 """aiobungie assets module for API Image hash and path linking."""
 
-
 from __future__ import annotations
 
 __all__: tuple[str, ...] = ("Image", "MimeType")

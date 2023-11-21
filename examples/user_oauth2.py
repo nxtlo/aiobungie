@@ -3,15 +3,17 @@
 import ssl
 import urllib.parse
 
-import aiohttp.web
+from aiohttp import web
 
 import aiobungie
 
 # Web router.
-router = aiohttp.web.RouteTableDef()
+router = web.RouteTableDef()
 
 client = aiobungie.RESTPool(
-    "CLIENT_TOKEN", client_secret="CLIENT_SECRET", client_id=0000  # client ID.
+    "CLIENT_TOKEN",
+    client_secret="CLIENT_SECRET",
+    client_id=0000,  # client ID.
 )
 
 
@@ -23,7 +25,7 @@ def parse_url(url: str) -> str:
 
 # Home page where we will be redirected to login.
 @router.get("/")
-async def home(_: aiohttp.web.Request) -> aiohttp.web.Response:
+async def home(_: web.Request) -> web.Response:
     # Build the OAuth2 url, Make sure the client id and secret are set in the client
     # constructor.
 
@@ -32,13 +34,13 @@ async def home(_: aiohttp.web.Request) -> aiohttp.web.Response:
         oauth_url = rest.build_oauth2_url()
 
         assert oauth_url is not None, "Make sure client id and secret are set!"
-        raise aiohttp.web.HTTPFound(location=oauth_url.url)
+    raise web.HTTPFound(location=oauth_url.url)
 
 
 # After logging in we will be redirected from our Bungie app to this location.
 # This "/redirect" route is configured in your Bungie Application at the developer portal.
 @router.get("/redirect")
-async def redirect(request: aiohttp.web.Request) -> aiohttp.web.Response:
+async def redirect(request: web.Request) -> web.Response:
     # Check if the code parameter is in the redirect URL.
     if code := parse_url(str(request.url)):
         async with client.acquire() as rest:
@@ -49,15 +51,15 @@ async def redirect(request: aiohttp.web.Request) -> aiohttp.web.Response:
             client.metadata["token"] = tokens.access_token
 
         # Redirect to "/me" route with the access token.
-        raise aiohttp.web.HTTPFound(location="/me", reason="OAuth2 success")
+        raise web.HTTPFound(location="/me", reason="OAuth2 success")
     else:
         # Otherwise return 404 and couldn't authenticate.
-        raise aiohttp.web.HTTPNotFound(text="Code not found and couldn't authenticate.")
+        raise web.HTTPNotFound(text="Code not found and couldn't authenticate.")
 
 
 # Our own authenticated user route.
 @router.get("/me")
-async def my_user(_request: aiohttp.web.Request) -> aiohttp.web.Response:
+async def my_user(_request: web.Request) -> web.Response:
     # Check our pool storage if it has the tokens stored.
     if access_token := client.metadata.get("token"):
         # Fetch our current Bungie.net user.
@@ -65,15 +67,15 @@ async def my_user(_request: aiohttp.web.Request) -> aiohttp.web.Response:
             my_user = await rest.fetch_current_user_memberships(access_token)
 
         # Return a JSON response.
-        return aiohttp.web.json_response(my_user)
+        return web.json_response(my_user)
     else:
         # Otherwise return unauthorized if no access token found.
-        raise aiohttp.web.HTTPUnauthorized(text="No access token found, Unauthorized.")
+        raise web.HTTPUnauthorized(text="No access token found, Unauthorized.")
 
 
 def main() -> None:
     # The application itself.
-    app = aiohttp.web.Application()
+    app = web.Application()
 
     # Add the routes.
     app.add_routes(router)
@@ -84,10 +86,10 @@ def main() -> None:
     ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
 
     # You should generate cert and private key files and place their path here.
-    ctx.load_cert_chain("CERTIFICATE_FILE_PATH", "PRIVATE_KEY_FILE_PATH")
+    ctx.load_cert_chain("CERT_PATH.pem", "KEY_PATH.pem")
 
     # Run the app.
-    aiohttp.web.run_app(app, host="localhost", port=8000, ssl_context=ctx)
+    web.run_app(app, host="localhost", port=8000, ssl_context=ctx)
 
 
 if __name__ == "__main__":

@@ -77,7 +77,7 @@ class MilestoneContent:
     """A sequence of the milestone's tips. fields in the sequence may be `UNDEFINED` if not specified."""
 
     items: typedefs.NoneOr[MilestoneItems]
-    """An optional items for this miletones. This may return `None` if nothing was found."""
+    """An optional items for this milestones. This may return `None` if nothing was found."""
 
 
 @attrs.define(kw_only=True)
@@ -99,7 +99,7 @@ class MilestoneActivity:
     """The activity hash."""
 
     challenges: collections.Sequence[records.Objective]
-    """A sequence of objetvies/challenges bound to this activity."""
+    """A sequence of objectives/challenges bound to this activity."""
 
     modifier_hashes: typing.Optional[list[int]]
     """An optional list of the activity's modifier hashes."""
@@ -141,7 +141,7 @@ class QuestStatus:
     """Whether this quest status has started by the player or not."""
 
     is_redeemed: bool
-    """Whether the quest has been redmeed or not."""
+    """Whether the quest has been redeemed or not."""
 
     item_instance_id: int
     """ The current Quest Step will be an instanced item in the player's inventory.
@@ -188,7 +188,7 @@ class MilestoneVendor:
 
 @attrs.define(kw_only=True)
 class MilestoneRewardEntry:
-    """Represents a charatcer-specific data for a milestone reward entry."""
+    """Represents a character-specific data for a milestone reward entry."""
 
     entry_hash: int
     """The entry hash."""
@@ -235,4 +235,4 @@ class Milestone:
     order: int
 
     rewards: typing.Optional[collections.Collection[MilestoneReward]]
-    """A colelctions of rewards that can be earned from this miletone"""
+    """A collections of rewards that can be earned from this milestone"""

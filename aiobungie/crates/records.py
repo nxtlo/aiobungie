@@ -71,7 +71,7 @@ class Node:
     """How much of the presentation node is considered to be completed so far by the given character/profile."""
 
     completion_value: int
-    """The value at which the presenation node is considered to be completed."""
+    """The value at which the presentation node is considered to be completed."""
 
     record_category_score: typing.Optional[int]
     """If available, this is the current score for the record category that this node represents."""

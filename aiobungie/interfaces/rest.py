@@ -52,16 +52,14 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
     if typing.TYPE_CHECKING:
 
-        async def __aenter__(self) -> RESTInterface:
-            ...
+        async def __aenter__(self) -> RESTInterface: ...
 
         async def __aexit__(
             self,
             exception_type: typing.Optional[type[BaseException]],
             exception: typing.Optional[BaseException],
             exception_traceback: typing.Optional[types.TracebackType],
-        ) -> None:
-            ...
+        ) -> None: ...
 
     @abc.abstractmethod
     async def read_manifest_bytes(self, language: str = "en", /) -> bytes:
@@ -228,7 +226,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         credential: `int`
             A valid SteamID64
         type: `aiobungie.typedefs.IntAnd[aiobungie.CredentialType]`
-            The crededntial type. This must not be changed
+            The credential type. This must not be changed
             Since its only credential that works "currently"
 
         Returns
@@ -560,7 +558,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Other Parameters
         ----------------
-        filter : `builsins.int`
+        filter : `int`
             Filter apply to list of joined groups. This Default to `0`
         group_type : `aiobungie.typedefs.IntAnd[aiobungie.GroupType]`
             The group's type.
@@ -593,7 +591,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Other Parameters
         ----------------
-        filter : `builsins.int`
+        filter : `int`
             Filter apply to list of joined groups. This Default to `0`
         group_type : `aiobungie.typedefs.IntAnd[aiobungie.GroupType]`
             The group's type.
@@ -618,7 +616,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Parameters
         ----------
-        clan_id : `builsins.int`
+        clan_id : `int`
             The clans id
 
         Other Parameters
@@ -685,7 +683,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         Returns
         -------
         `aiobungie.typedefs.JSONObject`
-            A JSON object of the objetive data.
+            A JSON object of the objective data.
         """
 
     @abc.abstractmethod
@@ -730,7 +728,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         ----------------
         all : `bool`
             If provided and set to `True`, All memberships regardless
-            of whether thry're obscured by overrides will be returned,
+            of whether they're obscured by overrides will be returned,
 
             If provided and set to `False`, Only available memberships will be returned.
             The default for this is `False`.
@@ -824,7 +822,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         character_id : `int`
             The character's id to equip the item to.
         membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
-            The membership type assocaiated with this player.
+            The membership type associated with this player.
         """
 
     @abc.abstractmethod
@@ -852,7 +850,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         character_id : `int`
             The character's id to equip the item to.
         membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
-            The membership type assocaiated with this player.
+            The membership type associated with this player.
         """
 
     @abc.abstractmethod
@@ -900,7 +898,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         membership_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
     ) -> None:
-        """Unbans a member from the clan.
+        """Unban a member from the clan.
 
         .. note::
             This request requires OAuth2: oauth2: `AdminGroups` scope.
@@ -1365,8 +1363,8 @@ class RESTInterface(traits.RESTful, abc.ABC):
         ----------------
         stack_size : `int`
             The item stack size.
-        valut : `bool`
-            Whether to transfer this item to your valut or not. Defaults to `False`.
+        vault : `bool`
+            Whether to transfer this item to your vault or not. Defaults to `False`.
         """
 
     @abc.abstractmethod
@@ -1406,8 +1404,8 @@ class RESTInterface(traits.RESTful, abc.ABC):
         ----------------
         stack_size : `int`
             The item stack size.
-        valut : `bool`
-            Whether to pill this item to your valut or not. Defaults to `False`.
+        vault : `bool`
+            Whether to pill this item to your vault or not. Defaults to `False`.
         """
 
     @abc.abstractmethod
@@ -1450,7 +1448,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    async def fetch_avaliable_clan_fireteams(
+    async def fetch_available_clan_fireteams(
         self,
         access_token: str,
         group_id: int,
@@ -2291,24 +2289,20 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    async def fetch_historical_definition(self) -> typedefs.JSONObject:
-        ...
+    async def fetch_historical_definition(self) -> typedefs.JSONObject: ...
 
     @abc.abstractmethod
-    async def fetch_content_type(self, type: str, /) -> typedefs.JSONObject:
-        ...
+    async def fetch_content_type(self, type: str, /) -> typedefs.JSONObject: ...
 
     @abc.abstractmethod
     async def fetch_content_by_id(
         self, id: int, locale: str, /, *, head: bool = False
-    ) -> typedefs.JSONObject:
-        ...
+    ) -> typedefs.JSONObject: ...
 
     @abc.abstractmethod
     async def fetch_content_by_tag_and_type(
         self, locale: str, tag: str, type: str, *, head: bool = False
-    ) -> typedefs.JSONObject:
-        ...
+    ) -> typedefs.JSONObject: ...
 
     @abc.abstractmethod
     async def search_content_with_text(
@@ -2321,8 +2315,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         *,
         page: undefined.UndefinedOr[int] = undefined.UNDEFINED,
         source: undefined.UndefinedOr[str] = undefined.UNDEFINED,
-    ) -> typedefs.JSONObject:
-        ...
+    ) -> typedefs.JSONObject: ...
 
     @abc.abstractmethod
     async def search_content_by_tag_and_type(
@@ -2332,14 +2325,12 @@ class RESTInterface(traits.RESTful, abc.ABC):
         type: str,
         *,
         page: undefined.UndefinedOr[int] = undefined.UNDEFINED,
-    ) -> typedefs.JSONObject:
-        ...
+    ) -> typedefs.JSONObject: ...
 
     @abc.abstractmethod
     async def search_help_articles(
         self, text: str, size: str, /
-    ) -> typedefs.JSONObject:
-        ...
+    ) -> typedefs.JSONObject: ...
 
     @abc.abstractmethod
     async def fetch_topics_page(
@@ -2352,8 +2343,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         page: undefined.UndefinedOr[int] = undefined.UNDEFINED,
         locales: undefined.UndefinedOr[collections.Iterable[str]] = undefined.UNDEFINED,
         tag_filter: undefined.UndefinedOr[str] = undefined.UNDEFINED,
-    ) -> typedefs.JSONObject:
-        ...
+    ) -> typedefs.JSONObject: ...
 
     @abc.abstractmethod
     async def fetch_core_topics_page(
@@ -2364,8 +2354,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         *,
         page: undefined.UndefinedOr[int] = undefined.UNDEFINED,
         locales: undefined.UndefinedOr[collections.Iterable[str]] = undefined.UNDEFINED,
-    ) -> typedefs.JSONObject:
-        ...
+    ) -> typedefs.JSONObject: ...
 
     @abc.abstractmethod
     async def fetch_posts_threaded_page(
@@ -2378,8 +2367,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         root_thread_mode: bool,
         sort_mode: int,
         show_banned: typing.Optional[str] = None,
-    ) -> typedefs.JSONObject:
-        ...
+    ) -> typedefs.JSONObject: ...
 
     @abc.abstractmethod
     async def fetch_posts_threaded_page_from_child(
@@ -2391,38 +2379,31 @@ class RESTInterface(traits.RESTful, abc.ABC):
         root_thread_mode: bool,
         sort_mode: int,
         show_banned: typing.Optional[str] = None,
-    ) -> typedefs.JSONObject:
-        ...
+    ) -> typedefs.JSONObject: ...
 
     @abc.abstractmethod
     async def fetch_post_and_parent(
         self, child_id: int, /, *, show_banned: typing.Optional[str] = None
-    ) -> typedefs.JSONObject:
-        ...
+    ) -> typedefs.JSONObject: ...
 
     @abc.abstractmethod
     async def fetch_posts_and_parent_awaiting(
         self, child_id: int, /, *, show_banned: typing.Optional[str] = None
-    ) -> typedefs.JSONObject:
-        ...
+    ) -> typedefs.JSONObject: ...
 
     @abc.abstractmethod
-    async def fetch_topic_for_content(self, content_id: int, /) -> int:
-        ...
+    async def fetch_topic_for_content(self, content_id: int, /) -> int: ...
 
     @abc.abstractmethod
     async def fetch_forum_tag_suggestions(
         self, partial_tag: str, /
-    ) -> typedefs.JSONObject:
-        ...
+    ) -> typedefs.JSONObject: ...
 
     @abc.abstractmethod
-    async def fetch_poll(self, topic_id: int, /) -> typedefs.JSONObject:
-        ...
+    async def fetch_poll(self, topic_id: int, /) -> typedefs.JSONObject: ...
 
     @abc.abstractmethod
-    async def fetch_recuirement_thread_summaries(self) -> typedefs.JSONArray:
-        ...
+    async def fetch_recruitment_thread_summaries(self) -> typedefs.JSONArray: ...
 
     @abc.abstractmethod
     async def fetch_recommended_groups(
@@ -2432,12 +2413,10 @@ class RESTInterface(traits.RESTful, abc.ABC):
         *,
         date_range: int = 0,
         group_type: typedefs.IntAnd[enums.GroupType] = enums.GroupType.CLAN,
-    ) -> typedefs.JSONArray:
-        ...
+    ) -> typedefs.JSONArray: ...
 
     @abc.abstractmethod
-    async def fetch_available_avatars(self) -> collections.Mapping[str, int]:
-        ...
+    async def fetch_available_avatars(self) -> collections.Mapping[str, int]: ...
 
     @abc.abstractmethod
     async def fetch_user_clan_invite_setting(
@@ -2445,8 +2424,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         access_token: str,
         /,
         membership_type: typedefs.IntAnd[enums.MembershipType],
-    ) -> bool:
-        ...
+    ) -> bool: ...
 
     @abc.abstractmethod
     async def fetch_banned_group_members(
@@ -2456,20 +2434,17 @@ class RESTInterface(traits.RESTful, abc.ABC):
         /,
         *,
         page: int = 1,
-    ) -> typedefs.JSONObject:
-        ...
+    ) -> typedefs.JSONObject: ...
 
     @abc.abstractmethod
     async def fetch_pending_group_memberships(
         self, access_token: str, group_id: int, /, *, current_page: int = 1
-    ) -> typedefs.JSONObject:
-        ...
+    ) -> typedefs.JSONObject: ...
 
     @abc.abstractmethod
     async def fetch_invited_group_memberships(
         self, access_token: str, group_id: int, /, *, current_page: int = 1
-    ) -> typedefs.JSONObject:
-        ...
+    ) -> typedefs.JSONObject: ...
 
     @abc.abstractmethod
     async def invite_member_to_group(
@@ -2481,8 +2456,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         membership_type: typedefs.IntAnd[enums.MembershipType],
         *,
         message: undefined.UndefinedOr[str] = undefined.UNDEFINED,
-    ) -> typedefs.JSONObject:
-        ...
+    ) -> typedefs.JSONObject: ...
 
     @abc.abstractmethod
     async def cancel_group_member_invite(
@@ -2492,8 +2466,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         group_id: int,
         membership_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
-    ) -> typedefs.JSONObject:
-        ...
+    ) -> typedefs.JSONObject: ...
 
     @abc.abstractmethod
     async def equip_loadout(
@@ -2504,7 +2477,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         character_id: int,
         membership_type: typedefs.IntAnd[enums.MembershipType],
     ) -> None:
-        """Equip a loadout. Youe character must be in a Social space, Orbit or Offline
+        """Equip a loadout. Your character must be in a Social space, Orbit or Offline
         while performing this operation.
 
         .. note::

@@ -24,10 +24,9 @@
 
 from __future__ import annotations
 
-import pathlib
-
 __all__ = ("ClientApp", "Netrunner", "Serializable", "RESTful", "Debug")
 
+import pathlib
 import typing
 
 if typing.TYPE_CHECKING:

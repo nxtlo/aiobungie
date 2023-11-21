@@ -183,7 +183,7 @@ class CharacterProgression:
     """A Mapping from an uninstanced inventory item hash to a sequence of its objectives."""
 
     # Still not sure if this field returned or not.
-    # unsinstanced_item_pers: collections.Mapping[int, ...]?
+    # uninstanced_item_pers: collections.Mapping[int, ...]?
 
 
 @attrs.define(kw_only=True)
@@ -200,7 +200,7 @@ class Character:
     """The character's member id."""
 
     member_type: enums.MembershipType
-    """The character's memberhip type."""
+    """The character's membership type."""
 
     light: int
     """Character's light"""
@@ -223,8 +223,8 @@ class Character:
     last_played: datetime.datetime
     """Character's last played date."""
 
-    total_played_time: str
-    """Character's total plyed time minutes."""
+    total_played_time: int
+    """Character's total played time in seconds."""
 
     class_type: enums.Class
     """Character's class."""
@@ -250,7 +250,7 @@ class Character:
         Parameters
         ----------
         mode: `aiobungie.typedefs.IntAnd[aiobungie.internal.enums.GameMode]`
-            Filters the gamemodes to fetch. i.e., Nightfall, Strike, Iron Banner, etc.
+            Filters the Game Modes to fetch. i.e., Nightfall, Strike, Iron Banner, etc.
 
         Other Parameters
         ----------------
@@ -306,8 +306,8 @@ class Character:
         ----------------
         stack_size : `int`
             The item stack size.
-        valut : `bool`
-            Whether to pill this item to your valut or not. Defaults to `False`.
+        vault : `bool`
+            Whether to pill this item to your vault or not. Defaults to `False`.
         """
         await self.net.request.rest.transfer_item(
             access_token,
@@ -347,8 +347,8 @@ class Character:
         ----------------
         stack_size : `int`
             The item stack size.
-        valut : `bool`
-            Whether to pill this item to your valut or not. Defaults to `False`.
+        vault : `bool`
+            Whether to pill this item to your vault or not. Defaults to `False`.
         """
         await self.net.request.rest.pull_item(
             access_token,
@@ -369,9 +369,9 @@ class Character:
 
         Parameters
         ----------
-        access_token : `builtins.str`
+        access_token : `str`
             The bearer access token associated with the bungie account.
-        item_id : `builtins.int`
+        item_id : `int`
             The item id.
         """
         await self.net.request.rest.equip_item(
@@ -390,7 +390,7 @@ class Character:
 
         Parameters
         ----------
-        access_token : `builtins.str`
+        access_token : `str`
             The bearer access token associated with the bungie account.
         item_ids: `list[builtins.int]`
             A list of item ids you want to equip for this character.

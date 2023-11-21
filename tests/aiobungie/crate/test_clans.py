@@ -362,14 +362,14 @@ class TestClan:
 
     @pytest.mark.asyncio()
     async def test_fetch_available_fireteams(self, obj: crate.Clan):
-        obj.net.request.fetch_avaliable_clan_fireteams = fts = mock.AsyncMock(
+        obj.net.request.fetch_available_clan_fireteams = fts = mock.AsyncMock(
             [crate.Fireteam]
         )
         fts.return_value = [mock.Mock(crate.Fireteam), mock.Mock(crate.Fireteam)]
 
         fts.return_value[0].activity_type = aiobungie.FireteamActivity.RAID_DSC
 
-        fireteams = await obj.fetch_avaliable_fireteams(
+        fireteams = await obj.fetch_available_fireteams(
             "token",
             activity_type=aiobungie.FireteamActivity.RAID_DSC,
             platform=aiobungie.FireteamPlatform.ANY,

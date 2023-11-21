@@ -19,7 +19,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Marshalling factory used to deserializing REST JSON payloads into an `aiobungie.crates`."""
+"""Deserializing REST JSON payloads into an `aiobungie.crates` objects."""
 
 from __future__ import annotations
 
@@ -380,7 +380,6 @@ class Factory(interfaces.FactoryInterface):
         )
 
     def _set_character_attrs(self, payload: typedefs.JSONObject) -> character.Character:
-        total_time = time.format_played(int(payload["minutesPlayedTotal"]), suffix=True)
         return character.Character(
             net=self._net,
             id=int(payload["characterId"]),
@@ -391,7 +390,7 @@ class Factory(interfaces.FactoryInterface):
             emblem_icon=assets.Image(str(payload["emblemPath"])),
             emblem_hash=int(payload["emblemHash"]),
             last_played=time.clean_date(payload["dateLastPlayed"]),
-            total_played_time=total_time,
+            total_played_time=int(payload["minutesPlayedTotal"]),
             member_id=int(payload["membershipId"]),
             member_type=enums.MembershipType(payload["membershipType"]),
             level=payload["baseCharacterLevel"],
@@ -444,7 +443,7 @@ class Factory(interfaces.FactoryInterface):
             transfer_status=transfer_status,
             lockable=payload["lockable"],
             state=enums.ItemState(payload["state"]),
-            dismantel_permissions=payload["dismantlePermission"],
+            dismantle_permissions=payload["dismantlePermission"],
             is_wrapper=payload["isWrapper"],
             instance_id=instance_id,
             version_number=version_number,
@@ -492,7 +491,7 @@ class Factory(interfaces.FactoryInterface):
             interval_objectives=interval_objectives,
             redeemed_count=payload.get("intervalsRedeemedCount", 0),
             completion_times=payload.get("completedCount", None),
-            reward_visibility=payload.get("rewardVisibilty", None),
+            reward_visibility=payload.get("rewardVisibility"),
         )
 
     def deserialize_character_records(
@@ -511,7 +510,7 @@ class Factory(interfaces.FactoryInterface):
             interval_objectives=record.interval_objectives,
             redeemed_count=payload.get("intervalsRedeemedCount", 0),
             completion_times=payload.get("completedCount"),
-            reward_visibility=payload.get("rewardVisibilty"),
+            reward_visibility=payload.get("rewardVisibility"),
             record_hashes=record_hashes or [],
         )
 
@@ -642,7 +641,7 @@ class Factory(interfaces.FactoryInterface):
         return items.Collectible(
             recent_collectibles=recent_collectibles,
             collectibles=collectibles,
-            collection_categorie_hash=int(payload["collectionCategoriesRootNodeHash"]),
+            collection_category_hash=int(payload["collectionCategoriesRootNodeHash"]),
             collection_badges_hash=int(payload["collectionBadgesRootNodeHash"]),
         )
 
@@ -916,7 +915,9 @@ class Factory(interfaces.FactoryInterface):
         ] = {}
         for char_id, data in payload["data"].items():
             # A little hack to stop mypy complaining about Mapping <-> dict
-            character_progressions[int(char_id)] = self.deserialize_character_progressions(data)  # type: ignore[index]
+            character_progressions[
+                int(char_id)
+            ] = self.deserialize_character_progressions(data)  # type: ignore[index]
         return character_progressions
 
     def deserialize_characters_records(
@@ -1217,8 +1218,8 @@ class Factory(interfaces.FactoryInterface):
         if raw_char_lookups := payload.get("characterCurrencyLookups"):
             if "data" in raw_char_lookups:
                 character_currency_lookups = {
-                    int(char_id): self._deserialize_currencies(currencie)
-                    for char_id, currencie in raw_char_lookups["data"].items()
+                    int(char_id): self._deserialize_currencies(currency)
+                    for char_id, currency in raw_char_lookups["data"].items()
                 }
 
         character_craftables: typing.Optional[
@@ -1303,11 +1304,11 @@ class Factory(interfaces.FactoryInterface):
                 for ins_id, item in raw_sockets["data"].items()
             }
 
-        objeectives: typing.Optional[
+        objectives: typing.Optional[
             collections.Mapping[int, collections.Sequence[records.Objective]]
         ] = None
         if raw_objectives := payload.get("objectives"):
-            objeectives = {
+            objectives = {
                 int(ins_id): [self.deserialize_objectives(objective)]
                 for ins_id, data in raw_objectives["data"].items()
                 for objective in data["objectives"]
@@ -1362,7 +1363,7 @@ class Factory(interfaces.FactoryInterface):
             stats=stats,
             render_data=render_data,
             instances=instances,
-            objectives=objeectives,
+            objectives=objectives,
             perks=perks,
             plug_states=plug_states,
             reusable_plugs=reusable_plugs,
@@ -1373,8 +1374,8 @@ class Factory(interfaces.FactoryInterface):
         self, payload: typedefs.JSONObject
     ) -> components.CharacterComponent:
         character_: typing.Optional[character.Character] = None
-        if raw_singuler_character := payload.get("character"):
-            character_ = self.deserialize_character(raw_singuler_character["data"])
+        if raw_singular_character := payload.get("character"):
+            character_ = self.deserialize_character(raw_singular_character["data"])
 
         inventory: typing.Optional[collections.Sequence[profile.ProfileItemImpl]] = None
         if raw_inventory := payload.get("inventory"):
@@ -2005,7 +2006,6 @@ class Factory(interfaces.FactoryInterface):
                     )
 
         return profile.LinkedProfile(
-            net=self._net,
             bungie=bungie_user,
             profiles=profiles_vec,
             profiles_with_errors=error_profiles_vec,
@@ -2198,6 +2198,7 @@ class Factory(interfaces.FactoryInterface):
                 members_.append(members_fields)
         return members_
 
+    # TODO: Don't return union here. In general fix this method.
     def deserialize_available_fireteams(
         self,
         data: typedefs.JSONObject,
@@ -2338,7 +2339,6 @@ class Factory(interfaces.FactoryInterface):
                     next_level=bonus["nextLevelAt"],
                 )
             artifact = season.Artifact(
-                net=self._net,
                 hash=raw_artifact["artifactHash"],
                 power_bonus=raw_artifact["powerBonus"],
                 acquired_points=raw_artifact["pointsAcquired"],

@@ -27,24 +27,27 @@ import os
 
 try:
     import dotenv
-    if (cli_key := dotenv.get_key("./.env", "CLIENT_TOKEN")):  # type: ignore
-        os.environ['CLIENT_TOKEN'] = cli_key
-except ImportError:
+
+    if cli_key := dotenv.get_key("./.env", "CLIENT_TOKEN"):  # type: ignore
+        os.environ["CLIENT_TOKEN"] = cli_key
+except ModuleNotFoundError:
     pass
 
-@nox.session(reuse_venv=True)
+
+@nox.session(reuse_venv=True, name="client")
 def client_test(session: nox.Session) -> None:
     session.install("python-dotenv")
+    session.install("orjson")
     if session.env.get("CLIENT_TOKEN") is None:  # type: ignore
         session.error("CLIENT_TOKEN not found in env variables.")
 
     session.install("-r", "requirements.txt")
-    session.install('.', "--upgrade")
+    session.install(".", "--upgrade")
     path = pathlib.Path("./tests/aiobungie/test_client.py")
     try:
         if path.exists() and path.is_file():
-            shutil.copy(path, '.')
-            session.run("python", 'test_client.py')
+            shutil.copy(path, ".")
+            session.run("python", "test_client.py")
         os.remove("./test_client.py")
     finally:
         pathlib.Path("./test_client.py").unlink(missing_ok=True)

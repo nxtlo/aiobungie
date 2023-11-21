@@ -40,9 +40,8 @@ import typing
 import attrs
 
 if typing.TYPE_CHECKING:
-    import collections.abc as colelctions
+    import collections.abc as collections
 
-    from aiobungie import traits
     from aiobungie.crates import progressions
 
 
@@ -61,12 +60,12 @@ class ArtifactTier:
 
     points_to_unlock: int
 
-    items: colelctions.Sequence[ArtifactTierItem]
+    items: collections.Sequence[ArtifactTierItem]
 
 
 @attrs.define(kw_only=True)
 class CharacterScopedArtifact:
-    """Represetns per-character artifact data."""
+    """Represents per-character artifact data."""
 
     hash: int
 
@@ -74,15 +73,12 @@ class CharacterScopedArtifact:
 
     reset_count: int
 
-    tiers: colelctions.Sequence[ArtifactTier]
+    tiers: collections.Sequence[ArtifactTier]
 
 
 @attrs.define(kw_only=True)
 class Artifact:
     """Represents a Destiny 2 Season artifact."""
-
-    net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
-    """A client app we may use to make external requests."""
 
     hash: int
     """The season artifact's hash."""

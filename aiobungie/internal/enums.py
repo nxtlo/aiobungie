@@ -22,7 +22,6 @@
 
 """Bungie enums implementation used within aiobungie."""
 
-
 from __future__ import annotations
 
 __all__: tuple[str, ...] = (

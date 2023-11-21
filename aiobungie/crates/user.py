@@ -282,7 +282,7 @@ class DestinyMembership(UserLike):
     """The member's profile privacy status."""
 
     crossave_override: typing.Union[enums.MembershipType, int]
-    """The member's corssave override membership type."""
+    """The member's crossave override membership type."""
 
     async def fetch_self_profile(
         self, components: list[enums.ComponentType], auth: typing.Optional[str] = None
@@ -320,7 +320,7 @@ class SearchableDestinyUser:
     """The user's global display name."""
 
     code: typing.Optional[int]
-    """The user's global dsplay name code if set."""
+    """The user's global display name code if set."""
 
     bungie_id: typing.Optional[int]
     """The user's Bungie.net id if set."""
@@ -333,7 +333,7 @@ class SearchableDestinyUser:
 class HardLinkedMembership:
     """Represents hard linked Bungie user membership.
 
-    This currently only supports SteamID which's a public credenitial.
+    This currently only supports SteamID which's a public credentials.
     Also Cross-Save Aware.
     """
 
@@ -344,7 +344,7 @@ class HardLinkedMembership:
     """The hard link user id"""
 
     cross_save_type: enums.MembershipType
-    """The hard link user's crpss save membership type. Default is set to None-0"""
+    """The hard link user's cross save membership type. Default is set to None-0"""
 
     def __int__(self) -> int:
         return self.id
@@ -361,7 +361,7 @@ class UserCredentials:
     """The credential type."""
 
     display_name: str
-    """The user displayname for this credential."""
+    """The user display name for this credential."""
 
     is_public: bool
     """Whether this credential is public or not."""

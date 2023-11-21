@@ -61,7 +61,7 @@ class ItemBreakerType(int, enums.Enum):
 
     OVERLOAD = DISRUPTION
     """An alias to SHIELD_PIERCING"""
-    UNSTOPABLE = STAGGER
+    UNSTOPPABLE = STAGGER
     """An alias to STAGGER"""
     ANTI_BARRIER = SHIELD_PIERCING
     """An alias to SHIELD_PIERCING."""
@@ -84,12 +84,12 @@ class Collectible:
     """Represents a collectible Destiny 2 item."""
 
     recent_collectibles: typing.Optional[collections.Collection[int]]
-    """If this is accessd from a profile response, This will be collection of the recent acquired items hashes."""
+    """If this is accessed from a profile response, This will be collection of the recent acquired items hashes."""
 
     collectibles: collections.Mapping[int, int]
     """A mapping of each collected item hash to its state."""
 
-    collection_categorie_hash: int
+    collection_category_hash: int
     """The hash for the root presentation node definition of Collection categories."""
 
     collection_badges_hash: int
@@ -98,7 +98,7 @@ class Collectible:
 
 @attrs.define(kw_only=True)
 class Currency:
-    """Represents a curency item in Destiny 2."""
+    """Represents a currency item in Destiny 2."""
 
     hash: int
     """The hash of this currency."""
@@ -210,7 +210,7 @@ class ItemEnergy:
     """The energy type."""
 
     capacity: int
-    """The total capcacity of energy that the item currently has."""
+    """The total capacity of energy that the item currently has."""
 
     used_energy: int
     """The amount if energy in use by inserted plugs."""
@@ -260,7 +260,7 @@ class ItemInstance:
 
     required_equip_unlock_hashes: typing.Optional[collections.Collection[int]]
     """If available, A collections of hash flags mapped to a its definitions
-    needed in oreder to equip this item will be returned.
+    needed in order to equip this item will be returned.
     """
 
     cant_equip_reason: int

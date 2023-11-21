@@ -32,8 +32,11 @@ __all__: tuple[str, ...] = (
     "EnumSig",
     "IntAnd",
     "is_unknown",
+    "Loads",
+    "Dumps",
 )
 
+import collections.abc as collections
 import typing
 
 from aiobungie.internal import enums
@@ -50,7 +53,7 @@ JSONArray = list[typing.Any]  # type: ignore[misc]
 i.e., `[{"Key": 1}, {"Key2": "Value"}]`
 """
 
-Unknown: typing.Final[typing.Literal[""]] = ""
+Unknown: typing.Literal[""] = ""
 """Some Bungie strings return empty so we undefine them if so."""
 
 T = typing.TypeVar("T", covariant=True)
@@ -65,6 +68,12 @@ EnumSig = typing.TypeVar(
 
 IntAnd = typing.Union[int, EnumSig]
 """A type hint for parameters that may receives an enum or an int."""
+
+Loads = collections.Callable[[str | bytes], JSONArray | JSONObject]
+"""A function that takes a `str` and decode it into a Python object."""
+
+Dumps = collections.Callable[[JSONObject | JSONArray], bytes]
+"""A function that takes an JSON object and encode it into bytes."""
 
 
 def is_unknown(string: str) -> bool:

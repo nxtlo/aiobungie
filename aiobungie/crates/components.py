@@ -74,7 +74,7 @@ class ComponentPrivacy(int, enums.Enum):
 class ComponentFields(enums.Enum):
     """An enum that provides fields found in a base component response."""
 
-    PRIVACY = ComponentPrivacy
+    PRIVACY = ComponentPrivacy.NONE
     DISABLED = False
 
 
@@ -151,7 +151,8 @@ class CraftablesComponent:
             If the craftables are available, a sequence of inventory entities. Otherwise `None`.
         """
 
-        if self.craftables is None:
+        # No reason to turn the map keys if it was empty.
+        if not self.craftables:
             return None
 
         item_ids = list(self.craftables.keys())
@@ -253,7 +254,7 @@ class ItemsComponent(UninstancedItemsComponent):
     """A mapping from the item instance id to tuple that holds two values.
 
     * First one is a bool that determines whether this item uses custom dyes or not.
-    * Second one is dict that holds int key that mapps to int value of the art regions.
+    * Second one is dict that holds int key that maps to int value of the art regions.
 
     This will be available when `aiobungie.ComponentType.ITEM_RENDER_DATA` is passed to the request.
     otherwise will be `None`.
@@ -415,7 +416,7 @@ class CharacterComponent(RecordsComponent):
     """
 
     inventory: typing.Optional[collections.Sequence[profile.ProfileItemImpl]]
-    """A sequence of the character inventorie items component.
+    """A sequence of the character inventory items component.
 
     Those items may be Weapons, emblems, ships, sparrows, etc.
 
@@ -446,7 +447,7 @@ class CharacterComponent(RecordsComponent):
     activities: typing.Optional[activity.CharacterActivity]
     """A sequence of the character activities component.
 
-    This will always be `None` unless `aiobungie.ComponentType.CHARACTER_ACTIVITES`
+    This will always be `None` unless `aiobungie.ComponentType.CHARACTER_ACTIVITIES`
     is passed to the request components.
     """
 
@@ -488,7 +489,7 @@ class CharacterComponent(RecordsComponent):
 class Component(
     ProfileComponent, RecordsComponent, StringVariableComponent, MetricsComponent
 ):
-    """Concerete implementation of all Bungie components.
+    """Concrete implementation of all Bungie components.
 
     Components that requires auth will return `None` unless an `access_token` was passed to the request
     `**options` parameters.
@@ -533,7 +534,7 @@ class Component(
     character_inventories: typing.Optional[
         collections.Mapping[int, collections.Sequence[profile.ProfileItemImpl]]
     ]
-    """A mapping from character's id to a sequence of their character inventorie items component.
+    """A mapping from character's id to a sequence of their character inventory items component.
 
     Those items may be Weapons, emblems, ships, sparrows, etc.
 
@@ -570,7 +571,7 @@ class Component(
     ]
     """A mapping from character's id to a sequence of their character activities component.
 
-    This will always be `None` unless `aiobungie.ComponentType.CHARACTER_ACTIVITES`
+    This will always be `None` unless `aiobungie.ComponentType.CHARACTER_ACTIVITIES`
     is passed to the request components.
     """
 

@@ -52,7 +52,7 @@ async def test_users():
     assert isinstance(u, aiobungie.crate.BungieUser)
 
 
-async def test_user_themese():
+async def test_user_themes():
     ut = await client.fetch_user_themes()
     assert isinstance(ut, list)
     assert isinstance(ut[0], aiobungie.crate.UserThemes)
@@ -222,7 +222,7 @@ async def test_search_users():
             assert isinstance(membership, aiobungie.crate.DestinyMembership)
 
 
-async def test_clan_conves():
+async def test_clan_conversations():
     x = await client.fetch_clan_conversations(881267)
     assert isinstance(x, list)
     for c in x:
@@ -231,10 +231,6 @@ async def test_clan_conves():
 
 async def test_clan_admins():
     ca = await client.fetch_clan_admins(4389205)
-    assert any(
-        not isinstance(c.name, aiobungie.UndefinedType) and "Karlz" or "Crit" == c.name
-        for c in ca
-    )
     assert any(member.is_admin or member.is_founder for member in ca)
     assert all(isinstance(admin, aiobungie.crate.ClanMember) for admin in ca)
 
@@ -351,18 +347,13 @@ async def test_insert_plug_free():
         pass
 
 
-async def test_set_item_lock_state():
-    try:
-        await client.rest.set_item_lock_state(
-            "my-token",
-            True,
-            123,
-            123,
-            1
-        )
-    # This will fail due to OAuth2
-    except aiobungie.Unauthorized:
-        pass
+# FIXME: There's currently a problem with this API route from Bungie's side.
+# async def test_set_item_lock_state():
+#     try:
+#         await client.rest.set_item_lock_state("my-token", True, 123, 123, 1)
+#     # This will fail due to OAuth2
+#     except aiobungie.Unauthorized:
+#         pass
 
 
 async def test_search_entities():

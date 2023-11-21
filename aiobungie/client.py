@@ -103,10 +103,14 @@ class Client(traits.ClientApp):
         *,
         client_secret: typing.Optional[str] = None,
         client_id: typing.Optional[int] = None,
+        dumps: typedefs.Dumps = helpers.dumps,
+        loads: typedefs.Loads = helpers.loads,
         max_retries: int = 4,
     ) -> None:
         self._rest = rest_.RESTClient(
             token,
+            dumps=dumps,
+            loads=loads,
             client_secret=client_secret,
             client_id=client_id,
             max_retries=max_retries,
@@ -1034,7 +1038,7 @@ class Client(traits.ClientApp):
 
         return self.factory.deserialize_fireteams(resp)
 
-    async def fetch_avaliable_clan_fireteams(
+    async def fetch_available_clan_fireteams(
         self,
         access_token: str,
         group_id: int,
@@ -1084,7 +1088,7 @@ class Client(traits.ClientApp):
             A sequence of  fireteams found in the clan.
             `None` will be returned if nothing was found.
         """
-        resp = await self.rest.fetch_avaliable_clan_fireteams(
+        resp = await self.rest.fetch_available_clan_fireteams(
             access_token,
             group_id,
             activity_type,
@@ -1122,9 +1126,7 @@ class Client(traits.ClientApp):
         """
         resp = await self.rest.fetch_clan_fireteam(access_token, fireteam_id, group_id)
 
-        return self.factory.deserialize_available_fireteams(
-            resp, no_results=True
-        )  # type: ignore[return-value]
+        return self.factory.deserialize_available_fireteams(resp, no_results=True)  # type: ignore[return-value]
 
     async def fetch_my_clan_fireteams(
         self,

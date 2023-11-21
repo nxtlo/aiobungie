@@ -23,9 +23,11 @@
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = ("Iterator", "into_iter")
+__all__: tuple[str, ...] = ("Iterator", "iter")
 
+import builtins as _builtins
 import collections.abc as collections
+import copy as _copy
 import itertools
 import typing
 
@@ -41,7 +43,7 @@ if typing.TYPE_CHECKING:
     _B = typing.TypeVar("_B", bound=collections.Callable[..., typing.Any])
 
 
-class Iterator(typing.Generic[Item]):
+class Iterator(typing.Generic[Item], collections.Iterator[Item]):
     """A Flat, In-Memory iterator for sequenced based data.
 
     Example
@@ -81,15 +83,13 @@ class Iterator(typing.Generic[Item]):
     __slots__ = ("_items",)
 
     def __init__(self, items: collections.Iterable[Item]) -> None:
-        self._items = iter(items)
+        self._items = _builtins.iter(items)
 
     @typing.overload
-    def collect(self) -> list[Item]:
-        ...
+    def collect(self) -> list[Item]: ...
 
     @typing.overload
-    def collect(self, casting: _B) -> list[_B]:
-        ...
+    def collect(self, casting: _B) -> list[_B]: ...
 
     def collect(
         self, casting: typing.Optional[_B] = None
@@ -116,6 +116,19 @@ class Iterator(typing.Generic[Item]):
             return typing.cast(list[_B], list(map(casting, self._items)))
 
         return list(self._items)
+
+    def copied(self) -> Iterator[Item]:
+        """Creates an iterator which `deeply` copies all of its elements.
+
+        Example
+        -------
+        ```py
+        it = Iterator([None, None, None])
+        copied_iter = it.copied()
+        assert it.collect() == copied.collect()
+        ```
+        """
+        return Iterator(_copy.deepcopy(self._items))
 
     def next(self) -> Item:
         """Returns the next item in the iterator.
@@ -555,7 +568,7 @@ class Iterator(typing.Generic[Item]):
         return item
 
 
-def into_iter(
+def iter(
     iterable: collections.Iterable[Item],
 ) -> Iterator[Item]:
     """Transform an iterable into an flat iterator.
@@ -564,7 +577,7 @@ def into_iter(
     -------
     ```py
     sequence = [1,2,3]
-    for item in aiobungie.into_iter(sequence).reversed():
+    for item in aiobungie.iter(sequence).reversed():
         print(item)
     # 3
     # 2

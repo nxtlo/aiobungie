@@ -33,6 +33,7 @@ __all__: list[str] = [
 
 import datetime
 import typing
+import sys as _sys
 import time as _time
 
 
@@ -41,32 +42,20 @@ def from_timestamp(timer: typing.Union[int, float], /) -> datetime.datetime:
     return datetime.datetime.utcfromtimestamp(timer)
 
 
-def _monkey_patch() -> None:
-    # fmt: off
-    from backports.datetime_fromisoformat import MonkeyPatch
-    MonkeyPatch.patch_fromisoformat()
-    # fmt: on
-
-
-def _backport() -> None:
-    try:
-        _monkey_patch()
-    except ModuleNotFoundError:
-        import subprocess as _subproc
-        import os as _os
-
-        py = "py" if _os.name == "nt" else "python"
-        _subproc.check_call(f"{py} -m pip install backports-datetime-fromisoformat")
-        _backport()
-
-
 def clean_date(iso_date: str, /) -> datetime.datetime:
     """Parse an `ISO8601` string datetime into a Python `datetime.datetime` object."""
     # Python 3.10 doesn't parse all ISO8601 formats, Need a backport for that.
-    import sys as _sys
 
     if _sys.version_info.minor == 10:
-        _backport()
+        try:
+            from backports.datetime_fromisoformat import MonkeyPatch
+
+            MonkeyPatch.patch_fromisoformat()
+        except ModuleNotFoundError:
+            raise ModuleNotFoundError(
+                "The backports module is required for Python 3.10 compatibility.\n"
+                "Please install it with `pip install backports-datetime-fromisoformat`"
+            )
 
     return datetime.datetime.fromisoformat(iso_date)
 

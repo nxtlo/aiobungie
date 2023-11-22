@@ -32,6 +32,7 @@ __all__: list[str] = [
 ]
 
 import datetime
+import sys as _sys
 import time as _time
 import typing
 
@@ -42,7 +43,12 @@ def from_timestamp(timer: typing.Union[int, float], /) -> datetime.datetime:
 
 
 def clean_date(iso_date: str, /) -> datetime.datetime:
-    """Parse a Bungie ISO format string date to a Python `datetime.datetime` object."""
+    """Parse an `ISO8601` string datetime into a Python `datetime.datetime` object."""
+    # Apparently Python 3.11 and above parses all type
+    # of ISO dates but not in 3.10.
+    # Need to remove the offset-from UTC `Z` char.
+    if _sys.version_info.minor == 10:
+        iso_date = iso_date[:-1] if iso_date[-1] == "Z" else iso_date
     return datetime.datetime.fromisoformat(iso_date)
 
 

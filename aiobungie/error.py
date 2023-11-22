@@ -46,7 +46,8 @@ import typing
 
 import attrs
 
-from aiobungie.internal import enums, helpers
+from aiobungie.internal import enums
+from aiobungie.internal import helpers
 
 if typing.TYPE_CHECKING:
     import aiohttp
@@ -64,9 +65,9 @@ _MEMBERSHIP_LOOKUP: dict[str, enums.MembershipType] = {
     "TigerDemon": enums.MembershipType.DEMON,
 }
 
-_DETERMINE_MSHIP: collections.Callable[
-    [str], enums.MembershipType
-] = lambda mship: _MEMBERSHIP_LOOKUP[mship]
+_DETERMINE_MSHIP: collections.Callable[[str], enums.MembershipType] = (
+    lambda mship: _MEMBERSHIP_LOOKUP[mship]
+)
 
 
 @attrs.define(auto_exc=True)

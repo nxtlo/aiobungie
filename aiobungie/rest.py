@@ -596,7 +596,8 @@ class RESTClient(interfaces.RESTInterface):
             exception_type: typing.Optional[type[BaseException]],
             exception: typing.Optional[BaseException],
             exception_traceback: typing.Optional[types.TracebackType],
-        ) -> None: ...
+        ) -> None:
+            ...
 
     async def __aenter__(self) -> RESTClient:
         self.open()

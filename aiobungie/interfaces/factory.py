@@ -423,37 +423,44 @@ class FactoryInterface(abc.ABC):
     @abc.abstractmethod
     def deserialize_characters(
         self, payload: typedefs.JSONObject
-    ) -> collections.Mapping[int, character.Character]: ...
+    ) -> collections.Mapping[int, character.Character]:
+        ...
 
     @abc.abstractmethod
     def deserialize_character(
         self, payload: typedefs.JSONObject
-    ) -> character.Character: ...
+    ) -> character.Character:
+        ...
 
     @abc.abstractmethod
     def deserialize_character_equipments(
         self, payload: typedefs.JSONObject
-    ) -> collections.Mapping[int, collections.Sequence[profile.ProfileItemImpl]]: ...
+    ) -> collections.Mapping[int, collections.Sequence[profile.ProfileItemImpl]]:
+        ...
 
     @abc.abstractmethod
     def deserialize_characters_render_data(
         self, payload: typedefs.JSONObject
-    ) -> collections.Mapping[int, character.RenderedData]: ...
+    ) -> collections.Mapping[int, character.RenderedData]:
+        ...
 
     @abc.abstractmethod
     def deserialize_progressions(
         self, payload: typedefs.JSONObject
-    ) -> progressions.Progression: ...
+    ) -> progressions.Progression:
+        ...
 
     @abc.abstractmethod
     def deserialize_character_progressions(
         self, payload: typedefs.JSONObject
-    ) -> character.CharacterProgression: ...
+    ) -> character.CharacterProgression:
+        ...
 
     @abc.abstractmethod
     def deserialize_character_progressions_mapping(
         self, payload: typedefs.JSONObject
-    ) -> collections.Mapping[int, character.CharacterProgression]: ...
+    ) -> collections.Mapping[int, character.CharacterProgression]:
+        ...
 
     # Profiles.
 
@@ -622,12 +629,14 @@ class FactoryInterface(abc.ABC):
     def deserialize_characters_records(
         self,
         payload: typedefs.JSONObject,
-    ) -> collections.Mapping[int, records.CharacterRecord]: ...
+    ) -> collections.Mapping[int, records.CharacterRecord]:
+        ...
 
     @abc.abstractmethod
     def deserialize_profile_records(
         self, payload: typedefs.JSONObject
-    ) -> collections.Mapping[int, records.Record]: ...
+    ) -> collections.Mapping[int, records.Record]:
+        ...
 
     @abc.abstractmethod
     def deserialize_objectives(self, payload: typedefs.JSONObject) -> records.Objective:
@@ -878,7 +887,8 @@ class FactoryInterface(abc.ABC):
     @abc.abstractmethod
     def deserialize_milestone(
         self, payload: typedefs.JSONObject
-    ) -> milestones.Milestone: ...
+    ) -> milestones.Milestone:
+        ...
 
     # Social and friends.
 
@@ -1069,24 +1079,25 @@ class FactoryInterface(abc.ABC):
 
     # No docs for this.
     @abc.abstractmethod
-    def deserialize_item_energy(
-        self, payload: typedefs.JSONObject
-    ) -> items.ItemEnergy: ...
+    def deserialize_item_energy(self, payload: typedefs.JSONObject) -> items.ItemEnergy:
+        ...
 
     @abc.abstractmethod
-    def deserialize_item_perk(self, payload: typedefs.JSONObject) -> items.ItemPerk: ...
+    def deserialize_item_perk(self, payload: typedefs.JSONObject) -> items.ItemPerk:
+        ...
 
     @abc.abstractmethod
-    def deserialize_item_socket(
-        self, payload: typedefs.JSONObject
-    ) -> items.ItemSocket: ...
+    def deserialize_item_socket(self, payload: typedefs.JSONObject) -> items.ItemSocket:
+        ...
 
     @abc.abstractmethod
     def deserialize_item_stats_view(
         self, payload: typedefs.JSONObject
-    ) -> items.ItemStatsView: ...
+    ) -> items.ItemStatsView:
+        ...
 
     @abc.abstractmethod
     def deserialize_plug_item_state(
         self, payload: typedefs.JSONObject
-    ) -> items.PlugItemState: ...
+    ) -> items.PlugItemState:
+        ...

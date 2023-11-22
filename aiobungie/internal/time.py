@@ -31,6 +31,7 @@ __all__: list[str] = [
     "monotonic",
 ]
 
+import subprocess as _subproc
 import datetime
 import sys as _sys
 import time as _time
@@ -44,11 +45,17 @@ def from_timestamp(timer: typing.Union[int, float], /) -> datetime.datetime:
 
 def clean_date(iso_date: str, /) -> datetime.datetime:
     """Parse an `ISO8601` string datetime into a Python `datetime.datetime` object."""
-    # Apparently Python 3.11 and above parses all type
-    # of ISO dates but not in 3.10.
-    # Need to remove the offset-from UTC `Z` char.
+    # Python 3.10 doesn't parse all ISO8601 formats, Need a backport for that.
     if _sys.version_info.minor == 10:
-        iso_date = iso_date[:-1] if iso_date[-1] == "Z" else iso_date
+        proc = _subproc.run("pip install backports-datetime-fromisoformat", check=True)
+        if proc.returncode == 0:
+            try:
+                from backports.datetime_fromisoformat import MonkeyPatch
+
+                MonkeyPatch.patch_fromisoformat()
+            except ModuleNotFoundError:
+                raise
+
     return datetime.datetime.fromisoformat(iso_date)
 
 

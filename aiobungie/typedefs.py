@@ -24,22 +24,16 @@
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = (
+__all__ = (
     "JSONObject",
     "JSONArray",
-    "Unknown",
-    "NoneOr",
-    "EnumSig",
-    "IntAnd",
-    "is_unknown",
     "Loads",
     "Dumps",
+    "unknown",
 )
 
 import collections.abc as collections
 import typing
-
-from aiobungie.internal import enums
 
 JSONObject = dict[str, typing.Any]  # type: ignore[misc]
 """A JSON like dict of string key and any value.
@@ -53,28 +47,15 @@ JSONArray = list[typing.Any]  # type: ignore[misc]
 i.e., `[{"Key": 1}, {"Key2": "Value"}]`
 """
 
-Unknown: typing.Literal[""] = ""
-"""Some Bungie strings return empty so we undefine them if so."""
-
-T = typing.TypeVar("T", covariant=True)
-
-NoneOr = typing.Union[None, T]
-"""A Union type that's similar to to `typing.Optional[T]`"""
-
-EnumSig = typing.TypeVar(
-    "EnumSig", covariant=True, bound=typing.Union[enums.Enum, enums.Flag]
-)
-"""A type hint bound to `aiobungie.internal.enums.Enum` and `aiobungie.internal.enums.Flag`"""
-
-IntAnd = typing.Union[int, EnumSig]
-"""A type hint for parameters that may receives an enum or an int."""
-
 Loads = collections.Callable[[str | bytes], JSONArray | JSONObject]
-"""A function that takes a `str` and decode it into a Python object."""
+"""A function that takes a `str | bytes` JSON object and decode it into a Python object."""
 
 Dumps = collections.Callable[[JSONObject | JSONArray], bytes]
-"""A function that takes an JSON object and encode it into bytes."""
+"""A function that dump a Python JSON object and encode it into bytes."""
 
 
-def is_unknown(string: str) -> bool:
-    return string == Unknown
+def unknown(string: str) -> str | None:
+    """Returns `None` if `string` is empty, otherwise `string`."""
+    if not string:
+        return None
+    return string

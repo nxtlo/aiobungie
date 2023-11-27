@@ -24,20 +24,19 @@
 
 from __future__ import annotations
 
-__all__: list[str] = [
+__all__ = (
     "from_timestamp",
     "clean_date",
     "parse_date_range",
     "monotonic",
-]
+)
 
 import datetime
-import typing
 import sys as _sys
 import time as _time
 
 
-def from_timestamp(timer: typing.Union[int, float], /) -> datetime.datetime:
+def from_timestamp(timer: int | float, /) -> datetime.datetime:
     """Converts a timestamp to `datetime.datetime`"""
     return datetime.datetime.utcfromtimestamp(timer)
 
@@ -61,8 +60,8 @@ def clean_date(iso_date: str, /) -> datetime.datetime:
 
 
 def parse_date_range(
-    end: typing.Optional[datetime.datetime] = None,
-    start: typing.Optional[datetime.datetime] = None,
+    end: datetime.datetime | None = None,
+    start: datetime.datetime | None = None,
 ) -> tuple[str, str]:
     """Parse Bungie's datetime ranges to string."""
 

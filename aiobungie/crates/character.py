@@ -47,7 +47,6 @@ if typing.TYPE_CHECKING:
     import datetime
 
     from aiobungie import traits
-    from aiobungie import typedefs
     from aiobungie.crates import activity
     from aiobungie.crates import entity
     from aiobungie.crates import milestones as milestones_
@@ -115,7 +114,7 @@ class MinimalEquipments:
     item_hash: int
     """The equipped items's hash."""
 
-    dyes: typing.Optional[collections.Collection[Dye]]
+    dyes: collections.Collection[Dye]
     """An optional collection of the item rendering dyes"""
 
     async def fetch_my_item(self) -> entity.InventoryEntity:
@@ -140,13 +139,13 @@ class RenderedData:
     """A sequence of minimal view of this character's equipment."""
 
     async def fetch_my_items(
-        self, *, limit: typing.Optional[int] = None
+        self, *, limit: int | None = None
     ) -> collections.Collection[entity.InventoryEntity]:
         """Fetch the inventory item definition of all the equipment this component has.
 
         Other Parameters
         ----------
-        limit : `typing.Optional[int]`
+        limit : `int | None`
             An optional item limit to fetch. Default is the length of the equipment.
 
         Returns
@@ -211,10 +210,10 @@ class Character:
     race: enums.Race
     """Character's race"""
 
-    emblem: assets.Image
+    emblem: assets.Image | None
     """Character's emblem"""
 
-    emblem_icon: assets.Image
+    emblem_icon: assets.Image | None
     """Character's emblem icon"""
 
     emblem_hash: int
@@ -229,18 +228,18 @@ class Character:
     class_type: enums.Class
     """Character's class."""
 
-    title_hash: typing.Optional[int]
+    title_hash: int | None
     """Character's equipped title hash."""
 
     level: int
     """Character's base level."""
 
-    stats: typing.Mapping[enums.Stat, int]
+    stats: collections.Mapping[enums.Stat, int]
     """A mapping of the character stats and its level."""
 
     async def fetch_activities(
         self,
-        mode: typedefs.IntAnd[enums.GameMode],
+        mode: enums.GameMode | int,
         *,
         page: int = 0,
         limit: int = 250,
@@ -249,7 +248,7 @@ class Character:
 
         Parameters
         ----------
-        mode: `aiobungie.typedefs.IntAnd[aiobungie.internal.enums.GameMode]`
+        mode: `aiobungie.aiobungie.internal.enums.GameMode | int`
             Filters the Game Modes to fetch. i.e., Nightfall, Strike, Iron Banner, etc.
 
         Other Parameters

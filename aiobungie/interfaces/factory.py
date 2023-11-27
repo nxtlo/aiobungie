@@ -220,7 +220,7 @@ class FactoryInterface(abc.ABC):
     @abc.abstractmethod
     def deserialize_group_member(
         self, payload: typedefs.JSONObject
-    ) -> typedefs.NoneOr[clans.GroupMember]:
+    ) -> clans.GroupMember:
         """Deserialize a JSON payload of group information for a member.
 
         Parameters
@@ -230,8 +230,8 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.typedefs.NoneOr[aiobungie.crates.GroupMember]`
-            A group member. This can return `None` if nothing was found.
+        `aiobungie.crates.GroupMember`
+            A group member object.
         """
 
     @abc.abstractmethod
@@ -582,7 +582,7 @@ class FactoryInterface(abc.ABC):
     def deserialize_records(
         self,
         payload: typedefs.JSONObject,
-        scores: typing.Optional[records.RecordScores] = None,
+        scores: records.RecordScores | None = None,
         **nodes: int,
     ) -> records.Record:
         """Deserialize a JSON object of a profile record component.
@@ -591,7 +591,7 @@ class FactoryInterface(abc.ABC):
         ----------
         payload : `aiobungie.internal.helpers.JsonObject`
             The JSON object payload
-        scores: `typing.Optional[records.RecordScores]`
+        scores: `records.RecordScores | None`
             The records scores object.
             This exists only to keep the signature of `aiobungie.crates.CharacterRecord` with the record object.
             As it will always be `None` in that object.
@@ -950,7 +950,7 @@ class FactoryInterface(abc.ABC):
     @abc.abstractmethod
     def deserialize_fireteams(
         self, payload: typedefs.JSONObject
-    ) -> typedefs.NoneOr[collections.Sequence[fireteams.Fireteam]]:
+    ) -> collections.Sequence[fireteams.Fireteam]:
         """Deserialize a JSON sequence of Bungie fireteams information.
 
         Parameters
@@ -1003,23 +1003,36 @@ class FactoryInterface(abc.ABC):
 
     @abc.abstractmethod
     def deserialize_available_fireteams(
-        self, data: typedefs.JSONObject, *, no_results: bool = False
-    ) -> typing.Union[
-        fireteams.AvailableFireteam, collections.Sequence[fireteams.AvailableFireteam]
-    ]:
+        self,
+        data: typedefs.JSONObject,
+    ) -> collections.Sequence[fireteams.AvailableFireteam]:
+        """Deserialize a JSON payload sequence of fireteam objects.
+
+        Parameters
+        ----------
+        payload : `aiobungie.typedefs.JSONObject`
+            The JSON payload.
+
+        Returns
+        -------
+        `collections.Sequence[aiobungie.crates.fireteams.AvailableFireteam]`
+            A sequence of available fireteams.
+        """
+
+    @abc.abstractmethod
+    def deserialize_available_fireteam(
+        self, payload: typedefs.JSONObject
+    ) -> fireteams.AvailableFireteam:
         """Deserialize a JSON payload of a sequence of/fireteam information.
 
         Parameters
         ----------
         payload : `aiobungie.typedefs.JSONObject`
             The JSON payload.
-        no_results : `bool`
-            Whether to deserialize the data from `results` in the payload or not.
 
         Returns
         -------
-        `typing.Union[aiobungie.crates.fireteams.AvailableFireteam, collections.Sequence[aiobungie.crates.fireteams.AvailableFireteam]]` # noqa: E501
-            An available fireteam or a sequence of available fireteam.
+        An available fireteam object.
         """
 
     @abc.abstractmethod

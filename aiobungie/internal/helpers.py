@@ -24,7 +24,7 @@
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = (
+__all__ = (
     "deprecated",
     "awaits",
     "get_or_make_loop",
@@ -54,8 +54,8 @@ class UnimplementedWarning(RuntimeWarning):
 
 def deprecated(
     since: str,
-    removed_in: typing.Optional[str] = None,
-    use_instead: typing.Optional[str] = None,
+    removed_in: str | None = None,
+    use_instead: str | None = None,
 ) -> collections.Callable[[T], T]:
     """A decorator that marks a function as deprecated.
 
@@ -63,7 +63,7 @@ def deprecated(
     ----------
     since : `str`
         The version that the function was deprecated.
-    use_instead : `typing.Optional[str]`
+    use_instead : `str | None`
         If provided, This should be the alternaviate object name that should be used instead.
     """
 
@@ -92,15 +92,15 @@ def deprecated(
 
 
 def unimplemented(
-    message: typing.Optional[str] = None, available_in: typing.Optional[str] = None
+    message: str | None = None, available_in: str | None = None
 ) -> collections.Callable[[T], T]:
     """A decorator that marks a function or classes as unimplemented.
 
     Parameters
     ----------
-    message : `typing.Optional[str]`
+    message : `str | None`
         An optional message to be displayed when the function is called. Otherwise default message will be used.
-    available_in : `typing.Optional[str]`
+    available_in : `str | None`
         If provided, This will be shown as what release this object be implemented.
     """
 
@@ -131,7 +131,7 @@ def unimplemented(
 # Source [https://github.com/hikari-py/hikari/blob/master/hikari/internal/aio.py]
 async def awaits(
     *aws: collections.Awaitable[T_co],
-    timeout: typing.Optional[float] = None,
+    timeout: float | None = None,
 ) -> collections.Sequence[T_co]:
     """Await all given awaitables concurrently.
 
@@ -139,7 +139,7 @@ async def awaits(
     ----------
     *aws : `collections.Awaitable[JT]`
         Multiple awaitables to await.
-    timeout : `typing.Optional[float]`
+    timeout : `float | None`
         An optional timeout.
     with_exceptions : `bool`
         If `True` then exceptions will be returned.
@@ -199,14 +199,13 @@ def get_or_make_loop() -> asyncio.AbstractEventLoop:
 def dumps(
     obj: typedefs.JSONArray | typedefs.JSONObject,
 ) -> bytes:
-    default_dumps: collections.Callable[
-        [typedefs.JSONArray | typedefs.JSONObject], bytes
-    ] = lambda x: _json.dumps(x).encode("UTF-8")
+    def default_dumps(x: typedefs.JSONArray | typedefs.JSONObject) -> bytes:
+        return _json.dumps(x).encode("UTF-8")
 
     try:
         import orjson
 
-        default_dumps = orjson.dumps
+        default_dumps = orjson.dumps  # noqa: F811
     except ModuleNotFoundError:
         try:
             import ujson

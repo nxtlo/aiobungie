@@ -24,7 +24,7 @@
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = ("Image", "MimeType")
+__all__ = ("Image", "MimeType")
 
 import asyncio
 import collections.abc as collections
@@ -39,6 +39,9 @@ from aiobungie import url
 
 from . import enums
 from . import helpers
+
+if typing.TYPE_CHECKING:
+    from typing_extensions import Self
 
 _LOGGER: typing.Final[logging.Logger] = logging.getLogger("aiobungie.assets")
 
@@ -59,7 +62,7 @@ class MimeType(str, enums.Enum):
 def _write(
     path: pathlib.Path,
     file_name: str,
-    mimetype: typing.Union[str, MimeType],
+    mimetype: str | MimeType,
     data: bytes,
 ) -> None:
     with open(path.name + f"{file_name}.{mimetype}", "wb") as file:
@@ -89,12 +92,12 @@ class Image:
     Parameters
     ----------
     path : `str | None`
-        The path to the image. If `None`, the default missing image path will be used.
+        The path to the image..
     """
 
     __slots__ = ("_path",)
 
-    def __init__(self, path: typing.Optional[str] = None) -> None:
+    def __init__(self, path: str) -> None:
         self._path = path
 
     @property
@@ -107,9 +110,29 @@ class Image:
         return self.create_url()
 
     @staticmethod
-    def missing_path() -> str:
-        """Returns the path to the missing Bungie image."""
+    def default() -> str:
+        """Returns the path to the missing Bungie image.
+
+        Note
+        ----
+        This returns the path only, If you want an actual image object use `Image.default_or_else()`
+        """
         return "img/misc/missing_icon_d2.png"
+
+    @classmethod
+    def default_or_else(cls, path: str | None = None) -> Self:
+        """Return the default image if `path` was `None` otherwise an `Image` object.
+
+        Example
+        -------
+        ```py
+        img = Image.default_or_else(None)
+        print(img.url()) # https://www.bungie.net/img/misc/missing_icon_d2.png
+
+        img = Image.default_or_else("/some_path/image.png")
+        ```
+        """
+        return cls(path or Image.default())
 
     def create_url(self) -> str:
         """Creates a full URL to the image path.
@@ -119,14 +142,14 @@ class Image:
         str
             The URL to the image.
         """
-        return f"{url.BASE}/{self._path if self._path else self.missing_path()}"
+        return f"{url.BASE}/{self._path if self._path else self.default()}"
 
     async def save(
         self,
         file_name: str,
         path: typing.Union[pathlib.Path, str],
         /,
-        mime_type: typing.Optional[typing.Union[MimeType, str]] = None,
+        mime_type: MimeType | str = MimeType.JPEG,
     ) -> None:
         """Saves the image to a file.
 
@@ -140,7 +163,7 @@ class Image:
         Other Parameters
         ----------------
         mime_type : `MimeType | str`
-            Optional MIME type of the image.
+            MIME type of the image. Defaults to JPEG.
 
         Raises
         ------
@@ -157,7 +180,6 @@ class Image:
         if self.is_missing:
             return
 
-        mimetype = mime_type or MimeType.PNG
         path = pathlib.Path(path)
 
         loop = helpers.get_or_make_loop()
@@ -166,7 +188,7 @@ class Image:
         try:
             with pool:
                 await loop.run_in_executor(
-                    pool, _write, path, file_name, mimetype, await self.read()
+                    pool, _write, path, file_name, mime_type, await self.read()
                 )
                 _LOGGER.info("Saved image to %s", file_name)
 
@@ -218,6 +240,14 @@ class Image:
 
         async for chunk in self:
             yield chunk
+
+    def __eq__(self, __value: object) -> bool:
+        if not isinstance(__value, Image):
+            return NotImplemented
+        return self._path == __value._path
+
+    def __ne__(self, __value: object) -> bool:
+        return not self.__eq__(__value)
 
     def __repr__(self) -> str:
         return f"Image(url={self.create_url()})"

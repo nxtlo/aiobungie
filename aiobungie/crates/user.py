@@ -50,12 +50,10 @@ if typing.TYPE_CHECKING:
     from datetime import datetime
 
     from aiobungie import traits
-    from aiobungie import typedefs
-    from aiobungie import undefined
 
 
 class UserLike(abc.ABC):
-    """An interface for Bungie users implementation."""
+    """An interface for common fields that Bungie user objects has."""
 
     __slots__ = ()
 
@@ -66,7 +64,7 @@ class UserLike(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def name(self) -> undefined.UndefinedOr[str]:
+    def name(self) -> str | None:
         """The user like's name."""
 
     @property
@@ -91,7 +89,7 @@ class UserLike(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def code(self) -> typedefs.NoneOr[int]:
+    def code(self) -> int | None:
         """The user like's unique display name code.
         This can be None if the user hasn't logged in after season of the lost update.
         """
@@ -129,7 +127,7 @@ class PartialBungieUser:
     net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
     """A network state used for making external requests."""
 
-    name: undefined.UndefinedOr[str]
+    name: str | None
     """The user's name. Field may be undefined if not found."""
 
     id: int
@@ -182,7 +180,7 @@ class BungieUser:
     created_at: datetime
     """The user's creation datetime."""
 
-    name: undefined.UndefinedOr[str]
+    name: str | None
     """The user's name."""
 
     unique_name: str
@@ -203,37 +201,37 @@ class BungieUser:
     is_deleted: bool
     """ True if the user is deleted"""
 
-    about: typing.Optional[str]
+    about: str | None
     """The user's about, Default is None if nothing is Found."""
 
     updated_at: datetime
     """The user's last updated om UTC date."""
 
-    psn_name: typing.Optional[str]
+    psn_name: str | None
     """The user's psn id if it exists."""
 
-    steam_name: typing.Optional[str]
+    steam_name: str | None
     """The user's steam name if it exists"""
 
-    twitch_name: typing.Optional[str]
+    twitch_name: str | None
     """The user's twitch name if it exists."""
 
-    blizzard_name: typing.Optional[str]
+    blizzard_name: str | None
     """The user's blizzard name if it exists."""
 
-    stadia_name: typing.Optional[str]
+    stadia_name: str | None
     """The user's stadia name if it exists."""
 
-    status: typing.Optional[str]
+    status: str | None
     """The user's bungie status text"""
 
-    locale: typing.Optional[str]
+    locale: str | None
     """The user's locale."""
 
     picture: assets.Image
     """The user's profile picture."""
 
-    code: typedefs.NoneOr[int]
+    code: int | None
     """The user's unique display name code.
     This can be None if the user hasn't logged in after season of the lost update.
     """
@@ -260,7 +258,7 @@ class DestinyMembership(UserLike):
     id: int
     """The member's id."""
 
-    name: undefined.UndefinedOr[str]
+    name: str | None
     """The member's name."""
 
     last_seen_name: str
@@ -275,7 +273,7 @@ class DestinyMembership(UserLike):
     icon: assets.Image
     """The member's icon if it was present."""
 
-    code: typedefs.NoneOr[int]
+    code: int | None
     """The member's name code. This field may be `None` if not found."""
 
     is_public: bool
@@ -285,7 +283,7 @@ class DestinyMembership(UserLike):
     """The member's crossave override membership type."""
 
     async def fetch_self_profile(
-        self, components: list[enums.ComponentType], auth: typing.Optional[str] = None
+        self, components: list[enums.ComponentType], auth: str | None = None
     ) -> components_.Component:
         """Fetch this user's profile.
 
@@ -297,7 +295,7 @@ class DestinyMembership(UserLike):
 
         Other Parameters
         ----------------
-        auth : `typing.Optional[str]`
+        auth : `str | None`
             A Bearer access_token to make the request with.
             This is optional and limited to components that only requires an Authorization token.
 
@@ -316,13 +314,13 @@ class DestinyMembership(UserLike):
 class SearchableDestinyUser:
     """Represents the results of the searched users details."""
 
-    name: undefined.UndefinedOr[str]
+    name: str | None
     """The user's global display name."""
 
-    code: typing.Optional[int]
+    code: int | None
     """The user's global display name code if set."""
 
-    bungie_id: typing.Optional[int]
+    bungie_id: int | None
     """The user's Bungie.net id if set."""
 
     memberships: collections.Sequence[DestinyMembership]
@@ -366,7 +364,7 @@ class UserCredentials:
     is_public: bool
     """Whether this credential is public or not."""
 
-    self_as_string: undefined.UndefinedOr[str]
+    self_as_string: str | None
     """The self credential as string,
 
     For an example if a Steam user's credentials this will be the id as a string.
@@ -383,10 +381,10 @@ class UserThemes:
     id: int
     """The theme id."""
 
-    name: undefined.UndefinedOr[str]
+    name: str | None
     """An optional theme name. if not found this field will be `None`"""
 
-    description: undefined.UndefinedOr[str]
+    description: str | None
     """An optional theme description. This field could be `None` if no description found."""
 
     def __int__(self) -> int:
@@ -403,5 +401,5 @@ class User:
     destiny: collections.Sequence[DestinyMembership]
     """A sequence of the user's Destiny memberships."""
 
-    primary_membership_id: typing.Optional[int]
+    primary_membership_id: int | None
     """If the user has a primary membership id, This field will be available."""

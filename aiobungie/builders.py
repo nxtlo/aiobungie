@@ -23,8 +23,9 @@
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = ("OAuth2Response", "PlugSocketBuilder", "OAuthURL")
+__all__ = ("OAuth2Response", "PlugSocketBuilder", "OAuthURL")
 
+import functools
 import typing
 import uuid
 
@@ -33,6 +34,10 @@ import attrs
 from aiobungie import url
 
 if typing.TYPE_CHECKING:
+    import collections.abc as collections
+
+    from typing_extensions import Self
+
     from aiobungie import typedefs
 
 
@@ -71,7 +76,8 @@ class OAuth2Response:
         )
 
 
-@attrs.define(kw_only=True)
+# To be able to cache the result of the compiled URL, We disable the slots here.
+@attrs.mutable(kw_only=True, slots=False)
 class OAuthURL:
     """The result of calling `aiobungie.RESTClient.build_oauth2_url`.
 
@@ -90,13 +96,24 @@ class OAuthURL:
     client_id: int
     """The client id for that's making the request."""
 
-    @property
+    @functools.cached_property
     def url(self) -> str:
-        """An alias for `OAuthURL.compile`."""
+        """The cached result of calling `OAuthURL.compile`.
+
+        This allow for a faster access for the compiled URL.
+
+        Example
+        -------
+        ```py
+        url = OAuthURL(client_id=0000)
+        first_compile = url.url
+        cached_url = url.url
+        ```
+        """
         return self.compile()
 
     def compile(self) -> str:
-        """Compiles the URL to finallize the result of the URL."""
+        """Compiles the fields to finalize the result of the URL."""
         return (
             url.OAUTH_EP
             + f"?client_id={self.client_id}&response_type=code&state={self.state}"  # noqa: W503
@@ -128,12 +145,12 @@ class PlugSocketBuilder:
 
     __slots__ = ("_map",)
 
-    def __init__(self, map: typing.Optional[dict[str, int]] = None, /) -> None:
+    def __init__(
+        self, map: collections.MutableMapping[str, int] | None = None, /
+    ) -> None:
         self._map = map or {}
 
-    def set_socket_array(
-        self, socket_type: typing.Literal[0, 1], /
-    ) -> PlugSocketBuilder:
+    def set_socket_array(self, socket_type: typing.Literal[0, 1], /) -> Self:
         """Set the array socket type.
 
         Parameters
@@ -150,7 +167,7 @@ class PlugSocketBuilder:
         self._map["socketArrayType"] = socket_type
         return self
 
-    def set_socket_index(self, index: int, /) -> PlugSocketBuilder:
+    def set_socket_index(self, index: int, /) -> Self:
         """Set the socket index into the array.
 
         Parameters
@@ -166,7 +183,7 @@ class PlugSocketBuilder:
         self._map["socketIndex"] = index
         return self
 
-    def set_plug_item(self, item_hash: int, /) -> PlugSocketBuilder:
+    def set_plug_item(self, item_hash: int, /) -> Self:
         """Set the socket index into the array.
 
         Parameters
@@ -182,12 +199,12 @@ class PlugSocketBuilder:
         self._map["plugItemHash"] = item_hash
         return self
 
-    def collect(self) -> dict[str, int]:
+    def collect(self) -> collections.Mapping[str, int]:
         """Collect the set values and return its map to be passed to the request.
 
         Returns
         -------
-        `dict[str, int]`
+        `Mapping[str, int]`
             The built map.
         """
         return self._map

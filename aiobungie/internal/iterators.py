@@ -23,7 +23,7 @@
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = ("Iterator", "iter")
+__all__ = ("Iterator", "iter")
 
 import builtins as _builtins
 import collections.abc as collections
@@ -93,9 +93,7 @@ class Iterator(typing.Generic[Item], collections.Iterator[Item]):
     def collect(self, casting: _B) -> list[_B]:
         ...
 
-    def collect(
-        self, casting: typing.Optional[_B] = None
-    ) -> typing.Union[list[Item], list[_B]]:
+    def collect(self, casting: _B | None = None) -> list[Item] | list[_B]:
         """Collects all items in the iterator into a list and cast them into an object if provided.
 
         Example

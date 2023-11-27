@@ -65,9 +65,9 @@ _MEMBERSHIP_LOOKUP: dict[str, enums.MembershipType] = {
     "TigerDemon": enums.MembershipType.DEMON,
 }
 
-_DETERMINE_MSHIP: collections.Callable[[str], enums.MembershipType] = (
-    lambda mship: _MEMBERSHIP_LOOKUP[mship]
-)
+
+def _determine_membership(membership: str) -> enums.MembershipType:
+    return _MEMBERSHIP_LOOKUP[membership]
 
 
 @attrs.define(auto_exc=True)
@@ -99,7 +99,7 @@ class HTTPException(HTTPError):
     throttle_seconds: int
     """The Bungie response throttle seconds."""
 
-    url: typing.Optional[typedefs.StrOrURL]
+    url: typedefs.StrOrURL | None
     """The URL/endpoint caused this error."""
 
     body: typing.Any
@@ -164,7 +164,7 @@ class Unauthorized(HTTPException):
 class BadRequest(HTTPError):
     """An exception raised when requesting a resource with the provided data is wrong."""
 
-    url: typing.Optional[typedefs.StrOrURL]
+    url: typedefs.StrOrURL | None
     """The URL/endpoint caused this error."""
 
     body: typing.Any
@@ -218,16 +218,14 @@ class MembershipTypeError(BadRequest):
     required_membership: str
     """The required correct membership for errored user."""
 
-    def into_membership(
-        self, value: typing.Optional[str] = None
-    ) -> enums.MembershipType:
+    def into_membership(self, value: str | None = None) -> enums.MembershipType:
         """Turn the required membership from `str` into `aiobungie.Membership` type.
 
         If value parameter is not provided it will fall back to the required membership.
         """
         if value is None:
-            return _DETERMINE_MSHIP(self.required_membership)
-        return _DETERMINE_MSHIP(value)
+            return _determine_membership(self.required_membership)
+        return _determine_membership(value)
 
     def __str__(self) -> str:
         return (

@@ -118,13 +118,13 @@ class ProfileItemImpl:
     is_wrapper: bool
     """Whether the item is a wrapper or not."""
 
-    instance_id: typing.Optional[int]
+    instance_id: int | None
     """An inventory item instance id if available, otherwise will be `None`."""
 
-    ornament_id: typing.Optional[int]
+    ornament_id: int | None
     """The ornament id of this item if it has one. Will be `None` otherwise."""
 
-    version_number: typing.Optional[int]
+    version_number: int | None
     """The item version number of available, other wise will be `None`."""
 
     @property
@@ -182,7 +182,7 @@ class Profile:
     """The profile's current season power cap."""
 
     async def collect_characters(
-        self, components: list[enums.ComponentType], auth: typing.Optional[str] = None
+        self, components: list[enums.ComponentType], auth: str | None = None
     ) -> collections.Sequence[components.CharacterComponent]:
         """Fetch this profile's characters.
 
@@ -193,7 +193,7 @@ class Profile:
 
         Other Parameters
         ----------------
-        auth : `typing.Optional[str]`
+        auth : `str | None`
             A Bearer access_token to make the request with.
             This is optional and limited to components that only requires an Authorization token.
 

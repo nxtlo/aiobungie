@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Added more examples.
 * Lightfall loadouts methods to the `RESTClient`.
 * `CHARACTER_LOADOUTS` components type enum field.
+* If your Python version is `3.10`, A backport of `datetime.fromisoformat` module will be installed.
+This is required due to this specific Python version not able to parse some ISO date formats.
 
 ### Changed
 * Python 3.10 and above is now supported, 3.9.0 is no longer supported.

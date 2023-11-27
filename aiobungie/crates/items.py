@@ -111,16 +111,16 @@ class Currency:
 class ItemSocket:
     """Information found in a profile item sockets component."""
 
-    plug_hash: typing.Optional[int]
+    plug_hash: int | None
     """The plug item hash."""
 
     is_enabled: bool
     """Whether this plug is enabled or not."""
 
-    is_visible: typing.Optional[bool]
+    is_visible: bool | None
     """Either the plug is visible or not."""
 
-    enable_fail_indexes: typing.Optional[list[int]]
+    enable_fail_indexes: list[int] | None
     """If a plug is inserted but not enabled,
     this field will be available with indexes into the plug item definition.
     """
@@ -165,7 +165,7 @@ class CraftableSocketPlug:
 class PlugItemState:
     """Information about a plug item's state."""
 
-    item_hash: typing.Optional[int]
+    item_hash: int | None
     """The hash of this item."""
 
     can_insert: bool
@@ -174,9 +174,9 @@ class PlugItemState:
     is_enabled: bool
     """Whether this item is enabled or not."""
 
-    insert_fail_indexes: typing.Optional[list[int]]
+    insert_fail_indexes: list[int] | None
 
-    enable_fail_indexes: typing.Optional[list[int]]
+    enable_fail_indexes: list[int] | None
     """If a plug is inserted but not enabled,
     this field will be available with indexes into the plug item definition.
     """
@@ -186,7 +186,7 @@ class PlugItemState:
 class ItemPerk:
     """Represents a Destiny 2 perk."""
 
-    hash: typing.Optional[int]
+    hash: int | None
     """Perk's hash."""
 
     icon: assets.Image
@@ -203,7 +203,7 @@ class ItemPerk:
 class ItemEnergy:
     """Represents a Destiny 2 item instance energy."""
 
-    hash: typing.Optional[int]
+    hash: int | None
     """The hash of the energy,"""
 
     type: ItemEnergyType
@@ -223,10 +223,10 @@ class ItemEnergy:
 class ItemStatsView:
     """A view of a Destiny 2 item stats."""
 
-    stat_hash: typing.Optional[int]
+    stat_hash: int | None
     """The stat hash if set."""
 
-    value: typing.Optional[int]
+    value: int | None
     """The value of this stat if set."""
 
 
@@ -237,10 +237,10 @@ class ItemInstance:
     damage_type: enums.DamageType
     """The item's damage type."""
 
-    damage_type_hash: typing.Optional[int]
+    damage_type_hash: int | None
     """The hash of the item damage type."""
 
-    primary_stat: typing.Optional[ItemStatsView]
+    primary_stat: ItemStatsView | None
     """The item's primary stats if has one."""
 
     item_level: int
@@ -266,10 +266,10 @@ class ItemInstance:
     cant_equip_reason: int
     """If the item can't be equipped, This will be the reason why."""
 
-    breaker_type: typing.Optional[ItemBreakerType]
+    breaker_type: ItemBreakerType | None
     """If them item has a breaker type, this field will be available."""
 
-    breaker_type_hash: typing.Optional[int]
+    breaker_type_hash: int | None
     """If them item has a breaker type hash, this field will be available."""
 
-    energy: typing.Optional[ItemEnergy]
+    energy: ItemEnergy | None

@@ -98,7 +98,7 @@ class Collectible:
 
 @attrs.define(kw_only=True)
 class Currency:
-    """Represents a curency item in Destiny 2."""
+    """Represents a currency item in Destiny 2."""
 
     hash: int
     """The hash of this currency."""

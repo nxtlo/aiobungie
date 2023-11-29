@@ -211,7 +211,7 @@ class Character:
     race: enums.Race
     """Character's race"""
 
-    emblem: assets.Image
+    emblem: assets.Image | None
     """Character's emblem"""
 
     emblem_icon: assets.Image

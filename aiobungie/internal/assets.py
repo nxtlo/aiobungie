@@ -117,7 +117,7 @@ class Image:
         ----
         This returns the path only, If you want an actual image object use `Image.default_or_else()`
         """
-        return "img/misc/missing_icon_d2.png"
+        return "/img/misc/missing_icon_d2.png"
 
     @classmethod
     def default_or_else(cls, path: str | None = None) -> Self:

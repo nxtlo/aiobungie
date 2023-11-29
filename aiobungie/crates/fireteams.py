@@ -202,7 +202,7 @@ class FireteamPartyCurrentActivity:
 
 @attrs.define(kw_only=True)
 class FireteamPartySettings:
-    """Represents information about a fireteam's joinability settings."""
+    """Represents information about a fireteam's joinability settngs."""
 
     open_slots: int
     """The number of open slots this fireteam has."""

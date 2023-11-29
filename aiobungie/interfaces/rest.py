@@ -685,7 +685,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         Returns
         -------
         `aiobungie.typedefs.JSONObject`
-            A JSON object of the objective data.
+            A JSON object of the objetive data.
         """
 
     @abc.abstractmethod

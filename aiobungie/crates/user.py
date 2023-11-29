@@ -320,7 +320,7 @@ class SearchableDestinyUser:
     """The user's global display name."""
 
     code: typing.Optional[int]
-    """The user's global display name code if set."""
+    """The user's global dsplay name code if set."""
 
     bungie_id: typing.Optional[int]
     """The user's Bungie.net id if set."""

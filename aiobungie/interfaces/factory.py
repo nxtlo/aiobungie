@@ -262,7 +262,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.iterators.Iterator[aiobungie.crates.ClanMember]`
+        `aiobungie.Iterator[aiobungie.crates.ClanMember]`
             An iterator of clan members of the deserialized payload.
         """
 
@@ -687,7 +687,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.iterators.Iterator[aiobungie.crates.SearchableEntity]`
+        `aiobungie.Iterator[aiobungie.crates.SearchableEntity]`
             An iterator over the found searched entities.
         """
 
@@ -740,7 +740,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.iterators.Iterator[aiobungie.crates.Activity]`
+        `aiobungie.Iterator[aiobungie.crates.Activity]`
             Am iterator over activity objects of the deserialized payload.
         """
 
@@ -827,7 +827,7 @@ class FactoryInterface(abc.ABC):
 
         Returns
         -------
-        `aiobungie.iterators.Iterator[aiobungie.crates.AggregatedActivity]`
+        `aiobungie.Iterator[aiobungie.crates.AggregatedActivity]`
             An iterator over aggregated activities objects.
         """
 

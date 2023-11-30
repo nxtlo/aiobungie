@@ -260,7 +260,7 @@ class Character:
 
         Returns
         -------
-        `aiobungie.iterators.Iterator[aiobungie.crates.Activity]`
+        `aiobungie.Iterator[aiobungie.crates.Activity]`
             A iterator over the character's activities.
 
         Raises

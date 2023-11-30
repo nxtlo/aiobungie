@@ -94,10 +94,19 @@ class RESTInterface(traits.RESTful, abc.ABC):
     async def download_json_manifest(
         self,
         file_name: str = "manifest",
-        path: typing.Union[str, pathlib.Path] = ".",
+        path: str | pathlib.Path = ".",
         language: str = "en",
-    ) -> None:
+    ) -> pathlib.Path:
         """Download the Bungie manifest json file.
+
+        Example
+        -------
+        ```py
+        manifest = await rest.download_json_manifest()
+        with open(manifest, "r") as f:
+            to_dict = json.loads(f.read())
+            item_definitions = to_dict['DestinyInventoryItemDefinition']
+        ```
 
         Parameters
         ----------
@@ -107,39 +116,48 @@ class RESTInterface(traits.RESTful, abc.ABC):
             The path to save the manifest json file. Default is the current directory. Example `"D:/"`
         language: `str`
             The manifest database language bytes to get. Default is English.
+
+        Returns
+        -------
+        `pathlib.Path`
+            The path of this JSON manifest.
         """
 
     @abc.abstractmethod
-    async def download_manifest(
+    async def download_sqlite_manifest(
         self,
         language: str = "en",
         name: str = "manifest",
-        path: typing.Union[str, pathlib.Path] = ".",
+        path: str | pathlib.Path = ".",
         *,
         force: bool = False,
-    ) -> None:
-        """A helper method to download the manifest.
+    ) -> pathlib.Path:
+        """Downloads the SQLite version of Destiny2's Manifest.
 
-        Note
-        ----
-        This method downloads the sqlite database and not JSON.
-        Use `RESTInterface.download_json_manifest` for the JSON version.
+        Example
+        -------
+        ```py
+        manifest = await rest.download_sqlite_manifest()
+        with sqlite3.connect(manifest) as conn:
+            ...
+        ```
 
         Parameters
         ----------
         language : `str`
-            The manifest language to download, Default is english.
+            The manifest language to download, Default is English.
         path: `str` | `pathlib.Path`
-            The path to save the manifest sqlite database. Example `"D:/"`, Default is the current directory.
+            The path to download this manifest. Example `"/tmp/databases/"`, Default is the current directory.
         name : `str`
             The manifest database file name. Default is `manifest`
         force : `bool`
             Whether to force the download. Default is `False`. However if set to true the old
-            file will get removed and a new one will being to download.
+            file will get unlinked and a new one will begin to download.
 
         Returns
         --------
-        `None`
+        `pathlib.Path`
+            A pathlib object of the `.sqlite` file.
 
         Raises
         ------
@@ -301,7 +319,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    async def fetch_player(
+    async def fetch_membership(
         self,
         name: str,
         code: int,
@@ -1409,7 +1427,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         activity_type: fireteams.FireteamActivity | int,
         *,
         platform: fireteams.FireteamPlatform | int,
-        language: typing.Union[fireteams.FireteamLanguage, str],
+        language: fireteams.FireteamLanguage | str,
         date_range: fireteams.FireteamDate | int = 0,
         page: int = 0,
         slots_filter: int = 0,
@@ -1426,7 +1444,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         platform : `aiobungie.aiobungie.crates.fireteams.FireteamPlatform | int`
             If this is provided. Then the results will be filtered with the given platform.
             Defaults to `aiobungie.crates.FireteamPlatform.ANY` which returns all platforms.
-        language : `typing.Union[aiobungie.crates.fireteams.FireteamLanguage, str]`
+        language : `aiobungie.crates.fireteams.FireteamLanguage | str`
             A locale language to filter the used language in that fireteam.
             Defaults to `aiobungie.crates.FireteamLanguage.ALL`
         date_range : `aiobungie.aiobungie.FireteamDate | int`
@@ -1450,7 +1468,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         activity_type: fireteams.FireteamActivity | int,
         *,
         platform: fireteams.FireteamPlatform | int,
-        language: typing.Union[fireteams.FireteamLanguage, str],
+        language: fireteams.FireteamLanguage | str,
         date_range: fireteams.FireteamDate | int = 0,
         page: int = 0,
         public_only: bool = False,
@@ -1475,7 +1493,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         platform : `aiobungie.aiobungie.crates.fireteams.FireteamPlatform | int`
             If this is provided. Then the results will be filtered with the given platform.
             Defaults to `aiobungie.crates.FireteamPlatform.ANY` which returns all platforms.
-        language : `typing.Union[aiobungie.crates.fireteams.FireteamLanguage, str]`
+        language : `aiobungie.crates.fireteams.FireteamLanguage | str`
             A locale language to filter the used language in that fireteam.
             Defaults to `aiobungie.crates.FireteamLanguage.ALL`
         date_range : `aiobungie.aiobungie.FireteamDate | int`
@@ -1525,7 +1543,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         *,
         include_closed: bool = True,
         platform: fireteams.FireteamPlatform | int,
-        language: typing.Union[fireteams.FireteamLanguage, str],
+        language: fireteams.FireteamLanguage | str,
         filtered: bool = True,
         page: int = 0,
     ) -> typedefs.JSONObject:
@@ -1550,7 +1568,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         platform : `aiobungie.aiobungie.crates.fireteams.FireteamPlatform | int`
             If this is provided. Then the results will be filtered with the given platform.
             Defaults to `aiobungie.crates.FireteamPlatform.ANY` which returns all platforms.
-        language : `typing.Union[aiobungie.crates.fireteams.FireteamLanguage, str]`
+        language : `aiobungie.crates.fireteams.FireteamLanguage | str`
             A locale language to filter the used language in that fireteam.
             Defaults to `aiobungie.crates.FireteamLanguage.ALL`
         filtered : `bool`
@@ -1656,7 +1674,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         action_token: str,
         /,
         instance_id: int,
-        plug: typing.Union[builders.PlugSocketBuilder, dict[str, int]],
+        plug: builders.PlugSocketBuilder | collections.Mapping[str, int],
         character_id: int,
         membership_type: enums.MembershipType | int,
     ) -> typedefs.JSONObject:
@@ -1671,7 +1689,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
             Action token provided by the AwaGetActionToken API call.
         instance_id : `int`
             The item instance id that's plug inserted.
-        plug : `typing.Union[aiobungie.builders.PlugSocketBuilder, dict[str, int]]`
+        plug : `aiobungie.builders.PlugSocketBuilder | Mapping[str, int]`
             Either a PlugSocketBuilder object or a raw dict contains key, value for the plug entries.
 
         Example

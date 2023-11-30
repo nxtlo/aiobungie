@@ -69,7 +69,7 @@ client = aiobungie.RESTClient("TOKEN")
 
 async def main() -> None:
     async with client as rest:
-        payload = await rest.fetch_player('Fate怒', 4275)
+        payload = await rest.fetch_membership('Fate怒', 4275)
 
         for membership in payload:
             print(membership['membershipId'])
@@ -125,6 +125,7 @@ from aiobungie.error import *
 from aiobungie.internal import iterators
 from aiobungie.internal.assets import Image
 from aiobungie.internal.enums import *
+from aiobungie.internal.factory import EmptyFactory
 from aiobungie.internal.factory import Factory
 from aiobungie.internal.iterators import *
 from aiobungie.rest import *

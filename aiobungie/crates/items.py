@@ -83,7 +83,7 @@ class ItemEnergyType(int, enums.Enum):
 class Collectible:
     """Represents a collectible Destiny 2 item."""
 
-    recent_collectibles: typing.Optional[collections.Collection[int]]
+    recent_collectibles: collections.Collection[int] | None
     """If this is accessed from a profile response, This will be collection of the recent acquired items hashes."""
 
     collectibles: collections.Mapping[int, int]
@@ -258,7 +258,7 @@ class ItemInstance:
     equip_required_level: int
     """The required level to be able to equip this item."""
 
-    required_equip_unlock_hashes: typing.Optional[collections.Collection[int]]
+    required_equip_unlock_hashes: collections.Collection[int] | None
     """If available, A collections of hash flags mapped to a its definitions
     needed in order to equip this item will be returned.
     """

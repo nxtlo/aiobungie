@@ -64,9 +64,6 @@ if typing.TYPE_CHECKING:
     import collections.abc as collections
     import types
 
-ResponseSig = typedefs.JSONObject | typedefs.JSONArray | bytes | int | bool | None
-"""The possible response types from a REST API request."""
-
 _LOG: logging.Logger = logging.getLogger("aiobungie.rest")
 _MANIFEST_LANGUAGES: typing.Final[set[str]] = {
     "en",
@@ -148,7 +145,8 @@ def _write_json_bytes(
     file_name: str = "manifest",
     path: pathlib.Path | str = "./",
 ) -> None:
-    with _get_path(file_name, path).open("wb") as file:
+    p = _get_path(file_name, path).open("wb")
+    with p as file:
         file.write(helpers.dumps(helpers.loads(data)))
 
 
@@ -437,7 +435,7 @@ class RESTClient(interfaces.RESTInterface):
         *,
         auth: str | None = None,
         json: collections.Mapping[str, typing.Any] | None = None,
-    ) -> ResponseSig:
+    ) -> typedefs.JSONIsh:
         return await self._request(method, path, auth=auth, json=json)
 
     @typing.final
@@ -478,7 +476,7 @@ class RESTClient(interfaces.RESTInterface):
         json: collections.Mapping[str, typing.Any] | str | None = None,
         params: collections.Mapping[str, typing.Any] | None = None,
         headers: dict[str, typing.Any] | None = None,
-    ) -> ResponseSig:
+    ) -> typedefs.JSONIsh:
         # This is not None when opening the client.
         assert self._session is not None
 
@@ -705,7 +703,7 @@ class RESTClient(interfaces.RESTInterface):
         assert isinstance(resp, dict)
         return resp
 
-    async def fetch_player(
+    async def fetch_membership(
         self,
         name: str,
         code: int,
@@ -1038,14 +1036,14 @@ class RESTClient(interfaces.RESTInterface):
         assert isinstance(resp, bytes)
         return resp
 
-    async def download_manifest(
+    async def download_sqlite_manifest(
         self,
         language: str = "en",
         name: str = "manifest",
         path: pathlib.Path | str = ".",
         *,
         force: bool = False,
-    ) -> None:
+    ) -> pathlib.Path:
         complete_path = _get_path(name, path, sql=True)
 
         if complete_path.exists() and force:
@@ -1055,7 +1053,9 @@ class RESTClient(interfaces.RESTInterface):
                 )
                 complete_path.unlink(missing_ok=True)
 
-                return await self.download_manifest(language, name, path, force=force)
+                return await self.download_sqlite_manifest(
+                    language, name, path, force=force
+                )
 
             else:
                 raise FileExistsError(
@@ -1068,13 +1068,14 @@ class RESTClient(interfaces.RESTInterface):
         await asyncio.get_running_loop().run_in_executor(
             None, _write_sqlite_bytes, data_bytes, path, name
         )
+        return _get_path(name, path, sql=True)
 
     async def download_json_manifest(
         self,
         file_name: str = "manifest",
         path: str | pathlib.Path = ".",
         language: str = "en",
-    ) -> None:
+    ) -> pathlib.Path:
         _ensure_manifest_language(language)
 
         _LOG.info(f"Downloading manifest JSON to {_get_path(file_name, path)!r}...")
@@ -1091,9 +1092,11 @@ class RESTClient(interfaces.RESTInterface):
             None, _write_json_bytes, json_bytes, file_name, path
         )
         _LOG.info("Finished downloading manifest JSON.")
+        return _get_path(file_name, path)
 
     async def fetch_manifest_version(self) -> str:
-        return typing.cast(str, (await self.fetch_manifest_path())["version"])
+        # This is guaranteed str.
+        return (await self.fetch_manifest_path())["version"]  # type: ignore[no-any-return]
 
     async def fetch_linked_profiles(
         self,

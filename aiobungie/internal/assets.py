@@ -147,7 +147,7 @@ class Image:
     async def save(
         self,
         file_name: str,
-        path: typing.Union[pathlib.Path, str],
+        path: pathlib.Path | str,
         /,
         mime_type: MimeType | str = MimeType.JPEG,
     ) -> None:

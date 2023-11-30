@@ -56,10 +56,10 @@ class LinkedProfile:
     profiles: collections.Sequence[user.DestinyMembership]
     """A sequence of destiny memberships for this profile."""
 
-    bungie: user.PartialBungieUser
+    bungie_user: user.PartialBungieUser
     """The profile's bungie membership."""
 
-    profiles_with_errors: typing.Optional[collections.Sequence[user.DestinyMembership]]
+    profiles_with_errors: collections.Sequence[user.DestinyMembership] | None
     """A sequence of optional destiny memberships with errors.
 
     These profiles exists because they have missing fields. Otherwise this will be an empty array.

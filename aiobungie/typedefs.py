@@ -35,17 +35,20 @@ __all__ = (
 import collections.abc as collections
 import typing
 
-JSONObject = dict[str, typing.Any]  # type: ignore[misc]
+JSONObject = collections.Mapping[str, typing.Any]
 """A JSON like dict of string key and any value.
 
 i.e., `{"Key": 1, "Key2": "Value"}`
 """
 
-JSONArray = list[typing.Any]  # type: ignore[misc]
+JSONArray = collections.Sequence[JSONObject]
 """A JSON like list of any data type.
 
 i.e., `[{"Key": 1}, {"Key2": "Value"}]`
 """
+
+JSONIsh = JSONObject | JSONArray | bytes | str | int | bool | None
+"""A type that any valid REST response from Bungie."""
 
 Loads = collections.Callable[[str | bytes], JSONArray | JSONObject]
 """A function that takes a `str | bytes` JSON object and decode it into a Python object."""

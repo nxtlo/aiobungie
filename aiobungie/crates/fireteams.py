@@ -340,8 +340,8 @@ class Fireteam:
 class AvailableFireteam(Fireteam):
     """Represents an available clan fireteam. This includes the members and alternative members."""
 
-    members: typing.Optional[collections.Sequence[FireteamMember]]
+    members: collections.Sequence[FireteamMember] | None
     """A sequence of the fireteam members."""
 
-    alternatives: typing.Optional[collections.Sequence[FireteamMember]]
+    alternatives: collections.Sequence[FireteamMember] | None
     """A sequence of the fireteam alternative members."""

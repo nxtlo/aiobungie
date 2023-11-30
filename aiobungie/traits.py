@@ -20,9 +20,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Interfaces used for the core aiobungie implementations."""
+"""Interfaces used for the core aiobungie client implementations.
+
+An aiobungie `trait` is a collection of methods defined for an known object. See `aiobungie.EmptyFactory` for more.
+```
+"""
 
 from __future__ import annotations
+
+from aiobungie import typedefs
 
 __all__ = ("ClientApp", "Netrunner", "Serializable", "RESTful", "Debug")
 
@@ -209,8 +215,8 @@ class RESTful(Debug, typing.Protocol):
         path: str,
         *,
         auth: str | None = None,
-        json: typing.Optional[dict[str, typing.Any]] = None,
-    ) -> rest.ResponseSig:
+        json: collections.MutableMapping[str, typing.Any] | None = None,
+    ) -> typedefs.JSONIsh:
         """Perform an HTTP request given a valid Bungie endpoint.
 
         Parameters
@@ -220,14 +226,17 @@ class RESTful(Debug, typing.Protocol):
         path: `str`
             The Bungie endpoint or path.
             A path must look something like this `Destiny2/3/Profile/46111239123/...`
+
+        Other Parameters
+        ----------------
         auth : `str | None`
             An optional bearer token for methods that requires OAuth2 Authorization header.
-        json : `dict[str, typing.Any] | None`
-            An optional JSON data to include in the request.
+        json : `MutableMapping[str, typing.Any] | None`
+            An optional JSON mapping to include in the request.
 
         Returns
         -------
-        `aiobungie.rest.ResponseSig`
+        `aiobungie.typedefs.JSONIsh`
             The response payload.
         """
         raise NotImplementedError

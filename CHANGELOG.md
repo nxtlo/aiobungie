@@ -20,9 +20,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * `CHARACTER_LOADOUTS` components type enum field.
 * If your Python version is `3.10`, A backport of `datetime.fromisoformat` module will be installed.
 This is required due to this specific Python version not able to parse some ISO date formats.
+* `aiobungie.EmptyFactory` object. See the object docs for more info.
 
 ### Changed
 * Python 3.10 and above is now supported, 3.9.0 is no longer supported.
+* `download_manifest` method has been renamed to `download_sqlite_manifest`
+* Method `fetch_player` renamed to `fetch_membership`.
+* `User.destiny` renamed to `User.memberships`, `ClanMember.bungie` to `ClanMember.bungie_user`,
+`LinkedProfile.bungie` to `LinkedProfile.bungie_user` for naming consistency.
+* Both download manifest methods now return `pathlib.Path` object.
 * All arguments in the client constructors now required to be passed as a kwarg besides the token.
 * Refactor examples code.
 * `Factory` methods that used to return `Optional[T]` now returns just `T`.
@@ -465,7 +471,7 @@ This is optional and not required.
 - `fireteams` enums are finalized with `typing.final`
 - `Character.stats` now returns a mapping of `aiobungie.Stat` to `int` of the character stats.
 - `crate.season.*` objects are now exposed to docs and `crate.__init__.py`
-- `fetch_player()` Now requires an extra parameter `code` seperatly instead of `NAME#123`
+- `fetch_membership()` Now requires an extra parameter `code` seperatly instead of `NAME#123`
 
 ### Removed
 - `profile.Profile` methods `fetch_warlock`, `fetch_titan`, and `fetch_hunter` has been removed since the expected character to be returned wasn't always guranteed, This method has been replaced with `collect_characters` which fetch all found characters

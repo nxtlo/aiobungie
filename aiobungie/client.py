@@ -202,7 +202,7 @@ class Client(traits.ClientApp):
 
         Returns
         -------
-        `aiobungie.iterators.Iterator[aiobungie.crates.DestinyMembership]`
+        `aiobungie.Iterator[aiobungie.crates.DestinyMembership]`
             A sequence of destiny memberships.
         """
         payload = await self.rest.search_users(name)
@@ -404,7 +404,7 @@ class Client(traits.ClientApp):
 
         return self.factory.deserialize_linked_profiles(resp)
 
-    async def fetch_player(
+    async def fetch_membership(
         self,
         name: str,
         code: int,
@@ -433,7 +433,7 @@ class Client(traits.ClientApp):
         `aiobungie.MembershipTypeError`
             The provided membership type was invalid.
         """
-        resp = await self.rest.fetch_player(name, code, type)
+        resp = await self.rest.fetch_membership(name, code, type)
 
         return self.factory.deserialize_destiny_memberships(resp)
 
@@ -543,7 +543,7 @@ class Client(traits.ClientApp):
 
         Returns
         -------
-        `aiobungie.iterators.Iterator[aiobungie.crates.Activity]`
+        `aiobungie.Iterator[aiobungie.crates.Activity]`
             An iterator of the player's activities.
 
         Raises
@@ -598,7 +598,7 @@ class Client(traits.ClientApp):
 
         Returns
         -------
-        `aiobungie.iterators.Iterator[aiobungie.crates.AggregatedActivity]`
+        `aiobungie.Iterator[aiobungie.crates.AggregatedActivity]`
             An iterator of the player's activities.
 
         Raises
@@ -712,7 +712,7 @@ class Client(traits.ClientApp):
 
         Returns
         -------
-        `aiobungie.iterators.Iterator[aiobungie.crates.ClanMember]`
+        `aiobungie.Iterator[aiobungie.crates.ClanMember]`
             An iterator over the found clan admins and founder.
 
         Raises
@@ -829,7 +829,7 @@ class Client(traits.ClientApp):
 
         Returns
         -------
-        `aiobungie.iterators.Iterator[aiobungie.crates.ClanMember]`
+        `aiobungie.Iterator[aiobungie.crates.ClanMember]`
             An iterator over the bungie clan members.
 
         Raises
@@ -966,7 +966,7 @@ class Client(traits.ClientApp):
 
         Returns
         -------
-        `aiobungie.iterators.Iterator[aiobungie.crates.SearchableEntity]`
+        `aiobungie.Iterator[aiobungie.crates.SearchableEntity]`
             An iterator over the found results matching the provided name.
         """
         resp = await self.rest.search_entities(name, entity_type, page=page)

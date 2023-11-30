@@ -102,10 +102,10 @@ class MilestoneActivity:
     modifier_hashes: list[int] | None
     """An optional list of the activity's modifier hashes."""
 
-    boolean_options: typing.Optional[collections.Mapping[int, bool]]
+    boolean_options: collections.Mapping[int, bool] | None
     """An optional mapping from int to bool of the activity available options."""
 
-    phases: typing.Optional[collections.Collection[MilestoneActivityPhase]]
+    phases: collections.Collection[MilestoneActivityPhase] | None
     """An optional collection of the activity phases."""
 
 
@@ -215,13 +215,13 @@ class Milestone:
     hash: int
     """Milestone hash."""
 
-    available_quests: typing.Optional[collections.Sequence[MilestoneQuest]]
+    available_quests: collections.Sequence[MilestoneQuest] | None
     """If there're active quests related to this milestone. they will appear here."""
 
-    activities: typing.Optional[collections.Sequence[MilestoneActivity]]
+    activities: collections.Sequence[MilestoneActivity] | None
     """A sequence of activities related to this milestone."""
 
-    vendors: typing.Optional[collections.Sequence[MilestoneVendor]]
+    vendors: collections.Sequence[MilestoneVendor] | None
     """A sequence of vendors related to this milestone."""
 
     start_date: datetime.datetime | None
@@ -232,5 +232,5 @@ class Milestone:
 
     order: int
 
-    rewards: typing.Optional[collections.Collection[MilestoneReward]]
+    rewards: collections.Collection[MilestoneReward] | None
     """A collections of rewards that can be earned from this milestone"""

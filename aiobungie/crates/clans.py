@@ -194,7 +194,7 @@ class ClanMember(user.DestinyMembership):
     joined_at: datetime
     """The clan member's join date in UTC time zone."""
 
-    bungie: user.PartialBungieUser | None
+    bungie_user: user.PartialBungieUser | None
     """The clan member's bungie partial net user if set. `None` if not found.
 
     .. note:: This only returns a partial bungie net user.
@@ -574,7 +574,7 @@ class Clan:
         activity_type: fireteams.FireteamActivity | int,
         *,
         platform: fireteams.FireteamPlatform | int,
-        language: typing.Union[fireteams.FireteamLanguage, str],
+        language: fireteams.FireteamLanguage | str,
         date_range: fireteams.FireteamDate | int = fireteams.FireteamDate.ALL,
         page: int = 0,
         public_only: bool = False,
@@ -597,7 +597,7 @@ class Clan:
         platform : `aiobungie.aiobungie.crates.fireteams.FireteamPlatform | int`
             If this is provided. Then the results will be filtered with the given platform.
             Defaults to `aiobungie.crates.FireteamPlatform.ANY` which returns all platforms.
-        language : `typing.Union[aiobungie.crates.fireteams.FireteamLanguage, str]`
+        language : `aiobungie.crates.fireteams.FireteamLanguage | str`
             A locale language to filter the used language in that fireteam.
             Defaults to `aiobungie.crates.FireteamLanguage.ALL`
         date_range : `aiobungie.aiobungie.FireteamDate | int`
@@ -627,7 +627,7 @@ class Clan:
         *,
         include_closed: bool = True,
         platform: fireteams.FireteamPlatform | int,
-        language: typing.Union[fireteams.FireteamLanguage, str],
+        language: fireteams.FireteamLanguage | str,
         filtered: bool = True,
         page: int = 0,
     ) -> collections.Sequence[fireteams.AvailableFireteam]:
@@ -649,7 +649,7 @@ class Clan:
         platform : aiobungie.aiobungie.crates.fireteams.FireteamPlatform | int
             If this is provided. Then the results will be filtered with the given platform.
             Defaults to aiobungie.crates.FireteamPlatform.ANY which returns all platforms.
-        language : typing.Union[aiobungie.crates.fireteams.FireteamLanguage, str]
+        language : aiobungie.crates.fireteams.FireteamLanguage | str
             A locale language to filter the used language in that fireteam.
             Defaults to aiobungie.crates.FireteamLanguage.ALL
         filtered : bool

@@ -11,6 +11,7 @@ from aiobungie.error import *
 from aiobungie.internal import iterators as iterators
 from aiobungie.internal.assets import Image as Image
 from aiobungie.internal.enums import *
+from aiobungie.internal.factory import EmptyFactory as EmptyFactory
 from aiobungie.internal.factory import Factory as Factory
 from aiobungie.internal.iterators import *
 from aiobungie.rest import *

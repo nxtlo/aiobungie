@@ -8,12 +8,8 @@ import requests
 import aiobungie
 
 
-# This is a dummy client since the factory requires a client owner.
-class DummyClient(aiobungie.traits.Netrunner):
-    ...
-
-
-factory = aiobungie.Factory(DummyClient())
+# Construct an empty factory. This will be used as a deserializer only.
+factory = aiobungie.EmptyFactory()
 CLAN_TYPE = int(aiobungie.GroupType.CLAN)
 CLAN_NAME = "Redeem"  # You can use your clan name.
 TOKEN = "YOUR_TOKEN"  # This should be stored somewhere safe.

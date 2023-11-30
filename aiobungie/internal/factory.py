@@ -23,7 +23,7 @@
 
 from __future__ import annotations
 
-__all__ = ("Factory",)
+__all__ = ("Factory", "EmptyFactory")
 
 import typing
 
@@ -145,8 +145,10 @@ class Factory(interfaces.FactoryInterface):
             primary_membership_id = int(raw_primary_id)
 
         return user.User(
-            bungie=self.deserialize_bungie_user(data["bungieNetUser"]),
-            destiny=self.deserialize_destiny_memberships(data["destinyMemberships"]),
+            bungie_user=self.deserialize_bungie_user(data["bungieNetUser"]),
+            memberships=self.deserialize_destiny_memberships(
+                data["destinyMemberships"]
+            ),
             primary_membership_id=primary_membership_id,
         )
 
@@ -288,7 +290,7 @@ class Factory(interfaces.FactoryInterface):
             code=destiny_user.code,
             is_online=data["isOnline"],
             crossave_override=destiny_user.crossave_override,
-            bungie=self.deserialize_partial_bungie_user(data["bungieNetUserInfo"])
+            bungie_user=self.deserialize_partial_bungie_user(data["bungieNetUserInfo"])
             if "bungieNetUserInfo" in data
             else None,
             member_type=enums.ClanMemberType(int(data["memberType"])),
@@ -1029,7 +1031,7 @@ class Factory(interfaces.FactoryInterface):
 
         if raw_character_records := payload.get("characterRecords"):
             # Had to do it in two steps..
-            to_update: typedefs.JSONObject = {}
+            to_update = {}
             for _, data in raw_character_records["data"].items():
                 for record_id, record in data.items():
                     to_update[record_id] = record
@@ -1963,7 +1965,7 @@ class Factory(interfaces.FactoryInterface):
                     )
 
         return profile.LinkedProfile(
-            bungie=bungie_user,
+            bungie_user=bungie_user,
             profiles=profiles_vec,
             profiles_with_errors=error_profiles_vec,
         )
@@ -2406,3 +2408,48 @@ class Factory(interfaces.FactoryInterface):
             is_enabled=payload["enabled"],
             can_insert=payload["canInsert"],
         )
+
+
+class EmptyFactory(Factory):
+    """A stand-alone factory that doesn't requires a client instance.
+
+    # Example
+    ---------
+    ```py
+    # We'll implement a serializable RESTClient.
+    @dataclass(slots=True)
+    class MyClient(aiobungie.traits.Serializable):
+        rest = aiobungie.RESTClient(env["CLIENT_TOKEN"])
+        my_name = "Fate怒"
+        my_code = 4275
+
+        # Must implement this one method.
+        @property
+        def factory(self) -> aiobungie.EmptyFactory:
+            # Return an empty factory
+            return aiobungie.EmptyFactory()
+
+        async def my_memberships(self) -> Sequence[aiobungie.crates.DestinyMembership]:
+            # Note, Do not call methods within objects, Since this is an empty
+            # factory, The client reference that makes these calls will be `None`.
+            response = await self.rest.fetch_membership(self.my_name, self.my_code)
+            return self.factory.deserialize_destiny_memberships(response)
+
+
+        async def main() -> None:
+            client = MyClient()
+            async with client.client:
+                print(await client.my_memberships())
+
+    asyncio.run(main())
+    ```
+    """
+
+    __slots__ = ()
+
+    if typing.TYPE_CHECKING:
+        # We explicitly want this to be `None`.
+        _net: None  # type: ignore[assignment]
+
+    def __init__(self, net: None = None) -> None:
+        self._net = net

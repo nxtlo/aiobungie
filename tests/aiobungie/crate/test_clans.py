@@ -136,7 +136,7 @@ class TestClanMember:
             code=5432,
             types=[aiobungie.MembershipType.STEAM, aiobungie.MembershipType.STADIA],
             last_seen_name="YOYONAME",
-            bungie=mock_bungie_user,
+            bungie_user=mock_bungie_user,
             crossave_override=1,
             member_type=aiobungie.ClanMemberType.ADMIN,
         )

@@ -111,7 +111,6 @@ class UserLike(abc.ABC):
         return self.id
 
 
-# This is meant for Bungie destiny users which's different from a normal bungie user.
 @attrs.define(kw_only=True)
 class PartialBungieUser:
     """Represents partial bungie user.
@@ -279,7 +278,7 @@ class DestinyMembership(UserLike):
     is_public: bool
     """The member's profile privacy status."""
 
-    crossave_override: typing.Union[enums.MembershipType, int]
+    crossave_override: enums.MembershipType | int
     """The member's crossave override membership type."""
 
     async def fetch_self_profile(
@@ -395,10 +394,10 @@ class UserThemes:
 class User:
     """Represents a user with both Destiny memberships and Bungie.net profile."""
 
-    bungie: BungieUser
+    bungie_user: BungieUser
     """The user's bungie net user."""
 
-    destiny: collections.Sequence[DestinyMembership]
+    memberships: collections.Sequence[DestinyMembership]
     """A sequence of the user's Destiny memberships."""
 
     primary_membership_id: int | None

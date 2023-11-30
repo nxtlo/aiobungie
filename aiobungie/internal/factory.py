@@ -389,7 +389,9 @@ class Factory(interfaces.FactoryInterface):
             class_type=enums.Class(payload["classType"]),
             emblem=assets.Image(payload.get("emblemBackgroundPath")),
             emblem_icon=assets.Image(payload.get("emblemPath")),
-            emblem_hash=int(payload["emblemHash"]),
+            emblem_hash=int(payload["emblemHash"])
+            if payload.get("emblemHash")
+            else None,
             last_played=time.clean_date(payload["dateLastPlayed"]),
             total_played_time=total_time,
             member_id=int(payload["membershipId"]),

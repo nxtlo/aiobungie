@@ -217,7 +217,7 @@ class Character:
     emblem_icon: assets.Image
     """Character's emblem icon"""
 
-    emblem_hash: int
+    emblem_hash: typing.Optional[int]
     """Character's emblem hash."""
 
     last_played: datetime.datetime

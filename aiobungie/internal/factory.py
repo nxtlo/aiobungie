@@ -375,7 +375,8 @@ class Factory(interfaces.FactoryInterface):
             emblem_icon=assets.Image(payload["emblemPath"])
             if "emblemPath" in payload
             else None,
-            emblem_hash=int(payload["emblemHash"]),
+            emblem_hash=int(payload["emblemHash"]) if "emblemHash" in payload
+            else None,
             last_played=time.clean_date(payload["dateLastPlayed"]),
             total_played_time=int(payload["minutesPlayedTotal"]),
             member_id=int(payload["membershipId"]),

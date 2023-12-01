@@ -9,7 +9,7 @@ readme = "README.md"
 repository = "https://github.com/nxtlo/aiobungie"
 packages = [{ include = "aiobungie" }, { include = "aiobungie/**/*.py" }]
 classifiers = [
-    'Development Status :: 5 - Stable',
+    "Development Status :: 5 - Production/Stable",
     "Framework :: AsyncIO",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",

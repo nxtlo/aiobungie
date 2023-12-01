@@ -10,17 +10,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.2.9](https://github.com/nxtlo/aiobungie/compare/0.2.8...0.2.9) 2023-11-18
 
 ## Performance Improvements.
-* Optimized converting ISO8661 date strings to datetime, dateutil package has been dropped and the converting process has been implemented directly using stdlib datetime.
+* Optimized converting ISO8661 date strings to datetime, date-util package has been dropped and the converting process has been implemented directly using stdlib datetime.
 * `orjson` and `ujson` are a faster replacement for the JSON lib, If were found installed, They will be used as the default JSON encode/decoder.
 * `ruff` is now used as the default formatter. This is rather an internal change and shouldn't affect users.
 
 ### Added
 * Added more examples.
 * Lightfall loadouts methods to the `RESTClient`.
+    - `equip_loadout`
+    - `clear_loadout`
+    - `snapshot_loadout`
+    - `update_loadout`
 * `CHARACTER_LOADOUTS` components type enum field.
 * If your Python version is `3.10`, A backport of `datetime.fromisoformat` module will be installed.
 This is required due to this specific Python version not able to parse some ISO date formats.
 * `aiobungie.EmptyFactory` object. See the object docs for more info.
+* `Iterator.last()` method which return the last item in the iterator.
 
 ### Changed
 * Python 3.10 and above is now supported, 3.9.0 is no longer supported.

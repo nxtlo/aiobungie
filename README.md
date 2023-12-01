@@ -57,8 +57,16 @@ client.run(main())
 ```
 
 ## RESTful clients
-Alternatively, You can use `RESTClient` or `RESTPool` which're designed to only make HTTP requests and return JSON objects.
-and to interact with the manifest.
+aiobungie also provides a stand-alone `RESTClient` / `RESTPool` which's what `Client` built on top of, These clients just provide a lower-level abstraction.
+
+A key note is that any `Client` based user can access the `RESTClient` instance bound to it with `.rest` property.
+
+### Key Features
+* Lower level, allows to read and deserialize the JSON objects yourself.
+* `RESTClient`s do not turn response payloads into one of `aiobungie.crates` object.
+* RESTful, You can use this as your REST API client in backend directly.
+* Both `Manifest` and `OAuth` methods are usable directly.
+
 
 ### Example
 ```py
@@ -70,21 +78,32 @@ client = aiobungie.RESTClient("...")
 
 async def main() -> None:
     async with client:
-        # SQLite manifest.
-        await client.download_manifest()
+        # Download and open the JSON manifest.
+        manifest = await client.download_json_manifest(name="latest_manifest", path='/home/.../')
+        with manifest.open("r") as file:
+            data = file.read()
 
-        # OAuth2 API.
+        # OAuth2 API. 2 simple methods for fetching and refreshing tokens.
         tokens = await client.fetch_oauth2_tokens('code')
+        refreshed_tokens = await client.refresh_access_token(tokens.refresh_token)
+
+        # Testing your own requests.
+        response = await client.static_request(
+            "GET", # Method.
+            "Destiny2/path/to/route", # Route.
+            auth="optional_access_token", # If the method requires OAuth2.
+            json={"some_key": "some_value"} # If you need to pass JSON data.
+        )
 
 asyncio.run(main())
 ```
 
-## Requirements
-* Python 3.10 or higher is required.
+## Dependancies
 * aiohttp
 * attrs
+* `backports.datetime_fromisoformat`, required for `Python 3.10` only.
 
-### Speed-ups - Optional
+### Speedups - Optional
 Additionally, If you have [orjson](https://github.com/ijl/orjson) or [ujson](https://github.com/ultrajson/ultrajson)
 installed they will be used as the default JSON parser.
 
@@ -100,7 +119,9 @@ If you have used aiobungie and want to show your work, Feel free to Open a PR in
 
 * [Fated](https://github.com/nxtlo/Fated/blob/master/core/components/destiny.py): My Discord BOT for testing purposes.
 
-## Getting Help
+## Useful Resources
 * Discord Username: `fateq`
+* aiobungie Documentation: [Here](https://nxtlo.github.io/aiobungie/).
 * BungieAPI Discord: [Here](https://discord.gg/vP7VC7TKUG)
-* Docs: [Here](https://nxtlo.github.io/aiobungie/).
+* Official Bungie Documentation: [Here](https://bungie-net.github.io/multi/index.html)
+* Bungie Developer Portal: [Here](https://www.bungie.net/en/Application)

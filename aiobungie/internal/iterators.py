@@ -405,6 +405,18 @@ class Iterator(typing.Generic[Item], collections.Iterator[Item]):
         """
         return self.take(1).next()
 
+    def last(self) -> Item:
+        """Returns the last item in the iterator.
+
+        Example
+        ------
+        ```py
+        it = Iterator((1, 2, 3))
+        assert it.first() == 1 and it.last() == 3
+        ```
+        """
+        return self.reversed().first()
+
     def reversed(self) -> Iterator[Item]:
         """Returns a new iterator that yields the items in the iterator in reverse order.
 

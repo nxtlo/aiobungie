@@ -211,13 +211,13 @@ class Character:
     """Character's race"""
 
     emblem: assets.Image | None
-    """Character's emblem"""
+    """Character's emblem, If included."""
 
     emblem_icon: assets.Image | None
-    """Character's emblem icon"""
+    """Character's emblem icon, If included."""
 
-    emblem_hash: typing.Optional[int]
-    """Character's emblem hash."""
+    emblem_hash: int | None
+    """Character's emblem hash, If included."""
 
     last_played: datetime.datetime
     """Character's last played date."""
@@ -256,7 +256,7 @@ class Character:
         page : `int`
             The page number. Default is `0`
         limit: `int`
-            Limit the returned result. Default is `250`.
+            Limit the returned result. Default is `250` which's the max.
 
         Returns
         -------
@@ -292,12 +292,12 @@ class Character:
         Notes
         -----
         * This method requires OAuth2: MoveEquipDestinyItems scope.
-        * This method requires both item id and hash.
+        * This method requires both item instance ID and hash.
 
         Parameters
         ----------
         item_id : `int`
-            The item id you to transfer.
+            The item instance ID you want to transfer.
         item_hash : `int`
             The item hash.
 
@@ -333,12 +333,12 @@ class Character:
         Notes
         -----
         * This method requires OAuth2: MoveEquipDestinyItems scope.
-        * This method requires both item id and hash.
+        * This method requires both item instance ID and hash.
 
         Parameters
         ----------
         item_id : `int`
-            The item id to pull.
+            The item instance ID to pull.
         item_hash : `int`
             The item hash.
 
@@ -363,6 +363,7 @@ class Character:
         """Equip an item to this character.
 
         This requires the OAuth2: MoveEquipDestinyItems scope.
+
         Also You must have a valid Destiny account, and either be
         in a social space, in orbit or offline.
 
@@ -371,7 +372,7 @@ class Character:
         access_token : `str`
             The bearer access token associated with the bungie account.
         item_id : `int`
-            The item id.
+            The item instance ID.
         """
         await self.net.request.rest.equip_item(
             access_token,
@@ -380,7 +381,9 @@ class Character:
             membership_type=self.member_type,
         )
 
-    async def equip_items(self, access_token: str, item_ids: list[int], /) -> None:
+    async def equip_items(
+        self, access_token: str, item_ids: collections.Sequence[int], /
+    ) -> None:
         """Equip multiple items to this character.
 
         This requires the OAuth2: MoveEquipDestinyItems scope.
@@ -391,7 +394,7 @@ class Character:
         ----------
         access_token : `str`
             The bearer access token associated with the bungie account.
-        item_ids: `list[builtins.int]`
+        item_ids: `Sequence[int]`
             A list of item ids you want to equip for this character.
         """
         await self.net.request.rest.equip_items(
@@ -403,7 +406,7 @@ class Character:
 
     @property
     def url(self) -> str:
-        """A url for the character at bungie.net."""
+        """A URL of the character at Bungie.net."""
         return f"{url.BASE}/en/Gear/{int(self.member_type)}/{self.member_id}/{self.id}"
 
     def __int__(self) -> int:

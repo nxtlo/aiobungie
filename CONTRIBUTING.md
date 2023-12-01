@@ -8,7 +8,7 @@ Branches should look something like this.
     * This should be for any type of PR thats not mentioned under.
 
 * `meta/small-branch-info`
-    * This should be for typos, markdown issues. typing issues. etc.
+    * This should be for typos, documentation, markdowns, typing issues, etc.
 
 * `feature/a-small-feature-info`
     * This should be for feature implementation and requires more tasks and reviews only.
@@ -58,7 +58,16 @@ if typing.TYPE_CHECKING:
 
 # Use the builtin tuple type and collections's sequence.
 # We use the `|` pipe operator for union types.
-foo = tuple[str, ...] | str | None
+Foo: tuple[str, ...] | str | None = None
+
+# We annotate immutable sequence like objects with `collections.abc.Sequence[T]`
+def get(components: collections.Sequence[aiobungie.Object]) -> str:
+    components[0] = ... # Error.
+    return ",".join(str(c) for c in components)
+
+class Object:
+    # Immutable sequences.
+    name_list: collections.Sequence[str]
 
 ```
 This doesn't follow the coding style.
@@ -66,7 +75,7 @@ This doesn't follow the coding style.
 from typing import Union, Tuple, Optional
 from aiobungie.internal.enums import MembershipType
 
-foo = Union[Tuple[Optional[str], ...], int]
+Foo: Union[Tuple[Optional[str], ...], int] = 0
 ```
 
 ## [Type checking](https://www.python.org/dev/peps/pep-0484/)

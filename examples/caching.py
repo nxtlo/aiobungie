@@ -23,10 +23,10 @@ async def get_item(id: int) -> aiobungie.crates.InventoryEntity:
     # Returns the item if it was cached otherwise perform an HTTP request fetching it.
     if (item := items.get(id)) is not None:
         return item
-    else:
-        item = await client.fetch_inventory_item(id)
-        items[id] = item
-        return item
+
+    item = await client.fetch_inventory_item(id)
+    items[id] = item
+    return item
 
 
 async def main() -> None:

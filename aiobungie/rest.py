@@ -109,14 +109,14 @@ logging.addLevelName(TRACE, "TRACE")
 
 
 def _collect_components(components: list[enums.ComponentType], /) -> str:
-    pending: list[str] = []
+    collector: list[str] = []
 
     for component in components:
         if isinstance(component.value, tuple):
-            pending.extend(str(c) for c in component.value)  # type: ignore
+            collector.extend(str(c) for c in component.value)  # type: ignore
         else:
-            pending.append(str(component.value))
-    return ",".join(pending)
+            collector.append(str(component.value))
+    return ",".join(collector)
 
 
 def _uuid() -> str:
@@ -282,12 +282,12 @@ class RESTPool:
 
     @typing.final
     def acquire(self) -> RESTClient:
-        """Acquires a new `RESTClient` instance from this REST pool.
+        """Acquires a new `RESTClient` instance from this pool.
 
         Returns
         -------
         `RESTClient`
-            An instance of a REST client.
+            An instance of a `RESTClient`.
         """
         return RESTClient(
             self._token,
@@ -1170,7 +1170,7 @@ class RESTClient(interfaces.RESTInterface):
         self,
         access_token: str,
         /,
-        item_ids: list[int],
+        item_ids: collections.Sequence[int],
         character_id: int,
         membership_type: enums.MembershipType | int,
     ) -> None:

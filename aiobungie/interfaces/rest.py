@@ -847,7 +847,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         self,
         access_token: str,
         /,
-        item_ids: list[int],
+        item_ids: collections.Sequence[int],
         character_id: int,
         membership_type: enums.MembershipType | int,
     ) -> None:
@@ -862,8 +862,8 @@ class RESTInterface(traits.RESTful, abc.ABC):
         ----------
         access_token : `str`
             The bearer access token associated with the bungie account.
-        item_ids : `list[int]`
-            A list of item ids.
+        item_ids : `Sequence[int]`
+            A sequence of item ids.
         character_id : `int`
             The character's id to equip the item to.
         membership_type : `aiobungie.aiobungie.MembershipType | int`

@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.9...HEAD)
 
 
-## [0.2.9](https://github.com/nxtlo/aiobungie/compare/0.2.8...0.2.9) 2023-11-18
+## [0.2.9](https://github.com/nxtlo/aiobungie/compare/0.2.8...0.2.9) - 2023-12-1
 
 ## Performance Improvements.
 * Optimized converting ISO8661 date strings to datetime, date-util package has been dropped and the converting process has been implemented directly using stdlib datetime.

@@ -22,8 +22,7 @@
 
 """A statically typed, asynchronous API wrapper for building clients for Bungie's API in Python.
 
-Getting Started
----------------
+### Getting Started
 
 This is the basic client you probably want you start with.
 
@@ -47,8 +46,7 @@ async def main() -> None:
 client.run(main()) # or asyncio.run(main())
 ```
 
-RESTClient
-----------
+### RESTClient
 
 aiobungie provides a second way to use Bungie's API,
 
@@ -77,8 +75,7 @@ async def main() -> None:
 asyncio.run(main())
 ```
 
-RESTPool
---------
+### RESTPool
 
 A REST client pool allows you to acquire multiple `RESTClient` that share the same state.
 
@@ -104,8 +101,7 @@ async def fetch() -> None:
 await asyncio.gather(set(), fetch())
 ```
 
-When should you use which client?
----------------------------------
+### When should you use which client?
 * Use `Client` when you want to build a Chat Bot, Discord Bot, access data as Python classes.
 * Use `RESTClient` when you want one TCP session for all clients, access data as JSON payloads.
 * Use `RESTPool` when you're serving a large amount of connections and want to spawn a session for each,

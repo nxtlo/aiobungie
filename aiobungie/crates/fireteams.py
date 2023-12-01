@@ -47,8 +47,6 @@ if typing.TYPE_CHECKING:
     import collections.abc as collections
     import datetime
 
-    from aiobungie import undefined
-
 
 @typing.final
 class FireteamPlatform(int, enums.Enum):
@@ -164,7 +162,7 @@ class FireteamPartyMember:
     emblem_hash: int
     """Party member's emblem hash."""
 
-    display_name: undefined.UndefinedOr[str]
+    display_name: str | None
     """Party member's display name. `UNDEFINED` if not set."""
 
     status: FireteamPartyMemberState
@@ -181,10 +179,10 @@ class FireteamPartyMember:
 class FireteamPartyCurrentActivity:
     """Represents information about a fireteam party's current activity."""
 
-    start_time: typing.Optional[datetime.datetime]
+    start_time: datetime.datetime | None
     """An optional datetime of when was this activity started."""
 
-    end_time: typing.Optional[datetime.datetime]
+    end_time: datetime.datetime | None
     """An optional datetime of when was this activity ended."""
 
     score: float
@@ -193,7 +191,7 @@ class FireteamPartyCurrentActivity:
     highest_opposing_score: float
     """If the activity was against humans, This will be their highest score."""
 
-    opponenst_count: int
+    opponents_count: int
     """How many human opponents were playing against this fireteam."""
 
     player_count: int
@@ -202,7 +200,7 @@ class FireteamPartyCurrentActivity:
 
 @attrs.define(kw_only=True)
 class FireteamPartySettings:
-    """Represents information about a fireteam's joinability settngs."""
+    """Represents information about a fireteam's joinability settings."""
 
     open_slots: int
     """The number of open slots this fireteam has."""
@@ -227,7 +225,7 @@ class FireteamParty:
     settings: FireteamPartySettings
     """Information about the fireteam joinability settings, e.g. Privacy, Open slots."""
 
-    last_destination_hash: typing.Optional[int]
+    last_destination_hash: int | None
     """The hash identifier for the destination of the last location you were orbiting when in orbit."""
 
     tracking: list[dict[str, typing.Any]]
@@ -296,14 +294,20 @@ class Fireteam:
     available_player_slots: int
     """The available player slots in this fireteam."""
 
-    available_alternate_slots: int
+    available_alternate_slots: int | None
     """The alternate available player slots in this fireteam."""
 
-    title: undefined.UndefinedOr[str]
-    """The fireteam title. Could be `UNDEFINED` if not set."""
+    title: str | None
+    """The fireteam title. Could be `None` if not set."""
 
     date_created: datetime.datetime
     """A datetime of when was this fireteam created."""
+
+    date_modified: datetime.datetime | None
+    """If the this fireteam has been modified, This will be when."""
+
+    scheduled_time: datetime.datetime | None
+    """An optional datetime of when this fireteam activity is scheduled to start."""
 
     is_public: bool
     """Whether the fireteam is public or not."""
@@ -336,8 +340,8 @@ class Fireteam:
 class AvailableFireteam(Fireteam):
     """Represents an available clan fireteam. This includes the members and alternative members."""
 
-    members: typing.Optional[collections.Sequence[FireteamMember]]
+    members: collections.Sequence[FireteamMember] | None
     """A sequence of the fireteam members."""
 
-    alternatives: typing.Optional[collections.Sequence[FireteamMember]]
+    alternatives: collections.Sequence[FireteamMember] | None
     """A sequence of the fireteam alternative members."""

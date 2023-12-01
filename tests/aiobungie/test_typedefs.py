@@ -39,27 +39,27 @@ class TestTypedefs:
         assert "Key2" in mock_json_array[1]
 
     def test_unknown_is_true(self):
-        unknwon_str = typedefs.Unknown
-        assert typedefs.is_unknown(unknwon_str)
+        unknown_str = typedefs.unknown("")
+        assert unknown_str is None
 
     def test_unknown_is_not_true(self):
         known_str = "yoyoyo"
-        assert not typedefs.is_unknown(known_str)
+        assert typedefs.unknown(known_str) is not None
 
     def test_none_or_is_true(self):
-        optional_field: typedefs.NoneOr[bool] = None
+        optional_field: bool | None = None
         assert optional_field is None
         optional_field = True
         assert optional_field
 
     def test_none_or_is_not_true(self):
-        optional_field: typedefs.NoneOr[bool] = False
+        optional_field: bool | None = False
         assert not optional_field
         optional_field = None
         assert optional_field is None
 
-    def test_IntAnd(self):
-        int_and: typedefs.IntAnd[enums.MembershipType] = 1
+    def test_int_or_membership(self):
+        int_and: enums.MembershipType | int = 1
         assert isinstance(int_and, int)
         assert int_and == 1
         int_and = enums.MembershipType.STEAM

@@ -22,54 +22,46 @@
 
 """Time helper functions."""
 
-
 from __future__ import annotations
 
-__all__: list[str] = [
-    "format_played",
+__all__ = (
     "from_timestamp",
     "clean_date",
-    "to_timestamp",
     "parse_date_range",
     "monotonic",
-]
+)
 
-import calendar
 import datetime
-import math
+import sys as _sys
 import time as _time
-import typing
-
-import dateutil.parser
 
 
-def format_played(mins: int, /, *, suffix: bool = False) -> str:
-    """Converts A memberships's total played time from minutes to a readable string."""
-    hrs = math.floor(mins // 60)
-    seconds = math.floor(mins % 60)
-    return f"{hrs} hours{' and' if suffix else ''} {seconds} seconds."
-
-
-def from_timestamp(timer: typing.Union[int, float], /) -> datetime.datetime:
+def from_timestamp(timer: int | float, /) -> datetime.datetime:
     """Converts a timestamp to `datetime.datetime`"""
     return datetime.datetime.utcfromtimestamp(timer)
 
 
 def clean_date(iso_date: str, /) -> datetime.datetime:
-    """Parse a Bungie ISO format string date to a Python `datetime.datetime` object."""
-    parsed = dateutil.parser.parse(iso_date)
-    ts = to_timestamp(parsed)  # had to do it in two ways...
-    return from_timestamp(ts)
+    """Parse an `ISO8601` string datetime into a Python `datetime.datetime` object."""
+    # Python 3.10 doesn't parse all ISO8601 formats, Need a backport for that.
 
+    if _sys.version_info.minor == 10:
+        try:
+            from backports.datetime_fromisoformat import MonkeyPatch
 
-def to_timestamp(date: datetime.datetime, /) -> int:
-    """Converts `datetime.datetime` to timestamp."""
-    return calendar.timegm(date.timetuple())
+            MonkeyPatch.patch_fromisoformat()
+        except ModuleNotFoundError:
+            raise ModuleNotFoundError(
+                "The backports module is required for Python 3.10 compatibility.\n"
+                "Please install it with `pip install backports-datetime-fromisoformat`"
+            )
+
+    return datetime.datetime.fromisoformat(iso_date)
 
 
 def parse_date_range(
-    end: typing.Optional[datetime.datetime] = None,
-    start: typing.Optional[datetime.datetime] = None,
+    end: datetime.datetime | None = None,
+    start: datetime.datetime | None = None,
 ) -> tuple[str, str]:
     """Parse Bungie's datetime ranges to string."""
 

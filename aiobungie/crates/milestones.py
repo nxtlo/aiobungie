@@ -46,8 +46,6 @@ if typing.TYPE_CHECKING:
     import datetime
 
     from aiobungie import traits
-    from aiobungie import typedefs
-    from aiobungie import undefined
     from aiobungie.crates import entity
     from aiobungie.crates import records
 
@@ -56,8 +54,8 @@ if typing.TYPE_CHECKING:
 class MilestoneItems:
     """Represents items the may be found inside a milestone."""
 
-    title: undefined.UndefinedOr[str]
-    """The item title. This may be `UNDEFINED` if not specified."""
+    title: str | None
+    """The item title. This may be `None` if not specified."""
 
     hashes: collections.Sequence[int]
     """The items hashes"""
@@ -67,17 +65,17 @@ class MilestoneItems:
 class MilestoneContent:
     """Represents information about a Destiny milestone content."""
 
-    about: undefined.UndefinedOr[str]
+    about: str | None
     """About this milestone."""
 
-    status: undefined.UndefinedOr[str]
-    """The milestone's status. This field may be `UNDEFINED` if not specified."""
+    status: str | None
+    """The milestone's status."""
 
-    tips: collections.Sequence[undefined.UndefinedOr[str]]
-    """A sequence of the milestone's tips. fields in the sequence may be `UNDEFINED` if not specified."""
+    tips: collections.Sequence[str]
+    """A sequence of the milestone's tips.."""
 
-    items: typedefs.NoneOr[MilestoneItems]
-    """An optional items for this miletones. This may return `None` if nothing was found."""
+    items: MilestoneItems | None
+    """An optional items for this milestones. This may return `None` if nothing was found."""
 
 
 @attrs.define(kw_only=True)
@@ -99,15 +97,15 @@ class MilestoneActivity:
     """The activity hash."""
 
     challenges: collections.Sequence[records.Objective]
-    """A sequence of objetvies/challenges bound to this activity."""
+    """A sequence of objectives/challenges bound to this activity."""
 
-    modifier_hashes: typing.Optional[list[int]]
+    modifier_hashes: list[int] | None
     """An optional list of the activity's modifier hashes."""
 
-    boolean_options: typing.Optional[collections.Mapping[int, bool]]
+    boolean_options: collections.Mapping[int, bool] | None
     """An optional mapping from int to bool of the activity available options."""
 
-    phases: typing.Optional[collections.Collection[MilestoneActivityPhase]]
+    phases: collections.Collection[MilestoneActivityPhase] | None
     """An optional collection of the activity phases."""
 
 
@@ -123,7 +121,7 @@ class QuestStatus:
     step_hash: int
     """The quest step hash."""
 
-    vendor_hash: typing.Optional[int]
+    vendor_hash: int | None
     """If the quest has a related Vendor that you should talk to
     in order to initiate the quest/earn rewards/continue the quest
     """
@@ -141,7 +139,7 @@ class QuestStatus:
     """Whether this quest status has started by the player or not."""
 
     is_redeemed: bool
-    """Whether the quest has been redmeed or not."""
+    """Whether the quest has been redeemed or not."""
 
     item_instance_id: int
     """ The current Quest Step will be an instanced item in the player's inventory.
@@ -183,12 +181,12 @@ class MilestoneVendor:
 
     vendor_hash: int
 
-    preview_itemhash: typing.Optional[int]
+    preview_itemhash: int | None
 
 
 @attrs.define(kw_only=True)
 class MilestoneRewardEntry:
-    """Represents a charatcer-specific data for a milestone reward entry."""
+    """Represents a character-specific data for a milestone reward entry."""
 
     entry_hash: int
     """The entry hash."""
@@ -217,22 +215,22 @@ class Milestone:
     hash: int
     """Milestone hash."""
 
-    available_quests: typing.Optional[collections.Sequence[MilestoneQuest]]
+    available_quests: collections.Sequence[MilestoneQuest] | None
     """If there're active quests related to this milestone. they will appear here."""
 
-    activities: typing.Optional[collections.Sequence[MilestoneActivity]]
+    activities: collections.Sequence[MilestoneActivity] | None
     """A sequence of activities related to this milestone."""
 
-    vendors: typing.Optional[collections.Sequence[MilestoneVendor]]
+    vendors: collections.Sequence[MilestoneVendor] | None
     """A sequence of vendors related to this milestone."""
 
-    start_date: typing.Optional[datetime.datetime]
+    start_date: datetime.datetime | None
     """If the date of the milestone is known. This will be returned."""
 
-    end_date: typing.Optional[datetime.datetime]
+    end_date: datetime.datetime | None
     """If the end date of the milestone is known. This will be returned."""
 
     order: int
 
-    rewards: typing.Optional[collections.Collection[MilestoneReward]]
-    """A colelctions of rewards that can be earned from this miletone"""
+    rewards: collections.Collection[MilestoneReward] | None
+    """A collections of rewards that can be earned from this milestone"""

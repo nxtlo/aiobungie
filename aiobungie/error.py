@@ -24,8 +24,6 @@
 
 from __future__ import annotations
 
-import collections
-
 __all__: list[str] = [
     "AiobungieError",
     "NotFound",
@@ -42,12 +40,14 @@ __all__: list[str] = [
     "stringify_http_message",
 ]
 
+import collections.abc as collections
 import http
 import typing
 
 import attrs
 
 from aiobungie.internal import enums
+from aiobungie.internal import helpers
 
 if typing.TYPE_CHECKING:
     import aiohttp
@@ -65,9 +65,9 @@ _MEMBERSHIP_LOOKUP: dict[str, enums.MembershipType] = {
     "TigerDemon": enums.MembershipType.DEMON,
 }
 
-_DETERMINE_MSHIP: collections.Callable[
-    [str], enums.MembershipType
-] = lambda mship: _MEMBERSHIP_LOOKUP[mship]
+
+def _determine_membership(membership: str) -> enums.MembershipType:
+    return _MEMBERSHIP_LOOKUP[membership]
 
 
 @attrs.define(auto_exc=True)
@@ -99,7 +99,7 @@ class HTTPException(HTTPError):
     throttle_seconds: int
     """The Bungie response throttle seconds."""
 
-    url: typing.Optional[typedefs.StrOrURL]
+    url: typedefs.StrOrURL | None
     """The URL/endpoint caused this error."""
 
     body: typing.Any
@@ -164,7 +164,7 @@ class Unauthorized(HTTPException):
 class BadRequest(HTTPError):
     """An exception raised when requesting a resource with the provided data is wrong."""
 
-    url: typing.Optional[typedefs.StrOrURL]
+    url: typedefs.StrOrURL | None
     """The URL/endpoint caused this error."""
 
     body: typing.Any
@@ -218,16 +218,14 @@ class MembershipTypeError(BadRequest):
     required_membership: str
     """The required correct membership for errored user."""
 
-    def into_membership(
-        self, value: typing.Optional[str] = None
-    ) -> enums.MembershipType:
+    def into_membership(self, value: str | None = None) -> enums.MembershipType:
         """Turn the required membership from `str` into `aiobungie.Membership` type.
 
         If value parameter is not provided it will fall back to the required membership.
         """
         if value is None:
-            return _DETERMINE_MSHIP(self.required_membership)
-        return _DETERMINE_MSHIP(value)
+            return _determine_membership(self.required_membership)
+        return _determine_membership(value)
 
     def __str__(self) -> str:
         return (
@@ -291,7 +289,7 @@ async def raise_error(response: aiohttp.ClientResponse) -> AiobungieError:
             http.HTTPStatus.UNSUPPORTED_MEDIA_TYPE,
         )
 
-    body = await response.json()
+    body: collections.Mapping[str, typing.Any] = helpers.loads(await response.read())  # type: ignore
     message: str = body.get("Message", "UNDEFINED_MESSAGE")
     error_status: str = body.get("ErrorStatus", "UNDEFINED_ERROR_STATUS")
     message_data: dict[str, str] = body.get("MessageData", {})
@@ -299,101 +297,8 @@ async def raise_error(response: aiohttp.ClientResponse) -> AiobungieError:
     error_code: int = body.get("ErrorCode", 0)
 
     # Standard HTTP status.
-    if response.status == http.HTTPStatus.NOT_FOUND:
-        return NotFound(
-            message=message,
-            error_code=error_code,
-            throttle_seconds=throttle_seconds,
-            url=str(response.real_url),
-            body=body,
-            headers=response.headers,
-            error_status=error_status,
-            message_data=message_data,
-        )
-
-    elif response.status == http.HTTPStatus.FORBIDDEN:
-        return Forbidden(
-            message=message,
-            error_code=error_code,
-            throttle_seconds=throttle_seconds,
-            url=str(response.real_url),
-            body=body,
-            headers=response.headers,
-            error_status=error_status,
-            message_data=message_data,
-        )
-
-    elif response.status == http.HTTPStatus.UNAUTHORIZED:
-        return Unauthorized(
-            message=message,
-            error_code=error_code,
-            throttle_seconds=throttle_seconds,
-            url=str(response.real_url),
-            body=body,
-            headers=response.headers,
-            error_status=error_status,
-            message_data=message_data,
-        )
-
-    elif response.status == http.HTTPStatus.BAD_REQUEST:
-        # Membership needs to be alone.
-        if error_status == "InvalidParameters":
-            return MembershipTypeError(
-                message=message,
-                body=body,
-                headers=response.headers,
-                url=str(response.url),
-                membership_type=message_data["membershipType"],
-                required_membership=message_data["membershipInfo.membershipType"],
-                membership_id=int(message_data["membershipId"]),
-            )
-        return BadRequest(
-            message=message,
-            body=body,
-            headers=response.headers,
-            url=str(response.url),
-        )
-
-    status = http.HTTPStatus(response.status)
-
-    if 400 <= status < 500:
-        return ResponseError(
-            message=message,
-            error_code=error_code,
-            throttle_seconds=throttle_seconds,
-            url=str(response.real_url),
-            body=body,
-            headers=response.headers,
-            error_status=error_status,
-            message_data=message_data,
-            http_status=status,
-        )
-
-    # Need to self handle ~5xx errors
-    elif 500 <= status < 600:
-        # No API key or method requires OAuth2 most likely.
-        if error_status in {
-            "ApiKeyMissingFromRequest",
-            "WebAuthRequired",
-            "ApiInvalidOrExpiredKey",
-            "AuthenticationInvalid",
-            "AuthorizationCodeInvalid",
-        }:
-            return Unauthorized(
-                message=message,
-                error_code=error_code,
-                throttle_seconds=throttle_seconds,
-                url=str(response.real_url),
-                body=body,
-                headers=response.headers,
-                error_status=error_status,
-                message_data=message_data,
-            )
-
-        # Anything contains not found.
-        elif (
-            "NotFound" in error_status or error_status == "UserCannotFindRequestedUser"
-        ):
+    match response.status:
+        case http.HTTPStatus.NOT_FOUND:
             return NotFound(
                 message=message,
                 error_code=error_code,
@@ -405,9 +310,8 @@ async def raise_error(response: aiohttp.ClientResponse) -> AiobungieError:
                 message_data=message_data,
             )
 
-        # Other 5xx errors.
-        else:
-            return InternalServerError(
+        case http.HTTPStatus.FORBIDDEN:
+            return Forbidden(
                 message=message,
                 error_code=error_code,
                 throttle_seconds=throttle_seconds,
@@ -416,21 +320,117 @@ async def raise_error(response: aiohttp.ClientResponse) -> AiobungieError:
                 headers=response.headers,
                 error_status=error_status,
                 message_data=message_data,
-                http_status=status,
             )
-    # Something else.
-    else:
-        return HTTPException(
-            message=message,
-            error_code=error_code,
-            throttle_seconds=throttle_seconds,
-            url=str(response.real_url),
-            body=body,
-            headers=response.headers,
-            error_status=error_status,
-            message_data=message_data,
-            http_status=status,
-        )
+
+        case http.HTTPStatus.UNAUTHORIZED:
+            return Unauthorized(
+                message=message,
+                error_code=error_code,
+                throttle_seconds=throttle_seconds,
+                url=str(response.real_url),
+                body=body,
+                headers=response.headers,
+                error_status=error_status,
+                message_data=message_data,
+            )
+
+        case http.HTTPStatus.BAD_REQUEST:
+            # Membership needs to be alone.
+            if error_status == "InvalidParameters":
+                return MembershipTypeError(
+                    message=message,
+                    body=body,
+                    headers=response.headers,
+                    url=str(response.url),
+                    membership_type=message_data["membershipType"],
+                    required_membership=message_data["membershipInfo.membershipType"],
+                    membership_id=int(message_data["membershipId"]),
+                )
+            return BadRequest(
+                message=message,
+                body=body,
+                headers=response.headers,
+                url=str(response.url),
+            )
+        case _:
+            status = http.HTTPStatus(response.status)
+
+            if 400 <= status < 500:
+                return ResponseError(
+                    message=message,
+                    error_code=error_code,
+                    throttle_seconds=throttle_seconds,
+                    url=str(response.real_url),
+                    body=body,
+                    headers=response.headers,
+                    error_status=error_status,
+                    message_data=message_data,
+                    http_status=status,
+                )
+
+            # Need to self handle ~5xx errors
+            elif 500 <= status < 600:
+                # No API key or method requires OAuth2 most likely.
+                if error_status in {
+                    "ApiKeyMissingFromRequest",
+                    "WebAuthRequired",
+                    "ApiInvalidOrExpiredKey",
+                    "AuthenticationInvalid",
+                    "AuthorizationCodeInvalid",
+                }:
+                    return Unauthorized(
+                        message=message,
+                        error_code=error_code,
+                        throttle_seconds=throttle_seconds,
+                        url=str(response.real_url),
+                        body=body,
+                        headers=response.headers,
+                        error_status=error_status,
+                        message_data=message_data,
+                    )
+
+                # Anything contains not found.
+                elif (
+                    "NotFound" in error_status
+                    or error_status == "UserCannotFindRequestedUser"
+                ):
+                    return NotFound(
+                        message=message,
+                        error_code=error_code,
+                        throttle_seconds=throttle_seconds,
+                        url=str(response.real_url),
+                        body=body,
+                        headers=response.headers,
+                        error_status=error_status,
+                        message_data=message_data,
+                    )
+
+                # Other 5xx errors.
+                else:
+                    return InternalServerError(
+                        message=message,
+                        error_code=error_code,
+                        throttle_seconds=throttle_seconds,
+                        url=str(response.real_url),
+                        body=body,
+                        headers=response.headers,
+                        error_status=error_status,
+                        message_data=message_data,
+                        http_status=status,
+                    )
+            # Something else.
+            else:
+                return HTTPException(
+                    message=message,
+                    error_code=error_code,
+                    throttle_seconds=throttle_seconds,
+                    url=str(response.real_url),
+                    body=body,
+                    headers=response.headers,
+                    error_status=error_status,
+                    message_data=message_data,
+                    http_status=status,
+                )
 
 
 def stringify_http_message(headers: collections.Mapping[str, str]) -> str:
@@ -439,7 +439,7 @@ def stringify_http_message(headers: collections.Mapping[str, str]) -> str:
         + "\n".join(  # noqa: W503
             f"{f'   {key}'}: {value}"
             if key not in ("Authorization", "X-API-KEY")
-            else f"   {key}: HIDDEN_TOKEN"
+            else f"   {key}: REDACTED_TOKEN"
             for key, value in headers.items()
         )
         + "\n}"  # noqa: W503

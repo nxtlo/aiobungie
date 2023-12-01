@@ -52,7 +52,7 @@ async def test_users():
     assert isinstance(u, aiobungie.crate.BungieUser)
 
 
-async def test_user_themese():
+async def test_user_themes():
     ut = await client.fetch_user_themes()
     assert isinstance(ut, list)
     assert isinstance(ut[0], aiobungie.crate.UserThemes)
@@ -83,10 +83,8 @@ async def test_fetch_clan_members():
     assert len(ms) == 1
     for member in ms:
         assert isinstance(member, aiobungie.crate.ClanMember)
-        assert isinstance(member.bungie, aiobungie.crate.PartialBungieUser)
-        assert member.bungie.name == "Fate怒"
-        fetched_user = await member.bungie.fetch_self()
-        assert isinstance(fetched_user, aiobungie.crate.BungieUser)
+        assert isinstance(member.bungie_user, aiobungie.crate.PartialBungieUser)
+        assert member.bungie_user.name == "Fate怒"
 
 
 async def test_fetch_inventory_item():
@@ -97,12 +95,10 @@ async def test_fetch_inventory_item():
 async def test_fetch_app():
     a = await client.fetch_application(33226)
     assert isinstance(a, aiobungie.crate.Application)
-    fetched_user = await a.owner.fetch_self()
-    assert isinstance(fetched_user, aiobungie.crate.BungieUser)
 
 
 async def test_player():
-    p = await client.fetch_player("Fate怒", 4275)
+    p = await client.fetch_membership("Fate怒", 4275)
     profile = await p[0].fetch_self_profile([aiobungie.ComponentType.PROFILE])
     assert isinstance(profile, aiobungie.crate.Component)
     assert isinstance(profile.profiles, aiobungie.crate.Profile)
@@ -125,11 +121,6 @@ async def test_fetch_character():
     assert c.progressions
     assert c.profile_records is None
     assert c.item_components
-    acts = await c.character.fetch_activities(aiobungie.GameMode.RAID, limit=10)
-    assert len(acts) == 10
-    for act in acts:
-        assert act.mode is aiobungie.GameMode.RAID
-        assert isinstance(act, aiobungie.crate.Activity)
 
 
 async def test_profile():
@@ -208,9 +199,9 @@ async def test_profile():
 async def test_membership_types_from_id():
     u = await client.fetch_membership_from_id(MID)
     assert isinstance(u, aiobungie.crate.User)
-    assert isinstance(u.bungie, aiobungie.crate.BungieUser)
-    for du in u.destiny:
-        assert isinstance(du, aiobungie.crate.DestinyMembership)
+    assert isinstance(u.bungie_user, aiobungie.crate.BungieUser)
+    for mem in u.memberships:
+        assert isinstance(mem, aiobungie.crate.DestinyMembership)
 
 
 async def test_search_users():
@@ -222,7 +213,7 @@ async def test_search_users():
             assert isinstance(membership, aiobungie.crate.DestinyMembership)
 
 
-async def test_clan_conves():
+async def test_clan_conversations():
     x = await client.fetch_clan_conversations(881267)
     assert isinstance(x, list)
     for c in x:
@@ -231,10 +222,6 @@ async def test_clan_conves():
 
 async def test_clan_admins():
     ca = await client.fetch_clan_admins(4389205)
-    assert any(
-        not isinstance(c.name, aiobungie.UndefinedType) and "Karlz" or "Crit" == c.name
-        for c in ca
-    )
     assert any(member.is_admin or member.is_founder for member in ca)
     assert all(isinstance(admin, aiobungie.crate.ClanMember) for admin in ca)
 
@@ -351,18 +338,13 @@ async def test_insert_plug_free():
         pass
 
 
-async def test_set_item_lock_state():
-    try:
-        await client.rest.set_item_lock_state(
-            "my-token",
-            True,
-            123,
-            123,
-            1
-        )
-    # This will fail due to OAuth2
-    except aiobungie.Unauthorized:
-        pass
+# FIXME: There's currently a problem with this API route from Bungie's side.
+# async def test_set_item_lock_state():
+#     try:
+#         await client.rest.set_item_lock_state("my-token", True, 123, 123, 1)
+#     # This will fail due to OAuth2
+#     except aiobungie.Unauthorized:
+#         pass
 
 
 async def test_search_entities():

@@ -27,7 +27,7 @@ This client only makes HTTP requests to the API and returns pure JSON objects.
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = (
+__all__ = (
     "RESTClient",
     "RESTPool",
     "RequestMethod",
@@ -53,23 +53,18 @@ from aiobungie import error
 from aiobungie import interfaces
 from aiobungie import metadata
 from aiobungie import typedefs
-from aiobungie import undefined
 from aiobungie import url
 from aiobungie.crates import fireteams
 from aiobungie.internal import _backoff as backoff
 from aiobungie.internal import enums
+from aiobungie.internal import helpers
 from aiobungie.internal import time
 
 if typing.TYPE_CHECKING:
     import collections.abc as collections
     import types
 
-ResponseSig = typing.Union[
-    typedefs.JSONObject, typedefs.JSONArray, bytes, int, bool, None
-]
-"""The signature of the response."""
-
-_LOG: typing.Final[logging.Logger] = logging.getLogger("aiobungie.rest")
+_LOG: logging.Logger = logging.getLogger("aiobungie.rest")
 _MANIFEST_LANGUAGES: typing.Final[set[str]] = {
     "en",
     "fr",
@@ -85,13 +80,14 @@ _MANIFEST_LANGUAGES: typing.Final[set[str]] = {
     "zh-cht",
     "zh-chs",
 }
-_APP_JSON: typing.Final[str] = "application/json"
-_RETRY_5XX: typing.Final[set[int]] = {500, 502, 503, 504}
-_AUTH_HEADER: typing.Final[str] = sys.intern("Authorization")
-_USER_AGENT_HEADERS: typing.Final[str] = sys.intern("User-Agent")
-_USER_AGENT: typing.Final[
-    str
-] = f"AiobungieClient (Author: {metadata.__author__}), (Version: {metadata.__version__}), (URL: {metadata.__url__})"
+_APP_JSON: str = "application/json"
+_RETRY_5XX: set[int] = {500, 502, 503, 504}
+_AUTH_HEADER: str = sys.intern("Authorization")
+_USER_AGENT_HEADERS: str = sys.intern("User-Agent")
+_USER_AGENT: str = (
+    f"AiobungieClient (Author: {metadata.__author__}), "
+    f"(Version: {metadata.__version__}), (URL: {metadata.__url__})"
+)
 
 TRACE: typing.Final[int] = logging.DEBUG - 5
 """The trace logging level for the `RESTClient` responses.
@@ -113,14 +109,14 @@ logging.addLevelName(TRACE, "TRACE")
 
 
 def _collect_components(components: list[enums.ComponentType], /) -> str:
-    pending: list[str] = []
+    collector: list[str] = []
 
     for component in components:
         if isinstance(component.value, tuple):
-            pending.extend(str(c) for c in component.value)  # type: ignore
+            collector.extend(str(c) for c in component.value)  # type: ignore
         else:
-            pending.append(str(component.value))
-    return ",".join(pending)
+            collector.append(str(component.value))
+    return ",".join(collector)
 
 
 def _uuid() -> str:
@@ -137,7 +133,7 @@ def _ensure_manifest_language(language: str) -> None:
 
 
 def _get_path(
-    file_name: str, path: typing.Union[str, pathlib.Path], sql: bool = False
+    file_name: str, path: str | pathlib.Path, sql: bool = False
 ) -> pathlib.Path:
     if sql:
         return pathlib.Path(path).joinpath(file_name + ".sqlite3")
@@ -147,17 +143,16 @@ def _get_path(
 def _write_json_bytes(
     data: bytes,
     file_name: str = "manifest",
-    path: typing.Union[pathlib.Path, str] = "./",
+    path: pathlib.Path | str = "./",
 ) -> None:
-    import json
-
-    with _get_path(file_name, path).open("wb") as file:
-        file.write(json.dumps(json.loads(data), indent=4).encode("utf-8"))
+    p = _get_path(file_name, path).open("wb")
+    with p as file:
+        file.write(helpers.dumps(helpers.loads(data)))
 
 
 def _write_sqlite_bytes(
     data: bytes,
-    path: typing.Union[pathlib.Path, str] = "./",
+    path: pathlib.Path | str = "./",
     file_name: str = "manifest",
 ) -> None:
     try:
@@ -196,30 +191,19 @@ class RESTPool:
     """Pool of `RESTClient` instances.
 
     This allows to create multiple instances of `RESTClient`s that can be acquired
-    which share the same config and metadata.
+    which share the same TCP connector.
 
     Example
     -------
     ```py
     import aiobungie
-    import asyncio
 
     client_pool = aiobungie.RESTPool("token", client_id=1234, client_secret='secret')
 
     # Using a context manager to acquire an instance
-    # of the pool and close the connection after finishing.
-
-    async def first() -> str:
-        async with client_pool.acquire() as client:
-            return client.build_oauth2_url()
-
-    async def second() -> None:
-        async with client_pool.acquire() as client:
-            new_tokens = await client.refresh_access_token("token")
-            client.metadata['tokens'] = new_tokens
-
-    # Client instances are independent from first and second.
-    await asyncio.gather(first(), second())
+    # from the pool and close it after.
+    async with client_pool.acquire() as rest:
+        ...
     ```
 
     Parameters
@@ -231,10 +215,10 @@ class RESTPool:
     ----------------
     max_retries : `int`
         The max retries number to retry if the request hit a `5xx` status code.
-    client_secret : `typing.Optional[str]`
+    client_secret : `str | None`
         An optional application client secret,
         This is only needed if you're fetching OAuth2 tokens with this client.
-    client_id : `typing.Optional[int]`
+    client_id : `int | None`
         An optional application client id,
         This is only needed if you're fetching OAuth2 tokens with this client.
     enable_debugging : `bool | str`
@@ -256,33 +240,39 @@ class RESTPool:
         "_metadata",
         "_enable_debug",
         "_client_session",
+        "_loads",
+        "_dumps",
     )
 
     # Looks like mypy doesn't like this.
     if typing.TYPE_CHECKING:
-        _enable_debug: typing.Union[typing.Literal["TRACE"], bool, int]
+        _enable_debug: typing.Literal["TRACE"] | bool | int
 
     def __init__(
         self,
         token: str,
         /,
         *,
-        client_secret: typing.Optional[str] = None,
-        client_id: typing.Optional[int] = None,
-        client_session: typing.Optional[aiohttp.ClientSession] = None,
+        client_secret: str | None = None,
+        client_id: int | None = None,
+        client_session: aiohttp.ClientSession | None = None,
+        dumps: typedefs.Dumps = helpers.dumps,
+        loads: typedefs.Loads = helpers.loads,
         max_retries: int = 4,
-        enable_debugging: typing.Union[typing.Literal["TRACE"], bool, int] = False,
+        enable_debugging: typing.Literal["TRACE"] | bool | int = False,
     ) -> None:
         self._client_secret = client_secret
         self._client_id = client_id
-        self._token: str = token
+        self._token = token
         self._max_retries = max_retries
         self._metadata: collections.MutableMapping[typing.Any, typing.Any] = {}
         self._enable_debug = enable_debugging
         self._client_session = client_session
+        self._loads = loads
+        self._dumps = dumps
 
     @property
-    def client_id(self) -> typing.Optional[int]:
+    def client_id(self) -> int | None:
         return self._client_id
 
     @property
@@ -292,17 +282,19 @@ class RESTPool:
 
     @typing.final
     def acquire(self) -> RESTClient:
-        """Acquires a new `RESTClient` instance from this REST pool.
+        """Acquires a new `RESTClient` instance from this pool.
 
         Returns
         -------
         `RESTClient`
-            An instance of a REST client.
+            An instance of a `RESTClient`.
         """
         return RESTClient(
             self._token,
             client_secret=self._client_secret,
             client_id=self._client_id,
+            loads=self._loads,
+            dumps=self._dumps,
             max_retries=self._max_retries,
             enable_debugging=self._enable_debug,
             client_session=self._client_session,
@@ -315,7 +307,7 @@ class RESTClient(interfaces.RESTInterface):
     This client is designed to only make HTTP requests and return JSON objects
     to provide RESTful functionality.
 
-    This client is also used within `aiobungie.Client` which deserialize those returned JSON objects
+    This client is the core for `aiobungie.Client` which deserialize those returned JSON objects
     using the factory into Pythonic data classes objects which provide Python functionality.
 
     Example
@@ -323,13 +315,12 @@ class RESTClient(interfaces.RESTInterface):
     ```py
     import aiobungie
 
-    async def main():
-        async with aiobungie.RESTClient("TOKEN") as rest_client:
-            req = await rest_client.fetch_clan_members(4389205)
-            clan_members = req['results']
-            for member in clan_members:
-                for k, v in member['destinyUserInfo'].items():
-                    print(k, v)
+    client = aiobungie.RESTClient("TOKEN")
+    async with client:
+        response = await client.fetch_clan_members(4389205)
+        for member in response['results']:
+            for key, value in member['destinyUserInfo'].items():
+                print(key, value)
     ```
 
     Parameters
@@ -341,10 +332,10 @@ class RESTClient(interfaces.RESTInterface):
     ----------------
     max_retries : `int`
         The max retries number to retry if the request hit a `5xx` status code.
-    client_secret : `typing.Optional[str]`
+    client_secret : `str | None`
         An optional application client secret,
         This is only needed if you're fetching OAuth2 tokens with this client.
-    client_id : `typing.Optional[int]`
+    client_id : `int | None`
         An optional application client id,
         This is only needed if you're fetching OAuth2 tokens with this client.
     enable_debugging : `bool | str`
@@ -365,6 +356,8 @@ class RESTClient(interfaces.RESTInterface):
         "_client_secret",
         "_client_id",
         "_metadata",
+        "_dumps",
+        "_loads",
     )
 
     def __init__(
@@ -372,24 +365,28 @@ class RESTClient(interfaces.RESTInterface):
         token: str,
         /,
         *,
-        client_secret: typing.Optional[str] = None,
-        client_id: typing.Optional[int] = None,
-        client_session: typing.Optional[aiohttp.ClientSession] = None,
+        client_secret: str | None = None,
+        client_id: int | None = None,
+        client_session: aiohttp.ClientSession | None = None,
+        dumps: typedefs.Dumps = helpers.dumps,
+        loads: typedefs.Loads = helpers.loads,
         max_retries: int = 4,
-        enable_debugging: typing.Union[typing.Literal["TRACE"], bool, int] = False,
+        enable_debugging: typing.Literal["TRACE"] | bool | int = False,
     ) -> None:
-        self._session: typing.Optional[aiohttp.ClientSession] = client_session
-        self._lock: typing.Optional[asyncio.Lock] = None
+        self._session = client_session
+        self._lock: asyncio.Lock | None = None
         self._client_secret = client_secret
         self._client_id = client_id
         self._token: str = token
         self._max_retries = max_retries
+        self._dumps = dumps
+        self._loads = loads
         self._metadata: collections.MutableMapping[typing.Any, typing.Any] = {}
 
         self._set_debug_level(enable_debugging)
 
     @property
-    def client_id(self) -> typing.Optional[int]:
+    def client_id(self) -> int | None:
         return self._client_id
 
     @property
@@ -415,7 +412,8 @@ class RESTClient(interfaces.RESTInterface):
             raise RuntimeError("Cannot open REST client when it's already open.")
 
         self._session = aiohttp.ClientSession(
-            connector=aiohttp.TCPConnector(ssl=False),
+            connector=aiohttp.TCPConnector(),
+            connector_owner=True,
             raise_for_status=False,
             timeout=aiohttp.ClientTimeout(total=30.0),
         )
@@ -423,8 +421,8 @@ class RESTClient(interfaces.RESTInterface):
     @typing.final
     def enable_debugging(
         self,
-        level: typing.Union[typing.Literal["TRACE"], bool, int] = False,
-        file: typing.Optional[typing.Union[pathlib.Path, str]] = None,
+        level: typing.Literal["TRACE"] | bool | int = False,
+        file: pathlib.Path | str | None = None,
         /,
     ) -> None:
         self._set_debug_level(level, file)
@@ -432,18 +430,18 @@ class RESTClient(interfaces.RESTInterface):
     @typing.final
     async def static_request(
         self,
-        method: typing.Union[RequestMethod, str],
+        method: RequestMethod | str,
         path: str,
         *,
-        auth: typing.Optional[str] = None,
-        json: typing.Optional[dict[str, typing.Any]] = None,
-    ) -> ResponseSig:
+        auth: str | None = None,
+        json: collections.Mapping[str, typing.Any] | None = None,
+    ) -> typedefs.JSONIsh:
         return await self._request(method, path, auth=auth, json=json)
 
     @typing.final
     def build_oauth2_url(
-        self, client_id: typing.Optional[int] = None
-    ) -> typing.Optional[builders.OAuthURL]:
+        self, client_id: int | None = None
+    ) -> builders.OAuthURL | None:
         client_id = client_id or self._client_id
         if client_id is None:
             return None
@@ -452,8 +450,8 @@ class RESTClient(interfaces.RESTInterface):
 
     @staticmethod
     def _set_debug_level(
-        level: typing.Union[typing.Literal["TRACE"], bool, int] = False,
-        file: typing.Optional[typing.Union[pathlib.Path, str]] = None,
+        level: typing.Literal["TRACE"] | bool | int = False,
+        file: pathlib.Path | str | None = None,
     ) -> None:
         file_handler = logging.FileHandler(file, mode="w") if file else None
         if level == "TRACE" or level == TRACE:
@@ -468,17 +466,17 @@ class RESTClient(interfaces.RESTInterface):
 
     async def _request(
         self,
-        method: typing.Union[RequestMethod, str],
+        method: RequestMethod | str,
         route: str,
         *,
         base: bool = False,
         oauth2: bool = False,
-        auth: typing.Optional[str] = None,
+        auth: str | None = None,
         unwrapping: typing.Literal["json", "read"] = "json",
-        json: typing.Optional[dict[str, typing.Any]] = None,
-        headers: typing.Optional[dict[str, typing.Any]] = None,
-        data: typing.Optional[typing.Union[str, dict[str, typing.Any]]] = None,
-    ) -> ResponseSig:
+        json: collections.Mapping[str, typing.Any] | str | None = None,
+        params: collections.Mapping[str, typing.Any] | None = None,
+        headers: dict[str, typing.Any] | None = None,
+    ) -> typedefs.JSONIsh:
         # This is not None when opening the client.
         assert self._session is not None
 
@@ -508,16 +506,15 @@ class RESTClient(interfaces.RESTInterface):
             async with (stack := contextlib.AsyncExitStack()):
                 await stack.enter_async_context(self._lock)
 
+                data = self._dumps(json) if isinstance(json, dict) else json
                 # We make the request here.
                 taken_time = time.monotonic()
-                response = await stack.enter_async_context(
-                    self._session.request(
-                        method=method,
-                        url=f"{endpoint}/{route}",
-                        json=json,
-                        headers=headers,
-                        data=data,
-                    )
+                response = await self._session.request(
+                    method=method,
+                    url=f"{endpoint}/{route}",
+                    headers=headers,
+                    data=data,
+                    params=params,
                 )
                 response_time = (time.monotonic() - taken_time) * 1_000
 
@@ -540,7 +537,8 @@ class RESTClient(interfaces.RESTInterface):
                         return await response.read()
 
                     if response.content_type == _APP_JSON:
-                        json_data = await response.json()
+                        # json_data = self._loads(await response.read())
+                        json_data = self._loads(await response.read())
 
                         _LOG.debug(
                             "%s %s %s Time %.4fms",
@@ -565,11 +563,10 @@ class RESTClient(interfaces.RESTInterface):
                         if oauth2:
                             return json_data  # type: ignore[no-any-return]
 
-                        return json_data["Response"]  # type: ignore[no-any-return]
+                        return json_data["Response"]  # type: ignore
 
                 if (
-                    response.status in _RETRY_5XX
-                    and retries < self._max_retries  # noqa: W503
+                    response.status in _RETRY_5XX and retries < self._max_retries  # noqa: W503
                 ):
                     backoff_ = backoff.ExponentialBackOff(maximum=6)
                     sleep_time = next(backoff_)
@@ -587,31 +584,15 @@ class RESTClient(interfaces.RESTInterface):
 
                 raise await error.raise_error(response)
 
-    if not typing.TYPE_CHECKING:
-
-        def __enter__(self) -> typing.NoReturn:
-            cls = type(self)
-            raise TypeError(
-                f"{cls.__qualname__} is async only, use 'async with' instead."
-            )
-
-        def __exit__(
-            self,
-            exception_type: typing.Optional[type[BaseException]],
-            exception: typing.Optional[BaseException],
-            exception_traceback: typing.Optional[types.TracebackType],
-        ) -> None:
-            ...
-
     async def __aenter__(self) -> RESTClient:
         self.open()
         return self
 
     async def __aexit__(
         self,
-        exception_type: typing.Optional[type[BaseException]],
-        exception: typing.Optional[BaseException],
-        exception_traceback: typing.Optional[types.TracebackType],
+        exception_type: type[BaseException] | None,
+        exception: BaseException | None,
+        exception_traceback: types.TracebackType | None,
     ) -> None:
         await self.close()
 
@@ -632,7 +613,7 @@ class RESTClient(interfaces.RESTInterface):
                 http.HTTPStatus.TOO_MANY_REQUESTS,
             )
 
-        json: typedefs.JSONObject = await response.json()
+        json: typedefs.JSONObject = self._loads(await response.read())  # type: ignore
         retry_after = float(json.get("ThrottleSeconds", 15.0)) + 0.1
         max_calls: int = 0
 
@@ -673,7 +654,7 @@ class RESTClient(interfaces.RESTInterface):
         )
 
         response = await self._request(
-            RequestMethod.POST, "", headers=headers, data=data, oauth2=True
+            RequestMethod.POST, "", headers=headers, json=data, oauth2=True
         )
         assert isinstance(response, dict)
         return builders.OAuth2Response.build_response(response)
@@ -694,12 +675,11 @@ class RESTClient(interfaces.RESTInterface):
             "Content-Type": "application/x-www-form-urlencoded",
         }
 
-        response = await self._request(RequestMethod.POST, "", data=data, oauth2=True)
+        response = await self._request(RequestMethod.POST, "", json=data, oauth2=True)
         assert isinstance(response, dict)
         return builders.OAuth2Response.build_response(response)
 
     async def fetch_bungie_user(self, id: int) -> typedefs.JSONObject:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         resp = await self._request(
             RequestMethod.GET, f"User/GetBungieNetUserById/{id}/"
         )
@@ -707,7 +687,6 @@ class RESTClient(interfaces.RESTInterface):
         return resp
 
     async def fetch_user_themes(self) -> typedefs.JSONArray:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         resp = await self._request(RequestMethod.GET, "User/GetAvailableThemes/")
         assert isinstance(resp, list)
         return resp
@@ -715,24 +694,22 @@ class RESTClient(interfaces.RESTInterface):
     async def fetch_membership_from_id(
         self,
         id: int,
-        type: typedefs.IntAnd[enums.MembershipType] = enums.MembershipType.NONE,
+        type: enums.MembershipType | int = enums.MembershipType.NONE,
         /,
     ) -> typedefs.JSONObject:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         resp = await self._request(
             RequestMethod.GET, f"User/GetMembershipsById/{id}/{int(type)}"
         )
         assert isinstance(resp, dict)
         return resp
 
-    async def fetch_player(
+    async def fetch_membership(
         self,
         name: str,
         code: int,
-        type: typedefs.IntAnd[enums.MembershipType] = enums.MembershipType.ALL,
+        type: enums.MembershipType | int = enums.MembershipType.ALL,
         /,
     ) -> typedefs.JSONArray:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         resp = await self._request(
             RequestMethod.POST,
             f"Destiny2/SearchDestinyPlayerByBungieName/{int(type)}",
@@ -742,7 +719,6 @@ class RESTClient(interfaces.RESTInterface):
         return resp
 
     async def search_users(self, name: str, /) -> typedefs.JSONObject:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         resp = await self._request(
             RequestMethod.POST,
             "User/Search/GlobalName/0",
@@ -752,9 +728,8 @@ class RESTClient(interfaces.RESTInterface):
         return resp
 
     async def fetch_clan_from_id(
-        self, id: int, /, access_token: typing.Optional[str] = None
+        self, id: int, /, access_token: str | None = None
     ) -> typedefs.JSONObject:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         resp = await self._request(
             RequestMethod.GET, f"GroupV2/{id}", auth=access_token
         )
@@ -765,11 +740,10 @@ class RESTClient(interfaces.RESTInterface):
         self,
         name: str,
         /,
-        access_token: typing.Optional[str] = None,
+        access_token: str | None = None,
         *,
-        type: typedefs.IntAnd[enums.GroupType] = enums.GroupType.CLAN,
+        type: enums.GroupType | int = enums.GroupType.CLAN,
     ) -> typedefs.JSONObject:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         resp = await self._request(
             RequestMethod.GET, f"GroupV2/Name/{name}/{int(type)}", auth=access_token
         )
@@ -777,7 +751,6 @@ class RESTClient(interfaces.RESTInterface):
         return resp
 
     async def fetch_clan_admins(self, clan_id: int, /) -> typedefs.JSONObject:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         resp = await self._request(
             RequestMethod.GET, f"GroupV2/{clan_id}/AdminsAndFounder/"
         )
@@ -785,7 +758,6 @@ class RESTClient(interfaces.RESTInterface):
         return resp
 
     async def fetch_clan_conversations(self, clan_id: int, /) -> typedefs.JSONArray:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         resp = await self._request(
             RequestMethod.GET, f"GroupV2/{clan_id}/OptionalConversations/"
         )
@@ -793,7 +765,6 @@ class RESTClient(interfaces.RESTInterface):
         return resp
 
     async def fetch_application(self, appid: int, /) -> typedefs.JSONObject:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         resp = await self._request(RequestMethod.GET, f"App/Application/{appid}")
         assert isinstance(resp, dict)
         return resp
@@ -801,12 +772,11 @@ class RESTClient(interfaces.RESTInterface):
     async def fetch_character(
         self,
         member_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
         character_id: int,
         components: list[enums.ComponentType],
-        auth: typing.Optional[str] = None,
+        auth: str | None = None,
     ) -> typedefs.JSONObject:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         collector = _collect_components(components)
         response = await self._request(
             RequestMethod.GET,
@@ -821,15 +791,12 @@ class RESTClient(interfaces.RESTInterface):
         self,
         member_id: int,
         character_id: int,
-        mode: typedefs.IntAnd[enums.GameMode],
-        membership_type: typedefs.IntAnd[
-            enums.MembershipType
-        ] = enums.MembershipType.ALL,
+        mode: enums.GameMode | int,
+        membership_type: enums.MembershipType | int = enums.MembershipType.ALL,
         *,
         page: int = 0,
         limit: int = 1,
     ) -> typedefs.JSONObject:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         resp = await self._request(
             RequestMethod.GET,
             f"Destiny2/{int(membership_type)}/Account/"
@@ -840,7 +807,6 @@ class RESTClient(interfaces.RESTInterface):
         return resp
 
     async def fetch_vendor_sales(self) -> typedefs.JSONObject:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         resp = await self._request(
             RequestMethod.GET,
             f"Destiny2/Vendors/?components={int(enums.ComponentType.VENDOR_SALES)}",
@@ -851,11 +817,10 @@ class RESTClient(interfaces.RESTInterface):
     async def fetch_profile(
         self,
         membership_id: int,
-        type: typedefs.IntAnd[enums.MembershipType],
+        type: enums.MembershipType | int,
         components: list[enums.ComponentType],
-        auth: typing.Optional[str] = None,
+        auth: str | None = None,
     ) -> typedefs.JSONObject:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         collector = _collect_components(components)
         response = await self._request(
             RequestMethod.GET,
@@ -866,7 +831,6 @@ class RESTClient(interfaces.RESTInterface):
         return response
 
     async def fetch_entity(self, type: str, hash: int) -> typedefs.JSONObject:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         response = await self._request(
             RequestMethod.GET, route=f"Destiny2/Manifest/{type}/{hash}"
         )
@@ -874,13 +838,11 @@ class RESTClient(interfaces.RESTInterface):
         return response
 
     async def fetch_inventory_item(self, hash: int, /) -> typedefs.JSONObject:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         resp = await self.fetch_entity("DestinyInventoryItemDefinition", hash)
         assert isinstance(resp, dict)
         return resp
 
     async def fetch_objective_entity(self, hash: int, /) -> typedefs.JSONObject:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         resp = await self.fetch_entity("DestinyObjectiveDefinition", hash)
         assert isinstance(resp, dict)
         return resp
@@ -888,11 +850,11 @@ class RESTClient(interfaces.RESTInterface):
     async def fetch_groups_for_member(
         self,
         member_id: int,
-        member_type: typedefs.IntAnd[enums.MembershipType],
+        member_type: enums.MembershipType | int,
         /,
         *,
         filter: int = 0,
-        group_type: typedefs.IntAnd[enums.GroupType] = enums.GroupType.CLAN,
+        group_type: enums.GroupType | int = enums.GroupType.CLAN,
     ) -> typedefs.JSONObject:
         resp = await self._request(
             RequestMethod.GET,
@@ -904,11 +866,11 @@ class RESTClient(interfaces.RESTInterface):
     async def fetch_potential_groups_for_member(
         self,
         member_id: int,
-        member_type: typedefs.IntAnd[enums.MembershipType],
+        member_type: enums.MembershipType | int,
         /,
         *,
         filter: int = 0,
-        group_type: typedefs.IntAnd[enums.GroupType] = enums.GroupType.CLAN,
+        group_type: enums.GroupType | int = enums.GroupType.CLAN,
     ) -> typedefs.JSONObject:
         resp = await self._request(
             RequestMethod.GET,
@@ -922,10 +884,9 @@ class RESTClient(interfaces.RESTInterface):
         clan_id: int,
         /,
         *,
-        name: typing.Optional[str] = None,
-        type: typedefs.IntAnd[enums.MembershipType] = enums.MembershipType.NONE,
+        name: str | None = None,
+        type: enums.MembershipType | int = enums.MembershipType.NONE,
     ) -> typedefs.JSONObject:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         resp = await self._request(
             RequestMethod.GET,
             f"/GroupV2/{clan_id}/Members/?memberType={int(type)}&nameSearch={name if name else ''}&currentpage=1",
@@ -936,10 +897,9 @@ class RESTClient(interfaces.RESTInterface):
     async def fetch_hardlinked_credentials(
         self,
         credential: int,
-        type: typedefs.IntAnd[enums.CredentialType] = enums.CredentialType.STEAMID,
+        type: enums.CredentialType | int = enums.CredentialType.STEAMID,
         /,
     ) -> typedefs.JSONObject:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         resp = await self._request(
             RequestMethod.GET,
             f"User/GetMembershipFromHardLinkedCredential/{int(type)}/{credential}/",
@@ -963,9 +923,9 @@ class RESTClient(interfaces.RESTInterface):
         action_token: str,
         /,
         instance_id: int,
-        plug: typing.Union[builders.PlugSocketBuilder, dict[str, int]],
+        plug: builders.PlugSocketBuilder | collections.Mapping[str, int],
         character_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
     ) -> typedefs.JSONObject:
         if isinstance(plug, builders.PlugSocketBuilder):
             plug = plug.collect()
@@ -988,9 +948,9 @@ class RESTClient(interfaces.RESTInterface):
         access_token: str,
         /,
         instance_id: int,
-        plug: typing.Union[builders.PlugSocketBuilder, dict[str, int]],
+        plug: builders.PlugSocketBuilder | collections.Mapping[str, int],
         character_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
     ) -> typedefs.JSONObject:
         if isinstance(plug, builders.PlugSocketBuilder):
             plug = plug.collect()
@@ -1017,7 +977,7 @@ class RESTClient(interfaces.RESTInterface):
         /,
         item_id: int,
         character_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
     ) -> int:
         body = {
             "state": state,
@@ -1041,7 +1001,7 @@ class RESTClient(interfaces.RESTInterface):
         /,
         item_id: int,
         character_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
     ) -> int:
         body = {
             "state": state,
@@ -1059,13 +1019,11 @@ class RESTClient(interfaces.RESTInterface):
         return response
 
     async def fetch_manifest_path(self) -> typedefs.JSONObject:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         path = await self._request(RequestMethod.GET, "Destiny2/Manifest")
         assert isinstance(path, dict)
         return path
 
     async def read_manifest_bytes(self, language: str = "en", /) -> bytes:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         _ensure_manifest_language(language)
 
         content = await self.fetch_manifest_path()
@@ -1078,15 +1036,14 @@ class RESTClient(interfaces.RESTInterface):
         assert isinstance(resp, bytes)
         return resp
 
-    async def download_manifest(
+    async def download_sqlite_manifest(
         self,
         language: str = "en",
         name: str = "manifest",
-        path: typing.Union[pathlib.Path, str] = ".",
+        path: pathlib.Path | str = ".",
         *,
         force: bool = False,
-    ) -> None:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+    ) -> pathlib.Path:
         complete_path = _get_path(name, path, sql=True)
 
         if complete_path.exists() and force:
@@ -1096,7 +1053,9 @@ class RESTClient(interfaces.RESTInterface):
                 )
                 complete_path.unlink(missing_ok=True)
 
-                return await self.download_manifest(language, name, path, force=force)
+                return await self.download_sqlite_manifest(
+                    language, name, path, force=force
+                )
 
             else:
                 raise FileExistsError(
@@ -1109,13 +1068,14 @@ class RESTClient(interfaces.RESTInterface):
         await asyncio.get_running_loop().run_in_executor(
             None, _write_sqlite_bytes, data_bytes, path, name
         )
+        return _get_path(name, path, sql=True)
 
     async def download_json_manifest(
         self,
         file_name: str = "manifest",
-        path: typing.Union[str, pathlib.Path] = ".",
+        path: str | pathlib.Path = ".",
         language: str = "en",
-    ) -> None:
+    ) -> pathlib.Path:
         _ensure_manifest_language(language)
 
         _LOG.info(f"Downloading manifest JSON to {_get_path(file_name, path)!r}...")
@@ -1132,19 +1092,20 @@ class RESTClient(interfaces.RESTInterface):
             None, _write_json_bytes, json_bytes, file_name, path
         )
         _LOG.info("Finished downloading manifest JSON.")
+        return _get_path(file_name, path)
 
     async def fetch_manifest_version(self) -> str:
-        return typing.cast(str, (await self.fetch_manifest_path())["version"])
+        # This is guaranteed str.
+        return (await self.fetch_manifest_path())["version"]  # type: ignore[no-any-return]
 
     async def fetch_linked_profiles(
         self,
         member_id: int,
-        member_type: typedefs.IntAnd[enums.MembershipType],
+        member_type: enums.MembershipType | int,
         /,
         *,
         all: bool = False,
     ) -> typedefs.JSONObject:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         resp = await self._request(
             RequestMethod.GET,
             f"Destiny2/{int(member_type)}/Profile/{member_id}/LinkedProfiles/?getAllMemberships={all}",
@@ -1153,7 +1114,6 @@ class RESTClient(interfaces.RESTInterface):
         return resp
 
     async def fetch_clan_banners(self) -> typedefs.JSONObject:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         resp = await self._request(
             RequestMethod.GET, "Destiny2/Clan/ClanBannerDictionary/"
         )
@@ -1161,7 +1121,6 @@ class RESTClient(interfaces.RESTInterface):
         return resp
 
     async def fetch_public_milestones(self) -> typedefs.JSONObject:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         resp = await self._request(RequestMethod.GET, "Destiny2/Milestones/")
         assert isinstance(resp, dict)
         return resp
@@ -1169,7 +1128,6 @@ class RESTClient(interfaces.RESTInterface):
     async def fetch_public_milestone_content(
         self, milestone_hash: int, /
     ) -> typedefs.JSONObject:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         resp = await self._request(
             RequestMethod.GET, f"Destiny2/Milestones/{milestone_hash}/Content/"
         )
@@ -1179,7 +1137,6 @@ class RESTClient(interfaces.RESTInterface):
     async def fetch_current_user_memberships(
         self, access_token: str, /
     ) -> typedefs.JSONObject:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         resp = await self._request(
             RequestMethod.GET,
             "User/GetMembershipsForCurrentUser/",
@@ -1194,9 +1151,8 @@ class RESTClient(interfaces.RESTInterface):
         /,
         item_id: int,
         character_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
     ) -> None:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         payload = {
             "itemId": item_id,
             "characterId": character_id,
@@ -1214,11 +1170,10 @@ class RESTClient(interfaces.RESTInterface):
         self,
         access_token: str,
         /,
-        item_ids: list[int],
+        item_ids: collections.Sequence[int],
         character_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
     ) -> None:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         payload = {
             "itemIds": item_ids,
             "characterId": character_id,
@@ -1237,12 +1192,11 @@ class RESTClient(interfaces.RESTInterface):
         /,
         group_id: int,
         membership_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
         *,
         length: int = 0,
-        comment: undefined.UndefinedOr[str] = undefined.UNDEFINED,
+        comment: str | None = None,
     ) -> None:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         payload = {"comment": str(comment), "length": length}
         await self._request(
             RequestMethod.POST,
@@ -1257,9 +1211,8 @@ class RESTClient(interfaces.RESTInterface):
         /,
         group_id: int,
         membership_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
     ) -> None:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         await self._request(
             RequestMethod.POST,
             f"GroupV2/{group_id}/Members/{int(membership_type)}/{membership_id}/Unban/",
@@ -1272,9 +1225,8 @@ class RESTClient(interfaces.RESTInterface):
         /,
         group_id: int,
         membership_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
     ) -> typedefs.JSONObject:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         resp = await self._request(
             RequestMethod.POST,
             f"GroupV2/{group_id}/Members/{int(membership_type)}/{membership_id}/Kick/",
@@ -1289,26 +1241,23 @@ class RESTClient(interfaces.RESTInterface):
         /,
         group_id: int,
         *,
-        name: typedefs.NoneOr[str] = None,
-        about: typedefs.NoneOr[str] = None,
-        motto: typedefs.NoneOr[str] = None,
-        theme: typedefs.NoneOr[str] = None,
-        tags: typedefs.NoneOr[collections.Sequence[str]] = None,
-        is_public: typedefs.NoneOr[bool] = None,
-        locale: typedefs.NoneOr[str] = None,
-        avatar_image_index: typedefs.NoneOr[int] = None,
-        membership_option: typedefs.NoneOr[
-            typedefs.IntAnd[enums.MembershipOption]
-        ] = None,
-        allow_chat: typedefs.NoneOr[bool] = None,
-        chat_security: typedefs.NoneOr[typing.Literal[0, 1]] = None,
-        call_sign: typedefs.NoneOr[str] = None,
-        homepage: typedefs.NoneOr[typing.Literal[0, 1, 2]] = None,
-        enable_invite_messaging_for_admins: typedefs.NoneOr[bool] = None,
-        default_publicity: typedefs.NoneOr[typing.Literal[0, 1, 2]] = None,
-        is_public_topic_admin: typedefs.NoneOr[bool] = None,
+        name: str | None = None,
+        about: str | None = None,
+        motto: str | None = None,
+        theme: str | None = None,
+        tags: collections.Sequence[str] | None = None,
+        is_public: bool | None = None,
+        locale: str | None = None,
+        avatar_image_index: int | None = None,
+        membership_option: enums.MembershipOption | int | None = None,
+        allow_chat: bool | None = None,
+        chat_security: typing.Literal[0, 1] | None = None,
+        call_sign: str | None = None,
+        homepage: typing.Literal[0, 1, 2] | None = None,
+        enable_invite_messaging_for_admins: bool | None = None,
+        default_publicity: typing.Literal[0, 1, 2] | None = None,
+        is_public_topic_admin: bool | None = None,
     ) -> None:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         payload = {
             "name": name,
             "about": about,
@@ -1342,13 +1291,11 @@ class RESTClient(interfaces.RESTInterface):
         /,
         group_id: int,
         *,
-        invite_permissions_override: typedefs.NoneOr[bool] = None,
-        update_culture_permissionOverride: typedefs.NoneOr[bool] = None,
-        host_guided_game_permission_override: typedefs.NoneOr[
-            typing.Literal[0, 1, 2]
-        ] = None,
-        update_banner_permission_override: typedefs.NoneOr[bool] = None,
-        join_level: typedefs.NoneOr[typedefs.IntAnd[enums.ClanMemberType]] = None,
+        invite_permissions_override: bool | None = None,
+        update_culture_permissionOverride: bool | None = None,
+        host_guided_game_permission_override: typing.Literal[0, 1, 2] | None = None,
+        update_banner_permission_override: bool | None = None,
+        join_level: enums.ClanMemberType | int | None = None,
     ) -> None:
         payload = {
             "InvitePermissionOverride": invite_permissions_override,
@@ -1366,7 +1313,6 @@ class RESTClient(interfaces.RESTInterface):
         )
 
     async def fetch_friends(self, access_token: str, /) -> typedefs.JSONObject:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         resp = await self._request(
             RequestMethod.GET,
             "Social/Friends/",
@@ -1376,7 +1322,6 @@ class RESTClient(interfaces.RESTInterface):
         return resp
 
     async def fetch_friend_requests(self, access_token: str, /) -> typedefs.JSONObject:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         resp = await self._request(
             RequestMethod.GET,
             "Social/Friends/Requests",
@@ -1386,7 +1331,6 @@ class RESTClient(interfaces.RESTInterface):
         return resp
 
     async def accept_friend_request(self, access_token: str, /, member_id: int) -> None:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         await self._request(
             RequestMethod.POST,
             f"Social/Friends/Requests/Accept/{member_id}",
@@ -1394,7 +1338,6 @@ class RESTClient(interfaces.RESTInterface):
         )
 
     async def send_friend_request(self, access_token: str, /, member_id: int) -> None:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         await self._request(
             RequestMethod.POST,
             f"Social/Friends/Add/{member_id}",
@@ -1404,7 +1347,6 @@ class RESTClient(interfaces.RESTInterface):
     async def decline_friend_request(
         self, access_token: str, /, member_id: int
     ) -> None:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         await self._request(
             RequestMethod.POST,
             f"Social/Friends/Requests/Decline/{member_id}",
@@ -1412,7 +1354,6 @@ class RESTClient(interfaces.RESTInterface):
         )
 
     async def remove_friend(self, access_token: str, /, member_id: int) -> None:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         await self._request(
             RequestMethod.POST,
             f"Social/Friends/Remove/{member_id}",
@@ -1432,7 +1373,7 @@ class RESTClient(interfaces.RESTInterface):
         access_token: str,
         /,
         group_id: int,
-        message: undefined.UndefinedOr[str] = undefined.UNDEFINED,
+        message: str | None = None,
     ) -> None:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>
         await self._request(
@@ -1448,7 +1389,7 @@ class RESTClient(interfaces.RESTInterface):
         /,
         group_id: int,
         *,
-        message: undefined.UndefinedOr[str] = undefined.UNDEFINED,
+        message: str | None = None,
     ) -> None:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>
         await self._request(
@@ -1464,7 +1405,7 @@ class RESTClient(interfaces.RESTInterface):
         /,
         group_id: int,
         *,
-        name: undefined.UndefinedOr[str] = undefined.UNDEFINED,
+        name: str | None = None,
         security: typing.Literal[0, 1] = 0,
     ) -> None:
         # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>
@@ -1483,7 +1424,7 @@ class RESTClient(interfaces.RESTInterface):
         group_id: int,
         conversation_id: int,
         *,
-        name: undefined.UndefinedOr[str] = undefined.UNDEFINED,
+        name: str | None = None,
         security: typing.Literal[0, 1] = 0,
         enable_chat: bool = False,
     ) -> None:
@@ -1507,7 +1448,7 @@ class RESTClient(interfaces.RESTInterface):
         item_id: int,
         item_hash: int,
         character_id: int,
-        member_type: typedefs.IntAnd[enums.MembershipType],
+        member_type: enums.MembershipType | int,
         *,
         stack_size: int = 1,
         vault: bool = False,
@@ -1535,7 +1476,7 @@ class RESTClient(interfaces.RESTInterface):
         item_id: int,
         item_hash: int,
         character_id: int,
-        member_type: typedefs.IntAnd[enums.MembershipType],
+        member_type: enums.MembershipType | int,
         *,
         stack_size: int = 1,
         vault: bool = False,
@@ -1558,21 +1499,14 @@ class RESTClient(interfaces.RESTInterface):
 
     async def fetch_fireteams(
         self,
-        activity_type: typedefs.IntAnd[fireteams.FireteamActivity],
+        activity_type: fireteams.FireteamActivity | int,
         *,
-        platform: typedefs.IntAnd[
-            fireteams.FireteamPlatform
-        ] = fireteams.FireteamPlatform.ANY,
-        language: typing.Union[
-            fireteams.FireteamLanguage, str
-        ] = fireteams.FireteamLanguage.ALL,
-        date_range: typedefs.IntAnd[
-            fireteams.FireteamDate
-        ] = fireteams.FireteamDate.ALL,
+        platform: fireteams.FireteamPlatform | int = fireteams.FireteamPlatform.ANY,
+        language: fireteams.FireteamLanguage | str = fireteams.FireteamLanguage.ALL,
+        date_range: fireteams.FireteamDate | int = fireteams.FireteamDate.ALL,
         page: int = 0,
         slots_filter: int = 0,
     ) -> typedefs.JSONObject:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         resp = await self._request(
             RequestMethod.GET,
             f"Fireteam/Search/Available/{int(platform)}/{int(activity_type)}/{int(date_range)}/{slots_filter}/{page}/?langFilter={str(language)}",  # noqa: E501 Line too long
@@ -1580,22 +1514,19 @@ class RESTClient(interfaces.RESTInterface):
         assert isinstance(resp, dict)
         return resp
 
-    async def fetch_avaliable_clan_fireteams(
+    async def fetch_available_clan_fireteams(
         self,
         access_token: str,
         group_id: int,
-        activity_type: typedefs.IntAnd[fireteams.FireteamActivity],
+        activity_type: fireteams.FireteamActivity | int,
         *,
-        platform: typedefs.IntAnd[fireteams.FireteamPlatform],
-        language: typing.Union[fireteams.FireteamLanguage, str],
-        date_range: typedefs.IntAnd[
-            fireteams.FireteamDate
-        ] = fireteams.FireteamDate.ALL,
+        platform: fireteams.FireteamPlatform | int,
+        language: fireteams.FireteamLanguage | str,
+        date_range: fireteams.FireteamDate | int = fireteams.FireteamDate.ALL,
         page: int = 0,
         public_only: bool = False,
         slots_filter: int = 0,
     ) -> typedefs.JSONObject:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         resp = await self._request(
             RequestMethod.GET,
             f"Fireteam/Clan/{group_id}/Available/{int(platform)}/{int(activity_type)}/{int(date_range)}/{slots_filter}/{public_only}/{page}",  # noqa: E501
@@ -1608,7 +1539,6 @@ class RESTClient(interfaces.RESTInterface):
     async def fetch_clan_fireteam(
         self, access_token: str, fireteam_id: int, group_id: int
     ) -> typedefs.JSONObject:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         resp = await self._request(
             RequestMethod.GET,
             f"Fireteam/Clan/{group_id}/Summary/{fireteam_id}",
@@ -1623,13 +1553,13 @@ class RESTClient(interfaces.RESTInterface):
         group_id: int,
         *,
         include_closed: bool = True,
-        platform: typedefs.IntAnd[fireteams.FireteamPlatform],
-        language: typing.Union[fireteams.FireteamLanguage, str],
+        platform: fireteams.FireteamPlatform | int,
+        language: fireteams.FireteamLanguage | str,
         filtered: bool = True,
         page: int = 0,
     ) -> typedefs.JSONObject:
         payload = {"groupFilter": filtered, "langFilter": str(language)}
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+
         resp = await self._request(
             RequestMethod.GET,
             f"Fireteam/Clan/{group_id}/My/{int(platform)}/{include_closed}/{page}",
@@ -1642,7 +1572,6 @@ class RESTClient(interfaces.RESTInterface):
     async def fetch_private_clan_fireteams(
         self, access_token: str, group_id: int, /
     ) -> int:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         resp = await self._request(
             RequestMethod.GET,
             f"Fireteam/Clan/{group_id}/ActiveCount",
@@ -1652,7 +1581,6 @@ class RESTClient(interfaces.RESTInterface):
         return resp
 
     async def fetch_post_activity(self, instance_id: int, /) -> typedefs.JSONObject:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         resp = await self._request(
             RequestMethod.GET, f"Destiny2/Stats/PostGameCarnageReport/{instance_id}"
         )
@@ -1662,7 +1590,6 @@ class RESTClient(interfaces.RESTInterface):
     async def search_entities(
         self, name: str, entity_type: str, *, page: int = 0
     ) -> typedefs.JSONObject:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         resp = await self._request(
             RequestMethod.GET,
             f"Destiny2/Armory/Search/{entity_type}/{name}/",
@@ -1675,9 +1602,8 @@ class RESTClient(interfaces.RESTInterface):
         self,
         membership_id: int,
         character_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
     ) -> typedefs.JSONObject:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         resp = await self._request(
             RequestMethod.GET,
             f"Destiny2/{int(membership_type)}/Account/{membership_id}/Character/{character_id}/Stats/UniqueWeapons/",
@@ -1689,11 +1615,11 @@ class RESTClient(interfaces.RESTInterface):
         self,
         member_id: int,
         item_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
         components: list[enums.ComponentType],
     ) -> typedefs.JSONObject:
         collector = _collect_components(components)
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
+
         resp = await self._request(
             RequestMethod.GET,
             f"Destiny2/{int(membership_type)}/Profile/{member_id}/Item/{item_id}/?components={collector}",
@@ -1702,7 +1628,6 @@ class RESTClient(interfaces.RESTInterface):
         return resp
 
     async def fetch_clan_weekly_rewards(self, clan_id: int, /) -> typedefs.JSONObject:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         resp = await self._request(
             RequestMethod.GET, f"Destiny2/Clan/{clan_id}/WeeklyRewardState/"
         )
@@ -1710,7 +1635,6 @@ class RESTClient(interfaces.RESTInterface):
         return resp
 
     async def fetch_available_locales(self) -> typedefs.JSONObject:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         resp = await self._request(
             RequestMethod.GET, "Destiny2/Manifest/DestinyLocaleDefinition/"
         )
@@ -1718,13 +1642,11 @@ class RESTClient(interfaces.RESTInterface):
         return resp
 
     async def fetch_common_settings(self) -> typedefs.JSONObject:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         resp = await self._request(RequestMethod.GET, "Settings")
         assert isinstance(resp, dict)
         return resp
 
     async def fetch_user_systems_overrides(self) -> typedefs.JSONObject:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         resp = await self._request(RequestMethod.GET, "UserSystemOverrides")
         assert isinstance(resp, dict)
         return resp
@@ -1732,7 +1654,6 @@ class RESTClient(interfaces.RESTInterface):
     async def fetch_global_alerts(
         self, *, include_streaming: bool = False
     ) -> typedefs.JSONArray:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         resp = await self._request(
             RequestMethod.GET, f"GlobalAlerts/?includestreaming={include_streaming}"
         )
@@ -1743,14 +1664,12 @@ class RESTClient(interfaces.RESTInterface):
         self,
         access_token: str,
         type: typing.Literal[0, 1],
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
         /,
         *,
-        affected_item_id: typing.Optional[int] = None,
-        character_id: typing.Optional[int] = None,
+        affected_item_id: int | None = None,
+        character_id: int | None = None,
     ) -> typedefs.JSONObject:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-
         body = {"type": type, "membershipType": int(membership_type)}
 
         if affected_item_id is not None:
@@ -1768,7 +1687,6 @@ class RESTClient(interfaces.RESTInterface):
     async def awaget_action_token(
         self, access_token: str, correlation_id: str, /
     ) -> typedefs.JSONObject:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         resp = await self._request(
             RequestMethod.POST,
             f"Destiny2/Awa/GetActionToken/{correlation_id}",
@@ -1782,10 +1700,8 @@ class RESTClient(interfaces.RESTInterface):
         access_token: str,
         selection: int,
         correlation_id: str,
-        nonce: collections.MutableSequence[typing.Union[str, bytes]],
+        nonce: collections.MutableSequence[str | bytes],
     ) -> int:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
-
         body = {"selection": selection, "correlationId": correlation_id, "nonce": nonce}
 
         resp = await self._request(
@@ -1802,12 +1718,11 @@ class RESTClient(interfaces.RESTInterface):
         access_token: str,
         character_id: int,
         membership_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
         /,
         components: list[enums.ComponentType],
-        filter: typing.Optional[int] = None,
+        filter: int | None = None,
     ) -> typedefs.JSONObject:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         components_ = _collect_components(components)
         route = (
             f"Destiny2/{int(membership_type)}/Profile/{membership_id}"
@@ -1830,12 +1745,11 @@ class RESTClient(interfaces.RESTInterface):
         access_token: str,
         character_id: int,
         membership_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
         vendor_hash: int,
         /,
         components: list[enums.ComponentType],
     ) -> typedefs.JSONObject:
-        # <<inherited docstring from aiobungie.interfaces.rest.RESTInterface>>.
         components_ = _collect_components(components)
         resp = await self._request(
             RequestMethod.GET,
@@ -1854,8 +1768,8 @@ class RESTClient(interfaces.RESTInterface):
         application_id: int,
         /,
         *,
-        start: typing.Optional[datetime.datetime] = None,
-        end: typing.Optional[datetime.datetime] = None,
+        start: datetime.datetime | None = None,
+        end: datetime.datetime | None = None,
     ) -> typedefs.JSONObject:
         end_date, start_date = time.parse_date_range(end, start)
         resp = await self._request(
@@ -1906,27 +1820,21 @@ class RESTClient(interfaces.RESTInterface):
         search_text: str,
         tag: str,
         *,
-        page: undefined.UndefinedOr[int] = undefined.UNDEFINED,
-        source: undefined.UndefinedOr[str] = undefined.UNDEFINED,
+        page: int | None = None,
+        source: str | None = None,
     ) -> typedefs.JSONObject:
-        body: typedefs.JSONObject = {}
+        body: typedefs.JSONObject = {
+            "locale": locale,
+            "currentpage": page or 1,
+            "ctype": content_type,
+            "searchtxt": search_text,
+            "ctype": content_type,
+            "searchtext": search_text,
+            "tag": tag,
+            "source": source,
+        }
 
-        body["ctype"] = content_type
-        body["searchtext"] = search_text
-        body["tag"] = tag
-
-        if page is not undefined.UNDEFINED:
-            body["currentpage"] = page
-        else:
-            body["currentpage"] = 1
-
-        if source is not undefined.UNDEFINED:
-            body["source"] = source
-        else:
-            source = ""
-        resp = await self._request(
-            RequestMethod.GET, f"Content/Search/{locale}/", json=body
-        )
+        resp = await self._request(RequestMethod.GET, "Content/Search", params=body)
         assert isinstance(resp, dict)
         return resp
 
@@ -1936,14 +1844,14 @@ class RESTClient(interfaces.RESTInterface):
         tag: str,
         type: str,
         *,
-        page: undefined.UndefinedOr[int] = undefined.UNDEFINED,
+        page: int | None = None,
     ) -> typedefs.JSONObject:
-        body: typedefs.JSONObject = {}
-        body["currentpage"] = 1 if page is undefined.UNDEFINED else page
+        body: typedefs.JSONObject = {"currentpage": page or 1}
+
         resp = await self._request(
             RequestMethod.GET,
             f"Content/SearchContentByTagAndType/{tag}/{type}/{locale}/",
-            json=body,
+            params=body,
         )
         assert isinstance(resp, dict)
         return resp
@@ -1962,29 +1870,22 @@ class RESTClient(interfaces.RESTInterface):
         category_filter: int,
         group: int,
         date_filter: int,
-        sort: typing.Union[str, bytes],
+        sort: str | bytes,
         *,
-        page: undefined.UndefinedOr[int] = undefined.UNDEFINED,
-        locales: undefined.UndefinedOr[collections.Iterable[str]] = undefined.UNDEFINED,
-        tag_filter: undefined.UndefinedOr[str] = undefined.UNDEFINED,
+        page: int | None = None,
+        locales: collections.Iterable[str] | None = None,
+        tag_filter: str | None = None,
     ) -> typedefs.JSONObject:
-        body: typedefs.JSONObject = {}
-        if locales is not undefined.UNDEFINED:
-            body["locales"] = ",".join(str(locales))
-        else:
-            body["locales"] = ",".join([])
-
-        if tag_filter is not undefined.UNDEFINED:
-            body["tagstring"] = tag_filter
-        else:
-            body["tagstring"] = ""
-
-        page = 0 if page is not undefined.UNDEFINED else page
+        params = {
+            "locales": ",".join(locales) if locales is not None else "en",
+        }
+        if tag_filter:
+            params["tagstring"] = tag_filter
 
         resp = await self._request(
             RequestMethod.GET,
-            f"Forum/GetTopicsPaged/{page}/{0}/{group}/{sort!s}/{date_filter}/{category_filter}/",
-            json=body,
+            f"Forum/GetTopicsPaged/{page or 0}/0/{group}/{sort!s}/{date_filter}/{category_filter}/",
+            params=params,
         )
         assert isinstance(resp, dict)
         return resp
@@ -1993,23 +1894,15 @@ class RESTClient(interfaces.RESTInterface):
         self,
         category_filter: int,
         date_filter: int,
-        sort: typing.Union[str, bytes],
+        sort: str | bytes,
         *,
-        page: undefined.UndefinedOr[int] = undefined.UNDEFINED,
-        locales: undefined.UndefinedOr[collections.Iterable[str]] = undefined.UNDEFINED,
+        page: int | None = None,
+        locales: collections.Iterable[str] | None = None,
     ) -> typedefs.JSONObject:
-        body: typedefs.JSONObject = {}
-
-        if locales is not undefined.UNDEFINED:
-            body["locales"] = ",".join(str(locales))
-        else:
-            body["locales"] = ",".join([])
-
         resp = await self._request(
             RequestMethod.GET,
-            f"Forum/GetCoreTopicsPaged/{0 if page is undefined.UNDEFINED else page}"
-            f"/{sort!s}/{date_filter}/{category_filter}/",
-            json=body,
+            f"Forum/GetCoreTopicsPaged/{page or 0}"
+            f"/{sort!s}/{date_filter}/{category_filter}/?locales={','.join(locales) if locales else 'en'}",
         )
         assert isinstance(resp, dict)
         return resp
@@ -2023,7 +1916,7 @@ class RESTClient(interfaces.RESTInterface):
         reply_size: int,
         root_thread_mode: bool,
         sort_mode: int,
-        show_banned: typing.Optional[str] = None,
+        show_banned: str | None = None,
     ) -> typedefs.JSONObject:
         resp = await self._request(
             RequestMethod.GET,
@@ -2042,7 +1935,7 @@ class RESTClient(interfaces.RESTInterface):
         reply_size: int,
         root_thread_mode: bool,
         sort_mode: int,
-        show_banned: typing.Optional[str] = None,
+        show_banned: str | None = None,
     ) -> typedefs.JSONObject:
         resp = await self._request(
             RequestMethod.GET,
@@ -2054,7 +1947,7 @@ class RESTClient(interfaces.RESTInterface):
         return resp
 
     async def fetch_post_and_parent(
-        self, child_id: int, /, *, show_banned: typing.Optional[str] = None
+        self, child_id: int, /, *, show_banned: str | None = None
     ) -> typedefs.JSONObject:
         resp = await self._request(
             RequestMethod.GET,
@@ -2065,7 +1958,7 @@ class RESTClient(interfaces.RESTInterface):
         return resp
 
     async def fetch_posts_and_parent_awaiting(
-        self, child_id: int, /, *, show_banned: typing.Optional[str] = None
+        self, child_id: int, /, *, show_banned: str | None = None
     ) -> typedefs.JSONObject:
         resp = await self._request(
             RequestMethod.GET,
@@ -2098,23 +1991,23 @@ class RESTClient(interfaces.RESTInterface):
         assert isinstance(resp, dict)
         return resp
 
-    async def fetch_recuirement_thread_summaries(self) -> typedefs.JSONArray:
+    async def fetch_recruitment_thread_summaries(self) -> typedefs.JSONArray:
         resp = await self._request(RequestMethod.POST, "Forum/Recruit/Summaries/")
         assert isinstance(resp, list)
         return resp
 
     async def fetch_recommended_groups(
         self,
-        accecss_token: str,
+        access_token: str,
         /,
         *,
         date_range: int = 0,
-        group_type: typedefs.IntAnd[enums.GroupType] = enums.GroupType.CLAN,
+        group_type: enums.GroupType | int = enums.GroupType.CLAN,
     ) -> typedefs.JSONArray:
         resp = await self._request(
             RequestMethod.POST,
             f"GroupV2/Recommended/{int(group_type)}/{date_range}/",
-            auth=accecss_token,
+            auth=access_token,
         )
         assert isinstance(resp, list)
         return resp
@@ -2128,7 +2021,7 @@ class RESTClient(interfaces.RESTInterface):
         self,
         access_token: str,
         /,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
     ) -> bool:
         resp = await self._request(
             RequestMethod.GET,
@@ -2177,9 +2070,9 @@ class RESTClient(interfaces.RESTInterface):
         /,
         group_id: int,
         membership_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
         *,
-        message: undefined.UndefinedOr[str] = undefined.UNDEFINED,
+        message: str | None = None,
     ) -> typedefs.JSONObject:
         resp = await self._request(
             RequestMethod.POST,
@@ -2196,7 +2089,7 @@ class RESTClient(interfaces.RESTInterface):
         /,
         group_id: int,
         membership_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
     ) -> typedefs.JSONObject:
         resp = await self._request(
             RequestMethod.POST,
@@ -2215,11 +2108,11 @@ class RESTClient(interfaces.RESTInterface):
         self,
         character_id: int,
         membership_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
         day_start: datetime.datetime,
         day_end: datetime.datetime,
-        groups: list[typedefs.IntAnd[enums.StatsGroupType]],
-        modes: collections.Sequence[typedefs.IntAnd[enums.GameMode]],
+        groups: list[enums.StatsGroupType | int],
+        modes: collections.Sequence[enums.GameMode | int],
         *,
         period_type: enums.PeriodType = enums.PeriodType.ALL_TIME,
     ) -> typedefs.JSONObject:
@@ -2241,8 +2134,8 @@ class RESTClient(interfaces.RESTInterface):
     async def fetch_historical_stats_for_account(
         self,
         membership_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
-        groups: list[typedefs.IntAnd[enums.StatsGroupType]],
+        membership_type: enums.MembershipType | int,
+        groups: list[enums.StatsGroupType | int],
     ) -> typedefs.JSONObject:
         resp = await self._request(
             RequestMethod.GET,
@@ -2256,7 +2149,7 @@ class RESTClient(interfaces.RESTInterface):
         self,
         character_id: int,
         membership_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
         /,
     ) -> typedefs.JSONObject:
         resp = await self._request(
@@ -2273,7 +2166,7 @@ class RESTClient(interfaces.RESTInterface):
         /,
         loadout_index: int,
         character_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
     ) -> None:
         response = await self._request(
             RequestMethod.POST,
@@ -2293,11 +2186,11 @@ class RESTClient(interfaces.RESTInterface):
         /,
         loadout_index: int,
         character_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
         *,
-        color_hash: typing.Optional[int] = None,
-        icon_hash: typing.Optional[int] = None,
-        name_hash: typing.Optional[int] = None,
+        color_hash: int | None = None,
+        icon_hash: int | None = None,
+        name_hash: int | None = None,
     ) -> None:
         response = await self._request(
             RequestMethod.POST,
@@ -2320,11 +2213,11 @@ class RESTClient(interfaces.RESTInterface):
         /,
         loadout_index: int,
         character_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
         *,
-        color_hash: typing.Optional[int] = None,
-        icon_hash: typing.Optional[int] = None,
-        name_hash: typing.Optional[int] = None,
+        color_hash: int | None = None,
+        icon_hash: int | None = None,
+        name_hash: int | None = None,
     ) -> None:
         response = await self._request(
             RequestMethod.POST,
@@ -2347,7 +2240,7 @@ class RESTClient(interfaces.RESTInterface):
         /,
         loadout_index: int,
         character_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
     ) -> None:
         response = await self._request(
             RequestMethod.POST,

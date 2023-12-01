@@ -34,8 +34,6 @@ if typing.TYPE_CHECKING:
     import collections.abc as collections
 
     from aiobungie import traits
-    from aiobungie import typedefs
-    from aiobungie import undefined
     from aiobungie.crates import user as user_
     from aiobungie.internal import enums
 
@@ -64,10 +62,10 @@ class Friend:
     type: enums.MembershipType
     """The friend's last seen membership type."""
 
-    name: undefined.UndefinedOr[str]
+    name: str | None
     """The friend's last seen global display name. This field could be UNDEFINED if the player hasn't logged in yet."""
 
-    code: typedefs.NoneOr[int]
+    code: int | None
     """The friend's last seen global code. This field could be None if the player hasn't logged in yet."""
 
     online_status: enums.Presence
@@ -79,7 +77,7 @@ class Friend:
     relationship: enums.Relationship
     """The friend's relationship type."""
 
-    user: typedefs.NoneOr[user_.BungieUser]
+    user: user_.BungieUser | None
     """The friend's bungie user account. This field is optional and can be None in some states."""
 
     @property

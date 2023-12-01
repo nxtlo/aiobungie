@@ -22,10 +22,9 @@
 
 """Bungie enums implementation used within aiobungie."""
 
-
 from __future__ import annotations
 
-__all__: tuple[str, ...] = (
+__all__ = (
     "Enum",
     "Flag",
     "GameMode",
@@ -113,19 +112,19 @@ class Flag(__enum.Flag):
     def __int__(self) -> int:
         return int(self.value)
 
-    def __or__(self, other: typing.Union[Flag, int]) -> Flag:
+    def __or__(self, other: Flag | int) -> Flag:
         return self.__class__(self._value_ | int(other))
 
-    def __xor__(self, other: typing.Union[Flag, int]) -> Flag:
+    def __xor__(self, other: Flag | int) -> Flag:
         return self.__class__(self._value_ ^ int(other))
 
-    def __and__(self, other: typing.Union[Flag, int]) -> Flag:
+    def __and__(self, other: Flag | int) -> Flag:
         return self.__class__(other & int(other))
 
     def __invert__(self) -> Flag:
         return self.__class__(~self._value_)
 
-    def __contains__(self, other: typing.Union[Flag, int]) -> bool:
+    def __contains__(self, other: Flag | int) -> bool:
         return self.value & int(other) == int(other)
 
 

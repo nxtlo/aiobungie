@@ -55,7 +55,6 @@ if typing.TYPE_CHECKING:
     import datetime
 
     from aiobungie import traits
-    from aiobungie import undefined
     from aiobungie.crates import entity
     from aiobungie.crates import user
 
@@ -83,7 +82,7 @@ class Rewards:
     hash: int
     """Reward's hash."""
 
-    instance_id: typing.Optional[int]
+    instance_id: int | None
     """An optional instance id for this reward. `None` if not found."""
 
     quantity: int
@@ -162,19 +161,19 @@ class GuidedGame:
 class Location:
     """Represents information about an activity location."""
 
-    hash: typing.Union[enums.Place, enums.Planet]
+    hash: int
     """Location hash."""
 
     activision_source: str
     """A hint that the UI uses to figure out how this location is activated by the player."""
 
-    item_hash: typing.Optional[int]
+    item_hash: int | None
     """The items hash if populated."""
 
-    objective_hash: typing.Optional[int]
+    objective_hash: int | None
     """The objective hash if populated."""
 
-    activity_hash: typing.Optional[int]
+    activity_hash: int | None
     """The activity hash if populated."""
 
 
@@ -191,16 +190,16 @@ class CharacterActivity:
     current_mode_hash: int
     """The current activity mode hash that the player is now playing."""
 
-    current_mode: typing.Optional[enums.GameMode]
+    current_mode: enums.GameMode | None
     """The current activity mode presented an an enum."""
 
-    current_mode_types: typing.Optional[collections.Sequence[enums.GameMode]]
+    current_mode_types: collections.Sequence[enums.GameMode]
     """A sequence of the current activity game-mode types presented as an enum."""
 
-    current_mode_hashes: typing.Optional[collections.Sequence[int]]
+    current_mode_hashes: collections.Sequence[int]
     """A sequence of the current activity's mode hashes."""
 
-    current_playlist_hash: typing.Optional[int]
+    current_playlist_hash: int | None
     """The current activity playlist hash."""
 
     last_story_hash: int
@@ -232,10 +231,10 @@ class AvailableActivity:
     is_visible: bool
     """Whether the activity is visible to this character or not."""
 
-    display_level: typing.Optional[int]
+    display_level: int | None
     """The activity's display level."""
 
-    recommended_light: typing.Optional[int]
+    recommended_light: int | None
     """The recommended light power to enter this activity."""
 
     difficulty: Difficulty
@@ -284,7 +283,7 @@ class ActivityValues:
     played_time: tuple[int, str]
     """The total time the player was in this activity represented as a tuple of int, str."""
 
-    team: typing.Optional[int]
+    team: int | None
     """???"""
 
     completion_reason: str
@@ -302,7 +301,7 @@ class ActivityValues:
     duration: tuple[int, str]
     """A tuple of int, string of The activity's duration, Example int, string format `1845`, `30m 45s`"""
 
-    # activity_id: typing.Optional[int]
+    # activity_id: int | None
     # """When a stat represents the best, most, longest, fastest or some other personal best,
     # the actual activity ID where that personal best was established is available on this property.
     # """
@@ -381,10 +380,10 @@ class ExtendedWeaponValues:
     precision_kills: int
     """Weapon's total precision kills."""
 
-    assists: typing.Optional[int]
+    assists: int | None
     """Optional weapon assists number."""
 
-    assists_damage: typing.Optional[int]
+    assists_damage: int | None
     """Optional weapon assists damage number."""
 
     precision_kills_percentage: tuple[int, str]
@@ -414,7 +413,7 @@ class ExtendedValues:
     ability_kills: int
     """Player ability kills."""
 
-    weapons: typing.Optional[collections.Collection[ExtendedWeaponValues]]
+    weapons: collections.Collection[ExtendedWeaponValues]
     """Collection of unique player weapons used in this activity. if no weapons found None will be returned."""
 
 
@@ -422,7 +421,7 @@ class ExtendedValues:
 class PostActivityTeam:
     """Represents a post activity team information.
 
-    Teams will be available in PvP gamemodes, e.g., Gambit, Crucible, Iron Banner. etc.
+    Teams will be available in PvP Game Modes, e.g., Gambit, Crucible, Iron Banner. etc.
     """
 
     id: int
@@ -454,19 +453,19 @@ class PostActivityPlayer:
     character_id: int
     """The id of the character the player finished this activity with."""
 
-    character_class: undefined.UndefinedOr[str]
+    character_class: str | None
     """A string of the character class the player finished this activity with."""
 
-    class_hash: typing.Optional[int]
+    class_hash: int | None
     """The hash of the player's character class."""
 
-    race_hash: typing.Optional[int]
+    race_hash: int | None
     """The hash of the player's character race."""
 
-    gender_hash: typing.Optional[int]
+    gender_hash: int | None
     """The hash of the player's character gender."""
 
-    character_level: typing.Optional[int]
+    character_level: int | None
     """The player's character's level."""
 
     light_level: int
@@ -508,7 +507,7 @@ class PostActivity:
     """The activity mode or type."""
 
     modes: collections.Sequence[enums.GameMode]
-    """A sequence of the activity's gamemodes."""
+    """A sequence of the activity's Game Modes."""
 
     is_private: bool
     """Whether this activity is private or not."""
@@ -519,7 +518,7 @@ class PostActivity:
     players: collections.Collection[PostActivityPlayer]
     """Collection of players that were in the activity."""
 
-    teams: typing.Optional[collections.Collection[PostActivityTeam]]
+    teams: collections.Collection[PostActivityTeam]
     """Collections the teams that were playing against each other.
 
     This field is optional and will be `None` if the activity don't have teams.
@@ -569,7 +568,7 @@ class Activity:
     """The activity mode or type."""
 
     modes: collections.Sequence[enums.GameMode]
-    """Sequence of the activity's gamemodes."""
+    """Sequence of the activity's Game Modes."""
 
     is_private: bool
     """Whether this activity is private or not."""
@@ -616,7 +615,7 @@ class Activity:
 
 @attrs.define(kw_only=True)
 class AggregatedActivity:
-    """Represents aggergated activity data."""
+    """Represents aggregated activity data."""
 
     hash: int
     """The activity hash."""

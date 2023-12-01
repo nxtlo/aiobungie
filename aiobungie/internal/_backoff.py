@@ -43,22 +43,22 @@ class ExponentialBackOff:
     the range \([0,1]\).
     Parameters
     ----------
-    base : builtins.float
+    base : float
         The base to use. Defaults to `2.0`.
-    maximum : builtins.float
+    maximum : float
         The max value the backoff can be in a single iteration. Anything above
         this will be capped to this base value plus random jitter.
-    jitter_multiplier : builtins.float
+    jitter_multiplier : float
         The multiplier for the random jitter. Defaults to `1.0`.
         Set to `0` to disable jitter.
-    initial_increment : builtins.int
+    initial_increment : int
         The initial increment to start at. Defaults to `0`.
     Raises
     ------
     ValueError
-        If an `builtins.int` that's too big to be represented as a
-        `builtins.float` or a non-finite value is passed in place of a field
-        that's annotated as `builtins.float`.
+        If an `int` that's too big to be represented as a
+        `float` or a non-finite value is passed in place of a field
+        that's annotated as `float`.
     """
 
     __slots__ = (
@@ -128,9 +128,7 @@ class ExponentialBackOff:
             # If this happened then we can be sure that we've passed maximum.
             value = self.maximum
 
-        return (
-            value + random.random() * self.jitter_multiplier
-        )  # nosec  # noqa S311 rng for cryptography
+        return value + random.random() * self.jitter_multiplier  # nosec  # noqa S311 rng for cryptography
 
     def __iter__(self) -> ExponentialBackOff:
         """Return this object, as it is an iterator."""

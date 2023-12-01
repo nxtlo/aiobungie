@@ -26,7 +26,6 @@ These crates are used to organize the flow and how things stracture
 for functional usage for the Bungie API objects.
 """
 
-
 from __future__ import annotations
 
 __all__: tuple[str, ...] = (

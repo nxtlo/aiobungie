@@ -37,7 +37,6 @@ import typing
 
 import attrs
 
-from aiobungie import undefined
 from aiobungie import url
 from aiobungie.crates import fireteams
 from aiobungie.crates import user
@@ -50,7 +49,6 @@ if typing.TYPE_CHECKING:
     from datetime import datetime
 
     from aiobungie import traits
-    from aiobungie import typedefs
     from aiobungie.crates import progressions as progressions_
     from aiobungie.internal import assets
 
@@ -68,7 +66,7 @@ class ClanFeatures:
     capabilities: int
     """An int that represents the clan's capabilities."""
 
-    membership_types: list[enums.MembershipType]
+    membership_types: collections.Sequence[enums.MembershipType]
     """The clan's membership types."""
 
     invite_permissions: bool
@@ -99,7 +97,7 @@ class ClanConversation:
     chat_enabled: bool
     """`True` if the Conversation's chat is enabled."""
 
-    name: undefined.UndefinedOr[str]
+    name: str | None
     """Conversation chat's name."""
 
     security: int
@@ -110,7 +108,7 @@ class ClanConversation:
         access_token: str,
         /,
         *,
-        name: undefined.UndefinedOr[str] = undefined.UNDEFINED,
+        name: str | None = None,
         security: typing.Literal[0, 1] = 0,
         enable_chat: bool = False,
     ) -> None:
@@ -196,7 +194,7 @@ class ClanMember(user.DestinyMembership):
     joined_at: datetime
     """The clan member's join date in UTC time zone."""
 
-    bungie: typing.Optional[user.PartialBungieUser]
+    bungie_user: user.PartialBungieUser | None
     """The clan member's bungie partial net user if set. `None` if not found.
 
     .. note:: This only returns a partial bungie net user.
@@ -228,7 +226,7 @@ class ClanMember(user.DestinyMembership):
         access_token: str,
         /,
         *,
-        comment: undefined.UndefinedOr[str] = undefined.UNDEFINED,
+        comment: str | None = None,
         length: int = 0,
     ) -> None:
         """Ban this member from the clan.
@@ -238,7 +236,7 @@ class ClanMember(user.DestinyMembership):
 
         Parameters
         ----------
-        access_token : `builtins.str`
+        access_token : `str`
             The bearer access token associated with the bungie account.
 
         Other Parameters
@@ -265,7 +263,7 @@ class ClanMember(user.DestinyMembership):
 
         Parameters
         ----------
-        access_token : `builtins.str`
+        access_token : `str`
             The bearer access token associated with the bungie account.
         """
         await self.net.request.rest.unban_clan_member(
@@ -283,7 +281,7 @@ class ClanMember(user.DestinyMembership):
 
         Parameters
         ----------
-        access_token : `builtins.str`
+        access_token : `str`
             The bearer access token associated with the bungie account.
 
         Returns
@@ -306,7 +304,7 @@ class GroupMember:
     net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
     """A network state used for making external requests."""
 
-    inactive_memberships: typedefs.NoneOr[dict[int, bool]]
+    inactive_memberships: collections.Mapping[int, bool] | None
     """The member's inactive memberships if provided. This will be `None` if not provided."""
 
     member_type: enums.ClanMemberType
@@ -316,7 +314,7 @@ class GroupMember:
     """Whether the member is online or not."""
 
     last_online: datetime
-    """Datetime of the member's last online apperation."""
+    """Datetime of the member's last online date."""
 
     group_id: int
     """The group id of this member."""
@@ -331,7 +329,7 @@ class GroupMember:
     """The member's group/clan object that represents the group member."""
 
     async def fetch_self_clan(self) -> Clan:
-        """Fetch an up-todate clan/group object of the current group.
+        """Fetch an up-to-date clan/group object of the current group.
 
         Returns
         -------
@@ -381,7 +379,7 @@ class Clan:
     about: str
     """Clan's about title."""
 
-    tags: list[str]
+    tags: collections.Sequence[str]
     """A list of the clan's tags."""
 
     theme: str
@@ -401,13 +399,13 @@ class Clan:
     call_sign: str
     """The clan call sign."""
 
-    owner: typedefs.NoneOr[ClanMember]
+    owner: ClanMember | None
     """The clan owner. This field could be `None` if not found."""
 
     features: ClanFeatures
     """The clan features."""
 
-    current_user_membership: typing.Optional[collections.Mapping[str, ClanMember]]
+    current_user_membership: collections.Mapping[str, ClanMember]
     """If an authorized user made this request and this user belongs to this clan.
     This field will be available.
 
@@ -419,13 +417,11 @@ class Clan:
         access_token: str,
         /,
         *,
-        invite_permissions_override: typedefs.NoneOr[bool] = None,
-        update_culture_permissionOverride: typedefs.NoneOr[bool] = None,
-        host_guided_game_permission_override: typedefs.NoneOr[
-            typing.Literal[0, 1, 2]
-        ] = None,
-        update_banner_permission_override: typedefs.NoneOr[bool] = None,
-        join_level: typedefs.NoneOr[typedefs.IntAnd[enums.ClanMemberType]] = None,
+        invite_permissions_override: bool | None = None,
+        update_culture_permissionOverride: bool | None = None,
+        host_guided_game_permission_override: typing.Literal[0, 1, 2] | None = None,
+        update_banner_permission_override: bool | None = None,
+        join_level: enums.ClanMemberType | int | None = None,
     ) -> None:
         """Edit this clan's options.
 
@@ -436,17 +432,17 @@ class Clan:
 
         Parameters
         ----------
-        access_token : `builtins.str`
+        access_token : `str`
             The bearer access token associated with the bungie account.
 
         Other Parameters
         ----------------
-        invite_permissions_override : `aiobungie.typedefs.NoneOr[bool]`
+        invite_permissions_override : `aiobungie.bool | None`
             Minimum Member Level allowed to invite new members to group
             Always Allowed: Founder, Acting Founder
             True means admins have this power, false means they don't
             Default is False for clans, True for groups.
-        update_culture_permissionOverride : `aiobungie.typedefs.NoneOr[bool]`
+        update_culture_permissionOverride : `aiobungie.bool | None`
             Minimum Member Level allowed to update group culture
             Always Allowed: Founder, Acting Founder
             True means admins have this power, false means they don't
@@ -456,7 +452,7 @@ class Clan:
             Always Allowed: Founder, Acting Founder, Admin
             Allowed Overrides: `0` -> None, `1` -> Beginner `2` -> Member.
             Default is Member for clans, None for groups, although this means nothing for groups.
-        update_banner_permission_override : `aiobungie.typedefs.NoneOr[bool]`
+        update_banner_permission_override : `aiobungie.bool | None`
             Minimum Member Level allowed to update banner
             Always Allowed: Founder, Acting Founder
             True means admins have this power, false means they don't
@@ -480,24 +476,22 @@ class Clan:
         access_token: str,
         /,
         *,
-        name: typedefs.NoneOr[str] = None,
-        about: typedefs.NoneOr[str] = None,
-        motto: typedefs.NoneOr[str] = None,
-        theme: typedefs.NoneOr[str] = None,
-        tags: typedefs.NoneOr[collections.Sequence[str]] = None,
-        is_public: typedefs.NoneOr[bool] = None,
-        locale: typedefs.NoneOr[str] = None,
-        avatar_image_index: typedefs.NoneOr[int] = None,
-        membership_option: typedefs.NoneOr[
-            typedefs.IntAnd[enums.MembershipOption]
-        ] = None,
-        allow_chat: typedefs.NoneOr[bool] = None,
-        chat_security: typedefs.NoneOr[typing.Literal[0, 1]] = None,
-        call_sign: typedefs.NoneOr[str] = None,
-        homepage: typedefs.NoneOr[typing.Literal[0, 1, 2]] = None,
-        enable_invite_messaging_for_admins: typedefs.NoneOr[bool] = None,
-        default_publicity: typedefs.NoneOr[typing.Literal[0, 1, 2]] = None,
-        is_public_topic_admin: typedefs.NoneOr[bool] = None,
+        name: str | None = None,
+        about: str | None = None,
+        motto: str | None = None,
+        theme: str | None = None,
+        tags: collections.Sequence[str] | None = None,
+        is_public: bool | None = None,
+        locale: str | None = None,
+        avatar_image_index: int | None = None,
+        membership_option: enums.MembershipOption | int | None = None,
+        allow_chat: bool | None = None,
+        chat_security: typing.Literal[0, 1] | None = None,
+        call_sign: str | None = None,
+        homepage: typing.Literal[0, 1, 2] | None = None,
+        enable_invite_messaging_for_admins: bool | None = None,
+        default_publicity: typing.Literal[0, 1, 2] | None = None,
+        is_public_topic_admin: bool | None = None,
     ) -> None:
         """Edit this clan.
 
@@ -513,44 +507,44 @@ class Clan:
 
         Other Parameters
         ----------------
-        name : `aiobungie.typedefs.NoneOr[str]`
+        name : `aiobungie.str | None`
             The name to edit the clan with.
-        about : `aiobungie.typedefs.NoneOr[str]`
+        about : `aiobungie.str | None`
             The about section to edit the clan with.
-        motto : `aiobungie.typedefs.NoneOr[str]`
+        motto : `aiobungie.str | None`
             The motto section to edit the clan with.
-        theme : `aiobungie.typedefs.NoneOr[str]`
+        theme : `aiobungie.str | None`
             The theme name to edit the clan with.
         tags : `aiobungie.typedefs.NoneOr[collections.Sequence[str]]`
             A sequence of strings to replace the clan tags with.
-        is_public : `aiobungie.typedefs.NoneOr[bool]`
+        is_public : `aiobungie.bool | None`
             If provided and set to `True`, The clan will set to private.
             If provided and set to `False`, The clan will set to public whether it was or not.
-        locale : `aiobungie.typedefs.NoneOr[str]`
+        locale : `aiobungie.str | None`
             The locale section to edit the clan with.
-        avatar_image_index : `aiobungie.typedefs.NoneOr[int]`
+        avatar_image_index : `aiobungie.int | None`
             The clan avatar image index to edit the clan with.
-        membership_option : `aiobungie.typedefs.NoneOr[aiobungie.typedefs.IntAnd[aiobungie.MembershipOption]]` # noqa: E501 # Line too long
+        membership_option : `aiobungie.typedefs.NoneOr[aiobungie.aiobungie.MembershipOption | int]` # noqa: E501 # Line too long
             The clan membership option to edit it with.
-        allow_chat : `aiobungie.typedefs.NoneOr[bool]`
+        allow_chat : `aiobungie.bool | None`
             If provided and set to `True`, The clan members will be allowed to chat.
             If provided and set to `False`, The clan members will not be allowed to chat.
         chat_security : `aiobungie.typedefs.NoneOr[typing.Literal[0, 1]]`
             If provided and set to `0`, The clan chat security will be edited to `Group` only.
             If provided and set to `1`, The clan chat security will be edited to `Admin` only.
-        call_sign : `aiobungie.typedefs.NoneOr[str]`
+        call_sign : `aiobungie.str | None`
             The clan call sign to edit it with.
         homepage : `aiobungie.typedefs.NoneOr[typing.Literal[0, 1, 2]]`
             If provided and set to `0`, The clan chat homepage will be edited to `Wall`.
             If provided and set to `1`, The clan chat homepage will be edited to `Forum`.
             If provided and set to `0`, The clan chat homepage will be edited to `AllianceForum`.
-        enable_invite_messaging_for_admins : `aiobungie.typedefs.NoneOr[bool]`
+        enable_invite_messaging_for_admins : `aiobungie.bool | None`
             ???
         default_publicity : `aiobungie.typedefs.NoneOr[typing.Literal[0, 1, 2]]`
             If provided and set to `0`, The clan chat publicity will be edited to `Public`.
             If provided and set to `1`, The clan chat publicity will be edited to `Alliance`.
             If provided and set to `2`, The clan chat publicity will be edited to `Private`.
-        is_public_topic_admin : `aiobungie.typedefs.NoneOr[bool]`
+        is_public_topic_admin : `aiobungie.bool | None`
             ???
         """
         await self.net.request.rest.edit_clan(
@@ -574,20 +568,18 @@ class Clan:
             is_public_topic_admin=is_public_topic_admin,
         )
 
-    async def fetch_avaliable_fireteams(
+    async def fetch_available_fireteams(
         self,
         access_token: str,
-        activity_type: typedefs.IntAnd[fireteams.FireteamActivity],
+        activity_type: fireteams.FireteamActivity | int,
         *,
-        platform: typedefs.IntAnd[fireteams.FireteamPlatform],
-        language: typing.Union[fireteams.FireteamLanguage, str],
-        date_range: typedefs.IntAnd[
-            fireteams.FireteamDate
-        ] = fireteams.FireteamDate.ALL,
+        platform: fireteams.FireteamPlatform | int,
+        language: fireteams.FireteamLanguage | str,
+        date_range: fireteams.FireteamDate | int = fireteams.FireteamDate.ALL,
         page: int = 0,
         public_only: bool = False,
         slots_filter: int = 0,
-    ) -> typing.Optional[collections.Sequence[fireteams.Fireteam]]:
+    ) -> collections.Sequence[fireteams.Fireteam]:
         """Fetch a clan's fireteams with open slots.
 
         .. note::
@@ -597,18 +589,18 @@ class Clan:
         ----------
         access_token : `str`
             The bearer access token associated with the bungie account.
-        activity_type : `aiobungie.typedefs.IntAnd[aiobungie.crates.FireteamActivity]`
+        activity_type : `aiobungie.aiobungie.crates.FireteamActivity | int`
             The fireteam activity type.
 
         Other Parameters
         ----------------
-        platform : `aiobungie.typedefs.IntAnd[aiobungie.crates.fireteams.FireteamPlatform]`
+        platform : `aiobungie.aiobungie.crates.fireteams.FireteamPlatform | int`
             If this is provided. Then the results will be filtered with the given platform.
             Defaults to `aiobungie.crates.FireteamPlatform.ANY` which returns all platforms.
-        language : `typing.Union[aiobungie.crates.fireteams.FireteamLanguage, str]`
+        language : `aiobungie.crates.fireteams.FireteamLanguage | str`
             A locale language to filter the used language in that fireteam.
             Defaults to `aiobungie.crates.FireteamLanguage.ALL`
-        date_range : `aiobungie.typedefs.IntAnd[aiobungie.FireteamDate]`
+        date_range : `aiobungie.aiobungie.FireteamDate | int`
             An integer to filter the date range of the returned fireteams. Defaults to `aiobungie.FireteamDate.ALL`.
         page : `int`
             The page number. By default its `0` which returns all available activities.
@@ -617,7 +609,7 @@ class Clan:
         slots_filter : `int`
             Filter the returned fireteams based on available slots. Default is `0`
         """
-        fireteams_ = await self.net.request.fetch_avaliable_clan_fireteams(
+        return await self.net.request.fetch_available_clan_fireteams(
             access_token,
             self.id,
             activity_type,
@@ -628,18 +620,14 @@ class Clan:
             public_only=public_only,
             slots_filter=slots_filter,
         )
-        if fireteams_ is None:
-            return None
-
-        return fireteams_
 
     async def fetch_fireteams(
         self,
         access_token: str,
         *,
         include_closed: bool = True,
-        platform: typedefs.IntAnd[fireteams.FireteamPlatform],
-        language: typing.Union[fireteams.FireteamLanguage, str],
+        platform: fireteams.FireteamPlatform | int,
+        language: fireteams.FireteamLanguage | str,
         filtered: bool = True,
         page: int = 0,
     ) -> collections.Sequence[fireteams.AvailableFireteam]:
@@ -658,10 +646,10 @@ class Clan:
         include_closed : bool
             If provided and set to True, It will also return closed fireteams.
             If provided and set to False, It will only return public fireteams. Default is True.
-        platform : aiobungie.typedefs.IntAnd[aiobungie.crates.fireteams.FireteamPlatform]
+        platform : aiobungie.aiobungie.crates.fireteams.FireteamPlatform | int
             If this is provided. Then the results will be filtered with the given platform.
             Defaults to aiobungie.crates.FireteamPlatform.ANY which returns all platforms.
-        language : typing.Union[aiobungie.crates.fireteams.FireteamLanguage, str]
+        language : aiobungie.crates.fireteams.FireteamLanguage | str
             A locale language to filter the used language in that fireteam.
             Defaults to aiobungie.crates.FireteamLanguage.ALL
         filtered : bool
@@ -671,8 +659,8 @@ class Clan:
 
         Returns
         -------
-        `typing.Optional[collections.Sequence[aiobungie.crates.AvalaibleFireteam]]`
-            A sequence of available fireteams objects if exists. else `None` will be returned.
+        `collections.Sequence[aiobungie.crates.AvalaibleFireteam]`
+            A sequence of available fireteams objects.
         """
         return await self.net.request.fetch_my_clan_fireteams(
             access_token,
@@ -698,7 +686,7 @@ class Clan:
         access_token: str,
         /,
         *,
-        name: undefined.UndefinedOr[str] = undefined.UNDEFINED,
+        name: str | None = None,
         security: typing.Literal[0, 1] = 0,
     ) -> None:
         """Add a new chat channel to a group.
@@ -729,14 +717,14 @@ class Clan:
     async def fetch_members(
         self,
         *,
-        name: typing.Optional[str] = None,
+        name: str | None = None,
         type: enums.MembershipType = enums.MembershipType.NONE,
     ) -> iterators.Iterator[ClanMember]:
         """Fetch the members of the clan.
 
         Parameters
         ----------
-        name : `typing.Optional[str]`
+        name : `str | None`
             If provided, Only players matching this name will be returned.
         type: `aiobungie.MembershipType`
             Filters the membership types of the players to return.
@@ -759,7 +747,7 @@ class Clan:
         access_token: str,
         /,
         *,
-        message: undefined.UndefinedOr[str] = undefined.UNDEFINED,
+        message: str | None = None,
     ) -> None:
         """Approve all pending users for this clan.
 
@@ -785,7 +773,7 @@ class Clan:
         access_token: str,
         /,
         *,
-        message: undefined.UndefinedOr[str] = undefined.UNDEFINED,
+        message: str | None = None,
     ) -> None:
         """Deny all pending users for this clan.
 

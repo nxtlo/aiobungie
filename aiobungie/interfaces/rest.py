@@ -34,7 +34,6 @@ import collections.abc as collections
 import typing
 
 from aiobungie import traits
-from aiobungie import undefined
 from aiobungie.internal import enums
 
 if typing.TYPE_CHECKING:
@@ -57,9 +56,9 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         async def __aexit__(
             self,
-            exception_type: typing.Optional[type[BaseException]],
-            exception: typing.Optional[BaseException],
-            exception_traceback: typing.Optional[types.TracebackType],
+            exception_type: type[BaseException] | None,
+            exception: BaseException | None,
+            exception_traceback: types.TracebackType | None,
         ) -> None:
             ...
 
@@ -95,10 +94,19 @@ class RESTInterface(traits.RESTful, abc.ABC):
     async def download_json_manifest(
         self,
         file_name: str = "manifest",
-        path: typing.Union[str, pathlib.Path] = ".",
+        path: str | pathlib.Path = ".",
         language: str = "en",
-    ) -> None:
+    ) -> pathlib.Path:
         """Download the Bungie manifest json file.
+
+        Example
+        -------
+        ```py
+        manifest = await rest.download_json_manifest()
+        with open(manifest, "r") as f:
+            to_dict = json.loads(f.read())
+            item_definitions = to_dict['DestinyInventoryItemDefinition']
+        ```
 
         Parameters
         ----------
@@ -108,39 +116,48 @@ class RESTInterface(traits.RESTful, abc.ABC):
             The path to save the manifest json file. Default is the current directory. Example `"D:/"`
         language: `str`
             The manifest database language bytes to get. Default is English.
+
+        Returns
+        -------
+        `pathlib.Path`
+            The path of this JSON manifest.
         """
 
     @abc.abstractmethod
-    async def download_manifest(
+    async def download_sqlite_manifest(
         self,
         language: str = "en",
         name: str = "manifest",
-        path: typing.Union[str, pathlib.Path] = ".",
+        path: str | pathlib.Path = ".",
         *,
         force: bool = False,
-    ) -> None:
-        """A helper method to download the manifest.
+    ) -> pathlib.Path:
+        """Downloads the SQLite version of Destiny2's Manifest.
 
-        Note
-        ----
-        This method downloads the sqlite database and not JSON.
-        Use `RESTInterface.download_json_manifest` for the JSON version.
+        Example
+        -------
+        ```py
+        manifest = await rest.download_sqlite_manifest()
+        with sqlite3.connect(manifest) as conn:
+            ...
+        ```
 
         Parameters
         ----------
         language : `str`
-            The manifest language to download, Default is english.
+            The manifest language to download, Default is English.
         path: `str` | `pathlib.Path`
-            The path to save the manifest sqlite database. Example `"D:/"`, Default is the current directory.
+            The path to download this manifest. Example `"/tmp/databases/"`, Default is the current directory.
         name : `str`
             The manifest database file name. Default is `manifest`
         force : `bool`
             Whether to force the download. Default is `False`. However if set to true the old
-            file will get removed and a new one will being to download.
+            file will get unlinked and a new one will begin to download.
 
         Returns
         --------
-        `None`
+        `pathlib.Path`
+            A pathlib object of the `.sqlite` file.
 
         Raises
         ------
@@ -215,7 +232,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
     async def fetch_hardlinked_credentials(
         self,
         credential: int,
-        type: typedefs.IntAnd[enums.CredentialType] = enums.CredentialType.STEAMID,
+        type: enums.CredentialType | int = enums.CredentialType.STEAMID,
         /,
     ) -> typedefs.JSONObject:
         """Gets any hard linked membership given a credential.
@@ -227,8 +244,8 @@ class RESTInterface(traits.RESTful, abc.ABC):
         ----------
         credential: `int`
             A valid SteamID64
-        type: `aiobungie.typedefs.IntAnd[aiobungie.CredentialType]`
-            The crededntial type. This must not be changed
+        type: `aiobungie.aiobungie.CredentialType | int`
+            The credential type. This must not be changed
             Since its only credential that works "currently"
 
         Returns
@@ -241,7 +258,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
     async def fetch_membership_from_id(
         self,
         id: int,
-        type: typedefs.IntAnd[enums.MembershipType] = enums.MembershipType.NONE,
+        type: enums.MembershipType | int = enums.MembershipType.NONE,
         /,
     ) -> typedefs.JSONObject:
         """Fetch Bungie user's memberships from their id.
@@ -250,7 +267,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         ----------
         id : `int`
             The user's id.
-        type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
+        type : `aiobungie.aiobungie.MembershipType | int`
             The user's membership type.
 
         Returns
@@ -268,9 +285,9 @@ class RESTInterface(traits.RESTful, abc.ABC):
     async def fetch_profile(
         self,
         membership_id: int,
-        type: typedefs.IntAnd[enums.MembershipType],
+        type: enums.MembershipType | int,
         components: list[enums.ComponentType],
-        auth: typing.Optional[str] = None,
+        auth: str | None = None,
     ) -> typedefs.JSONObject:
         """
         Fetch a bungie profile.
@@ -279,14 +296,14 @@ class RESTInterface(traits.RESTful, abc.ABC):
         ----------
         membership_id: `int`
             The member's id.
-        type: `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
+        type: `aiobungie.aiobungie.MembershipType | int`
             A valid membership type.
         components : `list[aiobungie.ComponentType]`
             A list of profile components to collect and return.
 
         Other Parameters
         ----------------
-        auth : `typing.Optional[str]`
+        auth : `str | None`
             A bearer access_token to make the request with.
             This is optional and limited to components that only requires an Authorization token.
 
@@ -302,11 +319,11 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    async def fetch_player(
+    async def fetch_membership(
         self,
         name: str,
         code: int,
-        type: typedefs.IntAnd[enums.MembershipType] = enums.MembershipType.ALL,
+        type: enums.MembershipType | int = enums.MembershipType.ALL,
         /,
     ) -> typedefs.JSONArray:
         """Fetch a Destiny 2 Player.
@@ -317,7 +334,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
             The unique Bungie player name.
         code : `int`
             The unique Bungie display name code.
-        type: `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
+        type: `aiobungie.aiobungie.MembershipType | int`
             The player's membership type, e,g. XBOX, STEAM, PSN
 
         Returns
@@ -337,10 +354,10 @@ class RESTInterface(traits.RESTful, abc.ABC):
     async def fetch_character(
         self,
         member_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
         character_id: int,
         components: list[enums.ComponentType],
-        auth: typing.Optional[str] = None,
+        auth: str | None = None,
     ) -> typedefs.JSONObject:
         """Fetch a Destiny 2 player's characters.
 
@@ -348,7 +365,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         ----------
         member_id: `int`
             A valid bungie member id.
-        membership_type: `aiobungie.typedefs.IntAnd[aiobungie.internal.enums.MembershipType]`
+        membership_type: `aiobungie.aiobungie.internal.enums.MembershipType | int`
             The member's membership type.
         character_id : `int`
             The character id to return.
@@ -357,7 +374,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Other Parameters
         ----------------
-        auth : `typing.Optional[str]`
+        auth : `str | None`
             A bearer access_token to make the request with.
             This is optional and limited to components that only requires an Authorization token.
 
@@ -377,10 +394,8 @@ class RESTInterface(traits.RESTful, abc.ABC):
         self,
         member_id: int,
         character_id: int,
-        mode: typedefs.IntAnd[enums.GameMode],
-        membership_type: typedefs.IntAnd[
-            enums.MembershipType
-        ] = enums.MembershipType.ALL,
+        mode: enums.GameMode | int,
+        membership_type: enums.MembershipType | int = enums.MembershipType.ALL,
         *,
         page: int = 1,
         limit: int = 1,
@@ -393,12 +408,12 @@ class RESTInterface(traits.RESTful, abc.ABC):
             The user id that starts with `4611`.
         character_id: `int`
             The id of the character to retrieve.
-        mode: `aiobungie.typedefs.IntAnd[aiobungie.GameMode]`
+        mode: `aiobungie.aiobungie.GameMode | int`
             This parameter filters the game mode, Nightfall, Strike, Iron Banner, etc.
 
         Other Parameters
         ----------------
-        membership_type: `aiobungie.typedefs.IntAnd[aiobungie.internal.enums.MembershipType]`
+        membership_type: `aiobungie.aiobungie.internal.enums.MembershipType | int`
             The Member ship type, if nothing was passed than it will return all.
         page: `int`
             The page number. Default to `1`
@@ -436,7 +451,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
     @abc.abstractmethod
     async def fetch_clan_from_id(
-        self, id: int, /, access_token: typing.Optional[str] = None
+        self, id: int, /, access_token: str | None = None
     ) -> typedefs.JSONObject:
         """Fetch a Bungie Clan by its id.
 
@@ -447,7 +462,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Other Parameters
         ----------------
-        access_token : `typing.Optional[str]`
+        access_token : `str | None`
             An optional access token to make the request with.
 
             If the token was bound to a member of the clan,
@@ -470,9 +485,9 @@ class RESTInterface(traits.RESTful, abc.ABC):
         self,
         name: str,
         /,
-        access_token: typing.Optional[str] = None,
+        access_token: str | None = None,
         *,
-        type: typedefs.IntAnd[enums.GroupType] = enums.GroupType.CLAN,
+        type: enums.GroupType | int = enums.GroupType.CLAN,
     ) -> typedefs.JSONObject:
         """Fetch a Clan by its name.
         This method will return the first clan found with given name name.
@@ -484,13 +499,13 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Other Parameters
         ----------------
-        access_token : `typing.Optional[str]`
+        access_token : `str | None`
             An optional access token to make the request with.
 
             If the token was bound to a member of the clan,
             This field `aiobungie.crates.Clan.current_user_membership` will be available
             and will return the membership of the user who made this request.
-        type : `aiobungie.typedefs.IntAnd[aiobungie.GroupType]`
+        type : `aiobungie.aiobungie.GroupType | int`
             The group type, Default is one.
 
         Returns
@@ -543,11 +558,11 @@ class RESTInterface(traits.RESTful, abc.ABC):
     async def fetch_groups_for_member(
         self,
         member_id: int,
-        member_type: typedefs.IntAnd[enums.MembershipType],
+        member_type: enums.MembershipType | int,
         /,
         *,
         filter: int = 0,
-        group_type: typedefs.IntAnd[enums.GroupType] = enums.GroupType.CLAN,
+        group_type: enums.GroupType | int = enums.GroupType.CLAN,
     ) -> typedefs.JSONObject:
         """Fetch the information about the groups for a member.
 
@@ -555,14 +570,14 @@ class RESTInterface(traits.RESTful, abc.ABC):
         ----------
         member_id : `int`
             The member's id
-        member_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
+        member_type : `aiobungie.aiobungie.MembershipType | int`
             The member's membership type.
 
         Other Parameters
         ----------------
-        filter : `builsins.int`
+        filter : `int`
             Filter apply to list of joined groups. This Default to `0`
-        group_type : `aiobungie.typedefs.IntAnd[aiobungie.GroupType]`
+        group_type : `aiobungie.aiobungie.GroupType | int`
             The group's type.
             This is always set to `aiobungie.GroupType.CLAN` and should not be changed.
 
@@ -576,11 +591,11 @@ class RESTInterface(traits.RESTful, abc.ABC):
     async def fetch_potential_groups_for_member(
         self,
         member_id: int,
-        member_type: typedefs.IntAnd[enums.MembershipType],
+        member_type: enums.MembershipType | int,
         /,
         *,
         filter: int = 0,
-        group_type: typedefs.IntAnd[enums.GroupType] = enums.GroupType.CLAN,
+        group_type: enums.GroupType | int = enums.GroupType.CLAN,
     ) -> typedefs.JSONObject:
         """Get information about the groups that a given member has applied to or been invited to.
 
@@ -588,14 +603,14 @@ class RESTInterface(traits.RESTful, abc.ABC):
         ----------
         member_id : `int`
             The member's id
-        member_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
+        member_type : `aiobungie.aiobungie.MembershipType | int`
             The member's membership type.
 
         Other Parameters
         ----------------
-        filter : `builsins.int`
+        filter : `int`
             Filter apply to list of joined groups. This Default to `0`
-        group_type : `aiobungie.typedefs.IntAnd[aiobungie.GroupType]`
+        group_type : `aiobungie.aiobungie.GroupType | int`
             The group's type.
             This is always set to `aiobungie.GroupType.CLAN` and should not be changed.
 
@@ -611,21 +626,21 @@ class RESTInterface(traits.RESTful, abc.ABC):
         clan_id: int,
         /,
         *,
-        name: typing.Optional[str] = None,
-        type: typedefs.IntAnd[enums.MembershipType] = enums.MembershipType.NONE,
+        name: str | None = None,
+        type: enums.MembershipType | int = enums.MembershipType.NONE,
     ) -> typedefs.JSONObject:
         """Fetch all Bungie Clan members.
 
         Parameters
         ----------
-        clan_id : `builsins.int`
+        clan_id : `int`
             The clans id
 
         Other Parameters
         ----------------
-        name : `typing.Optional[str]`
+        name : `str | None`
             If provided, Only players matching this name will be returned.
-        type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
+        type : `aiobungie.aiobungie.MembershipType | int`
             An optional clan member's membership type.
             Default is set to `aiobungie.MembershipType.NONE`
             Which returns the first matched clan member by their name.
@@ -685,7 +700,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         Returns
         -------
         `aiobungie.typedefs.JSONObject`
-            A JSON object of the objetive data.
+            A JSON object of the objective data.
         """
 
     @abc.abstractmethod
@@ -707,7 +722,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
     async def fetch_linked_profiles(
         self,
         member_id: int,
-        member_type: typedefs.IntAnd[enums.MembershipType],
+        member_type: enums.MembershipType | int,
         /,
         *,
         all: bool = False,
@@ -723,14 +738,14 @@ class RESTInterface(traits.RESTful, abc.ABC):
         ----------
         member_id : `int`
             The ID of the membership. This must be a valid Bungie.Net or PSN or Xbox ID.
-        member_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
+        member_type : `aiobungie.aiobungie.MembershipType | int`
             The type for the membership whose linked Destiny account you want to return.
 
         Other Parameters
         ----------------
         all : `bool`
             If provided and set to `True`, All memberships regardless
-            of whether thry're obscured by overrides will be returned,
+            of whether they're obscured by overrides will be returned,
 
             If provided and set to `False`, Only available memberships will be returned.
             The default for this is `False`.
@@ -806,7 +821,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         /,
         item_id: int,
         character_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
     ) -> None:
         """Equip an item to a character.
 
@@ -823,8 +838,8 @@ class RESTInterface(traits.RESTful, abc.ABC):
             The item id.
         character_id : `int`
             The character's id to equip the item to.
-        membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
-            The membership type assocaiated with this player.
+        membership_type : `aiobungie.aiobungie.MembershipType | int`
+            The membership type associated with this player.
         """
 
     @abc.abstractmethod
@@ -832,9 +847,9 @@ class RESTInterface(traits.RESTful, abc.ABC):
         self,
         access_token: str,
         /,
-        item_ids: list[int],
+        item_ids: collections.Sequence[int],
         character_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
     ) -> None:
         """Equip multiple items to a character.
 
@@ -847,12 +862,12 @@ class RESTInterface(traits.RESTful, abc.ABC):
         ----------
         access_token : `str`
             The bearer access token associated with the bungie account.
-        item_ids : `list[int]`
-            A list of item ids.
+        item_ids : `Sequence[int]`
+            A sequence of item ids.
         character_id : `int`
             The character's id to equip the item to.
-        membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
-            The membership type assocaiated with this player.
+        membership_type : `aiobungie.aiobungie.MembershipType | int`
+            The membership type associated with this player.
         """
 
     @abc.abstractmethod
@@ -862,10 +877,10 @@ class RESTInterface(traits.RESTful, abc.ABC):
         /,
         group_id: int,
         membership_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
         *,
         length: int = 0,
-        comment: undefined.UndefinedOr[str] = undefined.UNDEFINED,
+        comment: str | None = None,
     ) -> None:
         """Bans a member from the clan.
 
@@ -880,7 +895,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
             The group id.
         membership_id : `int`
             The member id to ban.
-        membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
+        membership_type : `aiobungie.aiobungie.MembershipType | int`
             The member's membership type.
 
         Other Parameters
@@ -898,9 +913,9 @@ class RESTInterface(traits.RESTful, abc.ABC):
         /,
         group_id: int,
         membership_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
     ) -> None:
-        """Unbans a member from the clan.
+        """Unban a member from the clan.
 
         .. note::
             This request requires OAuth2: oauth2: `AdminGroups` scope.
@@ -913,7 +928,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
             The group id.
         membership_id : `int`
             The member id to unban.
-        membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
+        membership_type : `aiobungie.aiobungie.MembershipType | int`
             The member's membership type.
         """
 
@@ -924,7 +939,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         /,
         group_id: int,
         membership_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
     ) -> typedefs.JSONObject:
         """Kick a member from the clan.
 
@@ -939,7 +954,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
             The group id.
         membership_id : `int`
             The member id to kick.
-        membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
+        membership_type : `aiobungie.aiobungie.MembershipType | int`
             The member's membership type.
 
         Returns
@@ -955,13 +970,11 @@ class RESTInterface(traits.RESTful, abc.ABC):
         /,
         group_id: int,
         *,
-        invite_permissions_override: typedefs.NoneOr[bool] = None,
-        update_culture_permissionOverride: typedefs.NoneOr[bool] = None,
-        host_guided_game_permission_override: typedefs.NoneOr[
-            typing.Literal[0, 1, 2]
-        ] = None,
-        update_banner_permission_override: typedefs.NoneOr[bool] = None,
-        join_level: typedefs.NoneOr[typedefs.IntAnd[enums.ClanMemberType]] = None,
+        invite_permissions_override: bool | None = None,
+        update_culture_permissionOverride: bool | None = None,
+        host_guided_game_permission_override: typing.Literal[0, 1, 2] | None = None,
+        update_banner_permission_override: bool | None = None,
+        join_level: enums.ClanMemberType | int | None = None,
     ) -> None:
         """Edit the clan options.
 
@@ -979,12 +992,12 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Other Parameters
         ----------------
-        invite_permissions_override : `aiobungie.typedefs.NoneOr[bool]`
+        invite_permissions_override : `bool | None`
             Minimum Member Level allowed to invite new members to group
             Always Allowed: Founder, Acting Founder
             True means admins have this power, false means they don't
             Default is False for clans, True for groups.
-        update_culture_permissionOverride : `aiobungie.typedefs.NoneOr[bool]`
+        update_culture_permissionOverride : `bool | None`
             Minimum Member Level allowed to update group culture
             Always Allowed: Founder, Acting Founder
             True means admins have this power, false means they don't
@@ -994,7 +1007,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
             Always Allowed: Founder, Acting Founder, Admin
             Allowed Overrides: `0` -> None, `1` -> Beginner `2` -> Member.
             Default is Member for clans, None for groups, although this means nothing for groups.
-        update_banner_permission_override : `aiobungie.typedefs.NoneOr[bool]`
+        update_banner_permission_override : `bool | None`
             Minimum Member Level allowed to update banner
             Always Allowed: Founder, Acting Founder
             True means admins have this power, false means they don't
@@ -1011,24 +1024,22 @@ class RESTInterface(traits.RESTful, abc.ABC):
         /,
         group_id: int,
         *,
-        name: typedefs.NoneOr[str] = None,
-        about: typedefs.NoneOr[str] = None,
-        motto: typedefs.NoneOr[str] = None,
-        theme: typedefs.NoneOr[str] = None,
-        tags: typedefs.NoneOr[collections.Sequence[str]] = None,
-        is_public: typedefs.NoneOr[bool] = None,
-        locale: typedefs.NoneOr[str] = None,
-        avatar_image_index: typedefs.NoneOr[int] = None,
-        membership_option: typedefs.NoneOr[
-            typedefs.IntAnd[enums.MembershipOption]
-        ] = None,
-        allow_chat: typedefs.NoneOr[bool] = None,
-        chat_security: typedefs.NoneOr[typing.Literal[0, 1]] = None,
-        call_sign: typedefs.NoneOr[str] = None,
-        homepage: typedefs.NoneOr[typing.Literal[0, 1, 2]] = None,
-        enable_invite_messaging_for_admins: typedefs.NoneOr[bool] = None,
-        default_publicity: typedefs.NoneOr[typing.Literal[0, 1, 2]] = None,
-        is_public_topic_admin: typedefs.NoneOr[bool] = None,
+        name: str | None = None,
+        about: str | None = None,
+        motto: str | None = None,
+        theme: str | None = None,
+        tags: collections.Sequence[str] | None = None,
+        is_public: bool | None = None,
+        locale: str | None = None,
+        avatar_image_index: int | None = None,
+        membership_option: enums.MembershipOption | int | None = None,
+        allow_chat: bool | None = None,
+        chat_security: typing.Literal[0, 1] | None = None,
+        call_sign: str | None = None,
+        homepage: typing.Literal[0, 1, 2] | None = None,
+        enable_invite_messaging_for_admins: bool | None = None,
+        default_publicity: typing.Literal[0, 1, 2] | None = None,
+        is_public_topic_admin: bool | None = None,
     ) -> None:
         """Edit a clan.
 
@@ -1046,44 +1057,44 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Other Parameters
         ----------------
-        name : `aiobungie.typedefs.NoneOr[str]`
+        name : `str | None`
             The name to edit the clan with.
-        about : `aiobungie.typedefs.NoneOr[str]`
+        about : `str | None`
             The about section to edit the clan with.
-        motto : `aiobungie.typedefs.NoneOr[str]`
+        motto : `str | None`
             The motto section to edit the clan with.
-        theme : `aiobungie.typedefs.NoneOr[str]`
+        theme : `str | None`
             The theme name to edit the clan with.
-        tags : `aiobungie.typedefs.NoneOr[collections.Sequence[str]]`
+        tags : `collections.Sequence[str] | None`
             A sequence of strings to replace the clan tags with.
-        is_public : `aiobungie.typedefs.NoneOr[bool]`
+        is_public : `bool | None`
             If provided and set to `True`, The clan will set to private.
             If provided and set to `False`, The clan will set to public whether it was or not.
-        locale : `aiobungie.typedefs.NoneOr[str]`
+        locale : `str | None`
             The locale section to edit the clan with.
-        avatar_image_index : `aiobungie.typedefs.NoneOr[int]`
+        avatar_image_index : `int | None`
             The clan avatar image index to edit the clan with.
-        membership_option : `aiobungie.typedefs.NoneOr[aiobungie.typedefs.IntAnd[aiobungie.MembershipOption]]` # noqa: E501 # Line too long
+        membership_option : `aiobungie.typedefs.NoneOr[aiobungie.aiobungie.MembershipOption | int]` # noqa: E501 # Line too long
             The clan membership option to edit it with.
-        allow_chat : `aiobungie.typedefs.NoneOr[bool]`
+        allow_chat : `bool | None`
             If provided and set to `True`, The clan members will be allowed to chat.
             If provided and set to `False`, The clan members will not be allowed to chat.
         chat_security : `aiobungie.typedefs.NoneOr[typing.Literal[0, 1]]`
             If provided and set to `0`, The clan chat security will be edited to `Group` only.
             If provided and set to `1`, The clan chat security will be edited to `Admin` only.
-        call_sign : `aiobungie.typedefs.NoneOr[str]`
+        call_sign : `str | None`
             The clan call sign to edit it with.
         homepage : `aiobungie.typedefs.NoneOr[typing.Literal[0, 1, 2]]`
             If provided and set to `0`, The clan chat homepage will be edited to `Wall`.
             If provided and set to `1`, The clan chat homepage will be edited to `Forum`.
             If provided and set to `0`, The clan chat homepage will be edited to `AllianceForum`.
-        enable_invite_messaging_for_admins : `aiobungie.typedefs.NoneOr[bool]`
+        enable_invite_messaging_for_admins : `bool | None`
             ???
         default_publicity : `aiobungie.typedefs.NoneOr[typing.Literal[0, 1, 2]]`
             If provided and set to `0`, The clan chat publicity will be edited to `Public`.
             If provided and set to `1`, The clan chat publicity will be edited to `Alliance`.
             If provided and set to `2`, The clan chat publicity will be edited to `Private`.
-        is_public_topic_admin : `aiobungie.typedefs.NoneOr[bool]`
+        is_public_topic_admin : `bool | None`
             ???
         """
 
@@ -1206,7 +1217,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         access_token: str,
         /,
         group_id: int,
-        message: undefined.UndefinedOr[str] = undefined.UNDEFINED,
+        message: str | None = None,
     ) -> None:
         """Approve all pending users for the given group id.
 
@@ -1233,7 +1244,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         /,
         group_id: int,
         *,
-        message: undefined.UndefinedOr[str] = undefined.UNDEFINED,
+        message: str | None = None,
     ) -> None:
         """Deny all pending users for the given group id.
 
@@ -1260,7 +1271,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         /,
         group_id: int,
         *,
-        name: undefined.UndefinedOr[str] = undefined.UNDEFINED,
+        name: str | None = None,
         security: typing.Literal[0, 1] = 0,
     ) -> None:
         """Add a new chat channel to a group.
@@ -1295,7 +1306,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         group_id: int,
         conversation_id: int,
         *,
-        name: undefined.UndefinedOr[str] = undefined.UNDEFINED,
+        name: str | None = None,
         security: typing.Literal[0, 1] = 0,
         enable_chat: bool = False,
     ) -> None:
@@ -1336,7 +1347,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         item_id: int,
         item_hash: int,
         character_id: int,
-        member_type: typedefs.IntAnd[enums.MembershipType],
+        member_type: enums.MembershipType | int,
         *,
         stack_size: int = 1,
         vault: bool = False,
@@ -1358,15 +1369,15 @@ class RESTInterface(traits.RESTful, abc.ABC):
             The item hash.
         character_id : `int`
             The character id to transfer the item from/to.
-        member_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
+        member_type : `aiobungie.aiobungie.MembershipType | int`
             The user membership type.
 
         Other Parameters
         ----------------
         stack_size : `int`
             The item stack size.
-        valut : `bool`
-            Whether to transfer this item to your valut or not. Defaults to `False`.
+        vault : `bool`
+            Whether to transfer this item to your vault or not. Defaults to `False`.
         """
 
     @abc.abstractmethod
@@ -1377,7 +1388,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         item_id: int,
         item_hash: int,
         character_id: int,
-        member_type: typedefs.IntAnd[enums.MembershipType],
+        member_type: enums.MembershipType | int,
         *,
         stack_size: int = 1,
         vault: bool = False,
@@ -1399,25 +1410,25 @@ class RESTInterface(traits.RESTful, abc.ABC):
             The item hash.
         character_id : `int`
             The character id to pull the item to.
-        member_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
+        member_type : `aiobungie.aiobungie.MembershipType | int`
             The user membership type.
 
         Other Parameters
         ----------------
         stack_size : `int`
             The item stack size.
-        valut : `bool`
-            Whether to pill this item to your valut or not. Defaults to `False`.
+        vault : `bool`
+            Whether to pill this item to your vault or not. Defaults to `False`.
         """
 
     @abc.abstractmethod
     async def fetch_fireteams(
         self,
-        activity_type: typedefs.IntAnd[fireteams.FireteamActivity],
+        activity_type: fireteams.FireteamActivity | int,
         *,
-        platform: typedefs.IntAnd[fireteams.FireteamPlatform],
-        language: typing.Union[fireteams.FireteamLanguage, str],
-        date_range: typedefs.IntAnd[fireteams.FireteamDate] = 0,
+        platform: fireteams.FireteamPlatform | int,
+        language: fireteams.FireteamLanguage | str,
+        date_range: fireteams.FireteamDate | int = 0,
         page: int = 0,
         slots_filter: int = 0,
     ) -> typedefs.JSONObject:
@@ -1425,18 +1436,18 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Parameters
         ----------
-        activity_type : `aiobungie.typedefs.IntAnd[aiobungie.crates.FireteamActivity]`
+        activity_type : `aiobungie.aiobungie.crates.FireteamActivity | int`
             The fireteam activity type.
 
         Other Parameters
         ----------------
-        platform : `aiobungie.typedefs.IntAnd[aiobungie.crates.fireteams.FireteamPlatform]`
+        platform : `aiobungie.aiobungie.crates.fireteams.FireteamPlatform | int`
             If this is provided. Then the results will be filtered with the given platform.
             Defaults to `aiobungie.crates.FireteamPlatform.ANY` which returns all platforms.
-        language : `typing.Union[aiobungie.crates.fireteams.FireteamLanguage, str]`
+        language : `aiobungie.crates.fireteams.FireteamLanguage | str`
             A locale language to filter the used language in that fireteam.
             Defaults to `aiobungie.crates.FireteamLanguage.ALL`
-        date_range : `aiobungie.typedefs.IntAnd[aiobungie.FireteamDate]`
+        date_range : `aiobungie.aiobungie.FireteamDate | int`
             An integer to filter the date range of the returned fireteams. Defaults to `aiobungie.FireteamDate.ALL`.
         page : `int`
             The page number. By default its `0` which returns all available activities.
@@ -1450,15 +1461,15 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
-    async def fetch_avaliable_clan_fireteams(
+    async def fetch_available_clan_fireteams(
         self,
         access_token: str,
         group_id: int,
-        activity_type: typedefs.IntAnd[fireteams.FireteamActivity],
+        activity_type: fireteams.FireteamActivity | int,
         *,
-        platform: typedefs.IntAnd[fireteams.FireteamPlatform],
-        language: typing.Union[fireteams.FireteamLanguage, str],
-        date_range: typedefs.IntAnd[fireteams.FireteamDate] = 0,
+        platform: fireteams.FireteamPlatform | int,
+        language: fireteams.FireteamLanguage | str,
+        date_range: fireteams.FireteamDate | int = 0,
         page: int = 0,
         public_only: bool = False,
         slots_filter: int = 0,
@@ -1474,18 +1485,18 @@ class RESTInterface(traits.RESTful, abc.ABC):
             The bearer access token associated with the bungie account.
         group_id : `int`
             The group/clan id of the fireteam.
-        activity_type : `aiobungie.typedefs.IntAnd[aiobungie.crates.FireteamActivity]`
+        activity_type : `aiobungie.aiobungie.crates.FireteamActivity | int`
             The fireteam activity type.
 
         Other Parameters
         ----------------
-        platform : `aiobungie.typedefs.IntAnd[aiobungie.crates.fireteams.FireteamPlatform]`
+        platform : `aiobungie.aiobungie.crates.fireteams.FireteamPlatform | int`
             If this is provided. Then the results will be filtered with the given platform.
             Defaults to `aiobungie.crates.FireteamPlatform.ANY` which returns all platforms.
-        language : `typing.Union[aiobungie.crates.fireteams.FireteamLanguage, str]`
+        language : `aiobungie.crates.fireteams.FireteamLanguage | str`
             A locale language to filter the used language in that fireteam.
             Defaults to `aiobungie.crates.FireteamLanguage.ALL`
-        date_range : `aiobungie.typedefs.IntAnd[aiobungie.FireteamDate]`
+        date_range : `aiobungie.aiobungie.FireteamDate | int`
             An integer to filter the date range of the returned fireteams. Defaults to `aiobungie.FireteamDate.ALL`.
         page : `int`
             The page number. By default its `0` which returns all available activities.
@@ -1531,8 +1542,8 @@ class RESTInterface(traits.RESTful, abc.ABC):
         group_id: int,
         *,
         include_closed: bool = True,
-        platform: typedefs.IntAnd[fireteams.FireteamPlatform],
-        language: typing.Union[fireteams.FireteamLanguage, str],
+        platform: fireteams.FireteamPlatform | int,
+        language: fireteams.FireteamLanguage | str,
         filtered: bool = True,
         page: int = 0,
     ) -> typedefs.JSONObject:
@@ -1554,10 +1565,10 @@ class RESTInterface(traits.RESTful, abc.ABC):
             If provided and set to `True`, It will also return closed fireteams.
             If provided and set to `False`, It will only return public fireteams.
             Default is `True`.
-        platform : `aiobungie.typedefs.IntAnd[aiobungie.crates.fireteams.FireteamPlatform]`
+        platform : `aiobungie.aiobungie.crates.fireteams.FireteamPlatform | int`
             If this is provided. Then the results will be filtered with the given platform.
             Defaults to `aiobungie.crates.FireteamPlatform.ANY` which returns all platforms.
-        language : `typing.Union[aiobungie.crates.fireteams.FireteamLanguage, str]`
+        language : `aiobungie.crates.fireteams.FireteamLanguage | str`
             A locale language to filter the used language in that fireteam.
             Defaults to `aiobungie.crates.FireteamLanguage.ALL`
         filtered : `bool`
@@ -1663,9 +1674,9 @@ class RESTInterface(traits.RESTful, abc.ABC):
         action_token: str,
         /,
         instance_id: int,
-        plug: typing.Union[builders.PlugSocketBuilder, dict[str, int]],
+        plug: builders.PlugSocketBuilder | collections.Mapping[str, int],
         character_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
     ) -> typedefs.JSONObject:
         """Insert a plug into a socketed item.
 
@@ -1678,7 +1689,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
             Action token provided by the AwaGetActionToken API call.
         instance_id : `int`
             The item instance id that's plug inserted.
-        plug : `typing.Union[aiobungie.builders.PlugSocketBuilder, dict[str, int]]`
+        plug : `aiobungie.builders.PlugSocketBuilder | Mapping[str, int]`
             Either a PlugSocketBuilder object or a raw dict contains key, value for the plug entries.
 
         Example
@@ -1695,7 +1706,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         ```
         character_id : `int`
             The character's id.
-        membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
+        membership_type : `aiobungie.aiobungie.MembershipType | int`
             The membership type.
 
         Returns
@@ -1715,9 +1726,9 @@ class RESTInterface(traits.RESTful, abc.ABC):
         access_token: str,
         /,
         instance_id: int,
-        plug: typing.Union[builders.PlugSocketBuilder, dict[str, int]],
+        plug: builders.PlugSocketBuilder | collections.Mapping[str, int],
         character_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
     ) -> typedefs.JSONObject:
         """Insert a plug into a socketed item. This doesn't require an Action token.
 
@@ -1728,7 +1739,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         ----------
         instance_id : `int`
             The item instance id that's plug inserted.
-        plug : `typing.Union[aiobungie.builders.PlugSocketBuilder, dict[str, int]]`
+        plug : `aiobungie.builders.PlugSocketBuilder | Mapping[str, int]`
             Either a PlugSocketBuilder object or a raw dict contains key, value for the plug entries.
 
         Example
@@ -1745,7 +1756,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         ```
         character_id : `int`
             The character's id.
-        membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
+        membership_type : `aiobungie.aiobungie.MembershipType | int`
             The membership type.
 
         Returns
@@ -1767,7 +1778,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         /,
         item_id: int,
         character_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
     ) -> int:
         """Set the Lock State for an instanced item.
 
@@ -1784,7 +1795,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
             The item id.
         character_id : `int`
             The character id.
-        membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
+        membership_type : `aiobungie.aiobungie.MembershipType | int`
             The membership type for the associated account.
 
         Returns
@@ -1808,7 +1819,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         /,
         item_id: int,
         character_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
     ) -> int:
         """Set the Tracking State for an instanced Quest or Bounty.
 
@@ -1825,7 +1836,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
             The item id.
         character_id : `int`
             The character id.
-        membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
+        membership_type : `aiobungie.aiobungie.MembershipType | int`
             The membership type for the associated account.
 
         Returns
@@ -1870,7 +1881,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         self,
         membership_id: int,
         character_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
     ) -> typedefs.JSONObject:
         """Fetch details about unique weapon usage for a character. Includes all exotics.
 
@@ -1880,7 +1891,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
             The Destiny user membership id.
         character_id : `int`
             The character id to retrieve.
-        membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
+        membership_type : `aiobungie.aiobungie.MembershipType | int`
             The Destiny user's membership type.
 
         Returns
@@ -1901,7 +1912,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
     @abc.abstractmethod
     async def fetch_common_settings(self) -> typedefs.JSONObject:
-        """Fetch the common settings used by Bungie's envirotment.
+        """Fetch the common settings used by Bungie's environment.
 
         Returns
         -------
@@ -1941,7 +1952,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         self,
         member_id: int,
         item_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
         components: list[enums.ComponentType],
     ) -> typedefs.JSONObject:
         """Fetch an instanced Destiny 2 item's details.
@@ -1952,7 +1963,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
             The membership id of the Destiny 2 player.
         item_id : `int`
             The instance id of the item.
-        membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
+        membership_type : `aiobungie.aiobungie.MembershipType | int`
             The membership type of the Destiny 2 player.
         components : `list[aiobungie.ComponentType]`
             A list of components to retrieve.
@@ -1983,11 +1994,11 @@ class RESTInterface(traits.RESTful, abc.ABC):
         self,
         access_token: str,
         type: typing.Literal[0, 1],
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
         /,
         *,
-        affected_item_id: typing.Optional[int] = None,
-        character_id: typing.Optional[int] = None,
+        affected_item_id: int | None = None,
+        character_id: int | None = None,
     ) -> typedefs.JSONObject:
         """Initialize a request to perform an advanced write action.
 
@@ -2001,15 +2012,15 @@ class RESTInterface(traits.RESTful, abc.ABC):
         type : `typing.Literal[0, 1]`
             Type of the advanced write action. Its either 0 or 1.
             If set to 0 that means it `None`. Otherwise if 1 that means its insert plugs.
-        membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
+        membership_type : `aiobungie.aiobungie.MembershipType | int`
             The Destiny membership type of the account to modify.
 
         Other Parameters
         ----------------
-        affected_item_id : `typing.Optional[int]`
+        affected_item_id : `int | None`
             Item instance ID the action shall be applied to.
             This is optional for all but a new AwaType values.
-        character_id : `typing.Optional[int]`
+        character_id : `int | None`
             The Destiny character ID to perform this action on.
 
         Returns
@@ -2046,7 +2057,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         access_token: str,
         selection: int,
         correlation_id: str,
-        nonce: collections.MutableSequence[typing.Union[str, bytes]],
+        nonce: collections.MutableSequence[str | bytes],
     ) -> int:
         """Provide the result of the user interaction. Called by the Bungie Destiny App to approve or reject a request.
 
@@ -2061,7 +2072,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
             Indication of the selection the user has made (Approving or rejecting the action)
         correlation_id : `str`
             Correlation ID of the request.
-        nonce : `collections.MutableSequence[str, bytes]`
+        nonce : `collections.MutableSequence[str | bytes]`
             Secret nonce received via the PUSH notification.
 
         Returns
@@ -2076,10 +2087,10 @@ class RESTInterface(traits.RESTful, abc.ABC):
         access_token: str,
         character_id: int,
         membership_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
         /,
         components: list[enums.ComponentType],
-        filter: typing.Optional[int] = None,
+        filter: int | None = None,
     ) -> typedefs.JSONObject:
         """Get currently available vendors from the list of vendors that can possibly have rotating inventory.
 
@@ -2091,7 +2102,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
             The character ID to return the vendor info for.
         membership_id : `int`
             The Destiny membership id to return the vendor info for.
-        membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
+        membership_type : `aiobungie.aiobungie.MembershipType | int`
             The Destiny membership type to return the vendor info for.
         components: `list[aiobungie.ComponentType]`
             A list of vendor components to collect and return.
@@ -2113,7 +2124,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         access_token: str,
         character_id: int,
         membership_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
         vendor_hash: int,
         /,
         components: list[enums.ComponentType],
@@ -2128,7 +2139,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
             The character ID to return the vendor info for.
         membership_id : `int`
             The Destiny membership id to return the vendor info for.
-        membership_type : `aiobungie.typedefs.IntAnd[aiobungie.MembershipType]`
+        membership_type : `aiobungie.aiobungie.MembershipType | int`
             The Destiny membership type to return the vendor info for.
         vendor_hash : `int`
             The vendor hash to return the details for.
@@ -2158,8 +2169,8 @@ class RESTInterface(traits.RESTful, abc.ABC):
         application_id: int,
         /,
         *,
-        start: typing.Optional[datetime.datetime] = None,
-        end: typing.Optional[datetime.datetime] = None,
+        start: datetime.datetime | None = None,
+        end: datetime.datetime | None = None,
     ) -> typedefs.JSONObject:
         """Fetch a Bungie application's API usage.
 
@@ -2172,12 +2183,12 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         Other Parameters
         ----------------
-        start : `typing.Optional[datetime.datetime]`
+        start : `datetime.datetime | None`
             A datetime object can be used to collect the start of the application usage.
             This is limited and can go back to 30 days maximum.
 
             If this is left to `None`. It will return the last 24 hours.
-        end : `typing.Optional[datetime.datetime]`
+        end : `datetime.datetime | None`
             A datetime object can be used to collect the end of the application usage.
 
             If this is left to `None`. It will return `now`.
@@ -2189,7 +2200,8 @@ class RESTInterface(traits.RESTful, abc.ABC):
 
         # Fetch data from 2021 Dec 10th to 2021 Dec 20th
         await fetch_application_api_usage(
-            start=datetime.datetime(2021, 12, 10), end=datetime.datetime(2021, 12, 20)
+            start=datetime.datetime(2021, 12, 10),
+            end=datetime.datetime(2021, 12, 20)
         )
         ```
 
@@ -2204,11 +2216,11 @@ class RESTInterface(traits.RESTful, abc.ABC):
         self,
         character_id: int,
         membership_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
         day_start: datetime.datetime,
         day_end: datetime.datetime,
-        groups: list[typedefs.IntAnd[enums.StatsGroupType]],
-        modes: collections.Sequence[typedefs.IntAnd[enums.GameMode]],
+        groups: list[enums.StatsGroupType | int],
+        modes: collections.Sequence[enums.GameMode | int],
         *,
         period_type: enums.PeriodType = enums.PeriodType.ALL_TIME,
     ) -> typedefs.JSONObject:
@@ -2244,8 +2256,8 @@ class RESTInterface(traits.RESTful, abc.ABC):
     async def fetch_historical_stats_for_account(
         self,
         membership_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
-        groups: list[typedefs.IntAnd[enums.StatsGroupType]],
+        membership_type: enums.MembershipType | int,
+        groups: list[enums.StatsGroupType | int],
     ) -> typedefs.JSONObject:
         """Fetch historical stats for an account's membership.
 
@@ -2270,7 +2282,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         self,
         character_id: int,
         membership_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
         /,
     ) -> typedefs.JSONObject:
         """Fetch aggregated activity stats for a specific membership character.
@@ -2319,8 +2331,8 @@ class RESTInterface(traits.RESTful, abc.ABC):
         search_text: str,
         tag: str,
         *,
-        page: undefined.UndefinedOr[int] = undefined.UNDEFINED,
-        source: undefined.UndefinedOr[str] = undefined.UNDEFINED,
+        page: int | None = None,
+        source: str | None = None,
     ) -> typedefs.JSONObject:
         ...
 
@@ -2331,7 +2343,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         tag: str,
         type: str,
         *,
-        page: undefined.UndefinedOr[int] = undefined.UNDEFINED,
+        page: int | None = None,
     ) -> typedefs.JSONObject:
         ...
 
@@ -2347,11 +2359,11 @@ class RESTInterface(traits.RESTful, abc.ABC):
         category_filter: int,
         group: int,
         date_filter: int,
-        sort: typing.Union[str, bytes],
+        sort: str | bytes,
         *,
-        page: undefined.UndefinedOr[int] = undefined.UNDEFINED,
-        locales: undefined.UndefinedOr[collections.Iterable[str]] = undefined.UNDEFINED,
-        tag_filter: undefined.UndefinedOr[str] = undefined.UNDEFINED,
+        page: int | None = None,
+        locales: collections.Iterable[str] | None = None,
+        tag_filter: str | None = None,
     ) -> typedefs.JSONObject:
         ...
 
@@ -2360,10 +2372,10 @@ class RESTInterface(traits.RESTful, abc.ABC):
         self,
         category_filter: int,
         date_filter: int,
-        sort: typing.Union[str, bytes],
+        sort: str | bytes,
         *,
-        page: undefined.UndefinedOr[int] = undefined.UNDEFINED,
-        locales: undefined.UndefinedOr[collections.Iterable[str]] = undefined.UNDEFINED,
+        page: int | None = None,
+        locales: collections.Iterable[str] | None = None,
     ) -> typedefs.JSONObject:
         ...
 
@@ -2377,7 +2389,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         reply_size: int,
         root_thread_mode: bool,
         sort_mode: int,
-        show_banned: typing.Optional[str] = None,
+        show_banned: str | None = None,
     ) -> typedefs.JSONObject:
         ...
 
@@ -2390,19 +2402,19 @@ class RESTInterface(traits.RESTful, abc.ABC):
         reply_size: int,
         root_thread_mode: bool,
         sort_mode: int,
-        show_banned: typing.Optional[str] = None,
+        show_banned: str | None = None,
     ) -> typedefs.JSONObject:
         ...
 
     @abc.abstractmethod
     async def fetch_post_and_parent(
-        self, child_id: int, /, *, show_banned: typing.Optional[str] = None
+        self, child_id: int, /, *, show_banned: str | None = None
     ) -> typedefs.JSONObject:
         ...
 
     @abc.abstractmethod
     async def fetch_posts_and_parent_awaiting(
-        self, child_id: int, /, *, show_banned: typing.Optional[str] = None
+        self, child_id: int, /, *, show_banned: str | None = None
     ) -> typedefs.JSONObject:
         ...
 
@@ -2421,17 +2433,17 @@ class RESTInterface(traits.RESTful, abc.ABC):
         ...
 
     @abc.abstractmethod
-    async def fetch_recuirement_thread_summaries(self) -> typedefs.JSONArray:
+    async def fetch_recruitment_thread_summaries(self) -> typedefs.JSONArray:
         ...
 
     @abc.abstractmethod
     async def fetch_recommended_groups(
         self,
-        accecss_token: str,
+        access_token: str,
         /,
         *,
         date_range: int = 0,
-        group_type: typedefs.IntAnd[enums.GroupType] = enums.GroupType.CLAN,
+        group_type: enums.GroupType | int = enums.GroupType.CLAN,
     ) -> typedefs.JSONArray:
         ...
 
@@ -2444,7 +2456,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         self,
         access_token: str,
         /,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
     ) -> bool:
         ...
 
@@ -2478,9 +2490,9 @@ class RESTInterface(traits.RESTful, abc.ABC):
         /,
         group_id: int,
         membership_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
         *,
-        message: undefined.UndefinedOr[str] = undefined.UNDEFINED,
+        message: str | None = None,
     ) -> typedefs.JSONObject:
         ...
 
@@ -2491,7 +2503,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         /,
         group_id: int,
         membership_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
     ) -> typedefs.JSONObject:
         ...
 
@@ -2502,9 +2514,9 @@ class RESTInterface(traits.RESTful, abc.ABC):
         /,
         loadout_index: int,
         character_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
     ) -> None:
-        """Equip a loadout. Youe character must be in a Social space, Orbit or Offline
+        """Equip a loadout. Your character must be in a Social space, Orbit or Offline
         while performing this operation.
 
         .. note::
@@ -2529,11 +2541,11 @@ class RESTInterface(traits.RESTful, abc.ABC):
         /,
         loadout_index: int,
         character_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
         *,
-        color_hash: typing.Optional[int] = None,
-        icon_hash: typing.Optional[int] = None,
-        name_hash: typing.Optional[int] = None,
+        color_hash: int | None = None,
+        icon_hash: int | None = None,
+        name_hash: int | None = None,
     ) -> None:
         """Snapshot a loadout with the currently equipped items.
 
@@ -2568,11 +2580,11 @@ class RESTInterface(traits.RESTful, abc.ABC):
         /,
         loadout_index: int,
         character_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
         *,
-        color_hash: typing.Optional[int] = None,
-        icon_hash: typing.Optional[int] = None,
-        name_hash: typing.Optional[int] = None,
+        color_hash: int | None = None,
+        icon_hash: int | None = None,
+        name_hash: int | None = None,
     ) -> None:
         """Update the loadout. Color, Icon and Name.
 
@@ -2607,7 +2619,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         /,
         loadout_index: int,
         character_id: int,
-        membership_type: typedefs.IntAnd[enums.MembershipType],
+        membership_type: enums.MembershipType | int,
     ) -> None:
         """Clear the identifiers and items of a loadout.
 

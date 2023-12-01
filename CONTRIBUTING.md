@@ -1,14 +1,14 @@
 # Developing and Contributing to Aiobungie
 First thing, thanks for taking the time to contribute. I appreciate that.
 
-# Branches
+## Branches
 Branches should look something like this.
 
 * `task/a-small-branch-info`
     * This should be for any type of PR thats not mentioned under.
 
 * `meta/small-branch-info`
-    * This should be for typos, markdown issues. typing issues. etc.
+    * This should be for typos, documentation, markdowns, typing issues, etc.
 
 * `feature/a-small-feature-info`
     * This should be for feature implementation and requires more tasks and reviews only.
@@ -17,31 +17,35 @@ Branches should look something like this.
     * This should be for bug fixes only.
 
 
-# Nox
-nox is a helper to run all the tests for you. We have 6 tests
-* isort, black
-    * file formatters.
-* mypy, stubgen
-    * mypy type checks and stubgen for generating stub files.
+## Nox
+nox is a helper to run all the tests for you. We have 8 tests
+
+* format
+    * Formats and sorts the source files using ruff and isort.
+* lint
+    * Flake8 linting.
+* type_check
+    * Used for type checking the source files using mypy.
+* gen_stubs
+    * Used for generating stub files.
 * pdoc
-    * docs generator.
+    * Docs generator.
 * pytest
     * for testing and mocking aiobungie itself.
-* codespell
-    * File text spell checks.
-* client_test and rest_test
-    - Which are real tests for the base client and the rest client. 
+* spell
+    * Source file text spell checks.
+* client
+    * Which are real tests for the base client.
     For this you'll need to export your token in an env variable like this `export CLIENT_TOKEN='TOKEN'` for unix based systems.
 
-    If you're on windows i recommend making a `.env` file in the root directory and write this `CLIENT_TOKEN='TOKEN'`
+    If you're on windows, I recommend making a `.env` file in the root directory and write this `CLIENT_TOKEN='YOUR_TOKEN'`
 
 You can list all available session by typing `nox -l`
 
-## Notes
 
-### Coding style
+## Coding style
 - This project uses numpy style for the docs.
-- Importing stuff should be the module itself and not the absolute object. i.e.,
+- Importing objects should be the module itself and not the absolute object. i.e.,
 
 This is fine.
 ```py
@@ -52,23 +56,33 @@ from aiobungie.internal import enums
 if typing.TYPE_CHECKING:
     import collections.abc as collections
 
-# Use the builtin tuple type and collections's Collection.
-foo = typing.Union[tuple[str, ...], collections.Collection[str]]
+# Use the builtin tuple type and collections's sequence.
+# We use the `|` pipe operator for union types.
+Foo: tuple[str, ...] | str | None = None
+
+# We annotate immutable sequence like objects with `collections.abc.Sequence[T]`
+def get(components: collections.Sequence[aiobungie.Object]) -> str:
+    components[0] = ... # Error.
+    return ",".join(str(c) for c in components)
+
+class Object:
+    # Immutable sequences.
+    name_list: collections.Sequence[str]
+
 ```
 This doesn't follow the coding style.
 ```py
-from typing import Union, Tuple, Collection
+from typing import Union, Tuple, Optional
 from aiobungie.internal.enums import MembershipType
 
-foo = Union[Tuple[str, ...], Collection[str]]
-
+Foo: Union[Tuple[Optional[str], ...], int] = 0
 ```
 
-### [Type checking](https://www.python.org/dev/peps/pep-0484/)
-This project is statically typed and uses mypy for the type checking, So everything should be type annotated.
+## [Type checking](https://www.python.org/dev/peps/pep-0484/)
+This project is statically typed and uses mypy for the type checking, So everything must be type annotated.
 
-### Client and RESTClient tests
-You may write tests for your new changes(if so) at `tests/_raw`.
+## Raw Client tests
+You may write tests for your new changes in `tests/aiobungie/test_client.py`.
 
 ## Opening your first PR
 
@@ -82,11 +96,11 @@ You may write tests for your new changes(if so) at `tests/_raw`.
    - `pip install -r dev-requirements`
 
 - Checkout to a new branch and make your changes.
-   - `git checkout -b task/small-info-about-the-task`
+   - `git checkout -b task/refactor-method-x`
 
 - Test all pipelines after finishing.
    - run `nox` to make sure everything is working fine and all tests passed with no issues.
 
-   You can also run a specific session by running `nox -s type_check` or `nox -s type_check pdoc`
+   You can also run a specific session(s) by running `nox -s type_check` or `nox -s type_check pdoc`
 
 Push and open a PR.

@@ -169,7 +169,7 @@ class TestCharacter:
             emblem_icon=assets.Image("emblemiconpath.jpg"),
             emblem_hash=998877,
             last_played=datetime.datetime(2021, 9, 1),
-            total_played_time="1100 hours and 9 seconds.",
+            total_played_time=2020,
             class_type=aiobungie.Class.TITAN,
             title_hash=None,
             level=50,
@@ -202,13 +202,16 @@ class TestCharacter:
         assert model.title_hash is None
 
     def test_emblem(self, model: crate.Character) -> None:
-        assert model.emblem.url == assets.Image("emblempath.jpg").url
+        assert model.emblem == assets.Image("emblempath.jpg")
 
     def test_emblem___str__(self, model: crate.Character) -> None:
         assert str(model.emblem) == str(assets.Image("emblempath.jpg"))
 
     def test_emblem_icon(self, model: crate.Character) -> None:
-        assert model.emblem_icon.url == assets.Image("emblemiconpath.jpg").url
+        assert (
+            model.emblem_icon is not None
+            and model.emblem_icon.url == assets.Image("emblemiconpath.jpg").url
+        )
 
     @pytest.mark.asyncio()
     async def test_fetch_activities(self, model: crate.Character) -> None:

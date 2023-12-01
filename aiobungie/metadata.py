@@ -36,10 +36,10 @@ __all__ = (
 
 import typing
 
-__version__: typing.Final[str] = "0.2.8"
+__version__: typing.Final[str] = "0.2.9"
 __about__: typing.Final[
     str
-] = "A Pythonic `async`/`await` framework / wrapper for interacting with the Bungie API."
+] = "A statically typed, asynchronous API wrapper for building clients for Bungie's API in Python."
 __author__: typing.Final[str] = "nxtlo"
 __docs__: typing.Final[str] = "https://nxtlo.github.io/aiobungie/"
 __license__: typing.Final[str] = "MIT"

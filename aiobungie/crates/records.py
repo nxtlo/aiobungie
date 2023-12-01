@@ -36,7 +36,6 @@ import typing
 
 import attrs
 
-from aiobungie import undefined
 from aiobungie.internal import enums
 
 if typing.TYPE_CHECKING:
@@ -65,15 +64,15 @@ class Node:
     state: int
     """The state of this node."""
 
-    objective: typing.Optional[Objective]
+    objective: Objective | None
 
     progress_value: int
     """How much of the presentation node is considered to be completed so far by the given character/profile."""
 
     completion_value: int
-    """The value at which the presenation node is considered to be completed."""
+    """The value at which the presentation node is considered to be completed."""
 
-    record_category_score: typing.Optional[int]
+    record_category_score: int | None
     """If available, this is the current score for the record category that this node represents."""
 
 
@@ -95,14 +94,14 @@ class Objective:
     completion_value: int
     """An integer represents the objective completion value."""
 
-    progress: typing.Optional[int]
+    progress: int | None
     """If progress has been made, and the progress can be measured numerically,
     this will be the value of that progress."""
 
-    destination_hash: typing.Optional[int]
+    destination_hash: int | None
     """The hash of the Destiny 2 objective destination. If it has one."""
 
-    activity_hash: typing.Optional[int]
+    activity_hash: int | None
     """If the Objective has an Activity associated with it,
     this is the unique identifier of the Activity being referred to.
     """
@@ -139,37 +138,31 @@ class RecordScores:
 class Record:
     """Represents a Bungie profile records/triumphs component."""
 
-    scores: typing.Optional[RecordScores]
+    scores: RecordScores | None
     """Information about the global records score."""
 
-    categories_node_hash: undefined.UndefinedOr[int]
-    """ The hash for the root presentation node definition of Triumph categories.
+    categories_node_hash: int | None
+    """ The hash for the root presentation node definition of Triumph categories."""
 
-    This will be `UNDEFINED` if not found.
-    """
-
-    seals_node_hash: undefined.UndefinedOr[int]
-    """The hash for the root presentation node definition of Triumph Seals.
-
-    This will be `UNDEFINED` if not found.
-    """
+    seals_node_hash: int | None
+    """The hash for the root presentation node definition of Triumph Seals."""
 
     state: RecordState
     """Record's state. This will be an int if the state is a sum of multiple states."""
 
-    objectives: typing.Optional[list[Objective]]
+    objectives: list[Objective] | None
     """A list of the record objectives. The objectives are optional and may be `None` if not found."""
 
-    interval_objectives: typing.Optional[list[Objective]]
+    interval_objectives: list[Objective] | None
     """A list of the interval record objectives. The objectives are optional and may be `None` if not found."""
 
     redeemed_count: int
     """The number of times this record has been redeemed."""
 
-    completion_times: typing.Optional[int]
+    completion_times: int | None
     """An optional number of time this record has been completed, `None` if not found."""
 
-    reward_visibility: typing.Optional[list[bool]]
+    reward_visibility: list[bool] | None
     """An optional list of bool for the record reward visibility."""
 
 

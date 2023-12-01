@@ -22,7 +22,6 @@
 
 """Basic implementation of a Bungie a application."""
 
-
 from __future__ import annotations
 
 __all__ = ("Application", "ApplicationOwner")
@@ -31,7 +30,6 @@ import typing
 
 import attrs
 
-from aiobungie import undefined
 from aiobungie import url
 from aiobungie.crates import user
 from aiobungie.internal import enums
@@ -40,7 +38,6 @@ if typing.TYPE_CHECKING:
     from datetime import datetime
 
     from aiobungie import traits
-    from aiobungie import typedefs
     from aiobungie.internal import assets
 
 
@@ -51,7 +48,7 @@ class ApplicationOwner(user.UserLike):
     net: traits.Netrunner = attrs.field(repr=False, hash=False, eq=False)
     """A network state used for making external requests."""
 
-    name: undefined.UndefinedOr[str]
+    name: str | None
     """The application owner name. This can be `UNDEFINED` if not found."""
 
     type: enums.MembershipType
@@ -66,7 +63,7 @@ class ApplicationOwner(user.UserLike):
     is_public: bool
     """The application owner's profile privacy."""
 
-    code: typedefs.NoneOr[int]
+    code: int | None
     """The user like's unique display name code.
     This can be None if the user hasn't logged in after season of the lost update.
     """
@@ -88,8 +85,8 @@ class ApplicationOwner(user.UserLike):
 
     @property
     def last_seen_name(self) -> str:
-        """The last seen name of the application owner. This will always returns `UNDEFINED`."""
-        return str(undefined.UNDEFINED)
+        """The last seen name of the application owner."""
+        return self.unique_name
 
     @property
     def link(self) -> str:
@@ -106,7 +103,7 @@ class Application:
     name: str
     """App name"""
 
-    redirect_url: typing.Optional[str]
+    redirect_url: str | None
     """App redirect url"""
 
     created_at: datetime
@@ -121,7 +118,7 @@ class Application:
     status: int
     """App's status"""
 
-    scope: undefined.UndefinedOr[str]
+    scope: str | None
     """App's scope"""
 
     owner: ApplicationOwner

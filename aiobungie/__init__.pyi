@@ -11,12 +11,10 @@ from aiobungie.error import *
 from aiobungie.internal import iterators as iterators
 from aiobungie.internal.assets import Image as Image
 from aiobungie.internal.enums import *
+from aiobungie.internal.factory import EmptyFactory as EmptyFactory
 from aiobungie.internal.factory import Factory as Factory
 from aiobungie.internal.iterators import *
 from aiobungie.rest import *
-from aiobungie.undefined import UNDEFINED as UNDEFINED
-from aiobungie.undefined import UndefinedOr as UndefinedOr
-from aiobungie.undefined import UndefinedType as UndefinedType
 
 from .crates.activity import Difficulty as Difficulty
 from .crates.components import ComponentFields as ComponentFields

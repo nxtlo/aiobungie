@@ -53,16 +53,13 @@ if typing.TYPE_CHECKING:
 class LinkedProfile:
     """Represents a membership linked profile information summary."""
 
-    net: traits.Netrunner = attrs.field(repr=False, eq=False, hash=False)
-    """A network state used for making external requests."""
-
     profiles: collections.Sequence[user.DestinyMembership]
     """A sequence of destiny memberships for this profile."""
 
-    bungie: user.PartialBungieUser
+    bungie_user: user.PartialBungieUser
     """The profile's bungie membership."""
 
-    profiles_with_errors: typing.Optional[collections.Sequence[user.DestinyMembership]]
+    profiles_with_errors: collections.Sequence[user.DestinyMembership] | None
     """A sequence of optional destiny memberships with errors.
 
     These profiles exists because they have missing fields. Otherwise this will be an empty array.
@@ -115,19 +112,19 @@ class ProfileItemImpl:
     state: enums.ItemState
     """The item's state."""
 
-    dismantel_permissions: int
-    """The item's dismantel permission."""
+    dismantle_permissions: int
+    """The item's dismantle permission."""
 
     is_wrapper: bool
     """Whether the item is a wrapper or not."""
 
-    instance_id: typing.Optional[int]
+    instance_id: int | None
     """An inventory item instance id if available, otherwise will be `None`."""
 
-    ornament_id: typing.Optional[int]
+    ornament_id: int | None
     """The ornament id of this item if it has one. Will be `None` otherwise."""
 
-    version_number: typing.Optional[int]
+    version_number: int | None
     """The item version number of available, other wise will be `None`."""
 
     @property
@@ -185,7 +182,7 @@ class Profile:
     """The profile's current season power cap."""
 
     async def collect_characters(
-        self, components: list[enums.ComponentType], auth: typing.Optional[str] = None
+        self, components: list[enums.ComponentType], auth: str | None = None
     ) -> collections.Sequence[components.CharacterComponent]:
         """Fetch this profile's characters.
 
@@ -196,7 +193,7 @@ class Profile:
 
         Other Parameters
         ----------------
-        auth : `typing.Optional[str]`
+        auth : `str | None`
             A Bearer access_token to make the request with.
             This is optional and limited to components that only requires an Authorization token.
 

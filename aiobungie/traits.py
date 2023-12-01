@@ -20,14 +20,19 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Interfaces used for the core aiobungie implementations."""
+"""Interfaces used for the core aiobungie client implementations.
+
+An aiobungie `trait` is a collection of methods defined for an known object. See `aiobungie.EmptyFactory` for more.
+```
+"""
 
 from __future__ import annotations
 
-import pathlib
+from aiobungie import typedefs
 
 __all__ = ("ClientApp", "Netrunner", "Serializable", "RESTful", "Debug")
 
+import pathlib
 import typing
 
 if typing.TYPE_CHECKING:
@@ -87,8 +92,8 @@ class Debug(typing.Protocol):
 
     def enable_debugging(
         self,
-        level: typing.Union[typing.Literal["TRACE"], bool] = False,
-        file: typing.Optional[typing.Union[pathlib.Path, str]] = None,
+        level: typing.Literal["TRACE"] | bool = False,
+        file: pathlib.Path | str | None = None,
         /,
     ) -> None:
         """Enables debugging for the REST calls.
@@ -121,7 +126,7 @@ class RESTful(Debug, typing.Protocol):
     __slots__ = ()
 
     @property
-    def client_id(self) -> typing.Optional[int]:
+    def client_id(self) -> int | None:
         """Return the client id of this REST client if provided, Otherwise None."""
         raise NotImplementedError
 
@@ -159,8 +164,8 @@ class RESTful(Debug, typing.Protocol):
         raise NotImplementedError
 
     def build_oauth2_url(
-        self, client_id: typing.Optional[int] = None
-    ) -> typing.Optional[builders.OAuthURL]:
+        self, client_id: int | None = None
+    ) -> builders.OAuthURL | None:
         """Builds an OAuth2 URL using the provided user REST/Base client secret/id.
 
         You can't get the complete string URL by using `.compile()` method.
@@ -206,12 +211,12 @@ class RESTful(Debug, typing.Protocol):
 
     async def static_request(
         self,
-        method: typing.Union[rest.RequestMethod, str],
+        method: rest.RequestMethod | str,
         path: str,
         *,
-        auth: typing.Optional[str] = None,
-        json: typing.Optional[dict[str, typing.Any]] = None,
-    ) -> rest.ResponseSig:
+        auth: str | None = None,
+        json: collections.MutableMapping[str, typing.Any] | None = None,
+    ) -> typedefs.JSONIsh:
         """Perform an HTTP request given a valid Bungie endpoint.
 
         Parameters
@@ -221,14 +226,17 @@ class RESTful(Debug, typing.Protocol):
         path: `str`
             The Bungie endpoint or path.
             A path must look something like this `Destiny2/3/Profile/46111239123/...`
+
+        Other Parameters
+        ----------------
         auth : `str | None`
             An optional bearer token for methods that requires OAuth2 Authorization header.
-        json : `dict[str, typing.Any] | None`
-            An optional JSON data to include in the request.
+        json : `MutableMapping[str, typing.Any] | None`
+            An optional JSON mapping to include in the request.
 
         Returns
         -------
-        `aiobungie.rest.ResponseSig`
+        `aiobungie.typedefs.JSONIsh`
             The response payload.
         """
         raise NotImplementedError
@@ -243,17 +251,15 @@ class ClientApp(Netrunner, Serializable, typing.Protocol):
 
     __slots__ = ()
 
-    def run(
-        self, future: collections.Coroutine[None, None, None], debug: bool = False
-    ) -> None:
+    def run(self, fn: collections.Awaitable[typing.Any], debug: bool = False) -> None:
         """Runs a coroutine function until its complete.
 
         This is equivalent to `asyncio.get_event_loop().run_until_complete(...)`
 
         Parameters
         ----------
-        future: `collections.Coroutine[None, None, None]`
-            A coroutine object.
+        fn: `collections.Awaitable[Any]`
+            The async function to run.
         debug : `bool`
             Either to enable asyncio debug or not. Disabled by default.
 

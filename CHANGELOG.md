@@ -44,6 +44,7 @@ This is required due to this specific Python version not able to parse some ISO 
 * Some object field names has been typo fixed.
 * Method `fetch_available_fireteams` typo name fixed.
 * `Character.total_played_time` now returns the total time in seconds instead of string.
+* Fields `emblem`, `emblem_icon` and `emblem_hash` are now Optional.
 
 ### Removed
 * The `net` field has been removed from some objects.
@@ -51,6 +52,7 @@ This is required due to this specific Python version not able to parse some ISO 
 
 ### Fixed
 * Fixed multiple bugged `Factory` methods.
+* `Factory.deserialize_character` was raising `KeyError` when accessing the emblem keys, Thanks to @spacez320 (#303)
 
 ## [0.2.8](https://github.com/nxtlo/aiobungie/compare/0.2.7...0.2.8) 1-24-2023
 

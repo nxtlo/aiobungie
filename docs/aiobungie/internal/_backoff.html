@@ -122,15 +122,15 @@
 </span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a><span class="sd">    the range \([0,1]\).</span>
 </span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a><span class="sd">    Parameters</span>
 </span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a><span class="sd">    ----------</span>
-</span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a><span class="sd">    base : builtins.float</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a><span class="sd">    base : float</span>
 </span><span id="L-47"><a href="#L-47"><span class="linenos"> 47</span></a><span class="sd">        The base to use. Defaults to `2.0`.</span>
-</span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a><span class="sd">    maximum : builtins.float</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a><span class="sd">    maximum : float</span>
 </span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a><span class="sd">        The max value the backoff can be in a single iteration. Anything above</span>
 </span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a><span class="sd">        this will be capped to this base value plus random jitter.</span>
-</span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a><span class="sd">    jitter_multiplier : builtins.float</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a><span class="sd">    jitter_multiplier : float</span>
 </span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a><span class="sd">        The multiplier for the random jitter. Defaults to `1.0`.</span>
 </span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a><span class="sd">        Set to `0` to disable jitter.</span>
-</span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a><span class="sd">    initial_increment : builtins.int</span>
+</span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a><span class="sd">    initial_increment : int</span>
 </span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a><span class="sd">        The initial increment to start at. Defaults to `0`.</span>
 </span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a><span class="sd">    Raises</span>
 </span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a><span class="sd">    ------</span>
@@ -243,15 +243,15 @@
 </span><span id="ExponentialBackOff-44"><a href="#ExponentialBackOff-44"><span class="linenos"> 44</span></a><span class="sd">    the range \([0,1]\).</span>
 </span><span id="ExponentialBackOff-45"><a href="#ExponentialBackOff-45"><span class="linenos"> 45</span></a><span class="sd">    Parameters</span>
 </span><span id="ExponentialBackOff-46"><a href="#ExponentialBackOff-46"><span class="linenos"> 46</span></a><span class="sd">    ----------</span>
-</span><span id="ExponentialBackOff-47"><a href="#ExponentialBackOff-47"><span class="linenos"> 47</span></a><span class="sd">    base : builtins.float</span>
+</span><span id="ExponentialBackOff-47"><a href="#ExponentialBackOff-47"><span class="linenos"> 47</span></a><span class="sd">    base : float</span>
 </span><span id="ExponentialBackOff-48"><a href="#ExponentialBackOff-48"><span class="linenos"> 48</span></a><span class="sd">        The base to use. Defaults to `2.0`.</span>
-</span><span id="ExponentialBackOff-49"><a href="#ExponentialBackOff-49"><span class="linenos"> 49</span></a><span class="sd">    maximum : builtins.float</span>
+</span><span id="ExponentialBackOff-49"><a href="#ExponentialBackOff-49"><span class="linenos"> 49</span></a><span class="sd">    maximum : float</span>
 </span><span id="ExponentialBackOff-50"><a href="#ExponentialBackOff-50"><span class="linenos"> 50</span></a><span class="sd">        The max value the backoff can be in a single iteration. Anything above</span>
 </span><span id="ExponentialBackOff-51"><a href="#ExponentialBackOff-51"><span class="linenos"> 51</span></a><span class="sd">        this will be capped to this base value plus random jitter.</span>
-</span><span id="ExponentialBackOff-52"><a href="#ExponentialBackOff-52"><span class="linenos"> 52</span></a><span class="sd">    jitter_multiplier : builtins.float</span>
+</span><span id="ExponentialBackOff-52"><a href="#ExponentialBackOff-52"><span class="linenos"> 52</span></a><span class="sd">    jitter_multiplier : float</span>
 </span><span id="ExponentialBackOff-53"><a href="#ExponentialBackOff-53"><span class="linenos"> 53</span></a><span class="sd">        The multiplier for the random jitter. Defaults to `1.0`.</span>
 </span><span id="ExponentialBackOff-54"><a href="#ExponentialBackOff-54"><span class="linenos"> 54</span></a><span class="sd">        Set to `0` to disable jitter.</span>
-</span><span id="ExponentialBackOff-55"><a href="#ExponentialBackOff-55"><span class="linenos"> 55</span></a><span class="sd">    initial_increment : builtins.int</span>
+</span><span id="ExponentialBackOff-55"><a href="#ExponentialBackOff-55"><span class="linenos"> 55</span></a><span class="sd">    initial_increment : int</span>
 </span><span id="ExponentialBackOff-56"><a href="#ExponentialBackOff-56"><span class="linenos"> 56</span></a><span class="sd">        The initial increment to start at. Defaults to `0`.</span>
 </span><span id="ExponentialBackOff-57"><a href="#ExponentialBackOff-57"><span class="linenos"> 57</span></a><span class="sd">    Raises</span>
 </span><span id="ExponentialBackOff-58"><a href="#ExponentialBackOff-58"><span class="linenos"> 58</span></a><span class="sd">    ------</span>
@@ -351,15 +351,15 @@ the range ([0,1]).</p>
 <h6 id="parameters">Parameters</h6>
 
 <ul>
-<li><strong>base</strong> (builtins.float):
+<li><strong>base</strong> (float):
 The base to use. Defaults to <code>2.0</code>.</li>
-<li><strong>maximum</strong> (builtins.float):
+<li><strong>maximum</strong> (float):
 The max value the backoff can be in a single iteration. Anything above
 this will be capped to this base value plus random jitter.</li>
-<li><strong>jitter_multiplier</strong> (builtins.float):
+<li><strong>jitter_multiplier</strong> (float):
 The multiplier for the random jitter. Defaults to <code>1.0</code>.
 Set to <code>0</code> to disable jitter.</li>
-<li><strong>initial_increment</strong> (builtins.int):
+<li><strong>initial_increment</strong> (int):
 The initial increment to start at. Defaults to <code>0</code>.</li>
 </ul>
 

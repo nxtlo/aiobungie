@@ -104,7 +104,8 @@ async def fetch() -> None:
 await asyncio.gather(set(), fetch())
 ```
 
-## When should you use which client?
+When should you use which client?
+---------------------------------
 * Use `Client` when you want to build a Chat Bot, Discord Bot, access data as Python classes.
 * Use `RESTClient` when you want one TCP session for all clients, access data as JSON payloads.
 * Use `RESTPool` when you're serving a large amount of connections and want to spawn a session for each,

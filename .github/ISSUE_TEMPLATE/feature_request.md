@@ -1,14 +1,16 @@
 ---
-name: Feature request
+name: Feature Request
 about: Suggest an idea for this project!
 title: ''
-labels: 'feature'
+labels: 'Feature'
 assignees: ''
 
 ---
 
-**About the Feature.**
+## **About the Feature.**
 
-**Describe the Implementation / solution you'd like.**
+## Why is this needed and what value does this feature brings?
 
-**Additional context**
+## **Describe the Implementation / solution you'd like.**
+
+## **Additional context**

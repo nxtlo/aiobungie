@@ -79,7 +79,7 @@ client = aiobungie.RESTClient("...")
 async def main() -> None:
     async with client:
         # Download and open the JSON manifest.
-        manifest = await client.download_json_manifest(name="latest_manifest", path='/home/.../')
+        manifest = await client.download_json_manifest(name="latest_manifest")
         with manifest.open("r") as file:
             data = file.read()
 
@@ -125,3 +125,6 @@ If you have used aiobungie and want to show your work, Feel free to Open a PR in
 * BungieAPI Discord: [Here](https://discord.gg/vP7VC7TKUG)
 * Official Bungie Documentation: [Here](https://bungie-net.github.io/multi/index.html)
 * Bungie Developer Portal: [Here](https://www.bungie.net/en/Application)
+
+### Additional information
+If you have any question you can either open a blank issue, open a new github discussion, or just tag me in BungieAPI discord server.

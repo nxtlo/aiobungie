@@ -38,12 +38,22 @@ __all__ = (
 import aiobungie
 
 PRIMARY_CHARACTER_ID = 2305843009444904605
+"""Your character ID"""
 PRIMARY_MEMBERSHIP_ID = 4611686018484639825
+"""Your membership ID"""
 PRIMARY_MEMBERSHIP_TYPE = aiobungie.MembershipType.STEAM
+"""Your main membership ID associated with the membership ID"""
 PRIMARY_BUNGIE_ID = 20315338
+"""Your Bungie profile ID."""
 PRIMARY_USERNAME = "Fate怒"
+"""Your in game name."""
 PRIMARY_CODE = 4275
+"""Your in game unique code. This is the code that follows your unique name"""
 PRIMARY_CLAN_NAME = "Nuanceㅤ "
+"""The clan name your membership is associated with."""
 PRIMARY_CLAN_ID = 4389205
+"""The clan ID."""
 APP_ID = 33226
-PRIMARY_STEAM_ID = 76561198141430157
+"""You application ID from bungie.net developer portal."""
+PRIMARY_STEAM_ID: int | None = 76561198141430157
+"""If you play on Steam, this is your Steam ID. otherwise set it to None."""

@@ -8,7 +8,7 @@ Branches should look something like this.
     * This should be for any type of PR thats not mentioned under.
 
 * `meta/small-branch-info`
-    * This should be for typos, documentation, markdowns, typing issues, etc.
+    * This should be for typos, documentation, markdowns, minor issues.
 
 * `feature/a-small-feature-info`
     * This should be for feature implementation and requires more tasks and reviews only.
@@ -18,27 +18,25 @@ Branches should look something like this.
 
 
 ## Nox
-nox is a helper to run all the tests for you. We have 8 tests
+nox is a helper to run all the tests for you. We currently have 8 tests.
 
-* format
-    * Formats and sorts the source files using ruff and isort.
-* lint
-    * Flake8 linting.
-* type_check
-    * Used for type checking the source files using mypy.
-* gen_stubs
-    * Used for generating stub files.
-* pdoc
-    * Docs generator.
-* pytest
-    * for testing and mocking aiobungie itself.
-* spell
-    * Source file text spell checks.
-* client
-    * Which are real tests for the base client.
-    For this you'll need to export your token in an env variable like this `export CLIENT_TOKEN='TOKEN'` for unix based systems.
+* **format**: Formats and sorts the source files using `ruff` and `isort`.
 
-    If you're on windows, I recommend making a `.env` file in the root directory and write this `CLIENT_TOKEN='YOUR_TOKEN'`
+* **lint**: `flake8` linting.
+
+* **type_check**: Used for type checking the source files using `mypy`.
+
+* **gen_stubs**: Used for generating stub files.
+
+* **pdoc**: Docs generator.
+
+* **pytest**: for testing and mocking aiobungie's `objects`.
+
+* **spell**: Checks and fixes spelling mistakes in source files using `codespell`.
+
+* **client**:
+    Which are real HTTP tests for the base client, You need to configure something before you start.
+    Check `Raw Client tests` section below.
 
 You can list all available session by typing `nox -l`
 
@@ -61,7 +59,7 @@ if typing.TYPE_CHECKING:
 Foo: tuple[str, ...] | str | None = None
 
 # We annotate immutable sequence like objects with `collections.abc.Sequence[T]`
-def get(components: collections.Sequence[aiobungie.Object]) -> str:
+def get(components: collections.Sequence[Object]) -> str:
     components[0] = ... # Error.
     return ",".join(str(c) for c in components)
 
@@ -79,10 +77,19 @@ Foo: Union[Tuple[Optional[str], ...], int] = 0
 ```
 
 ## [Type checking](https://www.python.org/dev/peps/pep-0484/)
-This project is statically typed and uses mypy for the type checking, So everything must be type annotated.
+This project is statically typed and uses `mypy` for the type checking, So everything must be type annotated.
 
 ## Raw Client tests
-You may write tests for your new changes in `tests/aiobungie/test_client.py`.
+You may write tests for your new changes in `tests/aiobungie/test_client.py` under the specified class.
+
+* Export your token as an env variable like this `export CLIENT_TOKEN='TOKEN'` for unix based systems.
+
+If you're on windows, I recommend making a `.env` file in the root directory and write this `CLIENT_TOKEN='YOUR_TOKEN'`
+
+`python-dotenv` will be used to parse the token from the `.env` file so you don't have to export it manually.
+* Go to `tests/config.py` and set your account details there.
+This is optional unless if you want to test your own data.
+
 
 ## Opening your first PR
 

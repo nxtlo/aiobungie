@@ -86,7 +86,7 @@ class TestBungieUser:
             created_at=datetime.utcnow(),
             is_deleted=True,
             about=None,
-            picture=assets.Image("1029312dnoi12.jpg"),
+            picture=assets.Image(path="1029312dnoi12.jpg"),
             locale="eu",
             updated_at=datetime(2019, 4, 5),
             status=None,
@@ -108,10 +108,6 @@ class TestBungieUser:
 
     def test_int_op(self, model):
         assert int(model) == 205432
-
-    def test_user_status_when_None(self, model):
-        model.status = None
-        assert isinstance(model, crate.user.BungieUser) and model.status is None
 
 
 class TestDestinyUser:

@@ -104,18 +104,18 @@ class TestClanBanner:
     def model(self):
         return crate.ClanBanner(
             id=2934,
-            foreground=assets.Image("brrr.png"),
-            background=assets.Image("xo.jpg"),
+            foreground=assets.Image(path="brrr.png"),
+            background=assets.Image(path="xo.jpg"),
         )
 
     def test___int__(self, model: crate.ClanBanner):
         assert int(model) == 2934
 
     def test_foreground(self, model: crate.ClanBanner):
-        assert model.foreground.__str__() == assets.Image("brrr.png").url
+        assert model.foreground.__str__() == assets.Image(path="brrr.png").url
 
     def test_background(self, model: crate.ClanBanner):
-        assert model.background.__str__() == assets.Image("xo.jpg").url
+        assert model.background.__str__() == assets.Image(path="xo.jpg").url
 
 
 class TestClanMember:
@@ -127,13 +127,13 @@ class TestClanMember:
             id=4432,
             name="thom",
             type=aiobungie.MembershipType.STEAM,
-            icon=assets.Image("someIconPath.jpg"),
+            icon=assets.Image(path="someIconPath.jpg"),
             is_public=True,
             group_id=998271,
             is_online=True,
             joined_at=datetime.datetime(2021, 9, 6),
             last_online=datetime.datetime(2021, 5, 1),
-            code=5432,
+            code=None,
             types=[aiobungie.MembershipType.STEAM, aiobungie.MembershipType.STADIA],
             last_seen_name="YOYONAME",
             bungie_user=mock_bungie_user,
@@ -145,15 +145,7 @@ class TestClanMember:
         assert int(obj) == 4432
 
     def test_clan_member___str__(self, obj: crate.ClanMember):
-        assert str(obj) == "thom#5432"
-
-    def test_clan_member___str__when_code_is_None(self, obj: crate.ClanMember):
-        obj.code = None
         assert str(obj) == "thom#None"
-
-    def test_clan_member___str__when_name_is_None(self, obj: crate.ClanMember):
-        obj.name = None
-        assert str(obj) == "None#5432"
 
     def test_is_admin_property(self, obj: crate.ClanMember):
         assert obj.is_admin is True
@@ -266,8 +258,8 @@ class TestClan:
             member_count=2,
             motto="Cool motto",
             is_public=True,
-            banner=assets.Image("xxx.jpg"),
-            avatar=assets.Image("zzz.jpg"),
+            banner=assets.Image(path="xxx.jpg"),
+            avatar=assets.Image(path="zzz.jpg"),
             about="A cool clan.",
             tags=["Raids", "Tag", "Another tag"],
             owner=mock_owner,
@@ -296,11 +288,6 @@ class TestClan:
 
     def test_clan_about(self, obj: crate.Clan):
         assert obj.about == "A cool clan."
-
-    def test_clan_owner_is_None(self, obj: crate.Clan):
-        assert obj.owner is not None
-        obj.owner = None
-        assert obj.owner is None
 
     @pytest.mark.asyncio()
     async def test_edit_options(self, obj: crate.Clan):

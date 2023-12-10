@@ -38,7 +38,7 @@ if typing.TYPE_CHECKING:
     from aiobungie.internal import enums
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class FriendRequestView:
     """A view of the pending friend requests queue."""
 
@@ -49,7 +49,7 @@ class FriendRequestView:
     """The outgoing friend request view."""
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class Friend:
     """Represents a bungie friend in your account."""
 

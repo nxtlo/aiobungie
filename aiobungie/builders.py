@@ -41,7 +41,7 @@ if typing.TYPE_CHECKING:
     from aiobungie import typedefs
 
 
-@attrs.mutable(kw_only=True, repr=False)
+@attrs.frozen(kw_only=True, repr=False)
 class OAuth2Response:
     """Represents a proxy object for returned information from an OAuth2 successful response."""
 
@@ -77,7 +77,7 @@ class OAuth2Response:
 
 
 # To be able to cache the result of the compiled URL, We disable the slots here.
-@attrs.mutable(kw_only=True, slots=False)
+@attrs.frozen(kw_only=True, slots=False)
 class OAuthURL:
     """The result of calling `aiobungie.RESTClient.build_oauth2_url`.
 
@@ -123,6 +123,7 @@ class OAuthURL:
         return self.compile()
 
 
+@attrs.frozen(kw_only=True)
 class PlugSocketBuilder:
     """A helper for building insert socket plugs.
 
@@ -143,12 +144,7 @@ class PlugSocketBuilder:
     ```
     """
 
-    __slots__ = ("_map",)
-
-    def __init__(
-        self, map: collections.MutableMapping[str, int] | None = None, /
-    ) -> None:
-        self._map = map or {}
+    _map: collections.MutableMapping[str, int] = attrs.field(factory=dict)
 
     def set_socket_array(self, socket_type: typing.Literal[0, 1], /) -> Self:
         """Set the array socket type.

@@ -1239,7 +1239,8 @@ class Client(traits.ClientApp):
 
     # Milestones
 
-    async def fetch_public_milestone_content(
+    @helpers.unstable
+    async def fetch_public_milestone_content(  # type: ignore[empty-body]
         self, milestone_hash: int, /
     ) -> milestones.MilestoneContent:
         """Fetch the milestone content given its hash.
@@ -1254,6 +1255,6 @@ class Client(traits.ClientApp):
         `aiobungie.crates.milestones.MilestoneContent`
             A milestone content object.
         """
-        resp = await self.rest.fetch_public_milestone_content(milestone_hash)
-
-        return self.factory.deserialize_public_milestone_content(resp)
+        ...
+        # _resp = await self.rest.fetch_public_milestone_content(milestone_hash)
+        # return self.factory.deserialize_public_milestone_content(resp)

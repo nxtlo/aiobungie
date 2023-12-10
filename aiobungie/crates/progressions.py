@@ -29,7 +29,7 @@ __all__: tuple[str, ...] = ("Progression", "Factions")
 import attrs
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class Progression:
     """The base progression class that all progression objects must inherit from."""
 
@@ -63,7 +63,7 @@ class Progression:
     """The progression's next level at."""
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class Factions(Progression):
     """Represent a Bungie progression faction found in a character progressions component."""
 

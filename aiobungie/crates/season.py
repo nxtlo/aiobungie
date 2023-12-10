@@ -45,14 +45,14 @@ if typing.TYPE_CHECKING:
     from aiobungie.crates import progressions
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class ArtifactTierItem:
     hash: int
 
     is_active: bool
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class ArtifactTier:
     hash: int
 
@@ -63,7 +63,7 @@ class ArtifactTier:
     items: collections.Sequence[ArtifactTierItem]
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class CharacterScopedArtifact:
     """Represents per-character artifact data."""
 
@@ -76,7 +76,7 @@ class CharacterScopedArtifact:
     tiers: collections.Sequence[ArtifactTier]
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class Artifact:
     """Represents a Destiny 2 Season artifact."""
 

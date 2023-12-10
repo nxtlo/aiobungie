@@ -39,6 +39,8 @@ import attrs
 from aiobungie.internal import enums
 
 if typing.TYPE_CHECKING:
+    import collections.abc as collections
+
     from aiobungie import traits
     from aiobungie.crates import entity
 
@@ -57,7 +59,7 @@ class RecordState(enums.Flag):
     CAN_EQUIP_TITLE = 1 << 6
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class Node:
     """Represent a Destiny 2 presentation node."""
 
@@ -134,7 +136,7 @@ class RecordScores:
     """The lifetime triumphs score. This includes both legacy and current scores."""
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class Record:
     """Represents a Bungie profile records/triumphs component."""
 
@@ -150,10 +152,10 @@ class Record:
     state: RecordState
     """Record's state. This will be an int if the state is a sum of multiple states."""
 
-    objectives: list[Objective] | None
+    objectives: collections.Sequence[Objective] | None
     """A list of the record objectives. The objectives are optional and may be `None` if not found."""
 
-    interval_objectives: list[Objective] | None
+    interval_objectives: collections.Sequence[Objective] | None
     """A list of the interval record objectives. The objectives are optional and may be `None` if not found."""
 
     redeemed_count: int
@@ -162,16 +164,16 @@ class Record:
     completion_times: int | None
     """An optional number of time this record has been completed, `None` if not found."""
 
-    reward_visibility: list[bool] | None
+    reward_visibility: collections.Sequence[bool] | None
     """An optional list of bool for the record reward visibility."""
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class CharacterRecord(Record):
     """Represents a character focused records component.
 
     This derives from `Record` but returns a character focused's records.
     """
 
-    record_hashes: list[int]
+    record_hashes: collections.Sequence[int]
     """A list of int of the featured record hashes."""

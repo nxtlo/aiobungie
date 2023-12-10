@@ -412,7 +412,7 @@ class RESTClient(interfaces.RESTInterface):
             raise RuntimeError("Cannot open REST client when it's already open.")
 
         self._session = aiohttp.ClientSession(
-            connector=aiohttp.TCPConnector(),
+            connector=aiohttp.TCPConnector(ssl=False),
             connector_owner=True,
             raise_for_status=False,
             timeout=aiohttp.ClientTimeout(total=30.0),
@@ -483,7 +483,7 @@ class RESTClient(interfaces.RESTInterface):
         retries: int = 0
         headers = headers or {}
 
-        headers.setdefault(_USER_AGENT_HEADERS, _USER_AGENT)
+        headers[_USER_AGENT_HEADERS] = _USER_AGENT
         headers["X-API-KEY"] = self._token
 
         if auth is not None:
@@ -549,13 +549,12 @@ class RESTClient(interfaces.RESTInterface):
                         )
 
                         if _LOG.isEnabledFor(TRACE):
-                            cloned = headers.copy()
-                            cloned.update(response.headers)  # type: ignore
-
                             _LOG.log(
                                 TRACE,
                                 "%s",
-                                error.stringify_http_message(cloned),
+                                error.stringify_http_message(
+                                    dict(response.headers) | headers
+                                ),
                             )
 
                         # Return the response.
@@ -1125,6 +1124,7 @@ class RESTClient(interfaces.RESTInterface):
         assert isinstance(resp, dict)
         return resp
 
+    @helpers.unstable
     async def fetch_public_milestone_content(
         self, milestone_hash: int, /
     ) -> typedefs.JSONObject:

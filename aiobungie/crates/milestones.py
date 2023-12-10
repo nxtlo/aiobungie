@@ -50,7 +50,7 @@ if typing.TYPE_CHECKING:
     from aiobungie.crates import records
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class MilestoneItems:
     """Represents items the may be found inside a milestone."""
 
@@ -61,7 +61,7 @@ class MilestoneItems:
     """The items hashes"""
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class MilestoneContent:
     """Represents information about a Destiny milestone content."""
 
@@ -74,11 +74,11 @@ class MilestoneContent:
     tips: collections.Sequence[str]
     """A sequence of the milestone's tips.."""
 
-    items: MilestoneItems | None
+    items: collections.Sequence[MilestoneItems]
     """An optional items for this milestones. This may return `None` if nothing was found."""
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class MilestoneActivityPhase:
     """Represents information about a milestone activity phase."""
 
@@ -89,7 +89,7 @@ class MilestoneActivityPhase:
     """The phase's hash."""
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class MilestoneActivity:
     """Represents a Bungie milestone activity."""
 
@@ -109,7 +109,7 @@ class MilestoneActivity:
     """An optional collection of the activity phases."""
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class QuestStatus:
     """Information that an available quest status has."""
 
@@ -168,14 +168,14 @@ class QuestStatus:
         return await self.net.request.fetch_inventory_item(self.step_hash)
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class MilestoneQuest:
     item_hash: int
 
     status: QuestStatus
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class MilestoneVendor:
     """Represents a vendor found inside a milestone object."""
 
@@ -184,7 +184,7 @@ class MilestoneVendor:
     preview_itemhash: int | None
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class MilestoneRewardEntry:
     """Represents a character-specific data for a milestone reward entry."""
 
@@ -198,7 +198,7 @@ class MilestoneRewardEntry:
     """Whether the entry has been redeemed or not."""
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class MilestoneReward:
     """Represents a summary of rewards that can be earned from a milestone."""
 
@@ -208,7 +208,7 @@ class MilestoneReward:
     """A collections of reward entries for this category."""
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class Milestone:
     """Represents a milestone at Bungie."""
 

@@ -35,6 +35,7 @@ import typing
 
 from aiobungie import traits
 from aiobungie.internal import enums
+from aiobungie.internal import helpers
 
 if typing.TYPE_CHECKING:
     import types
@@ -777,6 +778,7 @@ class RESTInterface(traits.RESTful, abc.ABC):
         """
 
     @abc.abstractmethod
+    @helpers.unstable
     async def fetch_public_milestone_content(
         self, milestone_hash: int, /
     ) -> typedefs.JSONObject:

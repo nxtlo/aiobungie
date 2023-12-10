@@ -30,6 +30,8 @@ __all__: tuple[str, ...] = ("FactoryInterface",)
 import abc
 import typing
 
+from aiobungie.internal import helpers
+
 if typing.TYPE_CHECKING:
     import collections.abc as collections
 
@@ -608,6 +610,8 @@ class FactoryInterface(abc.ABC):
     def deserialize_character_records(
         self,
         payload: typedefs.JSONObject,
+        scores: records.RecordScores | None = None,
+        record_hashes: collections.Sequence[int] = (),
     ) -> records.CharacterRecord:
         """Deserialize a JSON object of a profile character record component.
 
@@ -868,6 +872,7 @@ class FactoryInterface(abc.ABC):
     # Milestones.
 
     @abc.abstractmethod
+    @helpers.unstable
     def deserialize_public_milestone_content(
         self, payload: typedefs.JSONObject
     ) -> milestones.MilestoneContent:

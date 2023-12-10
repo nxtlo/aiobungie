@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.9...HEAD)
 
+### Added
+* `Iterator.by_ref` method.
+
+### Changed
+* Object immutability, All objects are frozen. All sequences are now built as tuples instead of list, This reduces the size of the objects and increases the speed by a little bit since tuples are sized and lists are dynamic.
+
+* Printing an `Iterator` now doesn't consume the data.
+* `fetch_public_milestone_content` and `deserialize_public_milestone_content` are currently unstable.
 
 ## [0.2.9](https://github.com/nxtlo/aiobungie/compare/0.2.8...0.2.9) - 2023-12-1
 

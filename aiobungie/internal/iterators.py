@@ -86,14 +86,16 @@ class Iterator(typing.Generic[Item], collections.Iterator[Item]):
         self._items = _builtins.iter(items)
 
     @typing.overload
-    def collect(self) -> list[Item]:
+    def collect(self) -> collections.Sequence[Item]:
         ...
 
     @typing.overload
-    def collect(self, casting: _B) -> list[_B]:
+    def collect(self, casting: _B) -> collections.Sequence[_B]:
         ...
 
-    def collect(self, casting: _B | None = None) -> list[Item] | list[_B]:
+    def collect(
+        self, casting: _B | None = None
+    ) -> collections.Sequence[Item] | collections.Sequence[_B]:
         """Collects all items in the iterator into a list and cast them into an object if provided.
 
         Example
@@ -107,18 +109,29 @@ class Iterator(typing.Generic[Item], collections.Iterator[Item]):
         casting: `T | None`
             The type to cast the items to. If `None` is provided, the items will be returned as is.
 
+        Returns
+        -------
+        `collections.Sequence[Item | T]`
+            An immutable sequence of the elements in the iterator.
+
         Raises
         ------
         `StopIteration`
             If no elements are left in the iterator.
         """
         if casting is not None:
-            return typing.cast(list[_B], list(map(casting, self._items)))
+            return typing.cast(
+                collections.Sequence[_B], tuple(map(casting, self._items))
+            )
 
-        return list(self._items)
+        return tuple(self._items)
 
     def copied(self) -> Iterator[Item]:
         """Creates an iterator which `deeply` copies all of its elements.
+
+        .. warn::
+            This will `deeply` copy all of the elements, Use `Iterator.by_ref`
+            if you want copy of the iterator reference.
 
         Example
         -------
@@ -129,6 +142,23 @@ class Iterator(typing.Generic[Item], collections.Iterator[Item]):
         ```
         """
         return Iterator(_copy.deepcopy(self._items))
+
+    def by_ref(self) -> Iterator[Item]:
+        """Creates an iterator which doesn't consume its elements.
+        but instead shallow copy it.
+
+        Example
+        -------
+        ```py
+        it = Iterator([None, None, None])
+        for ref in it.by_ref():
+            ...
+
+        # Original not consumed.
+        assert it.count() == 3
+        ```
+        """
+        return Iterator(_copy.copy(self._items))
 
     def next(self) -> Item:
         """Returns the next item in the iterator.
@@ -563,7 +593,7 @@ class Iterator(typing.Generic[Item], collections.Iterator[Item]):
         ) from None
 
     def __repr__(self) -> str:
-        return f'<{self.__class__.__name__}({", ".join([str(item) for item in self])})>'
+        return f"Iterator(ptr: {hex(id(self._items))})"
 
     def __len__(self) -> int:
         return self.count()

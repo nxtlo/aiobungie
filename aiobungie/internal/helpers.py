@@ -31,6 +31,7 @@ __all__ = (
     "unimplemented",
     "loads",
     "dumps",
+    "unstable",
 )
 
 import asyncio
@@ -124,6 +125,25 @@ def unimplemented(
             return obj(*args, **kwargs)
 
         return typing.cast("T", wrapper)
+
+    return decorator
+
+
+def unstable(obj: T) -> collections.Callable[[T], typing.NoReturn]:
+    """A decorator that marks a function or classes as unimplemented.
+
+    .. warn::
+        Calling an object decorated with this will raise a runtime error.
+
+    Raises
+    ------
+    `RuntimeError`
+        If the object has been called while marked `unstable`.
+    """
+
+    @functools.wraps(obj)
+    def decorator(_: T) -> typing.NoReturn:
+        raise RuntimeError(f"Object {obj!s} is currently unstable.")
 
     return decorator
 

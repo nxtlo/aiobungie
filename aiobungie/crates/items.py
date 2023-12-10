@@ -79,7 +79,7 @@ class ItemEnergyType(int, enums.Enum):
     STASIS = 6
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class Collectible:
     """Represents a collectible Destiny 2 item."""
 
@@ -96,7 +96,7 @@ class Collectible:
     """The hash for the root presentation node definition of Collection Badges."""
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class Currency:
     """Represents a currency item in Destiny 2."""
 
@@ -107,7 +107,7 @@ class Currency:
     """The amount of this currency you have."""
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class ItemSocket:
     """Information found in a profile item sockets component."""
 
@@ -120,13 +120,13 @@ class ItemSocket:
     is_visible: bool | None
     """Either the plug is visible or not."""
 
-    enable_fail_indexes: list[int] | None
+    enable_fail_indexes: collections.Sequence[int] | None
     """If a plug is inserted but not enabled,
     this field will be available with indexes into the plug item definition.
     """
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class CraftableItem:
     """Represents a craftable item found within the craftable component."""
 
@@ -140,7 +140,7 @@ class CraftableItem:
     """A sequence of plug item states for the crafting sockets."""
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class CraftableSocket:
     """Represents a Destiny 2 crafting socket."""
 
@@ -150,7 +150,7 @@ class CraftableSocket:
     """A sequence of socket plugs bound to the craftable item."""
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class CraftableSocketPlug:
     """Represents a craftable socket plug."""
 
@@ -161,7 +161,7 @@ class CraftableSocketPlug:
     """Index into the unlock requirements to display failure descriptions."""
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class PlugItemState:
     """Information about a plug item's state."""
 
@@ -174,15 +174,15 @@ class PlugItemState:
     is_enabled: bool
     """Whether this item is enabled or not."""
 
-    insert_fail_indexes: list[int] | None
+    insert_fail_indexes: collections.Sequence[int] | None
 
-    enable_fail_indexes: list[int] | None
+    enable_fail_indexes: collections.Sequence[int] | None
     """If a plug is inserted but not enabled,
     this field will be available with indexes into the plug item definition.
     """
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class ItemPerk:
     """Represents a Destiny 2 perk."""
 
@@ -199,7 +199,7 @@ class ItemPerk:
     """Either the perk is visible or not."""
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class ItemEnergy:
     """Represents a Destiny 2 item instance energy."""
 
@@ -219,7 +219,7 @@ class ItemEnergy:
     """The amount of energy still available for inserting new plugs."""
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class ItemStatsView:
     """A view of a Destiny 2 item stats."""
 
@@ -230,7 +230,7 @@ class ItemStatsView:
     """The value of this stat if set."""
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class ItemInstance:
     """Represents an instance item for a character."""
 

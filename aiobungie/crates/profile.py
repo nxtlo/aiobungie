@@ -49,7 +49,7 @@ if typing.TYPE_CHECKING:
     from aiobungie.crates import season
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class LinkedProfile:
     """Represents a membership linked profile information summary."""
 
@@ -66,7 +66,7 @@ class LinkedProfile:
     """
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class ProfileProgression:
     """Represents a profile progression component details."""
 
@@ -149,7 +149,7 @@ class ProfileItemImpl:
         return self.hash
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class Profile:
     """Represents a Bungie member profile-only component.
 

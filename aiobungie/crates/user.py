@@ -111,7 +111,7 @@ class UserLike(abc.ABC):
         return self.id
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class PartialBungieUser:
     """Represents partial bungie user.
 
@@ -169,7 +169,7 @@ class PartialBungieUser:
         return self.id
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class BungieUser:
     """Represents a user at Bungie.net."""
 
@@ -247,7 +247,7 @@ class BungieUser:
         return self.id
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class DestinyMembership(UserLike):
     """Represents a Bungie user's Destiny 2 membership."""
 
@@ -309,7 +309,7 @@ class DestinyMembership(UserLike):
         )
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class SearchableDestinyUser:
     """Represents the results of the searched users details."""
 
@@ -326,7 +326,7 @@ class SearchableDestinyUser:
     """A sequence of the user's Destiny 2 memberships."""
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class HardLinkedMembership:
     """Represents hard linked Bungie user membership.
 
@@ -347,7 +347,7 @@ class HardLinkedMembership:
         return self.id
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class UserCredentials:
     """Represents a Bungie user's credential types.
 
@@ -373,7 +373,7 @@ class UserCredentials:
         return self.display_name
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class UserThemes:
     """Represents a Bungie user theme."""
 
@@ -390,7 +390,7 @@ class UserThemes:
         return self.id
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class User:
     """Represents a user with both Destiny memberships and Bungie.net profile."""
 

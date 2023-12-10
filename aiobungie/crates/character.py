@@ -58,7 +58,7 @@ if typing.TYPE_CHECKING:
     from aiobungie.internal import iterators
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class Dye:
     """Represents dyes rendered on a Destiny character."""
 
@@ -69,7 +69,7 @@ class Dye:
     """The dye's hash."""
 
 
-@attrs.define(kw_only=True, repr=False)
+@attrs.frozen(kw_only=True, repr=False)
 class CustomizationOptions:
     """Raw data represents a character's customization options."""
 
@@ -98,7 +98,7 @@ class CustomizationOptions:
     decal_index: int
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class MinimalEquipments:
     """Minimal information about a character's equipped items.
 
@@ -122,7 +122,7 @@ class MinimalEquipments:
         return await self.net.request.fetch_inventory_item(self.item_hash)
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class RenderedData:
     """Represents a character's rendered data profile component."""
 
@@ -158,7 +158,7 @@ class RenderedData:
         )
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class CharacterProgression:
     """Represents a character progression profile component."""
 
@@ -185,7 +185,7 @@ class CharacterProgression:
     # uninstanced_item_pers: collections.Mapping[int, ...]?
 
 
-@attrs.define(kw_only=True)
+@attrs.frozen(kw_only=True)
 class Character:
     """An implementation for a Bungie character."""
 

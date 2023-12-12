@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).All notable changes to this project will be documented in this file.
 
-## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.9...HEAD)
+## [Unreleased](https://github.com/nxtlo/aiobungie/compare/0.2.10...HEAD)
 
 ### Added
 * `Iterator.by_ref` method.
@@ -14,6 +14,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Printing an `Iterator` now doesn't consume the data.
 * `fetch_public_milestone_content` and `deserialize_public_milestone_content` are currently unstable.
+
+
+## [0.2.10](https://github.com/nxtlo/aiobungie/compare/0.2.9...0.2.19) - 2023-12-12
+
+## Fixed
+* Fixed `fetch_oauth2_tokens` and `refresh_access_token` raising `BadRequest`.
+* `client_secret` was being logged in the headers when enabling `TRACE` log level.
 
 ## [0.2.9](https://github.com/nxtlo/aiobungie/compare/0.2.8...0.2.9) - 2023-12-1
 

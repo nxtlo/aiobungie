@@ -36,7 +36,7 @@ __all__ = (
 
 import typing
 
-__version__: typing.Final[str] = "0.2.9"
+__version__: typing.Final[str] = "0.2.10"
 __about__: typing.Final[
     str
 ] = "A statically typed, asynchronous API wrapper for building clients for Bungie's API in Python."

@@ -120,7 +120,7 @@ If you have used aiobungie and want to show your work, Feel free to Open a PR in
 * [Fated](https://github.com/nxtlo/Fated/blob/master/core/components/destiny.py): My Discord BOT for testing purposes.
 
 ## Useful Resources
-* Discord Username: `fateq`
+* Discord Username: `vfate`
 * aiobungie Documentation: [Here](https://nxtlo.github.io/aiobungie/).
 * BungieAPI Discord: [Here](https://discord.gg/vP7VC7TKUG)
 * Official Bungie Documentation: [Here](https://bungie-net.github.io/multi/index.html)

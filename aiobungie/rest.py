@@ -172,6 +172,13 @@ def _write_sqlite_bytes(
         pathlib.Path(tmp.name).unlink(missing_ok=True)
 
 
+class _JSONPayload(aiohttp.BytesPayload):
+    def __init__(
+        self, value: typing.Any, dumps: typedefs.Dumps = helpers.dumps
+    ) -> None:
+        super().__init__(dumps(value), content_type=_APP_JSON, encoding="UTF-8")
+
+
 class RequestMethod(str, enums.Enum):
     """HTTP request methods enum."""
 
@@ -473,7 +480,8 @@ class RESTClient(interfaces.RESTInterface):
         oauth2: bool = False,
         auth: str | None = None,
         unwrapping: typing.Literal["json", "read"] = "json",
-        json: collections.Mapping[str, typing.Any] | str | None = None,
+        json: collections.Mapping[str, typing.Any] | None = None,
+        data: collections.Mapping[str, typing.Any] | None = None,
         params: collections.Mapping[str, typing.Any] | None = None,
         headers: dict[str, typing.Any] | None = None,
     ) -> typedefs.JSONIsh:
@@ -502,18 +510,20 @@ class RESTClient(interfaces.RESTInterface):
         if self._lock is None:
             self._lock = asyncio.Lock()
 
+        if json:
+            headers["Content-Type"] = _APP_JSON
+
         while True:
             async with (stack := contextlib.AsyncExitStack()):
                 await stack.enter_async_context(self._lock)
 
-                data = self._dumps(json) if isinstance(json, dict) else json
                 # We make the request here.
                 taken_time = time.monotonic()
                 response = await self._session.request(
                     method=method,
                     url=f"{endpoint}/{route}",
                     headers=headers,
-                    data=data,
+                    data=_JSONPayload(json) if json else data,
                     params=params,
                 )
                 response_time = (time.monotonic() - taken_time) * 1_000
@@ -648,13 +658,15 @@ class RESTClient(interfaces.RESTInterface):
             "client_secret": self._client_secret,
         }
 
-        data = (
-            f"grant_type=authorization_code&code={code}"
-            f"&client_id={self._client_id}&client_secret={self._client_secret}"
-        )
+        data = {
+            "grant_type": "authorization_code",
+            "code": code,
+            "client_id": self._client_id,
+            "client_secret": self._client_secret,
+        }
 
         response = await self._request(
-            RequestMethod.POST, "", headers=headers, json=data, oauth2=True
+            RequestMethod.POST, "", headers=headers, data=data, oauth2=True
         )
         assert isinstance(response, dict)
         return builders.OAuth2Response.build_response(response)
@@ -672,10 +684,9 @@ class RESTClient(interfaces.RESTInterface):
             "refresh_token": refresh_token,
             "client_id": self._client_id,
             "client_secret": self._client_secret,
-            "Content-Type": "application/x-www-form-urlencoded",
         }
 
-        response = await self._request(RequestMethod.POST, "", json=data, oauth2=True)
+        response = await self._request(RequestMethod.POST, "", data=data, oauth2=True)
         assert isinstance(response, dict)
         return builders.OAuth2Response.build_response(response)
 
